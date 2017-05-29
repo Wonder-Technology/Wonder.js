@@ -8,11 +8,7 @@ export declare class Matrix4 {
     constructor(mat: Float32Array);
     constructor();
     values: Float32Array;
-    private _matrixArr;
-    push(): void;
-    pop(): void;
-    set(initialM11: number, initialM12: number, initialM13: number, initialM14: number, initialM21: number, initialM22: number, initialM23: number, initialM24: number, initialM31: number, initialM32: number, initialM33: number, initialM34: number, initialM41: number, initialM42: number, initialM43: number, initialM44: number): any;
-    set(matrix: Matrix4): any;
+    set(initialM11: number, initialM12: number, initialM13: number, initialM14: number, initialM21: number, initialM22: number, initialM23: number, initialM24: number, initialM31: number, initialM32: number, initialM33: number, initialM34: number, initialM41: number, initialM42: number, initialM43: number, initialM44: number): this;
     setIdentity(): Matrix4;
     invert(): Matrix4;
     invertTo3x3(): Matrix3;

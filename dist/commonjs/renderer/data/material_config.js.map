@@ -1,0 +1,1 @@
+{"version":3,"file":"material_config.js","sourceRoot":"","sources":["../../../../src/renderer/data/material_config.ts"],"names":[],"mappings":";;AAAa,QAAA,eAAe,GAAG;IAC3B,eAAe,EAAE;QACb,QAAQ,EAAE;YACN,WAAW,EAAE;gBACT,iBAAiB;gBACjB,wBAAwB;gBACxB,6BAA6B;gBAC7B,gBAAgB;gBAChB,mBAAmB;gBACnB,cAAc;aACjB;SACJ;KACJ;CACJ,CAAA"}

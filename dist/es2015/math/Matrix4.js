@@ -8,7 +8,7 @@ import { registerClass } from "../definition/typescript/decorator/registerClass"
 import { Matrix3 } from "./Matrix3";
 import { Log } from "../utils/Log";
 import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import { expect } from "wonder-expect.js";
 import { Vector3 } from "./Vector3";
 import { Vector4 } from "./Vector4";
 import { Quaternion } from "./Quaternion";
@@ -20,14 +20,12 @@ var Matrix4 = Matrix4_1 = (function () {
             args[_i] = arguments[_i];
         }
         this.values = null;
-        this._matrixArr = null;
         if (args.length === 1) {
             this.values = args[0];
         }
         else {
             this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         }
-        this._matrixArr = [];
     }
     Matrix4.create = function () {
         var args = [];
@@ -43,43 +41,24 @@ var Matrix4 = Matrix4_1 = (function () {
         }
         return m;
     };
-    Matrix4.prototype.push = function () {
-        this._matrixArr.push(this.values);
-    };
-    Matrix4.prototype.pop = function () {
-        this.values = this._matrixArr.pop();
-    };
-    Matrix4.prototype.set = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var te = this.values, values = null;
-        if (args.length === 1) {
-            var matrix = args[0];
-            values = matrix.values;
-        }
-        else {
-            values = [
-                args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]
-            ];
-        }
-        te[0] = values[0];
-        te[1] = values[1];
-        te[2] = values[2];
-        te[3] = values[3];
-        te[4] = values[4];
-        te[5] = values[5];
-        te[6] = values[6];
-        te[7] = values[7];
-        te[8] = values[8];
-        te[9] = values[9];
-        te[10] = values[10];
-        te[11] = values[11];
-        te[12] = values[12];
-        te[13] = values[13];
-        te[14] = values[14];
-        te[15] = values[15];
+    Matrix4.prototype.set = function (initialM11, initialM12, initialM13, initialM14, initialM21, initialM22, initialM23, initialM24, initialM31, initialM32, initialM33, initialM34, initialM41, initialM42, initialM43, initialM44) {
+        var te = this.values;
+        te[0] = initialM11;
+        te[1] = initialM12;
+        te[2] = initialM13;
+        te[3] = initialM14;
+        te[4] = initialM21;
+        te[5] = initialM22;
+        te[6] = initialM23;
+        te[7] = initialM24;
+        te[8] = initialM31;
+        te[9] = initialM32;
+        te[10] = initialM33;
+        te[11] = initialM34;
+        te[12] = initialM41;
+        te[13] = initialM42;
+        te[14] = initialM43;
+        te[15] = initialM44;
         return this;
     };
     Matrix4.prototype.setIdentity = function () {

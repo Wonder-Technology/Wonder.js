@@ -18,7 +18,7 @@ export declare class Quaternion {
     normalize(): this;
     length(): any;
     multiplyVector3(vector: Vector3): Vector3;
-    set(x: number, y: number, z: number, w: number): void;
+    set(x: number, y: number, z: number, w: number): this;
     sub(quat: Quaternion): this;
     getEulerAngles(): any;
     slerp(left: Quaternion, right: Quaternion, amount: number): Quaternion;

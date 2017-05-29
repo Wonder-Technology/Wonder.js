@@ -1,43 +1,89 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
-import { EntityObject } from "../EntityObject";
-import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
-import { cloneAttributeAsBasicType } from "../../../definition/typescript/decorator/clone";
-import { Collection } from "wonder-commonlib/dist/commonjs/Collection";
-import { RenderUtils } from "../../../utils/RenderUtils";
+import {
+    addChild,
+    addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem,
+    isAlive, removeChild
+} from "./GameObjectSystem";
+import { GameObjectData } from "./GameObjectData";
+import { Component } from "../../../component/Component";
+import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
+import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
+import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
+import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { checkGameObjectShouldAlive } from "../../../utils/contractUtils";
+import { getState } from "../../DirectorSystem";
+import { DirectorData } from "../../DirectorData";
 
 @registerClass("GameObject")
-export class GameObject extends EntityObject {
-    public static create() {
-        var obj = new this();
-
-        obj.initWhenCreate();
-
-        return obj;
-    }
-
-    public transform: ThreeDTransform;
-    public parent: GameObject;
-
-    @cloneAttributeAsBasicType()
-    public renderGroup: number = 0;
-    @cloneAttributeAsBasicType()
-    public renderPriority: number = 0;
-    @cloneAttributeAsBasicType()
-    public isVisible: boolean = true;
-
-    protected children: Collection<GameObject>;
-
-    public initWhenCreate() {
-        super.initWhenCreate();
-
-        this.name = `gameObject${String(this.uid)}`;
-    }
-
-    protected createTransform() {
-        return ThreeDTransform.create();
-    }
-
-    protected getRenderList() {
-        return RenderUtils.getGameObjectRenderList(this.getChildren());
-    }
+export class GameObject implements IUIDEntity {
+    public uid: number = null;
 }
+
+export var createGameObject = () => create(createThreeDTransform(ThreeDTransformData), GameObjectData);
+
+export var addGameObjectComponent = requireCheckFunc((gameObject: GameObject, component: Component) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, component: Component) => {
+    addComponent(gameObject, component, GameObjectData);
+})
+
+export var disposeGameObject = requireCheckFunc((gameObject: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject) => {
+    dispose(gameObject, ThreeDTransformData, GameObjectData);
+})
+
+export var initGameObject = requireCheckFunc((gameObject: GameObject, component: Component) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, component: Component) => {
+    initGameObjectSystem(gameObject, getState(DirectorData), GameObjectData);
+})
+
+export var disposeGameObjectComponent = requireCheckFunc((gameObject: GameObject, component: Component) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, component: Component) => {
+    disposeComponent(gameObject, component, GameObjectData);
+})
+
+export var getGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, _class: any) => {
+    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+})
+
+export var getGameObjectTransform = (gameObject: GameObject) => {
+    return getTransform(gameObject, GameObjectData);
+}
+
+export var hasGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
+    // checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, _class: any) => {
+    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+})
+
+export var isGameObjectAlive = (gameObject: GameObject) => {
+    return isAlive(gameObject, GameObjectData);
+}
+
+export var addGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, child: GameObject) => {
+    addChild(gameObject, child, ThreeDTransformData, GameObjectData);
+})
+
+export var removeGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, child: GameObject) => {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+})
+
+export var hasGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, child: GameObject) => {
+    return hasChild(gameObject, child, GameObjectData);
+})
+
+export interface IUIDEntity {
+    uid: number;
+}
+

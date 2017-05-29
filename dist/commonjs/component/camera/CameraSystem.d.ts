@@ -1,0 +1,13 @@
+import { Map } from "immutable";
+import { Matrix4 } from "../../math/Matrix4";
+export declare var init: (state: Map<any, any>, index: number, PerspectiveCameraData: any, CameraData: any) => void;
+export declare var updateProjectionMatrix: (index: number, PerspectiveCameraData: any, CameraData: any) => void;
+export declare var getWorldToCameraMatrix: (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => any;
+export declare var getPMatrix: (index: number, CameraData: any) => any;
+export declare var setPMatrix: (index: number, pMatrix: Matrix4, CameraData: any) => void;
+export declare var getNear: (index: number, CameraData: any) => any;
+export declare var setNear: (index: number, near: number, CameraControllerData: any, CameraData: any) => void;
+export declare var getFar: (index: number, CameraData: any) => any;
+export declare var setFar: (index: number, far: number, CameraControllerData: any, CameraData: any) => void;
+export declare var dispose: (index: number, PerspectiveCameraData: any, CameraData: any) => void;
+export declare var initData: (PerspectiveCameraData: any, CameraData: any) => void;

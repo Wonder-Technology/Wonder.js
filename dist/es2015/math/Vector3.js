@@ -127,6 +127,7 @@ var Vector3 = Vector3_1 = (function () {
             this.y = v.y;
             this.z = v.z;
         }
+        return this;
     };
     Vector3.prototype.sub = function (v) {
         this.values[0] = this.values[0] - v.values[0];

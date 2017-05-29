@@ -1,1 +1,1 @@
-{"version":3,"file":"CompileConfig.js","sourceRoot":"","sources":["../../../src/config/CompileConfig.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAI,aAAa,GAAG;IACvB,aAAa,EAAE,IAAI;IACnB,iBAAiB,EAAE,KAAK;CAC3B,CAAA"}
+{"version":3,"file":"CompileConfig.js","sourceRoot":"","sources":["../../../src/config/CompileConfig.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAM,aAAa,GAAG;IACzB,aAAa,EAAE,IAAI;IACnB,iBAAiB,EAAE,KAAK;CAC3B,CAAC"}

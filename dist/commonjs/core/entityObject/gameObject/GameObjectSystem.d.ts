@@ -1,0 +1,18 @@
+import { GameObject, IUIDEntity } from "./GameObject";
+import { Component } from "../../../component/Component";
+import { Map as MapImmutable } from "immutable";
+export declare var create: Function;
+export declare var isAlive: (entity: IUIDEntity, GameObjectData: any) => boolean;
+export declare var initGameObject: (gameObject: GameObject, state: MapImmutable<any, any>, GameObjectData: any) => void;
+export declare var dispose: (entity: IUIDEntity, ThreeDTransformData: any, GameObjectData: any) => void;
+export declare var addComponent: Function;
+export declare var disposeComponent: (gameObject: GameObject, component: Component, GameObjectData: any) => void;
+export declare var getComponent: (gameObject: GameObject, componentTypeID: string, GameObjectData: any) => any;
+export declare var hasComponent: (gameObject: GameObject, componentTypeID: string, GameObjectData: any) => boolean;
+export declare var getTransform: (gameObject: GameObject, GameObjectData: any) => any;
+export declare var getGeometry: (gameObject: GameObject, GameObjectData: any) => any;
+export declare var getMaterial: (gameObject: GameObject, GameObjectData: any) => any;
+export declare var addChild: Function;
+export declare var removeChild: Function;
+export declare var hasChild: (gameObject: GameObject, child: GameObject, GameObjectData: any) => boolean;
+export declare var initData: (GameObjectData: any) => void;

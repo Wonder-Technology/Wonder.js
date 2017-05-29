@@ -17,4 +17,13 @@ var Log = (function (_super) {
     return Log;
 }(Log$));
 export { Log };
+export var error = function (cond) {
+    var messages = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        messages[_i - 1] = arguments[_i];
+    }
+    if (cond) {
+        throw new Error(messages.join("\n"));
+    }
+};
 //# sourceMappingURL=Log.js.map

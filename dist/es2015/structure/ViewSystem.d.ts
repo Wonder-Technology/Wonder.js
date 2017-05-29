@@ -1,0 +1,18 @@
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
+import { Map } from "immutable";
+export declare var getCanvas: (state: Map<any, any>) => HTMLCanvasElement;
+export declare var setCanvas: any;
+export declare var getX: any;
+export declare var setX: any;
+export declare var getY: any;
+export declare var setY: any;
+export declare var getWidth: any;
+export declare var setWidth: any;
+export declare var getHeight: any;
+export declare var setHeight: any;
+export declare var getStyleWidth: any;
+export declare var setStyleWidth: any;
+export declare var getStyleHeight: any;
+export declare var setStyleHeight: any;
+export declare var initCanvas: (dom: HTMLCanvasElement) => IO;
+export declare var getContext: (contextConfig: Map<string, any>, dom: HTMLCanvasElement) => WebGLRenderingContext;

@@ -1,0 +1,10 @@
+import { MeshRenderer } from "./MeshRenderer";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+export declare var addAddComponentHandle: (_class: any) => void;
+export declare var addDisposeHandle: (_class: any) => void;
+export declare var create: Function;
+export declare var addComponent: (component: MeshRenderer, gameObject: GameObject) => void;
+export declare var disposeComponent: (component: MeshRenderer) => void;
+export declare var getGameObject: (index: number, Data: any) => GameObject;
+export declare var getRenderList: any;
+export declare var initData: (MeshRendererData: any) => void;

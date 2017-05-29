@@ -11,80 +11,53 @@ require("wonder-frp/dist/commonjs/stream/IgnoreElementsStream");
 require("wonder-frp/dist/commonjs/extend/root");
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var singleton_1 = require("../definition/typescript/decorator/singleton");
-var DeviceManager_1 = require("../device/DeviceManager");
-var SceneDispatcher_1 = require("./entityObject/scene/SceneDispatcher");
 var DirectorTimeController_1 = require("../utils/time/DirectorTimeController");
-var WebGLRenderer_1 = require("../renderer/renderer/WebGLRenderer");
 var Operator_1 = require("wonder-frp/dist/commonjs/global/Operator");
-var BasicState_1 = require("../renderer/state/BasicState");
-var EventManager_1 = require("../event/EventManager");
-var CustomEvent_1 = require("../event/object/CustomEvent");
-var EEngineEvent_1 = require("../event/EEngineEvent");
-var EGameState;
-(function (EGameState) {
-    EGameState[EGameState["NORMAL"] = 0] = "NORMAL";
-    EGameState[EGameState["STOP"] = 1] = "STOP";
-    EGameState[EGameState["PAUSE"] = 2] = "PAUSE";
-})(EGameState || (EGameState = {}));
+var ThreeDTransformSystem_1 = require("../component/transform/ThreeDTransformSystem");
+var DirectorSystem_1 = require("./DirectorSystem");
+var DirectorData_1 = require("./DirectorData");
+var ThreeDTransformData_1 = require("../component/transform/ThreeDTransformData");
+var GlobalTempData_1 = require("../definition/GlobalTempData");
+var GameObjectData_1 = require("./entityObject/gameObject/GameObjectData");
+var SceneSystem_1 = require("./entityObject/scene/SceneSystem");
+var GeometrySystem_1 = require("../component/geometry/GeometrySystem");
+var WebGLRenderSystem_1 = require("../renderer/render/WebGLRenderSystem");
+var GeometryData_1 = require("../component/geometry/GeometryData");
+var ShaderSystem_1 = require("../renderer/shader/ShaderSystem");
+var ShaderData_1 = require("../renderer/shader/ShaderData");
+var Geometry_1 = require("../component/geometry/Geometry");
+var DataBufferConfig_1 = require("../config/DataBufferConfig");
+var MaterialSystem_1 = require("../component/material/MaterialSystem");
+var MaterialData_1 = require("../component/material/MaterialData");
+var MeshRendererSystem_1 = require("../component/renderer/MeshRendererSystem");
+var MeshRendererData_1 = require("../component/renderer/MeshRendererData");
+var TagSystem_1 = require("../component/tag/TagSystem");
+var TagData_1 = require("../component/tag/TagData");
+var Tag_1 = require("../component/tag/Tag");
+var ThreeDTransform_1 = require("../component/transform/ThreeDTransform");
+var IndexBufferSystem_1 = require("../renderer/buffer/IndexBufferSystem");
+var IndexBufferData_1 = require("../renderer/buffer/IndexBufferData");
+var ArrayBufferSystem_1 = require("../renderer/buffer/ArrayBufferSystem");
+var ArrayBufferData_1 = require("../renderer/buffer/ArrayBufferData");
+var Material_1 = require("../component/material/Material");
+var MeshRenderer_1 = require("../component/renderer/MeshRenderer");
+var CameraControllerSystem_1 = require("../component/camera/CameraControllerSystem");
+var PerspectiveCameraData_1 = require("../component/camera/PerspectiveCameraData");
+var CameraData_1 = require("../component/camera/CameraData");
+var CameraControllerData_1 = require("../component/camera/CameraControllerData");
+var SceneData_1 = require("./entityObject/scene/SceneData");
+var CameraControllerSystem_2 = require("../component/camera/CameraControllerSystem");
+var CameraController_1 = require("../component/camera/CameraController");
+var DeviceManager_1 = require("../device/DeviceManager");
+var GameObjectSystem_1 = require("./entityObject/gameObject/GameObjectSystem");
 var Director = (function () {
     function Director() {
-        this.scene = null;
-        this.renderer = null;
+        this.scene = SceneSystem_1.create(GameObjectData_1.GameObjectData);
         this._gameLoop = null;
-        this._gameState = EGameState.NORMAL;
         this._timeController = DirectorTimeController_1.DirectorTimeController.create();
     }
     Director.getInstance = function () { };
     ;
-    Object.defineProperty(Director.prototype, "gameTime", {
-        get: function () {
-            return this._timeController.gameTime;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "fps", {
-        get: function () {
-            return this._timeController.fps;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isNormal", {
-        get: function () {
-            return this._gameState === EGameState.NORMAL;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isStop", {
-        get: function () {
-            return this._gameState === EGameState.STOP;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isPause", {
-        get: function () {
-            return this._gameState === EGameState.PAUSE;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isTimeChange", {
-        get: function () {
-            return this._timeController.isTimeChange;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "elapsed", {
-        get: function () {
-            return this._timeController.elapsed;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Director.prototype, "view", {
         get: function () {
             return DeviceManager_1.DeviceManager.getInstance().view;
@@ -93,31 +66,9 @@ var Director = (function () {
         configurable: true
     });
     Director.prototype.initWhenCreate = function () {
-        this.scene = SceneDispatcher_1.SceneDispatcher.create();
-        this.renderer = WebGLRenderer_1.WebGLRenderer.create();
     };
     Director.prototype.start = function () {
-        this._gameState = EGameState.NORMAL;
         this._startLoop();
-    };
-    Director.prototype.stop = function () {
-        this._gameLoop && this._gameLoop.dispose();
-        this._gameState = EGameState.STOP;
-        this._timeController.stop();
-    };
-    Director.prototype.pause = function () {
-        if (this._gameState === EGameState.PAUSE) {
-            return;
-        }
-        this._gameState = EGameState.PAUSE;
-        this._timeController.pause();
-    };
-    Director.prototype.resume = function () {
-        this._gameState = EGameState.NORMAL;
-        this._timeController.resume();
-    };
-    Director.prototype.getDeltaTime = function () {
-        return this._timeController.deltaTime;
     };
     Director.prototype._startLoop = function () {
         var self = this;
@@ -125,53 +76,57 @@ var Director = (function () {
             .ignoreElements()
             .concat(this._buildLoopStream())
             .subscribe(function (time) {
-            self._loopBody(time);
+            DirectorSystem_1.setState(self._loopBody(time, DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData).run();
         });
     };
     Director.prototype._buildInitStream = function () {
         var _this = this;
         return Operator_1.callFunc(function () {
-            _this._init();
+            DirectorSystem_1.setState(_this._init(DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData);
         }, this);
     };
-    Director.prototype._init = function () {
-        this._initGameObjectScene();
+    Director.prototype._init = function (state) {
+        var resultState = state;
+        resultState = this._initSystem(resultState);
+        resultState = this._initRenderer(resultState);
+        return resultState;
     };
-    Director.prototype._initGameObjectScene = function () {
-        var gameObjectScene = this.scene.gameObjectScene;
-        gameObjectScene.init();
-        this.renderer.init();
-        this._timeController.start();
+    Director.prototype._initSystem = function (state) {
+        var resultState = ThreeDTransformSystem_1.init(GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData, state);
+        resultState = GeometrySystem_1.init(GeometryData_1.GeometryData, state);
+        resultState = CameraControllerSystem_1.init(PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData, CameraControllerData_1.CameraControllerData, state);
+        return resultState;
+    };
+    Director.prototype._initRenderer = function (state) {
+        var resultState = WebGLRenderSystem_1.init(state);
+        return resultState;
     };
     Director.prototype._buildLoopStream = function () {
         return Operator_1.intervalRequest();
     };
-    Director.prototype._loopBody = function (time) {
+    Director.prototype._loopBody = function (time, state) {
         var elapsed = null;
-        if (this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP) {
-            return false;
-        }
-        elapsed = this._timeController.computeElapseTime(time);
-        this._run(elapsed);
-        return true;
+        return this._run(elapsed, state);
     };
-    Director.prototype._run = function (elapsed) {
-        this._timeController.tick(elapsed);
-        EventManager_1.EventManager.trigger(CustomEvent_1.CustomEvent.create(EEngineEvent_1.EEngineEvent.STARTLOOP));
-        this._update(elapsed);
-        this._render();
-        EventManager_1.EventManager.trigger(CustomEvent_1.CustomEvent.create(EEngineEvent_1.EEngineEvent.ENDLOOP));
+    Director.prototype._run = function (elapsed, state) {
+        var resultState = this._update(elapsed, state);
+        resultState = this._render(state);
+        return resultState;
     };
-    Director.prototype._update = function (elapsed) {
-        this.scene.gameObjectScene.update(elapsed);
+    Director.prototype._update = function (elapsed, state) {
+        var resultState = this._updateSystem(elapsed, state);
+        return resultState;
     };
-    Director.prototype._render = function () {
-        this.scene.gameObjectScene.render(this.renderer);
-        this.renderer.clear();
-        if (this.renderer.hasCommand()) {
-            this.renderer.webglState = BasicState_1.BasicState.create();
-            this.renderer.render();
-        }
+    Director.prototype._render = function (state) {
+        var resultState = state;
+        resultState = WebGLRenderSystem_1.clear(state);
+        resultState = WebGLRenderSystem_1.render(state);
+        return resultState;
+    };
+    Director.prototype._updateSystem = function (elapsed, state) {
+        var resultState = ThreeDTransformSystem_1.update(elapsed, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData, state);
+        resultState = CameraControllerSystem_1.update(PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData, CameraControllerData_1.CameraControllerData);
+        return resultState;
     };
     return Director;
 }());
@@ -180,4 +135,29 @@ Director = __decorate([
     registerClass_1.registerClass("Director")
 ], Director);
 exports.Director = Director;
+ShaderSystem_1.initData(ShaderData_1.ShaderData);
+GeometrySystem_1.initData(DataBufferConfig_1.DataBufferConfig, GeometryData_1.GeometryData);
+GeometrySystem_1.addAddComponentHandle(Geometry_1.Geometry);
+GeometrySystem_1.addDisposeHandle(Geometry_1.Geometry);
+GeometrySystem_1.addInitHandle(Geometry_1.Geometry);
+MaterialSystem_1.initData(MaterialData_1.MaterialData);
+MaterialSystem_1.addAddComponentHandle(Material_1.Material);
+MaterialSystem_1.addDisposeHandle(Material_1.Material);
+MaterialSystem_1.addInitHandle(Material_1.Material);
+MeshRendererSystem_1.initData(MeshRendererData_1.MeshRendererData);
+MeshRendererSystem_1.addAddComponentHandle(MeshRenderer_1.MeshRenderer);
+MeshRendererSystem_1.addDisposeHandle(MeshRenderer_1.MeshRenderer);
+TagSystem_1.initData(TagData_1.TagData);
+TagSystem_1.addAddComponentHandle(Tag_1.Tag);
+TagSystem_1.addDisposeHandle(Tag_1.Tag);
+ThreeDTransformSystem_1.initData(GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
+ThreeDTransformSystem_1.addAddComponentHandle(ThreeDTransform_1.ThreeDTransform);
+ThreeDTransformSystem_1.addDisposeHandle(ThreeDTransform_1.ThreeDTransform);
+ArrayBufferSystem_1.initData(ArrayBufferData_1.ArrayBufferData);
+IndexBufferSystem_1.initData(IndexBufferData_1.IndexBufferData);
+SceneSystem_1.initData(SceneData_1.SceneData);
+CameraControllerSystem_2.initData(CameraControllerData_1.CameraControllerData, PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData);
+CameraControllerSystem_1.addAddComponentHandle(CameraController_1.CameraController);
+CameraControllerSystem_1.addDisposeHandle(CameraController_1.CameraController);
+GameObjectSystem_1.initData(GameObjectData_1.GameObjectData);
 //# sourceMappingURL=Director.js.map

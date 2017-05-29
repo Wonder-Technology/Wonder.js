@@ -1,6 +1,6 @@
 /*!
  * wonder.js - 3d webgl engine
- * @version v0.0.3
+ * @version v1.0.0-alpha.1
  * @author Yuanchao Yang <395976266@qq.com>
  * @link https://github.com/yyc-git/Wonder.js
  * @license MIT
@@ -84,8 +84,14 @@ var root;
 if (JudgeUtils.isNodeJs() && typeof global != "undefined") {
     root = global;
 }
-else {
+else if (typeof window != "undefined") {
     root = window;
+}
+else if (typeof self != "undefined") {
+    root = self;
+}
+else {
+    Log$1.error("no avaliable root!");
 }
 
 var Log$1 = (function () {
@@ -317,39 +323,32 @@ var Log$$1 = (function (_super) {
     }
     return Log$$1;
 }(Log$1));
+var error$1 = function (cond) {
+    var messages = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        messages[_i - 1] = arguments[_i];
+    }
+    if (cond) {
+        throw new Error(messages.join("\n"));
+    }
+};
 
 var CompileConfig = {
     isCompileTest: true,
     closeContractTest: false
 };
 
-var Main = (function () {
-    function Main() {
-    }
-    return Main;
-}());
-Main.isTest = false;
-
 var MainData = (function () {
     function MainData() {
     }
-    Object.defineProperty(MainData, "isTest", {
-        get: function () {
-            return this._isTest;
-        },
-        set: function (isTest) {
-            this._isTest = isTest;
-            Main.isTest = MainData.isTest;
-        },
-        enumerable: true,
-        configurable: true
-    });
     return MainData;
 }());
-MainData._isTest = false;
-MainData.screenSize = null;
+MainData.isTest = false;
 
 var _describeContext = null;
+var getIsTest = function () {
+    return MainData.isTest;
+};
 function assert(cond, message) {
     if (message === void 0) { message = "contract error"; }
     Log$$1.error(!cond, message);
@@ -370,7 +369,7 @@ function describe(message, func, preCondition, context) {
         }
     }
 }
-function it(message, func, context) {
+function it$1(message, func, context) {
     try {
         if (arguments.length === 3) {
             func.call(context, null);
@@ -393,7 +392,7 @@ function requireCheck(inFunc) {
         if (CompileConfig.isCompileTest) {
             var value_1 = descriptor.value;
             descriptor.value = function (args) {
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.apply(this, arguments);
                 }
                 return value_1.apply(this, arguments);
@@ -402,13 +401,29 @@ function requireCheck(inFunc) {
         return descriptor;
     };
 }
+function requireCheckFunc(checkFunc, bodyFunc) {
+    if (!CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+    return function () {
+        var paramArr = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            paramArr[_i] = arguments[_i];
+        }
+        if (!getIsTest()) {
+            return bodyFunc.apply(null, paramArr);
+        }
+        checkFunc.apply(null, paramArr);
+        return bodyFunc.apply(null, paramArr);
+    };
+}
 function ensure(outFunc) {
     return function (target, name, descriptor) {
         if (CompileConfig.isCompileTest) {
             var value_2 = descriptor.value;
             descriptor.value = function (args) {
                 var result = value_2.apply(this, arguments);
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result];
                     for (var i = 0, len = arguments.length; i < len; i++) {
                         params[i + 1] = arguments[i];
@@ -421,18 +436,35 @@ function ensure(outFunc) {
         return descriptor;
     };
 }
+function ensureFunc(checkFunc, bodyFunc) {
+    if (!CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+    return function () {
+        var paramArr = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            paramArr[_i] = arguments[_i];
+        }
+        if (!getIsTest()) {
+            return bodyFunc.apply(null, paramArr);
+        }
+        var result = bodyFunc.apply(null, paramArr);
+        checkFunc.apply(null, [result].concat(paramArr));
+        return result;
+    };
+}
 function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
     return function (target, name, descriptor) {
         if (CompileConfig.isCompileTest) {
             var getter_1 = descriptor.get, setter_1 = descriptor.set;
             descriptor.get = function () {
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     inGetterFunc.call(this);
                 }
                 return getter_1.call(this);
             };
             descriptor.set = function (val) {
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     inSetterFunc.call(this, val);
                 }
                 setter_1.call(this, val);
@@ -446,7 +478,7 @@ function requireGetter(inFunc) {
         if (CompileConfig.isCompileTest) {
             var getter_2 = descriptor.get;
             descriptor.get = function () {
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.call(this);
                 }
                 return getter_2.call(this);
@@ -460,7 +492,7 @@ function requireSetter(inFunc) {
         if (CompileConfig.isCompileTest) {
             var setter_2 = descriptor.set;
             descriptor.set = function (val) {
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.call(this, val);
                 }
                 setter_2.call(this, val);
@@ -475,14 +507,14 @@ function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             var getter_3 = descriptor.get, setter_3 = descriptor.set;
             descriptor.get = function () {
                 var result = getter_3.call(this);
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     outGetterFunc.call(this, result);
                 }
                 return result;
             };
             descriptor.set = function (val) {
                 var result = setter_3.call(this, val);
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result, val];
                     outSetterFunc.apply(this, params);
                 }
@@ -497,7 +529,7 @@ function ensureGetter(outFunc) {
             var getter_4 = descriptor.get;
             descriptor.get = function () {
                 var result = getter_4.call(this);
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     outFunc.call(this, result);
                 }
                 return result;
@@ -512,7 +544,7 @@ function ensureSetter(outFunc) {
             var setter_4 = descriptor.set;
             descriptor.set = function (val) {
                 var result = setter_4.call(this, val);
-                if (MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result, val];
                     outFunc.apply(this, params);
                 }
@@ -524,7 +556,7 @@ function ensureSetter(outFunc) {
 function invariant(func) {
     return function (target) {
         if (CompileConfig.isCompileTest) {
-            if (MainData.isTest) {
+            if (getIsTest()) {
                 func(target);
             }
         }
@@ -535,7 +567,9 @@ var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 
 
 
 
-
+function unwrapExports (x) {
+	return x && x.__esModule ? x['default'] : x;
+}
 
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
@@ -550,7 +584,14 @@ var index = createCommonjsModule(function (module) {
    * Exports.
    */
 
-  module.exports = expect;
+    /**
+     * modify by wonder
+     */
+  module.exports.expect = expect;
+
+
+
+
   expect.Assertion = Assertion;
 
   /**
@@ -1039,6 +1080,78 @@ var index = createCommonjsModule(function (module) {
     return this;
   };
 
+
+
+
+
+
+
+    /**
+     * extend by wonder
+     */
+
+
+    function addProperty(name, fn) {
+        Object.defineProperty(Assertion.prototype, name, {
+            get: function addProperty() {
+                return fn.call(this);
+            },
+            configurable: true
+        });
+    }
+
+
+
+    Assertion.prototype.lte = function (n) {
+        this.assert(
+            this.obj <= n
+            , function(){ return 'expected ' + i(this.obj) + ' to be <= ' + n }
+            , function(){ return 'expected ' + i(this.obj) + ' to be > ' + n });
+        return this;
+    };
+
+    Assertion.prototype.gte = function (n) {
+        this.assert(
+            this.obj >= n
+            , function(){ return 'expected ' + i(this.obj) + ' to be >= ' + n }
+            , function(){ return 'expected ' + i(this.obj) + ' to be < ' + n });
+        return this;
+    };
+
+
+    addProperty("exist",  function () {
+        this.assert(
+            this.obj !== null && this.obj !== undefined
+            , function(){ return 'expected ' + i(this.obj) + ' to be exist' }
+            , function(){ return 'expected ' + i(this.obj) + ' to not exist' });
+        return this;
+    });
+
+    addProperty("true",  function () {
+        this.assert(
+            this.obj === true
+            , function(){ return 'expected ' + i(this.obj) + ' to be true' }
+            , function(){ return 'expected ' + i(this.obj) + ' to be false' });
+        return this;
+    });
+
+    addProperty("false",  function () {
+        this.assert(
+            this.obj === false
+            , function(){ return 'expected ' + i(this.obj) + ' to be false' }
+            , function(){ return 'expected ' + i(this.obj) + ' to be true' });
+        return this;
+    });
+
+
+
+
+
+
+
+
+
+
   /**
    * Function bind implementation.
    */
@@ -1186,7 +1299,7 @@ var index = createCommonjsModule(function (module) {
       if (isDate(value) && $keys.length === 0) {
         return stylize(value.toUTCString(), 'date');
       }
-      
+
       // Error objects can be shortcutted
       if (value instanceof Error) {
         return stylize("["+value.toString()+"]", 'Error');
@@ -1824,7 +1937,12 @@ var index = createCommonjsModule(function (module) {
   })();
 
   if ('undefined' != typeof window) {
-    window.expect = module.exports;
+      /**
+       * modify by wonder
+       */
+      if(!window.expect){
+          window.expect = module.exports.expect;
+      }
   }
 
 })(
@@ -1833,39 +1951,7 @@ var index = createCommonjsModule(function (module) {
 );
 });
 
-var ClassUtils = (function () {
-    function ClassUtils() {
-    }
-    ClassUtils.getClassNameByInstance = function (obj) {
-        return obj.constructor["className"];
-    };
-    ClassUtils.addClass = function (className, _class) {
-        this._classMap[className] = _class;
-    };
-    ClassUtils.addClassNameAttributeToClass = function (className, _class) {
-        _class["className"] = className;
-    };
-    ClassUtils.getClass = function (className) {
-        return this._classMap[className];
-    };
-    return ClassUtils;
-}());
-ClassUtils._classMap = {};
-__decorate([
-    ensure(function (className) {
-        it("should get class name from objInstance", function () {
-            index(className).exist;
-            index(className !== "").true;
-        });
-    })
-], ClassUtils, "getClassNameByInstance", null);
-
-function registerClass(className) {
-    return function (_class) {
-        ClassUtils.addClassNameAttributeToClass(className, _class);
-        ClassUtils.addClass(className, _class);
-    };
-}
+var index_1 = index.expect;
 
 var $BREAK = {
     break: true
@@ -2181,226 +2267,408 @@ var JudgeUtils$1 = (function (_super) {
     function JudgeUtils$$1() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    JudgeUtils$$1.isView = function (obj) {
-        return !!obj && obj.offset && obj.width && obj.height && this.isFunction(obj.getContext);
-    };
-    JudgeUtils$$1.isEqual = function (target1, target2) {
-        if ((!target1 && target2) || (target1 && !target2)) {
-            return false;
-        }
-        if (target1.uid && target2.uid) {
-            return target1.uid === target2.uid;
-        }
-        return target1 === target2;
-    };
-    JudgeUtils$$1.isPowerOfTwo = function (value) {
-        return (value & (value - 1)) === 0 && value !== 0;
-    };
-    JudgeUtils$$1.isFloatArray = function (data) {
-        return Object.prototype.toString.call(data) === "[object Float32Array]" || Object.prototype.toString.call(data) === "[object Float16Array]";
-    };
-    JudgeUtils$$1.isInterface = function (target, memberOfInterface) {
-        return !!target[memberOfInterface];
-    };
-    JudgeUtils$$1.isSelf = function (self, entityObject) {
-        return self.uid === entityObject.uid;
-    };
-    JudgeUtils$$1.isComponenet = function (component) {
-        return component.entityObject !== void 0;
-    };
-    JudgeUtils$$1.isDom = function (obj) {
-        return Object.prototype.toString.call(obj).match(/\[object HTML\w+/) !== null;
-    };
     JudgeUtils$$1.isCollection = function (list) {
         return list instanceof Collection;
     };
-    JudgeUtils$$1.isClass = function (objInstance, className) {
-        return objInstance.constructor.name === className;
-    };
     return JudgeUtils$$1;
 }(JudgeUtils));
-JudgeUtils$1 = __decorate([
-    registerClass("JudgeUtils")
-], JudgeUtils$1);
+var isUndefined = function (v) { return v === void 0; };
+var isNotUndefined = function (v) { return v !== void 0; };
 
-var NOT_CLONE_TAG = "not_clone";
-var getCloneAttributeMembers = function (obj) {
-    return obj[buildMemberContainerAttributeName(obj)];
+var deleteVal = function (key, obj) { return obj[key] = void 0; };
+var deleteBySwap = function (sourceIndex, targetIndex, obj) {
+    obj[sourceIndex] = obj[targetIndex];
+    deleteVal(targetIndex, obj);
 };
-var setCloneAttributeMembers = function (obj, members) {
-    obj[buildMemberContainerAttributeName(obj)] = members;
+var isValidMapValue = function (val) {
+    return isNotUndefined(val);
 };
-var searchCloneAttributeMembers = function (obj) {
-    var CLONE_MEMBER_PREFIX = "__decorator_clone";
-    var result = null;
-    for (var memberName in obj) {
-        if (obj.hasOwnProperty(memberName)) {
-            if (memberName.indexOf(CLONE_MEMBER_PREFIX) > -1) {
-                result = obj[memberName];
-                break;
-            }
+var isNotValidMapValue = function (val) {
+    return isUndefined(val);
+};
+var createMap = function () { return Object.create(null); };
+
+var ComponentData = (function () {
+    function ComponentData() {
+    }
+    return ComponentData;
+}());
+ComponentData.addComponentHandleMap = {};
+ComponentData.disposeHandleMap = {};
+ComponentData.initHandleMap = {};
+
+var ClassUtils = (function () {
+    function ClassUtils() {
+    }
+    ClassUtils.getClassNameByInstance = function (obj) {
+        return obj.constructor["className"];
+    };
+    ClassUtils.getClassNameByClass = function (_class) {
+        return _class["className"];
+    };
+    ClassUtils.addClass = function (className, _class) {
+        this._classMap[className] = _class;
+    };
+    ClassUtils.addClassNameAttributeToClass = function (className, _class) {
+        _class["className"] = className;
+    };
+    ClassUtils.getClass = function (className) {
+        return this._classMap[className];
+    };
+    return ClassUtils;
+}());
+ClassUtils._classMap = {};
+__decorate([
+    ensure(function (className) {
+        it$1("should exist class name", function () {
+            index_1(className).exist;
+            index_1(className !== "").true;
+        });
+    })
+], ClassUtils, "getClassNameByInstance", null);
+__decorate([
+    ensure(function (className) {
+        it$1("should exist class name", function () {
+            index_1(className).exist;
+            index_1(className !== "").true;
+        });
+    })
+], ClassUtils, "getClassNameByClass", null);
+
+var _generateTypeID = function () {
+    var result = _typeID;
+    _typeID += 1;
+    return String(result);
+};
+var getTypeIDFromClass = function (_class) {
+    return _table[ClassUtils.getClassNameByClass(_class)];
+};
+var getTypeIDFromComponent = function (component) {
+    return _table[ClassUtils.getClassNameByInstance(component)];
+};
+var _addTypeID = function (componentClassNameArr, table) {
+    var id = _generateTypeID();
+    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
+        var className = componentClassNameArr_1[_i];
+        table[className] = id;
+    }
+};
+var _typeID = 1;
+var _table = {};
+_addTypeID(["ThreeDTransform"], _table);
+_addTypeID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
+_addTypeID(["Material", "BasicMaterial"], _table);
+_addTypeID(["MeshRenderer"], _table);
+_addTypeID(["Tag"], _table);
+_addTypeID(["CameraController"], _table);
+
+var _addHandle = function (_class, handleMap, handle) {
+    var typeID = getTypeIDFromClass(_class);
+    handleMap[typeID] = handle;
+};
+var addAddComponentHandle$1 = function (_class, handle) {
+    _addHandle(_class, ComponentData.addComponentHandleMap, handle);
+};
+var addDisposeHandle$1 = function (_class, handle) {
+    _addHandle(_class, ComponentData.disposeHandleMap, handle);
+};
+var addInitHandle = function (_class, handle) {
+    _addHandle(_class, ComponentData.initHandleMap, handle);
+};
+var execHandle = function (component, handleMapName, args) {
+    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
+    if (_isHandleNotExist(handle)) {
+        return;
+    }
+    if (!!args) {
+        handle.apply(null, args);
+    }
+    else {
+        handle(component);
+    }
+};
+var execInitHandle = function (typeID, index, state) {
+    var handle = ComponentData.initHandleMap[typeID];
+    if (_isHandleNotExist(handle)) {
+        return;
+    }
+    handle(index, state);
+};
+var _isHandleNotExist = function (handle) { return isNotValidMapValue(handle); };
+var checkComponentShouldAlive = function (component, data, isAlive) {
+    it$1("component should alive", function () {
+        index_1(isAlive(component, data)).true;
+    });
+};
+var addComponentToGameObjectMap = requireCheckFunc(function (gameObjectMap, index, gameObject) {
+    it$1("component should not exist in gameObject", function () {
+        index_1(gameObjectMap[index]).not.exist;
+    });
+}, function (gameObjectMap, index, gameObject) {
+    gameObjectMap[index] = gameObject;
+});
+var getComponentGameObject = function (gameObjectMap, index) {
+    return gameObjectMap[index];
+};
+var generateComponentIndex = function (ComponentData$$1) {
+    return ComponentData$$1.index++;
+};
+var deleteComponentBySwap = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
+    it$1("targetIndex should >= 0", function () {
+        index_1(targetIndex).gte(0);
+    });
+}, function (sourceIndex, targetIndex, componentMap) {
+    componentMap[targetIndex].index = sourceIndex;
+    markComponentIndexRemoved(componentMap[sourceIndex]);
+    deleteBySwap(sourceIndex, targetIndex, componentMap);
+});
+var markComponentIndexRemoved = function (component) {
+    component.index = -1;
+};
+
+var checkIndexShouldEqualCount = function (ComponentData) {
+    it$1("ComponentData.index should === ComponentData.count", function () {
+        index_1(ComponentData.index).equal(ComponentData.count);
+    });
+    it$1("ComponentData.index should >= 0", function () {
+        index_1(ComponentData.index).gte(0);
+    });
+    it$1("ComponentData.count should >= 0", function () {
+        index_1(ComponentData.count).gte(0);
+    });
+};
+
+function registerClass(className) {
+    return function (_class) {
+        ClassUtils.addClassNameAttributeToClass(className, _class);
+        ClassUtils.addClass(className, _class);
+    };
+}
+
+var Component = (function () {
+    function Component() {
+        this.index = null;
+    }
+    return Component;
+}());
+Component = __decorate([
+    registerClass("Component")
+], Component);
+
+var CameraControllerData = (function () {
+    function CameraControllerData() {
+    }
+    return CameraControllerData;
+}());
+CameraControllerData.index = null;
+CameraControllerData.count = null;
+CameraControllerData.dirtyIndexArray = null;
+CameraControllerData.gameObjectMap = null;
+CameraControllerData.worldToCameraMatrixCacheMap = null;
+
+var CameraController = (function (_super) {
+    __extends(CameraController, _super);
+    function CameraController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return CameraController;
+}(Component));
+CameraController = __decorate([
+    registerClass("CameraController")
+], CameraController);
+var createCameraController = function () {
+    return create(CameraControllerData);
+};
+var getCameraControllerGameObject = function (component) {
+    return getGameObject(component.index, CameraControllerData);
+};
+
+var isNotValidVal = function (val) { return isUndefined(val); };
+var deleteBySwap$1 = function (index, array) {
+    var last = array.length - 1, temp = null;
+    if (last === -1) {
+        return null;
+    }
+    temp = array[last];
+    array[last] = array[index];
+    array[index] = temp;
+    array.pop();
+};
+var hasDuplicateItems = function (arr) {
+    var noRepeatArr = [], hasRepeat = false;
+    for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+        var item = arr_1[_i];
+        if (!item) {
+            continue;
+        }
+        if (_contain(noRepeatArr, item)) {
+            hasRepeat = true;
+            break;
+        }
+        noRepeatArr.push(item);
+    }
+    return hasRepeat;
+};
+var _contain = function (arr, item) {
+    var c = null;
+    for (var i = 0, len = arr.length; i < len; i++) {
+        c = arr[i];
+        if (item === c) {
+            return true;
+        }
+    }
+    return false;
+};
+var removeDuplicateItems = function (arr) {
+    var resultArr = [];
+    for (var _i = 0, arr_2 = arr; _i < arr_2.length; _i++) {
+        var ele = arr_2[_i];
+        if (_contain(resultArr, ele)) {
+            continue;
+        }
+        resultArr.push(ele);
+    }
+    
+    return resultArr;
+};
+var removeItem = function (arr, item) {
+    return filter(arr, function (ele) {
+        return ele !== item;
+    });
+};
+var filter = function (arr, func) {
+    var result = [];
+    for (var _i = 0, arr_3 = arr; _i < arr_3.length; _i++) {
+        var ele = arr_3[_i];
+        if (func(ele)) {
+            result.push(ele);
         }
     }
     return result;
 };
-var getAllCloneAttributeMembers = function (obj) {
-    var IS_GATHERED_ATTRIBUTE_NAME = "__decorator_clone_isGathered_" + ClassUtils.getClassNameByInstance(obj) + "_cloneAttributeMembers";
-    var result = Collection.create();
-    var gather = function (obj) {
-        if (!obj) {
-            return;
-        }
-        if (obj[IS_GATHERED_ATTRIBUTE_NAME]) {
-            var members_1 = getCloneAttributeMembers(obj);
-            assert(members_1, Log$$1.info.FUNC_NOT_EXIST("" + buildMemberContainerAttributeName(obj)));
-            result.addChildren(members_1);
-            return;
-        }
-        gather(obj.__proto__);
-        var members = searchCloneAttributeMembers(obj);
-        if (members) {
-            result.addChildren(members);
-        }
-    }, setGatheredResult = function () {
-        setCloneAttributeMembers(obj.__proto__, result);
-        obj.__proto__[IS_GATHERED_ATTRIBUTE_NAME] = true;
-    };
-    gather(obj.__proto__);
-    setGatheredResult();
-    return getCloneAttributeMembers(obj);
-};
-var initCloneAttributeMembers = function (obj) {
-    setCloneAttributeMembers(obj, Collection.create());
-};
-var buildMemberContainerAttributeName = function (obj) {
-    return "__decorator_clone_" + ClassUtils.getClassNameByInstance(obj) + "_cloneAttributeMembers";
-};
-var generateCloneableMember = function (cloneType) {
-    var cloneDataArr = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        cloneDataArr[_i - 1] = arguments[_i];
+var forEach = function (arr, func) {
+    for (var i = 0, len = arr.length; i < len; i++) {
+        func(arr[i], i);
     }
-    return function (target, memberName) {
-        if (!getCloneAttributeMembers(target)) {
-            initCloneAttributeMembers(target);
+};
+
+var cacheFunc = function (hasCacheFunc, getCacheFunc, setCacheFunc, bodyFunc) {
+    return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
         }
-        if (cloneDataArr.length === 1) {
-            getCloneAttributeMembers(target).addChild({
-                memberName: memberName,
-                cloneType: cloneType,
-                configData: cloneDataArr[0]
-            });
+        if (hasCacheFunc.apply(null, args)) {
+            return getCacheFunc.apply(null, args);
         }
-        else if (cloneDataArr.length === 2) {
-            getCloneAttributeMembers(target).addChild({
-                memberName: memberName,
-                cloneType: cloneType,
-                cloneFunc: cloneDataArr[0],
-                configData: cloneDataArr[1]
-            });
-        }
+        var result = bodyFunc.apply(null, args);
+        args.push(result);
+        setCacheFunc.apply(null, args);
+        return result;
     };
 };
-function cloneAttributeAsBasicType(configData) {
-    return generateCloneableMember(CloneType.BASIC, ExtendUtils.extend({
-        order: 0
-    }, configData));
-}
-function cloneAttributeAsCloneable(configData) {
-    return generateCloneableMember(CloneType.CLONEABLE, ExtendUtils.extend({
-        order: 0
-    }, configData));
-}
-function cloneAttributeAsCustomType(cloneFunc, configData) {
-    return generateCloneableMember(CloneType.CUSTOM, cloneFunc, ExtendUtils.extend({
-        order: 0
-    }, configData));
-}
-var CloneUtils = (function () {
-    function CloneUtils() {
+
+var PerspectiveCameraData = (function () {
+    function PerspectiveCameraData() {
     }
-    CloneUtils.clone = function (sourceInstance, cloneData, createDataArr, target) {
-        if (cloneData === void 0) { cloneData = null; }
-        if (createDataArr === void 0) { createDataArr = null; }
-        if (target === void 0) { target = null; }
-        var cloneAttributeMembers = getAllCloneAttributeMembers(sourceInstance)
-            .sort(function (memberDataA, memberDataB) {
-            return memberDataA.configData.order - memberDataB.configData.order;
-        }), className = ClassUtils.getClassNameByInstance(sourceInstance);
-        if (target === null) {
-            if (createDataArr) {
-                var _class = ClassUtils.getClass(className);
-                target = _class.create.apply(_class, createDataArr);
-            }
-            else {
-                target = ClassUtils.getClass(className).create();
-            }
-        }
-        if (!cloneAttributeMembers) {
-            return target;
-        }
-        cloneAttributeMembers.forEach(function (memberData) {
-            var cloneType = memberData.cloneType, memberName = memberData.memberName;
-            switch (cloneType) {
-                case CloneType.CLONEABLE:
-                    if (sourceInstance[memberName] !== null && sourceInstance[memberName] !== void 0) {
-                        if (target[memberName] !== null) {
-                            target[memberName] = sourceInstance[memberName].clone(target[memberName]);
-                        }
-                        else {
-                            target[memberName] = sourceInstance[memberName].clone();
-                        }
-                    }
-                    break;
-                case CloneType.BASIC:
-                    target[memberName] = sourceInstance[memberName];
-                    break;
-                case CloneType.CUSTOM:
-                    var cloneFunc = memberData.cloneFunc;
-                    cloneFunc.call(target, sourceInstance, target, memberName, cloneData);
-                    break;
-            }
-        });
-        return target;
-    };
-    CloneUtils.cloneArray = function (arr, isDeep) {
-        if (isDeep === void 0) { isDeep = false; }
-        if (arr === null) {
-            return null;
-        }
-        if (isDeep) {
-            return ExtendUtils.extendDeep(arr);
-        }
-        return [].concat(arr);
-    };
-    CloneUtils.markNotClone = function (entityObject) {
-        if (!entityObject.hasTag(NOT_CLONE_TAG)) {
-            entityObject.addTag(NOT_CLONE_TAG);
-        }
-    };
-    CloneUtils.isNotClone = function (entityObject) {
-        return entityObject.hasTag(NOT_CLONE_TAG);
-    };
-    return CloneUtils;
+    return PerspectiveCameraData;
 }());
-__decorate([
-    requireCheck(function (source, cloneData, createDataArr) {
-        if (cloneData === void 0) { cloneData = null; }
-        if (createDataArr === void 0) { createDataArr = null; }
-        if (createDataArr) {
-            assert(JudgeUtils$1.isArrayExactly(createDataArr), Log$$1.info.FUNC_MUST_BE("param:createDataArr", "be arr"));
-        }
-    })
-], CloneUtils, "clone", null);
-CloneUtils = __decorate([
-    registerClass("CloneUtils")
-], CloneUtils);
-var CloneType;
-(function (CloneType) {
-    CloneType[CloneType["CLONEABLE"] = 0] = "CLONEABLE";
-    CloneType[CloneType["BASIC"] = 1] = "BASIC";
-    CloneType[CloneType["CUSTOM"] = 2] = "CUSTOM";
-})(CloneType || (CloneType = {}));
+PerspectiveCameraData.fovyMap = null;
+PerspectiveCameraData.aspectMap = null;
+
+var CameraData = (function () {
+    function CameraData() {
+    }
+    return CameraData;
+}());
+CameraData.nearMap = null;
+CameraData.farMap = null;
+CameraData.worldToCameraMatrixMap = null;
+CameraData.pMatrixMap = null;
+
+var addAddComponentHandle$$1 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent);
+};
+var addDisposeHandle$$1 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent);
+};
+var create = requireCheckFunc(function (CameraControllerData$$1) {
+    checkIndexShouldEqualCount(CameraControllerData$$1);
+}, function (CameraControllerData$$1) {
+    var controller = new CameraController(), index = generateComponentIndex(CameraControllerData$$1);
+    controller.index = index;
+    CameraControllerData$$1.count += 1;
+    addToDirtyList(index, CameraControllerData$$1);
+    return controller;
+});
+var addToDirtyList = ensureFunc(function (index, CameraControllerData$$1) {
+}, function (index, CameraControllerData$$1) {
+    CameraControllerData$$1.dirtyIndexArray.push(index);
+});
+var init$1 = function (PerspectiveCameraData$$1, CameraData$$1, CameraControllerData$$1, state) {
+    _forEachDirtyList(CameraControllerData$$1.dirtyIndexArray, function (dirtyIndex) {
+        initCameraController(state, dirtyIndex, PerspectiveCameraData$$1, CameraData$$1);
+    });
+    _clearDirtyList(CameraControllerData$$1);
+    return state;
+};
+var initCameraController = function (state, index, PerspectiveCameraData$$1, CameraData$$1) {
+    init$$1(state, index, PerspectiveCameraData$$1, CameraData$$1);
+};
+var _forEachDirtyList = function (dirtyIndexArray, func) {
+    var arr = removeDuplicateItems(dirtyIndexArray);
+    for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+        var dirtyIndex = arr_1[_i];
+        func(dirtyIndex);
+    }
+};
+var _clearDirtyList = function (CameraControllerData$$1) {
+    CameraControllerData$$1.dirtyIndexArray = [];
+};
+var update = function (PerspectiveCameraData$$1, CameraData$$1, CameraControllerData$$1) {
+    _forEachDirtyList(CameraControllerData$$1.dirtyIndexArray, function (dirtyIndex) {
+        updateProjectionMatrix$$1(dirtyIndex, PerspectiveCameraData$$1, CameraData$$1);
+    });
+    _clearDirtyList(CameraControllerData$$1);
+    _clearCache(CameraControllerData$$1);
+};
+var addComponent = function (component, gameObject) {
+    addComponentToGameObjectMap(CameraControllerData.gameObjectMap, component.index, gameObject);
+};
+var disposeComponent = function (component) {
+    var index = component.index;
+    deleteVal(index, CameraControllerData.gameObjectMap);
+    deleteVal(index, CameraControllerData.worldToCameraMatrixCacheMap);
+    CameraControllerData.count -= 1;
+    CameraControllerData.dirtyIndexArray = removeItem(CameraControllerData.dirtyIndexArray, index);
+    dispose$$1(index, PerspectiveCameraData, CameraData);
+};
+var getGameObject = function (index, CameraControllerData$$1) {
+    return getComponentGameObject(CameraControllerData$$1.gameObjectMap, index);
+};
+var getWorldToCameraMatrix$1 = cacheFunc(function (index, ThreeDTransformData, GameObjectData, CameraControllerData$$1, CameraData$$1) {
+    return isValidMapValue(CameraControllerData$$1.worldToCameraMatrixCacheMap[index]);
+}, function (index, ThreeDTransformData, GameObjectData, CameraControllerData$$1, CameraData$$1) {
+    return CameraControllerData$$1.worldToCameraMatrixCacheMap[index];
+}, function (index, ThreeDTransformData, GameObjectData, CameraControllerData$$1, CameraData$$1, worldToCamraMatrix) {
+    CameraControllerData$$1.worldToCameraMatrixCacheMap[index] = worldToCamraMatrix;
+}, function (index, ThreeDTransformData, GameObjectData, CameraControllerData$$1, CameraData$$1) {
+    return getWorldToCameraMatrix$$1(index, ThreeDTransformData, GameObjectData, CameraControllerData$$1, CameraData$$1);
+});
+var getPMatrix$1 = function (index, CameraData$$1) {
+    return getPMatrix$$1(index, CameraData$$1);
+};
+var _clearCache = function (CameraControllerData$$1) {
+    CameraControllerData$$1.worldToCameraMatrixCacheMap = {};
+};
+var initData$2 = function (CameraControllerData$$1, PerspectiveCameraData$$1, CameraData$$1) {
+    CameraControllerData$$1.index = 0;
+    CameraControllerData$$1.count = 0;
+    CameraControllerData$$1.gameObjectMap = createMap();
+    CameraControllerData$$1.dirtyIndexArray = [];
+    CameraControllerData$$1.worldToCameraMatrixCacheMap = createMap();
+    initData$$1(PerspectiveCameraData$$1, CameraData$$1);
+};
 
 var Vector2 = Vector2_1 = (function () {
     function Vector2() {
@@ -2998,6 +3266,7 @@ var Vector3 = Vector3_1 = (function () {
             this.y = v.y;
             this.z = v.z;
         }
+        return this;
     };
     Vector3.prototype.sub = function (v) {
         this.values[0] = this.values[0] - v.values[0];
@@ -3360,6 +3629,7 @@ var Quaternion = Quaternion_1 = (function () {
         this.y = y;
         this.z = z;
         this.w = w;
+        return this;
     };
     Quaternion.prototype.sub = function (quat) {
         var result = quat.clone().invert().multiply(this);
@@ -3435,14 +3705,12 @@ var Matrix4 = Matrix4_1 = (function () {
             args[_i] = arguments[_i];
         }
         this.values = null;
-        this._matrixArr = null;
         if (args.length === 1) {
             this.values = args[0];
         }
         else {
             this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         }
-        this._matrixArr = [];
     }
     Matrix4.create = function () {
         var args = [];
@@ -3458,43 +3726,24 @@ var Matrix4 = Matrix4_1 = (function () {
         }
         return m;
     };
-    Matrix4.prototype.push = function () {
-        this._matrixArr.push(this.values);
-    };
-    Matrix4.prototype.pop = function () {
-        this.values = this._matrixArr.pop();
-    };
-    Matrix4.prototype.set = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var te = this.values, values = null;
-        if (args.length === 1) {
-            var matrix = args[0];
-            values = matrix.values;
-        }
-        else {
-            values = [
-                args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]
-            ];
-        }
-        te[0] = values[0];
-        te[1] = values[1];
-        te[2] = values[2];
-        te[3] = values[3];
-        te[4] = values[4];
-        te[5] = values[5];
-        te[6] = values[6];
-        te[7] = values[7];
-        te[8] = values[8];
-        te[9] = values[9];
-        te[10] = values[10];
-        te[11] = values[11];
-        te[12] = values[12];
-        te[13] = values[13];
-        te[14] = values[14];
-        te[15] = values[15];
+    Matrix4.prototype.set = function (initialM11, initialM12, initialM13, initialM14, initialM21, initialM22, initialM23, initialM24, initialM31, initialM32, initialM33, initialM34, initialM41, initialM42, initialM43, initialM44) {
+        var te = this.values;
+        te[0] = initialM11;
+        te[1] = initialM12;
+        te[2] = initialM13;
+        te[3] = initialM14;
+        te[4] = initialM21;
+        te[5] = initialM22;
+        te[6] = initialM23;
+        te[7] = initialM24;
+        te[8] = initialM31;
+        te[9] = initialM32;
+        te[10] = initialM33;
+        te[11] = initialM34;
+        te[12] = initialM41;
+        te[13] = initialM42;
+        te[14] = initialM43;
+        te[15] = initialM44;
         return this;
     };
     Matrix4.prototype.setIdentity = function () {
@@ -3971,8 +4220,8 @@ var Matrix4 = Matrix4_1 = (function () {
     Matrix4.prototype.cloneToArray = function (array, offset) {
         if (offset === void 0) { offset = 0; }
         var values = this.values;
-        for (var index$$1 = 0; index$$1 < 16; index$$1++) {
-            array[offset + index$$1] = values[index$$1];
+        for (var index = 0; index < 16; index++) {
+            array[offset + index] = values[index];
         }
         return this;
     };
@@ -4066,8 +4315,8 @@ var Matrix4 = Matrix4_1 = (function () {
 }());
 __decorate([
     requireCheck(function (angle, x, y, z) {
-        it("axis's component shouldn't all be zero", function () {
-            index(x === 0 && y === 0 && z === 0).false;
+        it$1("axis's component shouldn't all be zero", function () {
+            index_1(x === 0 && y === 0 && z === 0).false;
         });
     })
 ], Matrix4.prototype, "setRotate", null);
@@ -4088,3924 +4337,1704 @@ Matrix4 = Matrix4_1 = __decorate([
 ], Matrix4);
 var Matrix4_1;
 
-function virtual(target, name, descriptor) {
-    return descriptor;
-}
-
-var Camera = (function () {
-    function Camera() {
-        this._worldToCameraMatrix = null;
-        this._near = null;
-        this._far = null;
-        this._pMatrix = Matrix4.create();
-        this.entityObject = null;
-        this.pMatrixDirty = false;
-        this._isUserSpecifyThePMatrix = false;
+var updateProjectionMatrix$1 = requireCheckFunc(function (index, PerspectiveCameraData, CameraData) {
+    it$1("fovy should exist", function () {
+        index_1(isValidMapValue(PerspectiveCameraData.fovyMap[index])).true;
+    });
+    it$1("aspect should exist", function () {
+        index_1(isValidMapValue(PerspectiveCameraData.aspectMap[index])).true;
+    });
+    it$1("near should exist", function () {
+        index_1(isValidMapValue(CameraData.nearMap[index])).true;
+    });
+    it$1("far should exist", function () {
+        index_1(isValidMapValue(CameraData.farMap[index])).true;
+    });
+}, function (index, PerspectiveCameraData, CameraData) {
+    setPMatrix(index, _getOrCreatePMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]), CameraData);
+});
+var _getOrCreatePMatrix = function (index, CameraData) {
+    var mat = CameraData.pMatrixMap[index];
+    if (isValidMapValue(mat)) {
+        return mat;
     }
-    Object.defineProperty(Camera.prototype, "cameraToWorldMatrix", {
-        get: function () {
-            return this.entityObject.transform.localToWorldMatrix;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Camera.prototype, "worldToCameraMatrix", {
-        get: function () {
-            if (this._worldToCameraMatrix) {
-                return this._worldToCameraMatrix;
-            }
-            return this.cameraToWorldMatrix.clone().invert();
-        },
-        set: function (matrix) {
-            this._worldToCameraMatrix = matrix;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Camera.prototype, "near", {
-        get: function () {
-            return this._near;
-        },
-        set: function (near) {
-            this._near = near;
-            this.pMatrixDirty = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Camera.prototype, "far", {
-        get: function () {
-            return this._far;
-        },
-        set: function (far) {
-            this._far = far;
-            this.pMatrixDirty = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Camera.prototype, "pMatrix", {
-        get: function () {
-            return this._pMatrix;
-        },
-        set: function (pMatrix) {
-            this._isUserSpecifyThePMatrix = true;
-            this._pMatrix = pMatrix;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Camera.prototype.init = function () {
-        if (this.pMatrixDirty) {
-            this._updateProjectionMatrix();
-            this.pMatrixDirty = false;
-        }
-    };
-    Camera.prototype.dispose = function () {
-    };
-    Camera.prototype.clone = function () {
-        return CloneUtils.clone(this);
-    };
-    Camera.prototype.update = function (elapsed) {
-        if (this.pMatrixDirty) {
-            this._updateProjectionMatrix();
-            this.pMatrixDirty = false;
-        }
-    };
-    Camera.prototype.getInvViewProjMat = function () {
-        return this.pMatrix.clone().multiply(this.worldToCameraMatrix).invert();
-    };
-    Camera.prototype._updateProjectionMatrix = function () {
-        if (this._isUserSpecifyThePMatrix) {
-            return;
-        }
-        this.updateProjectionMatrix();
-    };
-    return Camera;
+    return Matrix4.create();
+};
+var getFovy = function (index, PerspectiveCameraData) {
+    return PerspectiveCameraData.fovyMap[index];
+};
+var setFovy = function (index, fovy, PerspectiveCameraData, CameraControllerData) {
+    PerspectiveCameraData.fovyMap[index] = fovy;
+    addToDirtyList(index, CameraControllerData);
+};
+var getAspect = function (index, PerspectiveCameraData) {
+    return PerspectiveCameraData.aspectMap[index];
+};
+var setAspect = function (index, aspect, PerspectiveCameraData, CameraControllerData) {
+    PerspectiveCameraData.aspectMap[index] = aspect;
+    addToDirtyList(index, CameraControllerData);
+};
+var dispose$1 = function (index, PerspectiveCameraData) {
+    deleteVal(index, PerspectiveCameraData.fovyMap);
+    deleteVal(index, PerspectiveCameraData.aspectMap);
+};
+var initData$1 = function (PerspectiveCameraData) {
+    PerspectiveCameraData.fovyMap = createMap();
+    PerspectiveCameraData.aspectMap = createMap();
+};
+
+var GameObjectData = (function () {
+    function GameObjectData() {
+    }
+    return GameObjectData;
 }());
-__decorate([
-    requireGetter(function () {
-        assert(this.entityObject, Log$$1.info.FUNC_MUST_DEFINE("entityObject"));
-    })
-], Camera.prototype, "cameraToWorldMatrix", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], Camera.prototype, "_worldToCameraMatrix", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], Camera.prototype, "near", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], Camera.prototype, "far", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], Camera.prototype, "pMatrix", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], Camera.prototype, "_isUserSpecifyThePMatrix", void 0);
-__decorate([
-    virtual
-], Camera.prototype, "init", null);
-__decorate([
-    virtual
-], Camera.prototype, "dispose", null);
+GameObjectData.uid = null;
+GameObjectData.disposeCount = null;
+GameObjectData.componentMap = null;
+GameObjectData.parentMap = null;
+GameObjectData.childrenMap = null;
+GameObjectData.aliveUIDArray = null;
 
-var Entity = (function () {
-    function Entity(uidPre) {
-        this._uid = null;
-        this._uid = uidPre + String(Entity.UID++);
+var DataBufferConfig = {
+    transformDataBufferCount: 16 * 1024,
+    geometryDataBufferCount: 1024 * 1024,
+    geometryIndicesBufferBits: 16,
+};
+
+var ThreeDTransformData = (function () {
+    function ThreeDTransformData() {
     }
-    Object.defineProperty(Entity.prototype, "uid", {
+    Object.defineProperty(ThreeDTransformData, "count", {
         get: function () {
-            return this._uid;
-        },
-        set: function (uid) {
-            this._uid = uid;
+            return DataBufferConfig.transformDataBufferCount;
         },
         enumerable: true,
         configurable: true
     });
-    return Entity;
+    return ThreeDTransformData;
 }());
-Entity.UID = 1;
-
-var JudgeUtils$2 = (function (_super) {
-    __extends(JudgeUtils$$1, _super);
-    function JudgeUtils$$1() {
-        return _super !== null && _super.apply(this, arguments) || this;
+ThreeDTransformData.localToWorldMatrices = null;
+ThreeDTransformData.localPositions = null;
+ThreeDTransformData.localRotations = null;
+ThreeDTransformData.localScales = null;
+ThreeDTransformData.firstDirtyIndex = null;
+ThreeDTransformData.indexInArrayBuffer = null;
+ThreeDTransformData.notUsedIndexLinkList = null;
+ThreeDTransformData.isTranslateMap = null;
+ThreeDTransformData.parentMap = null;
+ThreeDTransformData.childrenMap = null;
+ThreeDTransformData.cacheMap = null;
+ThreeDTransformData.tempMap = null;
+ThreeDTransformData.transformMap = null;
+ThreeDTransformData.uid = null;
+ThreeDTransformData.disposeCount = null;
+ThreeDTransformData.isClearCacheMap = null;
+ThreeDTransformData.gameObjectMap = null;
+ThreeDTransformData.aliveUIDArray = null;
+ThreeDTransformData.buffer = null;
+var ThreeDTransformRelationData = (function () {
+    function ThreeDTransformRelationData() {
+        this.indexInArrayBuffer = null;
+        this.parent = null;
+        this.children = null;
     }
-    JudgeUtils$$1.isPromise = function (obj) {
-        return !!obj
-            && !_super.isFunction.call(this, obj.subscribe)
-            && _super.isFunction.call(this, obj.then);
-    };
-    JudgeUtils$$1.isEqual = function (ob1, ob2) {
-        return ob1.uid === ob2.uid;
-    };
-    JudgeUtils$$1.isIObserver = function (i) {
-        return i.next && i.error && i.completed;
-    };
-    return JudgeUtils$$1;
-}(JudgeUtils));
-
-var SubjectObserver = (function () {
-    function SubjectObserver() {
-        this.observers = Collection.create();
-        this._disposable = null;
-    }
-    SubjectObserver.prototype.isEmpty = function () {
-        return this.observers.getCount() === 0;
-    };
-    SubjectObserver.prototype.next = function (value) {
-        this.observers.forEach(function (ob) {
-            ob.next(value);
-        });
-    };
-    SubjectObserver.prototype.error = function (error) {
-        this.observers.forEach(function (ob) {
-            ob.error(error);
-        });
-    };
-    SubjectObserver.prototype.completed = function () {
-        this.observers.forEach(function (ob) {
-            ob.completed();
-        });
-    };
-    SubjectObserver.prototype.addChild = function (observer) {
-        this.observers.addChild(observer);
-        observer.setDisposable(this._disposable);
-    };
-    SubjectObserver.prototype.removeChild = function (observer) {
-        this.observers.removeChild(function (ob) {
-            return JudgeUtils$2.isEqual(ob, observer);
-        });
-    };
-    SubjectObserver.prototype.dispose = function () {
-        this.observers.forEach(function (ob) {
-            ob.dispose();
-        });
-        this.observers.removeAllChildren();
-    };
-    SubjectObserver.prototype.setDisposable = function (disposable) {
-        this.observers.forEach(function (observer) {
-            observer.setDisposable(disposable);
-        });
-        this._disposable = disposable;
-    };
-    return SubjectObserver;
-}());
-
-var Observer = (function (_super) {
-    __extends(Observer, _super);
-    function Observer() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var _this = _super.call(this, "Observer") || this;
-        _this._isDisposed = null;
-        _this.onUserNext = null;
-        _this.onUserError = null;
-        _this.onUserCompleted = null;
-        _this._isStop = false;
-        _this._disposable = null;
-        if (args.length === 1) {
-            var observer_1 = args[0];
-            _this.onUserNext = function (v) {
-                observer_1.next(v);
-            };
-            _this.onUserError = function (e) {
-                observer_1.error(e);
-            };
-            _this.onUserCompleted = function () {
-                observer_1.completed();
-            };
-        }
-        else {
-            var onNext = args[0], onError = args[1], onCompleted = args[2];
-            _this.onUserNext = onNext || function (v) { };
-            _this.onUserError = onError || function (e) {
-                throw e;
-            };
-            _this.onUserCompleted = onCompleted || function () { };
-        }
-        return _this;
-    }
-    Object.defineProperty(Observer.prototype, "isDisposed", {
-        get: function () {
-            return this._isDisposed;
-        },
-        set: function (isDisposed) {
-            this._isDisposed = isDisposed;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Observer.prototype.next = function (value) {
-        if (!this._isStop) {
-            return this.onNext(value);
-        }
-    };
-    Observer.prototype.error = function (error) {
-        if (!this._isStop) {
-            this._isStop = true;
-            this.onError(error);
-        }
-    };
-    Observer.prototype.completed = function () {
-        if (!this._isStop) {
-            this._isStop = true;
-            this.onCompleted();
-        }
-    };
-    Observer.prototype.dispose = function () {
-        this._isStop = true;
-        this._isDisposed = true;
-        if (this._disposable) {
-            this._disposable.dispose();
-        }
-    };
-    Observer.prototype.setDisposable = function (disposable) {
-        this._disposable = disposable;
-    };
-    return Observer;
-}(Entity));
-
-function assert$1(cond, message) {
-    if (message === void 0) { message = "contract error"; }
-    Log$1.error(!cond, message);
-}
-function requireCheck$1(InFunc) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (Main.isTest) {
-                InFunc.apply(this, args);
-            }
-            return value.apply(this, args);
-        };
-        return descriptor;
-    };
-}
-
-var AutoDetachObserver = (function (_super) {
-    __extends(AutoDetachObserver, _super);
-    function AutoDetachObserver() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    AutoDetachObserver.create = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            return new this(args[0]);
-        }
-        else {
-            return new this(args[0], args[1], args[2]);
-        }
-    };
-    AutoDetachObserver.prototype.dispose = function () {
-        if (this.isDisposed) {
-            return;
-        }
-        _super.prototype.dispose.call(this);
-    };
-    AutoDetachObserver.prototype.onNext = function (value) {
-        try {
-            this.onUserNext(value);
-        }
-        catch (e) {
-            this.onError(e);
-        }
-    };
-    AutoDetachObserver.prototype.onError = function (error) {
-        try {
-            this.onUserError(error);
-        }
-        catch (e) {
-            throw e;
-        }
-        finally {
-            this.dispose();
-        }
-    };
-    AutoDetachObserver.prototype.onCompleted = function () {
-        try {
-            this.onUserCompleted();
-            this.dispose();
-        }
-        catch (e) {
-            throw e;
-        }
-    };
-    return AutoDetachObserver;
-}(Observer));
-__decorate([
-    requireCheck$1(function () {
-        if (this.isDisposed) {
-            Log$1.warn("only can dispose once");
-        }
-    })
-], AutoDetachObserver.prototype, "dispose", null);
-
-var InnerSubscription = (function () {
-    function InnerSubscription(subject, observer) {
-        this._subject = null;
-        this._observer = null;
-        this._subject = subject;
-        this._observer = observer;
-    }
-    InnerSubscription.create = function (subject, observer) {
-        var obj = new this(subject, observer);
-        return obj;
-    };
-    InnerSubscription.prototype.dispose = function () {
-        this._subject.remove(this._observer);
-        this._observer.dispose();
-    };
-    return InnerSubscription;
-}());
-
-var Subject = (function () {
-    function Subject() {
-        this._source = null;
-        this._observer = new SubjectObserver();
-    }
-    Subject.create = function () {
+    ThreeDTransformRelationData.create = function () {
         var obj = new this();
         return obj;
     };
-    Object.defineProperty(Subject.prototype, "source", {
-        get: function () {
-            return this._source;
-        },
-        set: function (source) {
-            this._source = source;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Subject.prototype.subscribe = function (arg1, onError, onCompleted) {
-        var observer = arg1 instanceof Observer
-            ? arg1
-            : AutoDetachObserver.create(arg1, onError, onCompleted);
-        this._observer.addChild(observer);
-        return InnerSubscription.create(this, observer);
-    };
-    Subject.prototype.next = function (value) {
-        this._observer.next(value);
-    };
-    Subject.prototype.error = function (error) {
-        this._observer.error(error);
-    };
-    Subject.prototype.completed = function () {
-        this._observer.completed();
-    };
-    Subject.prototype.start = function () {
-        if (!this._source) {
-            return;
-        }
-        this._observer.setDisposable(this._source.buildStream(this));
-    };
-    Subject.prototype.remove = function (observer) {
-        this._observer.removeChild(observer);
-    };
-    Subject.prototype.dispose = function () {
-        this._observer.dispose();
-    };
-    return Subject;
+    return ThreeDTransformRelationData;
 }());
 
-var SingleDisposable = (function (_super) {
-    __extends(SingleDisposable, _super);
-    function SingleDisposable(disposeHandler) {
-        var _this = _super.call(this, "SingleDisposable") || this;
-        _this._disposeHandler = null;
-        _this._isDisposed = false;
-        _this._disposeHandler = disposeHandler;
+var GlobalTempData = (function () {
+    function GlobalTempData() {
+    }
+    return GlobalTempData;
+}());
+GlobalTempData.matrix4_1 = Matrix4.create();
+GlobalTempData.matrix4_2 = Matrix4.create();
+GlobalTempData.matrix4_3 = Matrix4.create();
+GlobalTempData.vector3_1 = Vector3.create();
+GlobalTempData.vector3_2 = Vector3.create();
+GlobalTempData.vector3_3 = Vector3.create();
+GlobalTempData.vector3_4 = Vector3.create();
+GlobalTempData.quaternion_1 = Quaternion.create();
+
+var ThreeDTransform = (function (_super) {
+    __extends(ThreeDTransform, _super);
+    function ThreeDTransform() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.uid = null;
         return _this;
     }
-    SingleDisposable.create = function (disposeHandler) {
-        if (disposeHandler === void 0) { disposeHandler = function () { }; }
-        var obj = new this(disposeHandler);
-        return obj;
-    };
-    SingleDisposable.prototype.setDisposeHandler = function (handler) {
-        this._disposeHandler = handler;
-    };
-    SingleDisposable.prototype.dispose = function () {
-        if (this._isDisposed) {
-            return;
-        }
-        this._isDisposed = true;
-        this._disposeHandler();
-    };
-    return SingleDisposable;
-}(Entity));
+    return ThreeDTransform;
+}(Component));
+ThreeDTransform = __decorate([
+    registerClass("ThreeDTransform")
+], ThreeDTransform);
+var createThreeDTransform = function () {
+    return create$2(ThreeDTransformData);
+};
+var getThreeDTransformPosition = requireCheckFunc(function (component) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component) {
+    return getPosition(component, ThreeDTransformData);
+});
+var setThreeDTransformPosition = requireCheckFunc(function (component, position) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component, position) {
+    setPosition(component, position, GlobalTempData, ThreeDTransformData);
+});
+var getThreeDTransformLocalToWorldMatrix = requireCheckFunc(function (component) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component) {
+    return getLocalToWorldMatrix(component, getTempLocalToWorldMatrix(component, ThreeDTransformData), ThreeDTransformData);
+});
+var getThreeDTransformLocalPosition = requireCheckFunc(function (component) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component) {
+    return getLocalPosition(component, ThreeDTransformData);
+});
+var setThreeDTransformLocalPosition = requireCheckFunc(function (component, localPosition) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component, localPosition) {
+    setLocalPosition(component, localPosition, ThreeDTransformData);
+});
+var setThreeDTransformBatchTransformDatas = function (batchData) {
+    setBatchDatas$$1(batchData, GlobalTempData, ThreeDTransformData);
+};
+var getThreeDTransformParent = requireCheckFunc(function (component) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component) {
+    return getParent$$1(component, ThreeDTransformData);
+});
+var setThreeDTransformParent = requireCheckFunc(function (component, parent) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component, parent) {
+    setParent$$1(component, parent, ThreeDTransformData);
+});
+var getThreeDTransformGameObject = requireCheckFunc(function (component) {
+    checkShouldAlive(component, ThreeDTransformData);
+}, function (component) {
+    return getGameObject$1(component.uid, ThreeDTransformData);
+});
 
-var ClassMapUtils = (function () {
-    function ClassMapUtils() {
+var _setValue = function (dataArr, increment, startIndex, target) {
+    dataArr[startIndex + increment] = target;
+};
+var DataUtils = (function () {
+    function DataUtils() {
     }
-    ClassMapUtils.addClassMap = function (className, _class) {
-        this._classMap[className] = _class;
+    DataUtils.setMatrices = function (dataArr, mat, index) {
+        var values = mat.values;
+        for (var i = 0; i <= 15; i++) {
+            _setValue(dataArr, i, index, values[i]);
+        }
     };
-    ClassMapUtils.getClass = function (className) {
-        return this._classMap[className];
+    DataUtils.setMatrix4ByIndex = function (mat, dataArr, index) {
+        mat.set(dataArr[index], dataArr[index + 1], dataArr[index + 2], dataArr[index + 3], dataArr[index + 4], dataArr[index + 5], dataArr[index + 6], dataArr[index + 7], dataArr[index + 8], dataArr[index + 9], dataArr[index + 10], dataArr[index + 11], dataArr[index + 12], dataArr[index + 13], dataArr[index + 14], dataArr[index + 15]);
+        return mat;
     };
-    return ClassMapUtils;
+    DataUtils.setVectors = function (dataArr, vec, index) {
+        var values = vec.values;
+        for (var i = 0; i <= 2; i++) {
+            _setValue(dataArr, i, index, values[i]);
+        }
+    };
+    DataUtils.setVector3ByIndex = function (vec, dataArr, index) {
+        vec.set(dataArr[index], dataArr[index + 1], dataArr[index + 2]);
+        return vec;
+    };
+    DataUtils.setQuaternions = function (dataArr, qua, index) {
+        _setValue(dataArr, 0, index, qua.x);
+        _setValue(dataArr, 1, index, qua.y);
+        _setValue(dataArr, 2, index, qua.z);
+        _setValue(dataArr, 3, index, qua.w);
+    };
+    DataUtils.setQuaternionByIndex = function (qua, dataArr, index) {
+        qua.set(dataArr[index], dataArr[index + 1], dataArr[index + 2], dataArr[index + 3]);
+        return qua;
+    };
+    DataUtils.swap = function (dataArr, index1, index2, length) {
+        for (var i = 0; i < length; i++) {
+            var newIndex1 = index1 + i, newIndex2 = index2 + i, temp = dataArr[newIndex2];
+            dataArr[newIndex2] = dataArr[newIndex1];
+            dataArr[newIndex1] = temp;
+        }
+    };
+    DataUtils.createMatrix4ByIndex = function (mat, dataArr, index) {
+        return this.setMatrix4ByIndex(mat, dataArr, index);
+    };
+    DataUtils.createVector3ByIndex = function (vec, dataArr, index) {
+        return this.setVector3ByIndex(vec, dataArr, index);
+    };
+    DataUtils.createQuaternionByIndex = function (qua, dataArr, index) {
+        return this.setQuaternionByIndex(qua, dataArr, index);
+    };
+    DataUtils.removeItemInArray = function (arr, index) {
+        arr[index] = void 0;
+    };
+    DataUtils.removeSingleItemInTypeArray = function (dataArr, index, resetValFunc) {
+        resetValFunc(dataArr, index).run();
+    };
+    DataUtils.removeTypeArrayItemBySwap = function (dataArr, index, swapItemIndex, length) {
+        for (var i = 0; i < length; i++) {
+            dataArr[index + i] = dataArr[swapItemIndex + i];
+        }
+    };
+    return DataUtils;
 }());
-ClassMapUtils._classMap = {};
+__decorate([
+    requireCheck(function (dataArr, index, swapItemIndex, length) {
+        it("index should <= swapItemIndex", function () {
+            index_1(index).lte(swapItemIndex);
+        });
+    })
+], DataUtils, "removeTypeArrayItemBySwap", null);
 
-var FunctionUtils = (function () {
-    function FunctionUtils() {
-    }
-    FunctionUtils.bind = function (object, func) {
-        return function () {
-            return func.apply(object, arguments);
-        };
-    };
-    return FunctionUtils;
-}());
+var identity_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function identity(value) {
+    return value;
+}
+exports.default = identity;
+});
 
-var Stream = (function (_super) {
-    __extends(Stream, _super);
-    function Stream(subscribeFunc) {
-        var _this = _super.call(this, "Stream") || this;
-        _this.scheduler = null;
-        _this.subscribeFunc = null;
-        _this.subscribeFunc = subscribeFunc || function () { };
-        return _this;
+var _freeGlobal = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal && commonjsGlobal.Object === Object && commonjsGlobal;
+exports.default = freeGlobal;
+});
+
+var _root = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _freeGlobal_js_1 = _freeGlobal;
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+var root = _freeGlobal_js_1.default || freeSelf || Function('return this')();
+exports.default = root;
+});
+
+var _Symbol = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _root_js_1 = _root;
+var Symbol = _root_js_1.default.Symbol;
+exports.default = Symbol;
+});
+
+var _getRawTag = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Symbol_js_1 = _Symbol;
+var objectProto = Object.prototype;
+var hasOwnProperty = objectProto.hasOwnProperty;
+var nativeObjectToString = objectProto.toString;
+var symToStringTag = _Symbol_js_1.default ? _Symbol_js_1.default.toStringTag : undefined;
+function getRawTag(value) {
+    var isOwn = hasOwnProperty.call(value, symToStringTag), tag = value[symToStringTag];
+    try {
+        value[symToStringTag] = undefined;
+        var unmasked = true;
     }
-    Stream.prototype.buildStream = function (observer) {
-        return SingleDisposable.create((this.subscribeFunc(observer) || function () { }));
-    };
-    Stream.prototype.do = function (onNext, onError, onCompleted) {
-        return ClassMapUtils.getClass("DoStream").create(this, onNext, onError, onCompleted);
-    };
-    Stream.prototype.map = function (selector) {
-        return ClassMapUtils.getClass("MapStream").create(this, selector);
-    };
-    Stream.prototype.flatMap = function (selector) {
-        return this.map(selector).mergeAll();
-    };
-    Stream.prototype.concatMap = function (selector) {
-        return this.map(selector).concatAll();
-    };
-    Stream.prototype.mergeAll = function () {
-        return ClassMapUtils.getClass("MergeAllStream").create(this);
-    };
-    Stream.prototype.concatAll = function () {
-        return this.merge(1);
-    };
-    Stream.prototype.skipUntil = function (otherStream) {
-        return ClassMapUtils.getClass("SkipUntilStream").create(this, otherStream);
-    };
-    Stream.prototype.takeUntil = function (otherStream) {
-        return ClassMapUtils.getClass("TakeUntilStream").create(this, otherStream);
-    };
-    Stream.prototype.take = function (count) {
-        if (count === void 0) { count = 1; }
-        var self = this;
-        if (count === 0) {
-            return ClassMapUtils.getClass("Operator").empty();
-        }
-        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
-            self.subscribe(function (value) {
-                if (count > 0) {
-                    observer.next(value);
-                }
-                count--;
-                if (count <= 0) {
-                    observer.completed();
-                }
-            }, function (e) {
-                observer.error(e);
-            }, function () {
-                observer.completed();
-            });
-        });
-    };
-    Stream.prototype.takeLast = function (count) {
-        if (count === void 0) { count = 1; }
-        var self = this;
-        if (count === 0) {
-            return ClassMapUtils.getClass("Operator").empty();
-        }
-        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
-            var queue = [];
-            self.subscribe(function (value) {
-                queue.push(value);
-                if (queue.length > count) {
-                    queue.shift();
-                }
-            }, function (e) {
-                observer.error(e);
-            }, function () {
-                while (queue.length > 0) {
-                    observer.next(queue.shift());
-                }
-                observer.completed();
-            });
-        });
-    };
-    Stream.prototype.takeWhile = function (predicate, thisArg) {
-        if (thisArg === void 0) { thisArg = this; }
-        var self = this, bindPredicate = null;
-        bindPredicate = FunctionUtils.bind(thisArg, predicate);
-        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
-            var i = 0, isStart = false;
-            self.subscribe(function (value) {
-                if (bindPredicate(value, i++, self)) {
-                    try {
-                        observer.next(value);
-                        isStart = true;
-                    }
-                    catch (e) {
-                        observer.error(e);
-                        return;
-                    }
-                }
-                else {
-                    if (isStart) {
-                        observer.completed();
-                    }
-                }
-            }, function (e) {
-                observer.error(e);
-            }, function () {
-                observer.completed();
-            });
-        });
-    };
-    Stream.prototype.lastOrDefault = function (defaultValue) {
-        if (defaultValue === void 0) { defaultValue = null; }
-        var self = this;
-        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
-            var queue = [];
-            self.subscribe(function (value) {
-                queue.push(value);
-                if (queue.length > 1) {
-                    queue.shift();
-                }
-            }, function (e) {
-                observer.error(e);
-            }, function () {
-                if (queue.length === 0) {
-                    observer.next(defaultValue);
-                }
-                else {
-                    while (queue.length > 0) {
-                        observer.next(queue.shift());
-                    }
-                }
-                observer.completed();
-            });
-        });
-    };
-    Stream.prototype.filter = function (predicate, thisArg) {
-        if (thisArg === void 0) { thisArg = this; }
-        if (this instanceof ClassMapUtils.getClass("FilterStream")) {
-            var self = this;
-            return self.internalFilter(predicate, thisArg);
-        }
-        return ClassMapUtils.getClass("FilterStream").create(this, predicate, thisArg);
-    };
-    Stream.prototype.filterWithState = function (predicate, thisArg) {
-        if (thisArg === void 0) { thisArg = this; }
-        if (this instanceof ClassMapUtils.getClass("FilterStream")) {
-            var self = this;
-            return self.internalFilter(predicate, thisArg);
-        }
-        return ClassMapUtils.getClass("FilterWithStateStream").create(this, predicate, thisArg);
-    };
-    Stream.prototype.concat = function () {
-        var args = null;
-        if (JudgeUtils$2.isArray(arguments[0])) {
-            args = arguments[0];
+    catch (e) { }
+    var result = nativeObjectToString.call(value);
+    if (unmasked) {
+        if (isOwn) {
+            value[symToStringTag] = tag;
         }
         else {
-            args = Array.prototype.slice.call(arguments, 0);
+            delete value[symToStringTag];
         }
-        args.unshift(this);
-        return ClassMapUtils.getClass("ConcatStream").create(args);
-    };
-    Stream.prototype.merge = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (JudgeUtils$2.isNumber(args[0])) {
-            var maxConcurrent = args[0];
-            return ClassMapUtils.getClass("MergeStream").create(this, maxConcurrent);
-        }
-        if (JudgeUtils$2.isArray(args[0])) {
-            args = arguments[0];
-        }
-        else {
-        }
-        var stream = null;
-        args.unshift(this);
-        stream = ClassMapUtils.getClass("Operator").fromArray(args).mergeAll();
-        return stream;
-    };
-    Stream.prototype.repeat = function (count) {
-        if (count === void 0) { count = -1; }
-        return ClassMapUtils.getClass("RepeatStream").create(this, count);
-    };
-    Stream.prototype.ignoreElements = function () {
-        return ClassMapUtils.getClass("IgnoreElementsStream").create(this);
-    };
-    Stream.prototype.handleSubject = function (subject) {
-        if (this._isSubject(subject)) {
-            this._setSubject(subject);
-            return true;
-        }
+    }
+    return result;
+}
+exports.default = getRawTag;
+});
+
+var _objectToString = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var objectProto = Object.prototype;
+var nativeObjectToString = objectProto.toString;
+function objectToString(value) {
+    return nativeObjectToString.call(value);
+}
+exports.default = objectToString;
+});
+
+var _baseGetTag = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Symbol_js_1 = _Symbol;
+var _getRawTag_js_1 = _getRawTag;
+var _objectToString_js_1 = _objectToString;
+var nullTag = '[object Null]', undefinedTag = '[object Undefined]';
+var symToStringTag = _Symbol_js_1.default ? _Symbol_js_1.default.toStringTag : undefined;
+function baseGetTag(value) {
+    if (value == null) {
+        return value === undefined ? undefinedTag : nullTag;
+    }
+    return (symToStringTag && symToStringTag in Object(value))
+        ? _getRawTag_js_1.default(value)
+        : _objectToString_js_1.default(value);
+}
+exports.default = baseGetTag;
+});
+
+var isObject_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function isObject(value) {
+    var type = typeof value;
+    return value != null && (type == 'object' || type == 'function');
+}
+exports.default = isObject;
+});
+
+var isFunction_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseGetTag_js_1 = _baseGetTag;
+var isObject_js_1 = isObject_1;
+var asyncTag = '[object AsyncFunction]', funcTag = '[object Function]', genTag = '[object GeneratorFunction]', proxyTag = '[object Proxy]';
+function isFunction(value) {
+    if (!isObject_js_1.default(value)) {
         return false;
-    };
-    Stream.prototype._isSubject = function (subject) {
-        return subject instanceof Subject;
-    };
-    Stream.prototype._setSubject = function (subject) {
-        subject.source = this;
-    };
-    return Stream;
-}(Entity));
-__decorate([
-    requireCheck$1(function (count) {
-        if (count === void 0) { count = 1; }
-        assert$1(count >= 0, Log$1.info.FUNC_SHOULD("count", ">= 0"));
-    })
-], Stream.prototype, "take", null);
-__decorate([
-    requireCheck$1(function (count) {
-        if (count === void 0) { count = 1; }
-        assert$1(count >= 0, Log$1.info.FUNC_SHOULD("count", ">= 0"));
-    })
-], Stream.prototype, "takeLast", null);
-
-var BaseStream = (function (_super) {
-    __extends(BaseStream, _super);
-    function BaseStream() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
-    BaseStream.prototype.subscribe = function (arg1, onError, onCompleted) {
-        var observer = null;
-        if (this.handleSubject(arg1)) {
-            return;
-        }
-        observer = arg1 instanceof Observer
-            ? AutoDetachObserver.create(arg1)
-            : AutoDetachObserver.create(arg1, onError, onCompleted);
-        observer.setDisposable(this.buildStream(observer));
-        return observer;
-    };
-    BaseStream.prototype.buildStream = function (observer) {
-        _super.prototype.buildStream.call(this, observer);
-        return this.subscribeCore(observer);
-    };
-    return BaseStream;
-}(Stream));
-
-var GroupDisposable = (function (_super) {
-    __extends(GroupDisposable, _super);
-    function GroupDisposable(disposable) {
-        var _this = _super.call(this, "GroupDisposable") || this;
-        _this._group = Collection.create();
-        _this._isDisposed = false;
-        if (disposable) {
-            _this._group.addChild(disposable);
-        }
-        return _this;
-    }
-    GroupDisposable.create = function (disposable) {
-        var obj = new this(disposable);
-        return obj;
-    };
-    GroupDisposable.prototype.add = function (disposable) {
-        this._group.addChild(disposable);
-        return this;
-    };
-    GroupDisposable.prototype.remove = function (disposable) {
-        this._group.removeChild(disposable);
-        return this;
-    };
-    GroupDisposable.prototype.dispose = function () {
-        if (this._isDisposed) {
-            return;
-        }
-        this._isDisposed = true;
-        this._group.forEach(function (disposable) {
-            disposable.dispose();
-        });
-    };
-    return GroupDisposable;
-}(Entity));
-
-var root$1;
-if (JudgeUtils$2.isNodeJs() && typeof global != "undefined") {
-    root$1 = global;
+    var tag = _baseGetTag_js_1.default(value);
+    return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
 }
-else {
-    root$1 = window;
-}
+exports.default = isFunction;
+});
 
-var Scheduler = (function () {
-    function Scheduler() {
-        this._requestLoopId = null;
-    }
-    Scheduler.create = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var obj = new this();
-        return obj;
-    };
-    Object.defineProperty(Scheduler.prototype, "requestLoopId", {
-        get: function () {
-            return this._requestLoopId;
-        },
-        set: function (requestLoopId) {
-            this._requestLoopId = requestLoopId;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Scheduler.prototype.publishRecursive = function (observer, initial, action) {
-        action(initial);
-    };
-    Scheduler.prototype.publishInterval = function (observer, initial, interval, action) {
-        return root$1.setInterval(function () {
-            initial = action(initial);
-        }, interval);
-    };
-    Scheduler.prototype.publishIntervalRequest = function (observer, action) {
-        var self = this, loop = function (time) {
-            var isEnd = action(time);
-            if (isEnd) {
-                return;
-            }
-            self._requestLoopId = root$1.requestNextAnimationFrame(loop);
-        };
-        this._requestLoopId = root$1.requestNextAnimationFrame(loop);
-    };
-    Scheduler.prototype.publishTimeout = function (observer, time, action) {
-        return root$1.setTimeout(function () {
-            action(time);
-            observer.completed();
-        }, time);
-    };
-    return Scheduler;
+var _coreJsData = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _root_js_1 = _root;
+var coreJsData = _root_js_1.default['__core-js_shared__'];
+exports.default = coreJsData;
+});
+
+var _isMasked = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _coreJsData_js_1 = _coreJsData;
+var maskSrcKey = (function () {
+    var uid = /[^.]+$/.exec(_coreJsData_js_1.default && _coreJsData_js_1.default.keys && _coreJsData_js_1.default.keys.IE_PROTO || '');
+    return uid ? ('Symbol(src)_1.' + uid) : '';
 }());
-
-var AnonymousStream = (function (_super) {
-    __extends(AnonymousStream, _super);
-    function AnonymousStream(subscribeFunc) {
-        var _this = _super.call(this, subscribeFunc) || this;
-        _this.scheduler = Scheduler.create();
-        return _this;
-    }
-    AnonymousStream.create = function (subscribeFunc) {
-        var obj = new this(subscribeFunc);
-        return obj;
-    };
-    AnonymousStream.prototype.buildStream = function (observer) {
-        return SingleDisposable.create((this.subscribeFunc(observer) || function () { }));
-    };
-    AnonymousStream.prototype.subscribe = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var observer = null;
-        if (args[0] instanceof Subject) {
-            var subject = args[0];
-            this.handleSubject(subject);
-            return;
-        }
-        else if (JudgeUtils$2.isIObserver(args[0])) {
-            observer = AutoDetachObserver.create(args[0]);
-        }
-        else {
-            var onNext = args[0], onError = args[1] || null, onCompleted = args[2] || null;
-            observer = AutoDetachObserver.create(onNext, onError, onCompleted);
-        }
-        observer.setDisposable(this.buildStream(observer));
-        return observer;
-    };
-    return AnonymousStream;
-}(Stream));
-
-var FromArrayStream = (function (_super) {
-    __extends(FromArrayStream, _super);
-    function FromArrayStream(array, scheduler) {
-        var _this = _super.call(this, null) || this;
-        _this._array = null;
-        _this._array = array;
-        _this.scheduler = scheduler;
-        return _this;
-    }
-    FromArrayStream.create = function (array, scheduler) {
-        var obj = new this(array, scheduler);
-        return obj;
-    };
-    FromArrayStream.prototype.subscribeCore = function (observer) {
-        var array = this._array, len = array.length;
-        function loopRecursive(i) {
-            if (i < len) {
-                observer.next(array[i]);
-                loopRecursive(i + 1);
-            }
-            else {
-                observer.completed();
-            }
-        }
-        this.scheduler.publishRecursive(observer, 0, loopRecursive);
-        return SingleDisposable.create();
-    };
-    return FromArrayStream;
-}(BaseStream));
-
-var FromPromiseStream = (function (_super) {
-    __extends(FromPromiseStream, _super);
-    function FromPromiseStream(promise, scheduler) {
-        var _this = _super.call(this, null) || this;
-        _this._promise = null;
-        _this._promise = promise;
-        _this.scheduler = scheduler;
-        return _this;
-    }
-    FromPromiseStream.create = function (promise, scheduler) {
-        var obj = new this(promise, scheduler);
-        return obj;
-    };
-    FromPromiseStream.prototype.subscribeCore = function (observer) {
-        this._promise.then(function (data) {
-            observer.next(data);
-            observer.completed();
-        }, function (err) {
-            observer.error(err);
-        }, observer);
-        return SingleDisposable.create();
-    };
-    return FromPromiseStream;
-}(BaseStream));
-
-var FromEventPatternStream = (function (_super) {
-    __extends(FromEventPatternStream, _super);
-    function FromEventPatternStream(addHandler, removeHandler) {
-        var _this = _super.call(this, null) || this;
-        _this._addHandler = null;
-        _this._removeHandler = null;
-        _this._addHandler = addHandler;
-        _this._removeHandler = removeHandler;
-        return _this;
-    }
-    FromEventPatternStream.create = function (addHandler, removeHandler) {
-        var obj = new this(addHandler, removeHandler);
-        return obj;
-    };
-    FromEventPatternStream.prototype.subscribeCore = function (observer) {
-        var self = this;
-        function innerHandler(event) {
-            observer.next(event);
-        }
-        this._addHandler(innerHandler);
-        return SingleDisposable.create(function () {
-            self._removeHandler(innerHandler);
-        });
-    };
-    return FromEventPatternStream;
-}(BaseStream));
-
-var IntervalStream = (function (_super) {
-    __extends(IntervalStream, _super);
-    function IntervalStream(interval, scheduler) {
-        var _this = _super.call(this, null) || this;
-        _this._interval = null;
-        _this._interval = interval;
-        _this.scheduler = scheduler;
-        return _this;
-    }
-    IntervalStream.create = function (interval, scheduler) {
-        var obj = new this(interval, scheduler);
-        obj.initWhenCreate();
-        return obj;
-    };
-    IntervalStream.prototype.initWhenCreate = function () {
-        this._interval = this._interval <= 0 ? 1 : this._interval;
-    };
-    IntervalStream.prototype.subscribeCore = function (observer) {
-        var self = this, id = null;
-        id = this.scheduler.publishInterval(observer, 0, this._interval, function (count) {
-            observer.next(count);
-            return count + 1;
-        });
-        return SingleDisposable.create(function () {
-            root$1.clearInterval(id);
-        });
-    };
-    return IntervalStream;
-}(BaseStream));
-
-var IntervalRequestStream = (function (_super) {
-    __extends(IntervalRequestStream, _super);
-    function IntervalRequestStream(scheduler) {
-        var _this = _super.call(this, null) || this;
-        _this._isEnd = false;
-        _this.scheduler = scheduler;
-        return _this;
-    }
-    IntervalRequestStream.create = function (scheduler) {
-        var obj = new this(scheduler);
-        return obj;
-    };
-    IntervalRequestStream.prototype.subscribeCore = function (observer) {
-        var self = this;
-        this.scheduler.publishIntervalRequest(observer, function (time) {
-            observer.next(time);
-            return self._isEnd;
-        });
-        return SingleDisposable.create(function () {
-            root$1.cancelNextRequestAnimationFrame(self.scheduler.requestLoopId);
-            self._isEnd = true;
-        });
-    };
-    return IntervalRequestStream;
-}(BaseStream));
-
-var TimeoutStream = (function (_super) {
-    __extends(TimeoutStream, _super);
-    function TimeoutStream(time, scheduler) {
-        var _this = _super.call(this, null) || this;
-        _this._time = null;
-        _this._time = time;
-        _this.scheduler = scheduler;
-        return _this;
-    }
-    TimeoutStream.create = function (time, scheduler) {
-        var obj = new this(time, scheduler);
-        return obj;
-    };
-    TimeoutStream.prototype.subscribeCore = function (observer) {
-        var id = null;
-        id = this.scheduler.publishTimeout(observer, this._time, function (time) {
-            observer.next(time);
-        });
-        return SingleDisposable.create(function () {
-            root$1.clearTimeout(id);
-        });
-    };
-    return TimeoutStream;
-}(BaseStream));
-__decorate([
-    requireCheck$1(function (time, scheduler) {
-        assert$1(time > 0, Log$1.info.FUNC_SHOULD("time", "> 0"));
-    })
-], TimeoutStream, "create", null);
-
-var DeferStream = (function (_super) {
-    __extends(DeferStream, _super);
-    function DeferStream(buildStreamFunc) {
-        var _this = _super.call(this, null) || this;
-        _this._buildStreamFunc = null;
-        _this._buildStreamFunc = buildStreamFunc;
-        return _this;
-    }
-    DeferStream.create = function (buildStreamFunc) {
-        var obj = new this(buildStreamFunc);
-        return obj;
-    };
-    DeferStream.prototype.subscribeCore = function (observer) {
-        var group = GroupDisposable.create();
-        group.add(this._buildStreamFunc().buildStream(observer));
-        return group;
-    };
-    return DeferStream;
-}(BaseStream));
-
-function registerClass$1(className) {
-    return function (target) {
-        ClassMapUtils.addClassMap(className, target);
-    };
+function isMasked(func) {
+    return !!maskSrcKey && (maskSrcKey in func);
 }
+exports.default = isMasked;
+});
 
-var Operator = (function () {
-    function Operator() {
-    }
-    Operator.empty = function () {
-        return this.createStream(function (observer) {
-            observer.completed();
-        });
-    };
-    Operator.createStream = function (subscribeFunc) {
-        return AnonymousStream.create(subscribeFunc);
-    };
-    Operator.fromArray = function (array, scheduler) {
-        if (scheduler === void 0) { scheduler = Scheduler.create(); }
-        return FromArrayStream.create(array, scheduler);
-    };
-    return Operator;
-}());
-Operator = __decorate([
-    registerClass$1("Operator")
-], Operator);
-var createStream = Operator.createStream;
-
-var fromArray = Operator.fromArray;
-var fromPromise = function (promise, scheduler) {
-    if (scheduler === void 0) { scheduler = Scheduler.create(); }
-    return FromPromiseStream.create(promise, scheduler);
-};
-var fromEventPattern = function (addHandler, removeHandler) {
-    return FromEventPatternStream.create(addHandler, removeHandler);
-};
-
-var intervalRequest = function (scheduler) {
-    if (scheduler === void 0) { scheduler = Scheduler.create(); }
-    return IntervalRequestStream.create(scheduler);
-};
-
-var callFunc = function (func, context) {
-    if (context === void 0) { context = root$1; }
-    return createStream(function (observer) {
+var _toSource = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var funcProto = Function.prototype;
+var funcToString = funcProto.toString;
+function toSource(func) {
+    if (func != null) {
         try {
-            observer.next(func.call(context, null));
+            return funcToString.call(func);
         }
-        catch (e) {
-            observer.error(e);
+        catch (e) { }
+        try {
+            return (func + '');
         }
-        observer.completed();
+        catch (e) { }
+    }
+    return '';
+}
+exports.default = toSource;
+});
+
+var _baseIsNative = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var isFunction_js_1 = isFunction_1;
+var _isMasked_js_1 = _isMasked;
+var isObject_js_1 = isObject_1;
+var _toSource_js_1 = _toSource;
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+var funcProto = Function.prototype, objectProto = Object.prototype;
+var funcToString = funcProto.toString;
+var hasOwnProperty = objectProto.hasOwnProperty;
+var reIsNative = RegExp('^' +
+    funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+        .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$');
+function baseIsNative(value) {
+    if (!isObject_js_1.default(value) || _isMasked_js_1.default(value)) {
+        return false;
+    }
+    var pattern = isFunction_js_1.default(value) ? reIsNative : reIsHostCtor;
+    return pattern.test(_toSource_js_1.default(value));
+}
+exports.default = baseIsNative;
+});
+
+var _getValue = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function getValue(object, key) {
+    return object == null ? undefined : object[key];
+}
+exports.default = getValue;
+});
+
+var _getNative = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseIsNative_js_1 = _baseIsNative;
+var _getValue_js_1 = _getValue;
+function getNative(object, key) {
+    var value = _getValue_js_1.default(object, key);
+    return _baseIsNative_js_1.default(value) ? value : undefined;
+}
+exports.default = getNative;
+});
+
+var _WeakMap = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _getNative_js_1 = _getNative;
+var _root_js_1 = _root;
+var WeakMap = _getNative_js_1.default(_root_js_1.default, 'WeakMap');
+exports.default = WeakMap;
+});
+
+var _metaMap = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _WeakMap_js_1 = _WeakMap;
+var metaMap = _WeakMap_js_1.default && new _WeakMap_js_1.default;
+exports.default = metaMap;
+});
+
+var _baseSetData = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var identity_js_1 = identity_1;
+var _metaMap_js_1 = _metaMap;
+var baseSetData = !_metaMap_js_1.default ? identity_js_1.default : function (func, data) {
+    _metaMap_js_1.default.set(func, data);
+    return func;
+};
+exports.default = baseSetData;
+});
+
+var _baseCreate = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var isObject_js_1 = isObject_1;
+var objectCreate = Object.create;
+var baseCreate = (function () {
+    function object() { }
+    return function (proto) {
+        if (!isObject_js_1.default(proto)) {
+            return {};
+        }
+        if (objectCreate) {
+            return objectCreate(proto);
+        }
+        object.prototype = proto;
+        var result = new object;
+        object.prototype = undefined;
+        return result;
+    };
+}());
+exports.default = baseCreate;
+});
+
+var _createCtor = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseCreate_js_1 = _baseCreate;
+var isObject_js_1 = isObject_1;
+function createCtor(Ctor) {
+    return function () {
+        var args = arguments;
+        switch (args.length) {
+            case 0: return new Ctor;
+            case 1: return new Ctor(args[0]);
+            case 2: return new Ctor(args[0], args[1]);
+            case 3: return new Ctor(args[0], args[1], args[2]);
+            case 4: return new Ctor(args[0], args[1], args[2], args[3]);
+            case 5: return new Ctor(args[0], args[1], args[2], args[3], args[4]);
+            case 6: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5]);
+            case 7: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+        }
+        var thisBinding = _baseCreate_js_1.default(Ctor.prototype), result = Ctor.apply(thisBinding, args);
+        return isObject_js_1.default(result) ? result : thisBinding;
+    };
+}
+exports.default = createCtor;
+});
+
+var _createBind = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _createCtor_js_1 = _createCtor;
+var _root_js_1 = _root;
+var WRAP_BIND_FLAG = 1;
+function createBind(func, bitmask, thisArg) {
+    var isBind = bitmask & WRAP_BIND_FLAG, Ctor = _createCtor_js_1.default(func);
+    function wrapper() {
+        var fn = (this && this !== _root_js_1.default && this instanceof wrapper) ? Ctor : func;
+        return fn.apply(isBind ? thisArg : this, arguments);
+    }
+    return wrapper;
+}
+exports.default = createBind;
+});
+
+var _apply = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function apply(func, thisArg, args) {
+    switch (args.length) {
+        case 0: return func.call(thisArg);
+        case 1: return func.call(thisArg, args[0]);
+        case 2: return func.call(thisArg, args[0], args[1]);
+        case 3: return func.call(thisArg, args[0], args[1], args[2]);
+    }
+    return func.apply(thisArg, args);
+}
+exports.default = apply;
+});
+
+var _composeArgs = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var nativeMax = Math.max;
+function composeArgs(args, partials, holders, isCurried) {
+    var argsIndex = -1, argsLength = args.length, holdersLength = holders.length, leftIndex = -1, leftLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(leftLength + rangeLength), isUncurried = !isCurried;
+    while (++leftIndex < leftLength) {
+        result[leftIndex] = partials[leftIndex];
+    }
+    while (++argsIndex < holdersLength) {
+        if (isUncurried || argsIndex < argsLength) {
+            result[holders[argsIndex]] = args[argsIndex];
+        }
+    }
+    while (rangeLength--) {
+        result[leftIndex++] = args[argsIndex++];
+    }
+    return result;
+}
+exports.default = composeArgs;
+});
+
+var _composeArgsRight = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var nativeMax = Math.max;
+function composeArgsRight(args, partials, holders, isCurried) {
+    var argsIndex = -1, argsLength = args.length, holdersIndex = -1, holdersLength = holders.length, rightIndex = -1, rightLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(rangeLength + rightLength), isUncurried = !isCurried;
+    while (++argsIndex < rangeLength) {
+        result[argsIndex] = args[argsIndex];
+    }
+    var offset = argsIndex;
+    while (++rightIndex < rightLength) {
+        result[offset + rightIndex] = partials[rightIndex];
+    }
+    while (++holdersIndex < holdersLength) {
+        if (isUncurried || argsIndex < argsLength) {
+            result[offset + holders[holdersIndex]] = args[argsIndex++];
+        }
+    }
+    return result;
+}
+exports.default = composeArgsRight;
+});
+
+var _countHolders = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function countHolders(array, placeholder) {
+    var length = array.length, result = 0;
+    while (length--) {
+        if (array[length] === placeholder) {
+            ++result;
+        }
+    }
+    return result;
+}
+exports.default = countHolders;
+});
+
+var _baseLodash = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function baseLodash() {
+}
+exports.default = baseLodash;
+});
+
+var _LazyWrapper = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseCreate_js_1 = _baseCreate;
+var _baseLodash_js_1 = _baseLodash;
+var MAX_ARRAY_LENGTH = 4294967295;
+function LazyWrapper(value) {
+    this.__wrapped__ = value;
+    this.__actions__ = [];
+    this.__dir__ = 1;
+    this.__filtered__ = false;
+    this.__iteratees__ = [];
+    this.__takeCount__ = MAX_ARRAY_LENGTH;
+    this.__views__ = [];
+}
+LazyWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
+LazyWrapper.prototype.constructor = LazyWrapper;
+exports.default = LazyWrapper;
+});
+
+var noop_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function noop() {
+}
+exports.default = noop;
+});
+
+var _getData = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _metaMap_js_1 = _metaMap;
+var noop_js_1 = noop_1;
+var getData = !_metaMap_js_1.default ? noop_js_1.default : function (func) {
+    return _metaMap_js_1.default.get(func);
+};
+exports.default = getData;
+});
+
+var _realNames = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var realNames = {};
+exports.default = realNames;
+});
+
+var _getFuncName = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _realNames_js_1 = _realNames;
+var objectProto = Object.prototype;
+var hasOwnProperty = objectProto.hasOwnProperty;
+function getFuncName(func) {
+    var result = (func.name + ''), array = _realNames_js_1.default[result], length = hasOwnProperty.call(_realNames_js_1.default, result) ? array.length : 0;
+    while (length--) {
+        var data = array[length], otherFunc = data.func;
+        if (otherFunc == null || otherFunc == func) {
+            return data.name;
+        }
+    }
+    return result;
+}
+exports.default = getFuncName;
+});
+
+var _LodashWrapper = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseCreate_js_1 = _baseCreate;
+var _baseLodash_js_1 = _baseLodash;
+function LodashWrapper(value, chainAll) {
+    this.__wrapped__ = value;
+    this.__actions__ = [];
+    this.__chain__ = !!chainAll;
+    this.__index__ = 0;
+    this.__values__ = undefined;
+}
+LodashWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
+LodashWrapper.prototype.constructor = LodashWrapper;
+exports.default = LodashWrapper;
+});
+
+var isArray_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var isArray = Array.isArray;
+exports.default = isArray;
+});
+
+var isObjectLike_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+}
+exports.default = isObjectLike;
+});
+
+var _copyArray = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function copyArray(source, array) {
+    var index = -1, length = source.length;
+    array || (array = Array(length));
+    while (++index < length) {
+        array[index] = source[index];
+    }
+    return array;
+}
+exports.default = copyArray;
+});
+
+var _wrapperClone = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _LazyWrapper_js_1 = _LazyWrapper;
+var _LodashWrapper_js_1 = _LodashWrapper;
+var _copyArray_js_1 = _copyArray;
+function wrapperClone(wrapper) {
+    if (wrapper instanceof _LazyWrapper_js_1.default) {
+        return wrapper.clone();
+    }
+    var result = new _LodashWrapper_js_1.default(wrapper.__wrapped__, wrapper.__chain__);
+    result.__actions__ = _copyArray_js_1.default(wrapper.__actions__);
+    result.__index__ = wrapper.__index__;
+    result.__values__ = wrapper.__values__;
+    return result;
+}
+exports.default = wrapperClone;
+});
+
+var wrapperLodash = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _LazyWrapper_js_1 = _LazyWrapper;
+var _LodashWrapper_js_1 = _LodashWrapper;
+var _baseLodash_js_1 = _baseLodash;
+var isArray_js_1 = isArray_1;
+var isObjectLike_js_1 = isObjectLike_1;
+var _wrapperClone_js_1 = _wrapperClone;
+var objectProto = Object.prototype;
+var hasOwnProperty = objectProto.hasOwnProperty;
+function lodash(value) {
+    if (isObjectLike_js_1.default(value) && !isArray_js_1.default(value) && !(value instanceof _LazyWrapper_js_1.default)) {
+        if (value instanceof _LodashWrapper_js_1.default) {
+            return value;
+        }
+        if (hasOwnProperty.call(value, '__wrapped__')) {
+            return _wrapperClone_js_1.default(value);
+        }
+    }
+    return new _LodashWrapper_js_1.default(value);
+}
+lodash.prototype = _baseLodash_js_1.default.prototype;
+lodash.prototype.constructor = lodash;
+exports.default = lodash;
+});
+
+var _isLaziable = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _LazyWrapper_js_1 = _LazyWrapper;
+var _getData_js_1 = _getData;
+var _getFuncName_js_1 = _getFuncName;
+var wrapperLodash_js_1 = wrapperLodash;
+function isLaziable(func) {
+    var funcName = _getFuncName_js_1.default(func), other = wrapperLodash_js_1.default[funcName];
+    if (typeof other != 'function' || !(funcName in _LazyWrapper_js_1.default.prototype)) {
+        return false;
+    }
+    if (func === other) {
+        return true;
+    }
+    var data = _getData_js_1.default(other);
+    return !!data && func === data[0];
+}
+exports.default = isLaziable;
+});
+
+var _shortOut = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var HOT_COUNT = 800, HOT_SPAN = 16;
+var nativeNow = Date.now;
+function shortOut(func) {
+    var count = 0, lastCalled = 0;
+    return function () {
+        var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
+        lastCalled = stamp;
+        if (remaining > 0) {
+            if (++count >= HOT_COUNT) {
+                return arguments[0];
+            }
+        }
+        else {
+            count = 0;
+        }
+        return func.apply(undefined, arguments);
+    };
+}
+exports.default = shortOut;
+});
+
+var _setData = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseSetData_js_1 = _baseSetData;
+var _shortOut_js_1 = _shortOut;
+var setData = _shortOut_js_1.default(_baseSetData_js_1.default);
+exports.default = setData;
+});
+
+var _getWrapDetails = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var reWrapDetails = /\{\n\/\* \[wrapped with (.+)\] \*/, reSplitDetails = /,? & /;
+function getWrapDetails(source) {
+    var match = source.match(reWrapDetails);
+    return match ? match[1].split(reSplitDetails) : [];
+}
+exports.default = getWrapDetails;
+});
+
+var _insertWrapDetails = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/;
+function insertWrapDetails(source, details) {
+    var length = details.length;
+    if (!length) {
+        return source;
+    }
+    var lastIndex = length - 1;
+    details[lastIndex] = (length > 1 ? '& ' : '') + details[lastIndex];
+    details = details.join(length > 2 ? ', ' : ' ');
+    return source.replace(reWrapComment, '{\n/* [wrapped with ' + details + '] */\n');
+}
+exports.default = insertWrapDetails;
+});
+
+var constant_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function constant(value) {
+    return function () {
+        return value;
+    };
+}
+exports.default = constant;
+});
+
+var _defineProperty = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _getNative_js_1 = _getNative;
+var defineProperty = (function () {
+    try {
+        var func = _getNative_js_1.default(Object, 'defineProperty');
+        func({}, '', {});
+        return func;
+    }
+    catch (e) { }
+}());
+exports.default = defineProperty;
+});
+
+var _baseSetToString = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var constant_js_1 = constant_1;
+var _defineProperty_js_1 = _defineProperty;
+var identity_js_1 = identity_1;
+var baseSetToString = !_defineProperty_js_1.default ? identity_js_1.default : function (func, string) {
+    return _defineProperty_js_1.default(func, 'toString', {
+        'configurable': true,
+        'enumerable': false,
+        'value': constant_js_1.default(string),
+        'writable': true
     });
 };
+exports.default = baseSetToString;
+});
 
-var MergeAllObserver = (function (_super) {
-    __extends(MergeAllObserver, _super);
-    function MergeAllObserver(currentObserver, streamGroup, groupDisposable) {
-        var _this = _super.call(this, null, null, null) || this;
-        _this.done = false;
-        _this.currentObserver = null;
-        _this._streamGroup = null;
-        _this._groupDisposable = null;
-        _this.currentObserver = currentObserver;
-        _this._streamGroup = streamGroup;
-        _this._groupDisposable = groupDisposable;
-        return _this;
-    }
-    MergeAllObserver.create = function (currentObserver, streamGroup, groupDisposable) {
-        return new this(currentObserver, streamGroup, groupDisposable);
-    };
-    MergeAllObserver.prototype.onNext = function (innerSource) {
-        if (JudgeUtils$2.isPromise(innerSource)) {
-            innerSource = fromPromise(innerSource);
+var _setToString = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseSetToString_js_1 = _baseSetToString;
+var _shortOut_js_1 = _shortOut;
+var setToString = _shortOut_js_1.default(_baseSetToString_js_1.default);
+exports.default = setToString;
+});
+
+var _arrayEach = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function arrayEach(array, iteratee) {
+    var index = -1, length = array == null ? 0 : array.length;
+    while (++index < length) {
+        if (iteratee(array[index], index, array) === false) {
+            break;
         }
-        this._streamGroup.addChild(innerSource);
-        this._groupDisposable.add(innerSource.buildStream(InnerObserver.create(this, this._streamGroup, innerSource)));
-    };
-    MergeAllObserver.prototype.onError = function (error) {
-        this.currentObserver.error(error);
-    };
-    MergeAllObserver.prototype.onCompleted = function () {
-        this.done = true;
-        if (this._streamGroup.getCount() === 0) {
-            this.currentObserver.completed();
+    }
+    return array;
+}
+exports.default = arrayEach;
+});
+
+var _baseFindIndex = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function baseFindIndex(array, predicate, fromIndex, fromRight) {
+    var length = array.length, index = fromIndex + (fromRight ? 1 : -1);
+    while ((fromRight ? index-- : ++index < length)) {
+        if (predicate(array[index], index, array)) {
+            return index;
         }
-    };
-    return MergeAllObserver;
-}(Observer));
-__decorate([
-    requireCheck$1(function (innerSource) {
-        assert$1(innerSource instanceof Stream || JudgeUtils$2.isPromise(innerSource), Log$1.info.FUNC_MUST_BE("innerSource", "Stream or Promise"));
-    })
-], MergeAllObserver.prototype, "onNext", null);
-var InnerObserver = (function (_super) {
-    __extends(InnerObserver, _super);
-    function InnerObserver(parent, streamGroup, currentStream) {
-        var _this = _super.call(this, null, null, null) || this;
-        _this._parent = null;
-        _this._streamGroup = null;
-        _this._currentStream = null;
-        _this._parent = parent;
-        _this._streamGroup = streamGroup;
-        _this._currentStream = currentStream;
-        return _this;
     }
-    InnerObserver.create = function (parent, streamGroup, currentStream) {
-        var obj = new this(parent, streamGroup, currentStream);
-        return obj;
-    };
-    InnerObserver.prototype.onNext = function (value) {
-        this._parent.currentObserver.next(value);
-    };
-    InnerObserver.prototype.onError = function (error) {
-        this._parent.currentObserver.error(error);
-    };
-    InnerObserver.prototype.onCompleted = function () {
-        var currentStream = this._currentStream, parent = this._parent;
-        this._streamGroup.removeChild(function (stream) {
-            return JudgeUtils$2.isEqual(stream, currentStream);
-        });
-        if (this._isAsync() && this._streamGroup.getCount() === 0) {
-            parent.currentObserver.completed();
+    return -1;
+}
+exports.default = baseFindIndex;
+});
+
+var _baseIsNaN = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function baseIsNaN(value) {
+    return value !== value;
+}
+exports.default = baseIsNaN;
+});
+
+var _strictIndexOf = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function strictIndexOf(array, value, fromIndex) {
+    var index = fromIndex - 1, length = array.length;
+    while (++index < length) {
+        if (array[index] === value) {
+            return index;
         }
-    };
-    InnerObserver.prototype._isAsync = function () {
-        return this._parent.done;
-    };
-    return InnerObserver;
-}(Observer));
-
-var MergeAllStream = (function (_super) {
-    __extends(MergeAllStream, _super);
-    function MergeAllStream(source) {
-        var _this = _super.call(this, null) || this;
-        _this._source = null;
-        _this._observer = null;
-        _this._source = source;
-        _this.scheduler = _this._source.scheduler;
-        return _this;
     }
-    MergeAllStream.create = function (source) {
-        var obj = new this(source);
-        return obj;
-    };
-    MergeAllStream.prototype.subscribeCore = function (observer) {
-        var streamGroup = Collection.create(), groupDisposable = GroupDisposable.create();
-        this._source.buildStream(MergeAllObserver.create(observer, streamGroup, groupDisposable));
-        return groupDisposable;
-    };
-    return MergeAllStream;
-}(BaseStream));
-MergeAllStream = __decorate([
-    registerClass$1("MergeAllStream")
-], MergeAllStream);
+    return -1;
+}
+exports.default = strictIndexOf;
+});
 
-var Entity$1 = (function () {
-    function Entity() {
-        this.uid = null;
-        this.data = null;
-        this._tagList = Collection.create();
-        this.uid = Entity._count;
-        Entity._count += 1;
-    }
-    Entity.prototype.addTag = function (tag) {
-        this._tagList.addChild(tag);
-    };
-    Entity.prototype.removeTag = function (tag) {
-        this._tagList.removeChild(tag);
-    };
-    Entity.prototype.getTagList = function () {
-        return this._tagList;
-    };
-    Entity.prototype.hasTag = function (tag) {
-        return this._tagList.hasChild(tag);
-    };
-    Entity.prototype.containTag = function (tag) {
-        return this._tagList.hasChildWithFunc(function (t) {
-            return t.indexOf(tag) > -1;
-        });
-    };
-    return Entity;
-}());
-Entity$1._count = 1;
+var _baseIndexOf = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseFindIndex_js_1 = _baseFindIndex;
+var _baseIsNaN_js_1 = _baseIsNaN;
+var _strictIndexOf_js_1 = _strictIndexOf;
+function baseIndexOf(array, value, fromIndex) {
+    return value === value
+        ? _strictIndexOf_js_1.default(array, value, fromIndex)
+        : _baseFindIndex_js_1.default(array, _baseIsNaN_js_1.default, fromIndex);
+}
+exports.default = baseIndexOf;
+});
 
-var Component = (function (_super) {
-    __extends(Component, _super);
-    function Component() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.entityObject = null;
-        return _this;
-    }
-    Object.defineProperty(Component.prototype, "transform", {
-        get: function () {
-            if (!this.entityObject) {
-                return null;
-            }
-            return this.entityObject.transform;
-        },
-        enumerable: true,
-        configurable: true
+var _arrayIncludes = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseIndexOf_js_1 = _baseIndexOf;
+function arrayIncludes(array, value) {
+    var length = array == null ? 0 : array.length;
+    return !!length && _baseIndexOf_js_1.default(array, value, 0) > -1;
+}
+exports.default = arrayIncludes;
+});
+
+var _updateWrapDetails = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _arrayEach_js_1 = _arrayEach;
+var _arrayIncludes_js_1 = _arrayIncludes;
+var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_FLAG = 8, WRAP_CURRY_RIGHT_FLAG = 16, WRAP_PARTIAL_FLAG = 32, WRAP_PARTIAL_RIGHT_FLAG = 64, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256, WRAP_FLIP_FLAG = 512;
+var wrapFlags = [
+    ['ary', WRAP_ARY_FLAG],
+    ['bind', WRAP_BIND_FLAG],
+    ['bindKey', WRAP_BIND_KEY_FLAG],
+    ['curry', WRAP_CURRY_FLAG],
+    ['curryRight', WRAP_CURRY_RIGHT_FLAG],
+    ['flip', WRAP_FLIP_FLAG],
+    ['partial', WRAP_PARTIAL_FLAG],
+    ['partialRight', WRAP_PARTIAL_RIGHT_FLAG],
+    ['rearg', WRAP_REARG_FLAG]
+];
+function updateWrapDetails(details, bitmask) {
+    _arrayEach_js_1.default(wrapFlags, function (pair) {
+        var value = '_.' + pair[0];
+        if ((bitmask & pair[1]) && !_arrayIncludes_js_1.default(details, value)) {
+            details.push(value);
+        }
     });
-    Component.prototype.init = function () {
-    };
-    Component.prototype.dispose = function () {
-    };
-    Component.prototype.clone = function () {
-        return CloneUtils.clone(this);
-    };
-    Component.prototype.addToObject = function (entityObject, isShareComponent) {
-        if (isShareComponent === void 0) { isShareComponent = false; }
-        if (isShareComponent) {
-            return;
-        }
-        if (this.entityObject) {
-            this.entityObject.removeComponent(this);
-        }
-        this.entityObject = entityObject;
-        this.addToComponentContainer();
-    };
-    Component.prototype.addToComponentContainer = function () {
-    };
-    Component.prototype.removeFromObject = function (entityObject) {
-        this.removeFromComponentContainer();
-    };
-    Component.prototype.removeFromComponentContainer = function () {
-    };
-    return Component;
-}(Entity$1));
-__decorate([
-    virtual
-], Component.prototype, "init", null);
-__decorate([
-    virtual
-], Component.prototype, "dispose", null);
-__decorate([
-    virtual
-], Component.prototype, "clone", null);
-__decorate([
-    virtual
-], Component.prototype, "addToObject", null);
-__decorate([
-    virtual
-], Component.prototype, "addToComponentContainer", null);
-__decorate([
-    virtual
-], Component.prototype, "removeFromObject", null);
-__decorate([
-    virtual
-], Component.prototype, "removeFromComponentContainer", null);
+    return details.sort();
+}
+exports.default = updateWrapDetails;
+});
 
-function cacheGetter(judgeFunc, returnCacheValueFunc, setCacheFunc) {
-    return function (target, name, descriptor) {
-        var getter = descriptor.get;
-        descriptor.get = function () {
-            var result = null;
-            if (judgeFunc.call(this)) {
-                return returnCacheValueFunc.call(this);
+var _setWrapToString = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _getWrapDetails_js_1 = _getWrapDetails;
+var _insertWrapDetails_js_1 = _insertWrapDetails;
+var _setToString_js_1 = _setToString;
+var _updateWrapDetails_js_1 = _updateWrapDetails;
+function setWrapToString(wrapper, reference, bitmask) {
+    var source = (reference + '');
+    return _setToString_js_1.default(wrapper, _insertWrapDetails_js_1.default(source, _updateWrapDetails_js_1.default(_getWrapDetails_js_1.default(source), bitmask)));
+}
+exports.default = setWrapToString;
+});
+
+var _createRecurry = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _isLaziable_js_1 = _isLaziable;
+var _setData_js_1 = _setData;
+var _setWrapToString_js_1 = _setWrapToString;
+var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_BOUND_FLAG = 4, WRAP_CURRY_FLAG = 8, WRAP_PARTIAL_FLAG = 32, WRAP_PARTIAL_RIGHT_FLAG = 64;
+function createRecurry(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary, arity) {
+    var isCurry = bitmask & WRAP_CURRY_FLAG, newHolders = isCurry ? holders : undefined, newHoldersRight = isCurry ? undefined : holders, newPartials = isCurry ? partials : undefined, newPartialsRight = isCurry ? undefined : partials;
+    bitmask |= (isCurry ? WRAP_PARTIAL_FLAG : WRAP_PARTIAL_RIGHT_FLAG);
+    bitmask &= ~(isCurry ? WRAP_PARTIAL_RIGHT_FLAG : WRAP_PARTIAL_FLAG);
+    if (!(bitmask & WRAP_CURRY_BOUND_FLAG)) {
+        bitmask &= ~(WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG);
+    }
+    var newData = [
+        func, bitmask, thisArg, newPartials, newHolders, newPartialsRight,
+        newHoldersRight, argPos, ary, arity
+    ];
+    var result = wrapFunc.apply(undefined, newData);
+    if (_isLaziable_js_1.default(func)) {
+        _setData_js_1.default(result, newData);
+    }
+    result.placeholder = placeholder;
+    return _setWrapToString_js_1.default(result, func, bitmask);
+}
+exports.default = createRecurry;
+});
+
+var _getHolder = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function getHolder(func) {
+    var object = func;
+    return object.placeholder;
+}
+exports.default = getHolder;
+});
+
+var _isIndex = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var MAX_SAFE_INTEGER = 9007199254740991;
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+function isIndex(value, length) {
+    length = length == null ? MAX_SAFE_INTEGER : length;
+    return !!length &&
+        (typeof value == 'number' || reIsUint.test(value)) &&
+        (value > -1 && value % 1 == 0 && value < length);
+}
+exports.default = isIndex;
+});
+
+var _reorder = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _copyArray_js_1 = _copyArray;
+var _isIndex_js_1 = _isIndex;
+var nativeMin = Math.min;
+function reorder(array, indexes) {
+    var arrLength = array.length, length = nativeMin(indexes.length, arrLength), oldArray = _copyArray_js_1.default(array);
+    while (length--) {
+        var index = indexes[length];
+        array[length] = _isIndex_js_1.default(index, arrLength) ? oldArray[index] : undefined;
+    }
+    return array;
+}
+exports.default = reorder;
+});
+
+var _replaceHolders = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var PLACEHOLDER = '__lodash_placeholder__';
+function replaceHolders(array, placeholder) {
+    var index = -1, length = array.length, resIndex = 0, result = [];
+    while (++index < length) {
+        var value = array[index];
+        if (value === placeholder || value === PLACEHOLDER) {
+            array[index] = PLACEHOLDER;
+            result[resIndex++] = index;
+        }
+    }
+    return result;
+}
+exports.default = replaceHolders;
+});
+
+var _createHybrid = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _composeArgs_js_1 = _composeArgs;
+var _composeArgsRight_js_1 = _composeArgsRight;
+var _countHolders_js_1 = _countHolders;
+var _createCtor_js_1 = _createCtor;
+var _createRecurry_js_1 = _createRecurry;
+var _getHolder_js_1 = _getHolder;
+var _reorder_js_1 = _reorder;
+var _replaceHolders_js_1 = _replaceHolders;
+var _root_js_1 = _root;
+var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_FLAG = 8, WRAP_CURRY_RIGHT_FLAG = 16, WRAP_ARY_FLAG = 128, WRAP_FLIP_FLAG = 512;
+function createHybrid(func, bitmask, thisArg, partials, holders, partialsRight, holdersRight, argPos, ary, arity) {
+    var isAry = bitmask & WRAP_ARY_FLAG, isBind = bitmask & WRAP_BIND_FLAG, isBindKey = bitmask & WRAP_BIND_KEY_FLAG, isCurried = bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG), isFlip = bitmask & WRAP_FLIP_FLAG, Ctor = isBindKey ? undefined : _createCtor_js_1.default(func);
+    function wrapper() {
+        var length = arguments.length, args = Array(length), index = length;
+        while (index--) {
+            args[index] = arguments[index];
+        }
+        if (isCurried) {
+            var placeholder = _getHolder_js_1.default(wrapper), holdersCount = _countHolders_js_1.default(args, placeholder);
+        }
+        if (partials) {
+            args = _composeArgs_js_1.default(args, partials, holders, isCurried);
+        }
+        if (partialsRight) {
+            args = _composeArgsRight_js_1.default(args, partialsRight, holdersRight, isCurried);
+        }
+        length -= holdersCount;
+        if (isCurried && length < arity) {
+            var newHolders = _replaceHolders_js_1.default(args, placeholder);
+            return _createRecurry_js_1.default(func, bitmask, createHybrid, wrapper.placeholder, thisArg, args, newHolders, argPos, ary, arity - length);
+        }
+        var thisBinding = isBind ? thisArg : this, fn = isBindKey ? thisBinding[func] : func;
+        length = args.length;
+        if (argPos) {
+            args = _reorder_js_1.default(args, argPos);
+        }
+        else if (isFlip && length > 1) {
+            args.reverse();
+        }
+        if (isAry && ary < length) {
+            args.length = ary;
+        }
+        if (this && this !== _root_js_1.default && this instanceof wrapper) {
+            fn = Ctor || _createCtor_js_1.default(fn);
+        }
+        return fn.apply(thisBinding, args);
+    }
+    return wrapper;
+}
+exports.default = createHybrid;
+});
+
+var _createCurry = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _apply_js_1 = _apply;
+var _createCtor_js_1 = _createCtor;
+var _createHybrid_js_1 = _createHybrid;
+var _createRecurry_js_1 = _createRecurry;
+var _getHolder_js_1 = _getHolder;
+var _replaceHolders_js_1 = _replaceHolders;
+var _root_js_1 = _root;
+function createCurry(func, bitmask, arity) {
+    var Ctor = _createCtor_js_1.default(func);
+    function wrapper() {
+        var length = arguments.length, args = Array(length), index = length, placeholder = _getHolder_js_1.default(wrapper);
+        while (index--) {
+            args[index] = arguments[index];
+        }
+        var holders = (length < 3 && args[0] !== placeholder && args[length - 1] !== placeholder)
+            ? []
+            : _replaceHolders_js_1.default(args, placeholder);
+        length -= holders.length;
+        if (length < arity) {
+            return _createRecurry_js_1.default(func, bitmask, _createHybrid_js_1.default, wrapper.placeholder, undefined, args, holders, undefined, undefined, arity - length);
+        }
+        var fn = (this && this !== _root_js_1.default && this instanceof wrapper) ? Ctor : func;
+        return _apply_js_1.default(fn, this, args);
+    }
+    return wrapper;
+}
+exports.default = createCurry;
+});
+
+var _createPartial = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _apply_js_1 = _apply;
+var _createCtor_js_1 = _createCtor;
+var _root_js_1 = _root;
+var WRAP_BIND_FLAG = 1;
+function createPartial(func, bitmask, thisArg, partials) {
+    var isBind = bitmask & WRAP_BIND_FLAG, Ctor = _createCtor_js_1.default(func);
+    function wrapper() {
+        var argsIndex = -1, argsLength = arguments.length, leftIndex = -1, leftLength = partials.length, args = Array(leftLength + argsLength), fn = (this && this !== _root_js_1.default && this instanceof wrapper) ? Ctor : func;
+        while (++leftIndex < leftLength) {
+            args[leftIndex] = partials[leftIndex];
+        }
+        while (argsLength--) {
+            args[leftIndex++] = arguments[++argsIndex];
+        }
+        return _apply_js_1.default(fn, isBind ? thisArg : this, args);
+    }
+    return wrapper;
+}
+exports.default = createPartial;
+});
+
+var _mergeData = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _composeArgs_js_1 = _composeArgs;
+var _composeArgsRight_js_1 = _composeArgsRight;
+var _replaceHolders_js_1 = _replaceHolders;
+var PLACEHOLDER = '__lodash_placeholder__';
+var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_BOUND_FLAG = 4, WRAP_CURRY_FLAG = 8, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256;
+var nativeMin = Math.min;
+function mergeData(data, source) {
+    var bitmask = data[1], srcBitmask = source[1], newBitmask = bitmask | srcBitmask, isCommon = newBitmask < (WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG | WRAP_ARY_FLAG);
+    var isCombo = ((srcBitmask == WRAP_ARY_FLAG) && (bitmask == WRAP_CURRY_FLAG)) ||
+        ((srcBitmask == WRAP_ARY_FLAG) && (bitmask == WRAP_REARG_FLAG) && (data[7].length <= source[8])) ||
+        ((srcBitmask == (WRAP_ARY_FLAG | WRAP_REARG_FLAG)) && (source[7].length <= source[8]) && (bitmask == WRAP_CURRY_FLAG));
+    if (!(isCommon || isCombo)) {
+        return data;
+    }
+    if (srcBitmask & WRAP_BIND_FLAG) {
+        data[2] = source[2];
+        newBitmask |= bitmask & WRAP_BIND_FLAG ? 0 : WRAP_CURRY_BOUND_FLAG;
+    }
+    var value = source[3];
+    if (value) {
+        var partials = data[3];
+        data[3] = partials ? _composeArgs_js_1.default(partials, value, source[4]) : value;
+        data[4] = partials ? _replaceHolders_js_1.default(data[3], PLACEHOLDER) : source[4];
+    }
+    value = source[5];
+    if (value) {
+        partials = data[5];
+        data[5] = partials ? _composeArgsRight_js_1.default(partials, value, source[6]) : value;
+        data[6] = partials ? _replaceHolders_js_1.default(data[5], PLACEHOLDER) : source[6];
+    }
+    value = source[7];
+    if (value) {
+        data[7] = value;
+    }
+    if (srcBitmask & WRAP_ARY_FLAG) {
+        data[8] = data[8] == null ? source[8] : nativeMin(data[8], source[8]);
+    }
+    if (data[9] == null) {
+        data[9] = source[9];
+    }
+    data[0] = source[0];
+    data[1] = newBitmask;
+    return data;
+}
+exports.default = mergeData;
+});
+
+var isSymbol_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseGetTag_js_1 = _baseGetTag;
+var isObjectLike_js_1 = isObjectLike_1;
+var symbolTag = '[object Symbol]';
+function isSymbol(value) {
+    return typeof value == 'symbol' ||
+        (isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == symbolTag);
+}
+exports.default = isSymbol;
+});
+
+var toNumber_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var isObject_js_1 = isObject_1;
+var isSymbol_js_1 = isSymbol_1;
+var NAN = 0 / 0;
+var reTrim = /^\s+|\s+$/g;
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+var reIsBinary = /^0b[01]+$/i;
+var reIsOctal = /^0o[0-7]+$/i;
+var freeParseInt = parseInt;
+function toNumber(value) {
+    if (typeof value == 'number') {
+        return value;
+    }
+    if (isSymbol_js_1.default(value)) {
+        return NAN;
+    }
+    if (isObject_js_1.default(value)) {
+        var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+        value = isObject_js_1.default(other) ? (other + '') : other;
+    }
+    if (typeof value != 'string') {
+        return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, '');
+    var isBinary = reIsBinary.test(value);
+    return (isBinary || reIsOctal.test(value))
+        ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+        : (reIsBadHex.test(value) ? NAN : +value);
+}
+exports.default = toNumber;
+});
+
+var toFinite_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var toNumber_js_1 = toNumber_1;
+var INFINITY = 1 / 0, MAX_INTEGER = 1.7976931348623157e+308;
+function toFinite(value) {
+    if (!value) {
+        return value === 0 ? value : 0;
+    }
+    value = toNumber_js_1.default(value);
+    if (value === INFINITY || value === -INFINITY) {
+        var sign = (value < 0 ? -1 : 1);
+        return sign * MAX_INTEGER;
+    }
+    return value === value ? value : 0;
+}
+exports.default = toFinite;
+});
+
+var toInteger_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var toFinite_js_1 = toFinite_1;
+function toInteger(value) {
+    var result = toFinite_js_1.default(value), remainder = result % 1;
+    return result === result ? (remainder ? result - remainder : result) : 0;
+}
+exports.default = toInteger;
+});
+
+var _createWrap = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseSetData_js_1 = _baseSetData;
+var _createBind_js_1 = _createBind;
+var _createCurry_js_1 = _createCurry;
+var _createHybrid_js_1 = _createHybrid;
+var _createPartial_js_1 = _createPartial;
+var _getData_js_1 = _getData;
+var _mergeData_js_1 = _mergeData;
+var _setData_js_1 = _setData;
+var _setWrapToString_js_1 = _setWrapToString;
+var toInteger_js_1 = toInteger_1;
+var FUNC_ERROR_TEXT = 'Expected a function';
+var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_FLAG = 8, WRAP_CURRY_RIGHT_FLAG = 16, WRAP_PARTIAL_FLAG = 32, WRAP_PARTIAL_RIGHT_FLAG = 64;
+var nativeMax = Math.max;
+function createWrap(func, bitmask, thisArg, partials, holders, argPos, ary, arity) {
+    var isBindKey = bitmask & WRAP_BIND_KEY_FLAG;
+    if (!isBindKey && typeof func != 'function') {
+        throw new TypeError(FUNC_ERROR_TEXT);
+    }
+    var length = partials ? partials.length : 0;
+    if (!length) {
+        bitmask &= ~(WRAP_PARTIAL_FLAG | WRAP_PARTIAL_RIGHT_FLAG);
+        partials = holders = undefined;
+    }
+    ary = ary === undefined ? ary : nativeMax(toInteger_js_1.default(ary), 0);
+    arity = arity === undefined ? arity : toInteger_js_1.default(arity);
+    length -= holders ? holders.length : 0;
+    if (bitmask & WRAP_PARTIAL_RIGHT_FLAG) {
+        var partialsRight = partials, holdersRight = holders;
+        partials = holders = undefined;
+    }
+    var data = isBindKey ? undefined : _getData_js_1.default(func);
+    var newData = [
+        func, bitmask, thisArg, partials, holders, partialsRight, holdersRight,
+        argPos, ary, arity
+    ];
+    if (data) {
+        _mergeData_js_1.default(newData, data);
+    }
+    func = newData[0];
+    bitmask = newData[1];
+    thisArg = newData[2];
+    partials = newData[3];
+    holders = newData[4];
+    arity = newData[9] = newData[9] === undefined
+        ? (isBindKey ? 0 : func.length)
+        : nativeMax(newData[9] - length, 0);
+    if (!arity && bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG)) {
+        bitmask &= ~(WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG);
+    }
+    if (!bitmask || bitmask == WRAP_BIND_FLAG) {
+        var result = _createBind_js_1.default(func, bitmask, thisArg);
+    }
+    else if (bitmask == WRAP_CURRY_FLAG || bitmask == WRAP_CURRY_RIGHT_FLAG) {
+        result = _createCurry_js_1.default(func, bitmask, arity);
+    }
+    else if ((bitmask == WRAP_PARTIAL_FLAG || bitmask == (WRAP_BIND_FLAG | WRAP_PARTIAL_FLAG)) && !holders.length) {
+        result = _createPartial_js_1.default(func, bitmask, thisArg, partials);
+    }
+    else {
+        result = _createHybrid_js_1.default.apply(undefined, newData);
+    }
+    var setter = data ? _baseSetData_js_1.default : _setData_js_1.default;
+    return _setWrapToString_js_1.default(setter(result, newData), func, bitmask);
+}
+exports.default = createWrap;
+});
+
+var curry_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _createWrap_js_1 = _createWrap;
+var WRAP_CURRY_FLAG = 8;
+function curry(func, arity, guard) {
+    arity = guard ? undefined : arity;
+    var result = _createWrap_js_1.default(func, WRAP_CURRY_FLAG, undefined, undefined, undefined, undefined, undefined, arity);
+    result.placeholder = curry.placeholder;
+    return result;
+}
+curry.placeholder = {};
+exports.default = curry;
+});
+
+var curry = unwrapExports(curry_1);
+
+var _arrayPush = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function arrayPush(array, values) {
+    var index = -1, length = values.length, offset = array.length;
+    while (++index < length) {
+        array[offset + index] = values[index];
+    }
+    return array;
+}
+exports.default = arrayPush;
+});
+
+var _baseIsArguments = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseGetTag_js_1 = _baseGetTag;
+var isObjectLike_js_1 = isObjectLike_1;
+var argsTag = '[object Arguments]';
+function baseIsArguments(value) {
+    return isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == argsTag;
+}
+exports.default = baseIsArguments;
+});
+
+var isArguments_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseIsArguments_js_1 = _baseIsArguments;
+var isObjectLike_js_1 = isObjectLike_1;
+var objectProto = Object.prototype;
+var hasOwnProperty = objectProto.hasOwnProperty;
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+var isArguments = _baseIsArguments_js_1.default(function () { return arguments; }()) ? _baseIsArguments_js_1.default : function (value) {
+    return isObjectLike_js_1.default(value) && hasOwnProperty.call(value, 'callee') &&
+        !propertyIsEnumerable.call(value, 'callee');
+};
+exports.default = isArguments;
+});
+
+var _isFlattenable = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Symbol_js_1 = _Symbol;
+var isArguments_js_1 = isArguments_1;
+var isArray_js_1 = isArray_1;
+var spreadableSymbol = _Symbol_js_1.default ? _Symbol_js_1.default.isConcatSpreadable : undefined;
+function isFlattenable(value) {
+    return isArray_js_1.default(value) || isArguments_js_1.default(value) ||
+        !!(spreadableSymbol && value && value[spreadableSymbol]);
+}
+exports.default = isFlattenable;
+});
+
+var _baseFlatten = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _arrayPush_js_1 = _arrayPush;
+var _isFlattenable_js_1 = _isFlattenable;
+function baseFlatten(array, depth, predicate, isStrict, result) {
+    var index = -1, length = array.length;
+    predicate || (predicate = _isFlattenable_js_1.default);
+    result || (result = []);
+    while (++index < length) {
+        var value = array[index];
+        if (depth > 0 && predicate(value)) {
+            if (depth > 1) {
+                baseFlatten(value, depth - 1, predicate, isStrict, result);
             }
-            result = getter.call(this);
-            setCacheFunc.call(this, result);
+            else {
+                _arrayPush_js_1.default(result, value);
+            }
+        }
+        else if (!isStrict) {
+            result[result.length] = value;
+        }
+    }
+    return result;
+}
+exports.default = baseFlatten;
+});
+
+var flatten_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseFlatten_js_1 = _baseFlatten;
+function flatten(array) {
+    var length = array == null ? 0 : array.length;
+    return length ? _baseFlatten_js_1.default(array, 1) : [];
+}
+exports.default = flatten;
+});
+
+var _overRest = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _apply_js_1 = _apply;
+var nativeMax = Math.max;
+function overRest(func, start, transform) {
+    start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+    return function () {
+        var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array = Array(length);
+        while (++index < length) {
+            array[index] = args[start + index];
+        }
+        index = -1;
+        var otherArgs = Array(start + 1);
+        while (++index < start) {
+            otherArgs[index] = args[index];
+        }
+        otherArgs[start] = transform(array);
+        return _apply_js_1.default(func, this, otherArgs);
+    };
+}
+exports.default = overRest;
+});
+
+var _flatRest = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var flatten_js_1 = flatten_1;
+var _overRest_js_1 = _overRest;
+var _setToString_js_1 = _setToString;
+function flatRest(func) {
+    return _setToString_js_1.default(_overRest_js_1.default(func, undefined, flatten_js_1.default), func + '');
+}
+exports.default = flatRest;
+});
+
+var _createFlow = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _LodashWrapper_js_1 = _LodashWrapper;
+var _flatRest_js_1 = _flatRest;
+var _getData_js_1 = _getData;
+var _getFuncName_js_1 = _getFuncName;
+var isArray_js_1 = isArray_1;
+var _isLaziable_js_1 = _isLaziable;
+var FUNC_ERROR_TEXT = 'Expected a function';
+var WRAP_CURRY_FLAG = 8, WRAP_PARTIAL_FLAG = 32, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256;
+function createFlow(fromRight) {
+    return _flatRest_js_1.default(function (funcs) {
+        var length = funcs.length, index = length, prereq = _LodashWrapper_js_1.default.prototype.thru;
+        if (fromRight) {
+            funcs.reverse();
+        }
+        while (index--) {
+            var func = funcs[index];
+            if (typeof func != 'function') {
+                throw new TypeError(FUNC_ERROR_TEXT);
+            }
+            if (prereq && !wrapper && _getFuncName_js_1.default(func) == 'wrapper') {
+                var wrapper = new _LodashWrapper_js_1.default([], true);
+            }
+        }
+        index = wrapper ? index : length;
+        while (++index < length) {
+            func = funcs[index];
+            var funcName = _getFuncName_js_1.default(func), data = funcName == 'wrapper' ? _getData_js_1.default(func) : undefined;
+            if (data && _isLaziable_js_1.default(data[0]) &&
+                data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) &&
+                !data[4].length && data[9] == 1) {
+                wrapper = wrapper[_getFuncName_js_1.default(data[0])].apply(wrapper, data[3]);
+            }
+            else {
+                wrapper = (func.length == 1 && _isLaziable_js_1.default(func))
+                    ? wrapper[funcName]()
+                    : wrapper.thru(func);
+            }
+        }
+        return function () {
+            var args = arguments, value = args[0];
+            if (wrapper && args.length == 1 && isArray_js_1.default(value)) {
+                return wrapper.plant(value).value();
+            }
+            var index = 0, result = length ? funcs[index].apply(this, args) : value;
+            while (++index < length) {
+                result = funcs[index].call(this, result);
+            }
             return result;
         };
-        return descriptor;
-    };
+    });
 }
-function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (args) {
-            var result = null, setArgs = null;
-            if (judgeFunc.apply(this, arguments)) {
-                return returnCacheValueFunc.apply(this, arguments);
-            }
-            result = value.apply(this, arguments);
-            setArgs = [result];
-            for (var i = 0, len = arguments.length; i < len; i++) {
-                setArgs[i + 1] = arguments[i];
-            }
-            setCacheFunc.apply(this, setArgs);
-            return result;
-        };
-        return descriptor;
-    };
-}
-function cacheBufferForBufferContainer() {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (dataName) {
-            var result = null;
-            if (this.container.hasChild(dataName)) {
-                return this.container.getChild(dataName);
-            }
-            result = value.call(this, dataName);
-            this.container.addChild(dataName, result);
-            return result;
-        };
-        return descriptor;
-    };
-}
-function cacheBufferForBufferContainerWithFuncParam(setDataNameFuncName) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (dataName) {
-            var result = null, settedDataName = this[setDataNameFuncName](dataName);
-            if (this.container.hasChild(settedDataName)) {
-                return this.container.getChild(settedDataName);
-            }
-            result = value.call(this, dataName);
-            this.container.addChild(settedDataName, result);
-            return result;
-        };
-        return descriptor;
-    };
-}
+exports.default = createFlow;
+});
 
-var Hash = (function () {
-    function Hash(children) {
-        if (children === void 0) { children = {}; }
-        this._children = null;
-        this._children = children;
+var flowRight_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _createFlow_js_1 = _createFlow;
+var flowRight = _createFlow_js_1.default(true);
+exports.default = flowRight;
+});
+
+var flowRight = unwrapExports(flowRight_1);
+
+var compose = flowRight;
+var chain = curry(function (f, m) {
+    return m.chain(f);
+});
+var map = curry(function (f, m) {
+    return m.map(f);
+});
+var filterArray = curry(function (f, arr) {
+    return filter(arr, f);
+});
+var forEachArray = curry(function (f, arr) {
+    return forEach(arr, f);
+});
+
+var getUID = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
+    it$1("indexInArrayBuffer should exist", function () {
+        index_1(indexInArrayBuffer).exist;
+    });
+    it$1("transform should exist", function () {
+        index_1(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
+    });
+}, function (indexInArrayBuffer, ThreeDTransformData) {
+    return ThreeDTransformData.transformMap[indexInArrayBuffer].uid;
+});
+var isIndexUsed = ensureFunc(function (isExist, indexInArrayBuffer, ThreeDTransformData) {
+}, function (indexInArrayBuffer, ThreeDTransformData) {
+    return isValidMapValue(ThreeDTransformData.transformMap[indexInArrayBuffer]);
+});
+var getStartIndexInArrayBuffer = function () { return 1; };
+
+var removeChildEntity = function (children, targetUID) {
+    for (var i = 0, len = children.length; i < len; ++i) {
+        if (children[i].uid === targetUID) {
+            children.splice(i, 1);
+            break;
+        }
     }
-    Hash.create = function (children) {
-        if (children === void 0) { children = {}; }
-        var obj = new this(children);
-        return obj;
-    };
-    Hash.prototype.getChildren = function () {
-        return this._children;
-    };
-    Hash.prototype.getCount = function () {
-        var result = 0, children = this._children, key = null;
-        for (key in children) {
-            if (children.hasOwnProperty(key)) {
-                result++;
-            }
-        }
-        return result;
-    };
-    Hash.prototype.getKeys = function () {
-        var result = Collection.create(), children = this._children, key = null;
-        for (key in children) {
-            if (children.hasOwnProperty(key)) {
-                result.addChild(key);
-            }
-        }
-        return result;
-    };
-    Hash.prototype.getValues = function () {
-        var result = Collection.create(), children = this._children, key = null;
-        for (key in children) {
-            if (children.hasOwnProperty(key)) {
-                result.addChild(children[key]);
-            }
-        }
-        return result;
-    };
-    Hash.prototype.getChild = function (key) {
-        return this._children[key];
-    };
-    Hash.prototype.setValue = function (key, value) {
-        this._children[key] = value;
-        return this;
-    };
-    Hash.prototype.addChild = function (key, value) {
-        this._children[key] = value;
-        return this;
-    };
-    Hash.prototype.addChildren = function (arg) {
-        var i = null, children = null;
-        if (arg instanceof Hash) {
-            children = arg.getChildren();
-        }
-        else {
-            children = arg;
-        }
-        for (i in children) {
-            if (children.hasOwnProperty(i)) {
-                this.addChild(i, children[i]);
-            }
-        }
-        return this;
-    };
-    Hash.prototype.appendChild = function (key, value) {
-        if (this._children[key] instanceof Collection) {
-            var c = (this._children[key]);
-            c.addChild(value);
-        }
-        else {
-            this._children[key] = (Collection.create().addChild(value));
-        }
-        return this;
-    };
-    Hash.prototype.setChildren = function (children) {
-        this._children = children;
-    };
-    Hash.prototype.removeChild = function (arg) {
-        var result = [];
-        if (JudgeUtils.isString(arg)) {
-            var key = arg;
-            result.push(this._children[key]);
-            this._children[key] = void 0;
-            delete this._children[key];
-        }
-        else if (JudgeUtils.isFunction(arg)) {
-            var func_1 = arg, self_1 = this;
-            this.forEach(function (val, key) {
-                if (func_1(val, key)) {
-                    result.push(self_1._children[key]);
-                    self_1._children[key] = void 0;
-                    delete self_1._children[key];
-                }
-            });
-        }
-        return Collection.create(result);
-    };
-    Hash.prototype.removeAllChildren = function () {
-        this._children = {};
-    };
-    Hash.prototype.hasChild = function (key) {
-        return this._children[key] !== void 0;
-    };
-    Hash.prototype.hasChildWithFunc = function (func) {
-        var result = false;
-        this.forEach(function (val, key) {
-            if (func(val, key)) {
-                result = true;
-                return $BREAK;
-            }
-        });
-        return result;
-    };
-    Hash.prototype.forEach = function (func, context) {
-        var children = this._children;
-        for (var i in children) {
-            if (children.hasOwnProperty(i)) {
-                if (func.call(context, children[i], i) === $BREAK) {
-                    break;
-                }
-            }
-        }
-        return this;
-    };
-    Hash.prototype.filter = function (func) {
-        var result = {}, children = this._children, value = null;
-        for (var key in children) {
-            if (children.hasOwnProperty(key)) {
-                value = children[key];
-                if (func.call(children, value, key)) {
-                    result[key] = value;
-                }
-            }
-        }
-        return Hash.create(result);
-    };
-    Hash.prototype.findOne = function (func) {
-        var result = [], self = this, scope = this._children;
-        this.forEach(function (val, key) {
-            if (!func.call(scope, val, key)) {
-                return;
-            }
-            result = [key, self.getChild(key)];
-            return $BREAK;
-        });
-        return result;
-    };
-    Hash.prototype.map = function (func) {
-        var resultMap = {};
-        this.forEach(function (val, key) {
-            var result = func(val, key);
-            if (result !== $REMOVE) {
-                Log$1.error(!JudgeUtils.isArray(result) || result.length !== 2, Log$1.info.FUNC_MUST_BE("iterator", "[key, value]"));
-                resultMap[result[0]] = result[1];
-            }
-        });
-        return Hash.create(resultMap);
-    };
-    Hash.prototype.toCollection = function () {
-        var result = Collection.create();
-        this.forEach(function (val, key) {
-            if (val instanceof Collection) {
-                result.addChildren(val);
-            }
-            else {
-                result.addChild(val);
-            }
-        });
-        return result;
-    };
-    Hash.prototype.toArray = function () {
-        var result = [];
-        this.forEach(function (val, key) {
-            if (val instanceof Collection) {
-                result = result.concat(val.getChildren());
-            }
-            else {
-                result.push(val);
-            }
-        });
-        return result;
-    };
-    Hash.prototype.clone = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var target = null, isDeep = null;
-        if (args.length === 0) {
-            isDeep = false;
-            target = Hash.create();
-        }
-        else if (args.length === 1) {
-            if (JudgeUtils.isBoolean(args[0])) {
-                target = Hash.create();
-                isDeep = args[0];
-            }
-            else {
-                target = args[0];
-                isDeep = false;
-            }
-        }
-        else {
-            target = args[0];
-            isDeep = args[1];
-        }
-        if (isDeep === true) {
-            target.setChildren(ExtendUtils.extendDeep(this._children));
-        }
-        else {
-            target.setChildren(ExtendUtils.extend({}, this._children));
-        }
-        return target;
-    };
-    return Hash;
-}());
-
-var ETransformState;
-(function (ETransformState) {
-    ETransformState[ETransformState["ISTRANSLATE"] = "isTranslate"] = "ISTRANSLATE";
-    ETransformState[ETransformState["ISROTATE"] = "isRotate"] = "ISROTATE";
-    ETransformState[ETransformState["ISSCALE"] = "isScale"] = "ISSCALE";
-    ETransformState[ETransformState["ISLOCALTRANSLATE"] = "isLocalTranslate"] = "ISLOCALTRANSLATE";
-    ETransformState[ETransformState["ISLOCALROTATE"] = "isLocalRotate"] = "ISLOCALROTATE";
-    ETransformState[ETransformState["ISLOCALSCALE"] = "isLocalScale"] = "ISLOCALSCALE";
-})(ETransformState || (ETransformState = {}));
-
-var EEngineEvent;
-(function (EEngineEvent) {
-    EEngineEvent[EEngineEvent["STARTLOOP"] = "wd_startLoop"] = "STARTLOOP";
-    EEngineEvent[EEngineEvent["ENDLOOP"] = "wd_endLoop"] = "ENDLOOP";
-    EEngineEvent[EEngineEvent["POINT_TAP"] = "wd_pointtap"] = "POINT_TAP";
-    EEngineEvent[EEngineEvent["POINT_DOWN"] = "wd_pointdown"] = "POINT_DOWN";
-    EEngineEvent[EEngineEvent["POINT_UP"] = "wd_pointup"] = "POINT_UP";
-    EEngineEvent[EEngineEvent["POINT_MOVE"] = "wd_pointmove"] = "POINT_MOVE";
-    EEngineEvent[EEngineEvent["POINT_OVER"] = "wd_pointover"] = "POINT_OVER";
-    EEngineEvent[EEngineEvent["POINT_OUT"] = "wd_pointout"] = "POINT_OUT";
-    EEngineEvent[EEngineEvent["POINT_SCALE"] = "wd_pointscale"] = "POINT_SCALE";
-    EEngineEvent[EEngineEvent["POINT_DRAG"] = "wd_pointdrag"] = "POINT_DRAG";
-    EEngineEvent[EEngineEvent["TRANSFORM_TRANSLATE"] = "wd_transform_translate"] = "TRANSFORM_TRANSLATE";
-    EEngineEvent[EEngineEvent["TRANSFORM_ROTATE"] = "wd_transform_rotate"] = "TRANSFORM_ROTATE";
-    EEngineEvent[EEngineEvent["TRANSFORM_SCALE"] = "wd_transform_scale"] = "TRANSFORM_SCALE";
-})(EEngineEvent || (EEngineEvent = {}));
-
-var Transform = (function (_super) {
-    __extends(Transform, _super);
-    function Transform() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.p_parent = null;
-        _this._isTranslate = false;
-        _this._isRotate = false;
-        _this._isScale = false;
-        _this.dirtyLocal = true;
-        _this.children = Collection.create();
-        _this._endLoopSubscription = null;
-        return _this;
-    }
-    Object.defineProperty(Transform.prototype, "parent", {
-        get: function () {
-            return this.p_parent;
-        },
-        set: function (parent) {
-            this.setParent(parent);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isTransform", {
-        get: function () {
-            return this.isTranslate || this.isRotate || this.isScale;
-        },
-        set: function (isTransform) {
-            if (isTransform) {
-                this._setGlobalTransformState(true);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isTranslate", {
-        get: function () {
-            return this._isTranslate;
-        },
-        set: function (isTranslate) {
-            this._setGlobalTransformState(ETransformState.ISTRANSLATE, isTranslate);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isRotate", {
-        get: function () {
-            return this._isRotate;
-        },
-        set: function (isRotate) {
-            this._setGlobalTransformState(ETransformState.ISROTATE, isRotate);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isScale", {
-        get: function () {
-            return this._isScale;
-        },
-        set: function (isScale) {
-            this._setGlobalTransformState(ETransformState.ISSCALE, isScale);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isLocalTranslate", {
-        set: function (isTranslate) {
-            this._setLocalTransformState(ETransformState.ISLOCALTRANSLATE, isTranslate);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isLocalRotate", {
-        set: function (isRotate) {
-            this._setLocalTransformState(ETransformState.ISLOCALROTATE, isRotate);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Transform.prototype, "isLocalScale", {
-        set: function (isScale) {
-            this._setLocalTransformState(ETransformState.ISLOCALSCALE, isScale);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Transform.prototype.init = function () {
-        var self = this;
-        this.clearCache();
-        this._endLoopSubscription = EventManager.fromEvent(EEngineEvent.ENDLOOP)
-            .subscribe(function () {
-            self._resetTransformFlag();
-        });
-    };
-    Transform.prototype.dispose = function () {
-        _super.prototype.dispose.call(this);
-        this._endLoopSubscription && this._endLoopSubscription.dispose();
-    };
-    Transform.prototype.addChild = function (child) {
-        this.children.addChild(child);
-    };
-    Transform.prototype.removeChild = function (child) {
-        this.children.removeChild(child);
-    };
-    Transform.prototype.setChildrenTransformState = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            var state = args[0];
-            if (state) {
-                this.children.forEach(function (child) {
-                    child.isTransform = true;
-                });
-            }
-        }
-        else {
-            var transformState_1 = args[0], state = args[1];
-            if (state) {
-                this.children.forEach(function (child) {
-                    child[transformState_1] = true;
-                });
-            }
-        }
-    };
-    Transform.prototype.handleWhenSetTransformState = function (transformState) {
-    };
-    Transform.prototype.setParent = function (parent) {
-        if (this.p_parent) {
-            this.p_parent.removeChild(this);
-        }
-        if (!parent) {
-            this.p_parent = null;
-            return;
-        }
-        this.p_parent = parent;
-        this.p_parent.addChild(this);
-    };
-    Transform.prototype.getMatrix = function (syncMethod, matrixAttriName) {
-        var syncList = Collection.create(), current = this.p_parent;
-        syncList.addChild(this);
-        while (current !== null) {
-            syncList.addChild(current);
-            current = current.parent;
-        }
-        syncList.reverse().forEach(function (transform) {
-            transform[syncMethod]();
-        });
-        return this[matrixAttriName];
-    };
-    Transform.prototype._setGlobalTransformState = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            var state = args[0];
-            if (!state) {
-                return;
-            }
-            this._isTranslate = true;
-            this._isRotate = true;
-            this._isScale = true;
-            this.dirtyLocal = true;
-            this.clearCache();
-            this.handleWhenSetTransformState();
-            this.setChildrenTransformState(state);
-        }
-        else {
-            var transformState = args[0], state = args[1];
-            this["_" + transformState] = state;
-            if (state) {
-                this.dirtyLocal = true;
-                this.clearCache();
-                this.handleWhenSetTransformState(transformState);
-            }
-            if (state) {
-                this.setChildrenTransformState(transformState, state);
-            }
-        }
-    };
-    Transform.prototype._setLocalTransformState = function (transformState, state) {
-        if (state) {
-            this.dirtyLocal = true;
-            this.clearCache();
-        }
-        if (state) {
-            this.setChildrenTransformState(transformState, state);
-        }
-    };
-    Transform.prototype._resetTransformFlag = function () {
-        this.isTranslate = false;
-        this.isScale = false;
-        this.isRotate = false;
-    };
-    return Transform;
-}(Component));
-__decorate([
-    cloneAttributeAsBasicType()
-], Transform.prototype, "parent", null);
-__decorate([
-    virtual
-], Transform.prototype, "handleWhenSetTransformState", null);
-
-var RendererComponent = (function (_super) {
-    __extends(RendererComponent, _super);
-    function RendererComponent() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return RendererComponent;
-}(Component));
-
-var EDrawMode;
-(function (EDrawMode) {
-    EDrawMode[EDrawMode["POINTS"] = "POINTS"] = "POINTS";
-    EDrawMode[EDrawMode["LINES"] = "LINES"] = "LINES";
-    EDrawMode[EDrawMode["LINE_LOOP"] = "LINE_LOOP"] = "LINE_LOOP";
-    EDrawMode[EDrawMode["LINE_STRIP"] = "LINE_STRIP"] = "LINE_STRIP";
-    EDrawMode[EDrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
-    EDrawMode[EDrawMode["TRIANGLE_STRIP"] = "TRIANGLE_STRIP"] = "TRIANGLE_STRIP";
-    EDrawMode[EDrawMode["TRANGLE_FAN"] = "TRIANGLE_FAN"] = "TRANGLE_FAN";
-})(EDrawMode || (EDrawMode = {}));
-
-function execOnlyOnce(flagName) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            var result = null;
-            if (this[flagName]) {
-                return;
-            }
-            this[flagName] = true;
-            return value.apply(this, args);
-        };
-        return descriptor;
-    };
-}
-
-function singleton(isInitWhenCreate) {
-    if (isInitWhenCreate === void 0) { isInitWhenCreate = false; }
-    return function (target) {
-        target._instance = null;
-        if (isInitWhenCreate) {
-            target.getInstance = function () {
-                if (target._instance === null) {
-                    var instance = new target();
-                    target._instance = instance;
-                    instance.initWhenCreate();
-                }
-                return target._instance;
-            };
-        }
-        else {
-            target.getInstance = function () {
-                if (target._instance === null) {
-                    target._instance = new target();
-                }
-                return target._instance;
-            };
-        }
-    };
-}
-
-var ViewWebGL = (function () {
-    function ViewWebGL(dom) {
-        this._dom = null;
-        this._dom = dom;
-    }
-    ViewWebGL.create = function (view) {
-        var obj = new this(view);
-        return obj;
-    };
-    Object.defineProperty(ViewWebGL.prototype, "offset", {
-        get: function () {
-            var view = this._dom, offset = { x: view.offsetLeft, y: view.offsetTop };
-            while (view = view.offsetParent) {
-                offset.x += view.offsetLeft;
-                offset.y += view.offsetTop;
-            }
-            return offset;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "dom", {
-        get: function () {
-            return this._dom;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "width", {
-        get: function () {
-            return this._dom.clientWidth;
-        },
-        set: function (width) {
-            this._dom.width = width;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "height", {
-        get: function () {
-            return this._dom.clientHeight;
-        },
-        set: function (height) {
-            this._dom.height = height;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "styleWidth", {
-        get: function () {
-            return this._dom.style.width;
-        },
-        set: function (styleWidth) {
-            this._dom.style.width = styleWidth;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "styleHeight", {
-        get: function () {
-            return this._dom.style.height;
-        },
-        set: function (styleHeight) {
-            this._dom.style.height = styleHeight;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "x", {
-        get: function () {
-            return Number(this._dom.style.left.slice(0, -2));
-        },
-        set: function (x) {
-            this._dom.style.left = x + "px";
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "y", {
-        get: function () {
-            return Number(this._dom.style.top.slice(0, -2));
-        },
-        set: function (y) {
-            this._dom.style.top = y + "px";
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ViewWebGL.prototype.initCanvas = function () {
-        this._dom.style.cssText = "position:absolute;left:0;top:0;";
-    };
-    ViewWebGL.prototype.getContext = function (contextConfig) {
-        return this._dom.getContext("webgl", contextConfig.options) || this._dom.getContext("experimental-webgl", contextConfig.options);
-    };
-    return ViewWebGL;
-}());
-ViewWebGL = __decorate([
-    registerClass("ViewWebGL")
-], ViewWebGL);
-
-var RectRegion = RectRegion_1 = (function (_super) {
-    __extends(RectRegion, _super);
-    function RectRegion() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Object.defineProperty(RectRegion.prototype, "width", {
-        get: function () {
-            return this.z;
-        },
-        set: function (width) {
-            this.z = width;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(RectRegion.prototype, "height", {
-        get: function () {
-            return this.w;
-        },
-        set: function (height) {
-            this.w = height;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    RectRegion.prototype.clone = function () {
-        return this.copyHelper(RectRegion_1.create());
-    };
-    RectRegion.prototype.isNotEmpty = function () {
-        return this.x !== 0
-            || this.y !== 0
-            || this.width !== 0
-            || this.height !== 0;
-    };
-    return RectRegion;
-}(Vector4));
-RectRegion = RectRegion_1 = __decorate([
-    registerClass("RectRegion")
-], RectRegion);
-var RectRegion_1;
-
-var DomQuery = (function () {
-    function DomQuery() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        this._doms = null;
-        if (JudgeUtils.isDom(args[0])) {
-            this._doms = [args[0]];
-        }
-        else if (this._isDomEleStr(args[0])) {
-            this._doms = [this._buildDom(args[0])];
-        }
-        else {
-            this._doms = document.querySelectorAll(args[0]);
-        }
-        return this;
-    }
-    DomQuery.create = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var obj = new this(args[0]);
-        return obj;
-    };
-    DomQuery.prototype.get = function (index) {
-        return this._doms[index];
-    };
-    DomQuery.prototype.prepend = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var targetDom = null;
-        targetDom = this._buildDom(args[0]);
-        for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
-            var dom = _b[_a];
-            if (dom.nodeType === 1) {
-                dom.insertBefore(targetDom, dom.firstChild);
-            }
-        }
-        return this;
-    };
-    DomQuery.prototype.prependTo = function (eleStr) {
-        var targetDom = null;
-        targetDom = DomQuery.create(eleStr);
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            if (dom.nodeType === 1) {
-                targetDom.prepend(dom);
-            }
-        }
-        return this;
-    };
-    DomQuery.prototype.remove = function () {
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            if (dom && dom.parentNode && dom.tagName != 'BODY') {
-                dom.parentNode.removeChild(dom);
-            }
-        }
-        return this;
-    };
-    DomQuery.prototype.css = function (property, value) {
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            dom.style[property] = value;
-        }
-    };
-    DomQuery.prototype.attr = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            var name = args[0];
-            return this.get(0).getAttribute(name);
-        }
-        else {
-            var name = args[0], value = args[1];
-            for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
-                var dom = _b[_a];
-                dom.setAttribute(name, value);
-            }
-        }
-    };
-    DomQuery.prototype.text = function (str) {
-        var dom = this.get(0);
-        if (str !== void 0) {
-            if (dom.textContent !== void 0) {
-                dom.textContent = str;
-            }
-            else {
-                dom.innerText = str;
-            }
-        }
-        else {
-            return dom.textContent !== void 0 ? dom.textContent : dom.innerText;
-        }
-    };
-    DomQuery.prototype._isDomEleStr = function (eleStr) {
-        return eleStr.match(/<(\w+)[^>]*><\/\1>/) !== null;
-    };
-    DomQuery.prototype._buildDom = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (JudgeUtils.isString(args[0])) {
-            var div = this._createElement("div"), eleStr = args[0];
-            div.innerHTML = eleStr;
-            return div.firstChild;
-        }
-        return args[0];
-    };
-    DomQuery.prototype._createElement = function (eleStr) {
-        return document.createElement(eleStr);
-    };
-    return DomQuery;
-}());
-
-var root$2;
-if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
-    root$2 = global;
-}
-else {
-    root$2 = window;
-}
-
-var EScreenSize;
-(function (EScreenSize) {
-    EScreenSize[EScreenSize["FULL"] = 0] = "FULL";
-})(EScreenSize || (EScreenSize = {}));
-
-var DeviceManager = (function () {
-    function DeviceManager() {
-        this._scissorTest = false;
-        this._depthTest = null;
-        this._depthFunc = null;
-        this._side = null;
-        this.polygonOffset = null;
-        this._polygonOffsetMode = null;
-        this._depthWrite = null;
-        this._blend = null;
-        this._alphaToCoverage = null;
-        this.view = null;
-        this.gl = null;
-        this.contextConfig = null;
-        this._writeRed = null;
-        this._writeGreen = null;
-        this._writeBlue = null;
-        this._writeAlpha = null;
-        this._blendSrc = null;
-        this._blendDst = null;
-        this._blendEquation = null;
-        this._blendFuncSeparate = null;
-        this._blendEquationSeparate = null;
-        this._scissorRegion = RectRegion.create();
-        this._viewport = RectRegion.create();
-        this._clearColor = null;
-        this._pixelRatio = null;
-    }
-    DeviceManager.getInstance = function () { };
-    Object.defineProperty(DeviceManager.prototype, "scissorTest", {
-        get: function () {
-            return this._scissorTest;
-        },
-        set: function (scissorTest) {
-            var gl = this.gl;
-            if (this._scissorTest === scissorTest) {
-                return;
-            }
-            if (scissorTest) {
-                gl.enable(gl.SCISSOR_TEST);
-            }
-            else {
-                gl.disable(gl.SCISSOR_TEST);
-            }
-            this._scissorTest = scissorTest;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    DeviceManager.prototype.setScissor = function (x, y, width, height) {
-        if (this._scissorRegion.y === y && this._scissorRegion.width === width && this._scissorRegion.height === height) {
-            return;
-        }
-        this.gl.scissor(x, y, width, height);
-        this._scissorRegion.set(x, y, width, height);
-        this.scissorTest = true;
-    };
-    DeviceManager.prototype.setViewport = function (x, y, width, height) {
-        if (this._viewport.x === x && this._viewport.y === y && this._viewport.width === width && this._viewport.height === height) {
-            return;
-        }
-        this._viewport.set(x, y, width, height);
-        this.gl.viewport(x, y, width, height);
-    };
-    DeviceManager.prototype.getViewport = function () {
-        return this._viewport;
-    };
-    Object.defineProperty(DeviceManager.prototype, "depthTest", {
-        get: function () {
-            return this._depthTest;
-        },
-        set: function (depthTest) {
-            var gl = this.gl;
-            if (this._depthTest !== depthTest) {
-                if (depthTest) {
-                    gl.enable(gl.DEPTH_TEST);
-                }
-                else {
-                    gl.disable(gl.DEPTH_TEST);
-                }
-                this._depthTest = depthTest;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "depthFunc", {
-        get: function () {
-            return this._depthFunc;
-        },
-        set: function (depthFunc) {
-            var gl = this.gl;
-            if (this._depthFunc !== depthFunc) {
-                gl.depthFunc(gl[depthFunc]);
-                this._depthFunc = depthFunc;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "side", {
-        get: function () {
-            return this._side;
-        },
-        set: function (side) {
-            var gl = this.gl;
-            if (this._side !== side) {
-                switch (side) {
-                    case ESide.NONE:
-                        gl.enable(gl.CULL_FACE);
-                        gl.cullFace(gl.FRONT_AND_BACK);
-                        break;
-                    case ESide.BOTH:
-                        gl.disable(gl.CULL_FACE);
-                        break;
-                    case ESide.FRONT:
-                        gl.enable(gl.CULL_FACE);
-                        gl.cullFace(gl.BACK);
-                        break;
-                    case ESide.BACK:
-                        gl.enable(gl.CULL_FACE);
-                        gl.cullFace(gl.FRONT);
-                        break;
-                    default:
-                        Log$$1.error(true, Log$$1.info.FUNC_UNEXPECT("side", side));
-                        break;
-                }
-                this._side = side;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "polygonOffsetMode", {
-        get: function () {
-            return this._polygonOffsetMode;
-        },
-        set: function (polygonOffsetMode) {
-            var gl = this.gl;
-            if (this._polygonOffsetMode !== polygonOffsetMode) {
-                switch (polygonOffsetMode) {
-                    case EPolygonOffsetMode.NONE:
-                        gl.polygonOffset(0.0, 0.0);
-                        gl.disable(gl.POLYGON_OFFSET_FILL);
-                        break;
-                    case EPolygonOffsetMode.IN:
-                        gl.enable(gl.POLYGON_OFFSET_FILL);
-                        gl.polygonOffset(1.0, 1.0);
-                        break;
-                    case EPolygonOffsetMode.OUT:
-                        gl.enable(gl.POLYGON_OFFSET_FILL);
-                        gl.polygonOffset(-1.0, -1.0);
-                        break;
-                    case EPolygonOffsetMode.CUSTOM:
-                        gl.enable(gl.POLYGON_OFFSET_FILL);
-                        Log$$1.error(!this.polygonOffset, Log$$1.info.FUNC_MUST_DEFINE("polygonOffset"));
-                        gl.polygonOffset(this.polygonOffset.x, this.polygonOffset.y);
-                        break;
-                    default:
-                        break;
-                }
-                this._polygonOffsetMode = polygonOffsetMode;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "depthWrite", {
-        get: function () {
-            return this._depthWrite;
-        },
-        set: function (depthWrite) {
-            if (this._depthWrite !== depthWrite) {
-                this.gl.depthMask(depthWrite);
-                this._depthWrite = depthWrite;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "blend", {
-        get: function () {
-            return this._blend;
-        },
-        set: function (blend) {
-            var gl = this.gl;
-            if (this._blend !== blend) {
-                if (blend) {
-                    gl.enable(gl.BLEND);
-                }
-                else {
-                    gl.disable(gl.BLEND);
-                }
-                this._blend = blend;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DeviceManager.prototype, "alphaToCoverage", {
-        get: function () {
-            return this._alphaToCoverage;
-        },
-        set: function (alphaToCoverage) {
-            var gl = this.gl;
-            if (this._alphaToCoverage !== alphaToCoverage) {
-                if (alphaToCoverage) {
-                    gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
-                }
-                else {
-                    gl.disable(gl.SAMPLE_ALPHA_TO_COVERAGE);
-                }
-                this._alphaToCoverage = alphaToCoverage;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    DeviceManager.prototype.setBlendFunc = function (blendSrc, blendDst) {
-        if ((this._blendSrc !== blendSrc) || (this._blendDst !== blendDst)) {
-            this._blend && this.gl.blendFunc(this.gl[blendSrc], this.gl[blendDst]);
-            this._blendSrc = blendSrc;
-            this._blendDst = blendDst;
-        }
-    };
-    DeviceManager.prototype.setBlendEquation = function (blendEquation) {
-        if (this._blendEquation !== blendEquation) {
-            this._blend && this.gl.blendEquation(this.gl[blendEquation]);
-            this._blendEquation = blendEquation;
-        }
-    };
-    DeviceManager.prototype.setBlendFuncSeparate = function (blendFuncSeparate) {
-        var gl = this.gl;
-        if (!this._blendFuncSeparate || this._blendFuncSeparate[0] !== blendFuncSeparate[0] || this._blendFuncSeparate[1] !== blendFuncSeparate[1]) {
-            this._blend && gl.blendFuncSeparate(gl[blendFuncSeparate[0]], gl[blendFuncSeparate[1]], gl[blendFuncSeparate[2]], gl[blendFuncSeparate[3]]);
-            this._blendFuncSeparate = blendFuncSeparate;
-        }
-    };
-    DeviceManager.prototype.setBlendEquationSeparate = function (blendEquationSeparate) {
-        var gl = this.gl;
-        if (!this._blendEquationSeparate || this._blendEquationSeparate[0] !== blendEquationSeparate[0] || this._blendEquationSeparate[1] !== blendEquationSeparate[1]) {
-            this._blend && gl.blendEquationSeparate(gl[blendEquationSeparate[0]], gl[blendEquationSeparate[1]]);
-            this._blendEquationSeparate = blendEquationSeparate;
-        }
-    };
-    DeviceManager.prototype.setColorWrite = function (writeRed, writeGreen, writeBlue, writeAlpha) {
-        if (this._writeRed !== writeRed
-            || this._writeGreen !== writeGreen
-            || this._writeBlue !== writeBlue
-            || this._writeAlpha !== writeAlpha) {
-            this.gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
-            this._writeRed = writeRed;
-            this._writeGreen = writeGreen;
-            this._writeBlue = writeBlue;
-            this._writeAlpha = writeAlpha;
-        }
-    };
-    DeviceManager.prototype.clear = function (options) {
-        var gl = this.gl, color = options.color;
-        this._setClearColor(color);
-        this.setColorWrite(true, true, true, true);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-    };
-    DeviceManager.prototype.createGL = function (canvasId, contextConfig, useDevicePixelRatio) {
-        var canvas = null;
-        this.contextConfig = contextConfig;
-        if (!!canvasId) {
-            canvas = DomQuery.create(this._getCanvasId(canvasId)).get(0);
-        }
-        else {
-            canvas = DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
-        }
-        this.view = ViewWebGL.create(canvas);
-        if (useDevicePixelRatio) {
-            this.setPixelRatio(root$2.devicePixelRatio);
-        }
-        this.gl = this.view.getContext(contextConfig);
-        if (!this.gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
-    };
-    DeviceManager.prototype.setScreen = function () {
-        var screenSize = MainData.screenSize, x = null, y = null, width = null, height = null, styleWidth = null, styleHeight = null;
-        if (screenSize === EScreenSize.FULL) {
-            x = 0;
-            y = 0;
-            width = root$2.innerWidth;
-            height = root$2.innerHeight;
-            styleWidth = "100%";
-            styleHeight = "100%";
-            DomQuery.create("body").css("margin", "0");
-        }
-        else {
-            x = screenSize.x || 0;
-            y = screenSize.y || 0;
-            width = screenSize.width || root$2.innerWidth;
-            height = screenSize.height || root$2.innerHeight;
-            styleWidth = width + "px";
-            styleHeight = height + "px";
-        }
-        this.view.initCanvas();
-        this.view.x = x;
-        this.view.y = y;
-        this.view.width = width;
-        this.view.height = height;
-        this.view.styleWidth = styleWidth;
-        this.view.styleHeight = styleHeight;
-        this.setViewport(0, 0, width, height);
-    };
-    DeviceManager.prototype.setHardwareScaling = function (level) {
-        var width = this.view.width / level, height = this.view.height / level;
-        this.view.width = width;
-        this.view.height = height;
-        this.setViewport(0, 0, width, height);
-    };
-    DeviceManager.prototype.setPixelRatio = function (pixelRatio) {
-        this.view.width = Math.round(this.view.width * pixelRatio);
-        this.view.height = Math.round(this.view.height * pixelRatio);
-        this._pixelRatio = pixelRatio;
-    };
-    DeviceManager.prototype.getPixelRatio = function () {
-        return this._pixelRatio;
-    };
-    DeviceManager.prototype._setClearColor = function (color) {
-        if (this._clearColor && this._clearColor.isEqual(color)) {
-            return;
-        }
-        this.gl.clearColor(color.r, color.g, color.b, color.a);
-        this._clearColor = color;
-    };
-    DeviceManager.prototype._getCanvasId = function (canvasId) {
-        if (canvasId.indexOf('#') > -1) {
-            return canvasId;
-        }
-        return "#" + canvasId;
-    };
-    return DeviceManager;
-}());
-__decorate([
-    requireCheck(function () {
-        it("should exist MainData.screenSize", function () {
-            index(MainData.screenSize).exist;
-        });
-    })
-], DeviceManager.prototype, "setScreen", null);
-__decorate([
-    requireCheck(function (level) {
-        it("level should > 0, but actual is " + level, function () {
-            index(level).greaterThan(0);
-        });
-    })
-], DeviceManager.prototype, "setHardwareScaling", null);
-__decorate([
-    ensure(function (id) {
-        it("canvas id should be #xxx", function () {
-            index(/#[^#]+/.test(id)).true;
-        });
-    })
-], DeviceManager.prototype, "_getCanvasId", null);
-DeviceManager = __decorate([
-    singleton(),
-    registerClass("DeviceManager")
-], DeviceManager);
-var EDepthFunction;
-(function (EDepthFunction) {
-    EDepthFunction[EDepthFunction["NEVER"] = "NEVER"] = "NEVER";
-    EDepthFunction[EDepthFunction["ALWAYS"] = "ALWAYS"] = "ALWAYS";
-    EDepthFunction[EDepthFunction["LESS"] = "LESS"] = "LESS";
-    EDepthFunction[EDepthFunction["LEQUAL"] = "LEQUAL"] = "LEQUAL";
-    EDepthFunction[EDepthFunction["EQUAL"] = "EQUAL"] = "EQUAL";
-    EDepthFunction[EDepthFunction["GEQUAL"] = "GEQUAL"] = "GEQUAL";
-    EDepthFunction[EDepthFunction["GREATER"] = "GREATER"] = "GREATER";
-    EDepthFunction[EDepthFunction["NOTEQUAL"] = "NOTEQUAL"] = "NOTEQUAL";
-})(EDepthFunction || (EDepthFunction = {}));
-var ESide;
-(function (ESide) {
-    ESide[ESide["NONE"] = 0] = "NONE";
-    ESide[ESide["BOTH"] = 1] = "BOTH";
-    ESide[ESide["BACK"] = 2] = "BACK";
-    ESide[ESide["FRONT"] = 3] = "FRONT";
-})(ESide || (ESide = {}));
-var EPolygonOffsetMode;
-(function (EPolygonOffsetMode) {
-    EPolygonOffsetMode[EPolygonOffsetMode["NONE"] = 0] = "NONE";
-    EPolygonOffsetMode[EPolygonOffsetMode["IN"] = 1] = "IN";
-    EPolygonOffsetMode[EPolygonOffsetMode["OUT"] = 2] = "OUT";
-    EPolygonOffsetMode[EPolygonOffsetMode["CUSTOM"] = 3] = "CUSTOM";
-})(EPolygonOffsetMode || (EPolygonOffsetMode = {}));
-var EBlendFunc;
-(function (EBlendFunc) {
-    EBlendFunc[EBlendFunc["ZERO"] = "ZEOR"] = "ZERO";
-    EBlendFunc[EBlendFunc["ONE"] = "ONE"] = "ONE";
-    EBlendFunc[EBlendFunc["SRC_COLOR"] = "SRC_COLOR"] = "SRC_COLOR";
-    EBlendFunc[EBlendFunc["ONE_MINUS_SRC_COLOR"] = "ONE_MINUS_SRC_COLOR"] = "ONE_MINUS_SRC_COLOR";
-    EBlendFunc[EBlendFunc["DST_COLOR"] = "DST_COLOR"] = "DST_COLOR";
-    EBlendFunc[EBlendFunc["ONE_MINUS_DST_COLOR"] = "ONE_MINUS_DST_COLOR"] = "ONE_MINUS_DST_COLOR";
-    EBlendFunc[EBlendFunc["SRC_ALPHA"] = "SRC_ALPHA"] = "SRC_ALPHA";
-    EBlendFunc[EBlendFunc["SRC_ALPHA_SATURATE"] = "SRC_ALPHA_SATURATE"] = "SRC_ALPHA_SATURATE";
-    EBlendFunc[EBlendFunc["ONE_MINUS_SRC_ALPHA"] = "ONE_MINUS_SRC_ALPHA"] = "ONE_MINUS_SRC_ALPHA";
-    EBlendFunc[EBlendFunc["DST_ALPHA"] = "DST_ALPHA"] = "DST_ALPHA";
-    EBlendFunc[EBlendFunc["ONE_MINUS_DST_ALPH"] = "ONE_MINUS_DST_ALPHA"] = "ONE_MINUS_DST_ALPH";
-})(EBlendFunc || (EBlendFunc = {}));
-var EBlendEquation;
-(function (EBlendEquation) {
-    EBlendEquation[EBlendEquation["ADD"] = "FUNC_ADD"] = "ADD";
-    EBlendEquation[EBlendEquation["SUBTRACT"] = "FUNC_SUBTRACT"] = "SUBTRACT";
-    EBlendEquation[EBlendEquation["REVERSE_SUBTRAC"] = "FUNC_REVERSE_SUBTRACT"] = "REVERSE_SUBTRAC";
-})(EBlendEquation || (EBlendEquation = {}));
-var EBlendType;
-(function (EBlendType) {
-    EBlendType[EBlendType["NONE"] = 0] = "NONE";
-    EBlendType[EBlendType["NORMAL"] = 1] = "NORMAL";
-    EBlendType[EBlendType["ADDITIVE"] = 2] = "ADDITIVE";
-    EBlendType[EBlendType["ADDITIVEALPHA"] = 3] = "ADDITIVEALPHA";
-    EBlendType[EBlendType["MULTIPLICATIVE"] = 4] = "MULTIPLICATIVE";
-    EBlendType[EBlendType["PREMULTIPLIED"] = 5] = "PREMULTIPLIED";
-})(EBlendType || (EBlendType = {}));
-var ECanvasType;
-(function (ECanvasType) {
-    ECanvasType[ECanvasType["TwoDUI"] = "TwoDUI"] = "TwoDUI";
-})(ECanvasType || (ECanvasType = {}));
-
-var Buffer$1 = (function (_super) {
-    __extends(Buffer, _super);
-    function Buffer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.buffer = null;
-        return _this;
-    }
-    Buffer.prototype.dispose = function () {
-        DeviceManager.getInstance().gl.deleteBuffer(this.buffer);
-        delete this.buffer;
-    };
-    return Buffer;
-}(Entity$1));
-
-var EBufferUsage;
-(function (EBufferUsage) {
-    EBufferUsage[EBufferUsage["STREAM_DRAW"] = "STREAM_DRAW"] = "STREAM_DRAW";
-    EBufferUsage[EBufferUsage["STATIC_DRAW"] = "STATIC_DRAW"] = "STATIC_DRAW";
-    EBufferUsage[EBufferUsage["DYNAMIC_DRAW"] = "DYNAMIC_DRAW"] = "DYNAMIC_DRAW";
-})(EBufferUsage || (EBufferUsage = {}));
-
-var CommonBuffer = (function (_super) {
-    __extends(CommonBuffer, _super);
-    function CommonBuffer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.type = null;
-        _this.count = null;
-        _this.usage = null;
-        return _this;
-    }
-    CommonBuffer.prototype.resetBufferData = function (glBufferTargetStr, typedData, offset) {
-        if (offset === void 0) { offset = 0; }
-        var gl = DeviceManager.getInstance().gl;
-        if (this.usage === EBufferUsage.STATIC_DRAW && offset === 0) {
-            gl.bufferData(gl[glBufferTargetStr], typedData, gl.DYNAMIC_DRAW);
-            return;
-        }
-        gl.bufferSubData(gl[glBufferTargetStr], offset, typedData);
-    };
-    return CommonBuffer;
-}(Buffer$1));
-
-var EBufferType;
-(function (EBufferType) {
-    EBufferType[EBufferType["BYTE"] = "BYTE"] = "BYTE";
-    EBufferType[EBufferType["UNSIGNED_BYTE"] = "UNSIGNED_BYTE"] = "UNSIGNED_BYTE";
-    EBufferType[EBufferType["SHORT"] = "SHORT"] = "SHORT";
-    EBufferType[EBufferType["UNSIGNED_SHORT"] = "UNSIGNED_SHORT"] = "UNSIGNED_SHORT";
-    EBufferType[EBufferType["INT"] = "INT"] = "INT";
-    EBufferType[EBufferType["UNSIGNED_INT"] = "UNSIGNED_INT"] = "UNSIGNED_INT";
-    EBufferType[EBufferType["FLOAT"] = "FLOAT"] = "FLOAT";
-})(EBufferType || (EBufferType = {}));
-
-var BufferTable = (function () {
-    function BufferTable() {
-    }
-    BufferTable.bindIndexBuffer = function (indexBuffer) {
-        var gl = null;
-        if (this.lastBindedElementBuffer === indexBuffer) {
-            return;
-        }
-        this.lastBindedElementBuffer = indexBuffer;
-        gl = DeviceManager.getInstance().gl;
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer.buffer);
-    };
-    BufferTable.hasBuffer = function (key) {
-        return this._table.hasChild(key);
-    };
-    BufferTable.addBuffer = function (key, buffer) {
-        this._table.addChild(key, buffer);
-    };
-    BufferTable.getBuffer = function (key) {
-        return this._table.getChild(key);
-    };
-    BufferTable.dispose = function () {
-        this._table.forEach(function (buffer) {
-            buffer.dispose();
-        });
-        this.lastBindedArrayBufferListUidStr = null;
-        this.lastBindedElementBuffer = null;
-    };
-    BufferTable.clearAll = function () {
-        this._table.removeAllChildren();
-        this.lastBindedArrayBufferListUidStr = null;
-        this.lastBindedElementBuffer = null;
-    };
-    BufferTable.resetBindedArrayBuffer = function () {
-        var gl = DeviceManager.getInstance().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-        this.lastBindedArrayBufferListUidStr = null;
-    };
-    BufferTable.resetBindedElementBuffer = function () {
-        var gl = DeviceManager.getInstance().gl;
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        this.lastBindedElementBuffer = null;
-    };
-    return BufferTable;
-}());
-BufferTable.lastBindedArrayBufferListUidStr = null;
-BufferTable.lastBindedElementBuffer = null;
-BufferTable._table = Hash.create();
-BufferTable = __decorate([
-    registerClass("BufferTable")
-], BufferTable);
-var BufferTableKey;
-(function (BufferTableKey) {
-    BufferTableKey[BufferTableKey["PROCEDURAL_VERTEX"] = "PROCEDURAL_VERTEX"] = "PROCEDURAL_VERTEX";
-    BufferTableKey[BufferTableKey["PROCEDURAL_INDEX"] = "PROCEDURAL_INDEX"] = "PROCEDURAL_INDEX";
-})(BufferTableKey || (BufferTableKey = {}));
-
-var GPUDetector = (function () {
-    function GPUDetector() {
-        this.maxTextureUnit = null;
-        this.maxTextureSize = null;
-        this.maxCubemapTextureSize = null;
-        this.maxAnisotropy = null;
-        this.maxBoneCount = null;
-        this.extensionCompressedTextureS3TC = null;
-        this.extensionTextureFilterAnisotropic = null;
-        this.extensionInstancedArrays = null;
-        this.extensionUintIndices = null;
-        this.extensionDepthTexture = null;
-        this.extensionVAO = null;
-        this.extensionStandardDerivatives = null;
-        this.precision = null;
-        this._isDetected = false;
-    }
-    GPUDetector.getInstance = function () { };
-    Object.defineProperty(GPUDetector.prototype, "gl", {
-        get: function () {
-            return DeviceManager.getInstance().gl;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    GPUDetector.prototype.detect = function () {
-        this._isDetected = true;
-        this._detectExtension();
-        this._detectCapabilty();
-    };
-    GPUDetector.prototype._detectExtension = function () {
-        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
-        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
-        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
-        this.extensionUintIndices = this._getExtension("element_index_uint");
-        this.extensionDepthTexture = this._getExtension("depth_texture");
-        this.extensionVAO = this._getExtension("vao");
-        this.extensionStandardDerivatives = this._getExtension("standard_derivatives");
-    };
-    GPUDetector.prototype._detectCapabilty = function () {
-        var gl = this.gl;
-        this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-        this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-        this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-        this.maxAnisotropy = this._getMaxAnisotropy();
-        this.maxBoneCount = this._getMaxBoneCount();
-        this._detectPrecision();
-    };
-    GPUDetector.prototype._getExtension = function (name) {
-        var extension, gl = this.gl;
-        switch (name) {
-            case "EXT_texture_filter_anisotropic":
-                extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-                break;
-            case "WEBGL_compressed_texture_s3tc":
-                extension = gl.getExtension("WEBGL_compressed_texture_s3tc") || gl.getExtension("MOZ_WEBGL_compressed_texture_s3tc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
-                break;
-            case "WEBGL_compressed_texture_pvrtc":
-                extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
-                break;
-            case "ANGLE_instanced_arrays":
-                extension = gl.getExtension("ANGLE_instanced_arrays");
-                break;
-            case "element_index_uint":
-                extension = gl.getExtension("OES_element_index_uint") !== null;
-                break;
-            case "depth_texture":
-                extension = gl.getExtension("WEBKIT_WEBGL_depth_texture") !== null || gl.getExtension("WEBGL_depth_texture") !== null;
-                break;
-            case "vao":
-                extension = gl.getExtension("OES_vertex_array_object");
-                break;
-            case "standard_derivatives":
-                extension = gl.getExtension("OES_standard_derivatives");
-                break;
-            default:
-                extension = gl.getExtension(name);
-                break;
-        }
-        return extension;
-    };
-    GPUDetector.prototype._getMaxBoneCount = function () {
-        var gl = this.gl, numUniforms = null, maxBoneCount = null;
-        numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
-        numUniforms -= 4 * 4;
-        numUniforms -= 1;
-        numUniforms -= 4 * 4;
-        maxBoneCount = Math.floor(numUniforms / 4);
-        return Math.min(maxBoneCount, 128);
-    };
-    GPUDetector.prototype._getMaxAnisotropy = function () {
-        var extension = this.extensionTextureFilterAnisotropic, gl = this.gl;
-        return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
-    };
-    GPUDetector.prototype._detectPrecision = function () {
-        var gl = this.gl;
-        if (!gl.getShaderPrecisionFormat) {
-            this.precision = EGPUPrecision.HIGHP;
-            return;
-        }
-        var vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT), vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT), fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT), fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT), highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0, mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
-        if (!highpAvailable) {
-            if (mediumpAvailable) {
-                this.precision = EGPUPrecision.MEDIUMP;
-                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
-            }
-            else {
-                this.precision = EGPUPrecision.LOWP;
-                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
-            }
-        }
-        else {
-            this.precision = EGPUPrecision.HIGHP;
-        }
-    };
-    return GPUDetector;
-}());
-GPUDetector = __decorate([
-    singleton(),
-    registerClass("GPUDetector")
-], GPUDetector);
-var EGPUPrecision;
-(function (EGPUPrecision) {
-    EGPUPrecision[EGPUPrecision["HIGHP"] = 0] = "HIGHP";
-    EGPUPrecision[EGPUPrecision["MEDIUMP"] = 1] = "MEDIUMP";
-    EGPUPrecision[EGPUPrecision["LOWP"] = 2] = "LOWP";
-})(EGPUPrecision || (EGPUPrecision = {}));
-
-var ElementBuffer = (function (_super) {
-    __extends(ElementBuffer, _super);
-    function ElementBuffer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.data = null;
-        return _this;
-    }
-    ElementBuffer.create = function (data, type, usage) {
-        if (type === void 0) { type = null; }
-        if (usage === void 0) { usage = EBufferUsage.STATIC_DRAW; }
-        var obj = new this();
-        obj.initWhenCreate(data, type, usage);
-        return obj;
-    };
-    Object.defineProperty(ElementBuffer.prototype, "typeSize", {
-        get: function () {
-            return this.data.BYTES_PER_ELEMENT;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ElementBuffer.prototype.initWhenCreate = function (data, type, usage) {
-        var gl = DeviceManager.getInstance().gl, isNeed32Bits = null, typedData = null;
-        this.buffer = gl.createBuffer();
-        if (!this.buffer) {
-            Log$$1.warn('Failed to create the this.buffer object');
-            return null;
-        }
-        if (!data) {
-            return null;
-        }
-        isNeed32Bits = this._checkIsNeed32Bits(data, type);
-        typedData = this._convertToTypedArray(isNeed32Bits, data);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, typedData, gl[usage]);
-        BufferTable.resetBindedElementBuffer();
-        this._saveData(typedData, this._getType(isNeed32Bits, type), usage);
-        return this.buffer;
-    };
-    ElementBuffer.prototype.resetData = function (data, type, offset) {
-        if (type === void 0) { type = null; }
-        if (offset === void 0) { offset = 0; }
-        var gl = DeviceManager.getInstance().gl, isNeed32Bits = this._checkIsNeed32Bits(data, type), typedData = this._convertToTypedArray(isNeed32Bits, data);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-        this.resetBufferData("ELEMENT_ARRAY_BUFFER", typedData, offset);
-        this._saveData(typedData, this._getType(isNeed32Bits, type), EBufferUsage.DYNAMIC_DRAW);
-        return this;
-    };
-    ElementBuffer.prototype._convertToTypedArray = function (isNeed32Bits, data) {
-        return isNeed32Bits ? new Uint32Array(data) : new Uint16Array(data);
-    };
-    ElementBuffer.prototype._checkIsNeed32Bits = function (indices, type) {
-        var isNeed32Bits = false;
-        if (type !== null) {
-            if (type === EBufferType.UNSIGNED_INT) {
-                return true;
-            }
-            return false;
-        }
-        if (GPUDetector.getInstance().extensionUintIndices) {
-            for (var _i = 0, indices_1 = indices; _i < indices_1.length; _i++) {
-                var indice = indices_1[_i];
-                if (indice > 65535) {
-                    isNeed32Bits = true;
-                    break;
-                }
-            }
-        }
-        else {
-            isNeed32Bits = false;
-        }
-        return isNeed32Bits;
-    };
-    ElementBuffer.prototype._getType = function (isNeed32Bits, type) {
-        return type === null ? (isNeed32Bits ? EBufferType.UNSIGNED_INT : EBufferType.UNSIGNED_SHORT) : type;
-    };
-    ElementBuffer.prototype._saveData = function (data, type, usage) {
-        this.type = type;
-        this.count = data.length;
-        this.data = data;
-        this.usage = usage;
-    };
-    return ElementBuffer;
-}(CommonBuffer));
-__decorate([
-    ensureGetter(function (typeSize) {
-        assert(typeSize > 0, Log$$1.info.FUNC_SHOULD("typeSize", "> 0, but actual is " + typeSize));
-    })
-], ElementBuffer.prototype, "typeSize", null);
-__decorate([
-    requireCheck(function (data, type, offset) {
-        if (type === void 0) { type = null; }
-        if (offset === void 0) { offset = 0; }
-        assert(this.buffer, Log$$1.info.FUNC_MUST("create gl buffer"));
-    })
-], ElementBuffer.prototype, "resetData", null);
-__decorate([
-    requireCheck(function (isNeed32Bits, type) {
-        if (type !== null) {
-            if (isNeed32Bits) {
-                assert(type === EBufferType.UNSIGNED_INT, Log$$1.info.FUNC_MUST_BE("type", "UNSIGNED_SHORT, but actual is " + type));
-            }
-            else {
-                assert(type === EBufferType.UNSIGNED_SHORT || type === EBufferType.UNSIGNED_INT, Log$$1.info.FUNC_MUST_BE("type", "UNSIGNED_SHORT or UNSIGNED_INT, but actual is " + type));
-            }
-        }
-    })
-], ElementBuffer.prototype, "_getType", null);
-ElementBuffer = __decorate([
-    registerClass("ElementBuffer")
-], ElementBuffer);
-
-var EBufferDataType;
-(function (EBufferDataType) {
-    EBufferDataType[EBufferDataType["VERTICE"] = "VERTICE"] = "VERTICE";
-    EBufferDataType[EBufferDataType["INDICE"] = "INDICE"] = "INDICE";
-})(EBufferDataType || (EBufferDataType = {}));
-
-var ArrayBuffer = (function (_super) {
-    __extends(ArrayBuffer, _super);
-    function ArrayBuffer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.size = null;
-        _this.data = null;
-        return _this;
-    }
-    ArrayBuffer.create = function (data, size, type, usage) {
-        if (type === void 0) { type = EBufferType.FLOAT; }
-        if (usage === void 0) { usage = EBufferUsage.STATIC_DRAW; }
-        var obj = new this();
-        obj.initWhenCreate(data, size, type, usage);
-        return obj;
-    };
-    ArrayBuffer.prototype.initWhenCreate = function (data, size, type, usage) {
-        var gl = DeviceManager.getInstance().gl, typedData = null;
-        this.buffer = gl.createBuffer();
-        if (!this.buffer) {
-            Log$$1.warn('Failed to create the this.buffer object');
-            return null;
-        }
-        if (!data) {
-            return null;
-        }
-        typedData = this._convertToTypedArray(data, type);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, typedData, gl[usage]);
-        BufferTable.resetBindedArrayBuffer();
-        this._saveData(typedData, size, type, usage);
-        return this.buffer;
-    };
-    ArrayBuffer.prototype.resetData = function (data, size, type, offset) {
-        if (size === void 0) { size = this.size; }
-        if (type === void 0) { type = this.type; }
-        if (offset === void 0) { offset = 0; }
-        var gl = DeviceManager.getInstance().gl, typedData = this._convertToTypedArray(data, type);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        this.resetBufferData("ARRAY_BUFFER", typedData, offset);
-        this._saveData(typedData, size, type, EBufferUsage.DYNAMIC_DRAW);
-        return this;
-    };
-    ArrayBuffer.prototype._convertToTypedArray = function (data, type) {
-        return new Float32Array(data);
-    };
-    ArrayBuffer.prototype._saveData = function (data, size, type, usage) {
-        this.size = size;
-        this.type = type;
-        this.count = data.length / size;
-        this.usage = usage;
-        this.data = data;
-    };
-    return ArrayBuffer;
-}(CommonBuffer));
-__decorate([
-    requireCheck(function (data, size, type, offset) {
-        if (size === void 0) { size = this.size; }
-        if (type === void 0) { type = this.type; }
-        if (offset === void 0) { offset = 0; }
-        assert(this.buffer, Log$$1.info.FUNC_MUST("create gl buffer"));
-    })
-], ArrayBuffer.prototype, "resetData", null);
-ArrayBuffer = __decorate([
-    registerClass("ArrayBuffer")
-], ArrayBuffer);
-
-var _table = Hash.create();
-_table.addChild(EBufferDataType.VERTICE, "vertices");
-_table.addChild(EBufferDataType.INDICE, "indices");
-var BufferDataTable = (function () {
-    function BufferDataTable() {
-    }
-    BufferDataTable.getGeometryDataName = function (type) {
-        var result = _table.getChild(type);
-        return result;
-    };
-    return BufferDataTable;
-}());
-__decorate([
-    ensure(function (result, type) {
-        Log$$1.error(result === void 0, Log$$1.info.FUNC_NOT_EXIST(type, "in BufferDataTable"));
-    })
-], BufferDataTable, "getGeometryDataName", null);
-BufferDataTable = __decorate([
-    registerClass("BufferDataTable")
-], BufferDataTable);
-
-var BufferContainer = (function () {
-    function BufferContainer(entityObject) {
-        this.geometryData = null;
-        this.entityObject = null;
-        this.container = Hash.create();
-        this._indiceBuffer = null;
-        this.entityObject = entityObject;
-    }
-    BufferContainer.prototype.createBuffersFromGeometryData = function () {
-        this.getChild(EBufferDataType.VERTICE);
-        this.getChild(EBufferDataType.INDICE);
-    };
-    BufferContainer.prototype.removeCache = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        this.container.removeChild(args[0]);
-    };
-    BufferContainer.prototype.getChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var type = args[0], result = null;
-        switch (type) {
-            case EBufferDataType.VERTICE:
-                result = this.getVertice(type);
-                break;
-            case EBufferDataType.INDICE:
-                result = this._getIndice(type);
-                break;
-            default:
-                break;
-        }
-        return result;
-    };
-    BufferContainer.prototype.init = function () {
-    };
-    BufferContainer.prototype.dispose = function () {
-        this.container.forEach(function (buffer) {
-            buffer.dispose();
-        });
-        this.geometryData.dispose();
-    };
-    BufferContainer.prototype.createOnlyOnceAndUpdateArrayBuffer = function (bufferAttriName, data, size, type, offset, usage) {
-        if (type === void 0) { type = EBufferType.FLOAT; }
-        if (offset === void 0) { offset = 0; }
-        if (usage === void 0) { usage = EBufferUsage.STATIC_DRAW; }
-        var buffer = this[bufferAttriName];
-        if (buffer) {
-            buffer.resetData(data, size, type, offset);
-            return;
-        }
-        this[bufferAttriName] = ArrayBuffer.create(data, size, type, usage);
-    };
-    BufferContainer.prototype.createOnlyOnceAndUpdateElememntBuffer = function (bufferAttriName, data, type, offset, usage) {
-        if (type === void 0) { type = null; }
-        if (offset === void 0) { offset = 0; }
-        if (usage === void 0) { usage = EBufferUsage.STATIC_DRAW; }
-        var buffer = this[bufferAttriName];
-        if (buffer) {
-            buffer.resetData(data, type, offset);
-            return;
-        }
-        this[bufferAttriName] = ElementBuffer.create(data, type, usage);
-    };
-    BufferContainer.prototype.hasData = function (data) {
-        return !!data && data.length > 0;
-    };
-    BufferContainer.prototype._getIndice = function (type) {
-        var geometryData = null;
-        geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-        if (!this.hasData(geometryData)) {
-            return null;
-        }
-        this.createOnlyOnceAndUpdateElememntBuffer("_indiceBuffer", geometryData);
-        return this._indiceBuffer;
-    };
-    return BufferContainer;
-}());
-__decorate([
-    virtual
-], BufferContainer.prototype, "createBuffersFromGeometryData", null);
-__decorate([
-    requireCheck(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        it("test arguments", function () {
-            if (args.length === 2) {
-                var dataName = args[1];
-                index(dataName).exist;
-                index(dataName).be.a("string");
-            }
-        });
-    })
-], BufferContainer.prototype, "getChild", null);
-__decorate([
-    cache(function (type) {
-        return this.container.hasChild(type);
-    }, function (type) {
-        return this.container.getChild(type);
-    }, function (result, type) {
-        this.container.addChild(type, result);
-    })
-], BufferContainer.prototype, "_getIndice", null);
-
-var CommonBufferContainer = (function (_super) {
-    __extends(CommonBufferContainer, _super);
-    function CommonBufferContainer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._verticeBuffer = null;
-        return _this;
-    }
-    CommonBufferContainer.prototype.getVertice = function (type) {
-        var geometryData = this.geometryData[BufferDataTable.getGeometryDataName(type)];
-        if (!this.hasData(geometryData)) {
-            return null;
-        }
-        this.createOnlyOnceAndUpdateArrayBuffer("_verticeBuffer", geometryData, 3);
-        return this._verticeBuffer;
-    };
-    return CommonBufferContainer;
-}(BufferContainer));
-__decorate([
-    cacheBufferForBufferContainer()
-], CommonBufferContainer.prototype, "getVertice", null);
-
-var BasicBufferContainer = (function (_super) {
-    __extends(BasicBufferContainer, _super);
-    function BasicBufferContainer() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BasicBufferContainer.create = function (entityObject) {
-        var obj = new this(entityObject);
-        return obj;
-    };
-    return BasicBufferContainer;
-}(CommonBufferContainer));
-BasicBufferContainer = __decorate([
-    registerClass("BasicBufferContainer")
-], BasicBufferContainer);
-
-var GeometryData = (function () {
-    function GeometryData(geometry) {
-        this._vertices = null;
-        this._faces = null;
-        this.geometry = null;
-        this._indiceCache = null;
-        this._indiceDirty = true;
-        this.geometry = geometry;
-    }
-    Object.defineProperty(GeometryData.prototype, "vertices", {
-        get: function () {
-            return this._vertices;
-        },
-        set: function (vertices) {
-            this._vertices = vertices;
-            this.geometry.buffers.removeCache(EBufferDataType.VERTICE);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(GeometryData.prototype, "indices", {
-        get: function () {
-            var indices = [];
-            for (var _i = 0, _a = this._faces; _i < _a.length; _i++) {
-                var face = _a[_i];
-                indices.push(face.aIndex, face.bIndex, face.cIndex);
-            }
-            return indices;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(GeometryData.prototype, "faces", {
-        get: function () {
-            return this._faces;
-        },
-        set: function (faces) {
-            this._faces = faces;
-            this.geometry.buffers.removeCache(EBufferDataType.INDICE);
-            this.onChangeFace();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    GeometryData.prototype.dispose = function () {
-    };
-    GeometryData.prototype.onChangeFace = function () {
-        this._indiceDirty = true;
-    };
-    return GeometryData;
-}());
-__decorate([
-    cacheGetter(function () {
-        return !this._indiceDirty && this._indiceCache;
-    }, function () {
-        return this._indiceCache;
-    }, function (result) {
-        this._indiceCache = result;
-        this._indiceDirty = false;
-    })
-], GeometryData.prototype, "indices", null);
-__decorate([
-    virtual
-], GeometryData.prototype, "onChangeFace", null);
-
-var BasicGeometryData = (function (_super) {
-    __extends(BasicGeometryData, _super);
-    function BasicGeometryData() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BasicGeometryData.create = function (geometry) {
-        var obj = new this(geometry);
-        return obj;
-    };
-    return BasicGeometryData;
-}(GeometryData));
-BasicGeometryData = __decorate([
-    registerClass("BasicGeometryData")
-], BasicGeometryData);
-
-var Geometry = (function (_super) {
-    __extends(Geometry, _super);
-    function Geometry() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._material = null;
-        _this.buffers = null;
-        _this.drawMode = EDrawMode.TRIANGLES;
-        return _this;
-    }
-    Object.defineProperty(Geometry.prototype, "material", {
-        get: function () {
-            return this._material;
-        },
-        set: function (material) {
-            if (!JudgeUtils$1.isEqual(material, this._material)) {
-                this._material = material;
-                this._material.geometry = this;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Geometry.prototype, "geometryData", {
-        get: function () {
-            if (this.buffers === null) {
-                return null;
-            }
-            return this.buffers.geometryData;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Geometry.prototype.init = function () {
-        var geometryData = null, computedData = this.computeData();
-        this.buffers = this.createBufferContainer();
-        geometryData = this.createGeometryData(computedData);
-        this.buffers.geometryData = geometryData;
-        this.buffers.init();
-        this._material.init();
-    };
-    Geometry.prototype.dispose = function () {
-        this.buffers.dispose();
-        this._material.dispose();
-    };
-    Geometry.prototype.createBuffersFromGeometryData = function () {
-        this.buffers.createBuffersFromGeometryData();
-    };
-    Geometry.prototype.createBufferContainer = function () {
-        return BasicBufferContainer.create(this.entityObject);
-    };
-    Geometry.prototype.createGeometryData = function (computedData) {
-        return this.createBasicGeometryData(computedData);
-    };
-    Geometry.prototype.createBasicGeometryData = function (computedData) {
-        var vertices = computedData.vertices, _a = computedData.faces, faces = _a === void 0 ? [] : _a, geometryData = BasicGeometryData.create(this);
-        geometryData.vertices = vertices;
-        geometryData.faces = faces;
-        return geometryData;
-    };
-    return Geometry;
-}(Component));
-__decorate([
-    cloneAttributeAsCloneable()
-], Geometry.prototype, "material", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], Geometry.prototype, "drawMode", void 0);
-__decorate([
-    ensure(function () {
-        var geometryData = this.buffers.geometryData;
-        it("faces.count should be be " + geometryData.indices.length / 3 + ", but actual is " + geometryData.faces.length, function () {
-            index(geometryData.faces.length * 3).equal(geometryData.indices.length);
-        });
-    }),
-    execOnlyOnce("_isInit")
-], Geometry.prototype, "init", null);
-__decorate([
-    requireCheck(function () {
-        var _this = this;
-        it("not exist buffers", function () {
-            index(_this.buffers).exist;
-        });
-    })
-], Geometry.prototype, "createBuffersFromGeometryData", null);
-__decorate([
-    virtual
-], Geometry.prototype, "createBufferContainer", null);
-__decorate([
-    virtual
-], Geometry.prototype, "createGeometryData", null);
-
-var SortUtils = (function () {
-    function SortUtils() {
-    }
-    SortUtils.insertSort = function (targetArr, compareFunc, isChangeSelf) {
-        if (isChangeSelf === void 0) { isChangeSelf = false; }
-        var resultArr = isChangeSelf ? targetArr : ExtendUtils.extend([], targetArr);
-        for (var i = 1, len = resultArr.length; i < len; i++) {
-            for (var j = i; j > 0 && compareFunc(resultArr[j], resultArr[j - 1]); j--) {
-                this._swap(resultArr, j - 1, j);
-            }
-        }
-        return resultArr;
-    };
-    SortUtils.quickSort = function (targetArr, compareFunc, isChangeSelf) {
-        if (isChangeSelf === void 0) { isChangeSelf = false; }
-        var resultArr = isChangeSelf ? targetArr : ExtendUtils.extend([], targetArr);
-        var sort = function (l, r) {
-            if (l >= r) {
-                return;
-            }
-            var i = l, j = r, x = resultArr[l];
-            while (i < j) {
-                while (i < j && compareFunc(x, resultArr[j])) {
-                    j--;
-                }
-                if (i < j) {
-                    resultArr[i++] = resultArr[j];
-                }
-                while (i < j && compareFunc(resultArr[i], x)) {
-                    i++;
-                }
-                if (i < j) {
-                    resultArr[j--] = resultArr[i];
-                }
-            }
-            resultArr[i] = x;
-            sort(l, i - 1);
-            sort(i + 1, r);
-        };
-        sort(0, resultArr.length - 1);
-        return resultArr;
-    };
-    SortUtils._swap = function (children, i, j) {
-        var t = null;
-        t = children[i];
-        children[i] = children[j];
-        children[j] = t;
-    };
-    return SortUtils;
-}());
-SortUtils = __decorate([
-    registerClass("SortUtils")
-], SortUtils);
-
-var ComponentInitOrderTable = (function () {
-    function ComponentInitOrderTable() {
-    }
-    ComponentInitOrderTable.getOrder = function (component) {
-        if (component instanceof Geometry) {
-            return 4;
-        }
-        return 5;
-    };
-    return ComponentInitOrderTable;
-}());
-ComponentInitOrderTable = __decorate([
-    registerClass("ComponentInitOrderTable")
-], ComponentInitOrderTable);
-
-var ComponentManager = (function () {
-    function ComponentManager(entityObject) {
-        this.transform = null;
-        this._entityObject = null;
-        this._components = Collection.create();
-        this._rendererComponent = null;
-        this._geometry = null;
-        this._entityObject = entityObject;
-    }
-    ComponentManager.create = function (entityObject) {
-        var obj = new this(entityObject);
-        return obj;
-    };
-    ComponentManager.prototype.init = function () {
-        for (var _i = 0, _a = SortUtils.insertSort(this._components.getChildren(), function (a, b) {
-            return ComponentInitOrderTable.getOrder(a) < ComponentInitOrderTable.getOrder(b);
-        }); _i < _a.length; _i++) {
-            var component = _a[_i];
-            component.init();
-        }
-    };
-    ComponentManager.prototype.dispose = function () {
-        var components = this.removeAllComponent();
-        components.forEach(function (component) {
-            component.dispose();
-        });
-        this._components.removeAllChildren();
-    };
-    ComponentManager.prototype.removeAllComponent = function () {
-        var _this = this;
-        var result = Collection.create();
-        this._components.forEach(function (component) {
-            _this._removeComponentHandler(component);
-            result.addChild(component);
-        }, this);
-        return result;
-    };
-    ComponentManager.prototype.getComponent = function (_class) {
-        return this._components.findOne(function (component) {
-            return component instanceof _class;
-        });
-    };
-    ComponentManager.prototype.getComponents = function () {
-        return this._components;
-    };
-    ComponentManager.prototype.findComponentByUid = function (uid) {
-        return this._components.findOne(function (component) {
-            return component.uid === uid;
-        });
-    };
-    ComponentManager.prototype.forEachComponent = function (func) {
-        this._components.forEach(func);
-        return this;
-    };
-    ComponentManager.prototype.hasComponent = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var result = null;
-        if (JudgeUtils$1.isComponenet(args[0])) {
-            var component = args[0];
-            result = this._components.hasChild(component);
-        }
-        else {
-            var _class_1 = args[0];
-            result = this._components.hasChildWithFunc(function (component) {
-                return component instanceof _class_1;
-            });
-        }
-        return result;
-    };
-    ComponentManager.prototype.addComponent = function (component, isShareComponent) {
-        if (isShareComponent === void 0) { isShareComponent = false; }
-        if (!component) {
-            return;
-        }
-        if (component instanceof RendererComponent) {
-            this._rendererComponent = component;
-        }
-        else if (component instanceof Geometry) {
-            this._geometry = component;
-        }
-        else if (component instanceof Transform) {
-            if (this.transform) {
-                this.removeComponent(this.transform);
-            }
-            this.transform = component;
-        }
-        component.addToObject(this._entityObject, isShareComponent);
-        this._components.addChild(component);
-        return this;
-    };
-    ComponentManager.prototype.removeComponent = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var component = null;
-        if (args[0] instanceof Component) {
-            component = args[0];
-        }
-        else {
-            component = this.getComponent(args[0]);
-        }
-        if (component) {
-            this._components.removeChild(component);
-            this._removeComponentHandler(component);
-        }
-        return this;
-    };
-    ComponentManager.prototype.getComponentCount = function (_class) {
-        return this._components.filter(function (component) {
-            return component instanceof _class;
-        }).getCount();
-    };
-    ComponentManager.prototype.getGeometry = function () {
-        return this._geometry;
-    };
-    ComponentManager.prototype.getRendererComponent = function () {
-        return this._rendererComponent;
-    };
-    ComponentManager.prototype._removeComponentHandler = function (component) {
-        component.removeFromObject(this._entityObject);
-    };
-    return ComponentManager;
-}());
-__decorate([
-    requireCheck(function (component, isShareComponent) {
-        var _this = this;
-        if (isShareComponent === void 0) { isShareComponent = false; }
-        if (!component) {
-            return;
-        }
-        it("should not add the component which is already added", function () {
-            index(_this.hasComponent(component)).false;
-        });
-    })
-], ComponentManager.prototype, "addComponent", null);
-__decorate([
-    requireCheck(function () {
-        var _this = this;
-        it("entityObject shouldn't contain more than 1 geometry component", function () {
-            index(_this.getComponentCount(Geometry)).lessThan(2);
-        });
-    })
-], ComponentManager.prototype, "getGeometry", null);
-__decorate([
-    requireCheck(function () {
-        var _this = this;
-        it("entityObject shouldn't contain more than 1 rendererComponent", function () {
-            index(_this.getComponentCount(RendererComponent)).lessThan(2);
-        });
-    })
-], ComponentManager.prototype, "getRendererComponent", null);
-ComponentManager = __decorate([
-    registerClass("ComponentManager")
-], ComponentManager);
-
-var EntityObjectManager = (function () {
-    function EntityObjectManager(entityObject) {
-        this._entityObject = null;
-        this._children = Collection.create();
-        this._entityObject = entityObject;
-    }
-    EntityObjectManager.create = function (entityObject) {
-        var obj = new this(entityObject);
-        return obj;
-    };
-    EntityObjectManager.prototype.init = function () {
-        this.forEach(function (child) {
-            child.init();
-        });
-    };
-    EntityObjectManager.prototype.dispose = function () {
-        this.forEach(function (child) {
-            child.dispose();
-        });
-    };
-    EntityObjectManager.prototype.hasChild = function (child) {
-        return this._children.hasChild(child);
-    };
-    EntityObjectManager.prototype.addChild = function (child) {
-        if (child.parent) {
-            child.parent.removeChild(child);
-        }
-        child.parent = this._entityObject;
-        child.transform.parent = this._entityObject.transform;
-        this._children.addChild(child);
-        return this;
-    };
-    EntityObjectManager.prototype.addChildren = function () {
-        var _this = this;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (JudgeUtils$1.isArray(args[0])) {
-            var children = args[0];
-            for (var _a = 0, children_1 = children; _a < children_1.length; _a++) {
-                var child = children_1[_a];
-                this.addChild(child);
-            }
-        }
-        else if (JudgeUtils$1.isCollection(args[0])) {
-            var children = args[0];
-            children.forEach(function (child) {
-                _this.addChild(child);
-            });
-        }
-        else {
-            this.addChild(args[0]);
-        }
-        return this;
-    };
-    EntityObjectManager.prototype.forEach = function (func) {
-        this._children.forEach(func);
-        return this;
-    };
-    EntityObjectManager.prototype.filter = function (func) {
-        return this._children.filter(func);
-    };
-    EntityObjectManager.prototype.sort = function (func, isSortSelf) {
-        if (isSortSelf === void 0) { isSortSelf = false; }
-        return this._children.sort(func, isSortSelf);
-    };
-    EntityObjectManager.prototype.getChildren = function () {
-        return this._children;
-    };
-    EntityObjectManager.prototype.getAllChildren = function () {
-        var result = Collection.create();
-        var getChildren = function (entityObject) {
-            result.addChildren(entityObject.getChildren());
-            entityObject.forEach(function (child) {
-                getChildren(child);
-            });
-        };
-        getChildren(this._entityObject);
-        return result;
-    };
-    EntityObjectManager.prototype.getChild = function (index) {
-        return this._children.getChild(index);
-    };
-    EntityObjectManager.prototype.findChildByUid = function (uid) {
-        return this._children.findOne(function (child) {
-            return child.uid === uid;
-        });
-    };
-    EntityObjectManager.prototype.findChildByTag = function (tag) {
-        return this._children.findOne(function (child) {
-            return child.hasTag(tag);
-        });
-    };
-    EntityObjectManager.prototype.findChildByName = function (name) {
-        return this._children.findOne(function (child) {
-            return child.name.search(name) > -1;
-        });
-    };
-    EntityObjectManager.prototype.findChildrenByName = function (name) {
-        return this._children.filter(function (child) {
-            return child.name.search(name) > -1;
-        });
-    };
-    EntityObjectManager.prototype.removeChild = function (child) {
-        this._children.removeChild(child);
-        child.parent = null;
-        return this;
-    };
-    EntityObjectManager.prototype.removeAllChildren = function () {
-        var _this = this;
-        this._children.forEach(function (child) {
-            _this.removeChild(child);
-        }, this);
-    };
-    return EntityObjectManager;
-}());
-EntityObjectManager = __decorate([
-    registerClass("EntityObjectManager")
-], EntityObjectManager);
-
-var EntityObject = (function (_super) {
-    __extends(EntityObject, _super);
-    function EntityObject() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._bubbleParent = null;
-        _this.name = null;
-        _this.parent = null;
-        _this.customEventMap = Hash.create();
-        _this.componentManager = ComponentManager.create(_this);
-        _this._hasComponentCache = Hash.create();
-        _this._getComponentCache = Hash.create();
-        _this._componentChangeSubscription = null;
-        _this._entityObjectManager = EntityObjectManager.create(_this);
-        return _this;
-    }
-    Object.defineProperty(EntityObject.prototype, "bubbleParent", {
-        get: function () {
-            return this._bubbleParent ? this._bubbleParent : this.parent;
-        },
-        set: function (bubbleParent) {
-            this._bubbleParent = bubbleParent;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(EntityObject.prototype, "componentDirty", {
-        set: function (componentDirty) {
-            if (componentDirty === true) {
-                this.clearCache();
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(EntityObject.prototype, "transform", {
-        get: function () {
-            return this.componentManager.transform;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    EntityObject.prototype.initWhenCreate = function () {
-        this.addComponent(this.createTransform());
-    };
-    EntityObject.prototype.clone = function (config) {
-        if (config === void 0) { config = {}; }
-        var result = null;
-        if (CloneUtils.isNotClone((this))) {
-            return null;
-        }
-        config = ExtendUtils.extend({
-            cloneChildren: true,
-            shareGeometry: false,
-            cloneGeometry: true
-        }, config);
-        result = CloneUtils.clone(this);
-        this.forEachComponent(function (component) {
-            if (!config.cloneGeometry && component instanceof Geometry) {
-                return;
-            }
-            if (config.shareGeometry && component instanceof Geometry) {
-                result.addComponent(component, true);
-                return;
-            }
-            result.addComponent(component.clone());
-        });
-        if (config.cloneChildren) {
-            this._cloneChildren(result);
-        }
-        return result;
-    };
-    EntityObject.prototype.init = function () {
-        var self = this;
-        this.componentManager.init();
-        this._entityObjectManager.init();
-        this.afterInitChildren();
-        return this;
-    };
-    EntityObject.prototype.dispose = function () {
-        if (this.parent) {
-            this.parent.removeChild(this);
-            this.parent = null;
-        }
-        this.componentManager.dispose();
-        this._entityObjectManager.dispose();
-        EventManager.off(this);
-    };
-    EntityObject.prototype.hasChild = function (child) {
-        return this._entityObjectManager.hasChild(child);
-    };
-    EntityObject.prototype.addChild = function (child) {
-        this._entityObjectManager.addChild(child);
-        return this;
-    };
-    EntityObject.prototype.getChildren = function () {
-        return this._entityObjectManager.getChildren();
-    };
-    EntityObject.prototype.removeChild = function (child) {
-        this._entityObjectManager.removeChild(child);
-        return this;
-    };
-    EntityObject.prototype.forEach = function (func) {
-        this._entityObjectManager.forEach(func);
-        return this;
-    };
-    EntityObject.prototype.getComponent = function (_class) {
-        return this.componentManager.getComponent(_class);
-    };
-    EntityObject.prototype.hasComponent = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var key = this._getHasComponentCacheKey(args[0]), result = this._hasComponentCache.getChild(key);
-        if (result !== void 0) {
-            return result;
-        }
-        result = this.componentManager.hasComponent(args[0]);
-        this._hasComponentCache.addChild(key, result);
-        return result;
-    };
-    EntityObject.prototype.addComponent = function (component, isShareComponent) {
-        if (isShareComponent === void 0) { isShareComponent = false; }
-        this.componentManager.addComponent(component, isShareComponent);
-        this.componentDirty = true;
-        return this;
-    };
-    EntityObject.prototype.removeComponent = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        this.componentManager.removeComponent(args[0]);
-        this.componentDirty = true;
-        return this;
-    };
-    EntityObject.prototype.forEachComponent = function (func) {
-        this.componentManager.forEachComponent(func);
-        return this;
-    };
-    EntityObject.prototype.render = function (renderer, camera) {
-        var rendererComponent = null;
-        rendererComponent = this.componentManager.getRendererComponent();
-        if (rendererComponent) {
-            rendererComponent.render(renderer, this, camera);
-        }
-        this.getRenderList().forEach(function (child) {
-            child.render(renderer, camera);
-        });
-    };
-    EntityObject.prototype.update = function (elapsed) {
-        this.forEach(function (child) {
-            child.update(elapsed);
-        });
-    };
-    EntityObject.prototype.clearCache = function () {
-        this._hasComponentCache.removeAllChildren();
-        this._getComponentCache.removeAllChildren();
-    };
-    EntityObject.prototype.getGeometry = function () {
-        return this.componentManager.getGeometry();
-    };
-    EntityObject.prototype.afterInitChildren = function () {
-    };
-    EntityObject.prototype.getRenderList = function () {
-        return this.getChildren();
-    };
-    EntityObject.prototype._getHasComponentCacheKey = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (JudgeUtils$1.isComponenet(args[0])) {
-            var component = args[0];
-            return String(component.uid);
-        }
-        else {
-            var _class = args[0];
-            return _class.name;
-        }
-    };
-    EntityObject.prototype._cloneChildren = function (result) {
-        this.forEach(function (child) {
-            var resultChild = child.clone();
-            if (resultChild !== null) {
-                result.addChild(resultChild);
-            }
-        });
-    };
-    return EntityObject;
-}(Entity$1));
-__decorate([
-    cloneAttributeAsBasicType()
-], EntityObject.prototype, "bubbleParent", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], EntityObject.prototype, "name", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], EntityObject.prototype, "parent", void 0);
-__decorate([
-    virtual
-], EntityObject.prototype, "initWhenCreate", null);
-__decorate([
-    cache(function (_class) {
-        return this._getComponentCache.hasChild(_class.name);
-    }, function (_class) {
-        return this._getComponentCache.getChild(_class.name);
-    }, function (result, _class) {
-        this._getComponentCache.addChild(_class.name, result);
-    })
-], EntityObject.prototype, "getComponent", null);
-__decorate([
-    virtual
-], EntityObject.prototype, "render", null);
-__decorate([
-    virtual
-], EntityObject.prototype, "getGeometry", null);
-__decorate([
-    virtual
-], EntityObject.prototype, "afterInitChildren", null);
-__decorate([
-    virtual
-], EntityObject.prototype, "getRenderList", null);
-__decorate([
-    ensure(function (key) {
-        it("key:" + key + " be string", function () {
-            index(JudgeUtils$1.isString(key)).true;
-        });
-    })
-], EntityObject.prototype, "_getHasComponentCacheKey", null);
-
-var EEventType;
-(function (EEventType) {
-    EEventType[EEventType["MOUSE"] = 0] = "MOUSE";
-    EEventType[EEventType["TOUCH"] = 1] = "TOUCH";
-    EEventType[EEventType["POINT"] = 2] = "POINT";
-    EEventType[EEventType["KEYBOARD"] = 3] = "KEYBOARD";
-    EEventType[EEventType["CUSTOM"] = 4] = "CUSTOM";
-})(EEventType || (EEventType = {}));
+};
 
 var bowser = createCommonjsModule(function (module) {
 /*!
@@ -8588,3377 +6617,6284 @@ var bowser = createCommonjsModule(function (module) {
 
   return bowser
 });
-// module.exports.chrome = "a";
-// module.exports.firefox = "a";
-// module.exports.msie = "a";
-// module.exports.version = "a";
-// module.exports.mobile = "a";
 });
 
-var bowser_1 = bowser.version;
 var bowser_2 = bowser.chrome;
-var bowser_3 = bowser.msie;
 var bowser_4 = bowser.firefox;
-var bowser_5 = bowser.mobile;
 
-var EBrowserIdentifier;
-(function (EBrowserIdentifier) {
-    EBrowserIdentifier[EBrowserIdentifier["FALLBACK"] = "fallback"] = "FALLBACK";
-    EBrowserIdentifier[EBrowserIdentifier["FIREFOX"] = "firefox"] = "FIREFOX";
-    EBrowserIdentifier[EBrowserIdentifier["CHROME"] = "chrome"] = "CHROME";
-})(EBrowserIdentifier || (EBrowserIdentifier = {}));
-var EEventName;
-(function (EEventName) {
-    EEventName[EEventName["CLICK"] = "click"] = "CLICK";
-    EEventName[EEventName["MOUSEOVER"] = "mouseover"] = "MOUSEOVER";
-    EEventName[EEventName["MOUSEUP"] = "mouseup"] = "MOUSEUP";
-    EEventName[EEventName["MOUSEOUT"] = "mouseout"] = "MOUSEOUT";
-    EEventName[EEventName["MOUSEMOVE"] = "mousemove"] = "MOUSEMOVE";
-    EEventName[EEventName["MOUSEDOWN"] = "mousedown"] = "MOUSEDOWN";
-    EEventName[EEventName["MOUSEWHEEL"] = "mousewheel|DOMMouseScroll*" + EBrowserIdentifier.FIREFOX] = "MOUSEWHEEL";
-    EEventName[EEventName["MOUSEDRAG"] = "mousedrag"] = "MOUSEDRAG";
-    EEventName[EEventName["TOUCHUP"] = "touchend"] = "TOUCHUP";
-    EEventName[EEventName["TOUCHMOVE"] = "touchmove"] = "TOUCHMOVE";
-    EEventName[EEventName["TOUCHDOWN"] = "touchstart"] = "TOUCHDOWN";
-    EEventName[EEventName["KEYDOWN"] = "keydown"] = "KEYDOWN";
-    EEventName[EEventName["KEYUP"] = "keyup"] = "KEYUP";
-    EEventName[EEventName["KEYPRESS"] = "keypress"] = "KEYPRESS";
-})(EEventName || (EEventName = {}));
-var EVENTNAME_SPLITTER = '|';
-var BROWSER_IDENTIFIER = '*';
-var EventNameHandler = (function () {
-    function EventNameHandler() {
-    }
-    EventNameHandler.handleEventName = function (domEventName) {
-        var eventName = domEventName, fallbackEventName = null, specifyBrowserEventNameArr = [], result = null;
-        for (var _i = 0, _a = eventName.split(EVENTNAME_SPLITTER); _i < _a.length; _i++) {
-            var name = _a[_i];
-            if (this._isFallbackEventName(name)) {
-                fallbackEventName = name;
-            }
-            else {
-                specifyBrowserEventNameArr.push(name);
-            }
+var getParent$1 = requireCheckFunc(function (uid, ThreeDTransformData) {
+    it$1("uid should exist", function () {
+        index_1(uid).exist;
+    });
+}, function (uid, ThreeDTransformData) {
+    return ThreeDTransformData.parentMap[uid];
+});
+var setParent$1 = requireCheckFunc(function (transform, parent, ThreeDTransformData) {
+    it$1("parent should not be self", function () {
+        if (parent !== null) {
+            index_1(_isTransformEqual(transform, parent)).false;
         }
-        result = this._getSpecifyBrowserEventName(specifyBrowserEventNameArr);
-        return result !== null ? result : fallbackEventName;
-    };
-    EventNameHandler._isFallbackEventName = function (eventName) {
-        return eventName.split(BROWSER_IDENTIFIER).length === 1;
-    };
-    EventNameHandler._getSpecifyBrowserEventName = function (specifyBrowserEventNameArr) {
-        var result = null;
-        for (var _i = 0, specifyBrowserEventNameArr_1 = specifyBrowserEventNameArr; _i < specifyBrowserEventNameArr_1.length; _i++) {
-            var eventName = specifyBrowserEventNameArr_1[_i];
-            var _a = eventName.split(BROWSER_IDENTIFIER), domEventName = _a[0], browserIdentifier = _a[1];
-            switch (browserIdentifier) {
-                case EBrowserIdentifier.CHROME:
-                    if (bowser_2) {
-                        result = domEventName;
-                    }
-                    break;
-                case EBrowserIdentifier.FIREFOX:
-                    if (bowser_4) {
-                        result = domEventName;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            if (result) {
-                break;
-            }
+    });
+}, function (transform, parent, ThreeDTransformData) {
+    var indexInArrayBuffer = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = getParent$1(uid, ThreeDTransformData), isCurrentParentExisit = isParentExist(currentParent);
+    if (parent === null) {
+        if (isCurrentParentExisit) {
+            _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
+            addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
         }
-        return result;
-    };
-    return EventNameHandler;
-}());
-EventNameHandler = __decorate([
-    registerClass("EventNameHandler")
-], EventNameHandler);
-
-var _table$1 = Hash.create();
-_table$1.addChild(EEventName.CLICK, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEMOVE, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEDOWN, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEDRAG, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEOUT, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEOVER, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEUP, EEventType.MOUSE);
-_table$1.addChild(EEventName.MOUSEWHEEL, EEventType.MOUSE);
-_table$1.addChild(EEventName.TOUCHMOVE, EEventType.TOUCH);
-_table$1.addChild(EEventName.TOUCHDOWN, EEventType.TOUCH);
-_table$1.addChild(EEventName.TOUCHUP, EEventType.TOUCH);
-_table$1.addChild(EEngineEvent.POINT_TAP, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_OVER, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_OUT, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_MOVE, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_DOWN, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_UP, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_SCALE, EEventType.POINT);
-_table$1.addChild(EEngineEvent.POINT_DRAG, EEventType.POINT);
-_table$1.addChild(EEventName.KEYDOWN, EEventType.KEYBOARD);
-_table$1.addChild(EEventName.KEYPRESS, EEventType.KEYBOARD);
-_table$1.addChild(EEventName.KEYUP, EEventType.KEYBOARD);
-var EventTable = (function () {
-    function EventTable() {
+        return;
     }
-    EventTable.getEventType = function (eventName) {
-        var result = _table$1.getChild(eventName);
-        if (result === void 0) {
-            result = EEventType.CUSTOM;
+    parentIndexInArrayBuffer = parent.index;
+    if (isCurrentParentExisit) {
+        if (isNotChangeParent(currentParent.index, parentIndexInArrayBuffer)) {
+            return;
         }
-        return result;
+        _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
+    }
+    _addToParent(uid, transform, parent, ThreeDTransformData);
+    addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
+});
+var _isTransformEqual = function (tra1, tra2) { return tra1.uid === tra2.uid; };
+var getChildren = function (uid, ThreeDTransformData) {
+    return ThreeDTransformData.childrenMap[uid];
+};
+var isParentExist = function (parent) { return isNotUndefined(parent); };
+var isChildrenExist = function (children) { return isNotUndefined(children); };
+var isNotChangeParent = function (currentParentIndexInArrayBuffer, newParentIndexInArrayBuffer) {
+    return currentParentIndexInArrayBuffer === newParentIndexInArrayBuffer;
+};
+var removeHierarchyData = function (uid, ThreeDTransformData) {
+    deleteVal(uid, ThreeDTransformData.childrenMap);
+    var parent = getParent$1(uid, ThreeDTransformData);
+    if (isParentExist(parent)) {
+        _removeHierarchyFromParent(parent, uid, ThreeDTransformData);
+    }
+};
+var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformData) {
+    var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
+    deleteVal(targetUID, ThreeDTransformData.parentMap);
+    if (isNotValidMapValue(children)) {
+        return;
+    }
+    _removeChild(parentUID, targetUID, children, ThreeDTransformData);
+};
+var _removeChild = null;
+if (bowser_2) {
+    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
+        setChildren(parentUID, filter(children, function (transform) {
+            return transform.uid !== targetUID;
+        }), ThreeDTransformData);
     };
-    return EventTable;
-}());
-EventTable = __decorate([
-    registerClass("EventTable")
-], EventTable);
-
-var EventBinder = (function () {
-    function EventBinder() {
-    }
-    return EventBinder;
-}());
-
-var EventHandler = (function () {
-    function EventHandler() {
-    }
-    return EventHandler;
-}());
-
-var EventRegister = (function () {
-    function EventRegister() {
-    }
-    EventRegister.prototype.getEventRegisterDataList = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+}
+else if (bowser_4) {
+    _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
+        removeChildEntity(children, targetUID);
+    };
+}
+else {
+    error$1(true, Log$$1.info.FUNC_NOT_SUPPORT("browser"));
+}
+var _addChild$1 = requireCheckFunc(function (uid, child, ThreeDTransformData) {
+    it$1("children should be empty array if has no child", function () {
+        index_1(getChildren(uid, ThreeDTransformData)).be.a("array");
+    });
+}, function (uid, child, ThreeDTransformData) {
+    var children = getChildren(uid, ThreeDTransformData);
+    children.push(child);
+});
+var setChildren = function (uid, children, ThreeDTransformData) {
+    ThreeDTransformData.childrenMap[uid] = children;
+};
+var _setParent$1 = function (uid, parent, ThreeDTransformData) {
+    ThreeDTransformData.parentMap[uid] = parent;
+};
+var _addToParent = requireCheckFunc(function (targetUID, target, parent, ThreeDTransformData) {
+    it$1("the child one should not has parent", function () {
+        index_1(isValidMapValue(getParent$1(targetUID, ThreeDTransformData))).false;
+    });
+    it$1("parent should not already has the child", function () {
+        var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
+        if (isValidMapValue(children)) {
+            index_1(children.indexOf(target)).equal(-1);
         }
-        var result = this.listenerMap.getChild.apply(this.listenerMap, args);
-        if (!result) {
+    });
+}, function (targetUID, target, parent, ThreeDTransformData) {
+    var parentUID = parent.uid;
+    _setParent$1(targetUID, parent, ThreeDTransformData);
+    _addChild$1(parentUID, target, ThreeDTransformData);
+});
+
+var swap = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
+    it$1("source index and target index should be used", function () {
+        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
+        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
+    });
+}, function (index1, index2, ThreeDTransformData) {
+    swapTypeArrData(index1, index2, ThreeDTransformData);
+    swapTransformMapData(index1, index2, ThreeDTransformData);
+    return ThreeDTransformData;
+});
+var swapTransformMapData = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
+    it$1("source index and target index should be used", function () {
+        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
+        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
+    });
+}, function (index1, index2, ThreeDTransformData) {
+    return _changeMapData(index1, index2, _swapTransformMap, ThreeDTransformData);
+});
+var swapTypeArrData = function (index1, index2, ThreeDTransformData) {
+    return _changeTypeArrData(index1, index2, _swapTypeArr, ThreeDTransformData);
+};
+var _swapTypeArr = function (dataArr, index1, index2, length) {
+    for (var i = 0; i < length; i++) {
+        var newIndex1 = index1 + i, newIndex2 = index2 + i, temp = dataArr[newIndex2];
+        dataArr[newIndex2] = dataArr[newIndex1];
+        dataArr[newIndex1] = temp;
+    }
+};
+var _swapTransformMap = function (transformMap, sourceIndex, targetIndex) {
+    var sourceTransform = transformMap[sourceIndex], targetTransform = transformMap[targetIndex];
+    sourceTransform.index = targetIndex;
+    targetTransform.index = sourceIndex;
+    transformMap[targetIndex] = sourceTransform;
+    transformMap[sourceIndex] = targetTransform;
+};
+var _changeTypeArrData = function (sourceIndex, targetIndex, changeFunc, ThreeDTransformData) {
+    if (sourceIndex === targetIndex) {
+        return ThreeDTransformData;
+    }
+    var mat4SourceIndex = getMatrix4DataIndexInArrayBuffer(sourceIndex), mat4TargetIndex = getMatrix4DataIndexInArrayBuffer(targetIndex), mat4Size = getMatrix4DataSize(), vec3SourceIndex = getVector3DataIndexInArrayBuffer(sourceIndex), vec3TargetIndex = getVector3DataIndexInArrayBuffer(targetIndex), vec3Size = getVector3DataSize(), quaSourceIndex = getQuaternionDataIndexInArrayBuffer(sourceIndex), quaTargetIndex = getQuaternionDataIndexInArrayBuffer(targetIndex), quaSize = getQuaternionDataSize();
+    changeFunc(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
+    changeFunc(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    changeFunc(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
+    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    return ThreeDTransformData;
+};
+var _changeMapData = function (sourceIndex, targetIndex, changeFunc, ThreeDTransformData) {
+    if (sourceIndex === targetIndex) {
+        return ThreeDTransformData;
+    }
+    changeFunc(ThreeDTransformData.transformMap, sourceIndex, targetIndex);
+    return ThreeDTransformData;
+};
+var _moveToTypeArr = function (dataArr, sourceIndex, targetIndex, length) {
+    for (var i = 0; i < length; i++) {
+        var newIndex1 = sourceIndex + i, newIndex2 = targetIndex + i;
+        dataArr[newIndex2] = dataArr[newIndex1];
+        dataArr[newIndex1] = 0;
+    }
+};
+var _moveToTransformMap = function (transformMap, sourceIndex, targetIndex) {
+    var sourceTransform = transformMap[sourceIndex];
+    sourceTransform.index = targetIndex;
+    transformMap[targetIndex] = sourceTransform;
+    deleteVal(sourceIndex, transformMap);
+};
+var moveToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
+    it$1("source index should not be used", function () {
+        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+    });
+}, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
+    it$1("source index should be used", function () {
+        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+    });
+    it$1("target index should not be used", function () {
+        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
+    });
+}, function (sourceIndex, targetIndex, ThreeDTransformData) {
+    moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+    moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+    addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);
+    return ThreeDTransformData;
+}));
+var moveMapDataToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
+    it$1("source index should not be used", function () {
+        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+    });
+}, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
+    it$1("source index should be used", function () {
+        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+    });
+    it$1("target index should not be used", function () {
+        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
+    });
+}, function (sourceIndex, targetIndex, ThreeDTransformData) {
+    return _changeMapData(sourceIndex, targetIndex, _moveToTransformMap, ThreeDTransformData);
+}));
+var moveTypeArrDataToIndex = function (sourceIndex, targetIndex, ThreeDTransformData) {
+    return _changeTypeArrData(sourceIndex, targetIndex, _moveToTypeArr, ThreeDTransformData);
+};
+var setTransformDataInTypeArr = function (indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData) {
+    setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+};
+var setLocalToWorldMatricesData = function (mat, mat4IndexInArrayBuffer, ThreeDTransformData) {
+    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
+};
+var setLocalPositionData = function (position, vec3IndexInArrayBuffer, ThreeDTransformData) {
+    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    return ThreeDTransformData;
+};
+var setLocalRotationData = function (qua, quaIndexInArrayBuffer, ThreeDTransformData) {
+    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
+    return ThreeDTransformData;
+};
+var setLocalScaleData = function (scale, vec3IndexInArrayBuffer, ThreeDTransformData) {
+    DataUtils.setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
+    return ThreeDTransformData;
+};
+var setPositionData = function (indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData) {
+    if (isParentExist(parent)) {
+        var indexInArrayBuffer_1 = parent.index;
+        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
+            uid: getUID(indexInArrayBuffer_1, ThreeDTransformData),
+            index: indexInArrayBuffer_1
+        }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
+    }
+    else {
+        DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    }
+};
+var getMatrix4DataSize = function () { return 16; };
+var getVector3DataSize = function () { return 3; };
+var getQuaternionDataSize = function () { return 4; };
+var getMatrix4DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getMatrix4DataSize(); };
+var getVector3DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getVector3DataSize(); };
+var getQuaternionDataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getQuaternionDataSize(); };
+
+var LinkList = (function () {
+    function LinkList() {
+        this._first = null;
+        this._last = null;
+    }
+    LinkList.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    LinkList.prototype.shift = function () {
+        var node = this._first;
+        if (node === null) {
             return null;
         }
-        return result.sort(function (dataA, dataB) {
-            return dataB.priority - dataA.priority;
-        }, true);
+        this._first = node.next;
+        return node;
     };
-    EventRegister.prototype.forEachAll = function (func) {
-        return this.listenerMap.forEachAll(func);
-    };
-    EventRegister.prototype.forEachEventName = function (func) {
-        this.listenerMap.forEachEventName(func);
-    };
-    EventRegister.prototype.clear = function () {
-        return this.listenerMap.clear();
-    };
-    EventRegister.prototype.getChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return this.listenerMap.getChild.apply(this.listenerMap, Array.prototype.slice.call(arguments, 0));
-    };
-    return EventRegister;
-}());
-
-var EventListenerMap = (function () {
-    function EventListenerMap() {
-    }
-    EventListenerMap.prototype.buildSecondLevelKey = function (eventName) {
-        return eventName;
-    };
-    return EventListenerMap;
-}());
-
-var DomEventListenerMap = (function (_super) {
-    __extends(DomEventListenerMap, _super);
-    function DomEventListenerMap() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._targetListenerMap = Hash.create();
-        return _this;
-    }
-    DomEventListenerMap.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    DomEventListenerMap.prototype.hasChild = function (dom, eventName) {
-        var list = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
-        if (!list) {
-            return false;
-        }
-        list = list.getChild(eventName);
-        return list && list.getCount() > 0;
-    };
-    DomEventListenerMap.prototype.appendChild = function (dom, eventName, data) {
-        var firstLevelKey = this.buildFirstLevelKey(dom);
-        if (!this._targetListenerMap.hasChild(firstLevelKey)) {
-            var secondMap = Hash.create();
-            secondMap.addChild(this.buildSecondLevelKey(eventName), Collection.create([data]));
-            this._targetListenerMap.addChild(firstLevelKey, secondMap);
+    LinkList.prototype.push = function (node) {
+        if (this._last === null) {
+            this._first = node;
+            this._last = node;
             return;
         }
-        this._targetListenerMap.getChild(firstLevelKey).appendChild(this.buildSecondLevelKey(eventName), data);
+        this._last.next = node;
+        this._last = node;
     };
-    DomEventListenerMap.prototype.forEachAll = function (func) {
-        this._targetListenerMap.forEach(function (secondMap) {
-            secondMap.forEach(func);
-        });
-    };
-    DomEventListenerMap.prototype.forEachEventName = function (func) {
-        this.forEachAll(func);
-    };
-    DomEventListenerMap.prototype.clear = function () {
-        this._targetListenerMap.removeAllChildren();
-    };
-    DomEventListenerMap.prototype.getChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            var dom = args[0];
-            return this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
-        }
-        else if (args.length === 2) {
-            var dom = args[0], eventName = args[1], secondMap = null;
-            secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
-            if (!secondMap) {
-                return null;
-            }
-            return secondMap.getChild(this.buildSecondLevelKey(eventName));
-        }
-    };
-    DomEventListenerMap.prototype.removeChild = function () {
-        var _this = this;
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var result = null;
-        if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName_1 = args[0], arr_1 = [];
-            this._targetListenerMap.forEach(function (secondMap, firstLevelKey) {
-                var secondLevelKey = _this.buildSecondLevelKey(eventName_1);
-                if (secondMap.hasChild(secondLevelKey)) {
-                    arr_1.push(secondMap.removeChild(secondLevelKey).getChild(0));
-                }
-            });
-            var l = Collection.create();
-            for (var _a = 0, arr_2 = arr_1; _a < arr_2.length; _a++) {
-                var list = arr_2[_a];
-                l.addChildren(list);
-            }
-            result = this._getEventDataOffDataList(eventName_1, l);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName_2 = args[0], handler_1 = args[1], arr_3 = [];
-            this._targetListenerMap.forEach(function (secondMap, firstLevelKey) {
-                var list = secondMap.getChild(_this.buildSecondLevelKey(eventName_2));
-                if (list) {
-                    arr_3.push(list.removeChild(function (data) {
-                        return data.originHandler === handler_1;
-                    }));
-                }
-            });
-            var l = Collection.create();
-            for (var _b = 0, arr_4 = arr_3; _b < arr_4.length; _b++) {
-                var list = arr_4[_b];
-                l.addChildren(list);
-            }
-            result = this._getEventDataOffDataList(eventName_2, l);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], secondMap = null;
-            secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
-            if (!secondMap) {
-                result = Collection.create();
-            }
-            else {
-                result = this._getEventDataOffDataList(eventName, secondMap.removeChild(this.buildSecondLevelKey(eventName)).getChild(0));
-            }
-        }
-        else if (args.length === 3 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], handler_2 = args[2], secondMap = null;
-            secondMap = this._targetListenerMap.getChild(this.buildFirstLevelKey(dom));
-            if (!secondMap) {
-                result = Collection.create();
-            }
-            else {
-                var list = secondMap.getChild(this.buildSecondLevelKey(eventName));
-                if (!list) {
-                    result = Collection.create();
-                }
-                else {
-                    result = this._getEventDataOffDataList(eventName, list.removeChild(function (val) {
-                        return val.originHandler === handler_2;
-                    }));
-                }
-            }
-        }
-        return result;
-    };
-    DomEventListenerMap.prototype.buildFirstLevelKey = function (dom) {
-        if (dom.id) {
-            return "" + dom.tagName + dom.id;
-        }
-        if (dom.nodeName) {
-            return "" + dom.nodeName;
-        }
-        return "" + dom.tagName;
-    };
-    DomEventListenerMap.prototype._getEventDataOffDataList = function (eventName, result) {
-        if (!result) {
-            return Collection.create();
-        }
-        return result.map(function (data) {
-            return {
-                dom: data.dom,
-                eventName: eventName,
-                domHandler: data.domHandler
-            };
-        });
-    };
-    return DomEventListenerMap;
-}(EventListenerMap));
-DomEventListenerMap = __decorate([
-    registerClass("DomEventListenerMap")
-], DomEventListenerMap);
-
-var DomEventRegister = (function (_super) {
-    __extends(DomEventRegister, _super);
-    function DomEventRegister() {
-        var _this = _super.call(this) || this;
-        _this.listenerMap = DomEventListenerMap.create();
-        return _this;
+    return LinkList;
+}());
+var LinkNode = (function () {
+    function LinkNode(val) {
+        this.val = null;
+        this.next = null;
+        this.val = val;
     }
-    DomEventRegister.getInstance = function () { };
-    DomEventRegister.prototype.register = function (dom, eventName, eventData, handler, originHandler, domHandler, priority) {
-        this.listenerMap.appendChild(dom, eventName, {
-            dom: dom,
-            eventName: eventName,
-            eventData: eventData,
-            handler: handler,
-            originHandler: originHandler,
-            domHandler: domHandler,
-            priority: priority
-        });
+    LinkNode.create = function (val) {
+        var obj = new this(val);
+        return obj;
     };
-    DomEventRegister.prototype.remove = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var result = null;
-        if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0];
-            result = this.listenerMap.removeChild(eventName);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isFunction(args[1])) {
-            var eventName = args[0], handler = args[1];
-            result = this.listenerMap.removeChild(eventName, handler);
-        }
-        else if ((args.length === 2 && JudgeUtils$1.isDom(args[0])) || args.length === 3) {
-            result = this.listenerMap.removeChild.apply(this.listenerMap, args);
-        }
-        return result;
-    };
-    DomEventRegister.prototype.isBinded = function (dom, eventName) {
-        return this.listenerMap.hasChild(dom, eventName);
-    };
-    DomEventRegister.prototype.getDomHandler = function (dom, eventName) {
-        var list = this.getChild(dom, eventName);
-        if (list && list.getCount() > 0) {
-            return list.getChild(0).domHandler;
-        }
-    };
-    return DomEventRegister;
-}(EventRegister));
-DomEventRegister = __decorate([
-    singleton(),
-    registerClass("DomEventRegister")
-], DomEventRegister);
-
-var EventUtils = (function () {
-    function EventUtils() {
-    }
-    EventUtils.bindEvent = function (context, func) {
-        return function (event) {
-            return func.call(context, event);
-        };
-    };
-    EventUtils.addEvent = function (dom, eventName, handler) {
-        if (JudgeUtils.isHostMethod(dom, "addEventListener")) {
-            dom.addEventListener(eventName, handler, false);
-        }
-        else if (JudgeUtils.isHostMethod(dom, "attachEvent")) {
-            dom.attachEvent("on" + eventName, handler);
-        }
-        else {
-            dom["on" + eventName] = handler;
-        }
-    };
-    EventUtils.removeEvent = function (dom, eventName, handler) {
-        if (JudgeUtils.isHostMethod(dom, "removeEventListener")) {
-            dom.removeEventListener(eventName, handler, false);
-        }
-        else if (JudgeUtils.isHostMethod(dom, "detachEvent")) {
-            dom.detachEvent("on" + eventName, handler);
-        }
-        else {
-            dom["on" + eventName] = null;
-        }
-    };
-    return EventUtils;
+    return LinkNode;
 }());
 
-var DomEventHandler = (function (_super) {
-    __extends(DomEventHandler, _super);
-    function DomEventHandler() {
+var addFirstDirtyIndex = ensureFunc(function (firstDirtyIndex, ThreeDTransformData) {
+    it$1("firstDirtyIndex should <= count", function () {
+        index_1(firstDirtyIndex).lte(ThreeDTransformData.count);
+    });
+}, function (ThreeDTransformData) {
+    return ThreeDTransformData.firstDirtyIndex + 1;
+});
+var minusFirstDirtyIndex = ensureFunc(function (firstDirtyIndex) {
+    it$1("firstDirtyIndex should >= start index:" + getStartIndexInArrayBuffer(), function () {
+        index_1(firstDirtyIndex).gte(getStartIndexInArrayBuffer());
+    });
+}, function (firstDirtyIndex) {
+    return firstDirtyIndex - 1;
+});
+var generateNotUsedIndexInArrayBuffer = ensureFunc(function (indexInArrayBuffer, ThreeDTransformData) {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+}, function (ThreeDTransformData) {
+    var result = ThreeDTransformData.indexInArrayBuffer;
+    if (result >= ThreeDTransformData.firstDirtyIndex) {
+        return _getNotUsedIndexFromArr(ThreeDTransformData);
+    }
+    ThreeDTransformData.indexInArrayBuffer += 1;
+    return result;
+});
+var _isValidArrayValue = function (val) {
+    return isNotUndefined(val);
+};
+var _isValidLinkNode = function (node) {
+    return node !== null;
+};
+var generateNotUsedIndexInNormalList = ensureFunc(function (indexInArrayBuffer, ThreeDTransformData) {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+}, function (ThreeDTransformData) {
+    var index = _getNotUsedIndexFromArr(ThreeDTransformData);
+    if (_isValidArrayValue(index)) {
+        return index;
+    }
+    index = ThreeDTransformData.indexInArrayBuffer;
+    ThreeDTransformData.indexInArrayBuffer += 1;
+    return index;
+});
+var addToDirtyList$1 = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
+    it$1("firstDirtyIndex should <= count", function () {
+        index_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
+    });
+}, function (indexInArrayBuffer, ThreeDTransformData) {
+    var targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
+    ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
+    if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
+        swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+    }
+    else {
+        moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+    }
+    return targetDirtyIndex;
+});
+var _getNotUsedIndexFromArr = function (ThreeDTransformData) {
+    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList, node = null;
+    do {
+        node = _getNotUsedIndexNode(notUsedIndexLinkList);
+    } while (_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData));
+    return node.val;
+};
+var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
+    return notUsedIndexLinkList.shift();
+};
+var addNotUsedIndex = function (index, notUsedIndexLinkList) {
+    notUsedIndexLinkList.push(LinkNode.create(index));
+};
+var isNotDirty = function (indexInArrayBuffer, firstDirtyIndex) {
+    return indexInArrayBuffer < firstDirtyIndex;
+};
+var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, uid, ThreeDTransformData) {
+    var indexInArraybuffer = rootIndexInArrayBuffer, children = getChildren(uid, ThreeDTransformData);
+    if (isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
+        addToDirtyList$1(indexInArraybuffer, ThreeDTransformData);
+    }
+    if (isChildrenExist(children)) {
+        forEach(children, function (child) {
+            addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
+        });
+    }
+    return ThreeDTransformData;
+};
+var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, indexInArrayBuffer) {
+    it$1("indexInArrayBuffer should < firstDirtyIndex", function () {
+        index_1(indexInArrayBuffer).exist;
+        index_1(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
+    });
+    it$1("index should not be used", function () {
+        index_1(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
+    });
+};
+
+var getIsTranslate = function (uid, ThreeDTransformData) {
+    return ThreeDTransformData.isTranslateMap[uid];
+};
+var setIsTranslate = requireCheckFunc(function (uid, isTranslate, ThreeDTransformData) {
+}, function (uid, isTranslate, ThreeDTransformData) {
+    ThreeDTransformData.isTranslateMap[uid] = isTranslate;
+});
+var isTranslate = function (data) {
+    return !!data.position || !!data.localPosition;
+};
+
+var clearCache = curry(function (ThreeDTransformData, state) {
+    var count = null, cacheMap = null;
+    if (ThreeDTransformData.isClearCacheMap) {
+        ThreeDTransformData.isClearCacheMap = false;
+        return;
+    }
+    count = ThreeDTransformData.count;
+    cacheMap = ThreeDTransformData.cacheMap;
+    for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
+        var uid = getUID(i, ThreeDTransformData), isTranslate$$1 = getIsTranslate(uid, ThreeDTransformData);
+        if (isTranslate$$1) {
+            deleteVal(uid, cacheMap);
+            setIsTranslate(uid, false, ThreeDTransformData);
+        }
+    }
+});
+var clearCacheMap = function (ThreeDTransformData) {
+    ThreeDTransformData.cacheMap = {};
+    ThreeDTransformData.isClearCacheMap = true;
+};
+var getLocalToWorldMatrixCache = function (uid, ThreeTransformData) {
+    return _getCache(uid, ThreeTransformData).localToWorldMatrix;
+};
+var setLocalToWorldMatrixCache = function (uid, mat, ThreeTransformData) {
+    _getCache(uid, ThreeTransformData).localToWorldMatrix = mat;
+};
+var getPositionCache = function (uid, ThreeTransformData) {
+    return _getCache(uid, ThreeTransformData).position;
+};
+var setPositionCache = function (uid, pos, ThreeTransformData) {
+    _getCache(uid, ThreeTransformData).position = pos;
+};
+var getLocalPositionCache = function (uid, ThreeTransformData) {
+    return _getCache(uid, ThreeTransformData).localPosition;
+};
+var setLocalPositionCache = function (uid, pos, ThreeTransformData) {
+    ThreeTransformData.cacheMap[uid].localPosition = pos;
+};
+var _getCache = function (uid, ThreeTransformData) {
+    var cache = ThreeTransformData.cacheMap[uid];
+    if (isNotValidMapValue(cache)) {
+        cache = {};
+        ThreeTransformData.cacheMap[uid] = cache;
+    }
+    return cache;
+};
+
+var update$2 = function (elapsed, GlobalTempData, ThreeDTransformData, state) {
+    return compose(_cleanDirtyList(ThreeDTransformData), _updateDirtyList(GlobalTempData, ThreeDTransformData), clearCache(ThreeDTransformData))(state);
+};
+var _updateDirtyList = curry(function (GlobalTempData, ThreeDTransformData, state) {
+    _sortParentBeforeChildInDirtyList(ThreeDTransformData);
+    var count = ThreeDTransformData.count;
+    for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
+        _transform(i, GlobalTempData, ThreeDTransformData);
+    }
+    return state;
+});
+var _cleanDirtyList = curry(function (ThreeDTransformData, state) {
+    var count = ThreeDTransformData.count;
+    for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
+        if (_needMoveOffDirtyList(i)) {
+            _moveFromDirtyListToNormalList(i, ThreeDTransformData);
+        }
+    }
+    return state;
+});
+var _needMoveOffDirtyList = function (index) {
+    return true;
+};
+var _moveFromDirtyListToNormalList = function (index, ThreeDTransformData) {
+    ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
+    moveToIndex(index, generateNotUsedIndexInNormalList(ThreeDTransformData), ThreeDTransformData);
+};
+var _transform = function (index, GlobalTempData, ThreeDTransformData) {
+    var vec3Index = getVector3DataIndexInArrayBuffer(index), quaIndex = getQuaternionDataIndexInArrayBuffer(index), mat4Index = getMatrix4DataIndexInArrayBuffer(index), mat = GlobalTempData.matrix4_2.setTRS(DataUtils.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index), DataUtils.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex), DataUtils.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)), parent = getParent$1(getUID(index, ThreeDTransformData), ThreeDTransformData);
+    if (isParentExist(parent)) {
+        var parentIndex = parent.index;
+        return setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
+            .multiply(mat), mat4Index, ThreeDTransformData);
+    }
+    return setLocalToWorldMatricesData(mat, mat4Index, ThreeDTransformData);
+};
+var _sortParentBeforeChildInDirtyList = function (ThreeDTransformData) {
+    var count = ThreeDTransformData.count;
+    for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
+        var parent = getParent$1(getUID(i, ThreeDTransformData), ThreeDTransformData);
+        if (isParentExist(parent)) {
+            var parentIndex = parent.index;
+            if (parentIndex > i) {
+                swap(parentIndex, i, ThreeDTransformData);
+            }
+        }
+    }
+};
+
+var checkTransformShouldAlive = function (transform, ThreeTransformData) {
+    checkComponentShouldAlive(transform, ThreeTransformData, function (transform, ThreeTransformData) {
+        return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
+    });
+};
+
+var setBatchDatas$1 = requireCheckFunc(function (batchData, GlobalTempData, ThreeTransformData) {
+    for (var _i = 0, batchData_1 = batchData; _i < batchData_1.length; _i++) {
+        var data = batchData_1[_i];
+        checkTransformShouldAlive(data.transform, ThreeTransformData);
+    }
+}, function (batchData, GlobalTempData, ThreeDTransformData) {
+    compose(_addBatchToDirtyListByChangeMapData(ThreeDTransformData, ThreeDTransformData.firstDirtyIndex), _addBatchToDirtyListByChangeTypeArrData(ThreeDTransformData, ThreeDTransformData.firstDirtyIndex), function (_a) {
+        var noDirtyIndex = _a[0], targetDirtyIndex = _a[1];
+        ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
+        return noDirtyIndex;
+    }, _getAllTransfomrsNotDirtyIndexArrAndMarkTransform(batchData), _setBatchTransformData(batchData, GlobalTempData))(ThreeDTransformData);
+});
+var _setBatchTransformData = curry(function (batchData, GlobalTempData, ThreeDTransformData) {
+    for (var _i = 0, batchData_2 = batchData; _i < batchData_2.length; _i++) {
+        var data = batchData_2[_i];
+        var transform = data.transform, indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$1(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer), position = data.position, localPosition = data.localPosition;
+        if (localPosition) {
+            setLocalPositionData(localPosition, vec3IndexInArrayBuffer, ThreeDTransformData);
+        }
+        if (position) {
+            setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
+        }
+    }
+    return ThreeDTransformData;
+});
+var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry(function (batchData, ThreeDTransformData) {
+    var notDirtyIndexArr = [], firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
+    var _getNotDirtyIndex = function (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate$$1, ThreeDTransformData) {
+        var children = getChildren(uid, ThreeDTransformData);
+        if (isTranslate$$1) {
+            setIsTranslate(uid, true, ThreeDTransformData);
+        }
+        if (isNotDirty(indexInArrayBuffer, firstDirtyIndex)) {
+            notDirtyIndexArr.push(indexInArrayBuffer);
+            firstDirtyIndex = minusFirstDirtyIndex(firstDirtyIndex);
+        }
+        if (isChildrenExist(children)) {
+            forEach(children, function (child) {
+                _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate$$1, ThreeDTransformData);
+            });
+        }
+    };
+    for (var _i = 0, batchData_3 = batchData; _i < batchData_3.length; _i++) {
+        var data = batchData_3[_i];
+        var transform = data.transform, indexInArrayBuffer = transform.index;
+        _getNotDirtyIndex(indexInArrayBuffer, transform.uid, notDirtyIndexArr, isTranslate(data), ThreeDTransformData);
+    }
+    return [notDirtyIndexArr, firstDirtyIndex];
+});
+var _addBatchToDirtyList = function (ThreeDTransformData, targetDirtyIndex, swapFunc, moveToIndexFunc, notDirtyIndexArr) {
+    for (var _i = 0, notDirtyIndexArr_1 = notDirtyIndexArr; _i < notDirtyIndexArr_1.length; _i++) {
+        var indexInArrayBuffer = notDirtyIndexArr_1[_i];
+        targetDirtyIndex = minusFirstDirtyIndex(targetDirtyIndex);
+        if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
+            swapFunc(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+        else {
+            moveToIndexFunc(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        }
+    }
+    return targetDirtyIndex;
+};
+var _addBatchToDirtyListByChangeTypeArrData = curry(function (ThreeDTransformData, targetDirtyIndex, notDirtyIndexArr) {
+    _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTypeArrData, moveTypeArrDataToIndex, notDirtyIndexArr);
+    return notDirtyIndexArr;
+});
+var _addBatchToDirtyListByChangeMapData = curry(function (ThreeDTransformData, targetDirtyIndex, notDirtyIndexArr) {
+    return _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTransformMapData, function (sourceIndex, targetIndex, ThreeDTransformData) {
+        moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
+        addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);
+    }, notDirtyIndexArr);
+});
+
+var TagData = (function () {
+    function TagData() {
+    }
+    return TagData;
+}());
+TagData.tagArray = null;
+TagData.slotCountMap = null;
+TagData.usedSlotCountMap = null;
+TagData.indexMap = null;
+TagData.indexInTagArrayMap = null;
+TagData.lastIndexInTagArray = null;
+TagData.tagMap = null;
+TagData.gameObjectMap = null;
+TagData.index = null;
+TagData.count = null;
+TagData.disposeCount = null;
+
+var Tag = (function (_super) {
+    __extends(Tag, _super);
+    function Tag() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    DomEventHandler.prototype.off = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var self = this, eventName = null, dom = null, eventRegister = DomEventRegister.getInstance(), eventOffDataList = null;
-        if (args.length === 1) {
-            eventName = args[0];
-            dom = this.getDefaultDom();
-            eventOffDataList = eventRegister.remove(eventName);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isDom(args[0])) {
-            dom = args[0];
-            eventName = args[1];
-            eventOffDataList = eventRegister.remove(dom, eventName);
-        }
-        else if (args.length === 2) {
-            var handler = args[1];
-            eventName = args[0];
-            dom = this.getDefaultDom();
-            eventOffDataList = eventRegister.remove(eventName, handler);
-        }
-        else {
-            var handler = args[2];
-            dom = args[0];
-            eventName = args[1];
-            eventOffDataList = eventRegister.remove(dom, eventName, handler);
-        }
-        if (eventOffDataList && !eventRegister.isBinded(dom, eventName)) {
-            eventOffDataList.forEach(function (eventOffData) {
-                self._unBind(eventOffData.dom, eventOffData.eventName, eventOffData.domHandler);
-            });
-        }
-    };
-    DomEventHandler.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var dom = null, event = null, eventName = null, registerDataList = null;
-        if (args.length === 1) {
-            event = args[0];
-            dom = this.getDefaultDom();
-        }
-        else {
-            dom = args[0];
-            event = args[1];
-        }
-        eventName = event.name;
-        registerDataList = DomEventRegister.getInstance().getEventRegisterDataList(dom, eventName);
-        if (registerDataList === null || registerDataList.getCount() === 0) {
-            return;
-        }
-        registerDataList.forEach(function (registerData) {
-            var eventCopy = event.clone();
-            registerData.handler(eventCopy, registerData.eventData);
-        });
-    };
-    DomEventHandler.prototype.clearHandler = function () {
-    };
-    DomEventHandler.prototype.buildDomHandler = function (dom, eventName) {
-        var self = this, context = root$2;
-        return EventUtils.bindEvent(context, function (event) {
-            self.triggerDomEvent(dom, event, eventName);
-        });
-    };
-    DomEventHandler.prototype.handler = function (dom, eventName, handler, priority) {
-        var domHandler = null, originHandler = handler;
-        handler = this.addEngineHandler(eventName, handler);
-        if (!DomEventRegister.getInstance().isBinded(dom, eventName)) {
-            domHandler = this._bind(dom, eventName);
-        }
-        else {
-            domHandler = DomEventRegister.getInstance().getDomHandler(dom, eventName);
-        }
-        DomEventRegister.getInstance().register(dom, eventName, this.createEventData(), handler, originHandler, domHandler, priority);
-    };
-    DomEventHandler.prototype._bind = function (dom, eventName) {
-        var domHandler = null;
-        domHandler = this.buildDomHandler(dom, eventName);
-        EventUtils.addEvent(dom, EventNameHandler.handleEventName(eventName), domHandler);
-        return domHandler;
-    };
-    DomEventHandler.prototype._unBind = function (dom, eventName, handler) {
-        EventUtils.removeEvent(dom, EventNameHandler.handleEventName(eventName), handler);
-    };
-    return DomEventHandler;
-}(EventHandler));
-__decorate([
-    virtual
-], DomEventHandler.prototype, "clearHandler", null);
-
-var PointEventHandler = (function (_super) {
-    __extends(PointEventHandler, _super);
-    function PointEventHandler() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PointEventHandler.prototype.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var dom = null, eventName = null, handler = null, priority = null;
-        if (args.length === 3) {
-            dom = this.getDefaultDom();
-            eventName = args[0];
-            handler = args[1];
-            priority = args[2];
-        }
-        else {
-            dom = args[0];
-            eventName = args[1];
-            handler = args[2];
-            priority = args[3];
-        }
-        this.handler(dom, eventName, handler, priority);
-    };
-    PointEventHandler.prototype.getDefaultDom = function () {
-        return document.body;
-    };
-    PointEventHandler.prototype.triggerDomEvent = function (dom, event, eventName) {
-        var eventObj = this.createEventObject(dom, event, eventName);
-        EventManager.trigger(dom, eventObj);
-    };
-    PointEventHandler.prototype.createEventData = function () {
-        var eventData = Hash.create();
-        eventData.addChild("lastX", null);
-        eventData.addChild("lastY", null);
-        return eventData;
-    };
-    PointEventHandler.prototype.handleMove = function (handler) {
-        var self = this;
-        return function (event, eventData) {
-            self._copyEventDataToEventObject(event, eventData);
-            handler(event);
-            self._saveLocation(event, eventData);
-        };
-    };
-    PointEventHandler.prototype._copyEventDataToEventObject = function (event, eventData) {
-        event.lastX = eventData.getChild("lastX");
-        event.lastY = eventData.getChild("lastY");
-    };
-    PointEventHandler.prototype._saveLocation = function (event, eventData) {
-        var location = event.location;
-        eventData.setValue("lastX", location.x);
-        eventData.setValue("lastY", location.y);
-    };
-    return PointEventHandler;
-}(DomEventHandler));
-__decorate([
-    requireCheck(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 4) {
-            var dom_1 = args[0];
-            it("first param should be HTMLElement", function () {
-                index(JudgeUtils$1.isDom(dom_1)).true;
-            });
-        }
-    })
-], PointEventHandler.prototype, "on", null);
-
-var Event = (function () {
-    function Event(eventName) {
-        this.name = null;
-        this.currentTarget = null;
-        this.isStopPropagation = false;
-        this.phase = null;
-        this.name = eventName;
-    }
-    Event.prototype.stopPropagation = function () {
-        this.isStopPropagation = true;
-    };
-    Event.prototype.copyMember = function (destination, source, memberArr) {
-        memberArr.forEach(function (member) {
-            destination[member] = source[member];
-        });
-        return destination;
-    };
-    return Event;
-}());
-
-var DomEvent = (function (_super) {
-    __extends(DomEvent, _super);
-    function DomEvent(event, eventName) {
-        var _this = _super.call(this, eventName) || this;
-        _this._event = null;
-        _this.event = event;
-        return _this;
-    }
-    Object.defineProperty(DomEvent.prototype, "event", {
-        get: function () {
-            return this._event;
-        },
-        set: function (event) {
-            this._event = event || root$2.event;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    DomEvent.prototype.preventDefault = function () {
-        var e = this._event;
-        if (bowser_3 && Number(bowser_1) <= 8) {
-            e.returnValue = false;
-        }
-        else {
-            e.preventDefault();
-        }
-    };
-    DomEvent.prototype.getDataFromCustomEvent = function (event) {
-        this.target = event.target;
-        this.currentTarget = event.currentTarget;
-        this.isStopPropagation = event.isStopPropagation;
-    };
-    return DomEvent;
-}(Event));
-
-var Point = (function () {
-    function Point(x, y) {
-        if (x === void 0) { x = null; }
-        if (y === void 0) { y = null; }
-        this.x = null;
-        this.y = null;
-        this.x = x;
-        this.y = y;
-    }
-    Point.create = function (x, y) {
-        if (x === void 0) { x = null; }
-        if (y === void 0) { y = null; }
-        var obj = new this(x, y);
-        return obj;
-    };
-    return Point;
-}());
-Point = __decorate([
-    registerClass("Point")
-], Point);
-
-var EMouseButton;
-(function (EMouseButton) {
-    EMouseButton[EMouseButton["LEFT"] = 0] = "LEFT";
-    EMouseButton[EMouseButton["RIGHT"] = 1] = "RIGHT";
-    EMouseButton[EMouseButton["CENTER"] = 2] = "CENTER";
-})(EMouseButton || (EMouseButton = {}));
-
-var MouseEvent = MouseEvent_1 = (function (_super) {
-    __extends(MouseEvent, _super);
-    function MouseEvent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._location = null;
-        _this._locationInView = null;
-        _this._button = null;
-        _this.type = EEventType.MOUSE;
-        _this.lastX = null;
-        _this.lastY = null;
-        return _this;
-    }
-    MouseEvent.create = function (event, eventName) {
-        var obj = new this(event, eventName);
-        return obj;
-    };
-    Object.defineProperty(MouseEvent.prototype, "location", {
-        get: function () {
-            var point = null, e = this.event;
-            if (this._location) {
-                return this._location;
-            }
-            point = Point.create();
-            if (bowser_3) {
-                point.x = e.clientX + document.body.scrollLeft || document.documentElement.scrollLeft;
-                point.y = e.clientY + document.body.scrollTop || document.documentElement.scrollTop;
-            }
-            else {
-                point.x = e.pageX;
-                point.y = e.pageY;
-            }
-            return point;
-        },
-        set: function (point) {
-            this._location = point;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MouseEvent.prototype, "locationInView", {
-        get: function () {
-            var point = null, viewOffset = null;
-            if (this._locationInView) {
-                return this._locationInView;
-            }
-            point = this.location;
-            viewOffset = DeviceManager.getInstance().view.offset;
-            return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
-        },
-        set: function (locationInView) {
-            this._locationInView = locationInView;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MouseEvent.prototype, "button", {
-        get: function () {
-            var e = this.event, mouseButton = null;
-            if (bowser_5) {
-                return null;
-            }
-            if (this._button !== null) {
-                return this._button;
-            }
-            if (bowser_3) {
-                switch (e.button) {
-                    case 1:
-                        mouseButton = EMouseButton.LEFT;
-                        break;
-                    case 4:
-                        mouseButton = EMouseButton.RIGHT;
-                        break;
-                    case 2:
-                        mouseButton = EMouseButton.CENTER;
-                        break;
-                    default:
-                        Log$$1.error(true, Log$$1.info.FUNC_NOT_SUPPORT("multi mouse button"));
-                        break;
-                }
-            }
-            else {
-                switch (e.button) {
-                    case 0:
-                        mouseButton = EMouseButton.LEFT;
-                        break;
-                    case 1:
-                        mouseButton = EMouseButton.RIGHT;
-                        break;
-                    case 2:
-                        mouseButton = EMouseButton.CENTER;
-                        break;
-                    default:
-                        Log$$1.error(true, Log$$1.info.FUNC_NOT_SUPPORT("multi mouse button"));
-                        break;
-                }
-            }
-            return mouseButton;
-        },
-        set: function (button) {
-            this._button = button;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MouseEvent.prototype, "wheel", {
-        get: function () {
-            var e = this.event;
-            if (bowser_5) {
-                return null;
-            }
-            if (e.detail) {
-                return -1 * e.detail;
-            }
-            if (e.wheelDelta) {
-                return e.wheelDelta / 120;
-            }
-            return 0;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MouseEvent.prototype, "movementDelta", {
-        get: function () {
-            var e = this.event, dx = null, dy = null;
-            if (this._isPointerLocked()) {
-                dx = e.movementX || e.webkitMovementX || e.mozMovementX || 0;
-                dy = e.movementY || e.webkitMovementY || e.mozMovementY || 0;
-            }
-            else {
-                var location = this.location, lastX = this.lastX, lastY = this.lastY;
-                if (lastX === null && lastY === null) {
-                    dx = 0;
-                    dy = 0;
-                }
-                else {
-                    dx = location.x - lastX;
-                    dy = location.y - lastY;
-                }
-            }
-            return {
-                x: dx,
-                y: dy
-            };
-        },
-        enumerable: true,
-        configurable: true
-    });
-    MouseEvent.prototype.clone = function () {
-        var eventObj = MouseEvent_1.create(this.event, this.name);
-        return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
-    };
-    MouseEvent.prototype._isPointerLocked = function () {
-        return !!(document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement);
-    };
-    return MouseEvent;
-}(DomEvent));
-MouseEvent = MouseEvent_1 = __decorate([
-    registerClass("MouseEvent")
-], MouseEvent);
-var MouseEvent_1;
-
-var MouseEventHandler = (function (_super) {
-    __extends(MouseEventHandler, _super);
-    function MouseEventHandler() {
-        return _super.call(this) || this;
-    }
-    MouseEventHandler.getInstance = function () { };
-    MouseEventHandler.prototype.addEngineHandler = function (eventName, handler) {
-        var resultHandler = null;
-        switch (eventName) {
-            case EEventName.MOUSEMOVE:
-                resultHandler = this.handleMove(handler);
-                break;
-            default:
-                resultHandler = handler;
-                break;
-        }
-        return resultHandler;
-    };
-    MouseEventHandler.prototype.createEventObject = function (dom, event, eventName) {
-        var obj = MouseEvent.create(event ? event : root$2.event, eventName);
-        obj.target = dom;
-        return obj;
-    };
-    return MouseEventHandler;
-}(PointEventHandler));
-MouseEventHandler = __decorate([
-    singleton(),
-    registerClass("MouseEventHandler")
-], MouseEventHandler);
-
-var TouchEvent = TouchEvent_1 = (function (_super) {
-    __extends(TouchEvent, _super);
-    function TouchEvent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._location = null;
-        _this._locationInView = null;
-        _this.type = EEventType.TOUCH;
-        _this.lastX = null;
-        _this.lastY = null;
-        return _this;
-    }
-    TouchEvent.create = function (event, eventName) {
-        var obj = new this(event, eventName);
-        return obj;
-    };
-    Object.defineProperty(TouchEvent.prototype, "location", {
-        get: function () {
-            var point = null;
-            if (this._location) {
-                return this._location;
-            }
-            var touchData = this.touchData;
-            point = Point.create();
-            point.x = touchData.pageX;
-            point.y = touchData.pageY;
-            return point;
-        },
-        set: function (point) {
-            this._location = point;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchEvent.prototype, "touchData", {
-        get: function () {
-            var touches = this.event.changedTouches;
-            return touches[0];
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchEvent.prototype, "locationInView", {
-        get: function () {
-            var point = null, viewOffset = null;
-            if (this._locationInView) {
-                return this._locationInView;
-            }
-            point = this.location;
-            viewOffset = DeviceManager.getInstance().view.offset;
-            return Point.create(point.x - viewOffset.x, point.y - viewOffset.y);
-        },
-        set: function (locationInView) {
-            this._locationInView = locationInView;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchEvent.prototype, "movementDelta", {
-        get: function () {
-            var dx = null, dy = null, location = this.location, lastX = this.lastX, lastY = this.lastY;
-            if (lastX === null && lastY === null) {
-                dx = 0;
-                dy = 0;
-            }
-            else {
-                dx = location.x - lastX;
-                dy = location.y - lastY;
-            }
-            return {
-                x: dx,
-                y: dy
-            };
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TouchEvent.prototype.clone = function () {
-        var eventObj = TouchEvent_1.create(this.event, this.name);
-        return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
-    };
-    return TouchEvent;
-}(DomEvent));
-__decorate([
-    ensureGetter(function (touchData) {
-        it("should exist touch data", function () {
-            index(touchData).exist;
-        }, this);
-    })
-], TouchEvent.prototype, "touchData", null);
-TouchEvent = TouchEvent_1 = __decorate([
-    registerClass("TouchEvent")
-], TouchEvent);
-var TouchEvent_1;
-
-var TouchEventHandler = (function (_super) {
-    __extends(TouchEventHandler, _super);
-    function TouchEventHandler() {
-        return _super.call(this) || this;
-    }
-    TouchEventHandler.getInstance = function () { };
-    TouchEventHandler.prototype.addEngineHandler = function (eventName, handler) {
-        var resultHandler = null;
-        switch (eventName) {
-            case EEventName.TOUCHMOVE:
-                resultHandler = this.handleMove(handler);
-                break;
-            default:
-                resultHandler = handler;
-                break;
-        }
-        return resultHandler;
-    };
-    TouchEventHandler.prototype.createEventObject = function (dom, event, eventName) {
-        var obj = TouchEvent.create(event ? event : root$2.event, eventName);
-        obj.target = dom;
-        return obj;
-    };
-    return TouchEventHandler;
-}(PointEventHandler));
-TouchEventHandler = __decorate([
-    singleton(),
-    registerClass("TouchEventHandler")
-], TouchEventHandler);
-
-var SPECIAL_KEY_MAP = {
-    8: "backspace",
-    9: "tab",
-    10: "return",
-    13: "return",
-    16: "shift",
-    17: "ctrl",
-    18: "alt",
-    19: "pause",
-    20: "capslock",
-    27: "esc",
-    32: "space",
-    33: "pageup",
-    34: "pagedown",
-    35: "end",
-    36: "home",
-    37: "left",
-    38: "up",
-    39: "right",
-    40: "down",
-    45: "insert",
-    46: "del",
-    59: ";",
-    61: "=",
-    65: "a",
-    66: "b",
-    67: "c",
-    68: "d",
-    69: "e",
-    70: "f",
-    71: "g",
-    72: "h",
-    73: "i",
-    74: "j",
-    75: "k",
-    76: "l",
-    77: "m",
-    78: "n",
-    79: "o",
-    80: "p",
-    81: "q",
-    82: "r",
-    83: "s",
-    84: "t",
-    85: "u",
-    86: "v",
-    87: "w",
-    88: "x",
-    89: "y",
-    90: "z",
-    96: "0",
-    97: "1",
-    98: "2",
-    99: "3",
-    100: "4",
-    101: "5",
-    102: "6",
-    103: "7",
-    104: "8",
-    105: "9",
-    106: "*",
-    107: "+",
-    109: "-",
-    110: ".",
-    111: "/",
-    112: "f1",
-    113: "f2",
-    114: "f3",
-    115: "f4",
-    116: "f5",
-    117: "f6",
-    118: "f7",
-    119: "f8",
-    120: "f9",
-    121: "f10",
-    122: "f11",
-    123: "f12",
-    144: "numlock",
-    145: "scroll",
-    173: "-",
-    186: ";",
-    187: "=",
-    188: ",",
-    189: "-",
-    190: ".",
-    191: "/",
-    192: "`",
-    219: "[",
-    220: "\\",
-    221: "]",
-    222: "'"
-};
-var SHIFT_KEY_MAP = {
-    "`": "~",
-    "1": "!",
-    "2": "@",
-    "3": "#",
-    "4": "$",
-    "5": "%",
-    "6": "^",
-    "7": "&",
-    "8": "*",
-    "9": "(",
-    "0": ")",
-    "-": "_",
-    "=": "+",
-    ";": ": ",
-    "'": "\"",
-    ",": "<",
-    ".": ">",
-    "/": "?",
-    "\\": "|"
-};
-var KeyboardEvent = KeyboardEvent_1 = (function (_super) {
-    __extends(KeyboardEvent, _super);
-    function KeyboardEvent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.type = EEventType.KEYBOARD;
-        _this.keyState = null;
-        return _this;
-    }
-    KeyboardEvent.create = function (event, eventName) {
-        var obj = new this(event, eventName);
-        return obj;
-    };
-    Object.defineProperty(KeyboardEvent.prototype, "ctrlKey", {
-        get: function () {
-            return this.event.ctrlKey;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(KeyboardEvent.prototype, "altKey", {
-        get: function () {
-            return this.event.altKey;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(KeyboardEvent.prototype, "shiftKey", {
-        get: function () {
-            return this.event.shiftKey;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(KeyboardEvent.prototype, "metaKey", {
-        get: function () {
-            return this.event.metaKey;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(KeyboardEvent.prototype, "keyCode", {
-        get: function () {
-            return this.event.keyCode;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(KeyboardEvent.prototype, "key", {
-        get: function () {
-            var key = SPECIAL_KEY_MAP[this.keyCode], char = null;
-            if (!key) {
-                char = String.fromCharCode(this.keyCode).toLowerCase();
-                if (this.shiftKey) {
-                    return SHIFT_KEY_MAP[char];
-                }
-                return char;
-            }
-            return key;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    KeyboardEvent.prototype.clone = function () {
-        var eventObj = KeyboardEvent_1.create(this.event, this.name);
-        return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
-    };
-    return KeyboardEvent;
-}(DomEvent));
-KeyboardEvent = KeyboardEvent_1 = __decorate([
-    registerClass("KeyboardEvent")
-], KeyboardEvent);
-var KeyboardEvent_1;
-
-var KeyboardEventHandler = (function (_super) {
-    __extends(KeyboardEventHandler, _super);
-    function KeyboardEventHandler() {
-        return _super.call(this) || this;
-    }
-    KeyboardEventHandler.getInstance = function () { };
-    KeyboardEventHandler.prototype.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventName = null, handler = null, priority = null;
-        if (args.length === 3) {
-            eventName = args[0];
-            handler = args[1];
-            priority = args[2];
-        }
-        else {
-            Log$$1.warn("keyboard event can only bind on document.body");
-            eventName = args[1];
-            handler = args[2];
-            priority = args[3];
-        }
-        this.handler(this.getDefaultDom(), eventName, handler, priority);
-    };
-    KeyboardEventHandler.prototype.triggerDomEvent = function (dom, event, eventName) {
-        var eventObj = this._createEventObject(dom, event, eventName);
-        EventManager.trigger(dom, eventObj);
-    };
-    KeyboardEventHandler.prototype.getDefaultDom = function () {
-        return document.body;
-    };
-    KeyboardEventHandler.prototype.addEngineHandler = function (eventName, handler) {
-        var resultHandler = null;
-        switch (eventName) {
-            case EEventName.KEYDOWN:
-                resultHandler = this._handleKeyDown(handler);
-                break;
-            case EEventName.KEYUP:
-                resultHandler = this._handleKeyUp(handler);
-                break;
-            default:
-                resultHandler = handler;
-                break;
-        }
-        return resultHandler;
-    };
-    KeyboardEventHandler.prototype.createEventData = function () {
-        var eventData = Hash.create();
-        eventData.addChild("keyState", {});
-        return eventData;
-    };
-    KeyboardEventHandler.prototype._handleKeyDown = function (handler) {
-        var self = this;
-        return function (event, eventData) {
-            var keyState = eventData.getChild("keyState");
-            self._setKeyStateAllFalse(keyState);
-            keyState[event.key] = true;
-            self._copyEventDataToEventObject(event, eventData);
-            handler(event);
-        };
-    };
-    KeyboardEventHandler.prototype._handleKeyUp = function (handler) {
-        var self = this;
-        return function (event, eventData) {
-            self._setKeyStateAllFalse(eventData.getChild("keyState"));
-            self._copyEventDataToEventObject(event, eventData);
-            handler(event);
-        };
-    };
-    KeyboardEventHandler.prototype._copyEventDataToEventObject = function (event, eventData) {
-        event.keyState = eventData.getChild("keyState");
-    };
-    KeyboardEventHandler.prototype._setKeyStateAllFalse = function (keyState) {
-        for (var i in keyState) {
-            if (keyState.hasOwnProperty(i)) {
-                keyState[i] = false;
-            }
-        }
-    };
-    KeyboardEventHandler.prototype._createEventObject = function (dom, event, eventName) {
-        var obj = KeyboardEvent.create(event ? event : root$2.event, eventName);
-        obj.target = dom;
-        return obj;
-    };
-    return KeyboardEventHandler;
-}(DomEventHandler));
-KeyboardEventHandler = __decorate([
-    singleton(),
-    registerClass("KeyboardEventHandler")
-], KeyboardEventHandler);
-
-var CustomEventListenerMap = (function (_super) {
-    __extends(CustomEventListenerMap, _super);
-    function CustomEventListenerMap() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._globalListenerMap = Hash.create();
-        _this._targetRecordMap = Hash.create();
-        return _this;
-    }
-    CustomEventListenerMap.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    CustomEventListenerMap.prototype.hasChild = function (target) {
-        return target.customEventMap.getCount() > 0;
-    };
-    CustomEventListenerMap.prototype.appendChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 2) {
-            var eventName = args[0], data = args[1];
-            this._globalListenerMap.appendChild(eventName, data);
-        }
-        else {
-            var target = args[0], eventName = args[1], data = args[2];
-            this._targetRecordMap.addChild(this.buildFirstLevelKey(target), target);
-            target.customEventMap.appendChild(this.buildSecondLevelKey(eventName), data);
-        }
-    };
-    CustomEventListenerMap.prototype.forEachAll = function (func) {
-        this._globalListenerMap.forEach(func);
-        this._targetRecordMap.forEach(function (target) {
-            target.customEventMap.forEach(func);
-        });
-    };
-    CustomEventListenerMap.prototype.forEachEventName = function (func) {
-        this._globalListenerMap.forEach(func);
-    };
-    CustomEventListenerMap.prototype.clear = function () {
-        this._globalListenerMap.removeAllChildren();
-        this._targetRecordMap.forEach(function (target) {
-            target.customEventMap.removeAllChildren();
-        });
-        this._targetRecordMap.removeAllChildren();
-    };
-    CustomEventListenerMap.prototype.getChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0];
-            return this._globalListenerMap.getChild(eventName);
-        }
-        else if (args.length === 1 && args[0] instanceof EntityObject) {
-            var target = args[0];
-            return target.customEventMap;
-        }
-        else if (args.length === 2) {
-            var target = args[0], eventName = args[1], secondMap = null;
-            secondMap = target.customEventMap;
-            if (!secondMap) {
-                return null;
-            }
-            return secondMap.getChild(this.buildSecondLevelKey(eventName));
-        }
-    };
-    CustomEventListenerMap.prototype.removeChild = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0];
-            this._globalListenerMap.removeChild(eventName);
-        }
-        else if (args.length === 1 && args[0] instanceof EntityObject) {
-            var target = args[0];
-            target.customEventMap.removeAllChildren();
-            this._targetRecordMap.removeChild(this.buildFirstLevelKey(target));
-        }
-        else if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler_1 = args[1], list = null;
-            list = this._globalListenerMap.getChild(eventName);
-            if (!!list) {
-                list.removeChild(function (val) {
-                    return val.originHandler === handler_1;
-                });
-                if (list.getCount() === 0) {
-                    this._globalListenerMap.removeChild(eventName);
-                }
-            }
-        }
-        else if (args.length === 2 && JudgeUtils$1.isNumber(args[0])) {
-            var uid = args[0], eventName = args[1], secondMap = null;
-            secondMap = (this._targetRecordMap.getChild(this.buildFirstLevelKey(uid)));
-            if (!!secondMap) {
-                secondMap.removeChild(this.buildSecondLevelKey(eventName));
-            }
-        }
-        else if (args.length === 2 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], secondMap = null;
-            secondMap = target.customEventMap;
-            if (!!secondMap) {
-                secondMap.removeChild(this.buildSecondLevelKey(eventName));
-            }
-        }
-        else if (args.length === 3 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler_2 = args[2], secondMap = null;
-            secondMap = target.customEventMap;
-            if (!!secondMap) {
-                var secondList = secondMap.getChild(eventName);
-                if (!!secondList) {
-                    secondList.removeChild(function (val) {
-                        return val.originHandler === handler_2;
-                    });
-                    if (secondList.getCount() === 0) {
-                        secondMap.removeChild(eventName);
-                    }
-                }
-            }
-        }
-    };
-    CustomEventListenerMap.prototype.buildFirstLevelKey = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var v = args[0], uid = v.uid;
-        if (uid) {
-            return String(uid);
-        }
-        return v;
-    };
-    return CustomEventListenerMap;
-}(EventListenerMap));
-CustomEventListenerMap = __decorate([
-    registerClass("CustomEventListenerMap")
-], CustomEventListenerMap);
-
-var CustomEventRegister = (function (_super) {
-    __extends(CustomEventRegister, _super);
-    function CustomEventRegister() {
-        var _this = _super.call(this) || this;
-        _this.listenerMap = CustomEventListenerMap.create();
-        return _this;
-    }
-    CustomEventRegister.getInstance = function () { };
-    CustomEventRegister.prototype.register = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 5) {
-            var eventName = args[0], handler = args[1], originHandler = args[2], domHandler = args[3], priority = args[4];
-            this.listenerMap.appendChild(eventName, {
-                target: null,
-                eventName: eventName,
-                handler: handler,
-                originHandler: originHandler,
-                domHandler: domHandler,
-                priority: priority
-            });
-        }
-        else {
-            var target = args[0], eventName = args[1], handler = args[2], originHandler = args[3], domHandler = args[4], priority = args[5];
-            this.listenerMap.appendChild(target, eventName, {
-                target: target,
-                eventName: eventName,
-                handler: handler,
-                originHandler: originHandler,
-                domHandler: domHandler,
-                priority: priority
-            });
-        }
-    };
-    CustomEventRegister.prototype.remove = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var target = args[0];
-        if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0];
-            this.listenerMap.removeChild(eventName);
-        }
-        else if (args.length === 1 && args[0] instanceof EntityObject) {
-            this.listenerMap.removeChild(target);
-            this._handleAfterAllEventHandlerRemoved(target);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isFunction(args[1])) {
-            var eventName = args[0], handler = args[1];
-            this.listenerMap.removeChild(eventName, handler);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isNumber(args[0])) {
-            var uid = args[0], eventName = args[1];
-            this.listenerMap.removeChild(uid, eventName);
-        }
-        else if ((args.length === 2 && args[0] instanceof EntityObject) || args.length === 3) {
-            this.listenerMap.removeChild.apply(this.listenerMap, args);
-            if (this._isAllEventHandlerRemoved(target)) {
-                this._handleAfterAllEventHandlerRemoved(target);
-            }
-        }
-    };
-    CustomEventRegister.prototype.setBubbleParent = function (target, parent) {
-        target.bubbleParent = parent;
-    };
-    CustomEventRegister.prototype._isAllEventHandlerRemoved = function (target) {
-        return !this.listenerMap.hasChild(target);
-    };
-    CustomEventRegister.prototype._handleAfterAllEventHandlerRemoved = function (target) {
-        this.setBubbleParent(target, null);
-    };
-    return CustomEventRegister;
-}(EventRegister));
-CustomEventRegister = __decorate([
-    singleton(),
-    registerClass("CustomEventRegister")
-], CustomEventRegister);
-
-var CustomEventHandler = (function (_super) {
-    __extends(CustomEventHandler, _super);
-    function CustomEventHandler() {
-        return _super.call(this) || this;
-    }
-    CustomEventHandler.getInstance = function () { };
-    CustomEventHandler.prototype.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 3) {
-            var eventName = args[0], handler = args[1], originHandler = handler, priority = args[2];
-            CustomEventRegister.getInstance().register(eventName, handler, originHandler, null, priority);
-        }
-        else if (args.length === 4) {
-            var target = args[0], eventName = args[1], handler = args[2], originHandler = handler, priority = args[3];
-            CustomEventRegister.getInstance().register(target, eventName, handler, originHandler, null, priority);
-        }
-    };
-    CustomEventHandler.prototype.off = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventRegister = CustomEventRegister.getInstance();
-        eventRegister.remove.apply(eventRegister, args);
-    };
-    CustomEventHandler.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var event = null;
-        if (args.length === 1 || args.length === 2) {
-            var userData = null;
-            if (args.length === 1) {
-                event = args[0];
-            }
-            else {
-                event = args[0];
-                userData = args[1];
-            }
-            return this._triggerEventHandler(event, userData);
-        }
-        else if (args.length === 3 || args.length === 4) {
-            var target = null, userData = null, notSetTarget = null;
-            if (args.length === 3) {
-                target = args[0];
-                event = args[1];
-                notSetTarget = args[2];
-            }
-            else {
-                target = args[0];
-                event = args[1];
-                userData = args[2];
-                notSetTarget = args[3];
-            }
-            return this._triggerTargetAndEventHandler(target, event, userData, notSetTarget);
-        }
-    };
-    CustomEventHandler.prototype._triggerEventHandler = function (event, userData) {
-        var registerDataList = null, self = this;
-        registerDataList = CustomEventRegister.getInstance().getEventRegisterDataList(event.name);
-        if (registerDataList === null || registerDataList.getCount() === 0) {
-            return false;
-        }
-        registerDataList.forEach(function (registerData) {
-            event.currentTarget = registerData.target;
-            event.target = registerData.target;
-            self._setUserData(event, userData);
-            registerData.handler(event);
-        });
-        return true;
-    };
-    CustomEventHandler.prototype._triggerTargetAndEventHandler = function (target, event, userData, notSetTarget) {
-        var registerDataList = null, isStopPropagation = false, self = this;
-        if (!notSetTarget) {
-            event.target = target;
-        }
-        registerDataList = CustomEventRegister.getInstance().getEventRegisterDataList(target, event.name);
-        if (registerDataList === null || registerDataList.getCount() === 0) {
-            return false;
-        }
-        registerDataList.forEach(function (registerData) {
-            event.currentTarget = registerData.target;
-            self._setUserData(event, userData);
-            registerData.handler(event);
-            if (event.isStopPropagation) {
-                isStopPropagation = true;
-            }
-        });
-        return isStopPropagation;
-    };
-    CustomEventHandler.prototype._setUserData = function (event, userData) {
-        if (userData) {
-            event.userData = userData;
-        }
-    };
-    return CustomEventHandler;
-}(EventHandler));
-CustomEventHandler = __decorate([
-    singleton(),
-    registerClass("CustomEventHandler")
-], CustomEventHandler);
-
-var EventHandlerFactory = (function () {
-    function EventHandlerFactory() {
-    }
-    EventHandlerFactory.createEventHandler = function (eventType) {
-        var handler = null;
-        switch (eventType) {
-            case EEventType.MOUSE:
-                handler = MouseEventHandler.getInstance();
-                break;
-            case EEventType.TOUCH:
-                handler = TouchEventHandler.getInstance();
-                break;
-            case EEventType.KEYBOARD:
-                handler = KeyboardEventHandler.getInstance();
-                break;
-            case EEventType.CUSTOM:
-            case EEventType.POINT:
-                handler = CustomEventHandler.getInstance();
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("eventType"));
-                break;
-        }
-        return handler;
-    };
-    return EventHandlerFactory;
-}());
-EventHandlerFactory = __decorate([
-    registerClass("EventHandlerFactory")
-], EventHandlerFactory);
-
-var DomEventBinder = (function (_super) {
-    __extends(DomEventBinder, _super);
-    function DomEventBinder() {
-        return _super.call(this) || this;
-    }
-    DomEventBinder.getInstance = function () { };
-    DomEventBinder.prototype.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(eventName, handler);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1], priority = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(eventName, handler, priority);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], handler = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(dom, eventName, handler);
-        }
-        else if (args.length === 4) {
-            var dom = args[0], eventName = args[1], handler = args[2], priority = args[3];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(dom, eventName, handler, priority);
-        }
-    };
-    DomEventBinder.prototype.off = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventRegister = DomEventRegister.getInstance();
-        if (args.length === 0) {
-            eventRegister.forEachAll(function (list, eventName) {
-                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                    .off(eventName);
-            });
-            eventRegister.clear();
-        }
-        else if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName_1 = args[0];
-            eventRegister.forEachEventName(function (list, registeredEventName) {
-                if (registeredEventName === eventName_1) {
-                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName_1))
-                        .off(eventName_1);
-                }
-            });
-        }
-        else if (args.length === 1 && JudgeUtils$1.isDom(args[0])) {
-            var dom_1 = args[0], secondMap = null;
-            secondMap = eventRegister.getChild(dom_1);
-            if (!!secondMap) {
-                secondMap.forEach(function (list, eventName) {
-                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                        .off(dom_1, eventName);
-                });
-            }
-        }
-        else if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(eventName, handler);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(dom, eventName);
-        }
-        else if (args.length === 3) {
-            var dom = args[0], eventName = args[1], handler = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(dom, eventName, handler);
-        }
-    };
-    return DomEventBinder;
-}(EventBinder));
-DomEventBinder = __decorate([
-    singleton(),
-    registerClass("DomEventBinder")
-], DomEventBinder);
-
-var CustomEventBinder = (function (_super) {
-    __extends(CustomEventBinder, _super);
-    function CustomEventBinder() {
-        return _super.call(this) || this;
-    }
-    CustomEventBinder.getInstance = function () { };
-    CustomEventBinder.prototype.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 2) {
-            var eventName = args[0], handler = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(eventName, handler);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1], priority = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(eventName, handler, priority);
-        }
-        else if (args.length === 3 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(target, eventName, handler);
-        }
-        else if (args.length === 4) {
-            var target = args[0], eventName = args[1], handler = args[2], priority = args[3];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .on(target, eventName, handler, priority);
-        }
-    };
-    CustomEventBinder.prototype.off = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventRegister = CustomEventRegister.getInstance();
-        if (args.length === 0) {
-            eventRegister.forEachAll(function (list, eventName) {
-                EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                    .off(eventName);
-            });
-            eventRegister.clear();
-        }
-        else if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName_1 = args[0];
-            eventRegister.forEachEventName(function (list, registeredEventName) {
-                if (registeredEventName === eventName_1) {
-                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName_1))
-                        .off(eventName_1);
-                }
-            });
-        }
-        else if (args.length === 1 && args[0] instanceof EntityObject) {
-            var target_1 = args[0], secondMap = null;
-            secondMap = eventRegister.getChild(target_1);
-            if (!!secondMap) {
-                secondMap.forEach(function (list, eventName) {
-                    EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                        .off(target_1, eventName);
-                });
-            }
-        }
-        else if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(eventName, handler);
-        }
-        else if (args.length === 2 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(target, eventName);
-        }
-        else if (args.length === 3 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler = args[2];
-            EventHandlerFactory.createEventHandler(EventTable.getEventType(eventName))
-                .off(target, eventName, handler);
-        }
-    };
-    return CustomEventBinder;
-}(EventBinder));
-CustomEventBinder = __decorate([
-    singleton(),
-    registerClass("CustomEventBinder")
-], CustomEventBinder);
-
-var EventBinderFactory = (function () {
-    function EventBinderFactory() {
-    }
-    EventBinderFactory.createEventBinder = function (eventName) {
-        var binder = null, eventType = EventTable.getEventType(eventName);
-        switch (eventType) {
-            case EEventType.MOUSE:
-            case EEventType.TOUCH:
-            case EEventType.KEYBOARD:
-                binder = DomEventBinder.getInstance();
-                break;
-            case EEventType.CUSTOM:
-            case EEventType.POINT:
-                binder = CustomEventBinder.getInstance();
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("eventName:" + eventName));
-                break;
-        }
-        return binder;
-    };
-    return EventBinderFactory;
-}());
-EventBinderFactory = __decorate([
-    registerClass("EventBinderFactory")
-], EventBinderFactory);
-
-var CustomEvent = CustomEvent_1 = (function (_super) {
-    __extends(CustomEvent, _super);
-    function CustomEvent() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var _this = _super.call(this, args[0]) || this;
-        _this.type = EEventType.CUSTOM;
-        _this.userData = null;
-        if (args.length === 2) {
-            var userData = args[1];
-            _this.userData = userData;
-        }
-        return _this;
-    }
-    CustomEvent.create = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var obj = null;
-        if (args.length === 1) {
-            obj = new this(args[0]);
-        }
-        else {
-            obj = new this(args[0], args[1]);
-        }
-        return obj;
-    };
-    CustomEvent.prototype.copyPublicAttri = function (destination, source) {
-        var property = null;
-        ExtendUtils.extend(destination, function (item, property) {
-            return property.slice(0, 1) !== "_"
-                && !JudgeUtils$1.isFunction(item);
-        });
-        return destination;
-    };
-    CustomEvent.prototype.clone = function () {
-        var eventObj = CustomEvent_1.create(this.name);
-        return this.copyMember(eventObj, this, ["target", "currentTarget", "isStopPropagation", "phase"]);
-    };
-    CustomEvent.prototype.getDataFromDomEvent = function (event) {
-        this.target = event.target;
-        this.currentTarget = event.currentTarget;
-        this.isStopPropagation = event.isStopPropagation;
-    };
-    return CustomEvent;
-}(Event));
-CustomEvent = CustomEvent_1 = __decorate([
-    registerClass("CustomEvent")
-], CustomEvent);
-var CustomEvent_1;
-
-var EventDispatcher = (function () {
-    function EventDispatcher() {
-    }
-    return EventDispatcher;
-}());
-
-var DomEventDispatcher = (function (_super) {
-    __extends(DomEventDispatcher, _super);
-    function DomEventDispatcher() {
-        return _super.call(this) || this;
-    }
-    DomEventDispatcher.getInstance = function () { };
-    DomEventDispatcher.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 1) {
-            var event = args[0], eventType = event.type;
-            EventHandlerFactory.createEventHandler(eventType)
-                .trigger(event);
-        }
-        else if (args.length === 2) {
-            var dom = args[0], event = args[1], eventType = event.type;
-            EventHandlerFactory.createEventHandler(eventType)
-                .trigger(dom, event);
-        }
-    };
-    return DomEventDispatcher;
-}(EventDispatcher));
-DomEventDispatcher = __decorate([
-    singleton(),
-    registerClass("DomEventDispatcher")
-], DomEventDispatcher);
-
-var EventUtils$1 = (function () {
-    function EventUtils() {
-    }
-    EventUtils.isEvent = function (arg) {
-        return arg && arg.currentTarget !== void 0;
-    };
-    EventUtils.isEntityObject = function (arg) {
-        return arg && arg.bubbleParent !== void 0;
-    };
-    return EventUtils;
-}());
-__decorate([
-    ensure(function (isEntityObject, arg) {
-        if (isEntityObject) {
-            assert(arg instanceof EntityObject, Log$$1.info.FUNC_MUST_BE("EntityObject, but actual is " + arg));
-        }
-    })
-], EventUtils$1, "isEntityObject", null);
-EventUtils$1 = __decorate([
-    registerClass("EventUtils")
-], EventUtils$1);
-
-var EEventPhase;
-(function (EEventPhase) {
-    EEventPhase[EEventPhase["BROADCAST"] = 0] = "BROADCAST";
-    EEventPhase[EEventPhase["EMIT"] = 1] = "EMIT";
-})(EEventPhase || (EEventPhase = {}));
-
-var CustomEventDispatcher = (function (_super) {
-    __extends(CustomEventDispatcher, _super);
-    function CustomEventDispatcher() {
-        return _super.call(this) || this;
-    }
-    CustomEventDispatcher.getInstance = function () { };
-    CustomEventDispatcher.prototype.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var length = args.length;
-        if (length === 1) {
-            var event = args[0], eventType = event.type;
-            return EventHandlerFactory.createEventHandler(eventType)
-                .trigger(event);
-        }
-        else if (length === 2 && EventUtils$1.isEvent(args[0])) {
-            var event = args[0], userData = args[1], eventType = event.type;
-            return EventHandlerFactory.createEventHandler(eventType)
-                .trigger(event, userData);
-        }
-        else if ((length === 2 && EventUtils$1.isEntityObject(args[0])) || (length === 3 && JudgeUtils$1.isBoolean(args[2]))) {
-            var target = args[0], event = args[1], notSetTarget = args[2] === void 0 ? false : args[2], eventType = event.type;
-            return EventHandlerFactory.createEventHandler(eventType)
-                .trigger(target, event, notSetTarget);
-        }
-        else if (length === 3 || length === 4) {
-            var target = args[0], event = args[1], userData = args[2], notSetTarget = args[3] === void 0 ? false : args[3], eventType = event.type;
-            return EventHandlerFactory.createEventHandler(eventType)
-                .trigger(target, event, userData, notSetTarget);
-        }
-    };
-    CustomEventDispatcher.prototype.emit = function (target, eventObject, userData) {
-        var isStopPropagation = false;
-        if (!target) {
-            return;
-        }
-        eventObject.phase = EEventPhase.EMIT;
-        eventObject.target = target;
-        do {
-            isStopPropagation = this._triggerWithUserData(target, eventObject, userData, true);
-            if (isStopPropagation) {
-                break;
-            }
-            target = target.bubbleParent;
-        } while (target);
-    };
-    CustomEventDispatcher.prototype.broadcast = function (target, eventObject, userData) {
-        var self = this;
-        var iterator = function (obj) {
-            var children = obj.getChildren();
-            if (children.getCount() === 0) {
-                return;
-            }
-            children.forEach(function (child) {
-                self._triggerWithUserData(child, eventObject, userData, true);
-                iterator(child);
-            });
-        };
-        if (!target) {
-            return;
-        }
-        eventObject.phase = EEventPhase.BROADCAST;
-        eventObject.target = target;
-        this._triggerWithUserData(target, eventObject, userData, true);
-        iterator(target);
-    };
-    CustomEventDispatcher.prototype._triggerWithUserData = function (target, event, userData, notSetTarget) {
-        return userData ? this.trigger(target, event, userData, notSetTarget)
-            : this.trigger(target, event, notSetTarget);
-    };
-    return CustomEventDispatcher;
-}(EventDispatcher));
-CustomEventDispatcher = __decorate([
-    singleton(),
-    registerClass("CustomEventDispatcher")
-], CustomEventDispatcher);
-
-var EventDispatcherFactory = (function () {
-    function EventDispatcherFactory() {
-    }
-    EventDispatcherFactory.createEventDispatcher = function (event) {
-        var dispatcher = null, eventType = event.type;
-        switch (eventType) {
-            case EEventType.MOUSE:
-            case EEventType.TOUCH:
-            case EEventType.KEYBOARD:
-                dispatcher = DomEventDispatcher.getInstance();
-                break;
-            case EEventType.CUSTOM:
-            case EEventType.POINT:
-                dispatcher = CustomEventDispatcher.getInstance();
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("event:" + event));
-                break;
-        }
-        return dispatcher;
-    };
-    return EventDispatcherFactory;
-}());
-EventDispatcherFactory = __decorate([
-    registerClass("EventDispatcherFactory")
-], EventDispatcherFactory);
-
-var EventManager = EventManager_1 = (function () {
-    function EventManager() {
-    }
-    EventManager.on = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1], priority = 1, eventBinder = EventBinderFactory.createEventBinder(eventName);
-            eventBinder.on(eventName, handler, priority);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1], priority = args[2], eventBinder = EventBinderFactory.createEventBinder(eventName);
-            eventBinder.on(eventName, handler, priority);
-        }
-        else if (args.length === 3 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler = args[2], priority = 1, eventBinder = CustomEventBinder.getInstance();
-            eventBinder.on(target, eventName, handler, priority);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], handler = args[2], priority = 1, eventBinder = DomEventBinder.getInstance();
-            eventBinder.on(dom, eventName, handler, priority);
-        }
-        else if (args.length === 4 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler = args[2], priority = args[3], eventBinder = CustomEventBinder.getInstance();
-            eventBinder.on(target, eventName, handler, priority);
-        }
-        else if (args.length === 4 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], handler = args[2], priority = args[3], eventBinder = DomEventBinder.getInstance();
-            eventBinder.on(dom, eventName, handler, priority);
-        }
-    };
-    EventManager.off = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 0) {
-            var customEventBinder = CustomEventBinder.getInstance(), domEventBinder = DomEventBinder.getInstance();
-            customEventBinder.off();
-            domEventBinder.off();
-        }
-        else if (args.length === 1 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], eventBinder = EventBinderFactory.createEventBinder(eventName);
-            eventBinder.off(eventName);
-        }
-        else if (args.length === 1 && args[0] instanceof EntityObject) {
-            var target = args[0], eventBinder = CustomEventBinder.getInstance();
-            eventBinder.off(target);
-        }
-        else if (args.length === 1 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventBinder = DomEventBinder.getInstance();
-            eventBinder.off(dom);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isString(args[0])) {
-            var eventName = args[0], handler = args[1], eventBinder = EventBinderFactory.createEventBinder(eventName);
-            eventBinder.off(eventName, handler);
-        }
-        else if (args.length === 2 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], eventBinder = CustomEventBinder.getInstance();
-            eventBinder.off(target, eventName);
-        }
-        else if (args.length === 2 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], eventBinder = DomEventBinder.getInstance();
-            eventBinder.off(dom, eventName);
-        }
-        else if (args.length === 3 && args[0] instanceof EntityObject) {
-            var target = args[0], eventName = args[1], handler = args[2], eventBinder = CustomEventBinder.getInstance();
-            eventBinder.off(target, eventName, handler);
-        }
-        else if (args.length === 3 && JudgeUtils$1.isDom(args[0])) {
-            var dom = args[0], eventName = args[1], handler = args[2], eventBinder = DomEventBinder.getInstance();
-            eventBinder.off(dom, eventName, handler);
-        }
-    };
-    EventManager.trigger = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var length = args.length;
-        if (length === 1) {
-            var event = args[0], eventDispatcher = EventDispatcherFactory.createEventDispatcher(event);
-            eventDispatcher.trigger(event);
-        }
-        else if (length === 2 && EventUtils$1.isEvent(args[0])) {
-            var event = args[0], userData = args[1], eventDispatcher = CustomEventDispatcher.getInstance();
-            eventDispatcher.trigger(event, userData);
-        }
-        else if (length === 2 && EventUtils$1.isEntityObject(args[0])) {
-            var target = args[0], event = args[1], eventDispatcher = CustomEventDispatcher.getInstance();
-            if (!target) {
-                return;
-            }
-            eventDispatcher.trigger(target, event);
-        }
-        else if (length === 2) {
-            var dom = args[0], event = args[1], eventDispatcher = DomEventDispatcher.getInstance();
-            if (!dom) {
-                return;
-            }
-            eventDispatcher.trigger(dom, event);
-        }
-        else if (length === 3) {
-            var target = args[0], event = args[1], userData = args[2], eventDispatcher = CustomEventDispatcher.getInstance();
-            if (!target) {
-                return;
-            }
-            eventDispatcher.trigger(target, event, userData);
-        }
-        else if (length === 4) {
-            var target = args[0], event = args[1], userData = args[2], notSetTarget = args[3], eventDispatcher = CustomEventDispatcher.getInstance();
-            if (!target) {
-                return;
-            }
-            eventDispatcher.trigger(target, event, userData, notSetTarget);
-        }
-    };
-    EventManager.broadcast = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventDispatcher = CustomEventDispatcher.getInstance();
-        eventDispatcher.broadcast.apply(eventDispatcher, args);
-    };
-    EventManager.emit = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eventDispatcher = CustomEventDispatcher.getInstance();
-        eventDispatcher.emit.apply(eventDispatcher, args);
-    };
-    EventManager.fromEvent = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var addHandler = null, removeHandler = null;
-        if (args.length === 1) {
-            var eventName_1 = args[0];
-            addHandler = function (handler) {
-                EventManager_1.on(eventName_1, handler);
-            };
-            removeHandler = function (handler) {
-                EventManager_1.off(eventName_1, handler);
-            };
-        }
-        else if (args.length === 2 && JudgeUtils$1.isNumber(args[1])) {
-            var eventName_2 = args[0], priority_1 = args[1];
-            addHandler = function (handler) {
-                EventManager_1.on(eventName_2, handler, priority_1);
-            };
-            removeHandler = function (handler) {
-                EventManager_1.off(eventName_2, handler);
-            };
-        }
-        else if (args.length === 2) {
-            var eventName_3 = args[1];
-            addHandler = function (handler) {
-                EventManager_1.on(args[0], eventName_3, handler);
-            };
-            removeHandler = function (handler) {
-                EventManager_1.off(args[0], eventName_3, handler);
-            };
-        }
-        else if (args.length === 3) {
-            var eventName_4 = args[1], priority_2 = args[2];
-            addHandler = function (handler) {
-                EventManager_1.on(args[0], eventName_4, handler, priority_2);
-            };
-            removeHandler = function (handler) {
-                EventManager_1.off(args[0], eventName_4, handler);
-            };
-        }
-        return fromEventPattern(addHandler, removeHandler);
-    };
-    EventManager.setBubbleParent = function (target, parent) {
-        CustomEventRegister.getInstance().setBubbleParent(target, parent);
-    };
-    return EventManager;
-}());
-__decorate([
-    requireCheck(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args[0] instanceof EntityObject) {
-            var eventName_5 = args[1];
-            it("event must be custom event", function () {
-                var eventType = EventTable.getEventType(eventName_5);
-                index(eventType === EEventType.CUSTOM || eventType === EEventType.POINT).true;
-            });
-        }
-        else if (JudgeUtils$1.isDom(args[0])) {
-            var eventName = args[1], eventType_1 = EventTable.getEventType(eventName);
-            it("event must be dom event", function () {
-                index(eventType_1 === EEventType.TOUCH || eventType_1 === EEventType.MOUSE || eventType_1 === EEventType.KEYBOARD).true;
-            });
-        }
-    })
-], EventManager, "on", null);
-__decorate([
-    requireCheck(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length > 2 && args[0] instanceof EntityObject) {
-            var eventName = args[1], eventType_2 = EventTable.getEventType(eventName);
-            it("event must be custom or point event", function () {
-                index(eventType_2 === EEventType.CUSTOM || eventType_2 === EEventType.POINT).true;
-            });
-        }
-        else if (args.length > 2 && JudgeUtils$1.isDom(args[0])) {
-            var eventName = args[1], eventType_3 = EventTable.getEventType(eventName);
-            it("event must be keyboard event", function () {
-                index(eventType_3 === EEventType.KEYBOARD).true;
-            });
-        }
-    })
-], EventManager, "off", null);
-__decorate([
-    requireCheck(function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args.length === 2 && args[0] instanceof Event) {
-            var event = args[0];
-            assert(event instanceof CustomEvent, Log$$1.info.FUNC_MUST_BE("event type", "CUSTOM"));
-        }
-        else if (args.length === 2 && args[0] instanceof EntityObject) {
-        }
-        else if (args.length === 2) {
-            if (args[0]) {
-                assert(JudgeUtils$1.isDom(args[0]), Log$$1.info.FUNC_MUST_BE("the first param", "dom"));
-            }
-        }
-        else if (args[0] instanceof EntityObject) {
-            var event = args[1];
-            assert(event instanceof CustomEvent, Log$$1.info.FUNC_MUST_BE("event type", "CUSTOM"));
-        }
-    })
-], EventManager, "trigger", null);
-__decorate([
-    requireCheck(function (target, eventObject, userData) {
-        assert(eventObject instanceof CustomEvent, Log$$1.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
-    })
-], EventManager, "broadcast", null);
-__decorate([
-    requireCheck(function (target, eventObject, userData) {
-        assert(eventObject instanceof CustomEvent, Log$$1.info.FUNC_MUST_BE("eventObject", "CustomEvent"));
-    })
-], EventManager, "emit", null);
-__decorate([
-    requireCheck(function (target, parent) {
-        assert(target instanceof EntityObject, "only EntityObject can setBubleParent");
-    })
-], EventManager, "setBubbleParent", null);
-EventManager = EventManager_1 = __decorate([
-    registerClass("EventManager")
-], EventManager);
-var EventManager_1;
-
-var CameraController = (function (_super) {
-    __extends(CameraController, _super);
-    function CameraController(cameraComponent) {
-        var _this = _super.call(this) || this;
-        _this.camera = null;
-        _this._worldToCameraMatrixCache = null;
-        _this._clearCacheSubscription = null;
-        _this.camera = cameraComponent;
-        return _this;
-    }
-    Object.defineProperty(CameraController.prototype, "cameraToWorldMatrix", {
-        get: function () {
-            return this.camera.cameraToWorldMatrix;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CameraController.prototype, "worldToCameraMatrix", {
-        get: function () {
-            return this._getWorldToCameraMatrix();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CameraController.prototype, "pMatrix", {
-        get: function () {
-            return this.camera.pMatrix;
-        },
-        set: function (pMatrix) {
-            this.camera.pMatrix = pMatrix;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    CameraController.prototype.init = function () {
-        this.camera.entityObject = this.entityObject;
-        this.camera.init();
-        this.bindClearCacheEvent();
-    };
-    CameraController.prototype.update = function (elapsed) {
-        this.camera.update(elapsed);
-    };
-    CameraController.prototype.dispose = function () {
-        this.camera.dispose();
-        this.disposeClearCacheEvent();
-    };
-    CameraController.prototype.clone = function () {
-        return CloneUtils.clone(this);
-    };
-    CameraController.prototype.bindClearCacheEvent = function () {
-        var self = this;
-        this._clearCacheSubscription = fromArray([
-            EventManager.fromEvent(EEngineEvent.ENDLOOP),
-            EventManager.fromEvent(this.entityObject, EEngineEvent.TRANSFORM_TRANSLATE),
-            EventManager.fromEvent(this.entityObject, EEngineEvent.TRANSFORM_ROTATE),
-            EventManager.fromEvent(this.entityObject, EEngineEvent.TRANSFORM_SCALE)
-        ])
-            .mergeAll()
-            .subscribe(function () {
-            self._clearCache();
-        });
-    };
-    CameraController.prototype.disposeClearCacheEvent = function () {
-        this._clearCacheSubscription && this._clearCacheSubscription.dispose();
-    };
-    CameraController.prototype._clearCache = function () {
-        this._worldToCameraMatrixCache = null;
-    };
-    CameraController.prototype._getWorldToCameraMatrix = function () {
-        return this.camera.worldToCameraMatrix;
-    };
-    return CameraController;
+    return Tag;
 }(Component));
-__decorate([
-    cacheGetter(function () {
-        return this._worldToCameraMatrixCache !== null;
-    }, function () {
-        return this._worldToCameraMatrixCache;
-    }, function (result) {
-        this._worldToCameraMatrixCache = result;
-    })
-], CameraController.prototype, "worldToCameraMatrix", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], CameraController.prototype, "camera", void 0);
-__decorate([
-    virtual
-], CameraController.prototype, "bindClearCacheEvent", null);
-__decorate([
-    virtual
-], CameraController.prototype, "disposeClearCacheEvent", null);
+Tag = __decorate([
+    registerClass("Tag")
+], Tag);
+var createTag = function (slotCount) {
+    if (slotCount === void 0) { slotCount = 4; }
+    return create$3(slotCount, TagData);
+};
+var addTag$1 = requireCheckFunc(function (component, tag) {
+    checkShouldAlive$1(component, TagData);
+}, function (component, tag) {
+    addTag$$1(component, tag, TagData);
+});
+var removeTag$1 = requireCheckFunc(function (component, tag) {
+    checkShouldAlive$1(component, TagData);
+}, function (component, tag) {
+    removeTag$$1(component, tag, TagData);
+});
+var findGameObjectsByTag$1 = function (tag) {
+    return findGameObjectsByTag$$1(tag, TagData);
+};
+var getTagGameObject = requireCheckFunc(function (component) {
+    checkShouldAlive$1(component, TagData);
+}, function (component) {
+    return getGameObject$2(component.index, TagData);
+});
 
-var BasicCameraController = (function (_super) {
-    __extends(BasicCameraController, _super);
-    function BasicCameraController() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var addAddComponentHandle$3 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$3);
+};
+var addDisposeHandle$3 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$3);
+};
+var create$3 = ensureFunc(function (tag, slotCount, TagData$$1) {
+    it$1("slot array should has no hole", function () {
+        for (var _i = 0, _a = TagData$$1.slotCountMap; _i < _a.length; _i++) {
+            var count = _a[_i];
+            index_1(count).exist;
+        }
+    });
+}, function (slotCount, TagData$$1) {
+    var tag = new Tag(), index = generateComponentIndex(TagData$$1);
+    tag.index = index;
+    TagData$$1.count += 1;
+    _setSlotCount(index, slotCount, TagData$$1.slotCountMap);
+    _setUsedSlotCount(index, 0, TagData$$1.usedSlotCountMap);
+    setNextIndexInTagArrayMap(index, slotCount, TagData$$1.indexInTagArrayMap);
+    _initIndexMap(index, slotCount, TagData$$1);
+    TagData$$1.lastIndexInTagArray += slotCount;
+    TagData$$1.tagMap[index] = tag;
+    return tag;
+});
+var setNextIndexInTagArrayMap = requireCheckFunc(function (index, slotCount, indexInTagArrayMap) {
+    it$1("index should >= 0", function () {
+        index_1(index).gte(0);
+    });
+}, function (index, slotCount, indexInTagArrayMap) {
+    indexInTagArrayMap[index + 1] = indexInTagArrayMap[index] + slotCount;
+});
+var _initIndexMap = function (index, slotCount, TagData$$1) {
+    var indexMap = TagData$$1.indexMap, lastIndexInTagArray = TagData$$1.lastIndexInTagArray;
+    for (var i = lastIndexInTagArray, count = lastIndexInTagArray + slotCount; i < count; i++) {
+        indexMap[i] = index;
     }
-    BasicCameraController.create = function (cameraComponent) {
-        var obj = new this(cameraComponent);
+};
+var addTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
+    it$1("tag should not already be added", function () {
+        var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), tagArray = TagData$$1.tagArray, slotCountMap = TagData$$1.slotCountMap, currentSlotCount = getSlotCount(index, slotCountMap);
+        index_1(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
+    });
+}, function (tagComponent, tag, TagData$$1) {
+    var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), slotCountMap = TagData$$1.slotCountMap, tagArray = TagData$$1.tagArray, usedSlotCountMap = TagData$$1.usedSlotCountMap, currentSlotCount = getSlotCount(index, slotCountMap), currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap);
+    if (_isSlotAllUsed(currentUsedSlotCount, currentSlotCount)) {
+        var increasedSlotCount = _allocateDoubleSlotCountAndAddTag(indexInArray, index, tag, currentSlotCount, currentUsedSlotCount, TagData$$1), slotCount = currentSlotCount + increasedSlotCount;
+        _setSlotCount(index, slotCount, slotCountMap);
+        _updateIndexInTagArrayMap(index, increasedSlotCount, TagData$$1);
+        TagData$$1.lastIndexInTagArray = _updateIndexMap(indexInArray, index, increasedSlotCount, TagData$$1);
+    }
+    else {
+        tagArray[indexInArray + currentUsedSlotCount] = tag;
+    }
+    _setUsedSlotCount(index, currentUsedSlotCount + 1, usedSlotCountMap);
+});
+var _updateIndexInTagArrayMap = function (startIndex, increasedSlotCount, TagData$$1) {
+    var count = TagData$$1.count, indexInTagArrayMap = TagData$$1.indexInTagArrayMap;
+    for (var i = startIndex + 1; i <= count; i++) {
+        indexInTagArrayMap[i] += increasedSlotCount;
+    }
+};
+var _updateIndexMap = function (indexInArray, index, increasedSlotCount, TagData$$1) {
+    var indexMap = TagData$$1.indexMap, lastIndexInTagArray = TagData$$1.lastIndexInTagArray + increasedSlotCount, spliceParamArr = [indexInArray + increasedSlotCount, 0];
+    for (var i = 0; i < increasedSlotCount; i++) {
+        spliceParamArr.push(index);
+    }
+    Array.prototype.splice.apply(indexMap, spliceParamArr);
+    return lastIndexInTagArray;
+};
+var removeTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
+    it$1("current used slot count should >= 0", function () {
+        var index = tagComponent.index, usedSlotCountMap = TagData$$1.usedSlotCountMap;
+        index_1(getUsedSlotCount(index, usedSlotCountMap)).gte(0);
+    });
+}, function (tagComponent, tag, TagData$$1) {
+    var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), usedSlotCountMap = TagData$$1.usedSlotCountMap, tagArray = TagData$$1.tagArray, currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap), newUsedSlotCount = currentUsedSlotCount;
+    for (var i = indexInArray, count = indexInArray + currentUsedSlotCount; i < count; i++) {
+        if (tagArray[i] === tag) {
+            tagArray[i] = void 0;
+            newUsedSlotCount = currentUsedSlotCount - 1;
+            break;
+        }
+    }
+    if (newUsedSlotCount <= 0) {
+        newUsedSlotCount = 0;
+    }
+    _setUsedSlotCount(index, newUsedSlotCount, usedSlotCountMap);
+});
+var addComponent$3 = function (component, gameObject) {
+    addComponentToGameObjectMap(TagData.gameObjectMap, component.index, gameObject);
+};
+var getSlotCount = function (index, slotCountMap) {
+    return slotCountMap[index];
+};
+var _setSlotCount = function (index, slotCount, slotCountMap) {
+    slotCountMap[index] = slotCount;
+};
+var getUsedSlotCount = function (index, usedSlotCountMap) {
+    return usedSlotCountMap[index];
+};
+var _setUsedSlotCount = function (index, slotCount, usedSlotCountMap) {
+    usedSlotCountMap[index] = slotCount;
+};
+var _isSlotAllUsed = requireCheckFunc(function (currentUsedSlotCount, currentSlotCount) {
+    it$1("usedSlotCount should <= slotCount", function () {
+        index_1(currentUsedSlotCount).lte(currentSlotCount);
+    });
+}, function (currentUsedSlotCount, currentSlotCount) {
+    return currentUsedSlotCount === currentSlotCount;
+});
+var _allocateDoubleSlotCountAndAddTag = function (indexInArray, index, tag, currentSlotCount, currentUsedSlotCount, TagData$$1) {
+    var spliceArr = [indexInArray + currentUsedSlotCount, 0, tag], tagArray = TagData$$1.tagArray;
+    for (var i = 0, len = currentSlotCount - 1; i < len; i++) {
+        spliceArr.push(null);
+    }
+    Array.prototype.splice.apply(tagArray, spliceArr);
+    return currentSlotCount;
+};
+var _convertTagIndexToIndexInArray = function (tagIndex, TagData$$1) {
+    return TagData$$1.indexInTagArrayMap[tagIndex];
+};
+var _convertIndexInArrayToTagIndex = function (indexInTagArray, TagData$$1) {
+    return TagData$$1.indexMap[indexInTagArray];
+};
+var checkShouldAlive$1 = function (tag, TagData$$1) {
+    checkComponentShouldAlive(tag, TagData$$1, function (tag, TagData$$1) {
+        return isValidMapValue(TagData$$1.indexMap[TagData$$1.indexInTagArrayMap[tag.index]]);
+    });
+};
+var disposeComponent$3 = ensureFunc(function (returnVal, tag) {
+    it$1("count should >= 0", function () {
+        index_1(TagData.count).gte(0);
+    });
+}, function (tag) {
+    var index = tag.index, indexInTagArray = _convertTagIndexToIndexInArray(index, TagData), currentUsedSlotCount = getUsedSlotCount(index, TagData.usedSlotCountMap), tagArray = TagData.tagArray;
+    for (var i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++) {
+        tagArray[i] = void 0;
+    }
+    deleteVal(indexInTagArray, TagData.indexMap);
+    TagData.count -= 1;
+    markComponentIndexRemoved(TagData.tagMap[index]);
+    TagData.disposeCount += 1;
+    if (isDisposeTooManyComponents(TagData.disposeCount)) {
+        reAllocateTagMap(TagData);
+        TagData.disposeCount = 0;
+    }
+});
+var getGameObject$2 = function (index, Data) {
+    return getComponentGameObject(Data.gameObjectMap, index);
+};
+var findGameObjectsByTag$$1 = function (targetTag, TagData$$1) {
+    var gameObjectArr = [], gameObjectMap = TagData$$1.gameObjectMap;
+    forEach(TagData$$1.tagArray, function (tag, indexInTagArray) {
+        if (tag === targetTag) {
+            gameObjectArr.push(gameObjectMap[_convertIndexInArrayToTagIndex(indexInTagArray, TagData$$1)]);
+        }
+    });
+    return gameObjectArr;
+};
+var initData$5 = function (TagData$$1) {
+    TagData$$1.tagArray = [];
+    TagData$$1.slotCountMap = [];
+    TagData$$1.usedSlotCountMap = [];
+    TagData$$1.indexMap = [];
+    TagData$$1.indexInTagArrayMap = [0];
+    TagData$$1.gameObjectMap = createMap();
+    TagData$$1.tagMap = createMap();
+    TagData$$1.lastIndexInTagArray = 0;
+    TagData$$1.index = 0;
+    TagData$$1.count = 0;
+    TagData$$1.disposeCount = 0;
+};
+
+var MemoryConfig = {
+    maxComponentDisposeCount: 1000
+};
+
+var isDisposeTooManyComponents = function (disposeCount) {
+    return disposeCount >= MemoryConfig.maxComponentDisposeCount;
+};
+var _setMapVal = function (map, uid, val) {
+    map[uid] = val;
+};
+var reAllocateThreeDTransformMap = function (ThreeDTransformData) {
+    var val = null, newParentMap = {}, newChildrenMap = {}, newIsTranslateMap = {}, newTempMap = {}, newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, tempMap = ThreeDTransformData.tempMap;
+    clearCacheMap(ThreeDTransformData);
+    for (var _i = 0, aliveUIDArray_1 = aliveUIDArray; _i < aliveUIDArray_1.length; _i++) {
+        var uid = aliveUIDArray_1[_i];
+        val = childrenMap[uid];
+        if (isNotValidMapValue(val)) {
+            continue;
+        }
+        newAliveUIDArray.push(uid);
+        _setMapVal(newChildrenMap, uid, val);
+        val = tempMap[uid];
+        _setMapVal(newTempMap, uid, val);
+        val = parentMap[uid];
+        _setMapVal(newParentMap, uid, val);
+        val = isTranslateMap[uid];
+        _setMapVal(newIsTranslateMap, uid, val);
+    }
+    ThreeDTransformData.parentMap = newParentMap;
+    ThreeDTransformData.childrenMap = newChildrenMap;
+    ThreeDTransformData.isTranslateMap = newIsTranslateMap;
+    ThreeDTransformData.tempMap = newTempMap;
+    ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
+};
+var reAllocateGameObjectMap = function (GameObjectData) {
+    var val = null, newParentMap = {}, newChildrenMap = {}, newComponentMap = {}, newAliveUIDArray = [], aliveUIDArray = GameObjectData.aliveUIDArray, parentMap = GameObjectData.parentMap, childrenMap = GameObjectData.childrenMap, componentMap = GameObjectData.componentMap;
+    for (var _i = 0, aliveUIDArray_2 = aliveUIDArray; _i < aliveUIDArray_2.length; _i++) {
+        var uid = aliveUIDArray_2[_i];
+        val = componentMap[uid];
+        if (isNotValidMapValue(val)) {
+            continue;
+        }
+        newAliveUIDArray.push(uid);
+        _setMapVal(newComponentMap, uid, val);
+        val = parentMap[uid];
+        _setMapVal(newParentMap, uid, val);
+        val = childrenMap[uid];
+        _setMapVal(newChildrenMap, uid, val);
+    }
+    GameObjectData.parentMap = newParentMap;
+    GameObjectData.childrenMap = newChildrenMap;
+    GameObjectData.componentMap = newComponentMap;
+    GameObjectData.aliveUIDArray = newAliveUIDArray;
+};
+var reAllocateTagMap = function (TagData) {
+    var usedSlotCountMap = TagData.usedSlotCountMap, slotCountMap = TagData.slotCountMap, indexMap = TagData.indexMap, tagArray = TagData.tagArray, gameObjectMap = TagData.gameObjectMap, indexInTagArrayMap = TagData.indexInTagArrayMap, tagMap = TagData.tagMap, newIndexInTagArrayMap = [0], newTagArray = [], newGameObjectMap = createMap(), newUsedSlotCountMap = [], newSlotCountMap = [], newIndexMap = [], newTagMap = createMap(), newIndexInTagArray = 0, newIndexInTagArrayInMap = null, newIndex = 0, newLastIndexInTagArray = 0, hasNewData = false, tagIndex = null;
+    for (var _i = 0, indexInTagArrayMap_1 = indexInTagArrayMap; _i < indexInTagArrayMap_1.length; _i++) {
+        var indexInTagArray = indexInTagArrayMap_1[_i];
+        var index = indexMap[indexInTagArray];
+        if (isNotValidVal(index)) {
+            continue;
+        }
+        hasNewData = true;
+        var currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap), tag = tagMap[index];
+        newGameObjectMap[newIndex] = gameObjectMap[index];
+        newSlotCountMap[newIndex] = getSlotCount(index, slotCountMap);
+        newUsedSlotCountMap[newIndex] = currentUsedSlotCount;
+        newIndexInTagArrayInMap = newIndexInTagArray;
+        newIndexInTagArrayMap[newIndex] = newIndexInTagArrayInMap;
+        tag.index = newIndex;
+        newTagMap[newIndex] = tag;
+        for (var i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++) {
+            newTagArray[newIndexInTagArray] = tagArray[i];
+            newIndexMap[newIndexInTagArray] = newIndex;
+            newIndexInTagArray += 1;
+        }
+        newIndex += 1;
+    }
+    if (hasNewData) {
+        newIndex -= 1;
+        newLastIndexInTagArray = newIndexInTagArrayInMap + getSlotCount(newIndex, newSlotCountMap);
+        tagIndex = newIndex + 1;
+    }
+    else {
+        tagIndex = 0;
+    }
+    setNextIndexInTagArrayMap(newIndex, newSlotCountMap[newIndex], newIndexInTagArrayMap);
+    TagData.slotCountMap = newSlotCountMap;
+    TagData.usedSlotCountMap = newUsedSlotCountMap;
+    TagData.gameObjectMap = newGameObjectMap;
+    TagData.tagMap = newTagMap;
+    TagData.indexMap = newIndexMap;
+    TagData.indexInTagArrayMap = newIndexInTagArrayMap;
+    TagData.lastIndexInTagArray = newLastIndexInTagArray;
+    TagData.tagArray = newTagArray;
+    TagData.index = tagIndex;
+};
+
+var addAddComponentHandle$2 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$2);
+};
+var addDisposeHandle$2 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$2);
+};
+var create$2 = ensureFunc(function (transform, ThreeDTransformData$$1) {
+    it$1("componentMap should has data", function () {
+        index_1(getChildren(transform.uid, ThreeDTransformData$$1)).exist;
+    });
+}, function (ThreeDTransformData$$1) {
+    var transform = new ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData$$1), uid = _buildUID$1(ThreeDTransformData$$1);
+    transform.index = index;
+    transform.uid = uid;
+    _createTempData(uid, ThreeDTransformData$$1);
+    _setTransformMap(index, transform, ThreeDTransformData$$1);
+    setChildren(uid, [], ThreeDTransformData$$1);
+    ThreeDTransformData$$1.aliveUIDArray.push(uid);
+    return transform;
+});
+var _buildUID$1 = function (ThreeDTransformData$$1) {
+    return ThreeDTransformData$$1.uid++;
+};
+var _generateIndexInArrayBuffer = function (ThreeDTransformData$$1) {
+    return generateNotUsedIndexInArrayBuffer(ThreeDTransformData$$1);
+};
+var _createTempData = function (uid, ThreeDTransformData$$1) {
+    ThreeDTransformData$$1.tempMap[uid] = {
+        position: Vector3.create(),
+        localPosition: Vector3.create(),
+        localToWorldMatrix: Matrix4.create()
+    };
+    return ThreeDTransformData$$1;
+};
+var checkShouldAlive = function (component, ThreeDTransformData$$1) {
+    checkComponentShouldAlive(component, ThreeDTransformData$$1, function (component, ThreeDTransformData$$1) {
+        return isChildrenExist(getChildren(component.uid, ThreeDTransformData$$1));
+    });
+};
+var init$2 = function (GlobalTempData$$1, ThreeDTransformData$$1, state) {
+    return update$1(null, GlobalTempData$$1, ThreeDTransformData$$1, state);
+};
+var addComponent$2 = function (transform, gameObject) {
+    var indexInArrayBuffer = transform.index, uid = transform.uid;
+    addComponentToGameObjectMap(ThreeDTransformData.gameObjectMap, uid, gameObject);
+    return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
+};
+var disposeComponent$2 = function (transform) {
+    var indexInArrayBuffer = transform.index, uid = transform.uid;
+    if (isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
+        _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+    }
+    else {
+        _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+    }
+    ThreeDTransformData.disposeCount += 1;
+    if (isDisposeTooManyComponents(ThreeDTransformData.disposeCount)) {
+        reAllocateThreeDTransformMap(ThreeDTransformData);
+        ThreeDTransformData.disposeCount = 0;
+    }
+};
+var getGameObject$1 = function (uid, ThreeDTransformData$$1) { return getComponentGameObject(ThreeDTransformData$$1.gameObjectMap, uid); };
+var getParent$$1 = function (transform, ThreeDTransformData$$1) {
+    var parent = getParent$1(transform.uid, ThreeDTransformData$$1);
+    if (isValidMapValue(parent)) {
+        return parent;
+    }
+    return null;
+};
+var setParent$$1 = function (transform, parent, ThreeDTransformData$$1) { return setParent$1(transform, parent, ThreeDTransformData$$1); };
+var getLocalToWorldMatrix = requireCheckFunc(function (transform, mat, ThreeTransformData) {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc(function (transform, mat, ThreeTransformData) {
+    return isValidMapValue(getLocalToWorldMatrixCache(transform.uid, ThreeTransformData));
+}, function (transform, mat, ThreeTransformData) {
+    return getLocalToWorldMatrixCache(transform.uid, ThreeTransformData);
+}, function (transform, mat, ThreeTransformData, returnedMat) {
+    setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
+}, function (transform, mat, ThreeTransformData) {
+    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
+}));
+var getPosition = requireCheckFunc(function (transform, ThreeTransformData) {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc(function (transform, ThreeTransformData) {
+    return isValidMapValue(getPositionCache(transform.uid, ThreeTransformData));
+}, function (transform, ThreeTransformData) {
+    return getPositionCache(transform.uid, ThreeTransformData);
+}, function (transform, ThreeTransformData, position) {
+    setPositionCache(transform.uid, position, ThreeTransformData);
+}, function (transform, ThreeTransformData) {
+    var indexInArrayBuffer = getMatrix4DataIndexInArrayBuffer(transform.index), localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
+    return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
+}));
+var _setTransformMap = function (indexInArrayBuffer, transform, ThreeDTransformData$$1) { return ThreeDTransformData$$1.transformMap[indexInArrayBuffer] = transform; };
+var setPosition = requireCheckFunc(function (transform, position, GlobalTempData$$1, ThreeTransformData) {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, function (transform, position, GlobalTempData$$1, ThreeTransformData) {
+    var indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$1(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
+    setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData$$1, ThreeTransformData);
+    setIsTranslate(uid, true, ThreeTransformData);
+    return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
+});
+var setBatchDatas$$1 = function (batchData, GlobalTempData$$1, ThreeTransformData) { return setBatchDatas$1(batchData, GlobalTempData$$1, ThreeDTransformData); };
+var getLocalPosition = requireCheckFunc(function (transform, ThreeTransformData) {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc(function (transform, ThreeTransformData) {
+    return isValidMapValue(getLocalPositionCache(transform.uid, ThreeTransformData));
+}, function (transform, ThreeTransformData) {
+    return getLocalPositionCache(transform.uid, ThreeTransformData);
+}, function (transform, ThreeTransformData, position) {
+    setLocalPositionCache(transform.uid, position, ThreeTransformData);
+}, function (transform, ThreeTransformData) {
+    return DataUtils.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+}));
+var setLocalPosition = requireCheckFunc(function (transform, position, ThreeTransformData) {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, function (transform, position, ThreeTransformData) {
+    var indexInArrayBuffer = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
+    setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
+    setIsTranslate(uid, true, ThreeTransformData);
+    return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
+});
+var update$1 = function (elapsed, GlobalTempData$$1, ThreeDTransformData$$1, state) {
+    return update$2(elapsed, GlobalTempData$$1, ThreeDTransformData$$1, state);
+};
+var _disposeItemInDataContainer = function (indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1) {
+    var mat = GlobalTempData$$1.matrix4_1.setIdentity(), positionVec = GlobalTempData$$1.vector3_1.set(0, 0, 0), qua = GlobalTempData$$1.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData$$1.vector3_2.set(1, 1, 1);
+    setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData$$1);
+    removeHierarchyData(uid, ThreeDTransformData$$1);
+    _disposeMapDatas$1(indexInArrayBuffer, uid, ThreeDTransformData$$1);
+    return ThreeDTransformData$$1;
+};
+var _disposeMapDatas$1 = function (indexInArrayBuffer, uid, ThreeDTransformData$$1) {
+    deleteVal(indexInArrayBuffer, ThreeDTransformData$$1.transformMap);
+};
+var _disposeFromNormalList = function (indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1) {
+    addNotUsedIndex(indexInArrayBuffer, ThreeDTransformData$$1.notUsedIndexLinkList);
+    return _disposeItemInDataContainer(indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1);
+};
+var _disposeFromDirtyList = function (indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1) {
+    var firstDirtyIndex = ThreeDTransformData$$1.firstDirtyIndex;
+    swap(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData$$1);
+    _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData$$1, ThreeDTransformData$$1);
+    ThreeDTransformData$$1.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData$$1);
+};
+var _addDefaultTransformData = function (GlobalTempData$$1, ThreeDTransformData$$1) {
+    var count = ThreeDTransformData$$1.count, mat = GlobalTempData$$1.matrix4_1.setIdentity(), positionVec = GlobalTempData$$1.vector3_1.set(0, 0, 0), qua = GlobalTempData$$1.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData$$1.vector3_2.set(1, 1, 1);
+    for (var i = getStartIndexInArrayBuffer(); i < count; i++) {
+        setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData$$1);
+    }
+};
+var getTempLocalToWorldMatrix = function (transform, ThreeDTransformData$$1) { return _getTempData(transform.uid, ThreeDTransformData$$1).localToWorldMatrix; };
+var _getTempData = function (uid, ThreeDTransformData$$1) {
+    var tempData = ThreeDTransformData$$1.tempMap[uid];
+    if (isNotValidMapValue(tempData)) {
+        tempData = {};
+        ThreeDTransformData$$1.tempMap[uid] = tempData;
+    }
+    return tempData;
+};
+var initData$4 = function (GlobalTempData$$1, ThreeDTransformData$$1) {
+    var buffer = null, count = ThreeDTransformData$$1.count, size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
+    ThreeDTransformData$$1.buffer = new ArrayBuffer(count * size);
+    buffer = ThreeDTransformData$$1.buffer;
+    ThreeDTransformData$$1.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
+    ThreeDTransformData$$1.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
+    ThreeDTransformData$$1.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
+    ThreeDTransformData$$1.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+    ThreeDTransformData$$1.notUsedIndexLinkList = LinkList.create();
+    ThreeDTransformData$$1.parentMap = createMap();
+    ThreeDTransformData$$1.childrenMap = createMap();
+    ThreeDTransformData$$1.isTranslateMap = createMap();
+    ThreeDTransformData$$1.cacheMap = createMap();
+    ThreeDTransformData$$1.tempMap = createMap();
+    ThreeDTransformData$$1.transformMap = createMap();
+    ThreeDTransformData$$1.gameObjectMap = createMap();
+    ThreeDTransformData$$1.firstDirtyIndex = ThreeDTransformData$$1.count;
+    ThreeDTransformData$$1.indexInArrayBuffer = getStartIndexInArrayBuffer();
+    ThreeDTransformData$$1.uid = 0;
+    ThreeDTransformData$$1.disposeCount = 0;
+    ThreeDTransformData$$1.isClearCacheMap = false;
+    ThreeDTransformData$$1.aliveUIDArray = [];
+    _addDefaultTransformData(GlobalTempData$$1, ThreeDTransformData$$1);
+};
+
+var checkGameObjectShouldAlive = function (gameObject, GameObjectData) {
+    it$1("gameObject is diposed, should release it", function () {
+        index_1(isAlive(gameObject, GameObjectData)).true;
+    });
+};
+
+var _arrayMap = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function arrayMap(array, iteratee) {
+    var index = -1, length = array == null ? 0 : array.length, result = Array(length);
+    while (++index < length) {
+        result[index] = iteratee(array[index], index, array);
+    }
+    return result;
+}
+exports.default = arrayMap;
+});
+
+var _baseToString = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _Symbol_js_1 = _Symbol;
+var _arrayMap_js_1 = _arrayMap;
+var isArray_js_1 = isArray_1;
+var isSymbol_js_1 = isSymbol_1;
+var INFINITY = 1 / 0;
+var symbolProto = _Symbol_js_1.default ? _Symbol_js_1.default.prototype : undefined, symbolToString = symbolProto ? symbolProto.toString : undefined;
+function baseToString(value) {
+    if (typeof value == 'string') {
+        return value;
+    }
+    if (isArray_js_1.default(value)) {
+        return _arrayMap_js_1.default(value, baseToString) + '';
+    }
+    if (isSymbol_js_1.default(value)) {
+        return symbolToString ? symbolToString.call(value) : '';
+    }
+    var result = (value + '');
+    return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+exports.default = baseToString;
+});
+
+var toString_1 = createCommonjsModule(function (module, exports) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var _baseToString_js_1 = _baseToString;
+function toString(value) {
+    return value == null ? '' : _baseToString_js_1.default(value);
+}
+exports.default = toString;
+});
+
+var toString$1 = unwrapExports(toString_1);
+
+var IO = (function () {
+    function IO(func) {
+        this.func = null;
+        this.func = func;
+    }
+    IO.of = function (func) {
+        var obj = new this(func);
         return obj;
     };
-    return BasicCameraController;
-}(CameraController));
-BasicCameraController = __decorate([
-    registerClass("BasicCameraController")
-], BasicCameraController);
-
-var PerspectiveCamera = (function (_super) {
-    __extends(PerspectiveCamera, _super);
-    function PerspectiveCamera() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._fovy = null;
-        _this._aspect = null;
-        return _this;
-    }
-    PerspectiveCamera.create = function () {
-        var obj = new this();
-        return obj;
+    IO.prototype.chain = function (f) {
+        var io = this;
+        return IO.of(function () {
+            var next = f(io.func.apply(io, arguments));
+            return next.func.apply(next, arguments);
+        });
     };
-    Object.defineProperty(PerspectiveCamera.prototype, "fovy", {
-        get: function () {
-            return this._fovy;
-        },
-        set: function (fovy) {
-            this._fovy = fovy;
-            this.pMatrixDirty = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PerspectiveCamera.prototype, "aspect", {
-        get: function () {
-            return this._aspect;
-        },
-        set: function (aspect) {
-            this._aspect = aspect;
-            this.pMatrixDirty = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    PerspectiveCamera.prototype.zoomIn = function (speed, min) {
-        if (min === void 0) { min = 1; }
-        this.fovy = Math.max(this.fovy - speed, min);
+    IO.prototype.map = function (f) {
+        return IO.of(flowRight(f, this.func));
     };
-    PerspectiveCamera.prototype.zoomOut = function (speed, max) {
-        if (max === void 0) { max = 179; }
-        this.fovy = Math.min(this.fovy + speed, max);
+    
+    IO.prototype.ap = function (thatIO) {
+        return this.chain(function (f) {
+            return thatIO.map(f);
+        });
     };
-    PerspectiveCamera.prototype.updateProjectionMatrix = function () {
-        this.pMatrix.setPerspective(this._fovy, this._aspect, this.near, this.far);
+    
+    IO.prototype.run = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return this.func.apply(this, arguments);
     };
-    return PerspectiveCamera;
-}(Camera));
-__decorate([
-    cloneAttributeAsBasicType()
-], PerspectiveCamera.prototype, "fovy", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], PerspectiveCamera.prototype, "aspect", null);
-PerspectiveCamera = __decorate([
-    registerClass("PerspectiveCamera")
-], PerspectiveCamera);
-
-var Face3 = (function () {
-    function Face3(aIndex, bIndex, cIndex, faceNormal, vertexNormals) {
-        this._faceNormal = null;
-        this.aIndex = null;
-        this.bIndex = null;
-        this.cIndex = null;
-        this.vertexNormals = null;
-        this.aIndex = aIndex;
-        this.bIndex = bIndex;
-        this.cIndex = cIndex;
-        this._faceNormal = faceNormal;
-        this.vertexNormals = vertexNormals;
-    }
-    Face3.create = function (aIndex, bIndex, cIndex, faceNormal, vertexNormals) {
-        if (faceNormal === void 0) { faceNormal = null; }
-        if (vertexNormals === void 0) { vertexNormals = Collection.create(); }
-        var obj = new this(aIndex, bIndex, cIndex, faceNormal, vertexNormals);
-        return obj;
+    
+    IO.prototype.toString = function () {
+        return "(" + toString$1(this.run()) + ")";
     };
-    Object.defineProperty(Face3.prototype, "faceNormal", {
-        get: function () {
-            return this._faceNormal !== null ? this._faceNormal : Vector3.create(0, 0, 0);
-        },
-        set: function (faceNormal) {
-            this._faceNormal = faceNormal;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Face3.prototype.clone = function () {
-        return CloneUtils.clone(this);
-    };
-    Face3.prototype.hasFaceNormal = function () {
-        return this._faceNormal !== null;
-    };
-    Face3.prototype.hasVertexNormal = function () {
-        return this.vertexNormals.getCount() > 0;
-    };
-    return Face3;
+    return IO;
 }());
-__decorate([
-    cloneAttributeAsCloneable()
-], Face3.prototype, "_faceNormal", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], Face3.prototype, "aIndex", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], Face3.prototype, "bIndex", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], Face3.prototype, "cIndex", void 0);
-__decorate([
-    cloneAttributeAsCustomType(function (source, target, memberName) {
-        target[memberName] = source[memberName].clone(true);
-    })
-], Face3.prototype, "vertexNormals", void 0);
-Face3 = __decorate([
-    registerClass("Face3")
-], Face3);
 
-var GeometryUtils = (function () {
-    function GeometryUtils() {
+var getState = function (DirectorData) {
+    return DirectorData.state;
+};
+var setState = function (state, DirectorData) {
+    return IO.of(function () {
+        DirectorData.state = state;
+    });
+};
+
+var immutable$1 = createCommonjsModule(function (module, exports) {
+/**
+ *  Copyright (c) 2014-2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+(function (global, factory) {
+  module.exports = factory();
+}(commonjsGlobal, function () { 'use strict';var SLICE$0 = Array.prototype.slice;
+
+  function createClass(ctor, superClass) {
+    if (superClass) {
+      ctor.prototype = Object.create(superClass.prototype);
     }
-    GeometryUtils.convertToFaces = function (indices, normals) {
-        var hasNormals = this.hasData(normals), faces = [];
-        for (var i = 0, len = indices.length; i < len; i += 3) {
-            var a = indices[i], b = indices[i + 1], c = indices[i + 2], face = Face3.create(a, b, c);
-            if (hasNormals) {
-                face.vertexNormals.addChildren([
-                    this.getThreeComponent(normals, a),
-                    this.getThreeComponent(normals, b),
-                    this.getThreeComponent(normals, c)
-                ]);
-                face.faceNormal = face.vertexNormals.getChild(0).clone();
+    ctor.prototype.constructor = ctor;
+  }
+
+  function Iterable(value) {
+      return isIterable(value) ? value : Seq(value);
+    }
+
+
+  createClass(KeyedIterable, Iterable);
+    function KeyedIterable(value) {
+      return isKeyed(value) ? value : KeyedSeq(value);
+    }
+
+
+  createClass(IndexedIterable, Iterable);
+    function IndexedIterable(value) {
+      return isIndexed(value) ? value : IndexedSeq(value);
+    }
+
+
+  createClass(SetIterable, Iterable);
+    function SetIterable(value) {
+      return isIterable(value) && !isAssociative(value) ? value : SetSeq(value);
+    }
+
+
+
+  function isIterable(maybeIterable) {
+    return !!(maybeIterable && maybeIterable[IS_ITERABLE_SENTINEL]);
+  }
+
+  function isKeyed(maybeKeyed) {
+    return !!(maybeKeyed && maybeKeyed[IS_KEYED_SENTINEL]);
+  }
+
+  function isIndexed(maybeIndexed) {
+    return !!(maybeIndexed && maybeIndexed[IS_INDEXED_SENTINEL]);
+  }
+
+  function isAssociative(maybeAssociative) {
+    return isKeyed(maybeAssociative) || isIndexed(maybeAssociative);
+  }
+
+  function isOrdered(maybeOrdered) {
+    return !!(maybeOrdered && maybeOrdered[IS_ORDERED_SENTINEL]);
+  }
+
+  Iterable.isIterable = isIterable;
+  Iterable.isKeyed = isKeyed;
+  Iterable.isIndexed = isIndexed;
+  Iterable.isAssociative = isAssociative;
+  Iterable.isOrdered = isOrdered;
+
+  Iterable.Keyed = KeyedIterable;
+  Iterable.Indexed = IndexedIterable;
+  Iterable.Set = SetIterable;
+
+
+  var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+  var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
+  var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
+  var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+
+  // Used for setting prototype methods that IE8 chokes on.
+  var DELETE = 'delete';
+
+  // Constants describing the size of trie nodes.
+  var SHIFT = 5; // Resulted in best performance after ______?
+  var SIZE = 1 << SHIFT;
+  var MASK = SIZE - 1;
+
+  // A consistent shared value representing "not set" which equals nothing other
+  // than itself, and nothing that could be provided externally.
+  var NOT_SET = {};
+
+  // Boolean references, Rough equivalent of `bool &`.
+  var CHANGE_LENGTH = { value: false };
+  var DID_ALTER = { value: false };
+
+  function MakeRef(ref) {
+    ref.value = false;
+    return ref;
+  }
+
+  function SetRef(ref) {
+    ref && (ref.value = true);
+  }
+
+  // A function which returns a value representing an "owner" for transient writes
+  // to tries. The return value will only ever equal itself, and will not equal
+  // the return of any subsequent call of this function.
+  function OwnerID() {}
+
+  // http://jsperf.com/copy-array-inline
+  function arrCopy(arr, offset) {
+    offset = offset || 0;
+    var len = Math.max(0, arr.length - offset);
+    var newArr = new Array(len);
+    for (var ii = 0; ii < len; ii++) {
+      newArr[ii] = arr[ii + offset];
+    }
+    return newArr;
+  }
+
+  function ensureSize(iter) {
+    if (iter.size === undefined) {
+      iter.size = iter.__iterate(returnTrue);
+    }
+    return iter.size;
+  }
+
+  function wrapIndex(iter, index) {
+    // This implements "is array index" which the ECMAString spec defines as:
+    //
+    //     A String property name P is an array index if and only if
+    //     ToString(ToUint32(P)) is equal to P and ToUint32(P) is not equal
+    //     to 2^32−1.
+    //
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-array-exotic-objects
+    if (typeof index !== 'number') {
+      var uint32Index = index >>> 0; // N >>> 0 is shorthand for ToUint32
+      if ('' + uint32Index !== index || uint32Index === 4294967295) {
+        return NaN;
+      }
+      index = uint32Index;
+    }
+    return index < 0 ? ensureSize(iter) + index : index;
+  }
+
+  function returnTrue() {
+    return true;
+  }
+
+  function wholeSlice(begin, end, size) {
+    return (begin === 0 || (size !== undefined && begin <= -size)) &&
+      (end === undefined || (size !== undefined && end >= size));
+  }
+
+  function resolveBegin(begin, size) {
+    return resolveIndex(begin, size, 0);
+  }
+
+  function resolveEnd(end, size) {
+    return resolveIndex(end, size, size);
+  }
+
+  function resolveIndex(index, size, defaultIndex) {
+    return index === undefined ?
+      defaultIndex :
+      index < 0 ?
+        Math.max(0, size + index) :
+        size === undefined ?
+          index :
+          Math.min(size, index);
+  }
+
+  /* global Symbol */
+
+  var ITERATE_KEYS = 0;
+  var ITERATE_VALUES = 1;
+  var ITERATE_ENTRIES = 2;
+
+  var REAL_ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator';
+
+  var ITERATOR_SYMBOL = REAL_ITERATOR_SYMBOL || FAUX_ITERATOR_SYMBOL;
+
+
+  function Iterator(next) {
+      this.next = next;
+    }
+
+    Iterator.prototype.toString = function() {
+      return '[Iterator]';
+    };
+
+
+  Iterator.KEYS = ITERATE_KEYS;
+  Iterator.VALUES = ITERATE_VALUES;
+  Iterator.ENTRIES = ITERATE_ENTRIES;
+
+  Iterator.prototype.inspect =
+  Iterator.prototype.toSource = function () { return this.toString(); };
+  Iterator.prototype[ITERATOR_SYMBOL] = function () {
+    return this;
+  };
+
+
+  function iteratorValue(type, k, v, iteratorResult) {
+    var value = type === 0 ? k : type === 1 ? v : [k, v];
+    iteratorResult ? (iteratorResult.value = value) : (iteratorResult = {
+      value: value, done: false
+    });
+    return iteratorResult;
+  }
+
+  function iteratorDone() {
+    return { value: undefined, done: true };
+  }
+
+  function hasIterator(maybeIterable) {
+    return !!getIteratorFn(maybeIterable);
+  }
+
+  function isIterator(maybeIterator) {
+    return maybeIterator && typeof maybeIterator.next === 'function';
+  }
+
+  function getIterator(iterable) {
+    var iteratorFn = getIteratorFn(iterable);
+    return iteratorFn && iteratorFn.call(iterable);
+  }
+
+  function getIteratorFn(iterable) {
+    var iteratorFn = iterable && (
+      (REAL_ITERATOR_SYMBOL && iterable[REAL_ITERATOR_SYMBOL]) ||
+      iterable[FAUX_ITERATOR_SYMBOL]
+    );
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  function isArrayLike(value) {
+    return value && typeof value.length === 'number';
+  }
+
+  createClass(Seq, Iterable);
+    function Seq(value) {
+      return value === null || value === undefined ? emptySequence() :
+        isIterable(value) ? value.toSeq() : seqFromValue(value);
+    }
+
+    Seq.of = function(/*...values*/) {
+      return Seq(arguments);
+    };
+
+    Seq.prototype.toSeq = function() {
+      return this;
+    };
+
+    Seq.prototype.toString = function() {
+      return this.__toString('Seq {', '}');
+    };
+
+    Seq.prototype.cacheResult = function() {
+      if (!this._cache && this.__iterateUncached) {
+        this._cache = this.entrySeq().toArray();
+        this.size = this._cache.length;
+      }
+      return this;
+    };
+
+    // abstract __iterateUncached(fn, reverse)
+
+    Seq.prototype.__iterate = function(fn, reverse) {
+      return seqIterate(this, fn, reverse, true);
+    };
+
+    // abstract __iteratorUncached(type, reverse)
+
+    Seq.prototype.__iterator = function(type, reverse) {
+      return seqIterator(this, type, reverse, true);
+    };
+
+
+
+  createClass(KeyedSeq, Seq);
+    function KeyedSeq(value) {
+      return value === null || value === undefined ?
+        emptySequence().toKeyedSeq() :
+        isIterable(value) ?
+          (isKeyed(value) ? value.toSeq() : value.fromEntrySeq()) :
+          keyedSeqFromValue(value);
+    }
+
+    KeyedSeq.prototype.toKeyedSeq = function() {
+      return this;
+    };
+
+
+
+  createClass(IndexedSeq, Seq);
+    function IndexedSeq(value) {
+      return value === null || value === undefined ? emptySequence() :
+        !isIterable(value) ? indexedSeqFromValue(value) :
+        isKeyed(value) ? value.entrySeq() : value.toIndexedSeq();
+    }
+
+    IndexedSeq.of = function(/*...values*/) {
+      return IndexedSeq(arguments);
+    };
+
+    IndexedSeq.prototype.toIndexedSeq = function() {
+      return this;
+    };
+
+    IndexedSeq.prototype.toString = function() {
+      return this.__toString('Seq [', ']');
+    };
+
+    IndexedSeq.prototype.__iterate = function(fn, reverse) {
+      return seqIterate(this, fn, reverse, false);
+    };
+
+    IndexedSeq.prototype.__iterator = function(type, reverse) {
+      return seqIterator(this, type, reverse, false);
+    };
+
+
+
+  createClass(SetSeq, Seq);
+    function SetSeq(value) {
+      return (
+        value === null || value === undefined ? emptySequence() :
+        !isIterable(value) ? indexedSeqFromValue(value) :
+        isKeyed(value) ? value.entrySeq() : value
+      ).toSetSeq();
+    }
+
+    SetSeq.of = function(/*...values*/) {
+      return SetSeq(arguments);
+    };
+
+    SetSeq.prototype.toSetSeq = function() {
+      return this;
+    };
+
+
+
+  Seq.isSeq = isSeq;
+  Seq.Keyed = KeyedSeq;
+  Seq.Set = SetSeq;
+  Seq.Indexed = IndexedSeq;
+
+  var IS_SEQ_SENTINEL = '@@__IMMUTABLE_SEQ__@@';
+
+  Seq.prototype[IS_SEQ_SENTINEL] = true;
+
+
+
+  createClass(ArraySeq, IndexedSeq);
+    function ArraySeq(array) {
+      this._array = array;
+      this.size = array.length;
+    }
+
+    ArraySeq.prototype.get = function(index, notSetValue) {
+      return this.has(index) ? this._array[wrapIndex(this, index)] : notSetValue;
+    };
+
+    ArraySeq.prototype.__iterate = function(fn, reverse) {
+      var array = this._array;
+      var maxIndex = array.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        if (fn(array[reverse ? maxIndex - ii : ii], ii, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    ArraySeq.prototype.__iterator = function(type, reverse) {
+      var array = this._array;
+      var maxIndex = array.length - 1;
+      var ii = 0;
+      return new Iterator(function() 
+        {return ii > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++])}
+      );
+    };
+
+
+
+  createClass(ObjectSeq, KeyedSeq);
+    function ObjectSeq(object) {
+      var keys = Object.keys(object);
+      this._object = object;
+      this._keys = keys;
+      this.size = keys.length;
+    }
+
+    ObjectSeq.prototype.get = function(key, notSetValue) {
+      if (notSetValue !== undefined && !this.has(key)) {
+        return notSetValue;
+      }
+      return this._object[key];
+    };
+
+    ObjectSeq.prototype.has = function(key) {
+      return this._object.hasOwnProperty(key);
+    };
+
+    ObjectSeq.prototype.__iterate = function(fn, reverse) {
+      var object = this._object;
+      var keys = this._keys;
+      var maxIndex = keys.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        var key = keys[reverse ? maxIndex - ii : ii];
+        if (fn(object[key], key, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    ObjectSeq.prototype.__iterator = function(type, reverse) {
+      var object = this._object;
+      var keys = this._keys;
+      var maxIndex = keys.length - 1;
+      var ii = 0;
+      return new Iterator(function()  {
+        var key = keys[reverse ? maxIndex - ii : ii];
+        return ii++ > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, key, object[key]);
+      });
+    };
+
+  ObjectSeq.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+  createClass(IterableSeq, IndexedSeq);
+    function IterableSeq(iterable) {
+      this._iterable = iterable;
+      this.size = iterable.length || iterable.size;
+    }
+
+    IterableSeq.prototype.__iterateUncached = function(fn, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterable = this._iterable;
+      var iterator = getIterator(iterable);
+      var iterations = 0;
+      if (isIterator(iterator)) {
+        var step;
+        while (!(step = iterator.next()).done) {
+          if (fn(step.value, iterations++, this) === false) {
+            break;
+          }
+        }
+      }
+      return iterations;
+    };
+
+    IterableSeq.prototype.__iteratorUncached = function(type, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterable = this._iterable;
+      var iterator = getIterator(iterable);
+      if (!isIterator(iterator)) {
+        return new Iterator(iteratorDone);
+      }
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step : iteratorValue(type, iterations++, step.value);
+      });
+    };
+
+
+
+  createClass(IteratorSeq, IndexedSeq);
+    function IteratorSeq(iterator) {
+      this._iterator = iterator;
+      this._iteratorCache = [];
+    }
+
+    IteratorSeq.prototype.__iterateUncached = function(fn, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterator = this._iterator;
+      var cache = this._iteratorCache;
+      var iterations = 0;
+      while (iterations < cache.length) {
+        if (fn(cache[iterations], iterations++, this) === false) {
+          return iterations;
+        }
+      }
+      var step;
+      while (!(step = iterator.next()).done) {
+        var val = step.value;
+        cache[iterations] = val;
+        if (fn(val, iterations++, this) === false) {
+          break;
+        }
+      }
+      return iterations;
+    };
+
+    IteratorSeq.prototype.__iteratorUncached = function(type, reverse) {
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = this._iterator;
+      var cache = this._iteratorCache;
+      var iterations = 0;
+      return new Iterator(function()  {
+        if (iterations >= cache.length) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          cache[iterations] = step.value;
+        }
+        return iteratorValue(type, iterations, cache[iterations++]);
+      });
+    };
+
+
+
+
+  // # pragma Helper functions
+
+  function isSeq(maybeSeq) {
+    return !!(maybeSeq && maybeSeq[IS_SEQ_SENTINEL]);
+  }
+
+  var EMPTY_SEQ;
+
+  function emptySequence() {
+    return EMPTY_SEQ || (EMPTY_SEQ = new ArraySeq([]));
+  }
+
+  function keyedSeqFromValue(value) {
+    var seq =
+      Array.isArray(value) ? new ArraySeq(value).fromEntrySeq() :
+      isIterator(value) ? new IteratorSeq(value).fromEntrySeq() :
+      hasIterator(value) ? new IterableSeq(value).fromEntrySeq() :
+      typeof value === 'object' ? new ObjectSeq(value) :
+      undefined;
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of [k, v] entries, '+
+        'or keyed object: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function indexedSeqFromValue(value) {
+    var seq = maybeIndexedSeqFromValue(value);
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of values: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function seqFromValue(value) {
+    var seq = maybeIndexedSeqFromValue(value) ||
+      (typeof value === 'object' && new ObjectSeq(value));
+    if (!seq) {
+      throw new TypeError(
+        'Expected Array or iterable object of values, or keyed object: ' + value
+      );
+    }
+    return seq;
+  }
+
+  function maybeIndexedSeqFromValue(value) {
+    return (
+      isArrayLike(value) ? new ArraySeq(value) :
+      isIterator(value) ? new IteratorSeq(value) :
+      hasIterator(value) ? new IterableSeq(value) :
+      undefined
+    );
+  }
+
+  function seqIterate(seq, fn, reverse, useKeys) {
+    var cache = seq._cache;
+    if (cache) {
+      var maxIndex = cache.length - 1;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        var entry = cache[reverse ? maxIndex - ii : ii];
+        if (fn(entry[1], useKeys ? entry[0] : ii, seq) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    }
+    return seq.__iterateUncached(fn, reverse);
+  }
+
+  function seqIterator(seq, type, reverse, useKeys) {
+    var cache = seq._cache;
+    if (cache) {
+      var maxIndex = cache.length - 1;
+      var ii = 0;
+      return new Iterator(function()  {
+        var entry = cache[reverse ? maxIndex - ii : ii];
+        return ii++ > maxIndex ?
+          iteratorDone() :
+          iteratorValue(type, useKeys ? entry[0] : ii - 1, entry[1]);
+      });
+    }
+    return seq.__iteratorUncached(type, reverse);
+  }
+
+  function fromJS(json, converter) {
+    return converter ?
+      fromJSWith(converter, json, '', {'': json}) :
+      fromJSDefault(json);
+  }
+
+  function fromJSWith(converter, json, key, parentJSON) {
+    if (Array.isArray(json)) {
+      return converter.call(parentJSON, key, IndexedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
+    }
+    if (isPlainObj(json)) {
+      return converter.call(parentJSON, key, KeyedSeq(json).map(function(v, k)  {return fromJSWith(converter, v, k, json)}));
+    }
+    return json;
+  }
+
+  function fromJSDefault(json) {
+    if (Array.isArray(json)) {
+      return IndexedSeq(json).map(fromJSDefault).toList();
+    }
+    if (isPlainObj(json)) {
+      return KeyedSeq(json).map(fromJSDefault).toMap();
+    }
+    return json;
+  }
+
+  function isPlainObj(value) {
+    return value && (value.constructor === Object || value.constructor === undefined);
+  }
+
+  /**
+   * An extension of the "same-value" algorithm as [described for use by ES6 Map
+   * and Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map#Key_equality)
+   *
+   * NaN is considered the same as NaN, however -0 and 0 are considered the same
+   * value, which is different from the algorithm described by
+   * [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is).
+   *
+   * This is extended further to allow Objects to describe the values they
+   * represent, by way of `valueOf` or `equals` (and `hashCode`).
+   *
+   * Note: because of this extension, the key equality of Immutable.Map and the
+   * value equality of Immutable.Set will differ from ES6 Map and Set.
+   *
+   * ### Defining custom values
+   *
+   * The easiest way to describe the value an object represents is by implementing
+   * `valueOf`. For example, `Date` represents a value by returning a unix
+   * timestamp for `valueOf`:
+   *
+   *     var date1 = new Date(1234567890000); // Fri Feb 13 2009 ...
+   *     var date2 = new Date(1234567890000);
+   *     date1.valueOf(); // 1234567890000
+   *     assert( date1 !== date2 );
+   *     assert( Immutable.is( date1, date2 ) );
+   *
+   * Note: overriding `valueOf` may have other implications if you use this object
+   * where JavaScript expects a primitive, such as implicit string coercion.
+   *
+   * For more complex types, especially collections, implementing `valueOf` may
+   * not be performant. An alternative is to implement `equals` and `hashCode`.
+   *
+   * `equals` takes another object, presumably of similar type, and returns true
+   * if the it is equal. Equality is symmetrical, so the same result should be
+   * returned if this and the argument are flipped.
+   *
+   *     assert( a.equals(b) === b.equals(a) );
+   *
+   * `hashCode` returns a 32bit integer number representing the object which will
+   * be used to determine how to store the value object in a Map or Set. You must
+   * provide both or neither methods, one must not exist without the other.
+   *
+   * Also, an important relationship between these methods must be upheld: if two
+   * values are equal, they *must* return the same hashCode. If the values are not
+   * equal, they might have the same hashCode; this is called a hash collision,
+   * and while undesirable for performance reasons, it is acceptable.
+   *
+   *     if (a.equals(b)) {
+   *       assert( a.hashCode() === b.hashCode() );
+   *     }
+   *
+   * All Immutable collections implement `equals` and `hashCode`.
+   *
+   */
+  function is(valueA, valueB) {
+    if (valueA === valueB || (valueA !== valueA && valueB !== valueB)) {
+      return true;
+    }
+    if (!valueA || !valueB) {
+      return false;
+    }
+    if (typeof valueA.valueOf === 'function' &&
+        typeof valueB.valueOf === 'function') {
+      valueA = valueA.valueOf();
+      valueB = valueB.valueOf();
+      if (valueA === valueB || (valueA !== valueA && valueB !== valueB)) {
+        return true;
+      }
+      if (!valueA || !valueB) {
+        return false;
+      }
+    }
+    if (typeof valueA.equals === 'function' &&
+        typeof valueB.equals === 'function' &&
+        valueA.equals(valueB)) {
+      return true;
+    }
+    return false;
+  }
+
+  function deepEqual(a, b) {
+    if (a === b) {
+      return true;
+    }
+
+    if (
+      !isIterable(b) ||
+      a.size !== undefined && b.size !== undefined && a.size !== b.size ||
+      a.__hash !== undefined && b.__hash !== undefined && a.__hash !== b.__hash ||
+      isKeyed(a) !== isKeyed(b) ||
+      isIndexed(a) !== isIndexed(b) ||
+      isOrdered(a) !== isOrdered(b)
+    ) {
+      return false;
+    }
+
+    if (a.size === 0 && b.size === 0) {
+      return true;
+    }
+
+    var notAssociative = !isAssociative(a);
+
+    if (isOrdered(a)) {
+      var entries = a.entries();
+      return b.every(function(v, k)  {
+        var entry = entries.next().value;
+        return entry && is(entry[1], v) && (notAssociative || is(entry[0], k));
+      }) && entries.next().done;
+    }
+
+    var flipped = false;
+
+    if (a.size === undefined) {
+      if (b.size === undefined) {
+        if (typeof a.cacheResult === 'function') {
+          a.cacheResult();
+        }
+      } else {
+        flipped = true;
+        var _ = a;
+        a = b;
+        b = _;
+      }
+    }
+
+    var allEqual = true;
+    var bSize = b.__iterate(function(v, k)  {
+      if (notAssociative ? !a.has(v) :
+          flipped ? !is(v, a.get(k, NOT_SET)) : !is(a.get(k, NOT_SET), v)) {
+        allEqual = false;
+        return false;
+      }
+    });
+
+    return allEqual && a.size === bSize;
+  }
+
+  createClass(Repeat, IndexedSeq);
+
+    function Repeat(value, times) {
+      if (!(this instanceof Repeat)) {
+        return new Repeat(value, times);
+      }
+      this._value = value;
+      this.size = times === undefined ? Infinity : Math.max(0, times);
+      if (this.size === 0) {
+        if (EMPTY_REPEAT) {
+          return EMPTY_REPEAT;
+        }
+        EMPTY_REPEAT = this;
+      }
+    }
+
+    Repeat.prototype.toString = function() {
+      if (this.size === 0) {
+        return 'Repeat []';
+      }
+      return 'Repeat [ ' + this._value + ' ' + this.size + ' times ]';
+    };
+
+    Repeat.prototype.get = function(index, notSetValue) {
+      return this.has(index) ? this._value : notSetValue;
+    };
+
+    Repeat.prototype.includes = function(searchValue) {
+      return is(this._value, searchValue);
+    };
+
+    Repeat.prototype.slice = function(begin, end) {
+      var size = this.size;
+      return wholeSlice(begin, end, size) ? this :
+        new Repeat(this._value, resolveEnd(end, size) - resolveBegin(begin, size));
+    };
+
+    Repeat.prototype.reverse = function() {
+      return this;
+    };
+
+    Repeat.prototype.indexOf = function(searchValue) {
+      if (is(this._value, searchValue)) {
+        return 0;
+      }
+      return -1;
+    };
+
+    Repeat.prototype.lastIndexOf = function(searchValue) {
+      if (is(this._value, searchValue)) {
+        return this.size;
+      }
+      return -1;
+    };
+
+    Repeat.prototype.__iterate = function(fn, reverse) {
+      for (var ii = 0; ii < this.size; ii++) {
+        if (fn(this._value, ii, this) === false) {
+          return ii + 1;
+        }
+      }
+      return ii;
+    };
+
+    Repeat.prototype.__iterator = function(type, reverse) {var this$0 = this;
+      var ii = 0;
+      return new Iterator(function() 
+        {return ii < this$0.size ? iteratorValue(type, ii++, this$0._value) : iteratorDone()}
+      );
+    };
+
+    Repeat.prototype.equals = function(other) {
+      return other instanceof Repeat ?
+        is(this._value, other._value) :
+        deepEqual(other);
+    };
+
+
+  var EMPTY_REPEAT;
+
+  function invariant(condition, error) {
+    if (!condition) throw new Error(error);
+  }
+
+  createClass(Range, IndexedSeq);
+
+    function Range(start, end, step) {
+      if (!(this instanceof Range)) {
+        return new Range(start, end, step);
+      }
+      invariant(step !== 0, 'Cannot step a Range by 0');
+      start = start || 0;
+      if (end === undefined) {
+        end = Infinity;
+      }
+      step = step === undefined ? 1 : Math.abs(step);
+      if (end < start) {
+        step = -step;
+      }
+      this._start = start;
+      this._end = end;
+      this._step = step;
+      this.size = Math.max(0, Math.ceil((end - start) / step - 1) + 1);
+      if (this.size === 0) {
+        if (EMPTY_RANGE) {
+          return EMPTY_RANGE;
+        }
+        EMPTY_RANGE = this;
+      }
+    }
+
+    Range.prototype.toString = function() {
+      if (this.size === 0) {
+        return 'Range []';
+      }
+      return 'Range [ ' +
+        this._start + '...' + this._end +
+        (this._step !== 1 ? ' by ' + this._step : '') +
+      ' ]';
+    };
+
+    Range.prototype.get = function(index, notSetValue) {
+      return this.has(index) ?
+        this._start + wrapIndex(this, index) * this._step :
+        notSetValue;
+    };
+
+    Range.prototype.includes = function(searchValue) {
+      var possibleIndex = (searchValue - this._start) / this._step;
+      return possibleIndex >= 0 &&
+        possibleIndex < this.size &&
+        possibleIndex === Math.floor(possibleIndex);
+    };
+
+    Range.prototype.slice = function(begin, end) {
+      if (wholeSlice(begin, end, this.size)) {
+        return this;
+      }
+      begin = resolveBegin(begin, this.size);
+      end = resolveEnd(end, this.size);
+      if (end <= begin) {
+        return new Range(0, 0);
+      }
+      return new Range(this.get(begin, this._end), this.get(end, this._end), this._step);
+    };
+
+    Range.prototype.indexOf = function(searchValue) {
+      var offsetValue = searchValue - this._start;
+      if (offsetValue % this._step === 0) {
+        var index = offsetValue / this._step;
+        if (index >= 0 && index < this.size) {
+          return index
+        }
+      }
+      return -1;
+    };
+
+    Range.prototype.lastIndexOf = function(searchValue) {
+      return this.indexOf(searchValue);
+    };
+
+    Range.prototype.__iterate = function(fn, reverse) {
+      var maxIndex = this.size - 1;
+      var step = this._step;
+      var value = reverse ? this._start + maxIndex * step : this._start;
+      for (var ii = 0; ii <= maxIndex; ii++) {
+        if (fn(value, ii, this) === false) {
+          return ii + 1;
+        }
+        value += reverse ? -step : step;
+      }
+      return ii;
+    };
+
+    Range.prototype.__iterator = function(type, reverse) {
+      var maxIndex = this.size - 1;
+      var step = this._step;
+      var value = reverse ? this._start + maxIndex * step : this._start;
+      var ii = 0;
+      return new Iterator(function()  {
+        var v = value;
+        value += reverse ? -step : step;
+        return ii > maxIndex ? iteratorDone() : iteratorValue(type, ii++, v);
+      });
+    };
+
+    Range.prototype.equals = function(other) {
+      return other instanceof Range ?
+        this._start === other._start &&
+        this._end === other._end &&
+        this._step === other._step :
+        deepEqual(this, other);
+    };
+
+
+  var EMPTY_RANGE;
+
+  createClass(Collection, Iterable);
+    function Collection() {
+      throw TypeError('Abstract');
+    }
+
+
+  createClass(KeyedCollection, Collection);function KeyedCollection() {}
+
+  createClass(IndexedCollection, Collection);function IndexedCollection() {}
+
+  createClass(SetCollection, Collection);function SetCollection() {}
+
+
+  Collection.Keyed = KeyedCollection;
+  Collection.Indexed = IndexedCollection;
+  Collection.Set = SetCollection;
+
+  var imul =
+    typeof Math.imul === 'function' && Math.imul(0xffffffff, 2) === -2 ?
+    Math.imul :
+    function imul(a, b) {
+      a = a | 0; // int
+      b = b | 0; // int
+      var c = a & 0xffff;
+      var d = b & 0xffff;
+      // Shift by 0 fixes the sign on the high part.
+      return (c * d) + ((((a >>> 16) * d + c * (b >>> 16)) << 16) >>> 0) | 0; // int
+    };
+
+  // v8 has an optimization for storing 31-bit signed numbers.
+  // Values which have either 00 or 11 as the high order bits qualify.
+  // This function drops the highest order bit in a signed number, maintaining
+  // the sign bit.
+  function smi(i32) {
+    return ((i32 >>> 1) & 0x40000000) | (i32 & 0xBFFFFFFF);
+  }
+
+  function hash(o) {
+    if (o === false || o === null || o === undefined) {
+      return 0;
+    }
+    if (typeof o.valueOf === 'function') {
+      o = o.valueOf();
+      if (o === false || o === null || o === undefined) {
+        return 0;
+      }
+    }
+    if (o === true) {
+      return 1;
+    }
+    var type = typeof o;
+    if (type === 'number') {
+      if (o !== o || o === Infinity) {
+        return 0;
+      }
+      var h = o | 0;
+      if (h !== o) {
+        h ^= o * 0xFFFFFFFF;
+      }
+      while (o > 0xFFFFFFFF) {
+        o /= 0xFFFFFFFF;
+        h ^= o;
+      }
+      return smi(h);
+    }
+    if (type === 'string') {
+      return o.length > STRING_HASH_CACHE_MIN_STRLEN ? cachedHashString(o) : hashString(o);
+    }
+    if (typeof o.hashCode === 'function') {
+      return o.hashCode();
+    }
+    if (type === 'object') {
+      return hashJSObj(o);
+    }
+    if (typeof o.toString === 'function') {
+      return hashString(o.toString());
+    }
+    throw new Error('Value type ' + type + ' cannot be hashed.');
+  }
+
+  function cachedHashString(string) {
+    var hash = stringHashCache[string];
+    if (hash === undefined) {
+      hash = hashString(string);
+      if (STRING_HASH_CACHE_SIZE === STRING_HASH_CACHE_MAX_SIZE) {
+        STRING_HASH_CACHE_SIZE = 0;
+        stringHashCache = {};
+      }
+      STRING_HASH_CACHE_SIZE++;
+      stringHashCache[string] = hash;
+    }
+    return hash;
+  }
+
+  // http://jsperf.com/hashing-strings
+  function hashString(string) {
+    // This is the hash from JVM
+    // The hash code for a string is computed as
+    // s[0] * 31 ^ (n - 1) + s[1] * 31 ^ (n - 2) + ... + s[n - 1],
+    // where s[i] is the ith character of the string and n is the length of
+    // the string. We "mod" the result to make it between 0 (inclusive) and 2^31
+    // (exclusive) by dropping high bits.
+    var hash = 0;
+    for (var ii = 0; ii < string.length; ii++) {
+      hash = 31 * hash + string.charCodeAt(ii) | 0;
+    }
+    return smi(hash);
+  }
+
+  function hashJSObj(obj) {
+    var hash;
+    if (usingWeakMap) {
+      hash = weakMap.get(obj);
+      if (hash !== undefined) {
+        return hash;
+      }
+    }
+
+    hash = obj[UID_HASH_KEY];
+    if (hash !== undefined) {
+      return hash;
+    }
+
+    if (!canDefineProperty) {
+      hash = obj.propertyIsEnumerable && obj.propertyIsEnumerable[UID_HASH_KEY];
+      if (hash !== undefined) {
+        return hash;
+      }
+
+      hash = getIENodeHash(obj);
+      if (hash !== undefined) {
+        return hash;
+      }
+    }
+
+    hash = ++objHashUID;
+    if (objHashUID & 0x40000000) {
+      objHashUID = 0;
+    }
+
+    if (usingWeakMap) {
+      weakMap.set(obj, hash);
+    } else if (isExtensible !== undefined && isExtensible(obj) === false) {
+      throw new Error('Non-extensible objects are not allowed as keys.');
+    } else if (canDefineProperty) {
+      Object.defineProperty(obj, UID_HASH_KEY, {
+        'enumerable': false,
+        'configurable': false,
+        'writable': false,
+        'value': hash
+      });
+    } else if (obj.propertyIsEnumerable !== undefined &&
+               obj.propertyIsEnumerable === obj.constructor.prototype.propertyIsEnumerable) {
+      // Since we can't define a non-enumerable property on the object
+      // we'll hijack one of the less-used non-enumerable properties to
+      // save our hash on it. Since this is a function it will not show up in
+      // `JSON.stringify` which is what we want.
+      obj.propertyIsEnumerable = function() {
+        return this.constructor.prototype.propertyIsEnumerable.apply(this, arguments);
+      };
+      obj.propertyIsEnumerable[UID_HASH_KEY] = hash;
+    } else if (obj.nodeType !== undefined) {
+      // At this point we couldn't get the IE `uniqueID` to use as a hash
+      // and we couldn't use a non-enumerable property to exploit the
+      // dontEnum bug so we simply add the `UID_HASH_KEY` on the node
+      // itself.
+      obj[UID_HASH_KEY] = hash;
+    } else {
+      throw new Error('Unable to set a non-enumerable property on object.');
+    }
+
+    return hash;
+  }
+
+  // Get references to ES5 object methods.
+  var isExtensible = Object.isExtensible;
+
+  // True if Object.defineProperty works as expected. IE8 fails this test.
+  var canDefineProperty = (function() {
+    try {
+      Object.defineProperty({}, '@', {});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }());
+
+  // IE has a `uniqueID` property on DOM nodes. We can construct the hash from it
+  // and avoid memory leaks from the IE cloneNode bug.
+  function getIENodeHash(node) {
+    if (node && node.nodeType > 0) {
+      switch (node.nodeType) {
+        case 1: // Element
+          return node.uniqueID;
+        case 9: // Document
+          return node.documentElement && node.documentElement.uniqueID;
+      }
+    }
+  }
+
+  // If possible, use a WeakMap.
+  var usingWeakMap = typeof WeakMap === 'function';
+  var weakMap;
+  if (usingWeakMap) {
+    weakMap = new WeakMap();
+  }
+
+  var objHashUID = 0;
+
+  var UID_HASH_KEY = '__immutablehash__';
+  if (typeof Symbol === 'function') {
+    UID_HASH_KEY = Symbol(UID_HASH_KEY);
+  }
+
+  var STRING_HASH_CACHE_MIN_STRLEN = 16;
+  var STRING_HASH_CACHE_MAX_SIZE = 255;
+  var STRING_HASH_CACHE_SIZE = 0;
+  var stringHashCache = {};
+
+  function assertNotInfinite(size) {
+    invariant(
+      size !== Infinity,
+      'Cannot perform this action with an infinite size.'
+    );
+  }
+
+  createClass(Map, KeyedCollection);
+
+    // @pragma Construction
+
+    function Map(value) {
+      return value === null || value === undefined ? emptyMap() :
+        isMap(value) && !isOrdered(value) ? value :
+        emptyMap().withMutations(function(map ) {
+          var iter = KeyedIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v, k)  {return map.set(k, v)});
+        });
+    }
+
+    Map.of = function() {var keyValues = SLICE$0.call(arguments, 0);
+      return emptyMap().withMutations(function(map ) {
+        for (var i = 0; i < keyValues.length; i += 2) {
+          if (i + 1 >= keyValues.length) {
+            throw new Error('Missing value for key: ' + keyValues[i]);
+          }
+          map.set(keyValues[i], keyValues[i + 1]);
+        }
+      });
+    };
+
+    Map.prototype.toString = function() {
+      return this.__toString('Map {', '}');
+    };
+
+    // @pragma Access
+
+    Map.prototype.get = function(k, notSetValue) {
+      return this._root ?
+        this._root.get(0, undefined, k, notSetValue) :
+        notSetValue;
+    };
+
+    // @pragma Modification
+
+    Map.prototype.set = function(k, v) {
+      return updateMap(this, k, v);
+    };
+
+    Map.prototype.setIn = function(keyPath, v) {
+      return this.updateIn(keyPath, NOT_SET, function()  {return v});
+    };
+
+    Map.prototype.remove = function(k) {
+      return updateMap(this, k, NOT_SET);
+    };
+
+    Map.prototype.deleteIn = function(keyPath) {
+      return this.updateIn(keyPath, function()  {return NOT_SET});
+    };
+
+    Map.prototype.update = function(k, notSetValue, updater) {
+      return arguments.length === 1 ?
+        k(this) :
+        this.updateIn([k], notSetValue, updater);
+    };
+
+    Map.prototype.updateIn = function(keyPath, notSetValue, updater) {
+      if (!updater) {
+        updater = notSetValue;
+        notSetValue = undefined;
+      }
+      var updatedValue = updateInDeepMap(
+        this,
+        forceIterator(keyPath),
+        notSetValue,
+        updater
+      );
+      return updatedValue === NOT_SET ? undefined : updatedValue;
+    };
+
+    Map.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._root = null;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyMap();
+    };
+
+    // @pragma Composition
+
+    Map.prototype.merge = function(/*...iters*/) {
+      return mergeIntoMapWith(this, undefined, arguments);
+    };
+
+    Map.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoMapWith(this, merger, iters);
+    };
+
+    Map.prototype.mergeIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
+      return this.updateIn(
+        keyPath,
+        emptyMap(),
+        function(m ) {return typeof m.merge === 'function' ?
+          m.merge.apply(m, iters) :
+          iters[iters.length - 1]}
+      );
+    };
+
+    Map.prototype.mergeDeep = function(/*...iters*/) {
+      return mergeIntoMapWith(this, deepMerger, arguments);
+    };
+
+    Map.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoMapWith(this, deepMergerWith(merger), iters);
+    };
+
+    Map.prototype.mergeDeepIn = function(keyPath) {var iters = SLICE$0.call(arguments, 1);
+      return this.updateIn(
+        keyPath,
+        emptyMap(),
+        function(m ) {return typeof m.mergeDeep === 'function' ?
+          m.mergeDeep.apply(m, iters) :
+          iters[iters.length - 1]}
+      );
+    };
+
+    Map.prototype.sort = function(comparator) {
+      // Late binding
+      return OrderedMap(sortFactory(this, comparator));
+    };
+
+    Map.prototype.sortBy = function(mapper, comparator) {
+      // Late binding
+      return OrderedMap(sortFactory(this, comparator, mapper));
+    };
+
+    // @pragma Mutability
+
+    Map.prototype.withMutations = function(fn) {
+      var mutable = this.asMutable();
+      fn(mutable);
+      return mutable.wasAltered() ? mutable.__ensureOwner(this.__ownerID) : this;
+    };
+
+    Map.prototype.asMutable = function() {
+      return this.__ownerID ? this : this.__ensureOwner(new OwnerID());
+    };
+
+    Map.prototype.asImmutable = function() {
+      return this.__ensureOwner();
+    };
+
+    Map.prototype.wasAltered = function() {
+      return this.__altered;
+    };
+
+    Map.prototype.__iterator = function(type, reverse) {
+      return new MapIterator(this, type, reverse);
+    };
+
+    Map.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      this._root && this._root.iterate(function(entry ) {
+        iterations++;
+        return fn(entry[1], entry[0], this$0);
+      }, reverse);
+      return iterations;
+    };
+
+    Map.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this.__altered = false;
+        return this;
+      }
+      return makeMap(this.size, this._root, ownerID, this.__hash);
+    };
+
+
+  function isMap(maybeMap) {
+    return !!(maybeMap && maybeMap[IS_MAP_SENTINEL]);
+  }
+
+  Map.isMap = isMap;
+
+  var IS_MAP_SENTINEL = '@@__IMMUTABLE_MAP__@@';
+
+  var MapPrototype = Map.prototype;
+  MapPrototype[IS_MAP_SENTINEL] = true;
+  MapPrototype[DELETE] = MapPrototype.remove;
+  MapPrototype.removeIn = MapPrototype.deleteIn;
+
+
+  // #pragma Trie Nodes
+
+
+
+    function ArrayMapNode(ownerID, entries) {
+      this.ownerID = ownerID;
+      this.entries = entries;
+    }
+
+    ArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      var entries = this.entries;
+      for (var ii = 0, len = entries.length; ii < len; ii++) {
+        if (is(key, entries[ii][0])) {
+          return entries[ii][1];
+        }
+      }
+      return notSetValue;
+    };
+
+    ArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      var removed = value === NOT_SET;
+
+      var entries = this.entries;
+      var idx = 0;
+      for (var len = entries.length; idx < len; idx++) {
+        if (is(key, entries[idx][0])) {
+          break;
+        }
+      }
+      var exists = idx < len;
+
+      if (exists ? entries[idx][1] === value : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+      (removed || !exists) && SetRef(didChangeSize);
+
+      if (removed && entries.length === 1) {
+        return; // undefined
+      }
+
+      if (!exists && !removed && entries.length >= MAX_ARRAY_MAP_SIZE) {
+        return createNodes(ownerID, entries, key, value);
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newEntries = isEditable ? entries : arrCopy(entries);
+
+      if (exists) {
+        if (removed) {
+          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
+        } else {
+          newEntries[idx] = [key, value];
+        }
+      } else {
+        newEntries.push([key, value]);
+      }
+
+      if (isEditable) {
+        this.entries = newEntries;
+        return this;
+      }
+
+      return new ArrayMapNode(ownerID, newEntries);
+    };
+
+
+
+
+    function BitmapIndexedNode(ownerID, bitmap, nodes) {
+      this.ownerID = ownerID;
+      this.bitmap = bitmap;
+      this.nodes = nodes;
+    }
+
+    BitmapIndexedNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var bit = (1 << ((shift === 0 ? keyHash : keyHash >>> shift) & MASK));
+      var bitmap = this.bitmap;
+      return (bitmap & bit) === 0 ? notSetValue :
+        this.nodes[popCount(bitmap & (bit - 1))].get(shift + SHIFT, keyHash, key, notSetValue);
+    };
+
+    BitmapIndexedNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var keyHashFrag = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var bit = 1 << keyHashFrag;
+      var bitmap = this.bitmap;
+      var exists = (bitmap & bit) !== 0;
+
+      if (!exists && value === NOT_SET) {
+        return this;
+      }
+
+      var idx = popCount(bitmap & (bit - 1));
+      var nodes = this.nodes;
+      var node = exists ? nodes[idx] : undefined;
+      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
+
+      if (newNode === node) {
+        return this;
+      }
+
+      if (!exists && newNode && nodes.length >= MAX_BITMAP_INDEXED_SIZE) {
+        return expandNodes(ownerID, nodes, bitmap, keyHashFrag, newNode);
+      }
+
+      if (exists && !newNode && nodes.length === 2 && isLeafNode(nodes[idx ^ 1])) {
+        return nodes[idx ^ 1];
+      }
+
+      if (exists && newNode && nodes.length === 1 && isLeafNode(newNode)) {
+        return newNode;
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newBitmap = exists ? newNode ? bitmap : bitmap ^ bit : bitmap | bit;
+      var newNodes = exists ? newNode ?
+        setIn(nodes, idx, newNode, isEditable) :
+        spliceOut(nodes, idx, isEditable) :
+        spliceIn(nodes, idx, newNode, isEditable);
+
+      if (isEditable) {
+        this.bitmap = newBitmap;
+        this.nodes = newNodes;
+        return this;
+      }
+
+      return new BitmapIndexedNode(ownerID, newBitmap, newNodes);
+    };
+
+
+
+
+    function HashArrayMapNode(ownerID, count, nodes) {
+      this.ownerID = ownerID;
+      this.count = count;
+      this.nodes = nodes;
+    }
+
+    HashArrayMapNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var node = this.nodes[idx];
+      return node ? node.get(shift + SHIFT, keyHash, key, notSetValue) : notSetValue;
+    };
+
+    HashArrayMapNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+      var idx = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+      var removed = value === NOT_SET;
+      var nodes = this.nodes;
+      var node = nodes[idx];
+
+      if (removed && !node) {
+        return this;
+      }
+
+      var newNode = updateNode(node, ownerID, shift + SHIFT, keyHash, key, value, didChangeSize, didAlter);
+      if (newNode === node) {
+        return this;
+      }
+
+      var newCount = this.count;
+      if (!node) {
+        newCount++;
+      } else if (!newNode) {
+        newCount--;
+        if (newCount < MIN_HASH_ARRAY_MAP_SIZE) {
+          return packNodes(ownerID, nodes, newCount, idx);
+        }
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newNodes = setIn(nodes, idx, newNode, isEditable);
+
+      if (isEditable) {
+        this.count = newCount;
+        this.nodes = newNodes;
+        return this;
+      }
+
+      return new HashArrayMapNode(ownerID, newCount, newNodes);
+    };
+
+
+
+
+    function HashCollisionNode(ownerID, keyHash, entries) {
+      this.ownerID = ownerID;
+      this.keyHash = keyHash;
+      this.entries = entries;
+    }
+
+    HashCollisionNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      var entries = this.entries;
+      for (var ii = 0, len = entries.length; ii < len; ii++) {
+        if (is(key, entries[ii][0])) {
+          return entries[ii][1];
+        }
+      }
+      return notSetValue;
+    };
+
+    HashCollisionNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      if (keyHash === undefined) {
+        keyHash = hash(key);
+      }
+
+      var removed = value === NOT_SET;
+
+      if (keyHash !== this.keyHash) {
+        if (removed) {
+          return this;
+        }
+        SetRef(didAlter);
+        SetRef(didChangeSize);
+        return mergeIntoNode(this, ownerID, shift, keyHash, [key, value]);
+      }
+
+      var entries = this.entries;
+      var idx = 0;
+      for (var len = entries.length; idx < len; idx++) {
+        if (is(key, entries[idx][0])) {
+          break;
+        }
+      }
+      var exists = idx < len;
+
+      if (exists ? entries[idx][1] === value : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+      (removed || !exists) && SetRef(didChangeSize);
+
+      if (removed && len === 2) {
+        return new ValueNode(ownerID, this.keyHash, entries[idx ^ 1]);
+      }
+
+      var isEditable = ownerID && ownerID === this.ownerID;
+      var newEntries = isEditable ? entries : arrCopy(entries);
+
+      if (exists) {
+        if (removed) {
+          idx === len - 1 ? newEntries.pop() : (newEntries[idx] = newEntries.pop());
+        } else {
+          newEntries[idx] = [key, value];
+        }
+      } else {
+        newEntries.push([key, value]);
+      }
+
+      if (isEditable) {
+        this.entries = newEntries;
+        return this;
+      }
+
+      return new HashCollisionNode(ownerID, this.keyHash, newEntries);
+    };
+
+
+
+
+    function ValueNode(ownerID, keyHash, entry) {
+      this.ownerID = ownerID;
+      this.keyHash = keyHash;
+      this.entry = entry;
+    }
+
+    ValueNode.prototype.get = function(shift, keyHash, key, notSetValue) {
+      return is(key, this.entry[0]) ? this.entry[1] : notSetValue;
+    };
+
+    ValueNode.prototype.update = function(ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+      var removed = value === NOT_SET;
+      var keyMatch = is(key, this.entry[0]);
+      if (keyMatch ? value === this.entry[1] : removed) {
+        return this;
+      }
+
+      SetRef(didAlter);
+
+      if (removed) {
+        SetRef(didChangeSize);
+        return; // undefined
+      }
+
+      if (keyMatch) {
+        if (ownerID && ownerID === this.ownerID) {
+          this.entry[1] = value;
+          return this;
+        }
+        return new ValueNode(ownerID, this.keyHash, [key, value]);
+      }
+
+      SetRef(didChangeSize);
+      return mergeIntoNode(this, ownerID, shift, hash(key), [key, value]);
+    };
+
+
+
+  // #pragma Iterators
+
+  ArrayMapNode.prototype.iterate =
+  HashCollisionNode.prototype.iterate = function (fn, reverse) {
+    var entries = this.entries;
+    for (var ii = 0, maxIndex = entries.length - 1; ii <= maxIndex; ii++) {
+      if (fn(entries[reverse ? maxIndex - ii : ii]) === false) {
+        return false;
+      }
+    }
+  };
+
+  BitmapIndexedNode.prototype.iterate =
+  HashArrayMapNode.prototype.iterate = function (fn, reverse) {
+    var nodes = this.nodes;
+    for (var ii = 0, maxIndex = nodes.length - 1; ii <= maxIndex; ii++) {
+      var node = nodes[reverse ? maxIndex - ii : ii];
+      if (node && node.iterate(fn, reverse) === false) {
+        return false;
+      }
+    }
+  };
+
+  ValueNode.prototype.iterate = function (fn, reverse) {
+    return fn(this.entry);
+  };
+
+  createClass(MapIterator, Iterator);
+
+    function MapIterator(map, type, reverse) {
+      this._type = type;
+      this._reverse = reverse;
+      this._stack = map._root && mapIteratorFrame(map._root);
+    }
+
+    MapIterator.prototype.next = function() {
+      var type = this._type;
+      var stack = this._stack;
+      while (stack) {
+        var node = stack.node;
+        var index = stack.index++;
+        var maxIndex;
+        if (node.entry) {
+          if (index === 0) {
+            return mapIteratorValue(type, node.entry);
+          }
+        } else if (node.entries) {
+          maxIndex = node.entries.length - 1;
+          if (index <= maxIndex) {
+            return mapIteratorValue(type, node.entries[this._reverse ? maxIndex - index : index]);
+          }
+        } else {
+          maxIndex = node.nodes.length - 1;
+          if (index <= maxIndex) {
+            var subNode = node.nodes[this._reverse ? maxIndex - index : index];
+            if (subNode) {
+              if (subNode.entry) {
+                return mapIteratorValue(type, subNode.entry);
+              }
+              stack = this._stack = mapIteratorFrame(subNode, stack);
             }
-            faces.push(face);
+            continue;
+          }
         }
-        return faces;
+        stack = this._stack = this._stack.__prev;
+      }
+      return iteratorDone();
     };
-    GeometryUtils.hasData = function (data) {
-        return data && ((data.length && data.length > 0) || (data.getCount && data.getCount() > 0));
-    };
-    GeometryUtils.getThreeComponent = function (sourceData, index) {
-        var startIndex = 3 * index;
-        return Vector3.create(sourceData[startIndex], sourceData[startIndex + 1], sourceData[startIndex + 2]);
-    };
-    GeometryUtils.iterateThreeComponent = function (dataArr, iterator) {
-        for (var i = 0, len = dataArr.length; i < len; i += 3) {
-            iterator(Vector3.create(dataArr[i], dataArr[i + 1], dataArr[i + 2]));
-        }
-    };
-    GeometryUtils.setThreeComponent = function (targetData, sourceData, index) {
-        if (sourceData instanceof Vector3) {
-            targetData[index * 3] = sourceData.x;
-            targetData[index * 3 + 1] = sourceData.y;
-            targetData[index * 3 + 2] = sourceData.z;
-        }
-        else {
-            targetData[index * 3] = sourceData[0];
-            targetData[index * 3 + 1] = sourceData[1];
-            targetData[index * 3 + 2] = sourceData[2];
-        }
-    };
-    return GeometryUtils;
-}());
-__decorate([
-    requireCheck(function (data) {
-        if (data) {
-            assert(data instanceof Collection || data instanceof Hash || JudgeUtils$1.isArrayExactly(data), Log$$1.info.FUNC_SHOULD("data", "be Array or Collection or Hash"));
-        }
-    })
-], GeometryUtils, "hasData", null);
-__decorate([
-    requireCheck(function (dataArr, iterator) {
-        assert(dataArr.length % 3 === 0, Log$$1.info.FUNC_SHOULD("dataArr.length", "times of three"));
-    })
-], GeometryUtils, "iterateThreeComponent", null);
-GeometryUtils = __decorate([
-    registerClass("GeometryUtils")
-], GeometryUtils);
 
-var BoxGeometry = (function (_super) {
-    __extends(BoxGeometry, _super);
-    function BoxGeometry() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.width = null;
-        _this.height = null;
-        _this.depth = null;
-        _this.widthSegments = 1;
-        _this.heightSegments = 1;
-        _this.depthSegments = 1;
-        return _this;
-    }
-    BoxGeometry.create = function () {
-        var geom = new this();
-        return geom;
+
+  function mapIteratorValue(type, entry) {
+    return iteratorValue(type, entry[0], entry[1]);
+  }
+
+  function mapIteratorFrame(node, prev) {
+    return {
+      node: node,
+      index: 0,
+      __prev: prev
     };
-    BoxGeometry.prototype.computeData = function () {
-        var width = this.width, height = this.height, depth = this.depth, widthSegments = this.widthSegments, heightSegments = this.heightSegments, depthSegments = this.depthSegments, sides = {
-            FRONT: 0,
-            BACK: 1,
-            TOP: 2,
-            BOTTOM: 3,
-            RIGHT: 4,
-            LEFT: 5
+  }
+
+  function makeMap(size, root, ownerID, hash) {
+    var map = Object.create(MapPrototype);
+    map.size = size;
+    map._root = root;
+    map.__ownerID = ownerID;
+    map.__hash = hash;
+    map.__altered = false;
+    return map;
+  }
+
+  var EMPTY_MAP;
+  function emptyMap() {
+    return EMPTY_MAP || (EMPTY_MAP = makeMap(0));
+  }
+
+  function updateMap(map, k, v) {
+    var newRoot;
+    var newSize;
+    if (!map._root) {
+      if (v === NOT_SET) {
+        return map;
+      }
+      newSize = 1;
+      newRoot = new ArrayMapNode(map.__ownerID, [[k, v]]);
+    } else {
+      var didChangeSize = MakeRef(CHANGE_LENGTH);
+      var didAlter = MakeRef(DID_ALTER);
+      newRoot = updateNode(map._root, map.__ownerID, 0, undefined, k, v, didChangeSize, didAlter);
+      if (!didAlter.value) {
+        return map;
+      }
+      newSize = map.size + (didChangeSize.value ? v === NOT_SET ? -1 : 1 : 0);
+    }
+    if (map.__ownerID) {
+      map.size = newSize;
+      map._root = newRoot;
+      map.__hash = undefined;
+      map.__altered = true;
+      return map;
+    }
+    return newRoot ? makeMap(newSize, newRoot) : emptyMap();
+  }
+
+  function updateNode(node, ownerID, shift, keyHash, key, value, didChangeSize, didAlter) {
+    if (!node) {
+      if (value === NOT_SET) {
+        return node;
+      }
+      SetRef(didAlter);
+      SetRef(didChangeSize);
+      return new ValueNode(ownerID, keyHash, [key, value]);
+    }
+    return node.update(ownerID, shift, keyHash, key, value, didChangeSize, didAlter);
+  }
+
+  function isLeafNode(node) {
+    return node.constructor === ValueNode || node.constructor === HashCollisionNode;
+  }
+
+  function mergeIntoNode(node, ownerID, shift, keyHash, entry) {
+    if (node.keyHash === keyHash) {
+      return new HashCollisionNode(ownerID, keyHash, [node.entry, entry]);
+    }
+
+    var idx1 = (shift === 0 ? node.keyHash : node.keyHash >>> shift) & MASK;
+    var idx2 = (shift === 0 ? keyHash : keyHash >>> shift) & MASK;
+
+    var newNode;
+    var nodes = idx1 === idx2 ?
+      [mergeIntoNode(node, ownerID, shift + SHIFT, keyHash, entry)] :
+      ((newNode = new ValueNode(ownerID, keyHash, entry)), idx1 < idx2 ? [node, newNode] : [newNode, node]);
+
+    return new BitmapIndexedNode(ownerID, (1 << idx1) | (1 << idx2), nodes);
+  }
+
+  function createNodes(ownerID, entries, key, value) {
+    if (!ownerID) {
+      ownerID = new OwnerID();
+    }
+    var node = new ValueNode(ownerID, hash(key), [key, value]);
+    for (var ii = 0; ii < entries.length; ii++) {
+      var entry = entries[ii];
+      node = node.update(ownerID, 0, undefined, entry[0], entry[1]);
+    }
+    return node;
+  }
+
+  function packNodes(ownerID, nodes, count, excluding) {
+    var bitmap = 0;
+    var packedII = 0;
+    var packedNodes = new Array(count);
+    for (var ii = 0, bit = 1, len = nodes.length; ii < len; ii++, bit <<= 1) {
+      var node = nodes[ii];
+      if (node !== undefined && ii !== excluding) {
+        bitmap |= bit;
+        packedNodes[packedII++] = node;
+      }
+    }
+    return new BitmapIndexedNode(ownerID, bitmap, packedNodes);
+  }
+
+  function expandNodes(ownerID, nodes, bitmap, including, node) {
+    var count = 0;
+    var expandedNodes = new Array(SIZE);
+    for (var ii = 0; bitmap !== 0; ii++, bitmap >>>= 1) {
+      expandedNodes[ii] = bitmap & 1 ? nodes[count++] : undefined;
+    }
+    expandedNodes[including] = node;
+    return new HashArrayMapNode(ownerID, count + 1, expandedNodes);
+  }
+
+  function mergeIntoMapWith(map, merger, iterables) {
+    var iters = [];
+    for (var ii = 0; ii < iterables.length; ii++) {
+      var value = iterables[ii];
+      var iter = KeyedIterable(value);
+      if (!isIterable(value)) {
+        iter = iter.map(function(v ) {return fromJS(v)});
+      }
+      iters.push(iter);
+    }
+    return mergeIntoCollectionWith(map, merger, iters);
+  }
+
+  function deepMerger(existing, value, key) {
+    return existing && existing.mergeDeep && isIterable(value) ?
+      existing.mergeDeep(value) :
+      is(existing, value) ? existing : value;
+  }
+
+  function deepMergerWith(merger) {
+    return function(existing, value, key)  {
+      if (existing && existing.mergeDeepWith && isIterable(value)) {
+        return existing.mergeDeepWith(merger, value);
+      }
+      var nextValue = merger(existing, value, key);
+      return is(existing, nextValue) ? existing : nextValue;
+    };
+  }
+
+  function mergeIntoCollectionWith(collection, merger, iters) {
+    iters = iters.filter(function(x ) {return x.size !== 0});
+    if (iters.length === 0) {
+      return collection;
+    }
+    if (collection.size === 0 && !collection.__ownerID && iters.length === 1) {
+      return collection.constructor(iters[0]);
+    }
+    return collection.withMutations(function(collection ) {
+      var mergeIntoMap = merger ?
+        function(value, key)  {
+          collection.update(key, NOT_SET, function(existing )
+            {return existing === NOT_SET ? value : merger(existing, value, key)}
+          );
+        } :
+        function(value, key)  {
+          collection.set(key, value);
         };
-        var faceAxes = [
-            [0, 1, 3],
-            [4, 5, 7],
-            [3, 2, 6],
-            [1, 0, 4],
-            [1, 4, 2],
-            [5, 0, 6]
-        ];
-        var corners = [
-            Vector3.create(-width, -height, depth),
-            Vector3.create(width, -height, depth),
-            Vector3.create(width, height, depth),
-            Vector3.create(-width, height, depth),
-            Vector3.create(width, -height, -depth),
-            Vector3.create(-width, -height, -depth),
-            Vector3.create(-width, height, -depth),
-            Vector3.create(width, height, -depth)
-        ];
-        var vertices = [];
-        var indices = [];
-        function generateFace(side, uSegments, vSegments) {
-            var x, y, z, u, v;
-            var i, j;
-            var offset = vertices.length / 3;
-            for (i = 0; i <= uSegments; i++) {
-                for (j = 0; j <= vSegments; j++) {
-                    var temp1 = Vector3.create();
-                    var temp2 = Vector3.create();
-                    var temp3 = Vector3.create();
-                    var r = Vector3.create();
-                    temp1.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][1]], i / uSegments);
-                    temp2.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][2]], j / vSegments);
-                    temp3.sub2(temp2, corners[faceAxes[side][0]]);
-                    r.add2(temp1, temp3);
-                    u = i / uSegments;
-                    v = j / vSegments;
-                    vertices.push(r.x, r.y, r.z);
-                    if ((i < uSegments) && (j < vSegments)) {
-                        indices.push(offset + j + i * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1), offset + j + i * (uSegments + 1) + 1);
-                        indices.push(offset + j + (i + 1) * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1) + 1, offset + j + i * (uSegments + 1) + 1);
-                    }
+      for (var ii = 0; ii < iters.length; ii++) {
+        iters[ii].forEach(mergeIntoMap);
+      }
+    });
+  }
+
+  function updateInDeepMap(existing, keyPathIter, notSetValue, updater) {
+    var isNotSet = existing === NOT_SET;
+    var step = keyPathIter.next();
+    if (step.done) {
+      var existingValue = isNotSet ? notSetValue : existing;
+      var newValue = updater(existingValue);
+      return newValue === existingValue ? existing : newValue;
+    }
+    invariant(
+      isNotSet || (existing && existing.set),
+      'invalid keyPath'
+    );
+    var key = step.value;
+    var nextExisting = isNotSet ? NOT_SET : existing.get(key, NOT_SET);
+    var nextUpdated = updateInDeepMap(
+      nextExisting,
+      keyPathIter,
+      notSetValue,
+      updater
+    );
+    return nextUpdated === nextExisting ? existing :
+      nextUpdated === NOT_SET ? existing.remove(key) :
+      (isNotSet ? emptyMap() : existing).set(key, nextUpdated);
+  }
+
+  function popCount(x) {
+    x = x - ((x >> 1) & 0x55555555);
+    x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+    x = (x + (x >> 4)) & 0x0f0f0f0f;
+    x = x + (x >> 8);
+    x = x + (x >> 16);
+    return x & 0x7f;
+  }
+
+  function setIn(array, idx, val, canEdit) {
+    var newArray = canEdit ? array : arrCopy(array);
+    newArray[idx] = val;
+    return newArray;
+  }
+
+  function spliceIn(array, idx, val, canEdit) {
+    var newLen = array.length + 1;
+    if (canEdit && idx + 1 === newLen) {
+      array[idx] = val;
+      return array;
+    }
+    var newArray = new Array(newLen);
+    var after = 0;
+    for (var ii = 0; ii < newLen; ii++) {
+      if (ii === idx) {
+        newArray[ii] = val;
+        after = -1;
+      } else {
+        newArray[ii] = array[ii + after];
+      }
+    }
+    return newArray;
+  }
+
+  function spliceOut(array, idx, canEdit) {
+    var newLen = array.length - 1;
+    if (canEdit && idx === newLen) {
+      array.pop();
+      return array;
+    }
+    var newArray = new Array(newLen);
+    var after = 0;
+    for (var ii = 0; ii < newLen; ii++) {
+      if (ii === idx) {
+        after = 1;
+      }
+      newArray[ii] = array[ii + after];
+    }
+    return newArray;
+  }
+
+  var MAX_ARRAY_MAP_SIZE = SIZE / 4;
+  var MAX_BITMAP_INDEXED_SIZE = SIZE / 2;
+  var MIN_HASH_ARRAY_MAP_SIZE = SIZE / 4;
+
+  createClass(List, IndexedCollection);
+
+    // @pragma Construction
+
+    function List(value) {
+      var empty = emptyList();
+      if (value === null || value === undefined) {
+        return empty;
+      }
+      if (isList(value)) {
+        return value;
+      }
+      var iter = IndexedIterable(value);
+      var size = iter.size;
+      if (size === 0) {
+        return empty;
+      }
+      assertNotInfinite(size);
+      if (size > 0 && size < SIZE) {
+        return makeList(0, size, SHIFT, null, new VNode(iter.toArray()));
+      }
+      return empty.withMutations(function(list ) {
+        list.setSize(size);
+        iter.forEach(function(v, i)  {return list.set(i, v)});
+      });
+    }
+
+    List.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    List.prototype.toString = function() {
+      return this.__toString('List [', ']');
+    };
+
+    // @pragma Access
+
+    List.prototype.get = function(index, notSetValue) {
+      index = wrapIndex(this, index);
+      if (index >= 0 && index < this.size) {
+        index += this._origin;
+        var node = listNodeFor(this, index);
+        return node && node.array[index & MASK];
+      }
+      return notSetValue;
+    };
+
+    // @pragma Modification
+
+    List.prototype.set = function(index, value) {
+      return updateList(this, index, value);
+    };
+
+    List.prototype.remove = function(index) {
+      return !this.has(index) ? this :
+        index === 0 ? this.shift() :
+        index === this.size - 1 ? this.pop() :
+        this.splice(index, 1);
+    };
+
+    List.prototype.insert = function(index, value) {
+      return this.splice(index, 0, value);
+    };
+
+    List.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = this._origin = this._capacity = 0;
+        this._level = SHIFT;
+        this._root = this._tail = null;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyList();
+    };
+
+    List.prototype.push = function(/*...values*/) {
+      var values = arguments;
+      var oldSize = this.size;
+      return this.withMutations(function(list ) {
+        setListBounds(list, 0, oldSize + values.length);
+        for (var ii = 0; ii < values.length; ii++) {
+          list.set(oldSize + ii, values[ii]);
+        }
+      });
+    };
+
+    List.prototype.pop = function() {
+      return setListBounds(this, 0, -1);
+    };
+
+    List.prototype.unshift = function(/*...values*/) {
+      var values = arguments;
+      return this.withMutations(function(list ) {
+        setListBounds(list, -values.length);
+        for (var ii = 0; ii < values.length; ii++) {
+          list.set(ii, values[ii]);
+        }
+      });
+    };
+
+    List.prototype.shift = function() {
+      return setListBounds(this, 1);
+    };
+
+    // @pragma Composition
+
+    List.prototype.merge = function(/*...iters*/) {
+      return mergeIntoListWith(this, undefined, arguments);
+    };
+
+    List.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoListWith(this, merger, iters);
+    };
+
+    List.prototype.mergeDeep = function(/*...iters*/) {
+      return mergeIntoListWith(this, deepMerger, arguments);
+    };
+
+    List.prototype.mergeDeepWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return mergeIntoListWith(this, deepMergerWith(merger), iters);
+    };
+
+    List.prototype.setSize = function(size) {
+      return setListBounds(this, 0, size);
+    };
+
+    // @pragma Iteration
+
+    List.prototype.slice = function(begin, end) {
+      var size = this.size;
+      if (wholeSlice(begin, end, size)) {
+        return this;
+      }
+      return setListBounds(
+        this,
+        resolveBegin(begin, size),
+        resolveEnd(end, size)
+      );
+    };
+
+    List.prototype.__iterator = function(type, reverse) {
+      var index = 0;
+      var values = iterateList(this, reverse);
+      return new Iterator(function()  {
+        var value = values();
+        return value === DONE ?
+          iteratorDone() :
+          iteratorValue(type, index++, value);
+      });
+    };
+
+    List.prototype.__iterate = function(fn, reverse) {
+      var index = 0;
+      var values = iterateList(this, reverse);
+      var value;
+      while ((value = values()) !== DONE) {
+        if (fn(value, index++, this) === false) {
+          break;
+        }
+      }
+      return index;
+    };
+
+    List.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        return this;
+      }
+      return makeList(this._origin, this._capacity, this._level, this._root, this._tail, ownerID, this.__hash);
+    };
+
+
+  function isList(maybeList) {
+    return !!(maybeList && maybeList[IS_LIST_SENTINEL]);
+  }
+
+  List.isList = isList;
+
+  var IS_LIST_SENTINEL = '@@__IMMUTABLE_LIST__@@';
+
+  var ListPrototype = List.prototype;
+  ListPrototype[IS_LIST_SENTINEL] = true;
+  ListPrototype[DELETE] = ListPrototype.remove;
+  ListPrototype.setIn = MapPrototype.setIn;
+  ListPrototype.deleteIn =
+  ListPrototype.removeIn = MapPrototype.removeIn;
+  ListPrototype.update = MapPrototype.update;
+  ListPrototype.updateIn = MapPrototype.updateIn;
+  ListPrototype.mergeIn = MapPrototype.mergeIn;
+  ListPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
+  ListPrototype.withMutations = MapPrototype.withMutations;
+  ListPrototype.asMutable = MapPrototype.asMutable;
+  ListPrototype.asImmutable = MapPrototype.asImmutable;
+  ListPrototype.wasAltered = MapPrototype.wasAltered;
+
+
+
+    function VNode(array, ownerID) {
+      this.array = array;
+      this.ownerID = ownerID;
+    }
+
+    // TODO: seems like these methods are very similar
+
+    VNode.prototype.removeBefore = function(ownerID, level, index) {
+      if (index === level ? 1 << level : 0 || this.array.length === 0) {
+        return this;
+      }
+      var originIndex = (index >>> level) & MASK;
+      if (originIndex >= this.array.length) {
+        return new VNode([], ownerID);
+      }
+      var removingFirst = originIndex === 0;
+      var newChild;
+      if (level > 0) {
+        var oldChild = this.array[originIndex];
+        newChild = oldChild && oldChild.removeBefore(ownerID, level - SHIFT, index);
+        if (newChild === oldChild && removingFirst) {
+          return this;
+        }
+      }
+      if (removingFirst && !newChild) {
+        return this;
+      }
+      var editable = editableVNode(this, ownerID);
+      if (!removingFirst) {
+        for (var ii = 0; ii < originIndex; ii++) {
+          editable.array[ii] = undefined;
+        }
+      }
+      if (newChild) {
+        editable.array[originIndex] = newChild;
+      }
+      return editable;
+    };
+
+    VNode.prototype.removeAfter = function(ownerID, level, index) {
+      if (index === (level ? 1 << level : 0) || this.array.length === 0) {
+        return this;
+      }
+      var sizeIndex = ((index - 1) >>> level) & MASK;
+      if (sizeIndex >= this.array.length) {
+        return this;
+      }
+
+      var newChild;
+      if (level > 0) {
+        var oldChild = this.array[sizeIndex];
+        newChild = oldChild && oldChild.removeAfter(ownerID, level - SHIFT, index);
+        if (newChild === oldChild && sizeIndex === this.array.length - 1) {
+          return this;
+        }
+      }
+
+      var editable = editableVNode(this, ownerID);
+      editable.array.splice(sizeIndex + 1);
+      if (newChild) {
+        editable.array[sizeIndex] = newChild;
+      }
+      return editable;
+    };
+
+
+
+  var DONE = {};
+
+  function iterateList(list, reverse) {
+    var left = list._origin;
+    var right = list._capacity;
+    var tailPos = getTailOffset(right);
+    var tail = list._tail;
+
+    return iterateNodeOrLeaf(list._root, list._level, 0);
+
+    function iterateNodeOrLeaf(node, level, offset) {
+      return level === 0 ?
+        iterateLeaf(node, offset) :
+        iterateNode(node, level, offset);
+    }
+
+    function iterateLeaf(node, offset) {
+      var array = offset === tailPos ? tail && tail.array : node && node.array;
+      var from = offset > left ? 0 : left - offset;
+      var to = right - offset;
+      if (to > SIZE) {
+        to = SIZE;
+      }
+      return function()  {
+        if (from === to) {
+          return DONE;
+        }
+        var idx = reverse ? --to : from++;
+        return array && array[idx];
+      };
+    }
+
+    function iterateNode(node, level, offset) {
+      var values;
+      var array = node && node.array;
+      var from = offset > left ? 0 : (left - offset) >> level;
+      var to = ((right - offset) >> level) + 1;
+      if (to > SIZE) {
+        to = SIZE;
+      }
+      return function()  {
+        do {
+          if (values) {
+            var value = values();
+            if (value !== DONE) {
+              return value;
+            }
+            values = null;
+          }
+          if (from === to) {
+            return DONE;
+          }
+          var idx = reverse ? --to : from++;
+          values = iterateNodeOrLeaf(
+            array && array[idx], level - SHIFT, offset + (idx << level)
+          );
+        } while (true);
+      };
+    }
+  }
+
+  function makeList(origin, capacity, level, root, tail, ownerID, hash) {
+    var list = Object.create(ListPrototype);
+    list.size = capacity - origin;
+    list._origin = origin;
+    list._capacity = capacity;
+    list._level = level;
+    list._root = root;
+    list._tail = tail;
+    list.__ownerID = ownerID;
+    list.__hash = hash;
+    list.__altered = false;
+    return list;
+  }
+
+  var EMPTY_LIST;
+  function emptyList() {
+    return EMPTY_LIST || (EMPTY_LIST = makeList(0, 0, SHIFT));
+  }
+
+  function updateList(list, index, value) {
+    index = wrapIndex(list, index);
+
+    if (index !== index) {
+      return list;
+    }
+
+    if (index >= list.size || index < 0) {
+      return list.withMutations(function(list ) {
+        index < 0 ?
+          setListBounds(list, index).set(0, value) :
+          setListBounds(list, 0, index + 1).set(index, value);
+      });
+    }
+
+    index += list._origin;
+
+    var newTail = list._tail;
+    var newRoot = list._root;
+    var didAlter = MakeRef(DID_ALTER);
+    if (index >= getTailOffset(list._capacity)) {
+      newTail = updateVNode(newTail, list.__ownerID, 0, index, value, didAlter);
+    } else {
+      newRoot = updateVNode(newRoot, list.__ownerID, list._level, index, value, didAlter);
+    }
+
+    if (!didAlter.value) {
+      return list;
+    }
+
+    if (list.__ownerID) {
+      list._root = newRoot;
+      list._tail = newTail;
+      list.__hash = undefined;
+      list.__altered = true;
+      return list;
+    }
+    return makeList(list._origin, list._capacity, list._level, newRoot, newTail);
+  }
+
+  function updateVNode(node, ownerID, level, index, value, didAlter) {
+    var idx = (index >>> level) & MASK;
+    var nodeHas = node && idx < node.array.length;
+    if (!nodeHas && value === undefined) {
+      return node;
+    }
+
+    var newNode;
+
+    if (level > 0) {
+      var lowerNode = node && node.array[idx];
+      var newLowerNode = updateVNode(lowerNode, ownerID, level - SHIFT, index, value, didAlter);
+      if (newLowerNode === lowerNode) {
+        return node;
+      }
+      newNode = editableVNode(node, ownerID);
+      newNode.array[idx] = newLowerNode;
+      return newNode;
+    }
+
+    if (nodeHas && node.array[idx] === value) {
+      return node;
+    }
+
+    SetRef(didAlter);
+
+    newNode = editableVNode(node, ownerID);
+    if (value === undefined && idx === newNode.array.length - 1) {
+      newNode.array.pop();
+    } else {
+      newNode.array[idx] = value;
+    }
+    return newNode;
+  }
+
+  function editableVNode(node, ownerID) {
+    if (ownerID && node && ownerID === node.ownerID) {
+      return node;
+    }
+    return new VNode(node ? node.array.slice() : [], ownerID);
+  }
+
+  function listNodeFor(list, rawIndex) {
+    if (rawIndex >= getTailOffset(list._capacity)) {
+      return list._tail;
+    }
+    if (rawIndex < 1 << (list._level + SHIFT)) {
+      var node = list._root;
+      var level = list._level;
+      while (node && level > 0) {
+        node = node.array[(rawIndex >>> level) & MASK];
+        level -= SHIFT;
+      }
+      return node;
+    }
+  }
+
+  function setListBounds(list, begin, end) {
+    // Sanitize begin & end using this shorthand for ToInt32(argument)
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+    if (begin !== undefined) {
+      begin = begin | 0;
+    }
+    if (end !== undefined) {
+      end = end | 0;
+    }
+    var owner = list.__ownerID || new OwnerID();
+    var oldOrigin = list._origin;
+    var oldCapacity = list._capacity;
+    var newOrigin = oldOrigin + begin;
+    var newCapacity = end === undefined ? oldCapacity : end < 0 ? oldCapacity + end : oldOrigin + end;
+    if (newOrigin === oldOrigin && newCapacity === oldCapacity) {
+      return list;
+    }
+
+    // If it's going to end after it starts, it's empty.
+    if (newOrigin >= newCapacity) {
+      return list.clear();
+    }
+
+    var newLevel = list._level;
+    var newRoot = list._root;
+
+    // New origin might need creating a higher root.
+    var offsetShift = 0;
+    while (newOrigin + offsetShift < 0) {
+      newRoot = new VNode(newRoot && newRoot.array.length ? [undefined, newRoot] : [], owner);
+      newLevel += SHIFT;
+      offsetShift += 1 << newLevel;
+    }
+    if (offsetShift) {
+      newOrigin += offsetShift;
+      oldOrigin += offsetShift;
+      newCapacity += offsetShift;
+      oldCapacity += offsetShift;
+    }
+
+    var oldTailOffset = getTailOffset(oldCapacity);
+    var newTailOffset = getTailOffset(newCapacity);
+
+    // New size might need creating a higher root.
+    while (newTailOffset >= 1 << (newLevel + SHIFT)) {
+      newRoot = new VNode(newRoot && newRoot.array.length ? [newRoot] : [], owner);
+      newLevel += SHIFT;
+    }
+
+    // Locate or create the new tail.
+    var oldTail = list._tail;
+    var newTail = newTailOffset < oldTailOffset ?
+      listNodeFor(list, newCapacity - 1) :
+      newTailOffset > oldTailOffset ? new VNode([], owner) : oldTail;
+
+    // Merge Tail into tree.
+    if (oldTail && newTailOffset > oldTailOffset && newOrigin < oldCapacity && oldTail.array.length) {
+      newRoot = editableVNode(newRoot, owner);
+      var node = newRoot;
+      for (var level = newLevel; level > SHIFT; level -= SHIFT) {
+        var idx = (oldTailOffset >>> level) & MASK;
+        node = node.array[idx] = editableVNode(node.array[idx], owner);
+      }
+      node.array[(oldTailOffset >>> SHIFT) & MASK] = oldTail;
+    }
+
+    // If the size has been reduced, there's a chance the tail needs to be trimmed.
+    if (newCapacity < oldCapacity) {
+      newTail = newTail && newTail.removeAfter(owner, 0, newCapacity);
+    }
+
+    // If the new origin is within the tail, then we do not need a root.
+    if (newOrigin >= newTailOffset) {
+      newOrigin -= newTailOffset;
+      newCapacity -= newTailOffset;
+      newLevel = SHIFT;
+      newRoot = null;
+      newTail = newTail && newTail.removeBefore(owner, 0, newOrigin);
+
+    // Otherwise, if the root has been trimmed, garbage collect.
+    } else if (newOrigin > oldOrigin || newTailOffset < oldTailOffset) {
+      offsetShift = 0;
+
+      // Identify the new top root node of the subtree of the old root.
+      while (newRoot) {
+        var beginIndex = (newOrigin >>> newLevel) & MASK;
+        if (beginIndex !== (newTailOffset >>> newLevel) & MASK) {
+          break;
+        }
+        if (beginIndex) {
+          offsetShift += (1 << newLevel) * beginIndex;
+        }
+        newLevel -= SHIFT;
+        newRoot = newRoot.array[beginIndex];
+      }
+
+      // Trim the new sides of the new root.
+      if (newRoot && newOrigin > oldOrigin) {
+        newRoot = newRoot.removeBefore(owner, newLevel, newOrigin - offsetShift);
+      }
+      if (newRoot && newTailOffset < oldTailOffset) {
+        newRoot = newRoot.removeAfter(owner, newLevel, newTailOffset - offsetShift);
+      }
+      if (offsetShift) {
+        newOrigin -= offsetShift;
+        newCapacity -= offsetShift;
+      }
+    }
+
+    if (list.__ownerID) {
+      list.size = newCapacity - newOrigin;
+      list._origin = newOrigin;
+      list._capacity = newCapacity;
+      list._level = newLevel;
+      list._root = newRoot;
+      list._tail = newTail;
+      list.__hash = undefined;
+      list.__altered = true;
+      return list;
+    }
+    return makeList(newOrigin, newCapacity, newLevel, newRoot, newTail);
+  }
+
+  function mergeIntoListWith(list, merger, iterables) {
+    var iters = [];
+    var maxSize = 0;
+    for (var ii = 0; ii < iterables.length; ii++) {
+      var value = iterables[ii];
+      var iter = IndexedIterable(value);
+      if (iter.size > maxSize) {
+        maxSize = iter.size;
+      }
+      if (!isIterable(value)) {
+        iter = iter.map(function(v ) {return fromJS(v)});
+      }
+      iters.push(iter);
+    }
+    if (maxSize > list.size) {
+      list = list.setSize(maxSize);
+    }
+    return mergeIntoCollectionWith(list, merger, iters);
+  }
+
+  function getTailOffset(size) {
+    return size < SIZE ? 0 : (((size - 1) >>> SHIFT) << SHIFT);
+  }
+
+  createClass(OrderedMap, Map);
+
+    // @pragma Construction
+
+    function OrderedMap(value) {
+      return value === null || value === undefined ? emptyOrderedMap() :
+        isOrderedMap(value) ? value :
+        emptyOrderedMap().withMutations(function(map ) {
+          var iter = KeyedIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v, k)  {return map.set(k, v)});
+        });
+    }
+
+    OrderedMap.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    OrderedMap.prototype.toString = function() {
+      return this.__toString('OrderedMap {', '}');
+    };
+
+    // @pragma Access
+
+    OrderedMap.prototype.get = function(k, notSetValue) {
+      var index = this._map.get(k);
+      return index !== undefined ? this._list.get(index)[1] : notSetValue;
+    };
+
+    // @pragma Modification
+
+    OrderedMap.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._map.clear();
+        this._list.clear();
+        return this;
+      }
+      return emptyOrderedMap();
+    };
+
+    OrderedMap.prototype.set = function(k, v) {
+      return updateOrderedMap(this, k, v);
+    };
+
+    OrderedMap.prototype.remove = function(k) {
+      return updateOrderedMap(this, k, NOT_SET);
+    };
+
+    OrderedMap.prototype.wasAltered = function() {
+      return this._map.wasAltered() || this._list.wasAltered();
+    };
+
+    OrderedMap.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._list.__iterate(
+        function(entry ) {return entry && fn(entry[1], entry[0], this$0)},
+        reverse
+      );
+    };
+
+    OrderedMap.prototype.__iterator = function(type, reverse) {
+      return this._list.fromEntrySeq().__iterator(type, reverse);
+    };
+
+    OrderedMap.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map.__ensureOwner(ownerID);
+      var newList = this._list.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        this._list = newList;
+        return this;
+      }
+      return makeOrderedMap(newMap, newList, ownerID, this.__hash);
+    };
+
+
+  function isOrderedMap(maybeOrderedMap) {
+    return isMap(maybeOrderedMap) && isOrdered(maybeOrderedMap);
+  }
+
+  OrderedMap.isOrderedMap = isOrderedMap;
+
+  OrderedMap.prototype[IS_ORDERED_SENTINEL] = true;
+  OrderedMap.prototype[DELETE] = OrderedMap.prototype.remove;
+
+
+
+  function makeOrderedMap(map, list, ownerID, hash) {
+    var omap = Object.create(OrderedMap.prototype);
+    omap.size = map ? map.size : 0;
+    omap._map = map;
+    omap._list = list;
+    omap.__ownerID = ownerID;
+    omap.__hash = hash;
+    return omap;
+  }
+
+  var EMPTY_ORDERED_MAP;
+  function emptyOrderedMap() {
+    return EMPTY_ORDERED_MAP || (EMPTY_ORDERED_MAP = makeOrderedMap(emptyMap(), emptyList()));
+  }
+
+  function updateOrderedMap(omap, k, v) {
+    var map = omap._map;
+    var list = omap._list;
+    var i = map.get(k);
+    var has = i !== undefined;
+    var newMap;
+    var newList;
+    if (v === NOT_SET) { // removed
+      if (!has) {
+        return omap;
+      }
+      if (list.size >= SIZE && list.size >= map.size * 2) {
+        newList = list.filter(function(entry, idx)  {return entry !== undefined && i !== idx});
+        newMap = newList.toKeyedSeq().map(function(entry ) {return entry[0]}).flip().toMap();
+        if (omap.__ownerID) {
+          newMap.__ownerID = newList.__ownerID = omap.__ownerID;
+        }
+      } else {
+        newMap = map.remove(k);
+        newList = i === list.size - 1 ? list.pop() : list.set(i, undefined);
+      }
+    } else {
+      if (has) {
+        if (v === list.get(i)[1]) {
+          return omap;
+        }
+        newMap = map;
+        newList = list.set(i, [k, v]);
+      } else {
+        newMap = map.set(k, list.size);
+        newList = list.set(list.size, [k, v]);
+      }
+    }
+    if (omap.__ownerID) {
+      omap.size = newMap.size;
+      omap._map = newMap;
+      omap._list = newList;
+      omap.__hash = undefined;
+      return omap;
+    }
+    return makeOrderedMap(newMap, newList);
+  }
+
+  createClass(ToKeyedSequence, KeyedSeq);
+    function ToKeyedSequence(indexed, useKeys) {
+      this._iter = indexed;
+      this._useKeys = useKeys;
+      this.size = indexed.size;
+    }
+
+    ToKeyedSequence.prototype.get = function(key, notSetValue) {
+      return this._iter.get(key, notSetValue);
+    };
+
+    ToKeyedSequence.prototype.has = function(key) {
+      return this._iter.has(key);
+    };
+
+    ToKeyedSequence.prototype.valueSeq = function() {
+      return this._iter.valueSeq();
+    };
+
+    ToKeyedSequence.prototype.reverse = function() {var this$0 = this;
+      var reversedSequence = reverseFactory(this, true);
+      if (!this._useKeys) {
+        reversedSequence.valueSeq = function()  {return this$0._iter.toSeq().reverse()};
+      }
+      return reversedSequence;
+    };
+
+    ToKeyedSequence.prototype.map = function(mapper, context) {var this$0 = this;
+      var mappedSequence = mapFactory(this, mapper, context);
+      if (!this._useKeys) {
+        mappedSequence.valueSeq = function()  {return this$0._iter.toSeq().map(mapper, context)};
+      }
+      return mappedSequence;
+    };
+
+    ToKeyedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var ii;
+      return this._iter.__iterate(
+        this._useKeys ?
+          function(v, k)  {return fn(v, k, this$0)} :
+          ((ii = reverse ? resolveSize(this) : 0),
+            function(v ) {return fn(v, reverse ? --ii : ii++, this$0)}),
+        reverse
+      );
+    };
+
+    ToKeyedSequence.prototype.__iterator = function(type, reverse) {
+      if (this._useKeys) {
+        return this._iter.__iterator(type, reverse);
+      }
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      var ii = reverse ? resolveSize(this) : 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, reverse ? --ii : ii++, step.value, step);
+      });
+    };
+
+  ToKeyedSequence.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+  createClass(ToIndexedSequence, IndexedSeq);
+    function ToIndexedSequence(iter) {
+      this._iter = iter;
+      this.size = iter.size;
+    }
+
+    ToIndexedSequence.prototype.includes = function(value) {
+      return this._iter.includes(value);
+    };
+
+    ToIndexedSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      return this._iter.__iterate(function(v ) {return fn(v, iterations++, this$0)}, reverse);
+    };
+
+    ToIndexedSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, iterations++, step.value, step)
+      });
+    };
+
+
+
+  createClass(ToSetSequence, SetSeq);
+    function ToSetSequence(iter) {
+      this._iter = iter;
+      this.size = iter.size;
+    }
+
+    ToSetSequence.prototype.has = function(key) {
+      return this._iter.includes(key);
+    };
+
+    ToSetSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._iter.__iterate(function(v ) {return fn(v, v, this$0)}, reverse);
+    };
+
+    ToSetSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      return new Iterator(function()  {
+        var step = iterator.next();
+        return step.done ? step :
+          iteratorValue(type, step.value, step.value, step);
+      });
+    };
+
+
+
+  createClass(FromEntriesSequence, KeyedSeq);
+    function FromEntriesSequence(entries) {
+      this._iter = entries;
+      this.size = entries.size;
+    }
+
+    FromEntriesSequence.prototype.entrySeq = function() {
+      return this._iter.toSeq();
+    };
+
+    FromEntriesSequence.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._iter.__iterate(function(entry ) {
+        // Check if entry exists first so array access doesn't throw for holes
+        // in the parent iteration.
+        if (entry) {
+          validateEntry(entry);
+          var indexedIterable = isIterable(entry);
+          return fn(
+            indexedIterable ? entry.get(1) : entry[1],
+            indexedIterable ? entry.get(0) : entry[0],
+            this$0
+          );
+        }
+      }, reverse);
+    };
+
+    FromEntriesSequence.prototype.__iterator = function(type, reverse) {
+      var iterator = this._iter.__iterator(ITERATE_VALUES, reverse);
+      return new Iterator(function()  {
+        while (true) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          var entry = step.value;
+          // Check if entry exists first so array access doesn't throw for holes
+          // in the parent iteration.
+          if (entry) {
+            validateEntry(entry);
+            var indexedIterable = isIterable(entry);
+            return iteratorValue(
+              type,
+              indexedIterable ? entry.get(0) : entry[0],
+              indexedIterable ? entry.get(1) : entry[1],
+              step
+            );
+          }
+        }
+      });
+    };
+
+
+  ToIndexedSequence.prototype.cacheResult =
+  ToKeyedSequence.prototype.cacheResult =
+  ToSetSequence.prototype.cacheResult =
+  FromEntriesSequence.prototype.cacheResult =
+    cacheResultThrough;
+
+
+  function flipFactory(iterable) {
+    var flipSequence = makeSequence(iterable);
+    flipSequence._iter = iterable;
+    flipSequence.size = iterable.size;
+    flipSequence.flip = function()  {return iterable};
+    flipSequence.reverse = function () {
+      var reversedSequence = iterable.reverse.apply(this); // super.reverse()
+      reversedSequence.flip = function()  {return iterable.reverse()};
+      return reversedSequence;
+    };
+    flipSequence.has = function(key ) {return iterable.includes(key)};
+    flipSequence.includes = function(key ) {return iterable.has(key)};
+    flipSequence.cacheResult = cacheResultThrough;
+    flipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(function(v, k)  {return fn(k, v, this$0) !== false}, reverse);
+    };
+    flipSequence.__iteratorUncached = function(type, reverse) {
+      if (type === ITERATE_ENTRIES) {
+        var iterator = iterable.__iterator(type, reverse);
+        return new Iterator(function()  {
+          var step = iterator.next();
+          if (!step.done) {
+            var k = step.value[0];
+            step.value[0] = step.value[1];
+            step.value[1] = k;
+          }
+          return step;
+        });
+      }
+      return iterable.__iterator(
+        type === ITERATE_VALUES ? ITERATE_KEYS : ITERATE_VALUES,
+        reverse
+      );
+    };
+    return flipSequence;
+  }
+
+
+  function mapFactory(iterable, mapper, context) {
+    var mappedSequence = makeSequence(iterable);
+    mappedSequence.size = iterable.size;
+    mappedSequence.has = function(key ) {return iterable.has(key)};
+    mappedSequence.get = function(key, notSetValue)  {
+      var v = iterable.get(key, NOT_SET);
+      return v === NOT_SET ?
+        notSetValue :
+        mapper.call(context, v, key, iterable);
+    };
+    mappedSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(
+        function(v, k, c)  {return fn(mapper.call(context, v, k, c), k, this$0) !== false},
+        reverse
+      );
+    };
+    mappedSequence.__iteratorUncached = function (type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      return new Iterator(function()  {
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        var key = entry[0];
+        return iteratorValue(
+          type,
+          key,
+          mapper.call(context, entry[1], key, iterable),
+          step
+        );
+      });
+    };
+    return mappedSequence;
+  }
+
+
+  function reverseFactory(iterable, useKeys) {
+    var reversedSequence = makeSequence(iterable);
+    reversedSequence._iter = iterable;
+    reversedSequence.size = iterable.size;
+    reversedSequence.reverse = function()  {return iterable};
+    if (iterable.flip) {
+      reversedSequence.flip = function () {
+        var flipSequence = flipFactory(iterable);
+        flipSequence.reverse = function()  {return iterable.flip()};
+        return flipSequence;
+      };
+    }
+    reversedSequence.get = function(key, notSetValue) 
+      {return iterable.get(useKeys ? key : -1 - key, notSetValue)};
+    reversedSequence.has = function(key )
+      {return iterable.has(useKeys ? key : -1 - key)};
+    reversedSequence.includes = function(value ) {return iterable.includes(value)};
+    reversedSequence.cacheResult = cacheResultThrough;
+    reversedSequence.__iterate = function (fn, reverse) {var this$0 = this;
+      return iterable.__iterate(function(v, k)  {return fn(v, k, this$0)}, !reverse);
+    };
+    reversedSequence.__iterator =
+      function(type, reverse)  {return iterable.__iterator(type, !reverse)};
+    return reversedSequence;
+  }
+
+
+  function filterFactory(iterable, predicate, context, useKeys) {
+    var filterSequence = makeSequence(iterable);
+    if (useKeys) {
+      filterSequence.has = function(key ) {
+        var v = iterable.get(key, NOT_SET);
+        return v !== NOT_SET && !!predicate.call(context, v, key, iterable);
+      };
+      filterSequence.get = function(key, notSetValue)  {
+        var v = iterable.get(key, NOT_SET);
+        return v !== NOT_SET && predicate.call(context, v, key, iterable) ?
+          v : notSetValue;
+      };
+    }
+    filterSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c)  {
+        if (predicate.call(context, v, k, c)) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0);
+        }
+      }, reverse);
+      return iterations;
+    };
+    filterSequence.__iteratorUncached = function (type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (true) {
+          var step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+          var entry = step.value;
+          var key = entry[0];
+          var value = entry[1];
+          if (predicate.call(context, value, key, iterable)) {
+            return iteratorValue(type, useKeys ? key : iterations++, value, step);
+          }
+        }
+      });
+    };
+    return filterSequence;
+  }
+
+
+  function countByFactory(iterable, grouper, context) {
+    var groups = Map().asMutable();
+    iterable.__iterate(function(v, k)  {
+      groups.update(
+        grouper.call(context, v, k, iterable),
+        0,
+        function(a ) {return a + 1}
+      );
+    });
+    return groups.asImmutable();
+  }
+
+
+  function groupByFactory(iterable, grouper, context) {
+    var isKeyedIter = isKeyed(iterable);
+    var groups = (isOrdered(iterable) ? OrderedMap() : Map()).asMutable();
+    iterable.__iterate(function(v, k)  {
+      groups.update(
+        grouper.call(context, v, k, iterable),
+        function(a ) {return (a = a || [], a.push(isKeyedIter ? [k, v] : v), a)}
+      );
+    });
+    var coerce = iterableClass(iterable);
+    return groups.map(function(arr ) {return reify(iterable, coerce(arr))});
+  }
+
+
+  function sliceFactory(iterable, begin, end, useKeys) {
+    var originalSize = iterable.size;
+
+    // Sanitize begin & end using this shorthand for ToInt32(argument)
+    // http://www.ecma-international.org/ecma-262/6.0/#sec-toint32
+    if (begin !== undefined) {
+      begin = begin | 0;
+    }
+    if (end !== undefined) {
+      if (end === Infinity) {
+        end = originalSize;
+      } else {
+        end = end | 0;
+      }
+    }
+
+    if (wholeSlice(begin, end, originalSize)) {
+      return iterable;
+    }
+
+    var resolvedBegin = resolveBegin(begin, originalSize);
+    var resolvedEnd = resolveEnd(end, originalSize);
+
+    // begin or end will be NaN if they were provided as negative numbers and
+    // this iterable's size is unknown. In that case, cache first so there is
+    // a known size and these do not resolve to NaN.
+    if (resolvedBegin !== resolvedBegin || resolvedEnd !== resolvedEnd) {
+      return sliceFactory(iterable.toSeq().cacheResult(), begin, end, useKeys);
+    }
+
+    // Note: resolvedEnd is undefined when the original sequence's length is
+    // unknown and this slice did not supply an end and should contain all
+    // elements after resolvedBegin.
+    // In that case, resolvedSize will be NaN and sliceSize will remain undefined.
+    var resolvedSize = resolvedEnd - resolvedBegin;
+    var sliceSize;
+    if (resolvedSize === resolvedSize) {
+      sliceSize = resolvedSize < 0 ? 0 : resolvedSize;
+    }
+
+    var sliceSeq = makeSequence(iterable);
+
+    // If iterable.size is undefined, the size of the realized sliceSeq is
+    // unknown at this point unless the number of items to slice is 0
+    sliceSeq.size = sliceSize === 0 ? sliceSize : iterable.size && sliceSize || undefined;
+
+    if (!useKeys && isSeq(iterable) && sliceSize >= 0) {
+      sliceSeq.get = function (index, notSetValue) {
+        index = wrapIndex(this, index);
+        return index >= 0 && index < sliceSize ?
+          iterable.get(index + resolvedBegin, notSetValue) :
+          notSetValue;
+      };
+    }
+
+    sliceSeq.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      if (sliceSize === 0) {
+        return 0;
+      }
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var skipped = 0;
+      var isSkipping = true;
+      var iterations = 0;
+      iterable.__iterate(function(v, k)  {
+        if (!(isSkipping && (isSkipping = skipped++ < resolvedBegin))) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0) !== false &&
+                 iterations !== sliceSize;
+        }
+      });
+      return iterations;
+    };
+
+    sliceSeq.__iteratorUncached = function(type, reverse) {
+      if (sliceSize !== 0 && reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      // Don't bother instantiating parent iterator if taking 0.
+      var iterator = sliceSize !== 0 && iterable.__iterator(type, reverse);
+      var skipped = 0;
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (skipped++ < resolvedBegin) {
+          iterator.next();
+        }
+        if (++iterations > sliceSize) {
+          return iteratorDone();
+        }
+        var step = iterator.next();
+        if (useKeys || type === ITERATE_VALUES) {
+          return step;
+        } else if (type === ITERATE_KEYS) {
+          return iteratorValue(type, iterations - 1, undefined, step);
+        } else {
+          return iteratorValue(type, iterations - 1, step.value[1], step);
+        }
+      });
+    };
+
+    return sliceSeq;
+  }
+
+
+  function takeWhileFactory(iterable, predicate, context) {
+    var takeSequence = makeSequence(iterable);
+    takeSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c) 
+        {return predicate.call(context, v, k, c) && ++iterations && fn(v, k, this$0)}
+      );
+      return iterations;
+    };
+    takeSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var iterating = true;
+      return new Iterator(function()  {
+        if (!iterating) {
+          return iteratorDone();
+        }
+        var step = iterator.next();
+        if (step.done) {
+          return step;
+        }
+        var entry = step.value;
+        var k = entry[0];
+        var v = entry[1];
+        if (!predicate.call(context, v, k, this$0)) {
+          iterating = false;
+          return iteratorDone();
+        }
+        return type === ITERATE_ENTRIES ? step :
+          iteratorValue(type, k, v, step);
+      });
+    };
+    return takeSequence;
+  }
+
+
+  function skipWhileFactory(iterable, predicate, context, useKeys) {
+    var skipSequence = makeSequence(iterable);
+    skipSequence.__iterateUncached = function (fn, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterate(fn, reverse);
+      }
+      var isSkipping = true;
+      var iterations = 0;
+      iterable.__iterate(function(v, k, c)  {
+        if (!(isSkipping && (isSkipping = predicate.call(context, v, k, c)))) {
+          iterations++;
+          return fn(v, useKeys ? k : iterations - 1, this$0);
+        }
+      });
+      return iterations;
+    };
+    skipSequence.__iteratorUncached = function(type, reverse) {var this$0 = this;
+      if (reverse) {
+        return this.cacheResult().__iterator(type, reverse);
+      }
+      var iterator = iterable.__iterator(ITERATE_ENTRIES, reverse);
+      var skipping = true;
+      var iterations = 0;
+      return new Iterator(function()  {
+        var step, k, v;
+        do {
+          step = iterator.next();
+          if (step.done) {
+            if (useKeys || type === ITERATE_VALUES) {
+              return step;
+            } else if (type === ITERATE_KEYS) {
+              return iteratorValue(type, iterations++, undefined, step);
+            } else {
+              return iteratorValue(type, iterations++, step.value[1], step);
+            }
+          }
+          var entry = step.value;
+          k = entry[0];
+          v = entry[1];
+          skipping && (skipping = predicate.call(context, v, k, this$0));
+        } while (skipping);
+        return type === ITERATE_ENTRIES ? step :
+          iteratorValue(type, k, v, step);
+      });
+    };
+    return skipSequence;
+  }
+
+
+  function concatFactory(iterable, values) {
+    var isKeyedIterable = isKeyed(iterable);
+    var iters = [iterable].concat(values).map(function(v ) {
+      if (!isIterable(v)) {
+        v = isKeyedIterable ?
+          keyedSeqFromValue(v) :
+          indexedSeqFromValue(Array.isArray(v) ? v : [v]);
+      } else if (isKeyedIterable) {
+        v = KeyedIterable(v);
+      }
+      return v;
+    }).filter(function(v ) {return v.size !== 0});
+
+    if (iters.length === 0) {
+      return iterable;
+    }
+
+    if (iters.length === 1) {
+      var singleton = iters[0];
+      if (singleton === iterable ||
+          isKeyedIterable && isKeyed(singleton) ||
+          isIndexed(iterable) && isIndexed(singleton)) {
+        return singleton;
+      }
+    }
+
+    var concatSeq = new ArraySeq(iters);
+    if (isKeyedIterable) {
+      concatSeq = concatSeq.toKeyedSeq();
+    } else if (!isIndexed(iterable)) {
+      concatSeq = concatSeq.toSetSeq();
+    }
+    concatSeq = concatSeq.flatten(true);
+    concatSeq.size = iters.reduce(
+      function(sum, seq)  {
+        if (sum !== undefined) {
+          var size = seq.size;
+          if (size !== undefined) {
+            return sum + size;
+          }
+        }
+      },
+      0
+    );
+    return concatSeq;
+  }
+
+
+  function flattenFactory(iterable, depth, useKeys) {
+    var flatSequence = makeSequence(iterable);
+    flatSequence.__iterateUncached = function(fn, reverse) {
+      var iterations = 0;
+      var stopped = false;
+      function flatDeep(iter, currentDepth) {var this$0 = this;
+        iter.__iterate(function(v, k)  {
+          if ((!depth || currentDepth < depth) && isIterable(v)) {
+            flatDeep(v, currentDepth + 1);
+          } else if (fn(v, useKeys ? k : iterations++, this$0) === false) {
+            stopped = true;
+          }
+          return !stopped;
+        }, reverse);
+      }
+      flatDeep(iterable, 0);
+      return iterations;
+    };
+    flatSequence.__iteratorUncached = function(type, reverse) {
+      var iterator = iterable.__iterator(type, reverse);
+      var stack = [];
+      var iterations = 0;
+      return new Iterator(function()  {
+        while (iterator) {
+          var step = iterator.next();
+          if (step.done !== false) {
+            iterator = stack.pop();
+            continue;
+          }
+          var v = step.value;
+          if (type === ITERATE_ENTRIES) {
+            v = v[1];
+          }
+          if ((!depth || stack.length < depth) && isIterable(v)) {
+            stack.push(iterator);
+            iterator = v.__iterator(type, reverse);
+          } else {
+            return useKeys ? step : iteratorValue(type, iterations++, v, step);
+          }
+        }
+        return iteratorDone();
+      });
+    };
+    return flatSequence;
+  }
+
+
+  function flatMapFactory(iterable, mapper, context) {
+    var coerce = iterableClass(iterable);
+    return iterable.toSeq().map(
+      function(v, k)  {return coerce(mapper.call(context, v, k, iterable))}
+    ).flatten(true);
+  }
+
+
+  function interposeFactory(iterable, separator) {
+    var interposedSequence = makeSequence(iterable);
+    interposedSequence.size = iterable.size && iterable.size * 2 -1;
+    interposedSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
+      var iterations = 0;
+      iterable.__iterate(function(v, k) 
+        {return (!iterations || fn(separator, iterations++, this$0) !== false) &&
+        fn(v, iterations++, this$0) !== false},
+        reverse
+      );
+      return iterations;
+    };
+    interposedSequence.__iteratorUncached = function(type, reverse) {
+      var iterator = iterable.__iterator(ITERATE_VALUES, reverse);
+      var iterations = 0;
+      var step;
+      return new Iterator(function()  {
+        if (!step || iterations % 2) {
+          step = iterator.next();
+          if (step.done) {
+            return step;
+          }
+        }
+        return iterations % 2 ?
+          iteratorValue(type, iterations++, separator) :
+          iteratorValue(type, iterations++, step.value, step);
+      });
+    };
+    return interposedSequence;
+  }
+
+
+  function sortFactory(iterable, comparator, mapper) {
+    if (!comparator) {
+      comparator = defaultComparator;
+    }
+    var isKeyedIterable = isKeyed(iterable);
+    var index = 0;
+    var entries = iterable.toSeq().map(
+      function(v, k)  {return [k, v, index++, mapper ? mapper(v, k, iterable) : v]}
+    ).toArray();
+    entries.sort(function(a, b)  {return comparator(a[3], b[3]) || a[2] - b[2]}).forEach(
+      isKeyedIterable ?
+      function(v, i)  { entries[i].length = 2; } :
+      function(v, i)  { entries[i] = v[1]; }
+    );
+    return isKeyedIterable ? KeyedSeq(entries) :
+      isIndexed(iterable) ? IndexedSeq(entries) :
+      SetSeq(entries);
+  }
+
+
+  function maxFactory(iterable, comparator, mapper) {
+    if (!comparator) {
+      comparator = defaultComparator;
+    }
+    if (mapper) {
+      var entry = iterable.toSeq()
+        .map(function(v, k)  {return [v, mapper(v, k, iterable)]})
+        .reduce(function(a, b)  {return maxCompare(comparator, a[1], b[1]) ? b : a});
+      return entry && entry[0];
+    } else {
+      return iterable.reduce(function(a, b)  {return maxCompare(comparator, a, b) ? b : a});
+    }
+  }
+
+  function maxCompare(comparator, a, b) {
+    var comp = comparator(b, a);
+    // b is considered the new max if the comparator declares them equal, but
+    // they are not equal and b is in fact a nullish value.
+    return (comp === 0 && b !== a && (b === undefined || b === null || b !== b)) || comp > 0;
+  }
+
+
+  function zipWithFactory(keyIter, zipper, iters) {
+    var zipSequence = makeSequence(keyIter);
+    zipSequence.size = new ArraySeq(iters).map(function(i ) {return i.size}).min();
+    // Note: this a generic base implementation of __iterate in terms of
+    // __iterator which may be more generically useful in the future.
+    zipSequence.__iterate = function(fn, reverse) {
+      /* generic:
+      var iterator = this.__iterator(ITERATE_ENTRIES, reverse);
+      var step;
+      var iterations = 0;
+      while (!(step = iterator.next()).done) {
+        iterations++;
+        if (fn(step.value[1], step.value[0], this) === false) {
+          break;
+        }
+      }
+      return iterations;
+      */
+      // indexed:
+      var iterator = this.__iterator(ITERATE_VALUES, reverse);
+      var step;
+      var iterations = 0;
+      while (!(step = iterator.next()).done) {
+        if (fn(step.value, iterations++, this) === false) {
+          break;
+        }
+      }
+      return iterations;
+    };
+    zipSequence.__iteratorUncached = function(type, reverse) {
+      var iterators = iters.map(function(i )
+        {return (i = Iterable(i), getIterator(reverse ? i.reverse() : i))}
+      );
+      var iterations = 0;
+      var isDone = false;
+      return new Iterator(function()  {
+        var steps;
+        if (!isDone) {
+          steps = iterators.map(function(i ) {return i.next()});
+          isDone = steps.some(function(s ) {return s.done});
+        }
+        if (isDone) {
+          return iteratorDone();
+        }
+        return iteratorValue(
+          type,
+          iterations++,
+          zipper.apply(null, steps.map(function(s ) {return s.value}))
+        );
+      });
+    };
+    return zipSequence
+  }
+
+
+  // #pragma Helper Functions
+
+  function reify(iter, seq) {
+    return isSeq(iter) ? seq : iter.constructor(seq);
+  }
+
+  function validateEntry(entry) {
+    if (entry !== Object(entry)) {
+      throw new TypeError('Expected [K, V] tuple: ' + entry);
+    }
+  }
+
+  function resolveSize(iter) {
+    assertNotInfinite(iter.size);
+    return ensureSize(iter);
+  }
+
+  function iterableClass(iterable) {
+    return isKeyed(iterable) ? KeyedIterable :
+      isIndexed(iterable) ? IndexedIterable :
+      SetIterable;
+  }
+
+  function makeSequence(iterable) {
+    return Object.create(
+      (
+        isKeyed(iterable) ? KeyedSeq :
+        isIndexed(iterable) ? IndexedSeq :
+        SetSeq
+      ).prototype
+    );
+  }
+
+  function cacheResultThrough() {
+    if (this._iter.cacheResult) {
+      this._iter.cacheResult();
+      this.size = this._iter.size;
+      return this;
+    } else {
+      return Seq.prototype.cacheResult.call(this);
+    }
+  }
+
+  function defaultComparator(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  }
+
+  function forceIterator(keyPath) {
+    var iter = getIterator(keyPath);
+    if (!iter) {
+      // Array might not be iterable in this environment, so we need a fallback
+      // to our wrapped type.
+      if (!isArrayLike(keyPath)) {
+        throw new TypeError('Expected iterable or array-like: ' + keyPath);
+      }
+      iter = getIterator(Iterable(keyPath));
+    }
+    return iter;
+  }
+
+  createClass(Record, KeyedCollection);
+
+    function Record(defaultValues, name) {
+      var hasInitialized;
+
+      var RecordType = function Record(values) {
+        if (values instanceof RecordType) {
+          return values;
+        }
+        if (!(this instanceof RecordType)) {
+          return new RecordType(values);
+        }
+        if (!hasInitialized) {
+          hasInitialized = true;
+          var keys = Object.keys(defaultValues);
+          setProps(RecordTypePrototype, keys);
+          RecordTypePrototype.size = keys.length;
+          RecordTypePrototype._name = name;
+          RecordTypePrototype._keys = keys;
+          RecordTypePrototype._defaultValues = defaultValues;
+        }
+        this._map = Map(values);
+      };
+
+      var RecordTypePrototype = RecordType.prototype = Object.create(RecordPrototype);
+      RecordTypePrototype.constructor = RecordType;
+
+      return RecordType;
+    }
+
+    Record.prototype.toString = function() {
+      return this.__toString(recordName(this) + ' {', '}');
+    };
+
+    // @pragma Access
+
+    Record.prototype.has = function(k) {
+      return this._defaultValues.hasOwnProperty(k);
+    };
+
+    Record.prototype.get = function(k, notSetValue) {
+      if (!this.has(k)) {
+        return notSetValue;
+      }
+      var defaultVal = this._defaultValues[k];
+      return this._map ? this._map.get(k, defaultVal) : defaultVal;
+    };
+
+    // @pragma Modification
+
+    Record.prototype.clear = function() {
+      if (this.__ownerID) {
+        this._map && this._map.clear();
+        return this;
+      }
+      var RecordType = this.constructor;
+      return RecordType._empty || (RecordType._empty = makeRecord(this, emptyMap()));
+    };
+
+    Record.prototype.set = function(k, v) {
+      if (!this.has(k)) {
+        throw new Error('Cannot set unknown key "' + k + '" on ' + recordName(this));
+      }
+      if (this._map && !this._map.has(k)) {
+        var defaultVal = this._defaultValues[k];
+        if (v === defaultVal) {
+          return this;
+        }
+      }
+      var newMap = this._map && this._map.set(k, v);
+      if (this.__ownerID || newMap === this._map) {
+        return this;
+      }
+      return makeRecord(this, newMap);
+    };
+
+    Record.prototype.remove = function(k) {
+      if (!this.has(k)) {
+        return this;
+      }
+      var newMap = this._map && this._map.remove(k);
+      if (this.__ownerID || newMap === this._map) {
+        return this;
+      }
+      return makeRecord(this, newMap);
+    };
+
+    Record.prototype.wasAltered = function() {
+      return this._map.wasAltered();
+    };
+
+    Record.prototype.__iterator = function(type, reverse) {var this$0 = this;
+      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterator(type, reverse);
+    };
+
+    Record.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return KeyedIterable(this._defaultValues).map(function(_, k)  {return this$0.get(k)}).__iterate(fn, reverse);
+    };
+
+    Record.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map && this._map.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        return this;
+      }
+      return makeRecord(this, newMap, ownerID);
+    };
+
+
+  var RecordPrototype = Record.prototype;
+  RecordPrototype[DELETE] = RecordPrototype.remove;
+  RecordPrototype.deleteIn =
+  RecordPrototype.removeIn = MapPrototype.removeIn;
+  RecordPrototype.merge = MapPrototype.merge;
+  RecordPrototype.mergeWith = MapPrototype.mergeWith;
+  RecordPrototype.mergeIn = MapPrototype.mergeIn;
+  RecordPrototype.mergeDeep = MapPrototype.mergeDeep;
+  RecordPrototype.mergeDeepWith = MapPrototype.mergeDeepWith;
+  RecordPrototype.mergeDeepIn = MapPrototype.mergeDeepIn;
+  RecordPrototype.setIn = MapPrototype.setIn;
+  RecordPrototype.update = MapPrototype.update;
+  RecordPrototype.updateIn = MapPrototype.updateIn;
+  RecordPrototype.withMutations = MapPrototype.withMutations;
+  RecordPrototype.asMutable = MapPrototype.asMutable;
+  RecordPrototype.asImmutable = MapPrototype.asImmutable;
+
+
+  function makeRecord(likeRecord, map, ownerID) {
+    var record = Object.create(Object.getPrototypeOf(likeRecord));
+    record._map = map;
+    record.__ownerID = ownerID;
+    return record;
+  }
+
+  function recordName(record) {
+    return record._name || record.constructor.name || 'Record';
+  }
+
+  function setProps(prototype, names) {
+    try {
+      names.forEach(setProp.bind(undefined, prototype));
+    } catch (error) {
+      // Object.defineProperty failed. Probably IE8.
+    }
+  }
+
+  function setProp(prototype, name) {
+    Object.defineProperty(prototype, name, {
+      get: function() {
+        return this.get(name);
+      },
+      set: function(value) {
+        invariant(this.__ownerID, 'Cannot set on an immutable record.');
+        this.set(name, value);
+      }
+    });
+  }
+
+  createClass(Set, SetCollection);
+
+    // @pragma Construction
+
+    function Set(value) {
+      return value === null || value === undefined ? emptySet() :
+        isSet(value) && !isOrdered(value) ? value :
+        emptySet().withMutations(function(set ) {
+          var iter = SetIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v ) {return set.add(v)});
+        });
+    }
+
+    Set.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    Set.fromKeys = function(value) {
+      return this(KeyedIterable(value).keySeq());
+    };
+
+    Set.prototype.toString = function() {
+      return this.__toString('Set {', '}');
+    };
+
+    // @pragma Access
+
+    Set.prototype.has = function(value) {
+      return this._map.has(value);
+    };
+
+    // @pragma Modification
+
+    Set.prototype.add = function(value) {
+      return updateSet(this, this._map.set(value, true));
+    };
+
+    Set.prototype.remove = function(value) {
+      return updateSet(this, this._map.remove(value));
+    };
+
+    Set.prototype.clear = function() {
+      return updateSet(this, this._map.clear());
+    };
+
+    // @pragma Composition
+
+    Set.prototype.union = function() {var iters = SLICE$0.call(arguments, 0);
+      iters = iters.filter(function(x ) {return x.size !== 0});
+      if (iters.length === 0) {
+        return this;
+      }
+      if (this.size === 0 && !this.__ownerID && iters.length === 1) {
+        return this.constructor(iters[0]);
+      }
+      return this.withMutations(function(set ) {
+        for (var ii = 0; ii < iters.length; ii++) {
+          SetIterable(iters[ii]).forEach(function(value ) {return set.add(value)});
+        }
+      });
+    };
+
+    Set.prototype.intersect = function() {var iters = SLICE$0.call(arguments, 0);
+      if (iters.length === 0) {
+        return this;
+      }
+      iters = iters.map(function(iter ) {return SetIterable(iter)});
+      var originalSet = this;
+      return this.withMutations(function(set ) {
+        originalSet.forEach(function(value ) {
+          if (!iters.every(function(iter ) {return iter.includes(value)})) {
+            set.remove(value);
+          }
+        });
+      });
+    };
+
+    Set.prototype.subtract = function() {var iters = SLICE$0.call(arguments, 0);
+      if (iters.length === 0) {
+        return this;
+      }
+      iters = iters.map(function(iter ) {return SetIterable(iter)});
+      var originalSet = this;
+      return this.withMutations(function(set ) {
+        originalSet.forEach(function(value ) {
+          if (iters.some(function(iter ) {return iter.includes(value)})) {
+            set.remove(value);
+          }
+        });
+      });
+    };
+
+    Set.prototype.merge = function() {
+      return this.union.apply(this, arguments);
+    };
+
+    Set.prototype.mergeWith = function(merger) {var iters = SLICE$0.call(arguments, 1);
+      return this.union.apply(this, iters);
+    };
+
+    Set.prototype.sort = function(comparator) {
+      // Late binding
+      return OrderedSet(sortFactory(this, comparator));
+    };
+
+    Set.prototype.sortBy = function(mapper, comparator) {
+      // Late binding
+      return OrderedSet(sortFactory(this, comparator, mapper));
+    };
+
+    Set.prototype.wasAltered = function() {
+      return this._map.wasAltered();
+    };
+
+    Set.prototype.__iterate = function(fn, reverse) {var this$0 = this;
+      return this._map.__iterate(function(_, k)  {return fn(k, k, this$0)}, reverse);
+    };
+
+    Set.prototype.__iterator = function(type, reverse) {
+      return this._map.map(function(_, k)  {return k}).__iterator(type, reverse);
+    };
+
+    Set.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      var newMap = this._map.__ensureOwner(ownerID);
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this._map = newMap;
+        return this;
+      }
+      return this.__make(newMap, ownerID);
+    };
+
+
+  function isSet(maybeSet) {
+    return !!(maybeSet && maybeSet[IS_SET_SENTINEL]);
+  }
+
+  Set.isSet = isSet;
+
+  var IS_SET_SENTINEL = '@@__IMMUTABLE_SET__@@';
+
+  var SetPrototype = Set.prototype;
+  SetPrototype[IS_SET_SENTINEL] = true;
+  SetPrototype[DELETE] = SetPrototype.remove;
+  SetPrototype.mergeDeep = SetPrototype.merge;
+  SetPrototype.mergeDeepWith = SetPrototype.mergeWith;
+  SetPrototype.withMutations = MapPrototype.withMutations;
+  SetPrototype.asMutable = MapPrototype.asMutable;
+  SetPrototype.asImmutable = MapPrototype.asImmutable;
+
+  SetPrototype.__empty = emptySet;
+  SetPrototype.__make = makeSet;
+
+  function updateSet(set, newMap) {
+    if (set.__ownerID) {
+      set.size = newMap.size;
+      set._map = newMap;
+      return set;
+    }
+    return newMap === set._map ? set :
+      newMap.size === 0 ? set.__empty() :
+      set.__make(newMap);
+  }
+
+  function makeSet(map, ownerID) {
+    var set = Object.create(SetPrototype);
+    set.size = map ? map.size : 0;
+    set._map = map;
+    set.__ownerID = ownerID;
+    return set;
+  }
+
+  var EMPTY_SET;
+  function emptySet() {
+    return EMPTY_SET || (EMPTY_SET = makeSet(emptyMap()));
+  }
+
+  createClass(OrderedSet, Set);
+
+    // @pragma Construction
+
+    function OrderedSet(value) {
+      return value === null || value === undefined ? emptyOrderedSet() :
+        isOrderedSet(value) ? value :
+        emptyOrderedSet().withMutations(function(set ) {
+          var iter = SetIterable(value);
+          assertNotInfinite(iter.size);
+          iter.forEach(function(v ) {return set.add(v)});
+        });
+    }
+
+    OrderedSet.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    OrderedSet.fromKeys = function(value) {
+      return this(KeyedIterable(value).keySeq());
+    };
+
+    OrderedSet.prototype.toString = function() {
+      return this.__toString('OrderedSet {', '}');
+    };
+
+
+  function isOrderedSet(maybeOrderedSet) {
+    return isSet(maybeOrderedSet) && isOrdered(maybeOrderedSet);
+  }
+
+  OrderedSet.isOrderedSet = isOrderedSet;
+
+  var OrderedSetPrototype = OrderedSet.prototype;
+  OrderedSetPrototype[IS_ORDERED_SENTINEL] = true;
+
+  OrderedSetPrototype.__empty = emptyOrderedSet;
+  OrderedSetPrototype.__make = makeOrderedSet;
+
+  function makeOrderedSet(map, ownerID) {
+    var set = Object.create(OrderedSetPrototype);
+    set.size = map ? map.size : 0;
+    set._map = map;
+    set.__ownerID = ownerID;
+    return set;
+  }
+
+  var EMPTY_ORDERED_SET;
+  function emptyOrderedSet() {
+    return EMPTY_ORDERED_SET || (EMPTY_ORDERED_SET = makeOrderedSet(emptyOrderedMap()));
+  }
+
+  createClass(Stack, IndexedCollection);
+
+    // @pragma Construction
+
+    function Stack(value) {
+      return value === null || value === undefined ? emptyStack() :
+        isStack(value) ? value :
+        emptyStack().unshiftAll(value);
+    }
+
+    Stack.of = function(/*...values*/) {
+      return this(arguments);
+    };
+
+    Stack.prototype.toString = function() {
+      return this.__toString('Stack [', ']');
+    };
+
+    // @pragma Access
+
+    Stack.prototype.get = function(index, notSetValue) {
+      var head = this._head;
+      index = wrapIndex(this, index);
+      while (head && index--) {
+        head = head.next;
+      }
+      return head ? head.value : notSetValue;
+    };
+
+    Stack.prototype.peek = function() {
+      return this._head && this._head.value;
+    };
+
+    // @pragma Modification
+
+    Stack.prototype.push = function(/*...values*/) {
+      if (arguments.length === 0) {
+        return this;
+      }
+      var newSize = this.size + arguments.length;
+      var head = this._head;
+      for (var ii = arguments.length - 1; ii >= 0; ii--) {
+        head = {
+          value: arguments[ii],
+          next: head
+        };
+      }
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    Stack.prototype.pushAll = function(iter) {
+      iter = IndexedIterable(iter);
+      if (iter.size === 0) {
+        return this;
+      }
+      assertNotInfinite(iter.size);
+      var newSize = this.size;
+      var head = this._head;
+      iter.reverse().forEach(function(value ) {
+        newSize++;
+        head = {
+          value: value,
+          next: head
+        };
+      });
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    Stack.prototype.pop = function() {
+      return this.slice(1);
+    };
+
+    Stack.prototype.unshift = function(/*...values*/) {
+      return this.push.apply(this, arguments);
+    };
+
+    Stack.prototype.unshiftAll = function(iter) {
+      return this.pushAll(iter);
+    };
+
+    Stack.prototype.shift = function() {
+      return this.pop.apply(this, arguments);
+    };
+
+    Stack.prototype.clear = function() {
+      if (this.size === 0) {
+        return this;
+      }
+      if (this.__ownerID) {
+        this.size = 0;
+        this._head = undefined;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return emptyStack();
+    };
+
+    Stack.prototype.slice = function(begin, end) {
+      if (wholeSlice(begin, end, this.size)) {
+        return this;
+      }
+      var resolvedBegin = resolveBegin(begin, this.size);
+      var resolvedEnd = resolveEnd(end, this.size);
+      if (resolvedEnd !== this.size) {
+        // super.slice(begin, end);
+        return IndexedCollection.prototype.slice.call(this, begin, end);
+      }
+      var newSize = this.size - resolvedBegin;
+      var head = this._head;
+      while (resolvedBegin--) {
+        head = head.next;
+      }
+      if (this.__ownerID) {
+        this.size = newSize;
+        this._head = head;
+        this.__hash = undefined;
+        this.__altered = true;
+        return this;
+      }
+      return makeStack(newSize, head);
+    };
+
+    // @pragma Mutability
+
+    Stack.prototype.__ensureOwner = function(ownerID) {
+      if (ownerID === this.__ownerID) {
+        return this;
+      }
+      if (!ownerID) {
+        this.__ownerID = ownerID;
+        this.__altered = false;
+        return this;
+      }
+      return makeStack(this.size, this._head, ownerID, this.__hash);
+    };
+
+    // @pragma Iteration
+
+    Stack.prototype.__iterate = function(fn, reverse) {
+      if (reverse) {
+        return this.reverse().__iterate(fn);
+      }
+      var iterations = 0;
+      var node = this._head;
+      while (node) {
+        if (fn(node.value, iterations++, this) === false) {
+          break;
+        }
+        node = node.next;
+      }
+      return iterations;
+    };
+
+    Stack.prototype.__iterator = function(type, reverse) {
+      if (reverse) {
+        return this.reverse().__iterator(type);
+      }
+      var iterations = 0;
+      var node = this._head;
+      return new Iterator(function()  {
+        if (node) {
+          var value = node.value;
+          node = node.next;
+          return iteratorValue(type, iterations++, value);
+        }
+        return iteratorDone();
+      });
+    };
+
+
+  function isStack(maybeStack) {
+    return !!(maybeStack && maybeStack[IS_STACK_SENTINEL]);
+  }
+
+  Stack.isStack = isStack;
+
+  var IS_STACK_SENTINEL = '@@__IMMUTABLE_STACK__@@';
+
+  var StackPrototype = Stack.prototype;
+  StackPrototype[IS_STACK_SENTINEL] = true;
+  StackPrototype.withMutations = MapPrototype.withMutations;
+  StackPrototype.asMutable = MapPrototype.asMutable;
+  StackPrototype.asImmutable = MapPrototype.asImmutable;
+  StackPrototype.wasAltered = MapPrototype.wasAltered;
+
+
+  function makeStack(size, head, ownerID, hash) {
+    var map = Object.create(StackPrototype);
+    map.size = size;
+    map._head = head;
+    map.__ownerID = ownerID;
+    map.__hash = hash;
+    map.__altered = false;
+    return map;
+  }
+
+  var EMPTY_STACK;
+  function emptyStack() {
+    return EMPTY_STACK || (EMPTY_STACK = makeStack(0));
+  }
+
+  /**
+   * Contributes additional methods to a constructor
+   */
+  function mixin(ctor, methods) {
+    var keyCopier = function(key ) { ctor.prototype[key] = methods[key]; };
+    Object.keys(methods).forEach(keyCopier);
+    Object.getOwnPropertySymbols &&
+      Object.getOwnPropertySymbols(methods).forEach(keyCopier);
+    return ctor;
+  }
+
+  Iterable.Iterator = Iterator;
+
+  mixin(Iterable, {
+
+    // ### Conversion to other types
+
+    toArray: function() {
+      assertNotInfinite(this.size);
+      var array = new Array(this.size || 0);
+      this.valueSeq().__iterate(function(v, i)  { array[i] = v; });
+      return array;
+    },
+
+    toIndexedSeq: function() {
+      return new ToIndexedSequence(this);
+    },
+
+    toJS: function() {
+      return this.toSeq().map(
+        function(value ) {return value && typeof value.toJS === 'function' ? value.toJS() : value}
+      ).__toJS();
+    },
+
+    toJSON: function() {
+      return this.toSeq().map(
+        function(value ) {return value && typeof value.toJSON === 'function' ? value.toJSON() : value}
+      ).__toJS();
+    },
+
+    toKeyedSeq: function() {
+      return new ToKeyedSequence(this, true);
+    },
+
+    toMap: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Map(this.toKeyedSeq());
+    },
+
+    toObject: function() {
+      assertNotInfinite(this.size);
+      var object = {};
+      this.__iterate(function(v, k)  { object[k] = v; });
+      return object;
+    },
+
+    toOrderedMap: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return OrderedMap(this.toKeyedSeq());
+    },
+
+    toOrderedSet: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return OrderedSet(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toSet: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Set(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toSetSeq: function() {
+      return new ToSetSequence(this);
+    },
+
+    toSeq: function() {
+      return isIndexed(this) ? this.toIndexedSeq() :
+        isKeyed(this) ? this.toKeyedSeq() :
+        this.toSetSeq();
+    },
+
+    toStack: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return Stack(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+    toList: function() {
+      // Use Late Binding here to solve the circular dependency.
+      return List(isKeyed(this) ? this.valueSeq() : this);
+    },
+
+
+    // ### Common JavaScript methods and properties
+
+    toString: function() {
+      return '[Iterable]';
+    },
+
+    __toString: function(head, tail) {
+      if (this.size === 0) {
+        return head + tail;
+      }
+      return head + ' ' + this.toSeq().map(this.__toStringMapper).join(', ') + ' ' + tail;
+    },
+
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    concat: function() {var values = SLICE$0.call(arguments, 0);
+      return reify(this, concatFactory(this, values));
+    },
+
+    includes: function(searchValue) {
+      return this.some(function(value ) {return is(value, searchValue)});
+    },
+
+    entries: function() {
+      return this.__iterator(ITERATE_ENTRIES);
+    },
+
+    every: function(predicate, context) {
+      assertNotInfinite(this.size);
+      var returnValue = true;
+      this.__iterate(function(v, k, c)  {
+        if (!predicate.call(context, v, k, c)) {
+          returnValue = false;
+          return false;
+        }
+      });
+      return returnValue;
+    },
+
+    filter: function(predicate, context) {
+      return reify(this, filterFactory(this, predicate, context, true));
+    },
+
+    find: function(predicate, context, notSetValue) {
+      var entry = this.findEntry(predicate, context);
+      return entry ? entry[1] : notSetValue;
+    },
+
+    forEach: function(sideEffect, context) {
+      assertNotInfinite(this.size);
+      return this.__iterate(context ? sideEffect.bind(context) : sideEffect);
+    },
+
+    join: function(separator) {
+      assertNotInfinite(this.size);
+      separator = separator !== undefined ? '' + separator : ',';
+      var joined = '';
+      var isFirst = true;
+      this.__iterate(function(v ) {
+        isFirst ? (isFirst = false) : (joined += separator);
+        joined += v !== null && v !== undefined ? v.toString() : '';
+      });
+      return joined;
+    },
+
+    keys: function() {
+      return this.__iterator(ITERATE_KEYS);
+    },
+
+    map: function(mapper, context) {
+      return reify(this, mapFactory(this, mapper, context));
+    },
+
+    reduce: function(reducer, initialReduction, context) {
+      assertNotInfinite(this.size);
+      var reduction;
+      var useFirst;
+      if (arguments.length < 2) {
+        useFirst = true;
+      } else {
+        reduction = initialReduction;
+      }
+      this.__iterate(function(v, k, c)  {
+        if (useFirst) {
+          useFirst = false;
+          reduction = v;
+        } else {
+          reduction = reducer.call(context, reduction, v, k, c);
+        }
+      });
+      return reduction;
+    },
+
+    reduceRight: function(reducer, initialReduction, context) {
+      var reversed = this.toKeyedSeq().reverse();
+      return reversed.reduce.apply(reversed, arguments);
+    },
+
+    reverse: function() {
+      return reify(this, reverseFactory(this, true));
+    },
+
+    slice: function(begin, end) {
+      return reify(this, sliceFactory(this, begin, end, true));
+    },
+
+    some: function(predicate, context) {
+      return !this.every(not(predicate), context);
+    },
+
+    sort: function(comparator) {
+      return reify(this, sortFactory(this, comparator));
+    },
+
+    values: function() {
+      return this.__iterator(ITERATE_VALUES);
+    },
+
+
+    // ### More sequential methods
+
+    butLast: function() {
+      return this.slice(0, -1);
+    },
+
+    isEmpty: function() {
+      return this.size !== undefined ? this.size === 0 : !this.some(function()  {return true});
+    },
+
+    count: function(predicate, context) {
+      return ensureSize(
+        predicate ? this.toSeq().filter(predicate, context) : this
+      );
+    },
+
+    countBy: function(grouper, context) {
+      return countByFactory(this, grouper, context);
+    },
+
+    equals: function(other) {
+      return deepEqual(this, other);
+    },
+
+    entrySeq: function() {
+      var iterable = this;
+      if (iterable._cache) {
+        // We cache as an entries array, so we can just return the cache!
+        return new ArraySeq(iterable._cache);
+      }
+      var entriesSequence = iterable.toSeq().map(entryMapper).toIndexedSeq();
+      entriesSequence.fromEntrySeq = function()  {return iterable.toSeq()};
+      return entriesSequence;
+    },
+
+    filterNot: function(predicate, context) {
+      return this.filter(not(predicate), context);
+    },
+
+    findEntry: function(predicate, context, notSetValue) {
+      var found = notSetValue;
+      this.__iterate(function(v, k, c)  {
+        if (predicate.call(context, v, k, c)) {
+          found = [k, v];
+          return false;
+        }
+      });
+      return found;
+    },
+
+    findKey: function(predicate, context) {
+      var entry = this.findEntry(predicate, context);
+      return entry && entry[0];
+    },
+
+    findLast: function(predicate, context, notSetValue) {
+      return this.toKeyedSeq().reverse().find(predicate, context, notSetValue);
+    },
+
+    findLastEntry: function(predicate, context, notSetValue) {
+      return this.toKeyedSeq().reverse().findEntry(predicate, context, notSetValue);
+    },
+
+    findLastKey: function(predicate, context) {
+      return this.toKeyedSeq().reverse().findKey(predicate, context);
+    },
+
+    first: function() {
+      return this.find(returnTrue);
+    },
+
+    flatMap: function(mapper, context) {
+      return reify(this, flatMapFactory(this, mapper, context));
+    },
+
+    flatten: function(depth) {
+      return reify(this, flattenFactory(this, depth, true));
+    },
+
+    fromEntrySeq: function() {
+      return new FromEntriesSequence(this);
+    },
+
+    get: function(searchKey, notSetValue) {
+      return this.find(function(_, key)  {return is(key, searchKey)}, undefined, notSetValue);
+    },
+
+    getIn: function(searchKeyPath, notSetValue) {
+      var nested = this;
+      // Note: in an ES6 environment, we would prefer:
+      // for (var key of searchKeyPath) {
+      var iter = forceIterator(searchKeyPath);
+      var step;
+      while (!(step = iter.next()).done) {
+        var key = step.value;
+        nested = nested && nested.get ? nested.get(key, NOT_SET) : NOT_SET;
+        if (nested === NOT_SET) {
+          return notSetValue;
+        }
+      }
+      return nested;
+    },
+
+    groupBy: function(grouper, context) {
+      return groupByFactory(this, grouper, context);
+    },
+
+    has: function(searchKey) {
+      return this.get(searchKey, NOT_SET) !== NOT_SET;
+    },
+
+    hasIn: function(searchKeyPath) {
+      return this.getIn(searchKeyPath, NOT_SET) !== NOT_SET;
+    },
+
+    isSubset: function(iter) {
+      iter = typeof iter.includes === 'function' ? iter : Iterable(iter);
+      return this.every(function(value ) {return iter.includes(value)});
+    },
+
+    isSuperset: function(iter) {
+      iter = typeof iter.isSubset === 'function' ? iter : Iterable(iter);
+      return iter.isSubset(this);
+    },
+
+    keyOf: function(searchValue) {
+      return this.findKey(function(value ) {return is(value, searchValue)});
+    },
+
+    keySeq: function() {
+      return this.toSeq().map(keyMapper).toIndexedSeq();
+    },
+
+    last: function() {
+      return this.toSeq().reverse().first();
+    },
+
+    lastKeyOf: function(searchValue) {
+      return this.toKeyedSeq().reverse().keyOf(searchValue);
+    },
+
+    max: function(comparator) {
+      return maxFactory(this, comparator);
+    },
+
+    maxBy: function(mapper, comparator) {
+      return maxFactory(this, comparator, mapper);
+    },
+
+    min: function(comparator) {
+      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator);
+    },
+
+    minBy: function(mapper, comparator) {
+      return maxFactory(this, comparator ? neg(comparator) : defaultNegComparator, mapper);
+    },
+
+    rest: function() {
+      return this.slice(1);
+    },
+
+    skip: function(amount) {
+      return this.slice(Math.max(0, amount));
+    },
+
+    skipLast: function(amount) {
+      return reify(this, this.toSeq().reverse().skip(amount).reverse());
+    },
+
+    skipWhile: function(predicate, context) {
+      return reify(this, skipWhileFactory(this, predicate, context, true));
+    },
+
+    skipUntil: function(predicate, context) {
+      return this.skipWhile(not(predicate), context);
+    },
+
+    sortBy: function(mapper, comparator) {
+      return reify(this, sortFactory(this, comparator, mapper));
+    },
+
+    take: function(amount) {
+      return this.slice(0, Math.max(0, amount));
+    },
+
+    takeLast: function(amount) {
+      return reify(this, this.toSeq().reverse().take(amount).reverse());
+    },
+
+    takeWhile: function(predicate, context) {
+      return reify(this, takeWhileFactory(this, predicate, context));
+    },
+
+    takeUntil: function(predicate, context) {
+      return this.takeWhile(not(predicate), context);
+    },
+
+    valueSeq: function() {
+      return this.toIndexedSeq();
+    },
+
+
+    // ### Hashable Object
+
+    hashCode: function() {
+      return this.__hash || (this.__hash = hashIterable(this));
+    }
+
+
+    // ### Internal
+
+    // abstract __iterate(fn, reverse)
+
+    // abstract __iterator(type, reverse)
+  });
+
+  // var IS_ITERABLE_SENTINEL = '@@__IMMUTABLE_ITERABLE__@@';
+  // var IS_KEYED_SENTINEL = '@@__IMMUTABLE_KEYED__@@';
+  // var IS_INDEXED_SENTINEL = '@@__IMMUTABLE_INDEXED__@@';
+  // var IS_ORDERED_SENTINEL = '@@__IMMUTABLE_ORDERED__@@';
+
+  var IterablePrototype = Iterable.prototype;
+  IterablePrototype[IS_ITERABLE_SENTINEL] = true;
+  IterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.values;
+  IterablePrototype.__toJS = IterablePrototype.toArray;
+  IterablePrototype.__toStringMapper = quoteString;
+  IterablePrototype.inspect =
+  IterablePrototype.toSource = function() { return this.toString(); };
+  IterablePrototype.chain = IterablePrototype.flatMap;
+  IterablePrototype.contains = IterablePrototype.includes;
+
+  mixin(KeyedIterable, {
+
+    // ### More sequential methods
+
+    flip: function() {
+      return reify(this, flipFactory(this));
+    },
+
+    mapEntries: function(mapper, context) {var this$0 = this;
+      var iterations = 0;
+      return reify(this,
+        this.toSeq().map(
+          function(v, k)  {return mapper.call(context, [k, v], iterations++, this$0)}
+        ).fromEntrySeq()
+      );
+    },
+
+    mapKeys: function(mapper, context) {var this$0 = this;
+      return reify(this,
+        this.toSeq().flip().map(
+          function(k, v)  {return mapper.call(context, k, v, this$0)}
+        ).flip()
+      );
+    }
+
+  });
+
+  var KeyedIterablePrototype = KeyedIterable.prototype;
+  KeyedIterablePrototype[IS_KEYED_SENTINEL] = true;
+  KeyedIterablePrototype[ITERATOR_SYMBOL] = IterablePrototype.entries;
+  KeyedIterablePrototype.__toJS = IterablePrototype.toObject;
+  KeyedIterablePrototype.__toStringMapper = function(v, k)  {return JSON.stringify(k) + ': ' + quoteString(v)};
+
+
+
+  mixin(IndexedIterable, {
+
+    // ### Conversion to other types
+
+    toKeyedSeq: function() {
+      return new ToKeyedSequence(this, false);
+    },
+
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    filter: function(predicate, context) {
+      return reify(this, filterFactory(this, predicate, context, false));
+    },
+
+    findIndex: function(predicate, context) {
+      var entry = this.findEntry(predicate, context);
+      return entry ? entry[0] : -1;
+    },
+
+    indexOf: function(searchValue) {
+      var key = this.keyOf(searchValue);
+      return key === undefined ? -1 : key;
+    },
+
+    lastIndexOf: function(searchValue) {
+      var key = this.lastKeyOf(searchValue);
+      return key === undefined ? -1 : key;
+    },
+
+    reverse: function() {
+      return reify(this, reverseFactory(this, false));
+    },
+
+    slice: function(begin, end) {
+      return reify(this, sliceFactory(this, begin, end, false));
+    },
+
+    splice: function(index, removeNum /*, ...values*/) {
+      var numArgs = arguments.length;
+      removeNum = Math.max(removeNum | 0, 0);
+      if (numArgs === 0 || (numArgs === 2 && !removeNum)) {
+        return this;
+      }
+      // If index is negative, it should resolve relative to the size of the
+      // collection. However size may be expensive to compute if not cached, so
+      // only call count() if the number is in fact negative.
+      index = resolveBegin(index, index < 0 ? this.count() : this.size);
+      var spliced = this.slice(0, index);
+      return reify(
+        this,
+        numArgs === 1 ?
+          spliced :
+          spliced.concat(arrCopy(arguments, 2), this.slice(index + removeNum))
+      );
+    },
+
+
+    // ### More collection methods
+
+    findLastIndex: function(predicate, context) {
+      var entry = this.findLastEntry(predicate, context);
+      return entry ? entry[0] : -1;
+    },
+
+    first: function() {
+      return this.get(0);
+    },
+
+    flatten: function(depth) {
+      return reify(this, flattenFactory(this, depth, false));
+    },
+
+    get: function(index, notSetValue) {
+      index = wrapIndex(this, index);
+      return (index < 0 || (this.size === Infinity ||
+          (this.size !== undefined && index > this.size))) ?
+        notSetValue :
+        this.find(function(_, key)  {return key === index}, undefined, notSetValue);
+    },
+
+    has: function(index) {
+      index = wrapIndex(this, index);
+      return index >= 0 && (this.size !== undefined ?
+        this.size === Infinity || index < this.size :
+        this.indexOf(index) !== -1
+      );
+    },
+
+    interpose: function(separator) {
+      return reify(this, interposeFactory(this, separator));
+    },
+
+    interleave: function(/*...iterables*/) {
+      var iterables = [this].concat(arrCopy(arguments));
+      var zipped = zipWithFactory(this.toSeq(), IndexedSeq.of, iterables);
+      var interleaved = zipped.flatten(true);
+      if (zipped.size) {
+        interleaved.size = zipped.size * iterables.length;
+      }
+      return reify(this, interleaved);
+    },
+
+    keySeq: function() {
+      return Range(0, this.size);
+    },
+
+    last: function() {
+      return this.get(-1);
+    },
+
+    skipWhile: function(predicate, context) {
+      return reify(this, skipWhileFactory(this, predicate, context, false));
+    },
+
+    zip: function(/*, ...iterables */) {
+      var iterables = [this].concat(arrCopy(arguments));
+      return reify(this, zipWithFactory(this, defaultZipper, iterables));
+    },
+
+    zipWith: function(zipper/*, ...iterables */) {
+      var iterables = arrCopy(arguments);
+      iterables[0] = this;
+      return reify(this, zipWithFactory(this, zipper, iterables));
+    }
+
+  });
+
+  IndexedIterable.prototype[IS_INDEXED_SENTINEL] = true;
+  IndexedIterable.prototype[IS_ORDERED_SENTINEL] = true;
+
+
+
+  mixin(SetIterable, {
+
+    // ### ES6 Collection methods (ES6 Array and Map)
+
+    get: function(value, notSetValue) {
+      return this.has(value) ? value : notSetValue;
+    },
+
+    includes: function(value) {
+      return this.has(value);
+    },
+
+
+    // ### More sequential methods
+
+    keySeq: function() {
+      return this.valueSeq();
+    }
+
+  });
+
+  SetIterable.prototype.has = IterablePrototype.includes;
+  SetIterable.prototype.contains = SetIterable.prototype.includes;
+
+
+  // Mixin subclasses
+
+  mixin(KeyedSeq, KeyedIterable.prototype);
+  mixin(IndexedSeq, IndexedIterable.prototype);
+  mixin(SetSeq, SetIterable.prototype);
+
+  mixin(KeyedCollection, KeyedIterable.prototype);
+  mixin(IndexedCollection, IndexedIterable.prototype);
+  mixin(SetCollection, SetIterable.prototype);
+
+
+  // #pragma Helper functions
+
+  function keyMapper(v, k) {
+    return k;
+  }
+
+  function entryMapper(v, k) {
+    return [k, v];
+  }
+
+  function not(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    }
+  }
+
+  function neg(predicate) {
+    return function() {
+      return -predicate.apply(this, arguments);
+    }
+  }
+
+  function quoteString(value) {
+    return typeof value === 'string' ? JSON.stringify(value) : String(value);
+  }
+
+  function defaultZipper() {
+    return arrCopy(arguments);
+  }
+
+  function defaultNegComparator(a, b) {
+    return a < b ? 1 : a > b ? -1 : 0;
+  }
+
+  function hashIterable(iterable) {
+    if (iterable.size === Infinity) {
+      return 0;
+    }
+    var ordered = isOrdered(iterable);
+    var keyed = isKeyed(iterable);
+    var h = ordered ? 1 : 0;
+    var size = iterable.__iterate(
+      keyed ?
+        ordered ?
+          function(v, k)  { h = 31 * h + hashMerge(hash(v), hash(k)) | 0; } :
+          function(v, k)  { h = h + hashMerge(hash(v), hash(k)) | 0; } :
+        ordered ?
+          function(v ) { h = 31 * h + hash(v) | 0; } :
+          function(v ) { h = h + hash(v) | 0; }
+    );
+    return murmurHashOfSize(size, h);
+  }
+
+  function murmurHashOfSize(size, h) {
+    h = imul(h, 0xCC9E2D51);
+    h = imul(h << 15 | h >>> -15, 0x1B873593);
+    h = imul(h << 13 | h >>> -13, 5);
+    h = (h + 0xE6546B64 | 0) ^ size;
+    h = imul(h ^ h >>> 16, 0x85EBCA6B);
+    h = imul(h ^ h >>> 13, 0xC2B2AE35);
+    h = smi(h ^ h >>> 16);
+    return h;
+  }
+
+  function hashMerge(a, b) {
+    return a ^ b + 0x9E3779B9 + (a << 6) + (a >> 2) | 0; // int
+  }
+
+  var Immutable = {
+
+    Iterable: Iterable,
+
+    Seq: Seq,
+    Collection: Collection,
+    Map: Map,
+    OrderedMap: OrderedMap,
+    List: List,
+    Stack: Stack,
+    Set: Set,
+    OrderedSet: OrderedSet,
+
+    Record: Record,
+    Range: Range,
+    Repeat: Repeat,
+
+    is: is,
+    fromJS: fromJS
+
+  };
+
+  return Immutable;
+
+}));
+});
+
+var immutable_1 = immutable$1.fromJS;
+var immutable_2 = immutable$1.Map;
+
+var createState = function () {
+    return immutable_2();
+};
+var isValueExist = function (val) {
+    return val !== void 0;
+};
+
+var DirectorData = (function () {
+    function DirectorData() {
+    }
+    return DirectorData;
+}());
+DirectorData.state = createState();
+
+var GameObject = (function () {
+    function GameObject() {
+        this.uid = null;
+    }
+    return GameObject;
+}());
+GameObject = __decorate([
+    registerClass("GameObject")
+], GameObject);
+var createGameObject = function () { return create$1(create$2(ThreeDTransformData), GameObjectData); };
+var addGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    addComponent$1(gameObject, component, GameObjectData);
+});
+var disposeGameObject = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    dispose$2(gameObject, ThreeDTransformData, GameObjectData);
+});
+var initGameObject$1 = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    initGameObject$$1(gameObject, getState(DirectorData), GameObjectData);
+});
+var disposeGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    disposeComponent$1(gameObject, component, GameObjectData);
+});
+var getGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, _class) {
+    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+var getGameObjectTransform = function (gameObject) {
+    return getTransform(gameObject, GameObjectData);
+};
+var hasGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+}, function (gameObject, _class) {
+    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+var isGameObjectAlive = function (gameObject) {
+    return isAlive(gameObject, GameObjectData);
+};
+var addGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    addChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+var removeGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+var hasGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    return hasChild(gameObject, child, GameObjectData);
+});
+
+var GeometryData = (function () {
+    function GeometryData() {
+    }
+    return GeometryData;
+}());
+GeometryData.index = null;
+GeometryData.count = null;
+GeometryData.verticesMap = null;
+GeometryData.indicesMap = null;
+GeometryData.indexType = null;
+GeometryData.indexTypeSize = null;
+GeometryData.configDataMap = null;
+GeometryData.computeDataFuncMap = null;
+GeometryData.gameObjectMap = null;
+GeometryData.geometryMap = null;
+
+function singleton(isInitWhenCreate) {
+    if (isInitWhenCreate === void 0) { isInitWhenCreate = false; }
+    return function (target) {
+        target._instance = null;
+        if (isInitWhenCreate) {
+            target.getInstance = function () {
+                if (target._instance === null) {
+                    var instance = new target();
+                    target._instance = instance;
+                    instance.initWhenCreate();
                 }
-            }
-        }
-        generateFace(sides.FRONT, widthSegments, heightSegments);
-        generateFace(sides.BACK, widthSegments, heightSegments);
-        generateFace(sides.TOP, widthSegments, depthSegments);
-        generateFace(sides.BOTTOM, widthSegments, depthSegments);
-        generateFace(sides.RIGHT, depthSegments, heightSegments);
-        generateFace(sides.LEFT, depthSegments, heightSegments);
-        return {
-            vertices: vertices,
-            faces: GeometryUtils.convertToFaces(indices)
-        };
-    };
-    return BoxGeometry;
-}(Geometry));
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "width", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "height", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "depth", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "widthSegments", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "heightSegments", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], BoxGeometry.prototype, "depthSegments", void 0);
-BoxGeometry = __decorate([
-    registerClass("BoxGeometry")
-], BoxGeometry);
-
-var WebGLState = (function () {
-    function WebGLState() {
-    }
-    return WebGLState;
-}());
-
-var BasicState = (function (_super) {
-    __extends(BasicState, _super);
-    function BasicState() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BasicState.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    BasicState.prototype.setState = function (material) {
-    };
-    return BasicState;
-}(WebGLState));
-BasicState = __decorate([
-    registerClass("BasicState")
-], BasicState);
-
-var GlUtils = (function () {
-    function GlUtils() {
-    }
-    GlUtils.drawElements = function (mode, count, type, offset) {
-        this._getGl().drawElements(mode, count, type, offset);
-    };
-    GlUtils.drawArrays = function (mode, first, count) {
-        this._getGl().drawArrays(mode, first, count);
-    };
-    GlUtils._getGl = function () {
-        return DeviceManager.getInstance().gl;
-    };
-    return GlUtils;
-}());
-GlUtils = __decorate([
-    registerClass("GlUtils")
-], GlUtils);
-
-var RenderCommand = (function () {
-    function RenderCommand() {
-        this._webglState = null;
-        this.drawMode = EDrawMode.TRIANGLES;
-    }
-    Object.defineProperty(RenderCommand.prototype, "webglState", {
-        get: function () {
-            return this._webglState ? this._webglState : BasicState.create();
-        },
-        set: function (webglState) {
-            this._webglState = webglState;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    RenderCommand.prototype.init = function () {
-    };
-    RenderCommand.prototype.dispose = function () {
-    };
-    RenderCommand.prototype.drawElements = function (indexBuffer) {
-        var startOffset = 0, gl = DeviceManager.getInstance().gl;
-        BufferTable.bindIndexBuffer(indexBuffer);
-        GlUtils.drawElements(gl[this.drawMode], indexBuffer.count, gl[indexBuffer.type], indexBuffer.typeSize * startOffset);
-    };
-    RenderCommand.prototype.drawArray = function (vertexBuffer) {
-        var startOffset = 0, gl = DeviceManager.getInstance().gl;
-        GlUtils.drawArrays(gl[this.drawMode], startOffset, vertexBuffer.count);
-    };
-    return RenderCommand;
-}());
-__decorate([
-    virtual
-], RenderCommand.prototype, "init", null);
-__decorate([
-    virtual
-], RenderCommand.prototype, "dispose", null);
-
-var QuadCommand = (function (_super) {
-    __extends(QuadCommand, _super);
-    function QuadCommand() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.mMatrix = null;
-        _this.vMatrix = null;
-        _this.pMatrix = null;
-        _this.buffers = null;
-        _this.material = null;
-        _this.target = null;
-        _this.sortId = null;
-        return _this;
-    }
-    Object.defineProperty(QuadCommand.prototype, "program", {
-        get: function () {
-            return this.material.program;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(QuadCommand.prototype, "mvpMatrix", {
-        get: function () {
-            return this.mMatrix.applyMatrix(this.vMatrix, true).applyMatrix(this.pMatrix, false);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(QuadCommand.prototype, "vpMatrix", {
-        get: function () {
-            return this.vMatrix.applyMatrix(this.pMatrix, true);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    QuadCommand.prototype.execute = function () {
-        var material = this.material;
-        material.updateShader(this);
-        this.draw(material);
-    };
-    return QuadCommand;
-}(RenderCommand));
-__decorate([
-    requireGetter(function () {
-        assert(!!this.mMatrix && !!this.vMatrix && !!this.pMatrix, Log$$1.info.FUNC_NOT_EXIST("mMatrix or vMatrix or pMatrix"));
-    })
-], QuadCommand.prototype, "mvpMatrix", null);
-__decorate([
-    requireGetter(function () {
-        assert(!!this.vMatrix && !!this.pMatrix, Log$$1.info.FUNC_NOT_EXIST("vMatrix or pMatrix"));
-    })
-], QuadCommand.prototype, "vpMatrix", null);
-
-var SingleDrawCommand = (function (_super) {
-    __extends(SingleDrawCommand, _super);
-    function SingleDrawCommand() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.normalMatrix = null;
-        return _this;
-    }
-    SingleDrawCommand.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    SingleDrawCommand.prototype.draw = function (material) {
-        var vertexBuffer = null, indexBuffer = this.buffers.getChild(EBufferDataType.INDICE);
-        this.webglState.setState(material);
-        if (indexBuffer) {
-            this.drawElements(indexBuffer);
+                return target._instance;
+            };
         }
         else {
-            vertexBuffer = this.buffers.getChild(EBufferDataType.VERTICE);
-            this.drawArray(vertexBuffer);
+            target.getInstance = function () {
+                if (target._instance === null) {
+                    target._instance = new target();
+                }
+                return target._instance;
+            };
         }
     };
-    return SingleDrawCommand;
-}(QuadCommand));
-SingleDrawCommand = __decorate([
-    registerClass("SingleDrawCommand")
-], SingleDrawCommand);
-
-var MeshRenderer = (function (_super) {
-    __extends(MeshRenderer, _super);
-    function MeshRenderer() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    MeshRenderer.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    MeshRenderer.prototype.render = function (renderer, target, camera) {
-        var geometry = target.getGeometry();
-        if (!geometry) {
-            return;
-        }
-        renderer.addCommand(this.createDrawCommand(target, geometry, camera));
-    };
-    MeshRenderer.prototype.createDrawCommand = function (target, geometry, camera) {
-        var cmd = null, cameraComponent = camera.getComponent(CameraController), material = geometry.material;
-        cmd = this._createCommand(target, material);
-        cmd.target = target;
-        cmd.buffers = geometry.buffers;
-        cmd.drawMode = geometry.drawMode;
-        cmd.mMatrix = target.transform.localToWorldMatrix;
-        if (target.data && target.data.vMatrix) {
-            cmd.vMatrix = target.data.vMatrix;
-        }
-        else {
-            cmd.vMatrix = cameraComponent.worldToCameraMatrix;
-        }
-        if (target.data && target.data.pMatrix) {
-            cmd.pMatrix = target.data.pMatrix;
-        }
-        else {
-            cmd.pMatrix = cameraComponent.pMatrix;
-        }
-        cmd.material = material;
-        return cmd;
-    };
-    MeshRenderer.prototype._createCommand = function (target, material) {
-        var cmd = null;
-        cmd = SingleDrawCommand.create();
-        cmd.normalMatrix = this.entityObject.transform.normalMatrix;
-        return cmd;
-    };
-    return MeshRenderer;
-}(RendererComponent));
-__decorate([
-    requireCheck(function (target, geometry, camera) {
-        var controller = camera.getComponent(CameraController);
-        it("camera must add Camera Component", function () {
-            index(!!controller && !!controller.camera).true;
-        });
-        it("Mesh must add geometry component", function () {
-            index(!!geometry).true;
-        });
-    })
-], MeshRenderer.prototype, "createDrawCommand", null);
-MeshRenderer = __decorate([
-    registerClass("MeshRenderer")
-], MeshRenderer);
-
-var ThreeDTransform = (function (_super) {
-    __extends(ThreeDTransform, _super);
-    function ThreeDTransform() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._localToWorldMatrix = null;
-        _this._position = Vector3.create();
-        _this._rotation = Quaternion.create(0, 0, 0, 1);
-        _this._scale = Vector3.create(1, 1, 1);
-        _this._eulerAngles = null;
-        _this._localPosition = Vector3.create(0, 0, 0);
-        _this._localRotation = Quaternion.create(0, 0, 0, 1);
-        _this._localEulerAngles = null;
-        _this._localScale = Vector3.create(1, 1, 1);
-        _this.dirtyWorld = null;
-        _this._localToParentMatrix = Matrix4.create();
-        _this._localToWorldMatrixCache = null;
-        _this._positionCache = null;
-        _this._rotationCache = null;
-        _this._scaleCache = null;
-        _this._eulerAnglesCache = null;
-        _this._localEulerAnglesCache = null;
-        _this._normalMatrixCache = null;
-        _this._isUserSpecifyTheLocalToWorldMatrix = false;
-        _this._userLocalToWorldMatrix = null;
-        return _this;
-    }
-    ThreeDTransform.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    Object.defineProperty(ThreeDTransform.prototype, "localToWorldMatrix", {
-        get: function () {
-            if (this._isUserSpecifyTheLocalToWorldMatrix) {
-                return this._userLocalToWorldMatrix;
-            }
-            return this.getMatrix("sync", "_localToWorldMatrix");
-        },
-        set: function (matrix) {
-            this._isUserSpecifyTheLocalToWorldMatrix = true;
-            this._userLocalToWorldMatrix = matrix;
-            this.isTransform = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "normalMatrix", {
-        get: function () {
-            return this.localToWorldMatrix.invertTo3x3().transpose();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "position", {
-        get: function () {
-            this._position = this.localToWorldMatrix.getTranslation();
-            return this._position;
-        },
-        set: function (position) {
-            if (this.p_parent === null) {
-                this._localPosition = position;
-            }
-            else {
-                this._localPosition = this.p_parent.localToWorldMatrix.clone().invert().multiplyPoint(position);
-            }
-            this.isTranslate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "rotation", {
-        get: function () {
-            this._rotation.setFromMatrix(this.localToWorldMatrix);
-            return this._rotation;
-        },
-        set: function (rotation) {
-            if (this.p_parent === null) {
-                this._localRotation = rotation;
-            }
-            else {
-                this._localRotation = this.p_parent.rotation.clone().invert().multiply(rotation);
-            }
-            this.isRotate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "scale", {
-        get: function () {
-            this._scale = this.localToWorldMatrix.getScale();
-            return this._scale;
-        },
-        set: function (scale) {
-            if (this.p_parent === null) {
-                this._localScale = scale;
-            }
-            else {
-                this._localScale = this.p_parent.localToWorldMatrix.clone().invert().multiplyVector3(scale);
-            }
-            this.isScale = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "eulerAngles", {
-        get: function () {
-            this._eulerAngles = this.localToWorldMatrix.getEulerAngles();
-            return this._eulerAngles;
-        },
-        set: function (eulerAngles) {
-            this._localRotation.setFromEulerAngles(eulerAngles);
-            if (this.p_parent !== null) {
-                this._localRotation = this.p_parent.rotation.clone().invert().multiply(this._localRotation);
-            }
-            this.isRotate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "localPosition", {
-        get: function () {
-            return this._localPosition;
-        },
-        set: function (position) {
-            this._localPosition = position;
-            this.isLocalTranslate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "localRotation", {
-        get: function () {
-            return this._localRotation;
-        },
-        set: function (rotation) {
-            this._localRotation = rotation;
-            this.isLocalRotate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "localEulerAngles", {
-        get: function () {
-            this._localEulerAngles = this._localRotation.getEulerAngles();
-            return this._localEulerAngles;
-        },
-        set: function (localEulerAngles) {
-            this._localRotation.setFromEulerAngles(localEulerAngles);
-            this.isLocalRotate = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "localScale", {
-        get: function () {
-            return this._localScale;
-        },
-        set: function (scale) {
-            this._localScale = scale;
-            this.isLocalScale = true;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "up", {
-        get: function () {
-            return this.localToWorldMatrix.getY().normalize();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "right", {
-        get: function () {
-            return this.localToWorldMatrix.getX().normalize();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ThreeDTransform.prototype, "forward", {
-        get: function () {
-            return this.localToWorldMatrix.getZ().normalize().scale(-1);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ThreeDTransform.prototype.sync = function () {
-        if (this.dirtyLocal) {
-            this._localToParentMatrix.setTRS(this._localPosition, this._localRotation, this._localScale);
-            this.dirtyLocal = false;
-            this.dirtyWorld = true;
-        }
-        if (this.dirtyWorld) {
-            if (this.p_parent === null) {
-                this._localToWorldMatrix = this._localToParentMatrix.clone();
-            }
-            else {
-                this._localToWorldMatrix = this.p_parent.localToWorldMatrix.clone().multiply(this._localToParentMatrix);
-            }
-            this.dirtyWorld = false;
-            this.children.forEach(function (child) {
-                child.dirtyWorld = true;
-            });
-        }
-    };
-    ThreeDTransform.prototype.translateLocal = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var translation = null;
-        if (args.length === 3) {
-            translation = Vector3.create(args[0], args[1], args[2]);
-        }
-        else {
-            translation = args[0];
-        }
-        this._localPosition = this._localPosition.add(this._localRotation.multiplyVector3(translation));
-        this.isTranslate = true;
-        return this;
-    };
-    ThreeDTransform.prototype.translate = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var translation = null;
-        if (args.length === 3) {
-            translation = Vector3.create(args[0], args[1], args[2]);
-        }
-        else {
-            translation = args[0];
-        }
-        this.position = translation.add(this.position);
-        return this;
-    };
-    ThreeDTransform.prototype.rotate = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eulerAngles = null, quaternion = Quaternion.create();
-        if (args.length === 3) {
-            eulerAngles = Vector3.create(args[0], args[1], args[2]);
-        }
-        else {
-            eulerAngles = args[0];
-        }
-        quaternion.setFromEulerAngles(eulerAngles);
-        if (this.p_parent === null) {
-            this._localRotation = quaternion.multiply(this._localRotation);
-        }
-        else {
-            quaternion = this.p_parent.rotation.clone().invert().multiply(quaternion);
-            this._localRotation = quaternion.multiply(this.rotation);
-        }
-        this.isRotate = true;
-        return this;
-    };
-    ThreeDTransform.prototype.rotateLocal = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var eulerAngles = null, quaternion = Quaternion.create();
-        if (args.length === 3) {
-            eulerAngles = Vector3.create(args[0], args[1], args[2]);
-        }
-        else {
-            eulerAngles = args[0];
-        }
-        quaternion.setFromEulerAngles(eulerAngles);
-        this._localRotation.multiply(quaternion);
-        this.isRotate = true;
-        return this;
-    };
-    ThreeDTransform.prototype.rotateAround = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var angle = null, center = null, axis = null, rot = null, dir = null;
-        if (args.length === 3) {
-            angle = args[0];
-            center = args[1];
-            axis = args[2];
-        }
-        else {
-            angle = args[0];
-            center = Vector3.create(args[1], args[2], args[3]);
-            axis = Vector3.create(args[4], args[5], args[6]);
-        }
-        rot = Quaternion.create().setFromAxisAngle(angle, axis);
-        dir = this.position.clone().sub(center);
-        dir = rot.multiplyVector3(dir);
-        this.position = center.add(dir);
-        this.rotation = rot.multiply(this.rotation);
-        return this;
-    };
-    ThreeDTransform.prototype.lookAt = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var target = null, up = null;
-        if (args.length === 1) {
-            target = args[0];
-            up = Vector3.up;
-        }
-        else if (args.length === 2) {
-            target = args[0];
-            up = args[1];
-        }
-        else if (args.length === 3) {
-            target = Vector3.create(args[0], args[1], args[2]);
-            up = Vector3.up;
-        }
-        else {
-            target = Vector3.create(args[0], args[1], args[2]);
-            up = Vector3.create(args[3], args[4], args[5]);
-        }
-        this.rotation = Quaternion.create().setFromMatrix(Matrix4.create().setLookAt(this.position, target, up));
-        return this;
-    };
-    ThreeDTransform.prototype.clearCache = function () {
-        this._localToWorldMatrixCache = null;
-        this._normalMatrixCache = null;
-        this._positionCache = null;
-        this._rotationCache = null;
-        this._scaleCache = null;
-        this._eulerAnglesCache = null;
-        this._localEulerAnglesCache = null;
-    };
-    ThreeDTransform.prototype.handleWhenSetTransformState = function (transformState) {
-        var eventName = null;
-        if (transformState === void 0) {
-            EventManager.trigger(this.entityObject, CustomEvent.create(EEngineEvent.TRANSFORM_TRANSLATE));
-            EventManager.trigger(this.entityObject, CustomEvent.create(EEngineEvent.TRANSFORM_ROTATE));
-            EventManager.trigger(this.entityObject, CustomEvent.create(EEngineEvent.TRANSFORM_SCALE));
-            return;
-        }
-        switch (transformState) {
-            case ETransformState.ISTRANSLATE:
-                eventName = EEngineEvent.TRANSFORM_TRANSLATE;
-                break;
-            case ETransformState.ISROTATE:
-                eventName = EEngineEvent.TRANSFORM_ROTATE;
-                break;
-            case ETransformState.ISSCALE:
-                eventName = EEngineEvent.TRANSFORM_SCALE;
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_UNKNOW("transformState:" + transformState));
-                break;
-        }
-        EventManager.trigger(this.entityObject, CustomEvent.create(eventName));
-    };
-    return ThreeDTransform;
-}(Transform));
-__decorate([
-    cacheGetter(function () {
-        return this._localToWorldMatrixCache !== null;
-    }, function () {
-        return this._localToWorldMatrixCache;
-    }, function (result) {
-        this._localToWorldMatrixCache = result;
-    })
-], ThreeDTransform.prototype, "localToWorldMatrix", null);
-__decorate([
-    cacheGetter(function () {
-        return this._normalMatrixCache !== null;
-    }, function () {
-        return this._normalMatrixCache;
-    }, function (result) {
-        this._normalMatrixCache = result;
-    })
-], ThreeDTransform.prototype, "normalMatrix", null);
-__decorate([
-    cloneAttributeAsCloneable(),
-    cacheGetter(function () {
-        return this._positionCache !== null;
-    }, function () {
-        return this._positionCache;
-    }, function (result) {
-        this._positionCache = result;
-    })
-], ThreeDTransform.prototype, "position", null);
-__decorate([
-    cloneAttributeAsCloneable(),
-    cacheGetter(function () {
-        return this._rotationCache !== null;
-    }, function () {
-        return this._rotationCache;
-    }, function (result) {
-        this._rotationCache = result;
-    })
-], ThreeDTransform.prototype, "rotation", null);
-__decorate([
-    cloneAttributeAsCloneable(),
-    cacheGetter(function () {
-        return this._scaleCache !== null;
-    }, function () {
-        return this._scaleCache;
-    }, function (result) {
-        this._scaleCache = result;
-    })
-], ThreeDTransform.prototype, "scale", null);
-__decorate([
-    cacheGetter(function () {
-        return this._eulerAnglesCache !== null;
-    }, function () {
-        return this._eulerAnglesCache;
-    }, function (result) {
-        this._eulerAnglesCache = result;
-    })
-], ThreeDTransform.prototype, "eulerAngles", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], ThreeDTransform.prototype, "localPosition", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], ThreeDTransform.prototype, "localRotation", null);
-__decorate([
-    cacheGetter(function () {
-        return this._localEulerAnglesCache !== null;
-    }, function () {
-        return this._localEulerAnglesCache;
-    }, function (result) {
-        this._localEulerAnglesCache = result;
-    })
-], ThreeDTransform.prototype, "localEulerAngles", null);
-__decorate([
-    cloneAttributeAsCloneable()
-], ThreeDTransform.prototype, "localScale", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], ThreeDTransform.prototype, "_isUserSpecifyTheLocalToWorldMatrix", void 0);
-__decorate([
-    cloneAttributeAsCloneable()
-], ThreeDTransform.prototype, "_userLocalToWorldMatrix", void 0);
-ThreeDTransform = __decorate([
-    registerClass("ThreeDTransform")
-], ThreeDTransform);
+}
 
 var DebugConfig = {
     isTest: false,
@@ -11966,514 +12902,1557 @@ var DebugConfig = {
     showDebugPanel: false
 };
 
-var ConcatObserver = (function (_super) {
-    __extends(ConcatObserver, _super);
-    function ConcatObserver(currentObserver, startNextStream) {
-        var _this = _super.call(this, null, null, null) || this;
-        _this.currentObserver = null;
-        _this._startNextStream = null;
-        _this.currentObserver = currentObserver;
-        _this._startNextStream = startNextStream;
-        return _this;
-    }
-    ConcatObserver.create = function (currentObserver, startNextStream) {
-        return new this(currentObserver, startNextStream);
-    };
-    ConcatObserver.prototype.onNext = function (value) {
-        this.currentObserver.next(value);
-    };
-    ConcatObserver.prototype.onError = function (error) {
-        this.currentObserver.error(error);
-    };
-    ConcatObserver.prototype.onCompleted = function () {
-        this._startNextStream();
-    };
-    return ConcatObserver;
-}(Observer));
+var EScreenSize;
+(function (EScreenSize) {
+    EScreenSize[EScreenSize["FULL"] = 0] = "FULL";
+})(EScreenSize || (EScreenSize = {}));
 
-var ConcatStream = (function (_super) {
-    __extends(ConcatStream, _super);
-    function ConcatStream(sources) {
-        var _this = _super.call(this, null) || this;
-        _this._sources = Collection.create();
-        var self = _this;
-        _this.scheduler = sources[0].scheduler;
-        sources.forEach(function (source) {
-            if (JudgeUtils$2.isPromise(source)) {
-                self._sources.addChild(fromPromise(source));
-            }
-            else {
-                self._sources.addChild(source);
+var Main = (function () {
+    function Main() {
+    }
+    return Main;
+}());
+Main.isTest = false;
+
+var detect = function (state) {
+    return GPUDetector.getInstance().detect(state);
+};
+
+var getIsTest$1 = function (MainData) {
+    return MainData.isTest;
+};
+var setIsTest = function (isTest, MainData) {
+    return IO.of(function () {
+        MainData.isTest = isTest;
+    });
+};
+var setLibIsTest = function (isTest) {
+    return IO.of(function () {
+        Main.isTest = isTest;
+    });
+};
+var getScreenSize = function (state) {
+    return state.getIn(["Main", "screenSize"]);
+};
+var setConfig = function (closeContractTest, MainData, _a) {
+    var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
+        options: {
+            alpha: true,
+            depth: true,
+            stencil: false,
+            antialias: true,
+            premultipliedAlpha: true,
+            preserveDrawingBuffer: false
+        }
+    } : _f;
+    return IO.of(function () {
+        var _isTest = false;
+        if (CompileConfig.closeContractTest) {
+            _isTest = false;
+            setLibIsTest(false).run();
+        }
+        else {
+            _isTest = isTest;
+            setLibIsTest(isTest).run();
+        }
+        setIsTest(_isTest, MainData).run();
+        return immutable_1({
+            Main: {
+                screenSize: screenSize
+            },
+            config: {
+                canvasId: canvasId,
+                contextConfig: {
+                    options: ExtendUtils.extend({
+                        alpha: true,
+                        depth: true,
+                        stencil: false,
+                        antialias: true,
+                        premultipliedAlpha: true,
+                        preserveDrawingBuffer: false
+                    }, contextConfig.options)
+                },
+                useDevicePixelRatio: useDevicePixelRatio
             }
         });
-        return _this;
-    }
-    ConcatStream.create = function (sources) {
-        var obj = new this(sources);
-        return obj;
-    };
-    ConcatStream.prototype.subscribeCore = function (observer) {
-        var self = this, count = this._sources.getCount(), d = GroupDisposable.create();
-        function loopRecursive(i) {
-            if (i === count) {
-                observer.completed();
-                return;
-            }
-            d.add(self._sources.getChild(i).buildStream(ConcatObserver.create(observer, function () {
-                loopRecursive(i + 1);
-            })));
-        }
-        this.scheduler.publishRecursive(observer, 0, loopRecursive);
-        return GroupDisposable.create(d);
-    };
-    return ConcatStream;
-}(BaseStream));
-ConcatStream = __decorate([
-    registerClass$1("ConcatStream")
-], ConcatStream);
-
-var IgnoreElementsObserver = (function (_super) {
-    __extends(IgnoreElementsObserver, _super);
-    function IgnoreElementsObserver(currentObserver) {
-        var _this = _super.call(this, null, null, null) || this;
-        _this._currentObserver = null;
-        _this._currentObserver = currentObserver;
-        return _this;
-    }
-    IgnoreElementsObserver.create = function (currentObserver) {
-        return new this(currentObserver);
-    };
-    IgnoreElementsObserver.prototype.onNext = function (value) {
-    };
-    IgnoreElementsObserver.prototype.onError = function (error) {
-        this._currentObserver.error(error);
-    };
-    IgnoreElementsObserver.prototype.onCompleted = function () {
-        this._currentObserver.completed();
-    };
-    return IgnoreElementsObserver;
-}(Observer));
-
-var IgnoreElementsStream = (function (_super) {
-    __extends(IgnoreElementsStream, _super);
-    function IgnoreElementsStream(source) {
-        var _this = _super.call(this, null) || this;
-        _this._source = null;
-        _this._source = source;
-        _this.scheduler = _this._source.scheduler;
-        return _this;
-    }
-    IgnoreElementsStream.create = function (source) {
-        var obj = new this(source);
-        return obj;
-    };
-    IgnoreElementsStream.prototype.subscribeCore = function (observer) {
-        return this._source.buildStream(IgnoreElementsObserver.create(observer));
-    };
-    return IgnoreElementsStream;
-}(BaseStream));
-IgnoreElementsStream = __decorate([
-    registerClass$1("IgnoreElementsStream")
-], IgnoreElementsStream);
-
-root$1.requestNextAnimationFrame = (function () {
-    var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = root$1.navigator && root$1.navigator.userAgent, index = 0, self = this;
-    wrapper = function (time) {
-        time = root$1.performance.now();
-        self.callback(time);
-    };
-    if (root$1.requestAnimationFrame) {
-        return requestAnimationFrame;
-    }
-    if (root$1.webkitRequestAnimationFrame) {
-        originalRequestAnimationFrame = root$1.webkitRequestAnimationFrame;
-        root$1.webkitRequestAnimationFrame = function (callback, element) {
-            self.callback = callback;
-            return originalRequestAnimationFrame(wrapper, element);
-        };
-    }
-    if (root$1.msRequestAnimationFrame) {
-        originalRequestAnimationFrame = root$1.msRequestAnimationFrame;
-        root$1.msRequestAnimationFrame = function (callback) {
-            self.callback = callback;
-            return originalRequestAnimationFrame(wrapper);
-        };
-    }
-    if (root$1.mozRequestAnimationFrame) {
-        index = userAgent.indexOf('rv:');
-        if (userAgent.indexOf('Gecko') != -1) {
-            geckoVersion = userAgent.substr(index + 3, 3);
-            if (geckoVersion === '2.0') {
-                root$1.mozRequestAnimationFrame = undefined;
-            }
-        }
-    }
-    return root$1.webkitRequestAnimationFrame ||
-        root$1.mozRequestAnimationFrame ||
-        root$1.oRequestAnimationFrame ||
-        root$1.msRequestAnimationFrame ||
-        function (callback, element) {
-            var start, finish;
-            root$1.setTimeout(function () {
-                start = root$1.performance.now();
-                callback(start);
-                finish = root$1.performance.now();
-                self.timeout = 1000 / 60 - (finish - start);
-            }, self.timeout);
-        };
-}());
-root$1.cancelNextRequestAnimationFrame = root$1.cancelRequestAnimationFrame
-    || root$1.webkitCancelAnimationFrame
-    || root$1.webkitCancelRequestAnimationFrame
-    || root$1.mozCancelRequestAnimationFrame
-    || root$1.oCancelRequestAnimationFrame
-    || root$1.msCancelRequestAnimationFrame
-    || clearTimeout;
-
-var RenderUtils = (function () {
-    function RenderUtils() {
-    }
-    RenderUtils.getGameObjectRenderList = function (sourceList) {
-        var renderList = [];
-        sourceList.forEach(function (child) {
-            var activeGameObject = null;
-            activeGameObject = child;
-            if (activeGameObject.isVisible) {
-                renderList.push(activeGameObject);
-            }
-        });
-        return Collection.create(renderList);
-    };
-    return RenderUtils;
-}());
-RenderUtils = __decorate([
-    registerClass("RenderUtils")
-], RenderUtils);
-
-var GameObject = (function (_super) {
-    __extends(GameObject, _super);
-    function GameObject() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.renderGroup = 0;
-        _this.renderPriority = 0;
-        _this.isVisible = true;
-        return _this;
-    }
-    GameObject.create = function () {
-        var obj = new this();
-        obj.initWhenCreate();
-        return obj;
-    };
-    GameObject.prototype.initWhenCreate = function () {
-        _super.prototype.initWhenCreate.call(this);
-        this.name = "gameObject" + String(this.uid);
-    };
-    GameObject.prototype.createTransform = function () {
-        return ThreeDTransform.create();
-    };
-    GameObject.prototype.getRenderList = function () {
-        return RenderUtils.getGameObjectRenderList(this.getChildren());
-    };
-    return GameObject;
-}(EntityObject));
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "renderGroup", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "renderPriority", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "isVisible", void 0);
-GameObject = __decorate([
-    registerClass("GameObject")
-], GameObject);
-
-var Scene = (function (_super) {
-    __extends(Scene, _super);
-    function Scene() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Scene;
-}(EntityObject));
-
-var GameObjectScene = (function (_super) {
-    __extends(GameObjectScene, _super);
-    function GameObjectScene() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._currentCamera = null;
-        _this._cameraList = Collection.create();
-        return _this;
-    }
-    GameObjectScene.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    Object.defineProperty(GameObjectScene.prototype, "currentCamera", {
-        get: function () {
-            return this._currentCamera || this._cameraList.getChild(0);
-        },
-        set: function (arg) {
-            if (JudgeUtils$1.isNumber(arg)) {
-                var index = arg;
-                this._currentCamera = this._cameraList.getChild(index);
-            }
-            else if (arg instanceof GameObject) {
-                var currentCamera = arg;
-                this._currentCamera = currentCamera;
-            }
-        },
-        enumerable: true,
-        configurable: true
     });
-    GameObjectScene.prototype.addChild = function (child) {
-        var cameraList = this._getCameras(child);
-        if (cameraList.getCount() > 0) {
-            this._cameraList.addChildren(cameraList);
-        }
-        return _super.prototype.addChild.call(this, child);
-    };
-    GameObjectScene.prototype.update = function (elapsed) {
-        var currentCamera = this._getCurrentCameraComponent();
-        if (currentCamera) {
-            currentCamera.update(elapsed);
-        }
-        _super.prototype.update.call(this, elapsed);
-    };
-    GameObjectScene.prototype.render = function (renderer) {
-        _super.prototype.render.call(this, renderer, this.currentCamera);
-    };
-    GameObjectScene.prototype.getRenderList = function () {
-        return RenderUtils.getGameObjectRenderList(this.getChildren());
-    };
-    GameObjectScene.prototype.createTransform = function () {
-        return null;
-    };
-    GameObjectScene.prototype._getCameras = function (gameObject) {
-        return this._find(gameObject, this._isCamera);
-    };
-    GameObjectScene.prototype._find = function (gameObject, judgeFunc) {
-        var self = this, resultArr = Collection.create();
-        var find = function (gameObject) {
-            if (judgeFunc.call(self, gameObject)) {
-                resultArr.addChild(gameObject);
-            }
-            gameObject.forEach(function (child) {
-                find(child);
-            });
-        };
-        find(gameObject);
-        return resultArr;
-    };
-    GameObjectScene.prototype._isCamera = function (child) {
-        return child.hasComponent(CameraController);
-    };
-    GameObjectScene.prototype._getCurrentCameraComponent = function () {
-        if (!this.currentCamera) {
-            return null;
-        }
-        return this.currentCamera.getComponent(CameraController);
-    };
-    return GameObjectScene;
-}(Scene));
-__decorate([
-    requireSetter(function (arg) {
-        if (JudgeUtils$1.isNumber(arg)) {
-            var index = arg;
-            assert(!!this._cameraList.getChild(index), Log$$1.info.FUNC_NOT_EXIST("current camera in cameraList"));
-        }
-    })
-], GameObjectScene.prototype, "currentCamera", null);
-GameObjectScene = __decorate([
-    registerClass("GameObjectScene")
-], GameObjectScene);
-
-var SceneDispatcher = (function (_super) {
-    __extends(SceneDispatcher, _super);
-    function SceneDispatcher() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.name = "scene" + String(_this.uid);
-        _this.gameObjectScene = GameObjectScene.create();
-        return _this;
-    }
-    SceneDispatcher.create = function () {
-        var obj = new this();
-        obj.initWhenCreate();
-        return obj;
-    };
-    Object.defineProperty(SceneDispatcher.prototype, "currentCamera", {
-        get: function () {
-            return this.gameObjectScene.currentCamera;
-        },
-        set: function (arg) {
-            this.gameObjectScene.currentCamera = arg;
-        },
-        enumerable: true,
-        configurable: true
+};
+var init$4 = requireCheckFunc(function (gameState, configState, DeviceManagerData) {
+    it$1("should set config before", function () {
+        index_1(configState.get("useDevicePixelRatio")).exist;
     });
-    SceneDispatcher.prototype.addChild = function (child) {
-        if (child instanceof GameObject) {
-            this.gameObjectScene.addChild(child);
-        }
-        child.parent = this;
-        return this;
-    };
-    SceneDispatcher.prototype.dispose = function () {
-        this.gameObjectScene.dispose();
-    };
-    SceneDispatcher.prototype.hasChild = function (child) {
-        if (child instanceof GameObject) {
-            return this.gameObjectScene.hasChild(child);
-        }
-    };
-    SceneDispatcher.prototype.addChildren = function () {
+}, function (gameState, configState, DeviceManagerData) {
+    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
+});
+
+var DomQuery = (function () {
+    function DomQuery() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        if (args[0] instanceof EntityObject) {
-            var child = args[0];
-            this.addChild(child);
+        this._doms = null;
+        if (JudgeUtils.isDom(args[0])) {
+            this._doms = [args[0]];
         }
-        if (args[0] instanceof Collection) {
-            var children = args[0], self_1 = this;
-            children.forEach(function (child) {
-                self_1.addChild(child);
-            });
+        else if (this._isDomEleStr(args[0])) {
+            this._doms = [this._buildDom(args[0])];
         }
-        else if (JudgeUtils$1.isArrayExactly(args[0])) {
-            var children = args[0];
-            for (var _a = 0, children_1 = children; _a < children_1.length; _a++) {
-                var child = children_1[_a];
-                this.addChild(child);
+        else {
+            this._doms = document.querySelectorAll(args[0]);
+        }
+        return this;
+    }
+    DomQuery.create = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var obj = new this(args[0]);
+        return obj;
+    };
+    DomQuery.prototype.get = function (index) {
+        return this._doms[index];
+    };
+    DomQuery.prototype.prepend = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var targetDom = null;
+        targetDom = this._buildDom(args[0]);
+        for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
+            var dom = _b[_a];
+            if (dom.nodeType === 1) {
+                dom.insertBefore(targetDom, dom.firstChild);
             }
         }
         return this;
     };
-    SceneDispatcher.prototype.getChildren = function () {
-        return this.gameObjectScene.getChildren();
+    DomQuery.prototype.prependTo = function (eleStr) {
+        var targetDom = null;
+        targetDom = DomQuery.create(eleStr);
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            if (dom.nodeType === 1) {
+                targetDom.prepend(dom);
+            }
+        }
+        return this;
     };
-    SceneDispatcher.prototype.createTransform = function () {
-        return null;
+    DomQuery.prototype.remove = function () {
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            if (dom && dom.parentNode && dom.tagName != 'BODY') {
+                dom.parentNode.removeChild(dom);
+            }
+        }
+        return this;
     };
-    return SceneDispatcher;
-}(EntityObject));
-SceneDispatcher = __decorate([
-    registerClass("SceneDispatcher")
-], SceneDispatcher);
-
-var TimeController = (function () {
-    function TimeController() {
-        this.elapsed = null;
-        this.pauseElapsed = 0;
-        this.pauseTime = null;
-        this.startTime = null;
-    }
-    TimeController.prototype.start = function () {
-        this.startTime = this.getNow();
-        this.pauseElapsed = null;
+    DomQuery.prototype.css = function (property, value) {
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            dom.style[property] = value;
+        }
     };
-    TimeController.prototype.stop = function () {
-        this.startTime = null;
-    };
-    TimeController.prototype.pause = function () {
-        this.pauseTime = this.getNow();
-    };
-    TimeController.prototype.resume = function () {
-        this.pauseElapsed += this.getNow() - this.pauseTime;
-        this.pauseTime = null;
-    };
-    TimeController.prototype.computeElapseTime = function (time) {
-        if (this.pauseElapsed) {
-            this.elapsed = time - this.pauseElapsed - this.startTime;
+    DomQuery.prototype.attr = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 1) {
+            var name = args[0];
+            return this.get(0).getAttribute(name);
         }
         else {
-            this.elapsed = time - this.startTime;
+            var name = args[0], value = args[1];
+            for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
+                var dom = _b[_a];
+                dom.setAttribute(name, value);
+            }
         }
-        if (this.elapsed < 0) {
-            this.elapsed = 0;
-        }
-        return this.elapsed;
     };
-    return TimeController;
+    DomQuery.prototype.text = function (str) {
+        var dom = this.get(0);
+        if (str !== void 0) {
+            if (dom.textContent !== void 0) {
+                dom.textContent = str;
+            }
+            else {
+                dom.innerText = str;
+            }
+        }
+        else {
+            return dom.textContent !== void 0 ? dom.textContent : dom.innerText;
+        }
+    };
+    DomQuery.prototype._isDomEleStr = function (eleStr) {
+        return eleStr.match(/<(\w+)[^>]*><\/\1>/) !== null;
+    };
+    DomQuery.prototype._buildDom = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (JudgeUtils.isString(args[0])) {
+            var div = this._createElement("div"), eleStr = args[0];
+            div.innerHTML = eleStr;
+            return div.firstChild;
+        }
+        return args[0];
+    };
+    DomQuery.prototype._createElement = function (eleStr) {
+        return document.createElement(eleStr);
+    };
+    return DomQuery;
 }());
-__decorate([
-    ensure(function () {
-        assert(this.elapsed >= 0, Log$$1.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
-    })
-], TimeController.prototype, "computeElapseTime", null);
 
-var STARTING_FPS = 60;
-var GAMETIME_SCALE = 1000;
-var DirectorTimeController = (function (_super) {
-    __extends(DirectorTimeController, _super);
-    function DirectorTimeController() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.gameTime = null;
-        _this.fps = null;
-        _this.isTimeChange = false;
-        _this.deltaTime = null;
-        _this._lastTime = null;
-        return _this;
-    }
-    DirectorTimeController.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    DirectorTimeController.prototype.tick = function (time) {
-        this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
-        this._updateFps(this.deltaTime);
-        this.gameTime = time / GAMETIME_SCALE;
-        this._lastTime = time;
-    };
-    DirectorTimeController.prototype.start = function () {
-        _super.prototype.start.call(this);
-        this.isTimeChange = true;
-        this.elapsed = 0;
-    };
-    DirectorTimeController.prototype.resume = function () {
-        _super.prototype.resume.call(this);
-        this.isTimeChange = true;
-    };
-    DirectorTimeController.prototype.getNow = function () {
-        return root$2.performance.now();
-    };
-    DirectorTimeController.prototype._updateFps = function (deltaTime) {
-        if (this._lastTime === null) {
-            this.fps = STARTING_FPS;
-        }
-        else {
-            this.fps = 1000 / deltaTime;
-        }
-    };
-    return DirectorTimeController;
-}(TimeController));
-DirectorTimeController = __decorate([
-    registerClass("DirectorTimeController")
-], DirectorTimeController);
+var getCanvas = function (state) {
+    return state.getIn(["View", "dom"]);
+};
+var setCanvas = curry(function (dom, state) {
+    return state.setIn(["View", "dom"], dom);
+});
+var getX = curry(function (dom) {
+    return Number(dom.style.left.slice(0, -2));
+});
+var setX = curry(function (x, dom) {
+    return IO.of(function () {
+        dom.style.left = x + "px";
+        return dom;
+    });
+});
+var getY = curry(function (dom) {
+    return Number(dom.style.top.slice(0, -2));
+});
+var setY = curry(function (y, dom) {
+    return IO.of(function () {
+        dom.style.top = y + "px";
+        return dom;
+    });
+});
+var getWidth = curry(function (dom) {
+    return dom.clientWidth;
+});
+var setWidth = curry(function (width, dom) {
+    return IO.of(function () {
+        dom.width = width;
+        return dom;
+    });
+});
+var getHeight = curry(function (dom) {
+    return dom.clientHeight;
+});
+var setHeight = curry(function (height, dom) {
+    return IO.of(function () {
+        dom.height = height;
+        return dom;
+    });
+});
+var getStyleWidth = curry(function (dom) {
+    return dom.style.width;
+});
+var setStyleWidth = curry(function (width, dom) {
+    return IO.of(function () {
+        dom.style.width = width;
+        return dom;
+    });
+});
+var getStyleHeight = curry(function (dom) {
+    return dom.style.height;
+});
+var setStyleHeight = curry(function (height, dom) {
+    return IO.of(function () {
+        dom.style.height = height;
+        return dom;
+    });
+});
+var initCanvas = function (dom) {
+    return IO.of(function () {
+        dom.style.cssText = "position:absolute;left:0;top:0;";
+        return dom;
+    });
+};
+var getContext = function (contextConfig, dom) {
+    var options = contextConfig.get("options").toObject();
+    return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options));
+};
 
-var Renderer = (function () {
-    function Renderer() {
-        this._webglState = null;
+var RectRegion = RectRegion_1 = (function (_super) {
+    __extends(RectRegion, _super);
+    function RectRegion() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Object.defineProperty(Renderer.prototype, "webglState", {
+    Object.defineProperty(RectRegion.prototype, "width", {
         get: function () {
-            return this._webglState ? this._webglState : BasicState.create();
+            return this.z;
         },
-        set: function (webglState) {
-            this._webglState = webglState;
+        set: function (width) {
+            this.z = width;
         },
         enumerable: true,
         configurable: true
     });
-    Renderer.prototype.init = function () {
+    Object.defineProperty(RectRegion.prototype, "height", {
+        get: function () {
+            return this.w;
+        },
+        set: function (height) {
+            this.w = height;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    RectRegion.prototype.clone = function () {
+        return this.copyHelper(RectRegion_1.create());
     };
-    return Renderer;
-}());
-__decorate([
-    virtual
-], Renderer.prototype, "init", null);
+    RectRegion.prototype.isNotEmpty = function () {
+        return this.x !== 0
+            || this.y !== 0
+            || this.width !== 0
+            || this.height !== 0;
+    };
+    return RectRegion;
+}(Vector4));
+RectRegion = RectRegion_1 = __decorate([
+    registerClass("RectRegion")
+], RectRegion);
+var RectRegion_1;
 
+var root$1;
+if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
+    root$1 = global;
+}
+else if (typeof window != "undefined") {
+    root$1 = window;
+}
+else if (typeof self != "undefined") {
+    root$1 = self;
+}
+else {
+    Log$$1.error("no avaliable root!");
+}
+
+var getRootProperty = function (propertyName) {
+    return IO.of(function () {
+        return root$1[propertyName];
+    });
+};
+
+var getGL = function (DeviceManagerData, state) {
+    return DeviceManagerData.gl;
+};
+var setGL = curry(function (gl, DeviceManagerData, state) {
+    DeviceManagerData.gl = gl;
+    return state;
+});
+var setContextConfig = curry(function (contextConfig, state) {
+    return state.setIn(["DeviceManager", "contextConfig"], contextConfig);
+});
+var setPixelRatio = function (pixelRatio, state) {
+    return state.setIn(["DeviceManager", "pixelRatio"], pixelRatio);
+};
+var getViewport = function (state) {
+    return state.getIn(["DeviceManager", "viewport"]);
+};
+var setViewport = function (x, y, width, height, state) {
+    return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
+};
+var _getCanvas = function (DomQuery$$1, domId) {
+    if (domId !== "") {
+        return DomQuery$$1.create(_getCanvasId(domId)).get(0);
+    }
+    return DomQuery$$1.create("<canvas></canvas>").prependTo("body").get(0);
+};
+var _getCanvasId = ensureFunc(function (id) {
+    it$1("dom id should be #string", function () {
+        index_1(/#[^#]+/.test(id)).true;
+    });
+}, function (domId) {
+    if (domId.indexOf('#') > -1) {
+        return domId;
+    }
+    return "#" + domId;
+});
+var setPixelRatioAndCanvas = curry(function (useDevicePixelRatio, state) {
+    return IO.of(function () {
+        if (!useDevicePixelRatio) {
+            return state;
+        }
+        var pixelRatio = getRootProperty("devicePixelRatio").run(), dom = getCanvas(state);
+        dom.width = Math.round(dom.width * pixelRatio);
+        dom.height = Math.round(dom.height * pixelRatio);
+        return setPixelRatio(pixelRatio, state);
+    });
+});
+var createGL = curry(function (canvasId, contextConfig, DeviceManagerData, state) {
+    return IO.of(function () {
+        var dom = _getCanvas(DomQuery, canvasId), gl = getContext(contextConfig, dom);
+        if (!gl) {
+            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        }
+        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
+    });
+});
+var setViewportOfGL = curry(function (x, y, width, height, DeviceManagerData, state) {
+    return IO.of(function () {
+        var gl = getGL(DeviceManagerData, state), viewport = getViewport(state);
+        if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
+            return state;
+        }
+        gl.viewport(x, y, width, height);
+        return setViewport(x, y, width, height, state);
+    });
+});
+var _setBodyByScreenSize = function (screenSize) {
+    return IO.of(function () {
+        if (screenSize === EScreenSize.FULL) {
+            DomQuery.create("body").css("margin", "0");
+        }
+        return screenSize;
+    });
+};
+var _getScreenData = function (screenSize) {
+    return IO.of(function () {
+        var x = null, y = null, width = null, height = null, styleWidth = null, styleHeight = null;
+        if (screenSize === EScreenSize.FULL) {
+            x = 0;
+            y = 0;
+            width = getRootProperty("innerWidth").run();
+            height = getRootProperty("innerHeight").run();
+            styleWidth = "100%";
+            styleHeight = "100%";
+        }
+        else {
+            x = screenSize.x || 0;
+            y = screenSize.y || 0;
+            width = screenSize.width || getRootProperty("innerWidth").run();
+            height = screenSize.height || getRootProperty("innerHeight").run();
+            styleWidth = width + "px";
+            styleHeight = height + "px";
+        }
+        return {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            styleWidth: styleWidth,
+            styleHeight: styleHeight
+        };
+    });
+};
+var _setScreenData = curry(function (DeviceManagerData, state, _a) {
+    var x = _a.x, y = _a.y, width = _a.width, height = _a.height, styleWidth = _a.styleWidth, styleHeight = _a.styleHeight;
+    return IO.of(function () {
+        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
+        return setViewportOfGL(0, 0, width, height, DeviceManagerData, state).run();
+    });
+});
+var setScreen = curry(function (DeviceManagerData, state) {
+    return IO.of(requireCheckFunc(function (state) {
+        it$1("should exist MainData.screenSize", function () {
+            index_1(getScreenSize(DirectorData.state)).exist;
+        });
+    }, function () {
+        var dom = getCanvas(state);
+        initCanvas(dom).run();
+        return compose(chain(_setScreenData(DeviceManagerData, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run();
+    }));
+});
+var clear = function (gl, color, DeviceManagerData) {
+    _setClearColor(gl, color, DeviceManagerData);
+    setColorWrite(gl, true, true, true, true, DeviceManagerData);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+};
+var _setClearColor = function (gl, color, DeviceManagerData) {
+    var clearColor = DeviceManagerData.clearColor;
+    if (clearColor && clearColor.isEqual(color)) {
+        return;
+    }
+    gl.clearColor(color.r, color.g, color.b, color.a);
+    DeviceManagerData.clearColor = color;
+};
+var setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeAlpha, DeviceManagerData) {
+    if (DeviceManagerData.writeRed !== writeRed
+        || DeviceManagerData.writeGreen !== writeGreen
+        || DeviceManagerData.writeBlue !== writeBlue
+        || DeviceManagerData.writeAlpha !== writeAlpha) {
+        gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
+        DeviceManagerData.writeRed = writeRed;
+        DeviceManagerData.writeGreen = writeGreen;
+        DeviceManagerData.writeBlue = writeBlue;
+        DeviceManagerData.writeAlpha = writeAlpha;
+    }
+};
+var initData$7 = function (DeviceManagerData) {
+    DeviceManagerData.gl = null;
+    DeviceManagerData.clearColor = null;
+    DeviceManagerData.writeRed = null;
+    DeviceManagerData.writeGreen = null;
+    DeviceManagerData.writeBlue = null;
+    DeviceManagerData.writeAlpha = null;
+};
+
+var DeviceManagerData = (function () {
+    function DeviceManagerData() {
+    }
+    return DeviceManagerData;
+}());
+DeviceManagerData.gl = null;
+DeviceManagerData.clearColor = null;
+DeviceManagerData.writeRed = null;
+DeviceManagerData.writeGreen = null;
+DeviceManagerData.writeBlue = null;
+DeviceManagerData.writeAlpha = null;
+
+var GPUDetector = (function () {
+    function GPUDetector() {
+        this.maxTextureUnit = null;
+        this.maxTextureSize = null;
+        this.maxCubemapTextureSize = null;
+        this.maxAnisotropy = null;
+        this.maxBoneCount = null;
+        this.extensionCompressedTextureS3TC = null;
+        this.extensionTextureFilterAnisotropic = null;
+        this.extensionInstancedArrays = null;
+        this.extensionUintIndices = null;
+        this.extensionDepthTexture = null;
+        this.extensionVAO = null;
+        this.extensionStandardDerivatives = null;
+        this.precision = null;
+        this._isDetected = false;
+    }
+    GPUDetector.getInstance = function () { };
+    GPUDetector.prototype.detect = function (state) {
+        this._isDetected = true;
+        this._detectExtension(state);
+        this._detectCapabilty(state);
+        return state;
+    };
+    GPUDetector.prototype._detectExtension = function (state) {
+        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state);
+        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state);
+        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state);
+        this.extensionUintIndices = this._getExtension("element_index_uint", state);
+        this.extensionDepthTexture = this._getExtension("depth_texture", state);
+        this.extensionVAO = this._getExtension("vao", state);
+        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state);
+    };
+    GPUDetector.prototype._detectCapabilty = function (state) {
+        var gl = getGL(DeviceManagerData, state);
+        this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+        this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+        this.maxAnisotropy = this._getMaxAnisotropy(state);
+        this.maxBoneCount = this._getMaxBoneCount(state);
+        this._detectPrecision(state);
+    };
+    GPUDetector.prototype._getExtension = function (name, state) {
+        var extension, gl = getGL(DeviceManagerData, state);
+        switch (name) {
+            case "EXT_texture_filter_anisotropic":
+                extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+                break;
+            case "WEBGL_compressed_texture_s3tc":
+                extension = gl.getExtension("WEBGL_compressed_texture_s3tc") || gl.getExtension("MOZ_WEBGL_compressed_texture_s3tc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
+                break;
+            case "WEBGL_compressed_texture_pvrtc":
+                extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
+                break;
+            case "ANGLE_instanced_arrays":
+                extension = gl.getExtension("ANGLE_instanced_arrays");
+                break;
+            case "element_index_uint":
+                extension = gl.getExtension("OES_element_index_uint") !== null;
+                break;
+            case "depth_texture":
+                extension = gl.getExtension("WEBKIT_WEBGL_depth_texture") !== null || gl.getExtension("WEBGL_depth_texture") !== null;
+                break;
+            case "vao":
+                extension = gl.getExtension("OES_vertex_array_object");
+                break;
+            case "standard_derivatives":
+                extension = gl.getExtension("OES_standard_derivatives");
+                break;
+            default:
+                extension = gl.getExtension(name);
+                break;
+        }
+        return extension;
+    };
+    GPUDetector.prototype._getMaxBoneCount = function (state) {
+        var gl = getGL(DeviceManagerData, state), numUniforms = null, maxBoneCount = null;
+        numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
+        numUniforms -= 4 * 4;
+        numUniforms -= 1;
+        numUniforms -= 4 * 4;
+        maxBoneCount = Math.floor(numUniforms / 4);
+        return Math.min(maxBoneCount, 128);
+    };
+    GPUDetector.prototype._getMaxAnisotropy = function (state) {
+        var extension = this.extensionTextureFilterAnisotropic, gl = getGL(DeviceManagerData, state);
+        return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
+    };
+    GPUDetector.prototype._detectPrecision = function (state) {
+        var gl = getGL(DeviceManagerData, state);
+        if (!gl.getShaderPrecisionFormat) {
+            this.precision = EGPUPrecision.HIGHP;
+            return;
+        }
+        var vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT), vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT), fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT), fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT), highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0, mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
+        if (!highpAvailable) {
+            if (mediumpAvailable) {
+                this.precision = EGPUPrecision.MEDIUMP;
+                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
+            }
+            else {
+                this.precision = EGPUPrecision.LOWP;
+                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
+            }
+        }
+        else {
+            this.precision = EGPUPrecision.HIGHP;
+        }
+    };
+    return GPUDetector;
+}());
+GPUDetector = __decorate([
+    singleton(),
+    registerClass("GPUDetector")
+], GPUDetector);
+var EGPUPrecision;
+(function (EGPUPrecision) {
+    EGPUPrecision[EGPUPrecision["HIGHP"] = 0] = "HIGHP";
+    EGPUPrecision[EGPUPrecision["MEDIUMP"] = 1] = "MEDIUMP";
+    EGPUPrecision[EGPUPrecision["LOWP"] = 2] = "LOWP";
+})(EGPUPrecision || (EGPUPrecision = {}));
+
+var EBufferType;
+(function (EBufferType) {
+    EBufferType[EBufferType["BYTE"] = "BYTE"] = "BYTE";
+    EBufferType[EBufferType["UNSIGNED_BYTE"] = "UNSIGNED_BYTE"] = "UNSIGNED_BYTE";
+    EBufferType[EBufferType["SHORT"] = "SHORT"] = "SHORT";
+    EBufferType[EBufferType["UNSIGNED_SHORT"] = "UNSIGNED_SHORT"] = "UNSIGNED_SHORT";
+    EBufferType[EBufferType["INT"] = "INT"] = "INT";
+    EBufferType[EBufferType["UNSIGNED_INT"] = "UNSIGNED_INT"] = "UNSIGNED_INT";
+    EBufferType[EBufferType["FLOAT"] = "FLOAT"] = "FLOAT";
+})(EBufferType || (EBufferType = {}));
+
+var EDrawMode;
+(function (EDrawMode) {
+    EDrawMode[EDrawMode["POINTS"] = "POINTS"] = "POINTS";
+    EDrawMode[EDrawMode["LINES"] = "LINES"] = "LINES";
+    EDrawMode[EDrawMode["LINE_LOOP"] = "LINE_LOOP"] = "LINE_LOOP";
+    EDrawMode[EDrawMode["LINE_STRIP"] = "LINE_STRIP"] = "LINE_STRIP";
+    EDrawMode[EDrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
+    EDrawMode[EDrawMode["TRIANGLE_STRIP"] = "TRIANGLE_STRIP"] = "TRIANGLE_STRIP";
+    EDrawMode[EDrawMode["TRANGLE_FAN"] = "TRIANGLE_FAN"] = "TRANGLE_FAN";
+})(EDrawMode || (EDrawMode = {}));
+
+var addAddComponentHandle$4 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$4);
+};
+var addDisposeHandle$4 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$4);
+};
+var addInitHandle$1 = function (_class) {
+    addInitHandle(_class, initGeometry$1);
+};
+var create$4 = requireCheckFunc(function (geometry, GeometryData$$1) {
+    checkIndexShouldEqualCount(GeometryData$$1);
+}, function (geometry, GeometryData$$1) {
+    var index = generateComponentIndex(GeometryData$$1);
+    geometry.index = index;
+    GeometryData$$1.count += 1;
+    GeometryData$$1.geometryMap[index] = geometry;
+    return geometry;
+});
+var init$3 = function (GeometryData$$1, state) {
+    for (var i = 0, count = GeometryData$$1.count; i < count; i++) {
+        initGeometry$1(i, state);
+    }
+    return state;
+};
+var initGeometry$1 = function (index, state) {
+    var computeDataFunc = GeometryData.computeDataFuncMap[index];
+    if (_isComputeDataFuncNotExist(computeDataFunc)) {
+        return;
+    }
+    var _a = computeDataFunc(index, GeometryData), vertices = _a.vertices, indices = _a.indices;
+    setVertices(index, vertices, GeometryData);
+    setIndices(index, indices, GeometryData);
+};
+var _isComputeDataFuncNotExist = function (func) { return isNotValidMapValue(func); };
+var getDrawMode$1 = function (index, GeometryData$$1) {
+    return EDrawMode.TRIANGLES;
+};
+var getVerticesCount = function (index, GeometryData$$1) {
+    return getVertices$1(index, GeometryData$$1).length;
+};
+var getIndicesCount = function (index, GeometryData$$1) {
+    return getIndices$1(index, GeometryData$$1).length;
+};
+var getIndexType = function (GeometryData$$1) {
+    return GeometryData$$1.indexType;
+};
+var getIndexTypeSize = function (GeometryData$$1) {
+    return GeometryData$$1.indexTypeSize;
+};
+var getVertices$1 = function (index, GeometryData$$1) {
+    return GeometryData$$1.verticesMap[index];
+};
+var setVertices = requireCheckFunc(function (index, vertices, GeometryData$$1) {
+    it$1("vertices should not already exist", function () {
+        index_1(GeometryData$$1.verticesMap[index]).not.exist;
+    });
+}, function (index, vertices, GeometryData$$1) {
+    GeometryData$$1.verticesMap[index] = vertices;
+});
+var getIndices$1 = function (index, GeometryData$$1) {
+    return GeometryData$$1.indicesMap[index];
+};
+var setIndices = requireCheckFunc(function (index, indices, GeometryData$$1) {
+    it$1("indices should not already exist", function () {
+        index_1(GeometryData$$1.indicesMap[index]).not.exist;
+    });
+}, function (index, indices, GeometryData$$1) {
+    GeometryData$$1.indicesMap[index] = indices;
+});
+var hasIndices = function (index, GeometryData$$1) {
+    var indices = getIndices$1(index, GeometryData$$1);
+    if (isNotValidMapValue(indices)) {
+        return false;
+    }
+    return indices.length > 0;
+};
+var addComponent$4 = function (component, gameObject) {
+    addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
+};
+var disposeComponent$4 = ensureFunc(function (returnVal, component) {
+    checkIndexShouldEqualCount(GeometryData);
+}, function (component) {
+    var sourceIndex = component.index, lastComponentIndex = null;
+    deleteBySwap$1(sourceIndex, GeometryData.verticesMap);
+    deleteBySwap$1(sourceIndex, GeometryData.indicesMap);
+    GeometryData.count -= 1;
+    GeometryData.index -= 1;
+    lastComponentIndex = GeometryData.count;
+    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.configDataMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.computeDataFuncMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
+});
+var getGameObject$3 = function (index, Data) {
+    return getComponentGameObject(Data.gameObjectMap, index);
+};
+var getConfigData = function (index, GeometryData$$1) {
+    return GeometryData$$1.configDataMap[index];
+};
+var initData$6 = function (DataBufferConfig, GeometryData$$1) {
+    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig), indicesArrayBytes = null;
+    if (isIndicesBufferNeed32Bits) {
+        indicesArrayBytes = Uint32Array.BYTES_PER_ELEMENT;
+        GeometryData$$1.indexType = EBufferType.UNSIGNED_INT;
+    }
+    else {
+        indicesArrayBytes = Uint16Array.BYTES_PER_ELEMENT;
+        GeometryData$$1.indexType = EBufferType.UNSIGNED_SHORT;
+    }
+    GeometryData$$1.indexTypeSize = indicesArrayBytes;
+    GeometryData$$1.configDataMap = createMap();
+    GeometryData$$1.verticesMap = [];
+    GeometryData$$1.indicesMap = [];
+    GeometryData$$1.computeDataFuncMap = createMap();
+    GeometryData$$1.gameObjectMap = createMap();
+    GeometryData$$1.geometryMap = createMap();
+    GeometryData$$1.index = 0;
+    GeometryData$$1.count = 0;
+};
+var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
+    if (DataBufferConfig.geometryIndicesBufferBits === 16) {
+        return false;
+    }
+    return GPUDetector.getInstance().extensionUintIndices === true;
+};
+var isIndicesBufferNeed32BitsByData = function (GeometryData$$1) {
+    return GeometryData$$1.indexType === EBufferType.UNSIGNED_INT;
+};
+var convertVerticesArrayToTypeArray = function (vertices) {
+    return new Float32Array(vertices);
+};
+var convertIndicesArrayToTypeArray = function (indices, GeometryData$$1) {
+    return isIndicesBufferNeed32BitsByData(GeometryData$$1) ? new Uint32Array(indices) : new Uint16Array(indices);
+};
+
+var Geometry = (function (_super) {
+    __extends(Geometry, _super);
+    function Geometry() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Geometry;
+}(Component));
+Geometry = __decorate([
+    registerClass("Geometry")
+], Geometry);
+var getDrawMode$$1 = function (geometry) {
+    return getDrawMode$1(geometry.index, GeometryData);
+};
+var getVertices$$1 = function (geometry) {
+    return getVertices$1(geometry.index, GeometryData);
+};
+var getIndices$$1 = function (geometry) {
+    return getIndices$1(geometry.index, GeometryData);
+};
+var getGeometryConfigData = function (geometry) {
+    return getConfigData(geometry.index, GeometryData);
+};
+var initGeometry$$1 = function (geometry) {
+    initGeometry$1(geometry.index, getState(DirectorData));
+};
+var getGeometryGameObject = function (geometry) {
+    return getGameObject$3(geometry.index, GeometryData);
+};
+
+var Shader = (function () {
+    function Shader() {
+        this.index = null;
+    }
+    return Shader;
+}());
+Shader = __decorate([
+    registerClass("Shader")
+], Shader);
+
+var isBufferExist = function (buffer) { return isValidMapValue(buffer); };
+
+var getOrCreateBuffer = function (gl, geometryIndex, GeometryData, IndexBufferData) {
+    var buffers = IndexBufferData.buffers, buffer = buffers[geometryIndex];
+    if (isBufferExist(buffer)) {
+        return buffer;
+    }
+    buffer = gl.createBuffer();
+    buffers[geometryIndex] = buffer;
+    _initBuffer(gl, getIndices$1(geometryIndex, GeometryData), buffer, IndexBufferData);
+    return buffer;
+};
+var _initBuffer = function (gl, data, buffer, IndexBufferData) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    _resetBindedBuffer(gl, IndexBufferData);
+};
+var _resetBindedBuffer = function (gl, IndexBufferData) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+};
+var getType = function (GeometryData) {
+    return getIndexType(GeometryData);
+};
+var getTypeSize = function (GeometryData) {
+    return getIndexTypeSize(GeometryData);
+};
+var initData$10 = function (IndexBufferData) {
+    IndexBufferData.buffers = [];
+};
+
+var isConfigDataExist = function (configData) {
+    return isValueExist(configData);
+};
+
+var main_begin = "void main(void){\n";
+var main_end = "}\n";
+var setPos_mvp = "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);\n";
+
+var empty = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var NULL = -1.0;
+var basic_materialColor_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(u_color, 1.0);\n" };
+var end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n" };
+var common_define = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\n//bool isRenderListEmpty(int isRenderListEmpty){\n//  return isRenderListEmpty == 1;\n//}\n", body: "" };
+var common_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+var mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
+
+var buildGLSLSource = requireCheckFunc(function (materialIndex, materialShaderLibConfig, shaderLibData) {
+    it$1("shaderLib should be defined", function () {
+        forEach(materialShaderLibConfig, function (shaderLibName) {
+            index_1(shaderLibData[shaderLibName]).exist;
+        });
+    });
+}, function (materialIndex, materialShaderLibConfig, shaderLibData) {
+    var vsTop = "", vsDefine = "", vsVarDeclare = "", vsFuncDeclare = "", vsFuncDefine = "", vsBody = "", fsTop = "", fsDefine = "", fsVarDeclare = "", fsFuncDeclare = "", fsFuncDefine = "", fsBody = "";
+    vsBody += main_begin;
+    fsBody += main_begin;
+    fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var glslData = shaderLibData[shaderLibName].glsl, vs = null, fs = null, func = null;
+        if (!isConfigDataExist(glslData)) {
+            return;
+        }
+        vs = glslData.vs;
+        fs = glslData.fs;
+        func = glslData.func;
+        if (isConfigDataExist(vs)) {
+            vsTop += _getGLSLPartData(vs, "top");
+            vsDefine += _getGLSLPartData(vs, "define");
+            vsVarDeclare += _getGLSLPartData(vs, "varDeclare");
+            vsFuncDeclare += _getGLSLPartData(vs, "funcDeclare");
+            vsFuncDefine += _getGLSLPartData(vs, "funcDefine");
+            vsBody += _getGLSLPartData(vs, "body");
+        }
+        if (isConfigDataExist(fs)) {
+            fsTop += _getGLSLPartData(fs, "top");
+            fsDefine += _getGLSLPartData(fs, "define");
+            fsVarDeclare += _getGLSLPartData(fs, "varDeclare");
+            fsFuncDeclare += _getGLSLPartData(fs, "funcDeclare");
+            fsFuncDefine += _getGLSLPartData(fs, "funcDefine");
+            fsBody += _getGLSLPartData(fs, "body");
+        }
+        if (isConfigDataExist(func)) {
+            var funcConfig = func(materialIndex);
+            if (isConfigDataExist(funcConfig)) {
+                var vs_1 = funcConfig.vs, fs_1 = funcConfig.fs;
+                if (isConfigDataExist(vs_1)) {
+                    vs_1 = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), vs_1);
+                    vsTop += _getFuncGLSLPartData(vs_1, "top");
+                    vsDefine += _getFuncGLSLPartData(vs_1, "define");
+                    vsVarDeclare += _getFuncGLSLPartData(vs_1, "varDeclare");
+                    vsFuncDeclare += _getFuncGLSLPartData(vs_1, "funcDeclare");
+                    vsFuncDefine += _getFuncGLSLPartData(vs_1, "funcDefine");
+                    vsBody += _getFuncGLSLPartData(vs_1, "body");
+                }
+                if (isConfigDataExist(fs_1)) {
+                    fs_1 = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), fs_1);
+                    fsTop += _getFuncGLSLPartData(fs_1, "top");
+                    fsDefine += _getFuncGLSLPartData(fs_1, "define");
+                    fsVarDeclare += _getFuncGLSLPartData(fs_1, "varDeclare");
+                    fsFuncDeclare += _getFuncGLSLPartData(fs_1, "funcDeclare");
+                    fsFuncDefine += _getFuncGLSLPartData(fs_1, "funcDefine");
+                    fsBody += _getFuncGLSLPartData(fs_1, "body");
+                }
+            }
+        }
+    });
+    vsBody += main_end;
+    fsBody += main_end;
+    vsTop += _generateAttributeSource(materialShaderLibConfig, shaderLibData);
+    vsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
+    fsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
+    return {
+        vsSource: vsTop + vsDefine + vsVarDeclare + vsFuncDeclare + vsFuncDefine + vsBody,
+        fsSource: fsTop + fsDefine + fsVarDeclare + fsFuncDeclare + fsFuncDefine + fsBody
+    };
+});
+var _getEmptyFuncGLSLConfig = function () {
+    return {
+        "top": "",
+        "varDeclare": "",
+        "funcDeclare": "",
+        "funcDefine": "",
+        "body": ""
+    };
+};
+var _getPrecisionSource = function (lowp_fragment$$1, mediump_fragment$$1, highp_fragment$$1) {
+    var precision = GPUDetector.getInstance().precision, result = null;
+    switch (precision) {
+        case EGPUPrecision.HIGHP:
+            result = highp_fragment$$1.top;
+            break;
+        case EGPUPrecision.MEDIUMP:
+            result = mediump_fragment$$1.top;
+            break;
+        case EGPUPrecision.LOWP:
+            result = lowp_fragment$$1.top;
+            break;
+        default:
+            result = "";
+            break;
+    }
+    return result;
+};
+var _getGLSLPartData = function (glslConfig, partName) {
+    var partConfig = glslConfig[partName];
+    if (isConfigDataExist(partConfig)) {
+        return partConfig;
+    }
+    else if (isConfigDataExist(glslConfig.source)) {
+        return glslConfig.source[partName];
+    }
+    return "";
+};
+var _getFuncGLSLPartData = function (glslConfig, partName) {
+    return glslConfig[partName];
+};
+var _isInSource = function (key, source) {
+    return source.indexOf(key) > -1;
+};
+var _generateAttributeSource = function (materialShaderLibConfig, shaderLibData) {
+    var result = "";
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send, attributeData = null;
+        if (!isConfigDataExist(sendData) || !isConfigDataExist(sendData.attribute)) {
+            return;
+        }
+        attributeData = sendData.attribute;
+        forEach(attributeData, function (data) {
+            result += "attribute " + data.type + " " + data.name + ";\n";
+        });
+    });
+    return result;
+};
+var _generateUniformSource = function (materialShaderLibConfig, shaderLibData, sourceVarDeclare, sourceFuncDefine, sourceBody) {
+    var result = "", generateFunc = compose(forEachArray(function (data) {
+        result += "uniform " + data.type + " " + data.name + ";\n";
+    }), filterArray(function (data) {
+        var name = data.name;
+        return _isInSource(name, sourceVarDeclare) || _isInSource(name, sourceFuncDefine) || _isInSource(name, sourceBody);
+    }));
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send, uniformData = null;
+        if (!isConfigDataExist(sendData) || !isConfigDataExist(sendData.uniform)) {
+            return;
+        }
+        uniformData = sendData.uniform;
+        generateFunc(uniformData);
+    });
+    return result;
+};
+
+var setLocationMap = ensureFunc(function (returnVal, gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
+    it$1("attribute should contain position at least", function () {
+        index_1(ShaderData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
+    });
+}, requireCheckFunc(function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
+    it$1("not setted location before", function () {
+        index_1(isValidMapValue(ShaderData.attributeLocationMap[shaderIndex])).false;
+        index_1(isValidMapValue(ShaderData.uniformLocationMap[shaderIndex])).false;
+    });
+}, function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
+    var attributeLocationMap = {}, uniformLocationMap = {}, sendData = null, attributeName = null, uniformName = null;
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var attribute = null, uniform = null;
+        sendData = shaderLibData[shaderLibName].send;
+        if (!isConfigDataExist(sendData)) {
+            return;
+        }
+        attribute = sendData.attribute;
+        uniform = sendData.uniform;
+        if (isConfigDataExist(attribute)) {
+            forEach(attribute, function (data) {
+                attributeName = data.name;
+                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
+            });
+        }
+        if (isConfigDataExist(uniform)) {
+            forEach(uniform, function (data) {
+                uniformName = data.name;
+                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
+            });
+        }
+    });
+    ShaderData.attributeLocationMap[shaderIndex] = attributeLocationMap;
+    ShaderData.uniformLocationMap[shaderIndex] = uniformLocationMap;
+}));
+var getAttribLocation = ensureFunc(function (pos, name, attributeLocationMap) {
+    it$1(name + "'s attrib location should be number", function () {
+        index_1(pos).be.a("number");
+    });
+}, function (name, attributeLocationMap) {
+    return attributeLocationMap[name];
+});
+var getUniformLocation = ensureFunc(function (pos, name, uniformLocationMap) {
+    it$1(name + "'s uniform location should exist in map", function () {
+        index_1(isValidMapValue(pos)).true;
+    });
+}, function (name, uniformLocationMap) {
+    return uniformLocationMap[name];
+});
+var isUniformLocationNotExist = function (pos) {
+    return pos === null;
+};
+var isAttributeLocationNotExist = function (pos) {
+    return pos === -1;
+};
+
+var EVariableType;
+(function (EVariableType) {
+    EVariableType[EVariableType["FLOAT"] = "float"] = "FLOAT";
+    EVariableType[EVariableType["VEC3"] = "vec3"] = "VEC3";
+    EVariableType[EVariableType["MAT4"] = "mat4"] = "MAT4";
+})(EVariableType || (EVariableType = {}));
+
+var getOrCreateBuffer$1 = function (gl, geometryIndex, bufferType, GeometryData, ArrayBufferData) {
+    var buffers = ArrayBufferData.buffers, buffer = buffers[geometryIndex];
+    if (isBufferExist(buffer)) {
+        return buffer;
+    }
+    buffer = gl.createBuffer();
+    buffers[geometryIndex] = buffer;
+    _initBuffer$1(gl, getVertices$1(geometryIndex, GeometryData), buffer, ArrayBufferData);
+    ArrayBufferData.bufferDataMap[geometryIndex] = {
+        size: 3,
+        type: EBufferType.FLOAT
+    };
+    return buffer;
+};
+var _initBuffer$1 = function (gl, data, buffer, ArrayBufferData) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    _resetBindedBuffer$1(gl, ArrayBufferData);
+};
+var _resetBindedBuffer$1 = function (gl, ArrayBufferData) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+};
+var initData$11 = function (ArrayBufferData) {
+    ArrayBufferData.buffers = [];
+    ArrayBufferData.bufferDataMap = createMap();
+};
+
+var getUniformData = function (field, from, renderCommand, MaterialData) {
+    var data = null;
+    switch (from) {
+        case "cmd":
+            data = renderCommand[field];
+            break;
+        case "material":
+            data = _getUnifromDataFromMaterial(field, renderCommand.materialIndex, MaterialData);
+            break;
+        default:
+            error$1(true, "unknow from:" + from);
+            break;
+    }
+    return data;
+};
+var _getUnifromDataFromMaterial = function (field, materialIndex, MaterialData) {
+    var data = null;
+    switch (field) {
+        case "color":
+            data = getColor(materialIndex, MaterialData).toVector3();
+            break;
+        case "opacity":
+            data = getOpacity(materialIndex, MaterialData);
+            break;
+        default:
+            error$1(true, "unknow field:" + field);
+            break;
+    }
+    return data;
+};
+var sendBuffer = function (gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData) {
+    var _a = ArrayBufferData.bufferDataMap[geometryIndex], size = _a.size, type = _a.type, vertexAttribHistory = ShaderData.vertexAttribHistory;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.vertexAttribPointer(pos, size, gl[type], false, 0, 0);
+    if (vertexAttribHistory[pos] !== true) {
+        gl.enableVertexAttribArray(pos);
+        vertexAttribHistory[pos] = true;
+    }
+};
+var sendMatrix4 = function (gl, name, data, uniformLocationMap) {
+    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
+        gl.uniformMatrix4fv(pos, false, data);
+    });
+};
+var sendVector3 = function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
+    var recordedData = getUniformCache(shaderIndex, name, uniformCacheMap);
+    if (recordedData && recordedData.x == data.x && recordedData.y == data.y && recordedData.z == data.z) {
+        return;
+    }
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
+    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
+        gl.uniform3f(pos, data.x, data.y, data.z);
+    });
+};
+var sendFloat1 = requireCheckFunc(function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
+    it$1("data should be number", function () {
+        index_1(data).be.a("number");
+    });
+}, function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
+    var recordedData = getUniformCache(shaderIndex, name, uniformCacheMap);
+    if (recordedData === data) {
+        return;
+    }
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
+    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
+        gl.uniform1f(pos, data);
+    });
+});
+var getUniformCache = function (shaderIndex, name, uniformCacheMap) {
+    return uniformCacheMap[shaderIndex][name];
+};
+var _setUniformCache = function (shaderIndex, name, data, uniformCacheMap) {
+    uniformCacheMap[shaderIndex][name] = data;
+};
+var _sendUniformData = function (gl, name, data, uniformLocationMap, sendFunc) {
+    var pos = getUniformLocation(name, uniformLocationMap);
+    if (isUniformLocationNotExist(pos)) {
+        return;
+    }
+    sendFunc(pos, data);
+};
+var addSendAttributeConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    it$1("sendAttributeConfigMap should not has duplicate attribute name", function () {
+        index_1(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
+    });
+}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    it$1("sendAttributeConfigMap[shaderIndex] should not be defined", function () {
+        index_1(sendAttributeConfigMap[shaderIndex]).not.exist;
+    });
+}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    var sendDataArr = [];
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send;
+        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
+            sendDataArr = sendDataArr.concat(sendData.attribute);
+        }
+    });
+    sendAttributeConfigMap[shaderIndex] = sendDataArr;
+}));
+var addSendUniformConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    it$1("sendUniformConfigMap should not has duplicate attribute name", function () {
+        index_1(hasDuplicateItems(sendUniformConfigMap[shaderIndex])).false;
+    });
+}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    it$1("sendUniformConfigMap[shaderIndex] should not be defined", function () {
+        index_1(sendUniformConfigMap[shaderIndex]).not.exist;
+    });
+}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    var sendDataArr = [];
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send;
+        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.uniform)) {
+            sendDataArr = sendDataArr.concat(sendData.uniform);
+        }
+    });
+    sendUniformConfigMap[shaderIndex] = sendDataArr;
+}));
+
+var use$1 = requireCheckFunc(function (gl, shaderIndex, ShaderData) {
+    it$1("program should exist", function () {
+        index_1(getProgram(shaderIndex, ShaderData)).exist;
+    });
+}, function (gl, shaderIndex, ShaderData) {
+    var program = getProgram(shaderIndex, ShaderData);
+    if (ShaderData.lastUsedProgram === program) {
+        return;
+    }
+    ShaderData.lastUsedProgram = program;
+    gl.useProgram(program);
+    disableVertexAttribArray(gl, ShaderData);
+    ShaderData.lastBindedArrayBuffer = null;
+    ShaderData.lastBindedIndexBuffer = null;
+});
+var disableVertexAttribArray = requireCheckFunc(function (gl, ShaderData) {
+    it$1("vertexAttribHistory should has not hole", function () {
+        forEach(ShaderData.vertexAttribHistory, function (isEnable) {
+            index_1(isEnable).exist;
+            index_1(isEnable).be.a("boolean");
+        });
+    });
+}, function (gl, ShaderData) {
+    var vertexAttribHistory = ShaderData.vertexAttribHistory;
+    for (var i = 0, len = vertexAttribHistory.length; i < len; i++) {
+        var isEnable = vertexAttribHistory[i];
+        if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
+            continue;
+        }
+        gl.disableVertexAttribArray(i);
+    }
+    ShaderData.vertexAttribHistory = [];
+});
+var getMaterialShaderLibConfig = requireCheckFunc(function (materialClassName, material_config) {
+    var materialData = material_config[materialClassName];
+    it$1("materialClassName should be defined", function () {
+        index_1(materialData).exist;
+    });
+    it$1("shaderLib should be array", function () {
+        index_1(materialData.shader.shaderLib).be.a("array");
+    });
+}, function (materialClassName, material_config) {
+    return material_config[materialClassName].shader.shaderLib;
+});
+var registerProgram = function (shaderIndex, ShaderData, program) {
+    ShaderData.programMap[shaderIndex] = program;
+};
+var getProgram = ensureFunc(function (program) {
+}, function (shaderIndex, ShaderData) {
+    return ShaderData.programMap[shaderIndex];
+});
+var isProgramExist = function (program) { return isValidMapValue(program); };
+var initShader = function (program, vsSource, fsSource, gl) {
+    var vs = _compileShader(gl, vsSource, gl.createShader(gl.VERTEX_SHADER)), fs = _compileShader(gl, fsSource, gl.createShader(gl.FRAGMENT_SHADER));
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.bindAttribLocation(program, 0, "a_position");
+    _linkProgram(gl, program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+};
+var _linkProgram = ensureFunc(function (returnVal, gl, program) {
+    it$1("link program error:" + gl.getProgramInfoLog(program), function () {
+        index_1(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
+    });
+}, function (gl, program) {
+    gl.linkProgram(program);
+});
+var _compileShader = function (gl, glslSource, shader) {
+    gl.shaderSource(shader, glslSource);
+    gl.compileShader(shader);
+    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        return shader;
+    }
+    else {
+        Log$$1.log(gl.getShaderInfoLog(shader));
+        Log$$1.log("source:\n", glslSource);
+    }
+};
+var sendAttributeData$1 = function (gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData) {
+    var sendDataArr = ShaderData.sendAttributeConfigMap[shaderIndex], attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex], lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
+    for (var _i = 0, sendDataArr_1 = sendDataArr; _i < sendDataArr_1.length; _i++) {
+        var sendData = sendDataArr_1[_i];
+        var buffer = getOrCreateBuffer$1(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData), pos = getAttribLocation(sendData.name, attributeLocationMap);
+        if (isAttributeLocationNotExist(pos)) {
+            return;
+        }
+        if (lastBindedArrayBuffer === buffer) {
+            return;
+        }
+        lastBindedArrayBuffer = buffer;
+        sendBuffer(gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData);
+    }
+    ShaderData.lastBindedArrayBuffer = lastBindedArrayBuffer;
+};
+var sendUniformData$1 = function (gl, shaderIndex, MaterialData, ShaderData, renderCommand) {
+    var sendDataArr = ShaderData.sendUniformConfigMap[shaderIndex], uniformLocationMap = ShaderData.uniformLocationMap[shaderIndex], uniformCacheMap = ShaderData.uniformCacheMap;
+    for (var _i = 0, sendDataArr_2 = sendDataArr; _i < sendDataArr_2.length; _i++) {
+        var sendData = sendDataArr_2[_i];
+        var name = sendData.name, field = sendData.field, type = sendData.type, from = sendData.from || "cmd", data = getUniformData(field, from, renderCommand, MaterialData);
+        switch (type) {
+            case EVariableType.MAT4:
+                sendMatrix4(gl, name, data, uniformLocationMap);
+                break;
+            case EVariableType.VEC3:
+                sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
+                break;
+            case EVariableType.FLOAT:
+                sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
+                break;
+            default:
+                Log$$1.error(true, Log$$1.info.FUNC_INVALID("EVariableType:", type));
+                break;
+        }
+    }
+};
+
+var create$6 = function (ShaderData) {
+    var shader = new Shader(), index = generateComponentIndex(ShaderData);
+    shader.index = index;
+    ShaderData.count += 1;
+    ShaderData.uniformCacheMap[index] = {};
+    return shader;
+};
+var init$6 = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ShaderData) {
+    var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config), shaderLibData = shaderLib_generator.shaderLibs, _a = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibData), vsSource = _a.vsSource, fsSource = _a.fsSource, program = getProgram(shaderIndex, ShaderData), gl = getGL(DeviceManagerData, state);
+    if (!isProgramExist(program)) {
+        program = gl.createProgram();
+        registerProgram(shaderIndex, ShaderData, program);
+    }
+    initShader(program, vsSource, fsSource, gl);
+    setLocationMap(gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData);
+    addSendAttributeConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendAttributeConfigMap);
+    addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendUniformConfigMap);
+};
+var sendAttributeData$$1 = function (gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData) {
+    sendAttributeData$1(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
+};
+var sendUniformData$$1 = function (gl, shaderIndex, MaterialData, ShaderData, renderCommand) {
+    sendUniformData$1(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
+};
+var bindIndexBuffer = function (gl, geometryIndex, ShaderData, GeometryData, IndexBufferData) {
+    var buffer = getOrCreateBuffer(gl, geometryIndex, GeometryData, IndexBufferData);
+    if (ShaderData.lastBindedIndexBuffer === buffer) {
+        return;
+    }
+    ShaderData.lastBindedIndexBuffer = buffer;
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+};
+var use$$1 = function (gl, shaderIndex, ShaderData) {
+    use$1(gl, shaderIndex, ShaderData);
+};
+
+var initData$9 = function (ShaderData) {
+    ShaderData.index = 0;
+    ShaderData.count = 0;
+    ShaderData.programMap = createMap();
+    ShaderData.attributeLocationMap = createMap();
+    ShaderData.uniformLocationMap = createMap();
+    ShaderData.sendAttributeConfigMap = createMap();
+    ShaderData.sendUniformConfigMap = createMap();
+    ShaderData.vertexAttribHistory = [];
+    ShaderData.uniformCacheMap = createMap();
+    ShaderData.shaderMap = createMap();
+    ShaderData.isInitMap = createMap();
+};
+
+var material_config = {
+    "BasicMaterial": {
+        "shader": {
+            "shaderLib": [
+                "CommonShaderLib",
+                "VerticeCommonShaderLib",
+                "BasicMaterialColorShaderLib",
+                "BasicShaderLib",
+                "EndBasicShaderLib",
+                "EndShaderLib"
+            ]
+        }
+    }
+};
+
+var MaterialData = (function () {
+    function MaterialData() {
+    }
+    return MaterialData;
+}());
+MaterialData.index = null;
+MaterialData.count = null;
+MaterialData.shaderMap = null;
+MaterialData.materialClassNameMap = null;
+MaterialData.gameObjectMap = null;
+MaterialData.colorMap = null;
+MaterialData.opacityMap = null;
+MaterialData.alphaTestMap = null;
+MaterialData.materialMap = null;
+
+var shaderLib_generator = {
+    "shaderLibs": {
+        "CommonShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": common_vertex,
+                    "define": common_define.define + common_vertex.define,
+                    "funcDefine": common_function.funcDefine + common_vertex.funcDefine
+                },
+                "fs": {
+                    "source": common_fragment,
+                    "define": common_define.define + common_fragment.define,
+                    "funcDefine": common_function.funcDefine + common_fragment.funcDefine
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_mMatrix",
+                        "field": "mMatrix",
+                        "type": "mat4"
+                    },
+                    {
+                        "name": "u_vMatrix",
+                        "field": "vMatrix",
+                        "type": "mat4"
+                    },
+                    {
+                        "name": "u_pMatrix",
+                        "field": "pMatrix",
+                        "type": "mat4"
+                    }
+                ]
+            }
+        },
+        "VerticeCommonShaderLib": {
+            "send": {
+                "attribute": [
+                    {
+                        "name": "a_position",
+                        "buffer": "vertice",
+                        "type": "vec3"
+                    }
+                ]
+            }
+        },
+        "BasicMaterialColorShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": basic_materialColor_fragment
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_color",
+                        "from": "material",
+                        "field": "color",
+                        "type": "vec3"
+                    }
+                ]
+            }
+        },
+        "BasicShaderLib": {
+            "glsl": {
+                "vs": {
+                    "body": setPos_mvp
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_opacity",
+                        "from": "material",
+                        "field": "opacity",
+                        "type": "float"
+                    }
+                ]
+            }
+        },
+        "EndBasicShaderLib": {
+            "glsl": {
+                "func": function (materialIndex) {
+                    var alphaTest = getAlphaTest(materialIndex, MaterialData);
+                    if (isPropertyExist(alphaTest)) {
+                        return {
+                            "fs": {
+                                "body": "if (gl_FragColor.a < " + alphaTest + "){\n    discard;\n}\n"
+                            }
+                        };
+                    }
+                    return void 0;
+                }
+            }
+        },
+        "EndShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": end_basic_fragment
+                }
+            }
+        }
+    }
+};
+
+function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
+    return function (target, name, descriptor) {
+        var value = descriptor.value;
+        descriptor.value = function (args) {
+            var result = null, setArgs = null;
+            if (judgeFunc.apply(this, arguments)) {
+                return returnCacheValueFunc.apply(this, arguments);
+            }
+            result = value.apply(this, arguments);
+            setArgs = [result];
+            for (var i = 0, len = arguments.length; i < len; i++) {
+                setArgs[i + 1] = arguments[i];
+            }
+            setCacheFunc.apply(this, setArgs);
+            return result;
+        };
+        return descriptor;
+    };
+}
+
+var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i;
+var REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i;
+var REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i;
+var REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i;
+var REGEX_NUM = /^\#([0-9a-f]{6})$/i;
 var Color = Color_1 = (function () {
     function Color() {
         this._r = null;
@@ -12572,8 +14551,14 @@ var Color = Color_1 = (function () {
     Color.prototype.isEqual = function (color) {
         return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
     };
+    Color.prototype.setColorByNum = function (colorVal) {
+        var color = null;
+        this._colorString = colorVal;
+        color = REGEX_NUM.exec(colorVal);
+        this._setHex(parseInt(color[1], 16));
+        return this;
+    };
     Color.prototype._setColor = function (colorVal) {
-        var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
         var color = null;
         if (REGEX_RGBA.test(colorVal)) {
             color = REGEX_RGBA.exec(colorVal);
@@ -12608,9 +14593,7 @@ var Color = Color_1 = (function () {
             return this;
         }
         if (REGEX_NUM.test(colorVal)) {
-            color = REGEX_NUM.exec(colorVal);
-            this._setHex(parseInt(color[1], 16));
-            return this;
+            return this.setColorByNum(colorVal);
         }
     };
     Color.prototype._getColorValue = function (color, index, num) {
@@ -12669,147 +14652,2832 @@ __decorate([
         this._colorVec4Cache = result;
     })
 ], Color.prototype, "toVector4", null);
+__decorate([
+    requireCheck(function (colorVal) {
+        it$1("color should be #xxxxxx", function () {
+            index_1(REGEX_NUM.test(colorVal)).true;
+        });
+    })
+], Color.prototype, "setColorByNum", null);
 Color = Color_1 = __decorate([
     registerClass("Color")
 ], Color);
 var Color_1;
 
-var WebGLRenderer = (function (_super) {
-    __extends(WebGLRenderer, _super);
-    function WebGLRenderer() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._commandQueue = Collection.create();
-        _this._clearOptions = {
-            color: Color.create("#000000")
-        };
+var ShaderData = (function () {
+    function ShaderData() {
+    }
+    return ShaderData;
+}());
+ShaderData.index = null;
+ShaderData.count = null;
+ShaderData.programMap = null;
+ShaderData.attributeLocationMap = null;
+ShaderData.uniformLocationMap = null;
+ShaderData.uniformCacheMap = null;
+ShaderData.sendAttributeConfigMap = null;
+ShaderData.sendUniformConfigMap = null;
+ShaderData.shaderMap = null;
+ShaderData.isInitMap = null;
+ShaderData.lastUsedProgram = null;
+ShaderData.vertexAttribHistory = null;
+ShaderData.lastBindedArrayBuffer = null;
+ShaderData.lastBindedIndexBuffer = null;
+
+var addAddComponentHandle$5 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$5);
+};
+var addDisposeHandle$5 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$5);
+};
+var addInitHandle$2 = function (_class) {
+    addInitHandle(_class, initMaterial$1);
+};
+var create$5 = requireCheckFunc(function (material, className, MaterialData$$1) {
+    it$1("MaterialData.index should >= 0", function () {
+        index_1(MaterialData$$1.index).gte(0);
+    });
+    it$1("MaterialData.count should >= 0", function () {
+        index_1(MaterialData$$1.count).gte(0);
+    });
+}, function (material, className, MaterialData$$1) {
+    var index = generateComponentIndex(MaterialData$$1);
+    material.index = index;
+    MaterialData$$1.count += 1;
+    _setMaterialClassName(index, className, MaterialData$$1);
+    setColor(index, _createDefaultColor(), MaterialData$$1);
+    setOpacity(index, 1, MaterialData$$1);
+    MaterialData$$1.materialMap[index] = material;
+    return material;
+});
+var _createDefaultColor = function () {
+    var color = Color.create();
+    return color.setColorByNum("#ffffff");
+};
+var init$5 = requireCheckFunc(function (state, material_config$$1, shaderLib_generator$$1, DeviceManagerData$$1, ShaderData$$1, MaterialData$$1) {
+}, function (state, material_config$$1, shaderLib_generator$$1, DeviceManagerData$$1, ShaderData$$1, MaterialData$$1) {
+    for (var i = 0, count = MaterialData$$1.count; i < count; i++) {
+        initMaterial$1(i, state);
+    }
+});
+var initMaterial$1 = function (index, state) {
+    var shader = getShader(index, MaterialData), isInitMap = ShaderData.isInitMap, shaderIndex = shader.index;
+    if (isInitMap[shaderIndex] === true) {
+        return;
+    }
+    isInitMap[shaderIndex] = true;
+    init$6(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
+};
+var _getMaterialClassName = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.materialClassNameMap[materialIndex];
+};
+var _setMaterialClassName = function (materialIndex, className, MaterialData$$1) {
+    MaterialData$$1.materialClassNameMap[materialIndex] = className;
+};
+var getShader = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.shaderMap[materialIndex];
+};
+var setShader = function (materialIndex, shader, MaterialData$$1) {
+    MaterialData$$1.shaderMap[materialIndex] = shader;
+};
+var getColor = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.colorMap[materialIndex];
+};
+var setColor = function (materialIndex, color, MaterialData$$1) {
+    MaterialData$$1.colorMap[materialIndex] = color;
+};
+var getOpacity = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.opacityMap[materialIndex];
+};
+var setOpacity = function (materialIndex, opacity, MaterialData$$1) {
+    MaterialData$$1.opacityMap[materialIndex] = opacity;
+};
+var getAlphaTest = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.alphaTestMap[materialIndex];
+};
+var setAlphaTest = function (materialIndex, alphaTest, MaterialData$$1) {
+    MaterialData$$1.alphaTestMap[materialIndex] = alphaTest;
+};
+var isPropertyExist = function (propertyVal) {
+    return isValidMapValue(propertyVal);
+};
+var addComponent$5 = function (component, gameObject) {
+    addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
+};
+var disposeComponent$5 = ensureFunc(function (returnVal, component) {
+    checkIndexShouldEqualCount(MaterialData);
+}, function (component) {
+    var sourceIndex = component.index, lastComponentIndex = null;
+    MaterialData.count -= 1;
+    MaterialData.index -= 1;
+    lastComponentIndex = MaterialData.count;
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.shaderMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+});
+var getGameObject$4 = function (index, Data) {
+    return getComponentGameObject(Data.gameObjectMap, index);
+};
+var initData$8 = function (MaterialData$$1) {
+    MaterialData$$1.shaderMap = createMap();
+    MaterialData$$1.materialClassNameMap = createMap();
+    MaterialData$$1.colorMap = createMap();
+    MaterialData$$1.opacityMap = createMap();
+    MaterialData$$1.alphaTestMap = createMap();
+    MaterialData$$1.materialMap = createMap();
+    MaterialData$$1.gameObjectMap = createMap();
+    MaterialData$$1.index = 0;
+    MaterialData$$1.count = 0;
+};
+
+var Material = (function (_super) {
+    __extends(Material, _super);
+    function Material() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Material;
+}(Component));
+Material = __decorate([
+    registerClass("Material")
+], Material);
+var getMaterialColor = function (material) {
+    return getColor(material.index, MaterialData);
+};
+var setMaterialColor = function (material, color) {
+    setColor(material.index, color, MaterialData);
+};
+var getMaterialOpacity = function (material) {
+    return getOpacity(material.index, MaterialData);
+};
+var setMaterialOpacity = function (material, opacity) {
+    setOpacity(material.index, opacity, MaterialData);
+};
+var getMaterialAlphaTest = function (material) {
+    return getAlphaTest(material.index, MaterialData);
+};
+var setMaterialAlphaTest = function (material, alphaTest) {
+    setAlphaTest(material.index, alphaTest, MaterialData);
+};
+var getMaterialGameObject = function (component) {
+    return getGameObject$4(component.index, MaterialData);
+};
+var getMaterialShader = function (material) {
+    return getShader(material.index, MaterialData);
+};
+var initMaterial$$1 = function (material) {
+    initMaterial$1(material.index, getState(DirectorData));
+};
+
+var create$1 = ensureFunc(function (gameObject, transform, GameObjectData) {
+    it$1("componentMap should has data", function () {
+        index_1(_getComponentData(gameObject.uid, GameObjectData)).exist;
+    });
+}, function (transform, GameObjectData) {
+    var gameObject = new GameObject(), uid = _buildUID(GameObjectData);
+    gameObject.uid = uid;
+    GameObjectData.aliveUIDArray.push(uid);
+    if (!transform) {
+        _setComponentData(uid, {}, GameObjectData);
+    }
+    else {
+        addComponent$1(gameObject, transform, GameObjectData);
+    }
+    return gameObject;
+});
+var _buildUID = function (GameObjectData) {
+    return GameObjectData.uid++;
+};
+var isAlive = function (entity, GameObjectData) {
+    return isValidMapValue(_getComponentData(entity.uid, GameObjectData));
+};
+var initGameObject$$1 = function (gameObject, state, GameObjectData) {
+    var uid = gameObject.uid, componentData = _getComponentData(uid, GameObjectData);
+    for (var typeID in componentData) {
+        if (componentData.hasOwnProperty(typeID)) {
+            execInitHandle(typeID, componentData[typeID].index, state);
+        }
+    }
+};
+var dispose$2 = function (entity, ThreeDTransformData, GameObjectData) {
+    var uid = entity.uid;
+    var parent = _getParent(uid, GameObjectData);
+    if (_isParentExist(parent)) {
+        _removeFromChildrenMap(parent.uid, uid, GameObjectData);
+    }
+    _diposeAllDatas(entity, GameObjectData);
+    GameObjectData.disposeCount += 1;
+    if (isDisposeTooManyComponents(GameObjectData.disposeCount)) {
+        reAllocateGameObjectMap(GameObjectData);
+        GameObjectData.disposeCount = 0;
+    }
+};
+var _removeFromChildrenMap = null;
+if (bowser_2) {
+    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
+        _setChildren(parentUID, filter(_getChildren(parentUID, GameObjectData), function (gameObject) {
+            return gameObject.uid !== childUID;
+        }), GameObjectData);
+    };
+}
+else if (bowser_4) {
+    _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
+        removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+    };
+}
+else {
+    error$1(true, Log$$1.info.FUNC_NOT_SUPPORT("browser"));
+}
+var _diposeAllDatas = function (gameObject, GameObjectData) {
+    var uid = gameObject.uid, children = _getChildren(uid, GameObjectData);
+    _disposeAllComponents(gameObject, GameObjectData);
+    _disposeMapDatas(uid, GameObjectData);
+    if (_isChildrenExist(children)) {
+        forEach(children, function (child) {
+            _diposeAllDatas(child, GameObjectData);
+        });
+    }
+};
+var _disposeMapDatas = function (uid, GameObjectData) {
+    deleteVal(uid, GameObjectData.childrenMap);
+    deleteVal(uid, GameObjectData.parentMap);
+    deleteVal(uid, GameObjectData.componentMap);
+};
+var _disposeAllComponents = function (gameObject, GameObjectData) {
+    var components = _getComponentData(gameObject.uid, GameObjectData);
+    for (var typeID in components) {
+        if (components.hasOwnProperty(typeID)) {
+            var component = components[typeID];
+            execHandle(component, "disposeHandleMap");
+        }
+    }
+};
+var addComponent$1 = requireCheckFunc(function (gameObject, component, GameObjectData) {
+    it$1("component should exist", function () {
+        index_1(component).exist;
+    });
+    it$1("should not has this type of component, please dispose it", function () {
+        index_1(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
+    });
+}, function (gameObject, component, GameObjectData) {
+    var uid = gameObject.uid, typeID = getTypeIDFromComponent(component), data = _getComponentData(uid, GameObjectData);
+    execHandle(component, "addComponentHandleMap", [component, gameObject]);
+    if (!data) {
+        var d = {};
+        d[typeID] = component;
+        _setComponentData(uid, d, GameObjectData);
+        return;
+    }
+    data[typeID] = component;
+});
+var _removeComponent = function (typeID, gameObject, component, GameObjectData) {
+    var uid = gameObject.uid, data = _getComponentData(uid, GameObjectData);
+    if (isValidMapValue(data)) {
+        deleteVal(typeID, data);
+    }
+};
+var disposeComponent$1 = function (gameObject, component, GameObjectData) {
+    var typeID = getTypeIDFromComponent(component);
+    _removeComponent(typeID, gameObject, component, GameObjectData);
+    execHandle(component, "disposeHandleMap");
+};
+var getComponent = function (gameObject, componentTypeID, GameObjectData) {
+    var uid = gameObject.uid, data = _getComponentData(uid, GameObjectData);
+    if (isValidMapValue(data)) {
+        var component = data[componentTypeID];
+        return isValidMapValue(component) ? component : null;
+    }
+    return null;
+};
+var _getComponentData = function (uid, GameObjectData) { return GameObjectData.componentMap[uid]; };
+var _setComponentData = function (uid, data, GameObjectData) { return GameObjectData.componentMap[uid] = data; };
+var hasComponent = function (gameObject, componentTypeID, GameObjectData) {
+    return getComponent(gameObject, componentTypeID, GameObjectData) !== null;
+};
+var getTransform = function (gameObject, GameObjectData) {
+    return getComponent(gameObject, getTypeIDFromClass(ThreeDTransform), GameObjectData);
+};
+var getGeometry = function (gameObject, GameObjectData) {
+    return getComponent(gameObject, getTypeIDFromClass(Geometry), GameObjectData);
+};
+var getMaterial = function (gameObject, GameObjectData) {
+    return getComponent(gameObject, getTypeIDFromClass(Material), GameObjectData);
+};
+var _isParentExist = function (parent) { return isNotUndefined(parent); };
+var _isChildrenExist = function (children) { return isNotUndefined(children); };
+var _isComponentExist = function (component) { return component !== null; };
+var _isGameObjectEqual = function (gameObject1, gameObject2) { return gameObject1.uid === gameObject2.uid; };
+var _getParent = function (uid, GameObjectData) { return GameObjectData.parentMap[uid]; };
+var _setParent = function (uid, parent, GameObjectData) {
+    GameObjectData.parentMap[uid] = parent;
+};
+var _getChildren = function (uid, GameObjectData) {
+    return GameObjectData.childrenMap[uid];
+};
+var _addChild = function (uid, child, GameObjectData) {
+    var children = _getChildren(uid, GameObjectData);
+    if (isValidMapValue(children)) {
+        children.push(child);
+    }
+    else {
+        _setChildren(uid, [child], GameObjectData);
+    }
+};
+var _setChildren = function (uid, children, GameObjectData) {
+    GameObjectData.childrenMap[uid] = children;
+};
+var addChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
+}, function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    var transform = getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = _getParent(childUID, GameObjectData);
+    if (_isParentExist(parent)) {
+        removeChild(parent, child, ThreeDTransformData, GameObjectData);
+    }
+    _setParent(childUID, gameObject, GameObjectData);
+    if (_isComponentExist(transform)) {
+        setParent$$1(getTransform(child, GameObjectData), transform, ThreeDTransformData);
+    }
+    _addChild(uid, child, GameObjectData);
+});
+var removeChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    it$1("child should has transform component", function () {
+        index_1(getTransform(child, GameObjectData)).exist;
+    });
+}, function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    var uid = gameObject.uid, childUID = child.uid;
+    deleteVal(childUID, GameObjectData.parentMap);
+    setParent$$1(getTransform(child, GameObjectData), null, ThreeDTransformData);
+    _removeFromChildrenMap(uid, childUID, GameObjectData);
+});
+var hasChild = function (gameObject, child, GameObjectData) {
+    var parent = _getParent(child.uid, GameObjectData);
+    if (!_isParentExist(parent)) {
+        return false;
+    }
+    return _isGameObjectEqual(parent, gameObject);
+};
+var initData$3 = function (GameObjectData) {
+    GameObjectData.uid = 0;
+    GameObjectData.componentMap = createMap();
+    GameObjectData.parentMap = createMap();
+    GameObjectData.childrenMap = createMap();
+    GameObjectData.aliveUIDArray = [];
+};
+
+var init$$1 = function (state, index, PerspectiveCameraData, CameraData) {
+    updateProjectionMatrix$$1(index, PerspectiveCameraData, CameraData);
+};
+var updateProjectionMatrix$$1 = function (index, PerspectiveCameraData, CameraData) {
+    updateProjectionMatrix$1(index, PerspectiveCameraData, CameraData);
+};
+var getWorldToCameraMatrix$$1 = function (index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData) {
+    return _getCameraToWorldMatrix(index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).clone().invert();
+};
+var _getCameraToWorldMatrix = function (index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData) {
+    var transform = getTransform(getGameObject(index, CameraControllerData), GameObjectData);
+    return getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
+};
+var getPMatrix$$1 = function (index, CameraData) {
+    return CameraData.pMatrixMap[index];
+};
+var setPMatrix = function (index, pMatrix, CameraData) {
+    CameraData.pMatrixMap[index] = pMatrix;
+};
+var getNear = function (index, CameraData) {
+    return CameraData.nearMap[index];
+};
+var setNear = function (index, near, CameraControllerData, CameraData) {
+    CameraData.nearMap[index] = near;
+    addToDirtyList(index, CameraControllerData);
+};
+var getFar = function (index, CameraData) {
+    return CameraData.farMap[index];
+};
+var setFar = function (index, far, CameraControllerData, CameraData) {
+    CameraData.farMap[index] = far;
+    addToDirtyList(index, CameraControllerData);
+};
+var dispose$$1 = function (index, PerspectiveCameraData, CameraData) {
+    deleteVal(index, CameraData.nearMap);
+    deleteVal(index, CameraData.farMap);
+    deleteVal(index, CameraData.worldToCameraMatrixMap);
+    deleteVal(index, CameraData.pMatrixMap);
+    dispose$1(index, PerspectiveCameraData);
+};
+var initData$$1 = function (PerspectiveCameraData, CameraData) {
+    CameraData.nearMap = createMap();
+    CameraData.farMap = createMap();
+    CameraData.worldToCameraMatrixMap = createMap();
+    CameraData.pMatrixMap = createMap();
+    initData$1(PerspectiveCameraData);
+};
+
+var getCameraPMatrix = function (cameraController) {
+    return getPMatrix$$1(cameraController.index, CameraData);
+};
+var getCameraNear = function (cameraController) {
+    return getNear(cameraController.index, CameraData);
+};
+var setCameraNear = function (cameraController, near) {
+    setNear(cameraController.index, near, CameraControllerData, CameraData);
+};
+var getCameraFar = function (cameraController) {
+    return getFar(cameraController.index, CameraData);
+};
+var setCameraFar = function (cameraController, far) {
+    setFar(cameraController.index, far, CameraControllerData, CameraData);
+};
+
+var getPerspectiveCameraFovy = function (cameraController) {
+    return getFovy(cameraController.index, PerspectiveCameraData);
+};
+var setPerspectiveCameraFovy = function (cameraController, fovy) {
+    setFovy(cameraController.index, fovy, PerspectiveCameraData, CameraControllerData);
+};
+var getPerspectiveCameraAspect = function (cameraController) {
+    return getAspect(cameraController.index, PerspectiveCameraData);
+};
+var setPerspectiveCameraAspect = function (cameraController, aspect) {
+    setAspect(cameraController.index, aspect, PerspectiveCameraData, CameraControllerData);
+};
+
+var _generateTypeID$1 = function () {
+    var result = _typeID$1;
+    _typeID$1 += 1;
+    return String(result);
+};
+var getTypeIDFromClass$1 = function (_class) {
+    return _table$1[ClassUtils.getClassNameByClass(_class)];
+};
+var getTypeIDFromComponent$1 = function (component) {
+    return _table$1[ClassUtils.getClassNameByInstance(component)];
+};
+var _addTypeID$1 = function (componentClassNameArr, table) {
+    var id = _generateTypeID$1();
+    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
+        var className = componentClassNameArr_1[_i];
+        table[className] = id;
+    }
+};
+var _typeID$1 = 1;
+var _table$1 = {};
+_addTypeID$1(["ThreeDTransform"], _table$1);
+_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
+_addTypeID$1(["Material", "BasicMaterial"], _table$1);
+_addTypeID$1(["MeshRenderer"], _table$1);
+_addTypeID$1(["Tag"], _table$1);
+_addTypeID$1(["CameraController"], _table$1);
+
+var create$7 = function (GeometryData) {
+    var geometry = new BoxGeometry(), index = null;
+    geometry = create$4(geometry, GeometryData);
+    index = geometry.index;
+    setConfigData(index, {}, GeometryData);
+    GeometryData.computeDataFuncMap[index] = _computeData;
+    return geometry;
+};
+var _computeData = function (index, GeometryData) {
+    var _a = _getConfigData(index, GeometryData), width = _a.width, height = _a.height, depth = _a.depth, widthSegments = _a.widthSegments, heightSegments = _a.heightSegments, depthSegments = _a.depthSegments, sides = {
+        FRONT: 0,
+        BACK: 1,
+        TOP: 2,
+        BOTTOM: 3,
+        RIGHT: 4,
+        LEFT: 5
+    }, vertices = [], indices = [];
+    var faceAxes = [
+        [0, 1, 3],
+        [4, 5, 7],
+        [3, 2, 6],
+        [1, 0, 4],
+        [1, 4, 2],
+        [5, 0, 6]
+    ];
+    var corners = [
+        Vector3.create(-width, -height, depth),
+        Vector3.create(width, -height, depth),
+        Vector3.create(width, height, depth),
+        Vector3.create(-width, height, depth),
+        Vector3.create(width, -height, -depth),
+        Vector3.create(-width, -height, -depth),
+        Vector3.create(-width, height, -depth),
+        Vector3.create(width, height, -depth)
+    ];
+    function generateFace(side, uSegments, vSegments) {
+        var x, y, z, u, v;
+        var i, j;
+        var offset = vertices.length / 3;
+        for (i = 0; i <= uSegments; i++) {
+            for (j = 0; j <= vSegments; j++) {
+                var temp1 = GlobalTempData.vector3_1, temp2 = GlobalTempData.vector3_2, temp3 = GlobalTempData.vector3_3, r = GlobalTempData.vector3_4;
+                temp1.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][1]], i / uSegments);
+                temp2.lerp(corners[faceAxes[side][0]], corners[faceAxes[side][2]], j / vSegments);
+                temp3.sub2(temp2, corners[faceAxes[side][0]]);
+                r.add2(temp1, temp3);
+                u = i / uSegments;
+                v = j / vSegments;
+                vertices.push(r.x, r.y, r.z);
+                if ((i < uSegments) && (j < vSegments)) {
+                    indices.push(offset + j + i * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1), offset + j + i * (uSegments + 1) + 1);
+                    indices.push(offset + j + (i + 1) * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1) + 1, offset + j + i * (uSegments + 1) + 1);
+                }
+            }
+        }
+    }
+    generateFace(sides.FRONT, widthSegments, heightSegments);
+    generateFace(sides.BACK, widthSegments, heightSegments);
+    generateFace(sides.TOP, widthSegments, depthSegments);
+    generateFace(sides.BOTTOM, widthSegments, depthSegments);
+    generateFace(sides.RIGHT, depthSegments, heightSegments);
+    generateFace(sides.LEFT, depthSegments, heightSegments);
+    return {
+        vertices: convertVerticesArrayToTypeArray(vertices),
+        indices: convertIndicesArrayToTypeArray(indices, GeometryData)
+    };
+};
+var _getConfigData = ensureFunc(function (data) {
+    it$1("config data should be defined", function () {
+        index_1(data).exist;
+        index_1(data.width).exist;
+        index_1(data.height).exist;
+        index_1(data.depth).exist;
+        index_1(data.widthSegments).exist;
+        index_1(data.heightSegments).exist;
+        index_1(data.depthSegments).exist;
+    });
+}, function (index, GeometryData) {
+    return GeometryData.configDataMap[index];
+});
+var setConfigData = function (index, data, GeometryData) {
+    GeometryData.configDataMap[index] = ExtendUtils.extend({
+        width: 10,
+        height: 10,
+        depth: 10,
+        widthSegments: 1,
+        heightSegments: 1,
+        depthSegments: 1
+    }, data);
+};
+
+var BoxGeometry = (function (_super) {
+    __extends(BoxGeometry, _super);
+    function BoxGeometry() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BoxGeometry;
+}(Geometry));
+BoxGeometry = __decorate([
+    registerClass("BoxGeometry")
+], BoxGeometry);
+var createBoxGeometry = function () {
+    return create$7(GeometryData);
+};
+var setBoxGeometryConfigData = function (geometry, data) {
+    setConfigData(geometry.index, data, GeometryData);
+};
+
+var create$8 = function (GeometryData) {
+    return create$4(new CustomGeometry(), GeometryData);
+};
+
+var CustomGeometry = (function (_super) {
+    __extends(CustomGeometry, _super);
+    function CustomGeometry() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return CustomGeometry;
+}(Geometry));
+CustomGeometry = __decorate([
+    registerClass("CustomGeometry")
+], CustomGeometry);
+var createCustomGeometry = function () {
+    return create$8(GeometryData);
+};
+var setCustomGeometryVertices = function (geometry, vertices) {
+    return setVertices(geometry.index, vertices, GeometryData);
+};
+var setCustomGeometryIndices = function (geometry, indices) {
+    return setIndices(geometry.index, indices, GeometryData);
+};
+
+var create$9 = function (ShaderData, MaterialData) {
+    var material = new BasicMaterial(), materialClassName = "BasicMaterial";
+    material = create$5(material, materialClassName, MaterialData);
+    setShader(material.index, _createShader(materialClassName, ShaderData), MaterialData);
+    return material;
+};
+var _createShader = function (materialClassName, ShaderData) {
+    var shaderMap = ShaderData.shaderMap, shader = shaderMap[materialClassName];
+    if (isValidMapValue(shader)) {
+        return shader;
+    }
+    shader = create$6(ShaderData);
+    shaderMap[materialClassName] = shader;
+    return shader;
+};
+
+var BasicMaterial = (function (_super) {
+    __extends(BasicMaterial, _super);
+    function BasicMaterial() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BasicMaterial;
+}(Material));
+BasicMaterial = __decorate([
+    registerClass("BasicMaterial")
+], BasicMaterial);
+var createBasicMaterial = function () {
+    return create$9(ShaderData, MaterialData);
+};
+
+var MeshRendererData = (function () {
+    function MeshRendererData() {
+    }
+    return MeshRendererData;
+}());
+MeshRendererData.renderGameObjectArray = null;
+MeshRendererData.gameObjectMap = null;
+MeshRendererData.meshRendererMap = null;
+MeshRendererData.index = null;
+MeshRendererData.count = null;
+
+var addAddComponentHandle$6 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$6);
+};
+var addDisposeHandle$6 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$6);
+};
+var create$10 = requireCheckFunc(function (MeshRendererData$$1) {
+    checkIndexShouldEqualCount(MeshRendererData$$1);
+}, function (MeshRendererData$$1) {
+    var renderer = new MeshRenderer(), index = generateComponentIndex(MeshRendererData$$1);
+    renderer.index = index;
+    MeshRendererData$$1.count += 1;
+    MeshRendererData$$1.meshRendererMap[index] = renderer;
+    return renderer;
+});
+var _setRenderGameObjectArray = requireCheckFunc(function (index, gameObject, renderGameObjectArray) {
+    it$1("should not exist gameObject", function () {
+        index_1(renderGameObjectArray[index]).not.exist;
+    });
+}, function (index, gameObject, renderGameObjectArray) {
+    renderGameObjectArray[index] = gameObject;
+});
+var addComponent$6 = function (component, gameObject) {
+    _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
+    addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
+};
+var disposeComponent$6 = function (component) {
+    var sourceIndex = component.index, lastComponentIndex = null;
+    deleteBySwap$1(sourceIndex, MeshRendererData.renderGameObjectArray);
+    MeshRendererData.count -= 1;
+    MeshRendererData.index -= 1;
+    lastComponentIndex = MeshRendererData.count;
+    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
+};
+var getGameObject$5 = function (index, Data) {
+    return getComponentGameObject(Data.gameObjectMap, index);
+};
+var getRenderList = curry(function (state, MeshRendererData$$1) {
+    return MeshRendererData$$1.renderGameObjectArray;
+});
+var initData$12 = function (MeshRendererData$$1) {
+    MeshRendererData$$1.renderGameObjectArray = [];
+    MeshRendererData$$1.gameObjectMap = createMap();
+    MeshRendererData$$1.meshRendererMap = createMap();
+    MeshRendererData$$1.index = 0;
+    MeshRendererData$$1.count = 0;
+};
+
+var MeshRenderer = (function (_super) {
+    __extends(MeshRenderer, _super);
+    function MeshRenderer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return MeshRenderer;
+}(Component));
+MeshRenderer = __decorate([
+    registerClass("MeshRenderer")
+], MeshRenderer);
+var createMeshRenderer = function () {
+    return create$10(MeshRendererData);
+};
+var getMeshRendererGameObject = function (component) {
+    return getGameObject$5(component.index, MeshRendererData);
+};
+var getMeshRendererRenderList = function () {
+    return getRenderList(null, MeshRendererData);
+};
+
+var JudgeUtils$2 = (function () {
+    function JudgeUtils() {
+    }
+    JudgeUtils.isArray = function (arr) {
+        var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+        var length = arr && arr.length;
+        return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+    };
+    JudgeUtils.isArrayExactly = function (arr) {
+        return Object.prototype.toString.call(arr) === "[object Array]";
+    };
+    JudgeUtils.isNumber = function (num) {
+        return typeof num == "number";
+    };
+    JudgeUtils.isNumberExactly = function (num) {
+        return Object.prototype.toString.call(num) === "[object Number]";
+    };
+    JudgeUtils.isString = function (str) {
+        return typeof str == "string";
+    };
+    JudgeUtils.isStringExactly = function (str) {
+        return Object.prototype.toString.call(str) === "[object String]";
+    };
+    JudgeUtils.isBoolean = function (bool) {
+        return bool === true || bool === false || toString.call(bool) === '[boolect Boolean]';
+    };
+    JudgeUtils.isDom = function (obj) {
+        return !!(obj && obj.nodeType === 1);
+    };
+    JudgeUtils.isObject = function (obj) {
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
+    };
+    JudgeUtils.isDirectObject = function (obj) {
+        return Object.prototype.toString.call(obj) === "[object Object]";
+    };
+    JudgeUtils.isHostMethod = function (object, property) {
+        var type = typeof object[property];
+        return type === "function" ||
+            (type === "object" && !!object[property]);
+    };
+    JudgeUtils.isNodeJs = function () {
+        return ((typeof global != "undefined" && global.module) || (typeof module != "undefined")) && typeof module.exports != "undefined";
+    };
+    JudgeUtils.isFunction = function (func) {
+        return true;
+    };
+    return JudgeUtils;
+}());
+if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+    JudgeUtils$2.isFunction = function (func) {
+        return typeof func == 'function';
+    };
+}
+else {
+    JudgeUtils$2.isFunction = function (func) {
+        return Object.prototype.toString.call(func) === "[object Function]";
+    };
+}
+
+var root$2;
+if (JudgeUtils$2.isNodeJs() && typeof global != "undefined") {
+    root$2 = global;
+}
+else if (typeof window != "undefined") {
+    root$2 = window;
+}
+else if (typeof self != "undefined") {
+    root$2 = self;
+}
+else {
+    Log$2.error("no avaliable root!");
+}
+
+var Log$2 = (function () {
+    function Log() {
+    }
+    Log.log = function () {
+        var messages = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            messages[_i] = arguments[_i];
+        }
+        if (!this._exec("log", messages)) {
+            root$2.alert(messages.join(","));
+        }
+        this._exec("trace", messages);
+    };
+    Log.assert = function (cond) {
+        var messages = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            messages[_i - 1] = arguments[_i];
+        }
+        if (cond) {
+            if (!this._exec("assert", arguments, 1)) {
+                this.log.apply(this, Array.prototype.slice.call(arguments, 1));
+            }
+        }
+    };
+    Log.error = function (cond) {
+        var message = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            message[_i - 1] = arguments[_i];
+        }
+        if (cond) {
+            throw new Error(Array.prototype.slice.call(arguments, 1).join("\n"));
+        }
+    };
+    Log.warn = function () {
+        var message = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            message[_i] = arguments[_i];
+        }
+        var result = this._exec("warn", arguments);
+        if (!result) {
+            this.log.apply(this, arguments);
+        }
+        else {
+            this._exec("trace", ["warn trace"]);
+        }
+    };
+    Log._exec = function (consoleMethod, args, sliceBegin) {
+        if (sliceBegin === void 0) { sliceBegin = 0; }
+        if (root$2.console && root$2.console[consoleMethod]) {
+            root$2.console[consoleMethod].apply(root$2.console, Array.prototype.slice.call(args, sliceBegin));
+            return true;
+        }
+        return false;
+    };
+    return Log;
+}());
+Log$2.info = {
+    INVALID_PARAM: "invalid parameter",
+    helperFunc: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var result = "";
+        args.forEach(function (val) {
+            result += String(val) + " ";
+        });
+        return result.slice(0, -1);
+    },
+    assertion: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 2) {
+            return this.helperFunc(args[0], args[1]);
+        }
+        else if (args.length === 3) {
+            return this.helperFunc(args[1], args[0], args[2]);
+        }
+        else {
+            throw new Error("args.length must <= 3");
+        }
+    },
+    FUNC_INVALID: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("invalid");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_MUST: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("must");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_MUST_BE: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("must be");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_MUST_NOT_BE: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("must not be");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_SHOULD: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("should");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_SHOULD_NOT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("should not");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_SUPPORT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("support");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_NOT_SUPPORT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("not support");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_MUST_DEFINE: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("must define");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_MUST_NOT_DEFINE: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("must not define");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_UNKNOW: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("unknow");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_EXPECT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("expect");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_UNEXPECT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("unexpect");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_EXIST: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("exist");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_NOT_EXIST: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("not exist");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_ONLY: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("only");
+        return this.assertion.apply(this, args);
+    },
+    FUNC_CAN_NOT: function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        args.unshift("can't");
+        return this.assertion.apply(this, args);
+    }
+};
+
+var Entity = (function () {
+    function Entity(uidPre) {
+        this._uid = null;
+        this._uid = uidPre + String(Entity.UID++);
+    }
+    Object.defineProperty(Entity.prototype, "uid", {
+        get: function () {
+            return this._uid;
+        },
+        set: function (uid) {
+            this._uid = uid;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Entity;
+}());
+Entity.UID = 1;
+
+var $BREAK$1 = {
+    break: true
+};
+var $REMOVE$1 = void 0;
+
+var List$1 = (function () {
+    function List() {
+        this.children = null;
+    }
+    List.prototype.getCount = function () {
+        return this.children.length;
+    };
+    List.prototype.hasChild = function (child) {
+        var c = null, children = this.children;
+        for (var i = 0, len = children.length; i < len; i++) {
+            c = children[i];
+            if (child.uid && c.uid && child.uid == c.uid) {
+                return true;
+            }
+            else if (child === c) {
+                return true;
+            }
+        }
+        return false;
+    };
+    List.prototype.hasChildWithFunc = function (func) {
+        for (var i = 0, len = this.children.length; i < len; i++) {
+            if (func(this.children[i], i)) {
+                return true;
+            }
+        }
+        return false;
+    };
+    List.prototype.getChildren = function () {
+        return this.children;
+    };
+    List.prototype.getChild = function (index) {
+        return this.children[index];
+    };
+    List.prototype.addChild = function (child) {
+        this.children.push(child);
+        return this;
+    };
+    List.prototype.addChildren = function (arg) {
+        if (JudgeUtils$2.isArray(arg)) {
+            var children = arg;
+            this.children = this.children.concat(children);
+        }
+        else if (arg instanceof List) {
+            var children = arg;
+            this.children = this.children.concat(children.getChildren());
+        }
+        else {
+            var child = arg;
+            this.addChild(child);
+        }
+        return this;
+    };
+    List.prototype.setChildren = function (children) {
+        this.children = children;
+        return this;
+    };
+    List.prototype.unShiftChild = function (child) {
+        this.children.unshift(child);
+    };
+    List.prototype.removeAllChildren = function () {
+        this.children = [];
+        return this;
+    };
+    List.prototype.forEach = function (func, context) {
+        this._forEach(this.children, func, context);
+        return this;
+    };
+    List.prototype.toArray = function () {
+        return this.children;
+    };
+    List.prototype.copyChildren = function () {
+        return this.children.slice(0);
+    };
+    List.prototype.removeChildHelper = function (arg) {
+        var result = null;
+        if (JudgeUtils$2.isFunction(arg)) {
+            var func = arg;
+            result = this._removeChild(this.children, func);
+        }
+        else if (arg.uid) {
+            result = this._removeChild(this.children, function (e) {
+                if (!e.uid) {
+                    return false;
+                }
+                return e.uid === arg.uid;
+            });
+        }
+        else {
+            result = this._removeChild(this.children, function (e) {
+                return e === arg;
+            });
+        }
+        return result;
+    };
+    List.prototype._forEach = function (arr, func, context) {
+        var scope = context, i = 0, len = arr.length;
+        for (i = 0; i < len; i++) {
+            if (func.call(scope, arr[i], i) === $BREAK$1) {
+                break;
+            }
+        }
+    };
+    List.prototype._removeChild = function (arr, func) {
+        var self = this, removedElementArr = [], remainElementArr = [];
+        this._forEach(arr, function (e, index) {
+            if (!!func.call(self, e)) {
+                removedElementArr.push(e);
+            }
+            else {
+                remainElementArr.push(e);
+            }
+        });
+        this.children = remainElementArr;
+        return removedElementArr;
+    };
+    return List;
+}());
+
+var ExtendUtils$1 = (function () {
+    function ExtendUtils() {
+    }
+    ExtendUtils.extendDeep = function (parent, child, filter) {
+        if (filter === void 0) { filter = function (val, i) { return true; }; }
+        var i = null, len = 0, toStr = Object.prototype.toString, sArr = "[object Array]", sOb = "[object Object]", type = "", _child = null;
+        if (toStr.call(parent) === sArr) {
+            _child = child || [];
+            for (i = 0, len = parent.length; i < len; i++) {
+                var member = parent[i];
+                if (!filter(member, i)) {
+                    continue;
+                }
+                if (member.clone) {
+                    _child[i] = member.clone();
+                    continue;
+                }
+                type = toStr.call(member);
+                if (type === sArr || type === sOb) {
+                    _child[i] = type === sArr ? [] : {};
+                    ExtendUtils.extendDeep(member, _child[i]);
+                }
+                else {
+                    _child[i] = member;
+                }
+            }
+        }
+        else if (toStr.call(parent) === sOb) {
+            _child = child || {};
+            for (i in parent) {
+                var member = parent[i];
+                if (!filter(member, i)) {
+                    continue;
+                }
+                if (member.clone) {
+                    _child[i] = member.clone();
+                    continue;
+                }
+                type = toStr.call(member);
+                if (type === sArr || type === sOb) {
+                    _child[i] = type === sArr ? [] : {};
+                    ExtendUtils.extendDeep(member, _child[i]);
+                }
+                else {
+                    _child[i] = member;
+                }
+            }
+        }
+        else {
+            _child = parent;
+        }
+        return _child;
+    };
+    ExtendUtils.extend = function (destination, source) {
+        var property = "";
+        for (property in source) {
+            destination[property] = source[property];
+        }
+        return destination;
+    };
+    ExtendUtils.copyPublicAttri = function (source) {
+        var property = null, destination = {};
+        this.extendDeep(source, destination, function (item, property) {
+            return property.slice(0, 1) !== "_"
+                && !JudgeUtils$2.isFunction(item);
+        });
+        return destination;
+    };
+    return ExtendUtils;
+}());
+
+var Collection$1 = (function (_super) {
+    __extends(Collection, _super);
+    function Collection(children) {
+        if (children === void 0) { children = []; }
+        var _this = _super.call(this) || this;
+        _this.children = children;
         return _this;
     }
-    WebGLRenderer.create = function () {
+    Collection.create = function (children) {
+        if (children === void 0) { children = []; }
+        var obj = new this(children);
+        return obj;
+    };
+    Collection.prototype.clone = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var target = null, isDeep = null;
+        if (args.length === 0) {
+            isDeep = false;
+            target = Collection.create();
+        }
+        else if (args.length === 1) {
+            if (JudgeUtils$2.isBoolean(args[0])) {
+                target = Collection.create();
+                isDeep = args[0];
+            }
+            else {
+                target = args[0];
+                isDeep = false;
+            }
+        }
+        else {
+            target = args[0];
+            isDeep = args[1];
+        }
+        if (isDeep === true) {
+            target.setChildren(ExtendUtils$1.extendDeep(this.children));
+        }
+        else {
+            target.setChildren(ExtendUtils$1.extend([], this.children));
+        }
+        return target;
+    };
+    Collection.prototype.filter = function (func) {
+        var children = this.children, result = [], value = null;
+        for (var i = 0, len = children.length; i < len; i++) {
+            value = children[i];
+            if (func.call(children, value, i)) {
+                result.push(value);
+            }
+        }
+        return Collection.create(result);
+    };
+    Collection.prototype.findOne = function (func) {
+        var scope = this.children, result = null;
+        this.forEach(function (value, index) {
+            if (!func.call(scope, value, index)) {
+                return;
+            }
+            result = value;
+            return $BREAK$1;
+        });
+        return result;
+    };
+    Collection.prototype.reverse = function () {
+        return Collection.create(this.copyChildren().reverse());
+    };
+    Collection.prototype.removeChild = function (arg) {
+        return Collection.create(this.removeChildHelper(arg));
+    };
+    Collection.prototype.sort = function (func, isSortSelf) {
+        if (isSortSelf === void 0) { isSortSelf = false; }
+        if (isSortSelf) {
+            this.children.sort(func);
+            return this;
+        }
+        return Collection.create(this.copyChildren().sort(func));
+    };
+    Collection.prototype.map = function (func) {
+        var resultArr = [];
+        this.forEach(function (e, index) {
+            var result = func(e, index);
+            if (result !== $REMOVE$1) {
+                resultArr.push(result);
+            }
+        });
+        return Collection.create(resultArr);
+    };
+    Collection.prototype.removeRepeatItems = function () {
+        var noRepeatList = Collection.create();
+        this.forEach(function (item) {
+            if (noRepeatList.hasChild(item)) {
+                return;
+            }
+            noRepeatList.addChild(item);
+        });
+        return noRepeatList;
+    };
+    Collection.prototype.hasRepeatItems = function () {
+        var noRepeatList = Collection.create(), hasRepeat = false;
+        this.forEach(function (item) {
+            if (noRepeatList.hasChild(item)) {
+                hasRepeat = true;
+                return $BREAK$1;
+            }
+            noRepeatList.addChild(item);
+        });
+        return hasRepeat;
+    };
+    return Collection;
+}(List$1));
+
+var JudgeUtils$3 = (function (_super) {
+    __extends(JudgeUtils$$1, _super);
+    function JudgeUtils$$1() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    JudgeUtils$$1.isPromise = function (obj) {
+        return !!obj
+            && !_super.isFunction.call(this, obj.subscribe)
+            && _super.isFunction.call(this, obj.then);
+    };
+    JudgeUtils$$1.isEqual = function (ob1, ob2) {
+        return ob1.uid === ob2.uid;
+    };
+    JudgeUtils$$1.isIObserver = function (i) {
+        return i.next && i.error && i.completed;
+    };
+    return JudgeUtils$$1;
+}(JudgeUtils$2));
+
+var SubjectObserver = (function () {
+    function SubjectObserver() {
+        this.observers = Collection$1.create();
+        this._disposable = null;
+    }
+    SubjectObserver.prototype.isEmpty = function () {
+        return this.observers.getCount() === 0;
+    };
+    SubjectObserver.prototype.next = function (value) {
+        this.observers.forEach(function (ob) {
+            ob.next(value);
+        });
+    };
+    SubjectObserver.prototype.error = function (error) {
+        this.observers.forEach(function (ob) {
+            ob.error(error);
+        });
+    };
+    SubjectObserver.prototype.completed = function () {
+        this.observers.forEach(function (ob) {
+            ob.completed();
+        });
+    };
+    SubjectObserver.prototype.addChild = function (observer) {
+        this.observers.addChild(observer);
+        observer.setDisposable(this._disposable);
+    };
+    SubjectObserver.prototype.removeChild = function (observer) {
+        this.observers.removeChild(function (ob) {
+            return JudgeUtils$3.isEqual(ob, observer);
+        });
+    };
+    SubjectObserver.prototype.dispose = function () {
+        this.observers.forEach(function (ob) {
+            ob.dispose();
+        });
+        this.observers.removeAllChildren();
+    };
+    SubjectObserver.prototype.setDisposable = function (disposable) {
+        this.observers.forEach(function (observer) {
+            observer.setDisposable(disposable);
+        });
+        this._disposable = disposable;
+    };
+    return SubjectObserver;
+}());
+
+var Observer = (function (_super) {
+    __extends(Observer, _super);
+    function Observer() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var _this = _super.call(this, "Observer") || this;
+        _this._isDisposed = null;
+        _this.onUserNext = null;
+        _this.onUserError = null;
+        _this.onUserCompleted = null;
+        _this._isStop = false;
+        _this._disposable = null;
+        if (args.length === 1) {
+            var observer_1 = args[0];
+            _this.onUserNext = function (v) {
+                observer_1.next(v);
+            };
+            _this.onUserError = function (e) {
+                observer_1.error(e);
+            };
+            _this.onUserCompleted = function () {
+                observer_1.completed();
+            };
+        }
+        else {
+            var onNext = args[0], onError = args[1], onCompleted = args[2];
+            _this.onUserNext = onNext || function (v) { };
+            _this.onUserError = onError || function (e) {
+                throw e;
+            };
+            _this.onUserCompleted = onCompleted || function () { };
+        }
+        return _this;
+    }
+    Object.defineProperty(Observer.prototype, "isDisposed", {
+        get: function () {
+            return this._isDisposed;
+        },
+        set: function (isDisposed) {
+            this._isDisposed = isDisposed;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Observer.prototype.next = function (value) {
+        if (!this._isStop) {
+            return this.onNext(value);
+        }
+    };
+    Observer.prototype.error = function (error) {
+        if (!this._isStop) {
+            this._isStop = true;
+            this.onError(error);
+        }
+    };
+    Observer.prototype.completed = function () {
+        if (!this._isStop) {
+            this._isStop = true;
+            this.onCompleted();
+        }
+    };
+    Observer.prototype.dispose = function () {
+        this._isStop = true;
+        this._isDisposed = true;
+        if (this._disposable) {
+            this._disposable.dispose();
+        }
+    };
+    Observer.prototype.setDisposable = function (disposable) {
+        this._disposable = disposable;
+    };
+    return Observer;
+}(Entity));
+
+function assert$1(cond, message) {
+    if (message === void 0) { message = "contract error"; }
+    Log$2.error(!cond, message);
+}
+function requireCheck$1(InFunc) {
+    return function (target, name, descriptor) {
+        var value = descriptor.value;
+        descriptor.value = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (Main.isTest) {
+                InFunc.apply(this, args);
+            }
+            return value.apply(this, args);
+        };
+        return descriptor;
+    };
+}
+
+var AutoDetachObserver = (function (_super) {
+    __extends(AutoDetachObserver, _super);
+    function AutoDetachObserver() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AutoDetachObserver.create = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 1) {
+            return new this(args[0]);
+        }
+        else {
+            return new this(args[0], args[1], args[2]);
+        }
+    };
+    AutoDetachObserver.prototype.dispose = function () {
+        if (this.isDisposed) {
+            return;
+        }
+        _super.prototype.dispose.call(this);
+    };
+    AutoDetachObserver.prototype.onNext = function (value) {
+        try {
+            this.onUserNext(value);
+        }
+        catch (e) {
+            this.onError(e);
+        }
+    };
+    AutoDetachObserver.prototype.onError = function (error) {
+        try {
+            this.onUserError(error);
+        }
+        catch (e) {
+            throw e;
+        }
+        finally {
+            this.dispose();
+        }
+    };
+    AutoDetachObserver.prototype.onCompleted = function () {
+        try {
+            this.onUserCompleted();
+            this.dispose();
+        }
+        catch (e) {
+            throw e;
+        }
+    };
+    return AutoDetachObserver;
+}(Observer));
+__decorate([
+    requireCheck$1(function () {
+        if (this.isDisposed) {
+            Log$2.warn("only can dispose once");
+        }
+    })
+], AutoDetachObserver.prototype, "dispose", null);
+
+var InnerSubscription = (function () {
+    function InnerSubscription(subject, observer) {
+        this._subject = null;
+        this._observer = null;
+        this._subject = subject;
+        this._observer = observer;
+    }
+    InnerSubscription.create = function (subject, observer) {
+        var obj = new this(subject, observer);
+        return obj;
+    };
+    InnerSubscription.prototype.dispose = function () {
+        this._subject.remove(this._observer);
+        this._observer.dispose();
+    };
+    return InnerSubscription;
+}());
+
+var Subject = (function () {
+    function Subject() {
+        this._source = null;
+        this._observer = new SubjectObserver();
+    }
+    Subject.create = function () {
         var obj = new this();
         return obj;
     };
-    WebGLRenderer.prototype.addCommand = function (command) {
-        this._commandQueue.addChild(command);
-        command.init();
+    Object.defineProperty(Subject.prototype, "source", {
+        get: function () {
+            return this._source;
+        },
+        set: function (source) {
+            this._source = source;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Subject.prototype.subscribe = function (arg1, onError, onCompleted) {
+        var observer = arg1 instanceof Observer
+            ? arg1
+            : AutoDetachObserver.create(arg1, onError, onCompleted);
+        this._observer.addChild(observer);
+        return InnerSubscription.create(this, observer);
     };
-    WebGLRenderer.prototype.hasCommand = function () {
-        return this._commandQueue.getCount() > 0;
+    Subject.prototype.next = function (value) {
+        this._observer.next(value);
     };
-    WebGLRenderer.prototype.clear = function () {
-        DeviceManager.getInstance().clear(this._clearOptions);
+    Subject.prototype.error = function (error) {
+        this._observer.error(error);
     };
-    WebGLRenderer.prototype.render = function () {
-        var deviceManager = DeviceManager.getInstance(), webglState = this.webglState;
-        this._commandQueue.forEach(function (command) {
-            command.webglState = webglState;
-            command.execute();
-        }, this);
-        this._clearCommand();
-        this.webglState = null;
+    Subject.prototype.completed = function () {
+        this._observer.completed();
     };
-    WebGLRenderer.prototype.init = function () {
-        var deviceManager = DeviceManager.getInstance();
-        deviceManager.depthTest = true;
-        deviceManager.blend = false;
-        deviceManager.setColorWrite(true, true, true, true);
-        deviceManager.side = ESide.FRONT;
-        deviceManager.depthWrite = true;
+    Subject.prototype.start = function () {
+        if (!this._source) {
+            return;
+        }
+        this._observer.setDisposable(this._source.buildStream(this));
     };
-    WebGLRenderer.prototype.setClearColor = function (color) {
-        this._setClearOptions({
-            color: color
+    Subject.prototype.remove = function (observer) {
+        this._observer.removeChild(observer);
+    };
+    Subject.prototype.dispose = function () {
+        this._observer.dispose();
+    };
+    return Subject;
+}());
+
+var SingleDisposable = (function (_super) {
+    __extends(SingleDisposable, _super);
+    function SingleDisposable(disposeHandler) {
+        var _this = _super.call(this, "SingleDisposable") || this;
+        _this._disposeHandler = null;
+        _this._isDisposed = false;
+        _this._disposeHandler = disposeHandler;
+        return _this;
+    }
+    SingleDisposable.create = function (disposeHandler) {
+        if (disposeHandler === void 0) { disposeHandler = function () { }; }
+        var obj = new this(disposeHandler);
+        return obj;
+    };
+    SingleDisposable.prototype.setDisposeHandler = function (handler) {
+        this._disposeHandler = handler;
+    };
+    SingleDisposable.prototype.dispose = function () {
+        if (this._isDisposed) {
+            return;
+        }
+        this._isDisposed = true;
+        this._disposeHandler();
+    };
+    return SingleDisposable;
+}(Entity));
+
+var ClassMapUtils = (function () {
+    function ClassMapUtils() {
+    }
+    ClassMapUtils.addClassMap = function (className, _class) {
+        this._classMap[className] = _class;
+    };
+    ClassMapUtils.getClass = function (className) {
+        return this._classMap[className];
+    };
+    return ClassMapUtils;
+}());
+ClassMapUtils._classMap = {};
+
+var FunctionUtils = (function () {
+    function FunctionUtils() {
+    }
+    FunctionUtils.bind = function (object, func) {
+        return function () {
+            return func.apply(object, arguments);
+        };
+    };
+    return FunctionUtils;
+}());
+
+var Stream = (function (_super) {
+    __extends(Stream, _super);
+    function Stream(subscribeFunc) {
+        var _this = _super.call(this, "Stream") || this;
+        _this.scheduler = null;
+        _this.subscribeFunc = null;
+        _this.subscribeFunc = subscribeFunc || function () { };
+        return _this;
+    }
+    Stream.prototype.buildStream = function (observer) {
+        return SingleDisposable.create((this.subscribeFunc(observer) || function () { }));
+    };
+    Stream.prototype.do = function (onNext, onError, onCompleted) {
+        return ClassMapUtils.getClass("DoStream").create(this, onNext, onError, onCompleted);
+    };
+    Stream.prototype.map = function (selector) {
+        return ClassMapUtils.getClass("MapStream").create(this, selector);
+    };
+    Stream.prototype.flatMap = function (selector) {
+        return this.map(selector).mergeAll();
+    };
+    Stream.prototype.concatMap = function (selector) {
+        return this.map(selector).concatAll();
+    };
+    Stream.prototype.mergeAll = function () {
+        return ClassMapUtils.getClass("MergeAllStream").create(this);
+    };
+    Stream.prototype.concatAll = function () {
+        return this.merge(1);
+    };
+    Stream.prototype.skipUntil = function (otherStream) {
+        return ClassMapUtils.getClass("SkipUntilStream").create(this, otherStream);
+    };
+    Stream.prototype.takeUntil = function (otherStream) {
+        return ClassMapUtils.getClass("TakeUntilStream").create(this, otherStream);
+    };
+    Stream.prototype.take = function (count) {
+        if (count === void 0) { count = 1; }
+        var self = this;
+        if (count === 0) {
+            return ClassMapUtils.getClass("Operator").empty();
+        }
+        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
+            self.subscribe(function (value) {
+                if (count > 0) {
+                    observer.next(value);
+                }
+                count--;
+                if (count <= 0) {
+                    observer.completed();
+                }
+            }, function (e) {
+                observer.error(e);
+            }, function () {
+                observer.completed();
+            });
         });
     };
-    WebGLRenderer.prototype._clearCommand = function () {
-        this._commandQueue.forEach(function (command) {
-            command.dispose();
+    Stream.prototype.takeLast = function (count) {
+        if (count === void 0) { count = 1; }
+        var self = this;
+        if (count === 0) {
+            return ClassMapUtils.getClass("Operator").empty();
+        }
+        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
+            var queue = [];
+            self.subscribe(function (value) {
+                queue.push(value);
+                if (queue.length > count) {
+                    queue.shift();
+                }
+            }, function (e) {
+                observer.error(e);
+            }, function () {
+                while (queue.length > 0) {
+                    observer.next(queue.shift());
+                }
+                observer.completed();
+            });
         });
-        this._commandQueue.removeAllChildren();
     };
-    WebGLRenderer.prototype._setClearOptions = function (clearOptions) {
-        ExtendUtils.extend(this._clearOptions, clearOptions);
+    Stream.prototype.takeWhile = function (predicate, thisArg) {
+        if (thisArg === void 0) { thisArg = this; }
+        var self = this, bindPredicate = null;
+        bindPredicate = FunctionUtils.bind(thisArg, predicate);
+        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
+            var i = 0, isStart = false;
+            self.subscribe(function (value) {
+                if (bindPredicate(value, i++, self)) {
+                    try {
+                        observer.next(value);
+                        isStart = true;
+                    }
+                    catch (e) {
+                        observer.error(e);
+                        return;
+                    }
+                }
+                else {
+                    if (isStart) {
+                        observer.completed();
+                    }
+                }
+            }, function (e) {
+                observer.error(e);
+            }, function () {
+                observer.completed();
+            });
+        });
     };
-    return WebGLRenderer;
-}(Renderer));
+    Stream.prototype.lastOrDefault = function (defaultValue) {
+        if (defaultValue === void 0) { defaultValue = null; }
+        var self = this;
+        return ClassMapUtils.getClass("Operator").createStream(function (observer) {
+            var queue = [];
+            self.subscribe(function (value) {
+                queue.push(value);
+                if (queue.length > 1) {
+                    queue.shift();
+                }
+            }, function (e) {
+                observer.error(e);
+            }, function () {
+                if (queue.length === 0) {
+                    observer.next(defaultValue);
+                }
+                else {
+                    while (queue.length > 0) {
+                        observer.next(queue.shift());
+                    }
+                }
+                observer.completed();
+            });
+        });
+    };
+    Stream.prototype.filter = function (predicate, thisArg) {
+        if (thisArg === void 0) { thisArg = this; }
+        if (this instanceof ClassMapUtils.getClass("FilterStream")) {
+            var self = this;
+            return self.internalFilter(predicate, thisArg);
+        }
+        return ClassMapUtils.getClass("FilterStream").create(this, predicate, thisArg);
+    };
+    Stream.prototype.filterWithState = function (predicate, thisArg) {
+        if (thisArg === void 0) { thisArg = this; }
+        if (this instanceof ClassMapUtils.getClass("FilterStream")) {
+            var self = this;
+            return self.internalFilter(predicate, thisArg);
+        }
+        return ClassMapUtils.getClass("FilterWithStateStream").create(this, predicate, thisArg);
+    };
+    Stream.prototype.concat = function () {
+        var args = null;
+        if (JudgeUtils$3.isArray(arguments[0])) {
+            args = arguments[0];
+        }
+        else {
+            args = Array.prototype.slice.call(arguments, 0);
+        }
+        args.unshift(this);
+        return ClassMapUtils.getClass("ConcatStream").create(args);
+    };
+    Stream.prototype.merge = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (JudgeUtils$3.isNumber(args[0])) {
+            var maxConcurrent = args[0];
+            return ClassMapUtils.getClass("MergeStream").create(this, maxConcurrent);
+        }
+        if (JudgeUtils$3.isArray(args[0])) {
+            args = arguments[0];
+        }
+        else {
+        }
+        var stream = null;
+        args.unshift(this);
+        stream = ClassMapUtils.getClass("Operator").fromArray(args).mergeAll();
+        return stream;
+    };
+    Stream.prototype.repeat = function (count) {
+        if (count === void 0) { count = -1; }
+        return ClassMapUtils.getClass("RepeatStream").create(this, count);
+    };
+    Stream.prototype.ignoreElements = function () {
+        return ClassMapUtils.getClass("IgnoreElementsStream").create(this);
+    };
+    Stream.prototype.handleSubject = function (subject) {
+        if (this._isSubject(subject)) {
+            this._setSubject(subject);
+            return true;
+        }
+        return false;
+    };
+    Stream.prototype._isSubject = function (subject) {
+        return subject instanceof Subject;
+    };
+    Stream.prototype._setSubject = function (subject) {
+        subject.source = this;
+    };
+    return Stream;
+}(Entity));
+__decorate([
+    requireCheck$1(function (count) {
+        if (count === void 0) { count = 1; }
+        assert$1(count >= 0, Log$2.info.FUNC_SHOULD("count", ">= 0"));
+    })
+], Stream.prototype, "take", null);
+__decorate([
+    requireCheck$1(function (count) {
+        if (count === void 0) { count = 1; }
+        assert$1(count >= 0, Log$2.info.FUNC_SHOULD("count", ">= 0"));
+    })
+], Stream.prototype, "takeLast", null);
+
+var BaseStream = (function (_super) {
+    __extends(BaseStream, _super);
+    function BaseStream() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BaseStream.prototype.subscribe = function (arg1, onError, onCompleted) {
+        var observer = null;
+        if (this.handleSubject(arg1)) {
+            return;
+        }
+        observer = arg1 instanceof Observer
+            ? AutoDetachObserver.create(arg1)
+            : AutoDetachObserver.create(arg1, onError, onCompleted);
+        observer.setDisposable(this.buildStream(observer));
+        return observer;
+    };
+    BaseStream.prototype.buildStream = function (observer) {
+        _super.prototype.buildStream.call(this, observer);
+        return this.subscribeCore(observer);
+    };
+    return BaseStream;
+}(Stream));
+
+var root$3;
+if (JudgeUtils$3.isNodeJs() && typeof global != "undefined") {
+    root$3 = global;
+}
+else if (typeof window != "undefined") {
+    root$3 = window;
+}
+else if (typeof self != "undefined") {
+    root$3 = self;
+}
+else {
+    Log$2.error("no avaliable root!");
+}
+
+var Scheduler = (function () {
+    function Scheduler() {
+        this._requestLoopId = null;
+    }
+    Scheduler.create = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var obj = new this();
+        return obj;
+    };
+    Object.defineProperty(Scheduler.prototype, "requestLoopId", {
+        get: function () {
+            return this._requestLoopId;
+        },
+        set: function (requestLoopId) {
+            this._requestLoopId = requestLoopId;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Scheduler.prototype.publishRecursive = function (observer, initial, action) {
+        action(initial);
+    };
+    Scheduler.prototype.publishInterval = function (observer, initial, interval, action) {
+        return root$3.setInterval(function () {
+            initial = action(initial);
+        }, interval);
+    };
+    Scheduler.prototype.publishIntervalRequest = function (observer, action) {
+        var self = this, loop = function (time) {
+            var isEnd = action(time);
+            if (isEnd) {
+                return;
+            }
+            self._requestLoopId = root$3.requestNextAnimationFrame(loop);
+        };
+        this._requestLoopId = root$3.requestNextAnimationFrame(loop);
+    };
+    Scheduler.prototype.publishTimeout = function (observer, time, action) {
+        return root$3.setTimeout(function () {
+            action(time);
+            observer.completed();
+        }, time);
+    };
+    return Scheduler;
+}());
+
+var AnonymousStream = (function (_super) {
+    __extends(AnonymousStream, _super);
+    function AnonymousStream(subscribeFunc) {
+        var _this = _super.call(this, subscribeFunc) || this;
+        _this.scheduler = Scheduler.create();
+        return _this;
+    }
+    AnonymousStream.create = function (subscribeFunc) {
+        var obj = new this(subscribeFunc);
+        return obj;
+    };
+    AnonymousStream.prototype.buildStream = function (observer) {
+        return SingleDisposable.create((this.subscribeFunc(observer) || function () { }));
+    };
+    AnonymousStream.prototype.subscribe = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var observer = null;
+        if (args[0] instanceof Subject) {
+            var subject = args[0];
+            this.handleSubject(subject);
+            return;
+        }
+        else if (JudgeUtils$3.isIObserver(args[0])) {
+            observer = AutoDetachObserver.create(args[0]);
+        }
+        else {
+            var onNext = args[0], onError = args[1] || null, onCompleted = args[2] || null;
+            observer = AutoDetachObserver.create(onNext, onError, onCompleted);
+        }
+        observer.setDisposable(this.buildStream(observer));
+        return observer;
+    };
+    return AnonymousStream;
+}(Stream));
+
+var FromArrayStream = (function (_super) {
+    __extends(FromArrayStream, _super);
+    function FromArrayStream(array, scheduler) {
+        var _this = _super.call(this, null) || this;
+        _this._array = null;
+        _this._array = array;
+        _this.scheduler = scheduler;
+        return _this;
+    }
+    FromArrayStream.create = function (array, scheduler) {
+        var obj = new this(array, scheduler);
+        return obj;
+    };
+    FromArrayStream.prototype.subscribeCore = function (observer) {
+        var array = this._array, len = array.length;
+        function loopRecursive(i) {
+            if (i < len) {
+                observer.next(array[i]);
+                loopRecursive(i + 1);
+            }
+            else {
+                observer.completed();
+            }
+        }
+        this.scheduler.publishRecursive(observer, 0, loopRecursive);
+        return SingleDisposable.create();
+    };
+    return FromArrayStream;
+}(BaseStream));
+
+var FromPromiseStream = (function (_super) {
+    __extends(FromPromiseStream, _super);
+    function FromPromiseStream(promise, scheduler) {
+        var _this = _super.call(this, null) || this;
+        _this._promise = null;
+        _this._promise = promise;
+        _this.scheduler = scheduler;
+        return _this;
+    }
+    FromPromiseStream.create = function (promise, scheduler) {
+        var obj = new this(promise, scheduler);
+        return obj;
+    };
+    FromPromiseStream.prototype.subscribeCore = function (observer) {
+        this._promise.then(function (data) {
+            observer.next(data);
+            observer.completed();
+        }, function (err) {
+            observer.error(err);
+        }, observer);
+        return SingleDisposable.create();
+    };
+    return FromPromiseStream;
+}(BaseStream));
+
+var FromEventPatternStream = (function (_super) {
+    __extends(FromEventPatternStream, _super);
+    function FromEventPatternStream(addHandler, removeHandler) {
+        var _this = _super.call(this, null) || this;
+        _this._addHandler = null;
+        _this._removeHandler = null;
+        _this._addHandler = addHandler;
+        _this._removeHandler = removeHandler;
+        return _this;
+    }
+    FromEventPatternStream.create = function (addHandler, removeHandler) {
+        var obj = new this(addHandler, removeHandler);
+        return obj;
+    };
+    FromEventPatternStream.prototype.subscribeCore = function (observer) {
+        var self = this;
+        function innerHandler(event) {
+            observer.next(event);
+        }
+        this._addHandler(innerHandler);
+        return SingleDisposable.create(function () {
+            self._removeHandler(innerHandler);
+        });
+    };
+    return FromEventPatternStream;
+}(BaseStream));
+
+var IntervalStream = (function (_super) {
+    __extends(IntervalStream, _super);
+    function IntervalStream(interval, scheduler) {
+        var _this = _super.call(this, null) || this;
+        _this._interval = null;
+        _this._interval = interval;
+        _this.scheduler = scheduler;
+        return _this;
+    }
+    IntervalStream.create = function (interval, scheduler) {
+        var obj = new this(interval, scheduler);
+        obj.initWhenCreate();
+        return obj;
+    };
+    IntervalStream.prototype.initWhenCreate = function () {
+        this._interval = this._interval <= 0 ? 1 : this._interval;
+    };
+    IntervalStream.prototype.subscribeCore = function (observer) {
+        var self = this, id = null;
+        id = this.scheduler.publishInterval(observer, 0, this._interval, function (count) {
+            observer.next(count);
+            return count + 1;
+        });
+        return SingleDisposable.create(function () {
+            root$3.clearInterval(id);
+        });
+    };
+    return IntervalStream;
+}(BaseStream));
+
+var IntervalRequestStream = (function (_super) {
+    __extends(IntervalRequestStream, _super);
+    function IntervalRequestStream(scheduler) {
+        var _this = _super.call(this, null) || this;
+        _this._isEnd = false;
+        _this.scheduler = scheduler;
+        return _this;
+    }
+    IntervalRequestStream.create = function (scheduler) {
+        var obj = new this(scheduler);
+        return obj;
+    };
+    IntervalRequestStream.prototype.subscribeCore = function (observer) {
+        var self = this;
+        this.scheduler.publishIntervalRequest(observer, function (time) {
+            observer.next(time);
+            return self._isEnd;
+        });
+        return SingleDisposable.create(function () {
+            root$3.cancelNextRequestAnimationFrame(self.scheduler.requestLoopId);
+            self._isEnd = true;
+        });
+    };
+    return IntervalRequestStream;
+}(BaseStream));
+
+var TimeoutStream = (function (_super) {
+    __extends(TimeoutStream, _super);
+    function TimeoutStream(time, scheduler) {
+        var _this = _super.call(this, null) || this;
+        _this._time = null;
+        _this._time = time;
+        _this.scheduler = scheduler;
+        return _this;
+    }
+    TimeoutStream.create = function (time, scheduler) {
+        var obj = new this(time, scheduler);
+        return obj;
+    };
+    TimeoutStream.prototype.subscribeCore = function (observer) {
+        var id = null;
+        id = this.scheduler.publishTimeout(observer, this._time, function (time) {
+            observer.next(time);
+        });
+        return SingleDisposable.create(function () {
+            root$3.clearTimeout(id);
+        });
+    };
+    return TimeoutStream;
+}(BaseStream));
+__decorate([
+    requireCheck$1(function (time, scheduler) {
+        assert$1(time > 0, Log$2.info.FUNC_SHOULD("time", "> 0"));
+    })
+], TimeoutStream, "create", null);
+
+var GroupDisposable = (function (_super) {
+    __extends(GroupDisposable, _super);
+    function GroupDisposable(disposable) {
+        var _this = _super.call(this, "GroupDisposable") || this;
+        _this._group = Collection$1.create();
+        _this._isDisposed = false;
+        if (disposable) {
+            _this._group.addChild(disposable);
+        }
+        return _this;
+    }
+    GroupDisposable.create = function (disposable) {
+        var obj = new this(disposable);
+        return obj;
+    };
+    GroupDisposable.prototype.add = function (disposable) {
+        this._group.addChild(disposable);
+        return this;
+    };
+    GroupDisposable.prototype.remove = function (disposable) {
+        this._group.removeChild(disposable);
+        return this;
+    };
+    GroupDisposable.prototype.dispose = function () {
+        if (this._isDisposed) {
+            return;
+        }
+        this._isDisposed = true;
+        this._group.forEach(function (disposable) {
+            disposable.dispose();
+        });
+    };
+    return GroupDisposable;
+}(Entity));
+
+var DeferStream = (function (_super) {
+    __extends(DeferStream, _super);
+    function DeferStream(buildStreamFunc) {
+        var _this = _super.call(this, null) || this;
+        _this._buildStreamFunc = null;
+        _this._buildStreamFunc = buildStreamFunc;
+        return _this;
+    }
+    DeferStream.create = function (buildStreamFunc) {
+        var obj = new this(buildStreamFunc);
+        return obj;
+    };
+    DeferStream.prototype.subscribeCore = function (observer) {
+        var group = GroupDisposable.create();
+        group.add(this._buildStreamFunc().buildStream(observer));
+        return group;
+    };
+    return DeferStream;
+}(BaseStream));
+
+function registerClass$1(className) {
+    return function (target) {
+        ClassMapUtils.addClassMap(className, target);
+    };
+}
+
+var Operator = (function () {
+    function Operator() {
+    }
+    Operator.empty = function () {
+        return this.createStream(function (observer) {
+            observer.completed();
+        });
+    };
+    Operator.createStream = function (subscribeFunc) {
+        return AnonymousStream.create(subscribeFunc);
+    };
+    Operator.fromArray = function (array, scheduler) {
+        if (scheduler === void 0) { scheduler = Scheduler.create(); }
+        return FromArrayStream.create(array, scheduler);
+    };
+    return Operator;
+}());
+Operator = __decorate([
+    registerClass$1("Operator")
+], Operator);
+var createStream = Operator.createStream;
+
+var fromArray = Operator.fromArray;
+var fromPromise = function (promise, scheduler) {
+    if (scheduler === void 0) { scheduler = Scheduler.create(); }
+    return FromPromiseStream.create(promise, scheduler);
+};
+
+
+var intervalRequest = function (scheduler) {
+    if (scheduler === void 0) { scheduler = Scheduler.create(); }
+    return IntervalRequestStream.create(scheduler);
+};
+
+var callFunc = function (func, context) {
+    if (context === void 0) { context = root$3; }
+    return createStream(function (observer) {
+        try {
+            observer.next(func.call(context, null));
+        }
+        catch (e) {
+            observer.error(e);
+        }
+        observer.completed();
+    });
+};
+
+var ConcatObserver = (function (_super) {
+    __extends(ConcatObserver, _super);
+    function ConcatObserver(currentObserver, startNextStream) {
+        var _this = _super.call(this, null, null, null) || this;
+        _this.currentObserver = null;
+        _this._startNextStream = null;
+        _this.currentObserver = currentObserver;
+        _this._startNextStream = startNextStream;
+        return _this;
+    }
+    ConcatObserver.create = function (currentObserver, startNextStream) {
+        return new this(currentObserver, startNextStream);
+    };
+    ConcatObserver.prototype.onNext = function (value) {
+        this.currentObserver.next(value);
+    };
+    ConcatObserver.prototype.onError = function (error) {
+        this.currentObserver.error(error);
+    };
+    ConcatObserver.prototype.onCompleted = function () {
+        this._startNextStream();
+    };
+    return ConcatObserver;
+}(Observer));
+
+var ConcatStream = (function (_super) {
+    __extends(ConcatStream, _super);
+    function ConcatStream(sources) {
+        var _this = _super.call(this, null) || this;
+        _this._sources = Collection$1.create();
+        var self = _this;
+        _this.scheduler = sources[0].scheduler;
+        sources.forEach(function (source) {
+            if (JudgeUtils$3.isPromise(source)) {
+                self._sources.addChild(fromPromise(source));
+            }
+            else {
+                self._sources.addChild(source);
+            }
+        });
+        return _this;
+    }
+    ConcatStream.create = function (sources) {
+        var obj = new this(sources);
+        return obj;
+    };
+    ConcatStream.prototype.subscribeCore = function (observer) {
+        var self = this, count = this._sources.getCount(), d = GroupDisposable.create();
+        function loopRecursive(i) {
+            if (i === count) {
+                observer.completed();
+                return;
+            }
+            d.add(self._sources.getChild(i).buildStream(ConcatObserver.create(observer, function () {
+                loopRecursive(i + 1);
+            })));
+        }
+        this.scheduler.publishRecursive(observer, 0, loopRecursive);
+        return GroupDisposable.create(d);
+    };
+    return ConcatStream;
+}(BaseStream));
+ConcatStream = __decorate([
+    registerClass$1("ConcatStream")
+], ConcatStream);
+
+var IgnoreElementsObserver = (function (_super) {
+    __extends(IgnoreElementsObserver, _super);
+    function IgnoreElementsObserver(currentObserver) {
+        var _this = _super.call(this, null, null, null) || this;
+        _this._currentObserver = null;
+        _this._currentObserver = currentObserver;
+        return _this;
+    }
+    IgnoreElementsObserver.create = function (currentObserver) {
+        return new this(currentObserver);
+    };
+    IgnoreElementsObserver.prototype.onNext = function (value) {
+    };
+    IgnoreElementsObserver.prototype.onError = function (error) {
+        this._currentObserver.error(error);
+    };
+    IgnoreElementsObserver.prototype.onCompleted = function () {
+        this._currentObserver.completed();
+    };
+    return IgnoreElementsObserver;
+}(Observer));
+
+var IgnoreElementsStream = (function (_super) {
+    __extends(IgnoreElementsStream, _super);
+    function IgnoreElementsStream(source) {
+        var _this = _super.call(this, null) || this;
+        _this._source = null;
+        _this._source = source;
+        _this.scheduler = _this._source.scheduler;
+        return _this;
+    }
+    IgnoreElementsStream.create = function (source) {
+        var obj = new this(source);
+        return obj;
+    };
+    IgnoreElementsStream.prototype.subscribeCore = function (observer) {
+        return this._source.buildStream(IgnoreElementsObserver.create(observer));
+    };
+    return IgnoreElementsStream;
+}(BaseStream));
+IgnoreElementsStream = __decorate([
+    registerClass$1("IgnoreElementsStream")
+], IgnoreElementsStream);
+
+root$3.requestNextAnimationFrame = (function () {
+    var originalRequestAnimationFrame = undefined, wrapper = undefined, callback = undefined, geckoVersion = null, userAgent = root$3.navigator && root$3.navigator.userAgent, index = 0, self = this;
+    wrapper = function (time) {
+        time = root$3.performance.now();
+        self.callback(time);
+    };
+    if (root$3.requestAnimationFrame) {
+        return requestAnimationFrame;
+    }
+    if (root$3.webkitRequestAnimationFrame) {
+        originalRequestAnimationFrame = root$3.webkitRequestAnimationFrame;
+        root$3.webkitRequestAnimationFrame = function (callback, element) {
+            self.callback = callback;
+            return originalRequestAnimationFrame(wrapper, element);
+        };
+    }
+    if (root$3.msRequestAnimationFrame) {
+        originalRequestAnimationFrame = root$3.msRequestAnimationFrame;
+        root$3.msRequestAnimationFrame = function (callback) {
+            self.callback = callback;
+            return originalRequestAnimationFrame(wrapper);
+        };
+    }
+    if (root$3.mozRequestAnimationFrame) {
+        index = userAgent.indexOf('rv:');
+        if (userAgent.indexOf('Gecko') != -1) {
+            geckoVersion = userAgent.substr(index + 3, 3);
+            if (geckoVersion === '2.0') {
+                root$3.mozRequestAnimationFrame = undefined;
+            }
+        }
+    }
+    return root$3.webkitRequestAnimationFrame ||
+        root$3.mozRequestAnimationFrame ||
+        root$3.oRequestAnimationFrame ||
+        root$3.msRequestAnimationFrame ||
+        function (callback, element) {
+            var start, finish;
+            root$3.setTimeout(function () {
+                start = root$3.performance.now();
+                callback(start);
+                finish = root$3.performance.now();
+                self.timeout = 1000 / 60 - (finish - start);
+            }, self.timeout);
+        };
+}());
+root$3.cancelNextRequestAnimationFrame = root$3.cancelRequestAnimationFrame
+    || root$3.webkitCancelAnimationFrame
+    || root$3.webkitCancelRequestAnimationFrame
+    || root$3.mozCancelRequestAnimationFrame
+    || root$3.oCancelRequestAnimationFrame
+    || root$3.msCancelRequestAnimationFrame
+    || clearTimeout;
+
+var TimeController = (function () {
+    function TimeController() {
+        this.elapsed = null;
+        this.pauseElapsed = 0;
+        this.pauseTime = null;
+        this.startTime = null;
+    }
+    TimeController.prototype.start = function () {
+        this.startTime = this.getNow();
+        this.pauseElapsed = null;
+    };
+    TimeController.prototype.stop = function () {
+        this.startTime = null;
+    };
+    TimeController.prototype.pause = function () {
+        this.pauseTime = this.getNow();
+    };
+    TimeController.prototype.resume = function () {
+        this.pauseElapsed += this.getNow() - this.pauseTime;
+        this.pauseTime = null;
+    };
+    TimeController.prototype.computeElapseTime = function (time) {
+        if (this.pauseElapsed) {
+            this.elapsed = time - this.pauseElapsed - this.startTime;
+        }
+        else {
+            this.elapsed = time - this.startTime;
+        }
+        if (this.elapsed < 0) {
+            this.elapsed = 0;
+        }
+        return this.elapsed;
+    };
+    return TimeController;
+}());
 __decorate([
     ensure(function () {
-        assert(!this._commandQueue.hasRepeatItems(), Log$$1.info.FUNC_SHOULD_NOT("has duplicate render command"));
+        assert(this.elapsed >= 0, Log$$1.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
     })
-], WebGLRenderer.prototype, "addCommand", null);
+], TimeController.prototype, "computeElapseTime", null);
+
+var STARTING_FPS = 60;
+var GAMETIME_SCALE = 1000;
+var DirectorTimeController = (function (_super) {
+    __extends(DirectorTimeController, _super);
+    function DirectorTimeController() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.gameTime = null;
+        _this.fps = null;
+        _this.isTimeChange = false;
+        _this.deltaTime = null;
+        _this._lastTime = null;
+        return _this;
+    }
+    DirectorTimeController.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    DirectorTimeController.prototype.tick = function (time) {
+        this.deltaTime = this._lastTime !== null ? time - this._lastTime : time;
+        this._updateFps(this.deltaTime);
+        this.gameTime = time / GAMETIME_SCALE;
+        this._lastTime = time;
+    };
+    DirectorTimeController.prototype.start = function () {
+        _super.prototype.start.call(this);
+        this.isTimeChange = true;
+        this.elapsed = 0;
+    };
+    DirectorTimeController.prototype.resume = function () {
+        _super.prototype.resume.call(this);
+        this.isTimeChange = true;
+    };
+    DirectorTimeController.prototype.getNow = function () {
+        return root$1.performance.now();
+    };
+    DirectorTimeController.prototype._updateFps = function (deltaTime) {
+        if (this._lastTime === null) {
+            this.fps = STARTING_FPS;
+        }
+        else {
+            this.fps = 1000 / deltaTime;
+        }
+    };
+    return DirectorTimeController;
+}(TimeController));
+DirectorTimeController = __decorate([
+    registerClass("DirectorTimeController")
+], DirectorTimeController);
+
+var create$11 = function (GameObjectData) {
+    return create$1(null, GameObjectData);
+};
+var addChild$1 = function (scene, child, GameObjectData, SceneData) {
+    if (_isCamera(child, GameObjectData)) {
+        SceneData.cameraArray.push(child);
+    }
+    addChild(scene, child, null, GameObjectData);
+};
+var removeChild$1 = function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+};
+var _isCamera = function (gameObject, GameObjectData) {
+    return hasComponent(gameObject, getTypeIDFromClass$1(CameraController), GameObjectData);
+};
+var getCurrentCamera = ensureFunc(function (camera, SceneData) {
+    it$1("current camera should exist", function () {
+        index_1(camera).exist;
+    });
+}, function (SceneData) {
+    return SceneData.cameraArray[0];
+});
+var initData$13 = function (SceneData) {
+    SceneData.cameraArray = [];
+};
+
+var RenderCommand = (function () {
+    function RenderCommand() {
+        this.materialIndex = null;
+        this.shaderIndex = null;
+        this.geometryIndex = null;
+        this.mMatrix = null;
+        this.vMatrix = null;
+        this.pMatrix = null;
+        this.drawMode = null;
+    }
+    return RenderCommand;
+}());
+
+var createRenderCommands = requireCheckFunc(curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {
+    forEach(renderGameObjectArray, function (gameObject) {
+        var geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData);
+        it$1("geometry should exist in gameObject", function () {
+            index_1(geometry).exist;
+        });
+        it$1("material should exist in gameObject", function () {
+            index_1(material).exist;
+        });
+    });
+}), curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {
+    var commandArr = [];
+    for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
+        var gameObject = renderGameObjectArray_1[_i];
+        var command = new RenderCommand(), currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass$1(CameraController), GameObjectData), currentCameraIndex = currentCamera.index, geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData), transform = getTransform(gameObject, GameObjectData), materialIndex = material.index, shader = getShader(materialIndex, MaterialData);
+        command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData).values;
+        command.vMatrix = getWorldToCameraMatrix$1(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
+        command.pMatrix = getPMatrix$1(currentCameraIndex, CameraData).values;
+        command.drawMode = getDrawMode$1(geometry, GeometryData);
+        command.materialIndex = materialIndex;
+        command.shaderIndex = shader.index;
+        command.geometryIndex = geometry.index;
+        commandArr.push(command);
+    }
+    return commandArr;
+}));
+
+var sortRenderCommands = curry(function (state, renderCommandArray) {
+    return renderCommandArray;
+});
+
+var draw = curry(function (state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData, renderCommandArray) {
+    for (var _i = 0, renderCommandArray_1 = renderCommandArray; _i < renderCommandArray_1.length; _i++) {
+        var renderCommand = renderCommandArray_1[_i];
+        var shaderIndex = renderCommand.shaderIndex, geometryIndex = renderCommand.geometryIndex, gl = getGL(DeviceManagerData, state);
+        use$$1(gl, shaderIndex, ShaderData);
+        sendAttributeData$$1(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
+        sendUniformData$$1(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
+        if (hasIndices(geometryIndex, GeometryData)) {
+            bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);
+            _drawElements(gl, geometryIndex, GeometryData);
+        }
+        else {
+            _drawArray(gl, geometryIndex, GeometryData);
+        }
+    }
+    return state;
+});
+var _drawElements = function (gl, geometryIndex, GeometryData) {
+    var startOffset = 0, drawMode = getDrawMode$1(geometryIndex, GeometryData), count = getIndicesCount(geometryIndex, GeometryData), type = getType(GeometryData), typeSize = getTypeSize(GeometryData);
+    gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
+};
+var _drawArray = function (gl, geometryIndex, GeometryData) {
+    var startOffset = 0, drawMode = getDrawMode$1(geometryIndex, GeometryData), count = getVerticesCount(geometryIndex, GeometryData);
+    gl.drawArrays(gl[drawMode], startOffset, count);
+};
+
+var ArrayBufferData = (function () {
+    function ArrayBufferData() {
+    }
+    return ArrayBufferData;
+}());
+ArrayBufferData.buffers = null;
+ArrayBufferData.bufferDataMap = null;
+
+var IndexBufferData = (function () {
+    function IndexBufferData() {
+    }
+    return IndexBufferData;
+}());
+IndexBufferData.buffers = null;
+
+var render_config = {
+    "render_setting": {
+        "clearColor": Color.create("#000000")
+    }
+};
+
+var SceneData = (function () {
+    function SceneData() {
+    }
+    return SceneData;
+}());
+SceneData.cameraArray = null;
+
+var init$7 = function (state) {
+    init$5(state, material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData);
+    return state;
+};
+var clear$1 = function (state) {
+    clear(getGL(DeviceManagerData, state), render_config.render_setting.clearColor, DeviceManagerData);
+    return state;
+};
+var render = function (state) {
+    return compose(draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData), sortRenderCommands(state), createRenderCommands(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData), getRenderList(state))(MeshRendererData);
+};
+
+var View = (function () {
+    function View() {
+    }
+    View.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    Object.defineProperty(View.prototype, "dom", {
+        get: function () {
+            return getCanvas(getState(DirectorData));
+        },
+        set: function (dom) {
+            setCanvas(dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "width", {
+        get: function () {
+            return getWidth(this.dom);
+        },
+        set: function (width) {
+            setWidth(width, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "height", {
+        get: function () {
+            return getHeight(this.dom);
+        },
+        set: function (height) {
+            setHeight(height, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "styleWidth", {
+        get: function () {
+            return getStyleWidth(this.dom);
+        },
+        set: function (styleWidth) {
+            setStyleWidth(styleWidth, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "styleHeight", {
+        get: function () {
+            return getStyleHeight(this.dom);
+        },
+        set: function (styleHeight) {
+            setStyleHeight(styleHeight, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "x", {
+        get: function () {
+            return getX(this.dom);
+        },
+        set: function (x) {
+            setX(x, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(View.prototype, "y", {
+        get: function () {
+            return getY(this.dom);
+        },
+        set: function (y) {
+            setY(y, this.dom).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return View;
+}());
+View = __decorate([
+    registerClass("View")
+], View);
+
+var DeviceManager = (function () {
+    function DeviceManager() {
+        this.view = View.create();
+    }
+    DeviceManager.getInstance = function () { };
+    Object.defineProperty(DeviceManager.prototype, "gl", {
+        get: function () {
+            return getGL(DeviceManagerData, getState(DirectorData));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(DeviceManager.prototype, "viewport", {
+        get: function () {
+            return getViewport(getState(DirectorData));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    DeviceManager.prototype.createGL = function (canvasId, contextConfig) {
+        return createGL(canvasId, immutable_1(contextConfig), getState(DirectorData));
+    };
+    DeviceManager.prototype.setScreen = function () {
+        return setScreen(DeviceManagerData, getState(DirectorData));
+    };
+    return DeviceManager;
+}());
 __decorate([
     requireCheck(function () {
-        assert(!!this.webglState, Log$$1.info.FUNC_MUST_DEFINE("webglState"));
+        it$1("canvas should be setter", function () {
+            index_1(getCanvas(getState(DirectorData))).exist;
+        });
     })
-], WebGLRenderer.prototype, "render", null);
-WebGLRenderer = __decorate([
-    registerClass("WebGLRenderer")
-], WebGLRenderer);
+], DeviceManager.prototype, "setScreen", null);
+DeviceManager = __decorate([
+    singleton(),
+    registerClass("DeviceManager")
+], DeviceManager);
+var setDeviceManagerGL = function (gl) {
+    return setGL(gl, DeviceManagerData, getState(DirectorData));
+};
 
-var EGameState;
-(function (EGameState) {
-    EGameState[EGameState["NORMAL"] = 0] = "NORMAL";
-    EGameState[EGameState["STOP"] = 1] = "STOP";
-    EGameState[EGameState["PAUSE"] = 2] = "PAUSE";
-})(EGameState || (EGameState = {}));
 var Director = (function () {
     function Director() {
-        this.scene = null;
-        this.renderer = null;
+        this.scene = create$11(GameObjectData);
         this._gameLoop = null;
-        this._gameState = EGameState.NORMAL;
         this._timeController = DirectorTimeController.create();
     }
     Director.getInstance = function () { };
     
-    Object.defineProperty(Director.prototype, "gameTime", {
-        get: function () {
-            return this._timeController.gameTime;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "fps", {
-        get: function () {
-            return this._timeController.fps;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isNormal", {
-        get: function () {
-            return this._gameState === EGameState.NORMAL;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isStop", {
-        get: function () {
-            return this._gameState === EGameState.STOP;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isPause", {
-        get: function () {
-            return this._gameState === EGameState.PAUSE;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "isTimeChange", {
-        get: function () {
-            return this._timeController.isTimeChange;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Director.prototype, "elapsed", {
-        get: function () {
-            return this._timeController.elapsed;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Object.defineProperty(Director.prototype, "view", {
         get: function () {
             return DeviceManager.getInstance().view;
@@ -12818,31 +17486,9 @@ var Director = (function () {
         configurable: true
     });
     Director.prototype.initWhenCreate = function () {
-        this.scene = SceneDispatcher.create();
-        this.renderer = WebGLRenderer.create();
     };
     Director.prototype.start = function () {
-        this._gameState = EGameState.NORMAL;
         this._startLoop();
-    };
-    Director.prototype.stop = function () {
-        this._gameLoop && this._gameLoop.dispose();
-        this._gameState = EGameState.STOP;
-        this._timeController.stop();
-    };
-    Director.prototype.pause = function () {
-        if (this._gameState === EGameState.PAUSE) {
-            return;
-        }
-        this._gameState = EGameState.PAUSE;
-        this._timeController.pause();
-    };
-    Director.prototype.resume = function () {
-        this._gameState = EGameState.NORMAL;
-        this._timeController.resume();
-    };
-    Director.prototype.getDeltaTime = function () {
-        return this._timeController.deltaTime;
     };
     Director.prototype._startLoop = function () {
         var self = this;
@@ -12850,53 +17496,57 @@ var Director = (function () {
             .ignoreElements()
             .concat(this._buildLoopStream())
             .subscribe(function (time) {
-            self._loopBody(time);
+            setState(self._loopBody(time, getState(DirectorData)), DirectorData).run();
         });
     };
     Director.prototype._buildInitStream = function () {
         var _this = this;
         return callFunc(function () {
-            _this._init();
+            setState(_this._init(getState(DirectorData)), DirectorData);
         }, this);
     };
-    Director.prototype._init = function () {
-        this._initGameObjectScene();
+    Director.prototype._init = function (state) {
+        var resultState = state;
+        resultState = this._initSystem(resultState);
+        resultState = this._initRenderer(resultState);
+        return resultState;
     };
-    Director.prototype._initGameObjectScene = function () {
-        var gameObjectScene = this.scene.gameObjectScene;
-        gameObjectScene.init();
-        this.renderer.init();
-        this._timeController.start();
+    Director.prototype._initSystem = function (state) {
+        var resultState = init$2(GlobalTempData, ThreeDTransformData, state);
+        resultState = init$3(GeometryData, state);
+        resultState = init$1(PerspectiveCameraData, CameraData, CameraControllerData, state);
+        return resultState;
+    };
+    Director.prototype._initRenderer = function (state) {
+        var resultState = init$7(state);
+        return resultState;
     };
     Director.prototype._buildLoopStream = function () {
         return intervalRequest();
     };
-    Director.prototype._loopBody = function (time) {
+    Director.prototype._loopBody = function (time, state) {
         var elapsed = null;
-        if (this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP) {
-            return false;
-        }
-        elapsed = this._timeController.computeElapseTime(time);
-        this._run(elapsed);
-        return true;
+        return this._run(elapsed, state);
     };
-    Director.prototype._run = function (elapsed) {
-        this._timeController.tick(elapsed);
-        EventManager.trigger(CustomEvent.create(EEngineEvent.STARTLOOP));
-        this._update(elapsed);
-        this._render();
-        EventManager.trigger(CustomEvent.create(EEngineEvent.ENDLOOP));
+    Director.prototype._run = function (elapsed, state) {
+        var resultState = this._update(elapsed, state);
+        resultState = this._render(state);
+        return resultState;
     };
-    Director.prototype._update = function (elapsed) {
-        this.scene.gameObjectScene.update(elapsed);
+    Director.prototype._update = function (elapsed, state) {
+        var resultState = this._updateSystem(elapsed, state);
+        return resultState;
     };
-    Director.prototype._render = function () {
-        this.scene.gameObjectScene.render(this.renderer);
-        this.renderer.clear();
-        if (this.renderer.hasCommand()) {
-            this.renderer.webglState = BasicState.create();
-            this.renderer.render();
-        }
+    Director.prototype._render = function (state) {
+        var resultState = state;
+        resultState = clear$1(state);
+        resultState = render(state);
+        return resultState;
+    };
+    Director.prototype._updateSystem = function (elapsed, state) {
+        var resultState = update$1(elapsed, GlobalTempData, ThreeDTransformData, state);
+        resultState = update(PerspectiveCameraData, CameraData, CameraControllerData);
+        return resultState;
     };
     return Director;
 }());
@@ -12904,2649 +17554,130 @@ Director = __decorate([
     singleton(true),
     registerClass("Director")
 ], Director);
+initData$9(ShaderData);
+initData$6(DataBufferConfig, GeometryData);
+addAddComponentHandle$4(Geometry);
+addDisposeHandle$4(Geometry);
+addInitHandle$1(Geometry);
+initData$8(MaterialData);
+addAddComponentHandle$5(Material);
+addDisposeHandle$5(Material);
+addInitHandle$2(Material);
+initData$12(MeshRendererData);
+addAddComponentHandle$6(MeshRenderer);
+addDisposeHandle$6(MeshRenderer);
+initData$5(TagData);
+addAddComponentHandle$3(Tag);
+addDisposeHandle$3(Tag);
+initData$4(GlobalTempData, ThreeDTransformData);
+addAddComponentHandle$2(ThreeDTransform);
+addDisposeHandle$2(ThreeDTransform);
+initData$11(ArrayBufferData);
+initData$10(IndexBufferData);
+initData$13(SceneData);
+initData$2(CameraControllerData, PerspectiveCameraData, CameraData);
+addAddComponentHandle$$1(CameraController);
+addDisposeHandle$$1(CameraController);
+initData$3(GameObjectData);
 
-var ProgramTable = (function () {
-    function ProgramTable() {
+var Scene = (function (_super) {
+    __extends(Scene, _super);
+    function Scene() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    ProgramTable.hasProgram = function (key) {
-        return this._table.hasChild(key);
-    };
-    ProgramTable.addProgram = function (key, program) {
-        this._table.addChild(key, program);
-    };
-    ProgramTable.getProgram = function (key) {
-        return this._table.getChild(key);
-    };
-    ProgramTable.dispose = function () {
-        this._table.forEach(function (program) {
-            program.dispose();
-        });
-        this.lastUsedProgram = null;
-    };
-    ProgramTable.clearAll = function () {
-        this._table.removeAllChildren();
-        this.lastUsedProgram = null;
-    };
-    return ProgramTable;
-}());
-ProgramTable.lastUsedProgram = null;
-ProgramTable._table = Hash.create();
-ProgramTable = __decorate([
-    registerClass("ProgramTable")
-], ProgramTable);
+    return Scene;
+}(GameObject));
+var addSceneChild = requireCheckFunc(function (scene, gameObject) {
+    it$1("scene should alive", function () {
+        index_1(isAlive(scene, GameObjectData)).true;
+    });
+}, function (scene, gameObject) {
+    addChild$1(scene, gameObject, GameObjectData, SceneData);
+});
+var removeSceneChild = requireCheckFunc(function (scene, gameObject) {
+    it$1("scene should alive", function () {
+        index_1(isAlive(scene, GameObjectData)).true;
+    });
+}, function (scene, gameObject) {
+    removeChild$1(scene, gameObject, ThreeDTransformData, GameObjectData);
+});
 
 var Main$1 = (function () {
     function Main() {
     }
-    Main.setConfig = function (_a) {
-        var _b = _a.canvasId, canvasId = _b === void 0 ? null : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
-            options: {
-                alpha: true,
-                depth: true,
-                stencil: false,
-                antialias: true,
-                premultipliedAlpha: true,
-                preserveDrawingBuffer: false
-            }
-        } : _f;
-        MainData.screenSize = screenSize;
-        this._canvasId = canvasId;
-        this._useDevicePixelRatio = useDevicePixelRatio;
-        this._contextConfig = {
-            options: ExtendUtils.extend({
-                alpha: true,
-                depth: true,
-                stencil: false,
-                antialias: true,
-                premultipliedAlpha: true,
-                preserveDrawingBuffer: false
-            }, contextConfig.options)
-        };
-        this._setIsTest(isTest);
+    Object.defineProperty(Main, "isTest", {
+        get: function () {
+            return getIsTest$1(MainData);
+        },
+        set: function (isTest) {
+            setIsTest(isTest, MainData).run();
+            setLibIsTest(isTest).run();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Main.setConfig = function (configState) {
+        this._configState = setConfig(CompileConfig.closeContractTest, MainData, configState).run();
+        setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
         return this;
     };
     Main.init = function () {
-        DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig, this._useDevicePixelRatio);
-        DeviceManager.getInstance().setScreen();
-        GPUDetector.getInstance().detect();
+        setState(init$4(getState(DirectorData), this._configState.get("config"), DeviceManagerData).run(), DirectorData).run();
         return this;
-    };
-    Main._setIsTest = function (isTestFromDebugConfig) {
-        if (CompileConfig.closeContractTest) {
-            MainData.isTest = false;
-        }
-        else {
-            MainData.isTest = isTestFromDebugConfig;
-        }
     };
     return Main;
 }());
-Main$1._canvasId = null;
-Main$1._contextConfig = null;
-Main$1._useDevicePixelRatio = null;
-Main$1 = __decorate([
-    registerClass("Main")
-], Main$1);
+Main$1._configState = null;
+__decorate([
+    requireCheck(function () {
+        it$1("configState should exist", function () {
+            index_1(Main$1._configState).exist;
+        });
+    })
+], Main$1, "init", null);
 
-var PointEvent = (function (_super) {
-    __extends(PointEvent, _super);
-    function PointEvent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.type = EEventType.POINT;
-        _this.eventObj = null;
-        return _this;
-    }
-    Object.defineProperty(PointEvent.prototype, "lastX", {
-        get: function () {
-            return this.eventObj.lastX;
-        },
-        set: function (x) {
-            this.eventObj.lastX = x;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PointEvent.prototype, "lastY", {
-        get: function () {
-            return this.eventObj.lastY;
-        },
-        set: function (y) {
-            this.eventObj.lastY = y;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    PointEvent.prototype.cloneHelper = function (eventObj) {
-        eventObj.event = this.event;
-        return this.copyMember(eventObj, this, ["eventObj", "target", "currentTarget", "isStopPropagation", "phase", "lastX", "lastY"]);
-    };
-    return PointEvent;
-}(DomEvent));
-
-var MousePointEvent = MousePointEvent_1 = (function (_super) {
-    __extends(MousePointEvent, _super);
-    function MousePointEvent() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    MousePointEvent.create = function (eventName) {
-        var obj = new this(null, eventName);
-        return obj;
-    };
-    Object.defineProperty(MousePointEvent.prototype, "location", {
-        get: function () {
-            return this.eventObj.location;
-        },
-        set: function (point) {
-            this.eventObj.location = point;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MousePointEvent.prototype, "locationInView", {
-        get: function () {
-            return this.eventObj.locationInView;
-        },
-        set: function (locationInView) {
-            this.eventObj.locationInView = locationInView;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MousePointEvent.prototype, "button", {
-        get: function () {
-            return this.eventObj.button;
-        },
-        set: function (button) {
-            this.eventObj.button = button;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MousePointEvent.prototype, "wheel", {
-        get: function () {
-            return this.eventObj.wheel;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MousePointEvent.prototype, "movementDelta", {
-        get: function () {
-            return this.eventObj.movementDelta;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    MousePointEvent.prototype.getDataFromEventObj = function (e) {
-        this.eventObj = e;
-        this.event = e.event;
-    };
-    MousePointEvent.prototype.clone = function () {
-        return this.cloneHelper(MousePointEvent_1.create(this.name));
-    };
-    return MousePointEvent;
-}(PointEvent));
-MousePointEvent = MousePointEvent_1 = __decorate([
-    registerClass("MousePointEvent")
-], MousePointEvent);
-var MousePointEvent_1;
-
-var TouchPointEvent = TouchPointEvent_1 = (function (_super) {
-    __extends(TouchPointEvent, _super);
-    function TouchPointEvent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.button = null;
-        return _this;
-    }
-    TouchPointEvent.create = function (eventName) {
-        var obj = new this(null, eventName);
-        return obj;
-    };
-    Object.defineProperty(TouchPointEvent.prototype, "location", {
-        get: function () {
-            return this.eventObj.location;
-        },
-        set: function (point) {
-            this.eventObj.location = point;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchPointEvent.prototype, "locationInView", {
-        get: function () {
-            return this.eventObj.locationInView;
-        },
-        set: function (locationInView) {
-            this.eventObj.locationInView = locationInView;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchPointEvent.prototype, "wheel", {
-        get: function () {
-            return null;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TouchPointEvent.prototype, "movementDelta", {
-        get: function () {
-            return this.eventObj.movementDelta;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TouchPointEvent.prototype.getDataFromEventObj = function (e) {
-        var touchData = e.touchData;
-        this.eventObj = e;
-        this.event = {
-            clientX: touchData.clientX,
-            clientY: touchData.clientY,
-            pageX: touchData.pageX,
-            pageY: touchData.pageY,
-            target: touchData.target,
-            currentTarget: e.currentTarget
+function execOnlyOnce(flagName) {
+    return function (target, name, descriptor) {
+        var value = descriptor.value;
+        descriptor.value = function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            var result = null;
+            if (this[flagName]) {
+                return;
+            }
+            this[flagName] = true;
+            return value.apply(this, args);
         };
+        return descriptor;
     };
-    TouchPointEvent.prototype.clone = function () {
-        return this.cloneHelper(TouchPointEvent_1.create(this.name));
-    };
-    return TouchPointEvent;
-}(PointEvent));
-TouchPointEvent = TouchPointEvent_1 = __decorate([
-    registerClass("TouchPointEvent")
-], TouchPointEvent);
-var TouchPointEvent_1;
+}
 
-var ShaderManager = (function () {
-    function ShaderManager(material) {
-        this._material = null;
-        this._mainShader = null;
-        this._material = material;
-    }
-    ShaderManager.create = function (material) {
-        var obj = new this(material);
-        return obj;
-    };
-    Object.defineProperty(ShaderManager.prototype, "shader", {
-        get: function () {
-            var scene = Director.getInstance().scene;
-            return this._mainShader;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ShaderManager.prototype.setShader = function (shader) {
-        this._mainShader = shader;
-    };
-    ShaderManager.prototype.init = function () {
-        var material = this._material;
-        this._mainShader.init(material);
-    };
-    ShaderManager.prototype.dispose = function () {
-        this._mainShader.dispose();
-    };
-    ShaderManager.prototype.update = function (quadCmd) {
-        this.shader.update(quadCmd, this._material);
-    };
-    return ShaderManager;
-}());
-__decorate([
-    ensureGetter(function (shader) {
-        assert(!!shader, Log$$1.info.FUNC_NOT_EXIST("shader"));
-    })
-], ShaderManager.prototype, "shader", null);
-ShaderManager = __decorate([
-    registerClass("ShaderManager")
-], ShaderManager);
+function virtual(target, name, descriptor) {
+    return descriptor;
+}
 
-var Material = (function () {
-    function Material() {
-        this._color = Color.create("#ffffff");
-        this.geometry = null;
-        this._shaderManager = ShaderManager.create(this);
-    }
-    Object.defineProperty(Material.prototype, "program", {
-        get: function () {
-            return this.shader.program;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Material.prototype, "color", {
-        get: function () {
-            return this._color;
-        },
-        set: function (color) {
-            if (this._color.isEqual(color)) {
-                return;
-            }
-            this._color = color;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Material.prototype, "shader", {
-        get: function () {
-            return this._shaderManager.shader;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Material.prototype.clone = function () {
-        return CloneUtils.clone(this);
-    };
-    Material.prototype.initWhenCreate = function () {
-        this._shaderManager.setShader(this.createShader());
-    };
-    Material.prototype.init = function () {
-        this._shaderManager.init();
-    };
-    Material.prototype.dispose = function () {
-        this._shaderManager.dispose();
-    };
-    Material.prototype.updateShader = function (quadCmd) {
-        this._shaderManager.update(quadCmd);
-    };
-    return Material;
-}());
-__decorate([
-    cloneAttributeAsCloneable()
-], Material.prototype, "color", null);
-__decorate([
-    cloneAttributeAsBasicType()
-], Material.prototype, "geometry", void 0);
-
-var ArrayUtils$1 = (function () {
-    function ArrayUtils() {
-    }
-    ArrayUtils.removeRepeatItems = function (arr, isEqual) {
-        if (isEqual === void 0) { isEqual = function (a, b) {
-            return a === b;
-        }; }
-        var resultArr = [], self = this;
-        arr.forEach(function (ele) {
-            if (self.contain(resultArr, function (val) {
-                return isEqual(val, ele);
-            })) {
-                return;
-            }
-            resultArr.push(ele);
-        });
-        return resultArr;
-    };
-    ArrayUtils.contain = function (arr, ele) {
-        if (JudgeUtils.isFunction(ele)) {
-            var func = ele;
-            for (var i = 0, len = arr.length; i < len; i++) {
-                var value = arr[i];
-                if (!!func.call(null, value, i)) {
-                    return true;
-                }
-            }
-        }
-        else {
-            for (var i = 0, len = arr.length; i < len; i++) {
-                var value = arr[i];
-                if (ele === value || (value.contain && value.contain(ele))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-    
-    return ArrayUtils;
-}());
-
-var ArrayUtils = (function (_super) {
-    __extends(ArrayUtils$$1, _super);
-    function ArrayUtils$$1() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ArrayUtils$$1.hasRepeatItems = function (arr) {
-        var noRepeatArr = [], hasRepeat = false;
-        for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
-            var item = arr_1[_i];
-            if (!item) {
-                continue;
-            }
-            if (this.contain(noRepeatArr, item)) {
-                hasRepeat = true;
-                break;
-            }
-            noRepeatArr.push(item);
-        }
-        return hasRepeat;
-    };
-    ArrayUtils$$1.contain = function (arr, item) {
-        var c = null;
-        for (var i = 0, len = arr.length; i < len; i++) {
-            c = arr[i];
-            if (item.uid && c.uid && item.uid == c.uid) {
-                return true;
-            }
-            else if (item === c) {
-                return true;
-            }
-        }
-        return false;
-    };
-    return ArrayUtils$$1;
-}(ArrayUtils$1));
-ArrayUtils = __decorate([
-    registerClass("ArrayUtils")
-], ArrayUtils);
-
-var GLSLDataSender = (function () {
-    function GLSLDataSender(program) {
-        this._program = null;
-        this._uniformCache = {};
-        this._vertexAttribHistory = [];
-        this._getUniformLocationCache = {};
-        this._toSendBufferArr = [];
-        this._toSendBuffersUidStr = "";
-        this._program = program;
-    }
-    GLSLDataSender.create = function (program) {
-        var obj = new this(program);
-        return obj;
-    };
-    GLSLDataSender.prototype.sendFloat1 = function (name, data) {
-        var gl = null, pos = null;
-        if (this._uniformCache[name] == data) {
-            return;
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform1f(pos, Number(data));
-    };
-    GLSLDataSender.prototype.sendFloat2 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] === data[0] && recordedData[1] === data[1]) {
-            return;
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform2f(pos, data[0], data[1]);
-    };
-    GLSLDataSender.prototype.sendFloat3 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2]) {
-            return;
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform3f(pos, data[0], data[1], data[2]);
-    };
-    GLSLDataSender.prototype.sendFloat4 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] === data[0] && recordedData[1] === data[1] && recordedData[2] === data[2] && recordedData[3] === data[3]) {
-            return;
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform4f(pos, data[0], data[1], data[2], data[3]);
-    };
-    GLSLDataSender.prototype.sendVector2 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] == data.x && recordedData[1] == data.y) {
-            return;
-        }
-        var x = data.x, y = data.y;
-        this._recordUniformData(name, [x, y]);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform2f(pos, x, y);
-    };
-    GLSLDataSender.prototype.sendVector3 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] == data.x && recordedData[1] == data.y && recordedData[2] == data.z) {
-            return;
-        }
-        var x = data.x, y = data.y, z = data.z;
-        this._recordUniformData(name, [x, y, z]);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform3f(pos, x, y, z);
-    };
-    GLSLDataSender.prototype.sendVector4 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name];
-        if (recordedData && recordedData[0] == data.x && recordedData[1] == data.y && recordedData[2] == data.z && recordedData[3] == data.w) {
-            return;
-        }
-        var x = data.x, y = data.y, z = data.z, w = data.w;
-        this._recordUniformData(name, [x, y, z, w]);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform4f(pos, x, y, z, w);
-    };
-    GLSLDataSender.prototype.sendColor3 = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name], convertedData = null;
-        if (recordedData && recordedData[0] == data.r && recordedData[1] == data.g && recordedData[2] == data.b) {
-            return;
-        }
-        var r = data.r, g = data.g, b = data.b;
-        this._recordUniformData(name, [r, g, b]);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform3f(pos, r, g, b);
-    };
-    GLSLDataSender.prototype.sendNum1 = function (name, data) {
-        var gl = null, pos = null;
-        if (this._uniformCache[name] === data) {
-            return;
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform1i(pos, data);
-    };
-    GLSLDataSender.prototype.sendMatrix3 = function (name, data) {
-        var gl = DeviceManager.getInstance().gl, pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniformMatrix3fv(pos, false, data.values);
-    };
-    GLSLDataSender.prototype.sendMatrix4 = function (name, data) {
-        var gl = DeviceManager.getInstance().gl, pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniformMatrix4fv(pos, false, data.values);
-    };
-    GLSLDataSender.prototype.sendMatrix4Array = function (name, data) {
-        var gl = DeviceManager.getInstance().gl, pos = this.getUniformLocation(name + "[0]");
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniformMatrix4fv(pos, false, data);
-    };
-    GLSLDataSender.prototype.sendSampleArray = function (name, data) {
-        var gl = null, pos = null, recordedData = this._uniformCache[name], isEqual = true;
-        if (recordedData) {
-            for (var i = 0, len = data.length; i < len; i++) {
-                if (recordedData[i] !== data[i]) {
-                    isEqual = false;
-                    break;
-                }
-            }
-            if (isEqual) {
-                return;
-            }
-        }
-        this._recordUniformData(name, data);
-        gl = DeviceManager.getInstance().gl;
-        pos = this.getUniformLocation(name);
-        if (this._isUniformDataNotExistByLocation(pos)) {
-            return;
-        }
-        gl.uniform1iv(pos, data);
-    };
-    GLSLDataSender.prototype.getUniformLocation = function (name) {
-        var pos = null, gl = DeviceManager.getInstance().gl;
-        pos = this._getUniformLocationCache[name];
-        if (pos !== void 0) {
-            return pos;
-        }
-        pos = gl.getUniformLocation(this._program.glProgram, name);
-        this._getUniformLocationCache[name] = pos;
-        return pos;
-    };
-    GLSLDataSender.prototype.addBufferToToSendList = function (pos, buffer) {
-        this._toSendBufferArr[pos] = buffer;
-        this._toSendBuffersUidStr += String(buffer.uid);
-    };
-    GLSLDataSender.prototype.sendAllBufferData = function () {
-        var toSendBufferArr = this._toSendBufferArr;
-        for (var pos = 0, len = toSendBufferArr.length; pos < len; pos++) {
-            var buffer = toSendBufferArr[pos];
-            if (!buffer) {
-                continue;
-            }
-            this.sendBuffer(pos, buffer);
-        }
-    };
-    GLSLDataSender.prototype.clearBufferList = function () {
-        this._toSendBufferArr = [];
-        this._toSendBuffersUidStr = "";
-    };
-    GLSLDataSender.prototype.sendBuffer = function (pos, buffer) {
-        var gl = DeviceManager.getInstance().gl;
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-        gl.vertexAttribPointer(pos, buffer.size, gl[buffer.type], false, 0, 0);
-        if (this._vertexAttribHistory[pos] !== true) {
-            gl.enableVertexAttribArray(pos);
-            this._vertexAttribHistory[pos] = true;
-        }
-    };
-    GLSLDataSender.prototype.disableVertexAttribArray = function () {
-        var gl = DeviceManager.getInstance().gl;
-        for (var i in this._vertexAttribHistory) {
-            var iAsNumber = +i;
-            if (iAsNumber > gl.VERTEX_ATTRIB_ARRAY_ENABLED || !this._vertexAttribHistory[iAsNumber]) {
-                continue;
-            }
-            this._vertexAttribHistory[iAsNumber] = false;
-            gl.disableVertexAttribArray(iAsNumber);
-        }
-        this._vertexAttribHistory = [];
-    };
-    GLSLDataSender.prototype.clearAllCache = function () {
-        this._getUniformLocationCache = {};
-        this._uniformCache = {};
-    };
-    GLSLDataSender.prototype.dispose = function () {
-        this.disableVertexAttribArray();
-    };
-    GLSLDataSender.prototype._recordUniformData = function (name, data) {
-        this._uniformCache[name] = data;
-    };
-    GLSLDataSender.prototype._isUniformDataNotExistByLocation = function (pos) {
-        return pos === null;
-    };
-    return GLSLDataSender;
-}());
-__decorate([
-    requireCheck(function (name, data) {
-        assert(JudgeUtils$1.isNumber(data), Log$$1.info.FUNC_MUST_BE("data", "be number"));
-    })
-], GLSLDataSender.prototype, "sendNum1", null);
-__decorate([
-    requireCheck(function (name, data) {
-        it("data should be array, but actual is " + data, function () {
-            index(JudgeUtils$1.isFloatArray(data) || JudgeUtils$1.isArrayExactly(data)).true;
-        });
-        it("name shouldn't be the first matrix of the array", function () {
-            index(/\[0\]$/.test(name)).false;
-        });
-    })
-], GLSLDataSender.prototype, "sendMatrix4Array", null);
-__decorate([
-    requireCheck(function (name, data) {
-        assert(JudgeUtils$1.isArrayExactly(data), Log$$1.info.FUNC_SHOULD("data", "be array, but actual is " + data));
-        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
-            var unit = data_1[_i];
-            assert(JudgeUtils$1.isNumber(unit), Log$$1.info.FUNC_SHOULD("data", "be Array<number>, but actual is " + data));
-        }
-    })
-], GLSLDataSender.prototype, "sendSampleArray", null);
-__decorate([
-    requireCheck(function () {
-        assert(!ArrayUtils.hasRepeatItems(this._toSendBufferArr), Log$$1.info.FUNC_SHOULD_NOT("_toSendBufferArr", "has repeat buffer"));
-    }),
-    cache(function () {
-        return BufferTable.lastBindedArrayBufferListUidStr === this._toSendBuffersUidStr;
-    }, function () {
-    }, function () {
-        BufferTable.lastBindedArrayBufferListUidStr = this._toSendBuffersUidStr;
-    })
-], GLSLDataSender.prototype, "sendAllBufferData", null);
-GLSLDataSender = __decorate([
-    registerClass("GLSLDataSender")
-], GLSLDataSender);
-
-var EVariableType;
-(function (EVariableType) {
-    EVariableType[EVariableType["FLOAT_1"] = "FLOAT_1"] = "FLOAT_1";
-    EVariableType[EVariableType["FLOAT_2"] = "FLOAT_2"] = "FLOAT_2";
-    EVariableType[EVariableType["FLOAT_3"] = "FLOAT_3"] = "FLOAT_3";
-    EVariableType[EVariableType["FLOAT_4"] = "FLOAT_4"] = "FLOAT_4";
-    EVariableType[EVariableType["VECTOR_2"] = "VECTOR_2"] = "VECTOR_2";
-    EVariableType[EVariableType["VECTOR_3"] = "VECTOR_3"] = "VECTOR_3";
-    EVariableType[EVariableType["VECTOR_4"] = "VECTOR_4"] = "VECTOR_4";
-    EVariableType[EVariableType["COLOR_3"] = "COLOR_3"] = "COLOR_3";
-    EVariableType[EVariableType["FLOAT_MAT3"] = "FLOAT_MAT3"] = "FLOAT_MAT3";
-    EVariableType[EVariableType["FLOAT_MAT4"] = "FLOAT_MAT4"] = "FLOAT_MAT4";
-    EVariableType[EVariableType["BUFFER"] = "BUFFER"] = "BUFFER";
-    EVariableType[EVariableType["SAMPLER_CUBE"] = "SAMPLER_CUBE"] = "SAMPLER_CUBE";
-    EVariableType[EVariableType["SAMPLER_2D"] = "SAMPLER_2D"] = "SAMPLER_2D";
-    EVariableType[EVariableType["NUMBER_1"] = "NUMBER_1"] = "NUMBER_1";
-    EVariableType[EVariableType["STRUCTURE"] = "STRUCTURE"] = "STRUCTURE";
-    EVariableType[EVariableType["STRUCTURES"] = "STRUCTURES"] = "STRUCTURES";
-    EVariableType[EVariableType["SAMPLER_ARRAY"] = "SAMPLER_ARRAY"] = "SAMPLER_ARRAY";
-    EVariableType[EVariableType["FLOAT_MAT4_ARRAY"] = "FLOAT_MAT4_ARRAY"] = "FLOAT_MAT4_ARRAY";
-})(EVariableType || (EVariableType = {}));
-
-var Program = (function (_super) {
-    __extends(Program, _super);
-    function Program() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.glProgram = null;
-        _this._getAttribLocationCache = Hash.create();
-        _this._sender = GLSLDataSender.create(_this);
-        return _this;
-    }
-    Program.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    Program.prototype.use = function () {
-        if (JudgeUtils$1.isEqual(this, ProgramTable.lastUsedProgram)) {
-            return;
-        }
-        ProgramTable.lastUsedProgram = this;
-        DeviceManager.getInstance().gl.useProgram(this.glProgram);
-        this._sender.disableVertexAttribArray();
-        BufferTable.lastBindedArrayBufferListUidStr = null;
-    };
-    Program.prototype.getAttribLocation = function (name) {
-        var pos = null, gl = DeviceManager.getInstance().gl;
-        pos = this._getAttribLocationCache.getChild(name);
-        if (pos !== void 0) {
-            return pos;
-        }
-        pos = gl.getAttribLocation(this.glProgram, name);
-        this._getAttribLocationCache.addChild(name, pos);
-        return pos;
-    };
-    Program.prototype.getUniformLocation = function (name) {
-        return this._sender.getUniformLocation(name);
-    };
-    Program.prototype.sendUniformData = function (name, type, data) {
-        if (data === null) {
-            return;
-        }
-        switch (type) {
-            case EVariableType.FLOAT_1:
-                this._sender.sendFloat1(name, data);
-                break;
-            case EVariableType.FLOAT_2:
-                this._sender.sendFloat2(name, data);
-                break;
-            case EVariableType.FLOAT_3:
-                this._sender.sendFloat3(name, data);
-                break;
-            case EVariableType.FLOAT_4:
-                this._sender.sendFloat4(name, data);
-                break;
-            case EVariableType.VECTOR_2:
-                this._sender.sendVector2(name, data);
-                break;
-            case EVariableType.VECTOR_3:
-                this._sender.sendVector3(name, data);
-                break;
-            case EVariableType.VECTOR_4:
-                this._sender.sendVector4(name, data);
-                break;
-            case EVariableType.COLOR_3:
-                this._sender.sendColor3(name, data);
-                break;
-            case EVariableType.FLOAT_MAT3:
-                this._sender.sendMatrix3(name, data);
-                break;
-            case EVariableType.FLOAT_MAT4:
-                this._sender.sendMatrix4(name, data);
-                break;
-            case EVariableType.NUMBER_1:
-            case EVariableType.SAMPLER_CUBE:
-            case EVariableType.SAMPLER_2D:
-                this._sender.sendNum1(name, data);
-                break;
-            case EVariableType.FLOAT_MAT4_ARRAY:
-                this._sender.sendMatrix4Array(name, data);
-                break;
-            case EVariableType.SAMPLER_ARRAY:
-                this._sender.sendSampleArray(name, data);
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("EVariableType:", type));
-                break;
-        }
-    };
-    Program.prototype.sendAttributeBuffer = function (name, type, buffer) {
-        var pos = null;
-        pos = this.getAttribLocation(name);
-        if (pos === -1) {
-            return;
-        }
-        this._sender.addBufferToToSendList(pos, buffer);
-    };
-    Program.prototype.sendStructureData = function (name, type, data) {
-        this.sendUniformData(name, type, data);
-    };
-    Program.prototype.sendFloat1 = function (name, data) {
-        this._sender.sendFloat1(name, data);
-    };
-    Program.prototype.sendFloat2 = function (name, data) {
-        this._sender.sendFloat2(name, data);
-    };
-    Program.prototype.sendFloat3 = function (name, data) {
-        this._sender.sendFloat3(name, data);
-    };
-    Program.prototype.sendFloat4 = function (name, data) {
-        this._sender.sendFloat4(name, data);
-    };
-    Program.prototype.sendVector2 = function (name, data) {
-        this._sender.sendVector2(name, data);
-    };
-    Program.prototype.sendVector3 = function (name, data) {
-        this._sender.sendVector3(name, data);
-    };
-    Program.prototype.sendVector4 = function (name, data) {
-        this._sender.sendVector4(name, data);
-    };
-    Program.prototype.sendColor3 = function (name, data) {
-        this._sender.sendColor3(name, data);
-    };
-    Program.prototype.sendNum1 = function (name, data) {
-        this._sender.sendNum1(name, data);
-    };
-    Program.prototype.sendMatrix3 = function (name, data) {
-        this._sender.sendMatrix3(name, data);
-    };
-    Program.prototype.sendMatrix4 = function (name, data) {
-        this._sender.sendMatrix4(name, data);
-    };
-    Program.prototype.sendMatrix4Array = function (name, data) {
-        this._sender.sendMatrix4Array(name, data);
-    };
-    Program.prototype.sendSampleArray = function (name, data) {
-        this._sender.sendSampleArray(name, data);
-    };
-    Program.prototype.sendAllBufferData = function () {
-        this._sender.sendAllBufferData();
-        this._sender.clearBufferList();
-    };
-    Program.prototype.initWithShader = function (shader) {
-        var gl = DeviceManager.getInstance().gl, vs = null, fs = null;
-        if (this.glProgram) {
-            this.dispose();
-        }
-        this.glProgram = DeviceManager.getInstance().gl.createProgram();
-        vs = shader.createVsShader();
-        fs = shader.createFsShader();
-        gl.attachShader(this.glProgram, vs);
-        gl.attachShader(this.glProgram, fs);
-        gl.bindAttribLocation(this.glProgram, 0, "a_position");
-        gl.linkProgram(this.glProgram);
-        Log$$1.error(gl.getProgramParameter(this.glProgram, gl.LINK_STATUS) === false, gl.getProgramInfoLog(this.glProgram));
-        gl.deleteShader(vs);
-        gl.deleteShader(fs);
-        return this;
-    };
-    Program.prototype.dispose = function () {
-        var gl = DeviceManager.getInstance().gl;
-        gl.deleteProgram(this.glProgram);
-        this.glProgram = null;
-        this._sender.dispose();
-        this._clearAllCache();
-    };
-    Program.prototype._clearAllCache = function () {
-        this._getAttribLocationCache.removeAllChildren();
-        this._sender.clearAllCache();
-    };
-    return Program;
-}(Entity$1));
-__decorate([
-    requireCheck(function (name, type, buffer) {
-        assert(buffer instanceof ArrayBuffer, Log$$1.info.FUNC_MUST_BE("ArrayBuffer"));
-        assert(type === EVariableType.BUFFER, Log$$1.info.FUNC_SHOULD("type", "be EVariableType.BUFFER, but actual is " + type));
-    })
-], Program.prototype, "sendAttributeBuffer", null);
-Program = __decorate([
-    registerClass("Program")
-], Program);
-
-var ShaderLib = (function () {
-    function ShaderLib() {
-        this.shader = null;
-    }
-    ShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-    };
-    ShaderLib.prototype.init = function () {
-    };
-    ShaderLib.prototype.dispose = function () {
-    };
-    return ShaderLib;
-}());
-__decorate([
-    virtual
-], ShaderLib.prototype, "sendShaderVariables", null);
-__decorate([
-    virtual
-], ShaderLib.prototype, "init", null);
-__decorate([
-    virtual
-], ShaderLib.prototype, "dispose", null);
-
-var Shader = (function () {
-    function Shader() {
-        this._attributes = Hash.create();
-        this._uniforms = Hash.create();
-        this._vsSource = "";
-        this._fsSource = "";
-        this.libDirty = false;
-        this.definitionDataDirty = false;
-        this.libs = Collection.create();
-        this.sourceBuilder = this.createShaderSourceBuilder();
-        this._programCache = null;
-    }
-    Object.defineProperty(Shader.prototype, "attributes", {
-        get: function () {
-            return this._attributes;
-        },
-        set: function (attributes) {
-            if (this._isNotEqual(attributes, this._attributes)) {
-                this.definitionDataDirty = true;
-            }
-            this._attributes = attributes;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Shader.prototype, "uniforms", {
-        get: function () {
-            return this._uniforms;
-        },
-        set: function (uniforms) {
-            if (this._isNotEqual(uniforms, this._uniforms)) {
-                this.definitionDataDirty = true;
-            }
-            this._uniforms = uniforms;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Shader.prototype, "vsSource", {
-        get: function () {
-            return this._vsSource;
-        },
-        set: function (vsSource) {
-            if (vsSource !== this._vsSource) {
-                this.definitionDataDirty = true;
-            }
-            this._vsSource = vsSource;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Shader.prototype, "fsSource", {
-        get: function () {
-            return this._fsSource;
-        },
-        set: function (fsSource) {
-            if (fsSource !== this._fsSource) {
-                this.definitionDataDirty = true;
-            }
-            this._fsSource = fsSource;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Shader.prototype, "dirty", {
-        get: function () {
-            return this.libDirty || this.definitionDataDirty;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Shader.prototype, "program", {
-        get: function () {
-            return ProgramTable.getProgram(this._getProgramTableKey());
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Shader.prototype.createVsShader = function () {
-        var gl = DeviceManager.getInstance().gl;
-        return this._initShader(gl.createShader(gl.VERTEX_SHADER), this.vsSource);
-    };
-    Shader.prototype.createFsShader = function () {
-        var gl = DeviceManager.getInstance().gl;
-        return this._initShader(gl.createShader(gl.FRAGMENT_SHADER), this.fsSource);
-    };
-    Shader.prototype.init = function (material) {
-        this.libs.forEach(function (lib) {
-            lib.init();
-        });
-        this.judgeRefreshShader(null, material);
-    };
-    Shader.prototype.dispose = function () {
-        this.attributes.removeAllChildren();
-        this.uniforms.removeAllChildren();
-        this.libs.forEach(function (lib) {
-            lib.dispose();
-        });
-        this._clearAllCache();
-    };
-    Shader.prototype.hasLib = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (args[0] instanceof ShaderLib) {
-            var lib = args[0];
-            return this.libs.hasChild(lib);
-        }
-        else {
-            var _class_1 = args[0];
-            return this.libs.hasChildWithFunc(function (lib) {
-                return lib instanceof _class_1;
-            });
-        }
-    };
-    Shader.prototype.addLib = function (lib) {
-        this.libs.addChild(lib);
-        lib.shader = this;
-        this.libDirty = true;
-    };
-    Shader.prototype.addShaderLibToTop = function (lib) {
-        this.libs.unShiftChild(lib);
-        lib.shader = this;
-        this.libDirty = true;
-    };
-    Shader.prototype.getLib = function (libClass) {
-        return this.libs.findOne(function (lib) {
-            return lib instanceof libClass;
-        });
-    };
-    Shader.prototype.getLibs = function () {
-        return this.libs;
-    };
-    Shader.prototype.removeLib = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        this.libDirty = true;
-        return this.libs.removeChild(args[0]);
-    };
-    Shader.prototype.removeAllLibs = function () {
-        this.libDirty = true;
-        this.libs.removeAllChildren();
-    };
-    Shader.prototype.sortLib = function (func) {
-        this.libDirty = true;
-        this.libs.sort(func, true);
-    };
-    Shader.prototype.judgeRefreshShader = function (cmd, material) {
-        if (this.libDirty) {
-            this.buildDefinitionData(cmd, material);
-        }
-        if (this.definitionDataDirty) {
-            this._programCache = null;
-            this._registerAndUpdateProgram();
-            this._programCache = null;
-        }
-        this.libDirty = false;
-        this.definitionDataDirty = false;
-    };
-    Shader.prototype._registerAndUpdateProgram = function () {
-        var key = this._getProgramTableKey();
-        if (ProgramTable.hasProgram(key)) {
-            return;
-        }
-        ProgramTable.addProgram(key, Program.create());
-        this._updateProgram();
-    };
-    Shader.prototype._updateProgram = function () {
-        this.program.initWithShader(this);
-    };
-    Shader.prototype._getProgramTableKey = function () {
-        return this.vsSource + "\n" + this.fsSource;
-    };
-    Shader.prototype._initShader = function (shader, source) {
-        var gl = DeviceManager.getInstance().gl;
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
-        if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            return shader;
-        }
-        else {
-            Log$$1.log(gl.getShaderInfoLog(shader));
-            Log$$1.log("attributes:\n", this.attributes);
-            Log$$1.log("uniforms:\n", this.uniforms);
-            Log$$1.log("source:\n", source);
-        }
-    };
-    Shader.prototype._isNotEqual = function (list1, list2) {
-        var result = false;
-        list1.forEach(function (data, key) {
-            var list2Data = list2.getChild(key);
-            if (!list2Data || data.type !== list2Data.type || data.value !== list2Data.value) {
-                result = true;
-                return $BREAK;
-            }
-        });
-        return result;
-    };
-    Shader.prototype._clearAllCache = function () {
-        this._programCache = null;
-    };
-    return Shader;
-}());
-__decorate([
-    ensureGetter(function (program) {
-        it("program should exist(its table key is " + this._getProgramTableKey(), function () {
-            index(program).exist;
-        }, this);
-    }),
-    cacheGetter(function () {
-        return this._programCache !== null;
-    }, function () {
-        return this._programCache;
-    }, function (program) {
-        this._programCache = program;
-    })
-], Shader.prototype, "program", null);
-__decorate([
-    execOnlyOnce("_isInit")
-], Shader.prototype, "init", null);
-__decorate([
-    ensure(function () {
-        var _this = this;
-        it("should set ShaderLib.shader to be this", function () {
-            _this.libs.forEach(function (lib) {
-                index(lib.shader === _this).true;
-            });
-        }, this);
-        it("libDirty should be true", function () {
-            index(_this.libDirty).true;
-        }, this);
-    })
-], Shader.prototype, "addLib", null);
-__decorate([
-    ensure(function (val, lib) {
-        var _this = this;
-        it("should add shader lib to the top", function () {
-            index(JudgeUtils$1.isEqual(lib, _this.libs.getChild(0))).true;
-        }, this);
-        it("should set ShaderLib.shader to be this", function () {
-            _this.libs.forEach(function (lib) {
-                index(lib.shader === _this).true;
-            });
-        }, this);
-        it("libDirty should be true", function () {
-            index(_this.libDirty).true;
-        }, this);
-    })
-], Shader.prototype, "addShaderLibToTop", null);
-
-var EVariableCategory;
-(function (EVariableCategory) {
-    EVariableCategory[EVariableCategory["ENGINE"] = "ENGINE"] = "ENGINE";
-    EVariableCategory[EVariableCategory["CUSTOM"] = "CUSTOM"] = "CUSTOM";
-})(EVariableCategory || (EVariableCategory = {}));
-
-var BufferUtils = (function () {
-    function BufferUtils() {
-    }
-    BufferUtils.convertArrayToArrayBuffer = function (type, value) {
-        var size = this._getBufferSize(type);
-        return ArrayBuffer.create(value, size, EBufferType.FLOAT);
-    };
-    BufferUtils._getBufferSize = function (type) {
-        var size = null;
-        switch (type) {
-            case EVariableType.FLOAT_1:
-            case EVariableType.NUMBER_1:
-                size = 1;
-                break;
-            case EVariableType.FLOAT_2:
-                size = 2;
-                break;
-            case EVariableType.FLOAT_3:
-                size = 3;
-                break;
-            case EVariableType.FLOAT_4:
-                size = 4;
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_UNEXPECT("EVariableType", type));
-                break;
-        }
-        return size;
-    };
-    return BufferUtils;
-}());
-__decorate([
-    requireCheck(function (type, value) {
-        it("value:" + value + " should be array", function () {
-            index(JudgeUtils$1.isArrayExactly(value)).true;
-        });
-    })
-], BufferUtils, "convertArrayToArrayBuffer", null);
-BufferUtils = __decorate([
-    registerClass("BufferUtils")
-], BufferUtils);
-
-var ShaderSourceBuilder = (function () {
-    function ShaderSourceBuilder() {
-        this.attributes = Hash.create();
-        this.uniforms = Hash.create();
-        this.vsSource = null;
-        this.fsSource = null;
-    }
-    ShaderSourceBuilder.prototype.dispose = function () {
-        this.clearShaderDefinition();
-    };
-    ShaderSourceBuilder.prototype.convertAttributesData = function () {
-        this.attributes
-            .filter(function (data) {
-            return data.value !== EVariableCategory.ENGINE && JudgeUtils$1.isArrayExactly(data.value);
-        })
-            .forEach(function (data, key) {
-            data.value = BufferUtils.convertArrayToArrayBuffer(data.type, data.value);
-        });
-    };
-    return ShaderSourceBuilder;
-}());
-__decorate([
-    requireCheck(function () {
-        this.attributes.forEach(function (data) {
-            assert(!JudgeUtils$1.isFloatArray(data.value), Log$$1.info.FUNC_SHOULD_NOT("attribute->value", "be Float array"));
-        });
-    })
-], ShaderSourceBuilder.prototype, "convertAttributesData", null);
-
-var main_begin = "void main(void){\n";
-var main_end = "}\n";
-var setPos_mvp = "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);\n";
-
-var empty$1 = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-
-var basic_materialColor_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "vec4 totalColor = vec4(u_color, 1.0);\n" };
-var end_basic_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "gl_FragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n" };
-var common_define = { top: "", define: "#define NULL -1.0\n", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-var common_fragment = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-var common_function = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "mat2 transpose(mat2 m) {\n  return mat2(  m[0][0], m[1][0],   // new col 0\n                m[0][1], m[1][1]    // new col 1\n             );\n  }\nmat3 transpose(mat3 m) {\n  return mat3(  m[0][0], m[1][0], m[2][0],  // new col 0\n                m[0][1], m[1][1], m[2][1],  // new col 1\n                m[0][2], m[1][2], m[2][2]   // new col 1\n             );\n  }\n\nbool isRenderListEmpty(int isRenderListEmpty){\n  return isRenderListEmpty == 1;\n}\n", body: "" };
-var common_vertex = { top: "", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-var highp_fragment = { top: "precision highp float;\nprecision highp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-var lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-var mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
-
-var _table$2 = Hash.create();
-_table$2.addChild(EVariableType.FLOAT_1, "float");
-_table$2.addChild(EVariableType.FLOAT_2, "vec2");
-_table$2.addChild(EVariableType.FLOAT_3, "vec3");
-_table$2.addChild(EVariableType.FLOAT_4, "vec4");
-_table$2.addChild(EVariableType.VECTOR_2, "vec2");
-_table$2.addChild(EVariableType.VECTOR_3, "vec3");
-_table$2.addChild(EVariableType.VECTOR_4, "vec4");
-_table$2.addChild(EVariableType.FLOAT_MAT3, "mat3");
-_table$2.addChild(EVariableType.FLOAT_MAT4, "mat4");
-_table$2.addChild(EVariableType.NUMBER_1, "int");
-_table$2.addChild(EVariableType.SAMPLER_CUBE, "samplerCube");
-_table$2.addChild(EVariableType.SAMPLER_2D, "sampler2D");
-var VariableTypeTable = (function () {
-    function VariableTypeTable() {
-    }
-    VariableTypeTable.getVariableType = function (type) {
-        var result = _table$2.getChild(type);
-        Log$$1.error(result === void 0, Log$$1.info.FUNC_NOT_EXIST(type, "in VariableTypeTable"));
-        return result;
-    };
-    return VariableTypeTable;
-}());
-VariableTypeTable = __decorate([
-    registerClass("VariableTypeTable")
-], VariableTypeTable);
-
-var EngineShaderSourceBuilder = (function (_super) {
-    __extends(EngineShaderSourceBuilder, _super);
-    function EngineShaderSourceBuilder() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsSourceTop = "";
-        _this.vsSourceDefine = "";
-        _this.vsSourceVarDeclare = "";
-        _this.vsSourceFuncDeclare = "";
-        _this.vsSourceFuncDefine = "";
-        _this.vsSourceBody = "";
-        _this.fsSourceTop = "";
-        _this.fsSourceDefine = "";
-        _this.fsSourceVarDeclare = "";
-        _this.fsSourceFuncDeclare = "";
-        _this.fsSourceFuncDefine = "";
-        _this.fsSourceBody = "";
-        _this.vsSourceDefineList = Collection.create();
-        _this.fsSourceDefineList = Collection.create();
-        _this.vsSourceExtensionList = Collection.create();
-        _this.fsSourceExtensionList = Collection.create();
-        return _this;
-    }
-    EngineShaderSourceBuilder.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    EngineShaderSourceBuilder.prototype.build = function (libs) {
-        this._readLibSource(libs);
-        if (this.vsSource === null) {
-            this._buildVsSource();
-        }
-        if (this.fsSource === null) {
-            this._buildFsSource();
-        }
-        this.convertAttributesData();
-    };
-    EngineShaderSourceBuilder.prototype.clearShaderDefinition = function () {
-        this.attributes.removeAllChildren();
-        this.uniforms.removeAllChildren();
-        this.vsSourceDefineList.removeAllChildren();
-        this.fsSourceDefineList.removeAllChildren();
-        this.vsSourceTop = "";
-        this.vsSourceDefine = "";
-        this.vsSourceVarDeclare = "";
-        this.vsSourceFuncDeclare = "";
-        this.vsSourceFuncDefine = "";
-        this.vsSourceBody = "";
-        this.vsSource = null;
-        this.fsSourceTop = "";
-        this.fsSourceDefine = "";
-        this.fsSourceVarDeclare = "";
-        this.fsSourceFuncDeclare = "";
-        this.fsSourceFuncDefine = "";
-        this.fsSourceBody = "";
-        this.fsSource = null;
-    };
-    EngineShaderSourceBuilder.prototype._readLibSource = function (libs) {
-        var setSourceLibs = libs.filter(function (lib) {
-            return lib.vsSource !== null || lib.fsSource !== null;
-        });
-        this._judgeAndSetVsSource(setSourceLibs);
-        this._judgeAndSetFsSource(setSourceLibs);
-        this._judgeAndSetPartSource(libs);
-    };
-    EngineShaderSourceBuilder.prototype._judgeAndSetVsSource = function (setSourceLibs) {
-        var setVsSourceLib = setSourceLibs.findOne(function (lib) {
-            return lib.vsSource !== null;
-        });
-        if (setVsSourceLib) {
-            this.vsSource = setVsSourceLib.vsSource;
-        }
-    };
-    EngineShaderSourceBuilder.prototype._judgeAndSetFsSource = function (setSourceLibs) {
-        var setFsSourceLib = setSourceLibs.findOne(function (lib) {
-            return lib.fsSource !== null;
-        });
-        if (setFsSourceLib) {
-            this.fsSource = setFsSourceLib.fsSource;
-        }
-    };
-    EngineShaderSourceBuilder.prototype._judgeAndSetPartSource = function (libs) {
-        var vsSource = this.vsSource, fsSource = this.fsSource, attributes = this.attributes, uniforms = this.uniforms, vsSourceDefineList = this.vsSourceDefineList, fsSourceDefineList = this.fsSourceDefineList, vsSourceExtensionList = this.vsSourceExtensionList, fsSourceExtensionList = this.fsSourceExtensionList, vsSourceTop = "", vsSourceDefine = "", vsSourceVarDeclare = "", vsSourceFuncDeclare = "", vsSourceFuncDefine = "", vsSourceBody = "", fsSourceTop = "", fsSourceDefine = "", fsSourceVarDeclare = "", fsSourceFuncDeclare = "", fsSourceFuncDefine = "", fsSourceBody = "";
-        libs.forEach(function (lib) {
-            attributes.addChildren(lib.attributes);
-            uniforms.addChildren(lib.uniforms);
-            if (vsSource === null) {
-                vsSourceTop += lib.vsSourceTop;
-                vsSourceDefine += lib.vsSourceDefine;
-                vsSourceVarDeclare += lib.vsSourceVarDeclare;
-                vsSourceFuncDeclare += lib.vsSourceFuncDeclare;
-                vsSourceFuncDefine += lib.vsSourceFuncDefine;
-                vsSourceBody += lib.vsSourceBody;
-                vsSourceDefineList.addChildren(lib.vsSourceDefineList);
-                vsSourceExtensionList.addChildren(lib.vsSourceExtensionList);
-            }
-            if (fsSource === null) {
-                fsSourceTop += lib.fsSourceTop;
-                fsSourceDefine += lib.fsSourceDefine;
-                fsSourceVarDeclare += lib.fsSourceVarDeclare;
-                fsSourceFuncDeclare += lib.fsSourceFuncDeclare;
-                fsSourceFuncDefine += lib.fsSourceFuncDefine;
-                fsSourceBody += lib.fsSourceBody;
-                fsSourceDefineList.addChildren(lib.fsSourceDefineList);
-                fsSourceExtensionList.addChildren(lib.fsSourceExtensionList);
-            }
-        });
-        if (vsSource === null) {
-            this.vsSourceTop = vsSourceTop;
-            this.vsSourceDefine = vsSourceDefine;
-            this.vsSourceVarDeclare = vsSourceVarDeclare;
-            this.vsSourceFuncDeclare = vsSourceFuncDeclare;
-            this.vsSourceFuncDefine = vsSourceFuncDefine;
-            this.vsSourceBody = vsSourceBody;
-        }
-        if (fsSource === null) {
-            this.fsSourceTop = fsSourceTop;
-            this.fsSourceDefine = fsSourceDefine;
-            this.fsSourceVarDeclare = fsSourceVarDeclare;
-            this.fsSourceFuncDeclare = fsSourceFuncDeclare;
-            this.fsSourceFuncDefine = fsSourceFuncDefine;
-            this.fsSourceBody = fsSourceBody;
-        }
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSource = function () {
-        this.vsSource = this._buildVsSourceTop() + this._buildVsSourceDefine() + this._buildVsSourceVarDeclare() + this._buildVsSourceFuncDeclare() + this._buildVsSourceFuncDefine() + this._buildVsSourceBody();
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSource = function () {
-        this.fsSource = this._buildFsSourceTop() + this._buildFsSourceDefine() + this._buildFsSourceVarDeclare() + this._buildFsSourceFuncDeclare() + this._buildFsSourceFuncDefine() + this._buildFsSourceBody();
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceTop = function () {
-        return this._buildVsSourceExtension() + this._getPrecisionSource() + this.vsSourceTop;
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceDefine = function () {
-        return this._buildSourceDefine(this.vsSourceDefineList) + this.vsSourceDefine;
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceExtension = function () {
-        return this._buildSourceExtension(this.vsSourceExtensionList);
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceVarDeclare = function () {
-        return this._generateAttributeSource() + this._generateUniformSource(this.vsSourceVarDeclare, this.vsSourceFuncDefine, this.vsSourceBody) + this.vsSourceVarDeclare;
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceFuncDeclare = function () {
-        return this.vsSourceFuncDeclare;
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceFuncDefine = function () {
-        return this.vsSourceFuncDefine;
-    };
-    EngineShaderSourceBuilder.prototype._buildVsSourceBody = function () {
-        return main_begin + this.vsSourceBody + main_end;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceTop = function () {
-        return this._buildFsSourceExtension() + this._getPrecisionSource() + this.fsSourceTop;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceDefine = function () {
-        return this._buildSourceDefine(this.fsSourceDefineList) + this.fsSourceDefine;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceExtension = function () {
-        return this._buildSourceExtension(this.fsSourceExtensionList);
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceVarDeclare = function () {
-        return this._generateUniformSource(this.fsSourceVarDeclare, this.fsSourceFuncDefine, this.fsSourceBody) + this.fsSourceVarDeclare;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceFuncDeclare = function () {
-        return this.fsSourceFuncDeclare;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceFuncDefine = function () {
-        return this.fsSourceFuncDefine;
-    };
-    EngineShaderSourceBuilder.prototype._buildFsSourceBody = function () {
-        return main_begin + this.fsSourceBody + main_end;
-    };
-    EngineShaderSourceBuilder.prototype._buildSourceDefine = function (defineList) {
-        var result = "";
-        defineList.forEach(function (sourceDefine) {
-            if (sourceDefine.value === void 0) {
-                result += "#define " + sourceDefine.name + "\n";
-            }
-            else {
-                result += "#define " + sourceDefine.name + " " + sourceDefine.value + "\n";
-            }
-        });
-        return result;
-    };
-    EngineShaderSourceBuilder.prototype._buildSourceExtension = function (extensionList) {
-        var result = "";
-        extensionList.forEach(function (name) {
-            result += "#extension " + name + " : enable\n";
-        });
-        return result;
-    };
-    EngineShaderSourceBuilder.prototype._getPrecisionSource = function () {
-        var precision = GPUDetector.getInstance().precision, result = null;
-        switch (precision) {
-            case EGPUPrecision.HIGHP:
-                result = highp_fragment.top;
-                break;
-            case EGPUPrecision.MEDIUMP:
-                result = mediump_fragment.top;
-                break;
-            case EGPUPrecision.LOWP:
-                result = lowp_fragment.top;
-                break;
-            default:
-                result = "";
-                break;
-        }
-        return result;
-    };
-    EngineShaderSourceBuilder.prototype._generateAttributeSource = function () {
-        var result = "";
-        this.attributes.filter(function (data, key) {
-            return !!data;
-        }).forEach(function (data, key) {
-            result += "attribute " + VariableTypeTable.getVariableType(data.type) + " " + key + ";\n";
-        });
-        return result;
-    };
-    EngineShaderSourceBuilder.prototype._generateUniformSource = function (sourceVarDeclare, sourceFuncDefine, sourceBody) {
-        var result = "", self = this;
-        this.uniforms.filter(function (data, key) {
-            return !!data && data.type !== EVariableType.STRUCTURE && data.type !== EVariableType.STRUCTURES && !self._isExistInSource(key, sourceVarDeclare) && (self._isExistInSource(key, sourceFuncDefine) || self._isExistInSource(key, sourceBody));
-        }).forEach(function (data, key) {
-            result += "uniform " + VariableTypeTable.getVariableType(data.type) + " " + key + ";\n";
-        });
-        return result;
-    };
-    EngineShaderSourceBuilder.prototype._isExistInSource = function (key, source) {
-        return source.indexOf(key) !== -1;
-    };
-    return EngineShaderSourceBuilder;
-}(ShaderSourceBuilder));
-__decorate([
-    requireCheck(function (libs) {
-        assert(this.vsSource === null, Log$$1.info.FUNC_SHOULD("vsSource", "be null"));
-        assert(this.fsSource === null, Log$$1.info.FUNC_SHOULD("fsSource", "be null"));
-    })
-], EngineShaderSourceBuilder.prototype, "build", null);
-EngineShaderSourceBuilder = __decorate([
-    registerClass("EngineShaderSourceBuilder")
-], EngineShaderSourceBuilder);
-
-var EngineShader = (function (_super) {
-    __extends(EngineShader, _super);
-    function EngineShader() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    EngineShader.prototype.buildDefinitionData = function (cmd, material) {
-        this.libs.forEach(function (lib) {
-            lib.setShaderDefinition(cmd, material);
-        });
-        this.sourceBuilder.clearShaderDefinition();
-        this.sourceBuilder.build(this.libs);
-        this.attributes = this.sourceBuilder.attributes;
-        this.uniforms = this.sourceBuilder.uniforms;
-        this.vsSource = this.sourceBuilder.vsSource;
-        this.fsSource = this.sourceBuilder.fsSource;
-    };
-    EngineShader.prototype.createShaderSourceBuilder = function () {
-        return EngineShaderSourceBuilder.create();
-    };
-    return EngineShader;
-}(Shader));
-
-var CommonShader = (function (_super) {
-    __extends(CommonShader, _super);
-    function CommonShader() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    CommonShader.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    CommonShader.prototype.update = function (cmd, material) {
-        var program = null;
-        this.judgeRefreshShader(cmd, material);
-        program = this.program;
-        program.use();
-        this.libs.forEach(function (lib) {
-            lib.sendShaderVariables(program, cmd, material);
-        });
-    };
-    return CommonShader;
-}(EngineShader));
-CommonShader = __decorate([
-    registerClass("CommonShader")
-], CommonShader);
-
-var VariableLib = (function () {
-    function VariableLib() {
-    }
-    return VariableLib;
-}());
-VariableLib.a_position = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_positionVec2 = {
-    type: EVariableType.FLOAT_2,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_currentFramePosition = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_nextFramePosition = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_normal = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_currentFrameNormal = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_nextFrameNormal = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_color = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_texCoord = {
-    type: EVariableType.FLOAT_2,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_tangent = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_color = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_mMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_vMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_pMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_mvpMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_vpMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_normalMatrix = {
-    type: EVariableType.FLOAT_MAT3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_samplerCube0 = {
-    type: EVariableType.SAMPLER_CUBE,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_sampler2D0 = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_sampler2D1 = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_lightMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap1Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap2Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap3Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_specularMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_emissionMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_normalMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_reflectionMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_refractionMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_cameraPos = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_refractionRatio = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_reflectivity = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_map0SourceRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_map1SourceRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMapSourceRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_map0RepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_map1RepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMapRepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_combineMode = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_mixRatio = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_lightMapIntensity = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuse = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_specular = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_emission = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_shininess = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_lightModel = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_isBothSide = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_opacity = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_ambient = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_directionLights = {
-    type: EVariableType.STRUCTURES,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_pointLights = {
-    type: EVariableType.STRUCTURES,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_vpMatrixFromLight = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_lightPos = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_farPlane = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_interpolation = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_tilesHeightNumber = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_tilesWidthNumber = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_amplitude = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_jointColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_time = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_speed = {
-    type: EVariableType.VECTOR_2,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_shift = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_alphaThreshold = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_fireColor = {
-    type: EVariableType.STRUCTURE,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_layerHeightDatas = {
-    type: EVariableType.STRUCTURES,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_layerSampler2Ds = {
-    type: EVariableType.SAMPLER_ARRAY,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_herb1Color = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_herb2Color = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_herb3Color = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_groundColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_ampScale = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_woodColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_roadColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_skyColor = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_cloudColor = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_brickColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_waveData = {
-    type: EVariableType.STRUCTURE,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_windMatrix = {
-    type: EVariableType.FLOAT_MAT4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_bumpMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_bumpMap1Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_bumpMap2Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_bumpMap3Sampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_levelData = {
-    type: EVariableType.STRUCTURE,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_mVec4_0 = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_mVec4_1 = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_mVec4_2 = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_mVec4_3 = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_normalVec4_0 = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_normalVec4_1 = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_normalVec4_2 = {
-    type: EVariableType.FLOAT_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_isRenderListEmpty = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_isReflectionRenderListEmpty = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_isRefractionRenderListEmpty = {
-    type: EVariableType.NUMBER_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_bitmapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_page = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_pageSampler2Ds = {
-    type: EVariableType.SAMPLER_ARRAY,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_mixMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap1RepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap2RepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_diffuseMap3RepeatRegion = {
-    type: EVariableType.VECTOR_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_grassMapDatas = {
-    type: EVariableType.STRUCTURES,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_quadIndex = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_grassMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_windData = {
-    type: EVariableType.STRUCTURES,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_vertexIndex = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_grassRangeWidth = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_grassRangeHeight = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainRangeWidth = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainRangeHeight = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainMinHeight = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainMaxHeight = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainSubdivisions = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainScaleY = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_terrainPositionY = {
-    type: EVariableType.FLOAT_1,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_heightMapSampler = {
-    type: EVariableType.SAMPLER_2D,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_lightColor = {
-    type: EVariableType.VECTOR_3,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_jointIndice = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.a_jointWeight = {
-    type: EVariableType.FLOAT_4,
-    value: EVariableCategory.ENGINE
-};
-VariableLib.u_jointMatrices = {
-    type: EVariableType.FLOAT_MAT4_ARRAY,
-    value: EVariableCategory.ENGINE
-};
-VariableLib = __decorate([
-    registerClass("VariableLib")
-], VariableLib);
-
-var EngineShaderLib = (function (_super) {
-    __extends(EngineShaderLib, _super);
-    function EngineShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.attributes = Hash.create();
-        _this.uniforms = Hash.create();
-        _this.vsSourceTop = "";
-        _this.vsSourceDefine = "";
-        _this.vsSourceVarDeclare = "";
-        _this.vsSourceFuncDeclare = "";
-        _this.vsSourceFuncDefine = "";
-        _this.vsSourceBody = "";
-        _this.vsSource = null;
-        _this.fsSourceTop = "";
-        _this.fsSourceDefine = "";
-        _this.fsSourceVarDeclare = "";
-        _this.fsSourceFuncDeclare = "";
-        _this.fsSourceFuncDefine = "";
-        _this.fsSourceBody = "";
-        _this.fsSource = null;
-        _this.vsSourceDefineList = Collection.create();
-        _this.fsSourceDefineList = Collection.create();
-        _this.vsSourceExtensionList = Collection.create();
-        _this.fsSourceExtensionList = Collection.create();
-        return _this;
-    }
-    EngineShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        var vs = null, fs = null;
-        this._clearShaderDefinition();
-        vs = this.getVsChunk();
-        fs = this.getFsChunk();
-        vs && this.setVsSource(vs);
-        fs && this.setFsSource(fs);
-    };
-    EngineShaderLib.prototype.sendAttributeBuffer = function (program, name, data) {
-        program.sendAttributeBuffer(name, EVariableType.BUFFER, data);
-    };
-    EngineShaderLib.prototype.sendUniformData = function (program, name, data) {
-        program.sendUniformData(name, VariableLib[name].type, data);
-    };
-    EngineShaderLib.prototype.getVsChunk = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var chunk = args.length === 0 ? this.vsChunk : args[0];
-        return this._getChunk(chunk, EShaderLibType.vs);
-    };
-    EngineShaderLib.prototype.getFsChunk = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var chunk = args.length === 0 ? this.fsChunk : args[0];
-        return this._getChunk(chunk, EShaderLibType.fs);
-    };
-    EngineShaderLib.prototype.setVsSource = function (vs, operator) {
-        if (operator === void 0) { operator = "="; }
-        if (JudgeUtils$1.isString(vs)) {
-            this.vsSource = vs;
-        }
-        else {
-            this._setSource(vs, EShaderLibType.vs, operator);
-        }
-    };
-    EngineShaderLib.prototype.setFsSource = function (fs, operator) {
-        if (operator === void 0) { operator = "="; }
-        if (JudgeUtils$1.isString(fs)) {
-            this.fsSource = fs;
-        }
-        else {
-            this._setSource(fs, EShaderLibType.fs, operator);
-        }
-    };
-    EngineShaderLib.prototype.addAttributeVariable = function (variableArr) {
-        this._addVariable(this.attributes, variableArr);
-    };
-    EngineShaderLib.prototype.addUniformVariable = function (variableArr) {
-        this._addVariable(this.uniforms, variableArr);
-    };
-    EngineShaderLib.prototype._addVariable = function (target, variableArr) {
-        variableArr.forEach(function (variable) {
-            assert(VariableLib[variable], Log$$1.info.FUNC_SHOULD(variable, "exist in VariableLib"));
-            target.addChild(variable, VariableLib[variable]);
-        });
-    };
-    EngineShaderLib.prototype._clearShaderDefinition = function () {
-        this.attributes.removeAllChildren();
-        this.uniforms.removeAllChildren();
-        this.vsSourceDefineList.removeAllChildren();
-        this.fsSourceDefineList.removeAllChildren();
-        this.vsSourceExtensionList.removeAllChildren();
-        this.fsSourceExtensionList.removeAllChildren();
-        this.vsSourceTop = "";
-        this.vsSourceDefine = "";
-        this.vsSourceVarDeclare = "";
-        this.vsSourceFuncDeclare = "";
-        this.vsSourceFuncDefine = "";
-        this.vsSourceBody = "";
-        this.vsSource = null;
-        this.fsSourceTop = "";
-        this.fsSourceDefine = "";
-        this.fsSourceVarDeclare = "";
-        this.fsSourceFuncDeclare = "";
-        this.fsSourceFuncDefine = "";
-        this.fsSourceBody = "";
-        this.fsSource = null;
-    };
-    EngineShaderLib.prototype._getChunk = function (chunk, sourceType) {
-        var key = null;
-        if (chunk === null) {
-            return empty$1;
-        }
-        return chunk;
-    };
-    EngineShaderLib.prototype._setSource = function (chunk, sourceType, operator) {
-        if (!chunk) {
-            return;
-        }
-        switch (operator) {
-            case "+":
-                this[sourceType + "SourceTop"] += chunk.top;
-                this[sourceType + "SourceDefine"] += chunk.define;
-                this[sourceType + "SourceVarDeclare"] += chunk.varDeclare;
-                this[sourceType + "SourceFuncDeclare"] += chunk.funcDeclare;
-                this[sourceType + "SourceFuncDefine"] += chunk.funcDefine;
-                this[sourceType + "SourceBody"] += chunk.body;
-                break;
-            case "=":
-                this[sourceType + "SourceTop"] = chunk.top;
-                this[sourceType + "SourceDefine"] = chunk.define;
-                this[sourceType + "SourceVarDeclare"] = chunk.varDeclare;
-                this[sourceType + "SourceFuncDeclare"] = chunk.funcDeclare;
-                this[sourceType + "SourceFuncDefine"] = chunk.funcDefine;
-                this[sourceType + "SourceBody"] = chunk.body;
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("opertor:", operator));
-                break;
-        }
-    };
-    return EngineShaderLib;
-}(ShaderLib));
-__decorate([
-    virtual
-], EngineShaderLib.prototype, "setShaderDefinition", null);
-__decorate([
-    requireCheck(function (program, name, data) {
-        assert(!!VariableLib[name], name + " should exist in VariableLib");
-    })
-], EngineShaderLib.prototype, "sendUniformData", null);
-__decorate([
-    requireCheck(function () {
-        assert(this.vsSource === null, Log$$1.info.FUNC_SHOULD("vsSource", "be null"));
-    })
-], EngineShaderLib.prototype, "setVsSource", null);
-__decorate([
-    requireCheck(function () {
-        assert(this.fsSource === null, Log$$1.info.FUNC_SHOULD("fsSource", "be null"));
-    })
-], EngineShaderLib.prototype, "setFsSource", null);
-__decorate([
-    requireCheck(function (target, variableArr) {
-        variableArr.forEach(function (variable) {
-            it("should exist in VariableLib", function () {
-                index(VariableLib[variable]).exist;
-            });
-        });
-    })
-], EngineShaderLib.prototype, "_addVariable", null);
-var EShaderLibType;
-(function (EShaderLibType) {
-    EShaderLibType[EShaderLibType["vs"] = "vs"] = "vs";
-    EShaderLibType[EShaderLibType["fs"] = "fs"] = "fs";
-})(EShaderLibType || (EShaderLibType = {}));
-
-var CommonShaderLib = (function (_super) {
-    __extends(CommonShaderLib, _super);
-    function CommonShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = common_vertex;
-        _this.fsChunk = common_fragment;
-        return _this;
-    }
-    CommonShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    CommonShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-        this.sendUniformData(program, "u_vMatrix", cmd.vMatrix);
-        this.sendUniformData(program, "u_pMatrix", cmd.pMatrix);
-        this.sendUniformData(program, "u_mMatrix", cmd.mMatrix);
-    };
-    CommonShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        _super.prototype.setShaderDefinition.call(this, cmd, material);
-        this.addUniformVariable(["u_vMatrix", "u_pMatrix", "u_mMatrix"]);
-        this.vsSourceDefine = common_define.define + common_vertex.define;
-        this.vsSourceFuncDefine = common_function.funcDefine + common_vertex.funcDefine;
-        this.fsSourceDefine = common_define.define + common_fragment.define;
-        this.fsSourceFuncDefine = common_function.funcDefine + common_fragment.funcDefine;
-    };
-    return CommonShaderLib;
-}(EngineShaderLib));
-CommonShaderLib = __decorate([
-    registerClass("CommonShaderLib")
-], CommonShaderLib);
-
-var VerticeCommonShaderLib = (function (_super) {
-    __extends(VerticeCommonShaderLib, _super);
-    function VerticeCommonShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = null;
-        _this.fsChunk = null;
-        return _this;
-    }
-    VerticeCommonShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    VerticeCommonShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-        this._sendAttributeVariables(program, cmd);
-    };
-    VerticeCommonShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        _super.prototype.setShaderDefinition.call(this, cmd, material);
-        this.addAttributeVariable(["a_position"]);
-    };
-    VerticeCommonShaderLib.prototype._sendAttributeVariables = function (program, cmd) {
-        var verticeBuffer = cmd.buffers.getChild(EBufferDataType.VERTICE);
-        if (!verticeBuffer) {
-            return;
-        }
-        this.sendAttributeBuffer(program, "a_position", verticeBuffer);
-    };
-    return VerticeCommonShaderLib;
-}(EngineShaderLib));
-VerticeCommonShaderLib = __decorate([
-    registerClass("VerticeCommonShaderLib")
-], VerticeCommonShaderLib);
-
-var ShaderLibUtils = (function () {
-    function ShaderLibUtils() {
-    }
-    ShaderLibUtils.addVerticeShaderLib = function (geometry, shader) {
-        shader.addLib(VerticeCommonShaderLib.create());
-    };
-    return ShaderLibUtils;
-}());
-ShaderLibUtils = __decorate([
-    registerClass("ShaderLibUtils")
-], ShaderLibUtils);
-
-var EndShaderLib = (function (_super) {
-    __extends(EndShaderLib, _super);
-    function EndShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = null;
-        _this.fsChunk = end_basic_fragment;
-        return _this;
-    }
-    EndShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    EndShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-        program.sendAllBufferData();
-    };
-    return EndShaderLib;
-}(EngineShaderLib));
-EndShaderLib = __decorate([
-    registerClass("EndShaderLib")
-], EndShaderLib);
-
-var EngineMaterial = (function (_super) {
-    __extends(EngineMaterial, _super);
-    function EngineMaterial() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    EngineMaterial.prototype.init = function () {
-        this._addTopShaderLib();
-        this.addShaderLib();
-        this._addEndShaderLib();
-        _super.prototype.init.call(this);
-    };
-    EngineMaterial.prototype.addShaderLib = function () {
-    };
-    EngineMaterial.prototype.createShader = function () {
-        return CommonShader.create();
-    };
-    EngineMaterial.prototype._addTopShaderLib = function () {
-        this.shader.addLib(CommonShaderLib.create());
-        ShaderLibUtils.addVerticeShaderLib(this.geometry, this.shader);
-    };
-    EngineMaterial.prototype._addShaderLibToTop = function (lib) {
-        this.shader.addShaderLibToTop(lib);
-    };
-    EngineMaterial.prototype._addEndShaderLib = function () {
-        this.shader.addLib(EndShaderLib.create());
-    };
-    return EngineMaterial;
-}(Material));
-__decorate([
-    virtual
-], EngineMaterial.prototype, "addShaderLib", null);
-
-var BasicMaterialColorShaderLib = (function (_super) {
-    __extends(BasicMaterialColorShaderLib, _super);
-    function BasicMaterialColorShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = null;
-        _this.fsChunk = basic_materialColor_fragment;
-        return _this;
-    }
-    BasicMaterialColorShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    BasicMaterialColorShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-        this.sendUniformData(program, "u_color", material.color.toVector3());
-    };
-    BasicMaterialColorShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        _super.prototype.setShaderDefinition.call(this, cmd, material);
-        this.addUniformVariable(["u_color"]);
-    };
-    return BasicMaterialColorShaderLib;
-}(EngineShaderLib));
-BasicMaterialColorShaderLib = __decorate([
-    registerClass("BasicMaterialColorShaderLib")
-], BasicMaterialColorShaderLib);
-
-var BasicShaderLib = (function (_super) {
-    __extends(BasicShaderLib, _super);
-    function BasicShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = null;
-        _this.fsChunk = null;
-        return _this;
-    }
-    BasicShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    BasicShaderLib.prototype.sendShaderVariables = function (program, cmd, material) {
-        this.sendUniformData(program, "u_opacity", material.opacity);
-    };
-    BasicShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        _super.prototype.setShaderDefinition.call(this, cmd, material);
-        this.addUniformVariable(["u_opacity"]);
-        this.vsSourceBody = setPos_mvp;
-    };
-    return BasicShaderLib;
-}(EngineShaderLib));
-BasicShaderLib = __decorate([
-    registerClass("BasicShaderLib")
-], BasicShaderLib);
-
-var EndBasicShaderLib = (function (_super) {
-    __extends(EndBasicShaderLib, _super);
-    function EndBasicShaderLib() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.vsChunk = null;
-        _this.fsChunk = end_basic_fragment;
-        return _this;
-    }
-    EndBasicShaderLib.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    EndBasicShaderLib.prototype.setShaderDefinition = function (cmd, material) {
-        _super.prototype.setShaderDefinition.call(this, cmd, material);
-        if (material.alphaTest !== null) {
-            this.fsSourceBody += "if (gl_FragColor.a < " + material.alphaTest + "){\n    discard;\n}\n";
-        }
-    };
-    return EndBasicShaderLib;
-}(EngineShaderLib));
-EndBasicShaderLib = __decorate([
-    registerClass("EndBasicShaderLib")
-], EndBasicShaderLib);
-
-var StandardBasicMaterial = (function (_super) {
-    __extends(StandardBasicMaterial, _super);
-    function StandardBasicMaterial() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.opacity = 1.0;
-        _this.alphaTest = null;
-        return _this;
-    }
-    StandardBasicMaterial.prototype.addExtendShaderLib = function () {
-    };
-    StandardBasicMaterial.prototype.addShaderLib = function () {
-        var envMap = null;
-        this.shader.addLib(BasicMaterialColorShaderLib.create());
-        this.shader.addLib(BasicShaderLib.create());
-        this.addExtendShaderLib();
-        this.shader.addLib(EndBasicShaderLib.create());
-    };
-    return StandardBasicMaterial;
-}(EngineMaterial));
-__decorate([
-    cloneAttributeAsBasicType()
-], StandardBasicMaterial.prototype, "opacity", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], StandardBasicMaterial.prototype, "alphaTest", void 0);
-__decorate([
-    virtual
-], StandardBasicMaterial.prototype, "addExtendShaderLib", null);
-
-var BasicMaterial = (function (_super) {
-    __extends(BasicMaterial, _super);
-    function BasicMaterial() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BasicMaterial.create = function () {
-        var obj = new this();
-        obj.initWhenCreate();
-        return obj;
-    };
-    return BasicMaterial;
-}(StandardBasicMaterial));
-BasicMaterial = __decorate([
-    registerClass("BasicMaterial")
-], BasicMaterial);
-
-var EVariableSemantic;
-(function (EVariableSemantic) {
-    EVariableSemantic[EVariableSemantic["POSITION"] = "POSITION"] = "POSITION";
-    EVariableSemantic[EVariableSemantic["NORMAL"] = "NORMAL"] = "NORMAL";
-    EVariableSemantic[EVariableSemantic["TEXCOORD"] = "TEXCOORD"] = "TEXCOORD";
-    EVariableSemantic[EVariableSemantic["TANGENT"] = "TANGENT"] = "TANGENT";
-    EVariableSemantic[EVariableSemantic["COLOR"] = "COLOR"] = "COLOR";
-    EVariableSemantic[EVariableSemantic["MODEL"] = "MODEL"] = "MODEL";
-    EVariableSemantic[EVariableSemantic["VIEW"] = "VIEW"] = "VIEW";
-    EVariableSemantic[EVariableSemantic["PROJECTION"] = "PROJECTION"] = "PROJECTION";
-    EVariableSemantic[EVariableSemantic["MODEL_VIEW"] = "MODEL_VIEW"] = "MODEL_VIEW";
-    EVariableSemantic[EVariableSemantic["MODEL_VIEW_PROJECTION"] = "MODEL_VIEW_PROJECTION"] = "MODEL_VIEW_PROJECTION";
-    EVariableSemantic[EVariableSemantic["MODEL_INVERSE"] = "MODEL_INVERSE"] = "MODEL_INVERSE";
-    EVariableSemantic[EVariableSemantic["VIEW_INVERSE"] = "VIEW_INVERSE"] = "VIEW_INVERSE";
-    EVariableSemantic[EVariableSemantic["PROJECTION_INVERSE"] = "PROJECTION_INVERSE"] = "PROJECTION_INVERSE";
-    EVariableSemantic[EVariableSemantic["MODEL_VIEW_INVERSE"] = "MODEL_VIEW_INVERSE"] = "MODEL_VIEW_INVERSE";
-    EVariableSemantic[EVariableSemantic["MODEL_VIEW_PROJECTION_INVERSE"] = "MODEL_VIEW_PROJECTION_INVERSE"] = "MODEL_VIEW_PROJECTION_INVERSE";
-    EVariableSemantic[EVariableSemantic["MODEL_INVERSE_TRANSPOSE"] = "MODEL_INVERSE_TRANSPOSE"] = "MODEL_INVERSE_TRANSPOSE";
-    EVariableSemantic[EVariableSemantic["MODEL_VIEW_INVERSE_TRANSPOSE"] = "MODEL_VIEW_INVERSE_TRANSPOSE"] = "MODEL_VIEW_INVERSE_TRANSPOSE";
-    EVariableSemantic[EVariableSemantic["VIEWPORT"] = "VIEWPORT"] = "VIEWPORT";
-})(EVariableSemantic || (EVariableSemantic = {}));
-
-var _table$3 = Hash.create();
-_table$3.addChild("lightMap", "u_lightMapSampler");
-_table$3.addChild("diffuseMap", "u_diffuseMapSampler");
-_table$3.addChild("diffuseMap1", "u_diffuseMap1Sampler");
-_table$3.addChild("diffuseMap2", "u_diffuseMap2Sampler");
-_table$3.addChild("diffuseMap3", "u_diffuseMap3Sampler");
-_table$3.addChild("specularMap", "u_specularMapSampler");
-_table$3.addChild("emissionMap", "u_emissionMapSampler");
-_table$3.addChild("normalMap", "u_normalMapSampler");
-_table$3.addChild("reflectionMap", "u_reflectionMapSampler");
-_table$3.addChild("refractionMap", "u_refractionMapSampler");
-_table$3.addChild("bitmap", "u_bitmapSampler");
-_table$3.addChild("bumpMap", "u_bumpMapSampler");
-_table$3.addChild("bumpMap1", "u_bumpMap1Sampler");
-_table$3.addChild("bumpMap2", "u_bumpMap2Sampler");
-_table$3.addChild("bumpMap3", "u_bumpMap3Sampler");
-_table$3.addChild("mixMap", "u_mixMapSampler");
-_table$3.addChild("grassMap", "u_grassMapSampler");
-_table$3.addChild("heightMap", "u_heightMapSampler");
-var VariableNameTable = (function () {
-    function VariableNameTable() {
-    }
-    VariableNameTable.getVariableName = function (name) {
-        return _table$3.getChild(name);
-    };
-    return VariableNameTable;
-}());
-__decorate([
-    ensure(function (variableName) {
-        it("variableName should in VariableNameTable", function () {
-            index(variableName).exist;
-        });
-    })
-], VariableNameTable, "getVariableName", null);
-VariableNameTable = __decorate([
-    registerClass("VariableNameTable")
-], VariableNameTable);
-
-var MathUtils = (function () {
-    function MathUtils() {
-    }
-    MathUtils.clamp = function (num, below, up) {
-        if (num < below) {
-            return below;
-        }
-        else if (num > up) {
-            return up;
-        }
-        return num;
-    };
-    MathUtils.bigThan = function (num, below) {
-        return num < below ? below : num;
-    };
-    MathUtils.generateZeroToOne = function () {
-        return Math.random();
-    };
-    MathUtils.generateMinToMax = function (min, max) {
-        return Math.random() * (max + 1 - min) + min;
-    };
-    MathUtils.generateInteger = function (min, max) {
-        return Math.floor(this.generateMinToMax(min, max));
-    };
-    MathUtils.mod = function (a, b) {
-        var n = Math.floor(a / b);
-        a -= n * b;
-        if (a < 0) {
-            a += b;
-        }
-        return a;
-    };
-    MathUtils.maxFloorIntegralMultiple = function (a, b) {
-        if (b == 0) {
-            return a;
-        }
-        if (a < b) {
-            return 0;
-        }
-        return Math.floor(a / b) * b;
-    };
-    return MathUtils;
-}());
-__decorate([
-    requireCheck(function (min, max) {
-        it("min should <= max", function () {
-            index(min).lte(max);
-        });
-    })
-], MathUtils, "generateMinToMax", null);
-__decorate([
-    ensure(function (val) {
-        it("result should >= 0", function () {
-            index(val).gte(0);
-        });
-    })
-], MathUtils, "mod", null);
-__decorate([
-    requireCheck(function (a, b) {
-        it("a,b should >= 0", function () {
-            index(a).gte(0);
-            index(b).gte(0);
-        });
-    }),
-    ensure(function (val) {
-        it("result should >= 0", function () {
-            index(val).gte(0);
-        });
-    })
-], MathUtils, "maxFloorIntegralMultiple", null);
-MathUtils = __decorate([
-    registerClass("MathUtils")
-], MathUtils);
+var initThreeDTransformData = initData$4;
+var DomQuery$1 = DomQuery;
+var fromArray$1 = fromArray;
+var initTagData = initData$5;
+var initGeometryData = initData$6;
+var initMaterialData = initData$8;
+var initShaderData = initData$9;
+var initMeshRendererData = initData$12;
+var initArrayBufferData = initData$11;
+var initIndexBufferData = initData$10;
+var initDeviceManagerData = initData$7;
+var initCameraControllerData = initData$2;
+var initGameObjectData = initData$3;
+var createState$1 = createState;
+var useProgram = use$$1;
+var sendAttributeData$2 = sendAttributeData$$1;
+var sendUniformData$2 = sendUniformData$$1;
+var disableVertexAttribArray$1 = disableVertexAttribArray;
+var DataUtils$1 = DataUtils;
 
 var CommonTimeController = (function (_super) {
     __extends(CommonTimeController, _super);
@@ -15561,7 +17692,7 @@ var CommonTimeController = (function (_super) {
         if (Director.getInstance().isTimeChange) {
             return Director.getInstance().elapsed;
         }
-        return root$2.performance.now();
+        return root$1.performance.now();
     };
     return CommonTimeController;
 }(TimeController));
@@ -15569,5 +17700,5 @@ CommonTimeController = __decorate([
     registerClass("CommonTimeController")
 ], CommonTimeController);
 
-export { Camera, BasicCameraController, CameraController, PerspectiveCamera, ComponentInitOrderTable, BoxGeometry, BasicBufferContainer, BasicGeometryData, BufferContainer, CommonBufferContainer, GeometryData, Geometry, GeometryUtils, MeshRenderer, RendererComponent, ETransformState, ThreeDTransform, Transform, DebugConfig, Component, Director, Entity$1 as Entity, EntityObject, GameObject, ComponentManager, EntityObjectManager, BufferTable, BufferTableKey, ProgramTable, GameObjectScene, Scene, SceneDispatcher, Main$1 as Main, MainData, cacheGetter, cache, cacheBufferForBufferContainer, cacheBufferForBufferContainerWithFuncParam, cloneAttributeAsBasicType, cloneAttributeAsCloneable, cloneAttributeAsCustomType, CloneUtils, CloneType, assert, describe, it, requireCheck, ensure, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$2 as root, DeviceManager, EDepthFunction, ESide, EPolygonOffsetMode, EBlendFunc, EBlendEquation, EBlendType, ECanvasType, EScreenSize, GPUDetector, EGPUPrecision, CustomEventBinder, CustomEventRegister, DomEventBinder, DomEventRegister, EventBinder, EventRegister, CustomEventDispatcher, DomEventDispatcher, EventDispatcher, EEngineEvent, EventManager, EventBinderFactory, EventDispatcherFactory, EventHandlerFactory, CustomEventHandler, DomEventHandler, EventHandler, KeyboardEventHandler, MouseEventHandler, PointEventHandler, TouchEventHandler, CustomEvent, DomEvent, EEventPhase, EEventType, EMouseButton, Event, EEventName, EventNameHandler, EventTable, KeyboardEvent, MouseEvent, MousePointEvent, PointEvent, TouchEvent, TouchPointEvent, CustomEventListenerMap, DomEventListenerMap, EventListenerMap, EventUtils$1 as EventUtils, BasicMaterial, EngineMaterial, Material, ShaderManager, StandardBasicMaterial, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBuffer, Buffer$1 as Buffer, BufferDataTable, CommonBuffer, EBufferDataType, EBufferType, EBufferUsage, ElementBuffer, QuadCommand, RenderCommand, SingleDrawCommand, EDrawMode, GlUtils, GLSLDataSender, Program, Renderer, WebGLRenderer, BasicMaterialColorShaderLib, BasicShaderLib, EndBasicShaderLib, CommonShaderLib, EndShaderLib, VerticeCommonShaderLib, EngineShaderLib, ShaderLib, CommonShader, EngineShader, Shader, EngineShaderSourceBuilder, ShaderSourceBuilder, EVariableCategory, EVariableSemantic, EVariableType, VariableLib, VariableNameTable, VariableTypeTable, BasicState, WebGLState, Color, Face3, Point, RectRegion, ViewWebGL, ArrayUtils, BufferUtils, ClassUtils, JudgeUtils$1 as JudgeUtils, Log$$1 as Log, MathUtils, RenderUtils, ShaderLibUtils, SortUtils, CommonTimeController, DirectorTimeController, TimeController, CompileConfig };
+export { getCameraPMatrix, getCameraNear, setCameraNear, getCameraFar, setCameraFar, CameraController, createCameraController, getCameraControllerGameObject, CameraControllerData, CameraData, getPerspectiveCameraFovy, setPerspectiveCameraFovy, getPerspectiveCameraAspect, setPerspectiveCameraAspect, PerspectiveCameraData, Component, ComponentData, getTypeIDFromClass$1 as getTypeIDFromClass, getTypeIDFromComponent$1 as getTypeIDFromComponent, BoxGeometry, createBoxGeometry, setBoxGeometryConfigData, CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices, Geometry, getDrawMode$$1 as getDrawMode, getVertices$$1 as getVertices, getIndices$$1 as getIndices, getGeometryConfigData, initGeometry$$1 as initGeometry, getGeometryGameObject, GeometryData, BasicMaterial, createBasicMaterial, Material, getMaterialColor, setMaterialColor, getMaterialOpacity, setMaterialOpacity, getMaterialAlphaTest, setMaterialAlphaTest, getMaterialGameObject, getMaterialShader, initMaterial$$1 as initMaterial, MaterialData, MeshRenderer, createMeshRenderer, getMeshRendererGameObject, getMeshRendererRenderList, MeshRendererData, Tag, createTag, addTag$1 as addTag, removeTag$1 as removeTag, findGameObjectsByTag$1 as findGameObjectsByTag, getTagGameObject, TagData, LinkList, LinkNode, ThreeDTransform, createThreeDTransform, getThreeDTransformPosition, setThreeDTransformPosition, getThreeDTransformLocalToWorldMatrix, getThreeDTransformLocalPosition, setThreeDTransformLocalPosition, setThreeDTransformBatchTransformDatas, getThreeDTransformParent, setThreeDTransformParent, getThreeDTransformGameObject, ThreeDTransformData, ThreeDTransformRelationData, getUID, isIndexUsed, getStartIndexInArrayBuffer, CompileConfig, DataBufferConfig, DebugConfig, MemoryConfig, Director, DirectorData, GameObject, createGameObject, addGameObjectComponent, disposeGameObject, initGameObject$1 as initGameObject, disposeGameObjectComponent, getGameObjectComponent, getGameObjectTransform, hasGameObjectComponent, isGameObjectAlive, addGameObject, removeGameObject, hasGameObject, GameObjectData, Scene, addSceneChild, removeSceneChild, SceneData, Main$1 as Main, MainData, GlobalTempData, cache, assert, describe, it$1 as it, requireCheck, requireCheckFunc, ensure, ensureFunc, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$1 as root, DeviceManager, setDeviceManagerGL, DeviceManagerData, EScreenSize, GPUDetector, EGPUPrecision, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBufferData, IndexBufferData, RenderCommand, material_config, render_config, shaderLib_generator, EBufferType, EDrawMode, EVariableType, empty, NULL, basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, Shader, ShaderData, main_begin, main_end, setPos_mvp, Color, RectRegion, View, initThreeDTransformData, DomQuery$1 as DomQuery, fromArray$1 as fromArray, initTagData, initGeometryData, initMaterialData, initShaderData, initMeshRendererData, initArrayBufferData, initIndexBufferData, initDeviceManagerData, initCameraControllerData, initGameObjectData, createState$1 as createState, useProgram, sendAttributeData$2 as sendAttributeData, sendUniformData$2 as sendUniformData, disableVertexAttribArray$1 as disableVertexAttribArray, DataUtils$1 as DataUtils, Log$$1 as Log, error$1 as error, CommonTimeController, DirectorTimeController, TimeController };
 //# sourceMappingURL=wd.module.js.map

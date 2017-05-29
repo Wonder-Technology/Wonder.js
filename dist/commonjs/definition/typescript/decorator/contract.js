@@ -2,8 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var Log_1 = require("../../../utils/Log");
 var CompileConfig_1 = require("../../../config/CompileConfig");
-var MainData_1 = require("../../../core/data/MainData");
+var MainData_1 = require("../../../core/MainData");
 var _describeContext = null;
+var getIsTest = function () {
+    return MainData_1.MainData.isTest;
+};
 function assert(cond, message) {
     if (message === void 0) { message = "contract error"; }
     Log_1.Log.error(!cond, message);
@@ -50,7 +53,7 @@ function requireCheck(inFunc) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
             var value_1 = descriptor.value;
             descriptor.value = function (args) {
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.apply(this, arguments);
                 }
                 return value_1.apply(this, arguments);
@@ -60,13 +63,30 @@ function requireCheck(inFunc) {
     };
 }
 exports.requireCheck = requireCheck;
+function requireCheckFunc(checkFunc, bodyFunc) {
+    if (!CompileConfig_1.CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+    return function () {
+        var paramArr = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            paramArr[_i] = arguments[_i];
+        }
+        if (!getIsTest()) {
+            return bodyFunc.apply(null, paramArr);
+        }
+        checkFunc.apply(null, paramArr);
+        return bodyFunc.apply(null, paramArr);
+    };
+}
+exports.requireCheckFunc = requireCheckFunc;
 function ensure(outFunc) {
     return function (target, name, descriptor) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
             var value_2 = descriptor.value;
             descriptor.value = function (args) {
                 var result = value_2.apply(this, arguments);
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result];
                     for (var i = 0, len = arguments.length; i < len; i++) {
                         params[i + 1] = arguments[i];
@@ -80,18 +100,36 @@ function ensure(outFunc) {
     };
 }
 exports.ensure = ensure;
+function ensureFunc(checkFunc, bodyFunc) {
+    if (!CompileConfig_1.CompileConfig.isCompileTest) {
+        return bodyFunc;
+    }
+    return function () {
+        var paramArr = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            paramArr[_i] = arguments[_i];
+        }
+        if (!getIsTest()) {
+            return bodyFunc.apply(null, paramArr);
+        }
+        var result = bodyFunc.apply(null, paramArr);
+        checkFunc.apply(null, [result].concat(paramArr));
+        return result;
+    };
+}
+exports.ensureFunc = ensureFunc;
 function requireGetterAndSetter(inGetterFunc, inSetterFunc) {
     return function (target, name, descriptor) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
             var getter_1 = descriptor.get, setter_1 = descriptor.set;
             descriptor.get = function () {
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     inGetterFunc.call(this);
                 }
                 return getter_1.call(this);
             };
             descriptor.set = function (val) {
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     inSetterFunc.call(this, val);
                 }
                 setter_1.call(this, val);
@@ -106,7 +144,7 @@ function requireGetter(inFunc) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
             var getter_2 = descriptor.get;
             descriptor.get = function () {
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.call(this);
                 }
                 return getter_2.call(this);
@@ -121,7 +159,7 @@ function requireSetter(inFunc) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
             var setter_2 = descriptor.set;
             descriptor.set = function (val) {
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     inFunc.call(this, val);
                 }
                 setter_2.call(this, val);
@@ -137,14 +175,14 @@ function ensureGetterAndSetter(outGetterFunc, outSetterFunc) {
             var getter_3 = descriptor.get, setter_3 = descriptor.set;
             descriptor.get = function () {
                 var result = getter_3.call(this);
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     outGetterFunc.call(this, result);
                 }
                 return result;
             };
             descriptor.set = function (val) {
                 var result = setter_3.call(this, val);
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result, val];
                     outSetterFunc.apply(this, params);
                 }
@@ -160,7 +198,7 @@ function ensureGetter(outFunc) {
             var getter_4 = descriptor.get;
             descriptor.get = function () {
                 var result = getter_4.call(this);
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     outFunc.call(this, result);
                 }
                 return result;
@@ -176,7 +214,7 @@ function ensureSetter(outFunc) {
             var setter_4 = descriptor.set;
             descriptor.set = function (val) {
                 var result = setter_4.call(this, val);
-                if (MainData_1.MainData.isTest) {
+                if (getIsTest()) {
                     var params = [result, val];
                     outFunc.apply(this, params);
                 }
@@ -189,7 +227,7 @@ exports.ensureSetter = ensureSetter;
 function invariant(func) {
     return function (target) {
         if (CompileConfig_1.CompileConfig.isCompileTest) {
-            if (MainData_1.MainData.isTest) {
+            if (getIsTest()) {
                 func(target);
             }
         }

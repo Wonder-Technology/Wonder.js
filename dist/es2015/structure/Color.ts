@@ -1,11 +1,18 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { ensureGetter, assert } from "../definition/typescript/decorator/contract";
+import { ensureGetter, assert, requireCheck, it } from "../definition/typescript/decorator/contract";
 import { Log } from "../utils/Log";
 import { Vector3 } from "../math/Vector3";
 import { Vector4 } from "../math/Vector4";
 import { cache } from "../definition/typescript/decorator/cache";
+import { expect } from "wonder-expect.js";
 
 declare var Math: any;
+
+const REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
+    REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i,
+    REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
+    REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i,
+    REGEX_NUM = /^\#([0-9a-f]{6})$/i;
 
 @registerClass("Color")
 export class Color {
@@ -130,12 +137,24 @@ export class Color {
         return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
     }
 
+    @requireCheck((colorVal: string) => {
+        it("color should be #xxxxxx", () => {
+            expect(REGEX_NUM.test(colorVal)).true;
+        })
+    })
+    public setColorByNum(colorVal: string) {
+        var color = null;
+
+        this._colorString = colorVal;
+
+        color = REGEX_NUM.exec(colorVal);
+
+        this._setHex(parseInt(color[1], 16));
+
+        return this;
+    }
+
     private _setColor(colorVal: string) {
-        const REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i,
-            REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i,
-            REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i,
-            REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i,
-            REGEX_NUM = /^\#([0-9a-f]{6})$/i;
         var color = null;
 
         // rgba(255,0,0,0)
@@ -197,16 +216,10 @@ export class Color {
 
         }
 
-
         // #ffffff
 
         if (REGEX_NUM.test(colorVal)) {
-            color = REGEX_NUM.exec(colorVal);
-
-            this._setHex(parseInt(color[1], 16));
-
-            return this;
-
+            return this.setColorByNum(colorVal);
         }
     }
 

@@ -1,6 +1,8 @@
-/// <reference types="wonder-commonlib" />
-import { ArrayUtils as ArrayUtils$ } from "wonder-commonlib/dist/es2015/utils/ArrayUtils";
-export declare class ArrayUtils extends ArrayUtils$ {
-    static hasRepeatItems(arr: Array<any>): boolean;
-    static contain(arr: Array<any>, item: any): boolean;
-}
+export declare var deleteVal: (key: number, arr: number[]) => any;
+export declare var isNotValidVal: (val: any) => boolean;
+export declare var deleteBySwap: (index: number, array: any[]) => any;
+export declare var hasDuplicateItems: (arr: any[]) => boolean;
+export declare var removeDuplicateItems: (arr: any[]) => any[];
+export declare var removeItem: (arr: any[], item: any) => any[];
+export declare var filter: (arr: any[], func: (item: any) => boolean) => any[];
+export declare var forEach: (arr: any[], func: (item: any, index: number) => void) => void;

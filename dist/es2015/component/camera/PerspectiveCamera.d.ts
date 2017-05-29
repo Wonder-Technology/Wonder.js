@@ -1,11 +1,5 @@
-import { Camera } from "./Camera";
-export declare class PerspectiveCamera extends Camera {
-    static create(): PerspectiveCamera;
-    private _fovy;
-    fovy: number;
-    private _aspect;
-    aspect: number;
-    zoomIn(speed: number, min?: number): void;
-    zoomOut(speed: number, max?: number): void;
-    protected updateProjectionMatrix(): void;
-}
+import { CameraController } from "./CameraController";
+export declare var getPerspectiveCameraFovy: (cameraController: CameraController) => any;
+export declare var setPerspectiveCameraFovy: (cameraController: CameraController, fovy: number) => void;
+export declare var getPerspectiveCameraAspect: (cameraController: CameraController) => any;
+export declare var setPerspectiveCameraAspect: (cameraController: CameraController, aspect: number) => void;

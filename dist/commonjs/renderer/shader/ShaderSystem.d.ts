@@ -1,0 +1,13 @@
+import { Shader } from "./Shader";
+import { IMaterialConfig } from "../data/material_config";
+import { IShaderLibGenerator } from "../data/shaderLib_generator";
+import { Map } from "immutable";
+import { RenderCommand } from "../command/RenderCommand";
+export declare var create: (ShaderData: any) => Shader;
+export declare var init: (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any) => void;
+export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ShaderData: any, GeometryData: any, ArrayBufferData: any) => void;
+export declare var sendUniformData: (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ShaderData: any, renderCommand: RenderCommand) => void;
+export declare var bindIndexBuffer: (gl: WebGLRenderingContext, geometryIndex: number, ShaderData: any, GeometryData: any, IndexBufferData: any) => void;
+export declare var use: (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => void;
+export declare var dispose: (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => void;
+export declare var initData: (ShaderData: any) => void;

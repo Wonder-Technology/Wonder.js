@@ -14,6 +14,9 @@ var ClassUtils = (function () {
     ClassUtils.getClassNameByInstance = function (obj) {
         return obj.constructor["className"];
     };
+    ClassUtils.getClassNameByClass = function (_class) {
+        return _class["className"];
+    };
     ClassUtils.addClass = function (className, _class) {
         this._classMap[className] = _class;
     };
@@ -28,11 +31,19 @@ var ClassUtils = (function () {
 ClassUtils._classMap = {};
 __decorate([
     contract_1.ensure(function (className) {
-        contract_1.it("should get class name from objInstance", function () {
-            wonder_expect_js_1.default(className).exist;
-            wonder_expect_js_1.default(className !== "").true;
+        contract_1.it("should exist class name", function () {
+            wonder_expect_js_1.expect(className).exist;
+            wonder_expect_js_1.expect(className !== "").true;
         });
     })
 ], ClassUtils, "getClassNameByInstance", null);
+__decorate([
+    contract_1.ensure(function (className) {
+        contract_1.it("should exist class name", function () {
+            wonder_expect_js_1.expect(className).exist;
+            wonder_expect_js_1.expect(className !== "").true;
+        });
+    })
+], ClassUtils, "getClassNameByClass", null);
 exports.ClassUtils = ClassUtils;
 //# sourceMappingURL=ClassUtils.js.map

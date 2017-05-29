@@ -1,63 +1,24 @@
-/// <reference types="wonder-commonlib" />
-import { Transform } from "./Transform";
-import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
-import { Quaternion } from "../../math/Quaternion";
-import { Collection } from "wonder-commonlib/dist/commonjs/Collection";
-import { Matrix3 } from "../../math/Matrix3";
-import { ETransformState } from "./ETransformState";
-export declare class ThreeDTransform extends Transform {
-    static create(): ThreeDTransform;
-    private _localToWorldMatrix;
-    localToWorldMatrix: Matrix4;
-    readonly normalMatrix: Matrix3;
-    private _position;
-    position: Vector3;
-    private _rotation;
-    rotation: Quaternion;
-    private _scale;
-    scale: Vector3;
-    private _eulerAngles;
-    eulerAngles: Vector3;
-    private _localPosition;
-    localPosition: Vector3;
-    private _localRotation;
-    localRotation: Quaternion;
-    private _localEulerAngles;
-    localEulerAngles: Vector3;
-    private _localScale;
-    localScale: Vector3;
-    readonly up: Vector3;
-    readonly right: Vector3;
-    readonly forward: any;
-    dirtyWorld: boolean;
-    protected p_parent: ThreeDTransform;
-    protected children: Collection<ThreeDTransform>;
-    private _localToParentMatrix;
-    private _localToWorldMatrixCache;
-    private _positionCache;
-    private _rotationCache;
-    private _scaleCache;
-    private _eulerAnglesCache;
-    private _localEulerAnglesCache;
-    private _normalMatrixCache;
-    private _isUserSpecifyTheLocalToWorldMatrix;
-    private _userLocalToWorldMatrix;
-    sync(): void;
-    translateLocal(translation: Vector3): any;
-    translateLocal(x: number, y: number, z: number): any;
-    translate(translation: Vector3): any;
-    translate(x: number, y: number, z: number): any;
-    rotate(eulerAngles: Vector3): any;
-    rotate(x: number, y: number, z: number): any;
-    rotateLocal(eulerAngles: Vector3): any;
-    rotateLocal(x: number, y: number, z: number): any;
-    rotateAround(angle: number, center: Vector3, axis: Vector3): any;
-    rotateAround(angle: number, centerX: number, centerY: number, centerZ: number, axisX: number, axisY: number, axisZ: number): any;
-    lookAt(target: Vector3): any;
-    lookAt(targetX: number, targetY: number, targetZ: number): any;
-    lookAt(target: Vector3, up: Vector3): any;
-    lookAt(targetX: number, targetY: number, targetZ: number, upX: number, upY: number, upZ: number): any;
-    protected clearCache(): void;
-    protected handleWhenSetTransformState(transformState?: ETransformState): void;
+import { Component } from "../Component";
+export declare class ThreeDTransform extends Component implements IThreeDTransform {
+    uid: number;
 }
+export interface IThreeDTransform {
+    index: number;
+    uid: number;
+}
+export interface BatchTransformData {
+    transform: ThreeDTransform;
+    position: Vector3;
+    localPosition: Vector3;
+}
+export declare var createThreeDTransform: () => any;
+export declare var getThreeDTransformPosition: Function;
+export declare var setThreeDTransformPosition: Function;
+export declare var getThreeDTransformLocalToWorldMatrix: Function;
+export declare var getThreeDTransformLocalPosition: Function;
+export declare var setThreeDTransformLocalPosition: Function;
+export declare var setThreeDTransformBatchTransformDatas: (batchData: BatchTransformData[]) => void;
+export declare var getThreeDTransformParent: Function;
+export declare var setThreeDTransformParent: Function;
+export declare var getThreeDTransformGameObject: Function;

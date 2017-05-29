@@ -1,68 +1,41 @@
-import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { DebugConfig } from "../config/DebugConfig";
-import { EScreenSize } from "../device/EScreenSize";
-import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
-import { DeviceManager } from "../device/DeviceManager";
-import { GPUDetector } from "../device/GPUDetector";
+import { getIsTest, init, MainConfigData, setConfig, setIsTest, setLibIsTest } from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
-import { MainData, ContextConfigData } from "./data/MainData";
-import { RectRegion } from "../structure/RectRegion";
+import { Map } from "immutable";
+import { DirectorData } from "./DirectorData";
+import { getState, setState } from "./DirectorSystem";
+import { it, requireCheck } from "../definition/typescript/decorator/contract";
+import { MainData } from "./MainData";
+import { expect } from "wonder-expect.js";
+import { DeviceManagerData } from "../device/DeviceManagerData";
 
-@registerClass("Main")
 export class Main {
-    private static _canvasId: string = null;
-    private static _contextConfig: ContextConfigData = null;
-    private static _useDevicePixelRatio: boolean = null;
+    static get isTest() {
+        return getIsTest(MainData);
+    }
+    static set isTest(isTest: boolean) {
+        setIsTest(isTest, MainData).run();
 
-    public static setConfig({
-            canvasId = null,
-        isTest = DebugConfig.isTest,
-        screenSize = EScreenSize.FULL,
-        useDevicePixelRatio = false,
-        contextConfig = {
-            options: {
-                alpha: true,
-                depth: true,
-                stencil: false,
-                antialias: true,
-                premultipliedAlpha: true,
-                preserveDrawingBuffer: false
-            }
-        }
-        }) {
-        MainData.screenSize = <EScreenSize & RectRegion>screenSize;
-        this._canvasId = canvasId;
-        this._useDevicePixelRatio = useDevicePixelRatio;
-        this._contextConfig = {
-            options: ExtendUtils.extend({
-                alpha: true,
-                depth: true,
-                stencil: false,
-                antialias: true,
-                premultipliedAlpha: true,
-                preserveDrawingBuffer: false
-            }, contextConfig.options)
-        };
+        setLibIsTest(isTest).run();
+    }
 
-        this._setIsTest(isTest);
+    private static _configState: Map<any, any> = null;
+
+    public static setConfig(configState: MainConfigData) {
+        this._configState = setConfig(CompileConfig.closeContractTest, MainData, configState).run();
+
+        setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
 
         return this;
     }
 
+    @requireCheck(() => {
+        it("configState should exist", () => {
+            expect(Main._configState).exist;
+        });
+    })
     public static init() {
-        DeviceManager.getInstance().createGL(this._canvasId, this._contextConfig, this._useDevicePixelRatio);
-        DeviceManager.getInstance().setScreen();
-        GPUDetector.getInstance().detect();
+        setState(init(getState(DirectorData), this._configState.get("config"), DeviceManagerData).run(), DirectorData).run();
 
         return this;
-    }
-
-    private static _setIsTest(isTestFromDebugConfig: boolean) {
-        if (CompileConfig.closeContractTest) {
-            MainData.isTest = false;
-        }
-        else {
-            MainData.isTest = isTestFromDebugConfig;
-        }
     }
 }

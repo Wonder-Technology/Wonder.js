@@ -4,105 +4,91 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+import { getCanvas, getHeight, getStyleHeight, getStyleWidth, getWidth, setHeight, setStyleWidth, getX, setX, getY, setY, setWidth, setCanvas, setStyleHeight } from "./ViewSystem";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-var ViewWebGL = (function () {
-    function ViewWebGL(dom) {
-        this._dom = null;
-        this._dom = dom;
+import { getState } from "../core/DirectorSystem";
+import { DirectorData } from "../core/DirectorData";
+var View = (function () {
+    function View() {
     }
-    ViewWebGL.create = function (view) {
-        var obj = new this(view);
+    View.create = function () {
+        var obj = new this();
         return obj;
     };
-    Object.defineProperty(ViewWebGL.prototype, "offset", {
+    Object.defineProperty(View.prototype, "dom", {
         get: function () {
-            var view = this._dom, offset = { x: view.offsetLeft, y: view.offsetTop };
-            while (view = view.offsetParent) {
-                offset.x += view.offsetLeft;
-                offset.y += view.offsetTop;
-            }
-            return offset;
+            return getCanvas(getState(DirectorData));
+        },
+        set: function (dom) {
+            setCanvas(dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "dom", {
+    Object.defineProperty(View.prototype, "width", {
         get: function () {
-            return this._dom;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewWebGL.prototype, "width", {
-        get: function () {
-            return this._dom.clientWidth;
+            return getWidth(this.dom);
         },
         set: function (width) {
-            this._dom.width = width;
+            setWidth(width, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "height", {
+    Object.defineProperty(View.prototype, "height", {
         get: function () {
-            return this._dom.clientHeight;
+            return getHeight(this.dom);
         },
         set: function (height) {
-            this._dom.height = height;
+            setHeight(height, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "styleWidth", {
+    Object.defineProperty(View.prototype, "styleWidth", {
         get: function () {
-            return this._dom.style.width;
+            return getStyleWidth(this.dom);
         },
         set: function (styleWidth) {
-            this._dom.style.width = styleWidth;
+            setStyleWidth(styleWidth, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "styleHeight", {
+    Object.defineProperty(View.prototype, "styleHeight", {
         get: function () {
-            return this._dom.style.height;
+            return getStyleHeight(this.dom);
         },
         set: function (styleHeight) {
-            this._dom.style.height = styleHeight;
+            setStyleHeight(styleHeight, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "x", {
+    Object.defineProperty(View.prototype, "x", {
         get: function () {
-            return Number(this._dom.style.left.slice(0, -2));
+            return getX(this.dom);
         },
         set: function (x) {
-            this._dom.style.left = x + "px";
+            setX(x, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(ViewWebGL.prototype, "y", {
+    Object.defineProperty(View.prototype, "y", {
         get: function () {
-            return Number(this._dom.style.top.slice(0, -2));
+            return getY(this.dom);
         },
         set: function (y) {
-            this._dom.style.top = y + "px";
+            setY(y, this.dom).run();
         },
         enumerable: true,
         configurable: true
     });
-    ViewWebGL.prototype.initCanvas = function () {
-        this._dom.style.cssText = "position:absolute;left:0;top:0;";
-    };
-    ViewWebGL.prototype.getContext = function (contextConfig) {
-        return this._dom.getContext("webgl", contextConfig.options) || this._dom.getContext("experimental-webgl", contextConfig.options);
-    };
-    return ViewWebGL;
+    return View;
 }());
-ViewWebGL = __decorate([
-    registerClass("ViewWebGL")
-], ViewWebGL);
-export { ViewWebGL };
+View = __decorate([
+    registerClass("View")
+], View);
+export { View };
 //# sourceMappingURL=View.js.map

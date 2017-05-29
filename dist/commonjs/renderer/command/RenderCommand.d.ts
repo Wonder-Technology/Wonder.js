@@ -1,14 +1,10 @@
-import { WebGLState } from "../state/WebGLState";
-import { EDrawMode } from "../EDrawMode";
-import { ElementBuffer } from "../buffer/ElementBuffer";
-import { ArrayBuffer } from "../buffer/ArrayBuffer";
-export declare abstract class RenderCommand {
-    private _webglState;
-    webglState: WebGLState;
+import { EDrawMode } from "../enum/EDrawMode";
+export declare class RenderCommand {
+    materialIndex: number;
+    shaderIndex: number;
+    geometryIndex: number;
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
     drawMode: EDrawMode;
-    abstract execute(): void;
-    init(): void;
-    dispose(): void;
-    protected drawElements(indexBuffer: ElementBuffer): void;
-    protected drawArray(vertexBuffer: ArrayBuffer): void;
 }

@@ -1,7 +1,7 @@
+import { Map } from "immutable";
 export declare class GPUDetector {
     static getInstance(): any;
     private constructor();
-    readonly gl: any;
     maxTextureUnit: number;
     maxTextureSize: number;
     maxCubemapTextureSize: number;
@@ -16,13 +16,13 @@ export declare class GPUDetector {
     extensionStandardDerivatives: boolean;
     precision: number;
     private _isDetected;
-    detect(): void;
-    private _detectExtension();
-    private _detectCapabilty();
-    private _getExtension(name);
-    private _getMaxBoneCount();
-    private _getMaxAnisotropy();
-    private _detectPrecision();
+    detect(state: Map<any, any>): Map<any, any>;
+    private _detectExtension(state);
+    private _detectCapabilty(state);
+    private _getExtension(name, state);
+    private _getMaxBoneCount(state);
+    private _getMaxAnisotropy(state);
+    private _detectPrecision(state);
 }
 export declare enum EGPUPrecision {
     HIGHP = 0,

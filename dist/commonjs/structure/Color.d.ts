@@ -19,6 +19,7 @@ export declare class Color {
     toString(): string;
     clone(): Color;
     isEqual(color: Color): boolean;
+    setColorByNum(colorVal: string): this;
     private _setColor(colorVal);
     private _getColorValue(color, index, num?);
     private _setHex(hex);

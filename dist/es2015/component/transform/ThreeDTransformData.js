@@ -12,18 +12,24 @@ var ThreeDTransformData = (function () {
     return ThreeDTransformData;
 }());
 export { ThreeDTransformData };
-ThreeDTransformData.transforms = null;
-ThreeDTransformData.transformIndexInArrayBufferTable = null;
 ThreeDTransformData.localToWorldMatrices = null;
 ThreeDTransformData.localPositions = null;
 ThreeDTransformData.localRotations = null;
 ThreeDTransformData.localScales = null;
-ThreeDTransformData.relations = null;
-ThreeDTransformData.size = null;
 ThreeDTransformData.firstDirtyIndex = null;
 ThreeDTransformData.indexInArrayBuffer = null;
-ThreeDTransformData.notUsedIndexArray = null;
-ThreeDTransformData.isTranslateTable = null;
+ThreeDTransformData.notUsedIndexLinkList = null;
+ThreeDTransformData.isTranslateMap = null;
+ThreeDTransformData.parentMap = null;
+ThreeDTransformData.childrenMap = null;
+ThreeDTransformData.cacheMap = null;
+ThreeDTransformData.tempMap = null;
+ThreeDTransformData.transformMap = null;
+ThreeDTransformData.uid = null;
+ThreeDTransformData.disposeCount = null;
+ThreeDTransformData.isClearCacheMap = null;
+ThreeDTransformData.gameObjectMap = null;
+ThreeDTransformData.aliveUIDArray = null;
 ThreeDTransformData.buffer = null;
 var ThreeDTransformRelationData = (function () {
     function ThreeDTransformRelationData() {

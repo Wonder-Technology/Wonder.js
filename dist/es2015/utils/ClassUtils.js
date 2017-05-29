@@ -5,12 +5,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { ensure, it } from "../definition/typescript/decorator/contract";
-import expect from "wonder-expect.js";
+import { expect } from "wonder-expect.js";
 var ClassUtils = (function () {
     function ClassUtils() {
     }
     ClassUtils.getClassNameByInstance = function (obj) {
         return obj.constructor["className"];
+    };
+    ClassUtils.getClassNameByClass = function (_class) {
+        return _class["className"];
     };
     ClassUtils.addClass = function (className, _class) {
         this._classMap[className] = _class;
@@ -27,10 +30,18 @@ export { ClassUtils };
 ClassUtils._classMap = {};
 __decorate([
     ensure(function (className) {
-        it("should get class name from objInstance", function () {
+        it("should exist class name", function () {
             expect(className).exist;
             expect(className !== "").true;
         });
     })
 ], ClassUtils, "getClassNameByInstance", null);
+__decorate([
+    ensure(function (className) {
+        it("should exist class name", function () {
+            expect(className).exist;
+            expect(className !== "").true;
+        });
+    })
+], ClassUtils, "getClassNameByClass", null);
 //# sourceMappingURL=ClassUtils.js.map

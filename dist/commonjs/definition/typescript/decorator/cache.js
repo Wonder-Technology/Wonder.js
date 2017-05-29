@@ -1,21 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function cacheGetter(judgeFunc, returnCacheValueFunc, setCacheFunc) {
-    return function (target, name, descriptor) {
-        var getter = descriptor.get;
-        descriptor.get = function () {
-            var result = null;
-            if (judgeFunc.call(this)) {
-                return returnCacheValueFunc.call(this);
-            }
-            result = getter.call(this);
-            setCacheFunc.call(this, result);
-            return result;
-        };
-        return descriptor;
-    };
-}
-exports.cacheGetter = cacheGetter;
 function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
     return function (target, name, descriptor) {
         var value = descriptor.value;
@@ -36,36 +20,4 @@ function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
     };
 }
 exports.cache = cache;
-function cacheBufferForBufferContainer() {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (dataName) {
-            var result = null;
-            if (this.container.hasChild(dataName)) {
-                return this.container.getChild(dataName);
-            }
-            result = value.call(this, dataName);
-            this.container.addChild(dataName, result);
-            return result;
-        };
-        return descriptor;
-    };
-}
-exports.cacheBufferForBufferContainer = cacheBufferForBufferContainer;
-function cacheBufferForBufferContainerWithFuncParam(setDataNameFuncName) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (dataName) {
-            var result = null, settedDataName = this[setDataNameFuncName](dataName);
-            if (this.container.hasChild(settedDataName)) {
-                return this.container.getChild(settedDataName);
-            }
-            result = value.call(this, dataName);
-            this.container.addChild(settedDataName, result);
-            return result;
-        };
-        return descriptor;
-    };
-}
-exports.cacheBufferForBufferContainerWithFuncParam = cacheBufferForBufferContainerWithFuncParam;
 //# sourceMappingURL=cache.js.map

@@ -1,60 +1,73 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var registerClass_1 = require("../definition/typescript/decorator/registerClass");
-var ArrayUtils_1 = require("wonder-commonlib/dist/commonjs/utils/ArrayUtils");
-var ArrayUtils = (function (_super) {
-    __extends(ArrayUtils, _super);
-    function ArrayUtils() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var JudgeUtils_1 = require("./JudgeUtils");
+exports.deleteVal = function (key, arr) { return arr[key] = void 0; };
+exports.isNotValidVal = function (val) { return JudgeUtils_1.isUndefined(val); };
+exports.deleteBySwap = function (index, array) {
+    var last = array.length - 1, temp = null;
+    if (last === -1) {
+        return null;
     }
-    ArrayUtils.hasRepeatItems = function (arr) {
-        var noRepeatArr = [], hasRepeat = false;
-        for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
-            var item = arr_1[_i];
-            if (!item) {
-                continue;
-            }
-            if (this.contain(noRepeatArr, item)) {
-                hasRepeat = true;
-                break;
-            }
-            noRepeatArr.push(item);
+    temp = array[last];
+    array[last] = array[index];
+    array[index] = temp;
+    array.pop();
+};
+exports.hasDuplicateItems = function (arr) {
+    var noRepeatArr = [], hasRepeat = false;
+    for (var _i = 0, arr_1 = arr; _i < arr_1.length; _i++) {
+        var item = arr_1[_i];
+        if (!item) {
+            continue;
         }
-        return hasRepeat;
-    };
-    ArrayUtils.contain = function (arr, item) {
-        var c = null;
-        for (var i = 0, len = arr.length; i < len; i++) {
-            c = arr[i];
-            if (item.uid && c.uid && item.uid == c.uid) {
-                return true;
-            }
-            else if (item === c) {
-                return true;
-            }
+        if (_contain(noRepeatArr, item)) {
+            hasRepeat = true;
+            break;
         }
-        return false;
-    };
-    return ArrayUtils;
-}(ArrayUtils_1.ArrayUtils));
-ArrayUtils = __decorate([
-    registerClass_1.registerClass("ArrayUtils")
-], ArrayUtils);
-exports.ArrayUtils = ArrayUtils;
-//# sourceMappingURL=ArrayUtils.js.map
+        noRepeatArr.push(item);
+    }
+    return hasRepeat;
+};
+var _contain = function (arr, item) {
+    var c = null;
+    for (var i = 0, len = arr.length; i < len; i++) {
+        c = arr[i];
+        if (item === c) {
+            return true;
+        }
+    }
+    return false;
+};
+exports.removeDuplicateItems = function (arr) {
+    var resultArr = [];
+    for (var _i = 0, arr_2 = arr; _i < arr_2.length; _i++) {
+        var ele = arr_2[_i];
+        if (_contain(resultArr, ele)) {
+            continue;
+        }
+        resultArr.push(ele);
+    }
+    ;
+    return resultArr;
+};
+exports.removeItem = function (arr, item) {
+    return exports.filter(arr, function (ele) {
+        return ele !== item;
+    });
+};
+exports.filter = function (arr, func) {
+    var result = [];
+    for (var _i = 0, arr_3 = arr; _i < arr_3.length; _i++) {
+        var ele = arr_3[_i];
+        if (func(ele)) {
+            result.push(ele);
+        }
+    }
+    return result;
+};
+exports.forEach = function (arr, func) {
+    for (var i = 0, len = arr.length; i < len; i++) {
+        func(arr[i], i);
+    }
+};
+//# sourceMappingURL=arrayUtils.js.map

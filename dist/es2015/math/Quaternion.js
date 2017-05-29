@@ -214,6 +214,7 @@ var Quaternion = Quaternion_1 = (function () {
         this.y = y;
         this.z = z;
         this.w = w;
+        return this;
     };
     Quaternion.prototype.sub = function (quat) {
         var result = quat.clone().invert().multiply(this);

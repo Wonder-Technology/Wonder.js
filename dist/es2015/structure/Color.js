@@ -5,11 +5,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { ensureGetter, assert } from "../definition/typescript/decorator/contract";
+import { ensureGetter, assert, requireCheck, it } from "../definition/typescript/decorator/contract";
 import { Log } from "../utils/Log";
 import { Vector3 } from "../math/Vector3";
 import { Vector4 } from "../math/Vector4";
 import { cache } from "../definition/typescript/decorator/cache";
+import { expect } from "wonder-expect.js";
+var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
 var Color = Color_1 = (function () {
     function Color() {
         this._r = null;
@@ -108,8 +110,14 @@ var Color = Color_1 = (function () {
     Color.prototype.isEqual = function (color) {
         return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
     };
+    Color.prototype.setColorByNum = function (colorVal) {
+        var color = null;
+        this._colorString = colorVal;
+        color = REGEX_NUM.exec(colorVal);
+        this._setHex(parseInt(color[1], 16));
+        return this;
+    };
     Color.prototype._setColor = function (colorVal) {
-        var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
         var color = null;
         if (REGEX_RGBA.test(colorVal)) {
             color = REGEX_RGBA.exec(colorVal);
@@ -144,9 +152,7 @@ var Color = Color_1 = (function () {
             return this;
         }
         if (REGEX_NUM.test(colorVal)) {
-            color = REGEX_NUM.exec(colorVal);
-            this._setHex(parseInt(color[1], 16));
-            return this;
+            return this.setColorByNum(colorVal);
         }
     };
     Color.prototype._getColorValue = function (color, index, num) {
@@ -205,6 +211,13 @@ __decorate([
         this._colorVec4Cache = result;
     })
 ], Color.prototype, "toVector4", null);
+__decorate([
+    requireCheck(function (colorVal) {
+        it("color should be #xxxxxx", function () {
+            expect(REGEX_NUM.test(colorVal)).true;
+        });
+    })
+], Color.prototype, "setColorByNum", null);
 Color = Color_1 = __decorate([
     registerClass("Color")
 ], Color);

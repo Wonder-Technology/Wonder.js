@@ -143,6 +143,8 @@ export class Vector3 {
             this.y = v.y;
             this.z = v.z;
         }
+
+        return this;
     }
 
     public sub(v: Vector3): Vector3 {

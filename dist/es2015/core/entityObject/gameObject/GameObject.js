@@ -1,13 +1,3 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -15,47 +5,74 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
-import { EntityObject } from "../EntityObject";
-import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
-import { cloneAttributeAsBasicType } from "../../../definition/typescript/decorator/clone";
-import { RenderUtils } from "../../../utils/RenderUtils";
-var GameObject = (function (_super) {
-    __extends(GameObject, _super);
+import { addChild, addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem, isAlive, removeChild } from "./GameObjectSystem";
+import { GameObjectData } from "./GameObjectData";
+import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
+import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
+import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
+import { requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { checkGameObjectShouldAlive } from "../../../utils/contractUtils";
+import { getState } from "../../DirectorSystem";
+import { DirectorData } from "../../DirectorData";
+var GameObject = (function () {
     function GameObject() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.renderGroup = 0;
-        _this.renderPriority = 0;
-        _this.isVisible = true;
-        return _this;
+        this.uid = null;
     }
-    GameObject.create = function () {
-        var obj = new this();
-        obj.initWhenCreate();
-        return obj;
-    };
-    GameObject.prototype.initWhenCreate = function () {
-        _super.prototype.initWhenCreate.call(this);
-        this.name = "gameObject" + String(this.uid);
-    };
-    GameObject.prototype.createTransform = function () {
-        return ThreeDTransform.create();
-    };
-    GameObject.prototype.getRenderList = function () {
-        return RenderUtils.getGameObjectRenderList(this.getChildren());
-    };
     return GameObject;
-}(EntityObject));
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "renderGroup", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "renderPriority", void 0);
-__decorate([
-    cloneAttributeAsBasicType()
-], GameObject.prototype, "isVisible", void 0);
+}());
 GameObject = __decorate([
     registerClass("GameObject")
 ], GameObject);
 export { GameObject };
+export var createGameObject = function () { return create(createThreeDTransform(ThreeDTransformData), GameObjectData); };
+export var addGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    addComponent(gameObject, component, GameObjectData);
+});
+export var disposeGameObject = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    dispose(gameObject, ThreeDTransformData, GameObjectData);
+});
+export var initGameObject = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    initGameObjectSystem(gameObject, getState(DirectorData), GameObjectData);
+});
+export var disposeGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    disposeComponent(gameObject, component, GameObjectData);
+});
+export var getGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, _class) {
+    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+export var getGameObjectTransform = function (gameObject) {
+    return getTransform(gameObject, GameObjectData);
+};
+export var hasGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+}, function (gameObject, _class) {
+    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+export var isGameObjectAlive = function (gameObject) {
+    return isAlive(gameObject, GameObjectData);
+};
+export var addGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    addChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+export var removeGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+export var hasGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    return hasChild(gameObject, child, GameObjectData);
+});
 //# sourceMappingURL=GameObject.js.map

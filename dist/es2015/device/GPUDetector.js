@@ -6,8 +6,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-import { DeviceManager } from "./DeviceManager";
 import { Log } from "../utils/Log";
+import { getGL } from "./DeviceManagerSystem";
+import { DeviceManagerData } from "./DeviceManagerData";
 var GPUDetector = (function () {
     function GPUDetector() {
         this.maxTextureUnit = null;
@@ -26,38 +27,32 @@ var GPUDetector = (function () {
         this._isDetected = false;
     }
     GPUDetector.getInstance = function () { };
-    Object.defineProperty(GPUDetector.prototype, "gl", {
-        get: function () {
-            return DeviceManager.getInstance().gl;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    GPUDetector.prototype.detect = function () {
+    GPUDetector.prototype.detect = function (state) {
         this._isDetected = true;
-        this._detectExtension();
-        this._detectCapabilty();
+        this._detectExtension(state);
+        this._detectCapabilty(state);
+        return state;
     };
-    GPUDetector.prototype._detectExtension = function () {
-        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc");
-        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic");
-        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays");
-        this.extensionUintIndices = this._getExtension("element_index_uint");
-        this.extensionDepthTexture = this._getExtension("depth_texture");
-        this.extensionVAO = this._getExtension("vao");
-        this.extensionStandardDerivatives = this._getExtension("standard_derivatives");
+    GPUDetector.prototype._detectExtension = function (state) {
+        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state);
+        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state);
+        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state);
+        this.extensionUintIndices = this._getExtension("element_index_uint", state);
+        this.extensionDepthTexture = this._getExtension("depth_texture", state);
+        this.extensionVAO = this._getExtension("vao", state);
+        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state);
     };
-    GPUDetector.prototype._detectCapabilty = function () {
-        var gl = this.gl;
+    GPUDetector.prototype._detectCapabilty = function (state) {
+        var gl = getGL(DeviceManagerData, state);
         this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
         this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-        this.maxAnisotropy = this._getMaxAnisotropy();
-        this.maxBoneCount = this._getMaxBoneCount();
-        this._detectPrecision();
+        this.maxAnisotropy = this._getMaxAnisotropy(state);
+        this.maxBoneCount = this._getMaxBoneCount(state);
+        this._detectPrecision(state);
     };
-    GPUDetector.prototype._getExtension = function (name) {
-        var extension, gl = this.gl;
+    GPUDetector.prototype._getExtension = function (name, state) {
+        var extension, gl = getGL(DeviceManagerData, state);
         switch (name) {
             case "EXT_texture_filter_anisotropic":
                 extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
@@ -89,8 +84,8 @@ var GPUDetector = (function () {
         }
         return extension;
     };
-    GPUDetector.prototype._getMaxBoneCount = function () {
-        var gl = this.gl, numUniforms = null, maxBoneCount = null;
+    GPUDetector.prototype._getMaxBoneCount = function (state) {
+        var gl = getGL(DeviceManagerData, state), numUniforms = null, maxBoneCount = null;
         numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
         numUniforms -= 4 * 4;
         numUniforms -= 1;
@@ -98,12 +93,12 @@ var GPUDetector = (function () {
         maxBoneCount = Math.floor(numUniforms / 4);
         return Math.min(maxBoneCount, 128);
     };
-    GPUDetector.prototype._getMaxAnisotropy = function () {
-        var extension = this.extensionTextureFilterAnisotropic, gl = this.gl;
+    GPUDetector.prototype._getMaxAnisotropy = function (state) {
+        var extension = this.extensionTextureFilterAnisotropic, gl = getGL(DeviceManagerData, state);
         return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     };
-    GPUDetector.prototype._detectPrecision = function () {
-        var gl = this.gl;
+    GPUDetector.prototype._detectPrecision = function (state) {
+        var gl = getGL(DeviceManagerData, state);
         if (!gl.getShaderPrecisionFormat) {
             this.precision = EGPUPrecision.HIGHP;
             return;

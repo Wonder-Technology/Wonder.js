@@ -3,26 +3,76 @@ import "wonder-frp/dist/commonjs/stream/IgnoreElementsStream";
 import "wonder-frp/dist/commonjs/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-import { DeviceManager } from "../device/DeviceManager";
-import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
-import { Renderer } from "../renderer/renderer/Renderer";
+// import { DeviceManager } from "../device/DeviceManager";
+// import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
+// import { Renderer } from "../renderer/renderer/Renderer";
 import { IDisposable } from "wonder-frp/dist/commonjs/Disposable/IDisposable";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
-import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
+// import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
 import { callFunc, intervalRequest } from "wonder-frp/dist/commonjs/global/Operator";
-import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
-import { BasicState } from "../renderer/state/BasicState";
-import { EventManager } from "../event/EventManager";
-import { CustomEvent } from "../event/object/CustomEvent";
-import { EEngineEvent } from "../event/EEngineEvent";
-
-enum EGameState {
-    NORMAL,
-    STOP,
-    PAUSE
-}
-
-//todo invoke scene.onExit
+// import { GameObjectScene } from "./entityObject/scene/gameObjectScene/GameObjectScene";
+// import { BasicState } from "../renderer/state/BasicState";
+// import { EventManager } from "../event/EventManager";
+// import { CustomEvent } from "../event/object/CustomEvent";
+// import { EEngineEvent } from "../event/EEngineEvent";
+import {
+    init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
+} from "../component/transform/ThreeDTransformSystem";
+import { getState, setState } from "./DirectorSystem";
+import { DirectorData } from "./DirectorData";
+import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
+import { Map } from "immutable";
+import { GlobalTempData } from "../definition/GlobalTempData";
+import { Scene } from "./entityObject/scene/Scene";
+import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
+import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
+import {
+    addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
+    init as initGeometry, initData as initGeometryData, isIndicesBufferNeed32BitsByData
+} from "../component/geometry/GeometrySystem";
+import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
+import { GeometryData } from "../component/geometry/GeometryData";
+import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
+import { ShaderData } from "../renderer/shader/ShaderData";
+import { Geometry } from "../component/geometry/Geometry";
+import { DataBufferConfig } from "../config/DataBufferConfig";
+import {
+    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle,
+    initData as initMaterialData
+} from "../component/material/MaterialSystem";
+import { MaterialData } from "../component/material/MaterialData";
+import {
+    addAddComponentHandle as addMeshRendererAddComponentHandle,
+    addDisposeHandle as addMeshRendererDisposeHandle,
+    initData as initMeshRendererData
+} from "../component/renderer/MeshRendererSystem";
+import { MeshRendererData } from "../component/renderer/MeshRendererData";
+import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
+import { TagData } from "../component/tag/TagData";
+import { Tag } from "../component/tag/Tag";
+import { ThreeDTransform } from "../component/transform/ThreeDTransform";
+import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
+import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
+import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
+import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
+import { Material } from "../component/material/Material";
+import { MeshRenderer } from "../component/renderer/MeshRenderer";
+import {
+    addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController,
+    update as updateCameraController
+} from "../component/camera/CameraControllerSystem";
+import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
+import { CameraData } from "../component/camera/CameraData";
+import { CameraControllerData } from "../component/camera/CameraControllerData";
+import { SceneData } from "./entityObject/scene/SceneData";
+import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
+import { CameraController } from "../component/camera/CameraController";
+import { DeviceManager } from "../device/DeviceManager";
+import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../component/ComponentSystem";
+import { material_config } from "../renderer/data/material_config";
+import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
+import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
+import { DeviceManagerData } from "../device/DeviceManagerData";
 
 @singleton(true)
 @registerClass("Director")
@@ -31,81 +81,28 @@ export class Director {
 
     private constructor() { }
 
-    get gameTime() {
-        return this._timeController.gameTime;
-    }
-
-    get fps() {
-        return this._timeController.fps;
-    }
-
-    get isNormal() {
-        return this._gameState === EGameState.NORMAL;
-    }
-
-    get isStop() {
-        return this._gameState === EGameState.STOP;
-    }
-
-    get isPause() {
-        return this._gameState === EGameState.PAUSE;
-    }
-
-    get isTimeChange() {
-        return this._timeController.isTimeChange;
-    }
-
-    get elapsed() {
-        return this._timeController.elapsed;
-    }
-
     get view() {
         return DeviceManager.getInstance().view;
     }
 
-    public scene: SceneDispatcher = null;
-    public renderer: Renderer = null;
+    // public scene: SceneDispatcher = null;
+    public scene: Scene = create(GameObjectData);
+    // public renderer: Renderer = null;
 
     private _gameLoop: IDisposable = null;
-    private _gameState: EGameState = EGameState.NORMAL;
+    // private _gameState: EGameState = EGameState.NORMAL;
     private _timeController: DirectorTimeController = DirectorTimeController.create();
-
+    // private _transformSystem: ThreeDTransformSystem = ThreeDTransformSystem.create();
 
     public initWhenCreate() {
-        this.scene = SceneDispatcher.create();
-        this.renderer = WebGLRenderer.create();
+        // this.scene = SceneDispatcher.create();
+        // this.renderer = WebGLRenderer.create();
     }
 
     public start() {
-        this._gameState = EGameState.NORMAL;
+        // this._gameState = EGameState.NORMAL;
 
         this._startLoop();
-    }
-
-    public stop() {
-        this._gameLoop && this._gameLoop.dispose();
-        this._gameState = EGameState.STOP;
-        this._timeController.stop();
-    }
-
-    public pause() {
-        if (this._gameState === EGameState.PAUSE) {
-            return;
-        }
-
-        this._gameState = EGameState.PAUSE;
-        this._timeController.pause();
-    }
-
-    public resume() {
-        this._gameState = EGameState.NORMAL;
-        this._timeController.resume();
-    }
-
-    //todo add dispose
-
-    public getDeltaTime() {
-        return this._timeController.deltaTime;
     }
 
     private _startLoop() {
@@ -122,7 +119,7 @@ export class Director {
                  I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
                  so it need polyfill
                  */
-                self._loopBody(time);
+                setState(self._loopBody(time, getState(DirectorData)), DirectorData).run();
                 // }, (e) => {
                 //     console.error(e);
                 //     throw e;
@@ -132,67 +129,149 @@ export class Director {
 
     private _buildInitStream() {
         return callFunc(() => {
-            this._init();
+            setState(this._init(getState(DirectorData)), DirectorData);
         }, this);
     }
 
-    private _init() {
-        this._initGameObjectScene();
+    private _init(state: Map<any, any>) {
+        var resultState = state;
+
+        // resultState = this._initGameObjectScene(resultState);
+        resultState = this._initSystem(resultState);
+
+        resultState = this._initRenderer(resultState);
+
+        // this.renderer.init();
+
+        // this._timeController.start();
+
+        return resultState;
     }
 
-    private _initGameObjectScene() {
-        var gameObjectScene: GameObjectScene = this.scene.gameObjectScene;
+    // private _initGameObjectScene(state: Map<any, any>) {
+    //     var resultState = state,
+    //         gameObjectScene: GameObjectScene = this.scene.gameObjectScene;
+    //
+    //     gameObjectScene.init(resultState);
+    //
+    //     return resultState;
+    // }
 
-        gameObjectScene.init();
+    private _initSystem(state: Map<any, any>) {
+        var resultState = initTransform(GlobalTempData, ThreeDTransformData, state);
 
-        //todo not put here?
-        this.renderer.init();
+        resultState = initGeometry(GeometryData, state);
 
-        this._timeController.start();
+        resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
+
+        return resultState;
+    }
+
+    private _initRenderer(state: Map<any, any>) {
+        var resultState = initRenderer(state);
+
+        return resultState;
     }
 
     private _buildLoopStream() {
         return intervalRequest();
     }
 
-    private _loopBody(time) {
+    private _loopBody(time: number, state: Map<any, any>) {
         var elapsed: number = null;
 
-        if (this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP) {
-            return false;
-        }
+        // if (this._gameState === EGameState.PAUSE || this._gameState === EGameState.STOP) {
+        //     return false;
+        // }
 
-        elapsed = this._timeController.computeElapseTime(time);
+        // elapsed = this._timeController.computeElapseTime(time);
 
-        this._run(elapsed);
-
-        return true;
+        return this._run(elapsed, state);
     }
 
-    private _run(elapsed: number) {
-        this._timeController.tick(elapsed);
+    private _run(elapsed: number, state: Map<any, any>) {
+        // this._timeController.tick(elapsed);
 
-        EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
+        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
-        this._update(elapsed);
+        var resultState = this._update(elapsed, state);
 
-        this._render();
+        resultState = this._render(state);
 
-        EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
+        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
+
+        return resultState;
     }
 
-    private _update(elapsed: number) {
-        this.scene.gameObjectScene.update(elapsed);
+    private _update(elapsed: number, state: Map<any, any>) {
+        // this.scene.gameObjectScene.update(elapsed);
+
+        var resultState = this._updateSystem(elapsed, state);
+
+        return resultState;
     }
 
-    private _render() {
-        this.scene.gameObjectScene.render(this.renderer);
+    private _render(state: Map<any, any>) {
+        var resultState = state;
 
-        this.renderer.clear();
+        // this.scene.gameObjectScene.render(this.renderer);
+        //
+        // this.renderer.clear();
+        //
+        // if (this.renderer.hasCommand()) {
+        //     this.renderer.webglState = BasicState.create();
+        //     this.renderer.render();
+        // }
 
-        if (this.renderer.hasCommand()) {
-            this.renderer.webglState = BasicState.create();
-            this.renderer.render();
-        }
+        resultState = clear(state);
+
+        resultState = render(state);
+
+        return resultState
+    }
+
+    private _updateSystem(elapsed: number, state: Map<any, any>) {
+        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
+
+        resultState = updateCameraController(PerspectiveCameraData, CameraData, CameraControllerData);
+
+        return resultState;
     }
 }
+
+initShaderData(ShaderData);
+
+initGeometryData(DataBufferConfig, GeometryData);
+addGeometryAddComponentHandle(Geometry);
+addGeometryDisposeHandle(Geometry);
+addGeometryInitHandle(Geometry);
+
+initMaterialData(MaterialData);
+addMaterialAddComponentHandle(Material);
+addMaterialDisposeHandle(Material);
+addMaterialInitHandle(Material);
+
+initMeshRendererData(MeshRendererData);
+addMeshRendererAddComponentHandle(MeshRenderer);
+addMeshRendererDisposeHandle(MeshRenderer);
+
+initTagData(TagData);
+addTagAddComponentHandle(Tag);
+addTagDisposeHandle(Tag);
+
+initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+addThreeDTransformAddComponentHandle(ThreeDTransform);
+addThreeDTransformDisposeHandle(ThreeDTransform);
+
+initArrayBufferData(ArrayBufferData);
+
+initIndexBufferData(IndexBufferData);
+
+initSceneData(SceneData);
+
+initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+addCameraControllerAddComponentHandle(CameraController);
+addCameraControllerDisposeHandle(CameraController);
+
+initGameObjectData(GameObjectData);
+
