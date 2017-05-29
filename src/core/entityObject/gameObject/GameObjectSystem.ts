@@ -4,7 +4,7 @@ import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/C
 import { createMap, deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { setParent } from "../../../component/transform/ThreeDTransformSystem";
 import { GameObjectComponentData } from "./GameObjectData";
-import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
@@ -13,33 +13,39 @@ import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
-import { deleteMapVal } from "../../../utils/mapUtils";
 import { removeChildEntity } from "../../../utils/entityUtils";
 import { chrome, firefox } from "bowser";
 import { error, Log } from "../../../utils/Log";
-import { isDisposeTooManyComponents, reAllocateGameObjectMap, setMapVal } from "../../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateGameObjectMap } from "../../../utils/memoryUtils";
 
-export var create = (transform:ThreeDTransform, GameObjectData:any) => {
+export var create = ensureFunc((gameObject:GameObject, transform:ThreeDTransform, GameObjectData:any) => {
+    it("componentMap should has data", () => {
+        expect(_getComponentData(gameObject.uid, GameObjectData)).exist;
+    });
+}, (transform:ThreeDTransform, GameObjectData:any) => {
     var gameObject:GameObject = new GameObject(),
         uid = _buildUID(GameObjectData);
 
     gameObject.uid = uid;
 
-    GameObjectData.isAliveMap.set(uid, true);
+    GameObjectData.aliveUIDArray.push(uid);
 
-    if(!!transform){
+    if(!transform){
+        _setComponentData(uid, {}, GameObjectData);
+    }
+    else{
         addComponent(gameObject, transform, GameObjectData);
     }
 
     return gameObject;
-}
+})
 
 var _buildUID = (GameObjectData:any) => {
     return GameObjectData.uid++;
 }
 
 export var isAlive = (entity:IUIDEntity, GameObjectData:any) => {
-    return GameObjectData.isAliveMap.get(entity.uid) === true;
+    return isValidMapValue(_getComponentData(entity.uid, GameObjectData));
 }
 
 export var initGameObject = (gameObject:GameObject, state:MapImmutable<any, any>, GameObjectData:any) => {
@@ -56,23 +62,21 @@ export var initGameObject = (gameObject:GameObject, state:MapImmutable<any, any>
 export var dispose = (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData:any) => {
     var uid = entity.uid;
 
-    deleteMapVal(uid, GameObjectData.isAliveMap);
-
     let parent = _getParent(uid, GameObjectData);
 
+    //todo move down
     if(_isParentExist(parent)){
         _removeFromChildrenMap(parent.uid, uid, GameObjectData);
     }
 
     _diposeAllDatas(entity, GameObjectData);
 
+    GameObjectData.disposeCount += 1;
+
     if(isDisposeTooManyComponents(GameObjectData.disposeCount)){
-        reAllocateGameObjectMap(GameObjectData.isAliveMap, GameObjectData);
+        reAllocateGameObjectMap(GameObjectData);
 
         GameObjectData.disposeCount = 0;
-    }
-    else{
-        GameObjectData.disposeCount += 1;
     }
 }
 
@@ -128,6 +132,9 @@ var _disposeAllComponents = (gameObject:GameObject, GameObjectData:any) => {
 }
 
 export var addComponent = requireCheckFunc((gameObject:GameObject, component: Component, GameObjectData:any) => {
+    it("component should exist", () => {
+        expect(component).exist;
+    });
     it("should not has this type of component, please dispose it", () => {
         expect(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
     });
@@ -285,9 +292,9 @@ export var hasChild = (gameObject:GameObject, child:GameObject, GameObjectData:a
 export var initData = (GameObjectData:any) => {
     GameObjectData.uid = 0;
 
-    //todo compatible with mobile: mobile not support Map, should use object fallback
-    GameObjectData.isAliveMap = new Map();
     GameObjectData.componentMap = createMap();
     GameObjectData.parentMap = createMap();
     GameObjectData.childrenMap = createMap();
+
+    GameObjectData.aliveUIDArray = [];
 }

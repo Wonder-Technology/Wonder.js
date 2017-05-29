@@ -1,4 +1,4 @@
-import { createMap, isValidMapValue } from "./objectUtils";
+import { createMap, isNotValidMapValue, isValidMapValue } from "./objectUtils";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { clearCacheMap } from "../component/transform/cacheSystem";
 import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
@@ -9,10 +9,16 @@ export var isDisposeTooManyComponents = (disposeCount:number) => {
     return disposeCount >= MemoryConfig.maxComponentDisposeCount;
 }
 
-export var setMapVal = (map:object, uid:number, val:any) => {
+var setMapVal = (map:object, uid:number, val:any) => {
     if(isValidMapValue(val)){
         map[uid] = val;
     }
+}
+
+var _setMapVal = (map:object, uid:number, val:any) => {
+    // if(isValidMapValue(val)){
+        map[uid] = val;
+    // }
 }
 
 export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, ThreeDTransformData:any) => {
@@ -48,29 +54,39 @@ export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, T
     ThreeDTransformData.tempMap = newTempMap;
 }
 
-export var reAllocateGameObjectMap = (forEachMap:Map<number, boolean>, GameObjectData:any) => {
+export var reAllocateGameObjectMap = (GameObjectData:any) => {
     let val: any = null,
         newParentMap = {},
         newChildrenMap = {},
         newComponentMap = {},
+        newAliveUIDArray:Array<number> = [],
+        aliveUIDArray = GameObjectData.aliveUIDArray,
         parentMap = GameObjectData.parentMap,
         childrenMap = GameObjectData.childrenMap,
         componentMap = GameObjectData.componentMap;
 
-    GameObjectData.isAliveMap.forEach(function (value, uid) {
+    for(let uid of aliveUIDArray){
+        val = componentMap[uid];
+
+        if(isNotValidMapValue(val)){
+            continue;
+        }
+
+        newAliveUIDArray.push(uid);
+
+        _setMapVal(newComponentMap, uid, val);
+
         val = parentMap[uid];
-        setMapVal(newParentMap, uid, val);
+        _setMapVal(newParentMap, uid, val);
 
         val = childrenMap[uid];
-        setMapVal(newChildrenMap, uid, val);
-
-        val = componentMap[uid];
-        setMapVal(newComponentMap, uid, val);
-    })
+        _setMapVal(newChildrenMap, uid, val);
+    }
 
     GameObjectData.parentMap = newParentMap;
     GameObjectData.childrenMap = newChildrenMap;
     GameObjectData.componentMap = newComponentMap;
+    GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
 
 export var reAllocateTagMap = (TagData:any) => {

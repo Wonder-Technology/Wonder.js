@@ -5,16 +5,18 @@ export class GameObjectData{
     public static uid:number = null;
     public static disposeCount:number = null;
 
-    public static isAliveMap:GameObjectIsAliveMap = null;
+    // public static isAliveMap:GameObjectIsAliveMap = null;
 
     public static componentMap:GameObjectComponentMap = null;
     public static parentMap:GameObjectParentMap = null;
     public static childrenMap:GameObjectChildrenMap = null;
 
+    public static aliveUIDArray:Array<number> = null;
+
     //todo add name map
 }
 
-export type GameObjectIsAliveMap = Map<number, boolean>;
+// export type GameObjectIsAliveMap = Map<number, boolean>;
 
 export type GameObjectComponentMap = {
     [uid:number]: GameObjectComponentData

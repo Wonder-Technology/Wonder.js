@@ -48,12 +48,26 @@ describe("GameObject", function() {
             testTool.closeContractCheck();
         });
 
-        it("should not alive", function(){
-            expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
+        describe("test alive", function() {
+            beforeEach(function(){
 
-            gameObjectTool.dispose(gameObject);
+            });
 
-            expect(gameObjectTool.isAlive(gameObject)).toBeFalsy();
+            it("disposed one should not alive", function(){
+                expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
+
+                gameObjectTool.dispose(gameObject);
+
+                expect(gameObjectTool.isAlive(gameObject)).toBeFalsy();
+            });
+            it("the children of disposed one should not alive", function () {
+                expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
+
+                gameObjectTool.dispose(gameObject);
+
+                expect(gameObjectTool.isAlive(child)).toBeFalsy();
+                expect(gameObjectTool.isAlive(child11)).toBeFalsy();
+            });
         });
 
         it("its parent should remove it", function () {
