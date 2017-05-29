@@ -5,6 +5,7 @@ var karma = require("karma").server;
 var fs = require("fs-extra");
 
 var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
+var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
 
 
 gulp.task("testByKarma", function (done) {
@@ -47,3 +48,14 @@ gulp.task("watchWDFile", function(){
 
 
 gulp.task("test", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "testByKarma"]));
+
+
+
+
+gulp.task("testInCI", function (done) {
+    karma.start({
+        configFile: ciKarmaConfPath,
+        singleRun:true,
+        autoWatch:false
+    }, done);
+});
