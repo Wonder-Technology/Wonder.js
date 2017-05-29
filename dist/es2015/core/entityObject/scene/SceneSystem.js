@@ -1,5 +1,5 @@
 import { create as createGameObject, addChild as addGameObject, removeChild as removeGameObject, hasComponent } from "../gameObject/GameObjectSystem";
-import { getTypeIDFromClass } from "../../../component/ComponentTypeIdManager";
+import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
 import { CameraController } from "../../../component/camera/CameraController";
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";

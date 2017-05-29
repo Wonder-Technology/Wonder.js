@@ -8,7 +8,7 @@ import { getDrawMode } from "../../component/geometry/GeometrySystem";
 import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../../component/transform/ThreeDTransformSystem";
 import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
 import { getPMatrix, getWorldToCameraMatrix } from "../../component/camera/CameraControllerSystem";
-import { getTypeIDFromClass } from "../../component/ComponentTypeIdManager";
+import { getTypeIDFromClass } from "../../component/ComponentTypeIDManager";
 import { CameraController } from "../../component/camera/CameraController";
 import { forEach } from "../../utils/arrayUtils";
 export var createRenderCommands = requireCheckFunc(curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {

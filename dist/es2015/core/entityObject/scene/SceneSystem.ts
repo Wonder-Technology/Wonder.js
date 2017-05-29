@@ -3,7 +3,7 @@ import {
     hasComponent
 } from "../gameObject/GameObjectSystem";
 import { GameObject } from "../gameObject/GameObject";
-import { getTypeIDFromClass } from "../../../component/ComponentTypeIdManager";
+import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
 import { CameraController } from "../../../component/camera/CameraController";
 import { Scene } from "./Scene";
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";

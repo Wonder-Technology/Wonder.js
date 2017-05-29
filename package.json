@@ -11,8 +11,6 @@
     "codecov": "cat test/coverage/*/lcov.info | codecov"
   },
   "devDependencies": {
-
-    "@types/jquery": "^2.0.41",
     "codecov.io": "^0.1.6",
     "del": "^2.2.2",
     "express": "^4.13.3",

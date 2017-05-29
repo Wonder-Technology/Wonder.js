@@ -375,7 +375,7 @@
 	        }
 	    }
 	}
-	function it$1(message, func, context) {
+	function it(message, func, context) {
 	    try {
 	        if (arguments.length === 3) {
 	            func.call(context, null);
@@ -2326,7 +2326,7 @@
 	ClassUtils._classMap = {};
 	__decorate([
 	    ensure(function (className) {
-	        it$1("should exist class name", function () {
+	        it("should exist class name", function () {
 	            index_1(className).exist;
 	            index_1(className !== "").true;
 	        });
@@ -2334,7 +2334,7 @@
 	], ClassUtils, "getClassNameByInstance", null);
 	__decorate([
 	    ensure(function (className) {
-	        it$1("should exist class name", function () {
+	        it("should exist class name", function () {
 	            index_1(className).exist;
 	            index_1(className !== "").true;
 	        });
@@ -2402,12 +2402,12 @@
 	};
 	var _isHandleNotExist = function (handle) { return isNotValidMapValue(handle); };
 	var checkComponentShouldAlive = function (component, data, isAlive) {
-	    it$1("component should alive", function () {
+	    it("component should alive", function () {
 	        index_1(isAlive(component, data)).true;
 	    });
 	};
 	var addComponentToGameObjectMap = requireCheckFunc(function (gameObjectMap, index, gameObject) {
-	    it$1("component should not exist in gameObject", function () {
+	    it("component should not exist in gameObject", function () {
 	        index_1(gameObjectMap[index]).not.exist;
 	    });
 	}, function (gameObjectMap, index, gameObject) {
@@ -2420,7 +2420,7 @@
 	    return ComponentData$$1.index++;
 	};
 	var deleteComponentBySwap = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
-	    it$1("targetIndex should >= 0", function () {
+	    it("targetIndex should >= 0", function () {
 	        index_1(targetIndex).gte(0);
 	    });
 	}, function (sourceIndex, targetIndex, componentMap) {
@@ -2433,13 +2433,13 @@
 	};
 
 	var checkIndexShouldEqualCount = function (ComponentData) {
-	    it$1("ComponentData.index should === ComponentData.count", function () {
+	    it("ComponentData.index should === ComponentData.count", function () {
 	        index_1(ComponentData.index).equal(ComponentData.count);
 	    });
-	    it$1("ComponentData.index should >= 0", function () {
+	    it("ComponentData.index should >= 0", function () {
 	        index_1(ComponentData.index).gte(0);
 	    });
-	    it$1("ComponentData.count should >= 0", function () {
+	    it("ComponentData.count should >= 0", function () {
 	        index_1(ComponentData.count).gte(0);
 	    });
 	};
@@ -4321,7 +4321,7 @@
 	}());
 	__decorate([
 	    requireCheck(function (angle, x, y, z) {
-	        it$1("axis's component shouldn't all be zero", function () {
+	        it("axis's component shouldn't all be zero", function () {
 	            index_1(x === 0 && y === 0 && z === 0).false;
 	        });
 	    })
@@ -4344,16 +4344,16 @@
 	var Matrix4_1;
 
 	var updateProjectionMatrix$1 = requireCheckFunc(function (index, PerspectiveCameraData, CameraData) {
-	    it$1("fovy should exist", function () {
+	    it("fovy should exist", function () {
 	        index_1(isValidMapValue(PerspectiveCameraData.fovyMap[index])).true;
 	    });
-	    it$1("aspect should exist", function () {
+	    it("aspect should exist", function () {
 	        index_1(isValidMapValue(PerspectiveCameraData.aspectMap[index])).true;
 	    });
-	    it$1("near should exist", function () {
+	    it("near should exist", function () {
 	        index_1(isValidMapValue(CameraData.nearMap[index])).true;
 	    });
-	    it$1("far should exist", function () {
+	    it("far should exist", function () {
 	        index_1(isValidMapValue(CameraData.farMap[index])).true;
 	    });
 	}, function (index, PerspectiveCameraData, CameraData) {
@@ -6018,10 +6018,10 @@
 	});
 
 	var getUID = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-	    it$1("indexInArrayBuffer should exist", function () {
+	    it("indexInArrayBuffer should exist", function () {
 	        index_1(indexInArrayBuffer).exist;
 	    });
-	    it$1("transform should exist", function () {
+	    it("transform should exist", function () {
 	        index_1(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
 	    });
 	}, function (indexInArrayBuffer, ThreeDTransformData) {
@@ -6043,14 +6043,14 @@
 	};
 
 	var getParent$1 = requireCheckFunc(function (uid, ThreeDTransformData) {
-	    it$1("uid should exist", function () {
+	    it("uid should exist", function () {
 	        index_1(uid).exist;
 	    });
 	}, function (uid, ThreeDTransformData) {
 	    return ThreeDTransformData.parentMap[uid];
 	});
 	var setParent$1 = requireCheckFunc(function (transform, parent, ThreeDTransformData) {
-	    it$1("parent should not be self", function () {
+	    it("parent should not be self", function () {
 	        if (parent !== null) {
 	            index_1(_isTransformEqual(transform, parent)).false;
 	        }
@@ -6102,7 +6102,7 @@
 	    removeChildEntity(children, targetUID);
 	};
 	var _addChild$1 = requireCheckFunc(function (uid, child, ThreeDTransformData) {
-	    it$1("children should be empty array if has no child", function () {
+	    it("children should be empty array if has no child", function () {
 	        index_1(getChildren(uid, ThreeDTransformData)).be.a("array");
 	    });
 	}, function (uid, child, ThreeDTransformData) {
@@ -6116,10 +6116,10 @@
 	    ThreeDTransformData.parentMap[uid] = parent;
 	};
 	var _addToParent = requireCheckFunc(function (targetUID, target, parent, ThreeDTransformData) {
-	    it$1("the child one should not has parent", function () {
+	    it("the child one should not has parent", function () {
 	        index_1(isValidMapValue(getParent$1(targetUID, ThreeDTransformData))).false;
 	    });
-	    it$1("parent should not already has the child", function () {
+	    it("parent should not already has the child", function () {
 	        var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
 	        if (isValidMapValue(children)) {
 	            index_1(children.indexOf(target)).equal(-1);
@@ -6132,7 +6132,7 @@
 	});
 
 	var swap = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
-	    it$1("source index and target index should be used", function () {
+	    it("source index and target index should be used", function () {
 	        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
 	        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
 	    });
@@ -6142,7 +6142,7 @@
 	    return ThreeDTransformData;
 	});
 	var swapTransformMapData = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
-	    it$1("source index and target index should be used", function () {
+	    it("source index and target index should be used", function () {
 	        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
 	        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
 	    });
@@ -6198,14 +6198,14 @@
 	    deleteVal(sourceIndex, transformMap);
 	};
 	var moveToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
-	    it$1("source index should not be used", function () {
+	    it("source index should not be used", function () {
 	        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
 	    });
 	}, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
-	    it$1("source index should be used", function () {
+	    it("source index should be used", function () {
 	        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
 	    });
-	    it$1("target index should not be used", function () {
+	    it("target index should not be used", function () {
 	        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
 	    });
 	}, function (sourceIndex, targetIndex, ThreeDTransformData) {
@@ -6215,14 +6215,14 @@
 	    return ThreeDTransformData;
 	}));
 	var moveMapDataToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
-	    it$1("source index should not be used", function () {
+	    it("source index should not be used", function () {
 	        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
 	    });
 	}, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
-	    it$1("source index should be used", function () {
+	    it("source index should be used", function () {
 	        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
 	    });
-	    it$1("target index should not be used", function () {
+	    it("target index should not be used", function () {
 	        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
 	    });
 	}, function (sourceIndex, targetIndex, ThreeDTransformData) {
@@ -6313,14 +6313,14 @@
 	}());
 
 	var addFirstDirtyIndex = ensureFunc(function (firstDirtyIndex, ThreeDTransformData) {
-	    it$1("firstDirtyIndex should <= count", function () {
+	    it("firstDirtyIndex should <= count", function () {
 	        index_1(firstDirtyIndex).lte(ThreeDTransformData.count);
 	    });
 	}, function (ThreeDTransformData) {
 	    return ThreeDTransformData.firstDirtyIndex + 1;
 	});
 	var minusFirstDirtyIndex = ensureFunc(function (firstDirtyIndex) {
-	    it$1("firstDirtyIndex should >= start index:" + getStartIndexInArrayBuffer(), function () {
+	    it("firstDirtyIndex should >= start index:" + getStartIndexInArrayBuffer(), function () {
 	        index_1(firstDirtyIndex).gte(getStartIndexInArrayBuffer());
 	    });
 	}, function (firstDirtyIndex) {
@@ -6354,7 +6354,7 @@
 	    return index;
 	});
 	var addToDirtyList$1 = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-	    it$1("firstDirtyIndex should <= count", function () {
+	    it("firstDirtyIndex should <= count", function () {
 	        index_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
 	    });
 	}, function (indexInArrayBuffer, ThreeDTransformData) {
@@ -6397,11 +6397,11 @@
 	    return ThreeDTransformData;
 	};
 	var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, indexInArrayBuffer) {
-	    it$1("indexInArrayBuffer should < firstDirtyIndex", function () {
+	    it("indexInArrayBuffer should < firstDirtyIndex", function () {
 	        index_1(indexInArrayBuffer).exist;
 	        index_1(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
 	    });
-	    it$1("index should not be used", function () {
+	    it("index should not be used", function () {
 	        index_1(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
 	    });
 	};
@@ -6649,7 +6649,7 @@
 	    addDisposeHandle$1(_class, disposeComponent$3);
 	};
 	var create$3 = ensureFunc(function (tag, slotCount, TagData$$1) {
-	    it$1("slot array should has no hole", function () {
+	    it("slot array should has no hole", function () {
 	        for (var _i = 0, _a = TagData$$1.slotCountMap; _i < _a.length; _i++) {
 	            var count = _a[_i];
 	            index_1(count).exist;
@@ -6668,7 +6668,7 @@
 	    return tag;
 	});
 	var setNextIndexInTagArrayMap = requireCheckFunc(function (index, slotCount, indexInTagArrayMap) {
-	    it$1("index should >= 0", function () {
+	    it("index should >= 0", function () {
 	        index_1(index).gte(0);
 	    });
 	}, function (index, slotCount, indexInTagArrayMap) {
@@ -6681,7 +6681,7 @@
 	    }
 	};
 	var addTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
-	    it$1("tag should not already be added", function () {
+	    it("tag should not already be added", function () {
 	        var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), tagArray = TagData$$1.tagArray, slotCountMap = TagData$$1.slotCountMap, currentSlotCount = getSlotCount(index, slotCountMap);
 	        index_1(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
 	    });
@@ -6713,7 +6713,7 @@
 	    return lastIndexInTagArray;
 	};
 	var removeTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
-	    it$1("current used slot count should >= 0", function () {
+	    it("current used slot count should >= 0", function () {
 	        var index = tagComponent.index, usedSlotCountMap = TagData$$1.usedSlotCountMap;
 	        index_1(getUsedSlotCount(index, usedSlotCountMap)).gte(0);
 	    });
@@ -6747,7 +6747,7 @@
 	    usedSlotCountMap[index] = slotCount;
 	};
 	var _isSlotAllUsed = requireCheckFunc(function (currentUsedSlotCount, currentSlotCount) {
-	    it$1("usedSlotCount should <= slotCount", function () {
+	    it("usedSlotCount should <= slotCount", function () {
 	        index_1(currentUsedSlotCount).lte(currentSlotCount);
 	    });
 	}, function (currentUsedSlotCount, currentSlotCount) {
@@ -6773,7 +6773,7 @@
 	    });
 	};
 	var disposeComponent$3 = ensureFunc(function (returnVal, tag) {
-	    it$1("count should >= 0", function () {
+	    it("count should >= 0", function () {
 	        index_1(TagData.count).gte(0);
 	    });
 	}, function (tag) {
@@ -6924,7 +6924,7 @@
 	    addDisposeHandle$1(_class, disposeComponent$2);
 	};
 	var create$2 = ensureFunc(function (transform, ThreeDTransformData$$1) {
-	    it$1("componentMap should has data", function () {
+	    it("componentMap should has data", function () {
 	        index_1(getChildren(transform.uid, ThreeDTransformData$$1)).exist;
 	    });
 	}, function (ThreeDTransformData$$1) {
@@ -7103,7 +7103,7 @@
 	};
 
 	var checkGameObjectShouldAlive = function (gameObject, GameObjectData) {
-	    it$1("gameObject is diposed, should release it", function () {
+	    it("gameObject is diposed, should release it", function () {
 	        index_1(isAlive(gameObject, GameObjectData)).true;
 	    });
 	};
@@ -12387,7 +12387,7 @@
 	    });
 	};
 	var init$4 = requireCheckFunc(function (gameState, configState, DeviceManagerData) {
-	    it$1("should set config before", function () {
+	    it("should set config before", function () {
 	        index_1(configState.get("useDevicePixelRatio")).exist;
 	    });
 	}, function (gameState, configState, DeviceManagerData) {
@@ -12673,7 +12673,7 @@
 	    return DomQuery$$1.create("<canvas></canvas>").prependTo("body").get(0);
 	};
 	var _getCanvasId = ensureFunc(function (id) {
-	    it$1("dom id should be #string", function () {
+	    it("dom id should be #string", function () {
 	        index_1(/#[^#]+/.test(id)).true;
 	    });
 	}, function (domId) {
@@ -12758,7 +12758,7 @@
 	});
 	var setScreen = curry(function (DeviceManagerData, state) {
 	    return IO.of(requireCheckFunc(function (state) {
-	        it$1("should exist MainData.screenSize", function () {
+	        it("should exist MainData.screenSize", function () {
 	            index_1(getScreenSize(DirectorData.state)).exist;
 	        });
 	    }, function () {
@@ -13008,7 +13008,7 @@
 	    return GeometryData$$1.verticesMap[index];
 	};
 	var setVertices = requireCheckFunc(function (index, vertices, GeometryData$$1) {
-	    it$1("vertices should not already exist", function () {
+	    it("vertices should not already exist", function () {
 	        index_1(GeometryData$$1.verticesMap[index]).not.exist;
 	    });
 	}, function (index, vertices, GeometryData$$1) {
@@ -13018,7 +13018,7 @@
 	    return GeometryData$$1.indicesMap[index];
 	};
 	var setIndices = requireCheckFunc(function (index, indices, GeometryData$$1) {
-	    it$1("indices should not already exist", function () {
+	    it("indices should not already exist", function () {
 	        index_1(GeometryData$$1.indicesMap[index]).not.exist;
 	    });
 	}, function (index, indices, GeometryData$$1) {
@@ -13180,7 +13180,7 @@
 	var mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
 
 	var buildGLSLSource = requireCheckFunc(function (materialIndex, materialShaderLibConfig, shaderLibData) {
-	    it$1("shaderLib should be defined", function () {
+	    it("shaderLib should be defined", function () {
 	        forEach(materialShaderLibConfig, function (shaderLibName) {
 	            index_1(shaderLibData[shaderLibName]).exist;
 	        });
@@ -13325,11 +13325,11 @@
 	};
 
 	var setLocationMap = ensureFunc(function (returnVal, gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
-	    it$1("attribute should contain position at least", function () {
+	    it("attribute should contain position at least", function () {
 	        index_1(ShaderData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
 	    });
 	}, requireCheckFunc(function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
-	    it$1("not setted location before", function () {
+	    it("not setted location before", function () {
 	        index_1(isValidMapValue(ShaderData.attributeLocationMap[shaderIndex])).false;
 	        index_1(isValidMapValue(ShaderData.uniformLocationMap[shaderIndex])).false;
 	    });
@@ -13360,14 +13360,14 @@
 	    ShaderData.uniformLocationMap[shaderIndex] = uniformLocationMap;
 	}));
 	var getAttribLocation = ensureFunc(function (pos, name, attributeLocationMap) {
-	    it$1(name + "'s attrib location should be number", function () {
+	    it(name + "'s attrib location should be number", function () {
 	        index_1(pos).be.a("number");
 	    });
 	}, function (name, attributeLocationMap) {
 	    return attributeLocationMap[name];
 	});
 	var getUniformLocation = ensureFunc(function (pos, name, uniformLocationMap) {
-	    it$1(name + "'s uniform location should exist in map", function () {
+	    it(name + "'s uniform location should exist in map", function () {
 	        index_1(isValidMapValue(pos)).true;
 	    });
 	}, function (name, uniformLocationMap) {
@@ -13468,7 +13468,7 @@
 	    });
 	};
 	var sendFloat1 = requireCheckFunc(function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
-	    it$1("data should be number", function () {
+	    it("data should be number", function () {
 	        index_1(data).be.a("number");
 	    });
 	}, function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
@@ -13495,11 +13495,11 @@
 	    sendFunc(pos, data);
 	};
 	var addSendAttributeConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
-	    it$1("sendAttributeConfigMap should not has duplicate attribute name", function () {
+	    it("sendAttributeConfigMap should not has duplicate attribute name", function () {
 	        index_1(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
 	    });
 	}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
-	    it$1("sendAttributeConfigMap[shaderIndex] should not be defined", function () {
+	    it("sendAttributeConfigMap[shaderIndex] should not be defined", function () {
 	        index_1(sendAttributeConfigMap[shaderIndex]).not.exist;
 	    });
 	}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
@@ -13513,11 +13513,11 @@
 	    sendAttributeConfigMap[shaderIndex] = sendDataArr;
 	}));
 	var addSendUniformConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
-	    it$1("sendUniformConfigMap should not has duplicate attribute name", function () {
+	    it("sendUniformConfigMap should not has duplicate attribute name", function () {
 	        index_1(hasDuplicateItems(sendUniformConfigMap[shaderIndex])).false;
 	    });
 	}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
-	    it$1("sendUniformConfigMap[shaderIndex] should not be defined", function () {
+	    it("sendUniformConfigMap[shaderIndex] should not be defined", function () {
 	        index_1(sendUniformConfigMap[shaderIndex]).not.exist;
 	    });
 	}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
@@ -13532,7 +13532,7 @@
 	}));
 
 	var use$1 = requireCheckFunc(function (gl, shaderIndex, ShaderData) {
-	    it$1("program should exist", function () {
+	    it("program should exist", function () {
 	        index_1(getProgram(shaderIndex, ShaderData)).exist;
 	    });
 	}, function (gl, shaderIndex, ShaderData) {
@@ -13547,7 +13547,7 @@
 	    ShaderData.lastBindedIndexBuffer = null;
 	});
 	var disableVertexAttribArray = requireCheckFunc(function (gl, ShaderData) {
-	    it$1("vertexAttribHistory should has not hole", function () {
+	    it("vertexAttribHistory should has not hole", function () {
 	        forEach(ShaderData.vertexAttribHistory, function (isEnable) {
 	            index_1(isEnable).exist;
 	            index_1(isEnable).be.a("boolean");
@@ -13566,10 +13566,10 @@
 	});
 	var getMaterialShaderLibConfig = requireCheckFunc(function (materialClassName, material_config) {
 	    var materialData = material_config[materialClassName];
-	    it$1("materialClassName should be defined", function () {
+	    it("materialClassName should be defined", function () {
 	        index_1(materialData).exist;
 	    });
-	    it$1("shaderLib should be array", function () {
+	    it("shaderLib should be array", function () {
 	        index_1(materialData.shader.shaderLib).be.a("array");
 	    });
 	}, function (materialClassName, material_config) {
@@ -13593,7 +13593,7 @@
 	    gl.deleteShader(fs);
 	};
 	var _linkProgram = ensureFunc(function (returnVal, gl, program) {
-	    it$1("link program error:" + gl.getProgramInfoLog(program), function () {
+	    it("link program error:" + gl.getProgramInfoLog(program), function () {
 	        index_1(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
 	    });
 	}, function (gl, program) {
@@ -14059,7 +14059,7 @@
 	], exports.Color.prototype, "toVector4", null);
 	__decorate([
 	    requireCheck(function (colorVal) {
-	        it$1("color should be #xxxxxx", function () {
+	        it("color should be #xxxxxx", function () {
 	            index_1(REGEX_NUM.test(colorVal)).true;
 	        });
 	    })
@@ -14099,10 +14099,10 @@
 	    addInitHandle(_class, initMaterial$1);
 	};
 	var create$5 = requireCheckFunc(function (material, className, MaterialData$$1) {
-	    it$1("MaterialData.index should >= 0", function () {
+	    it("MaterialData.index should >= 0", function () {
 	        index_1(MaterialData$$1.index).gte(0);
 	    });
-	    it$1("MaterialData.count should >= 0", function () {
+	    it("MaterialData.count should >= 0", function () {
 	        index_1(MaterialData$$1.count).gte(0);
 	    });
 	}, function (material, className, MaterialData$$1) {
@@ -14238,7 +14238,7 @@
 	};
 
 	var create$1 = ensureFunc(function (gameObject, transform, GameObjectData) {
-	    it$1("componentMap should has data", function () {
+	    it("componentMap should has data", function () {
 	        index_1(_getComponentData(gameObject.uid, GameObjectData)).exist;
 	    });
 	}, function (transform, GameObjectData) {
@@ -14308,10 +14308,10 @@
 	    }
 	};
 	var addComponent$1 = requireCheckFunc(function (gameObject, component, GameObjectData) {
-	    it$1("component should exist", function () {
+	    it("component should exist", function () {
 	        index_1(component).exist;
 	    });
-	    it$1("should not has this type of component, please dispose it", function () {
+	    it("should not has this type of component, please dispose it", function () {
 	        index_1(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
 	    });
 	}, function (gameObject, component, GameObjectData) {
@@ -14394,7 +14394,7 @@
 	    _addChild(uid, child, GameObjectData);
 	});
 	var removeChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
-	    it$1("child should has transform component", function () {
+	    it("child should has transform component", function () {
 	        index_1(getTransform(child, GameObjectData)).exist;
 	    });
 	}, function (gameObject, child, ThreeDTransformData, GameObjectData) {
@@ -14563,7 +14563,7 @@
 	    };
 	};
 	var _getConfigData = ensureFunc(function (data) {
-	    it$1("config data should be defined", function () {
+	    it("config data should be defined", function () {
 	        index_1(data).exist;
 	        index_1(data.width).exist;
 	        index_1(data.height).exist;
@@ -14684,7 +14684,7 @@
 	    return renderer;
 	});
 	var _setRenderGameObjectArray = requireCheckFunc(function (index, gameObject, renderGameObjectArray) {
-	    it$1("should not exist gameObject", function () {
+	    it("should not exist gameObject", function () {
 	        index_1(renderGameObjectArray[index]).not.exist;
 	    });
 	}, function (index, gameObject, renderGameObjectArray) {
@@ -16574,31 +16574,6 @@
 	    registerClass("DirectorTimeController")
 	], exports.DirectorTimeController);
 
-	var _generateTypeID$1 = function () {
-	    var result = _typeID$1;
-	    _typeID$1 += 1;
-	    return String(result);
-	};
-	var getTypeIDFromClass$1 = function (_class) {
-	    return _table$1[ClassUtils.getClassNameByClass(_class)];
-	};
-
-	var _addTypeID$1 = function (componentClassNameArr, table) {
-	    var id = _generateTypeID$1();
-	    for (var _i = 0, componentClassNameArr_1 = componentClassNameArr; _i < componentClassNameArr_1.length; _i++) {
-	        var className = componentClassNameArr_1[_i];
-	        table[className] = id;
-	    }
-	};
-	var _typeID$1 = 1;
-	var _table$1 = {};
-	_addTypeID$1(["ThreeDTransform"], _table$1);
-	_addTypeID$1(["Geometry", "BoxGeometry", "CustomGeometry"], _table$1);
-	_addTypeID$1(["Material", "BasicMaterial"], _table$1);
-	_addTypeID$1(["MeshRenderer"], _table$1);
-	_addTypeID$1(["Tag"], _table$1);
-	_addTypeID$1(["CameraController"], _table$1);
-
 	var create$11 = function (GameObjectData) {
 	    return create$1(null, GameObjectData);
 	};
@@ -16612,10 +16587,10 @@
 	    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
 	};
 	var _isCamera = function (gameObject, GameObjectData) {
-	    return hasComponent(gameObject, getTypeIDFromClass$1(exports.CameraController), GameObjectData);
+	    return hasComponent(gameObject, getTypeIDFromClass(exports.CameraController), GameObjectData);
 	};
 	var getCurrentCamera = ensureFunc(function (camera, SceneData) {
-	    it$1("current camera should exist", function () {
+	    it("current camera should exist", function () {
 	        index_1(camera).exist;
 	    });
 	}, function (SceneData) {
@@ -16641,10 +16616,10 @@
 	var createRenderCommands = requireCheckFunc(curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {
 	    forEach(renderGameObjectArray, function (gameObject) {
 	        var geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData);
-	        it$1("geometry should exist in gameObject", function () {
+	        it("geometry should exist in gameObject", function () {
 	            index_1(geometry).exist;
 	        });
-	        it$1("material should exist in gameObject", function () {
+	        it("material should exist in gameObject", function () {
 	            index_1(material).exist;
 	        });
 	    });
@@ -16652,7 +16627,7 @@
 	    var commandArr = [];
 	    for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
 	        var gameObject = renderGameObjectArray_1[_i];
-	        var command = new RenderCommand(), currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass$1(exports.CameraController), GameObjectData), currentCameraIndex = currentCamera.index, geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData), transform = getTransform(gameObject, GameObjectData), materialIndex = material.index, shader = getShader(materialIndex, MaterialData);
+	        var command = new RenderCommand(), currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(exports.CameraController), GameObjectData), currentCameraIndex = currentCamera.index, geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData), transform = getTransform(gameObject, GameObjectData), materialIndex = material.index, shader = getShader(materialIndex, MaterialData);
 	        command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData).values;
 	        command.vMatrix = getWorldToCameraMatrix$1(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
 	        command.pMatrix = getPMatrix$1(currentCameraIndex, CameraData).values;
@@ -16847,7 +16822,7 @@
 	}());
 	__decorate([
 	    requireCheck(function () {
-	        it$1("canvas should be setter", function () {
+	        it("canvas should be setter", function () {
 	            index_1(getCanvas(getState(DirectorData))).exist;
 	        });
 	    })
@@ -16978,14 +16953,14 @@
 	    return Scene;
 	}(exports.GameObject));
 	var addSceneChild = requireCheckFunc(function (scene, gameObject) {
-	    it$1("scene should alive", function () {
+	    it("scene should alive", function () {
 	        index_1(isAlive(scene, GameObjectData)).true;
 	    });
 	}, function (scene, gameObject) {
 	    addChild$1(scene, gameObject, GameObjectData, SceneData);
 	});
 	var removeSceneChild = requireCheckFunc(function (scene, gameObject) {
-	    it$1("scene should alive", function () {
+	    it("scene should alive", function () {
 	        index_1(isAlive(scene, GameObjectData)).true;
 	    });
 	}, function (scene, gameObject) {
@@ -17020,7 +16995,7 @@
 	Main$1._configState = null;
 	__decorate([
 	    requireCheck(function () {
-	        it$1("configState should exist", function () {
+	        it("configState should exist", function () {
 	            index_1(Main$1._configState).exist;
 	        });
 	    })
@@ -17185,7 +17160,7 @@
 	exports.cache = cache;
 	exports.assert = assert;
 	exports.describe = describe;
-	exports.it = it$1;
+	exports.it = it;
 	exports.requireCheck = requireCheck;
 	exports.requireCheckFunc = requireCheckFunc;
 	exports.ensure = ensure;

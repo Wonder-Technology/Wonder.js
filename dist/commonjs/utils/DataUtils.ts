@@ -3,7 +3,7 @@ import { Vector3 } from "../math/Vector3";
 import { Quaternion } from "../math/Quaternion";
 import curry from "wonder-lodash/curry";
 import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
-import { requireCheck } from "../definition/typescript/decorator/contract";
+import { it, requireCheck } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
 /*! side effect */

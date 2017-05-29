@@ -75,7 +75,7 @@ var DataUtils = (function () {
 }());
 __decorate([
     contract_1.requireCheck(function (dataArr, index, swapItemIndex, length) {
-        it("index should <= swapItemIndex", function () {
+        contract_1.it("index should <= swapItemIndex", function () {
             wonder_expect_js_1.expect(index).lte(swapItemIndex);
         });
     })
