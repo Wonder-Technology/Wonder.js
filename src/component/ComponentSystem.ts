@@ -1,4 +1,4 @@
-import { ComponentData, ComponentGameObjectMap, ComponentGameObjectMapMap } from "./ComponentData";
+import { ComponentData, ComponentGameObjectMap } from "./ComponentData";
 import { Component } from "./Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
@@ -66,25 +66,9 @@ export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap:Compone
     gameObjectMap[index] = gameObject;
 })
 
-export var addComponentToGameObjectMapMap = requireCheckFunc((gameObjectMap:ComponentGameObjectMapMap, index:number, gameObject:GameObject) => {
-    it("component should not exist in gameObject", () => {
-        expect(gameObjectMap.get(index)).not.exist;
-    });
-}, (gameObjectMap:ComponentGameObjectMapMap, index:number, gameObject:GameObject) => {
-    gameObjectMap.set(index, gameObject);
-})
-
 export var getComponentGameObject = (gameObjectMap:ComponentGameObjectMap, index:number) => {
     return gameObjectMap[index];
 }
-
-export var getComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number) => {
-    return gameObjectMap.get(uid);
-}
-
-// export var setComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number, gameObject:GameObject) => {
-//     return gameObjectMap.set(uid, gameObject);
-// }
 
 export var generateComponentIndex = (ComponentData: any) => {
     return ComponentData.index++;

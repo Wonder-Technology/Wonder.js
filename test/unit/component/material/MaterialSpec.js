@@ -116,6 +116,21 @@ describe("Material", function() {
         });
     });
 
+    describe("getGameObject", function() {
+        beforeEach(function(){
+
+        });
+
+        it("get gameObject who has the material", function(){
+            var mat2 = basicMaterialTool.create();
+
+            var obj2 = gameObjectTool.create();
+            gameObjectTool.addComponent(obj2, mat2);
+
+            expect(materialTool.getGameObject(mat2)).toEqual(obj2);
+        });
+    });
+
     describe("disposeComponent", function() {
         var count;
 

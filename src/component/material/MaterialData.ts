@@ -1,6 +1,6 @@
 import { Shader } from "../../renderer/shader/Shader";
 import { Color } from "../../structure/Color";
-import { ComponentGameObjectMapMap } from "../ComponentData";
+import { ComponentGameObjectMap } from "../ComponentData";
 import { ComponentMap } from "../ComponentSystem";
 
 export class MaterialData{
@@ -9,7 +9,7 @@ export class MaterialData{
 
     public static shaderMap:ShaderMap = null;
     public static materialClassNameMap:MaterialClassNameMap = null;
-    public static gameObjectMap:ComponentGameObjectMapMap = null;
+    public static gameObjectMap:ComponentGameObjectMap = null;
     public static colorMap:MaterialColorMap = null;
     public static opacityMap:MaterialOpacityMap = null;
     public static alphaTestMap:MaterialAlphaTestMap = null;

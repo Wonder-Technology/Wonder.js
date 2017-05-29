@@ -23,5 +23,3 @@ export type InitHandleMap = {
 export type ComponentGameObjectMap = {
     [index:number]: GameObject;
 }
-
-export type ComponentGameObjectMapMap = Map<number, GameObject>;

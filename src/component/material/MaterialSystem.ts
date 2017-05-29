@@ -7,12 +7,11 @@ import { Color } from "../../structure/Color";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
-    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMapMap,
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap,
     generateComponentIndex,
     getComponentGameObject
 } from "../ComponentSystem";
-import curry from "wonder-lodash/curry";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { createMap, deleteBySwap, isValidMapValue } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
@@ -131,7 +130,7 @@ export var isPropertyExist = (propertyVal:any) => {
 }
 
 export var addComponent = (component:Material, gameObject:GameObject) => {
-    addComponentToGameObjectMapMap(MaterialData.gameObjectMap, component.index, gameObject);
+    addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
 export var disposeComponent = ensureFunc((returnVal, component:Material) => {
@@ -151,7 +150,7 @@ export var disposeComponent = ensureFunc((returnVal, component:Material) => {
     deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
     deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
 
-    deleteMapBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
 
     deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
@@ -171,7 +170,7 @@ export var initData = (MaterialData:any) => {
 
     MaterialData.materialMap = createMap();
 
-    MaterialData.gameObjectMap = new Map();
+    MaterialData.gameObjectMap = createMap();
 
     MaterialData.index = 0;
     MaterialData.count = 0;
