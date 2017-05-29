@@ -6,8 +6,8 @@ import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 
-export var draw = curry((state:Map<any, any>, DeviceManagerData:any, MaterialData:any, ShaderData:any, GeometryData:any, ArrayBufferData:any, IndexBufferData:any, renderCommandArray:Array<RenderCommand>) => {
-    for(let renderCommand of renderCommandArray){
+export var draw = curry((state: Map<any, any>, DeviceManagerData: any, MaterialData: any, ShaderData: any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, renderCommandArray: Array<RenderCommand>) => {
+    for (let renderCommand of renderCommandArray) {
         var shaderIndex = renderCommand.shaderIndex,
             geometryIndex = renderCommand.geometryIndex,
             gl = getGL(DeviceManagerData, state);
@@ -19,12 +19,12 @@ export var draw = curry((state:Map<any, any>, DeviceManagerData:any, MaterialDat
         sendAttributeData(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
         sendUniformData(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
 
-        if(hasIndices(geometryIndex, GeometryData)){
+        if (hasIndices(geometryIndex, GeometryData)) {
             bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);
 
             _drawElements(gl, geometryIndex, GeometryData);
         }
-        else{
+        else {
             _drawArray(gl, geometryIndex, GeometryData);
         }
     }
@@ -32,7 +32,7 @@ export var draw = curry((state:Map<any, any>, DeviceManagerData:any, MaterialDat
     return state;
 })
 
-var _drawElements = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any) => {
+var _drawElements = (gl: WebGLRenderingContext, geometryIndex: number, GeometryData: any) => {
     var startOffset: number = 0,
         drawMode = getDrawMode(geometryIndex, GeometryData),
         count = getIndicesCount(geometryIndex, GeometryData),
@@ -42,7 +42,7 @@ var _drawElements = (gl:WebGLRenderingContext, geometryIndex:number, GeometryDat
     gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
 }
 
-var _drawArray = (gl:WebGLRenderingContext, geometryIndex:number, GeometryData:any) => {
+var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, GeometryData: any) => {
     var startOffset: number = 0,
         drawMode = getDrawMode(geometryIndex, GeometryData),
         count = getVerticesCount(geometryIndex, GeometryData);

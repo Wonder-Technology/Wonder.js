@@ -17,10 +17,10 @@ export var getTypeIDFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 
-var _addTypeID = (componentClassNameArr:Array<string>, table:object) => {
+var _addTypeID = (componentClassNameArr: Array<string>, table: object) => {
     var id = _generateTypeID();
 
-    for(let className of componentClassNameArr){
+    for (let className of componentClassNameArr) {
         table[className] = id;
     }
 }

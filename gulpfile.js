@@ -91,8 +91,7 @@ gulp.task("createShaderChunk", function() {
 
 
 
-// gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
-gulp.task("build", gulpSync.sync(["clean", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
+gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
 
 
 

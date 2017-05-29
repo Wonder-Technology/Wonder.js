@@ -1,13 +1,13 @@
 import { isUndefined } from "./JudgeUtils";
-export var deleteVal = (key:number, arr:Array<number>) => arr[key] = void 0;
+export var deleteVal = (key: number, arr: Array<number>) => arr[key] = void 0;
 
-export var isNotValidVal = (val:any) => isUndefined(val);
+export var isNotValidVal = (val: any) => isUndefined(val);
 
-export var deleteBySwap = (index:number, array:Array<any>) => {
+export var deleteBySwap = (index: number, array: Array<any>) => {
     var last = array.length - 1,
         temp = null;
 
-    if(last === -1){
+    if (last === -1) {
         return null;
     }
 
@@ -61,11 +61,11 @@ var _contain = (arr: Array<any>, item: any): boolean => {
 export var removeDuplicateItems = (arr: Array<any>) => {
     var resultArr = [];
 
-    for(let ele of arr){
+    for (let ele of arr) {
         // if (_contain(resultArr, function(val) {
         //         return isEqual(val, ele);
         //     })) {
-        if(_contain(resultArr, ele)){
+        if (_contain(resultArr, ele)) {
             continue;
         }
 
@@ -75,17 +75,17 @@ export var removeDuplicateItems = (arr: Array<any>) => {
     return resultArr;
 }
 
-export var removeItem = (arr:Array<any>, item:any) => {
+export var removeItem = (arr: Array<any>, item: any) => {
     return filter(arr, (ele) => {
         return ele !== item;
     });
 }
 
-export var filter = (arr:Array<any>, func:(item:any) => boolean) => {
+export var filter = (arr: Array<any>, func: (item: any) => boolean) => {
     let result = [];
 
-    for(let ele of arr){
-        if(func(ele)){
+    for (let ele of arr) {
+        if (func(ele)) {
             result.push(ele);
         }
     }
@@ -93,8 +93,8 @@ export var filter = (arr:Array<any>, func:(item:any) => boolean) => {
     return result;
 }
 
-export var forEach = (arr:Array<any>, func:(item:any, index:number) => void) => {
-    for(let i = 0, len = arr.length; i < len; i++){
+export var forEach = (arr: Array<any>, func: (item: any, index: number) => void) => {
+    for (let i = 0, len = arr.length; i < len; i++) {
         func(arr[i], i);
     }
 }

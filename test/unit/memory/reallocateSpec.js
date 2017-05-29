@@ -327,6 +327,7 @@ describe("reallocate memory", function() {
                 var childrenMap = {};
                 childrenMap[parentTra.uid] = [gameObjectTra];
                 childrenMap[gameObjectTra.uid] = [];
+                expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
 
 
                 var isTranslateMap = {};
@@ -335,7 +336,6 @@ describe("reallocate memory", function() {
                 expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
 
 
-                expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
 
                 expect(ThreeDTransformData.tempMap[parentTra.uid]).toBeExist();
                 expect(ThreeDTransformData.tempMap[gameObjectTra.uid]).toBeExist();

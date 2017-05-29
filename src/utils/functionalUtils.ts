@@ -12,10 +12,10 @@ export var map = curry((f: Function, m: any) => {
     return m.map(f);
 })
 
-export var filterArray = curry((f:(item:any) => boolean, arr:Array<any>) => {
+export var filterArray = curry((f: (item: any) => boolean, arr: Array<any>) => {
     return filter(arr, f);
 })
 
-export var forEachArray = curry((f:(item:any, index:number) => void, arr:Array<any>) => {
+export var forEachArray = curry((f: (item: any, index: number) => void, arr: Array<any>) => {
     return forEach(arr, f);
 })

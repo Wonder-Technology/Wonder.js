@@ -157,7 +157,7 @@ export class Director {
     //     return resultState;
     // }
 
-    private _initSystem(state: Map<any, any>){
+    private _initSystem(state: Map<any, any>) {
         var resultState = initTransform(GlobalTempData, ThreeDTransformData, state);
 
         resultState = initGeometry(GeometryData, state);
@@ -167,7 +167,7 @@ export class Director {
         return resultState;
     }
 
-    private _initRenderer(state: Map<any, any>){
+    private _initRenderer(state: Map<any, any>) {
         var resultState = initRenderer(state);
 
         return resultState;

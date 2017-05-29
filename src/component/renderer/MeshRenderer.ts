@@ -5,14 +5,14 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Component } from "../Component";
 
 @registerClass("MeshRenderer")
-export class MeshRenderer extends Component{
+export class MeshRenderer extends Component {
 }
 
 export var createMeshRenderer = () => {
     return create(MeshRendererData);
 }
 
-export var getMeshRendererGameObject = (component:MeshRenderer) => {
+export var getMeshRendererGameObject = (component: MeshRenderer) => {
     return getGameObject(component.index, MeshRendererData);
 }
 

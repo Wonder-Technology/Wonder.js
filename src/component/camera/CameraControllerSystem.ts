@@ -44,16 +44,16 @@ export var create = requireCheckFunc((CameraControllerData: any) => {
     return controller;
 })
 
-export var addToDirtyList = ensureFunc((index:number, CameraControllerData: any) => {
+export var addToDirtyList = ensureFunc((index: number, CameraControllerData: any) => {
     // it("dirty index should not be duplicated", () => {
     //     expect(hasDuplicateItems(CameraControllerData.dirtyIndexArray)).false;
     // });
-}, (index:number, CameraControllerData: any) => {
+}, (index: number, CameraControllerData: any) => {
     CameraControllerData.dirtyIndexArray.push(index);
 })
 
-export var init = (PerspectiveCameraData:any, CameraData:any, CameraControllerData:any, state: Map<any, any>) => {
-    _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex:number) => {
+export var init = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any, state: Map<any, any>) => {
+    _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex: number) => {
         initCameraController(state, dirtyIndex, PerspectiveCameraData, CameraData);
     });
 
@@ -62,14 +62,14 @@ export var init = (PerspectiveCameraData:any, CameraData:any, CameraControllerDa
     return state;
 }
 
-export var initCameraController = (state: Map<any, any>, index:number, PerspectiveCameraData:any, CameraData:any) => {
+export var initCameraController = (state: Map<any, any>, index: number, PerspectiveCameraData: any, CameraData: any) => {
     initCamera(state, index, PerspectiveCameraData, CameraData);
 }
 
-var _forEachDirtyList = (dirtyIndexArray:Array<number>, func:(dirtyIndex:number) => void) => {
+var _forEachDirtyList = (dirtyIndexArray: Array<number>, func: (dirtyIndex: number) => void) => {
     var arr = removeDuplicateItems(dirtyIndexArray);
 
-    for(let dirtyIndex of arr){
+    for (let dirtyIndex of arr) {
         func(dirtyIndex);
     }
 }
@@ -78,8 +78,8 @@ var _clearDirtyList = (CameraControllerData: any) => {
     CameraControllerData.dirtyIndexArray = [];
 }
 
-export var update = (PerspectiveCameraData:any, CameraData:any, CameraControllerData:any) => {
-    _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex:number) => {
+export var update = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any) => {
+    _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex: number) => {
         updateProjectionMatrix(dirtyIndex, PerspectiveCameraData, CameraData);
     });
 
@@ -87,11 +87,11 @@ export var update = (PerspectiveCameraData:any, CameraData:any, CameraController
     _clearCache(CameraControllerData);
 }
 
-export var addComponent = (component:CameraController, gameObject:GameObject) => {
+export var addComponent = (component: CameraController, gameObject: GameObject) => {
     addComponentToGameObjectMap(CameraControllerData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = (component:CameraController) => {
+export var disposeComponent = (component: CameraController) => {
     var index = component.index;
 
     deleteVal(index, CameraControllerData.gameObjectMap);
@@ -104,29 +104,29 @@ export var disposeComponent = (component:CameraController) => {
     dispose(index, PerspectiveCameraData, CameraData);
 }
 
-export var getGameObject = (index:number, CameraControllerData:any) => {
+export var getGameObject = (index: number, CameraControllerData: any) => {
     return getComponentGameObject(CameraControllerData.gameObjectMap, index);
 }
 
-export var getWorldToCameraMatrix = cacheFunc((index:number, ThreeDTransformData:any, GameObjectData:any, CameraControllerData:any, CameraData:any) => {
+export var getWorldToCameraMatrix = cacheFunc((index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
     return isValidMapValue(CameraControllerData.worldToCameraMatrixCacheMap[index]);
-}, (index:number, ThreeDTransformData:any, GameObjectData:any, CameraControllerData:any, CameraData:any) => {
+}, (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
     return CameraControllerData.worldToCameraMatrixCacheMap[index];
-}, (index:number, ThreeDTransformData:any, GameObjectData:any, CameraControllerData:any, CameraData:any, worldToCamraMatrix:Matrix4,) => {
+}, (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any, worldToCamraMatrix: Matrix4, ) => {
     CameraControllerData.worldToCameraMatrixCacheMap[index] = worldToCamraMatrix;
-}, (index:number, ThreeDTransformData:any, GameObjectData:any, CameraControllerData:any, CameraData:any) => {
+}, (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
     return getWorldToCameraMatrixCamera(index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData);
 })
 
-export var getPMatrix = (index:number, CameraData:any) => {
+export var getPMatrix = (index: number, CameraData: any) => {
     return getPMatrixCamera(index, CameraData);
 }
 
-var _clearCache = (CameraControllerData:any) => {
+var _clearCache = (CameraControllerData: any) => {
     CameraControllerData.worldToCameraMatrixCacheMap = {};
 }
 
-export var initData = (CameraControllerData: any, PerspectiveCameraData:any, CameraData:any) => {
+export var initData = (CameraControllerData: any, PerspectiveCameraData: any, CameraData: any) => {
     CameraControllerData.index = 0;
     CameraControllerData.count = 0;
     CameraControllerData.gameObjectMap = createMap();

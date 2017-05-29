@@ -14,11 +14,11 @@ import { trace } from "../utils/debugUtils";
 import { MainData } from "./MainData";
 // import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
 
-export var getIsTest = (MainData:any) => {
+export var getIsTest = (MainData: any) => {
     return MainData.isTest;
 }
 
-export var setIsTest = (isTest: boolean, MainData:any) => {
+export var setIsTest = (isTest: boolean, MainData: any) => {
     return IO.of(() => {
         MainData.isTest = isTest;
     });
@@ -34,7 +34,7 @@ export var getScreenSize = (state: Map<any, any>) => {
     return state.getIn(["Main", "screenSize"]);
 }
 
-export var setConfig = (closeContractTest: boolean, MainData:any, {
+export var setConfig = (closeContractTest: boolean, MainData: any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -86,11 +86,11 @@ export var setConfig = (closeContractTest: boolean, MainData:any, {
     });
 }
 
-export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData:any) => {
+export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData: any) => {
     it("should set config before", () => {
         expect(configState.get("useDevicePixelRatio")).exist;
     })
-}, (gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData:any) => {
+}, (gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData: any) => {
     return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
 });
 

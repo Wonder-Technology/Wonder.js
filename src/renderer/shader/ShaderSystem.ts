@@ -30,7 +30,7 @@ export var create = (ShaderData: any) => {
     return shader;
 }
 
-export var init = (state: Map<any, any>, materialIndex:number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData:any, ShaderData: any) => {
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any) => {
     var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         shaderLibData = shaderLib_generator.shaderLibs,
         {
@@ -58,14 +58,14 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     sendAttributeDataProgram(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData:any, ShaderData: any, renderCommand:RenderCommand) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ShaderData: any, renderCommand: RenderCommand) => {
     sendUniformDataProgram(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ShaderData: any, GeometryData: any, IndexBufferData: any) => {
     var buffer = getOrCreateIndexBuffer(gl, geometryIndex, GeometryData, IndexBufferData);
 
-    if(ShaderData.lastBindedIndexBuffer === buffer){
+    if (ShaderData.lastBindedIndexBuffer === buffer) {
         return;
     }
 
@@ -78,7 +78,7 @@ export var use = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: an
     useProgram(gl, shaderIndex, ShaderData);
 }
 
-export var dispose = (gl: WebGLRenderingContext, shaderIndex:number, ShaderData: any) => {
+export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
     //todo finish
 
     // _disposeProgram(gl, ShaderData.programMap[shaderIndex]);

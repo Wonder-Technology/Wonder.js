@@ -1,7 +1,7 @@
 import { expect } from "wonder-expect.js";
 import { it } from "../../definition/typescript/decorator/contract";
 
-export var checkIndexShouldEqualCount = (ComponentData:any) => {
+export var checkIndexShouldEqualCount = (ComponentData: any) => {
     it("ComponentData.index should === ComponentData.count", () => {
         expect(ComponentData.index).equal(ComponentData.count);
     });

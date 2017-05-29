@@ -24,7 +24,7 @@ export var minusFirstDirtyIndex = ensureFunc((firstDirtyIndex: number) => {
     return firstDirtyIndex - 1;
 })
 
-export var generateNotUsedIndexInArrayBuffer = ensureFunc((indexInArrayBuffer:number, ThreeDTransformData: any) => {
+export var generateNotUsedIndexInArrayBuffer = ensureFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
     _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
 }, (ThreeDTransformData: any) => {
     var result = ThreeDTransformData.indexInArrayBuffer;
@@ -42,11 +42,11 @@ var _isValidArrayValue = (val: any) => {
     return isNotUndefined(val);
 }
 
-var _isValidLinkNode = (node:LinkNode<number>) => {
+var _isValidLinkNode = (node: LinkNode<number>) => {
     return node !== null;
 }
 
-export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer:number, ThreeDTransformData: any) => {
+export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
     _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
 }, (ThreeDTransformData: any) => {
     var index = _getNotUsedIndexFromArr(ThreeDTransformData);
@@ -71,7 +71,7 @@ export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeD
     //
     //     expect(isIndexUsed(targetDirtyIndex, ThreeDTransformData)).false;
     // });
-},(indexInArrayBuffer: number, ThreeDTransformData: any) => {
+}, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
     let targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
 
     ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
@@ -86,14 +86,14 @@ export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeD
     return targetDirtyIndex;
 })
 
-var _getNotUsedIndexFromArr = (ThreeDTransformData:any) => {
+var _getNotUsedIndexFromArr = (ThreeDTransformData: any) => {
     var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList,
-        node:LinkNode<number> = null;
+        node: LinkNode<number> = null;
 
-    do{
+    do {
         node = _getNotUsedIndexNode(notUsedIndexLinkList);
     }
-    while(_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData))
+    while (_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData))
 
     return node.val;
 }
@@ -115,7 +115,7 @@ export var isNotDirty = (indexInArrayBuffer: number, firstDirtyIndex: number) =>
     return indexInArrayBuffer < firstDirtyIndex;
 }
 
-export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid:number, ThreeDTransformData: any) => {
+export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid: number, ThreeDTransformData: any) => {
     var indexInArraybuffer: number = rootIndexInArrayBuffer,
         children = getChildren(uid, ThreeDTransformData);
 
@@ -123,7 +123,7 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
         addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
 
-    if(isChildrenExist(children)){
+    if (isChildrenExist(children)) {
         forEach(children, (child: ThreeDTransform) => {
             addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
         });

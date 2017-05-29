@@ -46,9 +46,9 @@ export class Matrix4 {
     public values: Float32Array = null;
 
     public set(initialM11: number, initialM12: number, initialM13: number, initialM14: number,
-               initialM21: number, initialM22: number, initialM23: number, initialM24: number,
-               initialM31: number, initialM32: number, initialM33: number, initialM34: number,
-               initialM41: number, initialM42: number, initialM43: number, initialM44: number) {
+        initialM21: number, initialM22: number, initialM23: number, initialM24: number,
+        initialM31: number, initialM32: number, initialM33: number, initialM34: number,
+        initialM41: number, initialM42: number, initialM43: number, initialM44: number) {
         var te = this.values;
 
         te[0] = initialM11;

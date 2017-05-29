@@ -20,9 +20,9 @@ export var addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
+export var create = ensureFunc((tag: Tag, slotCount: number, TagData: any) => {
     it("slot array should has no hole", () => {
-        for(let count of TagData.slotCountMap){
+        for (let count of TagData.slotCountMap) {
             expect(count).exist;
         }
     });
@@ -31,7 +31,7 @@ export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
     //         expect(count).exist;
     //     }
     // });
-}, (slotCount:number, TagData:any)  => {
+}, (slotCount: number, TagData: any) => {
     var tag = new Tag(),
         index = generateComponentIndex(TagData);
 
@@ -53,24 +53,24 @@ export var create = ensureFunc((tag:Tag, slotCount:number, TagData:any) => {
     return tag;
 })
 
-export var setNextIndexInTagArrayMap = requireCheckFunc ((index:number, slotCount:number, indexInTagArrayMap:Array<number>) => {
+export var setNextIndexInTagArrayMap = requireCheckFunc((index: number, slotCount: number, indexInTagArrayMap: Array<number>) => {
     it("index should >= 0", () => {
         expect(index).gte(0);
     });
-}, (index:number, slotCount:number, indexInTagArrayMap:Array<number>) => {
+}, (index: number, slotCount: number, indexInTagArrayMap: Array<number>) => {
     indexInTagArrayMap[index + 1] = indexInTagArrayMap[index] + slotCount;
 })
 
-var _initIndexMap = (index:number, slotCount:number, TagData:any) => {
+var _initIndexMap = (index: number, slotCount: number, TagData: any) => {
     var indexMap = TagData.indexMap,
         lastIndexInTagArray = TagData.lastIndexInTagArray;
 
-    for(let i = lastIndexInTagArray, count = lastIndexInTagArray + slotCount; i < count; i++){
+    for (let i = lastIndexInTagArray, count = lastIndexInTagArray + slotCount; i < count; i++) {
         indexMap[i] = index;
     }
 }
 
-export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+export var addTag = requireCheckFunc((tagComponent: Tag, tag: string, TagData: any) => {
     it("tag should not already be added", () => {
         var index = tagComponent.index,
             indexInArray = _convertTagIndexToIndexInArray(index, TagData),
@@ -80,7 +80,7 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
 
         expect(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
     });
-}, (tagComponent:Tag, tag:string, TagData:any) => {
+}, (tagComponent: Tag, tag: string, TagData: any) => {
     var index = tagComponent.index,
         indexInArray = _convertTagIndexToIndexInArray(index, TagData),
         slotCountMap = TagData.slotCountMap,
@@ -89,7 +89,7 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
         currentSlotCount = getSlotCount(index, slotCountMap),
         currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap);
 
-    if(_isSlotAllUsed(currentUsedSlotCount, currentSlotCount)){
+    if (_isSlotAllUsed(currentUsedSlotCount, currentSlotCount)) {
         let increasedSlotCount = _allocateDoubleSlotCountAndAddTag(indexInArray, index, tag, currentSlotCount, currentUsedSlotCount, TagData),
             slotCount = currentSlotCount + increasedSlotCount;
 
@@ -99,28 +99,28 @@ export var addTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any)
 
         TagData.lastIndexInTagArray = _updateIndexMap(indexInArray, index, increasedSlotCount, TagData);
     }
-    else{
+    else {
         tagArray[indexInArray + currentUsedSlotCount] = tag;
     }
 
     _setUsedSlotCount(index, currentUsedSlotCount + 1, usedSlotCountMap);
 })
 
-var _updateIndexInTagArrayMap = (startIndex:number, increasedSlotCount:number, TagData:any) => {
+var _updateIndexInTagArrayMap = (startIndex: number, increasedSlotCount: number, TagData: any) => {
     var count = TagData.count,
         indexInTagArrayMap = TagData.indexInTagArrayMap;
 
-    for(let i = startIndex + 1; i <= count; i++){
+    for (let i = startIndex + 1; i <= count; i++) {
         indexInTagArrayMap[i] += increasedSlotCount;
     }
 }
 
-var _updateIndexMap = (indexInArray:number, index:number, increasedSlotCount:number, TagData:any) => {
+var _updateIndexMap = (indexInArray: number, index: number, increasedSlotCount: number, TagData: any) => {
     var indexMap = TagData.indexMap,
         lastIndexInTagArray = TagData.lastIndexInTagArray + increasedSlotCount,
         spliceParamArr = [indexInArray + increasedSlotCount, 0];
 
-    for(let i = 0; i < increasedSlotCount; i++){
+    for (let i = 0; i < increasedSlotCount; i++) {
         spliceParamArr.push(index);
     }
 
@@ -130,14 +130,14 @@ var _updateIndexMap = (indexInArray:number, index:number, increasedSlotCount:num
 }
 
 //todo optimize: collect redundant allocated slot count
-export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:any) => {
+export var removeTag = requireCheckFunc((tagComponent: Tag, tag: string, TagData: any) => {
     it("current used slot count should >= 0", () => {
         var index = tagComponent.index,
             usedSlotCountMap = TagData.usedSlotCountMap;
 
         expect(getUsedSlotCount(index, usedSlotCountMap)).gte(0);
     });
-}, (tagComponent:Tag, tag:string, TagData:any) => {
+}, (tagComponent: Tag, tag: string, TagData: any) => {
     var index = tagComponent.index,
         indexInArray = _convertTagIndexToIndexInArray(index, TagData),
         usedSlotCountMap = TagData.usedSlotCountMap,
@@ -145,8 +145,8 @@ export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:a
         currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap),
         newUsedSlotCount = currentUsedSlotCount;
 
-    for(let i = indexInArray, count = indexInArray + currentUsedSlotCount; i < count; i++){
-        if(tagArray[i] === tag){
+    for (let i = indexInArray, count = indexInArray + currentUsedSlotCount; i < count; i++) {
+        if (tagArray[i] === tag) {
             tagArray[i] = void 0;
             newUsedSlotCount = currentUsedSlotCount - 1;
 
@@ -154,46 +154,46 @@ export var removeTag = requireCheckFunc((tagComponent:Tag, tag:string, TagData:a
         }
     }
 
-    if(newUsedSlotCount <= 0){
+    if (newUsedSlotCount <= 0) {
         newUsedSlotCount = 0;
     }
 
     _setUsedSlotCount(index, newUsedSlotCount, usedSlotCountMap);
 })
 
-export var addComponent = (component:Tag, gameObject:GameObject) => {
+export var addComponent = (component: Tag, gameObject: GameObject) => {
     addComponentToGameObjectMap(TagData.gameObjectMap, component.index, gameObject);
 }
 
-export var getSlotCount = (index:number, slotCountMap:Array<number>) => {
+export var getSlotCount = (index: number, slotCountMap: Array<number>) => {
     return slotCountMap[index];
 }
 
-var _setSlotCount = (index:number, slotCount:number, slotCountMap:Array<number>) => {
+var _setSlotCount = (index: number, slotCount: number, slotCountMap: Array<number>) => {
     slotCountMap[index] = slotCount;
 }
 
-export var getUsedSlotCount = (index:number, usedSlotCountMap:Array<number>) => {
+export var getUsedSlotCount = (index: number, usedSlotCountMap: Array<number>) => {
     return usedSlotCountMap[index];
 }
 
-var _setUsedSlotCount = (index:number, slotCount:number, usedSlotCountMap:Array<number>) => {
+var _setUsedSlotCount = (index: number, slotCount: number, usedSlotCountMap: Array<number>) => {
     usedSlotCountMap[index] = slotCount;
 }
 
-var _isSlotAllUsed = requireCheckFunc((currentUsedSlotCount:number, currentSlotCount:number) => {
+var _isSlotAllUsed = requireCheckFunc((currentUsedSlotCount: number, currentSlotCount: number) => {
     it("usedSlotCount should <= slotCount", () => {
         expect(currentUsedSlotCount).lte(currentSlotCount);
     });
-},(currentUsedSlotCount:number, currentSlotCount:number) => {
+}, (currentUsedSlotCount: number, currentSlotCount: number) => {
     return currentUsedSlotCount === currentSlotCount;
 })
 
-var _allocateDoubleSlotCountAndAddTag = (indexInArray:number, index:number, tag:string, currentSlotCount:number, currentUsedSlotCount:number, TagData:any) => {
+var _allocateDoubleSlotCountAndAddTag = (indexInArray: number, index: number, tag: string, currentSlotCount: number, currentUsedSlotCount: number, TagData: any) => {
     var spliceArr = [indexInArray + currentUsedSlotCount, 0, tag],
         tagArray = TagData.tagArray;
 
-    for(let i = 0, len = currentSlotCount - 1; i < len; i++){
+    for (let i = 0, len = currentSlotCount - 1; i < len; i++) {
         spliceArr.push(null);
     }
 
@@ -202,31 +202,31 @@ var _allocateDoubleSlotCountAndAddTag = (indexInArray:number, index:number, tag:
     return currentSlotCount;
 }
 
-var _convertTagIndexToIndexInArray = (tagIndex:number, TagData:any) => {
+var _convertTagIndexToIndexInArray = (tagIndex: number, TagData: any) => {
     return TagData.indexInTagArrayMap[tagIndex];
 }
 
-var _convertIndexInArrayToTagIndex = (indexInTagArray:number, TagData:any) => {
+var _convertIndexInArrayToTagIndex = (indexInTagArray: number, TagData: any) => {
     return TagData.indexMap[indexInTagArray];
 }
 
-export var checkShouldAlive = (tag:Tag, TagData:any) => {
-    checkComponentShouldAlive(tag, TagData, (tag:Tag, TagData:any) => {
+export var checkShouldAlive = (tag: Tag, TagData: any) => {
+    checkComponentShouldAlive(tag, TagData, (tag: Tag, TagData: any) => {
         return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
     })
 }
 
-export var disposeComponent = ensureFunc((returnVal, tag:Tag) => {
+export var disposeComponent = ensureFunc((returnVal, tag: Tag) => {
     it("count should >= 0", () => {
         expect(TagData.count).gte(0);
     });
-}, (tag:Tag) => {
+}, (tag: Tag) => {
     var index = tag.index,
         indexInTagArray = _convertTagIndexToIndexInArray(index, TagData),
         currentUsedSlotCount = getUsedSlotCount(index, TagData.usedSlotCountMap),
         tagArray = TagData.tagArray;
 
-    for(let i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++){
+    for (let i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++) {
         tagArray[i] = void 0;
     }
 
@@ -241,23 +241,23 @@ export var disposeComponent = ensureFunc((returnVal, tag:Tag) => {
 
     TagData.disposeCount += 1;
 
-    if(isDisposeTooManyComponents(TagData.disposeCount)){
+    if (isDisposeTooManyComponents(TagData.disposeCount)) {
         reAllocateTagMap(TagData);
 
         TagData.disposeCount = 0;
     }
 })
 
-export var getGameObject = (index:number, Data:any) => {
+export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-export var findGameObjectsByTag = (targetTag:string, TagData:any) => {
-    var gameObjectArr:Array<GameObject> = [],
+export var findGameObjectsByTag = (targetTag: string, TagData: any) => {
+    var gameObjectArr: Array<GameObject> = [],
         gameObjectMap = TagData.gameObjectMap;
 
-    forEach(TagData.tagArray, (tag:string, indexInTagArray:number) => {
-        if(tag === targetTag){
+    forEach(TagData.tagArray, (tag: string, indexInTagArray: number) => {
+        if (tag === targetTag) {
             gameObjectArr.push(gameObjectMap[_convertIndexInArrayToTagIndex(indexInTagArray, TagData)]);
         }
     });
@@ -265,7 +265,7 @@ export var findGameObjectsByTag = (targetTag:string, TagData:any) => {
     return gameObjectArr;
 }
 
-export var initData = (TagData:any) => {
+export var initData = (TagData: any) => {
     TagData.tagArray = [];
     TagData.slotCountMap = [];
     TagData.usedSlotCountMap = [];

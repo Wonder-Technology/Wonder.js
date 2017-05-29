@@ -33,14 +33,14 @@ export var addInitHandle = (_class: any) => {
     addInitHandleToMap(_class, initMaterial);
 }
 
-export var create = requireCheckFunc((material:Material, className:string, MaterialData: any) => {
+export var create = requireCheckFunc((material: Material, className: string, MaterialData: any) => {
     it("MaterialData.index should >= 0", () => {
         expect(MaterialData.index).gte(0);
     });
     it("MaterialData.count should >= 0", () => {
         expect(MaterialData.count).gte(0);
     });
-}, (material:Material, className:string, MaterialData: any) => {
+}, (material: Material, className: string, MaterialData: any) => {
     var index = generateComponentIndex(MaterialData);
 
     material.index = index;
@@ -63,20 +63,20 @@ var _createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
+export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any, MaterialData: any) => {
     // checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DeviceManagerData:any, ShaderData:any, MaterialData:any) => {
-    for(let i = 0, count = MaterialData.count; i < count; i++){
+}, (state: MapImmutable<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any, MaterialData: any) => {
+    for (let i = 0, count = MaterialData.count; i < count; i++) {
         initMaterial(i, state);
     }
 })
 
-export var initMaterial = (index:number, state: MapImmutable<any, any>) => {
+export var initMaterial = (index: number, state: MapImmutable<any, any>) => {
     var shader = getShader(index, MaterialData),
         isInitMap = ShaderData.isInitMap,
         shaderIndex = shader.index;
 
-    if(isInitMap[shaderIndex] === true){
+    if (isInitMap[shaderIndex] === true) {
         return;
     }
 
@@ -85,59 +85,59 @@ export var initMaterial = (index:number, state: MapImmutable<any, any>) => {
     initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ShaderData);
 }
 
-var _getMaterialClassName = (materialIndex:number, MaterialData:any) => {
+var _getMaterialClassName = (materialIndex: number, MaterialData: any) => {
     return MaterialData.materialClassNameMap[materialIndex];
 }
 
-var _setMaterialClassName = (materialIndex:number, className:string, MaterialData:any) => {
+var _setMaterialClassName = (materialIndex: number, className: string, MaterialData: any) => {
     MaterialData.materialClassNameMap[materialIndex] = className;
 }
 
-export var getShader = (materialIndex:number, MaterialData:any) => {
+export var getShader = (materialIndex: number, MaterialData: any) => {
     return MaterialData.shaderMap[materialIndex];
 }
 
-export var setShader = (materialIndex:number, shader:Shader, MaterialData:any) => {
+export var setShader = (materialIndex: number, shader: Shader, MaterialData: any) => {
     MaterialData.shaderMap[materialIndex] = shader;
 }
 
-export var getColor = (materialIndex:number, MaterialData:any) => {
+export var getColor = (materialIndex: number, MaterialData: any) => {
     return MaterialData.colorMap[materialIndex];
 }
 
-export var setColor = (materialIndex:number, color:Color, MaterialData:any) => {
+export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
     MaterialData.colorMap[materialIndex] = color;
 }
 
-export var getOpacity = (materialIndex:number, MaterialData:any) => {
+export var getOpacity = (materialIndex: number, MaterialData: any) => {
     return MaterialData.opacityMap[materialIndex];
 }
 
-export var setOpacity = (materialIndex:number, opacity:number, MaterialData:any) => {
+export var setOpacity = (materialIndex: number, opacity: number, MaterialData: any) => {
     MaterialData.opacityMap[materialIndex] = opacity;
 }
 
-export var getAlphaTest = (materialIndex:number, MaterialData:any) => {
+export var getAlphaTest = (materialIndex: number, MaterialData: any) => {
     return MaterialData.alphaTestMap[materialIndex];
 }
 
-export var setAlphaTest = (materialIndex:number, alphaTest:number, MaterialData:any) => {
+export var setAlphaTest = (materialIndex: number, alphaTest: number, MaterialData: any) => {
     MaterialData.alphaTestMap[materialIndex] = alphaTest;
 }
 
-export var isPropertyExist = (propertyVal:any) => {
+export var isPropertyExist = (propertyVal: any) => {
     return isValidMapValue(propertyVal);
 }
 
-export var addComponent = (component:Material, gameObject:GameObject) => {
+export var addComponent = (component: Material, gameObject: GameObject) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = ensureFunc((returnVal, component:Material) => {
+export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     checkIndexShouldEqualCount(MaterialData);
-}, (component:Material) => {
+}, (component: Material) => {
     var sourceIndex = component.index,
-        lastComponentIndex:number = null;
+        lastComponentIndex: number = null;
 
     MaterialData.count -= 1;
     MaterialData.index -= 1;
@@ -157,11 +157,11 @@ export var disposeComponent = ensureFunc((returnVal, component:Material) => {
     //not dispose shader(for reuse shader)
 })
 
-export var getGameObject = (index:number, Data:any) => {
+export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-export var initData = (MaterialData:any) => {
+export var initData = (MaterialData: any) => {
     MaterialData.shaderMap = createMap();
     MaterialData.materialClassNameMap = createMap();
     MaterialData.colorMap = createMap();

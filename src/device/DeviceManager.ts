@@ -51,6 +51,6 @@ export class DeviceManager {
     }
 }
 
-export var setDeviceManagerGL = (gl:WebGLRenderingContext) => {
+export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {
     return setGL(gl, DeviceManagerData, getState(DirectorData));
 }

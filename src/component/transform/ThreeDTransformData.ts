@@ -29,80 +29,80 @@ export class ThreeDTransformData {
     // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
     // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
     // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    public static cacheMap:ThreeDTransformCacheMap = null;
+    public static cacheMap: ThreeDTransformCacheMap = null;
 
     // public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
     // public static tempPositionMap:ThreeDTransformPositionMap = null;
     // public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
-    public static tempMap:ThreeDTransformTempMap = null;
+    public static tempMap: ThreeDTransformTempMap = null;
 
-    public static transformMap:TransformMap = null;
+    public static transformMap: TransformMap = null;
 
-    public static uid:number = null;
-    public static disposeCount:number = null;
-    public static isClearCacheMap:boolean = null;
+    public static uid: number = null;
+    public static disposeCount: number = null;
+    public static isClearCacheMap: boolean = null;
 
-    public static gameObjectMap:ThreeDTransformGameObjectMap = null;
+    public static gameObjectMap: ThreeDTransformGameObjectMap = null;
 
-    public static aliveUIDArray:Array<number> = null;
+    public static aliveUIDArray: Array<number> = null;
 
     public static buffer: ArrayBuffer = null;
 }
 
-export class ThreeDTransformRelationData{
+export class ThreeDTransformRelationData {
     public static create() {
-    	var obj = new this();
+        var obj = new this();
 
-    	return obj;
+        return obj;
     }
 
-    public indexInArrayBuffer:number = null;
+    public indexInArrayBuffer: number = null;
     public parent: ThreeDTransformRelationData = null;
-    public children:Array<ThreeDTransformRelationData> = null;
+    public children: Array<ThreeDTransformRelationData> = null;
 }
 
 export type ParentMap = {
-    [uid:number]: ThreeDTransform
+    [uid: number]: ThreeDTransform
 }
 
 export type ChildrenMap = {
-    [uid:number]: Array<ThreeDTransform>
+    [uid: number]: Array<ThreeDTransform>
 }
 
 export type ThreeDTransformGameObjectMap = Map<number, GameObject>
 
 export type TransformMap = {
-    [index:number]: ThreeDTransform
+    [index: number]: ThreeDTransform
 }
 
 export type ThreeDTransformCacheMap = {
-    [uid:number]: ThreeDTransformCacheData
+    [uid: number]: ThreeDTransformCacheData
 }
 
 export type ThreeDTransformCacheData = {
-    position:Vector3;
-    localPosition:Vector3;
-    localToWorldMatrix:Matrix4;
+    position: Vector3;
+    localPosition: Vector3;
+    localToWorldMatrix: Matrix4;
 }
 
 export type ThreeDTransformTempMap = {
-    [uid:number]: ThreeDTransformTempData
+    [uid: number]: ThreeDTransformTempData
 }
 
 export type ThreeDTransformTempData = {
-    position:Vector3;
-    localPosition:Vector3;
-    localToWorldMatrix:Matrix4;
+    position: Vector3;
+    localPosition: Vector3;
+    localToWorldMatrix: Matrix4;
 }
 
 export type ThreeDTransformPositionMap = {
-    [uid:number]: Vector3
+    [uid: number]: Vector3
 }
 
 export type ThreeDTransformLocalPositionMap = {
-    [uid:number]: Vector3
+    [uid: number]: Vector3
 }
 
 export type ThreeDTransformLocalToWorldMatrixMap = {
-    [uid:number]: Matrix4
+    [uid: number]: Matrix4
 }

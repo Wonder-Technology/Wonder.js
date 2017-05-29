@@ -2,14 +2,14 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { expect } from "wonder-expect.js";
 import { isValidMapValue } from "../../utils/objectUtils";
 
-export var getUID = requireCheckFunc ((indexInArrayBuffer:number, ThreeDTransformData:any) => {
+export var getUID = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
     it("indexInArrayBuffer should exist", () => {
         expect(indexInArrayBuffer).exist;
     });
     it("transform should exist", () => {
         expect(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
     });
-}, (indexInArrayBuffer:number, ThreeDTransformData:any) => {
+}, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
     return ThreeDTransformData.transformMap[indexInArrayBuffer].uid;
 })
 

@@ -5,13 +5,13 @@ import { CameraControllerData } from "./CameraControllerData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
 @registerClass("CameraController")
-export class CameraController extends Component{
+export class CameraController extends Component {
 }
 
 export var createCameraController = () => {
     return create(CameraControllerData);
 }
 
-export var getCameraControllerGameObject = (component:CameraController) => {
+export var getCameraControllerGameObject = (component: CameraController) => {
     return getGameObject(component.index, CameraControllerData);
 }

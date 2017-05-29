@@ -8,6 +8,6 @@ export class JudgeUtils extends JudgeUtils$ {
     }
 }
 
-export var isUndefined = (v:any) => v === void 0;
+export var isUndefined = (v: any) => v === void 0;
 
-export var isNotUndefined = (v:any) => v !== void 0;
+export var isNotUndefined = (v: any) => v !== void 0;

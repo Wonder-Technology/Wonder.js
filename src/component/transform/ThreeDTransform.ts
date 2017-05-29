@@ -17,21 +17,21 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 
 @registerClass("ThreeDTransform")
-export class ThreeDTransform extends Component implements IThreeDTransform{
-    public uid:number = null;
+export class ThreeDTransform extends Component implements IThreeDTransform {
+    public uid: number = null;
 }
 
-export interface IThreeDTransform{
-    index:number;
-    uid:number;
+export interface IThreeDTransform {
+    index: number;
+    uid: number;
 }
 
-export interface BatchTransformData{
+export interface BatchTransformData {
     // uid:number;
     // index:number;
-    transform:ThreeDTransform,
-    position:Vector3;
-    localPosition:Vector3;
+    transform: ThreeDTransform,
+    position: Vector3;
+    localPosition: Vector3;
 }
 
 
@@ -39,54 +39,54 @@ export var createThreeDTransform = () => {
     return create(ThreeDTransformData);
 }
 
-export var getThreeDTransformPosition = requireCheckFunc((component:ThreeDTransform) => {
+export var getThreeDTransformPosition = requireCheckFunc((component: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform) => {
+}, (component: ThreeDTransform) => {
     return getPosition(component, ThreeDTransformData);
 })
 
-export var setThreeDTransformPosition = requireCheckFunc((component:ThreeDTransform, position:Vector3) => {
+export var setThreeDTransformPosition = requireCheckFunc((component: ThreeDTransform, position: Vector3) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform, position:Vector3) => {
+}, (component: ThreeDTransform, position: Vector3) => {
     setPosition(component, position, GlobalTempData, ThreeDTransformData);
 })
 
-export var getThreeDTransformLocalToWorldMatrix = requireCheckFunc((component:ThreeDTransform) => {
+export var getThreeDTransformLocalToWorldMatrix = requireCheckFunc((component: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform) => {
+}, (component: ThreeDTransform) => {
     return getLocalToWorldMatrix(component, getTempLocalToWorldMatrix(component, ThreeDTransformData), ThreeDTransformData);
 })
 
-export var getThreeDTransformLocalPosition = requireCheckFunc((component:ThreeDTransform) => {
+export var getThreeDTransformLocalPosition = requireCheckFunc((component: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform) => {
+}, (component: ThreeDTransform) => {
     return getLocalPosition(component, ThreeDTransformData);
 })
 
-export var setThreeDTransformLocalPosition = requireCheckFunc((component:ThreeDTransform, localPosition:Vector3) => {
+export var setThreeDTransformLocalPosition = requireCheckFunc((component: ThreeDTransform, localPosition: Vector3) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform, localPosition:Vector3) => {
+}, (component: ThreeDTransform, localPosition: Vector3) => {
     setLocalPosition(component, localPosition, ThreeDTransformData);
 })
 
-export var setThreeDTransformBatchTransformDatas = (batchData:Array<BatchTransformData>) => {
+export var setThreeDTransformBatchTransformDatas = (batchData: Array<BatchTransformData>) => {
     setBatchDatas(batchData, GlobalTempData, ThreeDTransformData);
 }
 
-export var getThreeDTransformParent = requireCheckFunc((component:ThreeDTransform) => {
+export var getThreeDTransformParent = requireCheckFunc((component: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform) => {
+}, (component: ThreeDTransform) => {
     return getParent(component, ThreeDTransformData);
 })
 
-export var setThreeDTransformParent = requireCheckFunc((component:ThreeDTransform, parent:ThreeDTransform) => {
+export var setThreeDTransformParent = requireCheckFunc((component: ThreeDTransform, parent: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform, parent:ThreeDTransform) => {
+}, (component: ThreeDTransform, parent: ThreeDTransform) => {
     setParent(component, parent, ThreeDTransformData);
 })
 
-export var getThreeDTransformGameObject = requireCheckFunc((component:ThreeDTransform) => {
+export var getThreeDTransformGameObject = requireCheckFunc((component: ThreeDTransform) => {
     checkShouldAlive(component, ThreeDTransformData);
-}, (component:ThreeDTransform) => {
+}, (component: ThreeDTransform) => {
     return getGameObject(component.uid, ThreeDTransformData);
 })

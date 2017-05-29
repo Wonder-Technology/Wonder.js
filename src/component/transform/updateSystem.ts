@@ -71,7 +71,7 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
         let parentIndex = parent.index;
 
         return setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
-                .multiply(mat),
+            .multiply(mat),
             mat4Index,
             ThreeDTransformData
         );

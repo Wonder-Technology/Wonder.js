@@ -5,7 +5,7 @@ import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 
 @registerClass("BasicMaterial")
-export class BasicMaterial extends Material{
+export class BasicMaterial extends Material {
 }
 
 export var createBasicMaterial = () => {

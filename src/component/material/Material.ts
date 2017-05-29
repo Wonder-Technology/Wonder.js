@@ -14,41 +14,41 @@ import { shaderLib_generator } from "../../renderer/data/shaderLib_generator";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 
 @registerClass("Material")
-export class Material extends Component{
+export class Material extends Component {
 }
 
-export var getMaterialColor = (material:Material) => {
+export var getMaterialColor = (material: Material) => {
     return getColor(material.index, MaterialData);
 }
 
-export var setMaterialColor = (material:Material, color:Color) => {
+export var setMaterialColor = (material: Material, color: Color) => {
     setColor(material.index, color, MaterialData);
 }
 
-export var getMaterialOpacity = (material:Material) => {
+export var getMaterialOpacity = (material: Material) => {
     return getOpacity(material.index, MaterialData);
 }
 
-export var setMaterialOpacity = (material:Material, opacity:number) => {
+export var setMaterialOpacity = (material: Material, opacity: number) => {
     setOpacity(material.index, opacity, MaterialData);
 }
 
-export var getMaterialAlphaTest = (material:Material) => {
+export var getMaterialAlphaTest = (material: Material) => {
     return getAlphaTest(material.index, MaterialData);
 }
 
-export var setMaterialAlphaTest = (material:Material, alphaTest:number) => {
+export var setMaterialAlphaTest = (material: Material, alphaTest: number) => {
     setAlphaTest(material.index, alphaTest, MaterialData);
 }
 
-export var getMaterialGameObject = (component:Material) => {
+export var getMaterialGameObject = (component: Material) => {
     return getGameObject(component.index, MaterialData);
 }
 
-export var getMaterialShader = (material:Material) => {
+export var getMaterialShader = (material: Material) => {
     return getShader(material.index, MaterialData);
 }
 
-export var initMaterial = (material:Material) => {
+export var initMaterial = (material: Material) => {
     initMaterialSystem(material.index, getState(DirectorData));
 }

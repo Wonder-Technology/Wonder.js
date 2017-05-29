@@ -73,7 +73,7 @@ export const shaderLib_generator = {
             "glsl": {
                 "vs": {
                     "body": setPos_mvp
-               }
+                }
             },
             "send": {
                 "uniform": [
@@ -88,7 +88,7 @@ export const shaderLib_generator = {
         },
         "EndBasicShaderLib": {
             "glsl": {
-                "func": (materialIndex:number) => {
+                "func": (materialIndex: number) => {
                     var alphaTest = getAlphaTest(materialIndex, MaterialData);
 
                     if (isPropertyExist(alphaTest)) {
@@ -108,7 +108,7 @@ export const shaderLib_generator = {
         "EndShaderLib": {
             "glsl": {
                 "fs": {
-                    "source":end_basic_fragment
+                    "source": end_basic_fragment
                 }
             }
         }
@@ -128,7 +128,7 @@ export interface IShaderLibConfig {
     glsl?: {
         vs?: IGLSLConfig,
         fs?: IGLSLConfig,
-        func?: (materialIndex:number) => IGLSLFuncConfig | null
+        func?: (materialIndex: number) => IGLSLFuncConfig | null
     },
     send?: IShaderLibSendConfig
 }
@@ -140,7 +140,7 @@ export interface IGLSLConfig {
     funcDeclare?: string;
     funcDefine?: string;
     body?: string;
-    define?:string;
+    define?: string;
 
     //todo support extension
     // define?: {
@@ -151,8 +151,8 @@ export interface IGLSLConfig {
 }
 
 export interface IGLSLFuncConfig {
-    vs?:IGLSLFuncGLSLConfig,
-    fs?:IGLSLFuncGLSLConfig
+    vs?: IGLSLFuncGLSLConfig,
+    fs?: IGLSLFuncGLSLConfig
 }
 
 export interface IGLSLFuncGLSLConfig {
@@ -161,7 +161,7 @@ export interface IGLSLFuncGLSLConfig {
     funcDeclare?: string;
     funcDefine?: string;
     body?: string;
-    define?:string;
+    define?: string;
 }
 
 export interface IShaderLibSendConfig {
@@ -169,15 +169,15 @@ export interface IShaderLibSendConfig {
     uniform?: Array<ISendUniformConfig>;
 }
 
-export interface ISendAttributeConfig{
-    name:string;
-    buffer:string;
-    type:"vec3";
+export interface ISendAttributeConfig {
+    name: string;
+    buffer: string;
+    type: "vec3";
 }
 
-export interface ISendUniformConfig{
-    name:string;
-    field:string;
+export interface ISendUniformConfig {
+    name: string;
+    field: string;
     type: "float" | "vec3" | "mat4";
     from?: "cmd" | "material";
 }

@@ -22,8 +22,8 @@ import { getTypeIDFromClass } from "../../component/ComponentTypeIdManager";
 import { CameraController } from "../../component/camera/CameraController";
 import { forEach } from "../../utils/arrayUtils";
 
-export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, CameraControllerData:any, CameraData:any, MaterialData:any, GeometryData:any, SceneData:any, renderGameObjectArray:Array<GameObject>) => {
-    forEach(renderGameObjectArray, (gameObject:GameObject) => {
+export var createRenderCommands = requireCheckFunc(curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, renderGameObjectArray: Array<GameObject>) => {
+    forEach(renderGameObjectArray, (gameObject: GameObject) => {
         var geometry = getGeometry(gameObject, GameObjectData),
             material = getMaterial(gameObject, GameObjectData);
 
@@ -34,10 +34,10 @@ export var createRenderCommands = requireCheckFunc(curry((state:Map<any, any>, G
             expect(material).exist;
         });
     });
-}), curry((state:Map<any, any>, GameObjectData:any, ThreeDTransformData:any, CameraControllerData:any, CameraData:any, MaterialData:any, GeometryData:any, SceneData:any, renderGameObjectArray:Array<GameObject>) => {
-    var commandArr:Array<RenderCommand> = [];
+}), curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, renderGameObjectArray: Array<GameObject>) => {
+    var commandArr: Array<RenderCommand> = [];
 
-    for(let gameObject of renderGameObjectArray){
+    for (let gameObject of renderGameObjectArray) {
         let command = new RenderCommand(),
             currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
             currentCameraIndex = currentCamera.index,

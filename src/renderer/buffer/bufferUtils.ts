@@ -1,4 +1,4 @@
 import { isValidMapValue } from "../../utils/objectUtils";
 
-export var isBufferExist = (buffer:WebGLBuffer) => isValidMapValue(buffer);
+export var isBufferExist = (buffer: WebGLBuffer) => isValidMapValue(buffer);
 

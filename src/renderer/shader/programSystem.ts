@@ -166,7 +166,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
         attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
 
-    for(let sendData of sendDataArr) {
+    for (let sendData of sendDataArr) {
         let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
             pos = getAttribLocation(sendData.name, attributeLocationMap);
 
@@ -186,27 +186,27 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     ShaderData.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData:any, ShaderData: any, renderCommand:RenderCommand) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ShaderData: any, renderCommand: RenderCommand) => {
     var sendDataArr = ShaderData.sendUniformConfigMap[shaderIndex],
         uniformLocationMap = ShaderData.uniformLocationMap[shaderIndex],
         uniformCacheMap = ShaderData.uniformCacheMap;
 
-    for(let sendData of sendDataArr){
+    for (let sendData of sendDataArr) {
         let name = sendData.name,
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from , renderCommand, MaterialData);
+            data = getUniformData(field, from, renderCommand, MaterialData);
 
         switch (type) {
             case EVariableType.MAT4:
                 sendMatrix4(gl, name, data, uniformLocationMap);
                 break;
             case EVariableType.VEC3:
-                sendVector3(gl, shaderIndex, name ,data, uniformCacheMap, uniformLocationMap);
+                sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             case EVariableType.FLOAT:
-                sendFloat1(gl, shaderIndex, name ,data, uniformCacheMap, uniformLocationMap);
+                sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             default:
                 Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));

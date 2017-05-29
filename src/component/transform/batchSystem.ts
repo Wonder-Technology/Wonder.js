@@ -14,11 +14,11 @@ import { compose } from "../../utils/functionalUtils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { forEach } from "../../utils/arrayUtils";
 
-export var setBatchDatas = requireCheckFunc((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
-    for(let data of batchData) {
+export var setBatchDatas = requireCheckFunc((batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
+    for (let data of batchData) {
         checkTransformShouldAlive(data.transform, ThreeTransformData);
     }
-}, (batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
+}, (batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
     compose(
         _addBatchToDirtyListByChangeMapData(ThreeDTransformData, ThreeDTransformData.firstDirtyIndex),
         _addBatchToDirtyListByChangeTypeArrData(ThreeDTransformData, ThreeDTransformData.firstDirtyIndex),
@@ -32,20 +32,20 @@ export var setBatchDatas = requireCheckFunc((batchData:Array<BatchTransformData>
     )(ThreeDTransformData);
 })
 
-var _setBatchTransformData = curry((batchData:Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
-    for(let data of batchData) {
+var _setBatchTransformData = curry((batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
+    for (let data of batchData) {
         let transform = data.transform,
             indexInArrayBuffer = transform.index,
             uid = transform.uid,
             parent = getParent(uid, ThreeDTransformData),
             vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer),
-            {position, localPosition} = data;
+            { position, localPosition } = data;
 
-        if(localPosition){
+        if (localPosition) {
             setLocalPositionData(localPosition, vec3IndexInArrayBuffer, ThreeDTransformData);
         }
 
-        if(position){
+        if (position) {
             setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
         }
     }
@@ -53,13 +53,13 @@ var _setBatchTransformData = curry((batchData:Array<BatchTransformData>, GlobalT
     return ThreeDTransformData;
 })
 
-var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<BatchTransformData>, ThreeDTransformData:any) => {
+var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData: Array<BatchTransformData>, ThreeDTransformData: any) => {
     var notDirtyIndexArr = [],
         firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
-    var _getNotDirtyIndex = (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate:boolean, ThreeDTransformData) => {
+    var _getNotDirtyIndex = (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate: boolean, ThreeDTransformData) => {
         var children = getChildren(uid, ThreeDTransformData);
 
-        if(isTranslate){
+        if (isTranslate) {
             setIsTranslate(uid, true, ThreeDTransformData);
         }
 
@@ -69,14 +69,14 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<B
             firstDirtyIndex = minusFirstDirtyIndex(firstDirtyIndex);
         }
 
-        if(isChildrenExist(children)){
+        if (isChildrenExist(children)) {
             forEach(children, (child: ThreeDTransform) => {
                 _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
             })
         }
     }
 
-    for(let data of batchData){
+    for (let data of batchData) {
         let transform = data.transform,
             indexInArrayBuffer = transform.index;
 
@@ -87,8 +87,8 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData:Array<B
 });
 
 
-var _addBatchToDirtyList = (ThreeDTransformData: any, targetDirtyIndex:number, swapFunc:Function, moveToIndexFunc:Function, notDirtyIndexArr:Array<number>) => {
-    for(let indexInArrayBuffer of notDirtyIndexArr){
+var _addBatchToDirtyList = (ThreeDTransformData: any, targetDirtyIndex: number, swapFunc: Function, moveToIndexFunc: Function, notDirtyIndexArr: Array<number>) => {
+    for (let indexInArrayBuffer of notDirtyIndexArr) {
         targetDirtyIndex = minusFirstDirtyIndex(targetDirtyIndex);
 
         if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
@@ -102,15 +102,15 @@ var _addBatchToDirtyList = (ThreeDTransformData: any, targetDirtyIndex:number, s
     return targetDirtyIndex;
 }
 
-var _addBatchToDirtyListByChangeTypeArrData = curry((ThreeDTransformData: any, targetDirtyIndex:number, notDirtyIndexArr:Array<number>) => {
-    _addBatchToDirtyList(ThreeDTransformData,targetDirtyIndex, swapTypeArrData, moveTypeArrDataToIndex, notDirtyIndexArr);
+var _addBatchToDirtyListByChangeTypeArrData = curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
+    _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTypeArrData, moveTypeArrDataToIndex, notDirtyIndexArr);
 
     return notDirtyIndexArr;
 })
 
 
-var _addBatchToDirtyListByChangeMapData = curry((ThreeDTransformData: any, targetDirtyIndex:number, notDirtyIndexArr:Array<number>) => {
-    return _addBatchToDirtyList(ThreeDTransformData,targetDirtyIndex, swapTransformMapData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+var _addBatchToDirtyListByChangeMapData = curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
+    return _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTransformMapData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
         moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
         addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);
     }, notDirtyIndexArr);

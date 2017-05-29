@@ -18,12 +18,12 @@ import { trace } from "../utils/debugUtils";
 import { isValueExist } from "../utils/stateUtils";
 import { Color } from "../structure/Color";
 
-export var getGL = (DeviceManagerData:any, state: Map<any, any>): WebGLRenderingContext => {
+export var getGL = (DeviceManagerData: any, state: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
     return DeviceManagerData.gl;
 }
 
-export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData:any, state: Map<any, any>) => {
+export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData: any, state: Map<any, any>) => {
     // return state.setIn(["DeviceManager", "gl"], gl);
     DeviceManagerData.gl = gl;
 
@@ -82,7 +82,7 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: 
     });
 })
 
-export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, DeviceManagerData:any, state: Map<any, any>) => {
+export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var dom = _getCanvas(DomQuery, canvasId),
             gl = getContext(contextConfig, dom);
@@ -103,7 +103,7 @@ export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, 
  * @param {Number} w The width of the viewport in pixels.
  * @param {Number} h The height of the viewport in pixels.
  */
-export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerData:any, state: Map<any, any>) => {
+export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getGL(DeviceManagerData, state),
             viewport = getViewport(state);
@@ -165,7 +165,7 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     });
 }
 
-var _setScreenData = curry((DeviceManagerData:any, state: Map<any, any>, {
+var _setScreenData = curry((DeviceManagerData: any, state: Map<any, any>, {
     x,
     y,
     width,
@@ -180,7 +180,7 @@ var _setScreenData = curry((DeviceManagerData:any, state: Map<any, any>, {
     });
 })
 
-export var setScreen = curry((DeviceManagerData:any, state: Map<any, any>) => {
+export var setScreen = curry((DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(requireCheckFunc((state: Map<any, any>) => {
         it("should exist MainData.screenSize", () => {
             expect(getScreenSize(DirectorData.state)).exist;
@@ -195,7 +195,7 @@ export var setScreen = curry((DeviceManagerData:any, state: Map<any, any>) => {
 });
 
 
-export var clear = (gl:WebGLRenderingContext, color:Color, DeviceManagerData:any) => {
+export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerData: any) => {
     _setClearColor(gl, color, DeviceManagerData);
 
     setColorWrite(gl, true, true, true, true, DeviceManagerData);
@@ -215,7 +215,7 @@ export var clear = (gl:WebGLRenderingContext, color:Color, DeviceManagerData:any
 }
 
 
-var _setClearColor = (gl:WebGLRenderingContext, color: Color, DeviceManagerData:any) => {
+var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerData: any) => {
     var clearColor = DeviceManagerData.clearColor;
 
     if (clearColor && clearColor.isEqual(color)) {
@@ -238,7 +238,7 @@ var _setClearColor = (gl:WebGLRenderingContext, color: Color, DeviceManagerData:
  * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
  * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
  */
-export var setColorWrite = (gl:WebGLRenderingContext, writeRed:boolean, writeGreen:boolean, writeBlue:boolean, writeAlpha:boolean, DeviceManagerData:any) => {
+export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerData: any) => {
     if (DeviceManagerData.writeRed !== writeRed
         || DeviceManagerData.writeGreen !== writeGreen
         || DeviceManagerData.writeBlue !== writeBlue

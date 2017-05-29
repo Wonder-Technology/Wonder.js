@@ -60,7 +60,7 @@ var _swapTransformMap = (transformMap: TransformMap, sourceIndex: number, target
     transformMap[sourceIndex] = targetTransform;
 }
 
-var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc:(arr:Float32Array, sourceIndex:number, targetIndex:number, length:number) => void, ThreeDTransformData: any) => {
+var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: (arr: Float32Array, sourceIndex: number, targetIndex: number, length: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -83,8 +83,8 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc:(
     return ThreeDTransformData;
 }
 
-var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc:(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
-    if(sourceIndex === targetIndex){
+var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
+    if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
 
@@ -130,7 +130,7 @@ export var moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex
     it("target index should not be used", () => {
         expect(isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
-},(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+}, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
     moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
 
@@ -150,7 +150,7 @@ export var moveMapDataToIndex = ensureFunc((returnVal, sourceIndex: number, targ
     it("target index should not be used", () => {
         expect(isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
-},(sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+}, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     return _changeMapData(sourceIndex, targetIndex, _moveToTransformMap, ThreeDTransformData);
 }))
 
@@ -190,13 +190,13 @@ export var setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, 
     return ThreeDTransformData;
 }
 
-export var setPositionData = (indexInArrayBuffer:number, parent:ThreeDTransform, vec3IndexInArrayBuffer:number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
+export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     if (isParentExist(parent)) {
         let indexInArrayBuffer = parent.index;
 
         DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
-            uid:getUID(indexInArrayBuffer, ThreeDTransformData),
-            index:indexInArrayBuffer
+            uid: getUID(indexInArrayBuffer, ThreeDTransformData),
+            index: indexInArrayBuffer
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {

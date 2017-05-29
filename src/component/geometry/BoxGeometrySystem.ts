@@ -12,7 +12,7 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 
 export var create = (GeometryData: any) => {
     var geometry = new BoxGeometry(),
-        index:number = null;
+        index: number = null;
 
     geometry = createGeometry(geometry, GeometryData);
 
@@ -28,11 +28,11 @@ export var create = (GeometryData: any) => {
 var _computeData = (index: number, GeometryData: any) => {
     var {
             width,
-            height,
-            depth,
-            widthSegments,
-            heightSegments,
-            depthSegments
+        height,
+        depth,
+        widthSegments,
+        heightSegments,
+        depthSegments
         } = _getConfigData(index, GeometryData),
         sides = {
             FRONT: 0,
@@ -134,15 +134,15 @@ var _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
     return GeometryData.configDataMap[index];
 })
 
-export var setConfigData = (index:number, data: BoxGeometryConfigData, GeometryData: any) => {
+export var setConfigData = (index: number, data: BoxGeometryConfigData, GeometryData: any) => {
     GeometryData.configDataMap[index] = ExtendUtils.extend({
-            width:10,
-            height:10,
-            depth:10,
-            widthSegments:1,
-            heightSegments:1,
-            depthSegments:1
-        },
+        width: 10,
+        height: 10,
+        depth: 10,
+        widthSegments: 1,
+        heightSegments: 1,
+        depthSegments: 1
+    },
         data
     );
 }

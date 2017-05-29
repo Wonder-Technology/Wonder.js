@@ -5,7 +5,7 @@ import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../co
 import { isNotValidVal } from "./arrayUtils";
 import { MemoryConfig } from "../config/MemoryConfig";
 
-export var isDisposeTooManyComponents = (disposeCount:number) => {
+export var isDisposeTooManyComponents = (disposeCount: number) => {
     return disposeCount >= MemoryConfig.maxComponentDisposeCount;
 }
 //
@@ -15,17 +15,17 @@ export var isDisposeTooManyComponents = (disposeCount:number) => {
 //     }
 // }
 
-var _setMapVal = (map:object, uid:number, val:any) => {
+var _setMapVal = (map: object, uid: number, val: any) => {
     map[uid] = val;
 }
 
-export var reAllocateThreeDTransformMap = (ThreeDTransformData:any) => {
-    var val:any = null,
+export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
+    var val: any = null,
         newParentMap = {},
         newChildrenMap = {},
         newIsTranslateMap = {},
         newTempMap = {},
-        newAliveUIDArray:Array<number> = [],
+        newAliveUIDArray: Array<number> = [],
         aliveUIDArray = ThreeDTransformData.aliveUIDArray,
         parentMap = ThreeDTransformData.parentMap,
         childrenMap = ThreeDTransformData.childrenMap,
@@ -34,10 +34,10 @@ export var reAllocateThreeDTransformMap = (ThreeDTransformData:any) => {
 
     clearCacheMap(ThreeDTransformData);
 
-    for(let uid of aliveUIDArray){
+    for (let uid of aliveUIDArray) {
         val = childrenMap[uid];
 
-        if(isNotValidMapValue(val)){
+        if (isNotValidMapValue(val)) {
             continue;
         }
 
@@ -63,21 +63,21 @@ export var reAllocateThreeDTransformMap = (ThreeDTransformData:any) => {
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 }
 
-export var reAllocateGameObjectMap = (GameObjectData:any) => {
+export var reAllocateGameObjectMap = (GameObjectData: any) => {
     let val: any = null,
         newParentMap = {},
         newChildrenMap = {},
         newComponentMap = {},
-        newAliveUIDArray:Array<number> = [],
+        newAliveUIDArray: Array<number> = [],
         aliveUIDArray = GameObjectData.aliveUIDArray,
         parentMap = GameObjectData.parentMap,
         childrenMap = GameObjectData.childrenMap,
         componentMap = GameObjectData.componentMap;
 
-    for(let uid of aliveUIDArray){
+    for (let uid of aliveUIDArray) {
         val = componentMap[uid];
 
-        if(isNotValidMapValue(val)){
+        if (isNotValidMapValue(val)) {
             continue;
         }
 
@@ -98,7 +98,7 @@ export var reAllocateGameObjectMap = (GameObjectData:any) => {
     GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
 
-export var reAllocateTagMap = (TagData:any) => {
+export var reAllocateTagMap = (TagData: any) => {
     var usedSlotCountMap = TagData.usedSlotCountMap,
         slotCountMap = TagData.slotCountMap,
         indexMap = TagData.indexMap,
@@ -106,7 +106,7 @@ export var reAllocateTagMap = (TagData:any) => {
         gameObjectMap = TagData.gameObjectMap,
         indexInTagArrayMap = TagData.indexInTagArrayMap,
         tagMap = TagData.tagMap,
-        newIndexInTagArrayMap:Array<number> = [0],
+        newIndexInTagArrayMap: Array<number> = [0],
         newTagArray = [],
         newGameObjectMap = createMap(),
         newUsedSlotCountMap = [],
@@ -118,12 +118,12 @@ export var reAllocateTagMap = (TagData:any) => {
         newIndex = 0,
         newLastIndexInTagArray = 0,
         hasNewData = false,
-        tagIndex:number = null;
+        tagIndex: number = null;
 
-    for(let indexInTagArray of indexInTagArrayMap){
+    for (let indexInTagArray of indexInTagArrayMap) {
         let index = indexMap[indexInTagArray];
 
-        if(isNotValidVal(index)){
+        if (isNotValidVal(index)) {
             continue;
         }
 
@@ -142,7 +142,7 @@ export var reAllocateTagMap = (TagData:any) => {
         tag.index = newIndex;
         newTagMap[newIndex] = tag;
 
-        for(let i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++){
+        for (let i = indexInTagArray, count = indexInTagArray + currentUsedSlotCount; i < count; i++) {
             newTagArray[newIndexInTagArray] = tagArray[i];
 
             newIndexMap[newIndexInTagArray] = newIndex;
@@ -153,14 +153,14 @@ export var reAllocateTagMap = (TagData:any) => {
         newIndex += 1;
     }
 
-    if(hasNewData){
+    if (hasNewData) {
         newIndex -= 1;
 
         newLastIndexInTagArray = newIndexInTagArrayInMap + getSlotCount(newIndex, newSlotCountMap);
 
         tagIndex = newIndex + 1;
     }
-    else{
+    else {
         tagIndex = 0;
     }
 

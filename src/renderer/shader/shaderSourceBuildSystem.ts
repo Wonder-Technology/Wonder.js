@@ -13,13 +13,13 @@ import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../utils/functionalUtils";
 import { forEach } from "../../utils/arrayUtils";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibConfig, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex:number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
+}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -44,7 +44,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
             fs = null,
             func = null;
 
-        if(!isConfigDataExist(glslData)){
+        if (!isConfigDataExist(glslData)) {
             return;
         }
 
@@ -52,7 +52,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
         fs = glslData.fs;
         func = glslData.func;
 
-        if(isConfigDataExist(vs)){
+        if (isConfigDataExist(vs)) {
             vsTop += _getGLSLPartData(vs, "top");
             vsDefine += _getGLSLPartData(vs, "define");
             vsVarDeclare += _getGLSLPartData(vs, "varDeclare");
@@ -61,7 +61,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
             vsBody += _getGLSLPartData(vs, "body");
         }
 
-        if(isConfigDataExist(fs)){
+        if (isConfigDataExist(fs)) {
             fsTop += _getGLSLPartData(fs, "top");
             fsDefine += _getGLSLPartData(fs, "define");
             fsVarDeclare += _getGLSLPartData(fs, "varDeclare");
@@ -70,14 +70,14 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
             fsBody += _getGLSLPartData(fs, "body");
         }
 
-        if(isConfigDataExist(func)){
-            let funcConfig:IGLSLFuncConfig = func(materialIndex);
+        if (isConfigDataExist(func)) {
+            let funcConfig: IGLSLFuncConfig = func(materialIndex);
 
-            if(isConfigDataExist(funcConfig)){
+            if (isConfigDataExist(funcConfig)) {
                 let vs = funcConfig.vs,
                     fs = funcConfig.fs;
 
-                if(isConfigDataExist(vs)){
+                if (isConfigDataExist(vs)) {
                     vs = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), vs);
 
                     vsTop += _getFuncGLSLPartData(vs, "top");
@@ -88,7 +88,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
                     vsBody += _getFuncGLSLPartData(vs, "body");
                 }
 
-                if(isConfigDataExist(fs)){
+                if (isConfigDataExist(fs)) {
                     fs = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), fs);
 
                     fsTop += _getFuncGLSLPartData(fs, "top");
@@ -117,15 +117,15 @@ export var buildGLSLSource = requireCheckFunc((materialIndex:number, materialSha
 
 var _getEmptyFuncGLSLConfig = () => {
     return {
-        "top":"",
-        "varDeclare":"",
-        "funcDeclare":"",
-        "funcDefine":"",
-        "body":""
+        "top": "",
+        "varDeclare": "",
+        "funcDeclare": "",
+        "funcDefine": "",
+        "body": ""
     }
 }
 
-var _getPrecisionSource = (lowp_fragment:GLSLChunk, mediump_fragment:GLSLChunk, highp_fragment:GLSLChunk) => {
+var _getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk) => {
     var precision = GPUDetector.getInstance().precision,
         result = null;
 
@@ -153,7 +153,7 @@ var _getGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     if (isConfigDataExist(partConfig)) {
         return partConfig;
     }
-    else if(isConfigDataExist(glslConfig.source)){
+    else if (isConfigDataExist(glslConfig.source)) {
         return glslConfig.source[partName];
     }
 
@@ -168,7 +168,7 @@ var _isInSource = (key: string, source: string) => {
     return source.indexOf(key) > -1;
 }
 
-var _generateAttributeSource = (materialShaderLibConfig:MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
+var _generateAttributeSource = (materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
     var result = "";
 
     forEach(materialShaderLibConfig, (shaderLibName: string) => {
@@ -189,7 +189,7 @@ var _generateAttributeSource = (materialShaderLibConfig:MaterialShaderLibConfig,
     return result;
 }
 
-var _generateUniformSource = (materialShaderLibConfig:MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
+var _generateUniformSource = (materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
             forEachArray((data: ISendAttributeConfig) => {
@@ -198,7 +198,7 @@ var _generateUniformSource = (materialShaderLibConfig:MaterialShaderLibConfig, s
             filterArray((data: ISendAttributeConfig) => {
                 var name = data.name;
 
-                return _isInSource(name, sourceVarDeclare) || _isInSource(name,sourceFuncDefine) || _isInSource(name, sourceBody);
+                return _isInSource(name, sourceVarDeclare) || _isInSource(name, sourceFuncDefine) || _isInSource(name, sourceBody);
             })
         );
 

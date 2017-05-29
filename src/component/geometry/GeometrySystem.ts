@@ -29,9 +29,9 @@ export var addInitHandle = (_class: any) => {
     addInitHandleToMap(_class, initGeometry);
 }
 
-export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
+export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {
     checkIndexShouldEqualCount(GeometryData);
-}, (geometry:Geometry, GeometryData: any) => {
+}, (geometry: Geometry, GeometryData: any) => {
     var index = generateComponentIndex(GeometryData);
 
     geometry.index = index;
@@ -43,7 +43,7 @@ export var create = requireCheckFunc((geometry:Geometry, GeometryData: any) => {
     return geometry;
 })
 
-export var init = (GeometryData: any, state:Map<any, any>) => {
+export var init = (GeometryData: any, state: Map<any, any>) => {
     for (let i = 0, count = GeometryData.count; i < count; i++) {
         initGeometry(i, state);
     }
@@ -54,7 +54,7 @@ export var init = (GeometryData: any, state:Map<any, any>) => {
 export var initGeometry = (index: number, state: Map<any, any>) => {
     var computeDataFunc = GeometryData.computeDataFuncMap[index];
 
-    if(_isComputeDataFuncNotExist(computeDataFunc)){
+    if (_isComputeDataFuncNotExist(computeDataFunc)) {
         return;
     }
 
@@ -68,71 +68,71 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
     setIndices(index, indices, GeometryData);
 }
 
-var _isComputeDataFuncNotExist = (func:Function) => isNotValidMapValue(func);
+var _isComputeDataFuncNotExist = (func: Function) => isNotValidMapValue(func);
 
-export var getDrawMode = (index:number, GeometryData:any) => {
+export var getDrawMode = (index: number, GeometryData: any) => {
     return EDrawMode.TRIANGLES;
 }
 
-export var getVerticesCount = (index:number, GeometryData:any) => {
+export var getVerticesCount = (index: number, GeometryData: any) => {
     return getVertices(index, GeometryData).length;
 }
 
-export var getIndicesCount = (index:number, GeometryData:any) => {
+export var getIndicesCount = (index: number, GeometryData: any) => {
     return getIndices(index, GeometryData).length;
 }
 
-export var getIndexType = (GeometryData:any) => {
+export var getIndexType = (GeometryData: any) => {
     return GeometryData.indexType;
 }
 
-export var getIndexTypeSize = (GeometryData:any) => {
+export var getIndexTypeSize = (GeometryData: any) => {
     return GeometryData.indexTypeSize;
 }
 
-export var getVertices = (index:number, GeometryData:any) => {
+export var getVertices = (index: number, GeometryData: any) => {
     return GeometryData.verticesMap[index];
 }
 
-export var setVertices = requireCheckFunc((index:number, vertices:Float32Array, GeometryData:any) => {
+export var setVertices = requireCheckFunc((index: number, vertices: Float32Array, GeometryData: any) => {
     it("vertices should not already exist", () => {
         expect(GeometryData.verticesMap[index]).not.exist;
     });
-}, (index:number, vertices:Float32Array, GeometryData:any) => {
+}, (index: number, vertices: Float32Array, GeometryData: any) => {
     GeometryData.verticesMap[index] = vertices;
 })
 
-export var getIndices = (index:number, GeometryData:any) => {
+export var getIndices = (index: number, GeometryData: any) => {
     return GeometryData.indicesMap[index];
 }
 
-export var setIndices = requireCheckFunc((index:number, indices:Uint16Array | Uint32Array, GeometryData:any) => {
+export var setIndices = requireCheckFunc((index: number, indices: Uint16Array | Uint32Array, GeometryData: any) => {
     it("indices should not already exist", () => {
         expect(GeometryData.indicesMap[index]).not.exist;
     });
-}, (index:number, indices:Uint16Array | Uint32Array, GeometryData:any) => {
+}, (index: number, indices: Uint16Array | Uint32Array, GeometryData: any) => {
     GeometryData.indicesMap[index] = indices;
 })
 
-export var hasIndices = (index:number, GeometryData:any) => {
+export var hasIndices = (index: number, GeometryData: any) => {
     var indices = getIndices(index, GeometryData);
 
-    if(isNotValidMapValue(indices)){
+    if (isNotValidMapValue(indices)) {
         return false;
     }
 
     return indices.length > 0;
 }
 
-export var addComponent = (component:Geometry, gameObject:GameObject) => {
+export var addComponent = (component: Geometry, gameObject: GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = ensureFunc((returnVal, component:Geometry) => {
+export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
     checkIndexShouldEqualCount(GeometryData);
-}, (component:Geometry) => {
+}, (component: Geometry) => {
     var sourceIndex = component.index,
-        lastComponentIndex:number = null;
+        lastComponentIndex: number = null;
 
     deleteBySwap(sourceIndex, GeometryData.verticesMap);
 
@@ -150,11 +150,11 @@ export var disposeComponent = ensureFunc((returnVal, component:Geometry) => {
     deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
 })
 
-export var getGameObject = (index:number, Data:any) => {
+export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-export var getConfigData = (index:number, GeometryData: any) => {
+export var getConfigData = (index: number, GeometryData: any) => {
     return GeometryData.configDataMap[index];
 }
 
@@ -199,14 +199,14 @@ var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any) => {
     return GPUDetector.getInstance().extensionUintIndices === true;
 }
 
-export var isIndicesBufferNeed32BitsByData = (GeometryData:any) => {
+export var isIndicesBufferNeed32BitsByData = (GeometryData: any) => {
     return GeometryData.indexType === EBufferType.UNSIGNED_INT;
 }
 
-export var convertVerticesArrayToTypeArray = (vertices:Array<number>) => {
+export var convertVerticesArrayToTypeArray = (vertices: Array<number>) => {
     return new Float32Array(vertices);
 }
 
-export var convertIndicesArrayToTypeArray = (indices:Array<number>, GeometryData:any) => {
+export var convertIndicesArrayToTypeArray = (indices: Array<number>, GeometryData: any) => {
     return isIndicesBufferNeed32BitsByData(GeometryData) ? new Uint32Array(indices) : new Uint16Array(indices)
 }

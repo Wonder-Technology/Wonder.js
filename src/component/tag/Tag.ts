@@ -9,31 +9,31 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 
 @registerClass("Tag")
-export class Tag extends Component{
+export class Tag extends Component {
 }
 
-export var createTag = (slotCount:number = 4) => {
+export var createTag = (slotCount: number = 4) => {
     return create(slotCount, TagData);
 }
 
-export var addTag = requireCheckFunc((component:Tag, tag:string) => {
+export var addTag = requireCheckFunc((component: Tag, tag: string) => {
     checkShouldAlive(component, TagData);
-}, (component:Tag, tag:string) => {
+}, (component: Tag, tag: string) => {
     addTagSystemTag(component, tag, TagData);
 })
 
-export var removeTag = requireCheckFunc((component:Tag, tag:string) => {
+export var removeTag = requireCheckFunc((component: Tag, tag: string) => {
     checkShouldAlive(component, TagData);
-}, (component:Tag, tag:string) => {
+}, (component: Tag, tag: string) => {
     removeTagSystemTag(component, tag, TagData);
 })
 
-export var findGameObjectsByTag = (tag:string) => {
+export var findGameObjectsByTag = (tag: string) => {
     return findTagSystemTagGameObjectsByTag(tag, TagData);
 }
 
-export var getTagGameObject = requireCheckFunc((component:Tag) => {
+export var getTagGameObject = requireCheckFunc((component: Tag) => {
     checkShouldAlive(component, TagData);
-}, (component:Tag) => {
+}, (component: Tag) => {
     return getGameObject(component.index, TagData);
 })
