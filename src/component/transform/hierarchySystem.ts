@@ -60,7 +60,6 @@ export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: Thr
 var _isTransformEqual = (tra1:ThreeDTransform, tra2:ThreeDTransform) => tra1.uid === tra2.uid;
 
 export var getChildren = (uid:number, ThreeDTransformData:any) => {
-    // return ThreeDTransformData.childrenMap.get(uid);
     return ThreeDTransformData.childrenMap[uid];
 }
 
@@ -73,7 +72,6 @@ export var isNotChangeParent = (currentParentIndexInArrayBuffer: number, newPare
 }
 
 export var removeHierarchyData = (uid:number, ThreeDTransformData: any) => {
-    // deleteMapVal(uid, ThreeDTransformData.childrenMap);
     deleteVal(uid, ThreeDTransformData.childrenMap);
 
     let parent = getParent(uid, ThreeDTransformData);
@@ -87,18 +85,10 @@ var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, Th
     var parentUID = parent.uid,
         children = getChildren(parentUID, ThreeDTransformData);
 
-    // deleteMapVal(targetUID, ThreeDTransformData.parentMap);
     deleteVal(targetUID, ThreeDTransformData.parentMap);
 
     if (isNotValidMapValue(children)) {
         return;
-    }
-
-    for (var i = 0, len = children.length; i < len; ++i) {
-        if (children[i].uid === targetUID) {
-            children.splice(i, 1);
-            break;
-        }
     }
 
     _removeChild(parentUID, children, targetUID, ThreeDTransformData);
@@ -108,7 +98,7 @@ var _removeChild = null;
 
 if(chrome){
     _removeChild = (parentUID:number, targetUID:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
-        _setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
+        setChildren(parentUID, filter(children, (transform:ThreeDTransform) => {
             return transform.uid !== targetUID;
         }), ThreeDTransformData);
     }
@@ -122,24 +112,21 @@ else{
     error(true, Log.info.FUNC_NOT_SUPPORT("browser"));
 }
 
-var _addChild = (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {
+var _addChild = requireCheckFunc ((uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {
+    it("children should be empty array if has no child", () => {
+        expect(getChildren(uid, ThreeDTransformData)).be.a("array");
+    });
+}, (uid:number, child:ThreeDTransform, ThreeDTransformData:any) => {
     var children = getChildren(uid, ThreeDTransformData);
 
-    if (isValidMapValue(children)) {
-        children.push(child);
-    }
-    else {
-        _setChildren(uid, [child], ThreeDTransformData);
-    }
-}
+    children.push(child);
+})
 
-var _setChildren = (uid:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
-    // ThreeDTransformData.childrenMap.set(uid, children);
+export var setChildren = (uid:number, children:Array<ThreeDTransform>, ThreeDTransformData:any) => {
     ThreeDTransformData.childrenMap[uid] = children;
 }
 
 var _setParent = (uid:number, parent:ThreeDTransform, ThreeDTransformData:any) => {
-    // ThreeDTransformData.parentMap.set(uid, parent);
     ThreeDTransformData.parentMap[uid] = parent;
 }
 

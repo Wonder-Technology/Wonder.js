@@ -82,9 +82,9 @@ export var getComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMa
     return gameObjectMap.get(uid);
 }
 
-export var setComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number, gameObject:GameObject) => {
-    return gameObjectMap.set(uid, gameObject);
-}
+// export var setComponentGameObjectByMap = (gameObjectMap:ComponentGameObjectMapMap, uid:number, gameObject:GameObject) => {
+//     return gameObjectMap.set(uid, gameObject);
+// }
 
 export var generateComponentIndex = (ComponentData: any) => {
     return ComponentData.index++;

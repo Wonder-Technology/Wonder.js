@@ -1,6 +1,6 @@
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import curry from "wonder-lodash/curry";
-import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
 import { Map as MapImmutable } from "immutable";
 import { DataUtils } from "../../utils/DataUtils";
@@ -8,8 +8,8 @@ import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { cacheFunc } from "../../utils/cacheUtils";
 import {
-    addAddComponentHandle as addAddComponentHandleToMap, addDisposeHandle as addDisposeHandleToMap,
-    getComponentGameObjectByMap, setComponentGameObjectByMap
+    addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
+    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
 } from "../ComponentSystem";
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -19,7 +19,8 @@ import {
     generateNotUsedIndexInArrayBuffer, isNotDirty
 } from "./dirtySystem";
 import {
-    getParent as getThreeDTransformDataParent, removeHierarchyData,
+    getChildren,
+    getParent as getThreeDTransformDataParent, removeHierarchyData, setChildren,
     setParent as setParentHierarchy
 } from "./hierarchySystem";
 import {
@@ -32,7 +33,6 @@ import { setIsTranslate } from "./isTransformSystem";
 import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
-import { deleteMapVal } from "../../utils/mapUtils";
 import {
     getLocalPositionCache, getLocalToWorldMatrixCache, getPositionCache, setLocalPositionCache,
     setLocalToWorldMatrixCache, setPositionCache
@@ -40,6 +40,7 @@ import {
 import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
+import { expect } from "wonder-expect.js";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -49,7 +50,13 @@ export var addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var create = (ThreeDTransformData:any) => {
+//todo add isAlive
+
+export var create = ensureFunc((transform:ThreeDTransform, ThreeDTransformData:any) => {
+    it("componentMap should has data", () => {
+        expect(getChildren(transform.uid, ThreeDTransformData)).exist;
+    });
+}, (ThreeDTransformData:any) => {
     var transform = new ThreeDTransform(),
         index = _generateIndexInArrayBuffer(ThreeDTransformData),
         uid = _buildUID(ThreeDTransformData);
@@ -59,9 +66,12 @@ export var create = (ThreeDTransformData:any) => {
 
     _createTempData(uid, ThreeDTransformData);
     _setTransformMap(index, transform, ThreeDTransformData);
+    setChildren(uid, [], ThreeDTransformData);
+
+    ThreeDTransformData.aliveUIDArray.push(uid);
 
     return transform;
-}
+})
 
 var _buildUID = (ThreeDTransformData:any) => {
     return ThreeDTransformData.uid++;
@@ -89,7 +99,7 @@ export var addComponent = (transform: ThreeDTransform, gameObject:GameObject) =>
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
-    setComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid, gameObject);
+    addComponentToGameObjectMap(ThreeDTransformData.gameObjectMap, uid, gameObject);
 
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 }
@@ -98,23 +108,23 @@ export var disposeComponent = (transform: ThreeDTransform) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
 
+    if (isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
+        _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+    }
+    else{
+        _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+    }
+
+    ThreeDTransformData.disposeCount += 1;
+
     if(isDisposeTooManyComponents(ThreeDTransformData.disposeCount)){
-        reAllocateThreeDTransformMap(ThreeDTransformData.gameObjectMap, ThreeDTransformData);
+        reAllocateThreeDTransformMap(ThreeDTransformData);
 
         ThreeDTransformData.disposeCount = 0;
     }
-    else{
-        ThreeDTransformData.disposeCount += 1;
-    }
-
-    if (isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
-        return _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
-    }
-
-    _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
 }
 
-export var getGameObject = (uid:number, ThreeDTransformData:any) => getComponentGameObjectByMap(ThreeDTransformData.gameObjectMap, uid);
+export var getGameObject = (uid:number, ThreeDTransformData:any) => getComponentGameObject(ThreeDTransformData.gameObjectMap, uid);
 
 export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     var parent = getThreeDTransformDataParent(transform.uid, ThreeDTransformData);
@@ -219,13 +229,6 @@ var _disposeItemInDataContainer = (indexInArrayBuffer: number, uid:number, Globa
 }
 
 var _disposeMapDatas = (indexInArrayBuffer:number, uid:number, ThreeDTransformData:any) => {
-    deleteMapVal(uid, ThreeDTransformData.gameObjectMap);
-
-    deleteVal(uid, ThreeDTransformData.isTranslateMap);
-
-    deleteVal(uid, ThreeDTransformData.cacheMap);
-    deleteVal(uid, ThreeDTransformData.tempMap);
-
     deleteVal(indexInArrayBuffer, ThreeDTransformData.transformMap);
 }
 
@@ -299,7 +302,7 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.transformMap = createMap();
 
-    ThreeDTransformData.gameObjectMap = new Map();
+    ThreeDTransformData.gameObjectMap = createMap();
 
     ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.count;
     ThreeDTransformData.indexInArrayBuffer = getStartIndexInArrayBuffer();
@@ -307,6 +310,8 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.uid = 0;
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;
+
+    ThreeDTransformData.aliveUIDArray = [];
 
     _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
 }

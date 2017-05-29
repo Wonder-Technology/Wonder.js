@@ -286,6 +286,173 @@ describe("reallocate memory", function() {
                 });
             });
         });
+
+        describe("test ThreeDTransform", function() {
+            var ThreeDTransformData = wd.ThreeDTransformData;
+
+            var gameObject;
+            var parent,child,child11;
+            var gameObjectTra, parentTra, childTra, child11Tra;
+
+            beforeEach(function(){
+                gameObject = gameObjectTool.create();
+                gameObjectTra = gameObjectTool.getTransform(gameObject);
+
+                parent = gameObjectTool.create();
+                gameObjectTool.add(parent, gameObject);
+                parentTra = gameObjectTool.getTransform(parent);
+
+
+                child = gameObjectTool.create();
+                gameObjectTool.add(gameObject, child);
+                childTra = gameObjectTool.getTransform(child);
+
+                child11 = gameObjectTool.create();
+                gameObjectTool.add(child, child11);
+                child11Tra = gameObjectTool.getTransform(child11);
+            });
+
+            beforeEach(function(){
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
+            });
+
+            it("new parentMap,childrenMap,isTranslateMap,tempMap should only has not-removed data", function(){
+                gameObjectTool.dispose(child);
+
+                var parentMap = {};
+                parentMap[gameObjectTra.uid] = parentTra;
+                parentMap[parentTra.uid] = undefined;
+                expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+                var childrenMap = {};
+                childrenMap[parentTra.uid] = [gameObjectTra];
+                childrenMap[gameObjectTra.uid] = [];
+
+
+                var isTranslateMap = {};
+                isTranslateMap[gameObjectTra.uid] = undefined;
+                isTranslateMap[parentTra.uid] = undefined;
+                expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
+
+
+                expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+
+                expect(ThreeDTransformData.tempMap[parentTra.uid]).toBeExist();
+                expect(ThreeDTransformData.tempMap[gameObjectTra.uid]).toBeExist();
+                expect(ThreeDTransformData.tempMap[childTra.uid]).not.toBeExist();
+                expect(ThreeDTransformData.tempMap[child11Tra.uid]).not.toBeExist();
+            });
+            it("test maxComponentDisposeCount > 1", function () {
+                /*!
+                "gameObjectTool.dispose(childTra)" will dispose component twice:dispose childTra; dispose child11Tra, so maxComponentDisposeCount should be 3 instead of 2
+                 */
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
+
+                gameObjectTool.dispose(childTra);
+
+
+                var parentMap = {};
+                parentMap[gameObjectTra.uid] = parentTra;
+                parentMap[childTra.uid] = undefined;
+                parentMap[child11Tra.uid] = undefined;
+                expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+
+
+
+                gameObjectTool.dispose(gameObjectTra);
+
+
+                var parentMap = {};
+                parentMap[parentTra.uid] = undefined;
+                expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+                var childrenMap = {};
+                childrenMap[parentTra.uid] = [];
+                expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+
+
+                var isTranslateMap = {};
+                isTranslateMap[parentTra.uid] = undefined;
+                expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
+
+
+
+                expect(ThreeDTransformData.tempMap[parentTra.uid]).toBeExist();
+                expect(ThreeDTransformData.tempMap[gameObjectTra.uid]).not.toBeExist();
+                expect(ThreeDTransformData.tempMap[childTra.uid]).not.toBeExist();
+                expect(ThreeDTransformData.tempMap[child11Tra.uid]).not.toBeExist();
+            });
+
+            describe("test add new one after dispose old one", function () {
+                it("test maxComponentDisposeCount === 1", function () {
+                    gameObjectTool.dispose(child11);
+
+
+                    var parentMap = {};
+                    parentMap[parentTra.uid] = undefined;
+                    parentMap[gameObjectTra.uid] = parentTra;
+                    parentMap[childTra.uid] = gameObjectTra;
+                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+
+
+
+                    var child2 = gameObjectTool.create();
+                    var child2Tra = gameObjectTool.getTransform(child2);
+
+                    gameObjectTool.add(child, child2);
+
+                    var parentMap = {};
+                    parentMap[parentTra.uid] = undefined;
+                    parentMap[gameObjectTra.uid] = parentTra;
+                    parentMap[childTra.uid] = gameObjectTra;
+                    parentMap[child2Tra.uid] = childTra;
+                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+
+                    var childrenMap = {};
+                    childrenMap[parentTra.uid] = [gameObjectTra];
+                    childrenMap[gameObjectTra.uid] = [childTra];
+                    childrenMap[childTra.uid] = [child2Tra];
+                    childrenMap[child2Tra.uid] = [];
+                    expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                });
+                it("test maxComponentDisposeCount > 1", function () {
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 4);
+
+                    var gameObject2 = gameObjectTool.create();
+
+                    gameObjectTool.dispose(gameObject2);
+                    gameObjectTool.dispose(child11);
+                    gameObjectTool.dispose(gameObject);
+
+
+                    var parentMap = {};
+                    parentMap[parentTra.uid] = undefined;
+                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+
+
+
+                    var child2 = gameObjectTool.create();
+                    var child2Tra = gameObjectTool.getTransform(child2);
+
+                    gameObjectTool.add(parent, child2);
+
+                    var parentMap = {};
+                    parentMap[parentTra.uid] = undefined;
+                    parentMap[child2Tra.uid] = parentTra;
+                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+
+
+                    var childrenMap = {};
+                    childrenMap[parentTra.uid] = [child2Tra];
+                    childrenMap[child2Tra.uid] = [];
+                    expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                });
+            });
+        });
     });
 });
 

@@ -44,6 +44,8 @@ export class ThreeDTransformData {
 
     public static gameObjectMap:ThreeDTransformGameObjectMap = null;
 
+    public static aliveUIDArray:Array<number> = null;
+
     public static buffer: ArrayBuffer = null;
 }
 

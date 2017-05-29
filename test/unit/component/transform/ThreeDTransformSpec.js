@@ -511,28 +511,28 @@ describe("ThreeDTransform", function () {
         beforeEach(function(){
         });
 
-        it("remove from gameObject", function () {
-            gameObjectTool.disposeComponent(obj1, tra1);
-
-            expect(threeDTransformTool.getGameObject(tra1)).toBeUndefined();
-        });
+        // it("remove from gameObject", function () {
+        //     gameObjectTool.disposeComponent(obj1, tra1);
+        //
+        //     expect(threeDTransformTool.getGameObject(tra1)).toBeUndefined();
+        // });
 
         describe("remove related data in tra1Data", () => {
             beforeEach(() => {
             });
 
-            it("clear all map datas", function () {
-                threeDTransformTool.setLocalPosition(tra1, Vector3.create(1,2,3));
-                gameObjectTool.disposeComponent(obj1, tra1);
-
-                var uid = tra1.uid,
-                    index = tra1.index;
-                expect(ThreeDTransformData.isTranslateMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.cacheMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.tempMap[uid]).toBeUndefined();
-                expect(ThreeDTransformData.transformMap[index]).toBeUndefined();
-                expect(ThreeDTransformData.gameObjectMap[uid]).toBeUndefined();
-            });
+            // it("clear all map datas", function () {
+            //     threeDTransformTool.setLocalPosition(tra1, Vector3.create(1,2,3));
+            //     gameObjectTool.disposeComponent(obj1, tra1);
+            //
+            //     var uid = tra1.uid,
+            //         index = tra1.index;
+            //     expect(ThreeDTransformData.isTranslateMap[uid]).toBeUndefined();
+            //     expect(ThreeDTransformData.cacheMap[uid]).toBeUndefined();
+            //     expect(ThreeDTransformData.tempMap[uid]).toBeUndefined();
+            //     expect(ThreeDTransformData.transformMap[index]).toBeUndefined();
+            //     expect(ThreeDTransformData.gameObjectMap[uid]).toBeUndefined();
+            // });
             it("if set/get transform data after dispose, error", function () {
                 var errorMsg = "should alive";
                 var pos = Vector3.create(1,2,3);

@@ -8,25 +8,25 @@ import { MemoryConfig } from "../config/MemoryConfig";
 export var isDisposeTooManyComponents = (disposeCount:number) => {
     return disposeCount >= MemoryConfig.maxComponentDisposeCount;
 }
-
-var setMapVal = (map:object, uid:number, val:any) => {
-    if(isValidMapValue(val)){
-        map[uid] = val;
-    }
-}
+//
+// var setMapVal = (map:object, uid:number, val:any) => {
+//     if(isValidMapValue(val)){
+//         map[uid] = val;
+//     }
+// }
 
 var _setMapVal = (map:object, uid:number, val:any) => {
-    // if(isValidMapValue(val)){
-        map[uid] = val;
-    // }
+    map[uid] = val;
 }
 
-export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, ThreeDTransformData:any) => {
+export var reAllocateThreeDTransformMap = (ThreeDTransformData:any) => {
     var val:any = null,
         newParentMap = {},
         newChildrenMap = {},
         newIsTranslateMap = {},
         newTempMap = {},
+        newAliveUIDArray:Array<number> = [],
+        aliveUIDArray = ThreeDTransformData.aliveUIDArray,
         parentMap = ThreeDTransformData.parentMap,
         childrenMap = ThreeDTransformData.childrenMap,
         isTranslateMap = ThreeDTransformData.isTranslateMap,
@@ -34,24 +34,33 @@ export var reAllocateThreeDTransformMap = (forEachMap:Map<number, GameObject>, T
 
     clearCacheMap(ThreeDTransformData);
 
-    forEachMap.forEach(function(value, uid) {
-        val = parentMap[uid];
-        setMapVal(newParentMap, uid, val);
-
+    for(let uid of aliveUIDArray){
         val = childrenMap[uid];
-        setMapVal(newChildrenMap, uid, val);
 
-        val = isTranslateMap[uid];
-        setMapVal(newIsTranslateMap, uid, val);
+        if(isNotValidMapValue(val)){
+            continue;
+        }
+
+        newAliveUIDArray.push(uid);
+
+        _setMapVal(newChildrenMap, uid, val);
 
         val = tempMap[uid];
-        setMapVal(newTempMap, uid, val);
-    })
+        _setMapVal(newTempMap, uid, val);
+
+        val = parentMap[uid];
+        _setMapVal(newParentMap, uid, val);
+
+        val = isTranslateMap[uid];
+        _setMapVal(newIsTranslateMap, uid, val);
+    }
 
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
     ThreeDTransformData.tempMap = newTempMap;
+
+    ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 }
 
 export var reAllocateGameObjectMap = (GameObjectData:any) => {

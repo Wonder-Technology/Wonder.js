@@ -64,7 +64,6 @@ export var dispose = (entity:IUIDEntity, ThreeDTransformData:any, GameObjectData
 
     let parent = _getParent(uid, GameObjectData);
 
-    //todo move down
     if(_isParentExist(parent)){
         _removeFromChildrenMap(parent.uid, uid, GameObjectData);
     }
