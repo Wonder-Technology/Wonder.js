@@ -6,7 +6,6 @@
   "homepage": "https://github.com/yyc-git/Wonder.js",
   "license": "MIT",
   "scripts": {
-    "postinstall": "sudo npm install -g typescript@next && sudo npm install -g rollup && sudo npm install -g typescript-formatter",
     "start": "node ./server/app.js",
     "test": "karma start karma.conf.js --single-run --browsers Firefox",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
