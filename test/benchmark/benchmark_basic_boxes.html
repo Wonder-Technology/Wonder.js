@@ -42,6 +42,10 @@
 //        director.scene.addChild(createCamera());
 
         function _setData() {
+            function getRandom(num){
+                return Math.floor(Math.random() * num);
+            }
+
             boxes.forEach(function(box){
 //                var pos = box.transform.position;
 //                var localPos = box.transform.localPosition;
@@ -62,6 +66,7 @@
 //                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
                     threeDTransformTool.setPosition(transform, wd.Vector3.create(10,0,0));
                 }
+//                threeDTransformTool.setPosition(transform, wd.Vector3.create(getRandom(500),getRandom(500),getRandom(500)));
             })
         }
 
@@ -73,11 +78,14 @@
 
         function setParent() {
             for (var i = 1, len = 10; i < len; i++) {
+//            for (var i = 1, len = boxes.length; i < len; i++) {
                 var box = boxes[i];
-                var transform = gameObjectTool.getTransform(box);
-                var parentTransform = gameObjectTool.getTransform(boxes[i - 1]);
+//                var transform = gameObjectTool.getTransform(box);
+//                var parentTransform = gameObjectTool.getTransform(boxes[i - 1]);
+//
+//                threeDTransformTool.setParent(transform, parentTransform);
 
-                threeDTransformTool.setParent(transform, parentTransform);
+                gameObjectTool.add(boxes[i - 1], box);
 //                box.transform.parent = boxes[i - 1].transform;
             }
 
@@ -90,14 +98,18 @@
                     var box = boxes[i];
 
 //                    box.transform.parent = boxes[getRandomParentIndex(10)].transform;
-                    var transform = gameObjectTool.getTransform(box);
-                    var parentTransform = gameObjectTool.getTransform(boxes[getRandomParentIndex(10)]);
+//                    var transform = gameObjectTool.getTransform(box);
+//                    var parentTransform = gameObjectTool.getTransform(boxes[getRandomParentIndex(10)]);
 
-                    threeDTransformTool.setParent(transform, parentTransform);
+//                    threeDTransformTool.setParent(transform, parentTransform);
+
+                    gameObjectTool.add(boxes[getRandomParentIndex(10)], box);
                 }
 
                 _setData();
             }, 30)
+
+
         }
 
 
@@ -165,29 +177,9 @@
                 })
 
 
-                boxes = createCustomGeometryBoxes(vertices, indices);
+//                boxes = createCustomGeometryBoxes(vertices, indices);
 
-                boxes.forEach(function(box){
-                    sceneTool.addGameObject(box);
-                    gameObjectTool.init(box);
-                })
-            }, 30);
-        }
-
-        function addTag() {
-            setInterval(function() {
-                var box = boxes[0];
-                var geo = gameObjectTool.getComponent(box, wd.Geometry);
-
-                var vertices = geometryTool.getVertices(geo),
-                    indices = geometryTool.getIndices(geo);
-
-                boxes.forEach(function (box) {
-                    gameObjectTool.dispose(box);
-                })
-
-
-                boxes = createCustomGeometryBoxes(vertices, indices);
+                boxes = createBoxes();
 
                 boxes.forEach(function(box){
                     sceneTool.addGameObject(box);
@@ -197,11 +189,12 @@
         }
 
 
-        setData();
+
+//        setData();
 //        setParent();
 //        batchSet();
 
-//        createAndDisposeGameObjects();
+        createAndDisposeGameObjects();
 
 
         director.start();
@@ -241,9 +234,9 @@
 
             gameObjectTool.addComponent(obj, geo);
 
-            var tag = tagTool.create();
-            tagTool.addTag(tag, "box1");
-            tagTool.addTag(tag, "box2");
+//            var tag = tagTool.create();
+//            tagTool.addTag(tag, "box1");
+//            tagTool.addTag(tag, "box2");
 
             gameObjectTool.addComponent(obj, tag);
 
@@ -256,7 +249,7 @@
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 5000; index++) {
+            for (var index = 0; index < 500; index++) {
                 var box = createBox();
 
 //                var scale = Math.random() * 0.8 + 0.6;
