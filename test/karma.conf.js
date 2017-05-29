@@ -27,7 +27,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
+        'test/unit/**/reallocate*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
         // 'test/unit/**/WebGLRenderer*',
