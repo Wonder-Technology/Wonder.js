@@ -202,3 +202,11 @@ var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any) => {
 export var isIndicesBufferNeed32BitsByData = (GeometryData:any) => {
     return GeometryData.indexType === EBufferType.UNSIGNED_INT;
 }
+
+export var convertVerticesArrayToTypeArray = (vertices:Array<number>) => {
+    return new Float32Array(vertices);
+}
+
+export var convertIndicesArrayToTypeArray = (indices:Array<number>, GeometryData:any) => {
+    return isIndicesBufferNeed32BitsByData(GeometryData) ? new Uint32Array(indices) : new Uint16Array(indices)
+}

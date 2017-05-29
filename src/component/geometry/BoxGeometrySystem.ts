@@ -2,7 +2,11 @@ import { BoxGeometry, BoxGeometryConfigData } from "./BoxGeometry";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
-import { create as createGeometry, isIndicesBufferNeed32BitsByData } from "./GeometrySystem";
+import {
+    convertIndicesArrayToTypeArray,
+    convertVerticesArrayToTypeArray, create as createGeometry,
+    isIndicesBufferNeed32BitsByData
+} from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 
@@ -111,8 +115,8 @@ var _computeData = (index: number, GeometryData: any) => {
     generateFace(sides.LEFT, depthSegments, heightSegments);
 
     return {
-        vertices: new Float32Array(vertices),
-        indices: isIndicesBufferNeed32BitsByData(GeometryData) ? new Uint32Array(indices) : new Uint16Array(indices)
+        vertices: convertVerticesArrayToTypeArray(vertices),
+        indices: convertIndicesArrayToTypeArray(indices, GeometryData)
     };
 }
 
