@@ -1,6 +1,6 @@
 import { ComponentData, ComponentGameObjectMap } from "./ComponentData";
 import { Component } from "./Component";
-import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
+import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIdManager1";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
