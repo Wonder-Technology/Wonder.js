@@ -3,9 +3,14 @@ language: node_js
 node_js:
   - "4.1"
 
+before_install:
+  - npm install -g typescript@next
+  - npm install -g rollup
+  - npm install -g typescript-formatter
+
 install:
-  - sudo $(which npm) install
-  - sudo $(which npm) install -g gulp
+  - npm install
+  - npm install -g gulp
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
