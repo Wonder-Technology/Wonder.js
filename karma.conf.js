@@ -16,8 +16,7 @@
 
             'examples/js/tool/*.js',
 
-            'test/helper/jquery.js',
-            'test/helper/yTool.js',
+            'test/helper/*.js',
 
             'test/helper/jasmine/**',
             'test/helper/sinonJs/*.js',
