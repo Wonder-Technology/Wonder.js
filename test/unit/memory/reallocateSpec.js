@@ -316,7 +316,7 @@ describe("reallocate memory", function() {
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
             });
 
-            it("new parentMap,childrenMap,isTranslateMap,tempMap should only has not-removed data", function(){
+            it("new parentMap,childrenMap,isTranslateMap,tempMap,gameObjectMap should only has not-removed data", function(){
                 gameObjectTool.dispose(child);
 
                 var parentMap = {};
@@ -335,6 +335,10 @@ describe("reallocate memory", function() {
                 isTranslateMap[parentTra.uid] = undefined;
                 expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
 
+                var gameObjectMap = {};
+                gameObjectMap[parentTra.uid] = parent;
+                gameObjectMap[gameObjectTra.uid] = gameObject;
+                expect(ThreeDTransformData.gameObjectMap).toEqual(gameObjectMap);
 
 
                 expect(ThreeDTransformData.tempMap[parentTra.uid]).toBeExist();
