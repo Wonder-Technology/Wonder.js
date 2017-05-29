@@ -210,7 +210,7 @@ var _convertIndexInArrayToTagIndex = (indexInTagArray:number, TagData:any) => {
     return TagData.indexMap[indexInTagArray];
 }
 
-export var checkTagShouldAlive = (tag:Tag, TagData:any) => {
+export var checkShouldAlive = (tag:Tag, TagData:any) => {
     checkComponentShouldAlive(tag, TagData, (tag:Tag, TagData:any) => {
         return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
     })

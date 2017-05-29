@@ -9,7 +9,7 @@ import { Vector3 } from "../../math/Vector3";
 import { cacheFunc } from "../../utils/cacheUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, checkComponentShouldAlive, getComponentGameObject
 } from "../ComponentSystem";
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -20,7 +20,7 @@ import {
 } from "./dirtySystem";
 import {
     getChildren,
-    getParent as getThreeDTransformDataParent, removeHierarchyData, setChildren,
+    getParent as getThreeDTransformDataParent, isChildrenExist, removeHierarchyData, setChildren,
     setParent as setParentHierarchy
 } from "./hierarchySystem";
 import {
@@ -49,8 +49,6 @@ export var addAddComponentHandle = (_class: any) => {
 export var addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
-
-//todo add isAlive
 
 export var create = ensureFunc((transform:ThreeDTransform, ThreeDTransformData:any) => {
     it("componentMap should has data", () => {
@@ -89,6 +87,12 @@ var _createTempData = (uid:number, ThreeDTransformData:any,) => {
     }
 
     return ThreeDTransformData;
+}
+
+export var checkShouldAlive = (component:ThreeDTransform, ThreeDTransformData:any) => {
+    checkComponentShouldAlive(component, ThreeDTransformData, (component:ThreeDTransform, ThreeDTransformData:any) => {
+        return isChildrenExist(getChildren(component.uid, ThreeDTransformData));
+    })
 }
 
 export var init = (GlobalTempData: any, ThreeDTransformData: any, state: MapImmutable<any, any>) => {

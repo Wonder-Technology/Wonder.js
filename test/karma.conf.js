@@ -27,7 +27,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        // 'test/unit/**',
         // 'test/unit/**/reallocate*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
@@ -37,7 +37,7 @@
         // 'test/unit/**/*Geometry*',
         // 'test/unit/**/*Material*',
         // 'test/unit/**/Main*',
-        // 'test/unit/**/ThreeD*',
+        'test/unit/**/ThreeD*',
         // 'test/unit/**/GameObject*',
         // 'test/unit/**/Scene*',
 

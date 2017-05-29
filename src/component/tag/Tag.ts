@@ -2,7 +2,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Component } from "../Component";
 import {
     addTag as addTagSystemTag, removeTag as removeTagSystemTag, create,
-    findGameObjectsByTag as findTagSystemTagGameObjectsByTag, getGameObject, checkTagShouldAlive
+    findGameObjectsByTag as findTagSystemTagGameObjectsByTag, getGameObject, checkShouldAlive
 } from "./TagSystem";
 import { TagData } from "./TagData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -17,13 +17,13 @@ export var createTag = (slotCount:number = 4) => {
 }
 
 export var addTag = requireCheckFunc((component:Tag, tag:string) => {
-    checkTagShouldAlive(component, TagData);
+    checkShouldAlive(component, TagData);
 }, (component:Tag, tag:string) => {
     addTagSystemTag(component, tag, TagData);
 })
 
 export var removeTag = requireCheckFunc((component:Tag, tag:string) => {
-    checkTagShouldAlive(component, TagData);
+    checkShouldAlive(component, TagData);
 }, (component:Tag, tag:string) => {
     removeTagSystemTag(component, tag, TagData);
 })
@@ -33,7 +33,7 @@ export var findGameObjectsByTag = (tag:string) => {
 }
 
 export var getTagGameObject = requireCheckFunc((component:Tag) => {
-    checkTagShouldAlive(component, TagData);
+    checkShouldAlive(component, TagData);
 }, (component:Tag) => {
     return getGameObject(component.index, TagData);
 })

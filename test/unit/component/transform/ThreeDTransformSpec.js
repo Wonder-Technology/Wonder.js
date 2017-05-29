@@ -623,6 +623,44 @@ describe("ThreeDTransform", function () {
                 });
             });
         });
+
+        it("if component is disposed, getThreeDTransformPosition/setThreeDTransformPosition/getThreeDTransformLocalToWorldMatrix/getThreeDTransformLocalPosition/setThreeDTransformLocalPosition/getThreeDTransformParent/setThreeDTransformParent/getThreeDTransformGameObject should error", function () {
+            var errMsg = "component should alive";
+
+            gameObjectTool.disposeComponent(obj1, tra1);
+
+            expect(function () {
+                threeDTransformTool.getPosition(tra1);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.setPosition(tra1, null);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.getLocalToWorldMatrix(tra1);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.getLocalPosition(tra1);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.setLocalPosition(tra1, null);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.getParent(tra1);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.setParent(tra1, null);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                threeDTransformTool.getGameObject(tra1);
+            }).toThrow(errMsg);
+        });
     });
 
     describe("defer compute", function(){
