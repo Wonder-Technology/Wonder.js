@@ -75,7 +75,6 @@ Here shows a spinning cube sample:
               wd.addGameObjectComponent(gameObject, material);
               wd.addGameObjectComponent(gameObject, geometry);
               wd.addGameObjectComponent(gameObject, wd.createMeshRenderer());
-              wd.addGameObjectComponent(gameObject, wd.createMeshRenderer());
 
               return gameObject;
           }
