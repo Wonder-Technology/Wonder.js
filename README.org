@@ -49,10 +49,11 @@ Here shows a spinning cube sample:
           initSample();
 
           function initSample() {
-              var director = wd.Director.getInstance();
+              var director = wd.Director.getInstance(),
+                  scene = director.scene;
 
-              wd.addSceneChild(createBox());
-              wd.addSceneChild(createCamera());
+              wd.addSceneChild(scene, createBox());
+              wd.addSceneChild(scene, createCamera());
 
               director.start();
           }
@@ -64,54 +65,40 @@ Here shows a spinning cube sample:
 
               var geometry = wd.createBoxGeometry();
               wd.setBoxGeometryConfigData(geometry, {
-                width:5,
-                height:5,
-                depth:5
-            });
+                  width:5,
+                  height:5,
+                  depth:5
+              });
 
               var gameObject = wd.createGameObject();
 
-              wd.addGameobjectComponent(gameObject, geometry);
-              wd.addGameobjectComponent(gameObject, wd.createMeshRenderer());
+              wd.addGameObjectComponent(gameObject, material);
+              wd.addGameObjectComponent(gameObject, geometry);
+              wd.addGameObjectComponent(gameObject, wd.createMeshRenderer());
+              wd.addGameObjectComponent(gameObject, wd.createMeshRenderer());
 
               return gameObject;
           }
 
           function createCamera() {
-              var camera = wd.GameObject.create(),
-                  view = wd.Director.getInstance().view,
-                  cameraComponent = wd.PerspectiveCamera.create();
+              var view = wd.Director.getInstance().view;
 
-              cameraComponent.fovy = 60;
-              cameraComponent.aspect = view.width / view.height;
-              cameraComponent.near = 0.1;
-              cameraComponent.far = 100;
+              var cameraObj = wd.createGameObject();
+              var cameraController = wd.createCameraController();
 
-              var controller = wd.BasicCameraController.create(cameraComponent);
-              camera.addComponent(controller);
+              wd.setCameraNear(cameraController, 0.1);
+              wd.setCameraFar(cameraController, 1000);
+              wd.setPerspectiveCameraFovy(cameraController, 60);
+              wd.setPerspectiveCameraAspect(cameraController, view.width / view.height);
 
-              camera.transform.translate(wd.Vector3.create(0, 0, 30));
-
-              return camera;
-
-            var view = wd.Director.getInstance().view;
-
-            var cameraObj = wd.createGameObject();
-            var cameraController = wd.createCameraController();
-
-            wd.setCameraNear(cameraController, 0.1);
-            wd.setCameraFar(cameraController, 1000);
-            wd.setPerspectiveCameraFovy(cameraController, 60);
-            wd.setPerspectiveCameraAspect(cameraController, view.width / view.height);
-
-            wd.addGameobjectComponent(cameraObj, cameraController);
+              wd.addGameObjectComponent(cameraObj, cameraController);
 
 
-            var transform = wd.getGameObjectTransform(cameraObj);
+              var transform = wd.getGameObjectTransform(cameraObj);
 
-            wd.setThreeDTransformPosition(transform, wd.Vector3.create(0,0, 40));
+              wd.setThreeDTransformPosition(transform, wd.Vector3.create(0,0, 40));
 
-            return cameraObj;
+              return cameraObj;
           }
       };
   </script>
