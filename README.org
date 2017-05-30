@@ -11,103 +11,31 @@ To build a elegant, beautiful 3D game engine with full functions.
 
 Please learn samples in examples/samples/ to get more info.
 * Design
-- Component
+- Data Oriented Design
+- ECS(Entity-Component-System)
 
   use components to assemble game object.
 - Functional Reactive Programming
 
   use Wonder-FRP library to handle async operation in frp way.
+- Functional Programming
 - Code Contract
 
   use contract to improve code quality and help debug.
 - Event Driven
 
   use event system to bind dom/custom event or to implement observer design pattern in frp way.
-- Composable Shader
-
-  use shader libs to assemble glsl code.
 * Contributing
 Join us, We can create the amazing 3D world together!
 * Feature
-- Skybox
-- Texture
-  - Canvas Texture
-  - Video Texture
-  - Compressed Texture(DDS)
-  - Cubemap Texture
-- Procedural
-  - Procedural Texture
-- Light
-  - Direction,Point Light
-  - Diffuse Map,Specular Map,Emission Map,Light Map
-  - Normal Map
-  - Mirror
-  - Reflection,Refraction,Fresnel
-- Shadow
-  - Direction,Point Light ShadowMap
-- Billboard
-- Event System
-  - EventTriggerDetector
-- Picking
-  - RayCast Picking
-- Collider
-  - BoxCollider,SphereCollider,AABBShape,SphereShape
-- Physics
-  - RigidBody,Collision,Constraint,Compound
-- Animation
-  - Morph
-  - Articulated
-  - Skin
-- Camera
-  - Perspective,Orthographic Camera
-  - Arcball Control
-  - Fly Control
-- UI
-  - ThreeD UI
-    - Bitmap Font
-    - Solid Line, Dash Line
-    - Arrow
-  - TwoD UI
-    - Ttf Font, Bitmap Font
-    - ProgressBar
-    - Image
-    - Button
-- Script
-  - User Script
-  - Event Script
-- Shader
-  - Custom Shader
-- Optimize
-  - LOD
-    - Geometry LOD
-    - GameObject LOD
-  - Space Partition
-    - Octree
-  - VAO
-  - Batch Draw
-    - Instance
-    - Render Queue Sort By RenderGroup,RenderPriority,Shader,Texture,VBO
-    - Merge GameObject
-- Outdoor
-  - Grass
-    - Grass Texture
-    - Grass Instance
-  - Water
-  - Terrain
-    - HeightMap
-    - Layer Texture, Mix Texture, Bump Texture
 
 
 * Tool
-- Converter
-support .fbx,.obj,.md2,.gltf converter
-
-- terrain height map generator
 
 * Usage
 Include library in your html:
 #+BEGIN_SRC html
-  <script src="dist/wd.all.min.js"></script>
+  <script src="dist/wd.js"></script>
 #+END_SRC
 Here shows a spinning cube sample:
 #+BEGIN_SRC js
@@ -123,31 +51,28 @@ Here shows a spinning cube sample:
           function initSample() {
               var director = wd.Director.getInstance();
 
-              director.scene.addChild(createBox());
-              director.scene.addChild(createCamera());
+              wd.addSceneChild(createBox());
+              wd.addSceneChild(createCamera());
 
               director.start();
           }
 
           function createBox() {
-              var material = wd.BasicMaterial.create();
-              material.color = wd.Color.create("rgb(1.0,0.0,1.0)");
+              var material = wd.createBasicMaterial();
+              wd.setMaterialColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
 
-              var geometry = wd.BoxGeometry.create();
-              geometry.material = material;
-              geometry.width = 5;
-              geometry.height = 5;
-              geometry.depth = 5;
 
-              var gameObject = wd.GameObject.create();
-              gameObject.addComponent(geometry);
-              gameObject.addComponent(wd.MeshRenderer.create());
+              var geometry = wd.createBoxGeometry();
+              wd.setBoxGeometryConfigData(geometry, {
+                width:5,
+                height:5,
+                depth:5
+            });
 
-              var action = wd.RepeatForever.create(wd.CallFunc.create(function () {
-                  gameObject.transform.rotate(0, 1, 0);
-              }));
+              var gameObject = wd.createGameObject();
 
-              gameObject.addComponent(action);
+              wd.addGameobjectComponent(gameObject, geometry);
+              wd.addGameobjectComponent(gameObject, wd.createMeshRenderer());
 
               return gameObject;
           }
@@ -168,49 +93,30 @@ Here shows a spinning cube sample:
               camera.transform.translate(wd.Vector3.create(0, 0, 30));
 
               return camera;
+
+            var view = wd.Director.getInstance().view;
+
+            var cameraObj = wd.createGameObject();
+            var cameraController = wd.createCameraController();
+
+            wd.setCameraNear(cameraController, 0.1);
+            wd.setCameraFar(cameraController, 1000);
+            wd.setPerspectiveCameraFovy(cameraController, 60);
+            wd.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+
+            wd.addGameobjectComponent(cameraObj, cameraController);
+
+
+            var transform = wd.getGameObjectTransform(cameraObj);
+
+            wd.setThreeDTransformPosition(transform, wd.Vector3.create(0,0, 40));
+
+            return cameraObj;
           }
       };
   </script>
 #+END_SRC
 * How to build
-- bower
-
-  You can install engine under bower:
-
-#+BEGIN_SRC js
-  bower install wonder
-#+END_SRC
-
-- setup engine
-
-  If you want to pull request(that's very appreciate), you can setup engine firstly under these commands:
-
-#+BEGIN_SRC js
-  //run these commands in project dir
-  npm install
-  git submodule init
-  git submodule update --remote
-  gulp build
-#+END_SRC
 * How to test
-- unit test
-
-  Wonder.js has complete unit test, you can clone this project and run karma under gulp task:
-
-#+BEGIN_SRC js
-  //you should first setup engine
-
-  //then run test gulp task in project dir
-  gulp test
-#+END_SRC
-- debug
-
-  You can first include wd.all.innerLib.js file, then include wd.all.debug.js file in your html, then you can debug in engine ts
-  file:
-
-#+BEGIN_SRC html
-  <script src="dist/wd.all.innerLib.js"></script>
-  <script src="dist/wd.all.debug.js"></script>
-#+END_SRC
 * License
 MIT Licence
