@@ -36,6 +36,8 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
         }
     }
 
+    gl.commit();
+
     return state;
 }
 
@@ -48,7 +50,7 @@ var _drawElements = (gl: WebGLRenderingContext, geometryIndex: number, GeometryD
 
     gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
 
-    gl.commit(); // new for webgl in workers
+    // gl.commit(); // new for webgl in workers
 }
 
 var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, GeometryData: any) => {
