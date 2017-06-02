@@ -30,14 +30,15 @@ import {
     addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
     init as initGeometry, initData as initGeometryData, isIndicesBufferNeed32BitsByData
 } from "../component/geometry/GeometrySystem";
-import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
+import { init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
 import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
-    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle,
+    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
+    // addInitHandle as addMaterialInitHandle,
     initData as initMaterialData
 } from "../component/material/MaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
@@ -170,6 +171,8 @@ export class Director {
     private _initRenderer(state: Map<any, any>) {
         var resultState = initRenderer(state);
 
+        //todo need wait render worker init?
+
         return resultState;
     }
 
@@ -223,7 +226,7 @@ export class Director {
         //     this.renderer.render();
         // }
 
-        resultState = clear(state);
+        // resultState = clear(state);
 
         resultState = render(state);
 
@@ -249,7 +252,8 @@ addGeometryInitHandle(Geometry);
 initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
-addMaterialInitHandle(Material);
+//todo restore
+// addMaterialInitHandle(Material);
 
 initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer);
@@ -263,9 +267,9 @@ initThreeDTransformData(GlobalTempData, ThreeDTransformData);
 addThreeDTransformAddComponentHandle(ThreeDTransform);
 addThreeDTransformDisposeHandle(ThreeDTransform);
 
-initArrayBufferData(ArrayBufferData);
+// initArrayBufferData(ArrayBufferData);
 
-initIndexBufferData(IndexBufferData);
+// initIndexBufferData(IndexBufferData);
 
 initSceneData(SceneData);
 

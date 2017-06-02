@@ -1,24 +1,25 @@
 import {
-    SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap,
-    UniformShaderLocationMap
-} from "./ShaderData";
-import { forEach, hasDuplicateItems } from "../../utils/arrayUtils";
-import { getColor, getOpacity } from "../../component/material/MaterialSystem";
-import { Vector3 } from "../../math/Vector3";
-import { isConfigDataExist } from "../utils/renderConfigUtils";
-import { error } from "../../utils/Log";
-import { Matrix4 } from "../../math/Matrix4";
+    SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap
+} from "./GLSLSenderData";
+import { forEach, hasDuplicateItems } from "../../../utils/arrayUtils";
+import { getColor, getOpacity } from "../../../component/material/MaterialSystem";
+import { Vector3 } from "../../../math/Vector3";
+import { isConfigDataExist } from "../../utils/renderConfigUtils";
+import { error } from "../../../utils/Log";
+import { Matrix4 } from "../../../math/Matrix4";
 import {
     getUniformLocation, isUniformLocationNotExist
-} from "./locationSystem";
+} from "../location/LocationSystem";
 import {
     ISendAttributeConfig, ISendUniformConfig,
     IShaderLibContentGenerator
-} from "../data/shaderLib_generator";
-import { MaterialShaderLibConfig } from "../data/material_config";
-import { RenderCommand } from "../command/RenderCommand";
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+} from "../../data/shaderLib_generator";
+import { MaterialShaderLibConfig } from "../../data/material_config";
+import { RenderCommand } from "../../command/RenderCommand";
+import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { createMap, isNotValidMapValue } from "../../../utils/objectUtils";
+import { UniformShaderLocationMap } from "../location/LocationData";
 
 export var getUniformData = (field: string, from: string, renderCommand: RenderCommand, MaterialData: any) => {
     var data: any = null;
@@ -56,12 +57,12 @@ var _getUnifromDataFromMaterial = (field: string, materialIndex: number, Materia
     return data;
 }
 
-export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, ShaderData: any, ArrayBufferData: any) => {
+export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderData: any, ArrayBufferData: any) => {
     var {
             size,
         type
         } = ArrayBufferData.bufferDataMap[geometryIndex],
-        vertexAttribHistory = ShaderData.vertexAttribHistory;
+        vertexAttribHistory = GLSLSenderData.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.vertexAttribPointer(pos, size, gl[type], false, 0, 0);
@@ -112,8 +113,19 @@ export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex
 })
 
 var getUniformCache = (shaderIndex: number, name: string, uniformCacheMap: UniformCacheMap) => {
-    return uniformCacheMap[shaderIndex][name];
+    var cache = uniformCacheMap[shaderIndex];
+
+    if(_isCacheNotExist(cache)){
+        cache = {};
+        uniformCacheMap[shaderIndex] = cache;
+
+        return null;
+    }
+
+    return cache[name];
 }
+
+var _isCacheNotExist = (cache:any) => isNotValidMapValue(cache);
 
 var _setUniformCache = (shaderIndex: number, name: string, data: any, uniformCacheMap: UniformCacheMap) => {
     uniformCacheMap[shaderIndex][name] = data;
@@ -172,3 +184,10 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
 
     sendUniformConfigMap[shaderIndex] = sendDataArr;
 }))
+
+export var initData = (GLSLSenderData: any) => {
+    GLSLSenderData.sendAttributeConfigMap = createMap();
+    GLSLSenderData.sendUniformConfigMap = createMap();
+    GLSLSenderData.vertexAttribHistory = [];
+    GLSLSenderData.uniformCacheMap = createMap();
+}

@@ -17,9 +17,12 @@ import { createMap, deleteBySwap, isValidMapValue } from "../../utils/objectUtil
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { deleteBySwap as deleteMapBySwap } from "../../utils/mapUtils";
 import { Shader } from "../../renderer/shader/Shader";
-import { MaterialData } from "./MaterialData";
+import { MaterialData, ShaderMap } from "./MaterialData";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { DeviceManagerData } from "../../device/DeviceManagerData";
+import { ProgramData } from "../../renderer/shader/program/ProgramData";
+import { LocationData } from "../../renderer/shader/location/LocationData";
+import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -29,9 +32,10 @@ export var addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var addInitHandle = (_class: any) => {
-    addInitHandleToMap(_class, initMaterial);
-}
+//todo restore
+// export var addInitHandle = (_class: any) => {
+//     addInitHandleToMap(_class, initMaterial);
+// }
 
 export var create = requireCheckFunc((material: Material, className: string, MaterialData: any) => {
     it("MaterialData.index should >= 0", () => {
@@ -63,26 +67,29 @@ var _createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-export var init = requireCheckFunc((state: MapImmutable<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any, MaterialData: any) => {
+//todo restore
+export var init = requireCheckFunc((state: MapImmutable<any, any>, materialCount:number) => {
     // checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ShaderData: any, MaterialData: any) => {
-    for (let i = 0, count = MaterialData.count; i < count; i++) {
-        initMaterial(i, state);
-    }
+}, (state: MapImmutable<any, any>, materialCount:number) => {
+    // for (let i = 0, count = materialCount; i < count; i++) {
+    //     initMaterial(i, state);
+    // }
 })
 
-export var initMaterial = (index: number, state: MapImmutable<any, any>) => {
-    var shader = getShader(index, MaterialData),
-        isInitMap = ShaderData.isInitMap,
+export var initMaterial = (index: number, shaderMap:ShaderMap, state: MapImmutable<any, any>) => {
+    var shader = getShader(index, shaderMap),
+        //todo move isInitMap out?(not contain worker data)
+        // isInitMap = ShaderData.isInitMap,
         shaderIndex = shader.index;
 
-    if (isInitMap[shaderIndex] === true) {
-        return;
-    }
+    // if (isInitMap[shaderIndex] === true) {
+    //     return;
+    // }
 
-    isInitMap[shaderIndex] = true;
+    // isInitMap[shaderIndex] = true;
 
-    initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ShaderData);
+    // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+    initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
 }
 
 var _getMaterialClassName = (materialIndex: number, MaterialData: any) => {
@@ -93,8 +100,8 @@ var _setMaterialClassName = (materialIndex: number, className: string, MaterialD
     MaterialData.materialClassNameMap[materialIndex] = className;
 }
 
-export var getShader = (materialIndex: number, MaterialData: any) => {
-    return MaterialData.shaderMap[materialIndex];
+export var getShader = (materialIndex: number, shaderMap:ShaderMap) => {
+    return shaderMap[materialIndex];
 }
 
 export var setShader = (materialIndex: number, shader: Shader, MaterialData: any) => {
@@ -102,7 +109,9 @@ export var setShader = (materialIndex: number, shader: Shader, MaterialData: any
 }
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
-    return MaterialData.colorMap[materialIndex];
+    // return MaterialData.colorMap[materialIndex];
+    //todo fix
+    return Color.create("rgb(1.0,0.0,1.0)");
 }
 
 export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
@@ -110,7 +119,8 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
 }
 
 export var getOpacity = (materialIndex: number, MaterialData: any) => {
-    return MaterialData.opacityMap[materialIndex];
+    // return MaterialData.opacityMap[materialIndex];
+    return 1;
 }
 
 export var setOpacity = (materialIndex: number, opacity: number, MaterialData: any) => {
@@ -118,7 +128,8 @@ export var setOpacity = (materialIndex: number, opacity: number, MaterialData: a
 }
 
 export var getAlphaTest = (materialIndex: number, MaterialData: any) => {
-    return MaterialData.alphaTestMap[materialIndex];
+    // return MaterialData.alphaTestMap[materialIndex];
+    return void 0;
 }
 
 export var setAlphaTest = (materialIndex: number, alphaTest: number, MaterialData: any) => {

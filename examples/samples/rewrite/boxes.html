@@ -81,7 +81,8 @@
             cameraControllerTool.setCameraNear(cameraController, 0.1);
             cameraControllerTool.setCameraFar(cameraController, 1000);
             cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
-            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+//            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
 
             gameObjectTool.addComponent(cameraObj, cameraController);
 

@@ -12,7 +12,7 @@ import {
 
 import {
     disableVertexAttribArray as disableVertexAttribArraySystem
-} from "../renderer/shader/programSystem";
+} from "../renderer/shader/program/programSystem";
 import { initData as initMeshRendererDataSystem } from "../component/renderer/MeshRendererSystem";
 import { createState as createStateUtils } from "../utils/stateUtils";
 import { Map } from "immutable";

@@ -1,4 +1,3 @@
-import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
 import { Shader } from "./Shader";
 
 export class ShaderData {
@@ -7,59 +6,9 @@ export class ShaderData {
 
     // public static vsSourceMap = null;
     // public static fsSourceMap = null;
-    public static programMap: ProgramMap = null;
-    public static attributeLocationMap: AttributeLocationMap = null;
-    public static uniformLocationMap: UniformLocationMap = null;
-
-    public static uniformCacheMap: UniformCacheMap = null;
-
-
-    public static sendAttributeConfigMap: SendAttributeConfigMap = null;
-    public static sendUniformConfigMap: SendUniformConfigMap = null;
 
     public static shaderMap: ShaderShaderMap = null;
     public static isInitMap: ShaderIsInitMap = null;
-
-    public static lastUsedProgram: WebGLProgram = null;
-
-    public static vertexAttribHistory: Array<boolean> = null;
-
-    public static lastBindedArrayBuffer: WebGLBuffer = null;
-    public static lastBindedIndexBuffer: WebGLBuffer = null;
-}
-
-export type SendAttributeConfigMap = {
-    [index: number]: Array<ISendAttributeConfig>
-}
-
-export type SendUniformConfigMap = {
-    [index: number]: Array<ISendUniformConfig>
-}
-
-export type ProgramMap = {
-    [index: number]: WebGLProgram
-}
-
-export type AttributeLocationMap = {
-    [index: number]: AttributeShaderLocationMap
-}
-
-export type UniformLocationMap = {
-    [index: number]: UniformShaderLocationMap
-}
-
-export type AttributeShaderLocationMap = {
-    [name: string]: number;
-}
-
-export type UniformShaderLocationMap = {
-    [name: string]: WebGLUniformLocation;
-}
-
-export type UniformCacheMap = {
-    [index: number]: {
-        [name: string]: any;
-    }
 }
 
 export type ShaderShaderMap = {

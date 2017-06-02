@@ -12,6 +12,7 @@ import { DirectorData } from "../../core/DirectorData";
 import { material_config } from "../../renderer/data/material_config";
 import { shaderLib_generator } from "../../renderer/data/shaderLib_generator";
 import { ShaderData } from "../../renderer/shader/ShaderData";
+import { Shader } from "../../renderer/shader/Shader";
 
 @registerClass("Material")
 export class Material extends Component {
@@ -46,9 +47,10 @@ export var getMaterialGameObject = (component: Material) => {
 }
 
 export var getMaterialShader = (material: Material) => {
-    return getShader(material.index, MaterialData);
+    return getShader(material.index, MaterialData.shaderMap);
 }
 
-export var initMaterial = (material: Material) => {
-    initMaterialSystem(material.index, getState(DirectorData));
-}
+//todo restore
+// export var initMaterial = (material: Material) => {
+//     initMaterialSystem(material.index, getState(DirectorData));
+// }

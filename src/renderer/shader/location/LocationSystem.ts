@@ -1,25 +1,25 @@
-import { isConfigDataExist } from "../utils/renderConfigUtils";
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
-import { MaterialShaderLibConfig } from "../data/material_config";
+import { isConfigDataExist } from "../../utils/renderConfigUtils";
+import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { MaterialShaderLibConfig } from "../../data/material_config";
 import {
     ISendAttributeConfig, ISendUniformConfig, IShaderLibContentGenerator,
     IShaderLibSendConfig
-} from "../data/shaderLib_generator";
-import { isValidMapValue } from "../../utils/objectUtils";
-import { AttributeLocationMap, UniformLocationMap } from "./ShaderData";
+} from "../../data/shaderLib_generator";
+import { createMap, isValidMapValue } from "../../../utils/objectUtils";
+import { AttributeLocationMap, UniformLocationMap } from "./LocationData";
 import { expect } from "wonder-expect.js";
-import { forEach } from "../../utils/arrayUtils";
+import { forEach } from "../../../utils/arrayUtils";
 
-export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, ShaderData: any) => {
+export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
     it("attribute should contain position at least", () => {
-        expect(ShaderData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
+        expect(LocationData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
     });
-}, requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, ShaderData: any) => {
+}, requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
     it("not setted location before", () => {
-        expect(isValidMapValue(ShaderData.attributeLocationMap[shaderIndex])).false;
-        expect(isValidMapValue(ShaderData.uniformLocationMap[shaderIndex])).false;
+        expect(isValidMapValue(LocationData.attributeLocationMap[shaderIndex])).false;
+        expect(isValidMapValue(LocationData.uniformLocationMap[shaderIndex])).false;
     });
-}, (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, ShaderData: any) => {
+}, (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
     var attributeLocationMap = {},
         uniformLocationMap = {},
         sendData: IShaderLibSendConfig = null,
@@ -56,8 +56,8 @@ export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, sh
         }
     })
 
-    ShaderData.attributeLocationMap[shaderIndex] = attributeLocationMap;
-    ShaderData.uniformLocationMap[shaderIndex] = uniformLocationMap;
+    LocationData.attributeLocationMap[shaderIndex] = attributeLocationMap;
+    LocationData.uniformLocationMap[shaderIndex] = uniformLocationMap;
 }))
 
 export var getAttribLocation = ensureFunc((pos: number, name: string, attributeLocationMap: AttributeLocationMap) => {
@@ -82,4 +82,9 @@ export var isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
 
 export var isAttributeLocationNotExist = (pos: number) => {
     return pos === -1;
+}
+
+export var initData = (LocationData: any) => {
+    LocationData.attributeLocationMap = createMap();
+    LocationData.uniformLocationMap = createMap();
 }

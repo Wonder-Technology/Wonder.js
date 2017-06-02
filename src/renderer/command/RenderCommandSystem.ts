@@ -45,7 +45,7 @@ export var createRenderCommands = requireCheckFunc(curry((state: Map<any, any>, 
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
             materialIndex = material.index,
-            shader = getShader(materialIndex, MaterialData);
+            shader = getShader(materialIndex, MaterialData.shaderMap);
 
         command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData).values;
         command.vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;

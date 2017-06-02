@@ -39,11 +39,15 @@ export var setPixelRatio = (pixelRatio: number, state: Map<any, any>) => {
 }
 
 export var getViewport = (state: Map<any, any>) => {
-    return state.getIn(["DeviceManager", "viewport"]);
+    // return state.getIn(["DeviceManager", "viewport"]);
+    //todo restore
+    return void 0;
 }
 
 export var setViewport = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
-    return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
+    // return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
+    //todo restore
+    return null;
 }
 
 var _getCanvas = (DomQuery: any, domId: string) => {
@@ -82,6 +86,7 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: 
     });
 })
 
+//todo move to createGLSystem?
 export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var dom = _getCanvas(DomQuery, canvasId),

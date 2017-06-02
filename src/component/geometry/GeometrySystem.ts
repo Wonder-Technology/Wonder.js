@@ -83,15 +83,25 @@ export var getIndicesCount = (index: number, GeometryData: any) => {
 }
 
 export var getIndexType = (GeometryData: any) => {
-    return GeometryData.indexType;
+    // return GeometryData.indexType;
+    //todo restore
+    return "UNSIGNED_SHORT";
 }
 
 export var getIndexTypeSize = (GeometryData: any) => {
-    return GeometryData.indexTypeSize;
+    // return GeometryData.indexTypeSize;
+    //todo restore
+    return Uint16Array.BYTES_PER_ELEMENT;
 }
 
 export var getVertices = (index: number, GeometryData: any) => {
-    return GeometryData.verticesMap[index];
+    // return GeometryData.verticesMap[index];
+
+    //todo pass vertices data to worker
+    //todo cache geometry data in render worker(add render-gemetry Data?)
+    return new Float32Array([
+                    -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, 5, 5, -5, 5, -5, 5, 5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5
+                ])
 }
 
 export var setVertices = requireCheckFunc((index: number, vertices: Float32Array, GeometryData: any) => {
@@ -103,7 +113,11 @@ export var setVertices = requireCheckFunc((index: number, vertices: Float32Array
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
-    return GeometryData.indicesMap[index];
+    // return GeometryData.indicesMap[index];
+    //todo pass indices data to worker
+    return new Uint16Array([
+                    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+                ]);
 }
 
 export var setIndices = requireCheckFunc((index: number, indices: Uint16Array | Uint32Array, GeometryData: any) => {

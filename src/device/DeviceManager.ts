@@ -1,7 +1,8 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
 import { ContextConfigData } from "../core/MainSystem";
-import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
+// import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
+import { createGL, getGL, getViewport, setGL } from "./DeviceManagerSystem";
 import { View } from "../structure/View";
 import { getState } from "../core/DirectorSystem";
 import { DirectorData } from "../core/DirectorData";
@@ -41,14 +42,15 @@ export class DeviceManager {
         return createGL(canvasId, fromJS(contextConfig), getState(DirectorData));
     }
 
-    @requireCheck(() => {
-        it("canvas should be setter", () => {
-            expect(getCanvas(getState(DirectorData))).exist;
-        });
-    })
-    public setScreen() {
-        return setScreen(DeviceManagerData, getState(DirectorData));
-    }
+    //todo open setScreen
+    // @requireCheck(() => {
+    //     it("canvas should be setter", () => {
+    //         expect(getCanvas(getState(DirectorData))).exist;
+    //     });
+    // })
+    // public setScreen() {
+    //     return setScreen(DeviceManagerData, getState(DirectorData));
+    // }
 }
 
 export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {

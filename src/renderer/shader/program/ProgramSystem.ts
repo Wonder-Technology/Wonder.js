@@ -1,50 +1,51 @@
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { IMaterialConfig } from "../data/material_config";
+import { IMaterialConfig } from "../../data/material_config";
 import {
     ISendAttributeConfig, ISendUniformConfig
-} from "../data/shaderLib_generator";
+} from "../../data/shaderLib_generator";
 import {
     getAttribLocation, isAttributeLocationNotExist
-} from "./locationSystem";
-import { RenderCommand } from "../command/RenderCommand";
-import { EVariableType } from "../enum/EVariableType";
-import { Log } from "../../utils/Log";
-import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../buffer/ArrayBufferSystem";
-import { isValidMapValue } from "../../utils/objectUtils";
-import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "./glslSenderSystem";
-import { forEach } from "../../utils/arrayUtils";
+} from "../location/LocationSystem";
+import { RenderCommand } from "../../command/RenderCommand";
+import { EVariableType } from "../../enum/EVariableType";
+import { Log } from "../../../utils/Log";
+import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/ArrayBufferSystem";
+import { createMap, isValidMapValue } from "../../../utils/objectUtils";
+import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "../glslSender/GLSLSenderSystem";
+import { forEach } from "../../../utils/arrayUtils";
+import { ProgramData } from "./ProgramData";
 
-export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
+export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramData: any, LocationData:any, GLSLSenderData:any) => {
     it("program should exist", () => {
-        expect(getProgram(shaderIndex, ShaderData)).exist;
+        expect(getProgram(shaderIndex, ProgramData)).exist;
     });
-}, (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
-    var program = getProgram(shaderIndex, ShaderData);
+}, (gl: WebGLRenderingContext, shaderIndex: number, ProgramData: any, LocationData:any, GLSLSenderData:any) => {
+    var program = getProgram(shaderIndex, ProgramData);
 
-    if (ShaderData.lastUsedProgram === program) {
+    if (ProgramData.lastUsedProgram === program) {
         return;
     }
 
-    ShaderData.lastUsedProgram = program;
+    ProgramData.lastUsedProgram = program;
 
     gl.useProgram(program);
 
-    disableVertexAttribArray(gl, ShaderData);
+    disableVertexAttribArray(gl, GLSLSenderData);
 
-    ShaderData.lastBindedArrayBuffer = null;
-    ShaderData.lastBindedIndexBuffer = null;
+    ProgramData.lastBindedArrayBuffer = null;
+    ProgramData.lastBindedIndexBuffer = null;
 })
 
-export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContext, ShaderData: any) => {
+export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContext, GLSLSenderData: any) => {
     it("vertexAttribHistory should has not hole", () => {
-        forEach(ShaderData.vertexAttribHistory, (isEnable: boolean) => {
+        forEach(GLSLSenderData.vertexAttribHistory, (isEnable: boolean) => {
             expect(isEnable).exist;
             expect(isEnable).be.a("boolean");
         })
     });
-}, (gl: WebGLRenderingContext, ShaderData: any) => {
-    var vertexAttribHistory = ShaderData.vertexAttribHistory;
+}, (gl: WebGLRenderingContext, GLSLSenderData: any) => {
+    var vertexAttribHistory = GLSLSenderData.vertexAttribHistory;
 
     for (let i = 0, len = vertexAttribHistory.length; i < len; i++) {
         let isEnable = vertexAttribHistory[i];
@@ -57,7 +58,7 @@ export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContex
         gl.disableVertexAttribArray(i);
     }
 
-    ShaderData.vertexAttribHistory = [];
+    GLSLSenderData.vertexAttribHistory = [];
 })
 
 export var getMaterialShaderLibConfig = requireCheckFunc((materialClassName: string, material_config: IMaterialConfig) => {
@@ -73,13 +74,13 @@ export var getMaterialShaderLibConfig = requireCheckFunc((materialClassName: str
     return material_config[materialClassName].shader.shaderLib;
 })
 
-export var registerProgram = (shaderIndex: number, ShaderData: any, program: WebGLProgram) => {
-    ShaderData.programMap[shaderIndex] = program;
+export var registerProgram = (shaderIndex: number, ProgramData: any, program: WebGLProgram) => {
+    ProgramData.programMap[shaderIndex] = program;
 }
 
 export var getProgram = ensureFunc((program: WebGLProgram) => {
-}, (shaderIndex: number, ShaderData: any) => {
-    return ShaderData.programMap[shaderIndex];
+}, (shaderIndex: number, ProgramData: any) => {
+    return ProgramData.programMap[shaderIndex];
 })
 
 export var isProgramExist = (program: WebGLProgram) => isValidMapValue(program);
@@ -161,10 +162,10 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ShaderData: any, GeometryData: any, ArrayBufferData: any) => {
-    var sendDataArr = ShaderData.sendAttributeConfigMap[shaderIndex],
-        attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex],
-        lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => {
+    var sendDataArr = GLSLSenderData.sendAttributeConfigMap[shaderIndex],
+        attributeLocationMap = LocationData.attributeLocationMap[shaderIndex],
+        lastBindedArrayBuffer = ProgramData.lastBindedArrayBuffer;
 
     for (let sendData of sendDataArr) {
         let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
@@ -180,16 +181,16 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
 
         lastBindedArrayBuffer = buffer;
 
-        sendBuffer(gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData);
+        sendBuffer(gl, pos, buffer, geometryIndex, GLSLSenderData, ArrayBufferData);
     }
 
-    ShaderData.lastBindedArrayBuffer = lastBindedArrayBuffer;
+    ProgramData.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ShaderData: any, renderCommand: RenderCommand) => {
-    var sendDataArr = ShaderData.sendUniformConfigMap[shaderIndex],
-        uniformLocationMap = ShaderData.uniformLocationMap[shaderIndex],
-        uniformCacheMap = ShaderData.uniformCacheMap;
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommand: RenderCommand) => {
+    var sendDataArr = GLSLSenderData.sendUniformConfigMap[shaderIndex],
+        uniformLocationMap = LocationData.uniformLocationMap[shaderIndex],
+        uniformCacheMap = GLSLSenderData.uniformCacheMap;
 
     for (let sendData of sendDataArr) {
         let name = sendData.name,
@@ -213,4 +214,8 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
                 break;
         }
     }
+}
+
+export var initData = (ProgramData: any) => {
+    ProgramData.programMap = createMap();
 }

@@ -2,7 +2,7 @@ import { DebugConfig } from "../config/DebugConfig";
 import { EScreenSize } from "../device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
-import { createGL, setPixelRatioAndCanvas, setScreen } from "../device/DeviceManagerSystem";
+// import { createGL, setPixelRatioAndCanvas, setScreen } from "../device/DeviceManagerSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { chain, compose, map } from "../utils/functionalUtils";
 import { Main } from "wonder-frp/dist/es2015/core/Main";
@@ -12,6 +12,7 @@ import { fromJS, Map } from "immutable";
 import { detect } from "../device/GPUDetectorSystem";
 import { trace } from "../utils/debugUtils";
 import { MainData } from "./MainData";
+import { createGL } from "../renderer/gl/createGLSystem";
 // import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
 
 export var getIsTest = (MainData: any) => {
@@ -91,7 +92,13 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
         expect(configState.get("useDevicePixelRatio")).exist;
     })
 }, (gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData: any) => {
-    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
+    // return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
+    return compose(
+        // map(detect),
+        // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
+        // chain(setScreen(DeviceManagerData)),
+        createGL
+    )(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
 });
 
 
@@ -116,3 +123,4 @@ export type ContextConfigOptionsData = {
     premultipliedAlpha: boolean;
     preserveDrawingBuffer: boolean;
 }
+
