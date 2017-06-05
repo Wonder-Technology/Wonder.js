@@ -30,21 +30,24 @@ export var create = (ShaderData: any) => {
 }
 
 export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData:any, LocationData:any, GLSLSenderData:any) => {
-    var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
+    var program = getProgram(shaderIndex, ProgramData);
+
+    //todo unit test
+    if (isProgramExist(program)) {
+        return;
+    }
+
+    let materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         shaderLibData = shaderLib_generator.shaderLibs,
         {
             vsSource,
             fsSource
         } = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibData),
-        program = getProgram(shaderIndex, ProgramData),
         gl = getGL(DeviceManagerData, state);
 
-    if (!isProgramExist(program)) {
-        program = gl.createProgram();
+    program = gl.createProgram();
 
-        registerProgram(shaderIndex, ProgramData, program);
-    }
-
+    registerProgram(shaderIndex, ProgramData, program);
     initShader(program, vsSource, fsSource, gl);
 
     setLocationMap(gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationData);
