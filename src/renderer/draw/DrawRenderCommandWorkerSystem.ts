@@ -14,7 +14,7 @@ export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceMan
     return state;
 }
 
-export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
     //todo get mMatrices... 's count data by postMessage?
 
     let mat4Length = 16;
@@ -28,14 +28,21 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
         vMatrixFloatArray = DrawRenderCommandWorkerData.vMatrixFloatArray,
         pMatrixFloatArray = DrawRenderCommandWorkerData.pMatrixFloatArray;
 
+    var {
+        mMatrices,
+        vMatrices,
+        pMatrices,
+        materialIndices,
+        shaderIndices,
+        geometryIndices
+    } = _createTypeArrays(buffer, render_config, mat4Length, DrawRenderCommandWorkerData);
 
-
-    let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
-        vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-        pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-        materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count),
-        shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count),
-        geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+    // let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
+    //     vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
+    //     pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
+    //     materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count),
+    //     shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count),
+    //     geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
 
     var gl = getGL(DeviceManagerData, state);
 
@@ -44,8 +51,8 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
     // pMatrices = pMatrices.slice();
 
 
-    vMatrices = _getMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArray)
-    pMatrices = _getMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArray)
+    vMatrices = _getMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArray);
+    pMatrices = _getMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArray);
 
 
     // for (let gameObject of renderGameObjectArray) {
@@ -128,6 +135,25 @@ var _buildRenderCommandUniformData = (mMatrices:Float32Array, vMatrices:Float32A
         pMatrix:pMatrices,
         materialIndex:materialIndex
     }
+}
+
+var _createTypeArrays = (buffer:SharedArrayBuffer, render_config:IRenderConfig, mat4Length:number, DrawRenderCommandWorkerData:any) => {
+    if(!_isTypeArrayExist(DrawRenderCommandWorkerData)){
+        let count = render_config.renderCommandBufferCount;
+
+        DrawRenderCommandWorkerData.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
+        DrawRenderCommandWorkerData.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandWorkerData.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandWorkerData.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
+        DrawRenderCommandWorkerData.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
+        DrawRenderCommandWorkerData.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+    }
+
+    return DrawRenderCommandWorkerData;
+}
+
+var _isTypeArrayExist = (DrawRenderCommandWorkerData:any) => {
+    return DrawRenderCommandWorkerData.mMatrices !== null;
 }
 
 export var initData = (DrawRenderCommandWorkerData:any) => {

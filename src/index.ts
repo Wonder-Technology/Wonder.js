@@ -56,6 +56,7 @@ export {Vector4} from "./math/Vector4";
 export {ArrayBufferData} from "./renderer/buffer/ArrayBufferData";
 export {IndexBufferData} from "./renderer/buffer/IndexBufferData";
 export {RenderCommand} from "./renderer/command/RenderCommand";
+export {RenderCommandBufferData} from "./renderer/command/RenderCommandBufferData";
 export {material_config} from "./renderer/data/material_config";
 export {render_config} from "./renderer/data/render_config";
 export {shaderLib_generator} from "./renderer/data/shaderLib_generator";

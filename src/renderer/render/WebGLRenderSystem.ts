@@ -24,6 +24,10 @@ import { CameraControllerData } from "../../component/camera/CameraControllerDat
 import { CameraData } from "../../component/camera/CameraData";
 import { RenderWorkerData } from "../worker/RenderWorkerData";
 import { EWorkerOperateType } from "../worker/EWorkerOperateType";
+import { initData as initRenderCommandBufferData } from "../command/RenderCommandBufferSystem";
+import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
+
+//todo extract WebGLRenderWorkerSystem?
 
 export var init = (state: Map<any, any>) => {
     // initMaterial(state, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
@@ -48,7 +52,9 @@ export var render = (state: Map<any, any>) => {
         // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         draw(RenderWorkerData),
         // sortRenderCommands(state),
-        createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData),
+        createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
         getRenderList(state)
     )(MeshRendererData)
 }
+
+initRenderCommandBufferData(render_config, RenderCommandBufferData);

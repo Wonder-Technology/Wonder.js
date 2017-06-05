@@ -18,28 +18,36 @@ import {
 import { getTypeIDFromClass } from "../../component/ComponentTypeIDManager";
 import { CameraController } from "../../component/camera/CameraController";
 import { DataUtils } from "../../utils/DataUtils";
+import { IRenderConfig } from "../data/render_config";
 
-export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, renderGameObjectArray: Array<GameObject>) => {
+//todo check: renderGameObjectArray.length should <= renderCommandBufferCount
+export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
     let mat4Length = 16;
     var count = renderGameObjectArray.length,
-        size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
-        buffer:any = null;
+        // size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
+        buffer:any = RenderCommandBufferData.buffer;
 
-    //todo optimize: create buffer once
 
     //todo handle not support SharedArrayBuffer
-    buffer = new SharedArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
+    // buffer = new SharedArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
 
 
-    let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
-        // vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, count * mat4Length),
-        // pMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 2, count * mat4Length),
-        vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-        pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-        materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count),
-        shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count),
-        geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
-    // drawModes = new Uint16Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 3 + Uint32Array.BYTES_PER_ELEMENT * 3, count);
+    // let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
+    //     // vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, count * mat4Length),
+    //     // pMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 2, count * mat4Length),
+    //     vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
+    //     pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
+    //     materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count),
+    //     shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count),
+    //     geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+    // // drawModes = new Uint16Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 3 + Uint32Array.BYTES_PER_ELEMENT * 3, count);
+
+    let mMatrices = RenderCommandBufferData.mMatrices,
+        vMatrices = RenderCommandBufferData.vMatrices,
+        pMatrices = RenderCommandBufferData.pMatrices,
+        materialIndices = RenderCommandBufferData.materialIndices,
+        shaderIndices = RenderCommandBufferData.shaderIndices,
+        geometryIndices = RenderCommandBufferData.geometryIndices;
 
     let currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCamera.index;
@@ -81,3 +89,22 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
     }
 })
 
+export var initData = (render_config:IRenderConfig, RenderCommandBufferData:any) => {
+    var mat4Length = 16;
+    var size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3;
+    var buffer:any = null;
+    var count = render_config.renderCommandBufferCount;
+
+
+    buffer = new SharedArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
+
+
+    RenderCommandBufferData.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
+    RenderCommandBufferData.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+    RenderCommandBufferData.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+    RenderCommandBufferData.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
+    RenderCommandBufferData.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
+    RenderCommandBufferData.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+
+    RenderCommandBufferData.buffer = buffer;
+}
