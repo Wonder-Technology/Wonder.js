@@ -1,13 +1,11 @@
 import curry from "wonder-lodash/curry";
-import { RenderCommand } from "../command/RenderCommand";
 import { EWorkerOperateType } from "../worker/EWorkerOperateType";
+import { RenderCommandBufferWorkerData } from "../command/RenderCommandBufferData";
 
-export var draw = curry((RenderWorkerData:any, renderCommandArray: Array<RenderCommand>) => {
+export var draw = curry((RenderWorkerData:any, data:RenderCommandBufferWorkerData) => {
     RenderWorkerData.renderWorker.postMessage({
         operateType:EWorkerOperateType.DRAW,
-        renderCommandArray:renderCommandArray
-        //todo optimize: transfer renderCommandArray
-    // }, [renderCommandArray])
+        bufferData:data
     })
 })
 

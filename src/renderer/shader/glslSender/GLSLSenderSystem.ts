@@ -20,16 +20,17 @@ import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript
 import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../utils/objectUtils";
 import { UniformShaderLocationMap } from "../location/LocationData";
+import { RenderCommandUniformData } from "../../command/RenderCommandBufferData";
 
-export var getUniformData = (field: string, from: string, renderCommand: RenderCommand, MaterialData: any) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any) => {
     var data: any = null;
 
     switch (from) {
         case "cmd":
-            data = renderCommand[field];
+            data = renderCommandUniformData[field];
             break;
         case "material":
-            data = _getUnifromDataFromMaterial(field, renderCommand.materialIndex, MaterialData);
+            data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, MaterialData);
             break;
         default:
             error(true, `unknow from:${from}`);

@@ -66,7 +66,7 @@ onmessage = (e) => {
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);
-            draw(null, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, data.renderCommandArray);
+            draw(null, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, data.bufferData);
             break;
         default:
             error(true, `unknow operateType:${operateType}`);

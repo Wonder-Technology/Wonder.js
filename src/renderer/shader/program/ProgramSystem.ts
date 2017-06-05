@@ -15,6 +15,7 @@ import { createMap, isValidMapValue } from "../../../utils/objectUtils";
 import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "../glslSender/GLSLSenderSystem";
 import { forEach } from "../../../utils/arrayUtils";
 import { ProgramData } from "./ProgramData";
+import { RenderCommandUniformData } from "../../command/RenderCommandBufferData";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramData: any, LocationData:any, GLSLSenderData:any) => {
     it("program should exist", () => {
@@ -187,7 +188,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     ProgramData.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommand: RenderCommand) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommandUniformData:RenderCommandUniformData) => {
     var sendDataArr = GLSLSenderData.sendUniformConfigMap[shaderIndex],
         uniformLocationMap = LocationData.uniformLocationMap[shaderIndex],
         uniformCacheMap = GLSLSenderData.uniformCacheMap;
@@ -197,7 +198,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, renderCommand, MaterialData);
+            data = getUniformData(field, from, renderCommandUniformData, MaterialData);
 
         switch (type) {
             case EVariableType.MAT4:

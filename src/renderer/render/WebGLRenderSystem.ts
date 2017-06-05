@@ -2,7 +2,8 @@ import { Map } from "immutable";
 import { getRenderList } from "../../component/renderer/MeshRendererSystem";
 import { MeshRendererData } from "../../component/renderer/MeshRendererData";
 import { compose } from "../../utils/functionalUtils";
-import { createRenderCommands } from "../command/RenderCommandSystem";
+// import { createRenderCommands } from "../command/RenderCommandSystem";
+import { createRenderCommandBuffer } from "../command/RenderCommandBufferSystem";
 import { sortRenderCommands } from "../sort/SortRenderCommandSystem";
 import { draw } from "../draw/DrawRenderCommandSystem";
 // import { init as initMaterial } from "../../component/material/MaterialSystem";
@@ -46,8 +47,8 @@ export var render = (state: Map<any, any>) => {
     return compose(
         // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         draw(RenderWorkerData),
-        sortRenderCommands(state),
-        createRenderCommands(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData),
+        // sortRenderCommands(state),
+        createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData),
         getRenderList(state)
     )(MeshRendererData)
 }

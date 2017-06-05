@@ -16,6 +16,7 @@ import { RenderCommand } from "../command/RenderCommand";
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/GLSLSenderSystem";
 import { generateComponentIndex } from "../../component/ComponentSystem";
 import { createMap } from "../../utils/objectUtils";
+import { RenderCommandUniformData } from "../command/RenderCommandBufferData";
 
 export var create = (ShaderData: any) => {
     var shader = new Shader(),
@@ -56,8 +57,8 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     sendAttributeDataProgram(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommand: RenderCommand) => {
-    sendUniformDataProgram(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommand);
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommandUniformData:RenderCommandUniformData) => {
+    sendUniformDataProgram(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ShaderData: any, GeometryData: any, IndexBufferData: any) => {
