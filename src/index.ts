@@ -80,3 +80,4 @@ export {Log,error} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
+export {DrawRenderCommandWorkerData} from "./renderer/draw/DrawRenderCommandWorkerData";

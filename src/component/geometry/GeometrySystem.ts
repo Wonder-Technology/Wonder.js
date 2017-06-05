@@ -94,14 +94,17 @@ export var getIndexTypeSize = (GeometryData: any) => {
     return Uint16Array.BYTES_PER_ELEMENT;
 }
 
+
+var vertices = new Float32Array([
+                    -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, 5, 5, -5, 5, -5, 5, 5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5
+                ]);
+
 export var getVertices = (index: number, GeometryData: any) => {
     // return GeometryData.verticesMap[index];
 
     //todo pass vertices data to worker
     //todo cache geometry data in render worker(add render-gemetry Data?)
-    return new Float32Array([
-                    -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, 5, 5, -5, 5, -5, 5, 5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5
-                ])
+    return vertices;
 }
 
 export var setVertices = requireCheckFunc((index: number, vertices: Float32Array, GeometryData: any) => {
@@ -112,12 +115,14 @@ export var setVertices = requireCheckFunc((index: number, vertices: Float32Array
     GeometryData.verticesMap[index] = vertices;
 })
 
+var indices = new Uint16Array([
+    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+]);
+
 export var getIndices = (index: number, GeometryData: any) => {
     // return GeometryData.indicesMap[index];
     //todo pass indices data to worker
-    return new Uint16Array([
-                    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
-                ]);
+    return indices;
 }
 
 export var setIndices = requireCheckFunc((index: number, indices: Uint16Array | Uint32Array, GeometryData: any) => {

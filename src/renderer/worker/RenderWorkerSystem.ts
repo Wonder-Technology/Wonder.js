@@ -14,7 +14,7 @@ import { material_config } from "../data/material_config";
 import { shaderLib_generator } from "../data/shaderLib_generator";
 import { ShaderData } from "../shader/ShaderData";
 import { MaterialData, ShaderMap } from "../../component/material/MaterialData";
-import { clear, draw } from "../draw/DrawRenderCommandWorkerSystem";
+import { clear, draw, initData as initDrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerSystem";
 import { GeometryData } from "../../component/geometry/GeometryData";
 import { ArrayBufferData, ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData, IndexBufferData } from "../buffer/IndexBufferData";
@@ -27,6 +27,7 @@ import { initData as initLocationData } from "../shader/location/LocationSystem"
 import { initData as initGLSLSenderData } from "../shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
+import { DrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerData";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -66,7 +67,7 @@ onmessage = (e) => {
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);
-            draw(null, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, data.bufferData);
+            draw(null, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.bufferData);
             break;
         default:
             error(true, `unknow operateType:${operateType}`);
@@ -140,3 +141,5 @@ initGLSLSenderData(GLSLSenderData);
 initArrayBufferData(ArrayBufferData);
 
 initIndexBufferData(IndexBufferData);
+
+initDrawRenderCommandWorkerData(DrawRenderCommandWorkerData);

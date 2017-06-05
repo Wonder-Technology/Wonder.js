@@ -1,5 +1,4 @@
 import curry from "wonder-lodash/curry";
-import { RenderCommand } from "../command/RenderCommand";
 import { Map } from "immutable";
 import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderSystem";
 import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
@@ -15,7 +14,7 @@ export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceMan
     return state;
 }
 
-export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, bufferData:RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
     //todo get mMatrices... 's count data by postMessage?
 
     let mat4Length = 16;
@@ -23,6 +22,11 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
     var count = bufferData.count,
         buffer:any = bufferData.buffer;
 
+
+
+    var mMatrixFloatArray = DrawRenderCommandWorkerData.mMatrixFloatArray,
+        vMatrixFloatArray = DrawRenderCommandWorkerData.vMatrixFloatArray,
+        pMatrixFloatArray = DrawRenderCommandWorkerData.pMatrixFloatArray;
 
 
 
@@ -40,8 +44,8 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
     // pMatrices = pMatrices.slice();
 
 
-    vMatrices = _getMatrixFloat32ArrayData(vMatrices, 0, mat4Length)
-    pMatrices = _getMatrixFloat32ArrayData(pMatrices, 0, mat4Length)
+    vMatrices = _getMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArray)
+    pMatrices = _getMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArray)
 
 
     // for (let gameObject of renderGameObjectArray) {
@@ -68,7 +72,7 @@ export var draw = (state: Map<any, any>, DeviceManagerData: any, MaterialData: a
         // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.subarray(matStartIndex, matEndIndex), vMatrices.subarray(matStartIndex, matEndIndex), pMatrices.subarray(matStartIndex, matEndIndex), materialIndices[i]));
         ////todo optimize: try to use subarray, but uniformMatrix4fv error: Failed to execute 'uniformMatrix4fv' on 'WebGLRenderingContext': The provided ArrayBufferView value must not be shared.
         // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.slice(matStartIndex, matEndIndex), vMatrices, pMatrices, materialIndices[i]));
-        sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(_getMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex), vMatrices, pMatrices, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(_getMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArray), vMatrices, pMatrices, materialIndices[i]));
 
 
         if (hasIndices(geometryIndex, GeometryData)) {
@@ -104,14 +108,17 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode:EDr
     gl.drawArrays(gl[drawMode], startOffset, count);
 }
 
-var _getMatrixFloat32ArrayData = (matrices:Float32Array, matStartIndex:number, matEndIndex:number) => {
-    var arr = new Float32Array(16);
+var _getMatrixFloat32ArrayData = (sourceMatrices:Float32Array, matStartIndex:number, matEndIndex:number, targetMatrices:Float32Array) => {
+    // var arr = new Float32Array(16);
+    // var arr = [];
 
     for(let i = matStartIndex; i < matEndIndex; i++){
-        arr[i - matStartIndex] = matrices[i];
+        targetMatrices[i - matStartIndex] = sourceMatrices[i];
     }
 
-    return arr;
+    return targetMatrices;
+
+    // return null;
 }
 
 var _buildRenderCommandUniformData = (mMatrices:Float32Array, vMatrices:Float32Array, pMatrices:Float32Array, materialIndex:number) => {
@@ -123,3 +130,8 @@ var _buildRenderCommandUniformData = (mMatrices:Float32Array, vMatrices:Float32A
     }
 }
 
+export var initData = (DrawRenderCommandWorkerData:any) => {
+    DrawRenderCommandWorkerData.mMatrixFloatArray = new Float32Array(16);
+    DrawRenderCommandWorkerData.vMatrixFloatArray = new Float32Array(16);
+    DrawRenderCommandWorkerData.pMatrixFloatArray = new Float32Array(16);
+}
