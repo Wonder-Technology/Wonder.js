@@ -28,6 +28,7 @@ import { initData as initGLSLSenderData } from "../shader/glslSender/GLSLSenderS
 import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
 import { DrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerData";
+import { ERenderWorkerState } from "./ERenderWorkerState";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -64,6 +65,10 @@ onmessage = (e) => {
         case EWorkerOperateType.INIT_MATERIAL:
             // initMaterial(null, data.materialCount);
             _initShaders(data.materialCount, data.shaderMap);
+
+            self.postMessage({
+                state: ERenderWorkerState.INIT_COMPLETE
+            });
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);

@@ -26,17 +26,29 @@ import { RenderWorkerData } from "../worker/RenderWorkerData";
 import { EWorkerOperateType } from "../worker/EWorkerOperateType";
 import { initData as initRenderCommandBufferData } from "../command/RenderCommandBufferSystem";
 import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
+import { ERenderWorkerState } from "../worker/ERenderWorkerState";
+import { WebGLRenderWorkerData } from "./WebGLRenderWorkerData";
 
 //todo extract WebGLRenderWorkerSystem?
 
 export var init = (state: Map<any, any>) => {
     // initMaterial(state, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
+
+    var renderWorker = RenderWorkerData.renderWorker;
+
     //todo transfer shaderMap?
-    RenderWorkerData.renderWorker.postMessage({
+    renderWorker.postMessage({
         operateType:EWorkerOperateType.INIT_MATERIAL,
         materialCount: MaterialData.count,
         shaderMap:MaterialData.shaderMap
     });
+
+    renderWorker.onmessage = (e) => {
+        var data = e.data,
+            state = data.state;
+
+        WebGLRenderWorkerData.state = ERenderWorkerState.INIT_COMPLETE;
+    }
 
     return state;
 }
@@ -48,6 +60,10 @@ export var init = (state: Map<any, any>) => {
 // }
 
 export var render = (state: Map<any, any>) => {
+    if(WebGLRenderWorkerData.state !== ERenderWorkerState.INIT_COMPLETE){
+        return state;
+    }
+
     return compose(
         // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
         draw(RenderWorkerData),
@@ -56,5 +72,11 @@ export var render = (state: Map<any, any>) => {
         getRenderList(state)
     )(MeshRendererData)
 }
+
+var _initData = (WebGLRenderWorkerData:any) => {
+    WebGLRenderWorkerData.state = ERenderWorkerState.DEFAULT;
+}
+
+_initData(WebGLRenderWorkerData);
 
 initRenderCommandBufferData(render_config, RenderCommandBufferData);

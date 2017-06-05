@@ -82,3 +82,5 @@ export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
 export {DrawRenderCommandWorkerData} from "./renderer/draw/DrawRenderCommandWorkerData";
+export {ERenderWorkerState} from "./renderer/worker/ERenderWorkerState";
+export {WebGLRenderWorkerData} from "./renderer/render/WebGLRenderWorkerData";
