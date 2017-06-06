@@ -74,6 +74,9 @@ import { material_config } from "../renderer/data/material_config";
 import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
 import { DeviceManagerData } from "../device/DeviceManagerData";
+import { initData as initWorkerTimeData, render as renderByWorkerTimeSystem } from "./worker/WorkerTimeSystem";
+import { WorkerTimeData } from "./worker/WorkerTimeData";
+import { WorkerConfig } from "../config/WorkerConfig";
 
 @singleton(true)
 @registerClass("Director")
@@ -144,7 +147,7 @@ export class Director {
 
         // this.renderer.init();
 
-        // this._timeController.start();
+        this._timeController.start();
 
         return resultState;
     }
@@ -187,19 +190,23 @@ export class Director {
         //     return false;
         // }
 
-        // elapsed = this._timeController.computeElapseTime(time);
+        elapsed = this._timeController.computeElapseTime(time);
 
         return this._run(elapsed, state);
     }
 
     private _run(elapsed: number, state: Map<any, any>) {
-        // this._timeController.tick(elapsed);
+        //todo unit test
+        this._timeController.tick(elapsed);
 
         // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
 
         var resultState = this._update(elapsed, state);
 
-        resultState = this._render(state);
+        //todo unit test
+        renderByWorkerTimeSystem(this._timeController.deltaTime, (elapsed: number) => {
+            resultState = render(state)
+        }, WorkerConfig, WorkerTimeData);
 
         // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
 
@@ -278,4 +285,6 @@ addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
 
 initGameObjectData(GameObjectData);
+
+initWorkerTimeData(WorkerTimeData);
 
