@@ -138,7 +138,7 @@ var _initShader = (materialIndex:number, shaderMap:ShaderMap) => {
 }
 
 var _initGeometrys = (geometryData:GeometryInitWorkerData, DataBufferConfig:any, GeometryWorkerData:any) => {
-    initGeometryWorkerData(geometryData.buffer, geometryData.indexType, DataBufferConfig, GeometryWorkerData);
+    initGeometryWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
 
     setPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }

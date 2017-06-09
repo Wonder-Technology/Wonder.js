@@ -44,6 +44,7 @@ export var init = (state: Map<any, any>) => {
         geometryData:{
             buffer:GeometryData.buffer,
             indexType: GeometryData.indexType,
+            indexTypeSize: GeometryData.indexTypeSize,
             verticesInfoList:GeometryData.verticesInfoList,
             indicesInfoList:GeometryData.indicesInfoList
         }

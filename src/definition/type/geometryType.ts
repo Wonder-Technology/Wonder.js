@@ -18,6 +18,7 @@ export type GeometryIndicesCacheMap = {
 export type GeometryInitWorkerData = {
     buffer: SharedArrayBuffer;
     indexType: EBufferType;
+    indexTypeSize: number;
     verticesInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }

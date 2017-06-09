@@ -71,15 +71,11 @@ var _setPointCacheData = requireCheckFunc((infoList:GeometryInfoList, points:Flo
 })
 
 export var getIndexType = (GeometryWorkerData: any) => {
-    // return GeometryWorkerData.indexType;
-    //todo restore
-    return "UNSIGNED_SHORT";
+    return GeometryWorkerData.indexType;
 }
 
 export var getIndexTypeSize = (GeometryWorkerData: any) => {
-    // return GeometryWorkerData.indexTypeSize;
-    //todo restore
-    return Uint16Array.BYTES_PER_ELEMENT;
+    return GeometryWorkerData.indexTypeSize;
 }
 
 export var hasIndices = (index: number, GeometryWorkerData: any) => {
@@ -104,7 +100,7 @@ export var getIndicesCount = (index: number, GeometryWorkerData: any) => {
     return getIndices(index, GeometryWorkerData).length;
 }
 
-export var initData = (buffer:SharedArrayBuffer, indexType:EBufferType, DataBufferConfig:any, GeometryWorkerData: any) => {
+export var initData = (buffer:SharedArrayBuffer, indexType:EBufferType, indexTypeSize:number, DataBufferConfig:any, GeometryWorkerData: any) => {
     GeometryWorkerData.verticesWorkerInfoList = [];
     GeometryWorkerData.indicesWorkerInfoList = [];
 
@@ -113,8 +109,10 @@ export var initData = (buffer:SharedArrayBuffer, indexType:EBufferType, DataBuff
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.indicesCacheMap = createMap();
 
-    _initBufferViewData(buffer, getUIntArrayClass(indexType), DataBufferConfig, GeometryWorkerData);
+    GeometryWorkerData.indexType = indexType;
+    GeometryWorkerData.indexTypeSize = indexTypeSize;
 
+    _initBufferViewData(buffer, getUIntArrayClass(indexType), DataBufferConfig, GeometryWorkerData);
 }
 
 var _initBufferViewData = (buffer:any, UintArray:any, DataBufferConfig: any, GeometryWorkerData: any) => {
