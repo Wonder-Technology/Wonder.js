@@ -6,15 +6,8 @@ export class Log extends Log$ {
 }
 
 
-export var error = (cond: boolean, ...messages): void => {
-    if (cond) {
-        /*!
-         console.error will not interrupt, it will throw error and continue exec the left statements
+export var error = Log$.error;
 
-         but here need interrupt! so not use it here.
-         */
-        //if (!this._exec("error", arguments, 1)) {
-        throw new Error(messages.join("\n"));
-        //}
-    }
-}
+export var info = Log$.info;
+
+export var log = Log$.log;

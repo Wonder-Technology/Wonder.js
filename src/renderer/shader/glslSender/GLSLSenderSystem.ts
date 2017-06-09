@@ -5,7 +5,7 @@ import { forEach, hasDuplicateItems } from "../../../utils/arrayUtils";
 import { getColor, getOpacity } from "../../../component/material/MaterialSystem";
 import { Vector3 } from "../../../math/Vector3";
 import { isConfigDataExist } from "../../utils/renderConfigUtils";
-import { error } from "../../../utils/Log";
+import { error, info } from "../../../utils/Log";
 import { Matrix4 } from "../../../math/Matrix4";
 import {
     getUniformLocation, isUniformLocationNotExist
@@ -33,7 +33,7 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
             data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, MaterialData);
             break;
         default:
-            error(true, `unknow from:${from}`);
+            error(true, info.FUNC_UNKNOW(`from:${from}`));
             break;
     }
 
@@ -51,7 +51,7 @@ var _getUnifromDataFromMaterial = (field: string, materialIndex: number, Materia
             data = getOpacity(materialIndex, MaterialData);
             break;
         default:
-            error(true, `unknow field:${field}`);
+            error(true, info.FUNC_UNKNOW(`field:${field}`));
             break;
     }
 

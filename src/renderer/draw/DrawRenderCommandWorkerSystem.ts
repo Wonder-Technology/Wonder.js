@@ -1,12 +1,11 @@
-import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderSystem";
 import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
 import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
-import { getDrawMode, getIndicesCount, getVerticesCount, hasIndices } from "../../component/geometry/GeometrySystem";
 import { IRenderConfig } from "../data/render_config";
 import { RenderCommandBufferWorkerData } from "../command/RenderCommandBufferData";
 import { EDrawMode } from "../enum/EDrawMode";
+import { getIndicesCount, getVerticesCount, hasIndices } from "../worker/geometry/GeometryWorkerSystem";
 
 export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any) => {
     clearGL(getGL(DeviceManagerData, state), render_config.clearColor, DeviceManagerData);
@@ -14,7 +13,7 @@ export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceMan
     return state;
 }
 
-export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryWorkerData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
     //todo get mMatrices... 's count data by postMessage?
 
     let mat4Length = 16;
@@ -75,20 +74,20 @@ export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceMana
 
         //todo set state
 
-        sendAttributeData(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
+        sendAttributeData(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData);
         // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.subarray(matStartIndex, matEndIndex), vMatrices.subarray(matStartIndex, matEndIndex), pMatrices.subarray(matStartIndex, matEndIndex), materialIndices[i]));
         ////todo optimize: try to use subarray, but uniformMatrix4fv error: Failed to execute 'uniformMatrix4fv' on 'WebGLRenderingContext': The provided ArrayBufferView value must not be shared.
         // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.slice(matStartIndex, matEndIndex), vMatrices, pMatrices, materialIndices[i]));
         sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(_getMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArray), vMatrices, pMatrices, materialIndices[i]));
 
 
-        if (hasIndices(geometryIndex, GeometryData)) {
-            bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);
+        if (hasIndices(geometryIndex, GeometryWorkerData)) {
+            bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryWorkerData, IndexBufferData);
 
-            _drawElements(gl, geometryIndex, drawMode, GeometryData);
+            _drawElements(gl, geometryIndex, drawMode, GeometryWorkerData);
         }
         else {
-            _drawArray(gl, geometryIndex, drawMode, GeometryData);
+            _drawArray(gl, geometryIndex, drawMode, GeometryWorkerData);
         }
     }
 
@@ -97,20 +96,20 @@ export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceMana
     return state;
 }
 
-var _drawElements = (gl: WebGLRenderingContext, geometryIndex: number, drawMode:EDrawMode, GeometryData: any) => {
+var _drawElements = (gl: WebGLRenderingContext, geometryIndex: number, drawMode:EDrawMode, GeometryWorkerData: any) => {
     var startOffset: number = 0,
-        count = getIndicesCount(geometryIndex, GeometryData),
-        type = getType(GeometryData),
-        typeSize = getTypeSize(GeometryData);
+        count = getIndicesCount(geometryIndex, GeometryWorkerData),
+        type = getType(GeometryWorkerData),
+        typeSize = getTypeSize(GeometryWorkerData);
 
     gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
 
     // gl.commit(); // new for webgl in workers
 }
 
-var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode:EDrawMode, GeometryData: any) => {
+var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode:EDrawMode, GeometryWorkerData: any) => {
     var startOffset: number = 0,
-        count = getVerticesCount(geometryIndex, GeometryData);
+        count = getVerticesCount(geometryIndex, GeometryWorkerData);
 
     gl.drawArrays(gl[drawMode], startOffset, count);
 }

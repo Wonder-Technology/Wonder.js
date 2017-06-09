@@ -6,7 +6,6 @@ import {
     getTransform
 } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { getShader } from "../../component/material/MaterialSystem";
-import { getDrawMode } from "../../component/geometry/GeometrySystem";
 import {
     getLocalToWorldMatrix,
     getTempLocalToWorldMatrix

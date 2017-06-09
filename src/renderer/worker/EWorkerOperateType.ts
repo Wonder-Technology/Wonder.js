@@ -1,5 +1,5 @@
 export enum EWorkerOperateType{
     INIT_GL,
-    INIT_MATERIAL,
+    INIT_MATERIAL_GEOMETRY,
     DRAW
 }

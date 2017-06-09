@@ -38,9 +38,15 @@ export var init = (state: Map<any, any>) => {
 
     //todo transfer shaderMap?
     renderWorker.postMessage({
-        operateType:EWorkerOperateType.INIT_MATERIAL,
+        operateType:EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
         materialCount: MaterialData.count,
-        shaderMap:MaterialData.shaderMap
+        shaderMap:MaterialData.shaderMap,
+        geometryData:{
+            buffer:GeometryData.buffer,
+            indexType: GeometryData.indexType,
+            verticesInfoList:GeometryData.verticesInfoList,
+            indicesInfoList:GeometryData.indicesInfoList
+        }
     });
 
     renderWorker.onmessage = (e) => {
@@ -48,7 +54,7 @@ export var init = (state: Map<any, any>) => {
             state = data.state;
 
         WebGLRenderWorkerData.state = ERenderWorkerState.INIT_COMPLETE;
-    }
+    };
 
     return state;
 }
@@ -66,7 +72,7 @@ export var render = (state: Map<any, any>) => {
 
     return compose(
         // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
-        draw(RenderWorkerData),
+        draw(RenderWorkerData, GeometryData),
         // sortRenderCommands(state),
         createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
         getRenderList(state)

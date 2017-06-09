@@ -1,15 +1,34 @@
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import { ComponentGameObjectMap } from "../ComponentData";
-import { Geometry } from "./Geometry";
 import { ComponentMap } from "../ComponentSystem";
+import { EGeometryWorkerDataOperateType } from "../../renderer/enum/EGeometryWorkerDataOperateType";
+import {
+    GeometryIndicesCacheMap, GeometryInfoList, GeometryVerticesCacheMap,
+    GeometryWorkerInfoList
+} from "../../definition/type/geometryType";
 
 export class GeometryData {
     public static index: number = null;
     public static count: number = null;
 
-    public static verticesMap: GeometryVerticesMap = null;
-    public static indicesMap: GeometryIndicesMap = null;
+    public static buffer:SharedArrayBuffer = null;
+
+    public static offset:number = null;
+
+    public static verticesInfoList: GeometryInfoList = null;
+    public static indicesInfoList: GeometryInfoList = null;
+
+    public static isInit:boolean = null;
+
+    public static verticesWorkerInfoList: GeometryWorkerInfoList = null;
+    public static indicesWorkerInfoList: GeometryWorkerInfoList = null;
+
+    public static vertices: Float32Array = null;
+    public static indices: Uint16Array | Uint32Array = null;
+
+    public static verticesCacheMap: GeometryVerticesCacheMap = null;
+    public static indicesCacheMap: GeometryIndicesCacheMap = null;
 
     public static indexType: EBufferType = null;
     public static indexTypeSize: number = null;
@@ -22,10 +41,6 @@ export class GeometryData {
 
     public static geometryMap: ComponentMap = null;
 }
-
-export type GeometryVerticesMap = Array<Float32Array>
-
-export type GeometryIndicesMap = Array<Uint16Array> | Array<Uint32Array>
 
 export type GeometryComputeDataFuncMap = {
     [index: number]: (index: number, GeometryData: any) => GeometryComputeData

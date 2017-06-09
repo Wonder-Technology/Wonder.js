@@ -1,5 +1,5 @@
 import { EWorkerOperateType } from "./EWorkerOperateType";
-import { error } from "../../utils/Log";
+import { error, info } from "../../utils/Log";
 // import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 // import { expect } from "wonder-expect.js";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
@@ -15,9 +15,8 @@ import { shaderLib_generator } from "../data/shaderLib_generator";
 import { ShaderData } from "../shader/ShaderData";
 import { MaterialData, ShaderMap } from "../../component/material/MaterialData";
 import { clear, draw, initData as initDrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerSystem";
-import { GeometryData } from "../../component/geometry/GeometryData";
-import { ArrayBufferData, ArrayBufferData } from "../buffer/ArrayBufferData";
-import { IndexBufferData, IndexBufferData } from "../buffer/IndexBufferData";
+import { ArrayBufferData } from "../buffer/ArrayBufferData";
+import { IndexBufferData } from "../buffer/IndexBufferData";
 import { render_config } from "../data/render_config";
 import { LocationData } from "../shader/location/LocationData";
 import { ProgramData } from "../shader/program/ProgramData";
@@ -29,6 +28,13 @@ import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
 import { DrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerData";
 import { ERenderWorkerState } from "./ERenderWorkerState";
+import {
+    initData as initGeometryWorkerData, setPointCacheDatas,
+    updatePointCacheDatas
+} from "./geometry/GeometryWorkerSystem";
+import { GeometryWorkerData } from "./geometry/GeometryWorkerData";
+import { GeometryInitWorkerData, GeometryUpdateWorkerData } from "../../definition/type/geometryType";
+import { DataBufferConfig } from "../../config/DataBufferConfig";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -62,9 +68,11 @@ onmessage = (e) => {
                 //todo refactor
             setViewportOfGL(0, 0, canvas.width, canvas.height, DeviceManagerData, null).run();
             break;
-        case EWorkerOperateType.INIT_MATERIAL:
+        case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
             // initMaterial(null, data.materialCount);
             _initShaders(data.materialCount, data.shaderMap);
+
+            _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
 
             self.postMessage({
                 state: ERenderWorkerState.INIT_COMPLETE
@@ -72,12 +80,23 @@ onmessage = (e) => {
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);
-            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.bufferData);
+            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
+
+            let geometryData = data.geometryData;
+
+            if(_needUpdateGeometryWorkerData(geometryData)){
+                updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+            }
             break;
         default:
-            error(true, `unknow operateType:${operateType}`);
+            error(true, info.FUNC_UNKOWN(`operateType:${operateType}`));
+            break;
     }
 };
+
+var _needUpdateGeometryWorkerData = (geometryData:GeometryUpdateWorkerData) => {
+    return geometryData !== null;
+}
 
 //todo move ShaderMap to ShaderData?
 var _initShaders = (materialCount:number, shaderMap:ShaderMap) => {
@@ -101,6 +120,12 @@ var _initShader = (materialIndex:number, shaderMap:ShaderMap) => {
 
     //todo refactor:rename?
     initMaterial(materialIndex, shaderMap, null);
+}
+
+var _initGeometrys = (geometryData:GeometryInitWorkerData, DataBufferConfig:any, GeometryWorkerData:any) => {
+    initGeometryWorkerData(geometryData.buffer, geometryData.indexType, DataBufferConfig, GeometryWorkerData);
+
+    setPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }
 
 var _createGL = curry((canvas:HTMLCanvasElement, options:ContextConfigOptionsData, DeviceManagerData: any) => {

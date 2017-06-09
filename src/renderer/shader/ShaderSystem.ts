@@ -56,16 +56,16 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
     addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibData, GLSLSenderData.sendUniformConfigMap);
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => {
-    sendAttributeDataProgram(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryWorkerData: any, ArrayBufferData: any) => {
+    sendAttributeDataProgram(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData);
 }
 
 export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommandUniformData:RenderCommandUniformData) => {
     sendUniformDataProgram(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
 }
 
-export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ShaderData: any, GeometryData: any, IndexBufferData: any) => {
-    var buffer = getOrCreateIndexBuffer(gl, geometryIndex, GeometryData, IndexBufferData);
+export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ShaderData: any, GeometryWorkerData: any, IndexBufferData: any) => {
+    var buffer = getOrCreateIndexBuffer(gl, geometryIndex, GeometryWorkerData, IndexBufferData);
 
     if (ShaderData.lastBindedIndexBuffer === buffer) {
         return;

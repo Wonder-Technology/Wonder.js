@@ -284,14 +284,14 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
         count = ThreeDTransformData.count,
         size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
 
-    ThreeDTransformData.buffer = new ArrayBuffer(count * size);
-
-    buffer = ThreeDTransformData.buffer;
+    buffer = new ArrayBuffer(count * size);
 
     ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
     ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
     ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
     ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+
+    ThreeDTransformData.buffer = buffer;
 
 
     ThreeDTransformData.notUsedIndexLinkList = LinkList.create();

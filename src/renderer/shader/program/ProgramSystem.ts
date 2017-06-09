@@ -9,7 +9,7 @@ import {
 } from "../location/LocationSystem";
 import { RenderCommand } from "../../command/RenderCommand";
 import { EVariableType } from "../../enum/EVariableType";
-import { Log } from "../../../utils/Log";
+import { error, info, log } from "../../../utils/Log";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/ArrayBufferSystem";
 import { createMap, isValidMapValue } from "../../../utils/objectUtils";
 import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "../glslSender/GLSLSenderSystem";
@@ -156,20 +156,20 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
         return shader;
     }
     else {
-        Log.log(gl.getShaderInfoLog(shader));
+        log(gl.getShaderInfoLog(shader));
         // Log.log("attributes:\n", this.attributes);
         // Log.log("uniforms:\n", this.uniforms);
-        Log.log("source:\n", glslSource);
+        log("source:\n", glslSource);
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryWorkerData: any, ArrayBufferData: any) => {
     var sendDataArr = GLSLSenderData.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationData.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramData.lastBindedArrayBuffer;
 
     for (let sendData of sendDataArr) {
-        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData),
+        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, GeometryWorkerData, ArrayBufferData),
             pos = getAttribLocation(sendData.name, attributeLocationMap);
 
         if (isAttributeLocationNotExist(pos)) {
@@ -211,7 +211,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, Ma
                 sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             default:
-                Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
+                error(true, info.FUNC_INVALID("EVariableType:", type));
                 break;
         }
     }

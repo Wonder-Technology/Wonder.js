@@ -77,6 +77,7 @@ import { DeviceManagerData } from "../device/DeviceManagerData";
 import { initData as initWorkerTimeData, render as renderByWorkerTimeSystem } from "./worker/WorkerTimeSystem";
 import { WorkerTimeData } from "./worker/WorkerTimeData";
 import { WorkerConfig } from "../config/WorkerConfig";
+import { GeometryWorkerData } from "../renderer/worker/geometry/GeometryWorkerData";
 
 @singleton(true)
 @registerClass("Director")
@@ -173,8 +174,6 @@ export class Director {
 
     private _initRenderer(state: Map<any, any>) {
         var resultState = initRenderer(state);
-
-        //todo need wait render worker init?
 
         return resultState;
     }
