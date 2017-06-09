@@ -1,5 +1,5 @@
 import { BasicMaterial } from "./BasicMaterial";
-import { create as createMaterial, setShader } from "./MaterialSystem";
+import { create as createMaterial, setShaderIndex } from "./MaterialSystem";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { isValidMapValue } from "../../utils/objectUtils";
 
@@ -9,7 +9,7 @@ export var create = (ShaderData: any, MaterialData: any) => {
 
     material = createMaterial(material, materialClassName, MaterialData);
 
-    setShader(material.index, _createShader(materialClassName, ShaderData), MaterialData);
+    setShaderIndex(material.index, _createShader(materialClassName, ShaderData), MaterialData);
 
     return material;
 }

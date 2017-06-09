@@ -9,7 +9,6 @@ import { DeviceManagerData } from "../../device/DeviceManagerData";
 import curry from "wonder-lodash/curry";
 import { detect } from "../../device/GPUDetectorSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-import { initMaterial } from "../../component/material/MaterialSystem";
 import { material_config } from "../data/material_config";
 import { shaderLib_generator } from "../data/shaderLib_generator";
 import { ShaderData } from "../shader/ShaderData";
@@ -39,6 +38,8 @@ import {
 } from "../../definition/type/geometryType";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { EGeometryWorkerDataOperateType } from "../enum/EGeometryWorkerDataOperateType";
+import { initData as initMaterialWorkerData, initMaterial } from "./material/MateiralWorkerSystem";
+import { MaterialInitWorkerData, MaterialWorkerData } from "./material/MaterialWorkerData";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -74,7 +75,9 @@ onmessage = (e) => {
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
             // initMaterial(null, data.materialCount);
-            _initShaders(data.materialCount, data.shaderMap);
+
+            // initMaterialWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
+            _initMaterials(data.materialData, DataBufferConfig, MaterialWorkerData);
 
             _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
 
@@ -113,28 +116,12 @@ var _needResetGeometryWorkerData = (geometryData:GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-//todo move ShaderMap to ShaderData?
-var _initShaders = (materialCount:number, shaderMap:ShaderMap) => {
-    for (let i = 0, count = materialCount; i < count; i++) {
-        _initShader(i, shaderMap);
+var _initMaterials = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
+    initMaterialWorkerData(materialData.buffer, DataBufferConfig, MaterialWorkerData);
+
+    for (let i = 0, count = materialData.materialCount; i < count; i++) {
+        initMaterial(i, null);
     }
-}
-
-var _initShader = (materialIndex:number, shaderMap:ShaderMap) => {
-    // var shader = getShader(materialIndex, MaterialData),
-    //     isInitMap = ShaderData.isInitMap,
-    //     shaderIndex = shader.index;
-    //
-    // if (isInitMap[shaderIndex] === true) {
-    //     return;
-    // }
-    //
-    // isInitMap[shaderIndex] = true;
-    //
-    // initShader(null, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, ProgramData, LocationData, GLSLSenderData);
-
-    //todo refactor:rename?
-    initMaterial(materialIndex, shaderMap, null);
 }
 
 var _initGeometrys = (geometryData:GeometryInitWorkerData, DataBufferConfig:any, GeometryWorkerData:any) => {

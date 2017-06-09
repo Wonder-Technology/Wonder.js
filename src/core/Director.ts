@@ -258,7 +258,6 @@ addGeometryInitHandle(Geometry);
 initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
-//todo restore
 // addMaterialInitHandle(Material);
 
 initMeshRendererData(MeshRendererData);

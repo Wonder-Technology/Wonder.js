@@ -39,8 +39,11 @@ export var init = (state: Map<any, any>) => {
     //todo transfer shaderMap?
     renderWorker.postMessage({
         operateType:EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
-        materialCount: MaterialData.count,
-        shaderMap:MaterialData.shaderMap,
+        // shaderMap:MaterialData.shaderMap,
+        materialData:{
+            buffer:MaterialData.buffer,
+            materialCount: MaterialData.count
+        },
         geometryData:{
             buffer:GeometryData.buffer,
             indexType: GeometryData.indexType,

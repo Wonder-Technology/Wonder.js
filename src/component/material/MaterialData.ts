@@ -7,7 +7,10 @@ export class MaterialData {
     public static index: number = null;
     public static count: number = null;
 
-    public static shaderMap: ShaderMap = null;
+    public static buffer: SharedArrayBuffer = null;
+
+    public static shaderIndices: Uint32Array = null;
+
     public static materialClassNameMap: MaterialClassNameMap = null;
     public static gameObjectMap: ComponentGameObjectMap = null;
     public static colorMap: MaterialColorMap = null;
@@ -19,10 +22,6 @@ export class MaterialData {
 
 export type MaterialClassNameMap = {
     [index: number]: string
-}
-
-export type ShaderMap = {
-    [index: number]: Shader
 }
 
 export type MaterialColorMap = {

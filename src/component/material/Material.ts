@@ -1,6 +1,8 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import {
-    getAlphaTest, getColor, getGameObject, getOpacity, getShader, initMaterial as initMaterialSystem, setAlphaTest, setColor,
+    getAlphaTest, getColor, getGameObject, getOpacity,
+    // initMaterial as initMaterialSystem,
+    setAlphaTest, setColor,
     setOpacity
 } from "./MaterialSystem";
 import { Color } from "../../structure/Color";
@@ -46,9 +48,9 @@ export var getMaterialGameObject = (component: Material) => {
     return getGameObject(component.index, MaterialData);
 }
 
-export var getMaterialShader = (material: Material) => {
-    return getShader(material.index, MaterialData.shaderMap);
-}
+// export var getMaterialShader = (material: Material) => {
+//     return getShader(material.index, MaterialData.shaderMap);
+// }
 
 //todo restore
 // export var initMaterial = (material: Material) => {

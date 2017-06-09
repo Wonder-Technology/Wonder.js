@@ -5,7 +5,6 @@ import {
     getComponent, getGeometry, getMaterial,
     getTransform
 } from "../../core/entityObject/gameObject/GameObjectSystem";
-import { getShader } from "../../component/material/MaterialSystem";
 import {
     getLocalToWorldMatrix,
     getTempLocalToWorldMatrix
@@ -18,6 +17,7 @@ import { getTypeIDFromClass } from "../../component/ComponentTypeIDManager";
 import { CameraController } from "../../component/camera/CameraController";
 import { DataUtils } from "../../utils/DataUtils";
 import { IRenderConfig } from "../data/render_config";
+import { getShaderIndex } from "../../component/material/MaterialSystem";
 
 //todo check: renderGameObjectArray.length should <= renderCommandBufferCount
 export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
@@ -71,14 +71,14 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
             materialIndex = material.index,
-            shader = getShader(materialIndex, MaterialData.shaderMap);
+            shaderIndex = getShaderIndex(materialIndex, MaterialData);
 
         DataUtils.setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
 
 
         // drawModes[i] = getDrawMode(geometry, GeometryData);
         materialIndices[i] = materialIndex;
-        shaderIndices[i] = shader.index;
+        shaderIndices[i] = shaderIndex;
         geometryIndices[i] = geometry.index;
     }
 
