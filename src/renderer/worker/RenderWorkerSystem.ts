@@ -29,12 +29,16 @@ import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
 import { DrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerData";
 import { ERenderWorkerState } from "./ERenderWorkerState";
 import {
-    initData as initGeometryWorkerData, setPointCacheDatas,
+    initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
     updatePointCacheDatas
 } from "./geometry/GeometryWorkerSystem";
 import { GeometryWorkerData } from "./geometry/GeometryWorkerData";
-import { GeometryInitWorkerData, GeometryUpdateWorkerData } from "../../definition/type/geometryType";
+import {
+    GeometryInitWorkerData, GeometryResetWorkerData,
+    GeometryUpdateWorkerData
+} from "../../definition/type/geometryType";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
+import { EGeometryWorkerDataOperateType } from "../enum/EGeometryWorkerDataOperateType";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -80,13 +84,20 @@ onmessage = (e) => {
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);
-            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
 
             let geometryData = data.geometryData;
 
-            if(_needUpdateGeometryWorkerData(geometryData)){
-                updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+            //todo unit test
+            if(geometryData !== null){
+                if(_needUpdateGeometryWorkerData(geometryData)){
+                    updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                }
+                else if(_needResetGeometryWorkerData(geometryData)){
+                    resetPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                }
             }
+
+            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
             break;
         default:
             error(true, info.FUNC_UNKOWN(`operateType:${operateType}`));
@@ -95,7 +106,11 @@ onmessage = (e) => {
 };
 
 var _needUpdateGeometryWorkerData = (geometryData:GeometryUpdateWorkerData) => {
-    return geometryData !== null;
+    return geometryData.type === EGeometryWorkerDataOperateType.ADD;
+}
+
+var _needResetGeometryWorkerData = (geometryData:GeometryResetWorkerData) => {
+    return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
 //todo move ShaderMap to ShaderData?

@@ -1,4 +1,5 @@
 import { EBufferType } from "../../renderer/enum/EBufferType";
+import { EGeometryWorkerDataOperateType } from "../../renderer/enum/EGeometryWorkerDataOperateType";
 
 export type GeometryWorkerInfoList = Array<{
     index: number;
@@ -23,8 +24,16 @@ export type GeometryInitWorkerData = {
 
 export type GeometryUpdateWorkerData = {
     buffer: SharedArrayBuffer;
+    type:EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryWorkerInfoList;
     indicesInfoList: GeometryWorkerInfoList;
+}
+
+export type GeometryResetWorkerData = {
+    buffer: SharedArrayBuffer;
+    type:EGeometryWorkerDataOperateType;
+    verticesInfoList: GeometryInfoList;
+    indicesInfoList: GeometryInfoList;
 }
 
 export type GeometryInfoList = Array<{

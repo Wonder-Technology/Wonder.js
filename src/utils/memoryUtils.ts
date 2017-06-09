@@ -4,9 +4,13 @@ import { clearCacheMap } from "../component/transform/cacheSystem";
 import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
 import { isNotValidVal } from "./arrayUtils";
 import { MemoryConfig } from "../config/MemoryConfig";
+import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+import { Component } from "../component/Component";
+import { checkIndexShouldEqualCount } from "../component/utils/contractUtils";
 
-export var isDisposeTooManyComponents = (disposeCount: number) => {
-    return disposeCount >= MemoryConfig.maxComponentDisposeCount;
+export var isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount:number = MemoryConfig.maxComponentDisposeCount) => {
+    return disposeCount >= maxComponentDisposeCount;
 }
 //
 // var setMapVal = (map:object, uid:number, val:any) => {
@@ -15,8 +19,12 @@ export var isDisposeTooManyComponents = (disposeCount: number) => {
 //     }
 // }
 
-var _setMapVal = (map: object, uid: number, val: any) => {
-    map[uid] = val;
+var _setMapVal = (map: object, key: number, val: any) => {
+    map[key] = val;
+}
+
+var _setArrayVal = (arr: Array<any>, index: number, val: any) => {
+    arr[index] = val;
 }
 
 export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
@@ -186,3 +194,110 @@ export var reAllocateTagMap = (TagData: any) => {
 
     TagData.index = tagIndex;
 };
+
+//todo unit test
+export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any) => {
+    checkIndexShouldEqualCount(GeometryData);
+}, (GeometryData: any) => {
+    let val: any = null,
+        // hasNewData = false,
+        index = GeometryData.index,
+        vertices = GeometryData.vertices,
+        indices = GeometryData.indices,
+        verticesInfoList = GeometryData.verticesInfoList,
+        indicesInfoList = GeometryData.indicesInfoList,
+        gameObjectMap = GeometryData.gameObjectMap,
+        geometryMap = GeometryData.geometryMap,
+        computeDataFuncMap = GeometryData.computeDataFuncMap,
+        configDataMap = GeometryData.configDataMap,
+        verticesCacheMap = GeometryData.verticesCacheMap,
+        indicesCacheMap = GeometryData.indicesCacheMap,
+        newIndexInArrayBuffer = 0,
+        newVerticesOffset = 0,
+        newIndicesOffset = 0,
+        newVertivesInfoList = [],
+        newIndicesInfoList = [],
+        newGameObjectMap = {},
+        newGeometryMap = {},
+        newComputeDatafuncMap = {},
+        newConfigDataMap: Array<number> = [],
+        newVerticesCacheMap: Array<number> = [],
+        newIndicesCacheMap: Array<number> = [];
+
+    for(let i = 0; i < index; i++){
+        let verticesInfo = verticesInfoList[i],
+            indicesInfo = indicesInfoList[i];
+
+        val = gameObjectMap[i];
+
+        if (isNotValidMapValue(val)) {
+            continue;
+        }
+
+        // hasNewData = true;
+
+        newVerticesOffset = _fillTypeArr(vertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
+        newIndicesOffset = _fillTypeArr(indices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
+
+        _setMapVal(newGameObjectMap, newIndexInArrayBuffer, val);
+
+        _setArrayVal(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo);
+        _setArrayVal(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo);
+
+        val = computeDataFuncMap[i];
+        _setMapVal(newComputeDatafuncMap, newIndexInArrayBuffer, val);
+
+        val = configDataMap[i];
+        _setMapVal(newConfigDataMap, newIndexInArrayBuffer, val);
+
+        val = verticesCacheMap[i];
+        _setMapVal(newVerticesCacheMap, newIndexInArrayBuffer, val);
+
+        val = indicesCacheMap[i];
+        _setMapVal(newIndicesCacheMap, newIndexInArrayBuffer, val);
+
+        _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
+
+        newIndexInArrayBuffer += 1;
+    }
+
+    GeometryData.gameObjectMap = newGameObjectMap;
+    GeometryData.verticesInfoList = newVertivesInfoList;
+    GeometryData.indicesInfoList = newIndicesInfoList;
+    GeometryData.computeDataFuncMap = newComputeDatafuncMap;
+    GeometryData.configDataMap = newConfigDataMap;
+    GeometryData.verticesCacheMap = newVerticesCacheMap;
+    GeometryData.indicesCacheMap = newIndicesCacheMap;
+
+    GeometryData.verticesOffset = newVerticesOffset;
+    GeometryData.indicesOffset = newIndicesOffset;
+
+    // if(hasNewData){
+    GeometryData.index = newIndexInArrayBuffer;
+    // }
+    // else{
+    //     GeometryData.index = 0;
+    // }
+})
+
+var _updateComponentIndex = (componentMap:object, newComponentMap:object, oldIndex:number, newIndex:number) => {
+    let component:Component = componentMap[oldIndex];
+
+    componentMap[oldIndex].index = newIndex;
+    newComponentMap[newIndex] = componentMap;
+}
+
+var _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex:number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+    it("targetStartIndex should <= sourceStartIndex", () => {
+        expect(targetStartIndex).lte(startIndex);
+    })
+}, (targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex:number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+    var typeArrIndex = targetStartIndex;
+
+    for (let i = startIndex; i < endIndex; i++) {
+        targetTypeArr[typeArrIndex] = sourceTypeArr[i];
+        typeArrIndex += 1;
+    }
+
+    return typeArrIndex;
+})

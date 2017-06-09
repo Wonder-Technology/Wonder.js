@@ -2,7 +2,6 @@ import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import { ComponentGameObjectMap } from "../ComponentData";
 import { ComponentMap } from "../ComponentSystem";
-import { EGeometryWorkerDataOperateType } from "../../renderer/enum/EGeometryWorkerDataOperateType";
 import {
     GeometryIndicesCacheMap, GeometryInfoList, GeometryVerticesCacheMap,
     GeometryWorkerInfoList
@@ -12,9 +11,15 @@ export class GeometryData {
     public static index: number = null;
     public static count: number = null;
 
+    public static disposeCount: number = null;
+
+    public static maxDisposeIndex:number = null;
+    public static isReallocate:boolean = null;
+
     public static buffer:SharedArrayBuffer = null;
 
-    public static offset:number = null;
+    public static verticesOffset:number = null;
+    public static indicesOffset:number = null;
 
     public static verticesInfoList: GeometryInfoList = null;
     public static indicesInfoList: GeometryInfoList = null;

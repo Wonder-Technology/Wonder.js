@@ -249,7 +249,7 @@
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 500; index++) {
+            for (var index = 0; index < 1000; index++) {
                 var box = createBox();
 
 //                var scale = Math.random() * 0.8 + 0.6;
@@ -263,6 +263,9 @@
             }
 
             return resultArr;
+
+
+//            return [createBox()]
         }
 
 
@@ -270,7 +273,7 @@
         function createBox(){
             var material = basicMaterialTool.create();
 
-            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+//            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
 
             var obj = gameObjectTool.create();
 
@@ -319,7 +322,8 @@
             cameraControllerTool.setCameraNear(cameraController, 0.1);
             cameraControllerTool.setCameraFar(cameraController, 2000);
             cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
-            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+//            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
 
             gameObjectTool.addComponent(cameraObj, cameraController);
 

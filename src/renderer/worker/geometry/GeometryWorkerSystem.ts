@@ -42,6 +42,14 @@ var _updatePointCacheData = (infoList:GeometryWorkerInfoList, points:Float32Arra
     }
 }
 
+export var resetPointCacheDatas = (verticesInfoList:GeometryInfoList, indicesInfoList:GeometryInfoList, GeometryWorkerData:any) => {
+    GeometryWorkerData.verticesCacheMap = createMap();
+    GeometryWorkerData.indicesCacheMap = createMap();
+
+    _setPointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
+    _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
+}
+
 export var setPointCacheDatas = (verticesInfoList:GeometryInfoList, indicesInfoList:GeometryInfoList, GeometryWorkerData:any) => {
     _setPointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);

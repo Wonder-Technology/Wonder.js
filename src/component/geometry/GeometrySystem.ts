@@ -16,9 +16,10 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GeometryData } from "./GeometryData";
-import { fill, getSubarray } from "../../utils/typeArrayUtils";
+import { getSubarray } from "../../utils/typeArrayUtils";
 import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../utils/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
+import { isDisposeTooManyComponents, reAllocateGeometryMap } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -33,7 +34,7 @@ export var addInitHandle = (_class: any) => {
 }
 
 export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {
-    checkIndexShouldEqualCount(GeometryData);
+    // checkIndexShouldEqualCount(GeometryData);
 }, (geometry: Geometry, GeometryData: any) => {
     var index = generateComponentIndex(GeometryData);
 
@@ -84,7 +85,7 @@ export var setVertices = requireCheckFunc((index: number, vertices: Array<number
     //     expect(GeometryData.verticesCacheMap[index]).not.exist;
     // });
 }, (index: number, vertices: Array<number>, GeometryData: any) => {
-    _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData);
+    GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
@@ -96,7 +97,7 @@ export var setIndices = requireCheckFunc((index: number, indices: Array<number>,
     //     expect(GeometryData.indicesCacheMap[index]).not.exist;
     // });
 }, (index: number, indices: Array<number>, GeometryData: any) => {
-    _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData);
+    GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 
 })
 
@@ -116,24 +117,21 @@ var _getPointData = (index: number, points:Float32Array | Uint16Array | Uint32Ar
     return dataArr;
 }
 
-var _setPointData = requireCheckFunc ((index: number, dataArr:Array<number>, dataSize:number, points:Float32Array | Uint16Array | Uint32Array, cacheMap:object, infoList:GeometryInfoList, workerInfoList:GeometryWorkerInfoList, GeometryData:any) => {
+var _setPointData = requireCheckFunc (() => {
     ////todo unit test: if set after init and has render worker, contract error
     //todo unit test: test allow set after init and has render worker
     // it("should not set point data after init", () => {
     //     expect(GeometryData.isInit).false;
     // });
-}, (index: number, dataArr:Array<number>, dataSize:number, points:Float32Array | Uint16Array | Uint32Array, cacheMap:object, infoList:GeometryInfoList, workerInfoList:GeometryWorkerInfoList, GeometryData:any) => {
+}, (index: number, dataArr:Array<number>, dataSize:number, points:Float32Array | Uint16Array | Uint32Array, cacheMap:object, infoList:GeometryInfoList, workerInfoList:GeometryWorkerInfoList, offset:number, GeometryData:any) => {
     var count = dataArr.length,
-        offset = GeometryData.offset,
         startIndex = offset;
 
-    offset += count * getIndexDataSize();
+    offset += count;
 
     infoList[index] = _buildInfo(startIndex, offset);
 
-    GeometryData.offset = offset;
-
-    fill(points, dataArr, startIndex, count);
+    _fillTypeArr(points, dataArr, startIndex, count);
 
     _removeCache(index, cacheMap);
 
@@ -141,7 +139,15 @@ var _setPointData = requireCheckFunc ((index: number, dataArr:Array<number>, dat
     if(_isInit(GeometryData)){
         _addWorkerInfo(workerInfoList, index, startIndex, offset);
     }
+
+    return offset;
 })
+
+var _fillTypeArr = (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    for (let i = 0; i < count; i++) {
+        typeArr[i + startIndex] = dataArr[i];
+    }
+}
 
 var _removeCache = (index:number, cacheMap:object) => {
     deleteVal(index, cacheMap);
@@ -161,25 +167,33 @@ export var addComponent = (component: Geometry, gameObject: GameObject) => {
 export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
     // checkIndexShouldEqualCount(GeometryData);
 }, (component: Geometry) => {
-    //todo rewrite
-    // var sourceIndex = component.index,
-    //     lastComponentIndex: number = null;
-    //
-    // deleteBySwap(sourceIndex, GeometryData.verticesCacheMap);
-    //
-    // deleteBySwap(sourceIndex, GeometryData.indicesCacheMap);
-    //
-    // GeometryData.count -= 1;
-    // GeometryData.index -= 1;
-    //
-    // lastComponentIndex = GeometryData.count;
-    //
-    // deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.configDataMap);
-    // deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.computeDataFuncMap);
-    // deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
-    //
-    // deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
+    var sourceIndex = component.index;
+
+    deleteVal(sourceIndex, GeometryData.gameObjectMap);
+
+    GeometryData.count -= 1;
+    GeometryData.disposeCount += 1;
+    GeometryData.isReallocate = false;
+
+    if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
+        reAllocateGeometryMap(GeometryData);
+
+        clearWorkerInfoList(GeometryData);
+        GeometryData.isReallocate = true;
+
+        GeometryData.disposeCount = 0;
+    }
 })
+
+export var isReallocate = (GeometryData:any) => {
+    return GeometryData.isReallocate;
+}
+
+var _isBufferNearlyFull = (GeometryData:any) => {
+    var infoList = GeometryData.indicesInfoList;
+
+    return infoList[infoList.length - 1].endIndex >= GeometryData.maxDisposeIndex;
+}
 
 export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
@@ -189,18 +203,12 @@ export var getConfigData = (index: number, GeometryData: any) => {
     return GeometryData.configDataMap[index];
 }
 
-var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig: any, GeometryData: any) => {
-    var buffer: any = null,
-        count = DataBufferConfig.geometryDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
-
-    buffer = new SharedArrayBuffer(count * size);
-
-    GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
-    GeometryData.indices = new UintArray(buffer, count * getVertexDataSize(), count * getIndexDataSize());
-
-    GeometryData.buffer = buffer;
-}
+// var _createVerticesTypeArray = () => {
+//     var count = DataBufferConfig.geometryDataBufferCount,
+//         size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
+//
+//     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
+// }
 
 var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any) => {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
@@ -280,5 +288,26 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 
-    GeometryData.offset = 0;
+    GeometryData.verticesOffset = 0;
+    GeometryData.indicesOffset = 0;
+
+    GeometryData.disposeCount = 0;
+
+    GeometryData.isReallocate = false;
 }
+
+var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig: any, GeometryData: any) => {
+    var buffer: any = null,
+        count = DataBufferConfig.geometryDataBufferCount,
+        size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
+
+    buffer = new SharedArrayBuffer(count * size);
+
+    GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
+    GeometryData.indices = new UintArray(buffer, count * getVertexDataSize(), count * getIndexDataSize());
+
+    GeometryData.buffer = buffer;
+
+    GeometryData.maxDisposeIndex = GeometryData.indices.length * 0.9;
+}
+
