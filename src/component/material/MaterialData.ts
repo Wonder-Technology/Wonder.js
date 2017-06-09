@@ -11,6 +11,8 @@ export class MaterialData {
 
     public static shaderIndices: Uint32Array = null;
 
+    public static workerInitList:Array<number> = null;
+
     public static materialClassNameMap: MaterialClassNameMap = null;
     public static gameObjectMap: ComponentGameObjectMap = null;
     public static colorMap: MaterialColorMap = null;

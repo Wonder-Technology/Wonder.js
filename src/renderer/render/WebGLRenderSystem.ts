@@ -76,7 +76,7 @@ export var render = (state: Map<any, any>) => {
 
     return compose(
         // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
-        draw(RenderWorkerData, GeometryData),
+        draw(RenderWorkerData, MaterialData, GeometryData),
         // sortRenderCommands(state),
         createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
         getRenderList(state)

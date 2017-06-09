@@ -8,10 +8,6 @@ import { isValidVal } from "../../../utils/arrayUtils";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { getSlice } from "../../../utils/typeArrayUtils";
 
-export var hasNewPointData = (GeometryWorkerData:any) => {
-    return GeometryWorkerData.verticesWorkerInfoList.length > 0;
-}
-
 export var getVertices = ensureFunc((vertices:Float32Array, index: number, GeometryWorkerData: any) => {
     it("vertices should exist", () => {
         expect(vertices).exist;

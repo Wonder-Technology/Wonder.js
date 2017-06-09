@@ -15,6 +15,7 @@ export var deleteBySwap = (index: number, array: Array<any>) => {
 
     temp = array[last];
 
+    //todo optimize: not set last, directly pop it
     array[last] = array[index];
     array[index] = temp;
 

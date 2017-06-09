@@ -12,7 +12,7 @@ export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomG
 export {Geometry,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {BasicMaterial,createBasicMaterial} from "./component/material/BasicMaterial";
-export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject} from "./component/material/Material";
+export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject,initMaterial} from "./component/material/Material";
 export {MaterialData} from "./component/material/MaterialData";
 export {MeshRenderer,createMeshRenderer,getMeshRendererGameObject,getMeshRendererRenderList} from "./component/renderer/MeshRenderer";
 export {MeshRendererData} from "./component/renderer/MeshRendererData";

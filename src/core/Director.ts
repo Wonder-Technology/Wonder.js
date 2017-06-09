@@ -38,7 +38,7 @@ import { Geometry } from "../component/geometry/Geometry";
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
     addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
-    // addInitHandle as addMaterialInitHandle,
+    addInitHandle as addMaterialInitHandle,
     initData as initMaterialData
 } from "../component/material/MaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
@@ -258,7 +258,7 @@ addGeometryInitHandle(Geometry);
 initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
-// addMaterialInitHandle(Material);
+addMaterialInitHandle(Material);
 
 initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer);

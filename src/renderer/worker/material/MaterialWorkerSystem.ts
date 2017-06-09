@@ -9,6 +9,12 @@ import { init as initShader } from "../../shader/ShaderSystem";
 import { IMaterialConfig, material_config } from "../../data/material_config";
 import { IShaderLibGenerator, shaderLib_generator } from "../../data/shaderLib_generator";
 
+export var initMaterials = (materialCount:number) => {
+    for (let i = 0, count = materialCount; i < count; i++) {
+        initMaterial(i, null);
+    }
+}
+
 // export var initMaterial = (index: number, shaderMap:ShaderMap, state: Map<any, any>) => {
 export var initMaterial = (index: number, state: Map<any, any>) => {
     var shaderIndex = getShaderIndex(index, MaterialWorkerData);
@@ -31,6 +37,12 @@ export var initMaterial = (index: number, state: Map<any, any>) => {
 
 export var getShaderIndex = (materialIndex: number, MaterialWorkerData:any) => {
     return MaterialWorkerData.shaderIndices[materialIndex];
+}
+
+export var initNewInitedMaterials = (workerInitList:Array<number>) => {
+    for (let index of workerInitList) {
+        initMaterial(index, null);
+    }
 }
 
 export var initData = (buffer:SharedArrayBuffer, DataBufferConfig:any, MaterialWorkerData:any) => {

@@ -15,6 +15,7 @@ import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
+import { deleteBySwapAndNotReset } from "../../utils/typeArrayUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -24,17 +25,12 @@ export var addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
 
-// export var addInitHandle = (_class: any) => {
-//     addInitHandleToMap(_class, initMaterial);
-// }
+export var addInitHandle = (_class: any) => {
+    addInitHandleToMap(_class, initMaterial);
+}
 
 export var create = requireCheckFunc((material: Material, className: string, MaterialData: any) => {
-    it("MaterialData.index should >= 0", () => {
-        expect(MaterialData.index).gte(0);
-    });
-    it("MaterialData.count should >= 0", () => {
-        expect(MaterialData.count).gte(0);
-    });
+    checkIndexShouldEqualCount(MaterialData);
 }, (material: Material, className: string, MaterialData: any) => {
     var index = generateComponentIndex(MaterialData);
 
@@ -67,22 +63,33 @@ var _createDefaultColor = () => {
     // }
 // })
 
-//todo pass
-// export var initMaterial = (index: number, shaderMap:ShaderMap, state: MapImmutable<any, any>) => {
-//     var shader = getShader(index, shaderMap),
-//         //todo move isInitMap out?(not contain worker data)
-//         // isInitMap = ShaderData.isInitMap,
-//         shaderIndex = shader.index;
-//
-//     // if (isInitMap[shaderIndex] === true) {
-//     //     return;
-//     // }
-//
-//     // isInitMap[shaderIndex] = true;
-//
-//     // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
-//     initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
-// }
+//todo unit test: test init new added one
+export var initMaterial = (index: number, state: MapImmutable<any, any>) => {
+    // var shader = getShader(index, shaderMap),
+    //     //todo move isInitMap out?(not contain worker data)
+    //     // isInitMap = ShaderData.isInitMap,
+    //     shaderIndex = shader.index;
+    //
+    // // if (isInitMap[shaderIndex] === true) {
+    // //     return;
+    // // }
+    //
+    // // isInitMap[shaderIndex] = true;
+    //
+    // // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+    // initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+
+
+    MaterialData.workerInitList.push(index);
+}
+
+export var clearWorkerInitList = (MaterialData:any) => {
+    MaterialData.workerInitList = [];
+}
+
+export var hasNewInitedMaterial = (MaterialData:any) => {
+    return MaterialData.workerInitList.length > 0;
+}
 
 var _getMaterialClassName = (materialIndex: number, MaterialData: any) => {
     return MaterialData.materialClassNameMap[materialIndex];
@@ -137,32 +144,37 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 }
 
 export var disposeComponent = ensureFunc((returnVal, component: Material) => {
-    // checkIndexShouldEqualCount(MaterialData);
+    checkIndexShouldEqualCount(MaterialData);
+
+    it("should not dispose the material which is inited in the same loop", () => {
+        expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
+    });
 }, (component: Material) => {
-    //todo rewrite
-    // var sourceIndex = component.index,
-    //     lastComponentIndex: number = null;
-    //
-    // MaterialData.count -= 1;
-    // MaterialData.index -= 1;
-    //
-    // lastComponentIndex = MaterialData.count;
-    //
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.shaderMap);
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
-    //
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
-    //
-    // deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+    var sourceIndex = component.index,
+        lastComponentIndex: number = null;
+
+    MaterialData.count -= 1;
+    MaterialData.index -= 1;
+
+    lastComponentIndex = MaterialData.count;
+
+    //todo unit test
+    deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
+
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
+
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
 
 
     //todo unit test: shader index when delete by swap
 
-    //not dispose shader(for reuse shader)
+    //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
 
 export var getGameObject = (index: number, Data: any) => {
@@ -182,6 +194,8 @@ export var initData = (MaterialData: any) => {
 
     MaterialData.index = 0;
     MaterialData.count = 0;
+
+    MaterialData.workerInitList = [];
 
     _initBufferData(MaterialData);
 }

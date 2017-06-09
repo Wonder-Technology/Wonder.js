@@ -38,7 +38,10 @@ import {
 } from "../../definition/type/geometryType";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { EGeometryWorkerDataOperateType } from "../enum/EGeometryWorkerDataOperateType";
-import { initData as initMaterialWorkerData, initMaterial } from "./material/MateiralWorkerSystem";
+import {
+    initData as initMaterialWorkerData, initMaterials,
+    initNewInitedMaterials
+} from "./material/MaterialWorkerSystem";
 import { MaterialInitWorkerData, MaterialWorkerData } from "./material/MaterialWorkerData";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
@@ -88,7 +91,8 @@ onmessage = (e) => {
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerData);
 
-            let geometryData = data.geometryData;
+            let geometryData = data.geometryData,
+                materialData = data.materialData;
 
             //todo unit test
             if(geometryData !== null){
@@ -98,6 +102,10 @@ onmessage = (e) => {
                 else if(_needResetGeometryWorkerData(geometryData)){
                     resetPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
+            }
+
+            if(materialData !== null){
+                initNewInitedMaterials(materialData.workerInitList);
             }
 
             draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
@@ -119,9 +127,7 @@ var _needResetGeometryWorkerData = (geometryData:GeometryResetWorkerData) => {
 var _initMaterials = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
     initMaterialWorkerData(materialData.buffer, DataBufferConfig, MaterialWorkerData);
 
-    for (let i = 0, count = materialData.materialCount; i < count; i++) {
-        initMaterial(i, null);
-    }
+    initMaterials(materialData.materialCount);
 }
 
 var _initGeometrys = (geometryData:GeometryInitWorkerData, DataBufferConfig:any, GeometryWorkerData:any) => {

@@ -1,12 +1,13 @@
 import curry from "wonder-lodash/curry";
 import { EWorkerOperateType } from "../worker/EWorkerOperateType";
 import { RenderCommandBufferWorkerData } from "../command/RenderCommandBufferData";
-import { hasNewPointData } from "../worker/geometry/GeometryWorkerSystem";
-import { clearWorkerInfoList, isReallocate } from "../../component/geometry/GeometrySystem";
+import { clearWorkerInfoList, hasNewPointData, isReallocate } from "../../component/geometry/GeometrySystem";
 import { EGeometryWorkerDataOperateType } from "../enum/EGeometryWorkerDataOperateType";
+import { clearWorkerInitList, hasNewInitedMaterial } from "../../component/material/MaterialSystem";
 
-export var draw = curry((RenderWorkerData:any, GeometryData:any, data:RenderCommandBufferWorkerData) => {
-    var geometryData = null;
+export var draw = curry((RenderWorkerData:any, MaterialData:any, GeometryData:any, data:RenderCommandBufferWorkerData) => {
+    var geometryData = null,
+        materialData = null;
 
     if(hasNewPointData(GeometryData)){
         geometryData = {
@@ -25,12 +26,21 @@ export var draw = curry((RenderWorkerData:any, GeometryData:any, data:RenderComm
         };
     }
 
+    if(hasNewInitedMaterial(MaterialData)){
+        materialData = {
+            buffer:MaterialData.buffer,
+            workerInitList: MaterialData.workerInitList
+        };
+    }
+
     RenderWorkerData.renderWorker.postMessage({
         operateType:EWorkerOperateType.DRAW,
         renderCommandBufferData:data,
+        materialData:materialData,
         geometryData:geometryData
     });
 
     clearWorkerInfoList(GeometryData);
+    clearWorkerInitList(MaterialData);
 })
 

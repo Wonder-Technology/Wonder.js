@@ -6,3 +6,7 @@ export var getSubarray = (typeArr: Float32Array | Uint32Array | Uint16Array, sta
     return typeArr.subarray(startIndex, endIndex);
 }
 
+export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex:number, typeArr: Float32Array | Uint32Array | Uint16Array) => {
+    typeArr[sourceIndex] = typeArr[targetIndex];
+}
+

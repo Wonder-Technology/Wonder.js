@@ -98,7 +98,6 @@ export var setIndices = requireCheckFunc((index: number, indices: Array<number>,
     // });
 }, (index: number, indices: Array<number>, GeometryData: any) => {
     GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
-
 })
 
 var _getPointData = (index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
@@ -235,6 +234,10 @@ var _isInit = (GeometryData: any) => {
 export var clearWorkerInfoList = (GeometryData:any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
+}
+
+export var hasNewPointData = (GeometryData:any) => {
+    return GeometryData.verticesWorkerInfoList.length > 0;
 }
 
 var _addWorkerInfo = (infoList:GeometryWorkerInfoList, index:number, startIndex:number, endIndex:number) => {
