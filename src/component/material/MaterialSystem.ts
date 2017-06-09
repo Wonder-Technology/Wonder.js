@@ -16,6 +16,7 @@ import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { deleteBySwapAndNotReset } from "../../utils/typeArrayUtils";
+import { getShaderIndexFromTable as getShaderIndexFromTableUtils } from "../../utils/materialUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -103,6 +104,8 @@ export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
     return MaterialData.shaderIndices[materialIndex];
 }
 
+export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
+
 export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData: any) => {
     MaterialData.shaderIndices[materialIndex] = shader.index;
 }
@@ -161,14 +164,15 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     //todo unit test
     deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
 
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
-
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
-
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+    //todo rewrite
+    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
+    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
+    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
+    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
+    //
+    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+    //
+    // deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
 
 
@@ -198,6 +202,8 @@ export var initData = (MaterialData: any) => {
     MaterialData.workerInitList = [];
 
     _initBufferData(MaterialData);
+
+    _initTable(MaterialData);
 }
 
 var _initBufferData = (MaterialData:any) => {
@@ -210,4 +216,14 @@ var _initBufferData = (MaterialData:any) => {
     MaterialData.shaderIndices = new Uint32Array(buffer, 0, count);
 
     MaterialData.buffer = buffer;
+}
+
+var _initTable = (MaterialData:any) => {
+    MaterialData.shaderIndexTable = {
+        "BasicMaterial": 0
+    }
+
+    MaterialData.materialClassNameTable  = {
+        0: "BasicMaterial"
+    }
 }

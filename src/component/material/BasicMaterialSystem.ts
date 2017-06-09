@@ -9,22 +9,22 @@ export var create = (ShaderData: any, MaterialData: any) => {
 
     material = createMaterial(material, materialClassName, MaterialData);
 
-    setShaderIndex(material.index, _createShader(materialClassName, ShaderData), MaterialData);
+    setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
 
     return material;
 }
 
-var _createShader = (materialClassName: string, ShaderData: any) => {
-    var shaderMap = ShaderData.shaderMap,
-        shader = shaderMap[materialClassName];
-
-    if (isValidMapValue(shader)) {
-        return shader;
-    }
-
-    shader = createShader(ShaderData);
-
-    shaderMap[materialClassName] = shader;
-
-    return shader;
-}
+// var _createShader = (materialClassName: string, MaterialData:any, ShaderData: any) => {
+//     var shaderMap = ShaderData.shaderMap,
+//         shader = shaderMap[materialClassName];
+//
+//     if (isValidMapValue(shader)) {
+//         return shader;
+//     }
+//
+//     shader = createShader(materialClassName, MaterialData, ShaderData);
+//
+//     // shaderMap[materialClassName] = shader;
+//
+//     return shader;
+// }

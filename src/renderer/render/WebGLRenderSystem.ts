@@ -42,7 +42,9 @@ export var init = (state: Map<any, any>) => {
         // shaderMap:MaterialData.shaderMap,
         materialData:{
             buffer:MaterialData.buffer,
-            materialCount: MaterialData.count
+            materialCount: MaterialData.count,
+            materialClassNameTable:MaterialData.materialClassNameTable,
+            shaderIndexTable:MaterialData.shaderIndexTable
         },
         geometryData:{
             buffer:GeometryData.buffer,

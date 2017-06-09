@@ -84,7 +84,6 @@ export {RenderWorkerData} from "./renderer/worker/RenderWorkerData";
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initGameObjectData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils} from "./test/forUnitTest";
 export {Log,error,info,log} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";

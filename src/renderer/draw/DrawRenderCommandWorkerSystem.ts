@@ -1,11 +1,11 @@
 import { Map } from "immutable";
-import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderSystem";
 import { getType, getTypeSize } from "../buffer/IndexBufferSystem";
 import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
 import { IRenderConfig } from "../data/render_config";
 import { RenderCommandBufferWorkerData } from "../command/RenderCommandBufferData";
 import { EDrawMode } from "../enum/EDrawMode";
 import { getIndicesCount, getVerticesCount, hasIndices } from "../worker/geometry/GeometryWorkerSystem";
+import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../worker/material/ShaderWorkerSystem";
 
 export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any) => {
     clearGL(getGL(DeviceManagerData, state), render_config.clearColor, DeviceManagerData);

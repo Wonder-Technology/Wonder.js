@@ -125,7 +125,7 @@ var _needResetGeometryWorkerData = (geometryData:GeometryResetWorkerData) => {
 }
 
 var _initMaterials = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
-    initMaterialWorkerData(materialData.buffer, DataBufferConfig, MaterialWorkerData);
+    initMaterialWorkerData(materialData, DataBufferConfig, MaterialWorkerData);
 
     initMaterials(materialData.materialCount);
 }
