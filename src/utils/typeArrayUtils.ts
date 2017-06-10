@@ -10,3 +10,10 @@ export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex:number, t
     typeArr[sourceIndex] = typeArr[targetIndex];
 }
 
+export var deleteBySwapAndReset = (sourceIndex: number, targetIndex:number, typeArr: Float32Array | Uint32Array | Uint16Array, length:number, defaultValueArr:Array<number>) => {
+    for(let i = 0; i < length; i++){
+        typeArr[sourceIndex + i] = typeArr[targetIndex + i];
+        typeArr[targetIndex + i] = defaultValueArr[i];
+    }
+}
+

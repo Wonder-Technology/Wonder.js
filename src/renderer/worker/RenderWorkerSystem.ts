@@ -12,7 +12,6 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { material_config } from "../data/material_config";
 import { shaderLib_generator } from "../data/shaderLib_generator";
 import { ShaderData } from "../shader/ShaderData";
-import { MaterialData, ShaderMap } from "../../component/material/MaterialData";
 import { clear, draw, initData as initDrawRenderCommandWorkerData } from "../draw/DrawRenderCommandWorkerSystem";
 import { ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData } from "../buffer/IndexBufferData";
@@ -108,7 +107,7 @@ onmessage = (e) => {
                 initNewInitedMaterials(materialData.workerInitList);
             }
 
-            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
+            draw(null, render_config, DeviceManagerData, MaterialWorkerData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData, IndexBufferData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
             break;
         default:
             error(true, info.FUNC_UNKOWN(`operateType:${operateType}`));

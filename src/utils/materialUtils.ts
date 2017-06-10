@@ -10,3 +10,10 @@ export var getShaderIndexFromTable = ensureFunc((index:number) => {
     return shaderIndexTable[materialClassName];
 })
 
+export var getColorDataSize = () => 3;
+
+export var createBufferViews = (buffer:any, count:number, Data:any) => {
+    Data.shaderIndices = new Uint32Array(buffer, 0, count);
+    Data.colors = new Float32Array(buffer, count * Uint32Array.BYTES_PER_ELEMENT, count * getColorDataSize());
+}
+

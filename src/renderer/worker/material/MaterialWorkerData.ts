@@ -5,6 +5,7 @@ export class MaterialWorkerData{
 
     public static materialClassNameTable: MaterialClassNameTable = null;
     public static shaderIndexTable: ShaderIndexTable = null;
+    public static colors: Float32Array = null;
 }
 
 export type MaterialInitWorkerData = {

@@ -2,7 +2,7 @@ import {
     SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap
 } from "./GLSLSenderData";
 import { forEach, hasDuplicateItems } from "../../../utils/arrayUtils";
-import { getColor, getOpacity } from "../../../component/material/MaterialSystem";
+import { getOpacity } from "../../../component/material/MaterialSystem";
 import { Vector3 } from "../../../math/Vector3";
 import { isConfigDataExist } from "../../utils/renderConfigUtils";
 import { error, info } from "../../../utils/Log";
@@ -21,8 +21,9 @@ import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../utils/objectUtils";
 import { UniformShaderLocationMap } from "../location/LocationData";
 import { RenderCommandUniformData } from "../../command/RenderCommandBufferData";
+import { getColorArr3 } from "../../worker/material/MaterialWorkerSystem";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialWorkerData: any) => {
     var data: any = null;
 
     switch (from) {
@@ -30,7 +31,7 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
             data = renderCommandUniformData[field];
             break;
         case "material":
-            data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, MaterialData);
+            data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, MaterialWorkerData);
             break;
         default:
             error(true, info.FUNC_UNKNOW(`from:${from}`));
@@ -40,15 +41,16 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
     return data;
 }
 
-var _getUnifromDataFromMaterial = (field: string, materialIndex: number, MaterialData: any) => {
+var _getUnifromDataFromMaterial = (field: string, materialIndex: number, MaterialWorkerData: any) => {
     var data: any = null;
 
     switch (field) {
         case "color":
-            data = getColor(materialIndex, MaterialData).toVector3();
+            data = getColorArr3(materialIndex, MaterialWorkerData);
             break;
         case "opacity":
-            data = getOpacity(materialIndex, MaterialData);
+            //todo fix
+            data = getOpacity(materialIndex, MaterialWorkerData);
             break;
         default:
             error(true, info.FUNC_UNKNOW(`field:${field}`));
@@ -81,17 +83,20 @@ export var sendMatrix4 = (gl: WebGLRenderingContext, name: string, data: Float32
     })
 }
 
-export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
-    var recordedData: any = getUniformCache(shaderIndex, name, uniformCacheMap);
+export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
+    var recordedData: any = getUniformCache(shaderIndex, name, uniformCacheMap),
+        x = data[0],
+        y = data[1],
+        z = data[2];
 
-    if (recordedData && recordedData.x == data.x && recordedData.y == data.y && recordedData.z == data.z) {
+    if (recordedData && recordedData[0] == x && recordedData[1] == y && recordedData[2] == z) {
         return;
     }
 
     _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
-    _sendUniformData<Vector3>(gl, name, data, uniformLocationMap, (pos, data) => {
-        gl.uniform3f(pos, data.x, data.y, data.z);
+    _sendUniformData<Array<number>>(gl, name, data, uniformLocationMap, (pos, data) => {
+        gl.uniform3f(pos, x, y, z);
     })
 }
 

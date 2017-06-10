@@ -15,8 +15,11 @@ import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { deleteBySwapAndNotReset } from "../../utils/typeArrayUtils";
-import { getShaderIndexFromTable as getShaderIndexFromTableUtils } from "../../utils/materialUtils";
+import { deleteBySwapAndNotReset, deleteBySwapAndReset } from "../../utils/typeArrayUtils";
+import {
+    createBufferViews, getColorDataSize,
+    getShaderIndexFromTable as getShaderIndexFromTableUtils
+} from "../../utils/materialUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -41,7 +44,7 @@ export var create = requireCheckFunc((material: Material, className: string, Mat
 
     _setMaterialClassName(index, className, MaterialData);
 
-    setColor(index, _createDefaultColor(), MaterialData);
+    // setColor(index, _createDefaultColor(), MaterialData);
     setOpacity(index, 1, MaterialData);
 
     MaterialData.materialMap[index] = material;
@@ -111,15 +114,32 @@ export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData
 }
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
-    // return MaterialData.colorMap[materialIndex];
-    //todo fix
-    return Color.create("rgb(1.0,0.0,1.0)");
+    var color = Color.create(),
+        colors = MaterialData.colors,
+        size = getColorDataSize(),
+        index = materialIndex * size;
+
+    color.r = colors[index];
+    color.g = colors[index + 1];
+    color.b = colors[index + 2];
+
+    return color;
 }
 
 export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
-    MaterialData.colorMap[materialIndex] = color;
+    var r = color.r,
+        g = color.g,
+        b = color.b,
+        colors = MaterialData.colors,
+        size = getColorDataSize(),
+        index = materialIndex * size;
+
+    colors[index] = r;
+    colors[index + 1] = g;
+    colors[index + 2] = b;
 }
 
+//todo restore
 export var getOpacity = (materialIndex: number, MaterialData: any) => {
     // return MaterialData.opacityMap[materialIndex];
     return 1;
@@ -154,7 +174,8 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     });
 }, (component: Material) => {
     var sourceIndex = component.index,
-        lastComponentIndex: number = null;
+        lastComponentIndex: number = null,
+        colorDataSize = getColorDataSize();
 
     MaterialData.count -= 1;
     MaterialData.index -= 1;
@@ -164,15 +185,17 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     //todo unit test
     deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
 
+    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
+
     //todo rewrite
     // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
     // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
     // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
     // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
     //
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
-    //
-    // deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+
+    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
 
 
@@ -188,7 +211,7 @@ export var getGameObject = (index: number, Data: any) => {
 export var initData = (MaterialData: any) => {
     // MaterialData.shaderMap = createMap();
     MaterialData.materialClassNameMap = createMap();
-    MaterialData.colorMap = createMap();
+    // MaterialData.colorMap = createMap();
     MaterialData.opacityMap = createMap();
     MaterialData.alphaTestMap = createMap();
 
@@ -201,6 +224,8 @@ export var initData = (MaterialData: any) => {
 
     MaterialData.workerInitList = [];
 
+    MaterialData.defaultColorArr = _createDefaultColor().toVector3().toArray();
+
     _initBufferData(MaterialData);
 
     _initTable(MaterialData);
@@ -209,13 +234,23 @@ export var initData = (MaterialData: any) => {
 var _initBufferData = (MaterialData:any) => {
     var buffer: any = null,
         count = DataBufferConfig.materialDataBufferCount,
-        size = Uint32Array.BYTES_PER_ELEMENT;
+        size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
 
     buffer = new SharedArrayBuffer(count * size);
 
-    MaterialData.shaderIndices = new Uint32Array(buffer, 0, count);
+    createBufferViews(buffer, count, MaterialData);
 
     MaterialData.buffer = buffer;
+
+    _addDefaultTypeArrData(count, MaterialData);
+}
+
+var _addDefaultTypeArrData = (count:number, MaterialData:any) => {
+    var color = _createDefaultColor();
+
+    for (let i = 0; i < count; i++) {
+        setColor(i, color, MaterialData);
+    }
 }
 
 var _initTable = (MaterialData:any) => {

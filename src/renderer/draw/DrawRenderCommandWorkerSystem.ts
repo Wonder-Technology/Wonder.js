@@ -13,7 +13,7 @@ export var clear = (state: Map<any, any>, render_config:IRenderConfig, DeviceMan
     return state;
 }
 
-export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any, MaterialData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryWorkerData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceManagerData: any, MaterialWorkerData: any, ShaderData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, GeometryWorkerData: any, ArrayBufferData: any, IndexBufferData: any, DrawRenderCommandWorkerData:any, bufferData:RenderCommandBufferWorkerData) => {
     //todo get mMatrices... 's count data by postMessage?
 
     let mat4Length = 16;
@@ -75,10 +75,10 @@ export var draw = (state: Map<any, any>, render_config:IRenderConfig, DeviceMana
         //todo set state
 
         sendAttributeData(gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryWorkerData, ArrayBufferData);
-        // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.subarray(matStartIndex, matEndIndex), vMatrices.subarray(matStartIndex, matEndIndex), pMatrices.subarray(matStartIndex, matEndIndex), materialIndices[i]));
+        // sendUniformData(gl, shaderIndex, MaterialWorkerData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.subarray(matStartIndex, matEndIndex), vMatrices.subarray(matStartIndex, matEndIndex), pMatrices.subarray(matStartIndex, matEndIndex), materialIndices[i]));
         ////todo optimize: try to use subarray, but uniformMatrix4fv error: Failed to execute 'uniformMatrix4fv' on 'WebGLRenderingContext': The provided ArrayBufferView value must not be shared.
-        // sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.slice(matStartIndex, matEndIndex), vMatrices, pMatrices, materialIndices[i]));
-        sendUniformData(gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(_getMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArray), vMatrices, pMatrices, materialIndices[i]));
+        // sendUniformData(gl, shaderIndex, MaterialWorkerData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(mMatrices.slice(matStartIndex, matEndIndex), vMatrices, pMatrices, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, MaterialWorkerData, ProgramData, LocationData, GLSLSenderData, _buildRenderCommandUniformData(_getMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArray), vMatrices, pMatrices, materialIndices[i]));
 
 
         if (hasIndices(geometryIndex, GeometryWorkerData)) {

@@ -10,7 +10,12 @@ import { IShaderLibGenerator, shaderLib_generator } from "../../data/shaderLib_g
 import { MaterialClassNameTable } from "../../../definition/type/materialType";
 import { expect } from "wonder-expect.js";
 import { init as initShader } from "./ShaderWorkerSystem";
-import { getShaderIndexFromTable as getShaderIndexFromTableUtils } from "../../../utils/materialUtils";
+import {
+    createBufferViews,
+    getColorDataSize,
+    getShaderIndexFromTable as getShaderIndexFromTableUtils
+} from "../../../utils/materialUtils";
+import { Vector3 } from "../../../math/Vector3";
 
 export var initMaterials = (materialCount:number) => {
     for (let i = 0, count = materialCount; i < count; i++) {
@@ -53,8 +58,16 @@ export var initNewInitedMaterials = (workerInitList:Array<number>) => {
     }
 }
 
+export var getColorArr3 = (materialIndex: number, MaterialWorkerData: any) => {
+    var colors = MaterialWorkerData.colors,
+        size = getColorDataSize(),
+        index = materialIndex * size;
+
+    return [colors[index], colors[index + 1],colors[index + 2]];
+}
+
 export var initData = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
-    MaterialWorkerData.shaderIndices = new Uint32Array(materialData.buffer, 0, DataBufferConfig.materialDataBufferCount);
+    createBufferViews(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);
 
     MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
     MaterialWorkerData.shaderIndexTable = materialData.shaderIndexTable;

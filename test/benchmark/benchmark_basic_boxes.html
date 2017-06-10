@@ -274,6 +274,10 @@
             var material = basicMaterialTool.create();
 
 //            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+            var r = Math.random(),
+                g = Math.random(),
+                b = Math.random();
+            materialTool.setColor(material, wd.Color.create("rgb(" + r + "," + g + "," + b + ")"));
 
             var obj = gameObjectTool.create();
 

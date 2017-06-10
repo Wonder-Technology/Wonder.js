@@ -254,7 +254,7 @@ var _disposeFromDirtyList = (indexInArrayBuffer: number, uid: number, GlobalTemp
     ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 }
 
-var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) => {
+var _addDefaultTypeArrData = (GlobalTempData: any, ThreeDTransformData: any) => {
     var count = ThreeDTransformData.count,
         mat = GlobalTempData.matrix4_1.setIdentity(),
         positionVec = GlobalTempData.vector3_1.set(0, 0, 0),
@@ -282,7 +282,7 @@ var _getTempData = (uid: number, ThreeDTransformData: any) => {
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     var buffer: ArrayBuffer = null,
         count = ThreeDTransformData.count,
-        size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
+        size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());
 
     buffer = new ArrayBuffer(count * size);
 
@@ -317,6 +317,6 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.aliveUIDArray = [];
 
-    _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
+    _addDefaultTypeArrData(GlobalTempData, ThreeDTransformData);
 }
 
