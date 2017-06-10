@@ -74,8 +74,8 @@ import { material_config } from "../renderer/data/material_config";
 import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
 import { DeviceManagerData } from "../device/DeviceManagerData";
-import { initData as initWorkerTimeData, render as renderByWorkerTimeSystem } from "./worker/WorkerTimeSystem";
-import { WorkerTimeData } from "./worker/WorkerTimeData";
+import { initData as initWorkerTimeData, render as renderByWorkerTimeSystem } from "../renderer/worker/core/WorkerTimeSystem";
+import { WorkerTimeData } from "../renderer/worker/core/WorkerTimeData";
 import { WorkerConfig } from "../config/WorkerConfig";
 import { GeometryWorkerData } from "../renderer/worker/geometry/GeometryWorkerData";
 

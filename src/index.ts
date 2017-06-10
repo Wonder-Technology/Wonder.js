@@ -35,7 +35,6 @@ export {Scene,addSceneChild,removeSceneChild} from "./core/entityObject/scene/Sc
 export {SceneData} from "./core/entityObject/scene/SceneData";
 export {Main} from "./core/Main";
 export {MainData} from "./core/MainData";
-export {WorkerTimeData} from "./core/worker/WorkerTimeData";
 export {GlobalTempData} from "./definition/GlobalTempData";
 export {cache} from "./definition/typescript/decorator/cache";
 export {assert,describe,it,requireCheck,requireCheckFunc,ensure,ensureFunc,requireGetterAndSetter,requireGetter,requireSetter,ensureGetterAndSetter,ensureGetter,ensureSetter,invariant} from "./definition/typescript/decorator/contract";
@@ -75,6 +74,7 @@ export {ProgramData} from "./renderer/shader/program/ProgramData";
 export {Shader} from "./renderer/shader/Shader";
 export {ShaderData} from "./renderer/shader/ShaderData";
 export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSnippet";
+export {WorkerTimeData} from "./renderer/worker/core/WorkerTimeData";
 export {ERenderWorkerState} from "./renderer/worker/ERenderWorkerState";
 export {EWorkerOperateType} from "./renderer/worker/EWorkerOperateType";
 export {GeometryWorkerData} from "./renderer/worker/geometry/GeometryWorkerData";
