@@ -13,7 +13,7 @@ import { error, info, log } from "../../../utils/Log";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/ArrayBufferSystem";
 import { createMap, isValidMapValue } from "../../../utils/objectUtils";
 import {
-    getUniformData, sendArray3, sendBuffer, sendFloat1, sendMatrix4,
+    getUniformData, sendBuffer, sendFloat1, sendMatrix4,
     sendVector3
 } from "../glslSender/GLSLSenderSystem";
 import { forEach } from "../../../utils/arrayUtils";

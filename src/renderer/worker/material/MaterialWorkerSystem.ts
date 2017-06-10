@@ -12,7 +12,7 @@ import { expect } from "wonder-expect.js";
 import { init as initShader } from "./ShaderWorkerSystem";
 import {
     createBufferViews,
-    getColorDataSize,
+    getColorDataSize, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     getShaderIndexFromTable as getShaderIndexFromTableUtils
 } from "../../../utils/materialUtils";
 import { Vector3 } from "../../../math/Vector3";
@@ -64,6 +64,14 @@ export var getColorArr3 = (materialIndex: number, MaterialWorkerData: any) => {
         index = materialIndex * size;
 
     return [colors[index], colors[index + 1],colors[index + 2]];
+}
+
+export var getOpacity = getOpacityUtils;
+
+export var getAlphaTest = getAlphaTestUtils;
+
+export var isTestAlpha = (alphaTest: number) => {
+    return alphaTest >= 0;
 }
 
 export var initData = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {

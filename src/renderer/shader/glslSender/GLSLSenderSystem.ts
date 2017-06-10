@@ -2,7 +2,6 @@ import {
     SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap
 } from "./GLSLSenderData";
 import { forEach, hasDuplicateItems } from "../../../utils/arrayUtils";
-import { getOpacity } from "../../../component/material/MaterialSystem";
 import { Vector3 } from "../../../math/Vector3";
 import { isConfigDataExist } from "../../utils/renderConfigUtils";
 import { error, info } from "../../../utils/Log";
@@ -21,7 +20,7 @@ import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../utils/objectUtils";
 import { UniformShaderLocationMap } from "../location/LocationData";
 import { RenderCommandUniformData } from "../../command/RenderCommandBufferData";
-import { getColorArr3 } from "../../worker/material/MaterialWorkerSystem";
+import { getColorArr3, getOpacity } from "../../worker/material/MaterialWorkerSystem";
 
 export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialWorkerData: any) => {
     var data: any = null;
@@ -49,7 +48,6 @@ var _getUnifromDataFromMaterial = (field: string, materialIndex: number, Materia
             data = getColorArr3(materialIndex, MaterialWorkerData);
             break;
         case "opacity":
-            //todo fix
             data = getOpacity(materialIndex, MaterialWorkerData);
             break;
         default:
