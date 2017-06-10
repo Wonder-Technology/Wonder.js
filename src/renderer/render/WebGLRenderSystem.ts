@@ -5,8 +5,8 @@ import { compose } from "../../utils/functionalUtils";
 // import { createRenderCommands } from "../command/RenderCommandSystem";
 import { createRenderCommandBuffer } from "../command/RenderCommandBufferSystem";
 import { sortRenderCommands } from "../sort/SortRenderCommandSystem";
-import { draw } from "../draw/DrawRenderCommandSystem";
-// import { init as initMaterial } from "../../component/material/MaterialSystem";
+import { sendDrawData } from "../worker/draw/SendDrawRenderCommandDataSystem";
+import { init as initMaterial } from "../../component/material/MaterialSystem";
 import { MaterialData } from "../../component/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { ShaderData } from "../shader/ShaderData";
@@ -15,80 +15,111 @@ import { shaderLib_generator } from "../data/shaderLib_generator";
 import { GeometryData } from "../../component/geometry/GeometryData";
 import { ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData } from "../buffer/IndexBufferData";
-import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
+import { clear as clearGL, getGL } from "../device/DeviceManagerSystem";
 import { render_config } from "../data/render_config";
-import { DeviceManagerData } from "../../device/DeviceManagerData";
+import { DeviceManagerData } from "../device/DeviceManagerData";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { SceneData } from "../../core/entityObject/scene/SceneData";
 import { CameraControllerData } from "../../component/camera/CameraControllerData";
 import { CameraData } from "../../component/camera/CameraData";
-import { RenderWorkerData } from "../worker/RenderWorkerData";
+import { DeviceManagerWorkerData } from "../worker/device/DeviceManagerWorkerData";
 import { EWorkerOperateType } from "../worker/EWorkerOperateType";
 import { initData as initRenderCommandBufferData } from "../command/RenderCommandBufferSystem";
 import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
 import { ERenderWorkerState } from "../worker/ERenderWorkerState";
-import { WebGLRenderWorkerData } from "./WebGLRenderWorkerData";
+import { SendDrawRenderCommandData } from "../worker/draw/SendDrawRenderCommandData";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import { clear, draw, initData as initDrawRenderCommandData } from "../draw/DrawRenderCommandSystem";
+import { DrawRenderCommandData } from "../draw/DrawRenderCommandData";
+import { ProgramData } from "../shader/program/ProgramData";
+import { LocationData } from "../shader/location/LocationData";
+import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
+import { initData as initProgramData } from "../shader/program/ProgramSystem";
+import { initData as initLocationData } from "../shader/location/LocationSystem";
+import { initData as initGLSLSenderData } from "../shader/glslSender/GLSLSenderSystem";
+import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
+import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
 
-//todo extract WebGLRenderWorkerSystem?
+export var init = null;
 
-export var init = (state: Map<any, any>) => {
-    // initMaterial(state, material_config, shaderLib_generator as any, DeviceManagerData, ShaderData, MaterialData);
+export var render = null;
 
-    var renderWorker = RenderWorkerData.renderWorker;
+if(isSupportRenderWorkerAndSharedArrayBuffer()){
+    init = (state: Map<any, any>) => {
+        var renderWorker = DeviceManagerWorkerData.renderWorker;
 
-    //todo transfer shaderMap?
-    renderWorker.postMessage({
-        operateType:EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
-        // shaderMap:MaterialData.shaderMap,
-        materialData:{
-            buffer:MaterialData.buffer,
-            materialCount: MaterialData.count,
-            materialClassNameTable:MaterialData.materialClassNameTable,
-            shaderIndexTable:MaterialData.shaderIndexTable
-        },
-        geometryData:{
-            buffer:GeometryData.buffer,
-            indexType: GeometryData.indexType,
-            indexTypeSize: GeometryData.indexTypeSize,
-            verticesInfoList:GeometryData.verticesInfoList,
-            indicesInfoList:GeometryData.indicesInfoList
-        }
-    });
+        renderWorker.postMessage({
+            operateType:EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+            materialData:{
+                buffer:MaterialData.buffer,
+                materialCount: MaterialData.count,
+                materialClassNameTable:MaterialData.materialClassNameTable,
+                shaderIndexTable:MaterialData.shaderIndexTable
+            },
+            geometryData:{
+                buffer:GeometryData.buffer,
+                indexType: GeometryData.indexType,
+                indexTypeSize: GeometryData.indexTypeSize,
+                verticesInfoList:GeometryData.verticesInfoList,
+                indicesInfoList:GeometryData.indicesInfoList
+            }
+        });
 
-    renderWorker.onmessage = (e) => {
-        var data = e.data,
-            state = data.state;
+        renderWorker.onmessage = (e) => {
+            var data = e.data,
+                state = data.state;
 
-        WebGLRenderWorkerData.state = ERenderWorkerState.INIT_COMPLETE;
-    };
+            SendDrawRenderCommandData.state = ERenderWorkerState.INIT_COMPLETE;
+        };
 
-    return state;
-}
-
-// export var clear = (state: Map<any, any>) => {
-//     clearGL(getGL(DeviceManagerData, state), render_config.clearColor, DeviceManagerData);
-//
-//     return state;
-// }
-
-export var render = (state: Map<any, any>) => {
-    if(WebGLRenderWorkerData.state !== ERenderWorkerState.INIT_COMPLETE){
         return state;
     }
 
-    return compose(
-        // draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData),
-        draw(RenderWorkerData, MaterialData, GeometryData),
-        // sortRenderCommands(state),
-        createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
-        getRenderList(state)
-    )(MeshRendererData)
-}
+    render = (state: Map<any, any>) => {
+        if(SendDrawRenderCommandData.state !== ERenderWorkerState.INIT_COMPLETE){
+            return state;
+        }
 
-var _initData = (WebGLRenderWorkerData:any) => {
-    WebGLRenderWorkerData.state = ERenderWorkerState.DEFAULT;
-}
+        return compose(
+            sendDrawData(DeviceManagerWorkerData, MaterialData, GeometryData),
+            // sortRenderCommands(state),
+            createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            getRenderList(state)
+        )(MeshRendererData)
+    }
 
-_initData(WebGLRenderWorkerData);
+    let _initData = (SendDrawRenderCommandData:any) => {
+        SendDrawRenderCommandData.state = ERenderWorkerState.DEFAULT;
+    }
+
+    _initData(SendDrawRenderCommandData);
+}
+else{
+    init = (state: Map<any, any>) => {
+        initMaterial(state, MaterialData);
+    }
+
+    render = (state: Map<any, any>) => {
+        return compose(
+            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData),
+            clear(null, render_config, DeviceManagerData),
+            // sortRenderCommands(state),
+            createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            getRenderList(state)
+        )(MeshRendererData)
+    }
+
+    initProgramData(ProgramData);
+
+    initLocationData(LocationData);
+
+    initGLSLSenderData(GLSLSenderData);
+
+    initArrayBufferData(ArrayBufferData);
+
+    initIndexBufferData(IndexBufferData);
+
+    initDrawRenderCommandData(DrawRenderCommandData);
+}
 
 initRenderCommandBufferData(render_config, RenderCommandBufferData);

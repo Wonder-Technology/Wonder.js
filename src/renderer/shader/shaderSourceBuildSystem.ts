@@ -6,7 +6,7 @@ import {
 import { main_begin, main_end } from "./snippet/ShaderSnippet";
 import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment } from "./chunk/ShaderChunk";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
-import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
+import { EGPUPrecision, GPUDetector } from "../device/GPUDetector";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { MaterialShaderLibConfig } from "../data/material_config";
 import { expect } from "wonder-expect.js";

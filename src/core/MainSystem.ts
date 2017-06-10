@@ -1,19 +1,16 @@
 import { DebugConfig } from "../config/DebugConfig";
-import { EScreenSize } from "../device/EScreenSize";
+import { EScreenSize } from "../renderer/device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
-// import { createGL, setPixelRatioAndCanvas, setScreen } from "../device/DeviceManagerSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-import { chain, compose, map } from "../utils/functionalUtils";
+import { compose } from "../utils/functionalUtils";
 import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
-import { detect } from "../device/GPUDetectorSystem";
-import { trace } from "../utils/debugUtils";
-import { MainData } from "./MainData";
-import { createGL } from "../renderer/gl/createGLSystem";
-// import { getIsTest as getIsTestInUtils } from "../utils/MainUtils";
+import { detect as detectWorker } from "../device/WorkerDetectSystem";
+import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
+import { ContextConfigOptionsData } from "../renderer/type/dataType";
 
 export var getIsTest = (MainData: any) => {
     return MainData.isTest;
@@ -29,10 +26,6 @@ export var setLibIsTest = (isTest: boolean) => {
     return IO.of(() => {
         Main.isTest = isTest;
     });
-}
-
-export var getScreenSize = (state: Map<any, any>) => {
-    return state.getIn(["Main", "screenSize"]);
 }
 
 export var setConfig = (closeContractTest: boolean, MainData: any, {
@@ -87,18 +80,15 @@ export var setConfig = (closeContractTest: boolean, MainData: any, {
     });
 }
 
-export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData: any) => {
+export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery:any) => {
     it("should set config before", () => {
         expect(configState.get("useDevicePixelRatio")).exist;
     })
-}, (gameState: Map<string, any>, configState: Map<any, any>, DeviceManagerData: any) => {
-    // return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
+}, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery:any) => {
     return compose(
-        // map(detect),
-        // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
-        // chain(setScreen(DeviceManagerData)),
-        createGL
-    )(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
+        initDevice(configState.get("contextConfig"), gameState, configState),
+        createCanvas(DomQuery)
+    )(configState.get("canvasId"));
 });
 
 
@@ -113,14 +103,3 @@ export type MainConfigData = {
     useDevicePixelRatio?: boolean;
     contextConfig?: ContextConfigData;
 }
-
-
-export type ContextConfigOptionsData = {
-    alpha: boolean;
-    depth: boolean;
-    stencil: boolean;
-    antialias: boolean;
-    premultipliedAlpha: boolean;
-    preserveDrawingBuffer: boolean;
-}
-

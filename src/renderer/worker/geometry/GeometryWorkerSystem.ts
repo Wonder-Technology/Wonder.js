@@ -7,6 +7,10 @@ import { expect } from "wonder-expect.js";
 import { isValidVal } from "../../../utils/arrayUtils";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { getSlice } from "../../../utils/typeArrayUtils";
+import {
+    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
+    hasIndices as hasIndicesUtils
+} from "../../utils/geometry/geometryUtils";
 
 export var getVertices = ensureFunc((vertices:Float32Array, index: number, GeometryWorkerData: any) => {
     it("vertices should exist", () => {
@@ -66,35 +70,17 @@ var _setPointCacheData = requireCheckFunc((infoList:GeometryInfoList, points:Flo
     }
 })
 
-export var getIndexType = (GeometryWorkerData: any) => {
-    return GeometryWorkerData.indexType;
-}
+export var getIndexType = getIndexTypeUtils;
 
-export var getIndexTypeSize = (GeometryWorkerData: any) => {
-    return GeometryWorkerData.indexTypeSize;
-}
+export var getIndexTypeSize = getIndexTypeUtils;
 
-export var hasIndices = (index: number, GeometryWorkerData: any) => {
-    var indices = getIndices(index, GeometryWorkerData);
+export var hasIndices = (index: number, GeometryWorkerData: any) => hasIndicesUtils(index, getIndices, GeometryWorkerData);
 
-    if (isNotValidMapValue(indices)) {
-        return false;
-    }
+export var getDrawMode = getDrawModeUtils;
 
-    return indices.length > 0;
-}
+export var getVerticesCount = (index: number, GeometryWorkerData: any) => getVerticesCountUtils(index, getVertices, GeometryWorkerData);
 
-export var getDrawMode = (index: number, GeometryWorkerData: any) => {
-    return EDrawMode.TRIANGLES;
-}
-
-export var getVerticesCount = (index: number, GeometryWorkerData: any) => {
-    return getVertices(index, GeometryWorkerData).length;
-}
-
-export var getIndicesCount = (index: number, GeometryWorkerData: any) => {
-    return getIndices(index, GeometryWorkerData).length;
-}
+export var getIndicesCount = (index: number, GeometryWorkerData: any) => getIndicesCountUtils(index, getIndices, GeometryWorkerData);
 
 export var initData = (buffer:SharedArrayBuffer, indexType:EBufferType, indexTypeSize:number, DataBufferConfig:any, GeometryWorkerData: any) => {
     GeometryWorkerData.verticesWorkerInfoList = [];

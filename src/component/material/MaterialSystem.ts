@@ -15,11 +15,23 @@ import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { deleteBySwapAndNotReset, deleteBySwapAndReset, deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
+import {
+    createSharedArrayBufferOrArrayBuffer, deleteBySwapAndNotReset, deleteBySwapAndReset,
+    deleteOneItemBySwapAndReset
+} from "../../utils/typeArrayUtils";
 import {
     createBufferViews, getAlphaTestDataSize, getColorDataSize, getOpacityDataSize,
-    getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils
-} from "../../utils/materialUtils";
+    getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
+    getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable
+} from "../../renderer/utils/material/materialUtils";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import { init as initShader } from "../../renderer/shader/ShaderSystem";
+import { material_config } from "../../renderer/data/material_config";
+import { shaderLib_generator } from "../../renderer/data/shaderLib_generator";
+import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
+import { ProgramData } from "../../renderer/shader/program/ProgramData";
+import { LocationData } from "../../renderer/shader/location/LocationData";
+import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -58,33 +70,43 @@ var _createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-//todo restore
-// export var init = requireCheckFunc((state: MapImmutable<any, any>, materialCount:number) => {
-//     checkIndexShouldEqualCount(MaterialData);
-// }, (state: MapImmutable<any, any>, materialCount:number) => {
-    // for (let i = 0, count = materialCount; i < count; i++) {
-    //     initMaterial(i, state);
-    // }
-// })
+export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData:any) => {
+    checkIndexShouldEqualCount(MaterialData);
+}, (state: MapImmutable<any, any>, MaterialData:any) => {
+    for (let i = 0, count = MaterialData.count; i < count; i++) {
+        initMaterial(i, state);
+    }
+})
 
 //todo unit test: test init new added one
-export var initMaterial = (index: number, state: MapImmutable<any, any>) => {
-    // var shader = getShader(index, shaderMap),
-    //     //todo move isInitMap out?(not contain worker data)
-    //     // isInitMap = ShaderData.isInitMap,
-    //     shaderIndex = shader.index;
-    //
-    // // if (isInitMap[shaderIndex] === true) {
-    // //     return;
-    // // }
-    //
-    // // isInitMap[shaderIndex] = true;
-    //
-    // // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
-    // initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+export var initMaterial = null;
 
+if(isSupportRenderWorkerAndSharedArrayBuffer()){
+    initMaterial = (index: number, state: MapImmutable<any, any>) => {
+        MaterialData.workerInitList.push(index);
+    }
+}
+else{
+    initMaterial = (index: number, state: MapImmutable<any, any>) => {
+        // var shader = getShader(index, shaderMap),
+        //     //todo move isInitMap out?(not contain worker data)
+        //     // isInitMap = ShaderData.isInitMap,
+        //     shaderIndex = shader.index;
+        //
+        // // if (isInitMap[shaderIndex] === true) {
+        // //     return;
+        // // }
+        //
+        // // isInitMap[shaderIndex] = true;
+        //
+        // // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+        // initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+        var shaderIndex = getShaderIndex(index, MaterialData);
 
-    MaterialData.workerInitList.push(index);
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+
+        // MaterialData.workerInitList.push(index);
+    }
 }
 
 export var clearWorkerInitList = (MaterialData:any) => {
@@ -235,7 +257,7 @@ var _initBufferData = (MaterialData:any) => {
         count = DataBufferConfig.materialDataBufferCount,
         size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize())
 
-    buffer = new SharedArrayBuffer(count * size);
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
     createBufferViews(buffer, count, MaterialData);
 

@@ -8,13 +8,8 @@ export class ShaderData {
     // public static fsSourceMap = null;
 
     public static shaderMap: ShaderShaderMap = null;
-    public static isInitMap: ShaderIsInitMap = null;
 }
 
 export type ShaderShaderMap = {
     [materialClassName: string]: Shader
-}
-
-export type ShaderIsInitMap = {
-    [index: number]: boolean
 }

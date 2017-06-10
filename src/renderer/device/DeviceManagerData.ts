@@ -1,4 +1,4 @@
-import { Color } from "../structure/Color";
+import { Color } from "../../structure/Color";
 
 export class DeviceManagerData {
     public static gl: WebGLRenderingContext = null;

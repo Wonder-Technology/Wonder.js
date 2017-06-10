@@ -1,3 +1,5 @@
+import { ProgramMap } from "../../type/dataType";
+
 export class ProgramData{
     public static programMap: ProgramMap = null;
 
@@ -5,8 +7,4 @@ export class ProgramData{
 
     public static lastBindedArrayBuffer: WebGLBuffer = null;
     public static lastBindedIndexBuffer: WebGLBuffer = null;
-}
-
-export type ProgramMap = {
-    [index: number]: WebGLProgram
 }

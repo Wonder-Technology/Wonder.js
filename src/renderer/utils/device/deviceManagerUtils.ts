@@ -1,31 +1,30 @@
-import { ContextConfigData, getScreenSize } from "../core/MainSystem";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
-import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import {
     getContext, initCanvas, setX, setY, setStyleWidth, setStyleHeight,
     setWidth, setHeight, setCanvas, getCanvas
-} from "../structure/ViewSystem";
+} from "../../../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { expect } from "wonder-expect.js";
-import { EScreenSize } from "./EScreenSize";
-import { RectRegion } from "../structure/RectRegion";
-import { chain, compose } from "../utils/functionalUtils";
-import { DirectorData } from "../core/DirectorData";
-import { getRootProperty } from "../utils/rootUtils";
+import { EScreenSize } from "../../device/EScreenSize";
+import { RectRegion } from "../../../structure/RectRegion";
+import { chain, compose } from "../../../utils/functionalUtils";
+import { DirectorData } from "../../../core/DirectorData";
+import { getRootProperty } from "../../../utils/rootUtils";
 import { Map } from "immutable";
-import { trace } from "../utils/debugUtils";
-import { isValueExist } from "../utils/stateUtils";
-import { Color } from "../structure/Color";
+import { trace } from "../../../utils/debugUtils";
+import { isValueExist } from "../../../utils/stateUtils";
+import { Color } from "../../../structure/Color";
 
-export var getGL = (DeviceManagerData: any, state: Map<any, any>): WebGLRenderingContext => {
+export var getGL = (DeviceManagerDataFromSystem: any, state: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
-    return DeviceManagerData.gl;
+    return DeviceManagerDataFromSystem.gl;
 }
 
-export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerData: any, state: Map<any, any>) => {
+export var setGL = curry((gl: WebGLRenderingContext, DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
     // return state.setIn(["DeviceManager", "gl"], gl);
-    DeviceManagerData.gl = gl;
+    DeviceManagerDataFromSystem.gl = gl;
 
     return state;
 })
@@ -39,36 +38,12 @@ export var setPixelRatio = (pixelRatio: number, state: Map<any, any>) => {
 }
 
 export var getViewport = (state: Map<any, any>) => {
-    // return state.getIn(["DeviceManager", "viewport"]);
-    //todo restore
-    return void 0;
+    return state.getIn(["DeviceManager", "viewport"]);
 }
 
 export var setViewport = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
-    // return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
-    //todo restore
-    return null;
+    return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
-
-var _getCanvas = (DomQuery: any, domId: string) => {
-    if (domId !== "") {
-        return DomQuery.create(_getCanvasId(domId)).get(0);
-    }
-
-    return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
-}
-
-var _getCanvasId = ensureFunc((id: string) => {
-    it("dom id should be #string", () => {
-        expect(/#[^#]+/.test(id)).true;
-    });
-}, (domId: string) => {
-    if (domId.indexOf('#') > -1) {
-        return domId;
-    }
-
-    return `#${domId}`;
-});
 
 export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: Map<any, any>) => {
     return IO.of(() => {
@@ -86,19 +61,6 @@ export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: 
     });
 })
 
-//todo move to createGLSystem?
-export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
-    return IO.of(() => {
-        var dom = _getCanvas(DomQuery, canvasId),
-            gl = getContext(contextConfig, dom);
-
-        if (!gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
-        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
-    });
-})
-
 /**
  * @function
  * @name setViewport
@@ -108,9 +70,9 @@ export var createGL = curry((canvasId: string, contextConfig: Map<string, any>, 
  * @param {Number} w The width of the viewport in pixels.
  * @param {Number} h The height of the viewport in pixels.
  */
-export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerData: any, state: Map<any, any>) => {
+export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = getGL(DeviceManagerData, state),
+        var gl = getGL(DeviceManagerDataFromSystem, state),
             viewport = getViewport(state);
 
         if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
@@ -170,7 +132,7 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     });
 }
 
-var _setScreenData = curry((DeviceManagerData: any, state: Map<any, any>, {
+var _setScreenData = curry((DeviceManagerDataFromSystem: any, state: Map<any, any>, {
     x,
     y,
     width,
@@ -181,11 +143,15 @@ var _setScreenData = curry((DeviceManagerData: any, state: Map<any, any>, {
     return IO.of(() => {
         compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
 
-        return setViewportOfGL(0, 0, width, height, DeviceManagerData, state).run();
+        return setViewportOfGL(0, 0, width, height, DeviceManagerDataFromSystem, state).run();
     });
 })
 
-export var setScreen = curry((DeviceManagerData: any, state: Map<any, any>) => {
+export var getScreenSize = (state: Map<any, any>) => {
+    return state.getIn(["Main", "screenSize"]);
+}
+
+export var setScreen = curry((DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
     return IO.of(requireCheckFunc((state: Map<any, any>) => {
         it("should exist MainData.screenSize", () => {
             expect(getScreenSize(DirectorData.state)).exist;
@@ -195,15 +161,15 @@ export var setScreen = curry((DeviceManagerData: any, state: Map<any, any>) => {
 
         initCanvas(dom).run();
 
-        return compose(chain(_setScreenData(DeviceManagerData, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
+        return compose(chain(_setScreenData(DeviceManagerDataFromSystem, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
     }));
 });
 
 
-export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerData: any) => {
-    _setClearColor(gl, color, DeviceManagerData);
+export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
+    _setClearColor(gl, color, DeviceManagerDataFromSystem);
 
-    setColorWrite(gl, true, true, true, true, DeviceManagerData);
+    setColorWrite(gl, true, true, true, true, DeviceManagerDataFromSystem);
 
     /*! optimize in ANGLE:
      (need more verify:set color mask all false before clear?
@@ -220,8 +186,8 @@ export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerData: 
 }
 
 
-var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerData: any) => {
-    var clearColor = DeviceManagerData.clearColor;
+var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
+    var clearColor = DeviceManagerDataFromSystem.clearColor;
 
     if (clearColor && clearColor.isEqual(color)) {
         return;
@@ -229,7 +195,7 @@ var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerData
 
     gl.clearColor(color.r, color.g, color.b, color.a);
 
-    DeviceManagerData.clearColor = color;
+    DeviceManagerDataFromSystem.clearColor = color;
 }
 
 /**
@@ -243,26 +209,26 @@ var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerData
  * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
  * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
  */
-export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerData: any) => {
-    if (DeviceManagerData.writeRed !== writeRed
-        || DeviceManagerData.writeGreen !== writeGreen
-        || DeviceManagerData.writeBlue !== writeBlue
-        || DeviceManagerData.writeAlpha !== writeAlpha) {
+export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.writeRed !== writeRed
+        || DeviceManagerDataFromSystem.writeGreen !== writeGreen
+        || DeviceManagerDataFromSystem.writeBlue !== writeBlue
+        || DeviceManagerDataFromSystem.writeAlpha !== writeAlpha) {
         gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
 
-        DeviceManagerData.writeRed = writeRed;
-        DeviceManagerData.writeGreen = writeGreen;
-        DeviceManagerData.writeBlue = writeBlue;
-        DeviceManagerData.writeAlpha = writeAlpha;
+        DeviceManagerDataFromSystem.writeRed = writeRed;
+        DeviceManagerDataFromSystem.writeGreen = writeGreen;
+        DeviceManagerDataFromSystem.writeBlue = writeBlue;
+        DeviceManagerDataFromSystem.writeAlpha = writeAlpha;
     }
 }
 
-export var initData = (DeviceManagerData: any) => {
-    DeviceManagerData.gl = null;
-    DeviceManagerData.clearColor = null;
+export var initData = (DeviceManagerDataFromSystem: any) => {
+    // DeviceManagerDataFromSystem.gl = null;
+    // DeviceManagerDataFromSystem.clearColor = null;
 
-    DeviceManagerData.writeRed = null;
-    DeviceManagerData.writeGreen = null;
-    DeviceManagerData.writeBlue = null;
-    DeviceManagerData.writeAlpha = null;
+    DeviceManagerDataFromSystem.writeRed = true;
+    DeviceManagerDataFromSystem.writeGreen = true;
+    DeviceManagerDataFromSystem.writeBlue = true;
+    DeviceManagerDataFromSystem.writeAlpha = true;
 }

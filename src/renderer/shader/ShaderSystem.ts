@@ -2,6 +2,12 @@ import { Shader } from "./Shader";
 import { createMap } from "../../utils/objectUtils";
 import { isValidMapValue } from "../../../dist/commonjs/utils/objectUtils";
 import { getShaderIndexFromTable } from "../../component/material/MaterialSystem";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import {
+    bindIndexBuffer as bindIndexBufferUtils, init as initUtils, sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
+    use as useUtils
+} from "../utils/shader/shaderUtils";
+import { getIndices, getVertices } from "../../component/geometry/GeometrySystem";
 
 export var create = (materialClassName:string, MaterialData:any, ShaderData: any) => {
     var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
@@ -21,6 +27,30 @@ export var create = (materialClassName:string, MaterialData:any, ShaderData: any
 }
 
 var _isShaderExist = (shader:Shader) => isValidMapValue(shader);
+
+export var init = null;
+
+export var sendAttributeData = null;
+
+export var sendUniformData = null;
+
+export var bindIndexBuffer = null;
+
+export var use = null;
+
+if(!isSupportRenderWorkerAndSharedArrayBuffer()){
+    init = initUtils;
+
+    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
+
+    sendUniformData = sendUniformDataUtils;
+
+    bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
+        bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
+    }
+
+    use = useUtils;
+}
 
 // export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
 //     //todo finish

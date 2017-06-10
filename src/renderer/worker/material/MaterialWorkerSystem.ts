@@ -1,21 +1,17 @@
 import { Map } from "immutable";
-import { DeviceManagerData } from "../../../device/DeviceManagerData";
-import { ProgramData } from "../../shader/program/ProgramData";
-import { LocationData } from "../../shader/location/LocationData";
-import { GLSLSenderData } from "../../shader/glslSender/GLSLSenderData";
 import { MaterialInitWorkerData, MaterialWorkerData } from "./MaterialWorkerData";
-import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { IMaterialConfig, material_config } from "../../data/material_config";
-import { IShaderLibGenerator, shaderLib_generator } from "../../data/shaderLib_generator";
-import { MaterialClassNameTable } from "../../../definition/type/materialType";
-import { expect } from "wonder-expect.js";
-import { init as initShader } from "./ShaderWorkerSystem";
+import { material_config } from "../../data/material_config";
+import { shaderLib_generator } from "../../data/shaderLib_generator";
+import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createBufferViews,
     getColorDataSize, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
-    getShaderIndexFromTable as getShaderIndexFromTableUtils
-} from "../../../utils/materialUtils";
-import { Vector3 } from "../../../math/Vector3";
+    getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable
+} from "../../utils/material/materialUtils";
+import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
+import { LocationWorkerData } from "../shader/location/LocationWorkerData";
+import { GLSLSenderWorkerData } from "../shader/glslSender/GLSLSenderWorkerData";
+import { DeviceManagerWorkerData } from "../device/DeviceManagerWorkerData";
 
 export var initMaterials = (materialCount:number) => {
     for (let i = 0, count = materialCount; i < count; i++) {
@@ -39,11 +35,7 @@ export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
 
     // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
 
-    initShader(state, materialIndex, shaderIndex, _getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
-}
-
-var _getMaterialClassNameFromTable = (shaderIndex:number, materialClassNameTable:MaterialClassNameTable) => {
-    return materialClassNameTable[shaderIndex]
+    initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData);
 }
 
 export var getShaderIndex = (materialIndex: number, MaterialWorkerData:any) => {

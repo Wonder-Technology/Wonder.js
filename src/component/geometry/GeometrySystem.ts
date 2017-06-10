@@ -1,4 +1,4 @@
-import { GPUDetector } from "../../device/GPUDetector";
+import { GPUDetector } from "../../renderer/device/GPUDetector";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Geometry } from "./Geometry";
 import { Map } from "immutable";
@@ -16,10 +16,15 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { EDrawMode } from "../../renderer/enum/EDrawMode";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GeometryData } from "./GeometryData";
-import { getSubarray } from "../../utils/typeArrayUtils";
+import { createSharedArrayBufferOrArrayBuffer, getSubarray } from "../../utils/typeArrayUtils";
 import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../utils/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometryMap } from "../../utils/memoryUtils";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import {
+    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
+    hasIndices as hasIndicesUtils
+} from "../../renderer/utils/geometry/geometryUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -304,7 +309,7 @@ var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig
         count = DataBufferConfig.geometryDataBufferCount,
         size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
 
-    buffer = new SharedArrayBuffer(count * size);
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
     GeometryData.indices = new UintArray(buffer, count * getVertexDataSize(), count * getIndexDataSize());
@@ -314,3 +319,28 @@ var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig
     GeometryData.maxDisposeIndex = GeometryData.indices.length * 0.9;
 }
 
+export var getIndexType = null;
+
+export var getIndexTypeSize = null;
+
+export var hasIndices = null;
+
+export var getDrawMode = null;
+
+export var getVerticesCount = null;
+
+export var getIndicesCount = null;
+
+if(!isSupportRenderWorkerAndSharedArrayBuffer()){
+    getIndexType = getIndexTypeUtils;
+
+    getIndexTypeSize = getIndexTypeUtils;
+
+    hasIndices = (index: number, GeometryData: any) => hasIndicesUtils(index, getIndices, GeometryData);
+
+    getDrawMode = getDrawModeUtils;
+
+    getVerticesCount = (index: number, GeometryData: any) => getVerticesCountUtils(index, getVertices, GeometryData);
+
+    getIndicesCount = (index: number, GeometryData: any) => getIndicesCountUtils(index, getIndices, GeometryData);
+}

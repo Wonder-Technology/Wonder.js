@@ -1,90 +1,16 @@
-import { isConfigDataExist } from "../../utils/renderConfigUtils";
-import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { MaterialShaderLibConfig } from "../../data/material_config";
 import {
-    ISendAttributeConfig, ISendUniformConfig, IShaderLibContentGenerator,
-    IShaderLibSendConfig
-} from "../../data/shaderLib_generator";
-import { createMap, isValidMapValue } from "../../../utils/objectUtils";
-import { AttributeLocationMap, UniformLocationMap } from "./LocationData";
-import { expect } from "wonder-expect.js";
-import { forEach } from "../../../utils/arrayUtils";
+    getAttribLocation as getAttribLocationUtils, getUniformLocation as getUniformLocationUtils, initData as initDataUtils, isAttributeLocationNotExist as isAttributeLocationNotExistUtils, isUniformLocationNotExist as isUniformLocationNotExistUtils,
+    setLocationMap as setLocationMapUtils
+} from "../../utils/shader/location/locationUtils";
 
-export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
-    it("attribute should contain position at least", () => {
-        expect(LocationData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
-    });
-}, requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
-    it("not setted location before", () => {
-        expect(isValidMapValue(LocationData.attributeLocationMap[shaderIndex])).false;
-        expect(isValidMapValue(LocationData.uniformLocationMap[shaderIndex])).false;
-    });
-}, (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationData: any) => {
-    var attributeLocationMap = {},
-        uniformLocationMap = {},
-        sendData: IShaderLibSendConfig = null,
-        attributeName: string = null,
-        uniformName: string = null;
+export var setLocationMap = setLocationMapUtils;
 
-    forEach(materialShaderLibConfig, (shaderLibName: string) => {
-        var attribute: Array<ISendAttributeConfig> = null,
-            uniform: Array<ISendUniformConfig> = null;
+export var getAttribLocation = getAttribLocationUtils;
 
-        sendData = shaderLibData[shaderLibName].send;
+export var getUniformLocation = getUniformLocationUtils;
 
-        if (!isConfigDataExist(sendData)) {
-            return;
-        }
+export var isUniformLocationNotExist = isUniformLocationNotExistUtils;
 
-        attribute = sendData.attribute;
-        uniform = sendData.uniform;
+export var isAttributeLocationNotExist = isAttributeLocationNotExistUtils;
 
-        if (isConfigDataExist(attribute)) {
-            forEach(attribute, (data: ISendAttributeConfig) => {
-                attributeName = data.name;
-
-                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
-            })
-        }
-
-        if (isConfigDataExist(uniform)) {
-            forEach(uniform, (data: ISendUniformConfig) => {
-                uniformName = data.name;
-
-                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
-            })
-        }
-    })
-
-    LocationData.attributeLocationMap[shaderIndex] = attributeLocationMap;
-    LocationData.uniformLocationMap[shaderIndex] = uniformLocationMap;
-}))
-
-export var getAttribLocation = ensureFunc((pos: number, name: string, attributeLocationMap: AttributeLocationMap) => {
-    it(`${name}'s attrib location should be number`, () => {
-        expect(pos).be.a("number");
-    });
-}, (name: string, attributeLocationMap: AttributeLocationMap) => {
-    return attributeLocationMap[name];
-})
-
-export var getUniformLocation = ensureFunc((pos: number, name: string, uniformLocationMap: UniformLocationMap) => {
-    it(`${name}'s uniform location should exist in map`, () => {
-        expect(isValidMapValue(pos)).true;
-    });
-}, (name: string, uniformLocationMap: UniformLocationMap) => {
-    return uniformLocationMap[name];
-})
-
-export var isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
-    return pos === null;
-}
-
-export var isAttributeLocationNotExist = (pos: number) => {
-    return pos === -1;
-}
-
-export var initData = (LocationData: any) => {
-    LocationData.attributeLocationMap = createMap();
-    LocationData.uniformLocationMap = createMap();
-}
+export var initData = initDataUtils;

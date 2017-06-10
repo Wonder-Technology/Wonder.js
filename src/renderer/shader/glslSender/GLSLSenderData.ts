@@ -1,4 +1,5 @@
-import { ISendAttributeConfig, ISendUniformConfig } from "../../data/shaderLib_generator";
+import { SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../type/dataType";
+
 export class GLSLSenderData{
     public static uniformCacheMap: UniformCacheMap = null;
 
@@ -7,18 +8,4 @@ export class GLSLSenderData{
 
     public static vertexAttribHistory: Array<boolean> = null;
 
-}
-
-export type SendAttributeConfigMap = {
-    [index: number]: Array<ISendAttributeConfig>
-}
-
-export type SendUniformConfigMap = {
-    [index: number]: Array<ISendUniformConfig>
-}
-
-export type UniformCacheMap = {
-    [index: number]: {
-        [name: string]: any;
-    }
 }

@@ -1,7 +1,7 @@
-import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { singleton } from "../definition/typescript/decorator/singleton";
+import { registerClass } from "../../definition/typescript/decorator/registerClass";
+import { singleton } from "../../definition/typescript/decorator/singleton";
 // import { DeviceManager } from "./DeviceManager";
-import { Log } from "../utils/Log";
+import { Log } from "../../utils/Log";
 import { getGL } from "./DeviceManagerSystem";
 import { Map } from "immutable";
 import { DeviceManagerData } from "./DeviceManagerData";
