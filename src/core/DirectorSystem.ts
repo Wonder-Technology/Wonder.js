@@ -1,9 +1,9 @@
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { Map } from "immutable";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
-import { render as renderByWorkerTime } from "../renderer/worker/core/WorkerTimeSystem";
+import { render as renderByWorkerTime } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
 import { WorkerConfig } from "../config/WorkerConfig";
-import { WorkerTimeData } from "../renderer/worker/core/WorkerTimeData";
+import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { render as renderByWebGLRender } from "../renderer/render/WebGLRenderSystem";
 
 export var getState = (DirectorData: any) => {

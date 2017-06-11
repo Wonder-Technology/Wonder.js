@@ -3,9 +3,6 @@ import "wonder-frp/dist/es2015/stream/IgnoreElementsStream";
 import "wonder-frp/dist/es2015/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-// import { DeviceManager } from "../device/DeviceManager";
-// import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
-// import { Renderer } from "../renderer/renderer/Renderer";
 import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 // import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
@@ -28,7 +25,7 @@ import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
 import {
     addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
-    init as initGeometry, initData as initGeometryData, isIndicesBufferNeed32BitsByData
+    init as initGeometry, initData as initGeometryData
 } from "../component/geometry/GeometrySystem";
 import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
@@ -52,10 +49,6 @@ import { initData as initTagData, addAddComponentHandle as addTagAddComponentHan
 import { TagData } from "../component/tag/TagData";
 import { Tag } from "../component/tag/Tag";
 import { ThreeDTransform } from "../component/transform/ThreeDTransform";
-import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
-import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
-import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { Material } from "../component/material/Material";
 import { MeshRenderer } from "../component/renderer/MeshRenderer";
 import {
@@ -69,15 +62,9 @@ import { SceneData } from "./entityObject/scene/SceneData";
 import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
-import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../component/ComponentSystem";
-import { material_config } from "../renderer/data/material_config";
-import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
-import { DeviceManagerData } from "../renderer/device/DeviceManagerData";
-import { initData as initWorkerTimeData } from "../renderer/worker/core/WorkerTimeSystem";
-import { WorkerTimeData } from "../renderer/worker/core/WorkerTimeData";
-import { WorkerConfig } from "../config/WorkerConfig";
-import { GeometryWorkerData } from "../renderer/worker/geometry/GeometryWorkerData";
+import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
+import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 
 @singleton(true)
 @registerClass("Director")

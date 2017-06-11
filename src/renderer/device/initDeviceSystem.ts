@@ -5,8 +5,8 @@ import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setPixelRatioAndCanvas, setScreen } from "./DeviceManagerSystem";
 import { detect } from "./GPUDetectorSystem";
-import { createGL as createGLWorker } from "../worker/device/DeviceManagerWorkerSystem";
-import { DeviceManagerWorkerData } from "../worker/device/DeviceManagerWorkerData";
+import { createGL as createGLWorker } from "../worker/both_file/device/DeviceManagerWorkerSystem";
+import { DeviceManagerWorkerData } from "../worker/both_file/device/DeviceManagerWorkerData";
 import { DeviceManagerData } from "./DeviceManagerData";
 
 export var initDevice = null;
