@@ -1,17 +1,10 @@
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { IMaterialConfig } from "../../../data/material_config";
-import {
-    getAttribLocation, isAttributeLocationNotExist
-} from "../../../shader/location/LocationSystem";
 import { EVariableType } from "../../../enum/EVariableType";
 import { error, info, log } from "../../../../utils/Log";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
-import {
-    getUniformData, sendBuffer, sendFloat1, sendMatrix4,
-    sendVector3
-} from "../../../shader/glslSender/GLSLSenderSystem";
 import { forEach } from "../../../../utils/arrayUtils";
 import { RenderCommandUniformData } from "../../../type/dataType";
 
@@ -161,13 +154,13 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVerticesFunc:Function, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, GeometryWorkerData: any, ArrayBufferData: any) => {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertices:Function, getAttribLocation:Function, isAttributeLocationNotExist:Function, sendBuffer:Function, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, GeometryWorkerData: any, ArrayBufferData: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
 
     for (let sendData of sendDataArr) {
-        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, getVerticesFunc, GeometryWorkerData, ArrayBufferData),
+        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, getVertices, GeometryWorkerData, ArrayBufferData),
             pos = getAttribLocation(sendData.name, attributeLocationMap);
 
         if (isAttributeLocationNotExist(pos)) {
@@ -186,7 +179,12 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialWorkerData: any, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, renderCommandUniformData:RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
+    getUniformData,
+    sendMatrix4,
+    sendVector3,
+    sendFloat1
+}, MaterialWorkerData: any, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, renderCommandUniformData:RenderCommandUniformData) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex],
         uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;

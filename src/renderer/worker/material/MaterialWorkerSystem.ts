@@ -6,7 +6,8 @@ import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createBufferViews,
     getColorDataSize, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
-    getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable
+    getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
+    getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils
 } from "../../utils/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
@@ -35,7 +36,7 @@ export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
 
     // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
 
-    initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData);
+    initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData);
 }
 
 export var getShaderIndex = (materialIndex: number, MaterialWorkerData:any) => {
@@ -50,21 +51,13 @@ export var initNewInitedMaterials = (workerInitList:Array<number>) => {
     }
 }
 
-export var getColorArr3 = (materialIndex: number, MaterialWorkerData: any) => {
-    var colors = MaterialWorkerData.colors,
-        size = getColorDataSize(),
-        index = materialIndex * size;
-
-    return [colors[index], colors[index + 1],colors[index + 2]];
-}
+export var getColorArr3 = getColorArr3Utils;
 
 export var getOpacity = getOpacityUtils;
 
 export var getAlphaTest = getAlphaTestUtils;
 
-export var isTestAlpha = (alphaTest: number) => {
-    return alphaTest >= 0;
-}
+export var isTestAlpha = isTestAlphaUtils;
 
 export var initData = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
     createBufferViews(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);

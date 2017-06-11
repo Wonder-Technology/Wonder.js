@@ -18,7 +18,7 @@ import { CameraController } from "../../component/camera/CameraController";
 import { DataUtils } from "../../utils/DataUtils";
 import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
-import { createSharedArrayBufferOrArrayBuffer } from "../../utils/typeArrayUtils";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 
 //todo check: renderGameObjectArray.length should <= renderCommandBufferCount
 export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {

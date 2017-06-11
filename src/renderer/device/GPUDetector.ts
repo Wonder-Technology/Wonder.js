@@ -1,10 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
-// import { DeviceManager } from "./DeviceManager";
 import { Log } from "../../utils/Log";
-import { getGL } from "./DeviceManagerSystem";
 import { Map } from "immutable";
-import { DeviceManagerData } from "./DeviceManagerData";
 
 @singleton()
 @registerClass("GPUDetector")
@@ -30,44 +27,43 @@ export class GPUDetector {
     private _isDetected: boolean = false;
 
     //todo test
-    public detect(state: Map<any, any>) {
+    public detect(state: Map<any, any>, getGL:Function, DeviceManagerDataFromSystem:any) {
+        var gl = getGL(DeviceManagerDataFromSystem, state);
+
         this._isDetected = true;
 
-        this._detectExtension(state);
-        this._detectCapabilty(state);
+        this._detectExtension(state, gl);
+        this._detectCapabilty(state, gl);
 
         return state;
     }
 
-    private _detectExtension(state: Map<any, any>) {
-        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state);
-        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state);
-        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state);
-        this.extensionUintIndices = this._getExtension("element_index_uint", state);
-        this.extensionDepthTexture = this._getExtension("depth_texture", state);
-        this.extensionVAO = this._getExtension("vao", state);
-        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state);
+    private _detectExtension(state: Map<any, any>, gl) {
+        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state, gl);
+        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state, gl);
+        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state, gl);
+        this.extensionUintIndices = this._getExtension("element_index_uint", state, gl);
+        this.extensionDepthTexture = this._getExtension("depth_texture", state, gl);
+        this.extensionVAO = this._getExtension("vao", state, gl);
+        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state, gl);
     }
 
-    private _detectCapabilty(state: Map<any, any>) {
-        var gl = getGL(DeviceManagerData, state);
-
+    private _detectCapabilty(state: Map<any, any>, gl:WebGLRenderingContext) {
         this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
         this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-        this.maxAnisotropy = this._getMaxAnisotropy(state);
+        this.maxAnisotropy = this._getMaxAnisotropy(state, gl);
 
-        this.maxBoneCount = this._getMaxBoneCount(state);
+        this.maxBoneCount = this._getMaxBoneCount(state, gl);
 
         //todo use map instead
         // alert("maxBoneCount:" + this.maxBoneCount);
 
-        this._detectPrecision(state);
+        this._detectPrecision(state, gl);
     }
 
-    private _getExtension(name: string, state: Map<any, any>) {
-        var extension,
-            gl = getGL(DeviceManagerData, state);
+    private _getExtension(name: string, state: Map<any, any>, gl:WebGLRenderingContext) {
+        var extension:any = null;
 
         switch (name) {
             case "EXT_texture_filter_anisotropic":
@@ -102,9 +98,8 @@ export class GPUDetector {
         return extension;
     }
 
-    private _getMaxBoneCount(state: Map<any, any>) {
-        var gl = getGL(DeviceManagerData, state),
-            numUniforms: number = null,
+    private _getMaxBoneCount(state: Map<any, any>, gl:WebGLRenderingContext) {
+        var numUniforms: number = null,
             maxBoneCount: number = null;
 
         // Calculate a estimate of the maximum number of bones that can be uploaded to the GPU
@@ -125,16 +120,13 @@ export class GPUDetector {
         return Math.min(maxBoneCount, 128);
     }
 
-    private _getMaxAnisotropy(state: Map<any, any>) {
-        var extension = this.extensionTextureFilterAnisotropic,
-            gl = getGL(DeviceManagerData, state);
+    private _getMaxAnisotropy(state: Map<any, any>, gl:WebGLRenderingContext) {
+        var extension = this.extensionTextureFilterAnisotropic;
 
         return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     }
 
-    private _detectPrecision(state: Map<any, any>) {
-        var gl = getGL(DeviceManagerData, state);
-
+    private _detectPrecision(state: Map<any, any>, gl:WebGLRenderingContext) {
         if (!gl.getShaderPrecisionFormat) {
             this.precision = EGPUPrecision.HIGHP;
 

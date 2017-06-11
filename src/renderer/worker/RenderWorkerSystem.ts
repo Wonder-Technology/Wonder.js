@@ -3,15 +3,17 @@ import { error, info } from "../../utils/Log";
 // import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 // import { expect } from "wonder-expect.js";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
-import { setGL, setPixelRatioAndCanvas, setScreen, setViewportOfGL } from "./device/DeviceManagerWorkerSystem";
+import { getGL, setGL, setPixelRatioAndCanvas, setScreen, setViewportOfGL } from "./device/DeviceManagerWorkerSystem";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import curry from "wonder-lodash/curry";
 import { detect } from "../device/GPUDetectorSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { material_config } from "../data/material_config";
 import { shaderLib_generator } from "../data/shaderLib_generator";
-import { ShaderData } from "../shader/ShaderData";
-import { clear, draw, initData as initDrawRenderCommandWorkerData } from "./draw/DrawRenderCommandWorkerSystem";
+import {
+    clear, draw,
+    initData as initDrawRenderCommandWorkerData
+} from "./draw/DrawRenderCommandWorkerSystem";
 import { render_config } from "../data/render_config";
 import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
 import { initData as initLocationWorkerData } from "./shader/location/LocationWorkerSystem";
@@ -43,6 +45,8 @@ import { GLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerData";
 import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 import { ContextConfigOptionsData } from "../type/dataType";
+import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
+import { createState } from "../../utils/stateUtils";
 
 onerror = (msg:string, fileName:string, lineno:number) => {
     // error(true, msg,fileName,lineno);
@@ -61,7 +65,7 @@ onmessage = (e) => {
             // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
             // chain(setScreen(DeviceManagerWorkerData)),
             compose(
-                map(detect),
+                map(detect(getGL, DeviceManagerWorkerData)),
                 // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
                 // chain(setPixelRatioAndCanvas(false)),
                 // chain(setScreen(DeviceManagerWorkerData)),
@@ -73,8 +77,10 @@ onmessage = (e) => {
 
             var canvas = data.canvas;
 
+            var state = createState();
+
                 //todo refactor
-            setViewportOfGL(0, 0, canvas.width, canvas.height, DeviceManagerWorkerData, null).run();
+            setViewportOfGL(0, 0, canvas.width, canvas.height, DeviceManagerWorkerData, state).run();
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
             // initMaterial(null, data.materialCount);
@@ -108,7 +114,7 @@ onmessage = (e) => {
                 initNewInitedMaterials(materialData.workerInitList);
             }
 
-            draw(null, render_config, DeviceManagerWorkerData, MaterialWorkerData, ShaderData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData, data.renderCommandBufferData);
+            draw(null, render_config, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData), data.renderCommandBufferData);
             break;
         default:
             error(true, info.FUNC_UNKOWN(`operateType:${operateType}`));

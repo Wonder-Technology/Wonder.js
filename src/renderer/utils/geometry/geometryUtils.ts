@@ -1,9 +1,25 @@
-import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
 import {
     isNotValidMapValue
 } from "../../../utils/objectUtils";
 import { EDrawMode } from "../../enum/EDrawMode";
-import { expect } from "wonder-expect.js";
+import { EBufferType } from "../../enum/EBufferType";
+import { error, info } from "../../../utils/Log";
+
+export var getVertexDataSize = () => 3;
+
+export var getIndexDataSize = () => 1;
+
+export var getUIntArrayClass = (indexType:EBufferType) => {
+    switch (indexType){
+        case EBufferType.UNSIGNED_SHORT:
+            return Uint16Array;
+        case EBufferType.INT:
+            return Uint32Array;
+        default:
+            error(true, info.FUNC_INVALID(`indexType:${indexType}`));
+            break;
+    }
+}
 
 export var getIndexType = (GeometryDataFromSystem: any) => {
     return GeometryDataFromSystem.indexType;

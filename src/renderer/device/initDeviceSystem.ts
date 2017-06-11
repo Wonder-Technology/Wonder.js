@@ -3,7 +3,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
-import { createGL, setPixelRatioAndCanvas, setScreen } from "./DeviceManagerSystem";
+import { createGL, getGL, setPixelRatioAndCanvas, setScreen } from "./DeviceManagerSystem";
 import { detect } from "./GPUDetectorSystem";
 import { createGL as createGLWorker } from "../worker/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../worker/device/DeviceManagerWorkerData";
@@ -22,7 +22,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 else{
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas:HTMLCanvasElement) => {
         return compose(
-            map(detect),
+            map(detect(getGL, DeviceManagerData)),
             chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
             chain(setScreen(DeviceManagerData)),
             createGL,

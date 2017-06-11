@@ -1,8 +1,39 @@
-import { clear as clearUtils, draw as drawUtils, initData as initDataUtils } from "../../utils/draw/drawRenderCommandUtils";
+import {
+    buildDrawFuncDataMap, clear as clearUtils, draw as drawUtils,
+    initData as initDataUtils
+} from "../../utils/draw/drawRenderCommandUtils";
+import { Map } from "immutable";
+import { clear as clearGL, getGL } from "../device/DeviceManagerWorkerSystem";
+import { DrawDataMap } from "../../type/utilsType";
+import { RenderCommandBufferWorkerData } from "../../type/dataType";
+import { IRenderConfig } from "../../data/render_config";
+import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderWorkerSystem";
+import {
+    getIndexType,
+    getIndexTypeSize,
+    getIndicesCount,
+    getVerticesCount,
+    hasIndices
+} from "../geometry/GeometryWorkerSystem";
+import { compose } from "../../../utils/functionalUtils";
 
-export var clear = clearUtils;
+export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceManagerWorkerData: any) => {
+    return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
+};
 
-export var draw = drawUtils;
+export var draw = (state: Map<any, any>, render_config: IRenderConfig, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
+    var gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state);
+
+    drawUtils(gl, state, render_config, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData);
+
+    _commitGL(gl, state);
+};
+
+var _commitGL = (gl: any, state: Map<any, any>) => {
+    gl.commit();
+
+    return state;
+}
 
 export var initData = initDataUtils;
 

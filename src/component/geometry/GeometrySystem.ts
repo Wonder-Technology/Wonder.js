@@ -13,18 +13,17 @@ import {
     generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { EDrawMode } from "../../renderer/enum/EDrawMode";
-import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GeometryData } from "./GeometryData";
-import { createSharedArrayBufferOrArrayBuffer, getSubarray } from "../../utils/typeArrayUtils";
-import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../utils/geometryUtils";
+import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometryMap } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
-    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
+    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
     hasIndices as hasIndicesUtils
 } from "../../renderer/utils/geometry/geometryUtils";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { getSubarray } from "../../utils/typeArrayUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);

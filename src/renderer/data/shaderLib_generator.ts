@@ -3,8 +3,6 @@ import {
     GLSLChunk
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
-import { getAlphaTest, isTestAlpha } from "../worker/material/MaterialWorkerSystem";
-import { MaterialWorkerData } from "../worker/material/MaterialWorkerData";
 
 export const shaderLib_generator = {
     "shaderLibs": {
@@ -88,8 +86,11 @@ export const shaderLib_generator = {
         },
         "EndBasicShaderLib": {
             "glsl": {
-                "func": (materialIndex: number) => {
-                    var alphaTest = getAlphaTest(materialIndex, MaterialWorkerData);
+                "func": (materialIndex: number, {
+                    getAlphaTest,
+                    isTestAlpha
+                }, MaterialDataFromSystem:any) => {
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
 
                     if (isTestAlpha(alphaTest)) {
                         return {

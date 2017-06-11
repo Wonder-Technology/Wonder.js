@@ -13,6 +13,7 @@ import {
     setScreen as setScreenUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/device/deviceManagerUtils";
+import { Color } from "../../structure/Color";
 
 export var createGL = curry((canvas:HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {

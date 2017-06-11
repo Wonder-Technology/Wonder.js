@@ -6,9 +6,9 @@ import {
     IShaderLibSendConfig
 } from "../../../data/shaderLib_generator";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
-import { AttributeLocationMap, UniformLocationMap } from "../../../shader/location/LocationDataFromSystem";
 import { expect } from "wonder-expect.js";
 import { forEach } from "../../../../utils/arrayUtils";
+import { AttributeLocationMap, UniformLocationMap } from "../../../type/dataType";
 
 export var setLocationMap = ensureFunc((returnVal, gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, LocationDataFromSystem: any) => {
     it("attribute should contain position at least", () => {

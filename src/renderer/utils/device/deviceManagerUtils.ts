@@ -227,8 +227,8 @@ export var initData = (DeviceManagerDataFromSystem: any) => {
     // DeviceManagerDataFromSystem.gl = null;
     // DeviceManagerDataFromSystem.clearColor = null;
 
-    DeviceManagerDataFromSystem.writeRed = true;
-    DeviceManagerDataFromSystem.writeGreen = true;
-    DeviceManagerDataFromSystem.writeBlue = true;
-    DeviceManagerDataFromSystem.writeAlpha = true;
+    // DeviceManagerDataFromSystem.writeRed = true;
+    // DeviceManagerDataFromSystem.writeGreen = true;
+    // DeviceManagerDataFromSystem.writeBlue = true;
+    // DeviceManagerDataFromSystem.writeAlpha = true;
 }

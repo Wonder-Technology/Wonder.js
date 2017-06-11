@@ -2,9 +2,7 @@ import { IMaterialConfig } from "../../data/material_config";
 import {
     IShaderLibGenerator
 } from "../../data/shaderLib_generator";
-import { getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
-import { buildGLSLSource } from "../../shader/shaderSourceBuildSystem";
 import { setLocationMap } from "./location/locationUtils";
 import {
     getMaterialShaderLibConfig, getProgram, initShader, isProgramExist,
@@ -13,8 +11,9 @@ import {
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/glslSenderUtils";
 import { RenderCommandUniformData } from "../../type/dataType";
 import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
+import { SendUniformDataFuncDataMap } from "../../type/utilsType";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerDataFromSystem: any, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, buildGLSLSource:Function, getGL:Function, DeviceManagerDataFromSystem: any, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any, MaterialDataFromSystem:any) => {
     var program = getProgram(shaderIndex, ProgramDataFromSystem);
 
     //todo unit test
@@ -27,7 +26,7 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
         {
             vsSource,
             fsSource
-        } = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibDataFromSystem),
+        } = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibDataFromSystem, MaterialDataFromSystem),
         gl = getGL(DeviceManagerDataFromSystem, state);
 
     program = gl.createProgram();
@@ -41,12 +40,12 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
     addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendUniformConfigMap);
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertivesFunc:Function, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
-    sendAttributeDataProgram(gl, shaderIndex, geometryIndex, getVertivesFunc, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertivesFunc:Function, getAttribLocation:Function, isAttributeLocationNotExist:Function, sendBuffer:Function, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+    sendAttributeDataProgram(gl, shaderIndex, geometryIndex, getVertivesFunc, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialDataFromSystem: any, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, renderCommandUniformData:RenderCommandUniformData) => {
-    sendUniformDataProgram(gl, shaderIndex, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData);
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, funcDataMap:SendUniformDataFuncDataMap, MaterialDataFromSystem: any, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, renderCommandUniformData:RenderCommandUniformData) => {
+    sendUniformDataProgram(gl, shaderIndex, funcDataMap, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc:Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {

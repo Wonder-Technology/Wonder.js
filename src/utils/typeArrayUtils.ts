@@ -1,4 +1,3 @@
-import { isSupportSharedArrayBuffer } from "../device/WorkerDetectSystem";
 export var getSlice = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     return typeArr.slice(startIndex, endIndex);
 }
@@ -21,17 +20,4 @@ export var deleteBySwapAndReset = (sourceIndex: number, targetIndex:number, type
 export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex:number, typeArr: Float32Array | Uint32Array | Uint16Array, defaultValue:number) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
-}
-
-export var createSharedArrayBufferOrArrayBuffer = (length:number) => {
-    var Buffer:any = null;
-
-    if(isSupportSharedArrayBuffer()){
-        Buffer = SharedArrayBuffer;
-    }
-    else{
-        Buffer = ArrayBuffer;
-    }
-
-    return new Buffer(length);
 }

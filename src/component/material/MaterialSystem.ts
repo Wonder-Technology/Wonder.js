@@ -16,13 +16,14 @@ import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import {
-    createSharedArrayBufferOrArrayBuffer, deleteBySwapAndNotReset, deleteBySwapAndReset,
+    deleteBySwapAndNotReset, deleteBySwapAndReset,
     deleteOneItemBySwapAndReset
 } from "../../utils/typeArrayUtils";
 import {
-    createBufferViews, getAlphaTestDataSize, getColorDataSize, getOpacityDataSize,
+    createBufferViews,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
-    getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable
+    getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
+    getAlphaTestDataSize, getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { init as initShader } from "../../renderer/shader/ShaderSystem";
@@ -32,6 +33,7 @@ import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
 import { ProgramData } from "../../renderer/shader/program/ProgramData";
 import { LocationData } from "../../renderer/shader/location/LocationData";
 import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -103,7 +105,7 @@ else{
         // initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
         var shaderIndex = getShaderIndex(index, MaterialData);
 
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
 
         // MaterialData.workerInitList.push(index);
     }
@@ -147,6 +149,8 @@ export var getColor = (materialIndex: number, MaterialData: any) => {
 
     return color;
 }
+
+export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
     var r = color.r,
@@ -226,6 +230,8 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
 export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
+
+export var isTestAlpha = isTestAlphaUtils;
 
 export var initData = (MaterialData: any) => {
     // MaterialData.shaderMap = createMap();

@@ -1,7 +1,7 @@
 import { isBufferExist } from "./bufferUtils";
 // import { getIndexType, getIndexTypeSize, getIndices } from "../../worker/geometry/GeometryWorkerSystem";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc:Function, GeometryWorkerData: any, IndexBufferDataFromSystem: any) => {
+export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndices:Function, GeometryWorkerData: any, IndexBufferDataFromSystem: any) => {
     var buffers = IndexBufferDataFromSystem.buffers,
         buffer = buffers[geometryIndex];
 
@@ -13,7 +13,7 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
 
     buffers[geometryIndex] = buffer;
 
-    _initBuffer(gl, getIndicesFunc(geometryIndex, GeometryWorkerData), buffer, IndexBufferDataFromSystem);
+    _initBuffer(gl, getIndices(geometryIndex, GeometryWorkerData), buffer, IndexBufferDataFromSystem);
 
     return buffer;
 }

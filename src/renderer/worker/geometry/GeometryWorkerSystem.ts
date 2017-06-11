@@ -1,5 +1,14 @@
 import { createMap, isNotValidMapValue } from "../../../utils/objectUtils";
-import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../../utils/geometryUtils";
+import {
+    getIndexDataSize,
+    getUIntArrayClass,
+    getVertexDataSize,
+    getDrawMode as getDrawModeUtils,
+    getIndexType as getIndexTypeUtils,
+    getIndicesCount as getIndicesCountUtils,
+    getVerticesCount as getVerticesCountUtils,
+    hasIndices as hasIndicesUtils
+} from "../../utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../../definition/type/geometryType";
 import { EBufferType } from "../../enum/EBufferType";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
@@ -7,10 +16,6 @@ import { expect } from "wonder-expect.js";
 import { isValidVal } from "../../../utils/arrayUtils";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { getSlice } from "../../../utils/typeArrayUtils";
-import {
-    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils
-} from "../../utils/geometry/geometryUtils";
 
 export var getVertices = ensureFunc((vertices:Float32Array, index: number, GeometryWorkerData: any) => {
     it("vertices should exist", () => {

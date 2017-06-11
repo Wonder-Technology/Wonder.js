@@ -9,7 +9,6 @@ import { sendDrawData } from "../worker/draw/SendDrawRenderCommandDataSystem";
 import { init as initMaterial } from "../../component/material/MaterialSystem";
 import { MaterialData } from "../../component/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-import { ShaderData } from "../shader/ShaderData";
 import { material_config } from "../data/material_config";
 import { shaderLib_generator } from "../data/shaderLib_generator";
 import { GeometryData } from "../../component/geometry/GeometryData";
@@ -39,6 +38,7 @@ import { initData as initLocationData } from "../shader/location/LocationSystem"
 import { initData as initGLSLSenderData } from "../shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
+import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
 
 export var init = null;
 
@@ -101,7 +101,8 @@ else{
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData),
+            // draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData),
+            draw(null, render_config, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

@@ -62,3 +62,8 @@ export type ContextConfigOptionsData = {
     premultipliedAlpha: boolean;
     preserveDrawingBuffer: boolean;
 }
+
+export type BuildGLSLSourceFuncFuncDataMap = {
+    getAlphaTest:Function;
+    isTestAlpha:Function;
+}
