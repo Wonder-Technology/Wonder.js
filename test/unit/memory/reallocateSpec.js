@@ -78,7 +78,7 @@ describe("reallocate memory", function() {
             it("tag index should be update", function () {
                 gameObjectTool.disposeComponent(gameObject1, tag1);
 
-                expect(tag1.index).toEqual(-1);
+                componentTool.judgeIsComponentIndexNotRemoved(tag1, expect);
                 expect(tag2.index).toEqual(0);
                 expect(tagTool.findGameObjectsByTag("qqq")).toEqual([gameObject2]);
             });
@@ -97,8 +97,8 @@ describe("reallocate memory", function() {
                 gameObjectTool.disposeComponent(gameObject2, tag2);
 
                 expect(tag1.index).toEqual(0);
-                expect(tag2.index).toEqual(-1);
-                expect(tag3.index).toEqual(-1);
+                componentTool.judgeIsComponentIndexNotRemoved(tag2, expect);
+                componentTool.judgeIsComponentIndexNotRemoved(tag3, expect);
                 expect(tagTool.findGameObjectsByTag("qqq")).toEqual([]);
                 expect(tagTool.findGameObjectsByTag("www")).toEqual([]);
                 expect(tagTool.findGameObjectsByTag("aaa")).toEqual([gameObject1]);
@@ -596,7 +596,7 @@ describe("reallocate memory", function() {
             it("update not-removed geometry's index", function () {
                 gameObjectTool.disposeComponent(obj1, geo1);
 
-                expect(geo1.index).toEqual(-1);
+                componentTool.judgeIsComponentIndexNotRemoved(geo1, expect);
                 expect(geo2.index).toEqual(0);
                 expect(geo3.index).toEqual(1);
             });

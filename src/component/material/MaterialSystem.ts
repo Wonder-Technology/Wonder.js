@@ -5,12 +5,11 @@ import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap,
+    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwapArray,
     generateComponentIndex,
     getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { createMap, deleteBySwap, isValidMapValue } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
@@ -34,6 +33,7 @@ import { ProgramData } from "../../renderer/shader/program/ProgramData";
 import { LocationData } from "../../renderer/shader/location/LocationData";
 import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { deleteBySwap } from "../../utils/arrayUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -206,6 +206,7 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     checkIndexShouldEqualCount(MaterialData);
 
+    //todo unit test
     it("should not dispose the material which is inited in the same loop", () => {
         expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
     });
@@ -216,13 +217,11 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
         opacityDataSize = getOpacityDataSize(),
         alphaTestDataSize = getAlphaTestDataSize();
 
-
     MaterialData.count -= 1;
     MaterialData.index -= 1;
 
     lastComponentIndex = MaterialData.count;
 
-    //todo unit test
     deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
 
     deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
@@ -230,15 +229,9 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData.opacities, MaterialData.defaultOpacity);
     deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, MaterialData.alphaTests, MaterialData.defaultAlphaTest);
 
-    // deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
-
     deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
 
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
-
-
-
-    //todo unit test: shader index when delete by swap
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
@@ -256,9 +249,9 @@ export var initData = (MaterialData: any) => {
     // MaterialData.opacityMap = createMap();
     // MaterialData.alphaTestMap = createMap();
 
-    MaterialData.materialMap = createMap();
+    MaterialData.materialMap = [];
 
-    MaterialData.gameObjectMap = createMap();
+    MaterialData.gameObjectMap = [];
 
     MaterialData.index = 0;
     MaterialData.count = 0;

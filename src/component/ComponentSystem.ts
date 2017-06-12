@@ -6,6 +6,7 @@ import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { deleteBySwap, deleteVal, isNotValidMapValue } from "../utils/objectUtils";
 import { Map as MapImmutable } from "immutable";
+import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
 
 var _addHandle = (_class: any, handleMap: object, handle: Function) => {
     var typeID = getTypeIDFromClass(_class);
@@ -58,15 +59,15 @@ export var checkComponentShouldAlive = (component: Component, data: any, isAlive
     });
 }
 
-export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap: ComponentGameObjectMap, index: number, gameObject: GameObject) => {
+export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
     it("component should not exist in gameObject", () => {
         expect(gameObjectMap[index]).not.exist;
     });
-}, (gameObjectMap: ComponentGameObjectMap, index: number, gameObject: GameObject) => {
+}, (gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
     gameObjectMap[index] = gameObject;
 })
 
-export var getComponentGameObject = (gameObjectMap: ComponentGameObjectMap, index: number) => {
+export var getComponentGameObject = (gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number) => {
     return gameObjectMap[index];
 }
 
@@ -83,16 +84,27 @@ export var deleteComponent = requireCheckFunc((index: number, componentMap: Comp
 
     deleteVal(index, componentMap);
 })
+//
+// export var deleteComponentBySwap = requireCheckFunc((sourceIndex: number, targetIndex: number | null, componentMap: ComponentMap) => {
+//     it("targetIndex should >= 0", () => {
+//         expect(targetIndex).gte(0);
+//     });
+// }, (sourceIndex: number, targetIndex: number, componentMap: ComponentMap) => {
+//     componentMap[targetIndex].index = sourceIndex;
+//     markComponentIndexRemoved(componentMap[sourceIndex]);
+//
+//     deleteBySwap(sourceIndex, targetIndex, componentMap);
+// })
 
-export var deleteComponentBySwap = requireCheckFunc((sourceIndex: number, targetIndex: number | null, componentMap: ComponentMap) => {
+export var deleteComponentBySwapArray = requireCheckFunc((sourceIndex: number, targetIndex: number | null, componentMap: Array<Component>) => {
     it("targetIndex should >= 0", () => {
         expect(targetIndex).gte(0);
     });
-}, (sourceIndex: number, targetIndex: number, componentMap: ComponentMap) => {
+}, (sourceIndex: number, targetIndex: number, componentMap: Array<Component>) => {
     componentMap[targetIndex].index = sourceIndex;
     markComponentIndexRemoved(componentMap[sourceIndex]);
 
-    deleteBySwap(sourceIndex, targetIndex, componentMap);
+    deleteBySwapArray(sourceIndex, targetIndex, componentMap);
 })
 
 export var markComponentIndexRemoved = (component: Component) => {

@@ -1,7 +1,6 @@
-import { Color } from "../../structure/Color";
-import { ComponentGameObjectMap } from "../ComponentData";
-import { ComponentMap } from "../ComponentSystem";
 import { MaterialClassNameTable, ShaderIndexTable } from "../../definition/type/materialType";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Material } from "./Material";
 
 export class MaterialData {
     public static index: number = null;
@@ -23,7 +22,7 @@ export class MaterialData {
     public static materialClassNameTable: MaterialClassNameTable = null;
     public static shaderIndexTable: ShaderIndexTable = null;
 
-    public static gameObjectMap: ComponentGameObjectMap = null;
+    public static gameObjectMap: Array<GameObject> = null;
 
-    public static materialMap: ComponentMap = null;
+    public static materialMap: Array<Material> = null;
 }

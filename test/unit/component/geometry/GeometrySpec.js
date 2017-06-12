@@ -125,7 +125,7 @@ describe("Geometry", function () {
 
             gameObjectTool.disposeComponent(gameObject, geo);
 
-            expect(geo.index).toEqual(-1);
+            componentTool.judgeIsComponentIndexNotRemoved(geo, expect);
         });
 
         describe("test dispose map data", function() {

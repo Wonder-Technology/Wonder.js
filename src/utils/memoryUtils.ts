@@ -197,7 +197,6 @@ export var reAllocateTagMap = (TagData: any) => {
     TagData.index = tagIndex;
 };
 
-//todo unit test
 export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any) => {
     checkIndexShouldEqualCount(GeometryData);
 }, (GeometryData: any) => {

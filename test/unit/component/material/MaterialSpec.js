@@ -32,7 +32,7 @@ describe("Material", function() {
         });
 
         it("default color is #ffffff", function(){
-            colorTool.isEqual(materialTool.getColor(material), Color.create("#ffffff"), expect);
+            colorTool.judgeIsEqual(materialTool.getColor(material), Color.create("#ffffff"), expect);
         });
     });
 
@@ -46,7 +46,7 @@ describe("Material", function() {
 
             materialTool.setColor(material, color);
 
-            colorTool.isEqual(materialTool.getColor(material), color, expect);
+            colorTool.judgeIsEqual(materialTool.getColor(material), color, expect);
         });
     });
 
@@ -133,42 +133,112 @@ describe("Material", function() {
     describe("disposeComponent", function() {
         var count;
 
+        function judgeNotAlive(mat, methodName, expect) {
+            componentTool.judgeNotAlive(mat, methodName, materialTool, expect);
+        }
+
         beforeEach(function(){
             count = MaterialData.count;
         });
 
-        it("remove data by swap", function () {
-            var mat2 = basicMaterialTool.create();
-            var obj2 = gameObjectTool.create();
-            gameObjectTool.addComponent(obj2, mat2);
-            sceneTool.addGameObject(obj2);
-
-            gameObjectTool.disposeComponent(obj, material);
-
-            // expect(materialTool.getColor(material)).toBeUndefined();
-            expect(materialTool.getColor(mat2)).toBeExist();
-        });
-
         describe("test remove data", function() {
             beforeEach(function(){
-                gameObjectTool.disposeComponent(obj, material);
             });
 
-            it("remove from gameObject", function () {
-                expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
-                // expect(materialTool.getGameObject(material)).toBeUndefined();
-            });
-            // it("remove from shaderMap", function () {
-            //     expect(MaterialData.shaderMap[material.index]).toBeUndefined();
-            // });
-            // it("remove from materialClassNameMap", function () {
-            //     expect(MaterialData.materialClassNameMap[material.index]).toBeUndefined();
-            // });
-            // it("remove from colorMap", function () {
-            //     expect(materialTool.getColor(material)).toBeUndefined();
-            // });
-            it("count - 1", function () {
-                expect(MaterialData.count).toEqual(count - 1);
+            describe("remove by swap with last one", function() {
+                var obj2,mat2;
+
+                beforeEach(function(){
+                    mat2 = basicMaterialTool.create();
+                    obj2 = gameObjectTool.create();
+                    gameObjectTool.addComponent(obj2, mat2);
+                    sceneTool.addGameObject(obj2);
+                });
+
+                describe("test remove from map", function() {
+                    beforeEach(function(){
+                    });
+
+                    describe("not reset removed one's value", function(){
+                        it("remove from gameObject", function () {
+                            it("swap with last one and remove the last one", function () {
+                                gameObjectTool.disposeComponent(obj, material);
+
+                                expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
+                                expect(gameObjectTool.hasComponent(obj2, wd.Material)).toBeTruthy();
+                                judgeNotAlive(material, "getGameObject", expect);
+                                expect(materialTool.getGameObject(mat2)).toEqual(obj2);
+                                expect(MaterialData.gameObjectMap.length).toEqual(1);
+                            });
+                        });
+                    });
+                });
+
+                describe("test remove from type array", function() {
+                    beforeEach(function(){
+                    });
+
+                    describe("not reset removed one's value", function(){
+                        it("remove from shaderIndices", function () {
+                            MaterialData.shaderIndices = new Uint32Array([10,2]);
+
+                            gameObjectTool.disposeComponent(obj, material);
+
+                            expect(MaterialData.shaderIndices[0]).toEqual(2);
+                            expect(MaterialData.shaderIndices[1]).toEqual(2);
+                        });
+                    });
+
+                    describe("reset removed one's value", function(){
+                        it("remove from colors", function () {
+                            var color1 = Color.create("rgb(0.1,0.2,0.3)");
+                            var color2 = Color.create("rgb(0.4,0.2,0.3)");
+                            materialTool.setColor(material, color1);
+                            materialTool.setColor(mat2, color2);
+
+                            gameObjectTool.disposeComponent(obj, material);
+
+                            colorTool.judgeIsEqual(materialTool.getColor(componentTool.createComponent(0)), color2, expect);
+                            colorTool.judgeIsEqual(materialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(MaterialData), expect);
+                        });
+                        it("remove from opacities", function () {
+                            materialTool.setOpacity(material, 0.3);
+                            materialTool.setOpacity(mat2, 0.5);
+
+                            gameObjectTool.disposeComponent(obj, material);
+
+                            expect(MaterialData.opacities[0]).toEqual(0.5);
+                            expect(MaterialData.opacities[1]).toEqual(MaterialData.defaultOpacity);
+                        });
+                        it("remove from alphaTests", function () {
+                            materialTool.setAlphaTest(material, 0.3);
+                            materialTool.setAlphaTest(mat2, 0.5);
+
+                            gameObjectTool.disposeComponent(obj, material);
+
+                            expect(MaterialData.alphaTests[0]).toEqual(0.5);
+                            expect(MaterialData.alphaTests[1]).toEqual(MaterialData.defaultAlphaTest);
+                        });
+                    });
+                });
+
+                describe("test remove from materialMap", function() {
+                    beforeEach(function(){
+
+                    });
+
+                    it("mark material removed", function () {
+                        gameObjectTool.disposeComponent(obj, material);
+
+                        componentTool.judgeIsComponentIndexNotRemoved(material, expect);
+                    });
+                    it("swap with last one and remove the last one", function () {
+                        gameObjectTool.disposeComponent(obj, material);
+
+                        expect(MaterialData.materialMap[0]).toEqual(mat2);
+                        expect(MaterialData.materialMap.length).toEqual(1);
+                    });
+                });
             });
         });
 
@@ -177,47 +247,23 @@ describe("Material", function() {
 
             var mat2 = basicMaterialTool.create();
 
+
             gameObjectTool.addComponent(obj, mat2);
 
             materialTool.initMaterial(mat2);
 
-
-            // expect(materialTool.getColor(material)).toBeUndefined();
             expect(materialTool.getColor(mat2)).toBeExist();
         });
-
         it("if material is disposed, operate it should error", function () {
-            var errMsg = "component should alive";
-
             gameObjectTool.disposeComponent(obj, material);
 
-            expect(function () {
-                materialTool.getColor(material);
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.setColor(material, Color.create());
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.getOpacity(material);
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.setOpacity(material, 1);
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.getGameObject(material);
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.getAlphaTest(material);
-            }).toThrow(errMsg);
-
-            expect(function () {
-                materialTool.setAlphaTest(material, 1);
-            }).toThrow(errMsg);
+            judgeNotAlive(material, "getGameObject", expect);
+            judgeNotAlive(material, "getColor", expect);
+            judgeNotAlive(material, "setColor", expect, Color.create());
+            judgeNotAlive(material, "getOpacity", expect);
+            judgeNotAlive(material, "setOpacity", expect, 0.5);
+            judgeNotAlive(material, "getAlphaTest", expect);
+            judgeNotAlive(material, "setAlphaTest", expect, 0.5);
         });
     });
 });

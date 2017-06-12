@@ -5,18 +5,15 @@ export var isNotValidVal = (val: any) => isUndefined(val);
 
 export var isValidVal = (val: any) => isNotUndefined(val);
 
-export var deleteBySwap = (index: number, array: Array<any>) => {
-    var last = array.length - 1,
-        temp = null;
+export var deleteBySwap = (index: number, lastIndex:number, array: Array<any>) => {
+    var temp = null;
 
-    if (last === -1) {
+    if (lastIndex === -1) {
         return null;
     }
 
-    temp = array[last];
+    temp = array[lastIndex];
 
-    //todo optimize: not set last, directly pop it
-    array[last] = array[index];
     array[index] = temp;
 
     array.pop();
