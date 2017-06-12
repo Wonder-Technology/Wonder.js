@@ -186,6 +186,67 @@ describe("Geometry", function () {
                 geometryTool.getGameObject(geo);
             }).toThrow(errMsg);
         });
+
+        describe("if dispose too many components", function() {
+            var MemoryConfig = wd.MemoryConfig;
+            var ArrayBufferData = wd.ArrayBufferData;
+            var IndexBufferData = wd.IndexBufferData;
+
+            beforeEach(function(){
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+            });
+
+            describe("dispose buffers", function(){
+                it("test", function () {
+                    var geo1 = boxGeometryTool.create();
+                    var geo2 = boxGeometryTool.create();
+
+                    var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1);
+                    var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);
+
+                    var obj1 = data1.gameObject,
+                        obj2 = data2.gameObject;
+
+                    directorTool.init(sandbox);
+
+
+                    var buffer1 = {},
+                        buffer2 = {a:2},
+                        buffer3 = {a:3},
+                        buffer4 = {a:4};
+
+                    var gl = stateTool.getGLFromFakeGLState(null);
+                    gl.createBuffer.onCall(0).returns(buffer1);
+                    gl.createBuffer.onCall(1).returns(buffer2);
+                    gl.createBuffer.onCall(2).returns(buffer3);
+                    gl.createBuffer.onCall(3).returns(buffer4);
+
+
+                    directorTool.loopBody(null, null);
+
+                    // var arrayBuffer1 = ArrayBufferData.buffers[geo1.index];
+                    // var arrayBuffer2 = ArrayBufferData.buffers[geo2.index];
+                    // var indexBuffer1 = IndexBufferData.buffers[geo1.index];
+                    // var indexBuffer2 = IndexBufferData.buffers[geo2.index];
+
+
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+
+                    expect(gl.deleteBuffer.callCount).toEqual(0);
+
+
+
+                    gameObjectTool.disposeComponent(obj2, geo2);
+
+                    expect(gl.deleteBuffer.callCount).toEqual(4);
+                    expect(gl.deleteBuffer.firstCall).toCalledWith(buffer1)
+                    expect(gl.deleteBuffer.secondCall).toCalledWith(buffer2)
+                    expect(gl.deleteBuffer.thirdCall).toCalledWith(buffer3)
+                    expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
+                });
+            });
+        });
     });
 
     describe("initGeometry", function () {

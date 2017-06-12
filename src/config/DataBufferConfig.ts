@@ -2,7 +2,7 @@ export const DataBufferConfig = {
     //todo contract: should check whether exceed max count!
 
     //20k
-    transformDataBufferCount: 20 * 1000,
+    transformDataBufferCount: 200 * 1000,
     //1000k vertices
     geometryDataBufferCount: 1000 * 1000,
 

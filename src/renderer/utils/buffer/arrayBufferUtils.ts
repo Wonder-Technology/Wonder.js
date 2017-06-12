@@ -14,7 +14,7 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
 
     buffers[geometryIndex] = buffer;
 
-    _initBuffer(gl, getVertices(geometryIndex, GeometryWorkerData), buffer, ArrayBufferDataFromSystem);
+    _initBuffer(gl, getVertices(geometryIndex, GeometryWorkerData), buffer);
 
     ArrayBufferDataFromSystem.bufferDataMap[geometryIndex] = {
         size: 3,
@@ -24,15 +24,15 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
     return buffer;
 }
 
-var _initBuffer = (gl: WebGLRenderingContext, data: Float32Array, buffer: WebGLBuffer, ArrayBufferDataFromSystemFromSystem: any) => {
+var _initBuffer = (gl: WebGLRenderingContext, data: Float32Array, buffer: WebGLBuffer) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
 
-    _resetBindedBuffer(gl, ArrayBufferDataFromSystemFromSystem);
+    _resetBindedBuffer(gl);
 }
 
-var _resetBindedBuffer = (gl: WebGLRenderingContext, ArrayBufferDataFromSystemFromSystem: any) => {
+var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
 

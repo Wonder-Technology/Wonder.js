@@ -225,7 +225,8 @@ export var reAllocateGeometry = ensureFunc((returnVal:any, GeometryData: any) =>
         newVerticesCacheMap: Array<number> = [],
         newIndicesCacheMap: Array<number> = [],
         newVertices:Array<number> = [],
-        newIndices:Array<number> = [];
+        newIndices:Array<number> = [],
+        disposedIndexArray:Array<number> = [];
 
     for(let i = 0; i < index; i++){
         let verticesInfo = verticesInfoList[i],
@@ -235,6 +236,7 @@ export var reAllocateGeometry = ensureFunc((returnVal:any, GeometryData: any) =>
         // val = gameObjectMap[i];
 
         if (isNotValidMapValue(val)) {
+            disposedIndexArray.push(i);
             continue;
         }
 
@@ -285,6 +287,8 @@ export var reAllocateGeometry = ensureFunc((returnVal:any, GeometryData: any) =>
     GeometryData.indicesOffset = newIndicesOffset;
 
     GeometryData.index = newIndexInArrayBuffer;
+
+    return disposedIndexArray;
 })
 
 var _updateComponentIndex = (componentMap:object, newComponentMap:object, oldIndex:number, newIndex:number) => {

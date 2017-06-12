@@ -35,6 +35,10 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
+import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
+import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
+import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
+import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -191,16 +195,23 @@ export var disposeComponent = (component: Geometry) => {
     GeometryData.disposeCount += 1;
     GeometryData.isReallocate = false;
 
-
-
-
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
-        reAllocateGeometry(GeometryData);
+        let disposedIndexArray = reAllocateGeometry(GeometryData);
+
+        //todo handle worker
+        _disposeBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData);
 
         clearWorkerInfoList(GeometryData);
         GeometryData.isReallocate = true;
 
         GeometryData.disposeCount = 0;
+    }
+}
+
+var _disposeBuffers = (disposedIndexArray:Array<number>, ArrayBufferData:any, IndexBufferData:any) => {
+    for(let index of disposedIndexArray){
+        disposeArrayBuffer(index, ArrayBufferData);
+        disposeIndexBuffer(index, IndexBufferData);
     }
 }
 

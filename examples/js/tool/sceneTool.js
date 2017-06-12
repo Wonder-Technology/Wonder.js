@@ -10,6 +10,19 @@ var sceneTool = (function () {
         removeGameObject: function(gameObj){
             wd.removeSceneChild(_getScene(), gameObj);
         },
+        addCameraObject: function(){
+            var cameraObj = gameObjectTool.create();
+            var cameraController = cameraControllerTool.create();
+
+            cameraControllerTool.setCameraNear(cameraController, 0.1);
+            cameraControllerTool.setCameraFar(cameraController, 1000);
+            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
+
+            gameObjectTool.addComponent(cameraObj, cameraController);
+
+            sceneTool.addGameObject(cameraObj);
+        },
         prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
             var isNotAddCamera$ = isNotAddCamera === true ? true : false;
             var geo = null;
@@ -38,17 +51,7 @@ var sceneTool = (function () {
             var cameraController = null;
 
             if(!isNotAddCamera){
-                var cameraObj = gameObjectTool.create();
-                var cameraController = cameraControllerTool.create();
-
-                cameraControllerTool.setCameraNear(cameraController, 0.1);
-                cameraControllerTool.setCameraFar(cameraController, 1000);
-                cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
-                cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
-
-                gameObjectTool.addComponent(cameraObj, cameraController);
-
-                sceneTool.addGameObject(cameraObj);
+                sceneTool.addCameraObject();
             }
 
 
