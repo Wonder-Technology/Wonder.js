@@ -37,7 +37,7 @@ import {
     getLocalPositionCache, getLocalToWorldMatrixCache, getPositionCache, setLocalPositionCache,
     setLocalToWorldMatrixCache, setPositionCache
 } from "./cacheSystem";
-import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateThreeDTransform } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { expect } from "wonder-expect.js";
@@ -122,7 +122,7 @@ export var disposeComponent = (transform: ThreeDTransform) => {
     ThreeDTransformData.disposeCount += 1;
 
     if (isDisposeTooManyComponents(ThreeDTransformData.disposeCount)) {
-        reAllocateThreeDTransformMap(ThreeDTransformData);
+        reAllocateThreeDTransform(ThreeDTransformData);
 
         ThreeDTransformData.disposeCount = 0;
     }

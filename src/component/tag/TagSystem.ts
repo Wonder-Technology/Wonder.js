@@ -10,7 +10,7 @@ import {
 import { createMap, deleteVal } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
 import { TagData } from "./TagData";
-import { isDisposeTooManyComponents, reAllocateTagMap } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateTag } from "../../utils/memoryUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -236,7 +236,7 @@ export var disposeComponent = ensureFunc((returnVal, tag: Tag) => {
     TagData.disposeCount += 1;
 
     if (isDisposeTooManyComponents(TagData.disposeCount)) {
-        reAllocateTagMap(TagData);
+        reAllocateTag(TagData);
 
         TagData.disposeCount = 0;
     }

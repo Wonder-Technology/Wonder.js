@@ -26,7 +26,7 @@ import {
     hasIndices as hasIndicesUtils
 } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
-import { isDisposeTooManyComponents, reAllocateGeometryMap } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
 
@@ -191,8 +191,11 @@ export var disposeComponent = (component: Geometry) => {
     GeometryData.disposeCount += 1;
     GeometryData.isReallocate = false;
 
+
+
+
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
-        reAllocateGeometryMap(GeometryData);
+        reAllocateGeometry(GeometryData);
 
         clearWorkerInfoList(GeometryData);
         GeometryData.isReallocate = true;

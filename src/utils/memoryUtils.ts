@@ -29,7 +29,7 @@ var _setArrayVal = (arr: Array<any>, index: number, val: any) => {
     arr[index] = val;
 }
 
-export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
+export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
     var val: any = null,
         newParentMap = {},
         newChildrenMap = {},
@@ -79,7 +79,7 @@ export var reAllocateThreeDTransformMap = (ThreeDTransformData: any) => {
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 }
 
-export var reAllocateGameObjectMap = (GameObjectData: any) => {
+export var reAllocateGameObject = (GameObjectData: any) => {
     let val: any = null,
         newParentMap = {},
         newChildrenMap = {},
@@ -114,7 +114,7 @@ export var reAllocateGameObjectMap = (GameObjectData: any) => {
     GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
 
-export var reAllocateTagMap = (TagData: any) => {
+export var reAllocateTag = (TagData: any) => {
     var usedSlotCountMap = TagData.usedSlotCountMap,
         slotCountMap = TagData.slotCountMap,
         indexMap = TagData.indexMap,
@@ -197,7 +197,7 @@ export var reAllocateTagMap = (TagData: any) => {
     TagData.index = tagIndex;
 };
 
-export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any) => {
+export var reAllocateGeometry = ensureFunc((returnVal:any, GeometryData: any) => {
     checkIndexShouldEqualCount(GeometryData);
 }, (GeometryData: any) => {
     let val: any = null,

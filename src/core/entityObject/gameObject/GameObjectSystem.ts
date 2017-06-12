@@ -14,7 +14,7 @@ import { Material } from "../../../component/material/Material";
 import { forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
 import { removeChildEntity } from "../../../utils/entityUtils";
-import { isDisposeTooManyComponents, reAllocateGameObjectMap } from "../../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
 
 export var create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
@@ -72,7 +72,7 @@ export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectDa
 
     //todo ThreeDThransformSystem,here add contract check:not buffer nearly full
     if (isDisposeTooManyComponents(GameObjectData.disposeCount)) {
-        reAllocateGameObjectMap(GameObjectData);
+        reAllocateGameObject(GameObjectData);
 
         GameObjectData.disposeCount = 0;
     }
