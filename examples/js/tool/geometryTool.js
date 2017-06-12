@@ -9,10 +9,10 @@ var geometryTool = (function () {
         getGameObject:wd.getGeometryGameObject,
 
         setIndices: function (index, data) {
-          wd.GeometryData.indicesMap[index] = data;
+          wd.setGeometryIndices(index, data, wd.GeometryData);
         },
         setVertices: function (index, data) {
-            wd.GeometryData.verticesMap[index] = data;
+            wd.setGeometryVertices(index, data, wd.GeometryData);
         },
         setIndexType: function (type) {
             wd.GeometryData.indexType = type;

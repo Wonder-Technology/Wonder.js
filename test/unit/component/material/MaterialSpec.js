@@ -32,7 +32,7 @@ describe("Material", function() {
         });
 
         it("default color is #ffffff", function(){
-            expect(materialTool.getColor(material)).toEqual(Color.create("#ffffff"));
+            colorTool.isEqual(materialTool.getColor(material), Color.create("#ffffff"), expect);
         });
     });
 
@@ -46,7 +46,7 @@ describe("Material", function() {
 
             materialTool.setColor(material, color);
 
-            expect(materialTool.getColor(material)).toEqual(color);
+            colorTool.isEqual(materialTool.getColor(material), color, expect);
         });
     });
 
@@ -65,8 +65,8 @@ describe("Material", function() {
 
         });
 
-        it("has no default value", function(){
-            expect(materialTool.getAlphaTest(material)).toBeUndefined();
+        it("default is -1", function(){
+            expect(materialTool.getAlphaTest(material)).toEqual(-1);
         });
     });
     
@@ -77,12 +77,11 @@ describe("Material", function() {
         it("same Material(same class name) share one shader", function(){
             var mat2 = basicMaterialTool.create();
             var mat3 = basicMaterialTool.create();
-            var shader = new Shader();
-            shader.index = 0;
+            var shaderIndex = 0;
 
-            expect(materialTool.getShader({index:0})).toEqual(shader);
-            expect(materialTool.getShader({index:1})).toEqual(shader);
-            expect(materialTool.getShader({index:2})).toEqual(shader);
+            expect(materialTool.getShaderIndex(material.index)).toEqual(shaderIndex);
+            expect(materialTool.getShaderIndex(mat2.index)).toEqual(shaderIndex);
+            expect(materialTool.getShaderIndex(mat3.index)).toEqual(shaderIndex);
         });
     });
 
@@ -146,7 +145,7 @@ describe("Material", function() {
 
             gameObjectTool.disposeComponent(obj, material);
 
-            expect(materialTool.getColor(material)).toBeUndefined();
+            // expect(materialTool.getColor(material)).toBeUndefined();
             expect(materialTool.getColor(mat2)).toBeExist();
         });
 
@@ -157,17 +156,17 @@ describe("Material", function() {
 
             it("remove from gameObject", function () {
                 expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
-                expect(materialTool.getGameObject(material)).toBeUndefined();
+                // expect(materialTool.getGameObject(material)).toBeUndefined();
             });
-            it("remove from shaderMap", function () {
-                expect(MaterialData.shaderMap[material.index]).toBeUndefined();
-            });
-            it("remove from materialClassNameMap", function () {
-                expect(MaterialData.materialClassNameMap[material.index]).toBeUndefined();
-            });
-            it("remove from colorMap", function () {
-                expect(materialTool.getColor(material)).toBeUndefined();
-            });
+            // it("remove from shaderMap", function () {
+            //     expect(MaterialData.shaderMap[material.index]).toBeUndefined();
+            // });
+            // it("remove from materialClassNameMap", function () {
+            //     expect(MaterialData.materialClassNameMap[material.index]).toBeUndefined();
+            // });
+            // it("remove from colorMap", function () {
+            //     expect(materialTool.getColor(material)).toBeUndefined();
+            // });
             it("count - 1", function () {
                 expect(MaterialData.count).toEqual(count - 1);
             });
@@ -183,8 +182,42 @@ describe("Material", function() {
             materialTool.initMaterial(mat2);
 
 
-            expect(materialTool.getColor(material)).toBeUndefined();
+            // expect(materialTool.getColor(material)).toBeUndefined();
             expect(materialTool.getColor(mat2)).toBeExist();
+        });
+
+        it("if material is disposed, operate it should error", function () {
+            var errMsg = "component should alive";
+
+            gameObjectTool.disposeComponent(obj, material);
+
+            expect(function () {
+                materialTool.getColor(material);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.setColor(material, Color.create());
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.getOpacity(material);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.setOpacity(material, 1);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.getGameObject(material);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.getAlphaTest(material);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                materialTool.setAlphaTest(material, 1);
+            }).toThrow(errMsg);
         });
     });
 });

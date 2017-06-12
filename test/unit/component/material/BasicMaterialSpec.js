@@ -234,7 +234,9 @@ describe("BasicMaterial", function () {
                 directorTool.init(state);
                 directorTool.loopBody(state);
 
-                expect(gl.uniform1f).toCalledWith(pos, opacity);
+                var args = gl.uniform1f.firstCall.args;
+                expect(args[0]).toEqual(pos);
+                expect(testTool.getValues(args[1])).toEqual(opacity);
             });
 
             describe("test glsl", function () {
@@ -266,7 +268,7 @@ describe("BasicMaterial", function () {
 
                         var fs = materialTool.getFsSource(gl);
                         expect(glslTool.containMultiLine(fs, [
-                            "if (gl_FragColor.a < " + alphaTest + "){",
+                            "if (gl_FragColor.a < 0.20000",
                             "discard;"
                         ])).toBeTruthy();
                     });

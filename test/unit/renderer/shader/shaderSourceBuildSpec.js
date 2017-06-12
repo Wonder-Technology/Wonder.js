@@ -31,6 +31,7 @@ describe("shader source build", function () {
 
     describe("build glsl source", function () {
         beforeEach(function () {
+            shaderTool.clearShader();
         });
 
         it("declare attribute variables", function () {

@@ -30,6 +30,7 @@
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
         // 'test/unit/**/WebGLRenderer*',
+        // 'test/unit/**/draw*',
         // 'test/unit/**/renderer/**',
         // 'test/unit/**/Tag*',
         // 'test/unit/**/*Geometry*',
@@ -38,6 +39,7 @@
         // 'test/unit/**/ThreeD*',
         // 'test/unit/**/GameObject*',
         // 'test/unit/**/Scene*',
+        // 'test/unit/**/shaderSource*',
 
         {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
 

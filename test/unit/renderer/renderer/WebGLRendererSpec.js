@@ -37,6 +37,7 @@ describe("WebGLRenderer", function() {
                 directorTool.init(state);
                 directorTool.loopBody(state);
             });
+
             describe("clear color", function () {
                 it("if color is as the same as the last clear color, not clear", function () {
                     directorTool.loopBody(state);

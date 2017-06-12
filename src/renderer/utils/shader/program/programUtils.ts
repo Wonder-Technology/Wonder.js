@@ -2,11 +2,11 @@ import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescr
 import { expect } from "wonder-expect.js";
 import { IMaterialConfig } from "../../../data/material_config";
 import { EVariableType } from "../../../enum/EVariableType";
-import { error, info, log } from "../../../../utils/Log";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
 import { forEach } from "../../../../utils/arrayUtils";
 import { RenderCommandUniformData } from "../../../type/dataType";
+import { Log } from "../../../../utils/Log";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     it("program should exist", () => {
@@ -147,10 +147,10 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
         return shader;
     }
     else {
-        log(gl.getShaderInfoLog(shader));
+        Log.log(gl.getShaderInfoLog(shader));
         // Log.log("attributes:\n", this.attributes);
         // Log.log("uniforms:\n", this.uniforms);
-        log("source:\n", glslSource);
+        Log.log("source:\n", glslSource);
     }
 }
 
@@ -207,7 +207,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
                 sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             default:
-                error(true, info.FUNC_INVALID("EVariableType:", type));
+                Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
                 break;
         }
     }

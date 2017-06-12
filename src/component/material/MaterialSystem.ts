@@ -167,21 +167,37 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
 
 export var getOpacity = getOpacityUtils;
 
-export var setOpacity = (materialIndex: number, opacity: number, MaterialData: any) => {
+export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number, MaterialData: any) => {
+    it("opacity should be number", () => {
+        expect(opacity).be.a("number");
+    });
+    it("opacity should <= 1 && >= 0", () => {
+        expect(opacity).lte(1);
+        expect(opacity).gte(0);
+    });
+}, (materialIndex: number, opacity: number, MaterialData: any) => {
     var size = getOpacityDataSize(),
         index = materialIndex * size;
 
     MaterialData.opacities[index] = opacity;
-}
+})
 
 export var getAlphaTest = getAlphaTestUtils;
 
-export var setAlphaTest = (materialIndex: number, alphaTest: number, MaterialData: any) => {
+export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: number, MaterialData: any) => {
+    it("alphaTest should be number", () => {
+        expect(alphaTest).be.a("number");
+    });
+    it("alphaTest should <= 1 && >= 0", () => {
+        expect(alphaTest).lte(1);
+        expect(alphaTest).gte(0);
+    });
+}, (materialIndex: number, alphaTest: number, MaterialData: any) => {
     var size = getAlphaTestDataSize(),
         index = materialIndex * size;
 
     MaterialData.alphaTests[index] = alphaTest;
-}
+})
 
 export var addComponent = (component: Material, gameObject: GameObject) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);

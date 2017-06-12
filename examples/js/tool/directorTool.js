@@ -22,7 +22,7 @@ var directorTool = (function(){
         loopBody: function (state, time) {
             var director = this.getDirector();
 
-            director._loopBody(time, state);
+            director._loopBody(time || 0, state);
         },
         getDirector: function(){
             return wd.Director.getInstance();

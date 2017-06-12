@@ -109,13 +109,13 @@ describe("Geometry", function () {
             it("remove vertices", function () {
                 gameObjectTool.disposeComponent(gameObject, geo);
 
-                expect(geometryTool.getVertices(geo)).toBeUndefined();
+                // expect(geometryTool.getVertices(geo)).toBeUndefined();
                 expect(geometryTool.getVertices(geo2)).toBeExist();
             });
             it("remove indices", function () {
                 gameObjectTool.disposeComponent(gameObject, geo);
 
-                expect(geometryTool.getIndices(geo)).toBeUndefined();
+                // expect(geometryTool.getIndices(geo)).toBeUndefined();
                 expect(geometryTool.getIndices(geo2)).toBeExist();
             });
         });
@@ -127,12 +127,12 @@ describe("Geometry", function () {
                 gameObjectTool.disposeComponent(gameObject, geo);
             });
 
-            it("remove config data", function () {
-                expect(geometryTool.getConfigData(geo)).toBeUndefined();
-            });
+            // it("remove config data", function () {
+            //     expect(geometryTool.getConfigData(geo)).toBeUndefined();
+            // });
             it("remove from gameObject", function () {
                 expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
-                expect(geometryTool.getGameObject(geo)).toBeUndefined();
+                // expect(geometryTool.getGameObject(geo)).toBeUndefined();
             });
         });
 
@@ -147,8 +147,36 @@ describe("Geometry", function () {
 
             geometryTool.initGeometry(geo2);
 
-            expect(testTool.getValues(geometryTool.getVertices(geo))).toBeUndefined();
+            // expect(testTool.getValues(geometryTool.getVertices(geo))).toBeUndefined();
             expect(testTool.getValues(geometryTool.getVertices(geo2))).toEqual(defaultVerticesData);
+        });
+
+        it("if geometry is disposed, operate it should error", function () {
+            directorTool.init(sandbox);
+
+            var errMsg = "component should alive";
+
+            gameObjectTool.disposeComponent(gameObject, geo);
+
+            expect(function () {
+                geometryTool.getVertices(geo);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                geometryTool.getDrawMode(geo);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                geometryTool.getIndices(geo);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                geometryTool.getConfigData(geo);
+            }).toThrow(errMsg);
+
+            expect(function () {
+                geometryTool.getGameObject(geo);
+            }).toThrow(errMsg);
         });
     });
 

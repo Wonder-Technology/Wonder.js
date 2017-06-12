@@ -1,6 +1,5 @@
 import { forEach, hasDuplicateItems } from "../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../renderConfigUtils";
-import { error, info } from "../../../../utils/Log";
 import {
     ISendAttributeConfig, ISendUniformConfig,
     IShaderLibContentGenerator
@@ -10,6 +9,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescr
 import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../utils/objectUtils";
 import { RenderCommandUniformData, UniformShaderLocationMap, SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../type/dataType";
+import { Log } from "../../../../utils/Log";
 
 export var getUniformData = (field: string, from: string, getColorArr3:Function, getOpacity:Function, renderCommandUniformData: RenderCommandUniformData, MaterialDataFromSystem: any) => {
     var data: any = null;
@@ -22,7 +22,7 @@ export var getUniformData = (field: string, from: string, getColorArr3:Function,
             data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, getColorArr3, getOpacity,  MaterialDataFromSystem);
             break;
         default:
-            error(true, info.FUNC_UNKNOW(`from:${from}`));
+            Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));
             break;
     }
 
@@ -40,7 +40,7 @@ var _getUnifromDataFromMaterial = (field: string, materialIndex: number, getColo
             data = getOpacity(materialIndex, MaterialDataFromSystem);
             break;
         default:
-            error(true, info.FUNC_UNKNOW(`field:${field}`));
+            Log.error(true, Log.info.FUNC_UNKNOW(`field:${field}`));
             break;
     }
 

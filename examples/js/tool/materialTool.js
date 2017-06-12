@@ -1,6 +1,5 @@
 var materialTool = (function () {
     return {
-        getShader:wd.getMaterialShader,
         getColor:wd.getMaterialColor,
         setColor:wd.setMaterialColor,
         getOpacity:wd.getMaterialOpacity,
@@ -10,6 +9,9 @@ var materialTool = (function () {
         setAlphaTest: wd.setMaterialAlphaTest,
         initMaterial: wd.initMaterial,
 
+        getShaderIndex: function(materialIndex){
+            return wd.getShaderIndex(materialIndex, wd.MaterialData);
+        },
         resetData: function(){
             wd.initMaterialData(wd.MaterialData);
         },

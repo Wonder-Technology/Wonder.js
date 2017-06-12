@@ -5,9 +5,9 @@ import { expect } from "wonder-expect.js";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
     addDisposeHandle as addDisposeHandleToMap,
-    checkComponentShouldAlive, generateComponentIndex, getComponentGameObject, markComponentIndexRemoved
+    generateComponentIndex, getComponentGameObject, markComponentIndexRemoved
 } from "../ComponentSystem";
-import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { createMap, deleteVal } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
 import { TagData } from "./TagData";
 import { isDisposeTooManyComponents, reAllocateTagMap } from "../../utils/memoryUtils";
@@ -208,12 +208,6 @@ var _convertTagIndexToIndexInArray = (tagIndex: number, TagData: any) => {
 
 var _convertIndexInArrayToTagIndex = (indexInTagArray: number, TagData: any) => {
     return TagData.indexMap[indexInTagArray];
-}
-
-export var checkShouldAlive = (tag: Tag, TagData: any) => {
-    checkComponentShouldAlive(tag, TagData, (tag: Tag, TagData: any) => {
-        return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
-    })
 }
 
 export var disposeComponent = ensureFunc((returnVal, tag: Tag) => {

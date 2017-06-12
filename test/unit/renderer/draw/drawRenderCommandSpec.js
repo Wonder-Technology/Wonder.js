@@ -102,57 +102,57 @@ describe("draw render command", function () {
         });
 
         it("bind array buffer", function () {
-            shaderTool.use(gl, 0, ShaderData);
+            shaderTool.use(gl, 0);
 
-            shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+            shaderTool.sendAttributeData(gl, 0, 0);
 
             expect(gl.bindBuffer).toCalledWith(gl.ARRAY_BUFFER, buffer1);
         });
         it("attach buffer to attribute", function () {
-            shaderTool.use(gl, 0, ShaderData);
+            shaderTool.use(gl, 0);
 
-            shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+            shaderTool.sendAttributeData(gl, 0, 0);
 
             expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl["FLOAT"], false, 0, 0);
         });
         describe("enable attribute", function () {
             it("if already enabled since use this program, not enable", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 1, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(1);
             });
             it("else, enable", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
 
-                shaderTool.disableVertexAttribArray(gl, ShaderData);
+                shaderTool.disableVertexAttribArray(gl);
 
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 1, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(2);
             });
 
             it("differenc shader's vertexAttribHistory of the same attribute data pos are independent", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendAttributeData(gl, 1, 1, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 1, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(2);
             });
@@ -160,14 +160,14 @@ describe("draw render command", function () {
 
         describe("test cache", function () {
             it("if switch program, clear cache and send it and enableVertexAttribArray", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendAttributeData(gl, 1, 1, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 1, 1);
 
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer1)).toCalledOnce();
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer2)).toCalledOnce();
@@ -175,14 +175,14 @@ describe("draw render command", function () {
             });
 
             it("if last send buffers equal current send buffers, not send again", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendAttributeData(gl, 0, 0, ShaderData, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0, GeometryData, ArrayBufferData);
 
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer1)).toCalledOnce();
                 expect(gl.enableVertexAttribArray.callCount).toEqual(1);
@@ -203,7 +203,7 @@ describe("draw render command", function () {
 
         describe("test cache", function () {
             var program1, program2;
-            var ShaderData, MaterialData;
+            var ShaderData;
             var renderCommand1, renderCommand2;
             var pos,pos2;
 
@@ -265,14 +265,14 @@ describe("draw render command", function () {
             });
 
             it("differenc shader's data of the same uniform data name are independent", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendUniformData(gl, 0, MaterialData, ShaderData, renderCommand1);
+                shaderTool.sendUniformData(gl, 0, renderCommand1);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendUniformData(gl, 1, MaterialData, ShaderData, renderCommand2);
+                shaderTool.sendUniformData(gl, 1, renderCommand2);
 
 
 
@@ -285,28 +285,28 @@ describe("draw render command", function () {
 
 
 
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendUniformData(gl, 0, MaterialData, ShaderData, renderCommand1);
+                shaderTool.sendUniformData(gl, 0, renderCommand1);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendUniformData(gl, 1, MaterialData, ShaderData, renderCommand2);
+                shaderTool.sendUniformData(gl, 1, renderCommand2);
 
 
                 expect(gl.uniform3f).toCalledTwice();
                 expect(gl.uniform1f).toCalledOnce();
             });
             it("if data not equal, cache miss", function () {
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendUniformData(gl, 0, MaterialData, ShaderData, renderCommand1);
+                shaderTool.sendUniformData(gl, 0, renderCommand1);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendUniformData(gl, 1, MaterialData, ShaderData, renderCommand2);
+                shaderTool.sendUniformData(gl, 1, renderCommand2);
 
 
 
@@ -316,14 +316,14 @@ describe("draw render command", function () {
                 materialTool.setOpacity({index:1}, 0.5);
 
 
-                shaderTool.use(gl, 0, ShaderData);
+                shaderTool.use(gl, 0);
 
-                shaderTool.sendUniformData(gl, 0, MaterialData, ShaderData, renderCommand1);
+                shaderTool.sendUniformData(gl, 0, renderCommand1);
 
 
-                shaderTool.use(gl, 1, ShaderData);
+                shaderTool.use(gl, 1);
 
-                shaderTool.sendUniformData(gl, 1, MaterialData, ShaderData, renderCommand2);
+                shaderTool.sendUniformData(gl, 1, renderCommand2);
 
 
 
@@ -350,12 +350,8 @@ describe("draw render command", function () {
                 expect(gl.uniform1f.withArgs(pos, v)).toCalledOnce();
             });
             it("data should be number", function () {
-                materialTool.setOpacity(material, true);
-
-                directorTool.init(state);
-
                 expect(function () {
-                    directorTool.loopBody(state);
+                    materialTool.setOpacity(material, true);
                 }).toThrow("to be a number");
             });
 
@@ -475,7 +471,7 @@ describe("draw render command", function () {
             directorTool.init(state);
 
             var indexBuffer = {a:1};
-            IndexBufferData.buffers = [indexBuffer];
+            indexBufferTool.setBuffers([indexBuffer]);
 
             // geometryTool.setDrawMode({index:0}, "TRIANGLES");
 

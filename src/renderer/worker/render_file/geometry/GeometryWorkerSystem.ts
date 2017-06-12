@@ -91,8 +91,6 @@ export var initData = (buffer:SharedArrayBuffer, indexType:EBufferType, indexTyp
     GeometryWorkerData.verticesWorkerInfoList = [];
     GeometryWorkerData.indicesWorkerInfoList = [];
 
-    GeometryWorkerData.isInit = false;
-
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.indicesCacheMap = createMap();
 

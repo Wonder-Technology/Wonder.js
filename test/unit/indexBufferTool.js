@@ -3,6 +3,9 @@ var indexBufferTool = (function () {
         setBuffer: function (index, data) {
             wd.IndexBufferData.buffers[index] = data;
         },
+        setBuffers: function (buffers) {
+            wd.IndexBufferData.buffers = buffers;
+        },
         resetData: function(){
             wd.initIndexBufferData(wd.IndexBufferData);
         }

@@ -3,7 +3,7 @@ import {
 } from "../../../utils/objectUtils";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { EBufferType } from "../../enum/EBufferType";
-import { error, info } from "../../../utils/Log";
+import { Log } from "../../../utils/Log";
 
 export var getVertexDataSize = () => 3;
 
@@ -16,7 +16,7 @@ export var getUIntArrayClass = (indexType:EBufferType) => {
         case EBufferType.INT:
             return Uint32Array;
         default:
-            error(true, info.FUNC_INVALID(`indexType:${indexType}`));
+            Log.error(true, Log.info.FUNC_INVALID(`indexType:${indexType}`));
             break;
     }
 }

@@ -9,21 +9,31 @@ import {
 } from "../../utils/objectUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap,
+    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponent,
     generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { GeometryData } from "./GeometryData";
-import { getIndexDataSize, getUIntArrayClass, getVertexDataSize } from "../../renderer/utils/geometry/geometryUtils";
+import {
+    getIndexDataSize,
+    getUIntArrayClass,
+    getVertexDataSize,
+    getIndexTypeSize as getIndexTypeSizeUtils,
+    getDrawMode as getDrawModeUtils,
+    getIndexType as getIndexTypeUtils,
+    getIndicesCount as getIndicesCountUtils,
+    getVerticesCount as getVerticesCountUtils,
+    hasIndices as hasIndicesUtils
+} from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometryMap } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
-    getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils
+
 } from "../../renderer/utils/geometry/geometryUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { getSubarray } from "../../utils/typeArrayUtils";
+import { isNotValidVal } from "../../utils/arrayUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -174,10 +184,13 @@ export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
 
     deleteVal(sourceIndex, GeometryData.gameObjectMap);
 
+    deleteComponent(sourceIndex, GeometryData.geometryMap);
+
     GeometryData.count -= 1;
     GeometryData.disposeCount += 1;
     GeometryData.isReallocate = false;
 
+    //todo unit test
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
         reAllocateGeometryMap(GeometryData);
 
@@ -193,9 +206,14 @@ export var isReallocate = (GeometryData:any) => {
 }
 
 var _isBufferNearlyFull = (GeometryData:any) => {
-    var infoList = GeometryData.indicesInfoList;
+    var infoList = GeometryData.indicesInfoList,
+        lastInfo = infoList[infoList.length - 1];
 
-    return infoList[infoList.length - 1].endIndex >= GeometryData.maxDisposeIndex;
+    if(isNotValidVal(lastInfo)){
+        return false;
+
+    }
+    return lastInfo.endIndex >= GeometryData.maxDisposeIndex;
 }
 
 export var getGameObject = (index: number, Data: any) => {
@@ -333,7 +351,7 @@ export var getIndicesCount = null;
 if(!isSupportRenderWorkerAndSharedArrayBuffer()){
     getIndexType = getIndexTypeUtils;
 
-    getIndexTypeSize = getIndexTypeUtils;
+    getIndexTypeSize = getIndexTypeSizeUtils;
 
     hasIndices = (index: number, GeometryData: any) => hasIndicesUtils(index, getIndices, GeometryData);
 

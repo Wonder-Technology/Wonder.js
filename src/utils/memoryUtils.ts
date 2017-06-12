@@ -228,7 +228,8 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
         let verticesInfo = verticesInfoList[i],
             indicesInfo = indicesInfoList[i];
 
-        val = gameObjectMap[i];
+        val = geometryMap[i];
+        // val = gameObjectMap[i];
 
         if (isNotValidMapValue(val)) {
             continue;
@@ -239,7 +240,7 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
         newVerticesOffset = _fillTypeArr(vertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
         newIndicesOffset = _fillTypeArr(indices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
 
-        _setMapVal(newGameObjectMap, newIndexInArrayBuffer, val);
+        _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
 
         _setArrayVal(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo);
         _setArrayVal(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo);
@@ -256,7 +257,8 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
         val = indicesCacheMap[i];
         _setMapVal(newIndicesCacheMap, newIndexInArrayBuffer, val);
 
-        _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
+        val = gameObjectMap[i];
+        _setMapVal(newGameObjectMap, newIndexInArrayBuffer, val);
 
         newIndexInArrayBuffer += 1;
     }

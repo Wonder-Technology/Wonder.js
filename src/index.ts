@@ -9,7 +9,7 @@ export {ComponentData} from "./component/ComponentData";
 export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIDManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
 export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
-export {Geometry,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
+export {Geometry,getDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {BasicMaterial,createBasicMaterial} from "./component/material/BasicMaterial";
 export {Material,getMaterialColor,setMaterialColor,getMaterialOpacity,setMaterialOpacity,getMaterialAlphaTest,setMaterialAlphaTest,getMaterialGameObject,initMaterial} from "./component/material/Material";
@@ -91,7 +91,8 @@ export {ProgramWorkerData} from "./renderer/worker/render_file/shader/program/Pr
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {Log,error,info,log} from "./utils/Log";
+export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initProgramData,initLocationData,initGLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initGameObjectData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils,setGeometryIndices,setGeometryVertices,getShaderIndex} from "./test/forUnitTest";
+export {Log} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";

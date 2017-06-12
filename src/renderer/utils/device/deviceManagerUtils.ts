@@ -224,11 +224,11 @@ export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeG
 }
 
 export var initData = (DeviceManagerDataFromSystem: any) => {
-    // DeviceManagerDataFromSystem.gl = null;
-    // DeviceManagerDataFromSystem.clearColor = null;
+    DeviceManagerDataFromSystem.gl = null;
+    DeviceManagerDataFromSystem.clearColor = null;
 
-    // DeviceManagerDataFromSystem.writeRed = true;
-    // DeviceManagerDataFromSystem.writeGreen = true;
-    // DeviceManagerDataFromSystem.writeBlue = true;
-    // DeviceManagerDataFromSystem.writeAlpha = true;
+    DeviceManagerDataFromSystem.writeRed = null;
+    DeviceManagerDataFromSystem.writeGreen = null;
+    DeviceManagerDataFromSystem.writeBlue = null;
+    DeviceManagerDataFromSystem.writeAlpha = null;
 }

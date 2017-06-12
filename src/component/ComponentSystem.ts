@@ -4,7 +4,7 @@ import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDMan
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
-import { deleteBySwap, isNotValidMapValue } from "../utils/objectUtils";
+import { deleteBySwap, deleteVal, isNotValidMapValue } from "../utils/objectUtils";
 import { Map as MapImmutable } from "immutable";
 
 var _addHandle = (_class: any, handleMap: object, handle: Function) => {
@@ -74,6 +74,16 @@ export var generateComponentIndex = (ComponentData: any) => {
     return ComponentData.index++;
 }
 
+export var deleteComponent = requireCheckFunc((index: number, componentMap: ComponentMap) => {
+    it("index should >= 0", () => {
+        expect(index).gte(0);
+    });
+}, (index: number, componentMap: ComponentMap) => {
+    markComponentIndexRemoved(componentMap[index]);
+
+    deleteVal(index, componentMap);
+})
+
 export var deleteComponentBySwap = requireCheckFunc((sourceIndex: number, targetIndex: number | null, componentMap: ComponentMap) => {
     it("targetIndex should >= 0", () => {
         expect(targetIndex).gte(0);
@@ -87,6 +97,10 @@ export var deleteComponentBySwap = requireCheckFunc((sourceIndex: number, target
 
 export var markComponentIndexRemoved = (component: Component) => {
     component.index = -1;
+}
+
+export var isComponentIndexNotRemoved = (component: Component) => {
+    return component.index !== -1;
 }
 
 export type ComponentMap = {
