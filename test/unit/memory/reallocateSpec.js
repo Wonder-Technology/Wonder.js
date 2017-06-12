@@ -1,5 +1,12 @@
 describe("reallocate memory", function() {
     var sandbox = null;
+    var MemoryConfig = wd.MemoryConfig;
+
+    function createGeometry(index){
+        return {
+            index:index
+        }
+    }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -13,8 +20,6 @@ describe("reallocate memory", function() {
     });
 
     describe("reallocate if dispose too many", function() {
-        var MemoryConfig = wd.MemoryConfig;
-
         describe("test Tag", function() {
             var TagData = wd.TagData;
 
@@ -455,6 +460,382 @@ describe("reallocate memory", function() {
                     childrenMap[child2Tra.uid] = [];
                     expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
                 });
+            });
+        });
+
+        describe("test Geometry", function() {
+            var GeometryData = wd.GeometryData;
+
+            var obj1,obj2,obj3;
+            var geo1, geo2,geo3;
+            var geo1VerticesData, geo1IndicesData;
+            var geo2VerticesData, geo2IndicesData;
+            var geo3VerticesData, geo3IndicesData;
+
+            function judgeMap(mapName, oldMap){
+                var map = {};
+                map[0] = oldMap[1];
+                map[1] = oldMap[2];
+
+                expect(GeometryData[mapName][0]).toEqual(map[0]);
+                expect(GeometryData[mapName][1]).toEqual(map[1]);
+            }
+
+            beforeEach(function(){
+                obj1 = gameObjectTool.create();
+                geo1VerticesData = [
+                    -10, -10, 10, -10, 10, 10, 10, -10, 10
+                ];
+
+                geo1IndicesData = [
+                    1,2,0
+                ]
+                geo1 = customGeometryTool.create();
+                gameObjectTool.addComponent(obj1, geo1);
+
+                customGeometryTool.setVertices(geo1, geo1VerticesData)
+                customGeometryTool.setIndices(geo1, geo1IndicesData)
+
+
+                // geo1VerticesData = [
+                //     -10, -10, 10, -10, 10, 10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, 10, 10, -10, 10, -10, 10, 10, 10, 10, 10, -10, 10, -10, 10, 10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10
+                // ];
+                //
+                // geo1IndicesData = [
+                //     0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+                // ]
+
+
+
+                obj2 = gameObjectTool.create();
+                geo2 = boxGeometryTool.create();
+                gameObjectTool.addComponent(obj2, geo2);
+
+                boxGeometryTool.setConfigData(geo2, {
+                    width: 5,
+                    height: 5,
+                    depth: 5
+                })
+
+
+                geo2VerticesData = [
+                    -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, 5, 5, -5, 5, -5, 5, 5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5
+                ];
+
+                geo2IndicesData = [
+                    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+                ]
+
+
+
+
+                obj3 = gameObjectTool.create();
+                geo3VerticesData = [
+                    -6, -6, 6, -6, 6, 6, 6, -6, 6,
+                    1,1,2
+                ];
+
+                geo3IndicesData = [
+                    2,0,1, 1,3,2
+                ]
+                geo3 = customGeometryTool.create();
+                gameObjectTool.addComponent(obj3, geo3);
+
+                customGeometryTool.setVertices(geo3, geo3VerticesData)
+                customGeometryTool.setIndices(geo3, geo3IndicesData)
+
+
+                // geo3VerticesData = [
+                //     -6, -6, 6, -6, 6, 6, 6, -6, 6, 6, 6, 6, 6, -6, -6, 6, 6, -6, -6, -6, -6, -6, 6, -6, -6, 6, 6, -6, 6, -6, 6, 6, 6, 6, 6, -6, 6, -6, 6, 6, -6, -6, -6, -6, 6, -6, -6, -6, 6, -6, 6, 6, 6, 6, 6, -6, -6, 6, 6, -6, -6, -6, -6, -6, 6, -6, -6, -6, 6, -6, 6, 6
+                // ];
+                //
+                // geo3IndicesData = [
+                //     0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+                // ]
+
+
+
+
+                directorTool.init(sandbox);
+
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
+            });
+
+            describe("test type array data(vertices, indices)", function() {
+                beforeEach(function(){
+
+                });
+
+                describe("pack type array with not-removed data", function(){
+                    it("test1", function () {
+                        gameObjectTool.disposeComponent(obj1, geo1);
+
+                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                    });
+                    it("test2", function () {
+                        gameObjectTool.disposeComponent(obj2, geo2);
+
+                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo1VerticesData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo1IndicesData);
+                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                    });
+                    it("test3", function () {
+                        gameObjectTool.disposeComponent(obj1, geo1);
+                        gameObjectTool.disposeComponent(obj3, geo3);
+
+                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                    });
+                });
+            });
+
+            it("update not-removed geometry's index", function () {
+                gameObjectTool.disposeComponent(obj1, geo1);
+
+                expect(geo1.index).toEqual(-1);
+                expect(geo2.index).toEqual(0);
+                expect(geo3.index).toEqual(1);
+            });
+
+            describe("test new info list", function () {
+                it("update startIndex,endIndex", function () {
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+                    expect(GeometryData.verticesInfoList).toEqual([
+                        { startIndex: 0, endIndex: 72 },
+                        { startIndex: 72, endIndex: 84 }
+                    ]);
+                    expect(GeometryData.indicesInfoList).toEqual([
+                        { startIndex: 0, endIndex: 36 },
+                        { startIndex: 36, endIndex: 42 }
+                    ]);
+                });
+                it("should only has not-removed data", function () {
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+                    expect(GeometryData.verticesInfoList.length).toEqual(2);
+                    expect(GeometryData.indicesInfoList.length).toEqual(2);
+                });
+            });
+
+            it("new maps should only has not-removed data", function(){
+                var oldGameObjectMap = GeometryData.gameObjectMap;
+                var oldComputeDataFuncMap = GeometryData.computeDataFuncMap;
+                var oldConfigDataMap = GeometryData.configDataMap;
+                var oldVerticesCacheMap = GeometryData.verticesCacheMap;
+                var oldIndicesCacheMap = GeometryData.indicesCacheMap;
+                var oldGeometryMap = GeometryData.geometryMap;
+
+                gameObjectTool.disposeComponent(obj1, geo1);
+
+                judgeMap("gameObjectMap", oldGameObjectMap);
+                judgeMap("computeDataFuncMap", oldComputeDataFuncMap);
+                judgeMap("configDataMap", oldConfigDataMap);
+                judgeMap("verticesCacheMap", oldVerticesCacheMap);
+                judgeMap("indicesCacheMap", oldIndicesCacheMap);
+                judgeMap("geometryMap", oldGeometryMap);
+            });
+            it("update offset", function () {
+                gameObjectTool.disposeComponent(obj1, geo1);
+
+                expect(GeometryData.verticesOffset).toEqual(geo2VerticesData.length + geo3VerticesData.length);
+                expect(GeometryData.indicesOffset).toEqual(geo2IndicesData.length + geo3IndicesData.length);
+            });
+            it("update index", function () {
+                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectTool.disposeComponent(obj3, geo3);
+
+
+                expect(GeometryData.index).toEqual(1);
+            });
+            it("test maxComponentDisposeCount > 1", function () {
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+
+                gameObjectTool.disposeComponent(obj2, geo2);
+
+                var oldGeometryMap = GeometryData.geometryMap;
+
+                var geometryMap = {};
+                geometryMap[0] = oldGeometryMap[0];
+                geometryMap[1] = undefined;
+                geometryMap[2] = oldGeometryMap[2];
+
+                expect(GeometryData.geometryMap).toEqual(geometryMap);
+
+
+
+                gameObjectTool.disposeComponent(obj1, geo1);
+
+                geometryMap = {};
+                geometryMap[0] = oldGeometryMap[2];
+
+                expect(GeometryData.geometryMap).toEqual(geometryMap);
+            });
+
+            describe("test add new one after dispose old one and then dispose new one", function () {
+                it("test maxComponentDisposeCount === 1", function () {
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+
+                    var obj4 = gameObjectTool.create();
+                    var geo4VerticesData = [
+                        -3, -3, 3, -3, 3, 3, 3, -3, 3,
+                        5,6,7
+                    ];
+
+                    var geo4IndicesData = [
+                        2,3,1, 1,3,0
+                    ]
+                    var geo4 = customGeometryTool.create();
+                    gameObjectTool.addComponent(obj4, geo4);
+
+                    customGeometryTool.setVertices(geo4, geo4VerticesData)
+                    customGeometryTool.setIndices(geo4, geo4IndicesData)
+
+
+
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(2)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(2)))).toEqual(geo4IndicesData);
+
+
+                    expect(GeometryData.geometryMap[0]).toEqual(geo2);
+                    expect(GeometryData.geometryMap[1]).toEqual(geo3);
+                    expect(GeometryData.geometryMap[2]).toEqual(geo4);
+
+                    expect(geo4.index).toEqual(2);
+
+
+
+
+                    gameObjectTool.disposeComponent(obj3, geo3);
+
+
+
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+
+                    expect(GeometryData.geometryMap[0]).toEqual(geo2);
+                    expect(GeometryData.geometryMap[1]).toEqual(geo4);
+
+                    expect(geo4.index).toEqual(1);
+                });
+                it("test maxComponentDisposeCount > 1", function () {
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+
+
+                    var obj4 = gameObjectTool.create();
+                    var geo4VerticesData = [
+                        -3, -3, 3, -3, 3, 3, 3, -3, 3,
+                        5,6,7
+                    ];
+
+                    var geo4IndicesData = [
+                        2,3,1, 1,3,0
+                    ]
+                    var geo4 = customGeometryTool.create();
+                    gameObjectTool.addComponent(obj4, geo4);
+
+                    customGeometryTool.setVertices(geo4, geo4VerticesData)
+                    customGeometryTool.setIndices(geo4, geo4IndicesData)
+
+
+
+                    gameObjectTool.disposeComponent(obj3, geo3);
+
+
+
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+
+
+                    expect(GeometryData.geometryMap[0]).toEqual(geo2);
+                    expect(GeometryData.geometryMap[1]).toEqual(geo4);
+
+                    expect(geo2.index).toEqual(0);
+                    expect(geo4.index).toEqual(1);
+
+
+
+
+
+
+
+
+
+
+                    gameObjectTool.disposeComponent(obj2, geo2);
+                    gameObjectTool.disposeComponent(obj4, geo4);
+
+
+
+                    expect(function(){
+                        geometryTool.getVertices(createGeometry(0))
+                    }).toThrow("should exist");
+
+
+                    expect(GeometryData.geometryMap[0]).toBeUndefined();
+
+                    expect(GeometryData.index).toEqual(0);
+                });
+            });
+        });
+    });
+
+    describe("reallocate if buffer nearyly full", function() {
+        beforeEach(function(){
+
+        });
+
+        describe("test geometry", function(){
+            var GeometryData = wd.GeometryData;
+
+            var obj1;
+            var geo1;
+
+            beforeEach(function(){
+                obj1 = gameObjectTool.create();
+                geo1VerticesData = [
+                    -10, -10, 10, -10, 10, 10, 10, -10, 10
+                ];
+
+                geo1IndicesData = [
+                    1,2,0
+                ]
+                geo1 = customGeometryTool.create();
+                gameObjectTool.addComponent(obj1, geo1);
+
+                customGeometryTool.setVertices(geo1, geo1VerticesData)
+                customGeometryTool.setIndices(geo1, geo1IndicesData)
+
+                directorTool.init(sandbox);
+            });
+
+            it("if indice info's endIndex >= GeometryData.maxDisposeIndex, reallocate", function () {
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+                sandbox.stub(GeometryData, "maxDisposeIndex", 3);
+
+                gameObjectTool.disposeComponent(obj1, geo1);
+
+
+                expect(function(){
+                    geometryTool.getVertices(createGeometry(0))
+                }).toThrow("should exist");
+
+
+                expect(GeometryData.geometryMap[0]).toBeUndefined();
+
+                expect(GeometryData.index).toEqual(0);
             });
         });
     });

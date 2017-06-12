@@ -8,6 +8,8 @@ import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decor
 import { expect } from "wonder-expect.js";
 import { Component } from "../component/Component";
 import { checkIndexShouldEqualCount } from "../component/utils/contractUtils";
+import { GeometryInfo, GeometryInfoList } from "../definition/type/geometryType";
+import { set } from "./typeArrayUtils";
 
 export var isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount:number = MemoryConfig.maxComponentDisposeCount) => {
     return disposeCount >= maxComponentDisposeCount;
@@ -222,7 +224,9 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
         newComputeDatafuncMap = {},
         newConfigDataMap: Array<number> = [],
         newVerticesCacheMap: Array<number> = [],
-        newIndicesCacheMap: Array<number> = [];
+        newIndicesCacheMap: Array<number> = [],
+        newVertices:Array<number> = [],
+        newIndices:Array<number> = [];
 
     for(let i = 0; i < index; i++){
         let verticesInfo = verticesInfoList[i],
@@ -237,13 +241,13 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
 
         // hasNewData = true;
 
-        newVerticesOffset = _fillTypeArr(vertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
-        newIndicesOffset = _fillTypeArr(indices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
+        _updateInfoList(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo, newVerticesOffset);
+        _updateInfoList(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo, newIndicesOffset);
+
+        newVerticesOffset = _fillTypeArr(newVertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
+        newIndicesOffset = _fillTypeArr(newIndices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
 
         _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
-
-        _setArrayVal(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo);
-        _setArrayVal(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo);
 
         val = computeDataFuncMap[i];
         _setMapVal(newComputeDatafuncMap, newIndexInArrayBuffer, val);
@@ -257,15 +261,22 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
         val = indicesCacheMap[i];
         _setMapVal(newIndicesCacheMap, newIndexInArrayBuffer, val);
 
+        val = geometryMap[i];
+        _setMapVal(newGeometryMap, newIndexInArrayBuffer, val);
+
         val = gameObjectMap[i];
         _setMapVal(newGameObjectMap, newIndexInArrayBuffer, val);
 
         newIndexInArrayBuffer += 1;
     }
 
+    set(GeometryData.vertices, newVertices);
+    set(GeometryData.indices, newIndices);
+
     GeometryData.gameObjectMap = newGameObjectMap;
     GeometryData.verticesInfoList = newVertivesInfoList;
     GeometryData.indicesInfoList = newIndicesInfoList;
+    GeometryData.geometryMap = newGeometryMap;
     GeometryData.computeDataFuncMap = newComputeDatafuncMap;
     GeometryData.configDataMap = newConfigDataMap;
     GeometryData.verticesCacheMap = newVerticesCacheMap;
@@ -274,25 +285,20 @@ export var reAllocateGeometryMap = ensureFunc((returnVal:any, GeometryData: any)
     GeometryData.verticesOffset = newVerticesOffset;
     GeometryData.indicesOffset = newIndicesOffset;
 
-    // if(hasNewData){
     GeometryData.index = newIndexInArrayBuffer;
-    // }
-    // else{
-    //     GeometryData.index = 0;
-    // }
 })
 
 var _updateComponentIndex = (componentMap:object, newComponentMap:object, oldIndex:number, newIndex:number) => {
     let component:Component = componentMap[oldIndex];
 
-    componentMap[oldIndex].index = newIndex;
-    newComponentMap[newIndex] = componentMap;
+    component.index = newIndex;
+    newComponentMap[newIndex] = component;
 }
 
 var _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex:number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
-    it("targetStartIndex should <= sourceStartIndex", () => {
-        expect(targetStartIndex).lte(startIndex);
-    })
+    // it("targetStartIndex should <= sourceStartIndex", () => {
+    //     expect(targetStartIndex).lte(startIndex);
+    // })
 }, (targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex:number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     var typeArrIndex = targetStartIndex;
 
@@ -302,4 +308,17 @@ var _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array |
     }
 
     return typeArrIndex;
+})
+
+var _updateInfoList = ensureFunc((returnVal:any, newInfoList, newIndexInArrayBuffer, info:GeometryInfo, offset:number) => {
+    it("info.startIndex should >= 0", () => {
+        expect(newInfoList[newIndexInArrayBuffer].startIndex).gte(0);
+    });
+}, (newInfoList:GeometryInfoList, newIndexInArrayBuffer:number, info:GeometryInfo, offset:number) => {
+    var increment = info.endIndex - info.startIndex;
+
+    _setArrayVal(newInfoList, newIndexInArrayBuffer, {
+        startIndex: offset,
+        endIndex: offset + increment
+    });
 })

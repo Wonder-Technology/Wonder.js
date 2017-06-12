@@ -3,6 +3,7 @@ import { fromArray as fromArrayFromFrp, Operator } from "wonder-frp/dist/es2015/
 import { initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
 import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import {
+    hasIndices,
     initData as initGeometryDataSystem, setIndices, setVertices
 } from "../component/geometry/GeometrySystem";
 import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
@@ -75,4 +76,7 @@ export var setGeometryIndices = setIndices;
 
 export var setGeometryVertices = setVertices;
 
+export var hasGeometryIndices = hasIndices;
+
 export var getShaderIndex = getShaderIndexSystem;
+

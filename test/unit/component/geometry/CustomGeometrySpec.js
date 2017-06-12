@@ -1,20 +1,27 @@
 describe("CustomGeometry", function () {
     var sandbox = null;
     var geo;
-    var director;
     var gameObject;
 
     var CustomGeometry = wd.CustomGeometry;
-    var BoxGeometry = wd.BoxGeometry;
+    var MemoryConfig = wd.MemoryConfig;
+
+    function createCustomGeometry() {
+        var customGeo = customGeometryTool.create();
+        var vertices = [1,2,3,2,2,4,3,3,3];
+        customGeometryTool.setVertices(customGeo, vertices);
+        var indices = [1,2,3,2,2,4,3,3,3];
+        customGeometryTool.setIndices(customGeo, indices);
+
+        return customGeo;
+    }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        director = directorTool.getDirector();
-
-        geo = customGeometryTool.create();
+        geo = createCustomGeometry();
 
         gameObject = gameObjectTool.create();
 
@@ -35,7 +42,7 @@ describe("CustomGeometry", function () {
             var vertices = [1,2,3,2,2,4,3,3,3];
             customGeometryTool.setVertices(geo, vertices);
 
-            director._init();
+            directorTool.init(sandbox);
 
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
@@ -47,7 +54,7 @@ describe("CustomGeometry", function () {
             var indices = [1,2,3,2,2,4,3,3,3];
             customGeometryTool.setIndices(geo, indices);
 
-            director._init();
+            directorTool.init(sandbox);
 
             expect(testTool.getValues(
                 geometryTool.getIndices(geo)
@@ -68,27 +75,36 @@ describe("CustomGeometry", function () {
 
             expect(gameObjectTool.hasComponent(gameObject, CustomGeometry)).toBeTruthy();
         });
-        it("test \"add two BoxGeometrys->dispose first BoxGeometrys->add one CustomGeometry\"", function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(true);
-            var gameObject = data.gameObject;
-            var geo = data.geometry;
+        describe("test \"add two BoxGeometrys->dispose first BoxGeometrys->add one CustomGeometry\"", function () {
+            function judge() {
+                var data = sceneTool.prepareGameObjectAndAddToScene(true);
+                var gameObject = data.gameObject;
+                var geo = data.geometry;
 
-            var data2 = sceneTool.prepareGameObjectAndAddToScene(true);
-            var gameObject2 = data2.gameObject;
-            // var geo2 = data.geometry;
+                var data2 = sceneTool.prepareGameObjectAndAddToScene(true);
+                var gameObject2 = data2.gameObject;
 
-            // gameObjectTool.disposeComponent(gameObject, geo);
-            // gameObjectTool.disposeComponent(gameObject2, geo2);
+                directorTool.init(sandbox);
 
-            gameObjectTool.dispose(gameObject);
-            // gameObjectTool.dispose(gameObject2);
+                gameObjectTool.dispose(gameObject);
 
-            // gameObjectTool.addComponent(gameObject, customGeometryTool.create());
 
-            var data3 = sceneTool.prepareGameObjectAndAddToScene(true, customGeometryTool.create());
-            var gameObject3 = data3.gameObject;
+                var data3 = sceneTool.prepareGameObjectAndAddToScene(true, createCustomGeometry());
+                var gameObject3 = data3.gameObject;
 
-            expect(gameObjectTool.hasComponent(gameObject3, CustomGeometry)).toBeTruthy();
+                expect(gameObjectTool.hasComponent(gameObject3, CustomGeometry)).toBeTruthy();
+            }
+
+            it("test with no reallocate", function () {
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+
+                judge();
+            });
+            it("test with reallocate", function () {
+                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
+
+                judge();
+            });
         });
     });
 });

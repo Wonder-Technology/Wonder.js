@@ -34,6 +34,7 @@ import {
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
+import { expect } from "wonder-expect.js";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -114,7 +115,11 @@ export var setIndices = requireCheckFunc((index: number, indices: Array<number>,
     GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 })
 
-var _getPointData = (index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
+var _getPointData = requireCheckFunc((index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
+    it("infoList[index] should exist", () => {
+        expect(infoList[index]).exist;
+    });
+}, (index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
     var dataArr = cacheMap[index];
 
     if(isValidMapValue(dataArr)){
@@ -128,7 +133,7 @@ var _getPointData = (index: number, points:Float32Array | Uint16Array | Uint32Ar
     cacheMap[index] = dataArr;
 
     return dataArr;
-}
+})
 
 var _setPointData = requireCheckFunc (() => {
     ////todo unit test: if set after init and has render worker, contract error
@@ -177,12 +182,8 @@ export var addComponent = (component: Geometry, gameObject: GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
-    // checkIndexShouldEqualCount(GeometryData);
-}, (component: Geometry) => {
+export var disposeComponent = (component: Geometry) => {
     var sourceIndex = component.index;
-
-    deleteVal(sourceIndex, GeometryData.gameObjectMap);
 
     deleteComponent(sourceIndex, GeometryData.geometryMap);
 
@@ -190,7 +191,6 @@ export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
     GeometryData.disposeCount += 1;
     GeometryData.isReallocate = false;
 
-    //todo unit test
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
         reAllocateGeometryMap(GeometryData);
 
@@ -199,7 +199,7 @@ export var disposeComponent = ensureFunc((returnVal, component: Geometry) => {
 
         GeometryData.disposeCount = 0;
     }
-})
+}
 
 export var isReallocate = (GeometryData:any) => {
     return GeometryData.isReallocate;
@@ -211,8 +211,8 @@ var _isBufferNearlyFull = (GeometryData:any) => {
 
     if(isNotValidVal(lastInfo)){
         return false;
-
     }
+
     return lastInfo.endIndex >= GeometryData.maxDisposeIndex;
 }
 

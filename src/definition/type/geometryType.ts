@@ -37,8 +37,10 @@ export type GeometryResetWorkerData = {
     indicesInfoList: GeometryInfoList;
 }
 
-export type GeometryInfoList = Array<{
+export type GeometryInfoList = Array<GeometryInfo>
+
+export type GeometryInfo = {
     startIndex:number;
     endIndex:number;
-}>
+};
 

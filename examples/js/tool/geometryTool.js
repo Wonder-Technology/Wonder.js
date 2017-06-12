@@ -8,6 +8,9 @@ var geometryTool = (function () {
         initGeometry:wd.initGeometry,
         getGameObject:wd.getGeometryGameObject,
 
+        hasIndices: function(index){
+            return wd.hasGeometryIndices(index, wd.GeometryData);
+        },
         setIndices: function (index, data) {
           wd.setGeometryIndices(index, data, wd.GeometryData);
         },

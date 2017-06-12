@@ -95,29 +95,37 @@ describe("Geometry", function () {
     // });
 
     describe("disposeComponent", function () {
-        describe("test dispose array data", function() {
-            var geo2;
+        // describe("test dispose array data", function() {
+        //     var geo2;
+        //
+        //     beforeEach(function(){
+        //         geo2 = boxGeometryTool.create();
+        //         var gameObject2 = gameObjectTool.create();
+        //         gameObjectTool.addComponent(gameObject2, geo2);
+        //         sceneTool.addGameObject(gameObject2);
+        //         directorTool.init(sandbox);
+        //     });
+        //
+        //     it("remove vertices", function () {
+        //         gameObjectTool.disposeComponent(gameObject, geo);
+        //
+        //         // expect(geometryTool.getVertices(geo)).toBeUndefined();
+        //         expect(geometryTool.getVertices(geo2)).toBeExist();
+        //     });
+        //     it("remove indices", function () {
+        //         gameObjectTool.disposeComponent(gameObject, geo);
+        //
+        //         // expect(geometryTool.getIndices(geo)).toBeUndefined();
+        //         expect(geometryTool.getIndices(geo2)).toBeExist();
+        //     });
+        // });
 
-            beforeEach(function(){
-                geo2 = boxGeometryTool.create();
-                var gameObject2 = gameObjectTool.create();
-                gameObjectTool.addComponent(gameObject2, geo2);
-                sceneTool.addGameObject(gameObject2);
-                directorTool.init(sandbox);
-            });
+        it("mark geometry removed", function () {
+            directorTool.init(sandbox);
 
-            it("remove vertices", function () {
-                gameObjectTool.disposeComponent(gameObject, geo);
+            gameObjectTool.disposeComponent(gameObject, geo);
 
-                // expect(geometryTool.getVertices(geo)).toBeUndefined();
-                expect(geometryTool.getVertices(geo2)).toBeExist();
-            });
-            it("remove indices", function () {
-                gameObjectTool.disposeComponent(gameObject, geo);
-
-                // expect(geometryTool.getIndices(geo)).toBeUndefined();
-                expect(geometryTool.getIndices(geo2)).toBeExist();
-            });
+            expect(geo.index).toEqual(-1);
         });
 
         describe("test dispose map data", function() {
