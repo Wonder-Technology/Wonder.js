@@ -4,6 +4,7 @@ describe("Geometry", function () {
     var geo;
 
     var EDrawMode = wd.EDrawMode;
+    var DataBufferConfig = wd.DataBufferConfig;
 
     var defaultVerticesData,
         defaultIndicesData;
@@ -277,6 +278,41 @@ describe("Geometry", function () {
             boxGeometryTool.setConfigData(geo, configData);
 
             expect(geometryTool.getConfigData(geo)).toEqual(configData);
+        });
+    });
+
+    describe("fix bug", function() {
+        beforeEach(function(){
+
+        });
+
+        it("when geometryDataBufferCount is just enough, set indices should not affect set vertices", function(){
+            sandbox.stub(DataBufferConfig, "geometryDataBufferCount", 6);
+
+            geometryTool.resetData();
+
+
+            gameObject = gameObjectTool.create();
+            var geoVerticesData = [
+                -6, -6, 6, -6, 6, 6, 6, -6, 6,
+                5, -6, 6,
+            ];
+
+            var geoIndicesData = [
+                2,0,1, 3,2,1
+            ]
+            geo = customGeometryTool.create();
+            gameObjectTool.addComponent(gameObject, geo);
+
+            customGeometryTool.setVertices(geo, geoVerticesData)
+            customGeometryTool.setIndices(geo, geoIndicesData)
+
+            expect(testTool.getValues(
+                geometryTool.getVertices(geo)
+            )).toEqual(geoVerticesData);
+            expect(testTool.getValues(
+                geometryTool.getIndices(geo)
+            )).toEqual(geoIndicesData);
         });
     });
 });

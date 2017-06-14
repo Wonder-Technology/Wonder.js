@@ -165,11 +165,15 @@ var _setPointData = requireCheckFunc (() => {
     return offset;
 })
 
-var _fillTypeArr = (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(count - 1 + startIndex).lte(typeArr.length);
+    });
+}, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
     for (let i = 0; i < count; i++) {
         typeArr[i + startIndex] = dataArr[i];
     }
-}
+})
 
 var _removeCache = (index:number, cacheMap:object) => {
     deleteVal(index, cacheMap);
@@ -338,12 +342,12 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
+        size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
-    GeometryData.indices = new UintArray(buffer, count * getVertexDataSize(), count * getIndexDataSize());
+    GeometryData.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getIndexDataSize());
 
     GeometryData.buffer = buffer;
 
