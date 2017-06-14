@@ -15,10 +15,10 @@ import {
 } from "../../component/camera/CameraControllerSystem";
 import { getTypeIDFromClass } from "../../component/ComponentTypeIDManager";
 import { CameraController } from "../../component/camera/CameraController";
-import { DataUtils } from "../../utils/DataUtils";
 import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { setMatrices } from "../../utils/typeArrayUtils";
 
 //todo check: renderGameObjectArray.length should <= renderCommandBufferCount
 export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
@@ -53,9 +53,9 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
         currentCameraIndex = currentCamera.index;
 
 
-    DataUtils.setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
+    setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
 
-    DataUtils.setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
+    setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
 
 
 
@@ -74,7 +74,7 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
             materialIndex = material.index,
             shaderIndex = getShaderIndex(materialIndex, MaterialData);
 
-        DataUtils.setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
+        setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
 
 
         // drawModes[i] = getDrawMode(geometry, GeometryData);

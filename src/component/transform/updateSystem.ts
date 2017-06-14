@@ -9,11 +9,11 @@ import {
     setLocalToWorldMatricesData,
     swap
 } from "./operateDataSystem";
-import { DataUtils } from "../../utils/DataUtils";
 import { Map } from "immutable";
 import { clearCache } from "./cacheSystem";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { setMatrix4ByIndex, setQuaternionByIndex, setVector3ByIndex } from "../../utils/typeArrayUtils";
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return compose(
@@ -71,16 +71,16 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
         quaIndex = getQuaternionDataIndexInArrayBuffer(index),
         mat4Index = getMatrix4DataIndexInArrayBuffer(index),
         mat = GlobalTempData.matrix4_2.setTRS(
-            DataUtils.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index),
-            DataUtils.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex),
-            DataUtils.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)
+            setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index),
+            setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex),
+            setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)
         ),
         parent = getThreeDTransformDataParent(getUID(index, ThreeDTransformData), ThreeDTransformData);
 
     if (isParentExist(parent)) {
         let parentIndex = parent.index;
 
-        return setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
+        return setLocalToWorldMatricesData(setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
             .multiply(mat),
             mat4Index,
             ThreeDTransformData

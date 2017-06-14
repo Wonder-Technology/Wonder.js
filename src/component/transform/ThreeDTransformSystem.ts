@@ -2,7 +2,6 @@ import { ThreeDTransformData } from "./ThreeDTransformData";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
 import { Map as MapImmutable } from "immutable";
-import { DataUtils } from "../../utils/DataUtils";
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { cacheFunc } from "../../utils/cacheUtils";
@@ -41,6 +40,7 @@ import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { expect } from "wonder-expect.js";
 import { Quaternion } from "../../math/Quaternion";
+import { createMatrix4ByIndex, createVector3ByIndex } from "../../utils/typeArrayUtils";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -159,7 +159,7 @@ export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform
 }, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any, returnedMat: Matrix4) => {
     setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
 }, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
-    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
+    return createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
 
 export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
@@ -205,7 +205,7 @@ export var getLocalPosition = requireCheckFunc((transform: ThreeDTransform, Thre
 }, (transform: ThreeDTransform, ThreeTransformData: any, position: Vector3) => {
     setLocalPositionCache(transform.uid, position, ThreeTransformData);
 }, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    return DataUtils.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+    return createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }))
 
 export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
@@ -319,4 +319,3 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.aliveUIDArray = [];
 }
-

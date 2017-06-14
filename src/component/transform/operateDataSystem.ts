@@ -7,10 +7,10 @@ import { expect } from "wonder-expect.js";
 import { TransformMap } from "./ThreeDTransformData";
 import { deleteVal } from "../../utils/objectUtils";
 import { addNotUsedIndex } from "./dirtySystem";
-import { DataUtils } from "../../utils/DataUtils";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { isParentExist } from "./hierarchySystem";
 import { getLocalToWorldMatrix } from "./ThreeDTransformSystem";
+import { setMatrices, setQuaternions, setVectors } from "../../utils/typeArrayUtils";
 
 export var swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
@@ -182,23 +182,23 @@ export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4
 }
 
 export var setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
+    setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
 }
 
 export var setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
 export var setLocalRotationData = (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
+    setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
 export var setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
@@ -207,13 +207,13 @@ export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransfor
     if (isParentExist(parent)) {
         let indexInArrayBuffer = parent.index;
 
-        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
+        setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
             uid: getUID(indexInArrayBuffer, ThreeDTransformData),
             index: indexInArrayBuffer
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
-        DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+        setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 }
 

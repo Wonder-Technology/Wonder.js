@@ -91,7 +91,7 @@ export {ProgramWorkerData} from "./renderer/worker/render_file/shader/program/Pr
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initProgramData,initLocationData,initGLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initGameObjectData,initSceneData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,DataUtils,setGeometryIndices,setGeometryVertices,hasGeometryIndices,getShaderIndex} from "./test/forUnitTest";
+export {initThreeDTransformData,DomQuery,fromArray,createMatrix4ByIndex,createVector3ByIndex,initTagData,initGeometryData,initMaterialData,initShaderData,initProgramData,initLocationData,initGLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initGameObjectData,initSceneData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,setGeometryIndices,setGeometryVertices,hasGeometryIndices,getShaderIndex} from "./test/forUnitTest";
 export {Log} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";

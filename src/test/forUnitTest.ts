@@ -19,7 +19,6 @@ import { Map } from "immutable";
 import { initData as initArrayBufferDataSystem } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferDataSystem } from "../renderer/buffer/IndexBufferSystem";
 import { RenderCommand } from "../renderer/command/RenderCommand";
-import { DataUtils as DataUtilsUtils } from "../utils/DataUtils";
 import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectDataSystem } from "../core/entityObject/gameObject/GameObjectSystem";
 import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/shader/program/programUtils";
@@ -72,8 +71,6 @@ export var sendAttributeData = sendAttributeDataSystem;
 export var sendUniformData = sendUniformDataSystem;
 
 export var disableVertexAttribArray = disableVertexAttribArrayUtils
-
-export var DataUtils = DataUtilsUtils;
 
 export var setGeometryIndices = setIndices;
 
