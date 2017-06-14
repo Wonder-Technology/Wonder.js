@@ -46,7 +46,7 @@ export var getOpacityDataSize = () => 1;
 
 export var getAlphaTestDataSize = () => 1;
 
-export var createBufferViews = (buffer:any, count:number, MaterialDataFromSystem:any) => {
+export var createTypeArrays = (buffer:any, count:number, MaterialDataFromSystem:any) => {
     MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, 0, count);
     MaterialDataFromSystem.colors = new Float32Array(buffer, count * Uint32Array.BYTES_PER_ELEMENT, count * getColorDataSize());
     MaterialDataFromSystem.opacities = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * getColorDataSize()), count * getOpacityDataSize());

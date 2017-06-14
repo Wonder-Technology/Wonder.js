@@ -836,4 +836,26 @@ describe("ThreeDTransform", function () {
             });
         });
     });
+
+    describe("contract check", function() {
+        beforeEach(function(){
+        });
+
+        it("if created ones >= maxCount, error", function () {
+            testTool.stubGetter(sinon, ThreeDTransformData, "maxCount", function () {
+                return 2;
+            });
+
+            threeDTransformTool.resetData();
+
+            obj1 = gameObjectTool.create();
+            tra1 = gameObjectTool.getTransform(obj1);
+            tra1.name = "tra1";
+
+
+            expect(function(){
+                obj2 = gameObjectTool.create();
+            }).toThrow();
+        });
+    });
 });

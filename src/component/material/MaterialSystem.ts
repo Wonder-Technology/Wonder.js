@@ -19,7 +19,7 @@ import {
     deleteOneItemBySwapAndReset
 } from "../../utils/typeArrayUtils";
 import {
-    createBufferViews,
+    createTypeArrays,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
     getAlphaTestDataSize, getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils
@@ -134,7 +134,7 @@ export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
 export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
 export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData: any) => {
-    MaterialData.shaderIndices[materialIndex] = shader.index;
+    _setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
 }
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
@@ -160,9 +160,9 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
         size = getColorDataSize(),
         index = materialIndex * size;
 
-    colors[index] = r;
-    colors[index + 1] = g;
-    colors[index + 2] = b;
+    _setTypeArrayValue(MaterialData.colors, index, r);
+    _setTypeArrayValue(MaterialData.colors, index + 1, g);
+    _setTypeArrayValue(MaterialData.colors, index + 2, b);
 }
 
 export var getOpacity = getOpacityUtils;
@@ -179,7 +179,7 @@ export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number
     var size = getOpacityDataSize(),
         index = materialIndex * size;
 
-    MaterialData.opacities[index] = opacity;
+    _setTypeArrayValue(MaterialData.opacities, index, opacity);
 })
 
 export var getAlphaTest = getAlphaTestUtils;
@@ -188,16 +188,18 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     it("alphaTest should be number", () => {
         expect(alphaTest).be.a("number");
     });
-    it("alphaTest should <= 1 && >= 0", () => {
-        expect(alphaTest).lte(1);
-        expect(alphaTest).gte(0);
-    });
+    // it("alphaTest should <= 1 && >= 0", () => {
+    //     expect(alphaTest).lte(1);
+    //     expect(alphaTest).gte(0);
+    // });
 }, (materialIndex: number, alphaTest: number, MaterialData: any) => {
     var size = getAlphaTestDataSize(),
         index = materialIndex * size;
 
-    MaterialData.alphaTests[index] = alphaTest;
+    _setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
 })
+
+var _
 
 export var addComponent = (component: Material, gameObject: GameObject) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
@@ -240,6 +242,14 @@ export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
+var _setTypeArrayValue = requireCheckFunc((typeArr:Float32Array | Uint32Array, index:number, value:number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index).lte(typeArr.length - 1);
+    });
+}, (typeArr:Float32Array, index:number, value:number) => {
+    typeArr[index] = value;
+})
+
 export var isTestAlpha = isTestAlphaUtils;
 
 export var initData = (MaterialData: any) => {
@@ -274,7 +284,7 @@ var _initBufferData = (MaterialData:any) => {
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
-    createBufferViews(buffer, count, MaterialData);
+    createTypeArrays(buffer, count, MaterialData);
 
     MaterialData.buffer = buffer;
 

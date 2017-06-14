@@ -7,6 +7,7 @@ describe("Material", function() {
     var Color = wd.Color;
     var MaterialData = wd.MaterialData;
     var Shader = wd.Shader;
+    var DataBufferConfig = wd.DataBufferConfig;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -20,6 +21,8 @@ describe("Material", function() {
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
+
+        sandbox.stub(DataBufferConfig, "materialDataBufferCount", 10);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -264,6 +267,71 @@ describe("Material", function() {
             judgeNotAlive(material, "setOpacity", expect, 0.5);
             judgeNotAlive(material, "getAlphaTest", expect);
             judgeNotAlive(material, "setAlphaTest", expect, 0.5);
+        });
+    });
+
+    describe("contract check", function() {
+        beforeEach(function(){
+        });
+
+        describe("data.length should not exceed DataBufferConfig->dataBufferCount", function() {
+            var mat1,mat2;
+            var obj1,obj2;
+
+            function prepareNotExceed() {
+                sandbox.stub(DataBufferConfig, "materialDataBufferCount", 1);
+
+                materialTool.resetData();
+
+                mat1.index = 0;
+                mat2.index = 1;
+
+                return "should not exceed type arr's length";
+            }
+
+            beforeEach(function(){
+                mat1 = basicMaterialTool.create();
+                obj1 = gameObjectTool.create();
+                gameObjectTool.addComponent(obj1, mat1);
+
+                mat2 = basicMaterialTool.create();
+                obj2 = gameObjectTool.create();
+                gameObjectTool.addComponent(obj2, mat2);
+            });
+
+            it("setShaderIndex", function () {
+                var errMsg = prepareNotExceed();
+
+                basicMaterialTool.create();
+                expect(function () {
+                    basicMaterialTool.create();
+                }).toThrow(errMsg);
+            });
+            it("setColor", function(){
+                var errMsg = prepareNotExceed();
+
+                var color = Color.create("rgb(0.4,0.2,0.3)");
+                materialTool.setColor(mat1, color);
+                expect(function () {
+                    materialTool.setColor(mat2, color);
+                }).toThrow(errMsg);
+            });
+            it("setOpacity", function(){
+                var errMsg = prepareNotExceed();
+
+                materialTool.setOpacity(mat1, 0.1)
+                expect(function () {
+                    materialTool.setOpacity(mat2, 0.1)
+                }).toThrow(errMsg);
+            });
+            it("setAlphaTest", function(){
+                var errMsg = prepareNotExceed();
+
+                materialTool.setAlphaTest(mat1, 0.1)
+                expect(function () {
+                    materialTool.setAlphaTest(mat2, 0.1)
+                }).toThrow(errMsg);
+            });
         });
     });
 });

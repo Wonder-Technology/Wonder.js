@@ -167,7 +167,7 @@ var _setPointData = requireCheckFunc (() => {
 
 var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
     it("should not exceed type arr's length", () => {
-        expect(count - 1 + startIndex).lte(typeArr.length);
+        expect(count + startIndex).lte(typeArr.length);
     });
 }, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
     for (let i = 0; i < count; i++) {

@@ -1,6 +1,8 @@
 import { Matrix4 } from "../math/Matrix4";
 import { Vector3 } from "../math/Vector3";
 import { Quaternion } from "../math/Quaternion";
+import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
 export var getSlice = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     return typeArr.slice(startIndex, endIndex);
@@ -38,7 +40,11 @@ export var setMatrices = (typeArr: Float32Array, mat: Matrix4, index: number) =>
     }
 }
 
-export var setMatrix4ByIndex = (mat: Matrix4, typeArr: Float32Array, index: number) => {
+export var setMatrix4ByIndex = requireCheckFunc((mat: Matrix4, typeArr: Float32Array, index: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index + 15).lte(typeArr.length - 1);
+    });
+}, (mat: Matrix4, typeArr: Float32Array, index: number) => {
     mat.set(
         typeArr[index],
         typeArr[index + 1],
@@ -59,7 +65,7 @@ export var setMatrix4ByIndex = (mat: Matrix4, typeArr: Float32Array, index: numb
     );
 
     return mat;
-}
+})
 
 export var setVectors = (typeArr: Float32Array, vec: Vector3, index: number) => {
     var values = vec.values;
@@ -69,7 +75,11 @@ export var setVectors = (typeArr: Float32Array, vec: Vector3, index: number) => 
     }
 }
 
-export var setVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: number) => {
+export var setVector3ByIndex = requireCheckFunc((vec: Vector3, typeArr: Float32Array, index: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index + 2).lte(typeArr.length - 1);
+    });
+}, (vec: Vector3, typeArr: Float32Array, index: number) => {
     vec.set(
         typeArr[index],
         typeArr[index + 1],
@@ -77,7 +87,7 @@ export var setVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: numb
     );
 
     return vec;
-}
+})
 
 export var setQuaternions = (typeArr: Float32Array, qua: Quaternion, index: number) => {
     _setValue(typeArr, 0, index, qua.x);
@@ -86,7 +96,11 @@ export var setQuaternions = (typeArr: Float32Array, qua: Quaternion, index: numb
     _setValue(typeArr, 3, index, qua.w);
 }
 
-export var setQuaternionByIndex = (qua: Quaternion, typeArr: Float32Array, index: number) => {
+export var setQuaternionByIndex = requireCheckFunc((qua: Quaternion, typeArr: Float32Array, index: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index + 3).lte(typeArr.length - 1);
+    });
+}, (qua: Quaternion, typeArr: Float32Array, index: number) => {
     qua.set(
         typeArr[index],
         typeArr[index + 1],
@@ -95,7 +109,7 @@ export var setQuaternionByIndex = (qua: Quaternion, typeArr: Float32Array, index
     );
 
     return qua;
-}
+})
 
 export var swap = (typeArr: any, index1: number, index2: number, length: number) => {
     for (let i = 0; i < length; i++) {
@@ -117,6 +131,10 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
     return setVector3ByIndex(vec, typeArr, index);
 }
 
-var _setValue = (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
+var _setValue = requireCheckFunc((typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
+   it("should not exceed type arr's length", () => {
+       expect(startIndex + increment).lte(typeArr.length - 1);
+   });
+}, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
     typeArr[startIndex + increment] = target;
-}
+})

@@ -281,6 +281,50 @@ describe("Geometry", function () {
         });
     });
 
+    describe("contract check", function() {
+        beforeEach(function(){
+            gameObject = gameObjectTool.create();
+            geo = customGeometryTool.create();
+            gameObjectTool.addComponent(gameObject, geo);
+        });
+
+        describe("data.length should not exceed DataBufferConfig->dataBufferCount", function() {
+            function prepareNotExceed() {
+                sandbox.stub(DataBufferConfig, "geometryDataBufferCount", 3);
+
+                geometryTool.resetData();
+
+                return "should not exceed type arr's length";
+            }
+
+            beforeEach(function(){
+
+            });
+
+            it("setVertices", function(){
+                var geoVerticesData = [
+                    -6, -6, 6, -6, 6, 6, 6, -6, 6,
+                    5, -6, 6,
+                ];
+                var errMsg = prepareNotExceed();
+
+                expect(function () {
+                    customGeometryTool.setVertices(geo, geoVerticesData)
+                }).toThrow(errMsg);
+            });
+            it("setIndices", function(){
+                var geoIndicesData = [
+                    2,0,1, 3
+                ]
+                var errMsg = prepareNotExceed();
+
+                expect(function () {
+                    customGeometryTool.setIndices(geo, geoIndicesData)
+                }).toThrow(errMsg);
+            });
+        });
+    });
+
     describe("fix bug", function() {
         beforeEach(function(){
 

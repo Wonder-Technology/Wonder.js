@@ -4,7 +4,7 @@ import { material_config } from "../../../data/material_config";
 import { shaderLib_generator } from "../../../data/shaderLib_generator";
 import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
-    createBufferViews,
+    createTypeArrays,
     getColorDataSize, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
     getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils
@@ -60,7 +60,7 @@ export var getAlphaTest = getAlphaTestUtils;
 export var isTestAlpha = isTestAlphaUtils;
 
 export var initData = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
-    createBufferViews(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);
+    createTypeArrays(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);
 
     MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
     MaterialWorkerData.shaderIndexTable = materialData.shaderIndexTable;
