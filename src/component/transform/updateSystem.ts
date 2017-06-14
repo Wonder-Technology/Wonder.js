@@ -12,6 +12,8 @@ import {
 import { DataUtils } from "../../utils/DataUtils";
 import { Map } from "immutable";
 import { clearCache } from "./cacheSystem";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return compose(
@@ -21,21 +23,29 @@ export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: 
     )(state);
 }
 
-var _updateDirtyList = curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
+var _updateDirtyList = requireCheckFunc(curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
+    it("firstDirtyIndex should <= maxCount", () => {
+        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
+    })
+}), curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     _sortParentBeforeChildInDirtyList(ThreeDTransformData);
 
-    let count = ThreeDTransformData.count;
+    let count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         _transform(i, GlobalTempData, ThreeDTransformData);
     }
 
     return state;
-})
+}))
 
 //todo optimize: if transform not transformed in 5 frames, not move off
-var _cleanDirtyList = curry((ThreeDTransformData: any, state: Map<any, any>) => {
-    var count = ThreeDTransformData.count;
+var _cleanDirtyList = requireCheckFunc(curry((ThreeDTransformData: any, state: Map<any, any>) => {
+    it("firstDirtyIndex should <= maxCount", () => {
+        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
+    })
+}), curry((ThreeDTransformData: any, state: Map<any, any>) => {
+    var count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         if (_needMoveOffDirtyList(i)) {
@@ -44,7 +54,7 @@ var _cleanDirtyList = curry((ThreeDTransformData: any, state: Map<any, any>) => 
     }
 
     return state;
-})
+}))
 
 var _needMoveOffDirtyList = (index: number) => {
     return true;
@@ -85,7 +95,7 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
 }
 
 var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
-    var count = ThreeDTransformData.count;
+    var count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         let parent = getThreeDTransformDataParent(getUID(i, ThreeDTransformData), ThreeDTransformData);

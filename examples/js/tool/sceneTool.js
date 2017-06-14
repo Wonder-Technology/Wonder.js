@@ -4,6 +4,9 @@ var sceneTool = (function () {
     }
 
     return {
+        resetData: function(){
+            wd.initSceneData(wd.SceneData);
+        },
         addGameObject: function(gameObj){
             wd.addSceneChild(_getScene(), gameObj);
         },
@@ -22,6 +25,8 @@ var sceneTool = (function () {
             gameObjectTool.addComponent(cameraObj, cameraController);
 
             sceneTool.addGameObject(cameraObj);
+
+            return cameraObj;
         },
         prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
             var isNotAddCamera$ = isNotAddCamera === true ? true : false;
@@ -48,10 +53,9 @@ var sceneTool = (function () {
             sceneTool.addGameObject(obj);
 
             var cameraObj = null;
-            var cameraController = null;
 
             if(!isNotAddCamera){
-                sceneTool.addCameraObject();
+                cameraObj = sceneTool.addCameraObject();
             }
 
 

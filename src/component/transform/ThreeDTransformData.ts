@@ -4,9 +4,10 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
+import { Quaternion } from "../../math/Quaternion";
 
 export class ThreeDTransformData {
-    static get count() {
+    static get maxCount() {
         return DataBufferConfig.transformDataBufferCount;
     }
 
@@ -14,6 +15,11 @@ export class ThreeDTransformData {
     public static localPositions: Float32Array = null;
     public static localRotations: Float32Array = null;
     public static localScales: Float32Array = null;
+
+    public static defaultPosition: Vector3 = null;
+    public static defaultRotation: Quaternion = null;
+    public static defaultScale: Vector3 = null;
+    public static defaultLocalToWorldMatrice: Matrix4 = null;
 
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
@@ -37,6 +43,8 @@ export class ThreeDTransformData {
     public static tempMap: ThreeDTransformTempMap = null;
 
     public static transformMap: TransformMap = null;
+
+    public static count:number = null;
 
     public static uid: number = null;
     public static disposeCount: number = null;

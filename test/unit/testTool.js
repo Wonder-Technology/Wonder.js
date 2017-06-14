@@ -87,6 +87,7 @@ var testTool = (function () {
             indexBufferTool.resetData();
             deviceManagerTool.resetData();
             cameraControllerTool.resetData();
+            sceneTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, isInit) {
@@ -108,7 +109,7 @@ var testTool = (function () {
             //
             //
             // sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
-            this.stubGetter(sinon, wd.ThreeDTransformData, "count", function () {
+            this.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
                 return 10;
             });
         },

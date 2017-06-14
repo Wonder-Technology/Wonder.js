@@ -78,10 +78,24 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: 
     changeFunc(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
     changeFunc(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
     changeFunc(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
-    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    _changeLocalScaleData(vec3SourceIndex, vec3TargetIndex, vec3Size, ThreeDTransformData, changeFunc);
 
     return ThreeDTransformData;
 }
+
+var _changeLocalScaleData = requireCheckFunc ((vec3SourceIndex:number, vec3TargetIndex:number, vec3Size:number, ThreeDTransformData:any, changeFunc:Function) => {
+    //todo unit test
+    it("source localScale data shouldn't be [0,0,0]", () => {
+        if(ThreeDTransformData.localScales[vec3SourceIndex] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 2] === 0
+        ){
+            expect(false).true;
+        }
+    });
+}, (vec3SourceIndex:number, vec3TargetIndex:number, vec3Size:number, ThreeDTransformData:any, changeFunc:Function) => {
+    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+})
 
 var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
@@ -104,8 +118,6 @@ var _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: n
             newIndex2 = targetIndex + i;
 
         dataArr[newIndex2] = dataArr[newIndex1];
-
-        dataArr[newIndex1] = 0;
     }
 };
 
@@ -161,6 +173,7 @@ export var moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, T
 
 
 export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+// export var setTransformDataInTypeArr = (indexInArrayBuffer: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
