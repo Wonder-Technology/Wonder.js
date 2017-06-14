@@ -181,7 +181,7 @@ var _buildRenderCommandUniformData = (mMatrices:Float32Array, vMatrices:Float32A
 }
 
 var _createTypeArrays = (buffer:any, render_config:IRenderConfig, mat4Length:number, DrawRenderCommandDataFromSystem:any) => {
-    if(!_isTypeArrayExist(DrawRenderCommandDataFromSystem)){
+    if(_isTypeArrayNotExist(DrawRenderCommandDataFromSystem)){
         let count = render_config.renderCommandBufferCount;
 
         DrawRenderCommandDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
@@ -195,8 +195,8 @@ var _createTypeArrays = (buffer:any, render_config:IRenderConfig, mat4Length:num
     return DrawRenderCommandDataFromSystem;
 }
 
-var _isTypeArrayExist = (DrawRenderCommandDataFromSystem:any) => {
-    return DrawRenderCommandDataFromSystem.mMatrices !== null;
+var _isTypeArrayNotExist = (DrawRenderCommandDataFromSystem:any) => {
+    return DrawRenderCommandDataFromSystem.mMatrices === null;
 }
 
 export var initData = (DrawRenderCommandDataFromSystem:any) => {

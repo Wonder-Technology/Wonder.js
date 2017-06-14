@@ -87,6 +87,8 @@ var testTool = (function () {
             indexBufferTool.resetData();
             deviceManagerTool.resetData();
             cameraControllerTool.resetData();
+            renderCommandBufferTool.resetData();
+            drawRenderCommandTool.resetData();
             sceneTool.resetData();
         },
 

@@ -162,6 +162,7 @@ var _getContext = (canvas: HTMLCanvasElement, options:ContextConfigOptionsData):
     return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
 }
 
+//todo do when init to accelerate
 initProgramWorkerData(ProgramWorkerData);
 
 initLocationWorkerData(LocationWorkerData);

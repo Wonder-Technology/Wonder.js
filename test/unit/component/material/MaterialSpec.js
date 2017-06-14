@@ -12,7 +12,10 @@ describe("Material", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+        bufferTool.minBufferCount(sandbox);
+
         testTool.clearAndOpenContractCheck(sandbox);
+
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
@@ -21,8 +24,6 @@ describe("Material", function() {
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
-
-        sandbox.stub(DataBufferConfig, "materialDataBufferCount", 10);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -72,11 +73,11 @@ describe("Material", function() {
             expect(materialTool.getAlphaTest(material)).toEqual(-1);
         });
     });
-    
+
     describe("create", function() {
         beforeEach(function(){
         });
-        
+
         it("same Material(same class name) share one shader", function(){
             var mat2 = basicMaterialTool.create();
             var mat3 = basicMaterialTool.create();
@@ -90,9 +91,9 @@ describe("Material", function() {
 
     describe("init", function() {
         beforeEach(function(){
-            
+
         });
-        
+
         // it("should not dispose any material before init", function(){
         it("can dispose any material before init", function(){
             var mat2 = basicMaterialTool.create();

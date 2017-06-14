@@ -27,6 +27,9 @@ import { initData as initProgramDataSystem } from "../renderer/shader/program/Pr
 import { initData as initLocationDataSystem } from "../renderer/shader/location/LocationSystem";
 import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
+import { initData as initRenderCommandBufferDataSystem } from "../renderer/command/RenderCommandBufferSystem";
+import { IRenderConfig } from "../renderer/data/render_config";
+import { initData as initDrawRenderCommandDataSystem } from "../renderer/draw/DrawRenderCommandSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -61,6 +64,10 @@ export var initCameraControllerData = initCameraControllerDataSystem;
 export var initGameObjectData = initGameObjectDataSystem;
 
 export var initSceneData = initSceneDataSystem;
+
+export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
+
+export var initDrawRenderCommandData = initDrawRenderCommandDataSystem;
 
 export var createState = createStateUtils;
 

@@ -29,24 +29,16 @@ import {
 } from "../component/geometry/GeometrySystem";
 import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
-import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
-import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
-import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
     addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
-    addInitHandle as addMaterialInitHandle,
-    initData as initMaterialData
+    addInitHandle as addMaterialInitHandle
 } from "../component/material/MaterialSystem";
-import { MaterialData } from "../component/material/MaterialData";
 import {
     addAddComponentHandle as addMeshRendererAddComponentHandle,
-    addDisposeHandle as addMeshRendererDisposeHandle,
-    initData as initMeshRendererData
+    addDisposeHandle as addMeshRendererDisposeHandle
 } from "../component/renderer/MeshRendererSystem";
-import { MeshRendererData } from "../component/renderer/MeshRendererData";
-import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
-import { TagData } from "../component/tag/TagData";
+import { addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { Tag } from "../component/tag/Tag";
 import { ThreeDTransform } from "../component/transform/ThreeDTransform";
 import { Material } from "../component/material/Material";
@@ -58,13 +50,8 @@ import {
 import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
-import { SceneData } from "./entityObject/scene/SceneData";
-import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
-import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
-import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
-import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 
 @singleton(true)
 @registerClass("Director")
@@ -213,40 +200,22 @@ export class Director {
     }
 }
 
-initShaderData(ShaderData);
-
-initGeometryData(DataBufferConfig, GeometryData);
 addGeometryAddComponentHandle(Geometry);
 addGeometryDisposeHandle(Geometry);
 addGeometryInitHandle(Geometry);
 
-initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
 addMaterialInitHandle(Material);
 
-initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer);
 addMeshRendererDisposeHandle(MeshRenderer);
 
-initTagData(TagData);
 addTagAddComponentHandle(Tag);
 addTagDisposeHandle(Tag);
 
-initThreeDTransformData(GlobalTempData, ThreeDTransformData);
 addThreeDTransformAddComponentHandle(ThreeDTransform);
 addThreeDTransformDisposeHandle(ThreeDTransform);
 
-// initArrayBufferData(ArrayBufferData);
-
-// initIndexBufferData(IndexBufferData);
-
-initSceneData(SceneData);
-
-initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
-
-initGameObjectData(GameObjectData);
-
-initWorkerTimeData(WorkerTimeData);

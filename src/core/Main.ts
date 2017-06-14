@@ -1,4 +1,7 @@
-import { getIsTest, init as initMain, MainConfigData, setConfig, setIsTest, setLibIsTest } from "./MainSystem";
+import {
+    getIsTest, init as initMain, initData as initDataMainSystem, MainConfigData, setConfig, setIsTest,
+    setLibIsTest
+} from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
 import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
@@ -34,6 +37,8 @@ export class Main {
         });
     })
     public static init() {
+        initDataMainSystem();
+
         setState(initMain(getState(DirectorData), this._configState.get("config"), DomQuery).run(), DirectorData).run();
 
         return this;

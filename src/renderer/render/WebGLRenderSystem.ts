@@ -23,21 +23,15 @@ import { CameraControllerData } from "../../component/camera/CameraControllerDat
 import { CameraData } from "../../component/camera/CameraData";
 import { DeviceManagerWorkerData } from "../worker/both_file/device/DeviceManagerWorkerData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
-import { initData as initRenderCommandBufferData } from "../command/RenderCommandBufferSystem";
 import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
 import { ERenderWorkerState } from "../worker/both_file/ERenderWorkerState";
 import { SendDrawRenderCommandData } from "../worker/logic_file/draw/SendDrawRenderCommandData";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { clear, draw, initData as initDrawRenderCommandData } from "../draw/DrawRenderCommandSystem";
+import { clear, draw } from "../draw/DrawRenderCommandSystem";
 import { DrawRenderCommandData } from "../draw/DrawRenderCommandData";
 import { ProgramData } from "../shader/program/ProgramData";
 import { LocationData } from "../shader/location/LocationData";
 import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
-import { initData as initProgramData } from "../shader/program/ProgramSystem";
-import { initData as initLocationData } from "../shader/location/LocationSystem";
-import { initData as initGLSLSenderData } from "../shader/glslSender/GLSLSenderSystem";
-import { initData as initArrayBufferData } from "../buffer/ArrayBufferSystem";
-import { initData as initIndexBufferData } from "../buffer/IndexBufferSystem";
 import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
 
 export var init = null;
@@ -109,18 +103,4 @@ else{
             getRenderList(state)
         )(MeshRendererData)
     }
-
-    initProgramData(ProgramData);
-
-    initLocationData(LocationData);
-
-    initGLSLSenderData(GLSLSenderData);
-
-    initArrayBufferData(ArrayBufferData);
-
-    initIndexBufferData(IndexBufferData);
-
-    initDrawRenderCommandData(DrawRenderCommandData);
 }
-
-initRenderCommandBufferData(render_config, RenderCommandBufferData);
