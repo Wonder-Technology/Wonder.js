@@ -274,19 +274,7 @@ var _getTempData = (uid: number, ThreeDTransformData: any) => {
 }
 
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
-    var buffer: ArrayBuffer = null,
-        maxCount = ThreeDTransformData.maxCount,
-        size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());
-
-    buffer = new ArrayBuffer(maxCount * size);
-
-    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, maxCount * getMatrix4DataSize());
-    ThreeDTransformData.localPositions = new Float32Array(buffer, maxCount * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), maxCount * getVector3DataSize());
-    ThreeDTransformData.localRotations = new Float32Array(buffer, maxCount * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), maxCount * getQuaternionDataSize());
-    ThreeDTransformData.localScales = new Float32Array(buffer, maxCount * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), maxCount * getVector3DataSize());
-
-    ThreeDTransformData.buffer = buffer;
-
+    _initBufferData(ThreeDTransformData);
 
     ThreeDTransformData.defaultPosition = Vector3.create(0, 0, 0);
     ThreeDTransformData.defaultRotation = Quaternion.create(0, 0, 0, 1);
@@ -319,3 +307,19 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.aliveUIDArray = [];
 }
+
+var _initBufferData = (ThreeDTransformData: any) => {
+    var buffer: ArrayBuffer = null,
+        count = ThreeDTransformData.maxCount,
+        size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());
+
+    buffer = new ArrayBuffer(count * size);
+
+    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
+    ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
+    ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
+    ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+
+    ThreeDTransformData.buffer = buffer;
+}
+
