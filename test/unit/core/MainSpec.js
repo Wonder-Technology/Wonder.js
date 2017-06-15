@@ -78,7 +78,7 @@ describe("Main", function() {
         describe("test set canvas id", function(){
             describe("if pass canvas id", function() {
                 beforeEach(function(){
-                    sandbox.stub(DomQuery, "create");
+                    sandbox.stub(DomQuery, "create")
 
                     DomQuery.create.withArgs("#a").returns(buildFakeDomQuery(canvasDom));
                     DomQuery.create.withArgs("body").returns(buildFakeDomQuery(canvasDom));

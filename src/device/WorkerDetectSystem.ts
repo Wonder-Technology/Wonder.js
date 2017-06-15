@@ -1,9 +1,20 @@
 import curry from "wonder-lodash/curry";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { WorkerDetectData } from "./WorkerDetectData";
+import { root } from "../definition/Variable";
 
 export var detect = curry((WorkerDetectData: any) => {
-    var canvas = DomQuery.create("<canvas></canvas>").get(0);
+    /*!
+    for unit test
+     */
+    if (typeof root.isSupportSharedArrayBuffer_wonder !== "undefined" && typeof root.isSupportRenderWorkerAndSharedArrayBuffer_wonder !== "undefined"){
+        WorkerDetectData.isSupportSharedArrayBuffer = root.isSupportSharedArrayBuffer_wonder;
+        WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = root.isSupportRenderWorkerAndSharedArrayBuffer_wonder;
+
+        return;
+    }
+
+    let canvas = DomQuery.create("<canvas></canvas>").get(0);
 
     if (typeof SharedArrayBuffer !== "undefined") {
         WorkerDetectData.isSupportSharedArrayBuffer = true;
@@ -27,6 +38,5 @@ export var isSupportSharedArrayBuffer = () => {
 export var isSupportRenderWorkerAndSharedArrayBuffer = () => {
     return WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 }
-
 
 detect(WorkerDetectData);

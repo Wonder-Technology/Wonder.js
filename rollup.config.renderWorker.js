@@ -17,8 +17,8 @@ export default {
         }),
         commonjs({
             namedExports: {
-                // "./node_modules/bowser/src/bowser.js": ["version", "chrome","msie", "firefox", "mobile"],
                 "./node_modules/immutable/dist/immutable.js": ["fromJS", "Map"],
+                "./node_modules/wonder-expect.js/dist/wdet.js": ["expect"],
                 "./node_modules/wonder-expect.js/index.js": ["expect"]
             },
             extensions: [".js", ".ts"]
@@ -29,7 +29,7 @@ export default {
             sourceMap: true,
             format: "umd",
             moduleName: "quad",
-            dest: "./dist/worker/RenderWorkerSystem.js"
+            dest: "./dist/worker/wd.renderWorker.js"
         }
     ]
 };

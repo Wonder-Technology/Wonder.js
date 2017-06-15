@@ -11,8 +11,7 @@ var stateTool = (function () {
             var state = wd.createState();
             var gl = glslTool.buildFakeGl(sandbox);
 
-            // return state.setIn(["DeviceManager", "gl"], gl);
-            wd.DeviceManagerData.gl = gl;
+            wd.DeviceManagerWorkerData.gl = gl;
 
             return state;
         },

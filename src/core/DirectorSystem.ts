@@ -18,8 +18,6 @@ export var setState = (state: Map<any, any>, DirectorData: any) => {
 
 export var render = null;
 
-//todo unit test
-
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     render = (deltaTime: number, state: Map<any, any>) => {
         var resultState = null;

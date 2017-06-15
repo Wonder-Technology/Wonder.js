@@ -1,5 +1,5 @@
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
-import { error, info } from "../../../utils/Log";
+import { Log } from "../../../utils/Log";
 // import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 // import { expect } from "wonder-expect.js";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
@@ -117,7 +117,7 @@ onmessage = (e) => {
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData), data.renderCommandBufferData);
             break;
         default:
-            error(true, info.FUNC_UNKOWN(`operateType:${operateType}`));
+            Log.error(true, Log.info.FUNC_UNKOWN(`operateType:${operateType}`));
             break;
     }
 };

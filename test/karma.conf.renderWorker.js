@@ -11,9 +11,11 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'test/unit/environment/noWorker.js',
+        'test/unit/environment/renderWorker.js',
 
         'dist/wd.forTest.js',
+        'dist/worker/wd.renderWorker.js',
+
 
 
         'examples/js/tool/*.js',
@@ -25,37 +27,18 @@
         'test/helper/yoop/yOOP.js',
 
         'test/unit/common/**',
-        'test/unit/**/*Tool.js',
+        'test/unit/worker/tool/*.js',
 
-        // 'test/unit/**/BufferWriter.js',
+        'test/unit/worker/render_worker/**',
 
-        'test/unit/**',
-        // 'test/unit/**/reallocate*',
-        // 'test/unit/**/Camera*',
-        // 'test/unit/**/*Camera*',
-        // 'test/unit/**/WebGLRenderer*',
-        // 'test/unit/**/draw*',
-        // 'test/unit/**/renderer/**',
-        // 'test/unit/**/Tag*',
-        // 'test/unit/**/*Geometry*',
-        // 'test/unit/**/*Material*',
-        // 'test/unit/**/MeshRenderer*',
-        // 'test/unit/**/Main*',
-        // 'test/unit/**/ThreeD*',
-        // 'test/unit/**/GameObject*',
-        // 'test/unit/**/Scene*',
-        // 'test/unit/**/shaderSource*',
-
-        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
-
-        // {pattern: 'test/res/**', watched: false, included: false, served: true}
+        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
+        {pattern: 'dist/worker/wd.renderWorker.js.map', watched: false, included: false, served: true, nocache:true}
     ],
 
 
     // list of files to exclude
     exclude: [
-        '**/temp/*',
-        'test/unit/worker/**'
+        '**/temp/*'
     ],
 
 
