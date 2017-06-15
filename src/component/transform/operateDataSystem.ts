@@ -10,7 +10,10 @@ import { addNotUsedIndex } from "./dirtySystem";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { isParentExist } from "./hierarchySystem";
 import { getLocalToWorldMatrix } from "./ThreeDTransformSystem";
-import { setMatrices, setQuaternions, setVectors } from "../../utils/typeArrayUtils";
+import {
+    getMatrix4DataSize, getQuaternionDataSize, getVector3DataSize, setMatrices, setQuaternions,
+    setVectors
+} from "../../utils/typeArrayUtils";
 
 export var swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
@@ -216,12 +219,6 @@ export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransfor
         setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 }
-
-export var getMatrix4DataSize = () => 16;
-
-export var getVector3DataSize = () => 3;
-
-export var getQuaternionDataSize = () => 4;
 
 export var getMatrix4DataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * getMatrix4DataSize();
 

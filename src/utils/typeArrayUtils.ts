@@ -4,6 +4,12 @@ import { Quaternion } from "../math/Quaternion";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
+export var getMatrix4DataSize = () => 16;
+
+export var getVector3DataSize = () => 3;
+
+export var getQuaternionDataSize = () => 4;
+
 export var getSlice = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     return typeArr.slice(startIndex, endIndex);
 }

@@ -18,7 +18,7 @@ import { CameraController } from "../../component/camera/CameraController";
 import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { setMatrices } from "../../utils/typeArrayUtils";
+import { getMatrix4DataSize, setMatrices } from "../../utils/typeArrayUtils";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
@@ -28,51 +28,25 @@ export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, a
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })
 }, (state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
-    let mat4Length = 16;
     var count = renderGameObjectArray.length,
-        // size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
-        buffer: any = RenderCommandBufferData.buffer;
-
-
-    //todo handle not support SharedArrayBuffer
-    // buffer = new SharedArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
-
-
-    // let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
-    //     // vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, count * mat4Length),
-    //     // pMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 2, count * mat4Length),
-    //     vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-    //     pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
-    //     materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count),
-    //     shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count),
-    //     geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
-    // // drawModes = new Uint16Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length * 3 + Uint32Array.BYTES_PER_ELEMENT * 3, count);
-
-    let mMatrices = RenderCommandBufferData.mMatrices,
+        buffer: any = RenderCommandBufferData.buffer,
+        mMatrices = RenderCommandBufferData.mMatrices,
         vMatrices = RenderCommandBufferData.vMatrices,
         pMatrices = RenderCommandBufferData.pMatrices,
         materialIndices = RenderCommandBufferData.materialIndices,
         shaderIndices = RenderCommandBufferData.shaderIndices,
-        geometryIndices = RenderCommandBufferData.geometryIndices;
-
-    let currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
-        currentCameraIndex = currentCamera.index;
-
+        geometryIndices = RenderCommandBufferData.geometryIndices,
+        currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
+        currentCameraIndex = currentCamera.index,
+        mat4Length = getMatrix4DataSize();
 
     setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
-
     setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
 
-
-    // for (let gameObject of renderGameObjectArray) {
     for (let i = 0; i < count; i++) {
-        let matIndex = 16 * i;
-
-        let gameObject = renderGameObjectArray[i];
-        // let command = new RenderCommand(),
-        // let currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData),
-        //     currentCameraIndex = currentCamera.index,
-        let geometry = getGeometry(gameObject, GameObjectData),
+        let matIndex = mat4Length * i,
+            gameObject = renderGameObjectArray[i],
+            geometry = getGeometry(gameObject, GameObjectData),
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
             materialIndex = material.index,
@@ -80,8 +54,6 @@ export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, a
 
         setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
 
-
-        // drawModes[i] = getDrawMode(geometry, GeometryData);
         materialIndices[i] = materialIndex;
         shaderIndices[i] = shaderIndex;
         geometryIndices[i] = geometry.index;
@@ -94,14 +66,12 @@ export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, a
 }), 10)
 
 export var initData = (DataBufferConfig:any, RenderCommandBufferData: any) => {
-    var mat4Length = 16;
-    var size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3;
-    var buffer: any = null;
-    var count = DataBufferConfig.renderCommandBufferCount;
-
+    var mat4Length = getMatrix4DataSize(),
+        size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
+        buffer: any = null,
+        count = DataBufferConfig.renderCommandBufferCount;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
-
 
     RenderCommandBufferData.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
     RenderCommandBufferData.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);

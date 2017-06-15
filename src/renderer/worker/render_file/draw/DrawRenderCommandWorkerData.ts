@@ -1,9 +1,7 @@
 export class DrawRenderCommandWorkerData {
-    //todo refactor: rename
-    public static mMatrixFloatArray: Float32Array = null;
-    public static vMatrixFloatArray: Float32Array = null;
-    public static pMatrixFloatArray: Float32Array = null;
-
+    public static mMatrixFloatArrayForSend: Float32Array = null;
+    public static vMatrixFloatArrayForSend: Float32Array = null;
+    public static pMatrixFloatArrayForSend: Float32Array = null;
 
     public static mMatrices: Float32Array = null;
     public static vMatrices: Float32Array = null;

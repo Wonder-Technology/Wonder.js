@@ -18,7 +18,6 @@ import { createState as createStateUtils } from "../utils/stateUtils";
 import { Map } from "immutable";
 import { initData as initArrayBufferDataSystem } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferDataSystem } from "../renderer/buffer/IndexBufferSystem";
-import { RenderCommand } from "../renderer/command/RenderCommand";
 import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectDataSystem } from "../core/entityObject/gameObject/GameObjectSystem";
 import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/shader/program/programUtils";
@@ -30,7 +29,6 @@ import { initData as initSceneDataSystem } from "../core/entityObject/scene/Scen
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command/RenderCommandBufferSystem";
 import { IRenderConfig } from "../renderer/data/render_config";
 import { initData as initDrawRenderCommandDataSystem } from "../renderer/draw/DrawRenderCommandSystem";
-import { BufferUtils as BufferUtilsUtils } from "../utils/BufferUtils";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -87,5 +85,3 @@ export var setGeometryVertices = setVertices;
 export var hasGeometryIndices = hasIndices;
 
 export var getShaderIndex = getShaderIndexSystem;
-
-export var BufferUtils = BufferUtilsUtils;

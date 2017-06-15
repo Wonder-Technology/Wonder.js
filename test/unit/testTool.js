@@ -105,7 +105,7 @@ var testTool = (function () {
             Main.isTest = true;
         },
         _prepareBufferForTest: function(sandbox, data){
-            sandbox.stub(wd.BufferUtils, "isDrawRenderCommandDataTypeArrayNotExist").returns(true);
+            sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandDataTypeArrayNotExist").returns(true);
 
             bufferTool.minBufferCount(sandbox, data);
         },

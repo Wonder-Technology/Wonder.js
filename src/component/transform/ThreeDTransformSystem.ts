@@ -22,8 +22,7 @@ import {
     setParent as setParentHierarchy
 } from "./hierarchySystem";
 import {
-    getMatrix4DataIndexInArrayBuffer, getMatrix4DataSize,
-    getQuaternionDataSize, getVector3DataIndexInArrayBuffer, getVector3DataSize,
+    getMatrix4DataIndexInArrayBuffer, getVector3DataIndexInArrayBuffer,
     setLocalPositionData, setPositionData, setTransformDataInTypeArr,
     swap
 } from "./operateDataSystem";
@@ -39,7 +38,10 @@ import { isDisposeTooManyComponents, reAllocateThreeDTransform } from "../../uti
 import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { Quaternion } from "../../math/Quaternion";
-import { createMatrix4ByIndex, createVector3ByIndex } from "../../utils/typeArrayUtils";
+import {
+    createMatrix4ByIndex, createVector3ByIndex, getMatrix4DataSize, getQuaternionDataSize,
+    getVector3DataSize
+} from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
 
 export var addAddComponentHandle = (_class: any) => {
