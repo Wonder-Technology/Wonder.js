@@ -72,9 +72,9 @@ var _createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData:any) => {
+export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData: any) => {
     checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, MaterialData:any) => {
+}, (state: MapImmutable<any, any>, MaterialData: any) => {
     for (let i = 0, count = MaterialData.count; i < count; i++) {
         initMaterial(i, state);
     }
@@ -83,12 +83,12 @@ export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData:
 //todo unit test: test init new added one
 export var initMaterial = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         MaterialData.workerInitList.push(index);
     }
 }
-else{
+else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         // var shader = getShader(index, shaderMap),
         //     //todo move isInitMap out?(not contain worker data)
@@ -111,11 +111,11 @@ else{
     }
 }
 
-export var clearWorkerInitList = (MaterialData:any) => {
+export var clearWorkerInitList = (MaterialData: any) => {
     MaterialData.workerInitList = [];
 }
 
-export var hasNewInitedMaterial = (MaterialData:any) => {
+export var hasNewInitedMaterial = (MaterialData: any) => {
     return MaterialData.workerInitList.length > 0;
 }
 
@@ -242,11 +242,11 @@ export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-var _setTypeArrayValue = requireCheckFunc((typeArr:Float32Array | Uint32Array, index:number, value:number) => {
+var _setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, index: number, value: number) => {
     it("should not exceed type arr's length", () => {
         expect(index).lte(typeArr.length - 1);
     });
-}, (typeArr:Float32Array, index:number, value:number) => {
+}, (typeArr: Float32Array, index: number, value: number) => {
     typeArr[index] = value;
 })
 
@@ -277,7 +277,7 @@ export var initData = (MaterialData: any) => {
     _initTable(MaterialData);
 }
 
-var _initBufferData = (MaterialData:any) => {
+var _initBufferData = (MaterialData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.materialDataBufferCount,
         size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize())
@@ -291,7 +291,7 @@ var _initBufferData = (MaterialData:any) => {
     _addDefaultTypeArrData(count, MaterialData);
 }
 
-var _addDefaultTypeArrData = (count:number, MaterialData:any) => {
+var _addDefaultTypeArrData = (count: number, MaterialData: any) => {
     var color = _createDefaultColor(),
         opacity = MaterialData.defaultOpacity,
         alphaTest = MaterialData.defaultAlphaTest;
@@ -303,12 +303,12 @@ var _addDefaultTypeArrData = (count:number, MaterialData:any) => {
     }
 }
 
-var _initTable = (MaterialData:any) => {
+var _initTable = (MaterialData: any) => {
     MaterialData.shaderIndexTable = {
         "BasicMaterial": 0
     }
 
-    MaterialData.materialClassNameTable  = {
+    MaterialData.materialClassNameTable = {
         0: "BasicMaterial"
     }
 }

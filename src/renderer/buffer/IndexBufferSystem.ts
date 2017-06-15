@@ -11,12 +11,12 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
 
 export var initData = initDataUtils;
 
-export var disposeBuffer = (geometryIndex:number, IndexBufferData: any) => {
+export var disposeBuffer = (geometryIndex: number, IndexBufferData: any) => {
     var gl = getGL(DeviceManagerData, null),
         buffers = IndexBufferData.buffers,
         buffer = buffers[geometryIndex];
 
-    if(isBufferExist(buffer)){
+    if (isBufferExist(buffer)) {
         gl.deleteBuffer(buffers[geometryIndex]);
 
         /*!

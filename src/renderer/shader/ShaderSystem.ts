@@ -1,6 +1,5 @@
 import { Shader } from "./Shader";
-import { createMap } from "../../utils/objectUtils";
-import { isValidMapValue } from "../../../dist/commonjs/utils/objectUtils";
+import { createMap, isValidMapValue } from "../../utils/objectUtils";
 import { getShaderIndexFromTable } from "../../component/material/MaterialSystem";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
@@ -17,11 +16,11 @@ import { IMaterialConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
 import { Map } from "immutable";
 
-export var create = (materialClassName:string, MaterialData:any, ShaderData: any) => {
+export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
     var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
         shader = ShaderData.shaderMap[index];
 
-    if(_isShaderExist(shader)){
+    if (_isShaderExist(shader)) {
         return shader;
     }
 
@@ -34,7 +33,7 @@ export var create = (materialClassName:string, MaterialData:any, ShaderData: any
     return shader;
 }
 
-var _isShaderExist = (shader:Shader) => isValidMapValue(shader);
+var _isShaderExist = (shader: Shader) => isValidMapValue(shader);
 
 export var init = null;
 
@@ -46,19 +45,19 @@ export var bindIndexBuffer = null;
 
 export var use = null;
 
-if(!isSupportRenderWorkerAndSharedArrayBuffer()){
-    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData:any, LocationData:any, GLSLSenderData:any, MaterialData:any) => {
+if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
+    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, MaterialData: any) => {
         initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
     };
 
-    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
+    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData:any, LocationData: any, GLSLSenderData:any, renderCommandUniformData:RenderCommandUniformData) => {
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, renderCommandUniformData: RenderCommandUniformData) => {
         sendUniformDataUtils(gl, shaderIndex, {
-            getUniformData:getUniformData,
-            sendMatrix4:sendMatrix4,
-            sendVector3:sendVector3,
-            sendFloat1:sendFloat1
+            getUniformData: getUniformData,
+            sendMatrix4: sendMatrix4,
+            sendVector3: sendVector3,
+            sendFloat1: sendFloat1
         }, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
     };
 

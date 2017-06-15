@@ -1,6 +1,6 @@
-export var render = (dt: number, renderFunc:(dt: number) => void,  WorkerConfig:any, WorkerTimeData:any) => {
+export var render = (dt: number, renderFunc: (dt: number) => void, WorkerConfig: any, WorkerTimeData: any) => {
     var accumulator = WorkerTimeData.accumulator,
-        steps:number = null,
+        steps: number = null,
         renderWorkerDT = WorkerConfig.renderWorkerDT;
 
     accumulator += dt;
@@ -10,11 +10,11 @@ export var render = (dt: number, renderFunc:(dt: number) => void,  WorkerConfig:
     steps = Math.floor(accumulator / renderWorkerDT);
 
     // Remove what will be consumed this tick.
-    if (steps > 0){
+    if (steps > 0) {
         accumulator -= steps * renderWorkerDT;
     }
 
-    while(steps > 0) {
+    while (steps > 0) {
         renderFunc(renderWorkerDT);
         steps--;
     }
@@ -22,6 +22,6 @@ export var render = (dt: number, renderFunc:(dt: number) => void,  WorkerConfig:
     WorkerTimeData.accumulator = accumulator;
 }
 
-export var initData = (WorkerTimeData:any) => {
+export var initData = (WorkerTimeData: any) => {
     WorkerTimeData.accumulator = 0;
 }

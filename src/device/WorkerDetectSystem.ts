@@ -2,20 +2,20 @@ import curry from "wonder-lodash/curry";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { WorkerDetectData } from "./WorkerDetectData";
 
-export var detect = curry((WorkerDetectData:any) => {
+export var detect = curry((WorkerDetectData: any) => {
     var canvas = DomQuery.create("<canvas></canvas>").get(0);
 
-    if(typeof SharedArrayBuffer !== "undefined"){
+    if (typeof SharedArrayBuffer !== "undefined") {
         WorkerDetectData.isSupportSharedArrayBuffer = true;
     }
-    else{
+    else {
         WorkerDetectData.isSupportSharedArrayBuffer = false;
     }
 
-    if(("transferControlToOffscreen" in canvas) && WorkerDetectData.isSupportSharedArrayBuffer){
+    if (("transferControlToOffscreen" in canvas) && WorkerDetectData.isSupportSharedArrayBuffer) {
         WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = true;
     }
-    else{
+    else {
         WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = false;
     }
 })

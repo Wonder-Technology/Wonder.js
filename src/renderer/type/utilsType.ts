@@ -23,8 +23,8 @@ export type DrawFuncDataMap = {
 }
 
 export type SendUniformDataFuncDataMap = {
-    getUniformData:Function;
-    sendMatrix4:Function;
-    sendVector3:Function;
-    sendFloat1:Function;
+    getUniformData: Function;
+    sendMatrix4: Function;
+    sendVector3: Function;
+    sendFloat1: Function;
 }

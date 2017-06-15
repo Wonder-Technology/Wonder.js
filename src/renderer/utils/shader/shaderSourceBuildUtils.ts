@@ -14,13 +14,13 @@ import { compose, filterArray, forEachArray } from "../../../utils/functionalUti
 import { forEach } from "../../../utils/arrayUtils";
 import { BuildGLSLSourceFuncFuncDataMap } from "../../type/dataType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap:BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem:any) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibConfig, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap:BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem:any) => {
+}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -43,7 +43,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         var glslData = shaderLibData[shaderLibName].glsl,
             vs = null,
             fs = null,
-            func:(materialIndex:number, funcDataMap:BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem:any) => any = null;
+            func: (materialIndex: number, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => any = null;
 
         if (!isConfigDataExist(glslData)) {
             return;

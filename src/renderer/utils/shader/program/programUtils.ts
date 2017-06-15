@@ -8,11 +8,11 @@ import { forEach } from "../../../../utils/arrayUtils";
 import { RenderCommandUniformData } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
 
-export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     it("program should exist", () => {
         expect(getProgram(shaderIndex, ProgramDataFromSystem)).exist;
     });
-}, (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+}, (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     var program = getProgram(shaderIndex, ProgramDataFromSystem);
 
     if (ProgramDataFromSystem.lastUsedProgram === program) {
@@ -154,7 +154,7 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertices:Function, getAttribLocation:Function, isAttributeLocationNotExist:Function, sendBuffer:Function, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, GeometryWorkerData: any, ArrayBufferData: any) => {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertices: Function, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerData: any, ArrayBufferData: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
@@ -184,7 +184,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
     sendMatrix4,
     sendVector3,
     sendFloat1
-}, MaterialWorkerData: any, ProgramDataFromSystem:any, LocationDataFromSystem: any, GLSLSenderDataFromSystem:any, renderCommandUniformData:RenderCommandUniformData) => {
+}, MaterialWorkerData: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, renderCommandUniformData: RenderCommandUniformData) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex],
         uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;

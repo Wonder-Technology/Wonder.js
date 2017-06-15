@@ -38,9 +38,9 @@ import {
 import { isDisposeTooManyComponents, reAllocateThreeDTransform } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
-import { expect } from "wonder-expect.js";
 import { Quaternion } from "../../math/Quaternion";
 import { createMatrix4ByIndex, createVector3ByIndex } from "../../utils/typeArrayUtils";
+import { expect } from "wonder-expect.js";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -256,7 +256,7 @@ var _disposeFromDirtyList = (indexInArrayBuffer: number, uid: number, GlobalTemp
 }
 
 
-var _setDefaultTypeArrData = (index:number, ThreeDTransformData: any) => {
+var _setDefaultTypeArrData = (index: number, ThreeDTransformData: any) => {
     setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
 }
 
@@ -322,4 +322,3 @@ var _initBufferData = (ThreeDTransformData: any) => {
 
     ThreeDTransformData.buffer = buffer;
 }
-

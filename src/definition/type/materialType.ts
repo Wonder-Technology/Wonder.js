@@ -1,7 +1,7 @@
 export type ShaderIndexTable = {
-    [className:string]: number
+    [className: string]: number
 }
 
-export type MaterialClassNameTable  = {
-    [shaderIndex:number]: string
+export type MaterialClassNameTable = {
+    [shaderIndex: number]: string
 }

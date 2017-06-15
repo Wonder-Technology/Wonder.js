@@ -20,8 +20,8 @@ export var render = null;
 
 //todo unit test
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
-    render = (deltaTime:number, state: Map<any, any>) => {
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    render = (deltaTime: number, state: Map<any, any>) => {
         var resultState = null;
 
         renderByWorkerTime(deltaTime, (elapsed: number) => {
@@ -31,8 +31,8 @@ if(isSupportRenderWorkerAndSharedArrayBuffer()){
         return resultState;
     }
 }
-else{
-    render = (deltaTime:number, state: Map<any, any>) => {
+else {
+    render = (deltaTime: number, state: Map<any, any>) => {
         var resultState = renderByWebGLRender(state);
 
         return resultState;

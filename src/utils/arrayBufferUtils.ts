@@ -1,12 +1,12 @@
 import { isSupportSharedArrayBuffer } from "../device/WorkerDetectSystem";
 
-export var createSharedArrayBufferOrArrayBuffer = (length:number) => {
-    var Buffer:any = null;
+export var createSharedArrayBufferOrArrayBuffer = (length: number) => {
+    var Buffer: any = null;
 
-    if(isSupportSharedArrayBuffer()){
+    if (isSupportSharedArrayBuffer()) {
         Buffer = SharedArrayBuffer;
     }
-    else{
+    else {
         Buffer = ArrayBuffer;
     }
 

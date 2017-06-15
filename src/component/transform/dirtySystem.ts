@@ -97,7 +97,7 @@ var _getNotUsedIndexFromArr = (ThreeDTransformData: any) => {
     }
     while (isValidLinkNode && isIndexUsed(node.val, ThreeDTransformData))
 
-    if(!isValidLinkNode){
+    if (!isValidLinkNode) {
         return void 0;
     }
 
@@ -144,7 +144,7 @@ var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, indexInArrayBuffer:
     // });
     it("indexInArrayBuffer should < firstDirtyIndex", () => {
         expect(indexInArrayBuffer).exist;
-        expect(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
+        expect(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", () => {
         expect(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;

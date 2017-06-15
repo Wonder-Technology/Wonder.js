@@ -14,7 +14,7 @@ import { LocationWorkerData } from "../shader/location/LocationWorkerData";
 import { GLSLSenderWorkerData } from "../shader/glslSender/GLSLSenderWorkerData";
 import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWorkerData";
 
-export var initMaterials = (materialCount:number) => {
+export var initMaterials = (materialCount: number) => {
     for (let i = 0, count = materialCount; i < count; i++) {
         initMaterial(i, null);
     }
@@ -39,13 +39,13 @@ export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
     initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData);
 }
 
-export var getShaderIndex = (materialIndex: number, MaterialWorkerData:any) => {
+export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
     return MaterialWorkerData.shaderIndices[materialIndex];
 }
 
 export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export var initNewInitedMaterials = (workerInitList:Array<number>) => {
+export var initNewInitedMaterials = (workerInitList: Array<number>) => {
     for (let index of workerInitList) {
         initMaterial(index, null);
     }
@@ -59,7 +59,7 @@ export var getAlphaTest = getAlphaTestUtils;
 
 export var isTestAlpha = isTestAlphaUtils;
 
-export var initData = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
+export var initData = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {
     createTypeArrays(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);
 
     MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;

@@ -127,11 +127,11 @@ export var setConfig = (closeContractTest: boolean, MainData: any, {
     });
 }
 
-export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery:any) => {
+export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
     it("should set config before", () => {
         expect(configState.get("useDevicePixelRatio")).exist;
     })
-}, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery:any) => {
+}, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
     return compose(
         initDevice(configState.get("contextConfig"), gameState, configState),
         createCanvas(DomQuery)
@@ -140,12 +140,12 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
 
 export var initData = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initData = () => {
         _initData();
     }
 }
-else{
+else {
     initData = () => {
         _initData();
 

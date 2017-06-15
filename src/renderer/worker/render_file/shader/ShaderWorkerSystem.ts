@@ -12,18 +12,18 @@ import { Map } from "immutable";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerWorkerData: any, ProgramWorkerData:any, LocationWorkerData:any, GLSLSenderWorkerData:any, MaterialWorkerData:any) => {
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, MaterialWorkerData: any) => {
     initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData);
 };
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramWorkerData:any, LocationWorkerData: any, GLSLSenderWorkerData:any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData);
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData);
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialWorkerData: any, ProgramWorkerData:any, LocationWorkerData: any, GLSLSenderWorkerData:any, renderCommandUniformData:RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, renderCommandUniformData: RenderCommandUniformData) => {
     sendUniformDataUtils(gl, shaderIndex, {
-        getUniformData:getUniformData,
-        sendMatrix4:sendMatrix4,
-        sendVector3:sendVector3,
-        sendFloat1:sendFloat1
+        getUniformData: getUniformData,
+        sendMatrix4: sendMatrix4,
+        sendVector3: sendVector3,
+        sendFloat1: sendFloat1
     }, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, renderCommandUniformData);
 };
 

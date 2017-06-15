@@ -1,7 +1,7 @@
 import { Color } from "../../../../structure/Color";
 
-export class DeviceManagerWorkerData{
-    public static renderWorker:Worker = null;
+export class DeviceManagerWorkerData {
+    public static renderWorker: Worker = null;
 
     public static gl: WebGLRenderingContext = null;
 

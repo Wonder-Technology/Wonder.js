@@ -38,24 +38,24 @@ export var init = null;
 
 export var render = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     init = (state: Map<any, any>) => {
         var renderWorker = DeviceManagerWorkerData.renderWorker;
 
         renderWorker.postMessage({
-            operateType:EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
-            materialData:{
-                buffer:MaterialData.buffer,
+            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+            materialData: {
+                buffer: MaterialData.buffer,
                 materialCount: MaterialData.count,
-                materialClassNameTable:MaterialData.materialClassNameTable,
-                shaderIndexTable:MaterialData.shaderIndexTable
+                materialClassNameTable: MaterialData.materialClassNameTable,
+                shaderIndexTable: MaterialData.shaderIndexTable
             },
-            geometryData:{
-                buffer:GeometryData.buffer,
+            geometryData: {
+                buffer: GeometryData.buffer,
                 indexType: GeometryData.indexType,
                 indexTypeSize: GeometryData.indexTypeSize,
-                verticesInfoList:GeometryData.verticesInfoList,
-                indicesInfoList:GeometryData.indicesInfoList
+                verticesInfoList: GeometryData.verticesInfoList,
+                indicesInfoList: GeometryData.indicesInfoList
             }
         });
 
@@ -70,7 +70,7 @@ if(isSupportRenderWorkerAndSharedArrayBuffer()){
     }
 
     render = (state: Map<any, any>) => {
-        if(SendDrawRenderCommandData.state !== ERenderWorkerState.INIT_COMPLETE){
+        if (SendDrawRenderCommandData.state !== ERenderWorkerState.INIT_COMPLETE) {
             return state;
         }
 
@@ -82,13 +82,13 @@ if(isSupportRenderWorkerAndSharedArrayBuffer()){
         )(MeshRendererData)
     }
 
-    let _initData = (SendDrawRenderCommandData:any) => {
+    let _initData = (SendDrawRenderCommandData: any) => {
         SendDrawRenderCommandData.state = ERenderWorkerState.DEFAULT;
     }
 
     _initData(SendDrawRenderCommandData);
 }
-else{
+else {
     init = (state: Map<any, any>) => {
         initMaterial(state, MaterialData);
     }

@@ -1,4 +1,4 @@
-export enum EGeometryWorkerDataOperateType{
+export enum EGeometryWorkerDataOperateType {
     ADD,
     RESET
 }

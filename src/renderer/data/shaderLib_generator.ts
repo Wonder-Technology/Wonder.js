@@ -89,7 +89,7 @@ export const shaderLib_generator = {
                 "func": (materialIndex: number, {
                     getAlphaTest,
                     isTestAlpha
-                }, MaterialDataFromSystem:any) => {
+                }, MaterialDataFromSystem: any) => {
                     var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
 
                     if (isTestAlpha(alphaTest)) {

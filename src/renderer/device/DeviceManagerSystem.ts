@@ -15,7 +15,7 @@ import {
 } from "../utils/device/deviceManagerUtils";
 import { Color } from "../../structure/Color";
 
-export var createGL = curry((canvas:HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
+export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getContext(contextConfig, canvas);
 

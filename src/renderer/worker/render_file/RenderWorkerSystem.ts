@@ -48,7 +48,7 @@ import { ContextConfigOptionsData } from "../../type/dataType";
 import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandUtils";
 import { createState } from "../../../utils/stateUtils";
 
-onerror = (msg:string, fileName:string, lineno:number) => {
+onerror = (msg: string, fileName: string, lineno: number) => {
     // error(true, msg,fileName,lineno);
 
     //todo refactor
@@ -59,7 +59,7 @@ onmessage = (e) => {
     var data = e.data,
         operateType = data.operateType;
 
-    switch (operateType){
+    switch (operateType) {
         case EWorkerOperateType.INIT_GL:
             //todo setPixelRatioAndCanvas;setScreen
             // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
@@ -79,7 +79,7 @@ onmessage = (e) => {
 
             var state = createState();
 
-                //todo refactor
+            //todo refactor
             setViewportOfGL(0, 0, canvas.width, canvas.height, DeviceManagerWorkerData, state).run();
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
@@ -101,16 +101,16 @@ onmessage = (e) => {
                 materialData = data.materialData;
 
             //todo unit test
-            if(geometryData !== null){
-                if(_needUpdateGeometryWorkerData(geometryData)){
+            if (geometryData !== null) {
+                if (_needUpdateGeometryWorkerData(geometryData)) {
                     updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
-                else if(_needResetGeometryWorkerData(geometryData)){
+                else if (_needResetGeometryWorkerData(geometryData)) {
                     resetPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
             }
 
-            if(materialData !== null){
+            if (materialData !== null) {
                 initNewInitedMaterials(materialData.workerInitList);
             }
 
@@ -122,27 +122,27 @@ onmessage = (e) => {
     }
 };
 
-var _needUpdateGeometryWorkerData = (geometryData:GeometryUpdateWorkerData) => {
+var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.ADD;
 }
 
-var _needResetGeometryWorkerData = (geometryData:GeometryResetWorkerData) => {
+var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (materialData:MaterialInitWorkerData, DataBufferConfig:any, MaterialWorkerData:any) => {
+var _initMaterials = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {
     initMaterialWorkerData(materialData, DataBufferConfig, MaterialWorkerData);
 
     initMaterials(materialData.materialCount);
 }
 
-var _initGeometrys = (geometryData:GeometryInitWorkerData, DataBufferConfig:any, GeometryWorkerData:any) => {
+var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
     initGeometryWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
 
     setPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }
 
-var _createGL = curry((canvas:HTMLCanvasElement, options:ContextConfigOptionsData, DeviceManagerWorkerData: any) => {
+var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any) => {
     return IO.of(() => {
         var gl = _getContext(canvas, options);
 
@@ -158,7 +158,7 @@ var _createGL = curry((canvas:HTMLCanvasElement, options:ContextConfigOptionsDat
     });
 })
 
-var _getContext = (canvas: HTMLCanvasElement, options:ContextConfigOptionsData): WebGLRenderingContext => {
+var _getContext = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData): WebGLRenderingContext => {
     return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
 }
 

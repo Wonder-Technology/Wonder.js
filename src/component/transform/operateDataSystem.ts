@@ -83,17 +83,17 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: 
     return ThreeDTransformData;
 }
 
-var _changeLocalScaleData = requireCheckFunc ((vec3SourceIndex:number, vec3TargetIndex:number, vec3Size:number, ThreeDTransformData:any, changeFunc:Function) => {
+var _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
     //todo unit test
     it("source localScale data shouldn't be [0,0,0]", () => {
-        if(ThreeDTransformData.localScales[vec3SourceIndex] === 0
+        if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
             && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
             && ThreeDTransformData.localScales[vec3SourceIndex + 2] === 0
-        ){
+        ) {
             expect(false).true;
         }
     });
-}, (vec3SourceIndex:number, vec3TargetIndex:number, vec3Size:number, ThreeDTransformData:any, changeFunc:Function) => {
+}, (vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
     changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
 })
 
@@ -173,7 +173,7 @@ export var moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, T
 
 
 export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
-// export var setTransformDataInTypeArr = (indexInArrayBuffer: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    // export var setTransformDataInTypeArr = (indexInArrayBuffer: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);

@@ -8,12 +8,12 @@ export var getOrCreateBuffer = getOrCreateBufferUtils;
 
 export var initData = initDataUtils;
 
-export var disposeBuffer = (geometryIndex:number, ArrayBufferData: any) => {
+export var disposeBuffer = (geometryIndex: number, ArrayBufferData: any) => {
     var gl = getGL(DeviceManagerData, null),
         buffers = ArrayBufferData.buffers,
         buffer = buffers[geometryIndex];
 
-    if(isBufferExist(buffer)){
+    if (isBufferExist(buffer)) {
         gl.deleteBuffer(buffers[geometryIndex]);
 
         /*!

@@ -25,14 +25,14 @@ export type GeometryInitWorkerData = {
 
 export type GeometryUpdateWorkerData = {
     buffer: SharedArrayBuffer;
-    type:EGeometryWorkerDataOperateType;
+    type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryWorkerInfoList;
     indicesInfoList: GeometryWorkerInfoList;
 }
 
 export type GeometryResetWorkerData = {
     buffer: SharedArrayBuffer;
-    type:EGeometryWorkerDataOperateType;
+    type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }
@@ -40,7 +40,7 @@ export type GeometryResetWorkerData = {
 export type GeometryInfoList = Array<GeometryInfo>
 
 export type GeometryInfo = {
-    startIndex:number;
-    endIndex:number;
+    startIndex: number;
+    endIndex: number;
 };
 

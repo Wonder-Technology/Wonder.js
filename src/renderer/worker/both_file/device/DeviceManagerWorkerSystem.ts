@@ -17,7 +17,7 @@ import {
 } from "../../../utils/device/deviceManagerUtils";
 import { Color } from "../../../../structure/Color";
 
-export var createGL = curry((canvas:HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerWorkerData: any, state: Map<any, any>) => {
+export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         //todo set canvas elsewhere
         canvas.width = window.innerWidth;

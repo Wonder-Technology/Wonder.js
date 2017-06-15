@@ -13,18 +13,18 @@ export class GeometryData {
 
     public static disposeCount: number = null;
 
-    public static maxDisposeIndex:number = null;
-    public static isReallocate:boolean = null;
+    public static maxDisposeIndex: number = null;
+    public static isReallocate: boolean = null;
 
-    public static buffer:SharedArrayBuffer = null;
+    public static buffer: SharedArrayBuffer = null;
 
-    public static verticesOffset:number = null;
-    public static indicesOffset:number = null;
+    public static verticesOffset: number = null;
+    public static indicesOffset: number = null;
 
     public static verticesInfoList: GeometryInfoList = null;
     public static indicesInfoList: GeometryInfoList = null;
 
-    public static isInit:boolean = null;
+    public static isInit: boolean = null;
 
     public static verticesWorkerInfoList: GeometryWorkerInfoList = null;
     public static indicesWorkerInfoList: GeometryWorkerInfoList = null;

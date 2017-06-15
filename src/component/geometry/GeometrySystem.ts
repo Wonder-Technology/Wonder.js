@@ -119,14 +119,14 @@ export var setIndices = requireCheckFunc((index: number, indices: Array<number>,
     GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 })
 
-var _getPointData = requireCheckFunc((index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
+var _getPointData = requireCheckFunc((index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
     it("infoList[index] should exist", () => {
         expect(infoList[index]).exist;
     });
-}, (index: number, points:Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList:object) => {
+}, (index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
     var dataArr = cacheMap[index];
 
-    if(isValidMapValue(dataArr)){
+    if (isValidMapValue(dataArr)) {
         return dataArr;
     }
 
@@ -139,13 +139,13 @@ var _getPointData = requireCheckFunc((index: number, points:Float32Array | Uint1
     return dataArr;
 })
 
-var _setPointData = requireCheckFunc (() => {
+var _setPointData = requireCheckFunc(() => {
     ////todo unit test: if set after init and has render worker, contract error
     //todo unit test: test allow set after init and has render worker
     // it("should not set point data after init", () => {
     //     expect(GeometryData.isInit).false;
     // });
-}, (index: number, dataArr:Array<number>, dataSize:number, points:Float32Array | Uint16Array | Uint32Array, cacheMap:object, infoList:GeometryInfoList, workerInfoList:GeometryWorkerInfoList, offset:number, GeometryData:any) => {
+}, (index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
     var count = dataArr.length,
         startIndex = offset;
 
@@ -158,7 +158,7 @@ var _setPointData = requireCheckFunc (() => {
     _removeCache(index, cacheMap);
 
     //todo judge whether support worker
-    if(_isInit(GeometryData)){
+    if (_isInit(GeometryData)) {
         _addWorkerInfo(workerInfoList, index, startIndex, offset);
     }
 
@@ -175,14 +175,14 @@ var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint1
     }
 })
 
-var _removeCache = (index:number, cacheMap:object) => {
+var _removeCache = (index: number, cacheMap: object) => {
     deleteVal(index, cacheMap);
 }
 
-var _buildInfo = (startIndex: number, endIndex:number) => {
+var _buildInfo = (startIndex: number, endIndex: number) => {
     return {
-        startIndex:startIndex,
-        endIndex:endIndex
+        startIndex: startIndex,
+        endIndex: endIndex
     }
 }
 
@@ -212,22 +212,22 @@ export var disposeComponent = (component: Geometry) => {
     }
 }
 
-var _disposeBuffers = (disposedIndexArray:Array<number>, ArrayBufferData:any, IndexBufferData:any) => {
-    for(let index of disposedIndexArray){
+var _disposeBuffers = (disposedIndexArray: Array<number>, ArrayBufferData: any, IndexBufferData: any) => {
+    for (let index of disposedIndexArray) {
         disposeArrayBuffer(index, ArrayBufferData);
         disposeIndexBuffer(index, IndexBufferData);
     }
 }
 
-export var isReallocate = (GeometryData:any) => {
+export var isReallocate = (GeometryData: any) => {
     return GeometryData.isReallocate;
 }
 
-var _isBufferNearlyFull = (GeometryData:any) => {
+var _isBufferNearlyFull = (GeometryData: any) => {
     var infoList = GeometryData.indicesInfoList,
         lastInfo = infoList[infoList.length - 1];
 
-    if(isNotValidVal(lastInfo)){
+    if (isNotValidVal(lastInfo)) {
         return false;
     }
 
@@ -271,30 +271,30 @@ var _isInit = (GeometryData: any) => {
     return GeometryData.isInit;
 }
 
-export var clearWorkerInfoList = (GeometryData:any) => {
+export var clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 }
 
-export var hasNewPointData = (GeometryData:any) => {
+export var hasNewPointData = (GeometryData: any) => {
     return GeometryData.verticesWorkerInfoList.length > 0;
 }
 
-var _addWorkerInfo = (infoList:GeometryWorkerInfoList, index:number, startIndex:number, endIndex:number) => {
+var _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
     infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
 }
 
-var _buildWorkerInfo = (index:number, startIndex: number, endIndex:number) => {
+var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => {
     return {
-        index:index,
-        startIndex:startIndex,
-        endIndex:endIndex
+        index: index,
+        startIndex: startIndex,
+        endIndex: endIndex
     }
 }
 
 export var initData = (DataBufferConfig: any, GeometryData: any) => {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig),
-        indicesArrayBytes:number = null;
+        indicesArrayBytes: number = null;
 
     if (isIndicesBufferNeed32Bits) {
         indicesArrayBytes = Uint32Array.BYTES_PER_ELEMENT;
@@ -339,7 +339,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     GeometryData.isReallocate = false;
 }
 
-var _initBufferData = (indicesArrayBytes:number, UintArray:any, DataBufferConfig: any, GeometryData: any) => {
+var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
         size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
@@ -366,7 +366,7 @@ export var getVerticesCount = null;
 
 export var getIndicesCount = null;
 
-if(!isSupportRenderWorkerAndSharedArrayBuffer()){
+if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     getIndexType = getIndexTypeUtils;
 
     getIndexTypeSize = getIndexTypeSizeUtils;

@@ -1,3 +1,3 @@
-export class WorkerTimeData{
-    public static accumulator:number = null;
+export class WorkerTimeData {
+    public static accumulator: number = null;
 }

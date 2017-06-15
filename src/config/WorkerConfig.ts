@@ -1,4 +1,4 @@
 export const WorkerConfig = {
-    renderWorkerDT:33.3
+    renderWorkerDT: 33.3
 };
 

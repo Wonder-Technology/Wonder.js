@@ -1,6 +1,6 @@
 import { GeometryIndicesCacheMap, GeometryVerticesCacheMap } from "../../../../definition/type/geometryType";
 
-export class GeometryWorkerData{
+export class GeometryWorkerData {
     public static verticesCacheMap: GeometryVerticesCacheMap = null;
     public static indicesCacheMap: GeometryIndicesCacheMap = null;
 

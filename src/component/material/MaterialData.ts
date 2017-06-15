@@ -17,7 +17,7 @@ export class MaterialData {
     public static defaultOpacity: number = null;
     public static defaultAlphaTest: number = null;
 
-    public static workerInitList:Array<number> = null;
+    public static workerInitList: Array<number> = null;
 
     public static materialClassNameTable: MaterialClassNameTable = null;
     public static shaderIndexTable: ShaderIndexTable = null;

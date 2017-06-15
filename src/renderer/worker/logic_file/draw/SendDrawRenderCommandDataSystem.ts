@@ -5,39 +5,39 @@ import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDat
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
 import { RenderCommandBufferWorkerData } from "../../../type/dataType";
 
-export var sendDrawData = curry((DeviceManagerWorkerData:any, MaterialData:any, GeometryData:any, data:RenderCommandBufferWorkerData) => {
+export var sendDrawData = curry((DeviceManagerWorkerData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
     var geometryData = null,
         materialData = null;
 
-    if(hasNewPointData(GeometryData)){
+    if (hasNewPointData(GeometryData)) {
         geometryData = {
-            buffer:GeometryData.buffer,
+            buffer: GeometryData.buffer,
             type: EGeometryWorkerDataOperateType.ADD,
-            verticesInfoList:GeometryData.verticesWorkerInfoList,
-            indicesInfoList:GeometryData.indicesWorkerInfoList
+            verticesInfoList: GeometryData.verticesWorkerInfoList,
+            indicesInfoList: GeometryData.indicesWorkerInfoList
         };
     }
-    else if(isReallocate(GeometryData)){
+    else if (isReallocate(GeometryData)) {
         geometryData = {
-            buffer:GeometryData.buffer,
+            buffer: GeometryData.buffer,
             type: EGeometryWorkerDataOperateType.RESET,
-            verticesInfoList:GeometryData.verticesInfoList,
-            indicesInfoList:GeometryData.indicesInfoList
+            verticesInfoList: GeometryData.verticesInfoList,
+            indicesInfoList: GeometryData.indicesInfoList
         };
     }
 
-    if(hasNewInitedMaterial(MaterialData)){
+    if (hasNewInitedMaterial(MaterialData)) {
         materialData = {
-            buffer:MaterialData.buffer,
+            buffer: MaterialData.buffer,
             workerInitList: MaterialData.workerInitList
         };
     }
 
     DeviceManagerWorkerData.renderWorker.postMessage({
-        operateType:EWorkerOperateType.DRAW,
-        renderCommandBufferData:data,
-        materialData:materialData,
-        geometryData:geometryData
+        operateType: EWorkerOperateType.DRAW,
+        renderCommandBufferData: data,
+        materialData: materialData,
+        geometryData: geometryData
     });
 
     clearWorkerInfoList(GeometryData);

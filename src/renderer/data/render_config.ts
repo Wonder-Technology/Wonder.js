@@ -8,7 +8,7 @@ export const render_config = {
 }
 
 export interface IRenderConfig {
-    renderCommandBufferCount:number;
+    renderCommandBufferCount: number;
     clearColor: Color;
 }
 

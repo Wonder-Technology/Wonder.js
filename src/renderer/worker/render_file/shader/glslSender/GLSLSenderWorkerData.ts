@@ -1,6 +1,6 @@
 import { SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../../type/dataType";
 
-export class GLSLSenderWorkerData{
+export class GLSLSenderWorkerData {
     public static uniformCacheMap: UniformCacheMap = null;
 
     public static sendAttributeConfigMap: SendAttributeConfigMap = null;

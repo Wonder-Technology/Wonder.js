@@ -12,15 +12,15 @@ import { DeviceManagerData } from "./DeviceManagerData";
 export var initDevice = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas:HTMLCanvasElement) => {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
         //todo set screen
         return compose(
             createGLWorker,
         )(canvas, contextConfig, DeviceManagerWorkerData, state)
     });
 }
-else{
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas:HTMLCanvasElement) => {
+else {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
         return compose(
             map(detect(getGL, DeviceManagerData)),
             chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),

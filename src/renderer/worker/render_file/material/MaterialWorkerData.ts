@@ -1,6 +1,6 @@
 import { MaterialClassNameTable, ShaderIndexTable } from "../../../../definition/type/materialType";
 
-export class MaterialWorkerData{
+export class MaterialWorkerData {
     public static shaderIndices: Uint32Array = null;
 
     public static materialClassNameTable: MaterialClassNameTable = null;
@@ -12,12 +12,12 @@ export class MaterialWorkerData{
 
 export type MaterialInitWorkerData = {
     buffer: SharedArrayBuffer;
-    materialCount:number;
-    materialClassNameTable:MaterialClassNameTable;
-    shaderIndexTable:ShaderIndexTable;
+    materialCount: number;
+    materialClassNameTable: MaterialClassNameTable;
+    shaderIndexTable: ShaderIndexTable;
 }
 
 export type MaterialUpdateWorkerData = {
     buffer: SharedArrayBuffer;
-    workerInitList:Array<number>;
+    workerInitList: Array<number>;
 }

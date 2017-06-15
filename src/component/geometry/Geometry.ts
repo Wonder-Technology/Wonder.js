@@ -50,8 +50,8 @@ export var getGeometryGameObject = requireCheckFunc((geometry: Geometry) => {
     return getGameObject(geometry.index, GeometryData);
 })
 
-var _checkShouldAlive = (geometry:Geometry, GeometryData: any) => {
-    checkComponentShouldAlive(geometry, GeometryData, (geometry:Geometry, GeometryData: any) => {
+var _checkShouldAlive = (geometry: Geometry, GeometryData: any) => {
+    checkComponentShouldAlive(geometry, GeometryData, (geometry: Geometry, GeometryData: any) => {
         return isComponentIndexNotRemoved(geometry);
     })
 }

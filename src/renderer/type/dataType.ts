@@ -43,15 +43,15 @@ export type ArrayBufferDataMap = {
 }
 
 export type RenderCommandBufferWorkerData = {
-    buffer:SharedArrayBuffer;
-    count:number
+    buffer: SharedArrayBuffer;
+    count: number
 }
 
 export type RenderCommandUniformData = {
-    mMatrices:Float32Array;
-    vMatrices:Float32Array;
-    pMatrices:Float32Array;
-    materialIndex:number;
+    mMatrices: Float32Array;
+    vMatrices: Float32Array;
+    pMatrices: Float32Array;
+    materialIndex: number;
 }
 
 export type ContextConfigOptionsData = {
@@ -64,6 +64,6 @@ export type ContextConfigOptionsData = {
 }
 
 export type BuildGLSLSourceFuncFuncDataMap = {
-    getAlphaTest:Function;
-    isTestAlpha:Function;
+    getAlphaTest: Function;
+    isTestAlpha: Function;
 }

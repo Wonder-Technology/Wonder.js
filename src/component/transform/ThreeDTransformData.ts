@@ -44,7 +44,7 @@ export class ThreeDTransformData {
 
     public static transformMap: TransformMap = null;
 
-    public static count:number = null;
+    public static count: number = null;
 
     public static uid: number = null;
     public static disposeCount: number = null;

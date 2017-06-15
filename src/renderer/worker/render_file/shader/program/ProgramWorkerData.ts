@@ -1,6 +1,6 @@
 import { ProgramMap } from "../../../../type/dataType";
 
-export class ProgramWorkerData{
+export class ProgramWorkerData {
     public static programMap: ProgramMap = null;
 
     public static lastUsedProgram: WebGLProgram = null;

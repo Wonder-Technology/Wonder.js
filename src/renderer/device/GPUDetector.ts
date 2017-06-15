@@ -27,7 +27,7 @@ export class GPUDetector {
     private _isDetected: boolean = false;
 
     //todo test
-    public detect(state: Map<any, any>, getGL:Function, DeviceManagerDataFromSystem:any) {
+    public detect(state: Map<any, any>, getGL: Function, DeviceManagerDataFromSystem: any) {
         var gl = getGL(DeviceManagerDataFromSystem, state);
 
         this._isDetected = true;
@@ -48,7 +48,7 @@ export class GPUDetector {
         this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state, gl);
     }
 
-    private _detectCapabilty(state: Map<any, any>, gl:WebGLRenderingContext) {
+    private _detectCapabilty(state: Map<any, any>, gl: WebGLRenderingContext) {
         this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
         this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
@@ -62,8 +62,8 @@ export class GPUDetector {
         this._detectPrecision(state, gl);
     }
 
-    private _getExtension(name: string, state: Map<any, any>, gl:WebGLRenderingContext) {
-        var extension:any = null;
+    private _getExtension(name: string, state: Map<any, any>, gl: WebGLRenderingContext) {
+        var extension: any = null;
 
         switch (name) {
             case "EXT_texture_filter_anisotropic":
@@ -98,7 +98,7 @@ export class GPUDetector {
         return extension;
     }
 
-    private _getMaxBoneCount(state: Map<any, any>, gl:WebGLRenderingContext) {
+    private _getMaxBoneCount(state: Map<any, any>, gl: WebGLRenderingContext) {
         var numUniforms: number = null,
             maxBoneCount: number = null;
 
@@ -120,13 +120,13 @@ export class GPUDetector {
         return Math.min(maxBoneCount, 128);
     }
 
-    private _getMaxAnisotropy(state: Map<any, any>, gl:WebGLRenderingContext) {
+    private _getMaxAnisotropy(state: Map<any, any>, gl: WebGLRenderingContext) {
         var extension = this.extensionTextureFilterAnisotropic;
 
         return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     }
 
-    private _detectPrecision(state: Map<any, any>, gl:WebGLRenderingContext) {
+    private _detectPrecision(state: Map<any, any>, gl: WebGLRenderingContext) {
         if (!gl.getShaderPrecisionFormat) {
             this.precision = EGPUPrecision.HIGHP;
 

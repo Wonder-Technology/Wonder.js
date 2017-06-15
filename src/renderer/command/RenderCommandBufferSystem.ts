@@ -21,11 +21,11 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { setMatrices } from "../../utils/typeArrayUtils";
 
 //todo check: renderGameObjectArray.length should <= renderCommandBufferCount
-export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
+export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     let mat4Length = 16;
     var count = renderGameObjectArray.length,
         // size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
-        buffer:any = RenderCommandBufferData.buffer;
+        buffer: any = RenderCommandBufferData.buffer;
 
 
     //todo handle not support SharedArrayBuffer
@@ -84,15 +84,15 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
     }
 
     return {
-        buffer:buffer,
-        count:count
+        buffer: buffer,
+        count: count
     }
 })
 
-export var initData = (render_config:IRenderConfig, RenderCommandBufferData:any) => {
+export var initData = (render_config: IRenderConfig, RenderCommandBufferData: any) => {
     var mat4Length = 16;
     var size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3;
-    var buffer:any = null;
+    var buffer: any = null;
     var count = render_config.renderCommandBufferCount;
 
 
