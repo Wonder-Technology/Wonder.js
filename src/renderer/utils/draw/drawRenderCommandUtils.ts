@@ -9,6 +9,7 @@ import { EDrawMode } from "../../enum/EDrawMode";
 // import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../../shader/ShaderSystem";
 // import curry from "wonder-lodash/curry";
 import { RenderCommandBufferWorkerData } from "../../type/dataType";
+import { BufferUtils } from "../../../utils/BufferUtils";
 
 export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystemFromSystem: any, data: RenderCommandBufferWorkerData) => {
     // clearGL(getGL(DeviceManagerDataFromSystem, state), render_config.clearColor, DeviceManagerDataFromSystem);
@@ -84,7 +85,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, render_confi
         materialIndices,
         shaderIndices,
         geometryIndices
-    } = _createTypeArrays(buffer, render_config, mat4Length, DrawRenderCommandDataFromSystem);
+    } = _createTypeArraysOnlyOnce(buffer, render_config, mat4Length, DrawRenderCommandDataFromSystem);
 
     // let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
     //     vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
@@ -180,8 +181,8 @@ var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float3
     }
 }
 
-var _createTypeArrays = (buffer: any, render_config: IRenderConfig, mat4Length: number, DrawRenderCommandDataFromSystem: any) => {
-    if (_isTypeArrayNotExist(DrawRenderCommandDataFromSystem)) {
+var _createTypeArraysOnlyOnce = (buffer: any, render_config: IRenderConfig, mat4Length: number, DrawRenderCommandDataFromSystem: any) => {
+    if (BufferUtils.isDrawRenderCommandDataTypeArrayNotExist(DrawRenderCommandDataFromSystem)) {
         let count = render_config.renderCommandBufferCount;
 
         DrawRenderCommandDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
@@ -193,10 +194,6 @@ var _createTypeArrays = (buffer: any, render_config: IRenderConfig, mat4Length: 
     }
 
     return DrawRenderCommandDataFromSystem;
-}
-
-var _isTypeArrayNotExist = (DrawRenderCommandDataFromSystem: any) => {
-    return DrawRenderCommandDataFromSystem.mMatrices === null;
 }
 
 export var initData = (DrawRenderCommandDataFromSystem: any) => {

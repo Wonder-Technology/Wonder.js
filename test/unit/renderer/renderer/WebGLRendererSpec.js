@@ -4,6 +4,7 @@ describe("WebGLRenderer", function() {
     var state;
 
     var Color = wd.Color;
+    var render_config = wd.render_config;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -28,11 +29,7 @@ describe("WebGLRenderer", function() {
             beforeEach(function(){
                 color = Color.create("#000000");
 
-                wd.render_config = {
-                    "render_setting": {
-                        "clearColor": color
-                    }
-                }
+                sandbox.stub(render_config, "clearColor", color);
 
                 directorTool.init(state);
                 directorTool.loopBody(state);

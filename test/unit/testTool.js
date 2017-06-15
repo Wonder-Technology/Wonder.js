@@ -98,12 +98,16 @@ var testTool = (function () {
             // if(isInit$){
             //     this.initForTest(sandbox);
             // }
-
-            bufferTool.minBufferCount(sandbox, data);
+            this._prepareBufferForTest(sandbox, data);
 
             this.clear(sandbox);
 
             Main.isTest = true;
+        },
+        _prepareBufferForTest: function(sandbox, data){
+            sandbox.stub(wd.BufferUtils, "isDrawRenderCommandDataTypeArrayNotExist").returns(true);
+
+            bufferTool.minBufferCount(sandbox, data);
         },
 
         // initForTest: function(sandbox){
