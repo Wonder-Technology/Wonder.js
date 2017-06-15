@@ -12,6 +12,7 @@ describe("draw render command", function () {
     var GeometryData = wd.GeometryData;
     var IndexBufferData = wd.IndexBufferData;
     var EBufferType = wd.EBufferType;
+    var DataBufferConfig = wd.DataBufferConfig;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -485,6 +486,41 @@ describe("draw render command", function () {
 
             expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)).toCalledOnce();
             expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indices.length, GeometryData.indexType, GeometryData.indexTypeSize * 0);
+        });
+    });
+
+    describe("contract check", function() {
+        beforeEach(function(){
+            testTool.openContractCheck();
+        });
+
+        describe("data.length should not exceed DataBufferConfig->dataBufferCount", function() {
+            function prepareNotExceed() {
+                sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 1);
+
+                meshRendererTool.resetData();
+
+                return "renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count";
+            }
+
+            beforeEach(function(){
+
+            });
+
+            it("RenderCommandBufferData->buffer", function(){
+                var errMsg = prepareNotExceed();
+
+                sceneTool.addGameObject(sceneTool.createGameObject().gameObject);
+
+                sceneTool.addGameObject(sceneTool.createGameObject().gameObject);
+
+                directorTool.init(state);
+
+
+                expect(function () {
+                    directorTool.loopBody(state);
+                }).toThrow(errMsg)
+            });
         });
     });
 });

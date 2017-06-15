@@ -285,6 +285,8 @@ describe("Geometry", function () {
 
     describe("contract check", function() {
         beforeEach(function(){
+            testTool.openContractCheck();
+
             gameObject = gameObjectTool.create();
             geo = customGeometryTool.create();
             gameObjectTool.addComponent(gameObject, geo);

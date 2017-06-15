@@ -1,6 +1,5 @@
 import { Map } from "immutable";
 // import { clear as clearGL, getGL } from "../../device/DeviceManagerSystem";
-import { IRenderConfig } from "../../data/render_config";
 import { EDrawMode } from "../../enum/EDrawMode";
 // import {
 //     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
@@ -10,6 +9,7 @@ import { EDrawMode } from "../../enum/EDrawMode";
 // import curry from "wonder-lodash/curry";
 import { RenderCommandBufferWorkerData } from "../../type/dataType";
 import { BufferUtils } from "../../../utils/BufferUtils";
+import { IRenderConfig } from "../../data/render_config";
 
 export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystemFromSystem: any, data: RenderCommandBufferWorkerData) => {
     // clearGL(getGL(DeviceManagerDataFromSystem, state), render_config.clearColor, DeviceManagerDataFromSystem);
@@ -46,7 +46,7 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
     }
 }
 
-export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, render_config: IRenderConfig, {
+export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig:any, {
     bindIndexBuffer,
     sendAttributeData,
     sendUniformData,
@@ -85,7 +85,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, render_confi
         materialIndices,
         shaderIndices,
         geometryIndices
-    } = _createTypeArraysOnlyOnce(buffer, render_config, mat4Length, DrawRenderCommandDataFromSystem);
+    } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, mat4Length, DrawRenderCommandDataFromSystem);
 
     // let mMatrices = new Float32Array(buffer, 0, count * mat4Length),
     //     vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length),
@@ -181,9 +181,9 @@ var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float3
     }
 }
 
-var _createTypeArraysOnlyOnce = (buffer: any, render_config: IRenderConfig, mat4Length: number, DrawRenderCommandDataFromSystem: any) => {
+var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig:any, mat4Length: number, DrawRenderCommandDataFromSystem: any) => {
     if (BufferUtils.isDrawRenderCommandDataTypeArrayNotExist(DrawRenderCommandDataFromSystem)) {
-        let count = render_config.renderCommandBufferCount;
+        let count = DataBufferConfig.renderCommandBufferCount;
 
         DrawRenderCommandDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
         DrawRenderCommandDataFromSystem.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);

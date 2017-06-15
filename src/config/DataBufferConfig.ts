@@ -7,6 +7,9 @@ export const DataBufferConfig = {
     //20k
     materialDataBufferCount: 20 * 1000,
 
+    renderCommandBufferCount: 10 * 1024,
+
+
     //16 or 32
     geometryIndicesBufferBits: 16
 };

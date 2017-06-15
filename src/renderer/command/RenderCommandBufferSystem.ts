@@ -19,9 +19,15 @@ import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { setMatrices } from "../../utils/typeArrayUtils";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+import { DataBufferConfig } from "../../config/DataBufferConfig";
 
-//todo check: renderGameObjectArray.length should <= renderCommandBufferCount
-export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+    it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
+        expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
+    })
+}, (state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     let mat4Length = 16;
     var count = renderGameObjectArray.length,
         // size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
@@ -58,8 +64,6 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
     setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
 
 
-
-
     // for (let gameObject of renderGameObjectArray) {
     for (let i = 0; i < count; i++) {
         let matIndex = 16 * i;
@@ -87,13 +91,13 @@ export var createRenderCommandBuffer = curry((state: Map<any, any>, GameObjectDa
         buffer: buffer,
         count: count
     }
-})
+}), 10)
 
-export var initData = (render_config: IRenderConfig, RenderCommandBufferData: any) => {
+export var initData = (DataBufferConfig:any, RenderCommandBufferData: any) => {
     var mat4Length = 16;
     var size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3;
     var buffer: any = null;
-    var count = render_config.renderCommandBufferCount;
+    var count = DataBufferConfig.renderCommandBufferCount;
 
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);

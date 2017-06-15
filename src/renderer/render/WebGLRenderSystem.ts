@@ -33,6 +33,7 @@ import { ProgramData } from "../shader/program/ProgramData";
 import { LocationData } from "../shader/location/LocationData";
 import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
 import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
+import { DataBufferConfig } from "../../config/DataBufferConfig";
 
 export var init = null;
 
@@ -96,7 +97,7 @@ else {
     render = (state: Map<any, any>) => {
         return compose(
             // draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData),
-            draw(null, render_config, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

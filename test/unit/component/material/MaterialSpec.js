@@ -271,6 +271,7 @@ describe("Material", function() {
 
     describe("contract check", function() {
         beforeEach(function(){
+            testTool.openContractCheck();
         });
 
         describe("data.length should not exceed DataBufferConfig->dataBufferCount", function() {

@@ -121,6 +121,9 @@ var testTool = (function () {
         //         return 10;
         //     });
         // },
+        openContractCheck: function () {
+            Main.isTest = true;
+        },
 
         closeContractCheck: function () {
             Main.isTest = false;

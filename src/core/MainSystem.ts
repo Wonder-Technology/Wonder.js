@@ -184,7 +184,7 @@ var _initData = () => {
 
     initWorkerTimeData(WorkerTimeData);
 
-    initRenderCommandBufferData(render_config, RenderCommandBufferData);
+    initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
 }
 
 

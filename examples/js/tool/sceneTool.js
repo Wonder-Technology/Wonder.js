@@ -28,13 +28,9 @@ var sceneTool = (function () {
 
             return cameraObj;
         },
-        prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
-            var isNotAddCamera$ = isNotAddCamera === true ? true : false;
+        createGameObject: function(geometry){
             var geo = null;
-
-
             var material = basicMaterialTool.create();
-
             var obj = gameObjectTool.create();
 
             gameObjectTool.addComponent(obj, material);
@@ -50,20 +46,30 @@ var sceneTool = (function () {
 
             gameObjectTool.addComponent(obj, geo);
 
-            sceneTool.addGameObject(obj);
+            return {
+                geometry:geo,
+                gameObject:obj,
+                material:material
+            }
+        },
+        prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
+            var isNotAddCamera$ = isNotAddCamera === true ? true : false;
+            var data = sceneTool.createGameObject(geometry);
+
+            sceneTool.addGameObject(data.gameObject);
 
             var cameraObj = null;
 
-            if(!isNotAddCamera){
+            if(!isNotAddCamera$){
                 cameraObj = sceneTool.addCameraObject();
             }
 
 
             return {
-                gameObject:obj,
+                gameObject:data.gameObject,
                 cameraGameObject: cameraObj,
-                geometry:geo,
-                material:material
+                geometry:data.geometry,
+                material:data.material
             }
         }
     }

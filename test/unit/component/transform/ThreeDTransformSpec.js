@@ -839,6 +839,7 @@ describe("ThreeDTransform", function () {
 
     describe("contract check", function() {
         beforeEach(function(){
+            testTool.openContractCheck();
         });
 
         it("if created ones >= maxCount, error", function () {
