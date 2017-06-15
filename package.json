@@ -61,7 +61,7 @@
     "bowser": "^1.6.0",
     "immutable": "^3.8.1",
     "wonder-commonlib": "^0.1.9",
-    "wonder-expect.js": "^0.1.8",
+    "wonder-expect.js": "^0.1.9",
     "wonder-fantasy-land": "^0.1.1",
     "wonder-frp": "^0.1.17",
     "wonder-lodash": "^0.1.3"
