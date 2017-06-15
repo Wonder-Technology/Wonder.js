@@ -92,29 +92,31 @@ var testTool = (function () {
             sceneTool.resetData();
         },
 
-        clearAndOpenContractCheck: function (sandbox, isInit) {
-            var isInit$ = isInit === false ? false : true;
+        clearAndOpenContractCheck: function (sandbox, data) {
+            // var isInit$ = isInit === false ? false : true;
+            //
+            // if(isInit$){
+            //     this.initForTest(sandbox);
+            // }
 
-            if(isInit$){
-                this.initForTest(sandbox);
-            }
+            bufferTool.minBufferCount(sandbox, data);
 
             this.clear(sandbox);
 
             Main.isTest = true;
         },
 
-        initForTest: function(sandbox){
-            // wd.ProgramTable.addProgram("\n", wd.Program.create());
-            //
-            //
-            //
-            //
-            // sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
-            this.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
-                return 10;
-            });
-        },
+        // initForTest: function(sandbox){
+        //     // wd.ProgramTable.addProgram("\n", wd.Program.create());
+        //     //
+        //     //
+        //     //
+        //     //
+        //     // sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
+        //     this.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
+        //         return 10;
+        //     });
+        // },
 
         closeContractCheck: function () {
             Main.isTest = false;

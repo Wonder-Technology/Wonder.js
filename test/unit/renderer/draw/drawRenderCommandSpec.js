@@ -352,7 +352,7 @@ describe("draw render command", function () {
             it("data should be number", function () {
                 expect(function () {
                     materialTool.setOpacity(material, true);
-                }).toThrow("to be a number");
+                }).toThrow("to be number");
             });
 
             describe("test cache", function () {

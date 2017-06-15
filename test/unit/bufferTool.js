@@ -1,13 +1,20 @@
 var bufferTool = (function () {
     return {
-        minBufferCount: function(sandbox){
+        minBufferCount: function(sandbox, data){
             var DataBufferConfig = wd.DataBufferConfig;
             var render_config = wd.render_config;
 
-            sandbox.stub(DataBufferConfig, "materialDataBufferCount", 50);
-            sandbox.stub(DataBufferConfig, "transformDataBufferCount", 50);
-            sandbox.stub(DataBufferConfig, "geometryDataBufferCount", 50);
-            sandbox.stub(render_config, "renderCommandBufferCount", 50);
+            var transformDataBufferCount = 10;
+            var geometryDataBufferCount = (data && data.geometryDataBufferCount) || 100;
+
+            testTool.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
+                return transformDataBufferCount;
+            });
+            sandbox.stub(DataBufferConfig, "transformDataBufferCount", transformDataBufferCount);
+
+            sandbox.stub(DataBufferConfig, "materialDataBufferCount", 10);
+            sandbox.stub(DataBufferConfig, "geometryDataBufferCount", geometryDataBufferCount);
+            sandbox.stub(render_config, "renderCommandBufferCount", 10);
         }
     }
 })()

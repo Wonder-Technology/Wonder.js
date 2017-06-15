@@ -12,8 +12,6 @@ describe("Material", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        bufferTool.minBufferCount(sandbox);
-
         testTool.clearAndOpenContractCheck(sandbox);
 
 

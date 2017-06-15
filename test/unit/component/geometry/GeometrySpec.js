@@ -13,7 +13,9 @@ describe("Geometry", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox, {
+            geometryDataBufferCount:200
+        });
 
         geo = boxGeometryTool.create();
 
