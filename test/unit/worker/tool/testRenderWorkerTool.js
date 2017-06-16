@@ -100,6 +100,8 @@ var testRenderWorkerTool = (function () {
             // }
             this._prepareBufferForTest(sandbox, data);
 
+            workerTool.init(sandbox);
+
             this.clear(sandbox);
 
             Main.isTest = true;

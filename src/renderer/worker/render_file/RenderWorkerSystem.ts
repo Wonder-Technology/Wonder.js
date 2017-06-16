@@ -1,25 +1,16 @@
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
-// import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
-// import { expect } from "wonder-expect.js";
+import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { getGL, setGL, setPixelRatioAndCanvas, setScreen, setViewportOfGL } from "../both_file/device/DeviceManagerWorkerSystem";
 import { chain, compose, map } from "../../../utils/functionalUtils";
 import curry from "wonder-lodash/curry";
 import { detect } from "../../device/GPUDetectorSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-import { material_config } from "../../data/material_config";
-import { shaderLib_generator } from "../../data/shaderLib_generator";
 import {
-    clear, draw,
-    initData as initDrawRenderCommandWorkerData
+    clear, draw
 } from "./draw/DrawRenderCommandWorkerSystem";
 import { render_config } from "../../data/render_config";
-import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
-import { initData as initLocationWorkerData } from "./shader/location/LocationWorkerSystem";
-import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerSystem";
-import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
-import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
 import { DrawRenderCommandWorkerData } from "./draw/DrawRenderCommandWorkerData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
@@ -48,14 +39,14 @@ import { ContextConfigOptionsData } from "../../type/dataType";
 import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandUtils";
 import { createState } from "../../../utils/stateUtils";
 
-onerror = (msg: string, fileName: string, lineno: number) => {
+export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     // error(true, msg,fileName,lineno);
 
     //todo refactor
     console.error(`message:${msg}\nfileName:${fileName}\nlineno:${lineno}`);
 }
 
-onmessage = (e) => {
+export var onmessageHandler = (e) => {
     var data = e.data,
         operateType = data.operateType;
 
@@ -161,16 +152,3 @@ var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsD
 var _getContext = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData): WebGLRenderingContext => {
     return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
 }
-
-//todo do when init to accelerate
-initProgramWorkerData(ProgramWorkerData);
-
-initLocationWorkerData(LocationWorkerData);
-
-initGLSLSenderWorkerData(GLSLSenderWorkerData);
-
-initArrayBufferData(ArrayBufferWorkerData);
-
-initIndexBufferData(IndexBufferWorkerData);
-
-initDrawRenderCommandWorkerData(DrawRenderCommandWorkerData);

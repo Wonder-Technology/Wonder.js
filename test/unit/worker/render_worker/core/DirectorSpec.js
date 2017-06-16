@@ -40,9 +40,9 @@ describe("Director", function () {
             beforeEach(function(){
                 SendDrawRenderCommandData.state = ERenderWorkerState.INIT_COMPLETE;
 
-                DeviceManagerWorkerData.renderWorker = {
-                    postMessage: sandbox.stub()
-                }
+                // DeviceManagerWorkerData.renderWorker = {
+                //     postMessage: sandbox.stub()
+                // }
 
                 sandbox.stub(window.performance, "now").returns(0);
 

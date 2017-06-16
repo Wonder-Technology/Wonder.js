@@ -3,7 +3,7 @@ import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
 
 export default {
-    entry: "./src/renderer/worker/render_file/RenderWorkerSystem.ts",
+    entry: "./src/renderer/worker/render_file/RenderWorkerIndex.ts",
     indent: "\t",
     plugins: [
         typescript({
@@ -28,7 +28,7 @@ export default {
         {
             sourceMap: true,
             format: "umd",
-            moduleName: "quad",
+            moduleName: "wdrd",
             dest: "./dist/worker/wd.renderWorker.js"
         }
     ]
