@@ -1,4 +1,4 @@
-var stateToolCommon = (function () {
+var stateUtils = (function () {
     return {
         setState: function(state){
             wd.DirectorData.state = state;

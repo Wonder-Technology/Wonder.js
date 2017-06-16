@@ -24,7 +24,7 @@
         'test/helper/sinonJs/*.js',
         'test/helper/yoop/yOOP.js',
 
-        'test/unit/common/**',
+        'test/unit/utils/**',
         'test/unit/**/*Tool.js',
 
         // 'test/unit/**/BufferWriter.js',

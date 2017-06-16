@@ -18,7 +18,7 @@ var stateTool = (function () {
         getGLFromFakeGLState: function (state) {
             return wd.DeviceManagerWorkerData.gl;
         },
-        setState: stateToolCommon.setState
+        setState: stateUtils.setState
     }
 })()
 
