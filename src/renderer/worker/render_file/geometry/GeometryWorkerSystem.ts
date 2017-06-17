@@ -7,7 +7,7 @@ import {
     getIndexType as getIndexTypeUtils,
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils
+    hasIndices as hasIndicesUtils, getIndexTypeSize as getIndexTypeSizeUtils, createBufferViews
 } from "../../../utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../../../definition/type/geometryType";
 import { EBufferType } from "../../../enum/EBufferType";
@@ -77,7 +77,7 @@ var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList, points: F
 
 export var getIndexType = getIndexTypeUtils;
 
-export var getIndexTypeSize = getIndexTypeUtils;
+export var getIndexTypeSize = getIndexTypeSizeUtils;
 
 export var hasIndices = (index: number, GeometryWorkerData: any) => hasIndicesUtils(index, getIndices, GeometryWorkerData);
 
@@ -97,12 +97,5 @@ export var initData = (buffer: SharedArrayBuffer, indexType: EBufferType, indexT
     GeometryWorkerData.indexType = indexType;
     GeometryWorkerData.indexTypeSize = indexTypeSize;
 
-    _initBufferViewData(buffer, getUIntArrayClass(indexType), DataBufferConfig, GeometryWorkerData);
-}
-
-var _initBufferViewData = (buffer: any, UintArray: any, DataBufferConfig: any, GeometryWorkerData: any) => {
-    var count = DataBufferConfig.geometryDataBufferCount;
-
-    GeometryWorkerData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
-    GeometryWorkerData.indices = new UintArray(buffer, count * getVertexDataSize(), count * getIndexDataSize());
+    createBufferViews(buffer, DataBufferConfig.geometryDataBufferCount, getUIntArrayClass(indexType), GeometryWorkerData);
 }

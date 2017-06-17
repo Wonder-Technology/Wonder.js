@@ -23,7 +23,7 @@ import {
     getIndexType as getIndexTypeUtils,
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils
+    hasIndices as hasIndicesUtils, createBufferViews
 } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
@@ -346,8 +346,7 @@ var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConf
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
-    GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
-    GeometryData.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getIndexDataSize());
+    createBufferViews(buffer, count, UintArray, GeometryData);
 
     GeometryData.buffer = buffer;
 
