@@ -60,12 +60,13 @@ export var onmessageHandler = (e) => {
             setState(initGL(data).run(), StateData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
-            // initMaterial(null, data.materialCount);
+            if(data.materialData !== null){
+                _initMaterials(data.materialData, DataBufferConfig, MaterialWorkerData);
+            }
 
-            // initMaterialWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
-            _initMaterials(data.materialData, DataBufferConfig, MaterialWorkerData);
-
-            _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
+            if(data.geometryData !== null) {
+                _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
+            }
 
             self.postMessage({
                 state: ERenderWorkerState.INIT_COMPLETE

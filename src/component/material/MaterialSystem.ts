@@ -80,7 +80,6 @@ export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData:
     }
 })
 
-//todo unit test: test init new added one
 export var initMaterial = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
@@ -90,29 +89,22 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
-        // var shader = getShader(index, shaderMap),
-        //     //todo move isInitMap out?(not contain worker data)
-        //     // isInitMap = ShaderData.isInitMap,
-        //     shaderIndex = shader.index;
-        //
-        // // if (isInitMap[shaderIndex] === true) {
-        // //     return;
-        // // }
-        //
-        // // isInitMap[shaderIndex] = true;
-        //
-        // // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
-        // initShader(state, index, shaderIndex, "BasicMaterial", material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
         var shaderIndex = getShaderIndex(index, MaterialData);
 
         initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
-
-        // MaterialData.workerInitList.push(index);
     }
 }
 
-export var clearWorkerInitList = (MaterialData: any) => {
-    MaterialData.workerInitList = [];
+export var clearWorkerInitList = null;
+
+if(isSupportRenderWorkerAndSharedArrayBuffer()){
+    clearWorkerInitList = (MaterialData: any) => {
+        MaterialData.workerInitList = [];
+    };
+}
+else{
+    clearWorkerInitList = (MaterialData: any) => {
+    };
 }
 
 export var hasNewInitedMaterial = (MaterialData: any) => {
@@ -209,7 +201,7 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     checkIndexShouldEqualCount(MaterialData);
 
     //todo unit test
-    it("should not dispose the material which is inited in the same loop", () => {
+    it("should not dispose the material which is inited in the same frame", () => {
         expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
     });
 }, (component: Material) => {

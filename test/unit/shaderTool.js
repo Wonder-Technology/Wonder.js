@@ -31,7 +31,8 @@ var shaderTool = (function () {
             wd.ProgramData.programMap[index] = data;
         },
         resetData: function(){
-            wd.initShaderData(wd.ShaderData);
+            shaderUtils.resetData();
+
             wd.initProgramData(wd.ProgramData);
             wd.initLocationData(wd.LocationData);
             wd.initGLSLSenderData(wd.GLSLSenderData);

@@ -31,10 +31,11 @@ var shaderTool = (function () {
             wd.ProgramData.programMap[index] = data;
         },
         resetData: function(){
-            wd.initShaderData(wd.ShaderData);
-            wd.initProgramData(wd.ProgramData);
-            wd.initLocationData(wd.LocationData);
-            wd.initGLSLSenderData(wd.GLSLSenderData);
+            shaderUtils.resetData();
+
+            wd.initProgramWorkerData(wdrd.ProgramWorkerData);
+            // wd.initLocationData(wd.LocationData);
+            // wd.initGLSLSenderData(wd.GLSLSenderData);
         },
 
         clearShader: function () {

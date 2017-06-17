@@ -5,7 +5,7 @@ import { shaderLib_generator } from "../../../data/shaderLib_generator";
 import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createTypeArrays,
-    getColorDataSize, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
+    getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
     getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils
 } from "../../../utils/material/materialUtils";
@@ -20,21 +20,8 @@ export var initMaterials = (materialCount: number) => {
     }
 }
 
-// export var initMaterial = (index: number, shaderMap:ShaderMap, state: Map<any, any>) => {
 export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
     var shaderIndex = getShaderIndex(materialIndex, MaterialWorkerData);
-    //not use isInitMap
-    ////todo move isInitMap out?(not contain worker data)
-    // isInitMap = ShaderData.isInitMap,
-    // shaderIndex = shader.index;
-
-    // if (isInitMap[shaderIndex] === true) {
-    //     return;
-    // }
-
-    // isInitMap[shaderIndex] = true;
-
-    // initShader(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData);
 
     initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData);
 }
