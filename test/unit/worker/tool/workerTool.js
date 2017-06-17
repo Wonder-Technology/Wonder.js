@@ -7,6 +7,8 @@ var workerTool = (function () {
                 postMessage: sandbox.stub()
             }
 
+            sandbox.stub(window, "postMessage");
+
             workerTool.createFakeWorker(sandbox);
 
             sandbox.stub(window.performance, "now").returns(0);
@@ -33,6 +35,9 @@ var workerTool = (function () {
         },
         getRenderWorker: function () {
             return wd.WorkerInstanceData.renderWorker;
+        },
+        getWorkerPostMessage: function(){
+            return window.postMessage;
         },
         execRenderWorkerMessageHandler: function (e) {
             window.onmessage(e);

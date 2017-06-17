@@ -332,7 +332,7 @@ describe("Main", function() {
                 expect(worker).toBeInstanceOf(window.Worker);
                 expect(worker.filePath).toEqual(workerFilePath);
             });
-            it("post message to render worker", function () {
+            it("send message to render worker", function () {
                 Main.setConfig({
                     canvasId: "#a"
                 }).init();

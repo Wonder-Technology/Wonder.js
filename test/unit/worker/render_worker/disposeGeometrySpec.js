@@ -49,7 +49,7 @@ describe("dispose geometry", function () {
                     obj2 = data2.gameObject;
                 })
 
-                it("post disposed geometry index array to render worker", function () {
+                it("send disposed geometry index array to render worker", function () {
                     directorTool.init(sandbox);
 
 
@@ -111,10 +111,7 @@ describe("dispose geometry", function () {
                         e = {
                             data:{
                                 operateType: EWorkerOperateType.DRAW,
-                                renderCommandBufferData:[{
-                                    buffer:null,
-                                    count:2
-                                }],
+                                renderCommandBufferData:[],
                                 materialData:null,
                                 geometryData:null,
                                 disposeData: {

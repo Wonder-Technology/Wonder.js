@@ -41,4 +41,6 @@ export { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorker
 export { GPUDetector } from "../../device/GPUDetector";
 export { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 export { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
+export { DataBufferConfig } from "../../../config/DataBufferConfig";
+export { GeometryWorkerData } from "./geometry/GeometryWorkerData";
 

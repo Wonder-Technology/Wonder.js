@@ -139,13 +139,7 @@ var _getPointData = requireCheckFunc((index: number, points: Float32Array | Uint
     return dataArr;
 })
 
-var _setPointData = requireCheckFunc(() => {
-    ////todo unit test: if set after init and has render worker, contract error
-    //todo unit test: test allow set after init and has render worker
-    // it("should not set point data after init", () => {
-    //     expect(GeometryData.isInit).false;
-    // });
-}, (index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
+var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
     var count = dataArr.length,
         startIndex = offset;
 
@@ -157,13 +151,12 @@ var _setPointData = requireCheckFunc(() => {
 
     _removeCache(index, cacheMap);
 
-    //todo judge whether support worker
     if (_isInit(GeometryData)) {
         _addWorkerInfo(workerInfoList, index, startIndex, offset);
     }
 
     return offset;
-})
+}
 
 var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
     it("should not exceed type arr's length", () => {
@@ -300,8 +293,16 @@ export var clearDisposedGeometryIndexArray = (GeometryData: any) => {
     GeometryData.disposedGeometryIndexArray = [];
 }
 
-var _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
-    infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
+var _addWorkerInfo = null;
+
+if(isSupportRenderWorkerAndSharedArrayBuffer()){
+    _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
+        infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
+    }
+}
+else{
+    _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
+    };
 }
 
 var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => {
