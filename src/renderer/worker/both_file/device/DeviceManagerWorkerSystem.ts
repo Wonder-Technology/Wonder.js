@@ -21,20 +21,21 @@ import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { ScreenData, ViewportData } from "../../../type/messageDataType";
 import { isValueExist } from "../../../../utils/stateUtils";
-import { DeviceManagerWorkerData } from "./DeviceManagerWorkerData";
+import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 
-export var createGL = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, contextConfig:Map<string, any>, viewportData:ViewportData) => {
+export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData:any, contextConfig:Map<string, any>, viewportData:ViewportData) => {
     return IO.of(() => {
-        var offscreen = (<any>canvas).transferControlToOffscreen();
+        var offscreen = (<any>canvas).transferControlToOffscreen(),
+        renderWorker = new Worker(renderWorkerConfig.workerFilePath);
 
-        DeviceManagerWorkerData.renderWorker = new Worker(renderWorkerConfig.workerFilePath);
-
-        DeviceManagerWorkerData.renderWorker.postMessage({
+        renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_GL,
             canvas: offscreen,
             options: contextConfig.get("options").toObject(),
             viewportData:viewportData
         }, [offscreen]);
+
+        setRenderWorker(renderWorker, WorkerInstanceData);
     })
 })
 

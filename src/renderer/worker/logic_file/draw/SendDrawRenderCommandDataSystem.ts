@@ -1,12 +1,19 @@
 import curry from "wonder-lodash/curry";
 import { EWorkerOperateType } from "../../both_file/EWorkerOperateType";
-import { clearWorkerInfoList, hasNewPointData, isReallocate } from "../../../../component/geometry/GeometrySystem";
+import {
+    clearDisposedGeometryIndexArray,
+    clearWorkerInfoList, hasDisposedGeometryIndexArrayData, hasNewPointData,
+    isReallocate
+} from "../../../../component/geometry/GeometrySystem";
 import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDataOperateType";
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
 import { RenderCommandBufferWorkerData } from "../../../type/dataType";
+import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
+import { getRenderWorker } from "../worker_instance/WorkerInstanceSystem";
 
-export var sendDrawData = curry((DeviceManagerWorkerData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
+export var sendDrawData = curry((WorkerInstanceData:any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
     var geometryData = null,
+        disposeData = null,
         materialData = null;
 
     if (hasNewPointData(GeometryData)) {
@@ -26,6 +33,13 @@ export var sendDrawData = curry((DeviceManagerWorkerData: any, MaterialData: any
         };
     }
 
+    if(hasDisposedGeometryIndexArrayData(GeometryData)){
+        disposeData = {
+            type: EDisposeDataOperateType.DISPOSE_BUFFER,
+            disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray
+        };
+    }
+
     if (hasNewInitedMaterial(MaterialData)) {
         materialData = {
             buffer: MaterialData.buffer,
@@ -33,14 +47,16 @@ export var sendDrawData = curry((DeviceManagerWorkerData: any, MaterialData: any
         };
     }
 
-    DeviceManagerWorkerData.renderWorker.postMessage({
+    getRenderWorker(WorkerInstanceData).postMessage({
         operateType: EWorkerOperateType.DRAW,
         renderCommandBufferData: data,
         materialData: materialData,
-        geometryData: geometryData
+        geometryData: geometryData,
+        disposeData: disposeData
     });
 
     clearWorkerInfoList(GeometryData);
+    clearDisposedGeometryIndexArray(GeometryData);
     clearWorkerInitList(MaterialData);
 })
 

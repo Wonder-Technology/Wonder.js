@@ -29,6 +29,8 @@ export class GeometryData {
     public static verticesWorkerInfoList: GeometryWorkerInfoList = null;
     public static indicesWorkerInfoList: GeometryWorkerInfoList = null;
 
+    public static disposedGeometryIndexArray: Array<number> = null;
+
     public static vertices: Float32Array = null;
     public static indices: Uint16Array | Uint32Array = null;
 

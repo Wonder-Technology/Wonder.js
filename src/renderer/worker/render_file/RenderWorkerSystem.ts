@@ -41,6 +41,8 @@ import { createState } from "../../../utils/stateUtils";
 import { initGL } from "./initGL";
 import { setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
+import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
+import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     // error(true, msg,fileName,lineno);
@@ -73,9 +75,9 @@ export var onmessageHandler = (e) => {
             clear(null, render_config, DeviceManagerWorkerData);
 
             let geometryData = data.geometryData,
+                disposeData = data.disposeData,
                 materialData = data.materialData;
 
-            //todo unit test
             if (geometryData !== null) {
                 if (_needUpdateGeometryWorkerData(geometryData)) {
                     updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
@@ -87,6 +89,10 @@ export var onmessageHandler = (e) => {
 
             if (materialData !== null) {
                 initNewInitedMaterials(materialData.workerInitList);
+            }
+
+            if(disposeData !== null){
+                _disposeBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData);
             }
 
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData), data.renderCommandBufferData);
@@ -103,6 +109,14 @@ var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => 
 
 var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
+}
+
+//todo refactor
+var _disposeBuffers = (disposedIndexArray: Array<number>, ArrayBufferWorkerData: any, IndexBufferWorkerData: any) => {
+    for (let index of disposedIndexArray) {
+        disposeArrayBuffer(index, ArrayBufferWorkerData);
+        disposeIndexBuffer(index, IndexBufferWorkerData);
+    }
 }
 
 var _initMaterials = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {

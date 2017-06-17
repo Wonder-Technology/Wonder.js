@@ -21,7 +21,6 @@ import { ThreeDTransformData } from "../../component/transform/ThreeDTransformDa
 import { SceneData } from "../../core/entityObject/scene/SceneData";
 import { CameraControllerData } from "../../component/camera/CameraControllerData";
 import { CameraData } from "../../component/camera/CameraData";
-import { DeviceManagerWorkerData } from "../worker/both_file/device/DeviceManagerWorkerData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
 import { ERenderWorkerState } from "../worker/both_file/ERenderWorkerState";
@@ -34,6 +33,8 @@ import { LocationData } from "../shader/location/LocationData";
 import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
 import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
+import { getRenderWorker } from "../worker/logic_file/worker_instance/WorkerInstanceSystem";
+import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
 
 export var init = null;
 
@@ -41,7 +42,7 @@ export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     init = (state: Map<any, any>) => {
-        var renderWorker = DeviceManagerWorkerData.renderWorker;
+        var renderWorker = getRenderWorker(WorkerInstanceData);
 
         renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
@@ -76,7 +77,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
 
         return compose(
-            sendDrawData(DeviceManagerWorkerData, MaterialData, GeometryData),
+            sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
             // sortRenderCommands(state),
             createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)

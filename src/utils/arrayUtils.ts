@@ -1,5 +1,6 @@
 import { isNotUndefined, isUndefined } from "./JudgeUtils";
-export var deleteVal = (key: number, arr: Array<number>) => arr[key] = void 0;
+
+export var deleteVal = (key: number, arr: Array<any>) => arr[key] = void 0;
 
 export var isNotValidVal = (val: any) => isUndefined(val);
 

@@ -4,7 +4,7 @@ describe("Director", function () {
     var SendDrawRenderCommandData = wd.SendDrawRenderCommandData;
     var ERenderWorkerState = wd.ERenderWorkerState;
 
-    var DeviceManagerWorkerData = wd.DeviceManagerWorkerData;
+    var WorkerInstanceData = wd.WorkerInstanceData;
 
     var WorkerConfig = wd.WorkerConfig;
     var EWorkerOperateType = wd.EWorkerOperateType;
@@ -29,22 +29,17 @@ describe("Director", function () {
             var renderWorkerDT;
 
             function judgeInvokeRenderWorkerCount(callCount, expect) {
-                expect(DeviceManagerWorkerData.renderWorker.postMessage.withArgs({
+                expect(workerTool.getRenderWorker().postMessage.withArgs({
                     operateType: EWorkerOperateType.DRAW,
                     renderCommandBufferData:sinon.match.any,
                     materialData:sinon.match.any,
-                    geometryData:sinon.match.any
+                    geometryData:sinon.match.any,
+                    disposeData:sinon.match.any
                 }).callCount).toEqual(callCount);
             }
 
             beforeEach(function(){
                 SendDrawRenderCommandData.state = ERenderWorkerState.INIT_COMPLETE;
-
-                // DeviceManagerWorkerData.renderWorker = {
-                //     postMessage: sandbox.stub()
-                // }
-
-                sandbox.stub(window.performance, "now").returns(0);
 
                 renderWorkerDT = 33;
 

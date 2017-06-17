@@ -1,11 +1,26 @@
 var workerTool = (function () {
+    var renderWorkerDT = 33;
+
     return {
         init: function (sandbox) {
-            wd.DeviceManagerWorkerData.renderWorker = {
+            wd.WorkerInstanceData.renderWorker = {
                 postMessage: sandbox.stub()
             }
 
             workerTool.createFakeWorker(sandbox);
+
+            sandbox.stub(window.performance, "now").returns(0);
+            sandbox.stub(wd.WorkerConfig, "renderWorkerDT", renderWorkerDT);
+        },
+        runRender: function (count) {
+            directorTool.loopBody(null, renderWorkerDT * count);
+        },
+        createGL: function(sandbox){
+            var gl = glslTool.buildFakeGl(sandbox);
+
+            wdrd.DeviceManagerWorkerData.gl = gl;
+
+            return gl;
         },
         createFakeWorker: function (sandbox) {
             var Worker = function (filePath) {
@@ -17,7 +32,7 @@ var workerTool = (function () {
             window.Worker = Worker;
         },
         getRenderWorker: function () {
-            return wd.DeviceManagerWorkerData.renderWorker;
+            return wd.WorkerInstanceData.renderWorker;
         },
         execRenderWorkerMessageHandler: function (e) {
             window.onmessage(e);

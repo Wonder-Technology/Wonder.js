@@ -202,8 +202,7 @@ export var disposeComponent = (component: Geometry) => {
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
         let disposedIndexArray = reAllocateGeometry(GeometryData);
 
-        //todo handle worker
-        _disposeBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData);
+        _disposeBuffers(disposedIndexArray);
 
         clearWorkerInfoList(GeometryData);
         GeometryData.isReallocate = true;
@@ -212,10 +211,23 @@ export var disposeComponent = (component: Geometry) => {
     }
 }
 
-var _disposeBuffers = (disposedIndexArray: Array<number>, ArrayBufferData: any, IndexBufferData: any) => {
-    for (let index of disposedIndexArray) {
-        disposeArrayBuffer(index, ArrayBufferData);
-        disposeIndexBuffer(index, IndexBufferData);
+var _disposeBuffers = null;
+
+if(isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _disposeBuffers = requireCheckFunc((disposedIndexArray:Array<number>) => {
+        it("should not add data twice in one frame", () => {
+            expect(GeometryData.disposedGeometryIndexArray.length).equal(0);
+        });
+    }, (disposedIndexArray:Array<number>) => {
+        GeometryData.disposedGeometryIndexArray = disposedIndexArray;
+    })
+}
+else{
+    _disposeBuffers = (disposedIndexArray: Array<number>) => {
+        for (let index of disposedIndexArray) {
+            disposeArrayBuffer(index, ArrayBufferData);
+            disposeIndexBuffer(index, IndexBufferData);
+        }
     }
 }
 
@@ -274,10 +286,18 @@ var _isInit = (GeometryData: any) => {
 export var clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
-}
+};
 
 export var hasNewPointData = (GeometryData: any) => {
     return GeometryData.verticesWorkerInfoList.length > 0;
+}
+
+export var hasDisposedGeometryIndexArrayData = (GeometryData: any) => {
+    return GeometryData.disposedGeometryIndexArray.length > 0;
+}
+
+export var clearDisposedGeometryIndexArray = (GeometryData: any) => {
+    GeometryData.disposedGeometryIndexArray = [];
 }
 
 var _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
@@ -330,6 +350,8 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
+    
+    GeometryData.disposedGeometryIndexArray = [];
 
     GeometryData.verticesOffset = 0;
     GeometryData.indicesOffset = 0;

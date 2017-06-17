@@ -7,7 +7,7 @@ var arrayBufferTool = (function () {
             wd.ArrayBufferData.bufferDataMap[index] = data;
         },
         resetData: function(){
-            wd.initArrayBufferData(wd.ArrayBufferData);
+            // wd.initArrayBufferData(wd.ArrayBufferData);
         }
     }
 })()

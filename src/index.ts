@@ -101,3 +101,5 @@ export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
 export {initDeviceManagerWorkerData} from "./test/forRenderWorkerUnitTest";
+export {EDisposeDataOperateType} from "./renderer/enum/EDisposeDataOperateType";
+export {WorkerInstanceData} from "./renderer/worker/logic_file/worker_instance/WorkerInstanceData";

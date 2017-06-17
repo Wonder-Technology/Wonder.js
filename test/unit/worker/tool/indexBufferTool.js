@@ -7,7 +7,7 @@ var indexBufferTool = (function () {
             wd.IndexBufferData.buffers = buffers;
         },
         resetData: function(){
-            wd.initIndexBufferData(wd.IndexBufferData);
+            // wd.initIndexBufferData(wd.IndexBufferData);
         }
     }
 })()

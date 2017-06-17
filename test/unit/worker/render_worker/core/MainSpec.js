@@ -24,7 +24,7 @@ describe("Main", function() {
         testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function() {
-        testTool.clearInstance(sandbox);
+        testRenderWorkerTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

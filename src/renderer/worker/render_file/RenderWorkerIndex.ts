@@ -39,3 +39,6 @@ export for unit test
  */
 export { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";
 export { GPUDetector } from "../../device/GPUDetector";
+export { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
+export { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
+

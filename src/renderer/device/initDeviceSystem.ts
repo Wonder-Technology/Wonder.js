@@ -11,22 +11,22 @@ import {
     setContextConfig, setPixelRatio,
     setScreen as setScreenFromDeviceManagerWorkerSystem, setViewport
 } from "../worker/both_file/device/DeviceManagerWorkerSystem";
-import { DeviceManagerWorkerData } from "../worker/both_file/device/DeviceManagerWorkerData";
 import { DeviceManagerData } from "./DeviceManagerData";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { setCanvas } from "../../structure/ViewSystem";
 import { ViewportData } from "../type/messageDataType";
 import { Map } from "immutable";
+import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
 
 export var initDevice = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
-            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, DeviceManagerWorkerData, state).run(),
+            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, state).run(),
                 viewportData:ViewportData = getViewportData(screenData, state);
 
-            createGLWorker(canvas, DeviceManagerWorkerData, contextConfig, viewportData).run();
+            createGLWorker(canvas, WorkerInstanceData, contextConfig, viewportData).run();
 
             return compose(
                 setCanvas(canvas),
