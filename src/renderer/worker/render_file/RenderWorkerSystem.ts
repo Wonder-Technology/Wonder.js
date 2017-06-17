@@ -38,6 +38,9 @@ import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 import { ContextConfigOptionsData } from "../../type/dataType";
 import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandUtils";
 import { createState } from "../../../utils/stateUtils";
+import { initGL } from "./initGL";
+import { setState } from "./state/StateSytem";
+import { StateData } from "./state/StateData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     // error(true, msg,fileName,lineno);
@@ -52,26 +55,7 @@ export var onmessageHandler = (e) => {
 
     switch (operateType) {
         case EWorkerOperateType.INIT_GL:
-            //todo setPixelRatioAndCanvas;setScreen
-            // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
-            // chain(setScreen(DeviceManagerWorkerData)),
-            compose(
-                map(detect(getGL, DeviceManagerWorkerData)),
-                // chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
-                // chain(setPixelRatioAndCanvas(false)),
-                // chain(setScreen(DeviceManagerWorkerData)),
-                _createGL
-            )(data.canvas, data.options, DeviceManagerWorkerData).run()
-
-
-
-
-            var canvas = data.canvas;
-
-            var state = createState();
-
-            //todo refactor
-            setViewportOfGL(0, 0, canvas.width, canvas.height, DeviceManagerWorkerData, state).run();
+            setState(initGL(data).run(), StateData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
             // initMaterial(null, data.materialCount);
@@ -133,22 +117,3 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
     setPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }
 
-var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any) => {
-    return IO.of(() => {
-        var gl = _getContext(canvas, options);
-
-        if (!gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
-
-        //todo setCanvas; setContextConfig
-        //     return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl, DeviceManagerWorkerData))(state);
-        return compose(
-            setGL(gl, DeviceManagerWorkerData)
-        )(null);
-    });
-})
-
-var _getContext = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData): WebGLRenderingContext => {
-    return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
-}

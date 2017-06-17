@@ -5,8 +5,8 @@ import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { IRenderConfig } from "../../data/render_config";
 import { getMatrix4DataSize } from "../../../utils/typeArrayUtils";
 
-export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystemFromSystem: any, data: RenderCommandBufferWorkerData) => {
-    clearGL(gl, render_config.clearColor, DeviceManagerDataFromSystemFromSystem);
+export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferWorkerData) => {
+    clearGL(gl, render_config.clearColor, DeviceManagerDataFromSystem);
 
     return data;
 }

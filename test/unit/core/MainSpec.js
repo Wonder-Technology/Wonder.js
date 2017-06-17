@@ -78,7 +78,7 @@ describe("Main", function() {
         describe("test set canvas id", function(){
             describe("if pass canvas id", function() {
                 beforeEach(function(){
-                    sandbox.stub(DomQuery, "create")
+                    sandbox.stub(DomQuery, "create");
 
                     DomQuery.create.withArgs("#a").returns(buildFakeDomQuery(canvasDom));
                     DomQuery.create.withArgs("body").returns(buildFakeDomQuery(canvasDom));
@@ -307,8 +307,8 @@ describe("Main", function() {
                 expect(view.y).toEqual(0);
                 expect(view.width).toEqual(50);
                 expect(view.height).toEqual(100);
-                expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
-                expect(device.viewport).toEqual(RectRegion.create(0, 0, view.width, view.height));
+                expect(device.gl.viewport).toCalledWith(10, 0, view.width, view.height);
+                expect(device.viewport).toEqual(RectRegion.create(10, 0, view.width, view.height));
                 expect(canvasDom.style.left).toEqual("10px");
                 expect(canvasDom.style.top).toEqual("0px");
             });

@@ -44,7 +44,7 @@ import { EScreenSize } from "../renderer/device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-import { compose } from "../utils/functionalUtils";
+import { chain, compose } from "../utils/functionalUtils";
 import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -133,7 +133,7 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
     })
 }, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
     return compose(
-        initDevice(configState.get("contextConfig"), gameState, configState),
+        chain(initDevice(configState.get("contextConfig"), gameState, configState)),
         createCanvas(DomQuery)
     )(configState.get("canvasId"));
 });

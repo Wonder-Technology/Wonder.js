@@ -1,41 +1,61 @@
 import curry from "wonder-lodash/curry";
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
-import { createGL, getGL, setPixelRatioAndCanvas, setScreen } from "./DeviceManagerSystem";
+import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
 import { detect } from "./GPUDetectorSystem";
-import { createGL as createGLWorker } from "../worker/both_file/device/DeviceManagerWorkerSystem";
+import {
+    createGL as createGLWorker, getViewport, getViewportData,
+    setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem,
+    setContextConfig, setPixelRatio,
+    setScreen as setScreenFromDeviceManagerWorkerSystem, setViewport
+} from "../worker/both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../worker/both_file/device/DeviceManagerWorkerData";
 import { DeviceManagerData } from "./DeviceManagerData";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
+import { setCanvas } from "../../structure/ViewSystem";
+import { ViewportData } from "../type/messageDataType";
+import { Map } from "immutable";
 
 export var initDevice = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
-        //todo set screen
-        return compose(
-            createGLWorker,
-        )(canvas, contextConfig, DeviceManagerWorkerData, state)
+        return IO.of(() => {
+            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, DeviceManagerWorkerData, state).run(),
+                viewportData:ViewportData = getViewportData(screenData, state);
+
+            createGLWorker(canvas, DeviceManagerWorkerData, contextConfig, viewportData).run();
+
+            return compose(
+                setCanvas(canvas),
+                setContextConfig(contextConfig),
+                setViewport(viewportData),
+                setPixelRatio(setCanvasPixelRatioFromDeviceManagerWorkerSystem(configState.get("useDevicePixelRatio"), canvas).run())
+            )(state);
+        });
     });
 }
 else {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
         return compose(
             map(detect(getGL, DeviceManagerData)),
-            chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))),
-            chain(setScreen(DeviceManagerData)),
+            chain(setCanvasPixelRatioFromDeviceManagerSystem(configState.get("useDevicePixelRatio"), canvas)),
+            chain(setScreenFromDeviceManagerSystem(canvas, DeviceManagerData)),
             createGL,
-        )(canvas, contextConfig, DeviceManagerData, state)
+        )(canvas, contextConfig, DeviceManagerData, state);
     });
 }
 
 export var createCanvas = curry((DomQuery: any, domID: string) => {
-    if (domID !== "") {
-        return DomQuery.create(_getCanvasID(domID)).get(0);
-    }
+    return IO.of(() => {
+        if (domID !== "") {
+            return DomQuery.create(_getCanvasID(domID)).get(0);
+        }
 
-    return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+        return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+    })
 })
 
 var _getCanvasID = ensureFunc((id: string) => {
@@ -49,3 +69,4 @@ var _getCanvasID = ensureFunc((id: string) => {
 
     return `#${domID}`;
 });
+

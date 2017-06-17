@@ -33,9 +33,13 @@ export var setContextConfig = curry((contextConfig: Map<string, any>, state: Map
     return state.setIn(["DeviceManager", "contextConfig"], contextConfig);
 })
 
-export var setPixelRatio = (pixelRatio: number, state: Map<any, any>) => {
+export var setPixelRatio = curry((pixelRatio: number|null, state: Map<any, any>) => {
+    if(pixelRatio === null){
+        return state;
+    }
+
     return state.setIn(["DeviceManager", "pixelRatio"], pixelRatio);
-}
+})
 
 export var getViewport = (state: Map<any, any>) => {
     return state.getIn(["DeviceManager", "viewport"]);
@@ -45,32 +49,23 @@ export var setViewport = (x: number, y: number, width: number, height: number, s
     return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
 
-export var setPixelRatioAndCanvas = curry((useDevicePixelRatio: boolean, state: Map<any, any>) => {
+export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas:HTMLCanvasElement) => {
     return IO.of(() => {
-        if (!useDevicePixelRatio) {
-            return state;
-        }
+        var pixelRatio: number = getRootProperty("devicePixelRatio").run();
 
-        let pixelRatio: number = getRootProperty("devicePixelRatio").run(),
-            dom = getCanvas(state);
+        canvas.width = Math.round(canvas.width * pixelRatio);
+        canvas.height = Math.round(canvas.height * pixelRatio);
 
-        dom.width = Math.round(dom.width * pixelRatio);
-        dom.height = Math.round(dom.height * pixelRatio);
-
-        return setPixelRatio(pixelRatio, state);
+        return pixelRatio;
     });
 })
 
-/**
- * @function
- * @name setViewport
- * @description Set the active rectangle for rendering on the specified device.
- * @param {Number} x The pixel space x-coordinate of the bottom left corner of the viewport.
- * @param {Number} y The pixel space y-coordinate of the bottom left corner of the viewport.
- * @param {Number} w The width of the viewport in pixels.
- * @param {Number} h The height of the viewport in pixels.
- */
-export var setViewportOfGL = curry((x: number, y: number, width: number, height: number, DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
+export var setViewportOfGL = curry((DeviceManagerDataFromSystem: any, state: Map<any, any>, {
+    x,
+    y,
+    width,
+    height
+}) => {
     return IO.of(() => {
         var gl = getGL(DeviceManagerDataFromSystem, state),
             viewport = getViewport(state);
@@ -132,39 +127,25 @@ var _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     });
 }
 
-var _setScreenData = curry((DeviceManagerDataFromSystem: any, state: Map<any, any>, {
-    x,
-    y,
-    width,
-    height,
-    styleWidth,
-    styleHeight
-}) => {
-    return IO.of(() => {
-        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
-
-        return setViewportOfGL(0, 0, width, height, DeviceManagerDataFromSystem, state).run();
-    });
-})
-
 export var getScreenSize = (state: Map<any, any>) => {
     return state.getIn(["Main", "screenSize"]);
 }
 
-export var setScreen = curry((DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
-    return IO.of(requireCheckFunc((state: Map<any, any>) => {
+export var setScreen = (canvas:HTMLCanvasElement, setScreenData:Function, DeviceManagerDataFromSystem:any, state: Map<any, any>) => {
+    return IO.of(requireCheckFunc(() => {
         it("should exist MainData.screenSize", () => {
-            expect(getScreenSize(DirectorData.state)).exist;
+            expect(getScreenSize(state)).exist;
         });
     }, () => {
-        var dom: HTMLCanvasElement = getCanvas(state);
+        initCanvas(canvas).run();
 
-        initCanvas(dom).run();
-
-        return compose(chain(_setScreenData(DeviceManagerDataFromSystem, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run()
+        return compose(
+            chain(setScreenData(DeviceManagerDataFromSystem, canvas, state)),
+            chain(_getScreenData),
+            _setBodyByScreenSize
+        )(getScreenSize(state)).run();
     }));
-});
-
+};
 
 export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
     _setClearColor(gl, color, DeviceManagerDataFromSystem);
