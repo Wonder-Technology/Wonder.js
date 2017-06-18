@@ -1,27 +1,21 @@
 import { renderWorkerConfig } from "../renderWorkerConfig";
 import { EWorkerOperateType } from "../EWorkerOperateType";
-import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
-// import {
-//     getContext, initCanvas, setCanvas
-// } from "../../../../structure/ViewSystem";
 import { IO } from "Wonder-Fantasy-Land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
-// import { chain, compose } from "../../../../utils/functionalUtils";
 import { Map } from "immutable";
 import {
     clear as clearUtils,
-    getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
+    getGL as getGLUtils, getViewport as getViewportUtils,
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
-    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
+    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils
 } from "../../../utils/device/deviceManagerUtils";
-import { Color } from "../../../../structure/Color";
-import { ContextConfigOptionsData } from "../../../type/dataType";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { ScreenData, ViewportData } from "../../../type/messageDataType";
 import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
+import { Color } from "../../../../structure/Color";
 
 export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData:any, contextConfig:Map<string, any>, viewportData:ViewportData) => {
     return IO.of(() => {
@@ -129,4 +123,3 @@ export var clear = clearUtils;
 export var setColorWrite = setColorWriteUtils;
 
 export var initData = initDataUtils;
-

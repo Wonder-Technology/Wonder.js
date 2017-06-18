@@ -11,7 +11,6 @@ import {
     getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
-    // setPixelRatioAndCanvas as setPixelRatioAndCanvasUtils,
     setScreen as setScreenUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/device/deviceManagerUtils";

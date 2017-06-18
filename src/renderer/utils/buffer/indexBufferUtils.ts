@@ -1,5 +1,4 @@
 import { isBufferExist } from "./bufferUtils";
-// import { getIndexType, getIndexTypeSize, getIndices } from "../../worker/geometry/GeometryWorkerSystem";
 
 export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndices: Function, GeometryWorkerData: any, IndexBufferDataFromSystem: any) => {
     var buffers = IndexBufferDataFromSystem.buffers,
@@ -29,14 +28,6 @@ var _initBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, b
 var _resetBindedBuffer = (gl: WebGLRenderingContext, IndexBufferDataFromSystem: any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 }
-
-// export var getType = (GeometryWorkerData: any) => {
-//     return getIndexType(GeometryWorkerData);
-// }
-//
-// export var getTypeSize = (GeometryWorkerData: any) => {
-//     return getIndexTypeSize(GeometryWorkerData);
-// }
 
 export var initData = (IndexBufferDataFromSystem: any) => {
     IndexBufferDataFromSystem.buffers = [];

@@ -92,5 +92,4 @@ export var initData = (ShaderData: any) => {
     ShaderData.count = 0;
 
     ShaderData.shaderMap = createMap();
-    // ShaderData.isInitMap = createMap();
 }

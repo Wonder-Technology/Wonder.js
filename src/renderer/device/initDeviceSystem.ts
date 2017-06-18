@@ -6,7 +6,7 @@ import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
 import { detect } from "./GPUDetectorSystem";
 import {
-    createGL as createGLWorker, getViewport, getViewportData,
+    createGL as createGLWorker, getViewportData,
     setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem,
     setContextConfig, setPixelRatio,
     setScreen as setScreenFromDeviceManagerWorkerSystem, setViewport

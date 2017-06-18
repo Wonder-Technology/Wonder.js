@@ -1,7 +1,7 @@
 import { chain, compose, map } from "../../../utils/functionalUtils";
 import { detect } from "../../device/GPUDetectorSystem";
 import {
-    getGL, setContextConfig, setGL, setPixelRatio,
+    getGL, setContextConfig, setGL,
     setViewportOfGL
 } from "../both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";

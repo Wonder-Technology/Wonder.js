@@ -92,7 +92,6 @@ else {
 
     render = (state: Map<any, any>) => {
         return compose(
-            // draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData),
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),

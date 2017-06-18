@@ -179,17 +179,6 @@ var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerData
     DeviceManagerDataFromSystem.clearColor = color;
 }
 
-/**
- * @function
- * @name setColorWrite
- * @description Enables or disables writes to the color buffer. Once this state
- * is set, it persists until it is changed. By default, color writes are enabled
- * for all color channels.
- * @param {Boolean} writeRed true to enable writing  of the red channel and false otherwise.
- * @param {Boolean} writeGreen true to enable writing  of the green channel and false otherwise.
- * @param {Boolean} writeBlue true to enable writing  of the blue channel and false otherwise.
- * @param {Boolean} writeAlpha true to enable writing  of the alpha channel and false otherwise.
- */
 export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.writeRed !== writeRed
         || DeviceManagerDataFromSystem.writeGreen !== writeGreen
