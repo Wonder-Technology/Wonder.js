@@ -11,7 +11,7 @@ export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config:
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandDataFromSystem: any, ) => {
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any, ) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         MaterialDataFromSystem: MaterialDataFromSystem,
@@ -21,7 +21,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFro
         GeometryDataFromSystem: GeometryDataFromSystem,
         ArrayBufferDataFromSystem: ArrayBufferDataFromSystem,
         IndexBufferDataFromSystem: IndexBufferDataFromSystem,
-        DrawRenderCommandDataFromSystem: DrawRenderCommandDataFromSystem
+        DrawRenderCommandBufferDataFromSystem: DrawRenderCommandBufferDataFromSystem
     }
 }
 
@@ -58,14 +58,14 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
                        GeometryDataFromSystem,
                        ArrayBufferDataFromSystem,
                        IndexBufferDataFromSystem,
-                       DrawRenderCommandDataFromSystem
+                       DrawRenderCommandBufferDataFromSystem
                    }, bufferData: RenderCommandBufferWorkerData) => {
     var mat4Length = getMatrix4DataSize(),
         count = bufferData.count,
         buffer: any = bufferData.buffer,
-        mMatrixFloatArrayForSend = DrawRenderCommandDataFromSystem.mMatrixFloatArrayForSend,
-        vMatrixFloatArrayForSend = DrawRenderCommandDataFromSystem.vMatrixFloatArrayForSend,
-        pMatrixFloatArrayForSend = DrawRenderCommandDataFromSystem.pMatrixFloatArrayForSend,
+        mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
+        vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
+        pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
         {
             mMatrices,
             vMatrices,
@@ -73,7 +73,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
             materialIndices,
             shaderIndices,
             geometryIndices
-        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, mat4Length, DrawRenderCommandDataFromSystem);
+        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, mat4Length, DrawRenderCommandBufferDataFromSystem);
 
     _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
@@ -141,25 +141,25 @@ var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float3
     }
 }
 
-var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig:any, mat4Length: number, DrawRenderCommandDataFromSystem: any) => {
-    if (BufferUtilsForUnitTest.isDrawRenderCommandDataTypeArrayNotExist(DrawRenderCommandDataFromSystem)) {
+var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig:any, mat4Length: number, DrawRenderCommandBufferDataFromSystem: any) => {
+    if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
         let count = DataBufferConfig.renderCommandBufferCount;
 
-        DrawRenderCommandDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
-        DrawRenderCommandDataFromSystem.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
-        DrawRenderCommandDataFromSystem.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
-        DrawRenderCommandDataFromSystem.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
-        DrawRenderCommandDataFromSystem.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
-        DrawRenderCommandDataFromSystem.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+        DrawRenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
+        DrawRenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
+        DrawRenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
     }
 
-    return DrawRenderCommandDataFromSystem;
+    return DrawRenderCommandBufferDataFromSystem;
 }
 
-export var initData = (DrawRenderCommandDataFromSystem: any) => {
+export var initData = (DrawRenderCommandBufferDataFromSystem: any) => {
     var mat4Length = getMatrix4DataSize();
 
-    DrawRenderCommandDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
-    DrawRenderCommandDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
-    DrawRenderCommandDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
 }

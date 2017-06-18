@@ -2,19 +2,14 @@ import { Map } from "immutable";
 import { getRenderList } from "../../component/renderer/MeshRendererSystem";
 import { MeshRendererData } from "../../component/renderer/MeshRendererData";
 import { compose } from "../../utils/functionalUtils";
-// import { createRenderCommands } from "../command/RenderCommandSystem";
-import { createRenderCommandBuffer } from "../command/RenderCommandBufferSystem";
-import { sortRenderCommands } from "../sort/SortRenderCommandSystem";
-import { sendDrawData } from "../worker/logic_file/draw/SendDrawRenderCommandDataSystem";
+import { createRenderCommandBuffer } from "../command_buffer/RenderCommandBufferSystem";
+import { sendDrawData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { init as initMaterial } from "../../component/material/MaterialSystem";
 import { MaterialData } from "../../component/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-import { material_config } from "../data/material_config";
-import { shaderLib_generator } from "../data/shaderLib_generator";
 import { GeometryData } from "../../component/geometry/GeometryData";
 import { ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData } from "../buffer/IndexBufferData";
-import { clear as clearGL, getGL } from "../device/DeviceManagerSystem";
 import { render_config } from "../data/render_config";
 import { DeviceManagerData } from "../device/DeviceManagerData";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
@@ -22,16 +17,16 @@ import { SceneData } from "../../core/entityObject/scene/SceneData";
 import { CameraControllerData } from "../../component/camera/CameraControllerData";
 import { CameraData } from "../../component/camera/CameraData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
-import { RenderCommandBufferData } from "../command/RenderCommandBufferData";
+import { RenderCommandBufferData } from "../command_buffer/RenderCommandBufferData";
 import { ERenderWorkerState } from "../worker/both_file/ERenderWorkerState";
-import { SendDrawRenderCommandData } from "../worker/logic_file/draw/SendDrawRenderCommandData";
+import { SendDrawRenderCommandBufferData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { clear, draw } from "../draw/DrawRenderCommandSystem";
-import { DrawRenderCommandData } from "../draw/DrawRenderCommandData";
+import { clear, draw } from "../draw/DrawRenderCommandBufferSystem";
+import { DrawRenderCommandBufferData } from "../draw/DrawRenderCommandBufferData";
 import { ProgramData } from "../shader/program/ProgramData";
 import { LocationData } from "../shader/location/LocationData";
 import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
-import { buildDrawDataMap } from "../utils/draw/drawRenderCommandUtils";
+import { buildDrawDataMap } from "../utils/draw/drawRenderCommandBufferUtils";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getRenderWorker } from "../worker/logic_file/worker_instance/WorkerInstanceSystem";
 import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
@@ -65,14 +60,14 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             var data = e.data,
                 state = data.state;
 
-            SendDrawRenderCommandData.state = ERenderWorkerState.INIT_COMPLETE;
+            SendDrawRenderCommandBufferData.state = ERenderWorkerState.INIT_COMPLETE;
         };
 
         return state;
     }
 
     render = (state: Map<any, any>) => {
-        if (SendDrawRenderCommandData.state !== ERenderWorkerState.INIT_COMPLETE) {
+        if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.INIT_COMPLETE) {
             return state;
         }
 
@@ -84,11 +79,11 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         )(MeshRendererData)
     }
 
-    let _initData = (SendDrawRenderCommandData: any) => {
-        SendDrawRenderCommandData.state = ERenderWorkerState.DEFAULT;
+    let _initData = (SendDrawRenderCommandBufferData: any) => {
+        SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
     }
 
-    _initData(SendDrawRenderCommandData);
+    _initData(SendDrawRenderCommandBufferData);
 }
 else {
     init = (state: Map<any, any>) => {
@@ -97,8 +92,8 @@ else {
 
     render = (state: Map<any, any>) => {
         return compose(
-            // draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData),
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandData)),
+            // draw(null, render_config, DeviceManagerData, MaterialData, ShaderData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

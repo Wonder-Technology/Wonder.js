@@ -45,28 +45,18 @@ var testRenderWorkerTool = (function () {
             deviceManagerTool.resetData();
             cameraControllerTool.resetData();
             renderCommandBufferTool.resetData();
-            drawRenderCommandTool.resetData();
+            drawRenderCommandBufferTool.resetData();
             sceneTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {
-            // var isInit$ = isInit === false ? false : true;
-            //
-            // if(isInit$){
-            //     this.initForTest(sandbox);
-            // }
-            this._prepareBufferForTest(sandbox, data);
+            testUtils.prepareBufferForTest(sandbox, data, bufferTool);
 
             workerTool.init(sandbox);
 
             this.clear(sandbox);
 
             Main.isTest = true;
-        },
-        _prepareBufferForTest: function(sandbox, data){
-            sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandDataTypeArrayNotExist").returns(true);
-
-            bufferTool.minBufferCount(sandbox, data);
         },
         closeContractCheck: function () {
             Main.isTest = false;

@@ -17,6 +17,11 @@ var testUtils = (function () {
                     return mathTestUtils.toFixed(values, digit);
                 }
             }
-        }
+        },
+        prepareBufferForTest: function(sandbox, data, bufferTool){
+            sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandBufferDataTypeArrayNotExist").returns(true);
+
+            bufferTool.minBufferCount(sandbox, data);
+        },
     }
 })();

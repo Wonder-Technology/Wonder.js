@@ -30,15 +30,15 @@ import { initData as initCameraControllerData } from "../component/camera/Camera
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
 import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
 import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
-import { initData as initRenderCommandBufferData } from "../renderer/command/RenderCommandBufferSystem";
+import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { render_config } from "../renderer/data/render_config";
-import { RenderCommandBufferData } from "../renderer/command/RenderCommandBufferData";
+import { RenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferData";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
 import { initData as initGLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { initData as initDrawRenderCommandData } from "../renderer/draw/DrawRenderCommandSystem";
+import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { DebugConfig } from "../config/DebugConfig";
 import { EScreenSize } from "../renderer/device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
@@ -52,7 +52,7 @@ import { fromJS, Map } from "immutable";
 import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
 import { ContextConfigOptionsData } from "../renderer/type/dataType";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
-import { DrawRenderCommandData } from "../renderer/draw/DrawRenderCommandData";
+import { DrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferData";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
@@ -159,7 +159,7 @@ else {
 
         initIndexBufferData(IndexBufferData);
 
-        initDrawRenderCommandData(DrawRenderCommandData);
+        initDrawRenderCommandBufferData(DrawRenderCommandBufferData);
     }
 }
 

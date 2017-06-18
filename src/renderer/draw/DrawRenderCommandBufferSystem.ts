@@ -1,7 +1,7 @@
 import {
     buildDrawFuncDataMap, clear as clearUtils, draw as drawUtils,
     initData as initDataUtils
-} from "../utils/draw/drawRenderCommandUtils";
+} from "../utils/draw/drawRenderCommandBufferUtils";
 import { clear as clearGL, getGL } from "../device/DeviceManagerSystem";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";

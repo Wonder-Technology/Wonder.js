@@ -7,7 +7,7 @@ export type DrawDataMap = {
     GeometryDataFromSystem: any;
     ArrayBufferDataFromSystem: any;
     IndexBufferDataFromSystem: any;
-    DrawRenderCommandDataFromSystem: any;
+    DrawRenderCommandBufferDataFromSystem: any;
 }
 
 export type DrawFuncDataMap = {

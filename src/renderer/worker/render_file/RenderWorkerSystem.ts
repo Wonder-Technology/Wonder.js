@@ -2,9 +2,9 @@ import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
 import {
     clear, draw
-} from "./draw/DrawRenderCommandWorkerSystem";
+} from "./draw/DrawRenderCommandBufferWorkerSystem";
 import { render_config } from "../../data/render_config";
-import { DrawRenderCommandWorkerData } from "./draw/DrawRenderCommandWorkerData";
+import { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
     initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
@@ -28,7 +28,7 @@ import { LocationWorkerData } from "./shader/location/LocationWorkerData";
 import { GLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerData";
 import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
-import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandUtils";
+import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandBufferUtils";
 import { initGL } from "./initGL";
 import { setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
@@ -40,7 +40,7 @@ import { initData as initLocationWorkerData } from "./shader/location/LocationWo
 import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
-import { initData as initDrawRenderCommandWorkerData } from "./draw/DrawRenderCommandWorkerSystem";
+import { initData as initDrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -93,7 +93,7 @@ export var onmessageHandler = (e) => {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData), data.renderCommandBufferData);
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKOWN(`operateType:${operateType}`));
@@ -112,7 +112,7 @@ var _initData = () => {
 
     initIndexBufferData(IndexBufferWorkerData);
 
-    initDrawRenderCommandWorkerData(DrawRenderCommandWorkerData);
+    initDrawRenderCommandBufferWorkerData(DrawRenderCommandBufferWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {

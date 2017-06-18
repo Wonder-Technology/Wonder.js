@@ -1,7 +1,7 @@
 import {
     buildDrawFuncDataMap, clear as clearUtils, draw as drawUtils,
     initData as initDataUtils
-} from "../../../utils/draw/drawRenderCommandUtils";
+} from "../../../utils/draw/drawRenderCommandBufferUtils";
 import { Map } from "immutable";
 import { clear as clearGL, getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 import { DrawDataMap } from "../../../type/utilsType";
