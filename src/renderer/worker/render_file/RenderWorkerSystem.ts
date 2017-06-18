@@ -35,6 +35,12 @@ import { StateData } from "./state/StateData";
 import { disposeGeometryBuffers } from "../both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
+import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
+import { initData as initLocationWorkerData } from "./shader/location/LocationWorkerSystem";
+import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerSystem";
+import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
+import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
+import { initData as initDrawRenderCommandWorkerData } from "./draw/DrawRenderCommandWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -46,6 +52,8 @@ export var onmessageHandler = (e) => {
 
     switch (operateType) {
         case EWorkerOperateType.INIT_GL:
+            _initData();
+
             setState(initGL(data).run(), StateData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
@@ -92,6 +100,20 @@ export var onmessageHandler = (e) => {
             break;
     }
 };
+
+var _initData = () => {
+    initProgramWorkerData(ProgramWorkerData);
+
+    initLocationWorkerData(LocationWorkerData);
+
+    initGLSLSenderWorkerData(GLSLSenderWorkerData);
+
+    initArrayBufferData(ArrayBufferWorkerData);
+
+    initIndexBufferData(IndexBufferWorkerData);
+
+    initDrawRenderCommandWorkerData(DrawRenderCommandWorkerData);
+}
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.ADD;
