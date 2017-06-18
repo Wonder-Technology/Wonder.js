@@ -1,7 +1,9 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import {
     addChild,
-    addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem,
+    addComponent, create, dispose, disposeComponent, getAliveChildren, getComponent, getTransform,
+    hasChild,
+    hasComponent, initGameObject as initGameObjectSystem,
     isAlive, removeChild
 } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
@@ -32,6 +34,14 @@ export var disposeGameObject = requireCheckFunc((gameObject: GameObject) => {
 }, (gameObject: GameObject) => {
     dispose(gameObject, ThreeDTransformData, GameObjectData);
 })
+
+// export var disposeBatchGameObjectChildren = requireCheckFunc((children: Array<GameObject>, parent:GameObject) => {
+//     for(let child of children){
+//         checkGameObjectShouldAlive(child, GameObjectData);
+//     }
+// }, (children: Array<GameObject>, parent:GameObject) => {
+//     disposeBatchChildren(children, parent, ThreeDTransformData, GameObjectData);
+// })
 
 export var initGameObject = requireCheckFunc((gameObject: GameObject, component: Component) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
@@ -81,6 +91,12 @@ export var hasGameObject = requireCheckFunc((gameObject: GameObject, child: Game
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, child: GameObject) => {
     return hasChild(gameObject, child, GameObjectData);
+})
+
+export var getGameObjectChildren = requireCheckFunc((gameObject: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject) => {
+    return getAliveChildren(gameObject.uid, GameObjectData);
 })
 
 export interface IUIDEntity {

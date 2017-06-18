@@ -70,15 +70,15 @@ describe("GameObject", function() {
             });
         });
 
-        it("its parent should remove it", function () {
-            var child2 = gameObjectTool.create();
-            gameObjectTool.add(parent, child2);
-
-            gameObjectTool.dispose(gameObject);
-
-            expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
-            expect(gameObjectTool.has(parent, child2)).toBeTruthy();
-        });
+        // it("its parent should remove it", function () {
+        //     var child2 = gameObjectTool.create();
+        //     gameObjectTool.add(parent, child2);
+        //
+        //     gameObjectTool.dispose(gameObject);
+        //
+        //     expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
+        //     expect(gameObjectTool.has(parent, child2)).toBeTruthy();
+        // });
         it("should remove children", function () {
             gameObjectTool.dispose(gameObject);
 
@@ -95,6 +95,88 @@ describe("GameObject", function() {
             threeDTransformTool.isNotAlive(tra);
             threeDTransformTool.isNotAlive(tra1);
             threeDTransformTool.isNotAlive(tra11);
+        });
+    });
+
+    // describe("disposeBatchChildren", function() {
+    //     var parent,child1,child2,child3,child11;
+    //     var disposedChildren;
+    //
+    //     beforeEach(function(){
+    //         parent = gameObjectTool.create();
+    //
+    //         child1 = gameObjectTool.create();
+    //         gameObjectTool.add(parent, child1);
+    //
+    //         child11 = gameObjectTool.create();
+    //         gameObjectTool.add(child1, child11);
+    //
+    //         child2 = gameObjectTool.create();
+    //         gameObjectTool.add(parent, child2);
+    //
+    //         child3 = gameObjectTool.create();
+    //         gameObjectTool.add(parent, child3);
+    //
+    //         disposedChildren = [
+    //             child1,
+    //             child2
+    //         ]
+    //     });
+    //
+    //     it("if disposed children not alive, error", function() {
+    //         shouldAlive(child1, function (gameObject) {
+    //             return gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //         })
+    //
+    //         shouldAlive(child2, function (gameObject) {
+    //             return gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //         })
+    //     });
+    //
+    //     it("remove from childrenMap", function () {
+    //         gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //
+    //         expect(gameObjectTool.has(parent, child1)).toBeFalsy();
+    //         expect(gameObjectTool.has(parent, child2)).toBeFalsy();
+    //         expect(gameObjectTool.has(parent, child3)).toBeTruthy();
+    //     });
+    //     it("disposed children all components should be disposed", function () {
+    //         var tra = gameObjectTool.getTransform(parent),
+    //             tra1 = gameObjectTool.getTransform(child1),
+    //             tra2 = gameObjectTool.getTransform(child2),
+    //             tra3 = gameObjectTool.getTransform(child3),
+    //             tra11 = gameObjectTool.getTransform(child11);
+    //
+    //         gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //
+    //         threeDTransformTool.isAlive(tra);
+    //         threeDTransformTool.isNotAlive(tra1);
+    //         threeDTransformTool.isNotAlive(tra2);
+    //         threeDTransformTool.isNotAlive(tra3);
+    //         threeDTransformTool.isNotAlive(tra11);
+    //     });
+    // });
+
+    describe("getAliveChildren", function() {
+        beforeEach(function(){
+        });
+
+        it("get alive children", function(){
+            var parent = gameObjectTool.create();
+            gameObjectTool.add(parent, gameObject);
+
+            var child = gameObjectTool.create();
+            gameObjectTool.add(gameObject, child);
+
+            var child11 = gameObjectTool.create();
+            gameObjectTool.add(child, child11);
+
+            gameObjectTool.dispose(child);
+
+            var parentChildren = gameObjectTool.getChildren(parent);
+            var gameObjectChildren = gameObjectTool.getChildren(gameObject);
+            expect(parentChildren).toEqual([gameObject]);
+            expect(gameObjectChildren).toEqual([]);
         });
     });
 

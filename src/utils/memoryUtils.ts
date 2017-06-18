@@ -1,4 +1,4 @@
-import { createMap, isNotValidMapValue, isValidMapValue } from "./objectUtils";
+import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "./objectUtils";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { clearCacheMap } from "../component/transform/cacheSystem";
 import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
@@ -10,6 +10,9 @@ import { Component } from "../component/Component";
 import { checkIndexShouldEqualCount } from "../component/utils/contractUtils";
 import { GeometryInfo, GeometryInfoList } from "../definition/type/geometryType";
 import { set } from "./typeArrayUtils";
+import { isAlive } from "../core/entityObject/gameObject/GameObjectSystem";
+import { isNotUndefined } from "./JudgeUtils";
+import { GameObjectParentMap } from "../core/entityObject/gameObject/GameObjectData";
 
 export var isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount: number = MemoryConfig.maxComponentDisposeCount) => {
     return disposeCount >= maxComponentDisposeCount;
@@ -31,11 +34,11 @@ var _setArrayVal = (arr: Array<any>, index: number, val: any) => {
 
 export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
     var val: any = null,
-        newParentMap = {},
-        newChildrenMap = {},
-        newIsTranslateMap = {},
-        newGameObjectMap = {},
-        newTempMap = {},
+        newParentMap = createMap(),
+        newChildrenMap = createMap(),
+        newIsTranslateMap = createMap(),
+        newGameObjectMap = createMap(),
+        newTempMap = createMap(),
         newAliveUIDArray: Array<number> = [],
         aliveUIDArray = ThreeDTransformData.aliveUIDArray,
         parentMap = ThreeDTransformData.parentMap,
@@ -70,6 +73,8 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
         _setMapVal(newGameObjectMap, uid, val);
     }
 
+    //todo reallocate transformMap
+
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
@@ -81,21 +86,32 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
 
 export var reAllocateGameObject = (GameObjectData: any) => {
     let val: any = null,
-        newParentMap = {},
-        newChildrenMap = {},
-        newComponentMap = {},
+        newParentMap = createMap(),
+        newChildrenMap = createMap(),
+        newComponentMap = createMap(),
         newAliveUIDArray: Array<number> = [],
         aliveUIDArray = GameObjectData.aliveUIDArray,
         parentMap = GameObjectData.parentMap,
         childrenMap = GameObjectData.childrenMap,
-        componentMap = GameObjectData.componentMap;
+        componentMap = GameObjectData.componentMap,
+        disposedUIDArr = [],
+        actualAliveUIDArr = [];
 
     for (let uid of aliveUIDArray) {
         val = componentMap[uid];
 
         if (isNotValidMapValue(val)) {
-            continue;
+            disposedUIDArr.push(uid);
         }
+        else{
+            actualAliveUIDArr.push(uid);
+        }
+    }
+
+    _cleanChildrenMap(disposedUIDArr, parentMap, GameObjectData);
+
+    for (let uid of actualAliveUIDArr) {
+        val = componentMap[uid];
 
         newAliveUIDArray.push(uid);
 
@@ -113,6 +129,58 @@ export var reAllocateGameObject = (GameObjectData: any) => {
     GameObjectData.componentMap = newComponentMap;
     GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
+
+var _cleanChildrenMap = (disposedUIDArr:Array<number>, parentMap:GameObjectParentMap, GameObjectData: any) => {
+    var isCleanedParentMap = createMap();
+
+    for (let uid of disposedUIDArr) {
+        let parent = parentMap[uid];
+
+        if (_isParentExist(parent)) {
+            let parentUID = parent.uid;
+
+            if(isValidMapValue(isCleanedParentMap[parentUID])){
+                continue;
+            }
+
+            _cleanChildren(parentUID, GameObjectData);
+
+            deleteVal(uid, parentMap);
+        }
+    }
+}
+
+var _cleanChildren = (parentUID: number, GameObjectData: any) => {
+    var children = _getChildren(parentUID, GameObjectData);
+
+    if(!_isChildrenExist(children)){
+        return;
+    }
+
+    let newChildren:Array<GameObject> = [];
+
+    for (let i = 0, len = children.length; i < len; ++i) {
+        let child = children[i];
+
+        if(isAlive(child, GameObjectData)){
+            newChildren.push(child);
+        }
+    }
+
+    _setChildren(parentUID, newChildren, GameObjectData);
+};
+//todo refactor
+var _getChildren = (uid: number, GameObjectData: any) => {
+    return GameObjectData.childrenMap[uid];
+}
+
+var _isParentExist = (parent: GameObject) => isNotUndefined(parent);
+
+var _setChildren = (uid: number, children: Array<GameObject>, GameObjectData: any) => {
+    GameObjectData.childrenMap[uid] = children;
+}
+
+var _isChildrenExist = (children: Array<GameObject>) => isNotUndefined(children);
 
 export var reAllocateTag = (TagData: any) => {
     var usedSlotCountMap = TagData.usedSlotCountMap,
@@ -218,9 +286,9 @@ export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) =
         newIndicesOffset = 0,
         newVertivesInfoList = [],
         newIndicesInfoList = [],
-        newGameObjectMap = {},
-        newGeometryMap = {},
-        newComputeDatafuncMap = {},
+        newGameObjectMap = createMap(),
+        newGeometryMap = createMap(),
+        newComputeDatafuncMap = createMap(),
         newConfigDataMap: Array<number> = [],
         newVerticesCacheMap: Array<number> = [],
         newIndicesCacheMap: Array<number> = [],

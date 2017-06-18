@@ -156,115 +156,94 @@ describe("reallocate memory", function() {
         describe("test GameObject", function() {
             var GameObjectData = wd.GameObjectData;
 
-            var gameObject;
-            var parent,child,child11;
-
             beforeEach(function(){
-                gameObject = gameObjectTool.create();
-
-                parent = gameObjectTool.create();
-                gameObjectTool.add(parent, gameObject);
-
-                child = gameObjectTool.create();
-                gameObjectTool.add(gameObject, child);
-
-                child11 = gameObjectTool.create();
-                gameObjectTool.add(child, child11);
+                // gameObjectTool.resetData();
             });
 
-            beforeEach(function(){
-                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
-            });
+            describe("batch remove from children map", function () {
+                var gameObject;
+                var parent,child1, child2;
 
-            it("new parentMap,childrenMap,componentMap should only has not-removed data", function(){
-                gameObjectTool.dispose(child);
+                it("test", function () {
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
+                    gameObject = gameObjectTool.create();
 
-                var parentMap = {};
-                parentMap[gameObject.uid] = parent;
-                parentMap[parent.uid] = undefined;
-                expect(GameObjectData.parentMap).toEqual(parentMap);
+                    parent = gameObjectTool.create();
+                    gameObjectTool.add(parent, gameObject);
 
-                var childrenMap = {};
-                childrenMap[parent.uid] = [gameObject];
-                childrenMap[gameObject.uid] = [];
-                expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    child1 = gameObjectTool.create();
+                    gameObjectTool.add(gameObject, child1);
 
-                expect(GameObjectData.componentMap[parent.uid]).toBeExist();
-                expect(GameObjectData.componentMap[gameObject.uid]).toBeExist();
-                expect(GameObjectData.componentMap[child.uid]).not.toBeExist();
-                expect(GameObjectData.componentMap[child11.uid]).not.toBeExist();
-            });
-            it("test maxComponentDisposeCount > 1", function () {
-                sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
-
-                gameObjectTool.dispose(child);
-
-
-                var parentMap = {};
-                parentMap[gameObject.uid] = parent;
-                parentMap[child.uid] = undefined;
-                parentMap[child11.uid] = undefined;
-                expect(GameObjectData.parentMap).toEqual(parentMap);
+                    child2 = gameObjectTool.create();
+                    gameObjectTool.add(gameObject, child2);
 
 
 
 
-                gameObjectTool.dispose(gameObject);
-
-
-                var parentMap = {};
-                parentMap[parent.uid] = undefined;
-                expect(GameObjectData.parentMap).toEqual(parentMap);
-
-                var childrenMap = {};
-                childrenMap[parent.uid] = [];
-                expect(GameObjectData.childrenMap).toEqual(childrenMap);
-
-                expect(GameObjectData.componentMap[parent.uid]).toBeExist();
-                expect(GameObjectData.componentMap[gameObject.uid]).not.toBeExist();
-                expect(GameObjectData.componentMap[child.uid]).not.toBeExist();
-                expect(GameObjectData.componentMap[child11.uid]).not.toBeExist();
-            });
-
-            describe("test add new one after dispose old one", function () {
-                it("test maxComponentDisposeCount === 1", function () {
-                    gameObjectTool.dispose(child11);
-
-
-                    var parentMap = {};
-                    parentMap[parent.uid] = undefined;
-                    parentMap[gameObject.uid] = parent;
-                    parentMap[child.uid] = gameObject;
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
-
-
-
-
-                    var child2 = gameObjectTool.create();
-
-                    gameObjectTool.add(child, child2);
-
-                    var parentMap = {};
-                    parentMap[parent.uid] = undefined;
-                    parentMap[gameObject.uid] = parent;
-                    parentMap[child.uid] = gameObject;
-                    parentMap[child2.uid] = child;
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
+                    gameObjectTool.dispose(child1);
+                    gameObjectTool.dispose(child2);
 
 
                     var childrenMap = {};
-                    childrenMap[parent.uid] = [gameObject];
-                    childrenMap[gameObject.uid] = [child];
-                    childrenMap[child.uid] = [child2];
+                    childrenMap[parent.uid] = [gameObject]
+                    childrenMap[gameObject.uid] = [];
+
                     expect(GameObjectData.childrenMap).toEqual(childrenMap);
                 });
+            });
+
+            describe("test other", function() {
+                var gameObject;
+                var parent,child,child11;
+
+                beforeEach(function(){
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
+
+                    gameObject = gameObjectTool.create();
+
+                    parent = gameObjectTool.create();
+                    gameObjectTool.add(parent, gameObject);
+
+                    child = gameObjectTool.create();
+                    gameObjectTool.add(gameObject, child);
+
+                    child11 = gameObjectTool.create();
+                    gameObjectTool.add(child, child11);
+                });
+
+                it("new parentMap,childrenMap,componentMap should only has not-removed data", function(){
+                    gameObjectTool.dispose(child);
+
+                    var parentMap = {};
+                    parentMap[gameObject.uid] = parent;
+                    parentMap[parent.uid] = undefined;
+                    expect(GameObjectData.parentMap).toEqual(parentMap);
+
+                    var childrenMap = {};
+                    childrenMap[parent.uid] = [gameObject];
+                    childrenMap[gameObject.uid] = [];
+                    expect(GameObjectData.childrenMap).toEqual(childrenMap);
+
+                    expect(GameObjectData.componentMap[parent.uid]).toBeExist();
+                    expect(GameObjectData.componentMap[gameObject.uid]).toBeExist();
+                    expect(GameObjectData.componentMap[child.uid]).not.toBeExist();
+                    expect(GameObjectData.componentMap[child11.uid]).not.toBeExist();
+                });
                 it("test maxComponentDisposeCount > 1", function () {
-                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                    var gameObject2 = gameObjectTool.create();
+                    gameObjectTool.dispose(child);
 
-                    gameObjectTool.dispose(gameObject2);
-                    gameObjectTool.dispose(child11);
+
+                    // var parentMap = {};
+                    // parentMap[gameObject.uid] = parent;
+                    // parentMap[child.uid] = undefined;
+                    // parentMap[child11.uid] = undefined;
+                    // expect(GameObjectData.parentMap).toEqual(parentMap);
+
+
+
+
                     gameObjectTool.dispose(gameObject);
 
 
@@ -272,24 +251,84 @@ describe("reallocate memory", function() {
                     parentMap[parent.uid] = undefined;
                     expect(GameObjectData.parentMap).toEqual(parentMap);
 
-
-
-
-                    var child2 = gameObjectTool.create();
-
-                    gameObjectTool.add(parent, child2);
-
-                    var parentMap = {};
-                    parentMap[parent.uid] = undefined;
-                    parentMap[child2.uid] = parent;
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
-
-
                     var childrenMap = {};
-                    childrenMap[parent.uid] = [child2];
+                    childrenMap[parent.uid] = [];
                     expect(GameObjectData.childrenMap).toEqual(childrenMap);
+
+                    expect(GameObjectData.componentMap[parent.uid]).toBeExist();
+                    expect(GameObjectData.componentMap[gameObject.uid]).not.toBeExist();
+                    expect(GameObjectData.componentMap[child.uid]).not.toBeExist();
+                    expect(GameObjectData.componentMap[child11.uid]).not.toBeExist();
+                });
+
+                describe("test add new one after dispose old one", function () {
+                    it("test maxComponentDisposeCount === 1", function () {
+                        sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
+
+                        gameObjectTool.dispose(child11);
+
+
+                        var parentMap = {};
+                        parentMap[parent.uid] = undefined;
+                        parentMap[gameObject.uid] = parent;
+                        parentMap[child.uid] = gameObject;
+                        expect(GameObjectData.parentMap).toEqual(parentMap);
+
+
+
+
+                        var child2 = gameObjectTool.create();
+
+                        gameObjectTool.add(child, child2);
+
+                        var parentMap = {};
+                        parentMap[parent.uid] = undefined;
+                        parentMap[gameObject.uid] = parent;
+                        parentMap[child.uid] = gameObject;
+                        parentMap[child2.uid] = child;
+                        expect(GameObjectData.parentMap).toEqual(parentMap);
+
+
+                        var childrenMap = {};
+                        childrenMap[parent.uid] = [gameObject];
+                        childrenMap[gameObject.uid] = [child];
+                        childrenMap[child.uid] = [child2];
+                        expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    });
+                    it("test maxComponentDisposeCount > 1", function () {
+                        sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
+
+                        var gameObject2 = gameObjectTool.create();
+
+                        gameObjectTool.dispose(gameObject2);
+                        gameObjectTool.dispose(child11);
+                        gameObjectTool.dispose(gameObject);
+
+
+                        var parentMap = {};
+                        parentMap[parent.uid] = undefined;
+                        expect(GameObjectData.parentMap).toEqual(parentMap);
+
+
+
+
+                        var child2 = gameObjectTool.create();
+
+                        gameObjectTool.add(parent, child2);
+
+                        var parentMap = {};
+                        parentMap[parent.uid] = undefined;
+                        parentMap[child2.uid] = parent;
+                        expect(GameObjectData.parentMap).toEqual(parentMap);
+
+
+                        var childrenMap = {};
+                        childrenMap[parent.uid] = [child2];
+                        expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    });
                 });
             });
+
         });
 
         describe("test ThreeDTransform", function() {

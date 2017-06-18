@@ -4,6 +4,9 @@ var sceneTool = (function () {
     }
 
     return {
+        getScene: function (){
+            return _getScene();
+        },
         resetData: function(){
             wd.initSceneData(wd.SceneData);
         },
