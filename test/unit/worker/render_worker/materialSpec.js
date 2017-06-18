@@ -120,5 +120,17 @@ describe("material", function () {
             });
         });
     });
+
+    it("should not dispose the material which is inited in the same frame", function() {
+        var data = sceneTool.prepareGameObjectAndAddToScene(false);
+        var mat = data.material,
+            obj = data.gameObject;
+
+        materialTool.initMaterial(mat);
+
+        expect(function(){
+            gameObjectTool.disposeComponent(obj, mat);
+        }).toThrow("should not dispose the material which is inited in the same frame");
+    });
 });
 

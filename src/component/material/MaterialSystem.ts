@@ -199,11 +199,8 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     checkIndexShouldEqualCount(MaterialData);
-
-    //todo unit test
-    it("should not dispose the material which is inited in the same frame", () => {
-        expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
-    });
+}, requireCheckFunc ((component: Material) => {
+    _checkDisposeComponentWorker(component);
 }, (component: Material) => {
     var sourceIndex = component.index,
         lastComponentIndex: number = null,
@@ -228,7 +225,20 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
-})
+}))
+
+var _checkDisposeComponentWorker = null;
+
+if(isSupportRenderWorkerAndSharedArrayBuffer()){
+    _checkDisposeComponentWorker = (component: Material) => {
+        it("should not dispose the material which is inited in the same frame", () => {
+            expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
+        });
+    }
+}
+else{
+    _checkDisposeComponentWorker = (component: Material) => {};
+}
 
 export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
