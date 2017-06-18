@@ -36,6 +36,13 @@ describe("Shader", function() {
                 
             });
 
+            it("if program already exist, return", function () {
+                materialTool.initMaterial(material);
+                materialTool.initMaterial(material);
+
+                expect(gl.createProgram).toCalledOnce();
+            });
+
             it("create vs and fs shader", function () {
                 directorTool.init(state);
 

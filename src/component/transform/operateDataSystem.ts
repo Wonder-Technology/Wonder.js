@@ -87,7 +87,6 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: 
 }
 
 var _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
-    //todo unit test
     it("source localScale data shouldn't be [0,0,0]", () => {
         if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
             && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0

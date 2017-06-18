@@ -70,7 +70,6 @@ export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectDa
 
     GameObjectData.disposeCount += 1;
 
-    //todo ThreeDThransformSystem,here add contract check:not buffer nearly full
     if (isDisposeTooManyComponents(GameObjectData.disposeCount)) {
         reAllocateGameObject(GameObjectData);
 

@@ -169,7 +169,6 @@ export class Director {
     }
 
     private _run(elapsed: number, state: Map<any, any>) {
-        //todo unit test
         this._timeController.tick(elapsed);
 
         // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
