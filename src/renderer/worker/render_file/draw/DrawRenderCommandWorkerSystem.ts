@@ -15,7 +15,6 @@ import {
     getVerticesCount,
     hasIndices
 } from "../geometry/GeometryWorkerSystem";
-import { compose } from "../../../../utils/functionalUtils";
 
 export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceManagerWorkerData: any) => {
     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
