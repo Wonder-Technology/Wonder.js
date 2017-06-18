@@ -189,8 +189,9 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
         uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
-    for (let sendData of sendDataArr) {
-        let name = sendData.name,
+    for (let i = 0, len = sendDataArr.length; i < len; i++) {
+        let sendData = sendDataArr[i],
+            name = sendData.name,
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",

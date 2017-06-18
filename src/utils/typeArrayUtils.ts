@@ -41,9 +41,22 @@ export var set = (typeArr: Float32Array | Uint32Array | Uint16Array, valArr: Arr
 export var setMatrices = (typeArr: Float32Array, mat: Matrix4, index: number) => {
     var values = mat.values;
 
-    for (let i = 0; i <= 15; i++) {
-        _setValue(typeArr, i, index, values[i]);
-    }
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
+    typeArr[index + 9] = values[9];
+    typeArr[index + 10] = values[10];
+    typeArr[index + 11] = values[11];
+    typeArr[index + 12] = values[12];
+    typeArr[index + 13] = values[13];
+    typeArr[index + 14] = values[14];
+    typeArr[index + 15] = values[15];
 }
 
 export var setMatrix4ByIndex = requireCheckFunc((mat: Matrix4, typeArr: Float32Array, index: number) => {
@@ -76,9 +89,9 @@ export var setMatrix4ByIndex = requireCheckFunc((mat: Matrix4, typeArr: Float32A
 export var setVectors = (typeArr: Float32Array, vec: Vector3, index: number) => {
     var values = vec.values;
 
-    for (let i = 0; i <= 2; i++) {
-        _setValue(typeArr, i, index, values[i]);
-    }
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
 }
 
 export var setVector3ByIndex = requireCheckFunc((vec: Vector3, typeArr: Float32Array, index: number) => {
@@ -86,20 +99,20 @@ export var setVector3ByIndex = requireCheckFunc((vec: Vector3, typeArr: Float32A
         expect(index + 2).lte(typeArr.length - 1);
     });
 }, (vec: Vector3, typeArr: Float32Array, index: number) => {
-    vec.set(
-        typeArr[index],
-        typeArr[index + 1],
-        typeArr[index + 2]
-    );
+    var values = vec.values;
+
+    values[0] = typeArr[index];
+    values[1] = typeArr[index + 1];
+    values[2] = typeArr[index + 2];
 
     return vec;
 })
 
 export var setQuaternions = (typeArr: Float32Array, qua: Quaternion, index: number) => {
-    _setValue(typeArr, 0, index, qua.x);
-    _setValue(typeArr, 1, index, qua.y);
-    _setValue(typeArr, 2, index, qua.z);
-    _setValue(typeArr, 3, index, qua.w);
+    typeArr[index] = qua.x;
+    typeArr[index + 1] = qua.y;
+    typeArr[index + 2] = qua.z;
+    typeArr[index + 3] = qua.z;
 }
 
 export var setQuaternionByIndex = requireCheckFunc((qua: Quaternion, typeArr: Float32Array, index: number) => {
@@ -137,10 +150,10 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
     return setVector3ByIndex(vec, typeArr, index);
 }
 
-var _setValue = requireCheckFunc((typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
-    it("should not exceed type arr's length", () => {
-        expect(startIndex + increment).lte(typeArr.length - 1);
-    });
-}, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
-    typeArr[startIndex + increment] = target;
-})
+// var _setValue = requireCheckFunc((typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
+//     it("should not exceed type arr's length", () => {
+//         expect(startIndex + increment).lte(typeArr.length - 1);
+//     });
+// }, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
+//     typeArr[startIndex + increment] = target;
+// })

@@ -167,6 +167,7 @@ var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint1
     for (let i = 0; i < count; i++) {
         typeArr[i + startIndex] = dataArr[i];
     }
+    // typeArr.set(dataArr, startIndex);
 })
 
 var _removeCache = (index: number, cacheMap: object) => {
