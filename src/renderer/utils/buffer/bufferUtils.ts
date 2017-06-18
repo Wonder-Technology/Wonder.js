@@ -1,5 +1,8 @@
 import { isValidMapValue } from "../../../utils/objectUtils";
 import { deleteVal } from "../../../utils/arrayUtils";
+// import { disposeBuffer } from "../../worker/render_file/buffer/IndexBufferWorkerSystem";
+import { disposeBuffer as disposeArrayBuffer } from "../../worker/render_file/buffer/ArrayBufferWorkerSystem";
+import { disposeBuffer as disposeIndexBuffer } from "../../worker/render_file/buffer/IndexBufferWorkerSystem";
 
 export var isBufferExist = (buffer: WebGLBuffer) => isValidMapValue(buffer);
 
@@ -16,4 +19,3 @@ export var disposeBuffer = (geometryIndex: number, buffers:Array<WebGLBuffer>, g
         deleteVal(geometryIndex, buffers);
     }
 }
-

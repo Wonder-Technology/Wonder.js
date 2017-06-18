@@ -39,8 +39,6 @@ describe("Director", function () {
             }
 
             beforeEach(function(){
-                SendDrawRenderCommandData.state = ERenderWorkerState.INIT_COMPLETE;
-
                 renderWorkerDT = 33;
 
                 sandbox.stub(WorkerConfig, "renderWorkerDT", renderWorkerDT);

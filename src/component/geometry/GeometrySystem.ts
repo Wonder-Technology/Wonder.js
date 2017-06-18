@@ -35,10 +35,11 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
-import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
-import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
+import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
+import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
+import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -217,10 +218,7 @@ if(isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else{
     _disposeBuffers = (disposedIndexArray: Array<number>) => {
-        for (let index of disposedIndexArray) {
-            disposeArrayBuffer(index, ArrayBufferData);
-            disposeIndexBuffer(index, IndexBufferData);
-        }
+        disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeArrayBuffer, disposeIndexBuffer);
     }
 }
 

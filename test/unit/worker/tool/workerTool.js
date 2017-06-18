@@ -13,6 +13,8 @@ var workerTool = (function () {
 
             sandbox.stub(window.performance, "now").returns(0);
             sandbox.stub(wd.WorkerConfig, "renderWorkerDT", renderWorkerDT);
+
+            wd.SendDrawRenderCommandData.state = wd.ERenderWorkerState.INIT_COMPLETE;
         },
         runRender: function (count) {
             directorTool.loopBody(null, renderWorkerDT * count);

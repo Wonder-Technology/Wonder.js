@@ -1,12 +1,5 @@
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
-import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
-import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
-import { getGL, setGL, setPixelRatioAndCanvas, setScreen, setViewportOfGL } from "../both_file/device/DeviceManagerWorkerSystem";
-import { chain, compose, map } from "../../../utils/functionalUtils";
-import curry from "wonder-lodash/curry";
-import { detect } from "../../device/GPUDetectorSystem";
-import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import {
     clear, draw
 } from "./draw/DrawRenderCommandWorkerSystem";
@@ -35,20 +28,16 @@ import { LocationWorkerData } from "./shader/location/LocationWorkerData";
 import { GLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerData";
 import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
-import { ContextConfigOptionsData } from "../../type/dataType";
 import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandUtils";
-import { createState } from "../../../utils/stateUtils";
 import { initGL } from "./initGL";
 import { setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
+import { disposeGeometryBuffers } from "../both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
-    // error(true, msg,fileName,lineno);
-
-    //todo refactor
-    console.error(`message:${msg}\nfileName:${fileName}\nlineno:${lineno}`);
+    Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
 }
 
 export var onmessageHandler = (e) => {
@@ -93,7 +82,7 @@ export var onmessageHandler = (e) => {
             }
 
             if(disposeData !== null){
-                _disposeBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData);
+                disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandWorkerData), data.renderCommandBufferData);
@@ -110,14 +99,6 @@ var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => 
 
 var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
-}
-
-//todo refactor
-var _disposeBuffers = (disposedIndexArray: Array<number>, ArrayBufferWorkerData: any, IndexBufferWorkerData: any) => {
-    for (let index of disposedIndexArray) {
-        disposeArrayBuffer(index, ArrayBufferWorkerData);
-        disposeIndexBuffer(index, IndexBufferWorkerData);
-    }
 }
 
 var _initMaterials = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {
