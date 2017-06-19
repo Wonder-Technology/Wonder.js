@@ -4,7 +4,7 @@ import { isAlive } from "./ThreeDTransformSystem";
 
 export var checkTransformShouldAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     checkComponentShouldAlive(transform, ThreeDTransformData, (transform: ThreeDTransform, ThreeDTransformData: any) => {
-        return isAlive(transform.index, ThreeDTransformData);
+        return isAlive(transform, ThreeDTransformData);
     });
 }
 

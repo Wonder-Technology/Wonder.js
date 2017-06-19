@@ -72,13 +72,11 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData: Array<
 
         if (isChildrenExist(children)) {
             forEach(children, (child: ThreeDTransform) => {
-                var index = child.index;
-
-                if(isNotAlive(index, ThreeDTransformData)){
+                if(isNotAlive(child, ThreeDTransformData)){
                     return;
                 }
 
-                _getNotDirtyIndex(index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
+                _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
             })
         }
     }
