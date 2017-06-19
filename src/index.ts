@@ -29,7 +29,7 @@ export {MemoryConfig} from "./config/MemoryConfig";
 export {WorkerConfig} from "./config/WorkerConfig";
 export {Director} from "./core/Director";
 export {DirectorData} from "./core/DirectorData";
-export {GameObject,createGameObject,addGameObjectComponent,disposeGameObject,initGameObject,disposeGameObjectComponent,getGameObjectComponent,getGameObjectTransform,hasGameObjectComponent,isGameObjectAlive,addGameObject,removeGameObject,hasGameObject,getGameObjectChildren} from "./core/entityObject/gameObject/GameObject";
+export {GameObject,createGameObject,addGameObjectComponent,disposeGameObject,initGameObject,disposeGameObjectComponent,getGameObjectComponent,getGameObjectTransform,hasGameObjectComponent,isGameObjectAlive,addGameObject,removeGameObject,hasGameObject,getGameObjectChildren,getGameObjectParent} from "./core/entityObject/gameObject/GameObject";
 export {GameObjectData} from "./core/entityObject/gameObject/GameObjectData";
 export {Scene,addSceneChild,removeSceneChild} from "./core/entityObject/scene/Scene";
 export {SceneData} from "./core/entityObject/scene/SceneData";

@@ -1,7 +1,7 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import {
     addChild,
-    addComponent, create, dispose, disposeComponent, getAliveChildren, getComponent, getTransform,
+    addComponent, create, dispose, disposeComponent, getAliveChildren, getComponent, getParent, getTransform,
     hasChild,
     hasComponent, initGameObject as initGameObjectSystem,
     isAlive, removeChild
@@ -97,6 +97,13 @@ export var getGameObjectChildren = requireCheckFunc((gameObject: GameObject) => 
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject) => {
     return getAliveChildren(gameObject.uid, GameObjectData);
+})
+
+
+export var getGameObjectParent = requireCheckFunc((gameObject: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject) => {
+    return getParent(gameObject.uid, GameObjectData);
 })
 
 export interface IUIDEntity {

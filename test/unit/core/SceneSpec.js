@@ -35,4 +35,21 @@ describe("Scene", function() {
             expect(threeDTransformTool.getParent(childTran)).toBeNull();
         });
     });
+
+    describe("fix bug", function() {
+        beforeEach(function(){
+        });
+
+        it("test add gameObject which has parent to scene", function(){
+            var parent = gameObjectTool.create();
+            var child = gameObjectTool.create();
+
+
+            gameObjectTool.add(parent, child);
+
+            sceneTool.addGameObject(child);
+
+            expect(gameObjectTool.getParent(child)).toEqual(sceneTool.getScene());
+        });
+    });
 });

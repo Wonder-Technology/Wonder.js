@@ -63,7 +63,7 @@ export var initGameObject = (gameObject: GameObject, state: MapImmutable<any, an
 
 export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectData: any) => {
     // var uid = entity.uid,
-    //     parent = _getParent(uid, GameObjectData);
+    //     parent = getParent(uid, GameObjectData);
 
     // if (_isParentExist(parent)) {
     //     let parentUID = parent.uid;
@@ -128,6 +128,7 @@ export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectDa
 //     }
 // }
 
+//todo not remove?(just store target uid here, remove when reallocate)
 var _removeFromChildrenMap = (parentUID: number, childUID: number, GameObjectData: any) => {
     removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
 };
@@ -288,7 +289,7 @@ var _isComponentExist = (component: Component) => component !== null;
 
 var _isGameObjectEqual = (gameObject1: GameObject, gameObject2: GameObject) => gameObject1.uid === gameObject2.uid;
 
-var _getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
+export var getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
 
 var _setParent = (uid: number, parent: GameObject, GameObjectData: any) => {
     GameObjectData.parentMap[uid] = parent;
@@ -324,7 +325,7 @@ export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObjec
     var transform = getTransform(gameObject, GameObjectData),
         uid = gameObject.uid,
         childUID = child.uid,
-        parent = _getParent(childUID, GameObjectData);
+        parent = getParent(childUID, GameObjectData);
 
     if (_isParentExist(parent)) {
         removeChild(parent, child, ThreeDTransformData, GameObjectData);
@@ -359,7 +360,7 @@ export var hasChild = (gameObject: GameObject, child: GameObject, GameObjectData
         return false;
     }
 
-    let parent = _getParent(child.uid, GameObjectData);
+    let parent = getParent(child.uid, GameObjectData);
 
     if (!_isParentExist(parent) || isNotAlive(parent, GameObjectData)) {
         return false;
