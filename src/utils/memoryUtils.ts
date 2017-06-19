@@ -13,6 +13,10 @@ import { set } from "./typeArrayUtils";
 import { isAlive } from "../core/entityObject/gameObject/GameObjectSystem";
 import { isNotUndefined } from "./JudgeUtils";
 import { GameObjectParentMap } from "../core/entityObject/gameObject/GameObjectData";
+import { ThreeDTransformParentMap } from "../component/transform/ThreeDTransformData";
+import { isAlive as isThreeDTransformAlive } from "../component/transform/ThreeDTransformSystem";
+import { ThreeDTransform } from "../component/transform/ThreeDTransform";
+import { getChildren, isChildrenExist, setChildren } from "../component/transform/hierarchySystem";
 
 export var isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount: number = MemoryConfig.maxComponentDisposeCount) => {
     return disposeCount >= maxComponentDisposeCount;
@@ -49,12 +53,31 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
 
     clearCacheMap(ThreeDTransformData);
 
+
+    let disposedUIDArr = [],
+        actualAliveUIDArr = [];
+
     for (let uid of aliveUIDArray) {
         val = childrenMap[uid];
 
         if (isNotValidMapValue(val)) {
-            continue;
+            disposedUIDArr.push(uid);
         }
+        else{
+            actualAliveUIDArr.push(uid);
+        }
+    }
+
+    _cleanTransformChildrenMap(disposedUIDArr, parentMap, ThreeDTransformData);
+
+
+
+    for (let uid of actualAliveUIDArr) {
+        val = childrenMap[uid];
+
+        // if (isNotValidMapValue(val)) {
+        //     continue;
+        // }
 
         newAliveUIDArray.push(uid);
 
@@ -83,6 +106,48 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
 
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 }
+
+var _cleanTransformChildrenMap = (disposedUIDArr:Array<number>, parentMap:ThreeDTransformParentMap, ThreeDTransformData: any) => {
+    var isCleanedParentMap = createMap();
+
+    //todo refactor with clean gameObject children map
+    for (let uid of disposedUIDArr) {
+        let parent = parentMap[uid];
+
+        if (_isParentExist(parent)) {
+            let parentUID = parent.uid;
+
+            if(isValidMapValue(isCleanedParentMap[parentUID])){
+                continue;
+            }
+
+            _cleanTransformChildren(parentUID, ThreeDTransformData);
+
+            //todo test remove from parent map
+            deleteVal(uid, parentMap);
+        }
+    }
+}
+
+var _cleanTransformChildren = (parentUID: number, ThreeDTransformData: any) => {
+    var children = getChildren(parentUID, ThreeDTransformData);
+
+    if(!isChildrenExist(children)){
+        return;
+    }
+
+    let newChildren:Array<ThreeDTransform> = [];
+
+    for (let i = 0, len = children.length; i < len; ++i) {
+        let child = children[i];
+
+        if(isThreeDTransformAlive(child.index, ThreeDTransformData)){
+            newChildren.push(child);
+        }
+    }
+
+    setChildren(parentUID, newChildren, ThreeDTransformData);
+};
 
 export var reAllocateGameObject = (GameObjectData: any) => {
     let val: any = null,

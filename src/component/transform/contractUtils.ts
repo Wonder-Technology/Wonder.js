@@ -1,10 +1,10 @@
 import { ThreeDTransform } from "./ThreeDTransform";
 import { checkComponentShouldAlive } from "../ComponentSystem";
-import { isValidMapValue } from "../../utils/objectUtils";
+import { isAlive } from "./ThreeDTransformSystem";
 
-export var checkTransformShouldAlive = (transform: ThreeDTransform, ThreeTransformData: any) => {
-    checkComponentShouldAlive(transform, ThreeTransformData, (transform: ThreeDTransform, ThreeTransformData: any) => {
-        return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
+export var checkTransformShouldAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
+    checkComponentShouldAlive(transform, ThreeDTransformData, (transform: ThreeDTransform, ThreeDTransformData: any) => {
+        return isAlive(transform.index, ThreeDTransformData);
     });
 }
 

@@ -13,6 +13,7 @@ import { requireCheckFunc } from "../../definition/typescript/decorator/contract
 import { compose } from "../../utils/functionalUtils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { forEach } from "../../utils/arrayUtils";
+import { isNotAlive } from "./ThreeDTransformSystem";
 
 export var setBatchDatas = requireCheckFunc((batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => {
     for (let data of batchData) {
@@ -71,7 +72,13 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData: Array<
 
         if (isChildrenExist(children)) {
             forEach(children, (child: ThreeDTransform) => {
-                _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
+                var index = child.index;
+
+                if(isNotAlive(index, ThreeDTransformData)){
+                    return;
+                }
+
+                _getNotDirtyIndex(index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData)
             })
         }
     }

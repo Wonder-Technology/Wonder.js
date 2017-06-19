@@ -679,6 +679,72 @@ describe("ThreeDTransform", function () {
                     threeDTransformTool.getGameObject(tra1);
                 }).toThrow(errMsg);
             });
+
+            describe("if child is disposed", function() {
+                beforeEach(function(){
+
+                });
+
+                it("dirtySystem->addItAndItsChildrenToDirtyList should not add disposed child to dirty list", function () {
+                    var pos2 = Vector3.create(1,1,2);
+                    threeDTransformTool.setParent(tra1, tra2);
+
+                    threeDTransformTool.setPosition(tra1, Vector3.create(0,2,3));
+
+                    gameObjectTool.disposeComponent(obj1, tra1);
+
+                    threeDTransformTool.setPosition(tra2, pos2);
+
+                    updateSystem(null, null);
+
+                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos2);
+
+                    testTool.closeContractCheck();
+                    expect(threeDTransformTool.getPosition(tra1)).toEqual(defaultPos);
+                });
+                it("batchSystem->_getAllTransfomrsNotDirtyIndexArrAndMarkTransform should not get disposed child's not-dirty-index", function () {
+                    var batchTransformDatas = [];
+                    var pos = Vector3.create(1,2,3);
+                    var pos2 = Vector3.create(10,2,3);
+                    var pos3 = Vector3.create(5,5,1);
+
+                    threeDTransformTool.setParent(tra1, tra2)
+
+
+
+                    var obj4 = gameObjectTool.create();
+                    var tra4 = gameObjectTool.getTransform(obj4);
+                    tra4.name = "tra4";
+
+                    threeDTransformTool.setParent(tra4, tra1)
+
+
+
+                    batchTransformDatas.push({
+                        transform:tra1,
+                        localPosition:pos.clone(),
+                        position:pos2.clone()
+                    });
+                    batchTransformDatas.push({
+                        transform:tra2,
+                        position:pos3.clone()
+                    });
+
+
+
+
+
+                    gameObjectTool.disposeComponent(obj4, tra4);
+
+                    threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+
+
+
+                    expect(function(){
+                        updateSystem(null, null);
+                    }).not.toThrow();
+                });
+            });
         });
 
         describe("defer compute", function(){

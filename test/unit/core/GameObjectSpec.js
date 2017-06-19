@@ -96,6 +96,25 @@ describe("GameObject", function() {
             threeDTransformTool.isNotAlive(tra1);
             threeDTransformTool.isNotAlive(tra11);
         });
+
+
+        describe("if child is disposed", function() {
+            beforeEach(function () {
+            });
+
+            it("should not affect dispose parent's datas", function () {
+                gameObjectTool.dispose(child11);
+                gameObjectTool.dispose(child);
+
+                var tra = gameObjectTool.getTransform(gameObject),
+                    tra1 = gameObjectTool.getTransform(child),
+                    tra11 = gameObjectTool.getTransform(child11);
+
+                threeDTransformTool.isAlive(tra);
+                threeDTransformTool.isNotAlive(tra1);
+                threeDTransformTool.isNotAlive(tra11);
+            });
+        });
     });
 
     // describe("disposeBatchChildren", function() {

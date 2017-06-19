@@ -8,7 +8,7 @@ var threeDTransformTool = (function () {
         setBatchTransformDatas: wd.setThreeDTransformBatchTransformDatas,
         getParent: wd.getThreeDTransformParent,
         setParent: wd.setThreeDTransformParent,
-        dispose: wd.disposeThreeDTransform,
+        // dispose: wd.disposeThreeDTransform,
         create: wd.createThreeDTransform,
         getGameObject:wd.getThreeDTransformGameObject,
 

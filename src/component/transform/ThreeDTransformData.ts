@@ -27,19 +27,11 @@ export class ThreeDTransformData {
 
     public static isTranslateMap = null;
 
-    public static parentMap: ParentMap = null;
-    public static childrenMap: ChildrenMap = null;
+    public static parentMap: ThreeDTransformParentMap = null;
+    public static childrenMap: ThreeDTransformChildrenMap = null;
 
-    // public static positionCacheMap:ThreeDTransformPositionMap = null;
-    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
-    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
-    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
     public static cacheMap: ThreeDTransformCacheMap = null;
 
-    // public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    // public static tempPositionMap:ThreeDTransformPositionMap = null;
-    // public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
     public static tempMap: ThreeDTransformTempMap = null;
 
     public static transformMap: TransformMap = null;
@@ -69,11 +61,11 @@ export class ThreeDTransformRelationData {
     public children: Array<ThreeDTransformRelationData> = null;
 }
 
-export type ParentMap = {
+export type ThreeDTransformParentMap = {
     [uid: number]: ThreeDTransform
 }
 
-export type ChildrenMap = {
+export type ThreeDTransformChildrenMap = {
     [uid: number]: Array<ThreeDTransform>
 }
 

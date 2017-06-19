@@ -102,4 +102,3 @@ export {Log} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
-export {DisposeConfig} from "./config/DisposeConfig";
