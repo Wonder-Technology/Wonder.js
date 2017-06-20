@@ -11,6 +11,8 @@
 
         // list of files / patterns to load in the browser
         files: [
+            'test/unit/environment/noWorker.js',
+
             'dist/wd.js',
 
 

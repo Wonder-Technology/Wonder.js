@@ -16,6 +16,6 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 script:
   - gulp build
-  - npm test
+  - gulp testInCI
 after_success:
   - npm run codecov
