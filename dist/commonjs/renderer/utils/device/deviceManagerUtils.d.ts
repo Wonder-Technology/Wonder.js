@@ -1,0 +1,16 @@
+import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
+import { Map } from "immutable";
+import { Color } from "../../../structure/Color";
+export declare var getGL: (DeviceManagerDataFromSystem: any, state: Map<any, any>) => WebGLRenderingContext;
+export declare var setGL: any;
+export declare var setContextConfig: any;
+export declare var setPixelRatio: any;
+export declare var getViewport: (state: Map<any, any>) => any;
+export declare var setViewport: (x: number, y: number, width: number, height: number, state: Map<any, any>) => Map<any, any>;
+export declare var setCanvasPixelRatio: any;
+export declare var setViewportOfGL: any;
+export declare var getScreenSize: (state: Map<any, any>) => any;
+export declare var setScreen: (canvas: HTMLCanvasElement, setScreenData: Function, DeviceManagerDataFromSystem: any, state: Map<any, any>) => IO;
+export declare var clear: (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => void;
+export declare var setColorWrite: (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => void;
+export declare var initData: (DeviceManagerDataFromSystem: any) => void;

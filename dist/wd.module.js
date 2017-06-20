@@ -323,15 +323,6 @@ var Log$$1 = (function (_super) {
     }
     return Log$$1;
 }(Log$1));
-var error$1 = function (cond) {
-    var messages = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        messages[_i - 1] = arguments[_i];
-    }
-    if (cond) {
-        throw new Error(messages.join("\n"));
-    }
-};
 
 var CompileConfig = {
     isCompileTest: true,
@@ -575,1383 +566,946 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var index = createCommonjsModule(function (module) {
-(function (global, module) {
+var wdet = createCommonjsModule(function (module, exports) {
+(function (global, factory) {
+	factory(exports);
+}(commonjsGlobal, (function (exports) { 'use strict';
+
+	function __extends(d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	}
+
+	var ExpectData = (function () {
+	    function ExpectData() {
+	    }
+	    return ExpectData;
+	}());
+	ExpectData.assertion = null;
+	ExpectData.source = null;
+	ExpectData.isNot = null;
+
+	var JudgeUtils = (function () {
+	    function JudgeUtils() {
+	    }
+	    JudgeUtils.isArray = function (arr) {
+	        var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+	        var length = arr && arr.length;
+	        return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+	    };
+	    JudgeUtils.isArrayExactly = function (arr) {
+	        return Object.prototype.toString.call(arr) === "[object Array]";
+	    };
+	    JudgeUtils.isNumber = function (num) {
+	        return typeof num == "number";
+	    };
+	    JudgeUtils.isNumberExactly = function (num) {
+	        return Object.prototype.toString.call(num) === "[object Number]";
+	    };
+	    JudgeUtils.isString = function (str) {
+	        return typeof str == "string";
+	    };
+	    JudgeUtils.isStringExactly = function (str) {
+	        return Object.prototype.toString.call(str) === "[object String]";
+	    };
+	    JudgeUtils.isBoolean = function (bool) {
+	        return bool === true || bool === false || toString.call(bool) === '[boolect Boolean]';
+	    };
+	    JudgeUtils.isDom = function (obj) {
+	        return !!(obj && obj.nodeType === 1);
+	    };
+	    JudgeUtils.isObject = function (obj) {
+	        var type = typeof obj;
+	        return type === 'function' || type === 'object' && !!obj;
+	    };
+	    JudgeUtils.isDirectObject = function (obj) {
+	        return Object.prototype.toString.call(obj) === "[object Object]";
+	    };
+	    JudgeUtils.isHostMethod = function (object, property) {
+	        var type = typeof object[property];
+	        return type === "function" ||
+	            (type === "object" && !!object[property]);
+	    };
+	    JudgeUtils.isNodeJs = function () {
+	        return ((typeof commonjsGlobal != "undefined" && commonjsGlobal.module) || ('object' != "undefined")) && 'object' != "undefined";
+	    };
+	    JudgeUtils.isFunction = function (func) {
+	        return true;
+	    };
+	    return JudgeUtils;
+	}());
+	if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+	    JudgeUtils.isFunction = function (func) {
+	        return typeof func == 'function';
+	    };
+	}
+	else {
+	    JudgeUtils.isFunction = function (func) {
+	        return Object.prototype.toString.call(func) === "[object Function]";
+	    };
+	}
+
+	var $BREAK = {
+	    break: true
+	};
+	var $REMOVE = void 0;
+
+	var List = (function () {
+	    function List() {
+	        this.children = null;
+	    }
+	    List.prototype.getCount = function () {
+	        return this.children.length;
+	    };
+	    List.prototype.hasChild = function (child) {
+	        var c = null, children = this.children;
+	        for (var i = 0, len = children.length; i < len; i++) {
+	            c = children[i];
+	            if (child.uid && c.uid && child.uid == c.uid) {
+	                return true;
+	            }
+	            else if (child === c) {
+	                return true;
+	            }
+	        }
+	        return false;
+	    };
+	    List.prototype.hasChildWithFunc = function (func) {
+	        for (var i = 0, len = this.children.length; i < len; i++) {
+	            if (func(this.children[i], i)) {
+	                return true;
+	            }
+	        }
+	        return false;
+	    };
+	    List.prototype.getChildren = function () {
+	        return this.children;
+	    };
+	    List.prototype.getChild = function (index) {
+	        return this.children[index];
+	    };
+	    List.prototype.addChild = function (child) {
+	        this.children.push(child);
+	        return this;
+	    };
+	    List.prototype.addChildren = function (arg) {
+	        if (JudgeUtils.isArray(arg)) {
+	            var children = arg;
+	            this.children = this.children.concat(children);
+	        }
+	        else if (arg instanceof List) {
+	            var children = arg;
+	            this.children = this.children.concat(children.getChildren());
+	        }
+	        else {
+	            var child = arg;
+	            this.addChild(child);
+	        }
+	        return this;
+	    };
+	    List.prototype.setChildren = function (children) {
+	        this.children = children;
+	        return this;
+	    };
+	    List.prototype.unShiftChild = function (child) {
+	        this.children.unshift(child);
+	    };
+	    List.prototype.removeAllChildren = function () {
+	        this.children = [];
+	        return this;
+	    };
+	    List.prototype.forEach = function (func, context) {
+	        this._forEach(this.children, func, context);
+	        return this;
+	    };
+	    List.prototype.toArray = function () {
+	        return this.children;
+	    };
+	    List.prototype.copyChildren = function () {
+	        return this.children.slice(0);
+	    };
+	    List.prototype.removeChildHelper = function (arg) {
+	        var result = null;
+	        if (JudgeUtils.isFunction(arg)) {
+	            var func = arg;
+	            result = this._removeChild(this.children, func);
+	        }
+	        else if (arg.uid) {
+	            result = this._removeChild(this.children, function (e) {
+	                if (!e.uid) {
+	                    return false;
+	                }
+	                return e.uid === arg.uid;
+	            });
+	        }
+	        else {
+	            result = this._removeChild(this.children, function (e) {
+	                return e === arg;
+	            });
+	        }
+	        return result;
+	    };
+	    List.prototype._forEach = function (arr, func, context) {
+	        var scope = context, i = 0, len = arr.length;
+	        for (i = 0; i < len; i++) {
+	            if (func.call(scope, arr[i], i) === $BREAK) {
+	                break;
+	            }
+	        }
+	    };
+	    List.prototype._removeChild = function (arr, func) {
+	        var self = this, removedElementArr = [], remainElementArr = [];
+	        this._forEach(arr, function (e, index) {
+	            if (!!func.call(self, e)) {
+	                removedElementArr.push(e);
+	            }
+	            else {
+	                remainElementArr.push(e);
+	            }
+	        });
+	        this.children = remainElementArr;
+	        return removedElementArr;
+	    };
+	    return List;
+	}());
+
+	var ExtendUtils = (function () {
+	    function ExtendUtils() {
+	    }
+	    ExtendUtils.extendDeep = function (parent, child, filter) {
+	        if (filter === void 0) { filter = function (val, i) { return true; }; }
+	        var i = null, len = 0, toStr = Object.prototype.toString, sArr = "[object Array]", sOb = "[object Object]", type = "", _child = null;
+	        if (toStr.call(parent) === sArr) {
+	            _child = child || [];
+	            for (i = 0, len = parent.length; i < len; i++) {
+	                var member = parent[i];
+	                if (!filter(member, i)) {
+	                    continue;
+	                }
+	                if (member.clone) {
+	                    _child[i] = member.clone();
+	                    continue;
+	                }
+	                type = toStr.call(member);
+	                if (type === sArr || type === sOb) {
+	                    _child[i] = type === sArr ? [] : {};
+	                    ExtendUtils.extendDeep(member, _child[i]);
+	                }
+	                else {
+	                    _child[i] = member;
+	                }
+	            }
+	        }
+	        else if (toStr.call(parent) === sOb) {
+	            _child = child || {};
+	            for (i in parent) {
+	                var member = parent[i];
+	                if (!filter(member, i)) {
+	                    continue;
+	                }
+	                if (member.clone) {
+	                    _child[i] = member.clone();
+	                    continue;
+	                }
+	                type = toStr.call(member);
+	                if (type === sArr || type === sOb) {
+	                    _child[i] = type === sArr ? [] : {};
+	                    ExtendUtils.extendDeep(member, _child[i]);
+	                }
+	                else {
+	                    _child[i] = member;
+	                }
+	            }
+	        }
+	        else {
+	            _child = parent;
+	        }
+	        return _child;
+	    };
+	    ExtendUtils.extend = function (destination, source) {
+	        var property = "";
+	        for (property in source) {
+	            destination[property] = source[property];
+	        }
+	        return destination;
+	    };
+	    ExtendUtils.copyPublicAttri = function (source) {
+	        var property = null, destination = {};
+	        this.extendDeep(source, destination, function (item, property) {
+	            return property.slice(0, 1) !== "_"
+	                && !JudgeUtils.isFunction(item);
+	        });
+	        return destination;
+	    };
+	    return ExtendUtils;
+	}());
+
+	var Collection = (function (_super) {
+	    __extends(Collection, _super);
+	    function Collection(children) {
+	        if (children === void 0) { children = []; }
+	        var _this = _super.call(this) || this;
+	        _this.children = children;
+	        return _this;
+	    }
+	    Collection.create = function (children) {
+	        if (children === void 0) { children = []; }
+	        var obj = new this(children);
+	        return obj;
+	    };
+	    Collection.prototype.clone = function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        var target = null, isDeep = null;
+	        if (args.length === 0) {
+	            isDeep = false;
+	            target = Collection.create();
+	        }
+	        else if (args.length === 1) {
+	            if (JudgeUtils.isBoolean(args[0])) {
+	                target = Collection.create();
+	                isDeep = args[0];
+	            }
+	            else {
+	                target = args[0];
+	                isDeep = false;
+	            }
+	        }
+	        else {
+	            target = args[0];
+	            isDeep = args[1];
+	        }
+	        if (isDeep === true) {
+	            target.setChildren(ExtendUtils.extendDeep(this.children));
+	        }
+	        else {
+	            target.setChildren(ExtendUtils.extend([], this.children));
+	        }
+	        return target;
+	    };
+	    Collection.prototype.filter = function (func) {
+	        var children = this.children, result = [], value = null;
+	        for (var i = 0, len = children.length; i < len; i++) {
+	            value = children[i];
+	            if (func.call(children, value, i)) {
+	                result.push(value);
+	            }
+	        }
+	        return Collection.create(result);
+	    };
+	    Collection.prototype.findOne = function (func) {
+	        var scope = this.children, result = null;
+	        this.forEach(function (value, index) {
+	            if (!func.call(scope, value, index)) {
+	                return;
+	            }
+	            result = value;
+	            return $BREAK;
+	        });
+	        return result;
+	    };
+	    Collection.prototype.reverse = function () {
+	        return Collection.create(this.copyChildren().reverse());
+	    };
+	    Collection.prototype.removeChild = function (arg) {
+	        return Collection.create(this.removeChildHelper(arg));
+	    };
+	    Collection.prototype.sort = function (func, isSortSelf) {
+	        if (isSortSelf === void 0) { isSortSelf = false; }
+	        if (isSortSelf) {
+	            this.children.sort(func);
+	            return this;
+	        }
+	        return Collection.create(this.copyChildren().sort(func));
+	    };
+	    Collection.prototype.map = function (func) {
+	        var resultArr = [];
+	        this.forEach(function (e, index) {
+	            var result = func(e, index);
+	            if (result !== $REMOVE) {
+	                resultArr.push(result);
+	            }
+	        });
+	        return Collection.create(resultArr);
+	    };
+	    Collection.prototype.removeRepeatItems = function () {
+	        var noRepeatList = Collection.create();
+	        this.forEach(function (item) {
+	            if (noRepeatList.hasChild(item)) {
+	                return;
+	            }
+	            noRepeatList.addChild(item);
+	        });
+	        return noRepeatList;
+	    };
+	    Collection.prototype.hasRepeatItems = function () {
+	        var noRepeatList = Collection.create(), hasRepeat = false;
+	        this.forEach(function (item) {
+	            if (noRepeatList.hasChild(item)) {
+	                hasRepeat = true;
+	                return $BREAK;
+	            }
+	            noRepeatList.addChild(item);
+	        });
+	        return hasRepeat;
+	    };
+	    return Collection;
+	}(List));
+
+	var Log = (function () {
+	    function Log() {
+	    }
+	    Log.log = function () {
+	        var messages = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            messages[_i] = arguments[_i];
+	        }
+	        if (!this._exec("log", messages)) {
+	            root.alert(messages.join(","));
+	        }
+	        this._exec("trace", messages);
+	    };
+	    Log.assert = function (cond) {
+	        var messages = [];
+	        for (var _i = 1; _i < arguments.length; _i++) {
+	            messages[_i - 1] = arguments[_i];
+	        }
+	        if (cond) {
+	            if (!this._exec("assert", arguments, 1)) {
+	                this.log.apply(this, Array.prototype.slice.call(arguments, 1));
+	            }
+	        }
+	    };
+	    Log.error = function (cond) {
+	        var message = [];
+	        for (var _i = 1; _i < arguments.length; _i++) {
+	            message[_i - 1] = arguments[_i];
+	        }
+	        if (cond) {
+	            throw new Error(Array.prototype.slice.call(arguments, 1).join("\n"));
+	        }
+	    };
+	    Log.warn = function () {
+	        var message = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            message[_i] = arguments[_i];
+	        }
+	        var result = this._exec("warn", arguments);
+	        if (!result) {
+	            this.log.apply(this, arguments);
+	        }
+	        else {
+	            this._exec("trace", ["warn trace"]);
+	        }
+	    };
+	    Log._exec = function (consoleMethod, args, sliceBegin) {
+	        if (sliceBegin === void 0) { sliceBegin = 0; }
+	        if (root.console && root.console[consoleMethod]) {
+	            root.console[consoleMethod].apply(root.console, Array.prototype.slice.call(args, sliceBegin));
+	            return true;
+	        }
+	        return false;
+	    };
+	    return Log;
+	}());
+	Log.info = {
+	    INVALID_PARAM: "invalid parameter",
+	    helperFunc: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        var result = "";
+	        args.forEach(function (val) {
+	            result += String(val) + " ";
+	        });
+	        return result.slice(0, -1);
+	    },
+	    assertion: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        if (args.length === 2) {
+	            return this.helperFunc(args[0], args[1]);
+	        }
+	        else if (args.length === 3) {
+	            return this.helperFunc(args[1], args[0], args[2]);
+	        }
+	        else {
+	            throw new Error("args.length must <= 3");
+	        }
+	    },
+	    FUNC_INVALID: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("invalid");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_MUST: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("must");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_MUST_BE: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("must be");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_MUST_NOT_BE: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("must not be");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_SHOULD: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("should");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_SHOULD_NOT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("should not");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_SUPPORT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("support");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_NOT_SUPPORT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("not support");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_MUST_DEFINE: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("must define");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_MUST_NOT_DEFINE: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("must not define");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_UNKNOW: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("unknow");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_EXPECT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("expect");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_UNEXPECT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("unexpect");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_EXIST: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("exist");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_NOT_EXIST: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("not exist");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_ONLY: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("only");
+	        return this.assertion.apply(this, args);
+	    },
+	    FUNC_CAN_NOT: function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        args.unshift("can't");
+	        return this.assertion.apply(this, args);
+	    }
+	};
+
+	var root;
+	if (JudgeUtils.isNodeJs() && typeof commonjsGlobal != "undefined") {
+	    root = commonjsGlobal;
+	}
+	else if (typeof window != "undefined") {
+	    root = window;
+	}
+	else if (typeof self != "undefined") {
+	    root = self;
+	}
+	else {
+	    Log.error("no avaliable root!");
+	}
+
+	var Queue = (function (_super) {
+	    __extends(Queue, _super);
+	    function Queue(children) {
+	        if (children === void 0) { children = []; }
+	        var _this = _super.call(this) || this;
+	        _this.children = children;
+	        return _this;
+	    }
+	    Queue.create = function (children) {
+	        if (children === void 0) { children = []; }
+	        var obj = new this(children);
+	        return obj;
+	    };
+	    Object.defineProperty(Queue.prototype, "front", {
+	        get: function () {
+	            return this.children[this.children.length - 1];
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Queue.prototype, "rear", {
+	        get: function () {
+	            return this.children[0];
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Queue.prototype.push = function (element) {
+	        this.children.unshift(element);
+	    };
+	    Queue.prototype.pop = function () {
+	        return this.children.pop();
+	    };
+	    Queue.prototype.clear = function () {
+	        this.removeAllChildren();
+	    };
+	    return Queue;
+	}(List));
+
+	var Stack = (function (_super) {
+	    __extends(Stack, _super);
+	    function Stack(children) {
+	        if (children === void 0) { children = []; }
+	        var _this = _super.call(this) || this;
+	        _this.children = children;
+	        return _this;
+	    }
+	    Stack.create = function (children) {
+	        if (children === void 0) { children = []; }
+	        var obj = new this(children);
+	        return obj;
+	    };
+	    Object.defineProperty(Stack.prototype, "top", {
+	        get: function () {
+	            return this.children[this.children.length - 1];
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Stack.prototype.push = function (element) {
+	        this.children.push(element);
+	    };
+	    Stack.prototype.pop = function () {
+	        return this.children.pop();
+	    };
+	    Stack.prototype.clear = function () {
+	        this.removeAllChildren();
+	    };
+	    Stack.prototype.clone = function () {
+	        var args = [];
+	        for (var _i = 0; _i < arguments.length; _i++) {
+	            args[_i] = arguments[_i];
+	        }
+	        var target = null, isDeep = null;
+	        if (args.length === 0) {
+	            isDeep = false;
+	            target = Stack.create();
+	        }
+	        else if (args.length === 1) {
+	            if (JudgeUtils.isBoolean(args[0])) {
+	                target = Stack.create();
+	                isDeep = args[0];
+	            }
+	            else {
+	                target = args[0];
+	                isDeep = false;
+	            }
+	        }
+	        else {
+	            target = args[0];
+	            isDeep = args[1];
+	        }
+	        if (isDeep === true) {
+	            target.setChildren(ExtendUtils.extendDeep(this.children));
+	        }
+	        else {
+	            target.setChildren(ExtendUtils.extend([], this.children));
+	        }
+	        return target;
+	    };
+	    Stack.prototype.filter = function (func) {
+	        var children = this.children, result = [], value = null;
+	        for (var i = 0, len = children.length; i < len; i++) {
+	            value = children[i];
+	            if (func.call(children, value, i)) {
+	                result.push(value);
+	            }
+	        }
+	        return Collection.create(result);
+	    };
+	    Stack.prototype.findOne = function (func) {
+	        var scope = this.children, result = null;
+	        this.forEach(function (value, index) {
+	            if (!func.call(scope, value, index)) {
+	                return;
+	            }
+	            result = value;
+	            return $BREAK;
+	        });
+	        return result;
+	    };
+	    Stack.prototype.reverse = function () {
+	        return Collection.create(this.copyChildren().reverse());
+	    };
+	    Stack.prototype.removeChild = function (arg) {
+	        return Collection.create(this.removeChildHelper(arg));
+	    };
+	    Stack.prototype.sort = function (func, isSortSelf) {
+	        if (isSortSelf === void 0) { isSortSelf = false; }
+	        if (isSortSelf) {
+	            this.children.sort(func);
+	            return this;
+	        }
+	        return Collection.create(this.copyChildren().sort(func));
+	    };
+	    Stack.prototype.map = function (func) {
+	        var resultArr = [];
+	        this.forEach(function (e, index) {
+	            var result = func(e, index);
+	            if (result !== $REMOVE) {
+	                resultArr.push(result);
+	            }
+	        });
+	        return Collection.create(resultArr);
+	    };
+	    Stack.prototype.removeRepeatItems = function () {
+	        var noRepeatList = Collection.create();
+	        this.forEach(function (item) {
+	            if (noRepeatList.hasChild(item)) {
+	                return;
+	            }
+	            noRepeatList.addChild(item);
+	        });
+	        return noRepeatList;
+	    };
+	    Stack.prototype.hasRepeatItems = function () {
+	        var noRepeatList = Collection.create(), hasRepeat = false;
+	        this.forEach(function (item) {
+	            if (noRepeatList.hasChild(item)) {
+	                hasRepeat = true;
+	                return $BREAK;
+	            }
+	            noRepeatList.addChild(item);
+	        });
+	        return hasRepeat;
+	    };
+	    return Stack;
+	}(List));
+
+	var Assertion = (function () {
+	    function Assertion() {
+	    }
+	    Assertion.create = function () {
+	        var obj = new this();
+	        return obj;
+	    };
+	    Object.defineProperty(Assertion.prototype, "not", {
+	        get: function () {
+	            ExpectData.isNot = true;
+	            return this;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Assertion.prototype, "be", {
+	        get: function () {
+	            return this;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Assertion.prototype, "true", {
+	        get: function () {
+	            var source = ExpectData.source;
+	            this._assert(!!source === true, "true");
+	            return this;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Assertion.prototype, "false", {
+	        get: function () {
+	            var source = ExpectData.source;
+	            this._assert(!!source === false, "false");
+	            return this;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Assertion.prototype, "exist", {
+	        get: function () {
+	            var source = ExpectData.source;
+	            this._assert(source !== null && source !== void 0, "exist");
+	            return this;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Assertion.prototype.equal = function (n) {
+	        var source = ExpectData.source;
+	        this._assert(source === n, "equal", n);
+	        return this;
+	    };
+	    Assertion.prototype.gt = function (n) {
+	        var source = ExpectData.source;
+	        this._assert(source > n, ">", n);
+	        return this;
+	    };
+	    Assertion.prototype.gte = function (n) {
+	        var source = ExpectData.source;
+	        this._assert(source >= n, ">=", n);
+	        return this;
+	    };
+	    Assertion.prototype.lt = function (n) {
+	        var source = ExpectData.source;
+	        this._assert(source < n, "<", n);
+	        return this;
+	    };
+	    Assertion.prototype.lte = function (n) {
+	        var source = ExpectData.source;
+	        this._assert(source <= n, "<=", n);
+	        return this;
+	    };
+	    Assertion.prototype.a = function (type) {
+	        var source = ExpectData.source;
+	        switch (type) {
+	            case "number":
+	                this._assert(JudgeUtils.isNumber(source), "number");
+	                break;
+	            case "array":
+	                this._assert(JudgeUtils.isArrayExactly(source), "array");
+	                break;
+	            case "boolean":
+	                this._assert(JudgeUtils.isBoolean(source), "boolean");
+	                break;
+	            case "string":
+	                this._assert(JudgeUtils.isStringExactly(source), "string");
+	                break;
+	            default:
+	                break;
+	        }
+	    };
+	    Assertion.prototype._buildFailMsg = function (operationStr, target) {
+	        if (!!target) {
+	            return "expected " + this._format(ExpectData.source) + " to be " + operationStr + " " + target;
+	        }
+	        return "expected " + this._format(ExpectData.source) + " to be " + operationStr;
+	    };
+	    Assertion.prototype._assert = function (passCondition, failMsg, target) {
+	        var pass = null, failMessage = null;
+	        if (ExpectData.isNot) {
+	            pass = !passCondition;
+	        }
+	        else {
+	            pass = passCondition;
+	        }
+	        if (pass) {
+	            ExpectData.isNot = false;
+	            return;
+	        }
+	        failMessage = this._buildFailMsg(failMsg, target);
+	        if (ExpectData.isNot) {
+	            ExpectData.isNot = false;
+	            failMessage = failMessage.replace("to be", "not to be");
+	        }
+	        throw new Error(failMessage);
+	    };
+	    Assertion.prototype._format = function (source) {
+	        return source;
+	    };
+	    return Assertion;
+	}());
+
+	var expect = function (source) {
+	    var assertion = ExpectData.assertion;
+	    ExpectData.source = source;
+	    return assertion;
+	};
+	var _initData = function () {
+	    ExpectData.assertion = Assertion.create();
+	    ExpectData.isNot = false;
+	};
+	_initData();
+
+	exports.Assertion = Assertion;
+	exports.expect = expect;
+	exports.ExpectData = ExpectData;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
 
-  var exports = module.exports;
-
-  /**
-   * Exports.
-   */
-
-    /**
-     * modify by wonder
-     */
-  module.exports.expect = expect;
-
-
-
-
-  expect.Assertion = Assertion;
-
-  /**
-   * Exports version.
-   */
-
-  expect.version = '0.3.1';
-
-  /**
-   * Possible assertion flags.
-   */
-
-  var flags = {
-      not: ['to', 'be', 'have', 'include', 'only']
-    , to: ['be', 'have', 'include', 'only', 'not']
-    , only: ['have']
-    , have: ['own']
-    , be: ['an']
-  };
-
-  function expect (obj) {
-    return new Assertion(obj);
-  }
-
-  /**
-   * Constructor
-   *
-   * @api private
-   */
-
-  function Assertion (obj, flag, parent) {
-    this.obj = obj;
-    this.flags = {};
-
-    if (undefined != parent) {
-      this.flags[flag] = true;
-
-      for (var i in parent.flags) {
-        if (parent.flags.hasOwnProperty(i)) {
-          this.flags[i] = true;
-        }
-      }
-    }
-
-    var $flags = flag ? flags[flag] : keys(flags)
-      , self = this;
-
-    if ($flags) {
-      for (var i = 0, l = $flags.length; i < l; i++) {
-        // avoid recursion
-        if (this.flags[$flags[i]]) continue;
-
-        var name = $flags[i]
-          , assertion = new Assertion(this.obj, name, this);
-
-        if ('function' == typeof Assertion.prototype[name]) {
-          // clone the function, make sure we dont touch the prot reference
-          var old = this[name];
-          this[name] = function () {
-            return old.apply(self, arguments);
-          };
-
-          for (var fn in Assertion.prototype) {
-            if (Assertion.prototype.hasOwnProperty(fn) && fn != name) {
-                /*!
-                modify by wonder
-                 */
-              if(fn !== "length"){
-                  this[name][fn] = bind(assertion[fn], assertion);
-              }
-            }
-          }
-        } else {
-          this[name] = assertion;
-        }
-      }
-    }
-  }
-
-  /**
-   * Performs an assertion
-   *
-   * @api private
-   */
-
-  Assertion.prototype.assert = function (truth, msg, error, expected) {
-    var msg = this.flags.not ? error : msg
-      , ok = this.flags.not ? !truth : truth
-      , err;
-
-    if (!ok) {
-      err = new Error(msg.call(this));
-      if (arguments.length > 3) {
-        err.actual = this.obj;
-        err.expected = expected;
-        err.showDiff = true;
-      }
-      throw err;
-    }
-
-    this.and = new Assertion(this.obj);
-  };
-
-  /**
-   * Check if the value is truthy
-   *
-   * @api public
-   */
-
-  Assertion.prototype.ok = function () {
-    this.assert(
-        !!this.obj
-      , function(){ return 'expected ' + i(this.obj) + ' to be truthy' }
-      , function(){ return 'expected ' + i(this.obj) + ' to be falsy' });
-  };
-
-  /**
-   * Creates an anonymous function which calls fn with arguments.
-   *
-   * @api public
-   */
-
-  Assertion.prototype.withArgs = function() {
-    expect(this.obj).to.be.a('function');
-    var fn = this.obj;
-    var args = Array.prototype.slice.call(arguments);
-    return expect(function() { fn.apply(null, args); });
-  };
-
-  /**
-   * Assert that the function throws.
-   *
-   * @param {Function|RegExp} callback, or regexp to match error string against
-   * @api public
-   */
-
-  Assertion.prototype.throwError =
-  Assertion.prototype.throwException = function (fn) {
-    expect(this.obj).to.be.a('function');
-
-    var thrown = false
-      , not = this.flags.not;
-
-    try {
-      this.obj();
-    } catch (e) {
-      if (isRegExp(fn)) {
-        var subject = 'string' == typeof e ? e : e.message;
-        if (not) {
-          expect(subject).to.not.match(fn);
-        } else {
-          expect(subject).to.match(fn);
-        }
-      } else if ('function' == typeof fn) {
-        fn(e);
-      }
-      thrown = true;
-    }
-
-    if (isRegExp(fn) && not) {
-      // in the presence of a matcher, ensure the `not` only applies to
-      // the matching.
-      this.flags.not = false;
-    }
-
-    var name = this.obj.name || 'fn';
-    this.assert(
-        thrown
-      , function(){ return 'expected ' + name + ' to throw an exception' }
-      , function(){ return 'expected ' + name + ' not to throw an exception' });
-  };
-
-  /**
-   * Checks if the array is empty.
-   *
-   * @api public
-   */
-
-  Assertion.prototype.empty = function () {
-    var expectation;
-
-    if ('object' == typeof this.obj && null !== this.obj && !isArray(this.obj)) {
-      if ('number' == typeof this.obj.length) {
-        expectation = !this.obj.length;
-      } else {
-        expectation = !keys(this.obj).length;
-      }
-    } else {
-      if ('string' != typeof this.obj) {
-        expect(this.obj).to.be.an('object');
-      }
-
-      expect(this.obj).to.have.property('length');
-      expectation = !this.obj.length;
-    }
-
-    this.assert(
-        expectation
-      , function(){ return 'expected ' + i(this.obj) + ' to be empty' }
-      , function(){ return 'expected ' + i(this.obj) + ' to not be empty' });
-    return this;
-  };
-
-  /**
-   * Checks if the obj exactly equals another.
-   *
-   * @api public
-   */
-
-  Assertion.prototype.be =
-  Assertion.prototype.equal = function (obj) {
-    this.assert(
-        obj === this.obj
-      , function(){ return 'expected ' + i(this.obj) + ' to equal ' + i(obj) }
-      , function(){ return 'expected ' + i(this.obj) + ' to not equal ' + i(obj) });
-    return this;
-  };
-
-  /**
-   * Checks if the obj sortof equals another.
-   *
-   * @api public
-   */
-
-  Assertion.prototype.eql = function (obj) {
-    this.assert(
-        expect.eql(this.obj, obj)
-      , function(){ return 'expected ' + i(this.obj) + ' to sort of equal ' + i(obj) }
-      , function(){ return 'expected ' + i(this.obj) + ' to sort of not equal ' + i(obj) }
-      , obj);
-    return this;
-  };
-
-  /**
-   * Assert within start to finish (inclusive).
-   *
-   * @param {Number} start
-   * @param {Number} finish
-   * @api public
-   */
-
-  Assertion.prototype.within = function (start, finish) {
-    var range = start + '..' + finish;
-    this.assert(
-        this.obj >= start && this.obj <= finish
-      , function(){ return 'expected ' + i(this.obj) + ' to be within ' + range }
-      , function(){ return 'expected ' + i(this.obj) + ' to not be within ' + range });
-    return this;
-  };
-
-  /**
-   * Assert typeof / instance of
-   *
-   * @api public
-   */
-
-  Assertion.prototype.a =
-  Assertion.prototype.an = function (type) {
-    if ('string' == typeof type) {
-      // proper english in error msg
-      var n = /^[aeiou]/.test(type) ? 'n' : '';
-
-      // typeof with support for 'array'
-      this.assert(
-          'array' == type ? isArray(this.obj) :
-            'regexp' == type ? isRegExp(this.obj) :
-              'object' == type
-                ? 'object' == typeof this.obj && null !== this.obj
-                : type == typeof this.obj
-        , function(){ return 'expected ' + i(this.obj) + ' to be a' + n + ' ' + type }
-        , function(){ return 'expected ' + i(this.obj) + ' not to be a' + n + ' ' + type });
-    } else {
-      // instanceof
-      var name = type.name || 'supplied constructor';
-      this.assert(
-          this.obj instanceof type
-        , function(){ return 'expected ' + i(this.obj) + ' to be an instance of ' + name }
-        , function(){ return 'expected ' + i(this.obj) + ' not to be an instance of ' + name });
-    }
-
-    return this;
-  };
-
-  /**
-   * Assert numeric value above _n_.
-   *
-   * @param {Number} n
-   * @api public
-   */
-
-  Assertion.prototype.greaterThan =
-  Assertion.prototype.above = function (n) {
-    this.assert(
-        this.obj > n
-      , function(){ return 'expected ' + i(this.obj) + ' to be above ' + n }
-      , function(){ return 'expected ' + i(this.obj) + ' to be below ' + n });
-    return this;
-  };
-
-  /**
-   * Assert numeric value below _n_.
-   *
-   * @param {Number} n
-   * @api public
-   */
-
-  Assertion.prototype.lessThan =
-  Assertion.prototype.below = function (n) {
-    this.assert(
-        this.obj < n
-      , function(){ return 'expected ' + i(this.obj) + ' to be below ' + n }
-      , function(){ return 'expected ' + i(this.obj) + ' to be above ' + n });
-    return this;
-  };
-
-  /**
-   * Assert string value matches _regexp_.
-   *
-   * @param {RegExp} regexp
-   * @api public
-   */
-
-  Assertion.prototype.match = function (regexp) {
-    this.assert(
-        regexp.exec(this.obj)
-      , function(){ return 'expected ' + i(this.obj) + ' to match ' + regexp }
-      , function(){ return 'expected ' + i(this.obj) + ' not to match ' + regexp });
-    return this;
-  };
-
-  /**
-   * Assert property "length" exists and has value of _n_.
-   *
-   * @param {Number} n
-   * @api public
-   */
-
-  Assertion.prototype.length = function (n) {
-    expect(this.obj).to.have.property('length');
-    var len = this.obj.length;
-    this.assert(
-        n == len
-      , function(){ return 'expected ' + i(this.obj) + ' to have a length of ' + n + ' but got ' + len }
-      , function(){ return 'expected ' + i(this.obj) + ' to not have a length of ' + len });
-    return this;
-  };
-
-  /**
-   * Assert property _name_ exists, with optional _val_.
-   *
-   * @param {String} name
-   * @param {Mixed} val
-   * @api public
-   */
-
-  Assertion.prototype.property = function (name, val) {
-    if (this.flags.own) {
-      this.assert(
-          Object.prototype.hasOwnProperty.call(this.obj, name)
-        , function(){ return 'expected ' + i(this.obj) + ' to have own property ' + i(name) }
-        , function(){ return 'expected ' + i(this.obj) + ' to not have own property ' + i(name) });
-      return this;
-    }
-
-    if (this.flags.not && undefined !== val) {
-      if (undefined === this.obj[name]) {
-        throw new Error(i(this.obj) + ' has no property ' + i(name));
-      }
-    } else {
-      var hasProp;
-      try {
-        hasProp = name in this.obj;
-      } catch (e) {
-        hasProp = undefined !== this.obj[name];
-      }
-
-      this.assert(
-          hasProp
-        , function(){ return 'expected ' + i(this.obj) + ' to have a property ' + i(name) }
-        , function(){ return 'expected ' + i(this.obj) + ' to not have a property ' + i(name) });
-    }
-
-    if (undefined !== val) {
-      this.assert(
-          val === this.obj[name]
-        , function(){ return 'expected ' + i(this.obj) + ' to have a property ' + i(name)
-          + ' of ' + i(val) + ', but got ' + i(this.obj[name]) }
-        , function(){ return 'expected ' + i(this.obj) + ' to not have a property ' + i(name)
-          + ' of ' + i(val) });
-    }
-
-    this.obj = this.obj[name];
-    return this;
-  };
-
-  /**
-   * Assert that the array contains _obj_ or string contains _obj_.
-   *
-   * @param {Mixed} obj|string
-   * @api public
-   */
-
-  Assertion.prototype.string =
-  Assertion.prototype.contain = function (obj) {
-    if ('string' == typeof this.obj) {
-      this.assert(
-          ~this.obj.indexOf(obj)
-        , function(){ return 'expected ' + i(this.obj) + ' to contain ' + i(obj) }
-        , function(){ return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) });
-    } else {
-      this.assert(
-          ~indexOf(this.obj, obj)
-        , function(){ return 'expected ' + i(this.obj) + ' to contain ' + i(obj) }
-        , function(){ return 'expected ' + i(this.obj) + ' to not contain ' + i(obj) });
-    }
-    return this;
-  };
-
-  /**
-   * Assert exact keys or inclusion of keys by using
-   * the `.own` modifier.
-   *
-   * @param {Array|String ...} keys
-   * @api public
-   */
-
-  Assertion.prototype.key =
-  Assertion.prototype.keys = function ($keys) {
-    var str
-      , ok = true;
-
-    $keys = isArray($keys)
-      ? $keys
-      : Array.prototype.slice.call(arguments);
-
-    if (!$keys.length) throw new Error('keys required');
-
-    var actual = keys(this.obj)
-      , len = $keys.length;
-
-    // Inclusion
-    ok = every($keys, function (key) {
-      return ~indexOf(actual, key);
-    });
-
-    // Strict
-    if (!this.flags.not && this.flags.only) {
-      ok = ok && $keys.length == actual.length;
-    }
-
-    // Key string
-    if (len > 1) {
-      $keys = map($keys, function (key) {
-        return i(key);
-      });
-      var last = $keys.pop();
-      str = $keys.join(', ') + ', and ' + last;
-    } else {
-      str = i($keys[0]);
-    }
-
-    // Form
-    str = (len > 1 ? 'keys ' : 'key ') + str;
-
-    // Have / include
-    str = (!this.flags.only ? 'include ' : 'only have ') + str;
-
-    // Assertion
-    this.assert(
-        ok
-      , function(){ return 'expected ' + i(this.obj) + ' to ' + str }
-      , function(){ return 'expected ' + i(this.obj) + ' to not ' + str });
-
-    return this;
-  };
-
-  /**
-   * Assert a failure.
-   *
-   * @param {String ...} custom message
-   * @api public
-   */
-  Assertion.prototype.fail = function (msg) {
-    var error = function() { return msg || "explicit failure"; };
-    this.assert(false, error, error);
-    return this;
-  };
-
-
-
-
-
-
-
-    /**
-     * extend by wonder
-     */
-
-
-    function addProperty(name, fn) {
-        Object.defineProperty(Assertion.prototype, name, {
-            get: function addProperty() {
-                return fn.call(this);
-            },
-            configurable: true
-        });
-    }
-
-
-
-    Assertion.prototype.lte = function (n) {
-        this.assert(
-            this.obj <= n
-            , function(){ return 'expected ' + i(this.obj) + ' to be <= ' + n }
-            , function(){ return 'expected ' + i(this.obj) + ' to be > ' + n });
-        return this;
-    };
-
-    Assertion.prototype.gte = function (n) {
-        this.assert(
-            this.obj >= n
-            , function(){ return 'expected ' + i(this.obj) + ' to be >= ' + n }
-            , function(){ return 'expected ' + i(this.obj) + ' to be < ' + n });
-        return this;
-    };
-
-
-    addProperty("exist",  function () {
-        this.assert(
-            this.obj !== null && this.obj !== undefined
-            , function(){ return 'expected ' + i(this.obj) + ' to be exist' }
-            , function(){ return 'expected ' + i(this.obj) + ' to not exist' });
-        return this;
-    });
-
-    addProperty("true",  function () {
-        this.assert(
-            this.obj === true
-            , function(){ return 'expected ' + i(this.obj) + ' to be true' }
-            , function(){ return 'expected ' + i(this.obj) + ' to be false' });
-        return this;
-    });
-
-    addProperty("false",  function () {
-        this.assert(
-            this.obj === false
-            , function(){ return 'expected ' + i(this.obj) + ' to be false' }
-            , function(){ return 'expected ' + i(this.obj) + ' to be true' });
-        return this;
-    });
-
-
-
-
-
-
-
-
-
-
-  /**
-   * Function bind implementation.
-   */
-
-  function bind (fn, scope) {
-    return function () {
-      return fn.apply(scope, arguments);
-    }
-  }
-
-  /**
-   * Array every compatibility
-   *
-   * @see bit.ly/5Fq1N2
-   * @api public
-   */
-
-  function every (arr, fn, thisObj) {
-    var scope = thisObj || global;
-    for (var i = 0, j = arr.length; i < j; ++i) {
-      if (!fn.call(scope, arr[i], i, arr)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Array indexOf compatibility.
-   *
-   * @see bit.ly/a5Dxa2
-   * @api public
-   */
-
-  function indexOf (arr, o, i) {
-    if (Array.prototype.indexOf) {
-      return Array.prototype.indexOf.call(arr, o, i);
-    }
-
-    if (arr.length === undefined) {
-      return -1;
-    }
-
-    for (var j = arr.length, i = i < 0 ? i + j < 0 ? 0 : i + j : i || 0
-        ; i < j && arr[i] !== o; i++);
-
-    return j <= i ? -1 : i;
-  }
-
-  // https://gist.github.com/1044128/
-  var getOuterHTML = function(element) {
-    if ('outerHTML' in element) return element.outerHTML;
-    var ns = "http://www.w3.org/1999/xhtml";
-    var container = document.createElementNS(ns, '_');
-    var xmlSerializer = new XMLSerializer();
-    var html;
-    if (document.xmlVersion) {
-      return xmlSerializer.serializeToString(element);
-    } else {
-      container.appendChild(element.cloneNode(false));
-      html = container.innerHTML.replace('><', '>' + element.innerHTML + '<');
-      container.innerHTML = '';
-      return html;
-    }
-  };
-
-  // Returns true if object is a DOM element.
-  var isDOMElement = function (object) {
-    if (typeof HTMLElement === 'object') {
-      return object instanceof HTMLElement;
-    } else {
-      return object &&
-        typeof object === 'object' &&
-        object.nodeType === 1 &&
-        typeof object.nodeName === 'string';
-    }
-  };
-
-  /**
-   * Inspects an object.
-   *
-   * @see taken from node.js `util` module (copyright Joyent, MIT license)
-   * @api private
-   */
-
-  function i (obj, showHidden, depth) {
-    var seen = [];
-
-    function stylize (str) {
-      return str;
-    }
-
-    function format (value, recurseTimes) {
-      // Provide a hook for user-specified inspect functions.
-      // Check that value is an object with an inspect function on it
-      if (value && typeof value.inspect === 'function' &&
-          // Filter out the util module, it's inspect function is special
-          value !== exports &&
-          // Also filter out any prototype objects using the circular check.
-          !(value.constructor && value.constructor.prototype === value)) {
-        return value.inspect(recurseTimes);
-      }
-
-      // Primitive types cannot have properties
-      switch (typeof value) {
-        case 'undefined':
-          return stylize('undefined', 'undefined');
-
-        case 'string':
-          var simple = '\'' + json.stringify(value).replace(/^"|"$/g, '')
-                                                   .replace(/'/g, "\\'")
-                                                   .replace(/\\"/g, '"') + '\'';
-          return stylize(simple, 'string');
-
-        case 'number':
-          return stylize('' + value, 'number');
-
-        case 'boolean':
-          return stylize('' + value, 'boolean');
-      }
-      // For some reason typeof null is "object", so special case here.
-      if (value === null) {
-        return stylize('null', 'null');
-      }
-
-      if (isDOMElement(value)) {
-        return getOuterHTML(value);
-      }
-
-      // Look up the keys of the object.
-      var visible_keys = keys(value);
-      var $keys = showHidden ? Object.getOwnPropertyNames(value) : visible_keys;
-
-      // Functions without properties can be shortcutted.
-      if (typeof value === 'function' && $keys.length === 0) {
-        if (isRegExp(value)) {
-          return stylize('' + value, 'regexp');
-        } else {
-          var name = value.name ? ': ' + value.name : '';
-          return stylize('[Function' + name + ']', 'special');
-        }
-      }
-
-      // Dates without properties can be shortcutted
-      if (isDate(value) && $keys.length === 0) {
-        return stylize(value.toUTCString(), 'date');
-      }
-
-      // Error objects can be shortcutted
-      if (value instanceof Error) {
-        return stylize("["+value.toString()+"]", 'Error');
-      }
-
-      var base, type, braces;
-      // Determine the object type
-      if (isArray(value)) {
-        type = 'Array';
-        braces = ['[', ']'];
-      } else {
-        type = 'Object';
-        braces = ['{', '}'];
-      }
-
-      // Make functions say that they are functions
-      if (typeof value === 'function') {
-        var n = value.name ? ': ' + value.name : '';
-        base = (isRegExp(value)) ? ' ' + value : ' [Function' + n + ']';
-      } else {
-        base = '';
-      }
-
-      // Make dates with properties first say the date
-      if (isDate(value)) {
-        base = ' ' + value.toUTCString();
-      }
-
-      if ($keys.length === 0) {
-        return braces[0] + base + braces[1];
-      }
-
-      if (recurseTimes < 0) {
-        if (isRegExp(value)) {
-          return stylize('' + value, 'regexp');
-        } else {
-          return stylize('[Object]', 'special');
-        }
-      }
-
-      seen.push(value);
-
-      var output = map($keys, function (key) {
-        var name, str;
-        if (value.__lookupGetter__) {
-          if (value.__lookupGetter__(key)) {
-            if (value.__lookupSetter__(key)) {
-              str = stylize('[Getter/Setter]', 'special');
-            } else {
-              str = stylize('[Getter]', 'special');
-            }
-          } else {
-            if (value.__lookupSetter__(key)) {
-              str = stylize('[Setter]', 'special');
-            }
-          }
-        }
-        if (indexOf(visible_keys, key) < 0) {
-          name = '[' + key + ']';
-        }
-        if (!str) {
-          if (indexOf(seen, value[key]) < 0) {
-            if (recurseTimes === null) {
-              str = format(value[key]);
-            } else {
-              str = format(value[key], recurseTimes - 1);
-            }
-            if (str.indexOf('\n') > -1) {
-              if (isArray(value)) {
-                str = map(str.split('\n'), function (line) {
-                  return '  ' + line;
-                }).join('\n').substr(2);
-              } else {
-                str = '\n' + map(str.split('\n'), function (line) {
-                  return '   ' + line;
-                }).join('\n');
-              }
-            }
-          } else {
-            str = stylize('[Circular]', 'special');
-          }
-        }
-        if (typeof name === 'undefined') {
-          if (type === 'Array' && key.match(/^\d+$/)) {
-            return str;
-          }
-          name = json.stringify('' + key);
-          if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-            name = name.substr(1, name.length - 2);
-            name = stylize(name, 'name');
-          } else {
-            name = name.replace(/'/g, "\\'")
-                       .replace(/\\"/g, '"')
-                       .replace(/(^"|"$)/g, "'");
-            name = stylize(name, 'string');
-          }
-        }
-
-        return name + ': ' + str;
-      });
-
-      seen.pop();
-
-      var numLinesEst = 0;
-      var length = reduce(output, function (prev, cur) {
-        numLinesEst++;
-        if (indexOf(cur, '\n') >= 0) numLinesEst++;
-        return prev + cur.length + 1;
-      }, 0);
-
-      if (length > 50) {
-        output = braces[0] +
-                 (base === '' ? '' : base + '\n ') +
-                 ' ' +
-                 output.join(',\n  ') +
-                 ' ' +
-                 braces[1];
-
-      } else {
-        output = braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-      }
-
-      return output;
-    }
-    return format(obj, (typeof depth === 'undefined' ? 2 : depth));
-  }
-
-  expect.stringify = i;
-
-  function isArray (ar) {
-    return Object.prototype.toString.call(ar) === '[object Array]';
-  }
-
-  function isRegExp(re) {
-    var s;
-    try {
-      s = '' + re;
-    } catch (e) {
-      return false;
-    }
-
-    return re instanceof RegExp || // easy case
-           // duck-type for context-switching evalcx case
-           typeof(re) === 'function' &&
-           re.constructor.name === 'RegExp' &&
-           re.compile &&
-           re.test &&
-           re.exec &&
-           s.match(/^\/.*\/[gim]{0,3}$/);
-  }
-
-  function isDate(d) {
-    return d instanceof Date;
-  }
-
-  function keys (obj) {
-    if (Object.keys) {
-      return Object.keys(obj);
-    }
-
-    var keys = [];
-
-    for (var i in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, i)) {
-        keys.push(i);
-      }
-    }
-
-    return keys;
-  }
-
-  function map (arr, mapper, that) {
-    if (Array.prototype.map) {
-      return Array.prototype.map.call(arr, mapper, that);
-    }
-
-    var other= new Array(arr.length);
-
-    for (var i= 0, n = arr.length; i<n; i++)
-      if (i in arr)
-        other[i] = mapper.call(that, arr[i], i, arr);
-
-    return other;
-  }
-
-  function reduce (arr, fun) {
-    if (Array.prototype.reduce) {
-      return Array.prototype.reduce.apply(
-          arr
-        , Array.prototype.slice.call(arguments, 1)
-      );
-    }
-
-    var len = +this.length;
-
-    if (typeof fun !== "function")
-      throw new TypeError();
-
-    // no value to return if no initial value and an empty array
-    if (len === 0 && arguments.length === 1)
-      throw new TypeError();
-
-    var i = 0;
-    if (arguments.length >= 2) {
-      var rv = arguments[1];
-    } else {
-      do {
-        if (i in this) {
-          rv = this[i++];
-          break;
-        }
-
-        // if array contains no values, no initial value to return
-        if (++i >= len)
-          throw new TypeError();
-      } while (true);
-    }
-
-    for (; i < len; i++) {
-      if (i in this)
-        rv = fun.call(null, rv, this[i], i, this);
-    }
-
-    return rv;
-  }
-
-  /**
-   * Asserts deep equality
-   *
-   * @see taken from node.js `assert` module (copyright Joyent, MIT license)
-   * @api private
-   */
-
-  expect.eql = function eql(actual, expected) {
-    // 7.1. All identical values are equivalent, as determined by ===.
-    if (actual === expected) {
-      return true;
-    } else if ('undefined' != typeof Buffer
-      && Buffer.isBuffer(actual) && Buffer.isBuffer(expected)) {
-      if (actual.length != expected.length) return false;
-
-      for (var i = 0; i < actual.length; i++) {
-        if (actual[i] !== expected[i]) return false;
-      }
-
-      return true;
-
-      // 7.2. If the expected value is a Date object, the actual value is
-      // equivalent if it is also a Date object that refers to the same time.
-    } else if (actual instanceof Date && expected instanceof Date) {
-      return actual.getTime() === expected.getTime();
-
-      // 7.3. Other pairs that do not both pass typeof value == "object",
-      // equivalence is determined by ==.
-    } else if (typeof actual != 'object' && typeof expected != 'object') {
-      return actual == expected;
-    // If both are regular expression use the special `regExpEquiv` method
-    // to determine equivalence.
-    } else if (isRegExp(actual) && isRegExp(expected)) {
-      return regExpEquiv(actual, expected);
-    // 7.4. For all other Object pairs, including Array objects, equivalence is
-    // determined by having the same number of owned properties (as verified
-    // with Object.prototype.hasOwnProperty.call), the same set of keys
-    // (although not necessarily the same order), equivalent values for every
-    // corresponding key, and an identical "prototype" property. Note: this
-    // accounts for both named and indexed properties on Arrays.
-    } else {
-      return objEquiv(actual, expected);
-    }
-  };
-
-  function isUndefinedOrNull (value) {
-    return value === null || value === undefined;
-  }
-
-  function isArguments (object) {
-    return Object.prototype.toString.call(object) == '[object Arguments]';
-  }
-
-  function regExpEquiv (a, b) {
-    return a.source === b.source && a.global === b.global &&
-           a.ignoreCase === b.ignoreCase && a.multiline === b.multiline;
-  }
-
-  function objEquiv (a, b) {
-    if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
-      return false;
-    // an identical "prototype" property.
-    if (a.prototype !== b.prototype) return false;
-    //~~~I've managed to break Object.keys through screwy arguments passing.
-    //   Converting to array solves the problem.
-    if (isArguments(a)) {
-      if (!isArguments(b)) {
-        return false;
-      }
-      a = pSlice.call(a);
-      b = pSlice.call(b);
-      return expect.eql(a, b);
-    }
-    try{
-      var ka = keys(a),
-        kb = keys(b),
-        key, i;
-    } catch (e) {//happens when one is a string literal and the other isn't
-      return false;
-    }
-    // having the same number of owned properties (keys incorporates hasOwnProperty)
-    if (ka.length != kb.length)
-      return false;
-    //the same set of keys (although not necessarily the same order),
-    ka.sort();
-    kb.sort();
-    //~~~cheap key test
-    for (i = ka.length - 1; i >= 0; i--) {
-      if (ka[i] != kb[i])
-        return false;
-    }
-    //equivalent values for every corresponding key, and
-    //~~~possibly expensive deep test
-    for (i = ka.length - 1; i >= 0; i--) {
-      key = ka[i];
-      if (!expect.eql(a[key], b[key]))
-         return false;
-    }
-    return true;
-  }
-
-  var json = (function () {
-    "use strict";
-
-    if ('object' == typeof JSON && JSON.parse && JSON.stringify) {
-      return {
-          parse: nativeJSON.parse
-        , stringify: nativeJSON.stringify
-      }
-    }
-
-    var JSON = {};
-
-    function f(n) {
-        // Format integers to have at least two digits.
-        return n < 10 ? '0' + n : n;
-    }
-
-    function date(d, key) {
-      return isFinite(d.valueOf()) ?
-          d.getUTCFullYear()     + '-' +
-          f(d.getUTCMonth() + 1) + '-' +
-          f(d.getUTCDate())      + 'T' +
-          f(d.getUTCHours())     + ':' +
-          f(d.getUTCMinutes())   + ':' +
-          f(d.getUTCSeconds())   + 'Z' : null;
-    }
-
-    var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-        escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-        gap,
-        indent,
-        meta = {    // table of character substitutions
-            '\b': '\\b',
-            '\t': '\\t',
-            '\n': '\\n',
-            '\f': '\\f',
-            '\r': '\\r',
-            '"' : '\\"',
-            '\\': '\\\\'
-        },
-        rep;
-
-
-    function quote(string) {
-
-  // If the string contains no control characters, no quote characters, and no
-  // backslash characters, then we can safely slap some quotes around it.
-  // Otherwise we must also replace the offending characters with safe escape
-  // sequences.
-
-        escapable.lastIndex = 0;
-        return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
-            var c = meta[a];
-            return typeof c === 'string' ? c :
-                '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-        }) + '"' : '"' + string + '"';
-    }
-
-
-    function str(key, holder) {
-
-  // Produce a string from holder[key].
-
-        var i,          // The loop counter.
-            k,          // The member key.
-            v,          // The member value.
-            length,
-            mind = gap,
-            partial,
-            value = holder[key];
-
-  // If the value has a toJSON method, call it to obtain a replacement value.
-
-        if (value instanceof Date) {
-            value = date(key);
-        }
-
-  // If we were called with a replacer function, then call the replacer to
-  // obtain a replacement value.
-
-        if (typeof rep === 'function') {
-            value = rep.call(holder, key, value);
-        }
-
-  // What happens next depends on the value's type.
-
-        switch (typeof value) {
-        case 'string':
-            return quote(value);
-
-        case 'number':
-
-  // JSON numbers must be finite. Encode non-finite numbers as null.
-
-            return isFinite(value) ? String(value) : 'null';
-
-        case 'boolean':
-        case 'null':
-
-  // If the value is a boolean or null, convert it to a string. Note:
-  // typeof null does not produce 'null'. The case is included here in
-  // the remote chance that this gets fixed someday.
-
-            return String(value);
-
-  // If the type is 'object', we might be dealing with an object or an array or
-  // null.
-
-        case 'object':
-
-  // Due to a specification blunder in ECMAScript, typeof null is 'object',
-  // so watch out for that case.
-
-            if (!value) {
-                return 'null';
-            }
-
-  // Make an array to hold the partial results of stringifying this object value.
-
-            gap += indent;
-            partial = [];
-
-  // Is the value an array?
-
-            if (Object.prototype.toString.apply(value) === '[object Array]') {
-
-  // The value is an array. Stringify every element. Use null as a placeholder
-  // for non-JSON values.
-
-                length = value.length;
-                for (i = 0; i < length; i += 1) {
-                    partial[i] = str(i, value) || 'null';
-                }
-
-  // Join all of the elements together, separated with commas, and wrap them in
-  // brackets.
-
-                v = partial.length === 0 ? '[]' : gap ?
-                    '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']' :
-                    '[' + partial.join(',') + ']';
-                gap = mind;
-                return v;
-            }
-
-  // If the replacer is an array, use it to select the members to be stringified.
-
-            if (rep && typeof rep === 'object') {
-                length = rep.length;
-                for (i = 0; i < length; i += 1) {
-                    if (typeof rep[i] === 'string') {
-                        k = rep[i];
-                        v = str(k, value);
-                        if (v) {
-                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
-                        }
-                    }
-                }
-            } else {
-
-  // Otherwise, iterate through all of the keys in the object.
-
-                for (k in value) {
-                    if (Object.prototype.hasOwnProperty.call(value, k)) {
-                        v = str(k, value);
-                        if (v) {
-                            partial.push(quote(k) + (gap ? ': ' : ':') + v);
-                        }
-                    }
-                }
-            }
-
-  // Join all of the member texts together, separated with commas,
-  // and wrap them in braces.
-
-            v = partial.length === 0 ? '{}' : gap ?
-                '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}' :
-                '{' + partial.join(',') + '}';
-            gap = mind;
-            return v;
-        }
-    }
-
-  // If the JSON object does not yet have a stringify method, give it one.
-
-    JSON.stringify = function (value, replacer, space) {
-
-  // The stringify method takes a value and an optional replacer, and an optional
-  // space parameter, and returns a JSON text. The replacer can be a function
-  // that can replace values, or an array of strings that will select the keys.
-  // A default replacer method can be provided. Use of the space parameter can
-  // produce text that is more easily readable.
-
-        var i;
-        gap = '';
-        indent = '';
-
-  // If the space parameter is a number, make an indent string containing that
-  // many spaces.
-
-        if (typeof space === 'number') {
-            for (i = 0; i < space; i += 1) {
-                indent += ' ';
-            }
-
-  // If the space parameter is a string, it will be used as the indent string.
-
-        } else if (typeof space === 'string') {
-            indent = space;
-        }
-
-  // If there is a replacer, it must be a function or an array.
-  // Otherwise, throw an error.
-
-        rep = replacer;
-        if (replacer && typeof replacer !== 'function' &&
-                (typeof replacer !== 'object' ||
-                typeof replacer.length !== 'number')) {
-            throw new Error('JSON.stringify');
-        }
-
-  // Make a fake root object containing our value under the key of ''.
-  // Return the result of stringifying the value.
-
-        return str('', {'': value});
-    };
-
-  // If the JSON object does not yet have a parse method, give it one.
-
-    JSON.parse = function (text, reviver) {
-    // The parse method takes a text and an optional reviver function, and returns
-    // a JavaScript value if the text is a valid JSON text.
-
-        var j;
-
-        function walk(holder, key) {
-
-    // The walk method is used to recursively walk the resulting structure so
-    // that modifications can be made.
-
-            var k, v, value = holder[key];
-            if (value && typeof value === 'object') {
-                for (k in value) {
-                    if (Object.prototype.hasOwnProperty.call(value, k)) {
-                        v = walk(value, k);
-                        if (v !== undefined) {
-                            value[k] = v;
-                        } else {
-                            delete value[k];
-                        }
-                    }
-                }
-            }
-            return reviver.call(holder, key, value);
-        }
-
-
-    // Parsing happens in four stages. In the first stage, we replace certain
-    // Unicode characters with escape sequences. JavaScript handles many characters
-    // incorrectly, either silently deleting them, or treating them as line endings.
-
-        text = String(text);
-        cx.lastIndex = 0;
-        if (cx.test(text)) {
-            text = text.replace(cx, function (a) {
-                return '\\u' +
-                    ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            });
-        }
-
-    // In the second stage, we run the text against regular expressions that look
-    // for non-JSON patterns. We are especially concerned with '()' and 'new'
-    // because they can cause invocation, and '=' because it can cause mutation.
-    // But just to be safe, we want to reject all unexpected forms.
-
-    // We split the second stage into 4 regexp operations in order to work around
-    // crippling inefficiencies in IE's and Safari's regexp engines. First we
-    // replace the JSON backslash pairs with '@' (a non-JSON character). Second, we
-    // replace all simple value tokens with ']' characters. Third, we delete all
-    // open brackets that follow a colon or comma or that begin the text. Finally,
-    // we look to see that the remaining characters are only whitespace or ']' or
-    // ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.
-
-        if (/^[\],:{}\s]*$/
-                .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
-                    .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                    .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-
-    // In the third stage we use the eval function to compile the text into a
-    // JavaScript structure. The '{' operator is subject to a syntactic ambiguity
-    // in JavaScript: it can begin a block or an object literal. We wrap the text
-    // in parens to eliminate the ambiguity.
-
-            j = eval('(' + text + ')');
-
-    // In the optional fourth stage, we recursively walk the new structure, passing
-    // each name/value pair to a reviver function for possible transformation.
-
-            return typeof reviver === 'function' ?
-                walk({'': j}, '') : j;
-        }
-
-    // If the text is not JSON parseable, then a SyntaxError is thrown.
-
-        throw new SyntaxError('JSON.parse');
-    };
-
-    return JSON;
-  })();
-
-  if ('undefined' != typeof window) {
-      /**
-       * modify by wonder
-       */
-      if(!window.expect){
-          window.expect = module.exports.expect;
-      }
-  }
-
-})(
-    commonjsGlobal
-  , module
-);
 });
 
-var index_1 = index.expect;
+var wdet_1 = wdet.expect;
 
 var $BREAK = {
     break: true
@@ -2276,10 +1830,7 @@ var isUndefined = function (v) { return v === void 0; };
 var isNotUndefined = function (v) { return v !== void 0; };
 
 var deleteVal = function (key, obj) { return obj[key] = void 0; };
-var deleteBySwap = function (sourceIndex, targetIndex, obj) {
-    obj[sourceIndex] = obj[targetIndex];
-    deleteVal(targetIndex, obj);
-};
+
 var isValidMapValue = function (val) {
     return isNotUndefined(val);
 };
@@ -2321,16 +1872,16 @@ ClassUtils._classMap = {};
 __decorate([
     ensure(function (className) {
         it("should exist class name", function () {
-            index_1(className).exist;
-            index_1(className !== "").true;
+            wdet_1(className).exist;
+            wdet_1(className !== "").true;
         });
     })
 ], ClassUtils, "getClassNameByInstance", null);
 __decorate([
     ensure(function (className) {
         it("should exist class name", function () {
-            index_1(className).exist;
-            index_1(className !== "").true;
+            wdet_1(className).exist;
+            wdet_1(className !== "").true;
         });
     })
 ], ClassUtils, "getClassNameByClass", null);
@@ -2362,135 +1913,15 @@ _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);
 _addTypeID(["CameraController"], _table);
 
-var _addHandle = function (_class, handleMap, handle) {
-    var typeID = getTypeIDFromClass(_class);
-    handleMap[typeID] = handle;
-};
-var addAddComponentHandle$1 = function (_class, handle) {
-    _addHandle(_class, ComponentData.addComponentHandleMap, handle);
-};
-var addDisposeHandle$1 = function (_class, handle) {
-    _addHandle(_class, ComponentData.disposeHandleMap, handle);
-};
-var addInitHandle = function (_class, handle) {
-    _addHandle(_class, ComponentData.initHandleMap, handle);
-};
-var execHandle = function (component, handleMapName, args) {
-    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
-    if (_isHandleNotExist(handle)) {
-        return;
-    }
-    if (!!args) {
-        handle.apply(null, args);
-    }
-    else {
-        handle(component);
-    }
-};
-var execInitHandle = function (typeID, index, state) {
-    var handle = ComponentData.initHandleMap[typeID];
-    if (_isHandleNotExist(handle)) {
-        return;
-    }
-    handle(index, state);
-};
-var _isHandleNotExist = function (handle) { return isNotValidMapValue(handle); };
-var checkComponentShouldAlive = function (component, data, isAlive) {
-    it("component should alive", function () {
-        index_1(isAlive(component, data)).true;
-    });
-};
-var addComponentToGameObjectMap = requireCheckFunc(function (gameObjectMap, index, gameObject) {
-    it("component should not exist in gameObject", function () {
-        index_1(gameObjectMap[index]).not.exist;
-    });
-}, function (gameObjectMap, index, gameObject) {
-    gameObjectMap[index] = gameObject;
-});
-var getComponentGameObject = function (gameObjectMap, index) {
-    return gameObjectMap[index];
-};
-var generateComponentIndex = function (ComponentData$$1) {
-    return ComponentData$$1.index++;
-};
-var deleteComponentBySwap = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
-    it("targetIndex should >= 0", function () {
-        index_1(targetIndex).gte(0);
-    });
-}, function (sourceIndex, targetIndex, componentMap) {
-    componentMap[targetIndex].index = sourceIndex;
-    markComponentIndexRemoved(componentMap[sourceIndex]);
-    deleteBySwap(sourceIndex, targetIndex, componentMap);
-});
-var markComponentIndexRemoved = function (component) {
-    component.index = -1;
-};
-
-var checkIndexShouldEqualCount = function (ComponentData) {
-    it("ComponentData.index should === ComponentData.count", function () {
-        index_1(ComponentData.index).equal(ComponentData.count);
-    });
-    it("ComponentData.index should >= 0", function () {
-        index_1(ComponentData.index).gte(0);
-    });
-    it("ComponentData.count should >= 0", function () {
-        index_1(ComponentData.count).gte(0);
-    });
-};
-
-function registerClass(className) {
-    return function (_class) {
-        ClassUtils.addClassNameAttributeToClass(className, _class);
-        ClassUtils.addClass(className, _class);
-    };
-}
-
-var Component = (function () {
-    function Component() {
-        this.index = null;
-    }
-    return Component;
-}());
-Component = __decorate([
-    registerClass("Component")
-], Component);
-
-var CameraControllerData = (function () {
-    function CameraControllerData() {
-    }
-    return CameraControllerData;
-}());
-CameraControllerData.index = null;
-CameraControllerData.count = null;
-CameraControllerData.dirtyIndexArray = null;
-CameraControllerData.gameObjectMap = null;
-CameraControllerData.worldToCameraMatrixCacheMap = null;
-
-var CameraController = (function (_super) {
-    __extends(CameraController, _super);
-    function CameraController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return CameraController;
-}(Component));
-CameraController = __decorate([
-    registerClass("CameraController")
-], CameraController);
-var createCameraController = function () {
-    return create(CameraControllerData);
-};
-var getCameraControllerGameObject = function (component) {
-    return getGameObject(component.index, CameraControllerData);
-};
-
+var deleteVal$1 = function (key, arr) { return arr[key] = void 0; };
 var isNotValidVal = function (val) { return isUndefined(val); };
-var deleteBySwap$1 = function (index, array) {
-    var last = array.length - 1, temp = null;
-    if (last === -1) {
+
+var deleteBySwap$1 = function (index, lastIndex, array) {
+    var temp = null;
+    if (lastIndex === -1) {
         return null;
     }
-    temp = array[last];
-    array[last] = array[index];
+    temp = array[lastIndex];
     array[index] = temp;
     array.pop();
 };
@@ -2550,6 +1981,138 @@ var forEach = function (arr, func) {
     for (var i = 0, len = arr.length; i < len; i++) {
         func(arr[i], i);
     }
+};
+
+var _addHandle = function (_class, handleMap, handle) {
+    var typeID = getTypeIDFromClass(_class);
+    handleMap[typeID] = handle;
+};
+var addAddComponentHandle$1 = function (_class, handle) {
+    _addHandle(_class, ComponentData.addComponentHandleMap, handle);
+};
+var addDisposeHandle$1 = function (_class, handle) {
+    _addHandle(_class, ComponentData.disposeHandleMap, handle);
+};
+var addInitHandle = function (_class, handle) {
+    _addHandle(_class, ComponentData.initHandleMap, handle);
+};
+var execHandle = function (component, handleMapName, args) {
+    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
+    if (_isHandleNotExist(handle)) {
+        return;
+    }
+    if (!!args) {
+        handle.apply(null, args);
+    }
+    else {
+        handle(component);
+    }
+};
+var execInitHandle = function (typeID, index, state) {
+    var handle = ComponentData.initHandleMap[typeID];
+    if (_isHandleNotExist(handle)) {
+        return;
+    }
+    handle(index, state);
+};
+var _isHandleNotExist = function (handle) { return isNotValidMapValue(handle); };
+var checkComponentShouldAlive = function (component, data, isAlive) {
+    it("component should alive", function () {
+        wdet_1(isAlive(component, data)).true;
+    });
+};
+var addComponentToGameObjectMap = requireCheckFunc(function (gameObjectMap, index, gameObject) {
+    it("component should not exist in gameObject", function () {
+        wdet_1(gameObjectMap[index]).not.exist;
+    });
+}, function (gameObjectMap, index, gameObject) {
+    gameObjectMap[index] = gameObject;
+});
+var getComponentGameObject = function (gameObjectMap, index) {
+    return gameObjectMap[index];
+};
+var generateComponentIndex = function (ComponentData$$1) {
+    return ComponentData$$1.index++;
+};
+var deleteComponent = requireCheckFunc(function (index, componentMap) {
+    it("index should >= 0", function () {
+        wdet_1(index).gte(0);
+    });
+}, function (index, componentMap) {
+    markComponentIndexRemoved(componentMap[index]);
+    deleteVal(index, componentMap);
+});
+var deleteComponentBySwapArray = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
+    it("targetIndex should >= 0", function () {
+        wdet_1(targetIndex).gte(0);
+    });
+}, function (sourceIndex, targetIndex, componentMap) {
+    componentMap[targetIndex].index = sourceIndex;
+    markComponentIndexRemoved(componentMap[sourceIndex]);
+    deleteBySwap$1(sourceIndex, targetIndex, componentMap);
+});
+var markComponentIndexRemoved = function (component) {
+    component.index = -1;
+};
+var isComponentIndexNotRemoved = function (component) {
+    return component.index !== -1;
+};
+
+var checkIndexShouldEqualCount = function (ComponentData) {
+    it("ComponentData.index should === ComponentData.count", function () {
+        wdet_1(ComponentData.index).equal(ComponentData.count);
+    });
+    it("ComponentData.index should >= 0", function () {
+        wdet_1(ComponentData.index).gte(0);
+    });
+    it("ComponentData.count should >= 0", function () {
+        wdet_1(ComponentData.count).gte(0);
+    });
+};
+
+function registerClass(className) {
+    return function (_class) {
+        ClassUtils.addClassNameAttributeToClass(className, _class);
+        ClassUtils.addClass(className, _class);
+    };
+}
+
+var Component = (function () {
+    function Component() {
+        this.index = null;
+    }
+    return Component;
+}());
+Component = __decorate([
+    registerClass("Component")
+], Component);
+
+var CameraControllerData = (function () {
+    function CameraControllerData() {
+    }
+    return CameraControllerData;
+}());
+CameraControllerData.index = null;
+CameraControllerData.count = null;
+CameraControllerData.dirtyIndexArray = null;
+CameraControllerData.gameObjectMap = null;
+CameraControllerData.worldToCameraMatrixCacheMap = null;
+
+var CameraController = (function (_super) {
+    __extends(CameraController, _super);
+    function CameraController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return CameraController;
+}(Component));
+CameraController = __decorate([
+    registerClass("CameraController")
+], CameraController);
+var createCameraController = function () {
+    return create(CameraControllerData);
+};
+var getCameraControllerGameObject = function (component) {
+    return getGameObject(component.index, CameraControllerData);
 };
 
 var cacheFunc = function (hasCacheFunc, getCacheFunc, setCacheFunc, bodyFunc) {
@@ -4316,7 +3879,7 @@ var Matrix4 = Matrix4_1 = (function () {
 __decorate([
     requireCheck(function (angle, x, y, z) {
         it("axis's component shouldn't all be zero", function () {
-            index_1(x === 0 && y === 0 && z === 0).false;
+            wdet_1(x === 0 && y === 0 && z === 0).false;
         });
     })
 ], Matrix4.prototype, "setRotate", null);
@@ -4339,16 +3902,16 @@ var Matrix4_1;
 
 var updateProjectionMatrix$1 = requireCheckFunc(function (index, PerspectiveCameraData, CameraData) {
     it("fovy should exist", function () {
-        index_1(isValidMapValue(PerspectiveCameraData.fovyMap[index])).true;
+        wdet_1(isValidMapValue(PerspectiveCameraData.fovyMap[index])).true;
     });
     it("aspect should exist", function () {
-        index_1(isValidMapValue(PerspectiveCameraData.aspectMap[index])).true;
+        wdet_1(isValidMapValue(PerspectiveCameraData.aspectMap[index])).true;
     });
     it("near should exist", function () {
-        index_1(isValidMapValue(CameraData.nearMap[index])).true;
+        wdet_1(isValidMapValue(CameraData.nearMap[index])).true;
     });
     it("far should exist", function () {
-        index_1(isValidMapValue(CameraData.farMap[index])).true;
+        wdet_1(isValidMapValue(CameraData.farMap[index])).true;
     });
 }, function (index, PerspectiveCameraData, CameraData) {
     setPMatrix(index, _getOrCreatePMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]), CameraData);
@@ -4396,15 +3959,17 @@ GameObjectData.childrenMap = null;
 GameObjectData.aliveUIDArray = null;
 
 var DataBufferConfig = {
-    transformDataBufferCount: 16 * 1024,
-    geometryDataBufferCount: 1024 * 1024,
-    geometryIndicesBufferBits: 16,
+    transformDataBufferCount: 20 * 1000,
+    geometryDataBufferCount: 1000 * 1000,
+    materialDataBufferCount: 20 * 1000,
+    renderCommandBufferCount: 10 * 1024,
+    geometryIndicesBufferBits: 16
 };
 
 var ThreeDTransformData = (function () {
     function ThreeDTransformData() {
     }
-    Object.defineProperty(ThreeDTransformData, "count", {
+    Object.defineProperty(ThreeDTransformData, "maxCount", {
         get: function () {
             return DataBufferConfig.transformDataBufferCount;
         },
@@ -4417,6 +3982,10 @@ ThreeDTransformData.localToWorldMatrices = null;
 ThreeDTransformData.localPositions = null;
 ThreeDTransformData.localRotations = null;
 ThreeDTransformData.localScales = null;
+ThreeDTransformData.defaultPosition = null;
+ThreeDTransformData.defaultRotation = null;
+ThreeDTransformData.defaultScale = null;
+ThreeDTransformData.defaultLocalToWorldMatrice = null;
 ThreeDTransformData.firstDirtyIndex = null;
 ThreeDTransformData.indexInArrayBuffer = null;
 ThreeDTransformData.notUsedIndexLinkList = null;
@@ -4426,6 +3995,7 @@ ThreeDTransformData.childrenMap = null;
 ThreeDTransformData.cacheMap = null;
 ThreeDTransformData.tempMap = null;
 ThreeDTransformData.transformMap = null;
+ThreeDTransformData.count = null;
 ThreeDTransformData.uid = null;
 ThreeDTransformData.disposeCount = null;
 ThreeDTransformData.isClearCacheMap = null;
@@ -4505,7 +4075,7 @@ var setThreeDTransformBatchTransformDatas = function (batchData) {
 var getThreeDTransformParent = requireCheckFunc(function (component) {
     checkShouldAlive(component, ThreeDTransformData);
 }, function (component) {
-    return getParent$$1(component, ThreeDTransformData);
+    return getParent$1(component, ThreeDTransformData);
 });
 var setThreeDTransformParent = requireCheckFunc(function (component, parent) {
     checkShouldAlive(component, ThreeDTransformData);
@@ -4517,79 +4087,6 @@ var getThreeDTransformGameObject = requireCheckFunc(function (component) {
 }, function (component) {
     return getGameObject$1(component.uid, ThreeDTransformData);
 });
-
-var _setValue = function (dataArr, increment, startIndex, target) {
-    dataArr[startIndex + increment] = target;
-};
-var DataUtils = (function () {
-    function DataUtils() {
-    }
-    DataUtils.setMatrices = function (dataArr, mat, index) {
-        var values = mat.values;
-        for (var i = 0; i <= 15; i++) {
-            _setValue(dataArr, i, index, values[i]);
-        }
-    };
-    DataUtils.setMatrix4ByIndex = function (mat, dataArr, index) {
-        mat.set(dataArr[index], dataArr[index + 1], dataArr[index + 2], dataArr[index + 3], dataArr[index + 4], dataArr[index + 5], dataArr[index + 6], dataArr[index + 7], dataArr[index + 8], dataArr[index + 9], dataArr[index + 10], dataArr[index + 11], dataArr[index + 12], dataArr[index + 13], dataArr[index + 14], dataArr[index + 15]);
-        return mat;
-    };
-    DataUtils.setVectors = function (dataArr, vec, index) {
-        var values = vec.values;
-        for (var i = 0; i <= 2; i++) {
-            _setValue(dataArr, i, index, values[i]);
-        }
-    };
-    DataUtils.setVector3ByIndex = function (vec, dataArr, index) {
-        vec.set(dataArr[index], dataArr[index + 1], dataArr[index + 2]);
-        return vec;
-    };
-    DataUtils.setQuaternions = function (dataArr, qua, index) {
-        _setValue(dataArr, 0, index, qua.x);
-        _setValue(dataArr, 1, index, qua.y);
-        _setValue(dataArr, 2, index, qua.z);
-        _setValue(dataArr, 3, index, qua.w);
-    };
-    DataUtils.setQuaternionByIndex = function (qua, dataArr, index) {
-        qua.set(dataArr[index], dataArr[index + 1], dataArr[index + 2], dataArr[index + 3]);
-        return qua;
-    };
-    DataUtils.swap = function (dataArr, index1, index2, length) {
-        for (var i = 0; i < length; i++) {
-            var newIndex1 = index1 + i, newIndex2 = index2 + i, temp = dataArr[newIndex2];
-            dataArr[newIndex2] = dataArr[newIndex1];
-            dataArr[newIndex1] = temp;
-        }
-    };
-    DataUtils.createMatrix4ByIndex = function (mat, dataArr, index) {
-        return this.setMatrix4ByIndex(mat, dataArr, index);
-    };
-    DataUtils.createVector3ByIndex = function (vec, dataArr, index) {
-        return this.setVector3ByIndex(vec, dataArr, index);
-    };
-    DataUtils.createQuaternionByIndex = function (qua, dataArr, index) {
-        return this.setQuaternionByIndex(qua, dataArr, index);
-    };
-    DataUtils.removeItemInArray = function (arr, index) {
-        arr[index] = void 0;
-    };
-    DataUtils.removeSingleItemInTypeArray = function (dataArr, index, resetValFunc) {
-        resetValFunc(dataArr, index).run();
-    };
-    DataUtils.removeTypeArrayItemBySwap = function (dataArr, index, swapItemIndex, length) {
-        for (var i = 0; i < length; i++) {
-            dataArr[index + i] = dataArr[swapItemIndex + i];
-        }
-    };
-    return DataUtils;
-}());
-__decorate([
-    requireCheck(function (dataArr, index, swapItemIndex, length) {
-        it("index should <= swapItemIndex", function () {
-            index_1(index).lte(swapItemIndex);
-        });
-    })
-], DataUtils, "removeTypeArrayItemBySwap", null);
 
 var identity_1 = createCommonjsModule(function (module, exports) {
 "use strict";
@@ -6013,10 +5510,10 @@ var forEachArray = curry(function (f, arr) {
 
 var getUID = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
     it("indexInArrayBuffer should exist", function () {
-        index_1(indexInArrayBuffer).exist;
+        wdet_1(indexInArrayBuffer).exist;
     });
     it("transform should exist", function () {
-        index_1(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
+        wdet_1(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
     });
 }, function (indexInArrayBuffer, ThreeDTransformData) {
     return ThreeDTransformData.transformMap[indexInArrayBuffer].uid;
@@ -6036,9 +5533,9 @@ var removeChildEntity = function (children, targetUID) {
     }
 };
 
-var getParent$1 = requireCheckFunc(function (uid, ThreeDTransformData) {
+var getParent$2 = requireCheckFunc(function (uid, ThreeDTransformData) {
     it("uid should exist", function () {
-        index_1(uid).exist;
+        wdet_1(uid).exist;
     });
 }, function (uid, ThreeDTransformData) {
     return ThreeDTransformData.parentMap[uid];
@@ -6046,11 +5543,11 @@ var getParent$1 = requireCheckFunc(function (uid, ThreeDTransformData) {
 var setParent$1 = requireCheckFunc(function (transform, parent, ThreeDTransformData) {
     it("parent should not be self", function () {
         if (parent !== null) {
-            index_1(_isTransformEqual(transform, parent)).false;
+            wdet_1(_isTransformEqual(transform, parent)).false;
         }
     });
 }, function (transform, parent, ThreeDTransformData) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = getParent$1(uid, ThreeDTransformData), isCurrentParentExisit = isParentExist(currentParent);
+    var indexInArrayBuffer = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = getParent$2(uid, ThreeDTransformData), isCurrentParentExisit = isParentExist(currentParent);
     if (parent === null) {
         if (isCurrentParentExisit) {
             _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
@@ -6069,7 +5566,7 @@ var setParent$1 = requireCheckFunc(function (transform, parent, ThreeDTransformD
     addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 });
 var _isTransformEqual = function (tra1, tra2) { return tra1.uid === tra2.uid; };
-var getChildren = function (uid, ThreeDTransformData) {
+var getChildren$1 = function (uid, ThreeDTransformData) {
     return ThreeDTransformData.childrenMap[uid];
 };
 var isParentExist = function (parent) { return isNotUndefined(parent); };
@@ -6079,13 +5576,9 @@ var isNotChangeParent = function (currentParentIndexInArrayBuffer, newParentInde
 };
 var removeHierarchyData = function (uid, ThreeDTransformData) {
     deleteVal(uid, ThreeDTransformData.childrenMap);
-    var parent = getParent$1(uid, ThreeDTransformData);
-    if (isParentExist(parent)) {
-        _removeHierarchyFromParent(parent, uid, ThreeDTransformData);
-    }
 };
 var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformData) {
-    var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
+    var parentUID = parent.uid, children = getChildren$1(parentUID, ThreeDTransformData);
     deleteVal(targetUID, ThreeDTransformData.parentMap);
     if (isNotValidMapValue(children)) {
         return;
@@ -6097,13 +5590,13 @@ var _removeChild = function (parentUID, targetUID, children, ThreeDTransformData
 };
 var _addChild$1 = requireCheckFunc(function (uid, child, ThreeDTransformData) {
     it("children should be empty array if has no child", function () {
-        index_1(getChildren(uid, ThreeDTransformData)).be.a("array");
+        wdet_1(getChildren$1(uid, ThreeDTransformData)).be.a("array");
     });
 }, function (uid, child, ThreeDTransformData) {
-    var children = getChildren(uid, ThreeDTransformData);
+    var children = getChildren$1(uid, ThreeDTransformData);
     children.push(child);
 });
-var setChildren = function (uid, children, ThreeDTransformData) {
+var setChildren$1 = function (uid, children, ThreeDTransformData) {
     ThreeDTransformData.childrenMap[uid] = children;
 };
 var _setParent$1 = function (uid, parent, ThreeDTransformData) {
@@ -6111,12 +5604,12 @@ var _setParent$1 = function (uid, parent, ThreeDTransformData) {
 };
 var _addToParent = requireCheckFunc(function (targetUID, target, parent, ThreeDTransformData) {
     it("the child one should not has parent", function () {
-        index_1(isValidMapValue(getParent$1(targetUID, ThreeDTransformData))).false;
+        wdet_1(isValidMapValue(getParent$2(targetUID, ThreeDTransformData))).false;
     });
     it("parent should not already has the child", function () {
-        var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
+        var parentUID = parent.uid, children = getChildren$1(parentUID, ThreeDTransformData);
         if (isValidMapValue(children)) {
-            index_1(children.indexOf(target)).equal(-1);
+            wdet_1(children.indexOf(target)).equal(-1);
         }
     });
 }, function (targetUID, target, parent, ThreeDTransformData) {
@@ -6125,10 +5618,100 @@ var _addToParent = requireCheckFunc(function (targetUID, target, parent, ThreeDT
     _addChild$1(parentUID, target, ThreeDTransformData);
 });
 
-var swap = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
+var getMatrix4DataSize = function () { return 16; };
+var getVector3DataSize = function () { return 3; };
+var getQuaternionDataSize = function () { return 4; };
+
+var getSubarray = function (typeArr, startIndex, endIndex) {
+    return typeArr.subarray(startIndex, endIndex);
+};
+var deleteBySwapAndNotReset = function (sourceIndex, targetIndex, typeArr) {
+    typeArr[sourceIndex] = typeArr[targetIndex];
+};
+var deleteBySwapAndReset = function (sourceIndex, targetIndex, typeArr, length, defaultValueArr) {
+    for (var i = 0; i < length; i++) {
+        typeArr[sourceIndex + i] = typeArr[targetIndex + i];
+        typeArr[targetIndex + i] = defaultValueArr[i];
+    }
+};
+var deleteOneItemBySwapAndReset = function (sourceIndex, targetIndex, typeArr, defaultValue) {
+    typeArr[sourceIndex] = typeArr[targetIndex];
+    typeArr[targetIndex] = defaultValue;
+};
+var set = function (typeArr, valArr, offset) {
+    if (offset === void 0) { offset = 0; }
+    typeArr.set(valArr, offset);
+};
+var setMatrices = function (typeArr, mat, index) {
+    var values = mat.values;
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
+    typeArr[index + 9] = values[9];
+    typeArr[index + 10] = values[10];
+    typeArr[index + 11] = values[11];
+    typeArr[index + 12] = values[12];
+    typeArr[index + 13] = values[13];
+    typeArr[index + 14] = values[14];
+    typeArr[index + 15] = values[15];
+};
+var setMatrix4ByIndex = requireCheckFunc(function (mat, typeArr, index) {
+    it("should not exceed type arr's length", function () {
+        wdet_1(index + 15).lte(typeArr.length - 1);
+    });
+}, function (mat, typeArr, index) {
+    mat.set(typeArr[index], typeArr[index + 1], typeArr[index + 2], typeArr[index + 3], typeArr[index + 4], typeArr[index + 5], typeArr[index + 6], typeArr[index + 7], typeArr[index + 8], typeArr[index + 9], typeArr[index + 10], typeArr[index + 11], typeArr[index + 12], typeArr[index + 13], typeArr[index + 14], typeArr[index + 15]);
+    return mat;
+});
+var setVectors = function (typeArr, vec, index) {
+    var values = vec.values;
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+};
+var setVector3ByIndex = requireCheckFunc(function (vec, typeArr, index) {
+    it("should not exceed type arr's length", function () {
+        wdet_1(index + 2).lte(typeArr.length - 1);
+    });
+}, function (vec, typeArr, index) {
+    var values = vec.values;
+    values[0] = typeArr[index];
+    values[1] = typeArr[index + 1];
+    values[2] = typeArr[index + 2];
+    return vec;
+});
+var setQuaternions = function (typeArr, qua, index) {
+    typeArr[index] = qua.x;
+    typeArr[index + 1] = qua.y;
+    typeArr[index + 2] = qua.z;
+    typeArr[index + 3] = qua.z;
+};
+var setQuaternionByIndex = requireCheckFunc(function (qua, typeArr, index) {
+    it("should not exceed type arr's length", function () {
+        wdet_1(index + 3).lte(typeArr.length - 1);
+    });
+}, function (qua, typeArr, index) {
+    qua.set(typeArr[index], typeArr[index + 1], typeArr[index + 2], typeArr[index + 3]);
+    return qua;
+});
+
+var createMatrix4ByIndex = function (mat, typeArr, index) {
+    return setMatrix4ByIndex(mat, typeArr, index);
+};
+var createVector3ByIndex = function (vec, typeArr, index) {
+    return setVector3ByIndex(vec, typeArr, index);
+};
+
+var swap$$1 = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
     it("source index and target index should be used", function () {
-        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
-        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(index1, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(index2, ThreeDTransformData)).true;
     });
 }, function (index1, index2, ThreeDTransformData) {
     swapTypeArrData(index1, index2, ThreeDTransformData);
@@ -6137,8 +5720,8 @@ var swap = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
 });
 var swapTransformMapData = requireCheckFunc(function (index1, index2, ThreeDTransformData) {
     it("source index and target index should be used", function () {
-        index_1(isIndexUsed(index1, ThreeDTransformData)).true;
-        index_1(isIndexUsed(index2, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(index1, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(index2, ThreeDTransformData)).true;
     });
 }, function (index1, index2, ThreeDTransformData) {
     return _changeMapData(index1, index2, _swapTransformMap, ThreeDTransformData);
@@ -6168,9 +5751,20 @@ var _changeTypeArrData = function (sourceIndex, targetIndex, changeFunc, ThreeDT
     changeFunc(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
     changeFunc(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
     changeFunc(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
-    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    _changeLocalScaleData(vec3SourceIndex, vec3TargetIndex, vec3Size, ThreeDTransformData, changeFunc);
     return ThreeDTransformData;
 };
+var _changeLocalScaleData = requireCheckFunc(function (vec3SourceIndex, vec3TargetIndex, vec3Size, ThreeDTransformData, changeFunc) {
+    it("source localScale data shouldn't be [0,0,0]", function () {
+        if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 2] === 0) {
+            wdet_1(false).true;
+        }
+    });
+}, function (vec3SourceIndex, vec3TargetIndex, vec3Size, ThreeDTransformData, changeFunc) {
+    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+});
 var _changeMapData = function (sourceIndex, targetIndex, changeFunc, ThreeDTransformData) {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
@@ -6182,7 +5776,6 @@ var _moveToTypeArr = function (dataArr, sourceIndex, targetIndex, length) {
     for (var i = 0; i < length; i++) {
         var newIndex1 = sourceIndex + i, newIndex2 = targetIndex + i;
         dataArr[newIndex2] = dataArr[newIndex1];
-        dataArr[newIndex1] = 0;
     }
 };
 var _moveToTransformMap = function (transformMap, sourceIndex, targetIndex) {
@@ -6193,14 +5786,14 @@ var _moveToTransformMap = function (transformMap, sourceIndex, targetIndex) {
 };
 var moveToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
     it("source index should not be used", function () {
-        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+        wdet_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
 }, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
     it("source index should be used", function () {
-        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
     });
     it("target index should not be used", function () {
-        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
+        wdet_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
 }, function (sourceIndex, targetIndex, ThreeDTransformData) {
     moveTypeArrDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
@@ -6210,14 +5803,14 @@ var moveToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, Thre
 }));
 var moveMapDataToIndex = ensureFunc(function (returnVal, sourceIndex, targetIndex, ThreeDTransformData) {
     it("source index should not be used", function () {
-        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
+        wdet_1(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
 }, requireCheckFunc(function (sourceIndex, targetIndex, ThreeDTransformData) {
     it("source index should be used", function () {
-        index_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
+        wdet_1(isIndexUsed(sourceIndex, ThreeDTransformData)).true;
     });
     it("target index should not be used", function () {
-        index_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
+        wdet_1(isIndexUsed(targetIndex, ThreeDTransformData)).false;
     });
 }, function (sourceIndex, targetIndex, ThreeDTransformData) {
     return _changeMapData(sourceIndex, targetIndex, _moveToTransformMap, ThreeDTransformData);
@@ -6232,35 +5825,32 @@ var setTransformDataInTypeArr = function (indexInArrayBuffer, mat, qua, position
     setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
 };
 var setLocalToWorldMatricesData = function (mat, mat4IndexInArrayBuffer, ThreeDTransformData) {
-    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
+    setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
 };
 var setLocalPositionData = function (position, vec3IndexInArrayBuffer, ThreeDTransformData) {
-    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     return ThreeDTransformData;
 };
 var setLocalRotationData = function (qua, quaIndexInArrayBuffer, ThreeDTransformData) {
-    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
+    setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
     return ThreeDTransformData;
 };
 var setLocalScaleData = function (scale, vec3IndexInArrayBuffer, ThreeDTransformData) {
-    DataUtils.setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
     return ThreeDTransformData;
 };
 var setPositionData = function (indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData) {
     if (isParentExist(parent)) {
         var indexInArrayBuffer_1 = parent.index;
-        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
+        setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
             uid: getUID(indexInArrayBuffer_1, ThreeDTransformData),
             index: indexInArrayBuffer_1
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
-        DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+        setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 };
-var getMatrix4DataSize = function () { return 16; };
-var getVector3DataSize = function () { return 3; };
-var getQuaternionDataSize = function () { return 4; };
 var getMatrix4DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getMatrix4DataSize(); };
 var getVector3DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getVector3DataSize(); };
 var getQuaternionDataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getQuaternionDataSize(); };
@@ -6307,15 +5897,15 @@ var LinkNode = (function () {
 }());
 
 var addFirstDirtyIndex = ensureFunc(function (firstDirtyIndex, ThreeDTransformData) {
-    it("firstDirtyIndex should <= count", function () {
-        index_1(firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", function () {
+        wdet_1(firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
 }, function (ThreeDTransformData) {
     return ThreeDTransformData.firstDirtyIndex + 1;
 });
 var minusFirstDirtyIndex = ensureFunc(function (firstDirtyIndex) {
     it("firstDirtyIndex should >= start index:" + getStartIndexInArrayBuffer(), function () {
-        index_1(firstDirtyIndex).gte(getStartIndexInArrayBuffer());
+        wdet_1(firstDirtyIndex).gte(getStartIndexInArrayBuffer());
     });
 }, function (firstDirtyIndex) {
     return firstDirtyIndex - 1;
@@ -6348,14 +5938,14 @@ var generateNotUsedIndexInNormalList = ensureFunc(function (indexInArrayBuffer, 
     return index;
 });
 var addToDirtyList$1 = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-    it("firstDirtyIndex should <= count", function () {
-        index_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", function () {
+        wdet_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
 }, function (indexInArrayBuffer, ThreeDTransformData) {
     var targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
     ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
     if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
-        swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        swap$$1(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
     }
     else {
         moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
@@ -6363,10 +5953,14 @@ var addToDirtyList$1 = requireCheckFunc(function (indexInArrayBuffer, ThreeDTran
     return targetDirtyIndex;
 });
 var _getNotUsedIndexFromArr = function (ThreeDTransformData) {
-    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList, node = null;
+    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList, isValidLinkNode = true, node = null;
     do {
         node = _getNotUsedIndexNode(notUsedIndexLinkList);
-    } while (_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData));
+        isValidLinkNode = _isValidLinkNode(node);
+    } while (isValidLinkNode && isIndexUsed(node.val, ThreeDTransformData));
+    if (!isValidLinkNode) {
+        return void 0;
+    }
     return node.val;
 };
 var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
@@ -6379,12 +5973,15 @@ var isNotDirty = function (indexInArrayBuffer, firstDirtyIndex) {
     return indexInArrayBuffer < firstDirtyIndex;
 };
 var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, uid, ThreeDTransformData) {
-    var indexInArraybuffer = rootIndexInArrayBuffer, children = getChildren(uid, ThreeDTransformData);
+    var indexInArraybuffer = rootIndexInArrayBuffer, children = getChildren$1(uid, ThreeDTransformData);
     if (isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
         addToDirtyList$1(indexInArraybuffer, ThreeDTransformData);
     }
     if (isChildrenExist(children)) {
         forEach(children, function (child) {
+            if (isNotAlive$1(child, ThreeDTransformData)) {
+                return;
+            }
             addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
         });
     }
@@ -6392,11 +5989,11 @@ var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, uid, Thre
 };
 var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, indexInArrayBuffer) {
     it("indexInArrayBuffer should < firstDirtyIndex", function () {
-        index_1(indexInArrayBuffer).exist;
-        index_1(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
+        wdet_1(indexInArrayBuffer).exist;
+        wdet_1(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", function () {
-        index_1(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
+        wdet_1(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
     });
 };
 
@@ -6417,7 +6014,7 @@ var clearCache = curry(function (ThreeDTransformData, state) {
         ThreeDTransformData.isClearCacheMap = false;
         return;
     }
-    count = ThreeDTransformData.count;
+    count = ThreeDTransformData.maxCount;
     cacheMap = ThreeDTransformData.cacheMap;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         var uid = getUID(i, ThreeDTransformData), isTranslate$$1 = getIsTranslate(uid, ThreeDTransformData);
@@ -6461,23 +6058,31 @@ var _getCache = function (uid, ThreeTransformData) {
 var update$2 = function (elapsed, GlobalTempData, ThreeDTransformData, state) {
     return compose(_cleanDirtyList(ThreeDTransformData), _updateDirtyList(GlobalTempData, ThreeDTransformData), clearCache(ThreeDTransformData))(state);
 };
-var _updateDirtyList = curry(function (GlobalTempData, ThreeDTransformData, state) {
+var _updateDirtyList = requireCheckFunc(curry(function (GlobalTempData, ThreeDTransformData, state) {
+    it("firstDirtyIndex should <= maxCount", function () {
+        wdet_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
+    });
+}), curry(function (GlobalTempData, ThreeDTransformData, state) {
     _sortParentBeforeChildInDirtyList(ThreeDTransformData);
-    var count = ThreeDTransformData.count;
+    var count = ThreeDTransformData.maxCount;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         _transform(i, GlobalTempData, ThreeDTransformData);
     }
     return state;
-});
-var _cleanDirtyList = curry(function (ThreeDTransformData, state) {
-    var count = ThreeDTransformData.count;
+}));
+var _cleanDirtyList = requireCheckFunc(curry(function (ThreeDTransformData, state) {
+    it("firstDirtyIndex should <= maxCount", function () {
+        wdet_1(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
+    });
+}), curry(function (ThreeDTransformData, state) {
+    var count = ThreeDTransformData.maxCount;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         if (_needMoveOffDirtyList(i)) {
             _moveFromDirtyListToNormalList(i, ThreeDTransformData);
         }
     }
     return state;
-});
+}));
 var _needMoveOffDirtyList = function (index) {
     return true;
 };
@@ -6486,30 +6091,30 @@ var _moveFromDirtyListToNormalList = function (index, ThreeDTransformData) {
     moveToIndex(index, generateNotUsedIndexInNormalList(ThreeDTransformData), ThreeDTransformData);
 };
 var _transform = function (index, GlobalTempData, ThreeDTransformData) {
-    var vec3Index = getVector3DataIndexInArrayBuffer(index), quaIndex = getQuaternionDataIndexInArrayBuffer(index), mat4Index = getMatrix4DataIndexInArrayBuffer(index), mat = GlobalTempData.matrix4_2.setTRS(DataUtils.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index), DataUtils.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex), DataUtils.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)), parent = getParent$1(getUID(index, ThreeDTransformData), ThreeDTransformData);
+    var vec3Index = getVector3DataIndexInArrayBuffer(index), quaIndex = getQuaternionDataIndexInArrayBuffer(index), mat4Index = getMatrix4DataIndexInArrayBuffer(index), mat = GlobalTempData.matrix4_2.setTRS(setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index), setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex), setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)), parent = getParent$2(getUID(index, ThreeDTransformData), ThreeDTransformData);
     if (isParentExist(parent)) {
         var parentIndex = parent.index;
-        return setLocalToWorldMatricesData(DataUtils.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
+        return setLocalToWorldMatricesData(setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(parentIndex))
             .multiply(mat), mat4Index, ThreeDTransformData);
     }
     return setLocalToWorldMatricesData(mat, mat4Index, ThreeDTransformData);
 };
 var _sortParentBeforeChildInDirtyList = function (ThreeDTransformData) {
-    var count = ThreeDTransformData.count;
+    var count = ThreeDTransformData.maxCount;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        var parent = getParent$1(getUID(i, ThreeDTransformData), ThreeDTransformData);
+        var parent = getParent$2(getUID(i, ThreeDTransformData), ThreeDTransformData);
         if (isParentExist(parent)) {
             var parentIndex = parent.index;
             if (parentIndex > i) {
-                swap(parentIndex, i, ThreeDTransformData);
+                swap$$1(parentIndex, i, ThreeDTransformData);
             }
         }
     }
 };
 
-var checkTransformShouldAlive = function (transform, ThreeTransformData) {
-    checkComponentShouldAlive(transform, ThreeTransformData, function (transform, ThreeTransformData) {
-        return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
+var checkTransformShouldAlive = function (transform, ThreeDTransformData) {
+    checkComponentShouldAlive(transform, ThreeDTransformData, function (transform, ThreeDTransformData) {
+        return isAlive$1(transform, ThreeDTransformData);
     });
 };
 
@@ -6528,7 +6133,7 @@ var setBatchDatas$1 = requireCheckFunc(function (batchData, GlobalTempData, Thre
 var _setBatchTransformData = curry(function (batchData, GlobalTempData, ThreeDTransformData) {
     for (var _i = 0, batchData_2 = batchData; _i < batchData_2.length; _i++) {
         var data = batchData_2[_i];
-        var transform = data.transform, indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$1(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer), position = data.position, localPosition = data.localPosition;
+        var transform = data.transform, indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$2(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer), position = data.position, localPosition = data.localPosition;
         if (localPosition) {
             setLocalPositionData(localPosition, vec3IndexInArrayBuffer, ThreeDTransformData);
         }
@@ -6541,7 +6146,7 @@ var _setBatchTransformData = curry(function (batchData, GlobalTempData, ThreeDTr
 var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry(function (batchData, ThreeDTransformData) {
     var notDirtyIndexArr = [], firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
     var _getNotDirtyIndex = function (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate$$1, ThreeDTransformData) {
-        var children = getChildren(uid, ThreeDTransformData);
+        var children = getChildren$1(uid, ThreeDTransformData);
         if (isTranslate$$1) {
             setIsTranslate(uid, true, ThreeDTransformData);
         }
@@ -6551,6 +6156,9 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry(function (batchDat
         }
         if (isChildrenExist(children)) {
             forEach(children, function (child) {
+                if (isNotAlive$1(child, ThreeDTransformData)) {
+                    return;
+                }
                 _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate$$1, ThreeDTransformData);
             });
         }
@@ -6618,12 +6226,12 @@ var createTag = function (slotCount) {
     return create$3(slotCount, TagData);
 };
 var addTag$1 = requireCheckFunc(function (component, tag) {
-    checkShouldAlive$1(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component, tag) {
     addTag$$1(component, tag, TagData);
 });
 var removeTag$1 = requireCheckFunc(function (component, tag) {
-    checkShouldAlive$1(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component, tag) {
     removeTag$$1(component, tag, TagData);
 });
@@ -6631,10 +6239,15 @@ var findGameObjectsByTag$1 = function (tag) {
     return findGameObjectsByTag$$1(tag, TagData);
 };
 var getTagGameObject = requireCheckFunc(function (component) {
-    checkShouldAlive$1(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component) {
     return getGameObject$2(component.index, TagData);
 });
+var _checkShouldAlive = function (tag, TagData$$1) {
+    checkComponentShouldAlive(tag, TagData$$1, function (tag, TagData$$1) {
+        return isValidMapValue(TagData$$1.indexMap[TagData$$1.indexInTagArrayMap[tag.index]]);
+    });
+};
 
 var addAddComponentHandle$3 = function (_class) {
     addAddComponentHandle$1(_class, addComponent$3);
@@ -6646,7 +6259,7 @@ var create$3 = ensureFunc(function (tag, slotCount, TagData$$1) {
     it("slot array should has no hole", function () {
         for (var _i = 0, _a = TagData$$1.slotCountMap; _i < _a.length; _i++) {
             var count = _a[_i];
-            index_1(count).exist;
+            wdet_1(count).exist;
         }
     });
 }, function (slotCount, TagData$$1) {
@@ -6663,7 +6276,7 @@ var create$3 = ensureFunc(function (tag, slotCount, TagData$$1) {
 });
 var setNextIndexInTagArrayMap = requireCheckFunc(function (index, slotCount, indexInTagArrayMap) {
     it("index should >= 0", function () {
-        index_1(index).gte(0);
+        wdet_1(index).gte(0);
     });
 }, function (index, slotCount, indexInTagArrayMap) {
     indexInTagArrayMap[index + 1] = indexInTagArrayMap[index] + slotCount;
@@ -6677,7 +6290,7 @@ var _initIndexMap = function (index, slotCount, TagData$$1) {
 var addTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
     it("tag should not already be added", function () {
         var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), tagArray = TagData$$1.tagArray, slotCountMap = TagData$$1.slotCountMap, currentSlotCount = getSlotCount(index, slotCountMap);
-        index_1(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
+        wdet_1(tagArray.slice(indexInArray, indexInArray + currentSlotCount).indexOf(tag) > -1).false;
     });
 }, function (tagComponent, tag, TagData$$1) {
     var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), slotCountMap = TagData$$1.slotCountMap, tagArray = TagData$$1.tagArray, usedSlotCountMap = TagData$$1.usedSlotCountMap, currentSlotCount = getSlotCount(index, slotCountMap), currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap);
@@ -6709,7 +6322,7 @@ var _updateIndexMap = function (indexInArray, index, increasedSlotCount, TagData
 var removeTag$$1 = requireCheckFunc(function (tagComponent, tag, TagData$$1) {
     it("current used slot count should >= 0", function () {
         var index = tagComponent.index, usedSlotCountMap = TagData$$1.usedSlotCountMap;
-        index_1(getUsedSlotCount(index, usedSlotCountMap)).gte(0);
+        wdet_1(getUsedSlotCount(index, usedSlotCountMap)).gte(0);
     });
 }, function (tagComponent, tag, TagData$$1) {
     var index = tagComponent.index, indexInArray = _convertTagIndexToIndexInArray(index, TagData$$1), usedSlotCountMap = TagData$$1.usedSlotCountMap, tagArray = TagData$$1.tagArray, currentUsedSlotCount = getUsedSlotCount(index, usedSlotCountMap), newUsedSlotCount = currentUsedSlotCount;
@@ -6742,7 +6355,7 @@ var _setUsedSlotCount = function (index, slotCount, usedSlotCountMap) {
 };
 var _isSlotAllUsed = requireCheckFunc(function (currentUsedSlotCount, currentSlotCount) {
     it("usedSlotCount should <= slotCount", function () {
-        index_1(currentUsedSlotCount).lte(currentSlotCount);
+        wdet_1(currentUsedSlotCount).lte(currentSlotCount);
     });
 }, function (currentUsedSlotCount, currentSlotCount) {
     return currentUsedSlotCount === currentSlotCount;
@@ -6761,14 +6374,9 @@ var _convertTagIndexToIndexInArray = function (tagIndex, TagData$$1) {
 var _convertIndexInArrayToTagIndex = function (indexInTagArray, TagData$$1) {
     return TagData$$1.indexMap[indexInTagArray];
 };
-var checkShouldAlive$1 = function (tag, TagData$$1) {
-    checkComponentShouldAlive(tag, TagData$$1, function (tag, TagData$$1) {
-        return isValidMapValue(TagData$$1.indexMap[TagData$$1.indexInTagArrayMap[tag.index]]);
-    });
-};
 var disposeComponent$3 = ensureFunc(function (returnVal, tag) {
     it("count should >= 0", function () {
-        index_1(TagData.count).gte(0);
+        wdet_1(TagData.count).gte(0);
     });
 }, function (tag) {
     var index = tag.index, indexInTagArray = _convertTagIndexToIndexInArray(index, TagData), currentUsedSlotCount = getUsedSlotCount(index, TagData.usedSlotCountMap), tagArray = TagData.tagArray;
@@ -6780,7 +6388,7 @@ var disposeComponent$3 = ensureFunc(function (returnVal, tag) {
     markComponentIndexRemoved(TagData.tagMap[index]);
     TagData.disposeCount += 1;
     if (isDisposeTooManyComponents(TagData.disposeCount)) {
-        reAllocateTagMap(TagData);
+        reAllocateTag(TagData);
         TagData.disposeCount = 0;
     }
 });
@@ -6814,21 +6422,34 @@ var MemoryConfig = {
     maxComponentDisposeCount: 1000
 };
 
-var isDisposeTooManyComponents = function (disposeCount) {
-    return disposeCount >= MemoryConfig.maxComponentDisposeCount;
+var isDisposeTooManyComponents = function (disposeCount, maxComponentDisposeCount) {
+    if (maxComponentDisposeCount === void 0) { maxComponentDisposeCount = MemoryConfig.maxComponentDisposeCount; }
+    return disposeCount >= maxComponentDisposeCount;
 };
-var _setMapVal = function (map, uid, val) {
-    map[uid] = val;
+var _setMapVal = function (map, key, val) {
+    map[key] = val;
 };
-var reAllocateThreeDTransformMap = function (ThreeDTransformData) {
-    var val = null, newParentMap = {}, newChildrenMap = {}, newIsTranslateMap = {}, newGameObjectMap = {}, newTempMap = {}, newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, gameObjectMap = ThreeDTransformData.gameObjectMap, tempMap = ThreeDTransformData.tempMap;
+var _setArrayVal = function (arr, index, val) {
+    arr[index] = val;
+};
+var reAllocateThreeDTransform = function (ThreeDTransformData) {
+    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newIsTranslateMap = createMap(), newGameObjectMap = createMap(), newTempMap = createMap(), newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, gameObjectMap = ThreeDTransformData.gameObjectMap, tempMap = ThreeDTransformData.tempMap;
     clearCacheMap(ThreeDTransformData);
+    var disposedUIDArr = [], actualAliveUIDArr = [];
     for (var _i = 0, aliveUIDArray_1 = aliveUIDArray; _i < aliveUIDArray_1.length; _i++) {
         var uid = aliveUIDArray_1[_i];
         val = childrenMap[uid];
         if (isNotValidMapValue(val)) {
-            continue;
+            disposedUIDArr.push(uid);
         }
+        else {
+            actualAliveUIDArr.push(uid);
+        }
+    }
+    _cleanChildrenMap(disposedUIDArr, parentMap, isAlive$1, getChildren$1, setChildren$1, ThreeDTransformData);
+    for (var _a = 0, actualAliveUIDArr_1 = actualAliveUIDArr; _a < actualAliveUIDArr_1.length; _a++) {
+        var uid = actualAliveUIDArr_1[_a];
+        val = childrenMap[uid];
         newAliveUIDArray.push(uid);
         _setMapVal(newChildrenMap, uid, val);
         val = tempMap[uid];
@@ -6847,14 +6468,22 @@ var reAllocateThreeDTransformMap = function (ThreeDTransformData) {
     ThreeDTransformData.gameObjectMap = newGameObjectMap;
     ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
 };
-var reAllocateGameObjectMap = function (GameObjectData) {
-    var val = null, newParentMap = {}, newChildrenMap = {}, newComponentMap = {}, newAliveUIDArray = [], aliveUIDArray = GameObjectData.aliveUIDArray, parentMap = GameObjectData.parentMap, childrenMap = GameObjectData.childrenMap, componentMap = GameObjectData.componentMap;
+var reAllocateGameObject = function (GameObjectData) {
+    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newComponentMap = createMap(), newAliveUIDArray = [], aliveUIDArray = GameObjectData.aliveUIDArray, parentMap = GameObjectData.parentMap, childrenMap = GameObjectData.childrenMap, componentMap = GameObjectData.componentMap, disposedUIDArr = [], actualAliveUIDArr = [];
     for (var _i = 0, aliveUIDArray_2 = aliveUIDArray; _i < aliveUIDArray_2.length; _i++) {
         var uid = aliveUIDArray_2[_i];
         val = componentMap[uid];
         if (isNotValidMapValue(val)) {
-            continue;
+            disposedUIDArr.push(uid);
         }
+        else {
+            actualAliveUIDArr.push(uid);
+        }
+    }
+    _cleanChildrenMap(disposedUIDArr, parentMap, isAlive$$1, getChildren, setChildren, GameObjectData);
+    for (var _a = 0, actualAliveUIDArr_2 = actualAliveUIDArr; _a < actualAliveUIDArr_2.length; _a++) {
+        var uid = actualAliveUIDArr_2[_a];
+        val = componentMap[uid];
         newAliveUIDArray.push(uid);
         _setMapVal(newComponentMap, uid, val);
         val = parentMap[uid];
@@ -6867,7 +6496,38 @@ var reAllocateGameObjectMap = function (GameObjectData) {
     GameObjectData.componentMap = newComponentMap;
     GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
-var reAllocateTagMap = function (TagData) {
+var _cleanChildrenMap = function (disposedUIDArr, parentMap, isAlive$$2, getChildren$$1, setChildren$$1, Data) {
+    var isCleanedParentMap = createMap();
+    for (var _i = 0, disposedUIDArr_1 = disposedUIDArr; _i < disposedUIDArr_1.length; _i++) {
+        var uid = disposedUIDArr_1[_i];
+        var parent = parentMap[uid];
+        if (_isParentExist$1(parent)) {
+            var parentUID = parent.uid;
+            if (isValidMapValue(isCleanedParentMap[parentUID])) {
+                continue;
+            }
+            _cleanChildren(parentUID, isAlive$$2, getChildren$$1, setChildren$$1, Data);
+            deleteVal(uid, parentMap);
+        }
+    }
+};
+var _cleanChildren = function (parentUID, isAlive$$2, getChildren$$1, setChildren$$1, Data) {
+    var children = getChildren$$1(parentUID, Data);
+    if (!_isChildrenExist$1(children)) {
+        return;
+    }
+    var newChildren = [];
+    for (var i = 0, len = children.length; i < len; ++i) {
+        var child = children[i];
+        if (isAlive$$2(child, Data)) {
+            newChildren.push(child);
+        }
+    }
+    setChildren$$1(parentUID, newChildren, Data);
+};
+var _isParentExist$1 = function (parent) { return isNotUndefined(parent); };
+var _isChildrenExist$1 = function (children) { return isNotUndefined(children); };
+var reAllocateTag = function (TagData) {
     var usedSlotCountMap = TagData.usedSlotCountMap, slotCountMap = TagData.slotCountMap, indexMap = TagData.indexMap, tagArray = TagData.tagArray, gameObjectMap = TagData.gameObjectMap, indexInTagArrayMap = TagData.indexInTagArrayMap, tagMap = TagData.tagMap, newIndexInTagArrayMap = [0], newTagArray = [], newGameObjectMap = createMap(), newUsedSlotCountMap = [], newSlotCountMap = [], newIndexMap = [], newTagMap = createMap(), newIndexInTagArray = 0, newIndexInTagArrayInMap = null, newIndex = 0, newLastIndexInTagArray = 0, hasNewData = false, tagIndex = null;
     for (var _i = 0, indexInTagArrayMap_1 = indexInTagArrayMap; _i < indexInTagArrayMap_1.length; _i++) {
         var indexInTagArray = indexInTagArrayMap_1[_i];
@@ -6910,6 +6570,76 @@ var reAllocateTagMap = function (TagData) {
     TagData.tagArray = newTagArray;
     TagData.index = tagIndex;
 };
+var reAllocateGeometry = ensureFunc(function (returnVal, GeometryData) {
+    checkIndexShouldEqualCount(GeometryData);
+}, function (GeometryData) {
+    var val = null, index = GeometryData.index, vertices = GeometryData.vertices, indices = GeometryData.indices, verticesInfoList = GeometryData.verticesInfoList, indicesInfoList = GeometryData.indicesInfoList, gameObjectMap = GeometryData.gameObjectMap, geometryMap = GeometryData.geometryMap, computeDataFuncMap = GeometryData.computeDataFuncMap, configDataMap = GeometryData.configDataMap, verticesCacheMap = GeometryData.verticesCacheMap, indicesCacheMap = GeometryData.indicesCacheMap, newIndexInArrayBuffer = 0, newVerticesOffset = 0, newIndicesOffset = 0, newVertivesInfoList = [], newIndicesInfoList = [], newGameObjectMap = createMap(), newGeometryMap = createMap(), newComputeDatafuncMap = createMap(), newConfigDataMap = [], newVerticesCacheMap = [], newIndicesCacheMap = [], newVertices = [], newIndices = [], disposedIndexArray = [];
+    for (var i = 0; i < index; i++) {
+        var verticesInfo = verticesInfoList[i], indicesInfo = indicesInfoList[i];
+        val = geometryMap[i];
+        if (isNotValidMapValue(val)) {
+            disposedIndexArray.push(i);
+            continue;
+        }
+        _updateInfoList(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo, newVerticesOffset);
+        _updateInfoList(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo, newIndicesOffset);
+        newVerticesOffset = _fillTypeArr(newVertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
+        newIndicesOffset = _fillTypeArr(newIndices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
+        _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
+        val = computeDataFuncMap[i];
+        _setMapVal(newComputeDatafuncMap, newIndexInArrayBuffer, val);
+        val = configDataMap[i];
+        _setMapVal(newConfigDataMap, newIndexInArrayBuffer, val);
+        val = verticesCacheMap[i];
+        _setMapVal(newVerticesCacheMap, newIndexInArrayBuffer, val);
+        val = indicesCacheMap[i];
+        _setMapVal(newIndicesCacheMap, newIndexInArrayBuffer, val);
+        val = geometryMap[i];
+        _setMapVal(newGeometryMap, newIndexInArrayBuffer, val);
+        val = gameObjectMap[i];
+        _setMapVal(newGameObjectMap, newIndexInArrayBuffer, val);
+        newIndexInArrayBuffer += 1;
+    }
+    set(GeometryData.vertices, newVertices);
+    set(GeometryData.indices, newIndices);
+    GeometryData.gameObjectMap = newGameObjectMap;
+    GeometryData.verticesInfoList = newVertivesInfoList;
+    GeometryData.indicesInfoList = newIndicesInfoList;
+    GeometryData.geometryMap = newGeometryMap;
+    GeometryData.computeDataFuncMap = newComputeDatafuncMap;
+    GeometryData.configDataMap = newConfigDataMap;
+    GeometryData.verticesCacheMap = newVerticesCacheMap;
+    GeometryData.indicesCacheMap = newIndicesCacheMap;
+    GeometryData.verticesOffset = newVerticesOffset;
+    GeometryData.indicesOffset = newIndicesOffset;
+    GeometryData.index = newIndexInArrayBuffer;
+    return disposedIndexArray;
+});
+var _updateComponentIndex = function (componentMap, newComponentMap, oldIndex, newIndex) {
+    var component = componentMap[oldIndex];
+    component.index = newIndex;
+    newComponentMap[newIndex] = component;
+};
+var _fillTypeArr = requireCheckFunc(function (targetTypeArr, targetStartIndex, sourceTypeArr, startIndex, endIndex) {
+}, function (targetTypeArr, targetStartIndex, sourceTypeArr, startIndex, endIndex) {
+    var typeArrIndex = targetStartIndex;
+    for (var i = startIndex; i < endIndex; i++) {
+        targetTypeArr[typeArrIndex] = sourceTypeArr[i];
+        typeArrIndex += 1;
+    }
+    return typeArrIndex;
+});
+var _updateInfoList = ensureFunc(function (returnVal, newInfoList, newIndexInArrayBuffer, info, offset) {
+    it("info.startIndex should >= 0", function () {
+        wdet_1(newInfoList[newIndexInArrayBuffer].startIndex).gte(0);
+    });
+}, function (newInfoList, newIndexInArrayBuffer, info, offset) {
+    var increment = info.endIndex - info.startIndex;
+    _setArrayVal(newInfoList, newIndexInArrayBuffer, {
+        startIndex: offset,
+        endIndex: offset + increment
+    });
+});
 
 var addAddComponentHandle$2 = function (_class) {
     addAddComponentHandle$1(_class, addComponent$2);
@@ -6919,15 +6649,20 @@ var addDisposeHandle$2 = function (_class) {
 };
 var create$2 = ensureFunc(function (transform, ThreeDTransformData$$1) {
     it("componentMap should has data", function () {
-        index_1(getChildren(transform.uid, ThreeDTransformData$$1)).exist;
+        wdet_1(getChildren$1(transform.uid, ThreeDTransformData$$1)).exist;
+    });
+    it("count should <= ThreeDTransformData.maxCount", function () {
+        wdet_1(ThreeDTransformData$$1.count).lte(ThreeDTransformData$$1.maxCount);
     });
 }, function (ThreeDTransformData$$1) {
     var transform = new ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData$$1), uid = _buildUID$1(ThreeDTransformData$$1);
     transform.index = index;
     transform.uid = uid;
+    ThreeDTransformData$$1.count += 1;
     _createTempData(uid, ThreeDTransformData$$1);
     _setTransformMap(index, transform, ThreeDTransformData$$1);
-    setChildren(uid, [], ThreeDTransformData$$1);
+    setChildren$1(uid, [], ThreeDTransformData$$1);
+    _setDefaultTypeArrData(index, ThreeDTransformData$$1);
     ThreeDTransformData$$1.aliveUIDArray.push(uid);
     return transform;
 });
@@ -6947,7 +6682,7 @@ var _createTempData = function (uid, ThreeDTransformData$$1) {
 };
 var checkShouldAlive = function (component, ThreeDTransformData$$1) {
     checkComponentShouldAlive(component, ThreeDTransformData$$1, function (component, ThreeDTransformData$$1) {
-        return isChildrenExist(getChildren(component.uid, ThreeDTransformData$$1));
+        return isChildrenExist(getChildren$1(component.uid, ThreeDTransformData$$1));
     });
 };
 var init$2 = function (GlobalTempData$$1, ThreeDTransformData$$1, state) {
@@ -6958,6 +6693,12 @@ var addComponent$2 = function (transform, gameObject) {
     addComponentToGameObjectMap(ThreeDTransformData.gameObjectMap, uid, gameObject);
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 };
+var isAlive$1 = function (transform, ThreeDTransformData$$1) {
+    return isValidMapValue(ThreeDTransformData$$1.transformMap[transform.index]);
+};
+var isNotAlive$1 = function (transform, ThreeDTransformData$$1) {
+    return !isAlive$1(transform, ThreeDTransformData$$1);
+};
 var disposeComponent$2 = function (transform) {
     var indexInArrayBuffer = transform.index, uid = transform.uid;
     if (isNotDirty(indexInArrayBuffer, ThreeDTransformData.firstDirtyIndex)) {
@@ -6966,15 +6707,16 @@ var disposeComponent$2 = function (transform) {
     else {
         _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
     }
+    ThreeDTransformData.count -= 1;
     ThreeDTransformData.disposeCount += 1;
     if (isDisposeTooManyComponents(ThreeDTransformData.disposeCount)) {
-        reAllocateThreeDTransformMap(ThreeDTransformData);
+        reAllocateThreeDTransform(ThreeDTransformData);
         ThreeDTransformData.disposeCount = 0;
     }
 };
 var getGameObject$1 = function (uid, ThreeDTransformData$$1) { return getComponentGameObject(ThreeDTransformData$$1.gameObjectMap, uid); };
-var getParent$$1 = function (transform, ThreeDTransformData$$1) {
-    var parent = getParent$1(transform.uid, ThreeDTransformData$$1);
+var getParent$1 = function (transform, ThreeDTransformData$$1) {
+    var parent = getParent$2(transform.uid, ThreeDTransformData$$1);
     if (isValidMapValue(parent)) {
         return parent;
     }
@@ -6990,7 +6732,7 @@ var getLocalToWorldMatrix = requireCheckFunc(function (transform, mat, ThreeTran
 }, function (transform, mat, ThreeTransformData, returnedMat) {
     setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
 }, function (transform, mat, ThreeTransformData) {
-    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
+    return createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
 }));
 var getPosition = requireCheckFunc(function (transform, ThreeTransformData) {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -7008,7 +6750,7 @@ var _setTransformMap = function (indexInArrayBuffer, transform, ThreeDTransformD
 var setPosition = requireCheckFunc(function (transform, position, GlobalTempData$$1, ThreeTransformData) {
     checkTransformShouldAlive(transform, ThreeTransformData);
 }, function (transform, position, GlobalTempData$$1, ThreeTransformData) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$1(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
+    var indexInArrayBuffer = transform.index, uid = transform.uid, parent = getParent$2(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
     setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData$$1, ThreeTransformData);
     setIsTranslate(uid, true, ThreeTransformData);
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
@@ -7023,7 +6765,7 @@ var getLocalPosition = requireCheckFunc(function (transform, ThreeTransformData)
 }, function (transform, ThreeTransformData, position) {
     setLocalPositionCache(transform.uid, position, ThreeTransformData);
 }, function (transform, ThreeTransformData) {
-    return DataUtils.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+    return createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }));
 var setLocalPosition = requireCheckFunc(function (transform, position, ThreeTransformData) {
     checkTransformShouldAlive(transform, ThreeTransformData);
@@ -7037,8 +6779,6 @@ var update$1 = function (elapsed, GlobalTempData$$1, ThreeDTransformData$$1, sta
     return update$2(elapsed, GlobalTempData$$1, ThreeDTransformData$$1, state);
 };
 var _disposeItemInDataContainer = function (indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1) {
-    var mat = GlobalTempData$$1.matrix4_1.setIdentity(), positionVec = GlobalTempData$$1.vector3_1.set(0, 0, 0), qua = GlobalTempData$$1.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData$$1.vector3_2.set(1, 1, 1);
-    setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData$$1);
     removeHierarchyData(uid, ThreeDTransformData$$1);
     _disposeMapDatas$1(indexInArrayBuffer, uid, ThreeDTransformData$$1);
     return ThreeDTransformData$$1;
@@ -7052,15 +6792,12 @@ var _disposeFromNormalList = function (indexInArrayBuffer, uid, GlobalTempData$$
 };
 var _disposeFromDirtyList = function (indexInArrayBuffer, uid, GlobalTempData$$1, ThreeDTransformData$$1) {
     var firstDirtyIndex = ThreeDTransformData$$1.firstDirtyIndex;
-    swap(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData$$1);
+    swap$$1(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData$$1);
     _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData$$1, ThreeDTransformData$$1);
     ThreeDTransformData$$1.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData$$1);
 };
-var _addDefaultTransformData = function (GlobalTempData$$1, ThreeDTransformData$$1) {
-    var count = ThreeDTransformData$$1.count, mat = GlobalTempData$$1.matrix4_1.setIdentity(), positionVec = GlobalTempData$$1.vector3_1.set(0, 0, 0), qua = GlobalTempData$$1.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData$$1.vector3_2.set(1, 1, 1);
-    for (var i = getStartIndexInArrayBuffer(); i < count; i++) {
-        setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData$$1);
-    }
+var _setDefaultTypeArrData = function (index, ThreeDTransformData$$1) {
+    setTransformDataInTypeArr(index, ThreeDTransformData$$1.defaultLocalToWorldMatrice, ThreeDTransformData$$1.defaultRotation, ThreeDTransformData$$1.defaultPosition, ThreeDTransformData$$1.defaultScale, ThreeDTransformData$$1);
 };
 var getTempLocalToWorldMatrix = function (transform, ThreeDTransformData$$1) { return _getTempData(transform.uid, ThreeDTransformData$$1).localToWorldMatrix; };
 var _getTempData = function (uid, ThreeDTransformData$$1) {
@@ -7072,13 +6809,11 @@ var _getTempData = function (uid, ThreeDTransformData$$1) {
     return tempData;
 };
 var initData$4 = function (GlobalTempData$$1, ThreeDTransformData$$1) {
-    var buffer = null, count = ThreeDTransformData$$1.count, size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
-    ThreeDTransformData$$1.buffer = new ArrayBuffer(count * size);
-    buffer = ThreeDTransformData$$1.buffer;
-    ThreeDTransformData$$1.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
-    ThreeDTransformData$$1.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
-    ThreeDTransformData$$1.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
-    ThreeDTransformData$$1.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+    _initBufferData(ThreeDTransformData$$1);
+    ThreeDTransformData$$1.defaultPosition = Vector3.create(0, 0, 0);
+    ThreeDTransformData$$1.defaultRotation = Quaternion.create(0, 0, 0, 1);
+    ThreeDTransformData$$1.defaultScale = Vector3.create(1, 1, 1);
+    ThreeDTransformData$$1.defaultLocalToWorldMatrice = Matrix4.create().setIdentity();
     ThreeDTransformData$$1.notUsedIndexLinkList = LinkList.create();
     ThreeDTransformData$$1.parentMap = createMap();
     ThreeDTransformData$$1.childrenMap = createMap();
@@ -7087,18 +6822,27 @@ var initData$4 = function (GlobalTempData$$1, ThreeDTransformData$$1) {
     ThreeDTransformData$$1.tempMap = createMap();
     ThreeDTransformData$$1.transformMap = createMap();
     ThreeDTransformData$$1.gameObjectMap = createMap();
-    ThreeDTransformData$$1.firstDirtyIndex = ThreeDTransformData$$1.count;
+    ThreeDTransformData$$1.firstDirtyIndex = ThreeDTransformData$$1.maxCount;
     ThreeDTransformData$$1.indexInArrayBuffer = getStartIndexInArrayBuffer();
     ThreeDTransformData$$1.uid = 0;
     ThreeDTransformData$$1.disposeCount = 0;
     ThreeDTransformData$$1.isClearCacheMap = false;
+    ThreeDTransformData$$1.count = 0;
     ThreeDTransformData$$1.aliveUIDArray = [];
-    _addDefaultTransformData(GlobalTempData$$1, ThreeDTransformData$$1);
+};
+var _initBufferData = function (ThreeDTransformData$$1) {
+    var buffer = null, count = ThreeDTransformData$$1.maxCount, size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());
+    buffer = new ArrayBuffer(count * size);
+    ThreeDTransformData$$1.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
+    ThreeDTransformData$$1.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
+    ThreeDTransformData$$1.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
+    ThreeDTransformData$$1.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+    ThreeDTransformData$$1.buffer = buffer;
 };
 
 var checkGameObjectShouldAlive = function (gameObject, GameObjectData) {
     it("gameObject is diposed, should release it", function () {
-        index_1(isAlive(gameObject, GameObjectData)).true;
+        wdet_1(isAlive$$1(gameObject, GameObjectData)).true;
     });
 };
 
@@ -7192,14 +6936,613 @@ var IO = (function () {
     return IO;
 }());
 
-var getState = function (DirectorData) {
-    return DirectorData.state;
+var DomQuery = (function () {
+    function DomQuery() {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        this._doms = null;
+        if (JudgeUtils.isDom(args[0])) {
+            this._doms = [args[0]];
+        }
+        else if (this._isDomEleStr(args[0])) {
+            this._doms = [this._buildDom(args[0])];
+        }
+        else {
+            this._doms = document.querySelectorAll(args[0]);
+        }
+        return this;
+    }
+    DomQuery.create = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var obj = new this(args[0]);
+        return obj;
+    };
+    DomQuery.prototype.get = function (index) {
+        return this._doms[index];
+    };
+    DomQuery.prototype.prepend = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var targetDom = null;
+        targetDom = this._buildDom(args[0]);
+        for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
+            var dom = _b[_a];
+            if (dom.nodeType === 1) {
+                dom.insertBefore(targetDom, dom.firstChild);
+            }
+        }
+        return this;
+    };
+    DomQuery.prototype.prependTo = function (eleStr) {
+        var targetDom = null;
+        targetDom = DomQuery.create(eleStr);
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            if (dom.nodeType === 1) {
+                targetDom.prepend(dom);
+            }
+        }
+        return this;
+    };
+    DomQuery.prototype.remove = function () {
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            if (dom && dom.parentNode && dom.tagName != 'BODY') {
+                dom.parentNode.removeChild(dom);
+            }
+        }
+        return this;
+    };
+    DomQuery.prototype.css = function (property, value) {
+        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
+            var dom = _a[_i];
+            dom.style[property] = value;
+        }
+    };
+    DomQuery.prototype.attr = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (args.length === 1) {
+            var name = args[0];
+            return this.get(0).getAttribute(name);
+        }
+        else {
+            var name = args[0], value = args[1];
+            for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
+                var dom = _b[_a];
+                dom.setAttribute(name, value);
+            }
+        }
+    };
+    DomQuery.prototype.text = function (str) {
+        var dom = this.get(0);
+        if (str !== void 0) {
+            if (dom.textContent !== void 0) {
+                dom.textContent = str;
+            }
+            else {
+                dom.innerText = str;
+            }
+        }
+        else {
+            return dom.textContent !== void 0 ? dom.textContent : dom.innerText;
+        }
+    };
+    DomQuery.prototype._isDomEleStr = function (eleStr) {
+        return eleStr.match(/<(\w+)[^>]*><\/\1>/) !== null;
+    };
+    DomQuery.prototype._buildDom = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (JudgeUtils.isString(args[0])) {
+            var div = this._createElement("div"), eleStr = args[0];
+            div.innerHTML = eleStr;
+            return div.firstChild;
+        }
+        return args[0];
+    };
+    DomQuery.prototype._createElement = function (eleStr) {
+        return document.createElement(eleStr);
+    };
+    return DomQuery;
+}());
+
+var WorkerDetectData = (function () {
+    function WorkerDetectData() {
+    }
+    return WorkerDetectData;
+}());
+WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = null;
+WorkerDetectData.isSupportSharedArrayBuffer = null;
+WorkerDetectData.renderWorkerFileDir = null;
+
+var root$1;
+if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
+    root$1 = global;
+}
+else if (typeof window != "undefined") {
+    root$1 = window;
+}
+else if (typeof self != "undefined") {
+    root$1 = self;
+}
+else {
+    Log$$1.error("no avaliable root!");
+}
+
+var RenderWorkerConfig = {
+    useRenderWorker: true
 };
-var setState = function (state, DirectorData) {
+
+var detect = curry(function (WorkerDetectData$$1) {
+    if (typeof root$1.isSupportSharedArrayBuffer_wonder !== "undefined" && typeof root$1.isSupportRenderWorkerAndSharedArrayBuffer_wonder !== "undefined") {
+        WorkerDetectData$$1.isSupportSharedArrayBuffer = root$1.isSupportSharedArrayBuffer_wonder;
+        WorkerDetectData$$1.isSupportRenderWorkerAndSharedArrayBuffer = root$1.isSupportRenderWorkerAndSharedArrayBuffer_wonder;
+        return;
+    }
+    var canvas = DomQuery.create("<canvas></canvas>").get(0);
+    if (typeof SharedArrayBuffer !== "undefined") {
+        WorkerDetectData$$1.isSupportSharedArrayBuffer = true;
+    }
+    else {
+        WorkerDetectData$$1.isSupportSharedArrayBuffer = false;
+    }
+    if (("transferControlToOffscreen" in canvas) && WorkerDetectData$$1.isSupportSharedArrayBuffer) {
+        WorkerDetectData$$1.isSupportRenderWorkerAndSharedArrayBuffer = true;
+    }
+    else {
+        WorkerDetectData$$1.isSupportRenderWorkerAndSharedArrayBuffer = false;
+    }
+});
+var isSupportSharedArrayBuffer = function () {
+    return WorkerDetectData.isSupportSharedArrayBuffer;
+};
+var isSupportRenderWorkerAndSharedArrayBuffer = function () {
+    return RenderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
+};
+var setWorkerConfig = function (config, WorkerDetectData$$1) {
     return IO.of(function () {
-        DirectorData.state = state;
+        WorkerDetectData$$1.renderWorkerFileDir = config.renderWorkerFileDir;
     });
 };
+var getRenderWorkerFilePath = function () {
+    return _getValidFileDir(WorkerDetectData.renderWorkerFileDir) + "wd.renderWorker.js";
+};
+var _getValidFileDir = function (dir) {
+    if (dir.slice(-1) !== '/') {
+        return dir + "/";
+    }
+    return dir;
+};
+detect(WorkerDetectData);
+
+var MeshRendererData = (function () {
+    function MeshRendererData() {
+    }
+    return MeshRendererData;
+}());
+MeshRendererData.renderGameObjectArray = null;
+MeshRendererData.gameObjectMap = null;
+MeshRendererData.meshRendererMap = null;
+MeshRendererData.index = null;
+MeshRendererData.count = null;
+
+var MeshRenderer = (function (_super) {
+    __extends(MeshRenderer, _super);
+    function MeshRenderer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return MeshRenderer;
+}(Component));
+MeshRenderer = __decorate([
+    registerClass("MeshRenderer")
+], MeshRenderer);
+var createMeshRenderer = function () {
+    return create$4(MeshRendererData);
+};
+var getMeshRendererGameObject = requireCheckFunc(function (component) {
+    _checkShouldAlive$1(component, MeshRendererData);
+}, function (component) {
+    return getGameObject$3(component.index, MeshRendererData);
+});
+var getMeshRendererRenderList = function () {
+    return getRenderList(null, MeshRendererData);
+};
+var _checkShouldAlive$1 = function (component, MeshRendererData$$1) {
+    checkComponentShouldAlive(component, MeshRendererData$$1, function (component, MeshRendererData$$1) {
+        return isComponentIndexNotRemoved(component);
+    });
+};
+
+var addAddComponentHandle$4 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$4);
+};
+var addDisposeHandle$4 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$4);
+};
+var create$4 = requireCheckFunc(function (MeshRendererData$$1) {
+    checkIndexShouldEqualCount(MeshRendererData$$1);
+}, function (MeshRendererData$$1) {
+    var renderer = new MeshRenderer(), index = generateComponentIndex(MeshRendererData$$1);
+    renderer.index = index;
+    MeshRendererData$$1.count += 1;
+    MeshRendererData$$1.meshRendererMap[index] = renderer;
+    return renderer;
+});
+var _setRenderGameObjectArray = requireCheckFunc(function (index, gameObject, renderGameObjectArray) {
+    it("should not exist gameObject", function () {
+        wdet_1(renderGameObjectArray[index]).not.exist;
+    });
+}, function (index, gameObject, renderGameObjectArray) {
+    renderGameObjectArray[index] = gameObject;
+});
+var addComponent$4 = function (component, gameObject) {
+    _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
+    addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
+};
+var disposeComponent$4 = ensureFunc(function (returnVal, component) {
+    checkIndexShouldEqualCount(MeshRendererData);
+}, function (component) {
+    var sourceIndex = component.index, lastComponentIndex = null;
+    MeshRendererData.count -= 1;
+    MeshRendererData.index -= 1;
+    lastComponentIndex = MeshRendererData.count;
+    deleteBySwap$1(sourceIndex, lastComponentIndex, MeshRendererData.renderGameObjectArray);
+    deleteBySwap$1(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
+});
+var getGameObject$3 = function (index, Data) {
+    return getComponentGameObject(Data.gameObjectMap, index);
+};
+var getRenderList = curry(function (state, MeshRendererData$$1) {
+    return MeshRendererData$$1.renderGameObjectArray;
+});
+var initData$6 = function (MeshRendererData$$1) {
+    MeshRendererData$$1.renderGameObjectArray = [];
+    MeshRendererData$$1.gameObjectMap = [];
+    MeshRendererData$$1.meshRendererMap = [];
+    MeshRendererData$$1.index = 0;
+    MeshRendererData$$1.count = 0;
+};
+
+var create$5 = function (GameObjectData) {
+    return create$1(null, GameObjectData);
+};
+var addChild$1 = function (scene, child, ThreeDTransformData, GameObjectData, SceneData) {
+    if (_isCamera(child, GameObjectData)) {
+        SceneData.cameraArray.push(child);
+    }
+    addChild(scene, child, ThreeDTransformData, GameObjectData);
+};
+var removeChild$1 = function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+};
+var _isCamera = function (gameObject, GameObjectData) {
+    return hasComponent(gameObject, getTypeIDFromClass(CameraController), GameObjectData);
+};
+var getCurrentCamera = ensureFunc(function (camera, SceneData) {
+    it("current camera should exist", function () {
+        wdet_1(camera).exist;
+    });
+}, function (SceneData) {
+    return SceneData.cameraArray[0];
+});
+var initData$8 = function (SceneData) {
+    SceneData.cameraArray = [];
+};
+
+function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
+    return function (target, name, descriptor) {
+        var value = descriptor.value;
+        descriptor.value = function (args) {
+            var result = null, setArgs = null;
+            if (judgeFunc.apply(this, arguments)) {
+                return returnCacheValueFunc.apply(this, arguments);
+            }
+            result = value.apply(this, arguments);
+            setArgs = [result];
+            for (var i = 0, len = arguments.length; i < len; i++) {
+                setArgs[i + 1] = arguments[i];
+            }
+            setCacheFunc.apply(this, setArgs);
+            return result;
+        };
+        return descriptor;
+    };
+}
+
+var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i;
+var REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i;
+var REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i;
+var REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i;
+var REGEX_NUM = /^\#([0-9a-f]{6})$/i;
+var Color = Color_1 = (function () {
+    function Color() {
+        this._r = null;
+        this._g = null;
+        this._b = null;
+        this._a = null;
+        this._colorString = null;
+        this._colorVec3Cache = null;
+        this._colorVec4Cache = null;
+    }
+    Color.create = function (colorVal) {
+        var obj = new this();
+        obj.initWhenCreate(colorVal);
+        return obj;
+    };
+    Object.defineProperty(Color.prototype, "dirty", {
+        set: function (dirty) {
+            if (dirty) {
+                this._clearCache();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Color.prototype, "r", {
+        get: function () {
+            return this._r;
+        },
+        set: function (r) {
+            if (this._r !== r) {
+                this.dirty = true;
+                this._r = r;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Color.prototype, "g", {
+        get: function () {
+            return this._g;
+        },
+        set: function (g) {
+            if (this._g !== g) {
+                this.dirty = true;
+                this._g = g;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Color.prototype, "b", {
+        get: function () {
+            return this._b;
+        },
+        set: function (b) {
+            if (this._b !== b) {
+                this.dirty = true;
+                this._b = b;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Color.prototype, "a", {
+        get: function () {
+            return this._a;
+        },
+        set: function (a) {
+            if (this._a !== a) {
+                this.dirty = true;
+                this._a = a;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Color.prototype.initWhenCreate = function (colorVal) {
+        if (!colorVal) {
+            return;
+        }
+        this._colorString = colorVal;
+        this._setColor(colorVal);
+    };
+    Color.prototype.toVector3 = function () {
+        return Vector3.create(this.r, this.g, this.b);
+    };
+    Color.prototype.toVector4 = function () {
+        return Vector4.create(this.r, this.g, this.b, this.a);
+    };
+    Color.prototype.toString = function () {
+        return this._colorString;
+    };
+    Color.prototype.clone = function () {
+        return Color_1.create(this._colorString);
+    };
+    Color.prototype.isEqual = function (color) {
+        return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
+    };
+    Color.prototype.setColorByNum = function (colorVal) {
+        var color = null;
+        this._colorString = colorVal;
+        color = REGEX_NUM.exec(colorVal);
+        this._setHex(parseInt(color[1], 16));
+        return this;
+    };
+    Color.prototype._setColor = function (colorVal) {
+        var color = null;
+        if (REGEX_RGBA.test(colorVal)) {
+            color = REGEX_RGBA.exec(colorVal);
+            this.r = this._getColorValue(color, 1);
+            this.g = this._getColorValue(color, 2);
+            this.b = this._getColorValue(color, 3);
+            this.a = Number(color[4]);
+            return this;
+        }
+        if (REGEX_RGBA_2.test(colorVal)) {
+            color = REGEX_RGBA_2.exec(colorVal);
+            this.r = parseFloat(color[1]);
+            this.g = parseFloat(color[2]);
+            this.b = parseFloat(color[3]);
+            this.a = Number(color[4]);
+            return this;
+        }
+        if (REGEX_RGB.test(colorVal)) {
+            color = REGEX_RGB.exec(colorVal);
+            this.r = this._getColorValue(color, 1);
+            this.g = this._getColorValue(color, 2);
+            this.b = this._getColorValue(color, 3);
+            this.a = 1;
+            return this;
+        }
+        if (REGEX_RGB_2.test(colorVal)) {
+            color = REGEX_RGB_2.exec(colorVal);
+            this.r = parseFloat(color[1]);
+            this.g = parseFloat(color[2]);
+            this.b = parseFloat(color[3]);
+            this.a = 1;
+            return this;
+        }
+        if (REGEX_NUM.test(colorVal)) {
+            return this.setColorByNum(colorVal);
+        }
+    };
+    Color.prototype._getColorValue = function (color, index, num) {
+        if (num === void 0) { num = 255; }
+        return Math.min(num, parseInt(color[index], 10)) / num;
+    };
+    Color.prototype._setHex = function (hex) {
+        hex = Math.floor(hex);
+        this.r = (hex >> 16 & 255) / 255;
+        this.g = (hex >> 8 & 255) / 255;
+        this.b = (hex & 255) / 255;
+        this.a = 1;
+        return this;
+    };
+    Color.prototype._clearCache = function () {
+        this._colorVec3Cache = null;
+        this._colorVec4Cache = null;
+    };
+    return Color;
+}());
+__decorate([
+    ensureGetter(function (r) {
+        assert(r >= 0, Log$$1.info.FUNC_SHOULD("r", ">= 0, but actual is " + r));
+    })
+], Color.prototype, "r", null);
+__decorate([
+    ensureGetter(function (g) {
+        assert(g >= 0, Log$$1.info.FUNC_SHOULD("g", ">= 0, but actual is " + g));
+    })
+], Color.prototype, "g", null);
+__decorate([
+    ensureGetter(function (b) {
+        assert(b >= 0, Log$$1.info.FUNC_SHOULD("b", ">= 0, but actual is " + b));
+    })
+], Color.prototype, "b", null);
+__decorate([
+    ensureGetter(function (a) {
+        assert(a >= 0, Log$$1.info.FUNC_SHOULD("a", ">= 0, but actual is " + a));
+    })
+], Color.prototype, "a", null);
+__decorate([
+    cache(function () {
+        return this._colorVec3Cache !== null;
+    }, function () {
+        return this._colorVec3Cache;
+    }, function (result) {
+        this._colorVec3Cache = result;
+    })
+], Color.prototype, "toVector3", null);
+__decorate([
+    cache(function () {
+        return this._colorVec4Cache !== null;
+    }, function () {
+        return this._colorVec4Cache;
+    }, function (result) {
+        this._colorVec4Cache = result;
+    })
+], Color.prototype, "toVector4", null);
+__decorate([
+    requireCheck(function (colorVal) {
+        it("color should be #xxxxxx", function () {
+            wdet_1(REGEX_NUM.test(colorVal)).true;
+        });
+    })
+], Color.prototype, "setColorByNum", null);
+Color = Color_1 = __decorate([
+    registerClass("Color")
+], Color);
+var Color_1;
+
+var MaterialData = (function () {
+    function MaterialData() {
+    }
+    return MaterialData;
+}());
+MaterialData.index = null;
+MaterialData.count = null;
+MaterialData.buffer = null;
+MaterialData.shaderIndices = null;
+MaterialData.colors = null;
+MaterialData.opacities = null;
+MaterialData.alphaTests = null;
+MaterialData.defaultColorArr = null;
+MaterialData.defaultOpacity = null;
+MaterialData.defaultAlphaTest = null;
+MaterialData.workerInitList = null;
+MaterialData.materialClassNameTable = null;
+MaterialData.shaderIndexTable = null;
+MaterialData.gameObjectMap = null;
+MaterialData.materialMap = null;
+
+var getMaterialClassNameFromTable = function (shaderIndex, materialClassNameTable) {
+    return materialClassNameTable[shaderIndex];
+};
+var getShaderIndexFromTable$1 = ensureFunc(function (index) {
+    it("shader index should be defined in materialClassNameTable", function () {
+        wdet_1(index).gte(0);
+    });
+}, function (materialClassName, shaderIndexTable) {
+    return shaderIndexTable[materialClassName];
+});
+var getOpacity$1 = function (materialIndex, MaterialDataFromSystem) {
+    var size = getOpacityDataSize(), index = materialIndex * size;
+    return MaterialDataFromSystem.opacities[index];
+};
+var getAlphaTest$1 = function (materialIndex, MaterialDataFromSystem) {
+    var size = getAlphaTestDataSize(), index = materialIndex * size;
+    return MaterialDataFromSystem.alphaTests[index];
+};
+var getColorArr3$1 = function (materialIndex, MaterialMaterialDataFromSystem) {
+    var colors = MaterialMaterialDataFromSystem.colors, size = getColorDataSize(), index = materialIndex * size;
+    return [colors[index], colors[index + 1], colors[index + 2]];
+};
+var isTestAlpha$1 = function (alphaTest) {
+    return alphaTest >= 0;
+};
+var getColorDataSize = function () { return 3; };
+var getOpacityDataSize = function () { return 1; };
+var getAlphaTestDataSize = function () { return 1; };
+var createTypeArrays = function (buffer, count, MaterialDataFromSystem) {
+    MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, 0, count);
+    MaterialDataFromSystem.colors = new Float32Array(buffer, count * Uint32Array.BYTES_PER_ELEMENT, count * getColorDataSize());
+    MaterialDataFromSystem.opacities = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * getColorDataSize()), count * getOpacityDataSize());
+    MaterialDataFromSystem.alphaTests = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize())), count * getAlphaTestDataSize());
+};
+
+var Shader = (function () {
+    function Shader() {
+        this.index = null;
+    }
+    return Shader;
+}());
+Shader = __decorate([
+    registerClass("Shader")
+], Shader);
 
 var immutable$1 = createCommonjsModule(function (module, exports) {
 /**
@@ -12191,89 +12534,428 @@ var isValueExist = function (val) {
     return val !== void 0;
 };
 
-var DirectorData = (function () {
-    function DirectorData() {
-    }
-    return DirectorData;
-}());
-DirectorData.state = createState();
-
-var GameObject = (function () {
-    function GameObject() {
-        this.uid = null;
-    }
-    return GameObject;
-}());
-GameObject = __decorate([
-    registerClass("GameObject")
-], GameObject);
-var createGameObject = function () { return create$1(create$2(ThreeDTransformData), GameObjectData); };
-var addGameObjectComponent = requireCheckFunc(function (gameObject, component) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, component) {
-    addComponent$1(gameObject, component, GameObjectData);
-});
-var disposeGameObject = requireCheckFunc(function (gameObject) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject) {
-    dispose$2(gameObject, ThreeDTransformData, GameObjectData);
-});
-var initGameObject$1 = requireCheckFunc(function (gameObject, component) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, component) {
-    initGameObject$$1(gameObject, getState(DirectorData), GameObjectData);
-});
-var disposeGameObjectComponent = requireCheckFunc(function (gameObject, component) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, component) {
-    disposeComponent$1(gameObject, component, GameObjectData);
-});
-var getGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, _class) {
-    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
-});
-var getGameObjectTransform = function (gameObject) {
-    return getTransform(gameObject, GameObjectData);
+var isConfigDataExist = function (configData) {
+    return isValueExist(configData);
 };
-var hasGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
-}, function (gameObject, _class) {
-    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
-});
-var isGameObjectAlive = function (gameObject) {
-    return isAlive(gameObject, GameObjectData);
-};
-var addGameObject = requireCheckFunc(function (gameObject, child) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, child) {
-    addChild(gameObject, child, ThreeDTransformData, GameObjectData);
-});
-var removeGameObject = requireCheckFunc(function (gameObject, child) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, child) {
-    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
-});
-var hasGameObject = requireCheckFunc(function (gameObject, child) {
-    checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, function (gameObject, child) {
-    return hasChild(gameObject, child, GameObjectData);
-});
 
-var GeometryData = (function () {
-    function GeometryData() {
+var setLocationMap = ensureFunc(function (returnVal, gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
+    it("attribute should contain position at least", function () {
+        wdet_1(LocationDataFromSystem.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
+    });
+}, requireCheckFunc(function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
+    it("not setted location before", function () {
+        wdet_1(isValidMapValue(LocationDataFromSystem.attributeLocationMap[shaderIndex])).false;
+        wdet_1(isValidMapValue(LocationDataFromSystem.uniformLocationMap[shaderIndex])).false;
+    });
+}, function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
+    var attributeLocationMap = {}, uniformLocationMap = {}, sendData = null, attributeName = null, uniformName = null;
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var attribute = null, uniform = null;
+        sendData = shaderLibData[shaderLibName].send;
+        if (!isConfigDataExist(sendData)) {
+            return;
+        }
+        attribute = sendData.attribute;
+        uniform = sendData.uniform;
+        if (isConfigDataExist(attribute)) {
+            forEach(attribute, function (data) {
+                attributeName = data.name;
+                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
+            });
+        }
+        if (isConfigDataExist(uniform)) {
+            forEach(uniform, function (data) {
+                uniformName = data.name;
+                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
+            });
+        }
+    });
+    LocationDataFromSystem.attributeLocationMap[shaderIndex] = attributeLocationMap;
+    LocationDataFromSystem.uniformLocationMap[shaderIndex] = uniformLocationMap;
+}));
+var getAttribLocation = ensureFunc(function (pos, name, attributeLocationMap) {
+    it(name + "'s attrib location should be number", function () {
+        wdet_1(pos).be.a("number");
+    });
+}, function (name, attributeLocationMap) {
+    return attributeLocationMap[name];
+});
+var getUniformLocation = ensureFunc(function (pos, name, uniformLocationMap) {
+    it(name + "'s uniform location should exist in map", function () {
+        wdet_1(isValidMapValue(pos)).true;
+    });
+}, function (name, uniformLocationMap) {
+    return uniformLocationMap[name];
+});
+var isUniformLocationNotExist = function (pos) {
+    return pos === null;
+};
+var isAttributeLocationNotExist = function (pos) {
+    return pos === -1;
+};
+var initData$11 = function (LocationDataFromSystem) {
+    LocationDataFromSystem.attributeLocationMap = createMap();
+    LocationDataFromSystem.uniformLocationMap = createMap();
+};
+
+var EVariableType;
+(function (EVariableType) {
+    EVariableType[EVariableType["FLOAT"] = "float"] = "FLOAT";
+    EVariableType[EVariableType["VEC3"] = "vec3"] = "VEC3";
+    EVariableType[EVariableType["ARR3"] = "arr3"] = "ARR3";
+    EVariableType[EVariableType["MAT4"] = "mat4"] = "MAT4";
+})(EVariableType || (EVariableType = {}));
+
+var EBufferType;
+(function (EBufferType) {
+    EBufferType[EBufferType["BYTE"] = "BYTE"] = "BYTE";
+    EBufferType[EBufferType["UNSIGNED_BYTE"] = "UNSIGNED_BYTE"] = "UNSIGNED_BYTE";
+    EBufferType[EBufferType["SHORT"] = "SHORT"] = "SHORT";
+    EBufferType[EBufferType["UNSIGNED_SHORT"] = "UNSIGNED_SHORT"] = "UNSIGNED_SHORT";
+    EBufferType[EBufferType["INT"] = "INT"] = "INT";
+    EBufferType[EBufferType["UNSIGNED_INT"] = "UNSIGNED_INT"] = "UNSIGNED_INT";
+    EBufferType[EBufferType["FLOAT"] = "FLOAT"] = "FLOAT";
+})(EBufferType || (EBufferType = {}));
+
+var isBufferExist = function (buffer) { return isValidMapValue(buffer); };
+var disposeBuffer = function (geometryIndex, buffers, getGL, DeviceManagerDataFromSystem) {
+    var gl = getGL(DeviceManagerDataFromSystem, null), buffer = buffers[geometryIndex];
+    if (isBufferExist(buffer)) {
+        gl.deleteBuffer(buffers[geometryIndex]);
+        deleteVal$1(geometryIndex, buffers);
     }
-    return GeometryData;
-}());
-GeometryData.index = null;
-GeometryData.count = null;
-GeometryData.verticesMap = null;
-GeometryData.indicesMap = null;
-GeometryData.indexType = null;
-GeometryData.indexTypeSize = null;
-GeometryData.configDataMap = null;
-GeometryData.computeDataFuncMap = null;
-GeometryData.gameObjectMap = null;
-GeometryData.geometryMap = null;
+};
+
+var getOrCreateBuffer = function (gl, geometryIndex, bufferType, getVertices, GeometryWorkerData, ArrayBufferDataFromSystem) {
+    var buffers = ArrayBufferDataFromSystem.buffers, buffer = buffers[geometryIndex];
+    if (isBufferExist(buffer)) {
+        return buffer;
+    }
+    buffer = gl.createBuffer();
+    buffers[geometryIndex] = buffer;
+    _initBuffer(gl, getVertices(geometryIndex, GeometryWorkerData), buffer);
+    ArrayBufferDataFromSystem.bufferDataMap[geometryIndex] = {
+        size: 3,
+        type: EBufferType.FLOAT
+    };
+    return buffer;
+};
+var _initBuffer = function (gl, data, buffer) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    _resetBindedBuffer(gl);
+};
+var _resetBindedBuffer = function (gl) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+};
+var initData$13 = function (ArrayBufferDataFromSystemFromSystem) {
+    ArrayBufferDataFromSystemFromSystem.buffers = [];
+    ArrayBufferDataFromSystemFromSystem.bufferDataMap = createMap();
+};
+
+var use$2 = requireCheckFunc(function (gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) {
+    it("program should exist", function () {
+        wdet_1(getProgram(shaderIndex, ProgramDataFromSystem)).exist;
+    });
+}, function (gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) {
+    var program = getProgram(shaderIndex, ProgramDataFromSystem);
+    if (ProgramDataFromSystem.lastUsedProgram === program) {
+        return;
+    }
+    ProgramDataFromSystem.lastUsedProgram = program;
+    gl.useProgram(program);
+    disableVertexAttribArray(gl, GLSLSenderDataFromSystem);
+    ProgramDataFromSystem.lastBindedArrayBuffer = null;
+    ProgramDataFromSystem.lastBindedIndexBuffer = null;
+});
+var disableVertexAttribArray = requireCheckFunc(function (gl, GLSLSenderDataFromSystem) {
+    it("vertexAttribHistory should has not hole", function () {
+        forEach(GLSLSenderDataFromSystem.vertexAttribHistory, function (isEnable) {
+            wdet_1(isEnable).exist;
+            wdet_1(isEnable).be.a("boolean");
+        });
+    });
+}, function (gl, GLSLSenderDataFromSystem) {
+    var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
+    for (var i = 0, len = vertexAttribHistory.length; i < len; i++) {
+        var isEnable = vertexAttribHistory[i];
+        if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
+            continue;
+        }
+        gl.disableVertexAttribArray(i);
+    }
+    GLSLSenderDataFromSystem.vertexAttribHistory = [];
+});
+var getMaterialShaderLibConfig = requireCheckFunc(function (materialClassName, material_config) {
+    var materialData = material_config[materialClassName];
+    it("materialClassName should be defined", function () {
+        wdet_1(materialData).exist;
+    });
+    it("shaderLib should be array", function () {
+        wdet_1(materialData.shader.shaderLib).be.a("array");
+    });
+}, function (materialClassName, material_config) {
+    return material_config[materialClassName].shader.shaderLib;
+});
+var registerProgram = function (shaderIndex, ProgramDataFromSystem, program) {
+    ProgramDataFromSystem.programMap[shaderIndex] = program;
+};
+var getProgram = ensureFunc(function (program) {
+}, function (shaderIndex, ProgramDataFromSystem) {
+    return ProgramDataFromSystem.programMap[shaderIndex];
+});
+var isProgramExist = function (program) { return isValidMapValue(program); };
+var initShader = function (program, vsSource, fsSource, gl) {
+    var vs = _compileShader(gl, vsSource, gl.createShader(gl.VERTEX_SHADER)), fs = _compileShader(gl, fsSource, gl.createShader(gl.FRAGMENT_SHADER));
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.bindAttribLocation(program, 0, "a_position");
+    _linkProgram(gl, program);
+    gl.deleteShader(vs);
+    gl.deleteShader(fs);
+};
+var _linkProgram = ensureFunc(function (returnVal, gl, program) {
+    it("link program error:" + gl.getProgramInfoLog(program), function () {
+        wdet_1(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
+    });
+}, function (gl, program) {
+    gl.linkProgram(program);
+});
+var _compileShader = function (gl, glslSource, shader) {
+    gl.shaderSource(shader, glslSource);
+    gl.compileShader(shader);
+    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        return shader;
+    }
+    else {
+        Log$$1.log(gl.getShaderInfoLog(shader));
+        Log$$1.log("source:\n", glslSource);
+    }
+};
+var sendAttributeData$2 = function (gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerData, ArrayBufferData) {
+    var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex], attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex], lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
+    for (var _i = 0, sendDataArr_1 = sendDataArr; _i < sendDataArr_1.length; _i++) {
+        var sendData = sendDataArr_1[_i];
+        var buffer = getOrCreateBuffer(gl, geometryIndex, sendData.buffer, getVertices, GeometryWorkerData, ArrayBufferData), pos = getAttribLocation(sendData.name, attributeLocationMap);
+        if (isAttributeLocationNotExist(pos)) {
+            return;
+        }
+        if (lastBindedArrayBuffer === buffer) {
+            return;
+        }
+        lastBindedArrayBuffer = buffer;
+        sendBuffer(gl, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferData);
+    }
+    ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
+};
+var sendUniformData$2 = function (gl, shaderIndex, _a, MaterialWorkerData, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData) {
+    var getUniformData = _a.getUniformData, sendMatrix4 = _a.sendMatrix4, sendVector3 = _a.sendVector3, sendFloat1 = _a.sendFloat1;
+    var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex], uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex], uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
+    for (var i = 0, len = sendDataArr.length; i < len; i++) {
+        var sendData = sendDataArr[i], name = sendData.name, field = sendData.field, type = sendData.type, from = sendData.from || "cmd", data = getUniformData(field, from, renderCommandUniformData, MaterialWorkerData);
+        switch (type) {
+            case EVariableType.MAT4:
+                sendMatrix4(gl, name, data, uniformLocationMap);
+                break;
+            case EVariableType.VEC3:
+                sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
+                break;
+            case EVariableType.FLOAT:
+                sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
+                break;
+            default:
+                Log$$1.error(true, Log$$1.info.FUNC_INVALID("EVariableType:", type));
+                break;
+        }
+    }
+};
+var initData$12 = function (ProgramDataFromSystem) {
+    ProgramDataFromSystem.programMap = createMap();
+};
+
+var getUniformData = function (field, from, getColorArr3, getOpacity, renderCommandUniformData, MaterialDataFromSystem) {
+    var data = null;
+    switch (from) {
+        case "cmd":
+            data = renderCommandUniformData[field];
+            break;
+        case "material":
+            data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, getColorArr3, getOpacity, MaterialDataFromSystem);
+            break;
+        default:
+            Log$$1.error(true, Log$$1.info.FUNC_UNKNOW("from:" + from));
+            break;
+    }
+    return data;
+};
+var _getUnifromDataFromMaterial = function (field, materialIndex, getColorArr3, getOpacity, MaterialDataFromSystem) {
+    var data = null;
+    switch (field) {
+        case "color":
+            data = getColorArr3(materialIndex, MaterialDataFromSystem);
+            break;
+        case "opacity":
+            data = getOpacity(materialIndex, MaterialDataFromSystem);
+            break;
+        default:
+            Log$$1.error(true, Log$$1.info.FUNC_UNKNOW("field:" + field));
+            break;
+    }
+    return data;
+};
+var sendBuffer = function (gl, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferData) {
+    var _a = ArrayBufferData.bufferDataMap[geometryIndex], size = _a.size, type = _a.type, vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.vertexAttribPointer(pos, size, gl[type], false, 0, 0);
+    if (vertexAttribHistory[pos] !== true) {
+        gl.enableVertexAttribArray(pos);
+        vertexAttribHistory[pos] = true;
+    }
+};
+var sendMatrix4 = function (gl, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist) {
+    _sendUniformData(gl, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, function (pos, data) {
+        gl.uniformMatrix4fv(pos, false, data);
+    });
+};
+var sendVector3 = function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist) {
+    var recordedData = _getUniformCache(shaderIndex, name, uniformCacheMap), x = data[0], y = data[1], z = data[2];
+    if (recordedData && recordedData[0] == x && recordedData[1] == y && recordedData[2] == z) {
+        return;
+    }
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
+    _sendUniformData(gl, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, function (pos, data) {
+        gl.uniform3f(pos, x, y, z);
+    });
+};
+var sendFloat1 = requireCheckFunc(function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist) {
+    it("data should be number", function () {
+        wdet_1(data).be.a("number");
+    });
+}, function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist) {
+    var recordedData = _getUniformCache(shaderIndex, name, uniformCacheMap);
+    if (recordedData === data) {
+        return;
+    }
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
+    _sendUniformData(gl, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, function (pos, data) {
+        gl.uniform1f(pos, data);
+    });
+});
+var _getUniformCache = function (shaderIndex, name, uniformCacheMap) {
+    var cache = uniformCacheMap[shaderIndex];
+    if (_isCacheNotExist(cache)) {
+        cache = {};
+        uniformCacheMap[shaderIndex] = cache;
+        return null;
+    }
+    return cache[name];
+};
+var _isCacheNotExist = function (cache) { return isNotValidMapValue(cache); };
+var _setUniformCache = function (shaderIndex, name, data, uniformCacheMap) {
+    uniformCacheMap[shaderIndex][name] = data;
+};
+var _sendUniformData = function (gl, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, send) {
+    var pos = getUniformLocation(name, uniformLocationMap);
+    if (isUniformLocationNotExist(pos)) {
+        return;
+    }
+    send(pos, data);
+};
+var addSendAttributeConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    it("sendAttributeConfigMap should not has duplicate attribute name", function () {
+        wdet_1(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
+    });
+}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    it("sendAttributeConfigMap[shaderIndex] should not be defined", function () {
+        wdet_1(sendAttributeConfigMap[shaderIndex]).not.exist;
+    });
+}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
+    var sendDataArr = [];
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send;
+        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
+            sendDataArr = sendDataArr.concat(sendData.attribute);
+        }
+    });
+    sendAttributeConfigMap[shaderIndex] = sendDataArr;
+}));
+var addSendUniformConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    it("sendUniformConfigMap should not has duplicate attribute name", function () {
+        wdet_1(hasDuplicateItems(sendUniformConfigMap[shaderIndex])).false;
+    });
+}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    it("sendUniformConfigMap[shaderIndex] should not be defined", function () {
+        wdet_1(sendUniformConfigMap[shaderIndex]).not.exist;
+    });
+}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
+    var sendDataArr = [];
+    forEach(materialShaderLibConfig, function (shaderLibName) {
+        var sendData = shaderLibData[shaderLibName].send;
+        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.uniform)) {
+            sendDataArr = sendDataArr.concat(sendData.uniform);
+        }
+    });
+    sendUniformConfigMap[shaderIndex] = sendDataArr;
+}));
+var initData$14 = function (GLSLSenderDataFromSystem) {
+    GLSLSenderDataFromSystem.sendAttributeConfigMap = createMap();
+    GLSLSenderDataFromSystem.sendUniformConfigMap = createMap();
+    GLSLSenderDataFromSystem.vertexAttribHistory = [];
+    GLSLSenderDataFromSystem.uniformCacheMap = createMap();
+};
+
+var getOrCreateBuffer$1 = function (gl, geometryIndex, getIndices, GeometryWorkerData, IndexBufferDataFromSystem) {
+    var buffers = IndexBufferDataFromSystem.buffers, buffer = buffers[geometryIndex];
+    if (isBufferExist(buffer)) {
+        return buffer;
+    }
+    buffer = gl.createBuffer();
+    buffers[geometryIndex] = buffer;
+    _initBuffer$1(gl, getIndices(geometryIndex, GeometryWorkerData), buffer, IndexBufferDataFromSystem);
+    return buffer;
+};
+var _initBuffer$1 = function (gl, data, buffer, IndexBufferDataFromSystem) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    _resetBindedBuffer$1(gl, IndexBufferDataFromSystem);
+};
+var _resetBindedBuffer$1 = function (gl, IndexBufferDataFromSystem) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+};
+var initData$15 = function (IndexBufferDataFromSystem) {
+    IndexBufferDataFromSystem.buffers = [];
+};
+
+var init$6 = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, MaterialDataFromSystem) {
+    var program = getProgram(shaderIndex, ProgramDataFromSystem);
+    if (isProgramExist(program)) {
+        return;
+    }
+    var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config), shaderLibDataFromSystem = shaderLib_generator.shaderLibs, _a = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibDataFromSystem, MaterialDataFromSystem), vsSource = _a.vsSource, fsSource = _a.fsSource, gl = getGL(DeviceManagerDataFromSystem, state);
+    program = gl.createProgram();
+    registerProgram(shaderIndex, ProgramDataFromSystem, program);
+    initShader(program, vsSource, fsSource, gl);
+    setLocationMap(gl, shaderIndex, program, materialShaderLibConfig, shaderLibDataFromSystem, LocationDataFromSystem);
+    addSendAttributeConfig(shaderIndex, materialShaderLibConfig, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);
+    addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendUniformConfigMap);
+};
+var sendAttributeData$1 = function (gl, shaderIndex, geometryIndex, getVertivesFunc, getAttribLocation$$1, isAttributeLocationNotExist$$1, sendBuffer$$1, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem) {
+    sendAttributeData$2(gl, shaderIndex, geometryIndex, getVertivesFunc, getAttribLocation$$1, isAttributeLocationNotExist$$1, sendBuffer$$1, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
+};
+var sendUniformData$1 = function (gl, shaderIndex, funcDataMap, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData) {
+    sendUniformData$2(gl, shaderIndex, funcDataMap, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData);
+};
+var bindIndexBuffer$1 = function (gl, geometryIndex, getIndicesFunc, ProgramDataFromSystem, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem) {
+    var buffer = getOrCreateBuffer$1(gl, geometryIndex, getIndicesFunc, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem);
+    if (ProgramDataFromSystem.lastBindedIndexBuffer === buffer) {
+        return;
+    }
+    ProgramDataFromSystem.lastBindedIndexBuffer = buffer;
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+};
+var use$1 = function (gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) {
+    use$2(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+};
 
 function singleton(isInitWhenCreate) {
     if (isInitWhenCreate === void 0) { isInitWhenCreate = false; }
@@ -12300,216 +12982,241 @@ function singleton(isInitWhenCreate) {
     };
 }
 
-var DebugConfig = {
-    isTest: false,
-    debugCollision: false,
-    showDebugPanel: false
-};
-
-var EScreenSize;
-(function (EScreenSize) {
-    EScreenSize[EScreenSize["FULL"] = 0] = "FULL";
-})(EScreenSize || (EScreenSize = {}));
-
-var Main = (function () {
-    function Main() {
+var GPUDetector = (function () {
+    function GPUDetector() {
+        this.maxTextureUnit = null;
+        this.maxTextureSize = null;
+        this.maxCubemapTextureSize = null;
+        this.maxAnisotropy = null;
+        this.maxBoneCount = null;
+        this.extensionCompressedTextureS3TC = null;
+        this.extensionTextureFilterAnisotropic = null;
+        this.extensionInstancedArrays = null;
+        this.extensionUintIndices = null;
+        this.extensionDepthTexture = null;
+        this.extensionVAO = null;
+        this.extensionStandardDerivatives = null;
+        this.precision = null;
+        this._isDetected = false;
     }
-    return Main;
-}());
-Main.isTest = false;
-
-var detect = function (state) {
-    return GPUDetector.getInstance().detect(state);
-};
-
-var getIsTest$1 = function (MainData) {
-    return MainData.isTest;
-};
-var setIsTest = function (isTest, MainData) {
-    return IO.of(function () {
-        MainData.isTest = isTest;
-    });
-};
-var setLibIsTest = function (isTest) {
-    return IO.of(function () {
-        Main.isTest = isTest;
-    });
-};
-var getScreenSize = function (state) {
-    return state.getIn(["Main", "screenSize"]);
-};
-var setConfig = function (closeContractTest, MainData, _a) {
-    var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
-        options: {
-            alpha: true,
-            depth: true,
-            stencil: false,
-            antialias: true,
-            premultipliedAlpha: true,
-            preserveDrawingBuffer: false
-        }
-    } : _f;
-    return IO.of(function () {
-        var _isTest = false;
-        if (CompileConfig.closeContractTest) {
-            _isTest = false;
-            setLibIsTest(false).run();
-        }
-        else {
-            _isTest = isTest;
-            setLibIsTest(isTest).run();
-        }
-        setIsTest(_isTest, MainData).run();
-        return immutable_1({
-            Main: {
-                screenSize: screenSize
-            },
-            config: {
-                canvasId: canvasId,
-                contextConfig: {
-                    options: ExtendUtils.extend({
-                        alpha: true,
-                        depth: true,
-                        stencil: false,
-                        antialias: true,
-                        premultipliedAlpha: true,
-                        preserveDrawingBuffer: false
-                    }, contextConfig.options)
-                },
-                useDevicePixelRatio: useDevicePixelRatio
-            }
-        });
-    });
-};
-var init$4 = requireCheckFunc(function (gameState, configState, DeviceManagerData) {
-    it("should set config before", function () {
-        index_1(configState.get("useDevicePixelRatio")).exist;
-    });
-}, function (gameState, configState, DeviceManagerData) {
-    return compose(map(detect), chain(setPixelRatioAndCanvas(configState.get("useDevicePixelRatio"))), chain(setScreen(DeviceManagerData)), createGL)(configState.get("canvasId"), configState.get("contextConfig"), DeviceManagerData, gameState);
-});
-
-var DomQuery = (function () {
-    function DomQuery() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        this._doms = null;
-        if (JudgeUtils.isDom(args[0])) {
-            this._doms = [args[0]];
-        }
-        else if (this._isDomEleStr(args[0])) {
-            this._doms = [this._buildDom(args[0])];
-        }
-        else {
-            this._doms = document.querySelectorAll(args[0]);
-        }
-        return this;
-    }
-    DomQuery.create = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var obj = new this(args[0]);
-        return obj;
+    GPUDetector.getInstance = function () { };
+    GPUDetector.prototype.detect = function (state, getGL, DeviceManagerDataFromSystem) {
+        var gl = getGL(DeviceManagerDataFromSystem, state);
+        this._isDetected = true;
+        this._detectExtension(state, gl);
+        this._detectCapabilty(state, gl);
+        return state;
     };
-    DomQuery.prototype.get = function (index) {
-        return this._doms[index];
+    GPUDetector.prototype._detectExtension = function (state, gl) {
+        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state, gl);
+        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state, gl);
+        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state, gl);
+        this.extensionUintIndices = this._getExtension("element_index_uint", state, gl);
+        this.extensionDepthTexture = this._getExtension("depth_texture", state, gl);
+        this.extensionVAO = this._getExtension("vao", state, gl);
+        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state, gl);
     };
-    DomQuery.prototype.prepend = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var targetDom = null;
-        targetDom = this._buildDom(args[0]);
-        for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
-            var dom = _b[_a];
-            if (dom.nodeType === 1) {
-                dom.insertBefore(targetDom, dom.firstChild);
-            }
-        }
-        return this;
+    GPUDetector.prototype._detectCapabilty = function (state, gl) {
+        this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+        this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+        this.maxAnisotropy = this._getMaxAnisotropy(state, gl);
+        this.maxBoneCount = this._getMaxBoneCount(state, gl);
+        this._detectPrecision(state, gl);
     };
-    DomQuery.prototype.prependTo = function (eleStr) {
-        var targetDom = null;
-        targetDom = DomQuery.create(eleStr);
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            if (dom.nodeType === 1) {
-                targetDom.prepend(dom);
-            }
+    GPUDetector.prototype._getExtension = function (name, state, gl) {
+        var extension = null;
+        switch (name) {
+            case "EXT_texture_filter_anisotropic":
+                extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+                break;
+            case "WEBGL_compressed_texture_s3tc":
+                extension = gl.getExtension("WEBGL_compressed_texture_s3tc") || gl.getExtension("MOZ_WEBGL_compressed_texture_s3tc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
+                break;
+            case "WEBGL_compressed_texture_pvrtc":
+                extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
+                break;
+            case "ANGLE_instanced_arrays":
+                extension = gl.getExtension("ANGLE_instanced_arrays");
+                break;
+            case "element_index_uint":
+                extension = gl.getExtension("OES_element_index_uint") !== null;
+                break;
+            case "depth_texture":
+                extension = gl.getExtension("WEBKIT_WEBGL_depth_texture") !== null || gl.getExtension("WEBGL_depth_texture") !== null;
+                break;
+            case "vao":
+                extension = gl.getExtension("OES_vertex_array_object");
+                break;
+            case "standard_derivatives":
+                extension = gl.getExtension("OES_standard_derivatives");
+                break;
+            default:
+                extension = gl.getExtension(name);
+                break;
         }
-        return this;
+        return extension;
     };
-    DomQuery.prototype.remove = function () {
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            if (dom && dom.parentNode && dom.tagName != 'BODY') {
-                dom.parentNode.removeChild(dom);
-            }
-        }
-        return this;
+    GPUDetector.prototype._getMaxBoneCount = function (state, gl) {
+        var numUniforms = null, maxBoneCount = null;
+        numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
+        numUniforms -= 4 * 4;
+        numUniforms -= 1;
+        numUniforms -= 4 * 4;
+        maxBoneCount = Math.floor(numUniforms / 4);
+        return Math.min(maxBoneCount, 128);
     };
-    DomQuery.prototype.css = function (property, value) {
-        for (var _i = 0, _a = this._doms; _i < _a.length; _i++) {
-            var dom = _a[_i];
-            dom.style[property] = value;
-        }
+    GPUDetector.prototype._getMaxAnisotropy = function (state, gl) {
+        var extension = this.extensionTextureFilterAnisotropic;
+        return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
     };
-    DomQuery.prototype.attr = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
+    GPUDetector.prototype._detectPrecision = function (state, gl) {
+        if (!gl.getShaderPrecisionFormat) {
+            this.precision = EGPUPrecision.HIGHP;
+            return;
         }
-        if (args.length === 1) {
-            var name = args[0];
-            return this.get(0).getAttribute(name);
-        }
-        else {
-            var name = args[0], value = args[1];
-            for (var _a = 0, _b = this._doms; _a < _b.length; _a++) {
-                var dom = _b[_a];
-                dom.setAttribute(name, value);
-            }
-        }
-    };
-    DomQuery.prototype.text = function (str) {
-        var dom = this.get(0);
-        if (str !== void 0) {
-            if (dom.textContent !== void 0) {
-                dom.textContent = str;
+        var vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT), vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT), fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT), fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT), highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0, mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
+        if (!highpAvailable) {
+            if (mediumpAvailable) {
+                this.precision = EGPUPrecision.MEDIUMP;
+                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
             }
             else {
-                dom.innerText = str;
+                this.precision = EGPUPrecision.LOWP;
+                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
             }
         }
         else {
-            return dom.textContent !== void 0 ? dom.textContent : dom.innerText;
+            this.precision = EGPUPrecision.HIGHP;
         }
     };
-    DomQuery.prototype._isDomEleStr = function (eleStr) {
-        return eleStr.match(/<(\w+)[^>]*><\/\1>/) !== null;
-    };
-    DomQuery.prototype._buildDom = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        if (JudgeUtils.isString(args[0])) {
-            var div = this._createElement("div"), eleStr = args[0];
-            div.innerHTML = eleStr;
-            return div.firstChild;
-        }
-        return args[0];
-    };
-    DomQuery.prototype._createElement = function (eleStr) {
-        return document.createElement(eleStr);
-    };
-    return DomQuery;
+    return GPUDetector;
 }());
+GPUDetector = __decorate([
+    singleton(),
+    registerClass("GPUDetector")
+], GPUDetector);
+var EGPUPrecision;
+(function (EGPUPrecision) {
+    EGPUPrecision[EGPUPrecision["HIGHP"] = 0] = "HIGHP";
+    EGPUPrecision[EGPUPrecision["MEDIUMP"] = 1] = "MEDIUMP";
+    EGPUPrecision[EGPUPrecision["LOWP"] = 2] = "LOWP";
+})(EGPUPrecision || (EGPUPrecision = {}));
+
+var GeometryData = (function () {
+    function GeometryData() {
+    }
+    return GeometryData;
+}());
+GeometryData.index = null;
+GeometryData.count = null;
+GeometryData.disposeCount = null;
+GeometryData.maxDisposeIndex = null;
+GeometryData.isReallocate = null;
+GeometryData.buffer = null;
+GeometryData.verticesOffset = null;
+GeometryData.indicesOffset = null;
+GeometryData.verticesInfoList = null;
+GeometryData.indicesInfoList = null;
+GeometryData.isInit = null;
+GeometryData.verticesWorkerInfoList = null;
+GeometryData.indicesWorkerInfoList = null;
+GeometryData.disposedGeometryIndexArray = null;
+GeometryData.vertices = null;
+GeometryData.indices = null;
+GeometryData.verticesCacheMap = null;
+GeometryData.indicesCacheMap = null;
+GeometryData.indexType = null;
+GeometryData.indexTypeSize = null;
+GeometryData.configDataMap = null;
+GeometryData.computeDataFuncMap = null;
+GeometryData.gameObjectMap = null;
+GeometryData.geometryMap = null;
+
+var EDrawMode;
+(function (EDrawMode) {
+    EDrawMode[EDrawMode["POINTS"] = "POINTS"] = "POINTS";
+    EDrawMode[EDrawMode["LINES"] = "LINES"] = "LINES";
+    EDrawMode[EDrawMode["LINE_LOOP"] = "LINE_LOOP"] = "LINE_LOOP";
+    EDrawMode[EDrawMode["LINE_STRIP"] = "LINE_STRIP"] = "LINE_STRIP";
+    EDrawMode[EDrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
+    EDrawMode[EDrawMode["TRIANGLE_STRIP"] = "TRIANGLE_STRIP"] = "TRIANGLE_STRIP";
+    EDrawMode[EDrawMode["TRANGLE_FAN"] = "TRIANGLE_FAN"] = "TRANGLE_FAN";
+})(EDrawMode || (EDrawMode = {}));
+
+var getVertexDataSize = function () { return 3; };
+var getIndexDataSize = function () { return 1; };
+var getUIntArrayClass = function (indexType) {
+    switch (indexType) {
+        case EBufferType.UNSIGNED_SHORT:
+            return Uint16Array;
+        case EBufferType.INT:
+            return Uint32Array;
+        default:
+            Log$$1.error(true, Log$$1.info.FUNC_INVALID("indexType:" + indexType));
+            break;
+    }
+};
+var getIndexType$1 = function (GeometryDataFromSystem) {
+    return GeometryDataFromSystem.indexType;
+};
+var getIndexTypeSize$1 = function (GeometryDataFromSystem) {
+    return GeometryDataFromSystem.indexTypeSize;
+};
+var hasIndices$1 = function (index, getIndices, GeometryDataFromSystem) {
+    var indices = getIndices(index, GeometryDataFromSystem);
+    if (isNotValidMapValue(indices)) {
+        return false;
+    }
+    return indices.length > 0;
+};
+var getDrawMode$1 = function (index, GeometryDataFromSystem) {
+    return EDrawMode.TRIANGLES;
+};
+var getVerticesCount$1 = function (index, getVertices, GeometryDataFromSystem) {
+    return getVertices(index, GeometryDataFromSystem).length;
+};
+var getIndicesCount$1 = function (index, getIndices, GeometryDataFromSystem) {
+    return getIndices(index, GeometryDataFromSystem).length;
+};
+var createBufferViews = function (buffer, count, UintArray, GeometryDataFromSystem) {
+    GeometryDataFromSystem.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
+    GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getIndexDataSize());
+};
+
+var createSharedArrayBufferOrArrayBuffer = function (length) {
+    var Buffer = null;
+    if (isSupportSharedArrayBuffer()) {
+        Buffer = SharedArrayBuffer;
+    }
+    else {
+        Buffer = ArrayBuffer;
+    }
+    return new Buffer(length);
+};
+
+var ArrayBufferData = (function () {
+    function ArrayBufferData() {
+    }
+    return ArrayBufferData;
+}());
+ArrayBufferData.buffers = null;
+ArrayBufferData.bufferDataMap = null;
+
+var IndexBufferData = (function () {
+    function IndexBufferData() {
+    }
+    return IndexBufferData;
+}());
+IndexBufferData.buffers = null;
+
+var disposeGeometryBuffers = function (disposedIndexArray, ArrayBufferDataFromSystem, IndexBufferDataFromSystem, disposeArrayBuffer, disposeIndexBuffer) {
+    for (var _i = 0, disposedIndexArray_1 = disposedIndexArray; _i < disposedIndexArray_1.length; _i++) {
+        var index = disposedIndexArray_1[_i];
+        disposeArrayBuffer(index, ArrayBufferDataFromSystem);
+        disposeIndexBuffer(index, IndexBufferDataFromSystem);
+    }
+};
 
 var getCanvas = function (state) {
     return state.getIn(["View", "dom"]);
@@ -12582,6 +13289,11 @@ var getContext = function (contextConfig, dom) {
     return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options));
 };
 
+var EScreenSize;
+(function (EScreenSize) {
+    EScreenSize[EScreenSize["FULL"] = 0] = "FULL";
+})(EScreenSize || (EScreenSize = {}));
+
 var RectRegion = RectRegion_1 = (function (_super) {
     __extends(RectRegion, _super);
     function RectRegion() {
@@ -12623,89 +13335,51 @@ RectRegion = RectRegion_1 = __decorate([
 ], RectRegion);
 var RectRegion_1;
 
-var root$1;
-if (JudgeUtils$1.isNodeJs() && typeof global != "undefined") {
-    root$1 = global;
-}
-else if (typeof window != "undefined") {
-    root$1 = window;
-}
-else if (typeof self != "undefined") {
-    root$1 = self;
-}
-else {
-    Log$$1.error("no avaliable root!");
-}
-
 var getRootProperty = function (propertyName) {
     return IO.of(function () {
         return root$1[propertyName];
     });
 };
 
-var getGL = function (DeviceManagerData, state) {
-    return DeviceManagerData.gl;
+var getGL$1 = function (DeviceManagerDataFromSystem, state) {
+    return DeviceManagerDataFromSystem.gl;
 };
-var setGL = curry(function (gl, DeviceManagerData, state) {
-    DeviceManagerData.gl = gl;
+var setGL$1 = curry(function (gl, DeviceManagerDataFromSystem, state) {
+    DeviceManagerDataFromSystem.gl = gl;
     return state;
 });
-var setContextConfig = curry(function (contextConfig, state) {
+var setContextConfig$1 = curry(function (contextConfig, state) {
     return state.setIn(["DeviceManager", "contextConfig"], contextConfig);
 });
-var setPixelRatio = function (pixelRatio, state) {
+var setPixelRatio$1 = curry(function (pixelRatio, state) {
+    if (pixelRatio === null) {
+        return state;
+    }
     return state.setIn(["DeviceManager", "pixelRatio"], pixelRatio);
-};
-var getViewport = function (state) {
+});
+var getViewport$1 = function (state) {
     return state.getIn(["DeviceManager", "viewport"]);
 };
-var setViewport = function (x, y, width, height, state) {
+var setViewport$1 = function (x, y, width, height, state) {
     return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 };
-var _getCanvas = function (DomQuery$$1, domId) {
-    if (domId !== "") {
-        return DomQuery$$1.create(_getCanvasId(domId)).get(0);
-    }
-    return DomQuery$$1.create("<canvas></canvas>").prependTo("body").get(0);
-};
-var _getCanvasId = ensureFunc(function (id) {
-    it("dom id should be #string", function () {
-        index_1(/#[^#]+/.test(id)).true;
-    });
-}, function (domId) {
-    if (domId.indexOf('#') > -1) {
-        return domId;
-    }
-    return "#" + domId;
-});
-var setPixelRatioAndCanvas = curry(function (useDevicePixelRatio, state) {
+var setCanvasPixelRatio$1 = curry(function (useDevicePixelRatio, canvas) {
     return IO.of(function () {
-        if (!useDevicePixelRatio) {
-            return state;
-        }
-        var pixelRatio = getRootProperty("devicePixelRatio").run(), dom = getCanvas(state);
-        dom.width = Math.round(dom.width * pixelRatio);
-        dom.height = Math.round(dom.height * pixelRatio);
-        return setPixelRatio(pixelRatio, state);
+        var pixelRatio = getRootProperty("devicePixelRatio").run();
+        canvas.width = Math.round(canvas.width * pixelRatio);
+        canvas.height = Math.round(canvas.height * pixelRatio);
+        return pixelRatio;
     });
 });
-var createGL = curry(function (canvasId, contextConfig, DeviceManagerData, state) {
+var setViewportOfGL$1 = curry(function (DeviceManagerDataFromSystem, state, _a) {
+    var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
     return IO.of(function () {
-        var dom = _getCanvas(DomQuery, canvasId), gl = getContext(contextConfig, dom);
-        if (!gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
-        return compose(setCanvas(dom), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
-    });
-});
-var setViewportOfGL = curry(function (x, y, width, height, DeviceManagerData, state) {
-    return IO.of(function () {
-        var gl = getGL(DeviceManagerData, state), viewport = getViewport(state);
+        var gl = getGL$1(DeviceManagerDataFromSystem, state), viewport = getViewport$1(state);
         if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
             return state;
         }
         gl.viewport(x, y, width, height);
-        return setViewport(x, y, width, height, state);
+        return setViewport$1(x, y, width, height, state);
     });
 });
 var _setBodyByScreenSize = function (screenSize) {
@@ -12745,57 +13419,92 @@ var _getScreenData = function (screenSize) {
         };
     });
 };
-var _setScreenData = curry(function (DeviceManagerData, state, _a) {
-    var x = _a.x, y = _a.y, width = _a.width, height = _a.height, styleWidth = _a.styleWidth, styleHeight = _a.styleHeight;
-    return IO.of(function () {
-        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(getCanvas(state)).run();
-        return setViewportOfGL(0, 0, width, height, DeviceManagerData, state).run();
-    });
-});
-var setScreen = curry(function (DeviceManagerData, state) {
-    return IO.of(requireCheckFunc(function (state) {
+var getScreenSize$1 = function (state) {
+    return state.getIn(["Main", "screenSize"]);
+};
+var setScreen$1 = function (canvas, setScreenData, DeviceManagerDataFromSystem, state) {
+    return IO.of(requireCheckFunc(function () {
         it("should exist MainData.screenSize", function () {
-            index_1(getScreenSize(DirectorData.state)).exist;
+            wdet_1(getScreenSize$1(state)).exist;
         });
     }, function () {
-        var dom = getCanvas(state);
-        initCanvas(dom).run();
-        return compose(chain(_setScreenData(DeviceManagerData, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize(state)).run();
+        initCanvas(canvas).run();
+        return compose(chain(setScreenData(DeviceManagerDataFromSystem, canvas, state)), chain(_getScreenData), _setBodyByScreenSize)(getScreenSize$1(state)).run();
     }));
-});
-var clear = function (gl, color, DeviceManagerData) {
-    _setClearColor(gl, color, DeviceManagerData);
-    setColorWrite(gl, true, true, true, true, DeviceManagerData);
+};
+var clear$1 = function (gl, color, DeviceManagerDataFromSystem) {
+    _setClearColor(gl, color, DeviceManagerDataFromSystem);
+    setColorWrite$1(gl, true, true, true, true, DeviceManagerDataFromSystem);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 };
-var _setClearColor = function (gl, color, DeviceManagerData) {
-    var clearColor = DeviceManagerData.clearColor;
+var _setClearColor = function (gl, color, DeviceManagerDataFromSystem) {
+    var clearColor = DeviceManagerDataFromSystem.clearColor;
     if (clearColor && clearColor.isEqual(color)) {
         return;
     }
     gl.clearColor(color.r, color.g, color.b, color.a);
-    DeviceManagerData.clearColor = color;
+    DeviceManagerDataFromSystem.clearColor = color;
 };
-var setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeAlpha, DeviceManagerData) {
-    if (DeviceManagerData.writeRed !== writeRed
-        || DeviceManagerData.writeGreen !== writeGreen
-        || DeviceManagerData.writeBlue !== writeBlue
-        || DeviceManagerData.writeAlpha !== writeAlpha) {
+var setColorWrite$1 = function (gl, writeRed, writeGreen, writeBlue, writeAlpha, DeviceManagerDataFromSystem) {
+    if (DeviceManagerDataFromSystem.writeRed !== writeRed
+        || DeviceManagerDataFromSystem.writeGreen !== writeGreen
+        || DeviceManagerDataFromSystem.writeBlue !== writeBlue
+        || DeviceManagerDataFromSystem.writeAlpha !== writeAlpha) {
         gl.colorMask(writeRed, writeGreen, writeBlue, writeAlpha);
-        DeviceManagerData.writeRed = writeRed;
-        DeviceManagerData.writeGreen = writeGreen;
-        DeviceManagerData.writeBlue = writeBlue;
-        DeviceManagerData.writeAlpha = writeAlpha;
+        DeviceManagerDataFromSystem.writeRed = writeRed;
+        DeviceManagerDataFromSystem.writeGreen = writeGreen;
+        DeviceManagerDataFromSystem.writeBlue = writeBlue;
+        DeviceManagerDataFromSystem.writeAlpha = writeAlpha;
     }
 };
-var initData$7 = function (DeviceManagerData) {
-    DeviceManagerData.gl = null;
-    DeviceManagerData.clearColor = null;
-    DeviceManagerData.writeRed = null;
-    DeviceManagerData.writeGreen = null;
-    DeviceManagerData.writeBlue = null;
-    DeviceManagerData.writeAlpha = null;
+var initData$19 = function (DeviceManagerDataFromSystem) {
+    DeviceManagerDataFromSystem.gl = null;
+    DeviceManagerDataFromSystem.clearColor = null;
+    DeviceManagerDataFromSystem.writeRed = null;
+    DeviceManagerDataFromSystem.writeGreen = null;
+    DeviceManagerDataFromSystem.writeBlue = null;
+    DeviceManagerDataFromSystem.writeAlpha = null;
 };
+
+var createGL = curry(function (canvas, contextConfig, DeviceManagerData, state) {
+    return IO.of(function () {
+        var gl = getContext(contextConfig, canvas);
+        if (!gl) {
+            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        }
+        return compose(setCanvas(canvas), setContextConfig$$1(contextConfig), setGL$$1(gl, DeviceManagerData))(state);
+    });
+});
+var getGL$$1 = getGL$1;
+var setGL$$1 = setGL$1;
+var setContextConfig$$1 = setContextConfig$1;
+var setPixelRatio$$1 = setPixelRatio$1;
+var getViewport$$1 = getViewport$1;
+
+var setCanvasPixelRatio$$1 = curry(function (useDevicePixelRatio, canvas, state) {
+    return IO.of(function () {
+        if (!useDevicePixelRatio) {
+            return state;
+        }
+        var pixelRatio = setCanvasPixelRatio$1(useDevicePixelRatio, canvas).run();
+        return setPixelRatio$$1(pixelRatio, state);
+    });
+});
+var setViewportOfGL$$1 = setViewportOfGL$1;
+
+var setScreen$$1 = curry(function (canvas, DeviceManagerData, state) {
+    return setScreen$1(canvas, _setScreenData, DeviceManagerData, state);
+});
+var _setScreenData = curry(function (DeviceManagerData, canvas, state, data) {
+    var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;
+    return IO.of(function () {
+        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(canvas).run();
+        return setViewportOfGL$$1(DeviceManagerData, state, data).run();
+    });
+});
+var clear$$1 = clear$1;
+
+var initData$18 = initData$19;
 
 var DeviceManagerData = (function () {
     function DeviceManagerData() {
@@ -12809,161 +13518,26 @@ DeviceManagerData.writeGreen = null;
 DeviceManagerData.writeBlue = null;
 DeviceManagerData.writeAlpha = null;
 
-var GPUDetector = (function () {
-    function GPUDetector() {
-        this.maxTextureUnit = null;
-        this.maxTextureSize = null;
-        this.maxCubemapTextureSize = null;
-        this.maxAnisotropy = null;
-        this.maxBoneCount = null;
-        this.extensionCompressedTextureS3TC = null;
-        this.extensionTextureFilterAnisotropic = null;
-        this.extensionInstancedArrays = null;
-        this.extensionUintIndices = null;
-        this.extensionDepthTexture = null;
-        this.extensionVAO = null;
-        this.extensionStandardDerivatives = null;
-        this.precision = null;
-        this._isDetected = false;
-    }
-    GPUDetector.getInstance = function () { };
-    GPUDetector.prototype.detect = function (state) {
-        this._isDetected = true;
-        this._detectExtension(state);
-        this._detectCapabilty(state);
-        return state;
-    };
-    GPUDetector.prototype._detectExtension = function (state) {
-        this.extensionCompressedTextureS3TC = this._getExtension("WEBGL_compressed_texture_s3tc", state);
-        this.extensionTextureFilterAnisotropic = this._getExtension("EXT_texture_filter_anisotropic", state);
-        this.extensionInstancedArrays = this._getExtension("ANGLE_instanced_arrays", state);
-        this.extensionUintIndices = this._getExtension("element_index_uint", state);
-        this.extensionDepthTexture = this._getExtension("depth_texture", state);
-        this.extensionVAO = this._getExtension("vao", state);
-        this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state);
-    };
-    GPUDetector.prototype._detectCapabilty = function (state) {
-        var gl = getGL(DeviceManagerData, state);
-        this.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
-        this.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-        this.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
-        this.maxAnisotropy = this._getMaxAnisotropy(state);
-        this.maxBoneCount = this._getMaxBoneCount(state);
-        this._detectPrecision(state);
-    };
-    GPUDetector.prototype._getExtension = function (name, state) {
-        var extension, gl = getGL(DeviceManagerData, state);
-        switch (name) {
-            case "EXT_texture_filter_anisotropic":
-                extension = gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("MOZ_EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-                break;
-            case "WEBGL_compressed_texture_s3tc":
-                extension = gl.getExtension("WEBGL_compressed_texture_s3tc") || gl.getExtension("MOZ_WEBGL_compressed_texture_s3tc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_s3tc");
-                break;
-            case "WEBGL_compressed_texture_pvrtc":
-                extension = gl.getExtension("WEBGL_compressed_texture_pvrtc") || gl.getExtension("WEBKIT_WEBGL_compressed_texture_pvrtc");
-                break;
-            case "ANGLE_instanced_arrays":
-                extension = gl.getExtension("ANGLE_instanced_arrays");
-                break;
-            case "element_index_uint":
-                extension = gl.getExtension("OES_element_index_uint") !== null;
-                break;
-            case "depth_texture":
-                extension = gl.getExtension("WEBKIT_WEBGL_depth_texture") !== null || gl.getExtension("WEBGL_depth_texture") !== null;
-                break;
-            case "vao":
-                extension = gl.getExtension("OES_vertex_array_object");
-                break;
-            case "standard_derivatives":
-                extension = gl.getExtension("OES_standard_derivatives");
-                break;
-            default:
-                extension = gl.getExtension(name);
-                break;
-        }
-        return extension;
-    };
-    GPUDetector.prototype._getMaxBoneCount = function (state) {
-        var gl = getGL(DeviceManagerData, state), numUniforms = null, maxBoneCount = null;
-        numUniforms = gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS);
-        numUniforms -= 4 * 4;
-        numUniforms -= 1;
-        numUniforms -= 4 * 4;
-        maxBoneCount = Math.floor(numUniforms / 4);
-        return Math.min(maxBoneCount, 128);
-    };
-    GPUDetector.prototype._getMaxAnisotropy = function (state) {
-        var extension = this.extensionTextureFilterAnisotropic, gl = getGL(DeviceManagerData, state);
-        return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
-    };
-    GPUDetector.prototype._detectPrecision = function (state) {
-        var gl = getGL(DeviceManagerData, state);
-        if (!gl.getShaderPrecisionFormat) {
-            this.precision = EGPUPrecision.HIGHP;
-            return;
-        }
-        var vertexShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT), vertexShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT), fragmentShaderPrecisionHighpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT), fragmentShaderPrecisionMediumpFloat = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT), highpAvailable = vertexShaderPrecisionHighpFloat.precision > 0 && fragmentShaderPrecisionHighpFloat.precision > 0, mediumpAvailable = vertexShaderPrecisionMediumpFloat.precision > 0 && fragmentShaderPrecisionMediumpFloat.precision > 0;
-        if (!highpAvailable) {
-            if (mediumpAvailable) {
-                this.precision = EGPUPrecision.MEDIUMP;
-                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp, using mediump"));
-            }
-            else {
-                this.precision = EGPUPrecision.LOWP;
-                Log$$1.warn(Log$$1.info.FUNC_NOT_SUPPORT("gpu", "highp and mediump, using lowp"));
-            }
-        }
-        else {
-            this.precision = EGPUPrecision.HIGHP;
-        }
-    };
-    return GPUDetector;
-}());
-GPUDetector = __decorate([
-    singleton(),
-    registerClass("GPUDetector")
-], GPUDetector);
-var EGPUPrecision;
-(function (EGPUPrecision) {
-    EGPUPrecision[EGPUPrecision["HIGHP"] = 0] = "HIGHP";
-    EGPUPrecision[EGPUPrecision["MEDIUMP"] = 1] = "MEDIUMP";
-    EGPUPrecision[EGPUPrecision["LOWP"] = 2] = "LOWP";
-})(EGPUPrecision || (EGPUPrecision = {}));
-
-var EBufferType;
-(function (EBufferType) {
-    EBufferType[EBufferType["BYTE"] = "BYTE"] = "BYTE";
-    EBufferType[EBufferType["UNSIGNED_BYTE"] = "UNSIGNED_BYTE"] = "UNSIGNED_BYTE";
-    EBufferType[EBufferType["SHORT"] = "SHORT"] = "SHORT";
-    EBufferType[EBufferType["UNSIGNED_SHORT"] = "UNSIGNED_SHORT"] = "UNSIGNED_SHORT";
-    EBufferType[EBufferType["INT"] = "INT"] = "INT";
-    EBufferType[EBufferType["UNSIGNED_INT"] = "UNSIGNED_INT"] = "UNSIGNED_INT";
-    EBufferType[EBufferType["FLOAT"] = "FLOAT"] = "FLOAT";
-})(EBufferType || (EBufferType = {}));
-
-var EDrawMode;
-(function (EDrawMode) {
-    EDrawMode[EDrawMode["POINTS"] = "POINTS"] = "POINTS";
-    EDrawMode[EDrawMode["LINES"] = "LINES"] = "LINES";
-    EDrawMode[EDrawMode["LINE_LOOP"] = "LINE_LOOP"] = "LINE_LOOP";
-    EDrawMode[EDrawMode["LINE_STRIP"] = "LINE_STRIP"] = "LINE_STRIP";
-    EDrawMode[EDrawMode["TRIANGLES"] = "TRIANGLES"] = "TRIANGLES";
-    EDrawMode[EDrawMode["TRIANGLE_STRIP"] = "TRIANGLE_STRIP"] = "TRIANGLE_STRIP";
-    EDrawMode[EDrawMode["TRANGLE_FAN"] = "TRIANGLE_FAN"] = "TRANGLE_FAN";
-})(EDrawMode || (EDrawMode = {}));
-
-var addAddComponentHandle$4 = function (_class) {
-    addAddComponentHandle$1(_class, addComponent$4);
+var initData$17 = initData$13;
+var disposeBuffer$1 = function (geometryIndex, ArrayBufferData) {
+    disposeBuffer(geometryIndex, ArrayBufferData.buffers, getGL$$1, DeviceManagerData);
 };
-var addDisposeHandle$4 = function (_class) {
-    addDisposeHandle$1(_class, disposeComponent$4);
+
+var initData$20 = initData$15;
+var disposeBuffer$2 = function (geometryIndex, IndexBufferData) {
+    disposeBuffer(geometryIndex, IndexBufferData.buffers, getGL$$1, DeviceManagerData);
 };
-var addInitHandle$1 = function (_class) {
-    addInitHandle(_class, initGeometry$1);
+
+var addAddComponentHandle$6 = function (_class) {
+    addAddComponentHandle$1(_class, addComponent$6);
 };
-var create$4 = requireCheckFunc(function (geometry, GeometryData$$1) {
-    checkIndexShouldEqualCount(GeometryData$$1);
+var addDisposeHandle$6 = function (_class) {
+    addDisposeHandle$1(_class, disposeComponent$6);
+};
+var addInitHandle$2 = function (_class) {
+    addInitHandle(_class, initGeometry);
+};
+var create$8 = requireCheckFunc(function (geometry, GeometryData$$1) {
 }, function (geometry, GeometryData$$1) {
     var index = generateComponentIndex(GeometryData$$1);
     geometry.index = index;
@@ -12971,13 +13545,14 @@ var create$4 = requireCheckFunc(function (geometry, GeometryData$$1) {
     GeometryData$$1.geometryMap[index] = geometry;
     return geometry;
 });
-var init$3 = function (GeometryData$$1, state) {
+var init$7 = function (GeometryData$$1, state) {
     for (var i = 0, count = GeometryData$$1.count; i < count; i++) {
-        initGeometry$1(i, state);
+        initGeometry(i, state);
     }
+    _markIsInit(GeometryData$$1);
     return state;
 };
-var initGeometry$1 = function (index, state) {
+var initGeometry = function (index, state) {
     var computeDataFunc = GeometryData.computeDataFuncMap[index];
     if (_isComputeDataFuncNotExist(computeDataFunc)) {
         return;
@@ -12987,72 +13562,155 @@ var initGeometry$1 = function (index, state) {
     setIndices(index, indices, GeometryData);
 };
 var _isComputeDataFuncNotExist = function (func) { return isNotValidMapValue(func); };
-var getDrawMode$1 = function (index, GeometryData$$1) {
-    return EDrawMode.TRIANGLES;
-};
-var getVerticesCount = function (index, GeometryData$$1) {
-    return getVertices$1(index, GeometryData$$1).length;
-};
-var getIndicesCount = function (index, GeometryData$$1) {
-    return getIndices$1(index, GeometryData$$1).length;
-};
-var getIndexType = function (GeometryData$$1) {
-    return GeometryData$$1.indexType;
-};
-var getIndexTypeSize = function (GeometryData$$1) {
-    return GeometryData$$1.indexTypeSize;
-};
-var getVertices$1 = function (index, GeometryData$$1) {
-    return GeometryData$$1.verticesMap[index];
+var getVertices = function (index, GeometryData$$1) {
+    return _getPointData(index, GeometryData$$1.vertices, GeometryData$$1.verticesCacheMap, GeometryData$$1.verticesInfoList);
 };
 var setVertices = requireCheckFunc(function (index, vertices, GeometryData$$1) {
-    it("vertices should not already exist", function () {
-        index_1(GeometryData$$1.verticesMap[index]).not.exist;
-    });
 }, function (index, vertices, GeometryData$$1) {
-    GeometryData$$1.verticesMap[index] = vertices;
+    GeometryData$$1.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData$$1.vertices, GeometryData$$1.verticesCacheMap, GeometryData$$1.verticesInfoList, GeometryData$$1.verticesWorkerInfoList, GeometryData$$1.verticesOffset, GeometryData$$1);
 });
-var getIndices$1 = function (index, GeometryData$$1) {
-    return GeometryData$$1.indicesMap[index];
+var getIndices = function (index, GeometryData$$1) {
+    return _getPointData(index, GeometryData$$1.indices, GeometryData$$1.indicesCacheMap, GeometryData$$1.indicesInfoList);
 };
 var setIndices = requireCheckFunc(function (index, indices, GeometryData$$1) {
-    it("indices should not already exist", function () {
-        index_1(GeometryData$$1.indicesMap[index]).not.exist;
-    });
 }, function (index, indices, GeometryData$$1) {
-    GeometryData$$1.indicesMap[index] = indices;
+    GeometryData$$1.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData$$1.indices, GeometryData$$1.indicesCacheMap, GeometryData$$1.indicesInfoList, GeometryData$$1.indicesWorkerInfoList, GeometryData$$1.indicesOffset, GeometryData$$1);
 });
-var hasIndices = function (index, GeometryData$$1) {
-    var indices = getIndices$1(index, GeometryData$$1);
-    if (isNotValidMapValue(indices)) {
-        return false;
+var _getPointData = requireCheckFunc(function (index, points, cacheMap, infoList) {
+    it("infoList[index] should exist", function () {
+        wdet_1(infoList[index]).exist;
+    });
+}, function (index, points, cacheMap, infoList) {
+    var dataArr = cacheMap[index];
+    if (isValidMapValue(dataArr)) {
+        return dataArr;
     }
-    return indices.length > 0;
+    var info = infoList[index];
+    dataArr = getSubarray(points, info.startIndex, info.endIndex);
+    cacheMap[index] = dataArr;
+    return dataArr;
+});
+var _setPointData = function (index, dataArr, dataSize, points, cacheMap, infoList, workerInfoList, offset, GeometryData$$1) {
+    var count = dataArr.length, startIndex = offset;
+    offset += count;
+    infoList[index] = _buildInfo(startIndex, offset);
+    _fillTypeArr$1(points, dataArr, startIndex, count);
+    _removeCache(index, cacheMap);
+    if (_isInit(GeometryData$$1)) {
+        _addWorkerInfo(workerInfoList, index, startIndex, offset);
+    }
+    return offset;
 };
-var addComponent$4 = function (component, gameObject) {
+var _fillTypeArr$1 = requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
+    it("should not exceed type arr's length", function () {
+        wdet_1(count + startIndex).lte(typeArr.length);
+    });
+}, function (typeArr, dataArr, startIndex, count) {
+    for (var i = 0; i < count; i++) {
+        typeArr[i + startIndex] = dataArr[i];
+    }
+});
+var _removeCache = function (index, cacheMap) {
+    deleteVal(index, cacheMap);
+};
+var _buildInfo = function (startIndex, endIndex) {
+    return {
+        startIndex: startIndex,
+        endIndex: endIndex
+    };
+};
+var addComponent$6 = function (component, gameObject) {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 };
-var disposeComponent$4 = ensureFunc(function (returnVal, component) {
-    checkIndexShouldEqualCount(GeometryData);
-}, function (component) {
-    var sourceIndex = component.index, lastComponentIndex = null;
-    deleteBySwap$1(sourceIndex, GeometryData.verticesMap);
-    deleteBySwap$1(sourceIndex, GeometryData.indicesMap);
+var disposeComponent$6 = function (component) {
+    var sourceIndex = component.index;
+    deleteComponent(sourceIndex, GeometryData.geometryMap);
     GeometryData.count -= 1;
-    GeometryData.index -= 1;
-    lastComponentIndex = GeometryData.count;
-    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.configDataMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.computeDataFuncMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
-});
-var getGameObject$3 = function (index, Data) {
+    GeometryData.disposeCount += 1;
+    GeometryData.isReallocate = false;
+    if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
+        var disposedIndexArray = reAllocateGeometry(GeometryData);
+        _disposeBuffers(disposedIndexArray);
+        clearWorkerInfoList(GeometryData);
+        GeometryData.isReallocate = true;
+        GeometryData.disposeCount = 0;
+    }
+};
+var _disposeBuffers = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _disposeBuffers = requireCheckFunc(function (disposedIndexArray) {
+        it("should not add data twice in one frame", function () {
+            wdet_1(GeometryData.disposedGeometryIndexArray.length).equal(0);
+        });
+    }, function (disposedIndexArray) {
+        GeometryData.disposedGeometryIndexArray = disposedIndexArray;
+    });
+}
+else {
+    _disposeBuffers = function (disposedIndexArray) {
+        disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeBuffer$1, disposeBuffer$2);
+    };
+}
+var isReallocate = function (GeometryData$$1) {
+    return GeometryData$$1.isReallocate;
+};
+var _isBufferNearlyFull = function (GeometryData$$1) {
+    var infoList = GeometryData$$1.indicesInfoList, lastInfo = infoList[infoList.length - 1];
+    if (isNotValidVal(lastInfo)) {
+        return false;
+    }
+    return lastInfo.endIndex >= GeometryData$$1.maxDisposeIndex;
+};
+var getGameObject$5 = function (index, Data) {
     return getComponentGameObject(Data.gameObjectMap, index);
 };
 var getConfigData = function (index, GeometryData$$1) {
     return GeometryData$$1.configDataMap[index];
 };
-var initData$6 = function (DataBufferConfig, GeometryData$$1) {
+var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
+    if (DataBufferConfig.geometryIndicesBufferBits === 16) {
+        return false;
+    }
+    return GPUDetector.getInstance().extensionUintIndices === true;
+};
+
+var _markIsInit = function (GeometryData$$1) {
+    GeometryData$$1.isInit = true;
+};
+var _isInit = function (GeometryData$$1) {
+    return GeometryData$$1.isInit;
+};
+var clearWorkerInfoList = function (GeometryData$$1) {
+    GeometryData$$1.verticesWorkerInfoList = [];
+    GeometryData$$1.indicesWorkerInfoList = [];
+};
+var hasNewPointData = function (GeometryData$$1) {
+    return GeometryData$$1.verticesWorkerInfoList.length > 0;
+};
+var hasDisposedGeometryIndexArrayData = function (GeometryData$$1) {
+    return GeometryData$$1.disposedGeometryIndexArray.length > 0;
+};
+var clearDisposedGeometryIndexArray = function (GeometryData$$1) {
+    GeometryData$$1.disposedGeometryIndexArray = [];
+};
+var _addWorkerInfo = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _addWorkerInfo = function (infoList, index, startIndex, endIndex) {
+        infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
+    };
+}
+else {
+    _addWorkerInfo = function (infoList, index, startIndex, endIndex) {
+    };
+}
+var _buildWorkerInfo = function (index, startIndex, endIndex) {
+    return {
+        index: index,
+        startIndex: startIndex,
+        endIndex: endIndex
+    };
+};
+var initData$16 = function (DataBufferConfig, GeometryData$$1) {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig), indicesArrayBytes = null;
     if (isIndicesBufferNeed32Bits) {
         indicesArrayBytes = Uint32Array.BYTES_PER_ELEMENT;
@@ -13064,102 +13722,68 @@ var initData$6 = function (DataBufferConfig, GeometryData$$1) {
     }
     GeometryData$$1.indexTypeSize = indicesArrayBytes;
     GeometryData$$1.configDataMap = createMap();
-    GeometryData$$1.verticesMap = [];
-    GeometryData$$1.indicesMap = [];
+    GeometryData$$1.verticesCacheMap = createMap();
+    GeometryData$$1.indicesCacheMap = createMap();
     GeometryData$$1.computeDataFuncMap = createMap();
     GeometryData$$1.gameObjectMap = createMap();
     GeometryData$$1.geometryMap = createMap();
     GeometryData$$1.index = 0;
     GeometryData$$1.count = 0;
+    _initBufferData$2(indicesArrayBytes, getUIntArrayClass(GeometryData$$1.indexType), DataBufferConfig, GeometryData$$1);
+    GeometryData$$1.verticesInfoList = [];
+    GeometryData$$1.indicesInfoList = [];
+    GeometryData$$1.verticesWorkerInfoList = [];
+    GeometryData$$1.indicesWorkerInfoList = [];
+    GeometryData$$1.disposedGeometryIndexArray = [];
+    GeometryData$$1.verticesOffset = 0;
+    GeometryData$$1.indicesOffset = 0;
+    GeometryData$$1.disposeCount = 0;
+    GeometryData$$1.isReallocate = false;
 };
-var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
-    if (DataBufferConfig.geometryIndicesBufferBits === 16) {
-        return false;
-    }
-    return GPUDetector.getInstance().extensionUintIndices === true;
+var _initBufferData$2 = function (indicesArrayBytes, UintArray, DataBufferConfig, GeometryData$$1) {
+    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
+    createBufferViews(buffer, count, UintArray, GeometryData$$1);
+    GeometryData$$1.buffer = buffer;
+    GeometryData$$1.maxDisposeIndex = GeometryData$$1.indices.length * 0.9;
 };
-var isIndicesBufferNeed32BitsByData = function (GeometryData$$1) {
-    return GeometryData$$1.indexType === EBufferType.UNSIGNED_INT;
+var getIndexType$$1 = null;
+var getIndexTypeSize$$1 = null;
+var hasIndices$$1 = null;
+var getDrawMode$$1 = null;
+var getVerticesCount$$1 = null;
+var getIndicesCount$$1 = null;
+if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
+    getIndexType$$1 = getIndexType$1;
+    getIndexTypeSize$$1 = getIndexTypeSize$1;
+    hasIndices$$1 = function (index, GeometryData$$1) { return hasIndices$1(index, getIndices, GeometryData$$1); };
+    getDrawMode$$1 = getDrawMode$1;
+    getVerticesCount$$1 = function (index, GeometryData$$1) { return getVerticesCount$1(index, getVertices, GeometryData$$1); };
+    getIndicesCount$$1 = function (index, GeometryData$$1) { return getIndicesCount$1(index, getIndices, GeometryData$$1); };
+}
+
+var getAttribLocation$1 = getAttribLocation;
+var getUniformLocation$1 = getUniformLocation;
+var isUniformLocationNotExist$1 = isUniformLocationNotExist;
+var isAttributeLocationNotExist$1 = isAttributeLocationNotExist;
+var initData$21 = initData$11;
+
+var getUniformData$1 = function (field, from, renderCommandUniformData, MaterialData) {
+    return getUniformData(field, from, getColorArr3$$1, getOpacity$$1, renderCommandUniformData, MaterialData);
 };
-var convertVerticesArrayToTypeArray = function (vertices) {
-    return new Float32Array(vertices);
+var sendBuffer$1 = sendBuffer;
+var sendMatrix4$1 = function (gl, name, data, uniformLocationMap) {
+    sendMatrix4(gl, name, data, uniformLocationMap, getUniformLocation$1, isUniformLocationNotExist$1);
 };
-var convertIndicesArrayToTypeArray = function (indices, GeometryData$$1) {
-    return isIndicesBufferNeed32BitsByData(GeometryData$$1) ? new Uint32Array(indices) : new Uint16Array(indices);
+var sendVector3$1 = function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
+    sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation$1, isUniformLocationNotExist$1);
+};
+var sendFloat1$1 = function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
+    sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation$1, isUniformLocationNotExist$1);
 };
 
-var Geometry = (function (_super) {
-    __extends(Geometry, _super);
-    function Geometry() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Geometry;
-}(Component));
-Geometry = __decorate([
-    registerClass("Geometry")
-], Geometry);
-var getDrawMode$$1 = function (geometry) {
-    return getDrawMode$1(geometry.index, GeometryData);
-};
-var getVertices$$1 = function (geometry) {
-    return getVertices$1(geometry.index, GeometryData);
-};
-var getIndices$$1 = function (geometry) {
-    return getIndices$1(geometry.index, GeometryData);
-};
-var getGeometryConfigData = function (geometry) {
-    return getConfigData(geometry.index, GeometryData);
-};
-var initGeometry$$1 = function (geometry) {
-    initGeometry$1(geometry.index, getState(DirectorData));
-};
-var getGeometryGameObject = function (geometry) {
-    return getGameObject$3(geometry.index, GeometryData);
-};
 
-var Shader = (function () {
-    function Shader() {
-        this.index = null;
-    }
-    return Shader;
-}());
-Shader = __decorate([
-    registerClass("Shader")
-], Shader);
-
-var isBufferExist = function (buffer) { return isValidMapValue(buffer); };
-
-var getOrCreateBuffer = function (gl, geometryIndex, GeometryData, IndexBufferData) {
-    var buffers = IndexBufferData.buffers, buffer = buffers[geometryIndex];
-    if (isBufferExist(buffer)) {
-        return buffer;
-    }
-    buffer = gl.createBuffer();
-    buffers[geometryIndex] = buffer;
-    _initBuffer(gl, getIndices$1(geometryIndex, GeometryData), buffer, IndexBufferData);
-    return buffer;
-};
-var _initBuffer = function (gl, data, buffer, IndexBufferData) {
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    _resetBindedBuffer(gl, IndexBufferData);
-};
-var _resetBindedBuffer = function (gl, IndexBufferData) {
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-};
-var getType = function (GeometryData) {
-    return getIndexType(GeometryData);
-};
-var getTypeSize = function (GeometryData) {
-    return getIndexTypeSize(GeometryData);
-};
-var initData$10 = function (IndexBufferData) {
-    IndexBufferData.buffers = [];
-};
-
-var isConfigDataExist = function (configData) {
-    return isValueExist(configData);
-};
+var initData$22 = initData$14;
 
 var main_begin = "void main(void){\n";
 var main_end = "}\n";
@@ -13177,13 +13801,13 @@ var highp_fragment = { top: "precision highp float;\nprecision highp int;\n", de
 var lowp_fragment = { top: "precision lowp float;\nprecision lowp int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
 var mediump_fragment = { top: "precision mediump float;\nprecision mediump int;\n", define: "", varDeclare: "", funcDeclare: "", funcDefine: "", body: "" };
 
-var buildGLSLSource = requireCheckFunc(function (materialIndex, materialShaderLibConfig, shaderLibData) {
+var buildGLSLSource$1 = requireCheckFunc(function (materialIndex, materialShaderLibConfig, shaderLibData, funcDataMap, MaterialDataFromSystem) {
     it("shaderLib should be defined", function () {
         forEach(materialShaderLibConfig, function (shaderLibName) {
-            index_1(shaderLibData[shaderLibName]).exist;
+            wdet_1(shaderLibData[shaderLibName]).exist;
         });
     });
-}, function (materialIndex, materialShaderLibConfig, shaderLibData) {
+}, function (materialIndex, materialShaderLibConfig, shaderLibData, funcDataMap, MaterialDataFromSystem) {
     var vsTop = "", vsDefine = "", vsVarDeclare = "", vsFuncDeclare = "", vsFuncDefine = "", vsBody = "", fsTop = "", fsDefine = "", fsVarDeclare = "", fsFuncDeclare = "", fsFuncDefine = "", fsBody = "";
     vsBody += main_begin;
     fsBody += main_begin;
@@ -13213,7 +13837,7 @@ var buildGLSLSource = requireCheckFunc(function (materialIndex, materialShaderLi
             fsBody += _getGLSLPartData(fs, "body");
         }
         if (isConfigDataExist(func)) {
-            var funcConfig = func(materialIndex);
+            var funcConfig = func(materialIndex, funcDataMap, MaterialDataFromSystem);
             if (isConfigDataExist(funcConfig)) {
                 var vs_1 = funcConfig.vs, fs_1 = funcConfig.fs;
                 if (isConfigDataExist(vs_1)) {
@@ -13322,379 +13946,51 @@ var _generateUniformSource = function (materialShaderLibConfig, shaderLibData, s
     return result;
 };
 
-var setLocationMap = ensureFunc(function (returnVal, gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
-    it("attribute should contain position at least", function () {
-        index_1(ShaderData.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
-    });
-}, requireCheckFunc(function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
-    it("not setted location before", function () {
-        index_1(isValidMapValue(ShaderData.attributeLocationMap[shaderIndex])).false;
-        index_1(isValidMapValue(ShaderData.uniformLocationMap[shaderIndex])).false;
-    });
-}, function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData) {
-    var attributeLocationMap = {}, uniformLocationMap = {}, sendData = null, attributeName = null, uniformName = null;
-    forEach(materialShaderLibConfig, function (shaderLibName) {
-        var attribute = null, uniform = null;
-        sendData = shaderLibData[shaderLibName].send;
-        if (!isConfigDataExist(sendData)) {
-            return;
-        }
-        attribute = sendData.attribute;
-        uniform = sendData.uniform;
-        if (isConfigDataExist(attribute)) {
-            forEach(attribute, function (data) {
-                attributeName = data.name;
-                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
-            });
-        }
-        if (isConfigDataExist(uniform)) {
-            forEach(uniform, function (data) {
-                uniformName = data.name;
-                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
-            });
-        }
-    });
-    ShaderData.attributeLocationMap[shaderIndex] = attributeLocationMap;
-    ShaderData.uniformLocationMap[shaderIndex] = uniformLocationMap;
-}));
-var getAttribLocation = ensureFunc(function (pos, name, attributeLocationMap) {
-    it(name + "'s attrib location should be number", function () {
-        index_1(pos).be.a("number");
-    });
-}, function (name, attributeLocationMap) {
-    return attributeLocationMap[name];
-});
-var getUniformLocation = ensureFunc(function (pos, name, uniformLocationMap) {
-    it(name + "'s uniform location should exist in map", function () {
-        index_1(isValidMapValue(pos)).true;
-    });
-}, function (name, uniformLocationMap) {
-    return uniformLocationMap[name];
-});
-var isUniformLocationNotExist = function (pos) {
-    return pos === null;
-};
-var isAttributeLocationNotExist = function (pos) {
-    return pos === -1;
+var buildGLSLSource$$1 = function (materialIndex, materialShaderLibConfig, shaderLibData, MaterialData) {
+    return buildGLSLSource$1(materialIndex, materialShaderLibConfig, shaderLibData, {
+        getAlphaTest: getAlphaTest$$1,
+        isTestAlpha: isTestAlpha$$1
+    }, MaterialData);
 };
 
-var EVariableType;
-(function (EVariableType) {
-    EVariableType[EVariableType["FLOAT"] = "float"] = "FLOAT";
-    EVariableType[EVariableType["VEC3"] = "vec3"] = "VEC3";
-    EVariableType[EVariableType["MAT4"] = "mat4"] = "MAT4";
-})(EVariableType || (EVariableType = {}));
-
-var getOrCreateBuffer$1 = function (gl, geometryIndex, bufferType, GeometryData, ArrayBufferData) {
-    var buffers = ArrayBufferData.buffers, buffer = buffers[geometryIndex];
-    if (isBufferExist(buffer)) {
-        return buffer;
-    }
-    buffer = gl.createBuffer();
-    buffers[geometryIndex] = buffer;
-    _initBuffer$1(gl, getVertices$1(geometryIndex, GeometryData), buffer, ArrayBufferData);
-    ArrayBufferData.bufferDataMap[geometryIndex] = {
-        size: 3,
-        type: EBufferType.FLOAT
-    };
-    return buffer;
-};
-var _initBuffer$1 = function (gl, data, buffer, ArrayBufferData) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    _resetBindedBuffer$1(gl, ArrayBufferData);
-};
-var _resetBindedBuffer$1 = function (gl, ArrayBufferData) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-};
-var initData$11 = function (ArrayBufferData) {
-    ArrayBufferData.buffers = [];
-    ArrayBufferData.bufferDataMap = createMap();
-};
-
-var getUniformData = function (field, from, renderCommand, MaterialData) {
-    var data = null;
-    switch (from) {
-        case "cmd":
-            data = renderCommand[field];
-            break;
-        case "material":
-            data = _getUnifromDataFromMaterial(field, renderCommand.materialIndex, MaterialData);
-            break;
-        default:
-            error$1(true, "unknow from:" + from);
-            break;
-    }
-    return data;
-};
-var _getUnifromDataFromMaterial = function (field, materialIndex, MaterialData) {
-    var data = null;
-    switch (field) {
-        case "color":
-            data = getColor(materialIndex, MaterialData).toVector3();
-            break;
-        case "opacity":
-            data = getOpacity(materialIndex, MaterialData);
-            break;
-        default:
-            error$1(true, "unknow field:" + field);
-            break;
-    }
-    return data;
-};
-var sendBuffer = function (gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData) {
-    var _a = ArrayBufferData.bufferDataMap[geometryIndex], size = _a.size, type = _a.type, vertexAttribHistory = ShaderData.vertexAttribHistory;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.vertexAttribPointer(pos, size, gl[type], false, 0, 0);
-    if (vertexAttribHistory[pos] !== true) {
-        gl.enableVertexAttribArray(pos);
-        vertexAttribHistory[pos] = true;
-    }
-};
-var sendMatrix4 = function (gl, name, data, uniformLocationMap) {
-    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
-        gl.uniformMatrix4fv(pos, false, data);
-    });
-};
-var sendVector3 = function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
-    var recordedData = getUniformCache(shaderIndex, name, uniformCacheMap);
-    if (recordedData && recordedData.x == data.x && recordedData.y == data.y && recordedData.z == data.z) {
-        return;
-    }
-    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
-    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
-        gl.uniform3f(pos, data.x, data.y, data.z);
-    });
-};
-var sendFloat1 = requireCheckFunc(function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
-    it("data should be number", function () {
-        index_1(data).be.a("number");
-    });
-}, function (gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap) {
-    var recordedData = getUniformCache(shaderIndex, name, uniformCacheMap);
-    if (recordedData === data) {
-        return;
-    }
-    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
-    _sendUniformData(gl, name, data, uniformLocationMap, function (pos, data) {
-        gl.uniform1f(pos, data);
-    });
-});
-var getUniformCache = function (shaderIndex, name, uniformCacheMap) {
-    return uniformCacheMap[shaderIndex][name];
-};
-var _setUniformCache = function (shaderIndex, name, data, uniformCacheMap) {
-    uniformCacheMap[shaderIndex][name] = data;
-};
-var _sendUniformData = function (gl, name, data, uniformLocationMap, sendFunc) {
-    var pos = getUniformLocation(name, uniformLocationMap);
-    if (isUniformLocationNotExist(pos)) {
-        return;
-    }
-    sendFunc(pos, data);
-};
-var addSendAttributeConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
-    it("sendAttributeConfigMap should not has duplicate attribute name", function () {
-        index_1(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
-    });
-}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
-    it("sendAttributeConfigMap[shaderIndex] should not be defined", function () {
-        index_1(sendAttributeConfigMap[shaderIndex]).not.exist;
-    });
-}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendAttributeConfigMap) {
-    var sendDataArr = [];
-    forEach(materialShaderLibConfig, function (shaderLibName) {
-        var sendData = shaderLibData[shaderLibName].send;
-        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
-            sendDataArr = sendDataArr.concat(sendData.attribute);
-        }
-    });
-    sendAttributeConfigMap[shaderIndex] = sendDataArr;
-}));
-var addSendUniformConfig = ensureFunc(function (returnVal, shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
-    it("sendUniformConfigMap should not has duplicate attribute name", function () {
-        index_1(hasDuplicateItems(sendUniformConfigMap[shaderIndex])).false;
-    });
-}, requireCheckFunc(function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
-    it("sendUniformConfigMap[shaderIndex] should not be defined", function () {
-        index_1(sendUniformConfigMap[shaderIndex]).not.exist;
-    });
-}, function (shaderIndex, materialShaderLibConfig, shaderLibData, sendUniformConfigMap) {
-    var sendDataArr = [];
-    forEach(materialShaderLibConfig, function (shaderLibName) {
-        var sendData = shaderLibData[shaderLibName].send;
-        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.uniform)) {
-            sendDataArr = sendDataArr.concat(sendData.uniform);
-        }
-    });
-    sendUniformConfigMap[shaderIndex] = sendDataArr;
-}));
-
-var use$1 = requireCheckFunc(function (gl, shaderIndex, ShaderData) {
-    it("program should exist", function () {
-        index_1(getProgram(shaderIndex, ShaderData)).exist;
-    });
-}, function (gl, shaderIndex, ShaderData) {
-    var program = getProgram(shaderIndex, ShaderData);
-    if (ShaderData.lastUsedProgram === program) {
-        return;
-    }
-    ShaderData.lastUsedProgram = program;
-    gl.useProgram(program);
-    disableVertexAttribArray(gl, ShaderData);
-    ShaderData.lastBindedArrayBuffer = null;
-    ShaderData.lastBindedIndexBuffer = null;
-});
-var disableVertexAttribArray = requireCheckFunc(function (gl, ShaderData) {
-    it("vertexAttribHistory should has not hole", function () {
-        forEach(ShaderData.vertexAttribHistory, function (isEnable) {
-            index_1(isEnable).exist;
-            index_1(isEnable).be.a("boolean");
-        });
-    });
-}, function (gl, ShaderData) {
-    var vertexAttribHistory = ShaderData.vertexAttribHistory;
-    for (var i = 0, len = vertexAttribHistory.length; i < len; i++) {
-        var isEnable = vertexAttribHistory[i];
-        if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) {
-            continue;
-        }
-        gl.disableVertexAttribArray(i);
-    }
-    ShaderData.vertexAttribHistory = [];
-});
-var getMaterialShaderLibConfig = requireCheckFunc(function (materialClassName, material_config) {
-    var materialData = material_config[materialClassName];
-    it("materialClassName should be defined", function () {
-        index_1(materialData).exist;
-    });
-    it("shaderLib should be array", function () {
-        index_1(materialData.shader.shaderLib).be.a("array");
-    });
-}, function (materialClassName, material_config) {
-    return material_config[materialClassName].shader.shaderLib;
-});
-var registerProgram = function (shaderIndex, ShaderData, program) {
-    ShaderData.programMap[shaderIndex] = program;
-};
-var getProgram = ensureFunc(function (program) {
-}, function (shaderIndex, ShaderData) {
-    return ShaderData.programMap[shaderIndex];
-});
-var isProgramExist = function (program) { return isValidMapValue(program); };
-var initShader = function (program, vsSource, fsSource, gl) {
-    var vs = _compileShader(gl, vsSource, gl.createShader(gl.VERTEX_SHADER)), fs = _compileShader(gl, fsSource, gl.createShader(gl.FRAGMENT_SHADER));
-    gl.attachShader(program, vs);
-    gl.attachShader(program, fs);
-    gl.bindAttribLocation(program, 0, "a_position");
-    _linkProgram(gl, program);
-    gl.deleteShader(vs);
-    gl.deleteShader(fs);
-};
-var _linkProgram = ensureFunc(function (returnVal, gl, program) {
-    it("link program error:" + gl.getProgramInfoLog(program), function () {
-        index_1(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
-    });
-}, function (gl, program) {
-    gl.linkProgram(program);
-});
-var _compileShader = function (gl, glslSource, shader) {
-    gl.shaderSource(shader, glslSource);
-    gl.compileShader(shader);
-    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+var create$7 = function (materialClassName, MaterialData, ShaderData) {
+    var index = getShaderIndexFromTable$$1(materialClassName, MaterialData.shaderIndexTable), shader = ShaderData.shaderMap[index];
+    if (_isShaderExist(shader)) {
         return shader;
     }
-    else {
-        Log$$1.log(gl.getShaderInfoLog(shader));
-        Log$$1.log("source:\n", glslSource);
-    }
-};
-var sendAttributeData$1 = function (gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData) {
-    var sendDataArr = ShaderData.sendAttributeConfigMap[shaderIndex], attributeLocationMap = ShaderData.attributeLocationMap[shaderIndex], lastBindedArrayBuffer = ShaderData.lastBindedArrayBuffer;
-    for (var _i = 0, sendDataArr_1 = sendDataArr; _i < sendDataArr_1.length; _i++) {
-        var sendData = sendDataArr_1[_i];
-        var buffer = getOrCreateBuffer$1(gl, geometryIndex, sendData.buffer, GeometryData, ArrayBufferData), pos = getAttribLocation(sendData.name, attributeLocationMap);
-        if (isAttributeLocationNotExist(pos)) {
-            return;
-        }
-        if (lastBindedArrayBuffer === buffer) {
-            return;
-        }
-        lastBindedArrayBuffer = buffer;
-        sendBuffer(gl, pos, buffer, geometryIndex, ShaderData, ArrayBufferData);
-    }
-    ShaderData.lastBindedArrayBuffer = lastBindedArrayBuffer;
-};
-var sendUniformData$1 = function (gl, shaderIndex, MaterialData, ShaderData, renderCommand) {
-    var sendDataArr = ShaderData.sendUniformConfigMap[shaderIndex], uniformLocationMap = ShaderData.uniformLocationMap[shaderIndex], uniformCacheMap = ShaderData.uniformCacheMap;
-    for (var _i = 0, sendDataArr_2 = sendDataArr; _i < sendDataArr_2.length; _i++) {
-        var sendData = sendDataArr_2[_i];
-        var name = sendData.name, field = sendData.field, type = sendData.type, from = sendData.from || "cmd", data = getUniformData(field, from, renderCommand, MaterialData);
-        switch (type) {
-            case EVariableType.MAT4:
-                sendMatrix4(gl, name, data, uniformLocationMap);
-                break;
-            case EVariableType.VEC3:
-                sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType.FLOAT:
-                sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            default:
-                Log$$1.error(true, Log$$1.info.FUNC_INVALID("EVariableType:", type));
-                break;
-        }
-    }
-};
-
-var create$6 = function (ShaderData) {
-    var shader = new Shader(), index = generateComponentIndex(ShaderData);
+    shader = new Shader();
     shader.index = index;
     ShaderData.count += 1;
-    ShaderData.uniformCacheMap[index] = {};
     return shader;
 };
-var init$6 = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ShaderData) {
-    var materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config), shaderLibData = shaderLib_generator.shaderLibs, _a = buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibData), vsSource = _a.vsSource, fsSource = _a.fsSource, program = getProgram(shaderIndex, ShaderData), gl = getGL(DeviceManagerData, state);
-    if (!isProgramExist(program)) {
-        program = gl.createProgram();
-        registerProgram(shaderIndex, ShaderData, program);
-    }
-    initShader(program, vsSource, fsSource, gl);
-    setLocationMap(gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData);
-    addSendAttributeConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendAttributeConfigMap);
-    addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendUniformConfigMap);
-};
-var sendAttributeData$$1 = function (gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData) {
-    sendAttributeData$1(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
-};
-var sendUniformData$$1 = function (gl, shaderIndex, MaterialData, ShaderData, renderCommand) {
-    sendUniformData$1(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
-};
-var bindIndexBuffer = function (gl, geometryIndex, ShaderData, GeometryData, IndexBufferData) {
-    var buffer = getOrCreateBuffer(gl, geometryIndex, GeometryData, IndexBufferData);
-    if (ShaderData.lastBindedIndexBuffer === buffer) {
-        return;
-    }
-    ShaderData.lastBindedIndexBuffer = buffer;
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-};
-var use$$1 = function (gl, shaderIndex, ShaderData) {
-    use$1(gl, shaderIndex, ShaderData);
-};
-
-var initData$9 = function (ShaderData) {
+var _isShaderExist = function (shader) { return isValidMapValue(shader); };
+var init$5 = null;
+var sendAttributeData$$1 = null;
+var sendUniformData$$1 = null;
+var bindIndexBuffer$$1 = null;
+var use$$1 = null;
+if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
+    init$5 = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData) {
+        init$6(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource$$1, getGL$$1, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+    };
+    sendAttributeData$$1 = function (gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData) { return sendAttributeData$1(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation$1, isAttributeLocationNotExist$1, sendBuffer$1, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData); };
+    sendUniformData$$1 = function (gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData) {
+        sendUniformData$1(gl, shaderIndex, {
+            getUniformData: getUniformData$1,
+            sendMatrix4: sendMatrix4$1,
+            sendVector3: sendVector3$1,
+            sendFloat1: sendFloat1$1
+        }, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
+    };
+    bindIndexBuffer$$1 = function (gl, geometryIndex, ProgramData, GeometryData, IndexBufferData) {
+        bindIndexBuffer$1(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
+    };
+    use$$1 = use$1;
+}
+var initData$10 = function (ShaderData) {
     ShaderData.index = 0;
     ShaderData.count = 0;
-    ShaderData.programMap = createMap();
-    ShaderData.attributeLocationMap = createMap();
-    ShaderData.uniformLocationMap = createMap();
-    ShaderData.sendAttributeConfigMap = createMap();
-    ShaderData.sendUniformConfigMap = createMap();
-    ShaderData.vertexAttribHistory = [];
-    ShaderData.uniformCacheMap = createMap();
     ShaderData.shaderMap = createMap();
-    ShaderData.isInitMap = createMap();
 };
 
 var material_config = {
@@ -13711,21 +14007,6 @@ var material_config = {
         }
     }
 };
-
-var MaterialData = (function () {
-    function MaterialData() {
-    }
-    return MaterialData;
-}());
-MaterialData.index = null;
-MaterialData.count = null;
-MaterialData.shaderMap = null;
-MaterialData.materialClassNameMap = null;
-MaterialData.gameObjectMap = null;
-MaterialData.colorMap = null;
-MaterialData.opacityMap = null;
-MaterialData.alphaTestMap = null;
-MaterialData.materialMap = null;
 
 var shaderLib_generator = {
     "shaderLibs": {
@@ -13809,9 +14090,10 @@ var shaderLib_generator = {
         },
         "EndBasicShaderLib": {
             "glsl": {
-                "func": function (materialIndex) {
-                    var alphaTest = getAlphaTest(materialIndex, MaterialData);
-                    if (isPropertyExist(alphaTest)) {
+                "func": function (materialIndex, _a, MaterialDataFromSystem) {
+                    var getAlphaTest = _a.getAlphaTest, isTestAlpha = _a.isTestAlpha;
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+                    if (isTestAlpha(alphaTest)) {
                         return {
                             "fs": {
                                 "body": "if (gl_FragColor.a < " + alphaTest + "){\n    discard;\n}\n"
@@ -13832,261 +14114,33 @@ var shaderLib_generator = {
     }
 };
 
-function cache(judgeFunc, returnCacheValueFunc, setCacheFunc) {
-    return function (target, name, descriptor) {
-        var value = descriptor.value;
-        descriptor.value = function (args) {
-            var result = null, setArgs = null;
-            if (judgeFunc.apply(this, arguments)) {
-                return returnCacheValueFunc.apply(this, arguments);
-            }
-            result = value.apply(this, arguments);
-            setArgs = [result];
-            for (var i = 0, len = arguments.length; i < len; i++) {
-                setArgs[i + 1] = arguments[i];
-            }
-            setCacheFunc.apply(this, setArgs);
-            return result;
-        };
-        return descriptor;
-    };
-}
-
-var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i;
-var REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i;
-var REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i;
-var REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i;
-var REGEX_NUM = /^\#([0-9a-f]{6})$/i;
-var Color = Color_1 = (function () {
-    function Color() {
-        this._r = null;
-        this._g = null;
-        this._b = null;
-        this._a = null;
-        this._colorString = null;
-        this._colorVec3Cache = null;
-        this._colorVec4Cache = null;
+var ProgramData = (function () {
+    function ProgramData() {
     }
-    Color.create = function (colorVal) {
-        var obj = new this();
-        obj.initWhenCreate(colorVal);
-        return obj;
-    };
-    Object.defineProperty(Color.prototype, "dirty", {
-        set: function (dirty) {
-            if (dirty) {
-                this._clearCache();
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Color.prototype, "r", {
-        get: function () {
-            return this._r;
-        },
-        set: function (r) {
-            if (this._r !== r) {
-                this.dirty = true;
-                this._r = r;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Color.prototype, "g", {
-        get: function () {
-            return this._g;
-        },
-        set: function (g) {
-            if (this._g !== g) {
-                this.dirty = true;
-                this._g = g;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Color.prototype, "b", {
-        get: function () {
-            return this._b;
-        },
-        set: function (b) {
-            if (this._b !== b) {
-                this.dirty = true;
-                this._b = b;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Color.prototype, "a", {
-        get: function () {
-            return this._a;
-        },
-        set: function (a) {
-            if (this._a !== a) {
-                this.dirty = true;
-                this._a = a;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Color.prototype.initWhenCreate = function (colorVal) {
-        if (!colorVal) {
-            return;
-        }
-        this._colorString = colorVal;
-        this._setColor(colorVal);
-    };
-    Color.prototype.toVector3 = function () {
-        return Vector3.create(this.r, this.g, this.b);
-    };
-    Color.prototype.toVector4 = function () {
-        return Vector4.create(this.r, this.g, this.b, this.a);
-    };
-    Color.prototype.toString = function () {
-        return this._colorString;
-    };
-    Color.prototype.clone = function () {
-        return Color_1.create(this._colorString);
-    };
-    Color.prototype.isEqual = function (color) {
-        return this.r === color.r && this.g === color.g && this.b === color.b && this.a === color.a;
-    };
-    Color.prototype.setColorByNum = function (colorVal) {
-        var color = null;
-        this._colorString = colorVal;
-        color = REGEX_NUM.exec(colorVal);
-        this._setHex(parseInt(color[1], 16));
-        return this;
-    };
-    Color.prototype._setColor = function (colorVal) {
-        var color = null;
-        if (REGEX_RGBA.test(colorVal)) {
-            color = REGEX_RGBA.exec(colorVal);
-            this.r = this._getColorValue(color, 1);
-            this.g = this._getColorValue(color, 2);
-            this.b = this._getColorValue(color, 3);
-            this.a = Number(color[4]);
-            return this;
-        }
-        if (REGEX_RGBA_2.test(colorVal)) {
-            color = REGEX_RGBA_2.exec(colorVal);
-            this.r = parseFloat(color[1]);
-            this.g = parseFloat(color[2]);
-            this.b = parseFloat(color[3]);
-            this.a = Number(color[4]);
-            return this;
-        }
-        if (REGEX_RGB.test(colorVal)) {
-            color = REGEX_RGB.exec(colorVal);
-            this.r = this._getColorValue(color, 1);
-            this.g = this._getColorValue(color, 2);
-            this.b = this._getColorValue(color, 3);
-            this.a = 1;
-            return this;
-        }
-        if (REGEX_RGB_2.test(colorVal)) {
-            color = REGEX_RGB_2.exec(colorVal);
-            this.r = parseFloat(color[1]);
-            this.g = parseFloat(color[2]);
-            this.b = parseFloat(color[3]);
-            this.a = 1;
-            return this;
-        }
-        if (REGEX_NUM.test(colorVal)) {
-            return this.setColorByNum(colorVal);
-        }
-    };
-    Color.prototype._getColorValue = function (color, index, num) {
-        if (num === void 0) { num = 255; }
-        return Math.min(num, parseInt(color[index], 10)) / num;
-    };
-    Color.prototype._setHex = function (hex) {
-        hex = Math.floor(hex);
-        this.r = (hex >> 16 & 255) / 255;
-        this.g = (hex >> 8 & 255) / 255;
-        this.b = (hex & 255) / 255;
-        this.a = 1;
-        return this;
-    };
-    Color.prototype._clearCache = function () {
-        this._colorVec3Cache = null;
-        this._colorVec4Cache = null;
-    };
-    return Color;
+    return ProgramData;
 }());
-__decorate([
-    ensureGetter(function (r) {
-        assert(r >= 0, Log$$1.info.FUNC_SHOULD("r", ">= 0, but actual is " + r));
-    })
-], Color.prototype, "r", null);
-__decorate([
-    ensureGetter(function (g) {
-        assert(g >= 0, Log$$1.info.FUNC_SHOULD("g", ">= 0, but actual is " + g));
-    })
-], Color.prototype, "g", null);
-__decorate([
-    ensureGetter(function (b) {
-        assert(b >= 0, Log$$1.info.FUNC_SHOULD("b", ">= 0, but actual is " + b));
-    })
-], Color.prototype, "b", null);
-__decorate([
-    ensureGetter(function (a) {
-        assert(a >= 0, Log$$1.info.FUNC_SHOULD("a", ">= 0, but actual is " + a));
-    })
-], Color.prototype, "a", null);
-__decorate([
-    cache(function () {
-        return this._colorVec3Cache !== null;
-    }, function () {
-        return this._colorVec3Cache;
-    }, function (result) {
-        this._colorVec3Cache = result;
-    })
-], Color.prototype, "toVector3", null);
-__decorate([
-    cache(function () {
-        return this._colorVec4Cache !== null;
-    }, function () {
-        return this._colorVec4Cache;
-    }, function (result) {
-        this._colorVec4Cache = result;
-    })
-], Color.prototype, "toVector4", null);
-__decorate([
-    requireCheck(function (colorVal) {
-        it("color should be #xxxxxx", function () {
-            index_1(REGEX_NUM.test(colorVal)).true;
-        });
-    })
-], Color.prototype, "setColorByNum", null);
-Color = Color_1 = __decorate([
-    registerClass("Color")
-], Color);
-var Color_1;
+ProgramData.programMap = null;
+ProgramData.lastUsedProgram = null;
+ProgramData.lastBindedArrayBuffer = null;
+ProgramData.lastBindedIndexBuffer = null;
 
-var ShaderData = (function () {
-    function ShaderData() {
+var LocationData = (function () {
+    function LocationData() {
     }
-    return ShaderData;
+    return LocationData;
 }());
-ShaderData.index = null;
-ShaderData.count = null;
-ShaderData.programMap = null;
-ShaderData.attributeLocationMap = null;
-ShaderData.uniformLocationMap = null;
-ShaderData.uniformCacheMap = null;
-ShaderData.sendAttributeConfigMap = null;
-ShaderData.sendUniformConfigMap = null;
-ShaderData.shaderMap = null;
-ShaderData.isInitMap = null;
-ShaderData.lastUsedProgram = null;
-ShaderData.vertexAttribHistory = null;
-ShaderData.lastBindedArrayBuffer = null;
-ShaderData.lastBindedIndexBuffer = null;
+LocationData.attributeLocationMap = null;
+LocationData.uniformLocationMap = null;
+
+var GLSLSenderData = (function () {
+    function GLSLSenderData() {
+    }
+    return GLSLSenderData;
+}());
+GLSLSenderData.uniformCacheMap = null;
+GLSLSenderData.sendAttributeConfigMap = null;
+GLSLSenderData.sendUniformConfigMap = null;
+GLSLSenderData.vertexAttribHistory = null;
 
 var addAddComponentHandle$5 = function (_class) {
     addAddComponentHandle$1(_class, addComponent$5);
@@ -14094,23 +14148,15 @@ var addAddComponentHandle$5 = function (_class) {
 var addDisposeHandle$5 = function (_class) {
     addDisposeHandle$1(_class, disposeComponent$5);
 };
-var addInitHandle$2 = function (_class) {
-    addInitHandle(_class, initMaterial$1);
+var addInitHandle$1 = function (_class) {
+    addInitHandle(_class, initMaterial);
 };
-var create$5 = requireCheckFunc(function (material, className, MaterialData$$1) {
-    it("MaterialData.index should >= 0", function () {
-        index_1(MaterialData$$1.index).gte(0);
-    });
-    it("MaterialData.count should >= 0", function () {
-        index_1(MaterialData$$1.count).gte(0);
-    });
+var create$6 = requireCheckFunc(function (material, className, MaterialData$$1) {
+    checkIndexShouldEqualCount(MaterialData$$1);
 }, function (material, className, MaterialData$$1) {
     var index = generateComponentIndex(MaterialData$$1);
     material.index = index;
     MaterialData$$1.count += 1;
-    _setMaterialClassName(index, className, MaterialData$$1);
-    setColor(index, _createDefaultColor(), MaterialData$$1);
-    setOpacity(index, 1, MaterialData$$1);
     MaterialData$$1.materialMap[index] = material;
     return material;
 });
@@ -14118,84 +14164,645 @@ var _createDefaultColor = function () {
     var color = Color.create();
     return color.setColorByNum("#ffffff");
 };
-var init$5 = requireCheckFunc(function (state, material_config$$1, shaderLib_generator$$1, DeviceManagerData$$1, ShaderData$$1, MaterialData$$1) {
-}, function (state, material_config$$1, shaderLib_generator$$1, DeviceManagerData$$1, ShaderData$$1, MaterialData$$1) {
+var init$4 = requireCheckFunc(function (state, MaterialData$$1) {
+    checkIndexShouldEqualCount(MaterialData$$1);
+}, function (state, MaterialData$$1) {
     for (var i = 0, count = MaterialData$$1.count; i < count; i++) {
-        initMaterial$1(i, state);
+        initMaterial(i, state);
     }
 });
-var initMaterial$1 = function (index, state) {
-    var shader = getShader(index, MaterialData), isInitMap = ShaderData.isInitMap, shaderIndex = shader.index;
-    if (isInitMap[shaderIndex] === true) {
-        return;
-    }
-    isInitMap[shaderIndex] = true;
-    init$6(state, index, shaderIndex, _getMaterialClassName(index, MaterialData), material_config, shaderLib_generator, DeviceManagerData, ShaderData);
+var initMaterial = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    initMaterial = function (index, state) {
+        MaterialData.workerInitList.push(index);
+    };
+}
+else {
+    initMaterial = function (index, state) {
+        var shaderIndex = getShaderIndex(index, MaterialData);
+        init$5(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+    };
+}
+var clearWorkerInitList = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    clearWorkerInitList = function (MaterialData$$1) {
+        MaterialData$$1.workerInitList = [];
+    };
+}
+else {
+    clearWorkerInitList = function (MaterialData$$1) {
+    };
+}
+var hasNewInitedMaterial = function (MaterialData$$1) {
+    return MaterialData$$1.workerInitList.length > 0;
 };
-var _getMaterialClassName = function (materialIndex, MaterialData$$1) {
-    return MaterialData$$1.materialClassNameMap[materialIndex];
+var getShaderIndex = function (materialIndex, MaterialData$$1) {
+    return MaterialData$$1.shaderIndices[materialIndex];
 };
-var _setMaterialClassName = function (materialIndex, className, MaterialData$$1) {
-    MaterialData$$1.materialClassNameMap[materialIndex] = className;
-};
-var getShader = function (materialIndex, MaterialData$$1) {
-    return MaterialData$$1.shaderMap[materialIndex];
-};
-var setShader = function (materialIndex, shader, MaterialData$$1) {
-    MaterialData$$1.shaderMap[materialIndex] = shader;
+var getShaderIndexFromTable$$1 = getShaderIndexFromTable$1;
+var setShaderIndex = function (materialIndex, shader, MaterialData$$1) {
+    _setTypeArrayValue(MaterialData$$1.shaderIndices, materialIndex, shader.index);
 };
 var getColor = function (materialIndex, MaterialData$$1) {
-    return MaterialData$$1.colorMap[materialIndex];
+    var color = Color.create(), colors = MaterialData$$1.colors, size = getColorDataSize(), index = materialIndex * size;
+    color.r = colors[index];
+    color.g = colors[index + 1];
+    color.b = colors[index + 2];
+    return color;
 };
+var getColorArr3$$1 = getColorArr3$1;
 var setColor = function (materialIndex, color, MaterialData$$1) {
-    MaterialData$$1.colorMap[materialIndex] = color;
+    var r = color.r, g = color.g, b = color.b, colors = MaterialData$$1.colors, size = getColorDataSize(), index = materialIndex * size;
+    _setTypeArrayValue(colors, index, r);
+    _setTypeArrayValue(colors, index + 1, g);
+    _setTypeArrayValue(colors, index + 2, b);
 };
-var getOpacity = function (materialIndex, MaterialData$$1) {
-    return MaterialData$$1.opacityMap[materialIndex];
-};
-var setOpacity = function (materialIndex, opacity, MaterialData$$1) {
-    MaterialData$$1.opacityMap[materialIndex] = opacity;
-};
-var getAlphaTest = function (materialIndex, MaterialData$$1) {
-    return MaterialData$$1.alphaTestMap[materialIndex];
-};
-var setAlphaTest = function (materialIndex, alphaTest, MaterialData$$1) {
-    MaterialData$$1.alphaTestMap[materialIndex] = alphaTest;
-};
-var isPropertyExist = function (propertyVal) {
-    return isValidMapValue(propertyVal);
-};
+var getOpacity$$1 = getOpacity$1;
+var setOpacity = requireCheckFunc(function (materialIndex, opacity, MaterialData$$1) {
+    it("opacity should be number", function () {
+        wdet_1(opacity).be.a("number");
+    });
+    it("opacity should <= 1 && >= 0", function () {
+        wdet_1(opacity).lte(1);
+        wdet_1(opacity).gte(0);
+    });
+}, function (materialIndex, opacity, MaterialData$$1) {
+    var size = getOpacityDataSize(), index = materialIndex * size;
+    _setTypeArrayValue(MaterialData$$1.opacities, index, opacity);
+});
+var getAlphaTest$$1 = getAlphaTest$1;
+var setAlphaTest = requireCheckFunc(function (materialIndex, alphaTest, MaterialData$$1) {
+    it("alphaTest should be number", function () {
+        wdet_1(alphaTest).be.a("number");
+    });
+}, function (materialIndex, alphaTest, MaterialData$$1) {
+    var size = getAlphaTestDataSize(), index = materialIndex * size;
+    _setTypeArrayValue(MaterialData$$1.alphaTests, index, alphaTest);
+});
 var addComponent$5 = function (component, gameObject) {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 };
 var disposeComponent$5 = ensureFunc(function (returnVal, component) {
     checkIndexShouldEqualCount(MaterialData);
+}, requireCheckFunc(function (component) {
+    _checkDisposeComponentWorker(component);
 }, function (component) {
-    var sourceIndex = component.index, lastComponentIndex = null;
+    var sourceIndex = component.index, lastComponentIndex = null, colorDataSize = getColorDataSize(), opacityDataSize = getOpacityDataSize(), alphaTestDataSize = getAlphaTestDataSize();
     MaterialData.count -= 1;
     MaterialData.index -= 1;
     lastComponentIndex = MaterialData.count;
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.shaderMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.materialClassNameMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.colorMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.opacityMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.alphaTestMap);
-    deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MaterialData.materialMap);
-});
+    deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
+    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
+    deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData.opacities, MaterialData.defaultOpacity);
+    deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, MaterialData.alphaTests, MaterialData.defaultAlphaTest);
+    deleteBySwap$1(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+}));
+var _checkDisposeComponentWorker = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _checkDisposeComponentWorker = function (component) {
+        it("should not dispose the material which is inited in the same frame", function () {
+            wdet_1(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
+        });
+    };
+}
+else {
+    _checkDisposeComponentWorker = function (component) { };
+}
 var getGameObject$4 = function (index, Data) {
     return getComponentGameObject(Data.gameObjectMap, index);
 };
-var initData$8 = function (MaterialData$$1) {
-    MaterialData$$1.shaderMap = createMap();
-    MaterialData$$1.materialClassNameMap = createMap();
-    MaterialData$$1.colorMap = createMap();
-    MaterialData$$1.opacityMap = createMap();
-    MaterialData$$1.alphaTestMap = createMap();
-    MaterialData$$1.materialMap = createMap();
-    MaterialData$$1.gameObjectMap = createMap();
+var _setTypeArrayValue = requireCheckFunc(function (typeArr, index, value) {
+    it("should not exceed type arr's length", function () {
+        wdet_1(index).lte(typeArr.length - 1);
+    });
+}, function (typeArr, index, value) {
+    typeArr[index] = value;
+});
+var isTestAlpha$$1 = isTestAlpha$1;
+var initData$9 = function (MaterialData$$1) {
+    MaterialData$$1.materialMap = [];
+    MaterialData$$1.gameObjectMap = [];
     MaterialData$$1.index = 0;
     MaterialData$$1.count = 0;
+    MaterialData$$1.workerInitList = [];
+    MaterialData$$1.defaultColorArr = _createDefaultColor().toVector3().toArray();
+    MaterialData$$1.defaultOpacity = 1;
+    MaterialData$$1.defaultAlphaTest = -1;
+    _initBufferData$1(MaterialData$$1);
+    _initTable(MaterialData$$1);
+};
+var _initBufferData$1 = function (MaterialData$$1) {
+    var buffer = null, count = DataBufferConfig.materialDataBufferCount, size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
+    createTypeArrays(buffer, count, MaterialData$$1);
+    MaterialData$$1.buffer = buffer;
+    _addDefaultTypeArrData(count, MaterialData$$1);
+};
+var _addDefaultTypeArrData = function (count, MaterialData$$1) {
+    var color = _createDefaultColor(), opacity = MaterialData$$1.defaultOpacity, alphaTest = MaterialData$$1.defaultAlphaTest;
+    for (var i = 0; i < count; i++) {
+        setColor(i, color, MaterialData$$1);
+        setOpacity(i, opacity, MaterialData$$1);
+        setAlphaTest(i, alphaTest, MaterialData$$1);
+    }
+};
+var _initTable = function (MaterialData$$1) {
+    MaterialData$$1.shaderIndexTable = {
+        "BasicMaterial": 0
+    };
+    MaterialData$$1.materialClassNameTable = {
+        0: "BasicMaterial"
+    };
+};
+
+var createRenderCommandBufferData = curry(requireCheckFunc(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray) {
+    it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", function () {
+        wdet_1(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount);
+    });
+}, function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray) {
+    var count = renderGameObjectArray.length, buffer = RenderCommandBufferData.buffer, mMatrices = RenderCommandBufferData.mMatrices, vMatrices = RenderCommandBufferData.vMatrices, pMatrices = RenderCommandBufferData.pMatrices, materialIndices = RenderCommandBufferData.materialIndices, shaderIndices = RenderCommandBufferData.shaderIndices, geometryIndices = RenderCommandBufferData.geometryIndices, currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData), currentCameraIndex = currentCamera.index, mat4Length = getMatrix4DataSize();
+    setMatrices(vMatrices, getWorldToCameraMatrix$1(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
+    setMatrices(pMatrices, getPMatrix$1(currentCameraIndex, CameraData), 0);
+    for (var i = 0; i < count; i++) {
+        var matIndex = mat4Length * i, gameObject = renderGameObjectArray[i], geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData), transform = getTransform(gameObject, GameObjectData), materialIndex = material.index, shaderIndex = getShaderIndex(materialIndex, MaterialData);
+        setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
+        materialIndices[i] = materialIndex;
+        shaderIndices[i] = shaderIndex;
+        geometryIndices[i] = geometry.index;
+    }
+    return {
+        buffer: buffer,
+        count: count
+    };
+}), 10);
+var initData$7 = function (DataBufferConfig$$1, RenderCommandBufferData) {
+    var mat4Length = getMatrix4DataSize(), size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3, buffer = null, count = DataBufferConfig$$1.renderCommandBufferCount;
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size + 2 * Float32Array.BYTES_PER_ELEMENT * mat4Length);
+    RenderCommandBufferData.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
+    RenderCommandBufferData.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+    RenderCommandBufferData.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+    RenderCommandBufferData.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
+    RenderCommandBufferData.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
+    RenderCommandBufferData.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+    RenderCommandBufferData.buffer = buffer;
+};
+
+var EWorkerOperateType;
+(function (EWorkerOperateType) {
+    EWorkerOperateType[EWorkerOperateType["INIT_GL"] = 0] = "INIT_GL";
+    EWorkerOperateType[EWorkerOperateType["INIT_MATERIAL_GEOMETRY"] = 1] = "INIT_MATERIAL_GEOMETRY";
+    EWorkerOperateType[EWorkerOperateType["DRAW"] = 2] = "DRAW";
+})(EWorkerOperateType || (EWorkerOperateType = {}));
+
+var EGeometryWorkerDataOperateType;
+(function (EGeometryWorkerDataOperateType) {
+    EGeometryWorkerDataOperateType[EGeometryWorkerDataOperateType["ADD"] = 0] = "ADD";
+    EGeometryWorkerDataOperateType[EGeometryWorkerDataOperateType["RESET"] = 1] = "RESET";
+})(EGeometryWorkerDataOperateType || (EGeometryWorkerDataOperateType = {}));
+
+var EDisposeDataOperateType;
+(function (EDisposeDataOperateType) {
+    EDisposeDataOperateType[EDisposeDataOperateType["DISPOSE_BUFFER"] = 0] = "DISPOSE_BUFFER";
+})(EDisposeDataOperateType || (EDisposeDataOperateType = {}));
+
+var getRenderWorker = function (WorkerInstanceData) {
+    return WorkerInstanceData.renderWorker;
+};
+var setRenderWorker = function (worker, WorkerInstanceData) {
+    WorkerInstanceData.renderWorker = worker;
+};
+
+var sendDrawData = curry(function (WorkerInstanceData, MaterialData, GeometryData, data) {
+    var geometryData = null, disposeData = null, materialData = null;
+    if (hasNewPointData(GeometryData)) {
+        geometryData = {
+            buffer: GeometryData.buffer,
+            type: EGeometryWorkerDataOperateType.ADD,
+            verticesInfoList: GeometryData.verticesWorkerInfoList,
+            indicesInfoList: GeometryData.indicesWorkerInfoList
+        };
+    }
+    else if (isReallocate(GeometryData)) {
+        geometryData = {
+            buffer: GeometryData.buffer,
+            type: EGeometryWorkerDataOperateType.RESET,
+            verticesInfoList: GeometryData.verticesInfoList,
+            indicesInfoList: GeometryData.indicesInfoList
+        };
+    }
+    if (hasDisposedGeometryIndexArrayData(GeometryData)) {
+        disposeData = {
+            type: EDisposeDataOperateType.DISPOSE_BUFFER,
+            disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray
+        };
+    }
+    if (hasNewInitedMaterial(MaterialData)) {
+        materialData = {
+            buffer: MaterialData.buffer,
+            workerInitList: MaterialData.workerInitList
+        };
+    }
+    getRenderWorker(WorkerInstanceData).postMessage({
+        operateType: EWorkerOperateType.DRAW,
+        renderCommandBufferData: data,
+        materialData: materialData,
+        geometryData: geometryData,
+        disposeData: disposeData
+    });
+    clearWorkerInfoList(GeometryData);
+    clearDisposedGeometryIndexArray(GeometryData);
+    clearWorkerInitList(MaterialData);
+});
+
+var render_config = {
+    "clearColor": Color.create("#000000")
+};
+
+var SceneData = (function () {
+    function SceneData() {
+    }
+    return SceneData;
+}());
+SceneData.cameraArray = null;
+
+var RenderCommandBufferData = (function () {
+    function RenderCommandBufferData() {
+    }
+    return RenderCommandBufferData;
+}());
+RenderCommandBufferData.buffer = null;
+RenderCommandBufferData.mMatrices = null;
+RenderCommandBufferData.vMatrices = null;
+RenderCommandBufferData.pMatrices = null;
+RenderCommandBufferData.materialIndices = null;
+RenderCommandBufferData.shaderIndices = null;
+RenderCommandBufferData.geometryIndices = null;
+
+var ERenderWorkerState;
+(function (ERenderWorkerState) {
+    ERenderWorkerState[ERenderWorkerState["DEFAULT"] = 0] = "DEFAULT";
+    ERenderWorkerState[ERenderWorkerState["DRAW_WAIT"] = 1] = "DRAW_WAIT";
+    ERenderWorkerState[ERenderWorkerState["DRAW_COMPLETE"] = 2] = "DRAW_COMPLETE";
+})(ERenderWorkerState || (ERenderWorkerState = {}));
+
+var SendDrawRenderCommandBufferData = (function () {
+    function SendDrawRenderCommandBufferData() {
+    }
+    return SendDrawRenderCommandBufferData;
+}());
+SendDrawRenderCommandBufferData.state = null;
+
+var BufferUtilsForUnitTest = (function () {
+    function BufferUtilsForUnitTest() {
+    }
+    BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist = function (DrawRenderCommandBufferDataFromSystem) {
+        return DrawRenderCommandBufferDataFromSystem.mMatrices === null;
+    };
+    return BufferUtilsForUnitTest;
+}());
+
+var clear$3 = function (gl, clearGL, render_config, DeviceManagerDataFromSystem, data) {
+    clearGL(gl, render_config.clearColor, DeviceManagerDataFromSystem);
+    return data;
+};
+var buildDrawDataMap = function (DeviceManagerDataFromSystem, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem, IndexBufferDataFromSystem, DrawRenderCommandBufferDataFromSystem) {
+    return {
+        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
+        MaterialDataFromSystem: MaterialDataFromSystem,
+        ProgramDataFromSystem: ProgramDataFromSystem,
+        LocationDataFromSystem: LocationDataFromSystem,
+        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
+        GeometryDataFromSystem: GeometryDataFromSystem,
+        ArrayBufferDataFromSystem: ArrayBufferDataFromSystem,
+        IndexBufferDataFromSystem: IndexBufferDataFromSystem,
+        DrawRenderCommandBufferDataFromSystem: DrawRenderCommandBufferDataFromSystem
+    };
+};
+var buildDrawFuncDataMap = function (bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount) {
+    return {
+        bindIndexBuffer: bindIndexBuffer,
+        sendAttributeData: sendAttributeData,
+        sendUniformData: sendUniformData,
+        use: use,
+        hasIndices: hasIndices,
+        getIndicesCount: getIndicesCount,
+        getIndexType: getIndexType,
+        getIndexTypeSize: getIndexTypeSize,
+        getVerticesCount: getVerticesCount
+    };
+};
+var draw$1 = function (gl, state, DataBufferConfig, _a, _b, bufferData) {
+    var bindIndexBuffer = _a.bindIndexBuffer, sendAttributeData = _a.sendAttributeData, sendUniformData = _a.sendUniformData, use = _a.use, hasIndices = _a.hasIndices, getIndicesCount = _a.getIndicesCount, getIndexType = _a.getIndexType, getIndexTypeSize = _a.getIndexTypeSize, getVerticesCount = _a.getVerticesCount;
+    var DeviceManagerDataFromSystem = _b.DeviceManagerDataFromSystem, MaterialDataFromSystem = _b.MaterialDataFromSystem, ProgramDataFromSystem = _b.ProgramDataFromSystem, LocationDataFromSystem = _b.LocationDataFromSystem, GLSLSenderDataFromSystem = _b.GLSLSenderDataFromSystem, GeometryDataFromSystem = _b.GeometryDataFromSystem, ArrayBufferDataFromSystem = _b.ArrayBufferDataFromSystem, IndexBufferDataFromSystem = _b.IndexBufferDataFromSystem, DrawRenderCommandBufferDataFromSystem = _b.DrawRenderCommandBufferDataFromSystem;
+    var mat4Length = getMatrix4DataSize(), count = bufferData.count, buffer = bufferData.buffer, mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend, vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend, pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend, _c = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, mat4Length, DrawRenderCommandBufferDataFromSystem), mMatrices = _c.mMatrices, vMatrices = _c.vMatrices, pMatrices = _c.pMatrices, materialIndices = _c.materialIndices, shaderIndices = _c.shaderIndices, geometryIndices = _c.geometryIndices;
+    _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
+    for (var i = 0; i < count; i++) {
+        var matStartIndex = 16 * i, matEndIndex = matStartIndex + 16, shaderIndex = shaderIndices[i], geometryIndex = geometryIndices[i], drawMode = EDrawMode.TRIANGLES;
+        use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        sendAttributeData(gl, shaderIndex, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+        _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
+        sendUniformData(gl, shaderIndex, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrices, pMatrices, materialIndices[i]));
+        if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
+            bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
+            _drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);
+        }
+        else {
+            _drawArray(gl, geometryIndex, drawMode, getVerticesCount, GeometryDataFromSystem);
+        }
+    }
+    return state;
+};
+var _drawElements = function (gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem) {
+    var startOffset = 0, count = getIndicesCount(geometryIndex, GeometryDataFromSystem), type = getIndexType(GeometryDataFromSystem), typeSize = getIndexTypeSize(GeometryDataFromSystem);
+    gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
+};
+var _drawArray = function (gl, geometryIndex, drawMode, getVerticesCount, GeometryDataFromSystem) {
+    var startOffset = 0, count = getVerticesCount(geometryIndex, GeometryDataFromSystem);
+    gl.drawArrays(gl[drawMode], startOffset, count);
+};
+var _updateSendMatrixFloat32ArrayData = function (sourceMatrices, matStartIndex, matEndIndex, targetMatrices) {
+    for (var i = matStartIndex; i < matEndIndex; i++) {
+        targetMatrices[i - matStartIndex] = sourceMatrices[i];
+    }
+    return targetMatrices;
+};
+var _buildRenderCommandUniformData = function (mMatrices, vMatrices, pMatrices, materialIndex) {
+    return {
+        mMatrix: mMatrices,
+        vMatrix: vMatrices,
+        pMatrix: pMatrices,
+        materialIndex: materialIndex
+    };
+};
+var _createTypeArraysOnlyOnce = function (buffer, DataBufferConfig, mat4Length, DrawRenderCommandBufferDataFromSystem) {
+    if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
+        var count = DataBufferConfig.renderCommandBufferCount;
+        DrawRenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
+        DrawRenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
+        DrawRenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
+        DrawRenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+    }
+    return DrawRenderCommandBufferDataFromSystem;
+};
+var initData$24 = function (DrawRenderCommandBufferDataFromSystem) {
+    var mat4Length = getMatrix4DataSize();
+    DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
+};
+
+var clear$2 = curry(function (state, render_config, DeviceManagerData, data) {
+    return clear$3(getGL$$1(DeviceManagerData, state), clear$$1, render_config, DeviceManagerData, data);
+});
+var draw$$1 = curry(function (state, DataBufferConfig, drawDataMap, bufferData) {
+    return draw$1(getGL$$1(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer$$1, sendAttributeData$$1, sendUniformData$$1, use$$1, hasIndices$$1, getIndicesCount$$1, getIndexType$$1, getIndexTypeSize$$1, getVerticesCount$$1), drawDataMap, bufferData);
+});
+var initData$23 = initData$24;
+
+var DrawRenderCommandBufferData = (function () {
+    function DrawRenderCommandBufferData() {
+    }
+    return DrawRenderCommandBufferData;
+}());
+DrawRenderCommandBufferData.mMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferData.vMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferData.pMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferData.mMatrices = null;
+DrawRenderCommandBufferData.vMatrices = null;
+DrawRenderCommandBufferData.pMatrices = null;
+DrawRenderCommandBufferData.materialIndices = null;
+DrawRenderCommandBufferData.shaderIndices = null;
+DrawRenderCommandBufferData.geometryIndices = null;
+
+var WorkerInstanceData = (function () {
+    function WorkerInstanceData() {
+    }
+    return WorkerInstanceData;
+}());
+WorkerInstanceData.renderWorker = null;
+
+var init$3 = null;
+var render$1 = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    init$3 = function (state) {
+        var renderWorker = getRenderWorker(WorkerInstanceData);
+        renderWorker.postMessage({
+            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+            materialData: {
+                buffer: MaterialData.buffer,
+                materialCount: MaterialData.count,
+                materialClassNameTable: MaterialData.materialClassNameTable,
+                shaderIndexTable: MaterialData.shaderIndexTable
+            },
+            geometryData: {
+                buffer: GeometryData.buffer,
+                indexType: GeometryData.indexType,
+                indexTypeSize: GeometryData.indexTypeSize,
+                verticesInfoList: GeometryData.verticesInfoList,
+                indicesInfoList: GeometryData.indicesInfoList
+            }
+        });
+        renderWorker.onmessage = function (e) {
+            var data = e.data, state = data.state;
+            SendDrawRenderCommandBufferData.state = state;
+        };
+        return state;
+    };
+    render$1 = function (state) {
+        return compose(sendDrawData(WorkerInstanceData, MaterialData, GeometryData), createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData), getRenderList(state))(MeshRendererData);
+    };
+    var _initData = function (SendDrawRenderCommandBufferData$$1) {
+        SendDrawRenderCommandBufferData$$1.state = ERenderWorkerState.DEFAULT;
+    };
+    _initData(SendDrawRenderCommandBufferData);
+}
+else {
+    init$3 = function (state) {
+        init$4(state, MaterialData);
+    };
+    render$1 = function (state) {
+        return compose(draw$$1(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)), clear$2(null, render_config, DeviceManagerData), createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData), getRenderList(state))(MeshRendererData);
+    };
+}
+
+var getState = function (DirectorData) {
+    return DirectorData.state;
+};
+var setState = function (state, DirectorData) {
+    return IO.of(function () {
+        DirectorData.state = state;
+    });
+};
+var run = null;
+var render$$1 = null;
+var _sync = function (elapsed, state, scheduler) {
+    scheduler.update(elapsed);
+    var resultState = updateSystem(elapsed, state);
+    return resultState;
+};
+var updateSystem = function (elapsed, state) {
+    var resultState = update$1(elapsed, GlobalTempData, ThreeDTransformData, state);
+    resultState = update(PerspectiveCameraData, CameraData, CameraControllerData);
+    return resultState;
+};
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    run = function (elapsed, state, timeController, scheduler) {
+        var resultState = state;
+        if (SendDrawRenderCommandBufferData.state === ERenderWorkerState.DRAW_COMPLETE) {
+            timeController.tick(elapsed);
+            SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
+            resultState = _sync(elapsed, state, scheduler);
+        }
+        else if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.DRAW_WAIT) {
+            SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_WAIT;
+            resultState = render$$1(resultState);
+        }
+        return resultState;
+    };
+    render$$1 = function (state) {
+        var resultState = null;
+        resultState = render$1(state);
+        return resultState;
+    };
+}
+else {
+    run = function (elapsed, state, timeController, scheduler) {
+        var resultState = state;
+        timeController.tick(elapsed);
+        resultState = _sync(elapsed, state, scheduler);
+        resultState = render$$1(resultState);
+        return resultState;
+    };
+    render$$1 = function (state) {
+        var resultState = render$1(state);
+        return resultState;
+    };
+}
+
+var DirectorData = (function () {
+    function DirectorData() {
+    }
+    return DirectorData;
+}());
+DirectorData.state = createState();
+
+var GameObject = (function () {
+    function GameObject() {
+        this.uid = null;
+    }
+    return GameObject;
+}());
+GameObject = __decorate([
+    registerClass("GameObject")
+], GameObject);
+var createGameObject = function () { return create$1(create$2(ThreeDTransformData), GameObjectData); };
+var addGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    addComponent$1(gameObject, component, GameObjectData);
+});
+var disposeGameObject = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    dispose$2(gameObject, ThreeDTransformData, GameObjectData);
+});
+var initGameObject$1 = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    initGameObject$$1(gameObject, getState(DirectorData), GameObjectData);
+});
+var disposeGameObjectComponent = requireCheckFunc(function (gameObject, component) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, component) {
+    disposeComponent$1(gameObject, component, GameObjectData);
+});
+var getGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, _class) {
+    return getComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+var getGameObjectTransform = function (gameObject) {
+    return getTransform(gameObject, GameObjectData);
+};
+var hasGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
+}, function (gameObject, _class) {
+    return hasComponent(gameObject, getTypeIDFromClass(_class), GameObjectData);
+});
+var isGameObjectAlive = function (gameObject) {
+    return isAlive$$1(gameObject, GameObjectData);
+};
+var addGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    addChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+var removeGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+var hasGameObject = requireCheckFunc(function (gameObject, child) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject, child) {
+    return hasChild(gameObject, child, GameObjectData);
+});
+var getGameObjectChildren = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getAliveChildren(gameObject.uid, GameObjectData);
+});
+var getGameObjectParent = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getParent$$1(gameObject.uid, GameObjectData);
+});
+
+var Geometry = (function (_super) {
+    __extends(Geometry, _super);
+    function Geometry() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Geometry;
+}(Component));
+Geometry = __decorate([
+    registerClass("Geometry")
+], Geometry);
+var getDrawMode$2 = requireCheckFunc(function (geometry) {
+    _checkShouldAlive$2(geometry, GeometryData);
+}, function (geometry) {
+    return getDrawMode$$1(geometry.index, GeometryData);
+});
+var getVertices$1 = requireCheckFunc(function (geometry) {
+    _checkShouldAlive$2(geometry, GeometryData);
+}, function (geometry) {
+    return getVertices(geometry.index, GeometryData);
+});
+var getIndices$1 = requireCheckFunc(function (geometry) {
+    _checkShouldAlive$2(geometry, GeometryData);
+}, function (geometry) {
+    return getIndices(geometry.index, GeometryData);
+});
+var getGeometryConfigData = requireCheckFunc(function (geometry) {
+    _checkShouldAlive$2(geometry, GeometryData);
+}, function (geometry) {
+    return getConfigData(geometry.index, GeometryData);
+});
+var initGeometry$1 = function (geometry) {
+    initGeometry(geometry.index, getState(DirectorData));
+};
+var getGeometryGameObject = requireCheckFunc(function (geometry) {
+    _checkShouldAlive$2(geometry, GeometryData);
+}, function (geometry) {
+    return getGameObject$5(geometry.index, GeometryData);
+});
+var _checkShouldAlive$2 = function (geometry, GeometryData$$1) {
+    checkComponentShouldAlive(geometry, GeometryData$$1, function (geometry, GeometryData$$1) {
+        return isComponentIndexNotRemoved(geometry);
+    });
 };
 
 var Material = (function (_super) {
@@ -14208,37 +14815,53 @@ var Material = (function (_super) {
 Material = __decorate([
     registerClass("Material")
 ], Material);
-var getMaterialColor = function (material) {
+var getMaterialColor = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material) {
     return getColor(material.index, MaterialData);
-};
-var setMaterialColor = function (material, color) {
+});
+var setMaterialColor = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material, color) {
     setColor(material.index, color, MaterialData);
-};
-var getMaterialOpacity = function (material) {
-    return getOpacity(material.index, MaterialData);
-};
-var setMaterialOpacity = function (material, opacity) {
+});
+var getMaterialOpacity = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material) {
+    return getOpacity$$1(material.index, MaterialData);
+});
+var setMaterialOpacity = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material, opacity) {
     setOpacity(material.index, opacity, MaterialData);
-};
-var getMaterialAlphaTest = function (material) {
-    return getAlphaTest(material.index, MaterialData);
-};
-var setMaterialAlphaTest = function (material, alphaTest) {
+});
+var getMaterialAlphaTest = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material) {
+    return getAlphaTest$$1(material.index, MaterialData);
+});
+var setMaterialAlphaTest = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (material, alphaTest) {
     setAlphaTest(material.index, alphaTest, MaterialData);
-};
-var getMaterialGameObject = function (component) {
+});
+var getMaterialGameObject = requireCheckFunc(function (material) {
+    _checkShouldAlive$3(material, MaterialData);
+}, function (component) {
     return getGameObject$4(component.index, MaterialData);
+});
+var initMaterial$1 = function (material) {
+    initMaterial(material.index, getState(DirectorData));
 };
-var getMaterialShader = function (material) {
-    return getShader(material.index, MaterialData);
-};
-var initMaterial$$1 = function (material) {
-    initMaterial$1(material.index, getState(DirectorData));
+var _checkShouldAlive$3 = function (material, MaterialData$$1) {
+    checkComponentShouldAlive(material, MaterialData$$1, function (material, MaterialData$$1) {
+        return isComponentIndexNotRemoved(material);
+    });
 };
 
 var create$1 = ensureFunc(function (gameObject, transform, GameObjectData) {
     it("componentMap should has data", function () {
-        index_1(_getComponentData(gameObject.uid, GameObjectData)).exist;
+        wdet_1(_getComponentData(gameObject.uid, GameObjectData)).exist;
     });
 }, function (transform, GameObjectData) {
     var gameObject = new GameObject(), uid = _buildUID(GameObjectData);
@@ -14255,8 +14878,11 @@ var create$1 = ensureFunc(function (gameObject, transform, GameObjectData) {
 var _buildUID = function (GameObjectData) {
     return GameObjectData.uid++;
 };
-var isAlive = function (entity, GameObjectData) {
+var isAlive$$1 = function (entity, GameObjectData) {
     return isValidMapValue(_getComponentData(entity.uid, GameObjectData));
+};
+var isNotAlive$$1 = function (entity, GameObjectData) {
+    return !isAlive$$1(entity, GameObjectData);
 };
 var initGameObject$$1 = function (gameObject, state, GameObjectData) {
     var uid = gameObject.uid, componentData = _getComponentData(uid, GameObjectData);
@@ -14267,34 +14893,31 @@ var initGameObject$$1 = function (gameObject, state, GameObjectData) {
     }
 };
 var dispose$2 = function (entity, ThreeDTransformData, GameObjectData) {
-    var uid = entity.uid;
-    var parent = _getParent(uid, GameObjectData);
-    if (_isParentExist(parent)) {
-        _removeFromChildrenMap(parent.uid, uid, GameObjectData);
-    }
     _diposeAllDatas(entity, GameObjectData);
     GameObjectData.disposeCount += 1;
     if (isDisposeTooManyComponents(GameObjectData.disposeCount)) {
-        reAllocateGameObjectMap(GameObjectData);
+        reAllocateGameObject(GameObjectData);
         GameObjectData.disposeCount = 0;
     }
 };
 var _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+    removeChildEntity(getChildren(parentUID, GameObjectData), childUID);
 };
 var _diposeAllDatas = function (gameObject, GameObjectData) {
-    var uid = gameObject.uid, children = _getChildren(uid, GameObjectData);
+    var uid = gameObject.uid, children = getChildren(uid, GameObjectData);
     _disposeAllComponents(gameObject, GameObjectData);
     _disposeMapDatas(uid, GameObjectData);
     if (_isChildrenExist(children)) {
         forEach(children, function (child) {
+            if (isNotAlive$$1(child, GameObjectData)) {
+                return;
+            }
             _diposeAllDatas(child, GameObjectData);
         });
     }
 };
 var _disposeMapDatas = function (uid, GameObjectData) {
     deleteVal(uid, GameObjectData.childrenMap);
-    deleteVal(uid, GameObjectData.parentMap);
     deleteVal(uid, GameObjectData.componentMap);
 };
 var _disposeAllComponents = function (gameObject, GameObjectData) {
@@ -14308,10 +14931,10 @@ var _disposeAllComponents = function (gameObject, GameObjectData) {
 };
 var addComponent$1 = requireCheckFunc(function (gameObject, component, GameObjectData) {
     it("component should exist", function () {
-        index_1(component).exist;
+        wdet_1(component).exist;
     });
     it("should not has this type of component, please dispose it", function () {
-        index_1(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
+        wdet_1(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
     });
 }, function (gameObject, component, GameObjectData) {
     var uid = gameObject.uid, typeID = getTypeIDFromComponent(component), data = _getComponentData(uid, GameObjectData);
@@ -14361,28 +14984,33 @@ var _isParentExist = function (parent) { return isNotUndefined(parent); };
 var _isChildrenExist = function (children) { return isNotUndefined(children); };
 var _isComponentExist = function (component) { return component !== null; };
 var _isGameObjectEqual = function (gameObject1, gameObject2) { return gameObject1.uid === gameObject2.uid; };
-var _getParent = function (uid, GameObjectData) { return GameObjectData.parentMap[uid]; };
+var getParent$$1 = function (uid, GameObjectData) { return GameObjectData.parentMap[uid]; };
 var _setParent = function (uid, parent, GameObjectData) {
     GameObjectData.parentMap[uid] = parent;
 };
-var _getChildren = function (uid, GameObjectData) {
+var getChildren = function (uid, GameObjectData) {
     return GameObjectData.childrenMap[uid];
 };
+var setChildren = function (uid, children, GameObjectData) {
+    GameObjectData.childrenMap[uid] = children;
+};
+var getAliveChildren = function (uid, GameObjectData) {
+    return filter(getChildren(uid, GameObjectData), function (gameObject) {
+        return isAlive$$1(gameObject, GameObjectData);
+    });
+};
 var _addChild = function (uid, child, GameObjectData) {
-    var children = _getChildren(uid, GameObjectData);
+    var children = getChildren(uid, GameObjectData);
     if (isValidMapValue(children)) {
         children.push(child);
     }
     else {
-        _setChildren(uid, [child], GameObjectData);
+        setChildren(uid, [child], GameObjectData);
     }
-};
-var _setChildren = function (uid, children, GameObjectData) {
-    GameObjectData.childrenMap[uid] = children;
 };
 var addChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
 }, function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    var transform = getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = _getParent(childUID, GameObjectData);
+    var transform = getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = getParent$$1(childUID, GameObjectData);
     if (_isParentExist(parent)) {
         removeChild(parent, child, ThreeDTransformData, GameObjectData);
     }
@@ -14394,7 +15022,7 @@ var addChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData
 });
 var removeChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
     it("child should has transform component", function () {
-        index_1(getTransform(child, GameObjectData)).exist;
+        wdet_1(getTransform(child, GameObjectData)).exist;
     });
 }, function (gameObject, child, ThreeDTransformData, GameObjectData) {
     var uid = gameObject.uid, childUID = child.uid;
@@ -14403,8 +15031,11 @@ var removeChild = requireCheckFunc(function (gameObject, child, ThreeDTransformD
     _removeFromChildrenMap(uid, childUID, GameObjectData);
 });
 var hasChild = function (gameObject, child, GameObjectData) {
-    var parent = _getParent(child.uid, GameObjectData);
-    if (!_isParentExist(parent)) {
+    if (isNotAlive$$1(gameObject, GameObjectData) || isNotAlive$$1(child, GameObjectData)) {
+        return false;
+    }
+    var parent = getParent$$1(child.uid, GameObjectData);
+    if (!_isParentExist(parent) || isNotAlive$$1(parent, GameObjectData)) {
         return false;
     }
     return _isGameObjectEqual(parent, gameObject);
@@ -14414,6 +15045,7 @@ var initData$3 = function (GameObjectData) {
     GameObjectData.componentMap = createMap();
     GameObjectData.parentMap = createMap();
     GameObjectData.childrenMap = createMap();
+    GameObjectData.disposeCount = 0;
     GameObjectData.aliveUIDArray = [];
 };
 
@@ -14494,9 +15126,9 @@ var setPerspectiveCameraAspect = function (cameraController, aspect) {
     setAspect(cameraController.index, aspect, PerspectiveCameraData, CameraControllerData);
 };
 
-var create$7 = function (GeometryData) {
+var create$9 = function (GeometryData) {
     var geometry = new BoxGeometry(), index = null;
-    geometry = create$4(geometry, GeometryData);
+    geometry = create$8(geometry, GeometryData);
     index = geometry.index;
     setConfigData(index, {}, GeometryData);
     GeometryData.computeDataFuncMap[index] = _computeData;
@@ -14557,19 +15189,19 @@ var _computeData = function (index, GeometryData) {
     generateFace(sides.RIGHT, depthSegments, heightSegments);
     generateFace(sides.LEFT, depthSegments, heightSegments);
     return {
-        vertices: convertVerticesArrayToTypeArray(vertices),
-        indices: convertIndicesArrayToTypeArray(indices, GeometryData)
+        vertices: vertices,
+        indices: indices
     };
 };
 var _getConfigData = ensureFunc(function (data) {
     it("config data should be defined", function () {
-        index_1(data).exist;
-        index_1(data.width).exist;
-        index_1(data.height).exist;
-        index_1(data.depth).exist;
-        index_1(data.widthSegments).exist;
-        index_1(data.heightSegments).exist;
-        index_1(data.depthSegments).exist;
+        wdet_1(data).exist;
+        wdet_1(data.width).exist;
+        wdet_1(data.height).exist;
+        wdet_1(data.depth).exist;
+        wdet_1(data.widthSegments).exist;
+        wdet_1(data.heightSegments).exist;
+        wdet_1(data.depthSegments).exist;
     });
 }, function (index, GeometryData) {
     return GeometryData.configDataMap[index];
@@ -14596,14 +15228,14 @@ BoxGeometry = __decorate([
     registerClass("BoxGeometry")
 ], BoxGeometry);
 var createBoxGeometry = function () {
-    return create$7(GeometryData);
+    return create$9(GeometryData);
 };
 var setBoxGeometryConfigData = function (geometry, data) {
     setConfigData(geometry.index, data, GeometryData);
 };
 
-var create$8 = function (GeometryData) {
-    return create$4(new CustomGeometry(), GeometryData);
+var create$10 = function (GeometryData) {
+    return create$8(new CustomGeometry(), GeometryData);
 };
 
 var CustomGeometry = (function (_super) {
@@ -14617,7 +15249,7 @@ CustomGeometry = __decorate([
     registerClass("CustomGeometry")
 ], CustomGeometry);
 var createCustomGeometry = function () {
-    return create$8(GeometryData);
+    return create$10(GeometryData);
 };
 var setCustomGeometryVertices = function (geometry, vertices) {
     return setVertices(geometry.index, vertices, GeometryData);
@@ -14626,21 +15258,21 @@ var setCustomGeometryIndices = function (geometry, indices) {
     return setIndices(geometry.index, indices, GeometryData);
 };
 
-var create$9 = function (ShaderData, MaterialData) {
+var create$11 = function (ShaderData, MaterialData) {
     var material = new BasicMaterial(), materialClassName = "BasicMaterial";
-    material = create$5(material, materialClassName, MaterialData);
-    setShader(material.index, _createShader(materialClassName, ShaderData), MaterialData);
+    material = create$6(material, materialClassName, MaterialData);
+    setShaderIndex(material.index, create$7(materialClassName, MaterialData, ShaderData), MaterialData);
     return material;
 };
-var _createShader = function (materialClassName, ShaderData) {
-    var shaderMap = ShaderData.shaderMap, shader = shaderMap[materialClassName];
-    if (isValidMapValue(shader)) {
-        return shader;
+
+var ShaderData = (function () {
+    function ShaderData() {
     }
-    shader = create$6(ShaderData);
-    shaderMap[materialClassName] = shader;
-    return shader;
-};
+    return ShaderData;
+}());
+ShaderData.index = null;
+ShaderData.count = null;
+ShaderData.shaderMap = null;
 
 var BasicMaterial = (function (_super) {
     __extends(BasicMaterial, _super);
@@ -14653,87 +15285,13 @@ BasicMaterial = __decorate([
     registerClass("BasicMaterial")
 ], BasicMaterial);
 var createBasicMaterial = function () {
-    return create$9(ShaderData, MaterialData);
+    return create$11(ShaderData, MaterialData);
 };
 
-var MeshRendererData = (function () {
-    function MeshRendererData() {
-    }
-    return MeshRendererData;
-}());
-MeshRendererData.renderGameObjectArray = null;
-MeshRendererData.gameObjectMap = null;
-MeshRendererData.meshRendererMap = null;
-MeshRendererData.index = null;
-MeshRendererData.count = null;
-
-var addAddComponentHandle$6 = function (_class) {
-    addAddComponentHandle$1(_class, addComponent$6);
-};
-var addDisposeHandle$6 = function (_class) {
-    addDisposeHandle$1(_class, disposeComponent$6);
-};
-var create$10 = requireCheckFunc(function (MeshRendererData$$1) {
-    checkIndexShouldEqualCount(MeshRendererData$$1);
-}, function (MeshRendererData$$1) {
-    var renderer = new MeshRenderer(), index = generateComponentIndex(MeshRendererData$$1);
-    renderer.index = index;
-    MeshRendererData$$1.count += 1;
-    MeshRendererData$$1.meshRendererMap[index] = renderer;
-    return renderer;
-});
-var _setRenderGameObjectArray = requireCheckFunc(function (index, gameObject, renderGameObjectArray) {
-    it("should not exist gameObject", function () {
-        index_1(renderGameObjectArray[index]).not.exist;
-    });
-}, function (index, gameObject, renderGameObjectArray) {
-    renderGameObjectArray[index] = gameObject;
-});
-var addComponent$6 = function (component, gameObject) {
-    _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
-    addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
-};
-var disposeComponent$6 = function (component) {
-    var sourceIndex = component.index, lastComponentIndex = null;
-    deleteBySwap$1(sourceIndex, MeshRendererData.renderGameObjectArray);
-    MeshRendererData.count -= 1;
-    MeshRendererData.index -= 1;
-    lastComponentIndex = MeshRendererData.count;
-    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
-};
-var getGameObject$5 = function (index, Data) {
-    return getComponentGameObject(Data.gameObjectMap, index);
-};
-var getRenderList = curry(function (state, MeshRendererData$$1) {
-    return MeshRendererData$$1.renderGameObjectArray;
-});
-var initData$12 = function (MeshRendererData$$1) {
-    MeshRendererData$$1.renderGameObjectArray = [];
-    MeshRendererData$$1.gameObjectMap = createMap();
-    MeshRendererData$$1.meshRendererMap = createMap();
-    MeshRendererData$$1.index = 0;
-    MeshRendererData$$1.count = 0;
-};
-
-var MeshRenderer = (function (_super) {
-    __extends(MeshRenderer, _super);
-    function MeshRenderer() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return MeshRenderer;
-}(Component));
-MeshRenderer = __decorate([
-    registerClass("MeshRenderer")
-], MeshRenderer);
-var createMeshRenderer = function () {
-    return create$10(MeshRendererData);
-};
-var getMeshRendererGameObject = function (component) {
-    return getGameObject$5(component.index, MeshRendererData);
-};
-var getMeshRendererRenderList = function () {
-    return getRenderList(null, MeshRendererData);
+var DebugConfig = {
+    isTest: false,
+    debugCollision: false,
+    showDebugPanel: false
 };
 
 var JudgeUtils$2 = (function () {
@@ -15501,6 +16059,13 @@ var Observer = (function (_super) {
     };
     return Observer;
 }(Entity));
+
+var Main = (function () {
+    function Main() {
+    }
+    return Main;
+}());
+Main.isTest = false;
 
 function assert$1(cond, message) {
     if (message === void 0) { message = "contract error"; }
@@ -16573,142 +17138,6 @@ DirectorTimeController = __decorate([
     registerClass("DirectorTimeController")
 ], DirectorTimeController);
 
-var create$11 = function (GameObjectData) {
-    return create$1(null, GameObjectData);
-};
-var addChild$1 = function (scene, child, GameObjectData, SceneData) {
-    if (_isCamera(child, GameObjectData)) {
-        SceneData.cameraArray.push(child);
-    }
-    addChild(scene, child, null, GameObjectData);
-};
-var removeChild$1 = function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
-};
-var _isCamera = function (gameObject, GameObjectData) {
-    return hasComponent(gameObject, getTypeIDFromClass(CameraController), GameObjectData);
-};
-var getCurrentCamera = ensureFunc(function (camera, SceneData) {
-    it("current camera should exist", function () {
-        index_1(camera).exist;
-    });
-}, function (SceneData) {
-    return SceneData.cameraArray[0];
-});
-var initData$13 = function (SceneData) {
-    SceneData.cameraArray = [];
-};
-
-var RenderCommand = (function () {
-    function RenderCommand() {
-        this.materialIndex = null;
-        this.shaderIndex = null;
-        this.geometryIndex = null;
-        this.mMatrix = null;
-        this.vMatrix = null;
-        this.pMatrix = null;
-        this.drawMode = null;
-    }
-    return RenderCommand;
-}());
-
-var createRenderCommands = requireCheckFunc(curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {
-    forEach(renderGameObjectArray, function (gameObject) {
-        var geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData);
-        it("geometry should exist in gameObject", function () {
-            index_1(geometry).exist;
-        });
-        it("material should exist in gameObject", function () {
-            index_1(material).exist;
-        });
-    });
-}), curry(function (state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, renderGameObjectArray) {
-    var commandArr = [];
-    for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
-        var gameObject = renderGameObjectArray_1[_i];
-        var command = new RenderCommand(), currentCamera = getComponent(getCurrentCamera(SceneData), getTypeIDFromClass(CameraController), GameObjectData), currentCameraIndex = currentCamera.index, geometry = getGeometry(gameObject, GameObjectData), material = getMaterial(gameObject, GameObjectData), transform = getTransform(gameObject, GameObjectData), materialIndex = material.index, shader = getShader(materialIndex, MaterialData);
-        command.mMatrix = getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData).values;
-        command.vMatrix = getWorldToCameraMatrix$1(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
-        command.pMatrix = getPMatrix$1(currentCameraIndex, CameraData).values;
-        command.drawMode = getDrawMode$1(geometry, GeometryData);
-        command.materialIndex = materialIndex;
-        command.shaderIndex = shader.index;
-        command.geometryIndex = geometry.index;
-        commandArr.push(command);
-    }
-    return commandArr;
-}));
-
-var sortRenderCommands = curry(function (state, renderCommandArray) {
-    return renderCommandArray;
-});
-
-var draw = curry(function (state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData, renderCommandArray) {
-    for (var _i = 0, renderCommandArray_1 = renderCommandArray; _i < renderCommandArray_1.length; _i++) {
-        var renderCommand = renderCommandArray_1[_i];
-        var shaderIndex = renderCommand.shaderIndex, geometryIndex = renderCommand.geometryIndex, gl = getGL(DeviceManagerData, state);
-        use$$1(gl, shaderIndex, ShaderData);
-        sendAttributeData$$1(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
-        sendUniformData$$1(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
-        if (hasIndices(geometryIndex, GeometryData)) {
-            bindIndexBuffer(gl, geometryIndex, ShaderData, GeometryData, IndexBufferData);
-            _drawElements(gl, geometryIndex, GeometryData);
-        }
-        else {
-            _drawArray(gl, geometryIndex, GeometryData);
-        }
-    }
-    return state;
-});
-var _drawElements = function (gl, geometryIndex, GeometryData) {
-    var startOffset = 0, drawMode = getDrawMode$1(geometryIndex, GeometryData), count = getIndicesCount(geometryIndex, GeometryData), type = getType(GeometryData), typeSize = getTypeSize(GeometryData);
-    gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
-};
-var _drawArray = function (gl, geometryIndex, GeometryData) {
-    var startOffset = 0, drawMode = getDrawMode$1(geometryIndex, GeometryData), count = getVerticesCount(geometryIndex, GeometryData);
-    gl.drawArrays(gl[drawMode], startOffset, count);
-};
-
-var ArrayBufferData = (function () {
-    function ArrayBufferData() {
-    }
-    return ArrayBufferData;
-}());
-ArrayBufferData.buffers = null;
-ArrayBufferData.bufferDataMap = null;
-
-var IndexBufferData = (function () {
-    function IndexBufferData() {
-    }
-    return IndexBufferData;
-}());
-IndexBufferData.buffers = null;
-
-var render_config = {
-    "render_setting": {
-        "clearColor": Color.create("#000000")
-    }
-};
-
-var SceneData = (function () {
-    function SceneData() {
-    }
-    return SceneData;
-}());
-SceneData.cameraArray = null;
-
-var init$7 = function (state) {
-    init$5(state, material_config, shaderLib_generator, DeviceManagerData, ShaderData, MaterialData);
-    return state;
-};
-var clear$1 = function (state) {
-    clear(getGL(DeviceManagerData, state), render_config.render_setting.clearColor, DeviceManagerData);
-    return state;
-};
-var render = function (state) {
-    return compose(draw(state, DeviceManagerData, MaterialData, ShaderData, GeometryData, ArrayBufferData, IndexBufferData), sortRenderCommands(state), createRenderCommands(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData), getRenderList(state))(MeshRendererData);
-};
-
 var View = (function () {
     function View() {
     }
@@ -16720,18 +17149,12 @@ var View = (function () {
         get: function () {
             return getCanvas(getState(DirectorData));
         },
-        set: function (dom) {
-            setCanvas(dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "width", {
         get: function () {
             return getWidth(this.dom);
-        },
-        set: function (width) {
-            setWidth(width, this.dom).run();
         },
         enumerable: true,
         configurable: true
@@ -16740,18 +17163,12 @@ var View = (function () {
         get: function () {
             return getHeight(this.dom);
         },
-        set: function (height) {
-            setHeight(height, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "styleWidth", {
         get: function () {
             return getStyleWidth(this.dom);
-        },
-        set: function (styleWidth) {
-            setStyleWidth(styleWidth, this.dom).run();
         },
         enumerable: true,
         configurable: true
@@ -16760,9 +17177,6 @@ var View = (function () {
         get: function () {
             return getStyleHeight(this.dom);
         },
-        set: function (styleHeight) {
-            setStyleHeight(styleHeight, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
@@ -16770,18 +17184,12 @@ var View = (function () {
         get: function () {
             return getX(this.dom);
         },
-        set: function (x) {
-            setX(x, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "y", {
         get: function () {
             return getY(this.dom);
-        },
-        set: function (y) {
-            setY(y, this.dom).run();
         },
         enumerable: true,
         configurable: true
@@ -16799,14 +17207,14 @@ var DeviceManager = (function () {
     DeviceManager.getInstance = function () { };
     Object.defineProperty(DeviceManager.prototype, "gl", {
         get: function () {
-            return getGL(DeviceManagerData, getState(DirectorData));
+            return getGL$$1(DeviceManagerData, getState(DirectorData));
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(DeviceManager.prototype, "viewport", {
         get: function () {
-            return getViewport(getState(DirectorData));
+            return getViewport$$1(getState(DirectorData));
         },
         enumerable: true,
         configurable: true
@@ -16814,29 +17222,496 @@ var DeviceManager = (function () {
     DeviceManager.prototype.createGL = function (canvasId, contextConfig) {
         return createGL(canvasId, immutable_1(contextConfig), getState(DirectorData));
     };
-    DeviceManager.prototype.setScreen = function () {
-        return setScreen(DeviceManagerData, getState(DirectorData));
-    };
     return DeviceManager;
 }());
-__decorate([
-    requireCheck(function () {
-        it("canvas should be setter", function () {
-            index_1(getCanvas(getState(DirectorData))).exist;
-        });
-    })
-], DeviceManager.prototype, "setScreen", null);
 DeviceManager = __decorate([
     singleton(),
     registerClass("DeviceManager")
 ], DeviceManager);
 var setDeviceManagerGL = function (gl) {
-    return setGL(gl, DeviceManagerData, getState(DirectorData));
+    return setGL$$1(gl, DeviceManagerData, getState(DirectorData));
 };
+
+var Hash = (function () {
+    function Hash(children) {
+        if (children === void 0) { children = {}; }
+        this._children = null;
+        this._children = children;
+    }
+    Hash.create = function (children) {
+        if (children === void 0) { children = {}; }
+        var obj = new this(children);
+        return obj;
+    };
+    Hash.prototype.getChildren = function () {
+        return this._children;
+    };
+    Hash.prototype.getCount = function () {
+        var result = 0, children = this._children, key = null;
+        for (key in children) {
+            if (children.hasOwnProperty(key)) {
+                result++;
+            }
+        }
+        return result;
+    };
+    Hash.prototype.getKeys = function () {
+        var result = Collection.create(), children = this._children, key = null;
+        for (key in children) {
+            if (children.hasOwnProperty(key)) {
+                result.addChild(key);
+            }
+        }
+        return result;
+    };
+    Hash.prototype.getValues = function () {
+        var result = Collection.create(), children = this._children, key = null;
+        for (key in children) {
+            if (children.hasOwnProperty(key)) {
+                result.addChild(children[key]);
+            }
+        }
+        return result;
+    };
+    Hash.prototype.getChild = function (key) {
+        return this._children[key];
+    };
+    Hash.prototype.setValue = function (key, value) {
+        this._children[key] = value;
+        return this;
+    };
+    Hash.prototype.addChild = function (key, value) {
+        this._children[key] = value;
+        return this;
+    };
+    Hash.prototype.addChildren = function (arg) {
+        var i = null, children = null;
+        if (arg instanceof Hash) {
+            children = arg.getChildren();
+        }
+        else {
+            children = arg;
+        }
+        for (i in children) {
+            if (children.hasOwnProperty(i)) {
+                this.addChild(i, children[i]);
+            }
+        }
+        return this;
+    };
+    Hash.prototype.appendChild = function (key, value) {
+        if (this._children[key] instanceof Collection) {
+            var c = (this._children[key]);
+            c.addChild(value);
+        }
+        else {
+            this._children[key] = (Collection.create().addChild(value));
+        }
+        return this;
+    };
+    Hash.prototype.setChildren = function (children) {
+        this._children = children;
+    };
+    Hash.prototype.removeChild = function (arg) {
+        var result = [];
+        if (JudgeUtils.isString(arg)) {
+            var key = arg;
+            result.push(this._children[key]);
+            this._children[key] = void 0;
+            delete this._children[key];
+        }
+        else if (JudgeUtils.isFunction(arg)) {
+            var func_1 = arg, self_1 = this;
+            this.forEach(function (val, key) {
+                if (func_1(val, key)) {
+                    result.push(self_1._children[key]);
+                    self_1._children[key] = void 0;
+                    delete self_1._children[key];
+                }
+            });
+        }
+        return Collection.create(result);
+    };
+    Hash.prototype.removeAllChildren = function () {
+        this._children = {};
+    };
+    Hash.prototype.hasChild = function (key) {
+        return this._children[key] !== void 0;
+    };
+    Hash.prototype.hasChildWithFunc = function (func) {
+        var result = false;
+        this.forEach(function (val, key) {
+            if (func(val, key)) {
+                result = true;
+                return $BREAK;
+            }
+        });
+        return result;
+    };
+    Hash.prototype.forEach = function (func, context) {
+        var children = this._children;
+        for (var i in children) {
+            if (children.hasOwnProperty(i)) {
+                if (func.call(context, children[i], i) === $BREAK) {
+                    break;
+                }
+            }
+        }
+        return this;
+    };
+    Hash.prototype.filter = function (func) {
+        var result = {}, children = this._children, value = null;
+        for (var key in children) {
+            if (children.hasOwnProperty(key)) {
+                value = children[key];
+                if (func.call(children, value, key)) {
+                    result[key] = value;
+                }
+            }
+        }
+        return Hash.create(result);
+    };
+    Hash.prototype.findOne = function (func) {
+        var result = [], self = this, scope = this._children;
+        this.forEach(function (val, key) {
+            if (!func.call(scope, val, key)) {
+                return;
+            }
+            result = [key, self.getChild(key)];
+            return $BREAK;
+        });
+        return result;
+    };
+    Hash.prototype.map = function (func) {
+        var resultMap = {};
+        this.forEach(function (val, key) {
+            var result = func(val, key);
+            if (result !== $REMOVE) {
+                Log$1.error(!JudgeUtils.isArray(result) || result.length !== 2, Log$1.info.FUNC_MUST_BE("iterator", "[key, value]"));
+                resultMap[result[0]] = result[1];
+            }
+        });
+        return Hash.create(resultMap);
+    };
+    Hash.prototype.toCollection = function () {
+        var result = Collection.create();
+        this.forEach(function (val, key) {
+            if (val instanceof Collection) {
+                result.addChildren(val);
+            }
+            else {
+                result.addChild(val);
+            }
+        });
+        return result;
+    };
+    Hash.prototype.toArray = function () {
+        var result = [];
+        this.forEach(function (val, key) {
+            if (val instanceof Collection) {
+                result = result.concat(val.getChildren());
+            }
+            else {
+                result.push(val);
+            }
+        });
+        return result;
+    };
+    Hash.prototype.clone = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var target = null, isDeep = null;
+        if (args.length === 0) {
+            isDeep = false;
+            target = Hash.create();
+        }
+        else if (args.length === 1) {
+            if (JudgeUtils.isBoolean(args[0])) {
+                target = Hash.create();
+                isDeep = args[0];
+            }
+            else {
+                target = args[0];
+                isDeep = false;
+            }
+        }
+        else {
+            target = args[0];
+            isDeep = args[1];
+        }
+        if (isDeep === true) {
+            target.setChildren(ExtendUtils.extendDeep(this._children));
+        }
+        else {
+            target.setChildren(ExtendUtils.extend({}, this._children));
+        }
+        return target;
+    };
+    return Hash;
+}());
+
+var CommonTimeController = (function (_super) {
+    __extends(CommonTimeController, _super);
+    function CommonTimeController() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    CommonTimeController.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    CommonTimeController.prototype.getNow = function () {
+        if (Director.getInstance().isTimeChange) {
+            return Director.getInstance().elapsed;
+        }
+        return root$1.performance.now();
+    };
+    return CommonTimeController;
+}(TimeController));
+CommonTimeController = __decorate([
+    registerClass("CommonTimeController")
+], CommonTimeController);
+
+var Scheduler$1 = (function () {
+    function Scheduler() {
+        this._scheduleCount = 0;
+        this._schedules = Hash.create();
+    }
+    Scheduler.create = function () {
+        var obj = new this();
+        return obj;
+    };
+    Scheduler.prototype.update = function (elapsed) {
+        var _this = this;
+        this._schedules.forEach(function (scheduleItem, scheduleId) {
+            if (scheduleItem.isStop || scheduleItem.isPause) {
+                return;
+            }
+            scheduleItem.update(elapsed);
+            if (scheduleItem.isFinish) {
+                _this.remove(scheduleId);
+            }
+        });
+    };
+    Scheduler.prototype.scheduleLoop = function (task, args) {
+        if (args === void 0) { args = []; }
+        return this._schedule(LoopScheduleItem, Array.prototype.slice.call(arguments, 0));
+    };
+    Scheduler.prototype.scheduleFrame = function (task, frame, args) {
+        if (frame === void 0) { frame = 1; }
+        return this._schedule(FrameScheduleItem, Array.prototype.slice.call(arguments, 0));
+    };
+    Scheduler.prototype.scheduleInterval = function (task, time, args) {
+        if (time === void 0) { time = 0; }
+        return this._schedule(IntervalScheduleItem, Array.prototype.slice.call(arguments, 0));
+    };
+    Scheduler.prototype.scheduleTime = function (task, time, args) {
+        if (time === void 0) { time = 0; }
+        return this._schedule(TimeScheduleItem, Array.prototype.slice.call(arguments, 0));
+    };
+    Scheduler.prototype.pause = function (scheduleId) {
+        if (arguments.length === 0) {
+            var self_1 = this;
+            this._schedules.forEach(function (scheduleItem, scheduleId) {
+                self_1.pause(scheduleId);
+            });
+        }
+        else if (arguments.length === 1) {
+            var scheduleItem = this._schedules.getChild(arguments[0]);
+            scheduleItem.pause();
+        }
+    };
+    Scheduler.prototype.resume = function (scheduleId) {
+        if (arguments.length === 0) {
+            var self_2 = this;
+            this._schedules.forEach(function (scheduleItem, scheduleId) {
+                self_2.resume(scheduleId);
+            });
+        }
+        else if (arguments.length === 1) {
+            var scheduleItem = this._schedules.getChild(arguments[0]);
+            scheduleItem.resume();
+        }
+    };
+    Scheduler.prototype.start = function (scheduleId) {
+        if (arguments.length === 0) {
+            var self_3 = this;
+            this._schedules.forEach(function (scheduleItem, scheduleId) {
+                self_3.start(scheduleId);
+            });
+        }
+        else if (arguments.length === 1) {
+            var scheduleItem = this._schedules.getChild(arguments[0]);
+            scheduleItem.start();
+        }
+    };
+    Scheduler.prototype.stop = function (scheduleId) {
+        if (arguments.length === 0) {
+            var self_4 = this;
+            this._schedules.forEach(function (scheduleItem, scheduleId) {
+                self_4.stop(scheduleId);
+            });
+        }
+        else if (arguments.length === 1) {
+            var scheduleItem = this._schedules.getChild(arguments[0]);
+            scheduleItem.stop();
+        }
+    };
+    Scheduler.prototype.has = function (scheduleId) {
+        return !!this._schedules.hasChild(scheduleId);
+    };
+    Scheduler.prototype.remove = function (scheduleId) {
+        this._schedules.removeChild(scheduleId);
+    };
+    Scheduler.prototype.removeAll = function () {
+        this._schedules.removeAllChildren();
+    };
+    Scheduler.prototype._schedule = function (_class, args) {
+        var scheduleId = this._buildId();
+        this._schedules.setValue(scheduleId, _class.create.apply(_class, args));
+        return scheduleId;
+    };
+    Scheduler.prototype._buildId = function () {
+        return 'Schedule_' + (this._scheduleCount++);
+    };
+    return Scheduler;
+}());
+var ScheduleItem = (function () {
+    function ScheduleItem(task, args) {
+        this.isPause = false;
+        this.isStop = false;
+        this.pauseTime = null;
+        this.pauseElapsed = null;
+        this.startTime = null;
+        this.isFinish = false;
+        this.task = null;
+        this.args = null;
+        this.timeController = CommonTimeController.create();
+        this.task = task;
+        this.args = args;
+    }
+    ScheduleItem.prototype.pause = function () {
+        this.isPause = true;
+        this.timeController.pause();
+    };
+    ScheduleItem.prototype.resume = function () {
+        this.isPause = false;
+        this.timeController.resume();
+    };
+    ScheduleItem.prototype.start = function () {
+        this.isStop = false;
+        this.timeController.start();
+    };
+    ScheduleItem.prototype.stop = function () {
+        this.isStop = true;
+        this.timeController.stop();
+    };
+    ScheduleItem.prototype.finish = function () {
+        this.isFinish = true;
+    };
+    return ScheduleItem;
+}());
+var TimeScheduleItem = (function (_super) {
+    __extends(TimeScheduleItem, _super);
+    function TimeScheduleItem(task, time, args) {
+        if (time === void 0) { time = 0; }
+        if (args === void 0) { args = []; }
+        var _this = _super.call(this, task, args) || this;
+        _this._time = null;
+        _this._time = time;
+        return _this;
+    }
+    TimeScheduleItem.create = function (task, time, args) {
+        if (time === void 0) { time = 0; }
+        if (args === void 0) { args = []; }
+        var obj = new this(task, time, args);
+        return obj;
+    };
+    TimeScheduleItem.prototype.update = function (elapsed) {
+        var elapsed = this.timeController.computeElapseTime(elapsed);
+        if (elapsed >= this._time) {
+            this.task.apply(this, this.args);
+            this.finish();
+        }
+    };
+    return TimeScheduleItem;
+}(ScheduleItem));
+var IntervalScheduleItem = (function (_super) {
+    __extends(IntervalScheduleItem, _super);
+    function IntervalScheduleItem(task, time, args) {
+        if (time === void 0) { time = 0; }
+        if (args === void 0) { args = []; }
+        var _this = _super.call(this, task, args) || this;
+        _this._intervalTime = null;
+        _this._elapsed = 0;
+        _this._intervalTime = time;
+        return _this;
+    }
+    IntervalScheduleItem.create = function (task, time, args) {
+        if (time === void 0) { time = 0; }
+        if (args === void 0) { args = []; }
+        var obj = new this(task, time, args);
+        return obj;
+    };
+    IntervalScheduleItem.prototype.update = function (elapsed) {
+        var elapsed = this.timeController.computeElapseTime(elapsed);
+        if (elapsed - this._elapsed >= this._intervalTime) {
+            this.task.apply(this, this.args);
+            this._elapsed = elapsed;
+        }
+    };
+    IntervalScheduleItem.prototype.start = function () {
+        _super.prototype.start.call(this);
+        this._elapsed = 0;
+    };
+    return IntervalScheduleItem;
+}(ScheduleItem));
+var LoopScheduleItem = (function (_super) {
+    __extends(LoopScheduleItem, _super);
+    function LoopScheduleItem() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    LoopScheduleItem.create = function (task, args) {
+        if (args === void 0) { args = []; }
+        var obj = new this(task, args);
+        return obj;
+    };
+    LoopScheduleItem.prototype.update = function (elapsed) {
+        this.task.apply(this, this.args);
+    };
+    return LoopScheduleItem;
+}(ScheduleItem));
+var FrameScheduleItem = (function (_super) {
+    __extends(FrameScheduleItem, _super);
+    function FrameScheduleItem(task, frame, args) {
+        if (frame === void 0) { frame = 1; }
+        if (args === void 0) { args = []; }
+        var _this = _super.call(this, task, args) || this;
+        _this._frame = null;
+        _this._frame = frame;
+        return _this;
+    }
+    FrameScheduleItem.create = function (task, frame, args) {
+        if (frame === void 0) { frame = 1; }
+        if (args === void 0) { args = []; }
+        var obj = new this(task, frame, args);
+        return obj;
+    };
+    FrameScheduleItem.prototype.update = function (elapsed) {
+        this._frame--;
+        if (this._frame <= 0) {
+            this.task.apply(this, this.args);
+            this.finish();
+        }
+    };
+    return FrameScheduleItem;
+}(ScheduleItem));
 
 var Director = (function () {
     function Director() {
-        this.scene = create$11(GameObjectData);
+        this.scene = create$5(GameObjectData);
+        this.scheduler = null;
         this._gameLoop = null;
         this._timeController = DirectorTimeController.create();
     }
@@ -16850,6 +17725,7 @@ var Director = (function () {
         configurable: true
     });
     Director.prototype.initWhenCreate = function () {
+        this.scheduler = Scheduler$1.create();
     };
     Director.prototype.start = function () {
         this._startLoop();
@@ -16873,16 +17749,18 @@ var Director = (function () {
         var resultState = state;
         resultState = this._initSystem(resultState);
         resultState = this._initRenderer(resultState);
+        this._timeController.start();
+        this.scheduler.start();
         return resultState;
     };
     Director.prototype._initSystem = function (state) {
         var resultState = init$2(GlobalTempData, ThreeDTransformData, state);
-        resultState = init$3(GeometryData, state);
+        resultState = init$7(GeometryData, state);
         resultState = init$1(PerspectiveCameraData, CameraData, CameraControllerData, state);
         return resultState;
     };
     Director.prototype._initRenderer = function (state) {
-        var resultState = init$7(state);
+        var resultState = init$3(state);
         return resultState;
     };
     Director.prototype._buildLoopStream = function () {
@@ -16890,27 +17768,8 @@ var Director = (function () {
     };
     Director.prototype._loopBody = function (time, state) {
         var elapsed = null;
-        return this._run(elapsed, state);
-    };
-    Director.prototype._run = function (elapsed, state) {
-        var resultState = this._update(elapsed, state);
-        resultState = this._render(state);
-        return resultState;
-    };
-    Director.prototype._update = function (elapsed, state) {
-        var resultState = this._updateSystem(elapsed, state);
-        return resultState;
-    };
-    Director.prototype._render = function (state) {
-        var resultState = state;
-        resultState = clear$1(state);
-        resultState = render(state);
-        return resultState;
-    };
-    Director.prototype._updateSystem = function (elapsed, state) {
-        var resultState = update$1(elapsed, GlobalTempData, ThreeDTransformData, state);
-        resultState = update(PerspectiveCameraData, CameraData, CameraControllerData);
-        return resultState;
+        elapsed = this._timeController.computeElapseTime(time);
+        return run(elapsed, state, this._timeController, this.scheduler);
     };
     return Director;
 }());
@@ -16918,31 +17777,20 @@ Director = __decorate([
     singleton(true),
     registerClass("Director")
 ], Director);
-initData$9(ShaderData);
-initData$6(DataBufferConfig, GeometryData);
-addAddComponentHandle$4(Geometry);
-addDisposeHandle$4(Geometry);
-addInitHandle$1(Geometry);
-initData$8(MaterialData);
+addAddComponentHandle$6(Geometry);
+addDisposeHandle$6(Geometry);
+addInitHandle$2(Geometry);
 addAddComponentHandle$5(Material);
 addDisposeHandle$5(Material);
-addInitHandle$2(Material);
-initData$12(MeshRendererData);
-addAddComponentHandle$6(MeshRenderer);
-addDisposeHandle$6(MeshRenderer);
-initData$5(TagData);
+addInitHandle$1(Material);
+addAddComponentHandle$4(MeshRenderer);
+addDisposeHandle$4(MeshRenderer);
 addAddComponentHandle$3(Tag);
 addDisposeHandle$3(Tag);
-initData$4(GlobalTempData, ThreeDTransformData);
 addAddComponentHandle$2(ThreeDTransform);
 addDisposeHandle$2(ThreeDTransform);
-initData$11(ArrayBufferData);
-initData$10(IndexBufferData);
-initData$13(SceneData);
-initData$2(CameraControllerData, PerspectiveCameraData, CameraData);
 addAddComponentHandle$$1(CameraController);
 addDisposeHandle$$1(CameraController);
-initData$3(GameObjectData);
 
 var Scene = (function (_super) {
     __extends(Scene, _super);
@@ -16953,18 +17801,259 @@ var Scene = (function (_super) {
 }(GameObject));
 var addSceneChild = requireCheckFunc(function (scene, gameObject) {
     it("scene should alive", function () {
-        index_1(isAlive(scene, GameObjectData)).true;
+        wdet_1(isAlive$$1(scene, GameObjectData)).true;
     });
 }, function (scene, gameObject) {
-    addChild$1(scene, gameObject, GameObjectData, SceneData);
+    addChild$1(scene, gameObject, ThreeDTransformData, GameObjectData, SceneData);
 });
 var removeSceneChild = requireCheckFunc(function (scene, gameObject) {
     it("scene should alive", function () {
-        index_1(isAlive(scene, GameObjectData)).true;
+        wdet_1(isAlive$$1(scene, GameObjectData)).true;
     });
 }, function (scene, gameObject) {
     removeChild$1(scene, gameObject, ThreeDTransformData, GameObjectData);
 });
+
+var initData$26 = initData$12;
+
+var detect$1 = curry(function (getGL, DeviceManagerDataFromSystem, state) {
+    return GPUDetector.getInstance().detect(state, getGL, DeviceManagerDataFromSystem);
+});
+
+var IO$1 = (function () {
+    function IO(func) {
+        this.func = null;
+        this.func = func;
+    }
+    IO.of = function (func) {
+        var obj = new this(func);
+        return obj;
+    };
+    IO.prototype.chain = function (f) {
+        var io = this;
+        return IO.of(function () {
+            var next = f(io.func.apply(io, arguments));
+            return next.func.apply(next, arguments);
+        });
+    };
+    IO.prototype.map = function (f) {
+        return IO.of(flowRight(f, this.func));
+    };
+    
+    IO.prototype.ap = function (thatIO) {
+        return this.chain(function (f) {
+            return thatIO.map(f);
+        });
+    };
+    
+    IO.prototype.run = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return this.func.apply(this, arguments);
+    };
+    
+    IO.prototype.toString = function () {
+        return "(" + toString$1(this.run()) + ")";
+    };
+    return IO;
+}());
+
+var createGL$1 = curry(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
+    return IO$1.of(function () {
+        var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);
+        renderWorker.postMessage({
+            operateType: EWorkerOperateType.INIT_GL,
+            canvas: offscreen,
+            options: contextConfig.get("options").toObject(),
+            viewportData: viewportData
+        }, [offscreen]);
+        setRenderWorker(renderWorker, WorkerInstanceData);
+    });
+});
+var setContextConfig$2 = setContextConfig$1;
+var getGL$2 = getGL$1;
+var setGL$2 = setGL$1;
+var setPixelRatio$2 = setPixelRatio$1;
+var getViewport$2 = getViewport$1;
+var setViewport$2 = curry(function (viewportData, state) {
+    if (viewportData === null) {
+        return state;
+    }
+    return setViewport$1(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
+});
+var getViewportData = function (screenData, state) {
+    var oldViewportData = getViewport$2(state), x = screenData.x, y = screenData.y, width = screenData.width, height = screenData.height;
+    if (isValueExist(oldViewportData) && oldViewportData.x === x && oldViewportData.y === y && oldViewportData.width === width && oldViewportData.height === height) {
+        return null;
+    }
+    return {
+        x: x,
+        y: y,
+        width: width,
+        height: height
+    };
+};
+var setViewportOfGL$2 = curry(function (DeviceManagerWorkerData, _a, state) {
+    var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
+    return IO$1.of(function () {
+        var gl = getGL$2(DeviceManagerWorkerData, state);
+        gl.viewport(x, y, width, height);
+        return state;
+    });
+});
+var setScreen$2 = curry(function (canvas, DeviceManagerWorkerData, state) {
+    return setScreen$1(canvas, _setScreenData$1, DeviceManagerWorkerData, state);
+});
+var _setScreenData$1 = curry(function (DeviceManagerWorkerData, canvas, state, data) {
+    var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;
+    return IO$1.of(function () {
+        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(canvas).run();
+        return data;
+    });
+});
+var setCanvasPixelRatio$2 = curry(function (useDevicePixelRatio, canvas) {
+    return IO$1.of(function () {
+        if (!useDevicePixelRatio) {
+            return null;
+        }
+        return setCanvasPixelRatio$1(useDevicePixelRatio, canvas).run();
+    });
+});
+
+
+var initData$27 = initData$19;
+
+var initDevice = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    initDevice = curry(function (contextConfig, state, configState, canvas) {
+        return IO.of(function () {
+            var screenData = setScreen$2(canvas, null, state).run(), viewportData = getViewportData(screenData, state);
+            createGL$1(canvas, WorkerInstanceData, contextConfig, viewportData, getRenderWorkerFilePath()).run();
+            return compose(setCanvas(canvas), setContextConfig$2(contextConfig), setViewport$2(viewportData), setPixelRatio$2(setCanvasPixelRatio$2(configState.get("useDevicePixelRatio"), canvas).run()))(state);
+        });
+    });
+}
+else {
+    initDevice = curry(function (contextConfig, state, configState, canvas) {
+        return compose(map(detect$1(getGL$$1, DeviceManagerData)), chain(setCanvasPixelRatio$$1(configState.get("useDevicePixelRatio"), canvas)), chain(setScreen$$1(canvas, DeviceManagerData)), createGL)(canvas, contextConfig, DeviceManagerData, state);
+    });
+}
+var createCanvas = curry(function (DomQuery, domID) {
+    return IO.of(function () {
+        if (domID !== "") {
+            return DomQuery.create(_getCanvasID(domID)).get(0);
+        }
+        return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
+    });
+});
+var _getCanvasID = ensureFunc(function (id) {
+    it("dom id should be #string", function () {
+        wdet_1(/#[^#]+/.test(id)).true;
+    });
+}, function (domID) {
+    if (domID.indexOf('#') > -1) {
+        return domID;
+    }
+    return "#" + domID;
+});
+
+var getIsTest$1 = function (MainData) {
+    return MainData.isTest;
+};
+var setIsTest = function (isTest, MainData) {
+    return IO.of(function () {
+        MainData.isTest = isTest;
+    });
+};
+var setLibIsTest = function (isTest) {
+    return IO.of(function () {
+        Main.isTest = isTest;
+    });
+};
+var setConfig = function (closeContractTest, MainData, WorkerDetectData, _a) {
+    var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
+        options: {
+            alpha: true,
+            depth: true,
+            stencil: false,
+            antialias: true,
+            premultipliedAlpha: true,
+            preserveDrawingBuffer: false
+        }
+    } : _f, _g = _a.workerConfig, workerConfig = _g === void 0 ? {
+        renderWorkerFileDir: "/Wonder.js/dist/worker/"
+    } : _g;
+    return IO.of(function () {
+        var _isTest = false;
+        if (CompileConfig.closeContractTest) {
+            _isTest = false;
+            setLibIsTest(false).run();
+        }
+        else {
+            _isTest = isTest;
+            setLibIsTest(isTest).run();
+        }
+        setIsTest(_isTest, MainData).run();
+        setWorkerConfig(workerConfig, WorkerDetectData).run();
+        return immutable_1({
+            Main: {
+                screenSize: screenSize
+            },
+            config: {
+                canvasId: canvasId,
+                contextConfig: {
+                    options: ExtendUtils.extend({
+                        alpha: true,
+                        depth: true,
+                        stencil: false,
+                        antialias: true,
+                        premultipliedAlpha: true,
+                        preserveDrawingBuffer: false
+                    }, contextConfig.options)
+                },
+                useDevicePixelRatio: useDevicePixelRatio
+            }
+        });
+    });
+};
+var init$8 = requireCheckFunc(function (gameState, configState, DomQuery) {
+    it("should set config before", function () {
+        wdet_1(configState.get("useDevicePixelRatio")).exist;
+    });
+}, function (gameState, configState, DomQuery) {
+    return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState)), createCanvas(DomQuery))(configState.get("canvasId"));
+});
+var initData$25 = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    initData$25 = function () {
+        _initData$1();
+    };
+}
+else {
+    initData$25 = function () {
+        _initData$1();
+        initData$26(ProgramData);
+        initData$21(LocationData);
+        initData$22(GLSLSenderData);
+        initData$17(ArrayBufferData);
+        initData$20(IndexBufferData);
+        initData$23(DrawRenderCommandBufferData);
+    };
+}
+var _initData$1 = function () {
+    initData$10(ShaderData);
+    initData$16(DataBufferConfig, GeometryData);
+    initData$9(MaterialData);
+    initData$6(MeshRendererData);
+    initData$5(TagData);
+    initData$4(GlobalTempData, ThreeDTransformData);
+    initData$8(SceneData);
+    initData$2(CameraControllerData, PerspectiveCameraData, CameraData);
+    initData$3(GameObjectData);
+    initData$7(DataBufferConfig, RenderCommandBufferData);
+};
 
 var Main$1 = (function () {
     function Main() {
@@ -16981,12 +18070,13 @@ var Main$1 = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
-        this._configState = setConfig(CompileConfig.closeContractTest, MainData, configState).run();
+        this._configState = setConfig(CompileConfig.closeContractTest, MainData, WorkerDetectData, configState).run();
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
         return this;
     };
     Main.init = function () {
-        setState(init$4(getState(DirectorData), this._configState.get("config"), DeviceManagerData).run(), DirectorData).run();
+        initData$25();
+        setState(init$8(getState(DirectorData), this._configState.get("config"), DomQuery).run(), DirectorData).run();
         return this;
     };
     return Main;
@@ -16995,7 +18085,7 @@ Main$1._configState = null;
 __decorate([
     requireCheck(function () {
         it("configState should exist", function () {
-            index_1(Main$1._configState).exist;
+            wdet_1(Main$1._configState).exist;
         });
     })
 ], Main$1, "init", null);
@@ -17023,46 +18113,164 @@ function virtual(target, name, descriptor) {
     return descriptor;
 }
 
+var DeviceManagerWorkerData = (function () {
+    function DeviceManagerWorkerData() {
+    }
+    return DeviceManagerWorkerData;
+}());
+DeviceManagerWorkerData.gl = null;
+DeviceManagerWorkerData.clearColor = null;
+DeviceManagerWorkerData.writeRed = null;
+DeviceManagerWorkerData.writeGreen = null;
+DeviceManagerWorkerData.writeBlue = null;
+DeviceManagerWorkerData.writeAlpha = null;
+
+var ArrayBufferWorkerData = (function () {
+    function ArrayBufferWorkerData() {
+    }
+    return ArrayBufferWorkerData;
+}());
+ArrayBufferWorkerData.buffers = null;
+ArrayBufferWorkerData.bufferDataMap = null;
+
+var IndexBufferWorkerData = (function () {
+    function IndexBufferWorkerData() {
+    }
+    return IndexBufferWorkerData;
+}());
+IndexBufferWorkerData.buffers = null;
+
+var DrawRenderCommandBufferWorkerData = (function () {
+    function DrawRenderCommandBufferWorkerData() {
+    }
+    return DrawRenderCommandBufferWorkerData;
+}());
+DrawRenderCommandBufferWorkerData.mMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferWorkerData.vMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferWorkerData.pMatrixFloatArrayForSend = null;
+DrawRenderCommandBufferWorkerData.mMatrices = null;
+DrawRenderCommandBufferWorkerData.vMatrices = null;
+DrawRenderCommandBufferWorkerData.pMatrices = null;
+DrawRenderCommandBufferWorkerData.materialIndices = null;
+DrawRenderCommandBufferWorkerData.shaderIndices = null;
+DrawRenderCommandBufferWorkerData.geometryIndices = null;
+
+var GeometryWorkerData = (function () {
+    function GeometryWorkerData() {
+    }
+    return GeometryWorkerData;
+}());
+GeometryWorkerData.verticesCacheMap = null;
+GeometryWorkerData.indicesCacheMap = null;
+GeometryWorkerData.vertices = null;
+GeometryWorkerData.indices = null;
+
+var initGL = function (data) {
+    return compose(map(detect$1(getGL$2, DeviceManagerWorkerData)), chain(setViewportOfGL$2(DeviceManagerWorkerData, data.viewportData)), _createGL(data.canvas, data.options, DeviceManagerWorkerData))(createState());
+};
+var _createGL = curry(function (canvas, options, DeviceManagerWorkerData$$1, state) {
+    return IO.of(function () {
+        var gl = _getContext(canvas, options);
+        if (!gl) {
+            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        }
+        return compose(setCanvas(canvas), setContextConfig$2(options), setGL$2(gl, DeviceManagerWorkerData$$1))(state);
+    });
+});
+var _getContext = function (canvas, options) {
+    return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options));
+};
+
+var MaterialWorkerData = (function () {
+    function MaterialWorkerData() {
+    }
+    return MaterialWorkerData;
+}());
+MaterialWorkerData.shaderIndices = null;
+MaterialWorkerData.materialClassNameTable = null;
+MaterialWorkerData.shaderIndexTable = null;
+MaterialWorkerData.colors = null;
+MaterialWorkerData.opacities = null;
+MaterialWorkerData.alphaTests = null;
+
+var GLSLSenderWorkerData = (function () {
+    function GLSLSenderWorkerData() {
+    }
+    return GLSLSenderWorkerData;
+}());
+GLSLSenderWorkerData.uniformCacheMap = null;
+GLSLSenderWorkerData.sendAttributeConfigMap = null;
+GLSLSenderWorkerData.sendUniformConfigMap = null;
+GLSLSenderWorkerData.vertexAttribHistory = null;
+
+var LocationWorkerData = (function () {
+    function LocationWorkerData() {
+    }
+    return LocationWorkerData;
+}());
+LocationWorkerData.attributeLocationMap = null;
+LocationWorkerData.uniformLocationMap = null;
+
+var ProgramWorkerData = (function () {
+    function ProgramWorkerData() {
+    }
+    return ProgramWorkerData;
+}());
+ProgramWorkerData.programMap = null;
+ProgramWorkerData.lastUsedProgram = null;
+ProgramWorkerData.lastBindedArrayBuffer = null;
+ProgramWorkerData.lastBindedIndexBuffer = null;
+
+var StateData = (function () {
+    function StateData() {
+    }
+    return StateData;
+}());
+StateData.state = createState();
+
+var getState$1 = function (StateData) {
+    return StateData.state;
+};
+var setState$1 = function (state, StateData) {
+    return IO.of(function () {
+        StateData.state = state;
+    });
+};
+
+var initData$28 = initData$12;
+
+var initDeviceManagerWorkerData = initData$27;
+var initProgramWorkerData = initData$28;
+
 var initThreeDTransformData = initData$4;
 var DomQuery$1 = DomQuery;
 var fromArray$1 = fromArray;
 var initTagData = initData$5;
-var initGeometryData = initData$6;
-var initMaterialData = initData$8;
-var initShaderData = initData$9;
-var initMeshRendererData = initData$12;
-var initArrayBufferData = initData$11;
-var initIndexBufferData = initData$10;
-var initDeviceManagerData = initData$7;
+var initGeometryData = initData$16;
+var initMaterialData = initData$9;
+var initShaderData = initData$10;
+var initProgramData = initData$26;
+var initLocationData = initData$21;
+var initGLSLSenderData = initData$22;
+var initMeshRendererData = initData$6;
+var initArrayBufferData = initData$17;
+var initIndexBufferData = initData$20;
+var initDeviceManagerData = initData$18;
 var initCameraControllerData = initData$2;
 var initGameObjectData = initData$3;
+var initSceneData = initData$8;
+var initRenderCommandBufferData = initData$7;
+var initDrawRenderCommandBufferData = initData$23;
 var createState$1 = createState;
 var useProgram = use$$1;
-var sendAttributeData$2 = sendAttributeData$$1;
-var sendUniformData$2 = sendUniformData$$1;
+var sendAttributeData$3 = sendAttributeData$$1;
+var sendUniformData$3 = sendUniformData$$1;
 var disableVertexAttribArray$1 = disableVertexAttribArray;
-var DataUtils$1 = DataUtils;
+var setGeometryIndices = setIndices;
+var setGeometryVertices = setVertices;
+var hasGeometryIndices = hasIndices$$1;
+var getShaderIndex$1 = getShaderIndex;
+var updateSystem$1 = updateSystem;
 
-var CommonTimeController = (function (_super) {
-    __extends(CommonTimeController, _super);
-    function CommonTimeController() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    CommonTimeController.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    CommonTimeController.prototype.getNow = function () {
-        if (Director.getInstance().isTimeChange) {
-            return Director.getInstance().elapsed;
-        }
-        return root$1.performance.now();
-    };
-    return CommonTimeController;
-}(TimeController));
-CommonTimeController = __decorate([
-    registerClass("CommonTimeController")
-], CommonTimeController);
-
-export { getCameraPMatrix, getCameraNear, setCameraNear, getCameraFar, setCameraFar, CameraController, createCameraController, getCameraControllerGameObject, CameraControllerData, CameraData, getPerspectiveCameraFovy, setPerspectiveCameraFovy, getPerspectiveCameraAspect, setPerspectiveCameraAspect, PerspectiveCameraData, Component, ComponentData, getTypeIDFromClass, getTypeIDFromComponent, BoxGeometry, createBoxGeometry, setBoxGeometryConfigData, CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices, Geometry, getDrawMode$$1 as getDrawMode, getVertices$$1 as getVertices, getIndices$$1 as getIndices, getGeometryConfigData, initGeometry$$1 as initGeometry, getGeometryGameObject, GeometryData, BasicMaterial, createBasicMaterial, Material, getMaterialColor, setMaterialColor, getMaterialOpacity, setMaterialOpacity, getMaterialAlphaTest, setMaterialAlphaTest, getMaterialGameObject, getMaterialShader, initMaterial$$1 as initMaterial, MaterialData, MeshRenderer, createMeshRenderer, getMeshRendererGameObject, getMeshRendererRenderList, MeshRendererData, Tag, createTag, addTag$1 as addTag, removeTag$1 as removeTag, findGameObjectsByTag$1 as findGameObjectsByTag, getTagGameObject, TagData, LinkList, LinkNode, ThreeDTransform, createThreeDTransform, getThreeDTransformPosition, setThreeDTransformPosition, getThreeDTransformLocalToWorldMatrix, getThreeDTransformLocalPosition, setThreeDTransformLocalPosition, setThreeDTransformBatchTransformDatas, getThreeDTransformParent, setThreeDTransformParent, getThreeDTransformGameObject, ThreeDTransformData, ThreeDTransformRelationData, getUID, isIndexUsed, getStartIndexInArrayBuffer, CompileConfig, DataBufferConfig, DebugConfig, MemoryConfig, Director, DirectorData, GameObject, createGameObject, addGameObjectComponent, disposeGameObject, initGameObject$1 as initGameObject, disposeGameObjectComponent, getGameObjectComponent, getGameObjectTransform, hasGameObjectComponent, isGameObjectAlive, addGameObject, removeGameObject, hasGameObject, GameObjectData, Scene, addSceneChild, removeSceneChild, SceneData, Main$1 as Main, MainData, GlobalTempData, cache, assert, describe, it, requireCheck, requireCheckFunc, ensure, ensureFunc, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$1 as root, DeviceManager, setDeviceManagerGL, DeviceManagerData, EScreenSize, GPUDetector, EGPUPrecision, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBufferData, IndexBufferData, RenderCommand, material_config, render_config, shaderLib_generator, EBufferType, EDrawMode, EVariableType, empty, NULL, basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, Shader, ShaderData, main_begin, main_end, setPos_mvp, Color, RectRegion, View, initThreeDTransformData, DomQuery$1 as DomQuery, fromArray$1 as fromArray, initTagData, initGeometryData, initMaterialData, initShaderData, initMeshRendererData, initArrayBufferData, initIndexBufferData, initDeviceManagerData, initCameraControllerData, initGameObjectData, createState$1 as createState, useProgram, sendAttributeData$2 as sendAttributeData, sendUniformData$2 as sendUniformData, disableVertexAttribArray$1 as disableVertexAttribArray, DataUtils$1 as DataUtils, Log$$1 as Log, error$1 as error, CommonTimeController, DirectorTimeController, TimeController };
+export { getCameraPMatrix, getCameraNear, setCameraNear, getCameraFar, setCameraFar, CameraController, createCameraController, getCameraControllerGameObject, CameraControllerData, CameraData, getPerspectiveCameraFovy, setPerspectiveCameraFovy, getPerspectiveCameraAspect, setPerspectiveCameraAspect, PerspectiveCameraData, Component, ComponentData, getTypeIDFromClass, getTypeIDFromComponent, BoxGeometry, createBoxGeometry, setBoxGeometryConfigData, CustomGeometry, createCustomGeometry, setCustomGeometryVertices, setCustomGeometryIndices, Geometry, getDrawMode$2 as getDrawMode, getVertices$1 as getVertices, getIndices$1 as getIndices, getGeometryConfigData, initGeometry$1 as initGeometry, getGeometryGameObject, GeometryData, BasicMaterial, createBasicMaterial, Material, getMaterialColor, setMaterialColor, getMaterialOpacity, setMaterialOpacity, getMaterialAlphaTest, setMaterialAlphaTest, getMaterialGameObject, initMaterial$1 as initMaterial, MaterialData, MeshRenderer, createMeshRenderer, getMeshRendererGameObject, getMeshRendererRenderList, MeshRendererData, Tag, createTag, addTag$1 as addTag, removeTag$1 as removeTag, findGameObjectsByTag$1 as findGameObjectsByTag, getTagGameObject, TagData, LinkList, LinkNode, ThreeDTransform, createThreeDTransform, getThreeDTransformPosition, setThreeDTransformPosition, getThreeDTransformLocalToWorldMatrix, getThreeDTransformLocalPosition, setThreeDTransformLocalPosition, setThreeDTransformBatchTransformDatas, getThreeDTransformParent, setThreeDTransformParent, getThreeDTransformGameObject, ThreeDTransformData, ThreeDTransformRelationData, getUID, isIndexUsed, getStartIndexInArrayBuffer, CompileConfig, DataBufferConfig, DebugConfig, MemoryConfig, RenderWorkerConfig, Director, DirectorData, GameObject, createGameObject, addGameObjectComponent, disposeGameObject, initGameObject$1 as initGameObject, disposeGameObjectComponent, getGameObjectComponent, getGameObjectTransform, hasGameObjectComponent, isGameObjectAlive, addGameObject, removeGameObject, hasGameObject, getGameObjectChildren, getGameObjectParent, GameObjectData, Scene, addSceneChild, removeSceneChild, SceneData, Main$1 as Main, MainData, Scheduler$1 as Scheduler, GlobalTempData, cache, assert, describe, it, requireCheck, requireCheckFunc, ensure, ensureFunc, requireGetterAndSetter, requireGetter, requireSetter, ensureGetterAndSetter, ensureGetter, ensureSetter, invariant, execOnlyOnce, registerClass, singleton, virtual, root$1 as root, WorkerDetectData, DEG_TO_RAD, RAD_TO_DEG, Matrix3, Matrix4, Quaternion, Vector2, Vector3, Vector4, ArrayBufferData, IndexBufferData, RenderCommandBufferData, material_config, render_config, shaderLib_generator, DeviceManager, setDeviceManagerGL, DeviceManagerData, EScreenSize, GPUDetector, EGPUPrecision, DrawRenderCommandBufferData, EBufferType, EDisposeDataOperateType, EDrawMode, EGeometryWorkerDataOperateType, EVariableType, empty, NULL, basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, GLSLSenderData, LocationData, ProgramData, Shader, ShaderData, main_begin, main_end, setPos_mvp, DeviceManagerWorkerData, ERenderWorkerState, EWorkerOperateType, SendDrawRenderCommandBufferData, WorkerInstanceData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData, GeometryWorkerData, initGL, MaterialWorkerData, GLSLSenderWorkerData, LocationWorkerData, ProgramWorkerData, StateData, getState$1 as getState, setState$1 as setState, Color, RectRegion, View, initDeviceManagerWorkerData, initProgramWorkerData, initThreeDTransformData, DomQuery$1 as DomQuery, fromArray$1 as fromArray, initTagData, initGeometryData, initMaterialData, initShaderData, initProgramData, initLocationData, initGLSLSenderData, initMeshRendererData, initArrayBufferData, initIndexBufferData, initDeviceManagerData, initCameraControllerData, initGameObjectData, initSceneData, initRenderCommandBufferData, initDrawRenderCommandBufferData, createState$1 as createState, useProgram, sendAttributeData$3 as sendAttributeData, sendUniformData$3 as sendUniformData, disableVertexAttribArray$1 as disableVertexAttribArray, setGeometryIndices, setGeometryVertices, hasGeometryIndices, getShaderIndex$1 as getShaderIndex, updateSystem$1 as updateSystem, BufferUtilsForUnitTest, Log$$1 as Log, CommonTimeController, DirectorTimeController, TimeController };
 //# sourceMappingURL=wd.module.js.map

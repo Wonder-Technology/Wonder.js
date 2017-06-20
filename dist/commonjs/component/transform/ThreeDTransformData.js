@@ -4,7 +4,7 @@ var DataBufferConfig_1 = require("../../config/DataBufferConfig");
 var ThreeDTransformData = (function () {
     function ThreeDTransformData() {
     }
-    Object.defineProperty(ThreeDTransformData, "count", {
+    Object.defineProperty(ThreeDTransformData, "maxCount", {
         get: function () {
             return DataBufferConfig_1.DataBufferConfig.transformDataBufferCount;
         },
@@ -17,6 +17,10 @@ ThreeDTransformData.localToWorldMatrices = null;
 ThreeDTransformData.localPositions = null;
 ThreeDTransformData.localRotations = null;
 ThreeDTransformData.localScales = null;
+ThreeDTransformData.defaultPosition = null;
+ThreeDTransformData.defaultRotation = null;
+ThreeDTransformData.defaultScale = null;
+ThreeDTransformData.defaultLocalToWorldMatrice = null;
 ThreeDTransformData.firstDirtyIndex = null;
 ThreeDTransformData.indexInArrayBuffer = null;
 ThreeDTransformData.notUsedIndexLinkList = null;
@@ -26,6 +30,7 @@ ThreeDTransformData.childrenMap = null;
 ThreeDTransformData.cacheMap = null;
 ThreeDTransformData.tempMap = null;
 ThreeDTransformData.transformMap = null;
+ThreeDTransformData.count = null;
 ThreeDTransformData.uid = null;
 ThreeDTransformData.disposeCount = null;
 ThreeDTransformData.isClearCacheMap = null;

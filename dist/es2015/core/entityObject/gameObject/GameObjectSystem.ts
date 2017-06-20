@@ -1,9 +1,9 @@
 import { GameObject, IUIDEntity } from "./GameObject";
 import { Component } from "../../../component/Component";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/ComponentTypeIDManager";
-import { createMap, deleteVal, isValidMapValue } from "../../../utils/objectUtils";
+import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../../utils/objectUtils";
 import { setParent } from "../../../component/transform/ThreeDTransformSystem";
-import { GameObjectComponentData } from "./GameObjectData";
+import { GameObjectComponentData, GameObjectUIDMap } from "./GameObjectData";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
@@ -11,10 +11,10 @@ import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { execHandle, execInitHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
-import { forEach } from "../../../utils/arrayUtils";
+import { filter, forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
 import { removeChildEntity } from "../../../utils/entityUtils";
-import { isDisposeTooManyComponents, reAllocateGameObjectMap } from "../../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
 
 export var create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
@@ -46,6 +46,10 @@ export var isAlive = (entity: IUIDEntity, GameObjectData: any) => {
     return isValidMapValue(_getComponentData(entity.uid, GameObjectData));
 }
 
+export var isNotAlive = (entity: IUIDEntity, GameObjectData: any) => {
+    return !isAlive(entity, GameObjectData);
+}
+
 export var initGameObject = (gameObject: GameObject, state: MapImmutable<any, any>, GameObjectData: any) => {
     var uid = gameObject.uid,
         componentData: GameObjectComponentData = _getComponentData(uid, GameObjectData);
@@ -58,38 +62,34 @@ export var initGameObject = (gameObject: GameObject, state: MapImmutable<any, an
 }
 
 export var dispose = (entity: IUIDEntity, ThreeDTransformData: any, GameObjectData: any) => {
-    var uid = entity.uid;
-
-    let parent = _getParent(uid, GameObjectData);
-
-    if (_isParentExist(parent)) {
-        _removeFromChildrenMap(parent.uid, uid, GameObjectData);
-    }
-
     _diposeAllDatas(entity, GameObjectData);
 
     GameObjectData.disposeCount += 1;
 
     if (isDisposeTooManyComponents(GameObjectData.disposeCount)) {
-        reAllocateGameObjectMap(GameObjectData);
+        reAllocateGameObject(GameObjectData);
 
         GameObjectData.disposeCount = 0;
     }
 }
 
 var _removeFromChildrenMap = (parentUID: number, childUID: number, GameObjectData: any) => {
-    removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+    removeChildEntity(getChildren(parentUID, GameObjectData), childUID);
 };
 
 var _diposeAllDatas = (gameObject: GameObject, GameObjectData: any) => {
     let uid = gameObject.uid,
-        children = _getChildren(uid, GameObjectData);
+        children = getChildren(uid, GameObjectData);
 
     _disposeAllComponents(gameObject, GameObjectData);
     _disposeMapDatas(uid, GameObjectData);
 
     if (_isChildrenExist(children)) {
         forEach(children, (child: GameObject) => {
+            if (isNotAlive(child, GameObjectData)) {
+                return;
+            }
+
             _diposeAllDatas(child, GameObjectData);
         })
     }
@@ -97,7 +97,7 @@ var _diposeAllDatas = (gameObject: GameObject, GameObjectData: any) => {
 
 var _disposeMapDatas = (uid: number, GameObjectData: any) => {
     deleteVal(uid, GameObjectData.childrenMap);
-    deleteVal(uid, GameObjectData.parentMap);
+    // deleteVal(uid, GameObjectData.parentMap);
     deleteVal(uid, GameObjectData.componentMap);
 }
 
@@ -202,29 +202,36 @@ var _isComponentExist = (component: Component) => component !== null;
 
 var _isGameObjectEqual = (gameObject1: GameObject, gameObject2: GameObject) => gameObject1.uid === gameObject2.uid;
 
-var _getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
+export var getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
 
 var _setParent = (uid: number, parent: GameObject, GameObjectData: any) => {
     GameObjectData.parentMap[uid] = parent;
 }
 
-var _getChildren = (uid: number, GameObjectData: any) => {
+export var getChildren = (uid: number, GameObjectData: any) => {
     return GameObjectData.childrenMap[uid];
 }
 
+export var setChildren = (uid: number, children: Array<GameObject>, GameObjectData: any) => {
+    GameObjectData.childrenMap[uid] = children;
+}
+
+
+export var getAliveChildren = (uid: number, GameObjectData: any) => {
+    return filter(getChildren(uid, GameObjectData), (gameObject: GameObject) => {
+        return isAlive(gameObject, GameObjectData);
+    })
+}
+
 var _addChild = (uid: number, child: GameObject, GameObjectData: any) => {
-    var children = _getChildren(uid, GameObjectData);
+    var children = getChildren(uid, GameObjectData);
 
     if (isValidMapValue(children)) {
         children.push(child);
     }
     else {
-        _setChildren(uid, [child], GameObjectData);
+        setChildren(uid, [child], GameObjectData);
     }
-}
-
-var _setChildren = (uid: number, children: Array<GameObject>, GameObjectData: any) => {
-    GameObjectData.childrenMap[uid] = children;
 }
 
 export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
@@ -232,7 +239,7 @@ export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObjec
     var transform = getTransform(gameObject, GameObjectData),
         uid = gameObject.uid,
         childUID = child.uid,
-        parent = _getParent(childUID, GameObjectData);
+        parent = getParent(childUID, GameObjectData);
 
     if (_isParentExist(parent)) {
         removeChild(parent, child, ThreeDTransformData, GameObjectData);
@@ -263,9 +270,13 @@ export var removeChild = requireCheckFunc((gameObject: GameObject, child: GameOb
 })
 
 export var hasChild = (gameObject: GameObject, child: GameObject, GameObjectData: any) => {
-    var parent = _getParent(child.uid, GameObjectData);
+    if (isNotAlive(gameObject, GameObjectData) || isNotAlive(child, GameObjectData)) {
+        return false;
+    }
 
-    if (!_isParentExist(parent)) {
+    let parent = getParent(child.uid, GameObjectData);
+
+    if (!_isParentExist(parent) || isNotAlive(parent, GameObjectData)) {
         return false;
     }
 
@@ -278,6 +289,8 @@ export var initData = (GameObjectData: any) => {
     GameObjectData.componentMap = createMap();
     GameObjectData.parentMap = createMap();
     GameObjectData.childrenMap = createMap();
+
+    GameObjectData.disposeCount = 0;
 
     GameObjectData.aliveUIDArray = [];
 }

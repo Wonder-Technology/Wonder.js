@@ -22,6 +22,8 @@ var GeometrySystem_1 = require("./GeometrySystem");
 var Component_1 = require("../Component");
 var DirectorSystem_1 = require("../../core/DirectorSystem");
 var DirectorData_1 = require("../../core/DirectorData");
+var contract_1 = require("../../definition/typescript/decorator/contract");
+var ComponentSystem_1 = require("../ComponentSystem");
 var Geometry = (function (_super) {
     __extends(Geometry, _super);
     function Geometry() {
@@ -33,22 +35,37 @@ Geometry = __decorate([
     registerClass_1.registerClass("Geometry")
 ], Geometry);
 exports.Geometry = Geometry;
-exports.getDrawMode = function (geometry) {
+exports.getDrawMode = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
     return GeometrySystem_1.getDrawMode(geometry.index, GeometryData_1.GeometryData);
-};
-exports.getVertices = function (geometry) {
+});
+exports.getVertices = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
     return GeometrySystem_1.getVertices(geometry.index, GeometryData_1.GeometryData);
-};
-exports.getIndices = function (geometry) {
+});
+exports.getIndices = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
     return GeometrySystem_1.getIndices(geometry.index, GeometryData_1.GeometryData);
-};
-exports.getGeometryConfigData = function (geometry) {
+});
+exports.getGeometryConfigData = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
     return GeometrySystem_1.getConfigData(geometry.index, GeometryData_1.GeometryData);
-};
+});
 exports.initGeometry = function (geometry) {
     GeometrySystem_1.initGeometry(geometry.index, DirectorSystem_1.getState(DirectorData_1.DirectorData));
 };
-exports.getGeometryGameObject = function (geometry) {
+exports.getGeometryGameObject = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
     return GeometrySystem_1.getGameObject(geometry.index, GeometryData_1.GeometryData);
+});
+var _checkShouldAlive = function (geometry, GeometryData) {
+    ComponentSystem_1.checkComponentShouldAlive(geometry, GeometryData, function (geometry, GeometryData) {
+        return ComponentSystem_1.isComponentIndexNotRemoved(geometry);
+    });
 };
 //# sourceMappingURL=Geometry.js.map

@@ -133,11 +133,6 @@ var _convertTagIndexToIndexInArray = function (tagIndex, TagData) {
 var _convertIndexInArrayToTagIndex = function (indexInTagArray, TagData) {
     return TagData.indexMap[indexInTagArray];
 };
-exports.checkShouldAlive = function (tag, TagData) {
-    ComponentSystem_1.checkComponentShouldAlive(tag, TagData, function (tag, TagData) {
-        return objectUtils_1.isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
-    });
-};
 exports.disposeComponent = contract_1.ensureFunc(function (returnVal, tag) {
     contract_1.it("count should >= 0", function () {
         wonder_expect_js_1.expect(TagData_1.TagData.count).gte(0);
@@ -152,7 +147,7 @@ exports.disposeComponent = contract_1.ensureFunc(function (returnVal, tag) {
     ComponentSystem_1.markComponentIndexRemoved(TagData_1.TagData.tagMap[index]);
     TagData_1.TagData.disposeCount += 1;
     if (memoryUtils_1.isDisposeTooManyComponents(TagData_1.TagData.disposeCount)) {
-        memoryUtils_1.reAllocateTagMap(TagData_1.TagData);
+        memoryUtils_1.reAllocateTag(TagData_1.TagData);
         TagData_1.TagData.disposeCount = 0;
     }
 });

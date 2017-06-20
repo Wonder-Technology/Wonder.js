@@ -9,10 +9,12 @@ export declare var execHandle: (component: Component, handleMapName: string, arg
 export declare var execInitHandle: (typeID: string, index: number, state: MapImmutable<any, any>) => void;
 export declare var checkComponentShouldAlive: (component: Component, data: any, isAlive: (component: Component, data: any) => boolean) => void;
 export declare var addComponentToGameObjectMap: Function;
-export declare var getComponentGameObject: (gameObjectMap: ComponentGameObjectMap, index: number) => GameObject;
+export declare var getComponentGameObject: (gameObjectMap: ComponentGameObjectMap | GameObject[], index: number) => GameObject;
 export declare var generateComponentIndex: (ComponentData: any) => number;
-export declare var deleteComponentBySwap: Function;
+export declare var deleteComponent: Function;
+export declare var deleteComponentBySwapArray: Function;
 export declare var markComponentIndexRemoved: (component: Component) => void;
+export declare var isComponentIndexNotRemoved: (component: Component) => boolean;
 export declare type ComponentMap = {
     [index: number]: Component;
 };

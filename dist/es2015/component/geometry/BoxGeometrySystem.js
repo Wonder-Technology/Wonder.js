@@ -2,7 +2,7 @@ import { BoxGeometry } from "./BoxGeometry";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
-import { convertIndicesArrayToTypeArray, convertVerticesArrayToTypeArray, create as createGeometry } from "./GeometrySystem";
+import { create as createGeometry } from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 export var create = function (GeometryData) {
@@ -68,8 +68,8 @@ var _computeData = function (index, GeometryData) {
     generateFace(sides.RIGHT, depthSegments, heightSegments);
     generateFace(sides.LEFT, depthSegments, heightSegments);
     return {
-        vertices: convertVerticesArrayToTypeArray(vertices),
-        indices: convertIndicesArrayToTypeArray(indices, GeometryData)
+        vertices: vertices,
+        indices: indices
     };
 };
 var _getConfigData = ensureFunc(function (data) {

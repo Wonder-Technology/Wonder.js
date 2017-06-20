@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var JudgeUtils_1 = require("./JudgeUtils");
 exports.deleteVal = function (key, arr) { return arr[key] = void 0; };
 exports.isNotValidVal = function (val) { return JudgeUtils_1.isUndefined(val); };
-exports.deleteBySwap = function (index, array) {
-    var last = array.length - 1, temp = null;
-    if (last === -1) {
+exports.isValidVal = function (val) { return JudgeUtils_1.isNotUndefined(val); };
+exports.deleteBySwap = function (index, lastIndex, array) {
+    var temp = null;
+    if (lastIndex === -1) {
         return null;
     }
-    temp = array[last];
-    array[last] = array[index];
+    temp = array[lastIndex];
     array[index] = temp;
     array.pop();
 };

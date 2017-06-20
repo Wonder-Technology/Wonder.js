@@ -1,4 +1,4 @@
-import { MainConfigData } from "./MainSystem";
+import { MainConfigData } from "../definition/type/mainType";
 export declare class Main {
     static isTest: boolean;
     private static _configState;

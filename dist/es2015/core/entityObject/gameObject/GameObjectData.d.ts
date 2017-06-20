@@ -20,3 +20,6 @@ export declare type GameObjectParentMap = {
 export declare type GameObjectChildrenMap = {
     [uid: number]: Array<GameObject>;
 };
+export declare type GameObjectUIDMap = {
+    [uid: number]: boolean;
+};

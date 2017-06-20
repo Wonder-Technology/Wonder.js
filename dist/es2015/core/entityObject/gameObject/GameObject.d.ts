@@ -13,6 +13,8 @@ export declare var isGameObjectAlive: (gameObject: GameObject) => boolean;
 export declare var addGameObject: Function;
 export declare var removeGameObject: Function;
 export declare var hasGameObject: Function;
+export declare var getGameObjectChildren: Function;
+export declare var getGameObjectParent: Function;
 export interface IUIDEntity {
     uid: number;
 }

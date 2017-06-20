@@ -21,18 +21,12 @@ var View = (function () {
         get: function () {
             return ViewSystem_1.getCanvas(DirectorSystem_1.getState(DirectorData_1.DirectorData));
         },
-        set: function (dom) {
-            ViewSystem_1.setCanvas(dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "width", {
         get: function () {
             return ViewSystem_1.getWidth(this.dom);
-        },
-        set: function (width) {
-            ViewSystem_1.setWidth(width, this.dom).run();
         },
         enumerable: true,
         configurable: true
@@ -41,18 +35,12 @@ var View = (function () {
         get: function () {
             return ViewSystem_1.getHeight(this.dom);
         },
-        set: function (height) {
-            ViewSystem_1.setHeight(height, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "styleWidth", {
         get: function () {
             return ViewSystem_1.getStyleWidth(this.dom);
-        },
-        set: function (styleWidth) {
-            ViewSystem_1.setStyleWidth(styleWidth, this.dom).run();
         },
         enumerable: true,
         configurable: true
@@ -61,9 +49,6 @@ var View = (function () {
         get: function () {
             return ViewSystem_1.getStyleHeight(this.dom);
         },
-        set: function (styleHeight) {
-            ViewSystem_1.setStyleHeight(styleHeight, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
@@ -71,18 +56,12 @@ var View = (function () {
         get: function () {
             return ViewSystem_1.getX(this.dom);
         },
-        set: function (x) {
-            ViewSystem_1.setX(x, this.dom).run();
-        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(View.prototype, "y", {
         get: function () {
             return ViewSystem_1.getY(this.dom);
-        },
-        set: function (y) {
-            ViewSystem_1.setY(y, this.dom).run();
         },
         enumerable: true,
         configurable: true

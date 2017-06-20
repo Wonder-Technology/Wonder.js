@@ -1,9 +1,7 @@
 import { ThreeDTransformData } from "./ThreeDTransformData";
-import curry from "wonder-lodash/curry";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
 import { Map as MapImmutable } from "immutable";
-import { DataUtils } from "../../utils/DataUtils";
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { cacheFunc } from "../../utils/cacheUtils";
@@ -24,8 +22,7 @@ import {
     setParent as setParentHierarchy
 } from "./hierarchySystem";
 import {
-    getMatrix4DataIndexInArrayBuffer, getMatrix4DataSize,
-    getQuaternionDataSize, getVector3DataIndexInArrayBuffer, getVector3DataSize,
+    getMatrix4DataIndexInArrayBuffer, getVector3DataIndexInArrayBuffer,
     setLocalPositionData, setPositionData, setTransformDataInTypeArr,
     swap
 } from "./operateDataSystem";
@@ -37,9 +34,14 @@ import {
     getLocalPositionCache, getLocalToWorldMatrixCache, getPositionCache, setLocalPositionCache,
     setLocalToWorldMatrixCache, setPositionCache
 } from "./cacheSystem";
-import { isDisposeTooManyComponents, reAllocateThreeDTransformMap } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateThreeDTransform } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
 import { GlobalTempData } from "../../definition/GlobalTempData";
+import { Quaternion } from "../../math/Quaternion";
+import {
+    createMatrix4ByIndex, createVector3ByIndex, getMatrix4DataSize, getQuaternionDataSize,
+    getVector3DataSize
+} from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
 
 export var addAddComponentHandle = (_class: any) => {
@@ -54,6 +56,9 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
     it("componentMap should has data", () => {
         expect(getChildren(transform.uid, ThreeDTransformData)).exist;
     });
+    it("count should <= ThreeDTransformData.maxCount", () => {
+        expect(ThreeDTransformData.count).lte(ThreeDTransformData.maxCount);
+    });
 }, (ThreeDTransformData: any) => {
     var transform = new ThreeDTransform(),
         index = _generateIndexInArrayBuffer(ThreeDTransformData),
@@ -62,9 +67,13 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
     transform.index = index;
     transform.uid = uid;
 
+    ThreeDTransformData.count += 1;
+
     _createTempData(uid, ThreeDTransformData);
     _setTransformMap(index, transform, ThreeDTransformData);
     setChildren(uid, [], ThreeDTransformData);
+
+    _setDefaultTypeArrData(index, ThreeDTransformData);
 
     ThreeDTransformData.aliveUIDArray.push(uid);
 
@@ -108,6 +117,14 @@ export var addComponent = (transform: ThreeDTransform, gameObject: GameObject) =
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 }
 
+export var isAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return isValidMapValue(ThreeDTransformData.transformMap[transform.index]);
+}
+
+export var isNotAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return !isAlive(transform, ThreeDTransformData);
+}
+
 export var disposeComponent = (transform: ThreeDTransform) => {
     var indexInArrayBuffer = transform.index,
         uid = transform.uid;
@@ -119,10 +136,11 @@ export var disposeComponent = (transform: ThreeDTransform) => {
         _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
     }
 
+    ThreeDTransformData.count -= 1;
     ThreeDTransformData.disposeCount += 1;
 
     if (isDisposeTooManyComponents(ThreeDTransformData.disposeCount)) {
-        reAllocateThreeDTransformMap(ThreeDTransformData);
+        reAllocateThreeDTransform(ThreeDTransformData);
 
         ThreeDTransformData.disposeCount = 0;
     }
@@ -151,7 +169,7 @@ export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform
 }, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any, returnedMat: Matrix4) => {
     setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
 }, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
-    return DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
+    return createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
 
 export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
@@ -197,7 +215,7 @@ export var getLocalPosition = requireCheckFunc((transform: ThreeDTransform, Thre
 }, (transform: ThreeDTransform, ThreeTransformData: any, position: Vector3) => {
     setLocalPositionCache(transform.uid, position, ThreeTransformData);
 }, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    return DataUtils.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
+    return createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }))
 
 export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
@@ -219,13 +237,6 @@ export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: 
 }
 
 var _disposeItemInDataContainer = (indexInArrayBuffer: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
-    var mat = GlobalTempData.matrix4_1.setIdentity(),
-        positionVec = GlobalTempData.vector3_1.set(0, 0, 0),
-        qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1),
-        scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
-
-    setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData);
-
     removeHierarchyData(uid, ThreeDTransformData);
     _disposeMapDatas(indexInArrayBuffer, uid, ThreeDTransformData);
 
@@ -254,16 +265,9 @@ var _disposeFromDirtyList = (indexInArrayBuffer: number, uid: number, GlobalTemp
     ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 }
 
-var _addDefaultTransformData = (GlobalTempData: any, ThreeDTransformData: any) => {
-    var count = ThreeDTransformData.count,
-        mat = GlobalTempData.matrix4_1.setIdentity(),
-        positionVec = GlobalTempData.vector3_1.set(0, 0, 0),
-        qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1),
-        scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
 
-    for (let i = getStartIndexInArrayBuffer(); i < count; i++) {
-        setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData);
-    }
+var _setDefaultTypeArrData = (index: number, ThreeDTransformData: any) => {
+    setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
 }
 
 export var getTempLocalToWorldMatrix = (transform: ThreeDTransform, ThreeDTransformData: any) => _getTempData(transform.uid, ThreeDTransformData).localToWorldMatrix;
@@ -280,18 +284,12 @@ var _getTempData = (uid: number, ThreeDTransformData: any) => {
 }
 
 export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
-    var buffer: ArrayBuffer = null,
-        count = ThreeDTransformData.count,
-        size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
+    _initBufferData(ThreeDTransformData);
 
-    ThreeDTransformData.buffer = new ArrayBuffer(count * size);
-
-    buffer = ThreeDTransformData.buffer;
-
-    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
-    ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
-    ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
-    ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+    ThreeDTransformData.defaultPosition = Vector3.create(0, 0, 0);
+    ThreeDTransformData.defaultRotation = Quaternion.create(0, 0, 0, 1);
+    ThreeDTransformData.defaultScale = Vector3.create(1, 1, 1);
+    ThreeDTransformData.defaultLocalToWorldMatrice = Matrix4.create().setIdentity();
 
 
     ThreeDTransformData.notUsedIndexLinkList = LinkList.create();
@@ -308,15 +306,29 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.gameObjectMap = createMap();
 
-    ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.count;
+    ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.maxCount;
     ThreeDTransformData.indexInArrayBuffer = getStartIndexInArrayBuffer();
 
     ThreeDTransformData.uid = 0;
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;
 
-    ThreeDTransformData.aliveUIDArray = [];
+    ThreeDTransformData.count = 0;
 
-    _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
+    ThreeDTransformData.aliveUIDArray = [];
 }
 
+var _initBufferData = (ThreeDTransformData: any) => {
+    var buffer: ArrayBuffer = null,
+        count = ThreeDTransformData.maxCount,
+        size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());
+
+    buffer = new ArrayBuffer(count * size);
+
+    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * getMatrix4DataSize());
+    ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getMatrix4DataSize(), count * getVector3DataSize());
+    ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize()), count * getQuaternionDataSize());
+    ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize()), count * getVector3DataSize());
+
+    ThreeDTransformData.buffer = buffer;
+}

@@ -1,10 +1,10 @@
 export declare class View {
     static create(): View;
-    dom: HTMLCanvasElement;
-    width: number;
-    height: number;
-    styleWidth: string;
-    styleHeight: string;
-    x: number;
-    y: number;
+    readonly dom: HTMLCanvasElement;
+    readonly width: any;
+    readonly height: any;
+    readonly styleWidth: any;
+    readonly styleHeight: any;
+    readonly x: any;
+    readonly y: any;
 }

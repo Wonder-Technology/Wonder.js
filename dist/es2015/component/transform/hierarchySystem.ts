@@ -69,12 +69,6 @@ export var isNotChangeParent = (currentParentIndexInArrayBuffer: number, newPare
 
 export var removeHierarchyData = (uid: number, ThreeDTransformData: any) => {
     deleteVal(uid, ThreeDTransformData.childrenMap);
-
-    let parent = getParent(uid, ThreeDTransformData);
-
-    if (isParentExist(parent)) {
-        _removeHierarchyFromParent(parent, uid, ThreeDTransformData);
-    }
 }
 
 var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, ThreeDTransformData: any) => {

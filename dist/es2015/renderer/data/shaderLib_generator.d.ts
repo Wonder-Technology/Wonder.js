@@ -63,7 +63,10 @@ export declare const shaderLib_generator: {
         };
         "EndBasicShaderLib": {
             "glsl": {
-                "func": (materialIndex: number) => {
+                "func": (materialIndex: number, {getAlphaTest, isTestAlpha}: {
+                    getAlphaTest: any;
+                    isTestAlpha: any;
+                }, MaterialDataFromSystem: any) => {
                     "fs": {
                         "body": string;
                     };

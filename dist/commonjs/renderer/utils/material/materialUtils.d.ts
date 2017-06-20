@@ -1,0 +1,11 @@
+import { MaterialClassNameTable } from "../../../definition/type/materialType";
+export declare var getMaterialClassNameFromTable: (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => string;
+export declare var getShaderIndexFromTable: Function;
+export declare var getOpacity: (materialIndex: number, MaterialDataFromSystem: any) => any;
+export declare var getAlphaTest: (materialIndex: number, MaterialDataFromSystem: any) => any;
+export declare var getColorArr3: (materialIndex: number, MaterialMaterialDataFromSystem: any) => any[];
+export declare var isTestAlpha: (alphaTest: number) => boolean;
+export declare var getColorDataSize: () => number;
+export declare var getOpacityDataSize: () => number;
+export declare var getAlphaTestDataSize: () => number;
+export declare var createTypeArrays: (buffer: any, count: number, MaterialDataFromSystem: any) => void;

@@ -1,11 +1,11 @@
 import { Tag } from "./Tag";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, checkComponentShouldAlive, generateComponentIndex, getComponentGameObject, markComponentIndexRemoved } from "../ComponentSystem";
-import { createMap, deleteVal, isValidMapValue } from "../../utils/objectUtils";
+import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, generateComponentIndex, getComponentGameObject, markComponentIndexRemoved } from "../ComponentSystem";
+import { createMap, deleteVal } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
 import { TagData } from "./TagData";
-import { isDisposeTooManyComponents, reAllocateTagMap } from "../../utils/memoryUtils";
+import { isDisposeTooManyComponents, reAllocateTag } from "../../utils/memoryUtils";
 export var addAddComponentHandle = function (_class) {
     addAddComponentHandleToMap(_class, addComponent);
 };
@@ -131,11 +131,6 @@ var _convertTagIndexToIndexInArray = function (tagIndex, TagData) {
 var _convertIndexInArrayToTagIndex = function (indexInTagArray, TagData) {
     return TagData.indexMap[indexInTagArray];
 };
-export var checkShouldAlive = function (tag, TagData) {
-    checkComponentShouldAlive(tag, TagData, function (tag, TagData) {
-        return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
-    });
-};
 export var disposeComponent = ensureFunc(function (returnVal, tag) {
     it("count should >= 0", function () {
         expect(TagData.count).gte(0);
@@ -150,7 +145,7 @@ export var disposeComponent = ensureFunc(function (returnVal, tag) {
     markComponentIndexRemoved(TagData.tagMap[index]);
     TagData.disposeCount += 1;
     if (isDisposeTooManyComponents(TagData.disposeCount)) {
-        reAllocateTagMap(TagData);
+        reAllocateTag(TagData);
         TagData.disposeCount = 0;
     }
 });

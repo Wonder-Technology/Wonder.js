@@ -8,11 +8,11 @@ var wonder_expect_js_1 = require("wonder-expect.js");
 exports.create = function (GameObjectData) {
     return GameObjectSystem_1.create(null, GameObjectData);
 };
-exports.addChild = function (scene, child, GameObjectData, SceneData) {
+exports.addChild = function (scene, child, ThreeDTransformData, GameObjectData, SceneData) {
     if (_isCamera(child, GameObjectData)) {
         SceneData.cameraArray.push(child);
     }
-    GameObjectSystem_1.addChild(scene, child, null, GameObjectData);
+    GameObjectSystem_1.addChild(scene, child, ThreeDTransformData, GameObjectData);
 };
 exports.removeChild = function (gameObject, child, ThreeDTransformData, GameObjectData) {
     GameObjectSystem_1.removeChild(gameObject, child, ThreeDTransformData, GameObjectData);

@@ -11,46 +11,35 @@ import { registerClass } from "../definition/typescript/decorator/registerClass"
 import { singleton } from "../definition/typescript/decorator/singleton";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
-import { init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform } from "../component/transform/ThreeDTransformSystem";
-import { getState, setState } from "./DirectorSystem";
+import { init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle } from "../component/transform/ThreeDTransformSystem";
+import { getState, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { GlobalTempData } from "../definition/GlobalTempData";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
-import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
-import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle, init as initGeometry, initData as initGeometryData } from "../component/geometry/GeometrySystem";
-import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
+import { create } from "./entityObject/scene/SceneSystem";
+import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle, init as initGeometry } from "../component/geometry/GeometrySystem";
+import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
-import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
-import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
-import { DataBufferConfig } from "../config/DataBufferConfig";
-import { addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle, initData as initMaterialData } from "../component/material/MaterialSystem";
-import { MaterialData } from "../component/material/MaterialData";
-import { addAddComponentHandle as addMeshRendererAddComponentHandle, addDisposeHandle as addMeshRendererDisposeHandle, initData as initMeshRendererData } from "../component/renderer/MeshRendererSystem";
-import { MeshRendererData } from "../component/renderer/MeshRendererData";
-import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
-import { TagData } from "../component/tag/TagData";
+import { addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle } from "../component/material/MaterialSystem";
+import { addAddComponentHandle as addMeshRendererAddComponentHandle, addDisposeHandle as addMeshRendererDisposeHandle } from "../component/renderer/MeshRendererSystem";
+import { addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { Tag } from "../component/tag/Tag";
 import { ThreeDTransform } from "../component/transform/ThreeDTransform";
-import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
-import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
-import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { Material } from "../component/material/Material";
 import { MeshRenderer } from "../component/renderer/MeshRenderer";
-import { addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController, update as updateCameraController } from "../component/camera/CameraControllerSystem";
+import { addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController } from "../component/camera/CameraControllerSystem";
 import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
-import { SceneData } from "./entityObject/scene/SceneData";
-import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
-import { DeviceManager } from "../device/DeviceManager";
-import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
+import { DeviceManager } from "../renderer/device/DeviceManager";
+import { Scheduler } from "./Scheduler";
 var Director = (function () {
     function Director() {
         this.scene = create(GameObjectData);
+        this.scheduler = null;
         this._gameLoop = null;
         this._timeController = DirectorTimeController.create();
     }
@@ -64,6 +53,7 @@ var Director = (function () {
         configurable: true
     });
     Director.prototype.initWhenCreate = function () {
+        this.scheduler = Scheduler.create();
     };
     Director.prototype.start = function () {
         this._startLoop();
@@ -87,6 +77,8 @@ var Director = (function () {
         var resultState = state;
         resultState = this._initSystem(resultState);
         resultState = this._initRenderer(resultState);
+        this._timeController.start();
+        this.scheduler.start();
         return resultState;
     };
     Director.prototype._initSystem = function (state) {
@@ -104,27 +96,8 @@ var Director = (function () {
     };
     Director.prototype._loopBody = function (time, state) {
         var elapsed = null;
-        return this._run(elapsed, state);
-    };
-    Director.prototype._run = function (elapsed, state) {
-        var resultState = this._update(elapsed, state);
-        resultState = this._render(state);
-        return resultState;
-    };
-    Director.prototype._update = function (elapsed, state) {
-        var resultState = this._updateSystem(elapsed, state);
-        return resultState;
-    };
-    Director.prototype._render = function (state) {
-        var resultState = state;
-        resultState = clear(state);
-        resultState = render(state);
-        return resultState;
-    };
-    Director.prototype._updateSystem = function (elapsed, state) {
-        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
-        resultState = updateCameraController(PerspectiveCameraData, CameraData, CameraControllerData);
-        return resultState;
+        elapsed = this._timeController.computeElapseTime(time);
+        return run(elapsed, state, this._timeController, this.scheduler);
     };
     return Director;
 }());
@@ -133,29 +106,18 @@ Director = __decorate([
     registerClass("Director")
 ], Director);
 export { Director };
-initShaderData(ShaderData);
-initGeometryData(DataBufferConfig, GeometryData);
 addGeometryAddComponentHandle(Geometry);
 addGeometryDisposeHandle(Geometry);
 addGeometryInitHandle(Geometry);
-initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
 addMaterialInitHandle(Material);
-initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer);
 addMeshRendererDisposeHandle(MeshRenderer);
-initTagData(TagData);
 addTagAddComponentHandle(Tag);
 addTagDisposeHandle(Tag);
-initThreeDTransformData(GlobalTempData, ThreeDTransformData);
 addThreeDTransformAddComponentHandle(ThreeDTransform);
 addThreeDTransformDisposeHandle(ThreeDTransform);
-initArrayBufferData(ArrayBufferData);
-initIndexBufferData(IndexBufferData);
-initSceneData(SceneData);
-initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
-initGameObjectData(GameObjectData);
 //# sourceMappingURL=Director.js.map

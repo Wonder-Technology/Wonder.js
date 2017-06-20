@@ -2,9 +2,7 @@ import {
     basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
     GLSLChunk
 } from "../shader/chunk/ShaderChunk";
-import { getAlphaTest, isPropertyExist } from "../../component/material/MaterialSystem";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
-import { MaterialData } from "../../component/material/MaterialData";
 
 export const shaderLib_generator = {
     "shaderLibs": {
@@ -88,10 +86,13 @@ export const shaderLib_generator = {
         },
         "EndBasicShaderLib": {
             "glsl": {
-                "func": (materialIndex: number) => {
-                    var alphaTest = getAlphaTest(materialIndex, MaterialData);
+                "func": (materialIndex: number, {
+                    getAlphaTest,
+                    isTestAlpha
+                }, MaterialDataFromSystem: any) => {
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
 
-                    if (isPropertyExist(alphaTest)) {
+                    if (isTestAlpha(alphaTest)) {
                         return {
                             "fs": {
                                 "body": `if (gl_FragColor.a < ${alphaTest}){

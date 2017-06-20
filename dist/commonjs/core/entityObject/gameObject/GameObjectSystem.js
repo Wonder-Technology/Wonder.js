@@ -36,6 +36,9 @@ var _buildUID = function (GameObjectData) {
 exports.isAlive = function (entity, GameObjectData) {
     return objectUtils_1.isValidMapValue(_getComponentData(entity.uid, GameObjectData));
 };
+exports.isNotAlive = function (entity, GameObjectData) {
+    return !exports.isAlive(entity, GameObjectData);
+};
 exports.initGameObject = function (gameObject, state, GameObjectData) {
     var uid = gameObject.uid, componentData = _getComponentData(uid, GameObjectData);
     for (var typeID in componentData) {
@@ -45,34 +48,31 @@ exports.initGameObject = function (gameObject, state, GameObjectData) {
     }
 };
 exports.dispose = function (entity, ThreeDTransformData, GameObjectData) {
-    var uid = entity.uid;
-    var parent = _getParent(uid, GameObjectData);
-    if (_isParentExist(parent)) {
-        _removeFromChildrenMap(parent.uid, uid, GameObjectData);
-    }
     _diposeAllDatas(entity, GameObjectData);
     GameObjectData.disposeCount += 1;
     if (memoryUtils_1.isDisposeTooManyComponents(GameObjectData.disposeCount)) {
-        memoryUtils_1.reAllocateGameObjectMap(GameObjectData);
+        memoryUtils_1.reAllocateGameObject(GameObjectData);
         GameObjectData.disposeCount = 0;
     }
 };
 var _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-    entityUtils_1.removeChildEntity(_getChildren(parentUID, GameObjectData), childUID);
+    entityUtils_1.removeChildEntity(exports.getChildren(parentUID, GameObjectData), childUID);
 };
 var _diposeAllDatas = function (gameObject, GameObjectData) {
-    var uid = gameObject.uid, children = _getChildren(uid, GameObjectData);
+    var uid = gameObject.uid, children = exports.getChildren(uid, GameObjectData);
     _disposeAllComponents(gameObject, GameObjectData);
     _disposeMapDatas(uid, GameObjectData);
     if (_isChildrenExist(children)) {
         arrayUtils_1.forEach(children, function (child) {
+            if (exports.isNotAlive(child, GameObjectData)) {
+                return;
+            }
             _diposeAllDatas(child, GameObjectData);
         });
     }
 };
 var _disposeMapDatas = function (uid, GameObjectData) {
     objectUtils_1.deleteVal(uid, GameObjectData.childrenMap);
-    objectUtils_1.deleteVal(uid, GameObjectData.parentMap);
     objectUtils_1.deleteVal(uid, GameObjectData.componentMap);
 };
 var _disposeAllComponents = function (gameObject, GameObjectData) {
@@ -139,28 +139,33 @@ var _isParentExist = function (parent) { return JudgeUtils_1.isNotUndefined(pare
 var _isChildrenExist = function (children) { return JudgeUtils_1.isNotUndefined(children); };
 var _isComponentExist = function (component) { return component !== null; };
 var _isGameObjectEqual = function (gameObject1, gameObject2) { return gameObject1.uid === gameObject2.uid; };
-var _getParent = function (uid, GameObjectData) { return GameObjectData.parentMap[uid]; };
+exports.getParent = function (uid, GameObjectData) { return GameObjectData.parentMap[uid]; };
 var _setParent = function (uid, parent, GameObjectData) {
     GameObjectData.parentMap[uid] = parent;
 };
-var _getChildren = function (uid, GameObjectData) {
+exports.getChildren = function (uid, GameObjectData) {
     return GameObjectData.childrenMap[uid];
 };
+exports.setChildren = function (uid, children, GameObjectData) {
+    GameObjectData.childrenMap[uid] = children;
+};
+exports.getAliveChildren = function (uid, GameObjectData) {
+    return arrayUtils_1.filter(exports.getChildren(uid, GameObjectData), function (gameObject) {
+        return exports.isAlive(gameObject, GameObjectData);
+    });
+};
 var _addChild = function (uid, child, GameObjectData) {
-    var children = _getChildren(uid, GameObjectData);
+    var children = exports.getChildren(uid, GameObjectData);
     if (objectUtils_1.isValidMapValue(children)) {
         children.push(child);
     }
     else {
-        _setChildren(uid, [child], GameObjectData);
+        exports.setChildren(uid, [child], GameObjectData);
     }
-};
-var _setChildren = function (uid, children, GameObjectData) {
-    GameObjectData.childrenMap[uid] = children;
 };
 exports.addChild = contract_1.requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
 }, function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    var transform = exports.getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = _getParent(childUID, GameObjectData);
+    var transform = exports.getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = exports.getParent(childUID, GameObjectData);
     if (_isParentExist(parent)) {
         exports.removeChild(parent, child, ThreeDTransformData, GameObjectData);
     }
@@ -181,8 +186,11 @@ exports.removeChild = contract_1.requireCheckFunc(function (gameObject, child, T
     _removeFromChildrenMap(uid, childUID, GameObjectData);
 });
 exports.hasChild = function (gameObject, child, GameObjectData) {
-    var parent = _getParent(child.uid, GameObjectData);
-    if (!_isParentExist(parent)) {
+    if (exports.isNotAlive(gameObject, GameObjectData) || exports.isNotAlive(child, GameObjectData)) {
+        return false;
+    }
+    var parent = exports.getParent(child.uid, GameObjectData);
+    if (!_isParentExist(parent) || exports.isNotAlive(parent, GameObjectData)) {
         return false;
     }
     return _isGameObjectEqual(parent, gameObject);
@@ -192,6 +200,7 @@ exports.initData = function (GameObjectData) {
     GameObjectData.componentMap = objectUtils_1.createMap();
     GameObjectData.parentMap = objectUtils_1.createMap();
     GameObjectData.childrenMap = objectUtils_1.createMap();
+    GameObjectData.disposeCount = 0;
     GameObjectData.aliveUIDArray = [];
 };
 //# sourceMappingURL=GameObjectSystem.js.map

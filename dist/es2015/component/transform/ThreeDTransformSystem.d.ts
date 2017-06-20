@@ -7,6 +7,8 @@ export declare var create: Function;
 export declare var checkShouldAlive: (component: ThreeDTransform, ThreeDTransformData: any) => void;
 export declare var init: (GlobalTempData: any, ThreeDTransformData: any, state: MapImmutable<any, any>) => any;
 export declare var addComponent: (transform: ThreeDTransform, gameObject: GameObject) => any;
+export declare var isAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => boolean;
+export declare var isNotAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => boolean;
 export declare var disposeComponent: (transform: ThreeDTransform) => void;
 export declare var getGameObject: (uid: number, ThreeDTransformData: any) => GameObject;
 export declare var getParent: (transform: ThreeDTransform, ThreeDTransformData: any) => any;

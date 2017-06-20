@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
-import { addChild, addComponent, create, dispose, disposeComponent, getComponent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem, isAlive, removeChild } from "./GameObjectSystem";
+import { addChild, addComponent, create, dispose, disposeComponent, getAliveChildren, getComponent, getParent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem, isAlive, removeChild } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
 import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
@@ -74,5 +74,15 @@ export var hasGameObject = requireCheckFunc(function (gameObject, child) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, function (gameObject, child) {
     return hasChild(gameObject, child, GameObjectData);
+});
+export var getGameObjectChildren = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getAliveChildren(gameObject.uid, GameObjectData);
+});
+export var getGameObjectParent = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getParent(gameObject.uid, GameObjectData);
 });
 //# sourceMappingURL=GameObject.js.map

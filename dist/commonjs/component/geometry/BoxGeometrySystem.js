@@ -70,8 +70,8 @@ var _computeData = function (index, GeometryData) {
     generateFace(sides.RIGHT, depthSegments, heightSegments);
     generateFace(sides.LEFT, depthSegments, heightSegments);
     return {
-        vertices: GeometrySystem_1.convertVerticesArrayToTypeArray(vertices),
-        indices: GeometrySystem_1.convertIndicesArrayToTypeArray(indices, GeometryData)
+        vertices: vertices,
+        indices: indices
     };
 };
 var _getConfigData = contract_1.ensureFunc(function (data) {

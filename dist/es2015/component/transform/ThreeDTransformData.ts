@@ -4,9 +4,10 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
+import { Quaternion } from "../../math/Quaternion";
 
 export class ThreeDTransformData {
-    static get count() {
+    static get maxCount() {
         return DataBufferConfig.transformDataBufferCount;
     }
 
@@ -15,28 +16,27 @@ export class ThreeDTransformData {
     public static localRotations: Float32Array = null;
     public static localScales: Float32Array = null;
 
+    public static defaultPosition: Vector3 = null;
+    public static defaultRotation: Quaternion = null;
+    public static defaultScale: Vector3 = null;
+    public static defaultLocalToWorldMatrice: Matrix4 = null;
+
     public static firstDirtyIndex: number = null;
     public static indexInArrayBuffer: number = null;
     public static notUsedIndexLinkList: LinkList<number> = null;
 
     public static isTranslateMap = null;
 
-    public static parentMap: ParentMap = null;
-    public static childrenMap: ChildrenMap = null;
+    public static parentMap: ThreeDTransformParentMap = null;
+    public static childrenMap: ThreeDTransformChildrenMap = null;
 
-    // public static positionCacheMap:ThreeDTransformPositionMap = null;
-    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
-    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    // public static localPositionCacheMap:ThreeDTransformLocalPositionMap = null;
-    // public static localToWorldMatrixCacheMap:ThreeDTransformLocalToWorldMatrixMap = null;
     public static cacheMap: ThreeDTransformCacheMap = null;
 
-    // public static tempLocalToWorldMatrixMap:ThreeDTransformLocalToWorldMatrixMap = null;
-    // public static tempPositionMap:ThreeDTransformPositionMap = null;
-    // public static tempLocalPositionMap:ThreeDTransformLocalPositionMap = null;
     public static tempMap: ThreeDTransformTempMap = null;
 
     public static transformMap: TransformMap = null;
+
+    public static count: number = null;
 
     public static uid: number = null;
     public static disposeCount: number = null;
@@ -61,11 +61,11 @@ export class ThreeDTransformRelationData {
     public children: Array<ThreeDTransformRelationData> = null;
 }
 
-export type ParentMap = {
+export type ThreeDTransformParentMap = {
     [uid: number]: ThreeDTransform
 }
 
-export type ChildrenMap = {
+export type ThreeDTransformChildrenMap = {
     [uid: number]: Array<ThreeDTransform>
 }
 

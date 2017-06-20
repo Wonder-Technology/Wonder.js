@@ -3,8 +3,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "../../math/Vector3";
 import {
-    convertIndicesArrayToTypeArray,
-    convertVerticesArrayToTypeArray, create as createGeometry,
+    create as createGeometry,
     isIndicesBufferNeed32BitsByData
 } from "./GeometrySystem";
 import { ExtendUtils } from "wonder-commonlib/dist/commonjs/utils/ExtendUtils";
@@ -115,8 +114,8 @@ var _computeData = (index: number, GeometryData: any) => {
     generateFace(sides.LEFT, depthSegments, heightSegments);
 
     return {
-        vertices: convertVerticesArrayToTypeArray(vertices),
-        indices: convertIndicesArrayToTypeArray(indices, GeometryData)
+        vertices: vertices,
+        indices: indices
     };
 }
 

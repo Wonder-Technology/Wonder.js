@@ -6,7 +6,6 @@ var contract_1 = require("../../definition/typescript/decorator/contract");
 var arrayUtils_1 = require("../../utils/arrayUtils");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var ComponentSystem_1 = require("../ComponentSystem");
-var objectUtils_1 = require("../../utils/objectUtils");
 var contractUtils_1 = require("../utils/contractUtils");
 var MeshRendererData_1 = require("./MeshRendererData");
 exports.addAddComponentHandle = function (_class) {
@@ -35,15 +34,17 @@ exports.addComponent = function (component, gameObject) {
     _setRenderGameObjectArray(component.index, gameObject, MeshRendererData_1.MeshRendererData.renderGameObjectArray);
     ComponentSystem_1.addComponentToGameObjectMap(MeshRendererData_1.MeshRendererData.gameObjectMap, component.index, gameObject);
 };
-exports.disposeComponent = function (component) {
+exports.disposeComponent = contract_1.ensureFunc(function (returnVal, component) {
+    contractUtils_1.checkIndexShouldEqualCount(MeshRendererData_1.MeshRendererData);
+}, function (component) {
     var sourceIndex = component.index, lastComponentIndex = null;
-    arrayUtils_1.deleteBySwap(sourceIndex, MeshRendererData_1.MeshRendererData.renderGameObjectArray);
     MeshRendererData_1.MeshRendererData.count -= 1;
     MeshRendererData_1.MeshRendererData.index -= 1;
     lastComponentIndex = MeshRendererData_1.MeshRendererData.count;
-    objectUtils_1.deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData_1.MeshRendererData.gameObjectMap);
-    ComponentSystem_1.deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData_1.MeshRendererData.meshRendererMap);
-};
+    arrayUtils_1.deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData_1.MeshRendererData.renderGameObjectArray);
+    arrayUtils_1.deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData_1.MeshRendererData.gameObjectMap);
+    ComponentSystem_1.deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MeshRendererData_1.MeshRendererData.meshRendererMap);
+});
 exports.getGameObject = function (index, Data) {
     return ComponentSystem_1.getComponentGameObject(Data.gameObjectMap, index);
 };
@@ -52,8 +53,8 @@ exports.getRenderList = curry_1.default(function (state, MeshRendererData) {
 });
 exports.initData = function (MeshRendererData) {
     MeshRendererData.renderGameObjectArray = [];
-    MeshRendererData.gameObjectMap = objectUtils_1.createMap();
-    MeshRendererData.meshRendererMap = objectUtils_1.createMap();
+    MeshRendererData.gameObjectMap = [];
+    MeshRendererData.meshRendererMap = [];
     MeshRendererData.index = 0;
     MeshRendererData.count = 0;
 };

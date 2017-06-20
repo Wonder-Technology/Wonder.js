@@ -1,10 +1,9 @@
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { ComponentGameObjectMap } from "../ComponentData";
-import { ComponentMap } from "../ComponentSystem";
+import { MeshRenderer } from "./MeshRenderer";
 export declare class MeshRendererData {
     static renderGameObjectArray: Array<GameObject>;
-    static gameObjectMap: ComponentGameObjectMap;
-    static meshRendererMap: ComponentMap;
+    static gameObjectMap: Array<GameObject>;
+    static meshRendererMap: Array<MeshRenderer>;
     static index: number;
     static count: number;
 }

@@ -10,7 +10,7 @@ exports.clearCache = curry_1.default(function (ThreeDTransformData, state) {
         ThreeDTransformData.isClearCacheMap = false;
         return;
     }
-    count = ThreeDTransformData.count;
+    count = ThreeDTransformData.maxCount;
     cacheMap = ThreeDTransformData.cacheMap;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
         var uid = utils_1.getUID(i, ThreeDTransformData), isTranslate = isTransformSystem_1.getIsTranslate(uid, ThreeDTransformData);

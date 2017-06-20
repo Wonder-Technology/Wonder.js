@@ -21,6 +21,8 @@ var Component_1 = require("../Component");
 var TagSystem_1 = require("./TagSystem");
 var TagData_1 = require("./TagData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
+var ComponentSystem_1 = require("../ComponentSystem");
+var objectUtils_1 = require("../../utils/objectUtils");
 var Tag = (function (_super) {
     __extends(Tag, _super);
     function Tag() {
@@ -37,12 +39,12 @@ exports.createTag = function (slotCount) {
     return TagSystem_1.create(slotCount, TagData_1.TagData);
 };
 exports.addTag = contract_1.requireCheckFunc(function (component, tag) {
-    TagSystem_1.checkShouldAlive(component, TagData_1.TagData);
+    _checkShouldAlive(component, TagData_1.TagData);
 }, function (component, tag) {
     TagSystem_1.addTag(component, tag, TagData_1.TagData);
 });
 exports.removeTag = contract_1.requireCheckFunc(function (component, tag) {
-    TagSystem_1.checkShouldAlive(component, TagData_1.TagData);
+    _checkShouldAlive(component, TagData_1.TagData);
 }, function (component, tag) {
     TagSystem_1.removeTag(component, tag, TagData_1.TagData);
 });
@@ -50,8 +52,13 @@ exports.findGameObjectsByTag = function (tag) {
     return TagSystem_1.findGameObjectsByTag(tag, TagData_1.TagData);
 };
 exports.getTagGameObject = contract_1.requireCheckFunc(function (component) {
-    TagSystem_1.checkShouldAlive(component, TagData_1.TagData);
+    _checkShouldAlive(component, TagData_1.TagData);
 }, function (component) {
     return TagSystem_1.getGameObject(component.index, TagData_1.TagData);
 });
+var _checkShouldAlive = function (tag, TagData) {
+    ComponentSystem_1.checkComponentShouldAlive(tag, TagData, function (tag, TagData) {
+        return objectUtils_1.isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
+    });
+};
 //# sourceMappingURL=Tag.js.map

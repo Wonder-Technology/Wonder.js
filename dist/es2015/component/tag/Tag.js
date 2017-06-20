@@ -16,9 +16,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { Component } from "../Component";
-import { addTag as addTagSystemTag, removeTag as removeTagSystemTag, create, findGameObjectsByTag as findTagSystemTagGameObjectsByTag, getGameObject, checkShouldAlive } from "./TagSystem";
+import { addTag as addTagSystemTag, removeTag as removeTagSystemTag, create, findGameObjectsByTag as findTagSystemTagGameObjectsByTag, getGameObject } from "./TagSystem";
 import { TagData } from "./TagData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { checkComponentShouldAlive } from "../ComponentSystem";
+import { isValidMapValue } from "../../utils/objectUtils";
 var Tag = (function (_super) {
     __extends(Tag, _super);
     function Tag() {
@@ -35,12 +37,12 @@ export var createTag = function (slotCount) {
     return create(slotCount, TagData);
 };
 export var addTag = requireCheckFunc(function (component, tag) {
-    checkShouldAlive(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component, tag) {
     addTagSystemTag(component, tag, TagData);
 });
 export var removeTag = requireCheckFunc(function (component, tag) {
-    checkShouldAlive(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component, tag) {
     removeTagSystemTag(component, tag, TagData);
 });
@@ -48,8 +50,13 @@ export var findGameObjectsByTag = function (tag) {
     return findTagSystemTagGameObjectsByTag(tag, TagData);
 };
 export var getTagGameObject = requireCheckFunc(function (component) {
-    checkShouldAlive(component, TagData);
+    _checkShouldAlive(component, TagData);
 }, function (component) {
     return getGameObject(component.index, TagData);
 });
+var _checkShouldAlive = function (tag, TagData) {
+    checkComponentShouldAlive(tag, TagData, function (tag, TagData) {
+        return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
+    });
+};
 //# sourceMappingURL=Tag.js.map

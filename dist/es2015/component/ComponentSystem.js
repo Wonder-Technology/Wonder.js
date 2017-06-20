@@ -2,7 +2,8 @@ import { ComponentData } from "./ComponentData";
 import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
-import { deleteBySwap, isNotValidMapValue } from "../utils/objectUtils";
+import { deleteVal, isNotValidMapValue } from "../utils/objectUtils";
+import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
 var _addHandle = function (_class, handleMap, handle) {
     var typeID = getTypeIDFromClass(_class);
     handleMap[typeID] = handle;
@@ -54,16 +55,27 @@ export var getComponentGameObject = function (gameObjectMap, index) {
 export var generateComponentIndex = function (ComponentData) {
     return ComponentData.index++;
 };
-export var deleteComponentBySwap = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
+export var deleteComponent = requireCheckFunc(function (index, componentMap) {
+    it("index should >= 0", function () {
+        expect(index).gte(0);
+    });
+}, function (index, componentMap) {
+    markComponentIndexRemoved(componentMap[index]);
+    deleteVal(index, componentMap);
+});
+export var deleteComponentBySwapArray = requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
     it("targetIndex should >= 0", function () {
         expect(targetIndex).gte(0);
     });
 }, function (sourceIndex, targetIndex, componentMap) {
     componentMap[targetIndex].index = sourceIndex;
     markComponentIndexRemoved(componentMap[sourceIndex]);
-    deleteBySwap(sourceIndex, targetIndex, componentMap);
+    deleteBySwapArray(sourceIndex, targetIndex, componentMap);
 });
 export var markComponentIndexRemoved = function (component) {
     component.index = -1;
+};
+export var isComponentIndexNotRemoved = function (component) {
+    return component.index !== -1;
 };
 //# sourceMappingURL=ComponentSystem.js.map

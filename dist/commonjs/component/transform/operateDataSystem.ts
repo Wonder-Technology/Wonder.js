@@ -7,10 +7,13 @@ import { expect } from "wonder-expect.js";
 import { TransformMap } from "./ThreeDTransformData";
 import { deleteVal } from "../../utils/objectUtils";
 import { addNotUsedIndex } from "./dirtySystem";
-import { DataUtils } from "../../utils/DataUtils";
 import { ThreeDTransform } from "./ThreeDTransform";
 import { isParentExist } from "./hierarchySystem";
 import { getLocalToWorldMatrix } from "./ThreeDTransformSystem";
+import {
+    getMatrix4DataSize, getQuaternionDataSize, getVector3DataSize, setMatrices, setQuaternions,
+    setVectors
+} from "../../utils/typeArrayUtils";
 
 export var swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
@@ -78,10 +81,23 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: 
     changeFunc(ThreeDTransformData.localToWorldMatrices, mat4SourceIndex, mat4TargetIndex, mat4Size);
     changeFunc(ThreeDTransformData.localPositions, vec3SourceIndex, vec3TargetIndex, vec3Size);
     changeFunc(ThreeDTransformData.localRotations, quaSourceIndex, quaTargetIndex, quaSize);
-    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+    _changeLocalScaleData(vec3SourceIndex, vec3TargetIndex, vec3Size, ThreeDTransformData, changeFunc);
 
     return ThreeDTransformData;
 }
+
+var _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
+    it("source localScale data shouldn't be [0,0,0]", () => {
+        if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
+            && ThreeDTransformData.localScales[vec3SourceIndex + 2] === 0
+        ) {
+            expect(false).true;
+        }
+    });
+}, (vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
+    changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
+})
 
 var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
@@ -104,8 +120,6 @@ var _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: n
             newIndex2 = targetIndex + i;
 
         dataArr[newIndex2] = dataArr[newIndex1];
-
-        dataArr[newIndex1] = 0;
     }
 };
 
@@ -161,6 +175,7 @@ export var moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, T
 
 
 export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    // export var setTransformDataInTypeArr = (indexInArrayBuffer: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
     setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
@@ -169,23 +184,23 @@ export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4
 }
 
 export var setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
+    setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
 }
 
 export var setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
 export var setLocalRotationData = (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
+    setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
 export var setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    DataUtils.setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
+    setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
@@ -194,21 +209,15 @@ export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransfor
     if (isParentExist(parent)) {
         let indexInArrayBuffer = parent.index;
 
-        DataUtils.setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
+        setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
             uid: getUID(indexInArrayBuffer, ThreeDTransformData),
             index: indexInArrayBuffer
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
-        DataUtils.setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
+        setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 }
-
-export var getMatrix4DataSize = () => 16;
-
-export var getVector3DataSize = () => 3;
-
-export var getQuaternionDataSize = () => 4;
 
 export var getMatrix4DataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * getMatrix4DataSize();
 

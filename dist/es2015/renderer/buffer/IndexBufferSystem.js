@@ -1,30 +1,13 @@
-import { getIndexType, getIndexTypeSize, getIndices } from "../../component/geometry/GeometrySystem";
-import { isBufferExist } from "./bufferUtils";
+import { getOrCreateBuffer as getOrCreateBufferUtils, initData as initDataUtils } from "../utils/buffer/indexBufferUtils";
+import { getIndices } from "../../component/geometry/GeometrySystem";
+import { getGL } from "../device/DeviceManagerSystem";
+import { DeviceManagerData } from "../device/DeviceManagerData";
+import { disposeBuffer as disposeBufferUtils } from "../utils/buffer/bufferUtils";
 export var getOrCreateBuffer = function (gl, geometryIndex, GeometryData, IndexBufferData) {
-    var buffers = IndexBufferData.buffers, buffer = buffers[geometryIndex];
-    if (isBufferExist(buffer)) {
-        return buffer;
-    }
-    buffer = gl.createBuffer();
-    buffers[geometryIndex] = buffer;
-    _initBuffer(gl, getIndices(geometryIndex, GeometryData), buffer, IndexBufferData);
-    return buffer;
+    return getOrCreateBufferUtils(gl, geometryIndex, getIndices, GeometryData, IndexBufferData);
 };
-var _initBuffer = function (gl, data, buffer, IndexBufferData) {
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-    _resetBindedBuffer(gl, IndexBufferData);
-};
-var _resetBindedBuffer = function (gl, IndexBufferData) {
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-};
-export var getType = function (GeometryData) {
-    return getIndexType(GeometryData);
-};
-export var getTypeSize = function (GeometryData) {
-    return getIndexTypeSize(GeometryData);
-};
-export var initData = function (IndexBufferData) {
-    IndexBufferData.buffers = [];
+export var initData = initDataUtils;
+export var disposeBuffer = function (geometryIndex, IndexBufferData) {
+    disposeBufferUtils(geometryIndex, IndexBufferData.buffers, getGL, DeviceManagerData);
 };
 //# sourceMappingURL=IndexBufferSystem.js.map

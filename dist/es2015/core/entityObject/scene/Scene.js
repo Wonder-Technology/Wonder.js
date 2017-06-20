@@ -29,7 +29,7 @@ export var addSceneChild = requireCheckFunc(function (scene, gameObject) {
         expect(isAlive(scene, GameObjectData)).true;
     });
 }, function (scene, gameObject) {
-    addChild(scene, gameObject, GameObjectData, SceneData);
+    addChild(scene, gameObject, ThreeDTransformData, GameObjectData, SceneData);
 });
 export var removeSceneChild = requireCheckFunc(function (scene, gameObject) {
     it("scene should alive", function () {

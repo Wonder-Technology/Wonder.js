@@ -1,10 +1,9 @@
 import { MeshRenderer } from "./MeshRenderer";
 import curry from "wonder-lodash/curry";
-import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
-import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwap, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
-import { createMap, deleteBySwap as deleteObjectBySwap } from "../../utils/objectUtils";
+import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwapArray, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { MeshRendererData } from "./MeshRendererData";
 export var addAddComponentHandle = function (_class) {
@@ -33,15 +32,17 @@ export var addComponent = function (component, gameObject) {
     _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
     addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
 };
-export var disposeComponent = function (component) {
+export var disposeComponent = ensureFunc(function (returnVal, component) {
+    checkIndexShouldEqualCount(MeshRendererData);
+}, function (component) {
     var sourceIndex = component.index, lastComponentIndex = null;
-    deleteBySwap(sourceIndex, MeshRendererData.renderGameObjectArray);
     MeshRendererData.count -= 1;
     MeshRendererData.index -= 1;
     lastComponentIndex = MeshRendererData.count;
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
-};
+    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.renderGameObjectArray);
+    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
+});
 export var getGameObject = function (index, Data) {
     return getComponentGameObject(Data.gameObjectMap, index);
 };
@@ -50,8 +51,8 @@ export var getRenderList = curry(function (state, MeshRendererData) {
 });
 export var initData = function (MeshRendererData) {
     MeshRendererData.renderGameObjectArray = [];
-    MeshRendererData.gameObjectMap = createMap();
-    MeshRendererData.meshRendererMap = createMap();
+    MeshRendererData.gameObjectMap = [];
+    MeshRendererData.meshRendererMap = [];
     MeshRendererData.index = 0;
     MeshRendererData.count = 0;
 };

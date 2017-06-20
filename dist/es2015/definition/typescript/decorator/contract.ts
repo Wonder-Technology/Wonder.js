@@ -1,6 +1,5 @@
 import { Log } from "../../../utils/Log";
 import { CompileConfig } from "../../../config/CompileConfig";
-import { DirectorData } from "../../../core/DirectorData";
 import { MainData } from "../../../core/MainData";
 
 var _describeContext = null;

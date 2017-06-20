@@ -3,21 +3,27 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
+import { Quaternion } from "../../math/Quaternion";
 export declare class ThreeDTransformData {
-    static readonly count: number;
+    static readonly maxCount: number;
     static localToWorldMatrices: Float32Array;
     static localPositions: Float32Array;
     static localRotations: Float32Array;
     static localScales: Float32Array;
+    static defaultPosition: Vector3;
+    static defaultRotation: Quaternion;
+    static defaultScale: Vector3;
+    static defaultLocalToWorldMatrice: Matrix4;
     static firstDirtyIndex: number;
     static indexInArrayBuffer: number;
     static notUsedIndexLinkList: LinkList<number>;
     static isTranslateMap: any;
-    static parentMap: ParentMap;
-    static childrenMap: ChildrenMap;
+    static parentMap: ThreeDTransformParentMap;
+    static childrenMap: ThreeDTransformChildrenMap;
     static cacheMap: ThreeDTransformCacheMap;
     static tempMap: ThreeDTransformTempMap;
     static transformMap: TransformMap;
+    static count: number;
     static uid: number;
     static disposeCount: number;
     static isClearCacheMap: boolean;
@@ -31,10 +37,10 @@ export declare class ThreeDTransformRelationData {
     parent: ThreeDTransformRelationData;
     children: Array<ThreeDTransformRelationData>;
 }
-export declare type ParentMap = {
+export declare type ThreeDTransformParentMap = {
     [uid: number]: ThreeDTransform;
 };
-export declare type ChildrenMap = {
+export declare type ThreeDTransformChildrenMap = {
     [uid: number]: Array<ThreeDTransform>;
 };
 export declare type ThreeDTransformGameObjectMap = Map<number, GameObject>;

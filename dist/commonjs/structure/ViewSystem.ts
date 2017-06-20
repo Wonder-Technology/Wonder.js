@@ -1,7 +1,7 @@
-import { ContextConfigOptionsData } from "../core/MainSystem";
 import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
+import { ContextConfigOptionsData } from "../renderer/type/dataType";
 
 export var getCanvas = (state: Map<any, any>): HTMLCanvasElement => {
     return state.getIn(["View", "dom"]);

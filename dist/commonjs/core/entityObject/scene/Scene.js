@@ -31,7 +31,7 @@ exports.addSceneChild = contract_1.requireCheckFunc(function (scene, gameObject)
         wonder_expect_js_1.expect(GameObjectSystem_1.isAlive(scene, GameObjectData_1.GameObjectData)).true;
     });
 }, function (scene, gameObject) {
-    SceneSystem_1.addChild(scene, gameObject, GameObjectData_1.GameObjectData, SceneData_1.SceneData);
+    SceneSystem_1.addChild(scene, gameObject, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, SceneData_1.SceneData);
 });
 exports.removeSceneChild = contract_1.requireCheckFunc(function (scene, gameObject) {
     contract_1.it("scene should alive", function () {

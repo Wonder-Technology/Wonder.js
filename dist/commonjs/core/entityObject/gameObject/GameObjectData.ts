@@ -33,3 +33,7 @@ export type GameObjectParentMap = {
 export type GameObjectChildrenMap = {
     [uid: number]: Array<GameObject>
 }
+
+export type GameObjectUIDMap = {
+    [uid: number]: boolean;
+}

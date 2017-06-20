@@ -1,13 +1,21 @@
-import { GPUDetector } from "../../device/GPUDetector";
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { GPUDetector } from "../../renderer/device/GPUDetector";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { EBufferType } from "../../renderer/enum/EBufferType";
-import { createMap, deleteBySwap as deleteObjectBySwap, isNotValidMapValue } from "../../utils/objectUtils";
-import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwap, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
-import { deleteBySwap } from "../../utils/arrayUtils";
-import { EDrawMode } from "../../renderer/enum/EDrawMode";
-import { checkIndexShouldEqualCount } from "../utils/contractUtils";
-import { expect } from "wonder-expect.js";
+import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
+import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponent, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
 import { GeometryData } from "./GeometryData";
+import { getIndexDataSize, getUIntArrayClass, getVertexDataSize, getIndexTypeSize as getIndexTypeSizeUtils, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, createBufferViews } from "../../renderer/utils/geometry/geometryUtils";
+import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { getSubarray } from "../../utils/typeArrayUtils";
+import { isNotValidVal } from "../../utils/arrayUtils";
+import { expect } from "wonder-expect.js";
+import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
+import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
+import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
+import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
+import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 export var addAddComponentHandle = function (_class) {
     addAddComponentHandleToMap(_class, addComponent);
 };
@@ -18,7 +26,6 @@ export var addInitHandle = function (_class) {
     addInitHandleToMap(_class, initGeometry);
 };
 export var create = requireCheckFunc(function (geometry, GeometryData) {
-    checkIndexShouldEqualCount(GeometryData);
 }, function (geometry, GeometryData) {
     var index = generateComponentIndex(GeometryData);
     geometry.index = index;
@@ -30,6 +37,7 @@ export var init = function (GeometryData, state) {
     for (var i = 0, count = GeometryData.count; i < count; i++) {
         initGeometry(i, state);
     }
+    _markIsInit(GeometryData);
     return state;
 };
 export var initGeometry = function (index, state) {
@@ -42,70 +50,155 @@ export var initGeometry = function (index, state) {
     setIndices(index, indices, GeometryData);
 };
 var _isComputeDataFuncNotExist = function (func) { return isNotValidMapValue(func); };
-export var getDrawMode = function (index, GeometryData) {
-    return EDrawMode.TRIANGLES;
-};
-export var getVerticesCount = function (index, GeometryData) {
-    return getVertices(index, GeometryData).length;
-};
-export var getIndicesCount = function (index, GeometryData) {
-    return getIndices(index, GeometryData).length;
-};
-export var getIndexType = function (GeometryData) {
-    return GeometryData.indexType;
-};
-export var getIndexTypeSize = function (GeometryData) {
-    return GeometryData.indexTypeSize;
-};
 export var getVertices = function (index, GeometryData) {
-    return GeometryData.verticesMap[index];
+    return _getPointData(index, GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList);
 };
 export var setVertices = requireCheckFunc(function (index, vertices, GeometryData) {
-    it("vertices should not already exist", function () {
-        expect(GeometryData.verticesMap[index]).not.exist;
-    });
 }, function (index, vertices, GeometryData) {
-    GeometryData.verticesMap[index] = vertices;
+    GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
 });
 export var getIndices = function (index, GeometryData) {
-    return GeometryData.indicesMap[index];
+    return _getPointData(index, GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList);
 };
 export var setIndices = requireCheckFunc(function (index, indices, GeometryData) {
-    it("indices should not already exist", function () {
-        expect(GeometryData.indicesMap[index]).not.exist;
-    });
 }, function (index, indices, GeometryData) {
-    GeometryData.indicesMap[index] = indices;
+    GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 });
-export var hasIndices = function (index, GeometryData) {
-    var indices = getIndices(index, GeometryData);
-    if (isNotValidMapValue(indices)) {
-        return false;
+var _getPointData = requireCheckFunc(function (index, points, cacheMap, infoList) {
+    it("infoList[index] should exist", function () {
+        expect(infoList[index]).exist;
+    });
+}, function (index, points, cacheMap, infoList) {
+    var dataArr = cacheMap[index];
+    if (isValidMapValue(dataArr)) {
+        return dataArr;
     }
-    return indices.length > 0;
+    var info = infoList[index];
+    dataArr = getSubarray(points, info.startIndex, info.endIndex);
+    cacheMap[index] = dataArr;
+    return dataArr;
+});
+var _setPointData = function (index, dataArr, dataSize, points, cacheMap, infoList, workerInfoList, offset, GeometryData) {
+    var count = dataArr.length, startIndex = offset;
+    offset += count;
+    infoList[index] = _buildInfo(startIndex, offset);
+    _fillTypeArr(points, dataArr, startIndex, count);
+    _removeCache(index, cacheMap);
+    if (_isInit(GeometryData)) {
+        _addWorkerInfo(workerInfoList, index, startIndex, offset);
+    }
+    return offset;
+};
+var _fillTypeArr = requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
+    it("should not exceed type arr's length", function () {
+        expect(count + startIndex).lte(typeArr.length);
+    });
+}, function (typeArr, dataArr, startIndex, count) {
+    for (var i = 0; i < count; i++) {
+        typeArr[i + startIndex] = dataArr[i];
+    }
+});
+var _removeCache = function (index, cacheMap) {
+    deleteVal(index, cacheMap);
+};
+var _buildInfo = function (startIndex, endIndex) {
+    return {
+        startIndex: startIndex,
+        endIndex: endIndex
+    };
 };
 export var addComponent = function (component, gameObject) {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 };
-export var disposeComponent = ensureFunc(function (returnVal, component) {
-    checkIndexShouldEqualCount(GeometryData);
-}, function (component) {
-    var sourceIndex = component.index, lastComponentIndex = null;
-    deleteBySwap(sourceIndex, GeometryData.verticesMap);
-    deleteBySwap(sourceIndex, GeometryData.indicesMap);
+export var disposeComponent = function (component) {
+    var sourceIndex = component.index;
+    deleteComponent(sourceIndex, GeometryData.geometryMap);
     GeometryData.count -= 1;
-    GeometryData.index -= 1;
-    lastComponentIndex = GeometryData.count;
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.configDataMap);
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.computeDataFuncMap);
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, GeometryData.gameObjectMap);
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, GeometryData.geometryMap);
-});
+    GeometryData.disposeCount += 1;
+    GeometryData.isReallocate = false;
+    if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
+        var disposedIndexArray = reAllocateGeometry(GeometryData);
+        _disposeBuffers(disposedIndexArray);
+        clearWorkerInfoList(GeometryData);
+        GeometryData.isReallocate = true;
+        GeometryData.disposeCount = 0;
+    }
+};
+var _disposeBuffers = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _disposeBuffers = requireCheckFunc(function (disposedIndexArray) {
+        it("should not add data twice in one frame", function () {
+            expect(GeometryData.disposedGeometryIndexArray.length).equal(0);
+        });
+    }, function (disposedIndexArray) {
+        GeometryData.disposedGeometryIndexArray = disposedIndexArray;
+    });
+}
+else {
+    _disposeBuffers = function (disposedIndexArray) {
+        disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeArrayBuffer, disposeIndexBuffer);
+    };
+}
+export var isReallocate = function (GeometryData) {
+    return GeometryData.isReallocate;
+};
+var _isBufferNearlyFull = function (GeometryData) {
+    var infoList = GeometryData.indicesInfoList, lastInfo = infoList[infoList.length - 1];
+    if (isNotValidVal(lastInfo)) {
+        return false;
+    }
+    return lastInfo.endIndex >= GeometryData.maxDisposeIndex;
+};
 export var getGameObject = function (index, Data) {
     return getComponentGameObject(Data.gameObjectMap, index);
 };
 export var getConfigData = function (index, GeometryData) {
     return GeometryData.configDataMap[index];
+};
+var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
+    if (DataBufferConfig.geometryIndicesBufferBits === 16) {
+        return false;
+    }
+    return GPUDetector.getInstance().extensionUintIndices === true;
+};
+export var isIndicesBufferNeed32BitsByData = function (GeometryData) {
+    return GeometryData.indexType === EBufferType.UNSIGNED_INT;
+};
+var _markIsInit = function (GeometryData) {
+    GeometryData.isInit = true;
+};
+var _isInit = function (GeometryData) {
+    return GeometryData.isInit;
+};
+export var clearWorkerInfoList = function (GeometryData) {
+    GeometryData.verticesWorkerInfoList = [];
+    GeometryData.indicesWorkerInfoList = [];
+};
+export var hasNewPointData = function (GeometryData) {
+    return GeometryData.verticesWorkerInfoList.length > 0;
+};
+export var hasDisposedGeometryIndexArrayData = function (GeometryData) {
+    return GeometryData.disposedGeometryIndexArray.length > 0;
+};
+export var clearDisposedGeometryIndexArray = function (GeometryData) {
+    GeometryData.disposedGeometryIndexArray = [];
+};
+var _addWorkerInfo = null;
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _addWorkerInfo = function (infoList, index, startIndex, endIndex) {
+        infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
+    };
+}
+else {
+    _addWorkerInfo = function (infoList, index, startIndex, endIndex) {
+    };
+}
+var _buildWorkerInfo = function (index, startIndex, endIndex) {
+    return {
+        index: index,
+        startIndex: startIndex,
+        endIndex: endIndex
+    };
 };
 export var initData = function (DataBufferConfig, GeometryData) {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig), indicesArrayBytes = null;
@@ -119,27 +212,43 @@ export var initData = function (DataBufferConfig, GeometryData) {
     }
     GeometryData.indexTypeSize = indicesArrayBytes;
     GeometryData.configDataMap = createMap();
-    GeometryData.verticesMap = [];
-    GeometryData.indicesMap = [];
+    GeometryData.verticesCacheMap = createMap();
+    GeometryData.indicesCacheMap = createMap();
     GeometryData.computeDataFuncMap = createMap();
     GeometryData.gameObjectMap = createMap();
     GeometryData.geometryMap = createMap();
     GeometryData.index = 0;
     GeometryData.count = 0;
+    _initBufferData(indicesArrayBytes, getUIntArrayClass(GeometryData.indexType), DataBufferConfig, GeometryData);
+    GeometryData.verticesInfoList = [];
+    GeometryData.indicesInfoList = [];
+    GeometryData.verticesWorkerInfoList = [];
+    GeometryData.indicesWorkerInfoList = [];
+    GeometryData.disposedGeometryIndexArray = [];
+    GeometryData.verticesOffset = 0;
+    GeometryData.indicesOffset = 0;
+    GeometryData.disposeCount = 0;
+    GeometryData.isReallocate = false;
 };
-var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
-    if (DataBufferConfig.geometryIndicesBufferBits === 16) {
-        return false;
-    }
-    return GPUDetector.getInstance().extensionUintIndices === true;
+var _initBufferData = function (indicesArrayBytes, UintArray, DataBufferConfig, GeometryData) {
+    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
+    createBufferViews(buffer, count, UintArray, GeometryData);
+    GeometryData.buffer = buffer;
+    GeometryData.maxDisposeIndex = GeometryData.indices.length * 0.9;
 };
-export var isIndicesBufferNeed32BitsByData = function (GeometryData) {
-    return GeometryData.indexType === EBufferType.UNSIGNED_INT;
-};
-export var convertVerticesArrayToTypeArray = function (vertices) {
-    return new Float32Array(vertices);
-};
-export var convertIndicesArrayToTypeArray = function (indices, GeometryData) {
-    return isIndicesBufferNeed32BitsByData(GeometryData) ? new Uint32Array(indices) : new Uint16Array(indices);
-};
+export var getIndexType = null;
+export var getIndexTypeSize = null;
+export var hasIndices = null;
+export var getDrawMode = null;
+export var getVerticesCount = null;
+export var getIndicesCount = null;
+if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
+    getIndexType = getIndexTypeUtils;
+    getIndexTypeSize = getIndexTypeSizeUtils;
+    hasIndices = function (index, GeometryData) { return hasIndicesUtils(index, getIndices, GeometryData); };
+    getDrawMode = getDrawModeUtils;
+    getVerticesCount = function (index, GeometryData) { return getVerticesCountUtils(index, getVertices, GeometryData); };
+    getIndicesCount = function (index, GeometryData) { return getIndicesCountUtils(index, getIndices, GeometryData); };
+}
 //# sourceMappingURL=GeometrySystem.js.map

@@ -1,0 +1,1 @@
+export declare var disposeGeometryBuffers: (disposedIndexArray: number[], ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, disposeArrayBuffer: Function, disposeIndexBuffer: Function) => void;

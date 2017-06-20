@@ -1,9 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ShaderChunk_1 = require("../shader/chunk/ShaderChunk");
-var MaterialSystem_1 = require("../../component/material/MaterialSystem");
 var ShaderSnippet_1 = require("../shader/snippet/ShaderSnippet");
-var MaterialData_1 = require("../../component/material/MaterialData");
 exports.shaderLib_generator = {
     "shaderLibs": {
         "CommonShaderLib": {
@@ -86,9 +84,10 @@ exports.shaderLib_generator = {
         },
         "EndBasicShaderLib": {
             "glsl": {
-                "func": function (materialIndex) {
-                    var alphaTest = MaterialSystem_1.getAlphaTest(materialIndex, MaterialData_1.MaterialData);
-                    if (MaterialSystem_1.isPropertyExist(alphaTest)) {
+                "func": function (materialIndex, _a, MaterialDataFromSystem) {
+                    var getAlphaTest = _a.getAlphaTest, isTestAlpha = _a.isTestAlpha;
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+                    if (isTestAlpha(alphaTest)) {
                         return {
                             "fs": {
                                 "body": "if (gl_FragColor.a < " + alphaTest + "){\n    discard;\n}\n"

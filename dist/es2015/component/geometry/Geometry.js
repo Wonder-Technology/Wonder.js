@@ -16,10 +16,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { GeometryData } from "./GeometryData";
-import { getDrawMode as getGeometryDrawMode, getVertices as getGeometryVertices, getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem, getGameObject, } from "./GeometrySystem";
+import { getVertices as getGeometryVertices, getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem, getGameObject, getDrawMode as getGeometryDrawMode, } from "./GeometrySystem";
 import { Component } from "../Component";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
+import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../ComponentSystem";
 var Geometry = (function (_super) {
     __extends(Geometry, _super);
     function Geometry() {
@@ -31,22 +33,37 @@ Geometry = __decorate([
     registerClass("Geometry")
 ], Geometry);
 export { Geometry };
-export var getDrawMode = function (geometry) {
+export var getDrawMode = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
     return getGeometryDrawMode(geometry.index, GeometryData);
-};
-export var getVertices = function (geometry) {
+});
+export var getVertices = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
     return getGeometryVertices(geometry.index, GeometryData);
-};
-export var getIndices = function (geometry) {
+});
+export var getIndices = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
     return getGeometryIndices(geometry.index, GeometryData);
-};
-export var getGeometryConfigData = function (geometry) {
+});
+export var getGeometryConfigData = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
     return getConfigData(geometry.index, GeometryData);
-};
+});
 export var initGeometry = function (geometry) {
     initGeometrySystem(geometry.index, getState(DirectorData));
 };
-export var getGeometryGameObject = function (geometry) {
+export var getGeometryGameObject = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
     return getGameObject(geometry.index, GeometryData);
+});
+var _checkShouldAlive = function (geometry, GeometryData) {
+    checkComponentShouldAlive(geometry, GeometryData, function (geometry, GeometryData) {
+        return isComponentIndexNotRemoved(geometry);
+    });
 };
 //# sourceMappingURL=Geometry.js.map

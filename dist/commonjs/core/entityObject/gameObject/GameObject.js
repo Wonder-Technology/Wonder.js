@@ -77,4 +77,14 @@ exports.hasGameObject = contract_1.requireCheckFunc(function (gameObject, child)
 }, function (gameObject, child) {
     return GameObjectSystem_1.hasChild(gameObject, child, GameObjectData_1.GameObjectData);
 });
+exports.getGameObjectChildren = contract_1.requireCheckFunc(function (gameObject) {
+    contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
+}, function (gameObject) {
+    return GameObjectSystem_1.getAliveChildren(gameObject.uid, GameObjectData_1.GameObjectData);
+});
+exports.getGameObjectParent = contract_1.requireCheckFunc(function (gameObject) {
+    contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
+}, function (gameObject) {
+    return GameObjectSystem_1.getParent(gameObject.uid, GameObjectData_1.GameObjectData);
+});
 //# sourceMappingURL=GameObject.js.map

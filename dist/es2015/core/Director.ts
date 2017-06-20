@@ -3,9 +3,6 @@ import "wonder-frp/dist/es2015/stream/IgnoreElementsStream";
 import "wonder-frp/dist/es2015/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
-// import { DeviceManager } from "../device/DeviceManager";
-// import { SceneDispatcher } from "./entityObject/scene/SceneDispatcher";
-// import { Renderer } from "../renderer/renderer/Renderer";
 import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 // import { WebGLRenderer } from "../renderer/renderer/WebGLRenderer";
@@ -18,7 +15,7 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 import {
     init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
 } from "../component/transform/ThreeDTransformSystem";
-import { getState, setState } from "./DirectorSystem";
+import { getState, render, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
@@ -28,33 +25,22 @@ import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
 import {
     addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
-    init as initGeometry, initData as initGeometryData, isIndicesBufferNeed32BitsByData
+    init as initGeometry, initData as initGeometryData
 } from "../component/geometry/GeometrySystem";
-import { clear, init as initRenderer, render } from "../renderer/render/WebGLRenderSystem";
+import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
-import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
-import { ShaderData } from "../renderer/shader/ShaderData";
 import { Geometry } from "../component/geometry/Geometry";
-import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
-    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle,
-    initData as initMaterialData
+    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
+    addInitHandle as addMaterialInitHandle
 } from "../component/material/MaterialSystem";
-import { MaterialData } from "../component/material/MaterialData";
 import {
     addAddComponentHandle as addMeshRendererAddComponentHandle,
-    addDisposeHandle as addMeshRendererDisposeHandle,
-    initData as initMeshRendererData
+    addDisposeHandle as addMeshRendererDisposeHandle
 } from "../component/renderer/MeshRendererSystem";
-import { MeshRendererData } from "../component/renderer/MeshRendererData";
-import { initData as initTagData, addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
-import { TagData } from "../component/tag/TagData";
+import { addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { Tag } from "../component/tag/Tag";
 import { ThreeDTransform } from "../component/transform/ThreeDTransform";
-import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
-import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
-import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { Material } from "../component/material/Material";
 import { MeshRenderer } from "../component/renderer/MeshRenderer";
 import {
@@ -64,15 +50,11 @@ import {
 import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
-import { SceneData } from "./entityObject/scene/SceneData";
-import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { CameraController } from "../component/camera/CameraController";
-import { DeviceManager } from "../device/DeviceManager";
-import { addAddComponentHandle, addDisposeHandle, addInitHandle } from "../component/ComponentSystem";
-import { material_config } from "../renderer/data/material_config";
-import { shaderLib_generator } from "../renderer/data/shaderLib_generator";
-import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
-import { DeviceManagerData } from "../device/DeviceManagerData";
+import { DeviceManager } from "../renderer/device/DeviceManager";
+import { Scheduler } from "./Scheduler";
+import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
+import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 
 @singleton(true)
 @registerClass("Director")
@@ -88,6 +70,7 @@ export class Director {
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);
     // public renderer: Renderer = null;
+    public scheduler: Scheduler = null;
 
     private _gameLoop: IDisposable = null;
     // private _gameState: EGameState = EGameState.NORMAL;
@@ -97,6 +80,7 @@ export class Director {
     public initWhenCreate() {
         // this.scene = SceneDispatcher.create();
         // this.renderer = WebGLRenderer.create();
+        this.scheduler = Scheduler.create();
     }
 
     public start() {
@@ -143,7 +127,8 @@ export class Director {
 
         // this.renderer.init();
 
-        // this._timeController.start();
+        this._timeController.start();
+        this.scheduler.start();
 
         return resultState;
     }
@@ -184,94 +169,29 @@ export class Director {
         //     return false;
         // }
 
-        // elapsed = this._timeController.computeElapseTime(time);
+        elapsed = this._timeController.computeElapseTime(time);
 
-        return this._run(elapsed, state);
-    }
-
-    private _run(elapsed: number, state: Map<any, any>) {
-        // this._timeController.tick(elapsed);
-
-        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
-
-        var resultState = this._update(elapsed, state);
-
-        resultState = this._render(state);
-
-        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
-
-        return resultState;
-    }
-
-    private _update(elapsed: number, state: Map<any, any>) {
-        // this.scene.gameObjectScene.update(elapsed);
-
-        var resultState = this._updateSystem(elapsed, state);
-
-        return resultState;
-    }
-
-    private _render(state: Map<any, any>) {
-        var resultState = state;
-
-        // this.scene.gameObjectScene.render(this.renderer);
-        //
-        // this.renderer.clear();
-        //
-        // if (this.renderer.hasCommand()) {
-        //     this.renderer.webglState = BasicState.create();
-        //     this.renderer.render();
-        // }
-
-        resultState = clear(state);
-
-        resultState = render(state);
-
-        return resultState
-    }
-
-    private _updateSystem(elapsed: number, state: Map<any, any>) {
-        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
-
-        resultState = updateCameraController(PerspectiveCameraData, CameraData, CameraControllerData);
-
-        return resultState;
+        return run(elapsed, state, this._timeController, this.scheduler);
     }
 }
 
-initShaderData(ShaderData);
-
-initGeometryData(DataBufferConfig, GeometryData);
 addGeometryAddComponentHandle(Geometry);
 addGeometryDisposeHandle(Geometry);
 addGeometryInitHandle(Geometry);
 
-initMaterialData(MaterialData);
 addMaterialAddComponentHandle(Material);
 addMaterialDisposeHandle(Material);
 addMaterialInitHandle(Material);
 
-initMeshRendererData(MeshRendererData);
 addMeshRendererAddComponentHandle(MeshRenderer);
 addMeshRendererDisposeHandle(MeshRenderer);
 
-initTagData(TagData);
 addTagAddComponentHandle(Tag);
 addTagDisposeHandle(Tag);
 
-initThreeDTransformData(GlobalTempData, ThreeDTransformData);
 addThreeDTransformAddComponentHandle(ThreeDTransform);
 addThreeDTransformDisposeHandle(ThreeDTransform);
 
-initArrayBufferData(ArrayBufferData);
-
-initIndexBufferData(IndexBufferData);
-
-initSceneData(SceneData);
-
-initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
-
-initGameObjectData(GameObjectData);
 

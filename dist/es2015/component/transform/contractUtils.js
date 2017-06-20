@@ -1,8 +1,8 @@
 import { checkComponentShouldAlive } from "../ComponentSystem";
-import { isValidMapValue } from "../../utils/objectUtils";
-export var checkTransformShouldAlive = function (transform, ThreeTransformData) {
-    checkComponentShouldAlive(transform, ThreeTransformData, function (transform, ThreeTransformData) {
-        return isValidMapValue(ThreeTransformData.transformMap[transform.index]);
+import { isAlive } from "./ThreeDTransformSystem";
+export var checkTransformShouldAlive = function (transform, ThreeDTransformData) {
+    checkComponentShouldAlive(transform, ThreeDTransformData, function (transform, ThreeDTransformData) {
+        return isAlive(transform, ThreeDTransformData);
     });
 };
 //# sourceMappingURL=contractUtils.js.map

@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ThreeDTransformData_1 = require("./ThreeDTransformData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var ThreeDTransform_1 = require("./ThreeDTransform");
-var DataUtils_1 = require("../../utils/DataUtils");
 var Matrix4_1 = require("../../math/Matrix4");
 var Vector3_1 = require("../../math/Vector3");
 var cacheUtils_1 = require("../../utils/cacheUtils");
@@ -21,6 +20,8 @@ var cacheSystem_1 = require("./cacheSystem");
 var memoryUtils_1 = require("../../utils/memoryUtils");
 var LinkList_1 = require("./LinkList");
 var GlobalTempData_1 = require("../../definition/GlobalTempData");
+var Quaternion_1 = require("../../math/Quaternion");
+var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
 var wonder_expect_js_1 = require("wonder-expect.js");
 exports.addAddComponentHandle = function (_class) {
     ComponentSystem_1.addAddComponentHandle(_class, exports.addComponent);
@@ -32,13 +33,18 @@ exports.create = contract_1.ensureFunc(function (transform, ThreeDTransformData)
     contract_1.it("componentMap should has data", function () {
         wonder_expect_js_1.expect(hierarchySystem_1.getChildren(transform.uid, ThreeDTransformData)).exist;
     });
+    contract_1.it("count should <= ThreeDTransformData.maxCount", function () {
+        wonder_expect_js_1.expect(ThreeDTransformData.count).lte(ThreeDTransformData.maxCount);
+    });
 }, function (ThreeDTransformData) {
     var transform = new ThreeDTransform_1.ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData), uid = _buildUID(ThreeDTransformData);
     transform.index = index;
     transform.uid = uid;
+    ThreeDTransformData.count += 1;
     _createTempData(uid, ThreeDTransformData);
     _setTransformMap(index, transform, ThreeDTransformData);
     hierarchySystem_1.setChildren(uid, [], ThreeDTransformData);
+    _setDefaultTypeArrData(index, ThreeDTransformData);
     ThreeDTransformData.aliveUIDArray.push(uid);
     return transform;
 });
@@ -69,6 +75,12 @@ exports.addComponent = function (transform, gameObject) {
     ComponentSystem_1.addComponentToGameObjectMap(ThreeDTransformData_1.ThreeDTransformData.gameObjectMap, uid, gameObject);
     return dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData_1.ThreeDTransformData);
 };
+exports.isAlive = function (transform, ThreeDTransformData) {
+    return objectUtils_1.isValidMapValue(ThreeDTransformData.transformMap[transform.index]);
+};
+exports.isNotAlive = function (transform, ThreeDTransformData) {
+    return !exports.isAlive(transform, ThreeDTransformData);
+};
 exports.disposeComponent = function (transform) {
     var indexInArrayBuffer = transform.index, uid = transform.uid;
     if (dirtySystem_1.isNotDirty(indexInArrayBuffer, ThreeDTransformData_1.ThreeDTransformData.firstDirtyIndex)) {
@@ -77,9 +89,10 @@ exports.disposeComponent = function (transform) {
     else {
         _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
     }
+    ThreeDTransformData_1.ThreeDTransformData.count -= 1;
     ThreeDTransformData_1.ThreeDTransformData.disposeCount += 1;
     if (memoryUtils_1.isDisposeTooManyComponents(ThreeDTransformData_1.ThreeDTransformData.disposeCount)) {
-        memoryUtils_1.reAllocateThreeDTransformMap(ThreeDTransformData_1.ThreeDTransformData);
+        memoryUtils_1.reAllocateThreeDTransform(ThreeDTransformData_1.ThreeDTransformData);
         ThreeDTransformData_1.ThreeDTransformData.disposeCount = 0;
     }
 };
@@ -101,7 +114,7 @@ exports.getLocalToWorldMatrix = contract_1.requireCheckFunc(function (transform,
 }, function (transform, mat, ThreeTransformData, returnedMat) {
     cacheSystem_1.setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
 }, function (transform, mat, ThreeTransformData) {
-    return DataUtils_1.DataUtils.createMatrix4ByIndex(mat, ThreeDTransformData_1.ThreeDTransformData.localToWorldMatrices, operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index));
+    return typeArrayUtils_1.createMatrix4ByIndex(mat, ThreeDTransformData_1.ThreeDTransformData.localToWorldMatrices, operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index));
 }));
 exports.getPosition = contract_1.requireCheckFunc(function (transform, ThreeTransformData) {
     contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
@@ -134,7 +147,7 @@ exports.getLocalPosition = contract_1.requireCheckFunc(function (transform, Thre
 }, function (transform, ThreeTransformData, position) {
     cacheSystem_1.setLocalPositionCache(transform.uid, position, ThreeTransformData);
 }, function (transform, ThreeTransformData) {
-    return DataUtils_1.DataUtils.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).localPosition, ThreeDTransformData_1.ThreeDTransformData.localPositions, operateDataSystem_1.getVector3DataIndexInArrayBuffer(transform.index));
+    return typeArrayUtils_1.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).localPosition, ThreeDTransformData_1.ThreeDTransformData.localPositions, operateDataSystem_1.getVector3DataIndexInArrayBuffer(transform.index));
 }));
 exports.setLocalPosition = contract_1.requireCheckFunc(function (transform, position, ThreeTransformData) {
     contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
@@ -148,8 +161,6 @@ exports.update = function (elapsed, GlobalTempData, ThreeDTransformData, state) 
     return updateSystem_1.update(elapsed, GlobalTempData, ThreeDTransformData, state);
 };
 var _disposeItemInDataContainer = function (indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData) {
-    var mat = GlobalTempData.matrix4_1.setIdentity(), positionVec = GlobalTempData.vector3_1.set(0, 0, 0), qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
-    operateDataSystem_1.setTransformDataInTypeArr(indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData);
     hierarchySystem_1.removeHierarchyData(uid, ThreeDTransformData);
     _disposeMapDatas(indexInArrayBuffer, uid, ThreeDTransformData);
     return ThreeDTransformData;
@@ -167,11 +178,8 @@ var _disposeFromDirtyList = function (indexInArrayBuffer, uid, GlobalTempData, T
     _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData, ThreeDTransformData);
     ThreeDTransformData.firstDirtyIndex = dirtySystem_1.addFirstDirtyIndex(ThreeDTransformData);
 };
-var _addDefaultTransformData = function (GlobalTempData, ThreeDTransformData) {
-    var count = ThreeDTransformData.count, mat = GlobalTempData.matrix4_1.setIdentity(), positionVec = GlobalTempData.vector3_1.set(0, 0, 0), qua = GlobalTempData.quaternion_1.set(0, 0, 0, 1), scaleVec = GlobalTempData.vector3_2.set(1, 1, 1);
-    for (var i = utils_1.getStartIndexInArrayBuffer(); i < count; i++) {
-        operateDataSystem_1.setTransformDataInTypeArr(i, mat, qua, positionVec, scaleVec, ThreeDTransformData);
-    }
+var _setDefaultTypeArrData = function (index, ThreeDTransformData) {
+    operateDataSystem_1.setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
 };
 exports.getTempLocalToWorldMatrix = function (transform, ThreeDTransformData) { return _getTempData(transform.uid, ThreeDTransformData).localToWorldMatrix; };
 var _getTempData = function (uid, ThreeDTransformData) {
@@ -183,13 +191,11 @@ var _getTempData = function (uid, ThreeDTransformData) {
     return tempData;
 };
 exports.initData = function (GlobalTempData, ThreeDTransformData) {
-    var buffer = null, count = ThreeDTransformData.count, size = Float32Array.BYTES_PER_ELEMENT * (16 + 3 + 4 + 3);
-    ThreeDTransformData.buffer = new ArrayBuffer(count * size);
-    buffer = ThreeDTransformData.buffer;
-    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * operateDataSystem_1.getMatrix4DataSize());
-    ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * operateDataSystem_1.getMatrix4DataSize(), count * operateDataSystem_1.getVector3DataSize());
-    ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (operateDataSystem_1.getMatrix4DataSize() + operateDataSystem_1.getVector3DataSize()), count * operateDataSystem_1.getQuaternionDataSize());
-    ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (operateDataSystem_1.getMatrix4DataSize() + operateDataSystem_1.getVector3DataSize() + operateDataSystem_1.getQuaternionDataSize()), count * operateDataSystem_1.getVector3DataSize());
+    _initBufferData(ThreeDTransformData);
+    ThreeDTransformData.defaultPosition = Vector3_1.Vector3.create(0, 0, 0);
+    ThreeDTransformData.defaultRotation = Quaternion_1.Quaternion.create(0, 0, 0, 1);
+    ThreeDTransformData.defaultScale = Vector3_1.Vector3.create(1, 1, 1);
+    ThreeDTransformData.defaultLocalToWorldMatrice = Matrix4_1.Matrix4.create().setIdentity();
     ThreeDTransformData.notUsedIndexLinkList = LinkList_1.LinkList.create();
     ThreeDTransformData.parentMap = objectUtils_1.createMap();
     ThreeDTransformData.childrenMap = objectUtils_1.createMap();
@@ -198,12 +204,21 @@ exports.initData = function (GlobalTempData, ThreeDTransformData) {
     ThreeDTransformData.tempMap = objectUtils_1.createMap();
     ThreeDTransformData.transformMap = objectUtils_1.createMap();
     ThreeDTransformData.gameObjectMap = objectUtils_1.createMap();
-    ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.count;
+    ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.maxCount;
     ThreeDTransformData.indexInArrayBuffer = utils_1.getStartIndexInArrayBuffer();
     ThreeDTransformData.uid = 0;
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;
+    ThreeDTransformData.count = 0;
     ThreeDTransformData.aliveUIDArray = [];
-    _addDefaultTransformData(GlobalTempData, ThreeDTransformData);
+};
+var _initBufferData = function (ThreeDTransformData) {
+    var buffer = null, count = ThreeDTransformData.maxCount, size = Float32Array.BYTES_PER_ELEMENT * (typeArrayUtils_1.getMatrix4DataSize() + typeArrayUtils_1.getVector3DataSize() + typeArrayUtils_1.getQuaternionDataSize() + typeArrayUtils_1.getVector3DataSize());
+    buffer = new ArrayBuffer(count * size);
+    ThreeDTransformData.localToWorldMatrices = new Float32Array(buffer, 0, count * typeArrayUtils_1.getMatrix4DataSize());
+    ThreeDTransformData.localPositions = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * typeArrayUtils_1.getMatrix4DataSize(), count * typeArrayUtils_1.getVector3DataSize());
+    ThreeDTransformData.localRotations = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (typeArrayUtils_1.getMatrix4DataSize() + typeArrayUtils_1.getVector3DataSize()), count * typeArrayUtils_1.getQuaternionDataSize());
+    ThreeDTransformData.localScales = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (typeArrayUtils_1.getMatrix4DataSize() + typeArrayUtils_1.getVector3DataSize() + typeArrayUtils_1.getQuaternionDataSize()), count * typeArrayUtils_1.getVector3DataSize());
+    ThreeDTransformData.buffer = buffer;
 };
 //# sourceMappingURL=ThreeDTransformSystem.js.map

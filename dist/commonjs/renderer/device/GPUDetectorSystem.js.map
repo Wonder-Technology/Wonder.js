@@ -1,0 +1,1 @@
+{"version":3,"file":"GPUDetectorSystem.js","sourceRoot":"","sources":["../../../../src/renderer/device/GPUDetectorSystem.ts"],"names":[],"mappings":";;AAAA,6CAA4C;AAE5C,6CAAwC;AAI7B,QAAA,MAAM,GAAG,eAAK,CAAC,UAAC,KAAe,EAAE,2BAAgC,EAAE,KAAoB;IAC9F,MAAM,CAAC,yBAAW,CAAC,WAAW,EAAE,CAAC,MAAM,CAAC,KAAK,EAAE,KAAK,EAAE,2BAA2B,CAAC,CAAC;AACvF,CAAC,CAAC,CAAA"}

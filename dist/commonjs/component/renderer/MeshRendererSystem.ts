@@ -1,13 +1,14 @@
 import { MeshRenderer } from "./MeshRenderer";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import curry from "wonder-lodash/curry";
-import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { Map } from "immutable";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwap, generateComponentIndex, getComponentGameObject
+    addDisposeHandle as addDisposeHandleToMap, deleteComponentBySwapArray,
+    generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { createMap, deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
@@ -50,21 +51,23 @@ export var addComponent = (component: MeshRenderer, gameObject: GameObject) => {
     addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = (component: MeshRenderer) => {
+export var disposeComponent = ensureFunc((returnVal, component: MeshRenderer) => {
+    checkIndexShouldEqualCount(MeshRendererData);
+}, (component: MeshRenderer) => {
     var sourceIndex = component.index,
         lastComponentIndex = null;
-
-    deleteBySwap(sourceIndex, MeshRendererData.renderGameObjectArray);
 
     MeshRendererData.count -= 1;
     MeshRendererData.index -= 1;
 
     lastComponentIndex = MeshRendererData.count;
 
-    deleteObjectBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.renderGameObjectArray);
 
-    deleteComponentBySwap(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
-}
+    deleteBySwap(sourceIndex, lastComponentIndex, MeshRendererData.gameObjectMap);
+
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
+})
 
 export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
@@ -76,8 +79,8 @@ export var getRenderList = curry((state: Map<any, any>, MeshRendererData: any) =
 
 export var initData = (MeshRendererData: any) => {
     MeshRendererData.renderGameObjectArray = [];
-    MeshRendererData.gameObjectMap = createMap();
-    MeshRendererData.meshRendererMap = createMap();
+    MeshRendererData.gameObjectMap = [];
+    MeshRendererData.meshRendererMap = [];
     MeshRendererData.index = 0;
     MeshRendererData.count = 0;
 }

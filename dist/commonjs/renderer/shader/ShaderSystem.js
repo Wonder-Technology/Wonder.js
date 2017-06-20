@@ -1,62 +1,52 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Shader_1 = require("./Shader");
-var DeviceManagerSystem_1 = require("../../device/DeviceManagerSystem");
-var IndexBufferSystem_1 = require("../buffer/IndexBufferSystem");
-var shaderSourceBuildSystem_1 = require("./shaderSourceBuildSystem");
-var locationSystem_1 = require("./locationSystem");
-var programSystem_1 = require("./programSystem");
-var glslSenderSystem_1 = require("./glslSenderSystem");
-var ComponentSystem_1 = require("../../component/ComponentSystem");
 var objectUtils_1 = require("../../utils/objectUtils");
-exports.create = function (ShaderData) {
-    var shader = new Shader_1.Shader(), index = ComponentSystem_1.generateComponentIndex(ShaderData);
+var MaterialSystem_1 = require("../../component/material/MaterialSystem");
+var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
+var shaderUtils_1 = require("../utils/shader/shaderUtils");
+var GeometrySystem_1 = require("../../component/geometry/GeometrySystem");
+var LocationSystem_1 = require("./location/LocationSystem");
+var GLSLSenderSystem_1 = require("./glslSender/GLSLSenderSystem");
+var shaderSourceBuildSystem_1 = require("./shaderSourceBuildSystem");
+var DeviceManagerSystem_1 = require("../device/DeviceManagerSystem");
+exports.create = function (materialClassName, MaterialData, ShaderData) {
+    var index = MaterialSystem_1.getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable), shader = ShaderData.shaderMap[index];
+    if (_isShaderExist(shader)) {
+        return shader;
+    }
+    shader = new Shader_1.Shader();
     shader.index = index;
     ShaderData.count += 1;
-    ShaderData.uniformCacheMap[index] = {};
     return shader;
 };
-exports.init = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ShaderData) {
-    var materialShaderLibConfig = programSystem_1.getMaterialShaderLibConfig(materialClassName, material_config), shaderLibData = shaderLib_generator.shaderLibs, _a = shaderSourceBuildSystem_1.buildGLSLSource(materialIndex, materialShaderLibConfig, shaderLibData), vsSource = _a.vsSource, fsSource = _a.fsSource, program = programSystem_1.getProgram(shaderIndex, ShaderData), gl = DeviceManagerSystem_1.getGL(DeviceManagerData, state);
-    if (!programSystem_1.isProgramExist(program)) {
-        program = gl.createProgram();
-        programSystem_1.registerProgram(shaderIndex, ShaderData, program);
-    }
-    programSystem_1.initShader(program, vsSource, fsSource, gl);
-    locationSystem_1.setLocationMap(gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, ShaderData);
-    glslSenderSystem_1.addSendAttributeConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendAttributeConfigMap);
-    glslSenderSystem_1.addSendUniformConfig(shaderIndex, materialShaderLibConfig, shaderLibData, ShaderData.sendUniformConfigMap);
-};
-exports.sendAttributeData = function (gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData) {
-    programSystem_1.sendAttributeData(gl, shaderIndex, geometryIndex, ShaderData, GeometryData, ArrayBufferData);
-};
-exports.sendUniformData = function (gl, shaderIndex, MaterialData, ShaderData, renderCommand) {
-    programSystem_1.sendUniformData(gl, shaderIndex, MaterialData, ShaderData, renderCommand);
-};
-exports.bindIndexBuffer = function (gl, geometryIndex, ShaderData, GeometryData, IndexBufferData) {
-    var buffer = IndexBufferSystem_1.getOrCreateBuffer(gl, geometryIndex, GeometryData, IndexBufferData);
-    if (ShaderData.lastBindedIndexBuffer === buffer) {
-        return;
-    }
-    ShaderData.lastBindedIndexBuffer = buffer;
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-};
-exports.use = function (gl, shaderIndex, ShaderData) {
-    programSystem_1.use(gl, shaderIndex, ShaderData);
-};
-exports.dispose = function (gl, shaderIndex, ShaderData) {
-};
+var _isShaderExist = function (shader) { return objectUtils_1.isValidMapValue(shader); };
+exports.init = null;
+exports.sendAttributeData = null;
+exports.sendUniformData = null;
+exports.bindIndexBuffer = null;
+exports.use = null;
+if (!WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
+    exports.init = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData) {
+        shaderUtils_1.init(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, shaderSourceBuildSystem_1.buildGLSLSource, DeviceManagerSystem_1.getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+    };
+    exports.sendAttributeData = function (gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData) { return shaderUtils_1.sendAttributeData(gl, shaderIndex, geometryIndex, GeometrySystem_1.getVertices, LocationSystem_1.getAttribLocation, LocationSystem_1.isAttributeLocationNotExist, GLSLSenderSystem_1.sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData); };
+    exports.sendUniformData = function (gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData) {
+        shaderUtils_1.sendUniformData(gl, shaderIndex, {
+            getUniformData: GLSLSenderSystem_1.getUniformData,
+            sendMatrix4: GLSLSenderSystem_1.sendMatrix4,
+            sendVector3: GLSLSenderSystem_1.sendVector3,
+            sendFloat1: GLSLSenderSystem_1.sendFloat1
+        }, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
+    };
+    exports.bindIndexBuffer = function (gl, geometryIndex, ProgramData, GeometryData, IndexBufferData) {
+        shaderUtils_1.bindIndexBuffer(gl, geometryIndex, GeometrySystem_1.getIndices, ProgramData, GeometryData, IndexBufferData);
+    };
+    exports.use = shaderUtils_1.use;
+}
 exports.initData = function (ShaderData) {
     ShaderData.index = 0;
     ShaderData.count = 0;
-    ShaderData.programMap = objectUtils_1.createMap();
-    ShaderData.attributeLocationMap = objectUtils_1.createMap();
-    ShaderData.uniformLocationMap = objectUtils_1.createMap();
-    ShaderData.sendAttributeConfigMap = objectUtils_1.createMap();
-    ShaderData.sendUniformConfigMap = objectUtils_1.createMap();
-    ShaderData.vertexAttribHistory = [];
-    ShaderData.uniformCacheMap = objectUtils_1.createMap();
     ShaderData.shaderMap = objectUtils_1.createMap();
-    ShaderData.isInitMap = objectUtils_1.createMap();
 };
 //# sourceMappingURL=ShaderSystem.js.map

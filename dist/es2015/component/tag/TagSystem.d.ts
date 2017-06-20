@@ -9,7 +9,6 @@ export declare var removeTag: Function;
 export declare var addComponent: (component: Tag, gameObject: GameObject) => void;
 export declare var getSlotCount: (index: number, slotCountMap: number[]) => number;
 export declare var getUsedSlotCount: (index: number, usedSlotCountMap: number[]) => number;
-export declare var checkShouldAlive: (tag: Tag, TagData: any) => void;
 export declare var disposeComponent: Function;
 export declare var getGameObject: (index: number, Data: any) => GameObject;
 export declare var findGameObjectsByTag: (targetTag: string, TagData: any) => GameObject[];

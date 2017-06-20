@@ -49,10 +49,6 @@ exports.isNotChangeParent = function (currentParentIndexInArrayBuffer, newParent
 };
 exports.removeHierarchyData = function (uid, ThreeDTransformData) {
     objectUtils_1.deleteVal(uid, ThreeDTransformData.childrenMap);
-    var parent = exports.getParent(uid, ThreeDTransformData);
-    if (exports.isParentExist(parent)) {
-        _removeHierarchyFromParent(parent, uid, ThreeDTransformData);
-    }
 };
 var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformData) {
     var parentUID = parent.uid, children = exports.getChildren(parentUID, ThreeDTransformData);

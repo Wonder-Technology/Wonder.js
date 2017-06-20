@@ -14,9 +14,6 @@ export declare var setLocalPositionData: (position: Vector3, vec3IndexInArrayBuf
 export declare var setLocalRotationData: (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => any;
 export declare var setLocalScaleData: (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => any;
 export declare var setPositionData: (indexInArrayBuffer: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => void;
-export declare var getMatrix4DataSize: () => number;
-export declare var getVector3DataSize: () => number;
-export declare var getQuaternionDataSize: () => number;
 export declare var getMatrix4DataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;
 export declare var getVector3DataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;
 export declare var getQuaternionDataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;

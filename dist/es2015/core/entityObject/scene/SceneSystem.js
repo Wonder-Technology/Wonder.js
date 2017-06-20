@@ -6,11 +6,11 @@ import { expect } from "wonder-expect.js";
 export var create = function (GameObjectData) {
     return createGameObject(null, GameObjectData);
 };
-export var addChild = function (scene, child, GameObjectData, SceneData) {
+export var addChild = function (scene, child, ThreeDTransformData, GameObjectData, SceneData) {
     if (_isCamera(child, GameObjectData)) {
         SceneData.cameraArray.push(child);
     }
-    addGameObject(scene, child, null, GameObjectData);
+    addGameObject(scene, child, ThreeDTransformData, GameObjectData);
 };
 export var removeChild = function (gameObject, child, ThreeDTransformData, GameObjectData) {
     removeGameObject(gameObject, child, ThreeDTransformData, GameObjectData);

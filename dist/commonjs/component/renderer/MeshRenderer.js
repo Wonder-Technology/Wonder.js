@@ -20,6 +20,8 @@ var registerClass_1 = require("../../definition/typescript/decorator/registerCla
 var MeshRendererSystem_1 = require("./MeshRendererSystem");
 var MeshRendererData_1 = require("./MeshRendererData");
 var Component_1 = require("../Component");
+var contract_1 = require("../../definition/typescript/decorator/contract");
+var ComponentSystem_1 = require("../ComponentSystem");
 var MeshRenderer = (function (_super) {
     __extends(MeshRenderer, _super);
     function MeshRenderer() {
@@ -34,10 +36,17 @@ exports.MeshRenderer = MeshRenderer;
 exports.createMeshRenderer = function () {
     return MeshRendererSystem_1.create(MeshRendererData_1.MeshRendererData);
 };
-exports.getMeshRendererGameObject = function (component) {
+exports.getMeshRendererGameObject = contract_1.requireCheckFunc(function (component) {
+    _checkShouldAlive(component, MeshRendererData_1.MeshRendererData);
+}, function (component) {
     return MeshRendererSystem_1.getGameObject(component.index, MeshRendererData_1.MeshRendererData);
-};
+});
 exports.getMeshRendererRenderList = function () {
     return MeshRendererSystem_1.getRenderList(null, MeshRendererData_1.MeshRendererData);
+};
+var _checkShouldAlive = function (component, MeshRendererData) {
+    ComponentSystem_1.checkComponentShouldAlive(component, MeshRendererData, function (component, MeshRendererData) {
+        return ComponentSystem_1.isComponentIndexNotRemoved(component);
+    });
 };
 //# sourceMappingURL=MeshRenderer.js.map

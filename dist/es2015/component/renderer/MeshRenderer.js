@@ -18,6 +18,8 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { create, getGameObject, getRenderList } from "./MeshRendererSystem";
 import { MeshRendererData } from "./MeshRendererData";
 import { Component } from "../Component";
+import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../ComponentSystem";
 var MeshRenderer = (function (_super) {
     __extends(MeshRenderer, _super);
     function MeshRenderer() {
@@ -32,10 +34,17 @@ export { MeshRenderer };
 export var createMeshRenderer = function () {
     return create(MeshRendererData);
 };
-export var getMeshRendererGameObject = function (component) {
+export var getMeshRendererGameObject = requireCheckFunc(function (component) {
+    _checkShouldAlive(component, MeshRendererData);
+}, function (component) {
     return getGameObject(component.index, MeshRendererData);
-};
+});
 export var getMeshRendererRenderList = function () {
     return getRenderList(null, MeshRendererData);
+};
+var _checkShouldAlive = function (component, MeshRendererData) {
+    checkComponentShouldAlive(component, MeshRendererData, function (component, MeshRendererData) {
+        return isComponentIndexNotRemoved(component);
+    });
 };
 //# sourceMappingURL=MeshRenderer.js.map

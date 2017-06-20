@@ -17,7 +17,7 @@ export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) =
         return;
     }
 
-    count = ThreeDTransformData.count;
+    count = ThreeDTransformData.maxCount;
     cacheMap = ThreeDTransformData.cacheMap;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {

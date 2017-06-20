@@ -1,19 +1,20 @@
-import { isUndefined } from "./JudgeUtils";
-export var deleteVal = (key: number, arr: Array<number>) => arr[key] = void 0;
+import { isNotUndefined, isUndefined } from "./JudgeUtils";
+
+export var deleteVal = (key: number, arr: Array<any>) => arr[key] = void 0;
 
 export var isNotValidVal = (val: any) => isUndefined(val);
 
-export var deleteBySwap = (index: number, array: Array<any>) => {
-    var last = array.length - 1,
-        temp = null;
+export var isValidVal = (val: any) => isNotUndefined(val);
 
-    if (last === -1) {
+export var deleteBySwap = (index: number, lastIndex: number, array: Array<any>) => {
+    var temp = null;
+
+    if (lastIndex === -1) {
         return null;
     }
 
-    temp = array[last];
+    temp = array[lastIndex];
 
-    array[last] = array[index];
     array[index] = temp;
 
     array.pop();

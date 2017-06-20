@@ -7,10 +7,12 @@ import { ThreeDTransform } from "./ThreeDTransform";
 import { moveToIndex, swap } from "./operateDataSystem";
 import { forEach } from "../../utils/arrayUtils";
 import { LinkList, LinkNode } from "./LinkList";
+import { isValidMapValue } from "../../utils/objectUtils";
+import { isNotAlive } from "./ThreeDTransformSystem";
 
 export var addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number, ThreeDTransformData: any) => {
-    it("firstDirtyIndex should <= count", () => {
-        expect(firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", () => {
+        expect(firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
 }, (ThreeDTransformData: any) => {
     return ThreeDTransformData.firstDirtyIndex + 1;
@@ -63,8 +65,8 @@ export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer: nu
 })
 
 export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    it("firstDirtyIndex should <= count", () => {
-        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", () => {
+        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
     // it("target index should not be used", () => {
     //     var targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
@@ -88,12 +90,18 @@ export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeD
 
 var _getNotUsedIndexFromArr = (ThreeDTransformData: any) => {
     var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList,
+        isValidLinkNode = true,
         node: LinkNode<number> = null;
 
     do {
         node = _getNotUsedIndexNode(notUsedIndexLinkList);
+        isValidLinkNode = _isValidLinkNode(node);
     }
-    while (_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData))
+    while (isValidLinkNode && isIndexUsed(node.val, ThreeDTransformData))
+
+    if (!isValidLinkNode) {
+        return void 0;
+    }
 
     return node.val;
 }
@@ -125,6 +133,10 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
 
     if (isChildrenExist(children)) {
         forEach(children, (child: ThreeDTransform) => {
+            if (isNotAlive(child, ThreeDTransformData)) {
+                return;
+            }
+
             addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
         });
     }
@@ -138,7 +150,7 @@ var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, indexInArrayBuffer:
     // });
     it("indexInArrayBuffer should < firstDirtyIndex", () => {
         expect(indexInArrayBuffer).exist;
-        expect(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
+        expect(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", () => {
         expect(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;

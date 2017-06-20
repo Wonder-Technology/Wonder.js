@@ -6,9 +6,10 @@ import { getChildren, isChildrenExist } from "./hierarchySystem";
 import { moveToIndex, swap } from "./operateDataSystem";
 import { forEach } from "../../utils/arrayUtils";
 import { LinkNode } from "./LinkList";
+import { isNotAlive } from "./ThreeDTransformSystem";
 export var addFirstDirtyIndex = ensureFunc(function (firstDirtyIndex, ThreeDTransformData) {
-    it("firstDirtyIndex should <= count", function () {
-        expect(firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", function () {
+        expect(firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
 }, function (ThreeDTransformData) {
     return ThreeDTransformData.firstDirtyIndex + 1;
@@ -48,8 +49,8 @@ export var generateNotUsedIndexInNormalList = ensureFunc(function (indexInArrayB
     return index;
 });
 export var addToDirtyList = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-    it("firstDirtyIndex should <= count", function () {
-        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.count);
+    it("firstDirtyIndex should <= maxCount", function () {
+        expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
 }, function (indexInArrayBuffer, ThreeDTransformData) {
     var targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
@@ -63,10 +64,14 @@ export var addToDirtyList = requireCheckFunc(function (indexInArrayBuffer, Three
     return targetDirtyIndex;
 });
 var _getNotUsedIndexFromArr = function (ThreeDTransformData) {
-    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList, node = null;
+    var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList, isValidLinkNode = true, node = null;
     do {
         node = _getNotUsedIndexNode(notUsedIndexLinkList);
-    } while (_isValidLinkNode(node) && isIndexUsed(node.val, ThreeDTransformData));
+        isValidLinkNode = _isValidLinkNode(node);
+    } while (isValidLinkNode && isIndexUsed(node.val, ThreeDTransformData));
+    if (!isValidLinkNode) {
+        return void 0;
+    }
     return node.val;
 };
 var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
@@ -85,6 +90,9 @@ export var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, ui
     }
     if (isChildrenExist(children)) {
         forEach(children, function (child) {
+            if (isNotAlive(child, ThreeDTransformData)) {
+                return;
+            }
             addItAndItsChildrenToDirtyList(child.index, child.uid, ThreeDTransformData);
         });
     }
@@ -93,7 +101,7 @@ export var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, ui
 var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, indexInArrayBuffer) {
     it("indexInArrayBuffer should < firstDirtyIndex", function () {
         expect(indexInArrayBuffer).exist;
-        expect(indexInArrayBuffer).lessThan(ThreeDTransformData.firstDirtyIndex);
+        expect(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", function () {
         expect(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;

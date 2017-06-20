@@ -5,6 +5,7 @@ var ComponentTypeIDManager_1 = require("./ComponentTypeIDManager");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var contract_1 = require("../definition/typescript/decorator/contract");
 var objectUtils_1 = require("../utils/objectUtils");
+var arrayUtils_1 = require("../utils/arrayUtils");
 var _addHandle = function (_class, handleMap, handle) {
     var typeID = ComponentTypeIDManager_1.getTypeIDFromClass(_class);
     handleMap[typeID] = handle;
@@ -56,16 +57,27 @@ exports.getComponentGameObject = function (gameObjectMap, index) {
 exports.generateComponentIndex = function (ComponentData) {
     return ComponentData.index++;
 };
-exports.deleteComponentBySwap = contract_1.requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
+exports.deleteComponent = contract_1.requireCheckFunc(function (index, componentMap) {
+    contract_1.it("index should >= 0", function () {
+        wonder_expect_js_1.expect(index).gte(0);
+    });
+}, function (index, componentMap) {
+    exports.markComponentIndexRemoved(componentMap[index]);
+    objectUtils_1.deleteVal(index, componentMap);
+});
+exports.deleteComponentBySwapArray = contract_1.requireCheckFunc(function (sourceIndex, targetIndex, componentMap) {
     contract_1.it("targetIndex should >= 0", function () {
         wonder_expect_js_1.expect(targetIndex).gte(0);
     });
 }, function (sourceIndex, targetIndex, componentMap) {
     componentMap[targetIndex].index = sourceIndex;
     exports.markComponentIndexRemoved(componentMap[sourceIndex]);
-    objectUtils_1.deleteBySwap(sourceIndex, targetIndex, componentMap);
+    arrayUtils_1.deleteBySwap(sourceIndex, targetIndex, componentMap);
 });
 exports.markComponentIndexRemoved = function (component) {
     component.index = -1;
+};
+exports.isComponentIndexNotRemoved = function (component) {
+    return component.index !== -1;
 };
 //# sourceMappingURL=ComponentSystem.js.map

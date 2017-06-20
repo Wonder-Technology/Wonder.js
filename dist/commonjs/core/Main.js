@@ -13,7 +13,8 @@ var DirectorSystem_1 = require("./DirectorSystem");
 var contract_1 = require("../definition/typescript/decorator/contract");
 var MainData_1 = require("./MainData");
 var wonder_expect_js_1 = require("wonder-expect.js");
-var DeviceManagerData_1 = require("../device/DeviceManagerData");
+var DomQuery_1 = require("wonder-commonlib/dist/commonjs/utils/DomQuery");
+var WorkerDetectData_1 = require("../device/WorkerDetectData");
 var Main = (function () {
     function Main() {
     }
@@ -29,12 +30,13 @@ var Main = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
-        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, MainData_1.MainData, configState).run();
+        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, MainData_1.MainData, WorkerDetectData_1.WorkerDetectData, configState).run();
         DirectorSystem_1.setState(DirectorSystem_1.getState(DirectorData_1.DirectorData).set("Main", this._configState.get("Main")), DirectorData_1.DirectorData).run();
         return this;
     };
     Main.init = function () {
-        DirectorSystem_1.setState(MainSystem_1.init(DirectorSystem_1.getState(DirectorData_1.DirectorData), this._configState.get("config"), DeviceManagerData_1.DeviceManagerData).run(), DirectorData_1.DirectorData).run();
+        MainSystem_1.initData();
+        DirectorSystem_1.setState(MainSystem_1.init(DirectorSystem_1.getState(DirectorData_1.DirectorData), this._configState.get("config"), DomQuery_1.DomQuery).run(), DirectorData_1.DirectorData).run();
         return this;
     };
     return Main;

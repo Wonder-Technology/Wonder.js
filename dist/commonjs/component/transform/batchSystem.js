@@ -10,6 +10,7 @@ var contract_1 = require("../../definition/typescript/decorator/contract");
 var functionalUtils_1 = require("../../utils/functionalUtils");
 var contractUtils_1 = require("./contractUtils");
 var arrayUtils_1 = require("../../utils/arrayUtils");
+var ThreeDTransformSystem_1 = require("./ThreeDTransformSystem");
 exports.setBatchDatas = contract_1.requireCheckFunc(function (batchData, GlobalTempData, ThreeTransformData) {
     for (var _i = 0, batchData_1 = batchData; _i < batchData_1.length; _i++) {
         var data = batchData_1[_i];
@@ -48,6 +49,9 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry_1.default(function
         }
         if (hierarchySystem_1.isChildrenExist(children)) {
             arrayUtils_1.forEach(children, function (child) {
+                if (ThreeDTransformSystem_1.isNotAlive(child, ThreeDTransformData)) {
+                    return;
+                }
                 _getNotDirtyIndex(child.index, child.uid, notDirtyIndexArr, isTranslate, ThreeDTransformData);
             });
         }

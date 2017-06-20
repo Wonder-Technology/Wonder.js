@@ -17,50 +17,50 @@ export class View {
     get dom() {
         return getCanvas(getState(DirectorData));
     }
-    set dom(dom: HTMLCanvasElement) {
-        setCanvas(dom).run();
-    }
+    // set dom(dom: HTMLCanvasElement) {
+    //     setCanvas(dom).run();
+    // }
 
     get width() {
         return getWidth(this.dom);
     }
-    set width(width: number) {
-        setWidth(width, this.dom).run();
-    }
+    // set width(width: number) {
+    //     setWidth(width, this.dom).run();
+    // }
 
     get height() {
         return getHeight(this.dom);
     }
-    set height(height: number) {
-        setHeight(height, this.dom).run();
-    }
+    // set height(height: number) {
+    //     setHeight(height, this.dom).run();
+    // }
 
     get styleWidth() {
         return getStyleWidth(this.dom);
     }
-    set styleWidth(styleWidth: string) {
-        setStyleWidth(styleWidth, this.dom).run();
-    }
+    // set styleWidth(styleWidth: string) {
+    //     setStyleWidth(styleWidth, this.dom).run();
+    // }
 
     get styleHeight() {
         return getStyleHeight(this.dom);
     }
-    set styleHeight(styleHeight: string) {
-        setStyleHeight(styleHeight, this.dom).run();
-    }
+    // set styleHeight(styleHeight: string) {
+    //     setStyleHeight(styleHeight, this.dom).run();
+    // }
 
     get x() {
         return getX(this.dom);
     }
-    set x(x: number) {
-        setX(x, this.dom).run();
-    }
+    // set x(x: number) {
+    //     setX(x, this.dom).run();
+    // }
 
     get y() {
         return getY(this.dom);
     }
-    set y(y: number) {
-        setY(y, this.dom).run();
-    }
+    // set y(y: number) {
+    //     setY(y, this.dom).run();
+    // }
 }
 

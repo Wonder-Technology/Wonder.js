@@ -1,4 +1,5 @@
-export declare var isDisposeTooManyComponents: (disposeCount: number) => boolean;
-export declare var reAllocateThreeDTransformMap: (ThreeDTransformData: any) => void;
-export declare var reAllocateGameObjectMap: (GameObjectData: any) => void;
-export declare var reAllocateTagMap: (TagData: any) => void;
+export declare var isDisposeTooManyComponents: (disposeCount: number, maxComponentDisposeCount?: number) => boolean;
+export declare var reAllocateThreeDTransform: (ThreeDTransformData: any) => void;
+export declare var reAllocateGameObject: (GameObjectData: any) => void;
+export declare var reAllocateTag: (TagData: any) => void;
+export declare var reAllocateGeometry: Function;
