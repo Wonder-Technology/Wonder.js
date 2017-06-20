@@ -10,9 +10,9 @@ export type MainConfigData = {
     screenSize?: any;
     useDevicePixelRatio?: boolean;
     contextConfig?: ContextConfigData;
-    workerConfig?:WorkerConfigData;
+    workerConfig?: WorkerConfigData;
 }
 
 export type WorkerConfigData = {
-    renderWorkerFileDir:string;
+    renderWorkerFileDir: string;
 }

@@ -18,7 +18,7 @@ export var clear = curry((state: Map<any, any>, render_config: IRenderConfig, De
     return clearUtils(getGL(DeviceManagerData, state), clearGL, render_config, DeviceManagerData, data);
 });
 
-export var draw = curry((state: Map<any, any>, DataBufferConfig:any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
+export var draw = curry((state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
     return drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData)
 });
 

@@ -11,7 +11,7 @@ import { RenderCommandBufferWorkerData } from "../../../type/dataType";
 import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
 import { getRenderWorker } from "../worker_instance/WorkerInstanceSystem";
 
-export var sendDrawData = curry((WorkerInstanceData:any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
     var geometryData = null,
         disposeData = null,
         materialData = null;
@@ -33,7 +33,7 @@ export var sendDrawData = curry((WorkerInstanceData:any, MaterialData: any, Geom
         };
     }
 
-    if(hasDisposedGeometryIndexArrayData(GeometryData)){
+    if (hasDisposedGeometryIndexArrayData(GeometryData)) {
         disposeData = {
             type: EDisposeDataOperateType.DISPOSE_BUFFER,
             disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray

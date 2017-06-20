@@ -20,7 +20,7 @@ export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceMa
     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
 };
 
-export var draw = (state: Map<any, any>, DataBufferConfig:any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
     var gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state);
 
     drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData);

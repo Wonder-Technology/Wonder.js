@@ -24,7 +24,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
             var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, state).run(),
-                viewportData:ViewportData = getViewportData(screenData, state);
+                viewportData: ViewportData = getViewportData(screenData, state);
 
             createGLWorker(canvas, WorkerInstanceData, contextConfig, viewportData, getRenderWorkerFilePath()).run();
 

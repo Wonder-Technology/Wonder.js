@@ -57,11 +57,11 @@ export var onmessageHandler = (e) => {
             setState(initGL(data).run(), StateData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
-            if(data.materialData !== null){
+            if (data.materialData !== null) {
                 _initMaterials(data.materialData, DataBufferConfig, MaterialWorkerData);
             }
 
-            if(data.geometryData !== null) {
+            if (data.geometryData !== null) {
                 _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
             }
 
@@ -89,7 +89,7 @@ export var onmessageHandler = (e) => {
                 initNewInitedMaterials(materialData.workerInitList);
             }
 
-            if(disposeData !== null){
+            if (disposeData !== null) {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 

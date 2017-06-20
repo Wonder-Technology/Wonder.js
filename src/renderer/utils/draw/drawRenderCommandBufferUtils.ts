@@ -39,7 +39,7 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
     }
 }
 
-export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig:any, {
+export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig: any, {
     bindIndexBuffer,
     sendAttributeData,
     sendUniformData,
@@ -51,14 +51,14 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getVerticesCount
 }, {
                        DeviceManagerDataFromSystem,
-                       MaterialDataFromSystem,
-                       ProgramDataFromSystem,
-                       LocationDataFromSystem,
-                       GLSLSenderDataFromSystem,
-                       GeometryDataFromSystem,
-                       ArrayBufferDataFromSystem,
-                       IndexBufferDataFromSystem,
-                       DrawRenderCommandBufferDataFromSystem
+        MaterialDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem,
+        GeometryDataFromSystem,
+        ArrayBufferDataFromSystem,
+        IndexBufferDataFromSystem,
+        DrawRenderCommandBufferDataFromSystem
                    }, bufferData: RenderCommandBufferWorkerData) => {
     var mat4Length = getMatrix4DataSize(),
         count = bufferData.count,
@@ -141,7 +141,7 @@ var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float3
     }
 }
 
-var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig:any, mat4Length: number, DrawRenderCommandBufferDataFromSystem: any) => {
+var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, mat4Length: number, DrawRenderCommandBufferDataFromSystem: any) => {
     if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
         let count = DataBufferConfig.renderCommandBufferCount;
 

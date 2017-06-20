@@ -11,7 +11,7 @@ import { getCanvas } from "../../structure/ViewSystem";
 import { fromJS } from "immutable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { DeviceManagerData } from "./DeviceManagerData";
-import { ContextConfigData } from "../../../mine/es6_do/core/data/MainData";
+import { ContextConfigData } from "../../definition/type/mainType";
 
 //todo change to function
 

@@ -133,7 +133,7 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
 
     if (isChildrenExist(children)) {
         forEach(children, (child: ThreeDTransform) => {
-            if(isNotAlive(child, ThreeDTransformData)){
+            if (isNotAlive(child, ThreeDTransformData)) {
                 return;
             }
 

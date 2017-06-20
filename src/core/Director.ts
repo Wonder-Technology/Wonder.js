@@ -70,7 +70,7 @@ export class Director {
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);
     // public renderer: Renderer = null;
-    public scheduler:Scheduler = null;
+    public scheduler: Scheduler = null;
 
     private _gameLoop: IDisposable = null;
     // private _gameState: EGameState = EGameState.NORMAL;

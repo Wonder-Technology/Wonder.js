@@ -59,7 +59,7 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
         if (isNotValidMapValue(val)) {
             disposedUIDArr.push(uid);
         }
-        else{
+        else {
             actualAliveUIDArr.push(uid);
         }
     }
@@ -114,7 +114,7 @@ export var reAllocateGameObject = (GameObjectData: any) => {
         if (isNotValidMapValue(val)) {
             disposedUIDArr.push(uid);
         }
-        else{
+        else {
             actualAliveUIDArr.push(uid);
         }
     }
@@ -141,7 +141,7 @@ export var reAllocateGameObject = (GameObjectData: any) => {
     GameObjectData.aliveUIDArray = newAliveUIDArray;
 };
 
-var _cleanChildrenMap = (disposedUIDArr:Array<number>, parentMap:object, isAlive:Function, getChildren:Function, setChildren:Function, Data: any) => {
+var _cleanChildrenMap = (disposedUIDArr: Array<number>, parentMap: object, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var isCleanedParentMap = createMap();
 
     for (let uid of disposedUIDArr) {
@@ -150,7 +150,7 @@ var _cleanChildrenMap = (disposedUIDArr:Array<number>, parentMap:object, isAlive
         if (_isParentExist(parent)) {
             let parentUID = parent.uid;
 
-            if(isValidMapValue(isCleanedParentMap[parentUID])){
+            if (isValidMapValue(isCleanedParentMap[parentUID])) {
                 continue;
             }
 
@@ -161,19 +161,19 @@ var _cleanChildrenMap = (disposedUIDArr:Array<number>, parentMap:object, isAlive
     }
 }
 
-var _cleanChildren = (parentUID: number, isAlive:Function, getChildren:Function, setChildren:Function, Data: any) => {
+var _cleanChildren = (parentUID: number, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var children = getChildren(parentUID, Data);
 
-    if(!_isChildrenExist(children)){
+    if (!_isChildrenExist(children)) {
         return;
     }
 
-    let newChildren:Array<Component> = [];
+    let newChildren: Array<Component> = [];
 
     for (let i = 0, len = children.length; i < len; ++i) {
         let child = children[i];
 
-        if(isAlive(child, Data)){
+        if (isAlive(child, Data)) {
             newChildren.push(child);
         }
     }

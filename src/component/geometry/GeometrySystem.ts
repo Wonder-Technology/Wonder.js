@@ -208,16 +208,16 @@ export var disposeComponent = (component: Geometry) => {
 
 var _disposeBuffers = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeBuffers = requireCheckFunc((disposedIndexArray:Array<number>) => {
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _disposeBuffers = requireCheckFunc((disposedIndexArray: Array<number>) => {
         it("should not add data twice in one frame", () => {
             expect(GeometryData.disposedGeometryIndexArray.length).equal(0);
         });
-    }, (disposedIndexArray:Array<number>) => {
+    }, (disposedIndexArray: Array<number>) => {
         GeometryData.disposedGeometryIndexArray = disposedIndexArray;
     })
 }
-else{
+else {
     _disposeBuffers = (disposedIndexArray: Array<number>) => {
         disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeArrayBuffer, disposeIndexBuffer);
     }
@@ -294,12 +294,12 @@ export var clearDisposedGeometryIndexArray = (GeometryData: any) => {
 
 var _addWorkerInfo = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
         infoList.push(_buildWorkerInfo(index, startIndex, endIndex));
     }
 }
-else{
+else {
     _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
     };
 }
@@ -350,7 +350,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
-    
+
     GeometryData.disposedGeometryIndexArray = [];
 
     GeometryData.verticesOffset = 0;

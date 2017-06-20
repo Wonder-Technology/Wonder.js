@@ -1,4 +1,4 @@
-export class WorkerInstanceData{
+export class WorkerInstanceData {
     public static renderWorker: Worker = null;
 
 }

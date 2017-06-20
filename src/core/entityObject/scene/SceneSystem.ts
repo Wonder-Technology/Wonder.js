@@ -13,7 +13,7 @@ export var create = (GameObjectData: any) => {
     return createGameObject(null, GameObjectData);
 }
 
-export var addChild = (scene: Scene, child: GameObject, ThreeDTransformData:any, GameObjectData: any, SceneData: any) => {
+export var addChild = (scene: Scene, child: GameObject, ThreeDTransformData: any, GameObjectData: any, SceneData: any) => {
     if (_isCamera(child, GameObjectData)) {
         SceneData.cameraArray.push(child);
     }

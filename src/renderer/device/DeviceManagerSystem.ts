@@ -39,7 +39,7 @@ export var getViewport = getViewportUtils;
 
 export var setViewport = setViewportUtils;
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas:HTMLCanvasElement, state:Map<any, any>) => {
+export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement, state: Map<any, any>) => {
     return IO.of(() => {
         if (!useDevicePixelRatio) {
             return state;
@@ -55,11 +55,11 @@ export var setViewportOfGL = setViewportOfGLUtils;
 
 export var getScreenSize = getScreenSizeUtils;
 
-export var setScreen = curry((canvas:HTMLCanvasElement, DeviceManagerData:any, state: Map<any, any>) => {
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state);
 });
 
-var _setScreenData = curry((DeviceManagerData:any, canvas:HTMLCanvasElement, state: Map<any, any>, data:any) => {
+var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,

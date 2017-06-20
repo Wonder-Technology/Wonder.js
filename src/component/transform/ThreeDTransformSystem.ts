@@ -117,11 +117,11 @@ export var addComponent = (transform: ThreeDTransform, gameObject: GameObject) =
     return addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
 }
 
-export var isAlive = (transform:ThreeDTransform, ThreeDTransformData:any) => {
+export var isAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     return isValidMapValue(ThreeDTransformData.transformMap[transform.index]);
 }
 
-export var isNotAlive = (transform:ThreeDTransform, ThreeDTransformData:any) => {
+export var isNotAlive = (transform: ThreeDTransform, ThreeDTransformData: any) => {
     return !isAlive(transform, ThreeDTransformData);
 }
 

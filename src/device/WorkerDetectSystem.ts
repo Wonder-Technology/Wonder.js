@@ -10,7 +10,7 @@ export var detect = curry((WorkerDetectData: any) => {
     /*!
     for unit test
      */
-    if (typeof root.isSupportSharedArrayBuffer_wonder !== "undefined" && typeof root.isSupportRenderWorkerAndSharedArrayBuffer_wonder !== "undefined"){
+    if (typeof root.isSupportSharedArrayBuffer_wonder !== "undefined" && typeof root.isSupportRenderWorkerAndSharedArrayBuffer_wonder !== "undefined") {
         WorkerDetectData.isSupportSharedArrayBuffer = root.isSupportSharedArrayBuffer_wonder;
         WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer = root.isSupportRenderWorkerAndSharedArrayBuffer_wonder;
 
@@ -42,7 +42,7 @@ export var isSupportRenderWorkerAndSharedArrayBuffer = () => {
     return RenderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 }
 
-export var setWorkerConfig = (config:WorkerConfigData, WorkerDetectData:any) => {
+export var setWorkerConfig = (config: WorkerConfigData, WorkerDetectData: any) => {
     return IO.of(() => {
         WorkerDetectData.renderWorkerFileDir = config.renderWorkerFileDir;
     })
@@ -52,8 +52,8 @@ export var getRenderWorkerFilePath = () => {
     return `${_getValidFileDir(WorkerDetectData.renderWorkerFileDir)}wd.renderWorker.js`
 }
 
-var _getValidFileDir = (dir:string) => {
-    if(dir.slice(-1) !== '/'){
+var _getValidFileDir = (dir: string) => {
+    if (dir.slice(-1) !== '/') {
         return `${dir}/`;
     }
 

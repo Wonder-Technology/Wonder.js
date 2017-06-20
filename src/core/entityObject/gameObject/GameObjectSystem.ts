@@ -86,7 +86,7 @@ var _diposeAllDatas = (gameObject: GameObject, GameObjectData: any) => {
 
     if (_isChildrenExist(children)) {
         forEach(children, (child: GameObject) => {
-            if(isNotAlive(child, GameObjectData)){
+            if (isNotAlive(child, GameObjectData)) {
                 return;
             }
 
@@ -218,7 +218,7 @@ export var setChildren = (uid: number, children: Array<GameObject>, GameObjectDa
 
 
 export var getAliveChildren = (uid: number, GameObjectData: any) => {
-    return filter(getChildren(uid, GameObjectData), (gameObject:GameObject) => {
+    return filter(getChildren(uid, GameObjectData), (gameObject: GameObject) => {
         return isAlive(gameObject, GameObjectData);
     })
 }
@@ -270,7 +270,7 @@ export var removeChild = requireCheckFunc((gameObject: GameObject, child: GameOb
 })
 
 export var hasChild = (gameObject: GameObject, child: GameObject, GameObjectData: any) => {
-    if(isNotAlive(gameObject, GameObjectData) || isNotAlive(child, GameObjectData)){
+    if (isNotAlive(gameObject, GameObjectData) || isNotAlive(child, GameObjectData)) {
         return false;
     }
 

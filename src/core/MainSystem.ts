@@ -74,7 +74,7 @@ export var setLibIsTest = (isTest: boolean) => {
     });
 }
 
-export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectData:any, {
+export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectData: any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -90,7 +90,7 @@ export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectD
         }
     },
     workerConfig = {
-        renderWorkerFileDir:"/Wonder.js/dist/worker/"
+        renderWorkerFileDir: "/Wonder.js/dist/worker/"
     }
 }) => {
     return IO.of(() => {

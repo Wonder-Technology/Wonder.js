@@ -5,7 +5,7 @@ import { disposeBuffer as disposeIndexBuffer } from "../../worker/render_file/bu
 
 export var isBufferExist = (buffer: WebGLBuffer) => isValidMapValue(buffer);
 
-export var disposeBuffer = (geometryIndex: number, buffers:Array<WebGLBuffer>, getGL:Function, DeviceManagerDataFromSystem:any) => {
+export var disposeBuffer = (geometryIndex: number, buffers: Array<WebGLBuffer>, getGL: Function, DeviceManagerDataFromSystem: any) => {
     var gl = getGL(DeviceManagerDataFromSystem, null),
         buffer = buffers[geometryIndex];
 

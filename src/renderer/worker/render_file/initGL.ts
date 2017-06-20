@@ -14,7 +14,7 @@ import { MessageInitGLData } from "../../type/messageDataType";
 import { Map } from "immutable";
 import { setCanvas } from "../../../structure/ViewSystem";
 
-export var initGL = (data:MessageInitGLData) => {
+export var initGL = (data: MessageInitGLData) => {
     return compose(
         map(detect(getGL, DeviceManagerWorkerData)),
         chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)),
@@ -22,7 +22,7 @@ export var initGL = (data:MessageInitGLData) => {
     )(createState());
 }
 
-var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any, state:Map<any, any>) => {
+var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = _getContext(canvas, options);
 

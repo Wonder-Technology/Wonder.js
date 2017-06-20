@@ -51,7 +51,7 @@ export var getIndicesCount = (index: number, getIndices: Function, GeometryDataF
     return getIndices(index, GeometryDataFromSystem).length;
 }
 
-export var createBufferViews = (buffer:any, count:number, UintArray:any,  GeometryDataFromSystem: any) => {
+export var createBufferViews = (buffer: any, count: number, UintArray: any, GeometryDataFromSystem: any) => {
     GeometryDataFromSystem.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
     GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getIndexDataSize());
 }

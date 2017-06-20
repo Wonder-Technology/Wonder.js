@@ -65,7 +65,7 @@ export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, a
     }
 }), 10)
 
-export var initData = (DataBufferConfig:any, RenderCommandBufferData: any) => {
+export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
     var mat4Length = getMatrix4DataSize(),
         size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
         buffer: any = null,

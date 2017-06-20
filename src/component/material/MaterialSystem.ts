@@ -97,12 +97,12 @@ else {
 
 export var clearWorkerInitList = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     clearWorkerInitList = (MaterialData: any) => {
         MaterialData.workerInitList = [];
     };
 }
-else{
+else {
     clearWorkerInitList = (MaterialData: any) => {
     };
 }
@@ -197,7 +197,7 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     checkIndexShouldEqualCount(MaterialData);
-}, requireCheckFunc ((component: Material) => {
+}, requireCheckFunc((component: Material) => {
     _checkDisposeComponentWorker(component);
 }, (component: Material) => {
     var sourceIndex = component.index,
@@ -228,15 +228,15 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
 
 var _checkDisposeComponentWorker = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _checkDisposeComponentWorker = (component: Material) => {
         it("should not dispose the material which is inited in the same frame", () => {
             expect(MaterialData.workerInitList.indexOf(component.index)).equal(-1);
         });
     }
 }
-else{
-    _checkDisposeComponentWorker = (component: Material) => {};
+else {
+    _checkDisposeComponentWorker = (component: Material) => { };
 }
 
 export var getGameObject = (index: number, Data: any) => {

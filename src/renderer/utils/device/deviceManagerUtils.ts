@@ -33,8 +33,8 @@ export var setContextConfig = curry((contextConfig: Map<string, any>, state: Map
     return state.setIn(["DeviceManager", "contextConfig"], contextConfig);
 })
 
-export var setPixelRatio = curry((pixelRatio: number|null, state: Map<any, any>) => {
-    if(pixelRatio === null){
+export var setPixelRatio = curry((pixelRatio: number | null, state: Map<any, any>) => {
+    if (pixelRatio === null) {
         return state;
     }
 
@@ -49,7 +49,7 @@ export var setViewport = (x: number, y: number, width: number, height: number, s
     return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas:HTMLCanvasElement) => {
+export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
     return IO.of(() => {
         var pixelRatio: number = getRootProperty("devicePixelRatio").run();
 
@@ -131,7 +131,7 @@ export var getScreenSize = (state: Map<any, any>) => {
     return state.getIn(["Main", "screenSize"]);
 }
 
-export var setScreen = (canvas:HTMLCanvasElement, setScreenData:Function, DeviceManagerDataFromSystem:any, state: Map<any, any>) => {
+export var setScreen = (canvas: HTMLCanvasElement, setScreenData: Function, DeviceManagerDataFromSystem: any, state: Map<any, any>) => {
     return IO.of(requireCheckFunc(() => {
         it("should exist MainData.screenSize", () => {
             expect(getScreenSize(state)).exist;

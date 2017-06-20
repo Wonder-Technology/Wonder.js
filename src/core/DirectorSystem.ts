@@ -28,7 +28,7 @@ export var run = null;
 
 export var render = null;
 
-var _sync = (elapsed: number, state: Map<any, any>, scheduler:Scheduler) => {
+var _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
     scheduler.update(elapsed);
 
     var resultState = updateSystem(elapsed, state);
@@ -45,16 +45,16 @@ export var updateSystem = (elapsed: number, state: Map<any, any>) => {
 }
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    run = (elapsed: number, state: Map<any, any>, timeController:DirectorTimeController, scheduler:Scheduler) => {
-        var resultState:Map<any, any> = state;
+    run = (elapsed: number, state: Map<any, any>, timeController: DirectorTimeController, scheduler: Scheduler) => {
+        var resultState: Map<any, any> = state;
 
-        if(SendDrawRenderCommandBufferData.state === ERenderWorkerState.DRAW_COMPLETE){
+        if (SendDrawRenderCommandBufferData.state === ERenderWorkerState.DRAW_COMPLETE) {
             timeController.tick(elapsed);
             SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
 
             resultState = _sync(elapsed, state, scheduler);
         }
-        else if(SendDrawRenderCommandBufferData.state !== ERenderWorkerState.DRAW_WAIT){
+        else if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.DRAW_WAIT) {
             SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_WAIT;
             resultState = render(resultState);
         }
@@ -71,8 +71,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    run = (elapsed: number, state: Map<any, any>, timeController:DirectorTimeController, scheduler:Scheduler) => {
-        var resultState:Map<any, any> = state;
+    run = (elapsed: number, state: Map<any, any>, timeController: DirectorTimeController, scheduler: Scheduler) => {
+        var resultState: Map<any, any> = state;
 
         timeController.tick(elapsed);
 

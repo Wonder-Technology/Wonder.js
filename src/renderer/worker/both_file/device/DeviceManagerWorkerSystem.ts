@@ -16,16 +16,16 @@ import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 import { Color } from "../../../../structure/Color";
 
-export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData:any, contextConfig:Map<string, any>, viewportData:ViewportData, renderWorkerFilePath:string) => {
+export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData: any, contextConfig: Map<string, any>, viewportData: ViewportData, renderWorkerFilePath: string) => {
     return IO.of(() => {
         var offscreen = (<any>canvas).transferControlToOffscreen(),
-        renderWorker = new Worker(renderWorkerFilePath);
+            renderWorker = new Worker(renderWorkerFilePath);
 
         renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_GL,
             canvas: offscreen,
             options: contextConfig.get("options").toObject(),
-            viewportData:viewportData
+            viewportData: viewportData
         }, [offscreen]);
 
         setRenderWorker(renderWorker, WorkerInstanceData);
@@ -42,15 +42,15 @@ export var setPixelRatio = setPixelRatioUtils;
 
 export var getViewport = getViewportUtils;
 
-export var setViewport = curry((viewportData:ViewportData|null, state: Map<any, any>) => {
-    if(viewportData === null){
+export var setViewport = curry((viewportData: ViewportData | null, state: Map<any, any>) => {
+    if (viewportData === null) {
         return state;
     }
 
     return setViewportUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
 });
 
-export var getViewportData = (screenData:ScreenData, state: Map<any, any>) => {
+export var getViewportData = (screenData: ScreenData, state: Map<any, any>) => {
     var oldViewportData = getViewport(state),
         {
             x,
@@ -64,10 +64,10 @@ export var getViewportData = (screenData:ScreenData, state: Map<any, any>) => {
     }
 
     return {
-        x:x,
-        y:y,
-        width:width,
-        height:height
+        x: x,
+        y: y,
+        width: width,
+        height: height
     }
 }
 
@@ -86,11 +86,11 @@ export var setViewportOfGL = curry((DeviceManagerWorkerData: any, {
     });
 })
 
-export var setScreen = curry((canvas:HTMLCanvasElement, DeviceManagerWorkerData:any, state: Map<any, any>) => {
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state);
 });
 
-var _setScreenData = curry((DeviceManagerWorkerData:any, canvas:HTMLCanvasElement, state: Map<any, any>, data:any) => {
+var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -107,7 +107,7 @@ var _setScreenData = curry((DeviceManagerWorkerData:any, canvas:HTMLCanvasElemen
     });
 })
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas:HTMLCanvasElement) => {
+export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
     return IO.of(() => {
         if (!useDevicePixelRatio) {
             return null;
