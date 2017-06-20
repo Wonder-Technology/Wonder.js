@@ -4,7 +4,7 @@ import { WorkerDetectData } from "./WorkerDetectData";
 import { root } from "../definition/Variable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { WorkerConfigData } from "../definition/type/mainType";
-import { renderWorkerConfig } from "../renderer/worker/both_file/renderWorkerConfig";
+import { RenderWorkerConfig } from "../config/RenderWorkerConfig";
 
 export var detect = curry((WorkerDetectData: any) => {
     /*!
@@ -39,7 +39,7 @@ export var isSupportSharedArrayBuffer = () => {
 }
 
 export var isSupportRenderWorkerAndSharedArrayBuffer = () => {
-    return renderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
+    return RenderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 }
 
 export var setWorkerConfig = (config:WorkerConfigData, WorkerDetectData:any) => {

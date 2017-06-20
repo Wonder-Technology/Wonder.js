@@ -26,6 +26,7 @@ export {CompileConfig} from "./config/CompileConfig";
 export {DataBufferConfig} from "./config/DataBufferConfig";
 export {DebugConfig} from "./config/DebugConfig";
 export {MemoryConfig} from "./config/MemoryConfig";
+export {RenderWorkerConfig} from "./config/RenderWorkerConfig";
 export {Director} from "./core/Director";
 export {DirectorData} from "./core/DirectorData";
 export {GameObject,createGameObject,addGameObjectComponent,disposeGameObject,initGameObject,disposeGameObjectComponent,getGameObjectComponent,getGameObjectTransform,hasGameObjectComponent,isGameObjectAlive,addGameObject,removeGameObject,hasGameObject,getGameObjectChildren,getGameObjectParent} from "./core/entityObject/gameObject/GameObject";
@@ -77,7 +78,6 @@ export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSn
 export {DeviceManagerWorkerData} from "./renderer/worker/both_file/device/DeviceManagerWorkerData";
 export {ERenderWorkerState} from "./renderer/worker/both_file/ERenderWorkerState";
 export {EWorkerOperateType} from "./renderer/worker/both_file/EWorkerOperateType";
-export {renderWorkerConfig} from "./renderer/worker/both_file/renderWorkerConfig";
 export {SendDrawRenderCommandBufferData} from "./renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 export {WorkerInstanceData} from "./renderer/worker/logic_file/worker_instance/WorkerInstanceData";
 export {ArrayBufferWorkerData} from "./renderer/worker/render_file/buffer/ArrayBufferWorkerData";
