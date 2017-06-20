@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var EWorkerOperateType_1 = require("../EWorkerOperateType");
-var IO_1 = require("Wonder-Fantasy-Land/dist/commonjs/types/IO");
 var curry_1 = require("wonder-lodash/curry");
 var deviceManagerUtils_1 = require("../../../utils/device/deviceManagerUtils");
 var functionalUtils_1 = require("../../../../utils/functionalUtils");
 var ViewSystem_1 = require("../../../../structure/ViewSystem");
 var stateUtils_1 = require("../../../../utils/stateUtils");
 var WorkerInstanceSystem_1 = require("../../logic_file/worker_instance/WorkerInstanceSystem");
+var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
 exports.createGL = curry_1.default(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
     return IO_1.IO.of(function () {
         var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);

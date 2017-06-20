@@ -1,11 +1,11 @@
 import { EWorkerOperateType } from "../EWorkerOperateType";
-import { IO } from "Wonder-Fantasy-Land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 export var createGL = curry(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
     return IO.of(function () {
         var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);

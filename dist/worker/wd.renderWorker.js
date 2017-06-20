@@ -1526,75 +1526,13 @@
 	    DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
 	};
 
-	var isObject_1 = createCommonjsModule(function (module, exports) {
+	var identity_1 = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	function isObject(value) {
-	    var type = typeof value;
-	    return value != null && (type == 'object' || type == 'function');
+	function identity(value) {
+	    return value;
 	}
-	exports.default = isObject;
-	});
-
-	var _baseCreate = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var isObject_js_1 = isObject_1;
-	var objectCreate = Object.create;
-	var baseCreate = (function () {
-	    function object() { }
-	    return function (proto) {
-	        if (!isObject_js_1.default(proto)) {
-	            return {};
-	        }
-	        if (objectCreate) {
-	            return objectCreate(proto);
-	        }
-	        object.prototype = proto;
-	        var result = new object;
-	        object.prototype = undefined;
-	        return result;
-	    };
-	}());
-	exports.default = baseCreate;
-	});
-
-	var _baseLodash = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function baseLodash() {
-	}
-	exports.default = baseLodash;
-	});
-
-	var _LodashWrapper = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseCreate_js_1 = _baseCreate;
-	var _baseLodash_js_1 = _baseLodash;
-	function LodashWrapper(value, chainAll) {
-	    this.__wrapped__ = value;
-	    this.__actions__ = [];
-	    this.__chain__ = !!chainAll;
-	    this.__index__ = 0;
-	    this.__values__ = undefined;
-	}
-	LodashWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
-	LodashWrapper.prototype.constructor = LodashWrapper;
-	exports.default = LodashWrapper;
-	});
-
-	var _arrayPush = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function arrayPush(array, values) {
-	    var index = -1, length = values.length, offset = array.length;
-	    while (++index < length) {
-	        array[offset + index] = values[index];
-	    }
-	    return array;
-	}
-	exports.default = arrayPush;
+	exports.default = identity;
 	});
 
 	var _freeGlobal = createCommonjsModule(function (module, exports) {
@@ -1680,150 +1618,14 @@
 	exports.default = baseGetTag;
 	});
 
-	var isObjectLike_1 = createCommonjsModule(function (module, exports) {
+	var isObject_1 = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	function isObjectLike(value) {
-	    return value != null && typeof value == 'object';
+	function isObject(value) {
+	    var type = typeof value;
+	    return value != null && (type == 'object' || type == 'function');
 	}
-	exports.default = isObjectLike;
-	});
-
-	var _baseIsArguments = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseGetTag_js_1 = _baseGetTag;
-	var isObjectLike_js_1 = isObjectLike_1;
-	var argsTag = '[object Arguments]';
-	function baseIsArguments(value) {
-	    return isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == argsTag;
-	}
-	exports.default = baseIsArguments;
-	});
-
-	var isArguments_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseIsArguments_js_1 = _baseIsArguments;
-	var isObjectLike_js_1 = isObjectLike_1;
-	var objectProto = Object.prototype;
-	var hasOwnProperty = objectProto.hasOwnProperty;
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-	var isArguments = _baseIsArguments_js_1.default(function () { return arguments; }()) ? _baseIsArguments_js_1.default : function (value) {
-	    return isObjectLike_js_1.default(value) && hasOwnProperty.call(value, 'callee') &&
-	        !propertyIsEnumerable.call(value, 'callee');
-	};
-	exports.default = isArguments;
-	});
-
-	var isArray_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var isArray = Array.isArray;
-	exports.default = isArray;
-	});
-
-	var _isFlattenable = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _Symbol_js_1 = _Symbol;
-	var isArguments_js_1 = isArguments_1;
-	var isArray_js_1 = isArray_1;
-	var spreadableSymbol = _Symbol_js_1.default ? _Symbol_js_1.default.isConcatSpreadable : undefined;
-	function isFlattenable(value) {
-	    return isArray_js_1.default(value) || isArguments_js_1.default(value) ||
-	        !!(spreadableSymbol && value && value[spreadableSymbol]);
-	}
-	exports.default = isFlattenable;
-	});
-
-	var _baseFlatten = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _arrayPush_js_1 = _arrayPush;
-	var _isFlattenable_js_1 = _isFlattenable;
-	function baseFlatten(array, depth, predicate, isStrict, result) {
-	    var index = -1, length = array.length;
-	    predicate || (predicate = _isFlattenable_js_1.default);
-	    result || (result = []);
-	    while (++index < length) {
-	        var value = array[index];
-	        if (depth > 0 && predicate(value)) {
-	            if (depth > 1) {
-	                baseFlatten(value, depth - 1, predicate, isStrict, result);
-	            }
-	            else {
-	                _arrayPush_js_1.default(result, value);
-	            }
-	        }
-	        else if (!isStrict) {
-	            result[result.length] = value;
-	        }
-	    }
-	    return result;
-	}
-	exports.default = baseFlatten;
-	});
-
-	var flatten_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseFlatten_js_1 = _baseFlatten;
-	function flatten(array) {
-	    var length = array == null ? 0 : array.length;
-	    return length ? _baseFlatten_js_1.default(array, 1) : [];
-	}
-	exports.default = flatten;
-	});
-
-	var _apply = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function apply(func, thisArg, args) {
-	    switch (args.length) {
-	        case 0: return func.call(thisArg);
-	        case 1: return func.call(thisArg, args[0]);
-	        case 2: return func.call(thisArg, args[0], args[1]);
-	        case 3: return func.call(thisArg, args[0], args[1], args[2]);
-	    }
-	    return func.apply(thisArg, args);
-	}
-	exports.default = apply;
-	});
-
-	var _overRest = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _apply_js_1 = _apply;
-	var nativeMax = Math.max;
-	function overRest(func, start, transform) {
-	    start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-	    return function () {
-	        var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array = Array(length);
-	        while (++index < length) {
-	            array[index] = args[start + index];
-	        }
-	        index = -1;
-	        var otherArgs = Array(start + 1);
-	        while (++index < start) {
-	            otherArgs[index] = args[index];
-	        }
-	        otherArgs[start] = transform(array);
-	        return _apply_js_1.default(func, this, otherArgs);
-	    };
-	}
-	exports.default = overRest;
-	});
-
-	var constant_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function constant(value) {
-	    return function () {
-	        return value;
-	    };
-	}
-	exports.default = constant;
+	exports.default = isObject;
 	});
 
 	var isFunction_1 = createCommonjsModule(function (module, exports) {
@@ -1931,92 +1733,6 @@
 	exports.default = getNative;
 	});
 
-	var _defineProperty = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _getNative_js_1 = _getNative;
-	var defineProperty = (function () {
-	    try {
-	        var func = _getNative_js_1.default(Object, 'defineProperty');
-	        func({}, '', {});
-	        return func;
-	    }
-	    catch (e) { }
-	}());
-	exports.default = defineProperty;
-	});
-
-	var identity_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function identity(value) {
-	    return value;
-	}
-	exports.default = identity;
-	});
-
-	var _baseSetToString = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var constant_js_1 = constant_1;
-	var _defineProperty_js_1 = _defineProperty;
-	var identity_js_1 = identity_1;
-	var baseSetToString = !_defineProperty_js_1.default ? identity_js_1.default : function (func, string) {
-	    return _defineProperty_js_1.default(func, 'toString', {
-	        'configurable': true,
-	        'enumerable': false,
-	        'value': constant_js_1.default(string),
-	        'writable': true
-	    });
-	};
-	exports.default = baseSetToString;
-	});
-
-	var _shortOut = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var HOT_COUNT = 800, HOT_SPAN = 16;
-	var nativeNow = Date.now;
-	function shortOut(func) {
-	    var count = 0, lastCalled = 0;
-	    return function () {
-	        var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
-	        lastCalled = stamp;
-	        if (remaining > 0) {
-	            if (++count >= HOT_COUNT) {
-	                return arguments[0];
-	            }
-	        }
-	        else {
-	            count = 0;
-	        }
-	        return func.apply(undefined, arguments);
-	    };
-	}
-	exports.default = shortOut;
-	});
-
-	var _setToString = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseSetToString_js_1 = _baseSetToString;
-	var _shortOut_js_1 = _shortOut;
-	var setToString = _shortOut_js_1.default(_baseSetToString_js_1.default);
-	exports.default = setToString;
-	});
-
-	var _flatRest = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var flatten_js_1 = flatten_1;
-	var _overRest_js_1 = _overRest;
-	var _setToString_js_1 = _setToString;
-	function flatRest(func) {
-	    return _setToString_js_1.default(_overRest_js_1.default(func, undefined, flatten_js_1.default), func + '');
-	}
-	exports.default = flatRest;
-	});
-
 	var _WeakMap = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -2032,6 +1748,186 @@
 	var _WeakMap_js_1 = _WeakMap;
 	var metaMap = _WeakMap_js_1.default && new _WeakMap_js_1.default;
 	exports.default = metaMap;
+	});
+
+	var _baseSetData = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var identity_js_1 = identity_1;
+	var _metaMap_js_1 = _metaMap;
+	var baseSetData = !_metaMap_js_1.default ? identity_js_1.default : function (func, data) {
+	    _metaMap_js_1.default.set(func, data);
+	    return func;
+	};
+	exports.default = baseSetData;
+	});
+
+	var _baseCreate = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var isObject_js_1 = isObject_1;
+	var objectCreate = Object.create;
+	var baseCreate = (function () {
+	    function object() { }
+	    return function (proto) {
+	        if (!isObject_js_1.default(proto)) {
+	            return {};
+	        }
+	        if (objectCreate) {
+	            return objectCreate(proto);
+	        }
+	        object.prototype = proto;
+	        var result = new object;
+	        object.prototype = undefined;
+	        return result;
+	    };
+	}());
+	exports.default = baseCreate;
+	});
+
+	var _createCtor = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseCreate_js_1 = _baseCreate;
+	var isObject_js_1 = isObject_1;
+	function createCtor(Ctor) {
+	    return function () {
+	        var args = arguments;
+	        switch (args.length) {
+	            case 0: return new Ctor;
+	            case 1: return new Ctor(args[0]);
+	            case 2: return new Ctor(args[0], args[1]);
+	            case 3: return new Ctor(args[0], args[1], args[2]);
+	            case 4: return new Ctor(args[0], args[1], args[2], args[3]);
+	            case 5: return new Ctor(args[0], args[1], args[2], args[3], args[4]);
+	            case 6: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5]);
+	            case 7: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+	        }
+	        var thisBinding = _baseCreate_js_1.default(Ctor.prototype), result = Ctor.apply(thisBinding, args);
+	        return isObject_js_1.default(result) ? result : thisBinding;
+	    };
+	}
+	exports.default = createCtor;
+	});
+
+	var _createBind = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _createCtor_js_1 = _createCtor;
+	var _root_js_1 = _root;
+	var WRAP_BIND_FLAG = 1;
+	function createBind(func, bitmask, thisArg) {
+	    var isBind = bitmask & WRAP_BIND_FLAG, Ctor = _createCtor_js_1.default(func);
+	    function wrapper() {
+	        var fn = (this && this !== _root_js_1.default && this instanceof wrapper) ? Ctor : func;
+	        return fn.apply(isBind ? thisArg : this, arguments);
+	    }
+	    return wrapper;
+	}
+	exports.default = createBind;
+	});
+
+	var _apply = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function apply(func, thisArg, args) {
+	    switch (args.length) {
+	        case 0: return func.call(thisArg);
+	        case 1: return func.call(thisArg, args[0]);
+	        case 2: return func.call(thisArg, args[0], args[1]);
+	        case 3: return func.call(thisArg, args[0], args[1], args[2]);
+	    }
+	    return func.apply(thisArg, args);
+	}
+	exports.default = apply;
+	});
+
+	var _composeArgs = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var nativeMax = Math.max;
+	function composeArgs(args, partials, holders, isCurried) {
+	    var argsIndex = -1, argsLength = args.length, holdersLength = holders.length, leftIndex = -1, leftLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(leftLength + rangeLength), isUncurried = !isCurried;
+	    while (++leftIndex < leftLength) {
+	        result[leftIndex] = partials[leftIndex];
+	    }
+	    while (++argsIndex < holdersLength) {
+	        if (isUncurried || argsIndex < argsLength) {
+	            result[holders[argsIndex]] = args[argsIndex];
+	        }
+	    }
+	    while (rangeLength--) {
+	        result[leftIndex++] = args[argsIndex++];
+	    }
+	    return result;
+	}
+	exports.default = composeArgs;
+	});
+
+	var _composeArgsRight = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var nativeMax = Math.max;
+	function composeArgsRight(args, partials, holders, isCurried) {
+	    var argsIndex = -1, argsLength = args.length, holdersIndex = -1, holdersLength = holders.length, rightIndex = -1, rightLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(rangeLength + rightLength), isUncurried = !isCurried;
+	    while (++argsIndex < rangeLength) {
+	        result[argsIndex] = args[argsIndex];
+	    }
+	    var offset = argsIndex;
+	    while (++rightIndex < rightLength) {
+	        result[offset + rightIndex] = partials[rightIndex];
+	    }
+	    while (++holdersIndex < holdersLength) {
+	        if (isUncurried || argsIndex < argsLength) {
+	            result[offset + holders[holdersIndex]] = args[argsIndex++];
+	        }
+	    }
+	    return result;
+	}
+	exports.default = composeArgsRight;
+	});
+
+	var _countHolders = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function countHolders(array, placeholder) {
+	    var length = array.length, result = 0;
+	    while (length--) {
+	        if (array[length] === placeholder) {
+	            ++result;
+	        }
+	    }
+	    return result;
+	}
+	exports.default = countHolders;
+	});
+
+	var _baseLodash = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function baseLodash() {
+	}
+	exports.default = baseLodash;
+	});
+
+	var _LazyWrapper = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseCreate_js_1 = _baseCreate;
+	var _baseLodash_js_1 = _baseLodash;
+	var MAX_ARRAY_LENGTH = 4294967295;
+	function LazyWrapper(value) {
+	    this.__wrapped__ = value;
+	    this.__actions__ = [];
+	    this.__dir__ = 1;
+	    this.__filtered__ = false;
+	    this.__iteratees__ = [];
+	    this.__takeCount__ = MAX_ARRAY_LENGTH;
+	    this.__views__ = [];
+	}
+	LazyWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
+	LazyWrapper.prototype.constructor = LazyWrapper;
+	exports.default = LazyWrapper;
 	});
 
 	var noop_1 = createCommonjsModule(function (module, exports) {
@@ -2079,24 +1975,37 @@
 	exports.default = getFuncName;
 	});
 
-	var _LazyWrapper = createCommonjsModule(function (module, exports) {
+	var _LodashWrapper = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var _baseCreate_js_1 = _baseCreate;
 	var _baseLodash_js_1 = _baseLodash;
-	var MAX_ARRAY_LENGTH = 4294967295;
-	function LazyWrapper(value) {
+	function LodashWrapper(value, chainAll) {
 	    this.__wrapped__ = value;
 	    this.__actions__ = [];
-	    this.__dir__ = 1;
-	    this.__filtered__ = false;
-	    this.__iteratees__ = [];
-	    this.__takeCount__ = MAX_ARRAY_LENGTH;
-	    this.__views__ = [];
+	    this.__chain__ = !!chainAll;
+	    this.__index__ = 0;
+	    this.__values__ = undefined;
 	}
-	LazyWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
-	LazyWrapper.prototype.constructor = LazyWrapper;
-	exports.default = LazyWrapper;
+	LodashWrapper.prototype = _baseCreate_js_1.default(_baseLodash_js_1.default.prototype);
+	LodashWrapper.prototype.constructor = LodashWrapper;
+	exports.default = LodashWrapper;
+	});
+
+	var isArray_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var isArray = Array.isArray;
+	exports.default = isArray;
+	});
+
+	var isObjectLike_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function isObjectLike(value) {
+	    return value != null && typeof value == 'object';
+	}
+	exports.default = isObjectLike;
 	});
 
 	var _copyArray = createCommonjsModule(function (module, exports) {
@@ -2180,288 +2089,28 @@
 	exports.default = isLaziable;
 	});
 
-	var _createFlow = createCommonjsModule(function (module, exports) {
+	var _shortOut = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
-	var _LodashWrapper_js_1 = _LodashWrapper;
-	var _flatRest_js_1 = _flatRest;
-	var _getData_js_1 = _getData;
-	var _getFuncName_js_1 = _getFuncName;
-	var isArray_js_1 = isArray_1;
-	var _isLaziable_js_1 = _isLaziable;
-	var FUNC_ERROR_TEXT = 'Expected a function';
-	var WRAP_CURRY_FLAG = 8, WRAP_PARTIAL_FLAG = 32, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256;
-	function createFlow(fromRight) {
-	    return _flatRest_js_1.default(function (funcs) {
-	        var length = funcs.length, index = length, prereq = _LodashWrapper_js_1.default.prototype.thru;
-	        if (fromRight) {
-	            funcs.reverse();
-	        }
-	        while (index--) {
-	            var func = funcs[index];
-	            if (typeof func != 'function') {
-	                throw new TypeError(FUNC_ERROR_TEXT);
-	            }
-	            if (prereq && !wrapper && _getFuncName_js_1.default(func) == 'wrapper') {
-	                var wrapper = new _LodashWrapper_js_1.default([], true);
-	            }
-	        }
-	        index = wrapper ? index : length;
-	        while (++index < length) {
-	            func = funcs[index];
-	            var funcName = _getFuncName_js_1.default(func), data = funcName == 'wrapper' ? _getData_js_1.default(func) : undefined;
-	            if (data && _isLaziable_js_1.default(data[0]) &&
-	                data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) &&
-	                !data[4].length && data[9] == 1) {
-	                wrapper = wrapper[_getFuncName_js_1.default(data[0])].apply(wrapper, data[3]);
-	            }
-	            else {
-	                wrapper = (func.length == 1 && _isLaziable_js_1.default(func))
-	                    ? wrapper[funcName]()
-	                    : wrapper.thru(func);
-	            }
-	        }
-	        return function () {
-	            var args = arguments, value = args[0];
-	            if (wrapper && args.length == 1 && isArray_js_1.default(value)) {
-	                return wrapper.plant(value).value();
-	            }
-	            var index = 0, result = length ? funcs[index].apply(this, args) : value;
-	            while (++index < length) {
-	                result = funcs[index].call(this, result);
-	            }
-	            return result;
-	        };
-	    });
-	}
-	exports.default = createFlow;
-	});
-
-	var flowRight_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _createFlow_js_1 = _createFlow;
-	var flowRight = _createFlow_js_1.default(true);
-	exports.default = flowRight;
-	});
-
-	var flowRight = unwrapExports(flowRight_1);
-
-	var _arrayMap = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function arrayMap(array, iteratee) {
-	    var index = -1, length = array == null ? 0 : array.length, result = Array(length);
-	    while (++index < length) {
-	        result[index] = iteratee(array[index], index, array);
-	    }
-	    return result;
-	}
-	exports.default = arrayMap;
-	});
-
-	var isSymbol_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseGetTag_js_1 = _baseGetTag;
-	var isObjectLike_js_1 = isObjectLike_1;
-	var symbolTag = '[object Symbol]';
-	function isSymbol(value) {
-	    return typeof value == 'symbol' ||
-	        (isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == symbolTag);
-	}
-	exports.default = isSymbol;
-	});
-
-	var _baseToString = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _Symbol_js_1 = _Symbol;
-	var _arrayMap_js_1 = _arrayMap;
-	var isArray_js_1 = isArray_1;
-	var isSymbol_js_1 = isSymbol_1;
-	var INFINITY = 1 / 0;
-	var symbolProto = _Symbol_js_1.default ? _Symbol_js_1.default.prototype : undefined, symbolToString = symbolProto ? symbolProto.toString : undefined;
-	function baseToString(value) {
-	    if (typeof value == 'string') {
-	        return value;
-	    }
-	    if (isArray_js_1.default(value)) {
-	        return _arrayMap_js_1.default(value, baseToString) + '';
-	    }
-	    if (isSymbol_js_1.default(value)) {
-	        return symbolToString ? symbolToString.call(value) : '';
-	    }
-	    var result = (value + '');
-	    return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-	}
-	exports.default = baseToString;
-	});
-
-	var toString_1 = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseToString_js_1 = _baseToString;
-	function toString(value) {
-	    return value == null ? '' : _baseToString_js_1.default(value);
-	}
-	exports.default = toString;
-	});
-
-	var toString$1 = unwrapExports(toString_1);
-
-	var IO = (function () {
-	    function IO(func) {
-	        this.func = null;
-	        this.func = func;
-	    }
-	    IO.of = function (func) {
-	        var obj = new this(func);
-	        return obj;
-	    };
-	    IO.prototype.chain = function (f) {
-	        var io = this;
-	        return IO.of(function () {
-	            var next = f(io.func.apply(io, arguments));
-	            return next.func.apply(next, arguments);
-	        });
-	    };
-	    IO.prototype.map = function (f) {
-	        return IO.of(flowRight(f, this.func));
-	    };
-	    
-	    IO.prototype.ap = function (thatIO) {
-	        return this.chain(function (f) {
-	            return thatIO.map(f);
-	        });
-	    };
-	    
-	    IO.prototype.run = function () {
-	        var args = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            args[_i] = arguments[_i];
-	        }
-	        return this.func.apply(this, arguments);
-	    };
-	    
-	    IO.prototype.toString = function () {
-	        return "(" + toString$1(this.run()) + ")";
-	    };
-	    return IO;
-	}());
-
-	var _baseSetData = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var identity_js_1 = identity_1;
-	var _metaMap_js_1 = _metaMap;
-	var baseSetData = !_metaMap_js_1.default ? identity_js_1.default : function (func, data) {
-	    _metaMap_js_1.default.set(func, data);
-	    return func;
-	};
-	exports.default = baseSetData;
-	});
-
-	var _createCtor = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _baseCreate_js_1 = _baseCreate;
-	var isObject_js_1 = isObject_1;
-	function createCtor(Ctor) {
+	var HOT_COUNT = 800, HOT_SPAN = 16;
+	var nativeNow = Date.now;
+	function shortOut(func) {
+	    var count = 0, lastCalled = 0;
 	    return function () {
-	        var args = arguments;
-	        switch (args.length) {
-	            case 0: return new Ctor;
-	            case 1: return new Ctor(args[0]);
-	            case 2: return new Ctor(args[0], args[1]);
-	            case 3: return new Ctor(args[0], args[1], args[2]);
-	            case 4: return new Ctor(args[0], args[1], args[2], args[3]);
-	            case 5: return new Ctor(args[0], args[1], args[2], args[3], args[4]);
-	            case 6: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5]);
-	            case 7: return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+	        var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
+	        lastCalled = stamp;
+	        if (remaining > 0) {
+	            if (++count >= HOT_COUNT) {
+	                return arguments[0];
+	            }
 	        }
-	        var thisBinding = _baseCreate_js_1.default(Ctor.prototype), result = Ctor.apply(thisBinding, args);
-	        return isObject_js_1.default(result) ? result : thisBinding;
+	        else {
+	            count = 0;
+	        }
+	        return func.apply(undefined, arguments);
 	    };
 	}
-	exports.default = createCtor;
-	});
-
-	var _createBind = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var _createCtor_js_1 = _createCtor;
-	var _root_js_1 = _root;
-	var WRAP_BIND_FLAG = 1;
-	function createBind(func, bitmask, thisArg) {
-	    var isBind = bitmask & WRAP_BIND_FLAG, Ctor = _createCtor_js_1.default(func);
-	    function wrapper() {
-	        var fn = (this && this !== _root_js_1.default && this instanceof wrapper) ? Ctor : func;
-	        return fn.apply(isBind ? thisArg : this, arguments);
-	    }
-	    return wrapper;
-	}
-	exports.default = createBind;
-	});
-
-	var _composeArgs = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var nativeMax = Math.max;
-	function composeArgs(args, partials, holders, isCurried) {
-	    var argsIndex = -1, argsLength = args.length, holdersLength = holders.length, leftIndex = -1, leftLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(leftLength + rangeLength), isUncurried = !isCurried;
-	    while (++leftIndex < leftLength) {
-	        result[leftIndex] = partials[leftIndex];
-	    }
-	    while (++argsIndex < holdersLength) {
-	        if (isUncurried || argsIndex < argsLength) {
-	            result[holders[argsIndex]] = args[argsIndex];
-	        }
-	    }
-	    while (rangeLength--) {
-	        result[leftIndex++] = args[argsIndex++];
-	    }
-	    return result;
-	}
-	exports.default = composeArgs;
-	});
-
-	var _composeArgsRight = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	var nativeMax = Math.max;
-	function composeArgsRight(args, partials, holders, isCurried) {
-	    var argsIndex = -1, argsLength = args.length, holdersIndex = -1, holdersLength = holders.length, rightIndex = -1, rightLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result = Array(rangeLength + rightLength), isUncurried = !isCurried;
-	    while (++argsIndex < rangeLength) {
-	        result[argsIndex] = args[argsIndex];
-	    }
-	    var offset = argsIndex;
-	    while (++rightIndex < rightLength) {
-	        result[offset + rightIndex] = partials[rightIndex];
-	    }
-	    while (++holdersIndex < holdersLength) {
-	        if (isUncurried || argsIndex < argsLength) {
-	            result[offset + holders[holdersIndex]] = args[argsIndex++];
-	        }
-	    }
-	    return result;
-	}
-	exports.default = composeArgsRight;
-	});
-
-	var _countHolders = createCommonjsModule(function (module, exports) {
-	"use strict";
-	Object.defineProperty(exports, "__esModule", { value: true });
-	function countHolders(array, placeholder) {
-	    var length = array.length, result = 0;
-	    while (length--) {
-	        if (array[length] === placeholder) {
-	            ++result;
-	        }
-	    }
-	    return result;
-	}
-	exports.default = countHolders;
+	exports.default = shortOut;
 	});
 
 	var _setData = createCommonjsModule(function (module, exports) {
@@ -2499,6 +2148,58 @@
 	    return source.replace(reWrapComment, '{\n/* [wrapped with ' + details + '] */\n');
 	}
 	exports.default = insertWrapDetails;
+	});
+
+	var constant_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function constant(value) {
+	    return function () {
+	        return value;
+	    };
+	}
+	exports.default = constant;
+	});
+
+	var _defineProperty = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _getNative_js_1 = _getNative;
+	var defineProperty = (function () {
+	    try {
+	        var func = _getNative_js_1.default(Object, 'defineProperty');
+	        func({}, '', {});
+	        return func;
+	    }
+	    catch (e) { }
+	}());
+	exports.default = defineProperty;
+	});
+
+	var _baseSetToString = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var constant_js_1 = constant_1;
+	var _defineProperty_js_1 = _defineProperty;
+	var identity_js_1 = identity_1;
+	var baseSetToString = !_defineProperty_js_1.default ? identity_js_1.default : function (func, string) {
+	    return _defineProperty_js_1.default(func, 'toString', {
+	        'configurable': true,
+	        'enumerable': false,
+	        'value': constant_js_1.default(string),
+	        'writable': true
+	    });
+	};
+	exports.default = baseSetToString;
+	});
+
+	var _setToString = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseSetToString_js_1 = _baseSetToString;
+	var _shortOut_js_1 = _shortOut;
+	var setToString = _shortOut_js_1.default(_baseSetToString_js_1.default);
+	exports.default = setToString;
 	});
 
 	var _arrayEach = createCommonjsModule(function (module, exports) {
@@ -2871,6 +2572,19 @@
 	exports.default = mergeData;
 	});
 
+	var isSymbol_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseGetTag_js_1 = _baseGetTag;
+	var isObjectLike_js_1 = isObjectLike_1;
+	var symbolTag = '[object Symbol]';
+	function isSymbol(value) {
+	    return typeof value == 'symbol' ||
+	        (isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == symbolTag);
+	}
+	exports.default = isSymbol;
+	});
+
 	var toNumber_1 = createCommonjsModule(function (module, exports) {
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -3144,7 +2858,253 @@
 	    return DomQuery;
 	}());
 
-	var IO$1 = (function () {
+	var _arrayPush = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function arrayPush(array, values) {
+	    var index = -1, length = values.length, offset = array.length;
+	    while (++index < length) {
+	        array[offset + index] = values[index];
+	    }
+	    return array;
+	}
+	exports.default = arrayPush;
+	});
+
+	var _baseIsArguments = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseGetTag_js_1 = _baseGetTag;
+	var isObjectLike_js_1 = isObjectLike_1;
+	var argsTag = '[object Arguments]';
+	function baseIsArguments(value) {
+	    return isObjectLike_js_1.default(value) && _baseGetTag_js_1.default(value) == argsTag;
+	}
+	exports.default = baseIsArguments;
+	});
+
+	var isArguments_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseIsArguments_js_1 = _baseIsArguments;
+	var isObjectLike_js_1 = isObjectLike_1;
+	var objectProto = Object.prototype;
+	var hasOwnProperty = objectProto.hasOwnProperty;
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+	var isArguments = _baseIsArguments_js_1.default(function () { return arguments; }()) ? _baseIsArguments_js_1.default : function (value) {
+	    return isObjectLike_js_1.default(value) && hasOwnProperty.call(value, 'callee') &&
+	        !propertyIsEnumerable.call(value, 'callee');
+	};
+	exports.default = isArguments;
+	});
+
+	var _isFlattenable = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _Symbol_js_1 = _Symbol;
+	var isArguments_js_1 = isArguments_1;
+	var isArray_js_1 = isArray_1;
+	var spreadableSymbol = _Symbol_js_1.default ? _Symbol_js_1.default.isConcatSpreadable : undefined;
+	function isFlattenable(value) {
+	    return isArray_js_1.default(value) || isArguments_js_1.default(value) ||
+	        !!(spreadableSymbol && value && value[spreadableSymbol]);
+	}
+	exports.default = isFlattenable;
+	});
+
+	var _baseFlatten = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _arrayPush_js_1 = _arrayPush;
+	var _isFlattenable_js_1 = _isFlattenable;
+	function baseFlatten(array, depth, predicate, isStrict, result) {
+	    var index = -1, length = array.length;
+	    predicate || (predicate = _isFlattenable_js_1.default);
+	    result || (result = []);
+	    while (++index < length) {
+	        var value = array[index];
+	        if (depth > 0 && predicate(value)) {
+	            if (depth > 1) {
+	                baseFlatten(value, depth - 1, predicate, isStrict, result);
+	            }
+	            else {
+	                _arrayPush_js_1.default(result, value);
+	            }
+	        }
+	        else if (!isStrict) {
+	            result[result.length] = value;
+	        }
+	    }
+	    return result;
+	}
+	exports.default = baseFlatten;
+	});
+
+	var flatten_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseFlatten_js_1 = _baseFlatten;
+	function flatten(array) {
+	    var length = array == null ? 0 : array.length;
+	    return length ? _baseFlatten_js_1.default(array, 1) : [];
+	}
+	exports.default = flatten;
+	});
+
+	var _overRest = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _apply_js_1 = _apply;
+	var nativeMax = Math.max;
+	function overRest(func, start, transform) {
+	    start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+	    return function () {
+	        var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array = Array(length);
+	        while (++index < length) {
+	            array[index] = args[start + index];
+	        }
+	        index = -1;
+	        var otherArgs = Array(start + 1);
+	        while (++index < start) {
+	            otherArgs[index] = args[index];
+	        }
+	        otherArgs[start] = transform(array);
+	        return _apply_js_1.default(func, this, otherArgs);
+	    };
+	}
+	exports.default = overRest;
+	});
+
+	var _flatRest = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var flatten_js_1 = flatten_1;
+	var _overRest_js_1 = _overRest;
+	var _setToString_js_1 = _setToString;
+	function flatRest(func) {
+	    return _setToString_js_1.default(_overRest_js_1.default(func, undefined, flatten_js_1.default), func + '');
+	}
+	exports.default = flatRest;
+	});
+
+	var _createFlow = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _LodashWrapper_js_1 = _LodashWrapper;
+	var _flatRest_js_1 = _flatRest;
+	var _getData_js_1 = _getData;
+	var _getFuncName_js_1 = _getFuncName;
+	var isArray_js_1 = isArray_1;
+	var _isLaziable_js_1 = _isLaziable;
+	var FUNC_ERROR_TEXT = 'Expected a function';
+	var WRAP_CURRY_FLAG = 8, WRAP_PARTIAL_FLAG = 32, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256;
+	function createFlow(fromRight) {
+	    return _flatRest_js_1.default(function (funcs) {
+	        var length = funcs.length, index = length, prereq = _LodashWrapper_js_1.default.prototype.thru;
+	        if (fromRight) {
+	            funcs.reverse();
+	        }
+	        while (index--) {
+	            var func = funcs[index];
+	            if (typeof func != 'function') {
+	                throw new TypeError(FUNC_ERROR_TEXT);
+	            }
+	            if (prereq && !wrapper && _getFuncName_js_1.default(func) == 'wrapper') {
+	                var wrapper = new _LodashWrapper_js_1.default([], true);
+	            }
+	        }
+	        index = wrapper ? index : length;
+	        while (++index < length) {
+	            func = funcs[index];
+	            var funcName = _getFuncName_js_1.default(func), data = funcName == 'wrapper' ? _getData_js_1.default(func) : undefined;
+	            if (data && _isLaziable_js_1.default(data[0]) &&
+	                data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) &&
+	                !data[4].length && data[9] == 1) {
+	                wrapper = wrapper[_getFuncName_js_1.default(data[0])].apply(wrapper, data[3]);
+	            }
+	            else {
+	                wrapper = (func.length == 1 && _isLaziable_js_1.default(func))
+	                    ? wrapper[funcName]()
+	                    : wrapper.thru(func);
+	            }
+	        }
+	        return function () {
+	            var args = arguments, value = args[0];
+	            if (wrapper && args.length == 1 && isArray_js_1.default(value)) {
+	                return wrapper.plant(value).value();
+	            }
+	            var index = 0, result = length ? funcs[index].apply(this, args) : value;
+	            while (++index < length) {
+	                result = funcs[index].call(this, result);
+	            }
+	            return result;
+	        };
+	    });
+	}
+	exports.default = createFlow;
+	});
+
+	var flowRight_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _createFlow_js_1 = _createFlow;
+	var flowRight = _createFlow_js_1.default(true);
+	exports.default = flowRight;
+	});
+
+	var flowRight = unwrapExports(flowRight_1);
+
+	var _arrayMap = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	function arrayMap(array, iteratee) {
+	    var index = -1, length = array == null ? 0 : array.length, result = Array(length);
+	    while (++index < length) {
+	        result[index] = iteratee(array[index], index, array);
+	    }
+	    return result;
+	}
+	exports.default = arrayMap;
+	});
+
+	var _baseToString = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _Symbol_js_1 = _Symbol;
+	var _arrayMap_js_1 = _arrayMap;
+	var isArray_js_1 = isArray_1;
+	var isSymbol_js_1 = isSymbol_1;
+	var INFINITY = 1 / 0;
+	var symbolProto = _Symbol_js_1.default ? _Symbol_js_1.default.prototype : undefined, symbolToString = symbolProto ? symbolProto.toString : undefined;
+	function baseToString(value) {
+	    if (typeof value == 'string') {
+	        return value;
+	    }
+	    if (isArray_js_1.default(value)) {
+	        return _arrayMap_js_1.default(value, baseToString) + '';
+	    }
+	    if (isSymbol_js_1.default(value)) {
+	        return symbolToString ? symbolToString.call(value) : '';
+	    }
+	    var result = (value + '');
+	    return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+	}
+	exports.default = baseToString;
+	});
+
+	var toString_1 = createCommonjsModule(function (module, exports) {
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var _baseToString_js_1 = _baseToString;
+	function toString(value) {
+	    return value == null ? '' : _baseToString_js_1.default(value);
+	}
+	exports.default = toString;
+	});
+
+	var toString$1 = unwrapExports(toString_1);
+
+	var IO = (function () {
 	    function IO(func) {
 	        this.func = null;
 	        this.func = func;
@@ -3191,7 +3151,7 @@
 	    return Number(dom.style.left.slice(0, -2));
 	});
 	var setX = curry(function (x, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.style.left = x + "px";
 	        return dom;
 	    });
@@ -3200,7 +3160,7 @@
 	    return Number(dom.style.top.slice(0, -2));
 	});
 	var setY = curry(function (y, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.style.top = y + "px";
 	        return dom;
 	    });
@@ -3209,7 +3169,7 @@
 	    return dom.clientWidth;
 	});
 	var setWidth = curry(function (width, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.width = width;
 	        return dom;
 	    });
@@ -3218,7 +3178,7 @@
 	    return dom.clientHeight;
 	});
 	var setHeight = curry(function (height, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.height = height;
 	        return dom;
 	    });
@@ -3227,7 +3187,7 @@
 	    return dom.style.width;
 	});
 	var setStyleWidth = curry(function (width, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.style.width = width;
 	        return dom;
 	    });
@@ -3236,13 +3196,13 @@
 	    return dom.style.height;
 	});
 	var setStyleHeight = curry(function (height, dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.style.height = height;
 	        return dom;
 	    });
 	});
 	var initCanvas = function (dom) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        dom.style.cssText = "position:absolute;left:0;top:0;";
 	        return dom;
 	    });
@@ -4136,7 +4096,7 @@
 	}
 
 	var getRootProperty = function (propertyName) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        return root$1[propertyName];
 	    });
 	};
@@ -9153,7 +9113,7 @@
 	    return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 	};
 	var setCanvasPixelRatio$1 = curry(function (useDevicePixelRatio, canvas) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var pixelRatio = getRootProperty("devicePixelRatio").run();
 	        canvas.width = Math.round(canvas.width * pixelRatio);
 	        canvas.height = Math.round(canvas.height * pixelRatio);
@@ -9162,7 +9122,7 @@
 	});
 	var setViewportOfGL$1 = curry(function (DeviceManagerDataFromSystem, state, _a) {
 	    var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var gl = getGL$1(DeviceManagerDataFromSystem, state), viewport = getViewport$1(state);
 	        if (isValueExist(viewport) && viewport.x === x && viewport.y === y && viewport.width === width && viewport.height === height) {
 	            return state;
@@ -9172,7 +9132,7 @@
 	    });
 	});
 	var _setBodyByScreenSize = function (screenSize) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        if (screenSize === EScreenSize.FULL) {
 	            DomQuery.create("body").css("margin", "0");
 	        }
@@ -9180,7 +9140,7 @@
 	    });
 	};
 	var _getScreenData = function (screenSize) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var x = null, y = null, width = null, height = null, styleWidth = null, styleHeight = null;
 	        if (screenSize === EScreenSize.FULL) {
 	            x = 0;
@@ -9212,7 +9172,7 @@
 	    return state.getIn(["Main", "screenSize"]);
 	};
 	var setScreen$1 = function (canvas, setScreenData, DeviceManagerDataFromSystem, state) {
-	    return IO$1.of(requireCheckFunc(function () {
+	    return IO.of(requireCheckFunc(function () {
 	        it("should exist MainData.screenSize", function () {
 	            wdet_1(getScreenSize(state)).exist;
 	        });
@@ -10744,7 +10704,7 @@
 	    return compose(map(detect(getGL$$1, DeviceManagerWorkerData)), chain(setViewportOfGL$$1(DeviceManagerWorkerData, data.viewportData)), _createGL(data.canvas, data.options, DeviceManagerWorkerData))(createState());
 	};
 	var _createGL = curry(function (canvas, options, DeviceManagerWorkerData$$1, state) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var gl = _getContext(canvas, options);
 	        if (!gl) {
 	            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
@@ -10757,7 +10717,7 @@
 	};
 
 	var setState = function (state, StateData) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        StateData.state = state;
 	    });
 	};

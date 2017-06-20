@@ -1,5 +1,4 @@
 import { EWorkerOperateType } from "../EWorkerOperateType";
-import { IO } from "Wonder-Fantasy-Land/dist/commonjs/types/IO";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import {
@@ -15,6 +14,7 @@ import { ScreenData, ViewportData } from "../../../type/messageDataType";
 import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 import { Color } from "../../../../structure/Color";
+import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
 
 export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData: any, contextConfig: Map<string, any>, viewportData: ViewportData, renderWorkerFilePath: string) => {
     return IO.of(() => {

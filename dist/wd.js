@@ -17817,48 +17817,8 @@
 	    return exports.GPUDetector.getInstance().detect(state, getGL, DeviceManagerDataFromSystem);
 	});
 
-	var IO$1 = (function () {
-	    function IO(func) {
-	        this.func = null;
-	        this.func = func;
-	    }
-	    IO.of = function (func) {
-	        var obj = new this(func);
-	        return obj;
-	    };
-	    IO.prototype.chain = function (f) {
-	        var io = this;
-	        return IO.of(function () {
-	            var next = f(io.func.apply(io, arguments));
-	            return next.func.apply(next, arguments);
-	        });
-	    };
-	    IO.prototype.map = function (f) {
-	        return IO.of(flowRight(f, this.func));
-	    };
-	    
-	    IO.prototype.ap = function (thatIO) {
-	        return this.chain(function (f) {
-	            return thatIO.map(f);
-	        });
-	    };
-	    
-	    IO.prototype.run = function () {
-	        var args = [];
-	        for (var _i = 0; _i < arguments.length; _i++) {
-	            args[_i] = arguments[_i];
-	        }
-	        return this.func.apply(this, arguments);
-	    };
-	    
-	    IO.prototype.toString = function () {
-	        return "(" + toString$1(this.run()) + ")";
-	    };
-	    return IO;
-	}());
-
 	var createGL$1 = curry(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);
 	        renderWorker.postMessage({
 	            operateType: exports.EWorkerOperateType.INIT_GL,
@@ -17894,7 +17854,7 @@
 	};
 	var setViewportOfGL$2 = curry(function (DeviceManagerWorkerData, _a, state) {
 	    var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        var gl = getGL$2(DeviceManagerWorkerData, state);
 	        gl.viewport(x, y, width, height);
 	        return state;
@@ -17905,13 +17865,13 @@
 	});
 	var _setScreenData$1 = curry(function (DeviceManagerWorkerData, canvas, state, data) {
 	    var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        compose(chain(setStyleWidth(styleWidth)), chain(setStyleHeight(styleHeight)), chain(setHeight(height)), chain(setWidth(width)), chain(setY(y)), setX(x))(canvas).run();
 	        return data;
 	    });
 	});
 	var setCanvasPixelRatio$2 = curry(function (useDevicePixelRatio, canvas) {
-	    return IO$1.of(function () {
+	    return IO.of(function () {
 	        if (!useDevicePixelRatio) {
 	            return null;
 	        }
