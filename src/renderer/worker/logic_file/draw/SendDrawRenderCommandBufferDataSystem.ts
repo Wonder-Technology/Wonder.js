@@ -59,4 +59,3 @@ export var sendDrawData = curry((WorkerInstanceData:any, MaterialData: any, Geom
     clearDisposedGeometryIndexArray(GeometryData);
     clearWorkerInitList(MaterialData);
 })
-

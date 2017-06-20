@@ -18,4 +18,5 @@ export { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 export { DataBufferConfig } from "../../../config/DataBufferConfig";
 export { GeometryWorkerData } from "./geometry/GeometryWorkerData";
 export { ProgramWorkerData } from "./shader/program/ProgramWorkerData";
+export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 

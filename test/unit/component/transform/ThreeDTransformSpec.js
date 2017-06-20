@@ -77,7 +77,7 @@ describe("ThreeDTransform", function () {
 
             director = directorTool.getDirector();
 
-            updateSystem = director._updateSystem;
+            updateSystem = directorTool.updateSystem;
         })
 
         describe("build uid", function() {
@@ -851,11 +851,6 @@ describe("ThreeDTransform", function () {
                 obj2 = gameObjectTool.create();
                 tra2 = gameObjectTool.getTransform(obj2);
                 tra2.name = "tra2";
-
-
-                director = directorTool.getDirector();
-
-                updateSystem = director._updateSystem;
             });
 
             it("the new one's transform data should be default value", function () {

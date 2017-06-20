@@ -29,6 +29,7 @@ import { initData as initSceneDataSystem } from "../core/entityObject/scene/Scen
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { IRenderConfig } from "../renderer/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
+import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -85,3 +86,5 @@ export var setGeometryVertices = setVertices;
 export var hasGeometryIndices = hasIndices;
 
 export var getShaderIndex = getShaderIndexSystem;
+
+export var updateSystem = updateAllSystems;

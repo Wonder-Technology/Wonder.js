@@ -24,6 +24,9 @@ var directorTool = (function(){
 
             director._loopBody(time || 0, state);
         },
+        updateSystem: function(elapsed, state){
+          return wd.updateSystem(elapsed, state);
+        },
         getDirector: function(){
             return wd.Director.getInstance();
         }

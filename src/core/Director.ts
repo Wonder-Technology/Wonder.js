@@ -15,7 +15,7 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 import {
     init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
 } from "../component/transform/ThreeDTransformSystem";
-import { getState, render, setState } from "./DirectorSystem";
+import { getState, render, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
@@ -52,6 +52,9 @@ import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
+import { Scheduler } from "./Scheduler";
+import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
+import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 
 @singleton(true)
 @registerClass("Director")
@@ -67,6 +70,7 @@ export class Director {
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);
     // public renderer: Renderer = null;
+    public scheduler:Scheduler = null;
 
     private _gameLoop: IDisposable = null;
     // private _gameState: EGameState = EGameState.NORMAL;
@@ -76,6 +80,7 @@ export class Director {
     public initWhenCreate() {
         // this.scene = SceneDispatcher.create();
         // this.renderer = WebGLRenderer.create();
+        this.scheduler = Scheduler.create();
     }
 
     public start() {
@@ -123,6 +128,7 @@ export class Director {
         // this.renderer.init();
 
         this._timeController.start();
+        this.scheduler.start();
 
         return resultState;
     }
@@ -165,37 +171,7 @@ export class Director {
 
         elapsed = this._timeController.computeElapseTime(time);
 
-        return this._run(elapsed, state);
-    }
-
-    private _run(elapsed: number, state: Map<any, any>) {
-        this._timeController.tick(elapsed);
-
-        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.STARTLOOP));
-
-        var resultState = this._update(elapsed, state);
-
-        resultState = render(this._timeController.deltaTime, resultState);
-
-        // EventManager.trigger(CustomEvent.create(<any>EEngineEvent.ENDLOOP));
-
-        return resultState;
-    }
-
-    private _update(elapsed: number, state: Map<any, any>) {
-        // this.scene.gameObjectScene.update(elapsed);
-
-        var resultState = this._updateSystem(elapsed, state);
-
-        return resultState;
-    }
-
-    private _updateSystem(elapsed: number, state: Map<any, any>) {
-        var resultState = updateTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
-
-        resultState = updateCameraController(PerspectiveCameraData, CameraData, CameraControllerData);
-
-        return resultState;
+        return run(elapsed, state, this._timeController, this.scheduler);
     }
 }
 
@@ -218,3 +194,4 @@ addThreeDTransformDisposeHandle(ThreeDTransform);
 
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
+

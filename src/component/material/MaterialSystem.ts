@@ -152,9 +152,9 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
         size = getColorDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(MaterialData.colors, index, r);
-    _setTypeArrayValue(MaterialData.colors, index + 1, g);
-    _setTypeArrayValue(MaterialData.colors, index + 2, b);
+    _setTypeArrayValue(colors, index, r);
+    _setTypeArrayValue(colors, index + 1, g);
+    _setTypeArrayValue(colors, index + 2, b);
 }
 
 export var getOpacity = getOpacityUtils;
@@ -191,8 +191,6 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     _setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
 })
 
-var _
-
 export var addComponent = (component: Material, gameObject: GameObject) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
@@ -215,6 +213,7 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
 
     deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
 
+    //todo fix!
     deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
 
     deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData.opacities, MaterialData.defaultOpacity);

@@ -12,12 +12,14 @@ var workerTool = (function () {
             workerTool.createFakeWorker(sandbox);
 
             sandbox.stub(window.performance, "now").returns(0);
-            sandbox.stub(wd.WorkerConfig, "renderWorkerDT", renderWorkerDT);
+            // sandbox.stub(wd.WorkerConfig, "renderWorkerDT", renderWorkerDT);
 
-            wd.SendDrawRenderCommandBufferData.state = wd.ERenderWorkerState.INIT_COMPLETE;
+            // wd.SendDrawRenderCommandBufferData.state = wd.ERenderWorkerState.INIT_COMPLETE;
         },
-        runRender: function (count) {
-            directorTool.loopBody(null, renderWorkerDT * count);
+        runRender: function (time) {
+            wd.SendDrawRenderCommandBufferData.state = wdrd.ERenderWorkerState.DEFAULT;
+            // directorTool.loopBody(null, renderWorkerDT * count);
+            directorTool.loopBody(null, time);
         },
         createGL: function(sandbox){
             var gl = glslTool.buildFakeGl(sandbox);

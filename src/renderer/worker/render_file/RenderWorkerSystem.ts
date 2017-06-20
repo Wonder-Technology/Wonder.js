@@ -65,9 +65,9 @@ export var onmessageHandler = (e) => {
                 _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
             }
 
-            self.postMessage({
-                state: ERenderWorkerState.INIT_COMPLETE
-            });
+            // self.postMessage({
+            //     state: ERenderWorkerState.INIT_COMPLETE
+            // });
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerWorkerData);
@@ -94,6 +94,10 @@ export var onmessageHandler = (e) => {
             }
 
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
+
+            self.postMessage({
+                state: ERenderWorkerState.DRAW_COMPLETE
+            });
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKOWN(`operateType:${operateType}`));

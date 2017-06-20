@@ -37,6 +37,7 @@ describe("geometry", function () {
             workerTool.runRender(1);
 
 
+
             var obj2 = gameObjectTool.create();
             var geo2VerticesData = [
                 -3, -3, 3, -3, 3, 3, 3, -3, 3,
@@ -54,7 +55,6 @@ describe("geometry", function () {
 
 
             workerTool.runRender(2);
-
 
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage.getCall(2)).toCalledWith({

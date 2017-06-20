@@ -1,4 +1,4 @@
-describe("draw render command", function () {
+describe("draw render command buffer", function () {
     var sandbox = null;
 
     var worker;
@@ -6,6 +6,8 @@ describe("draw render command", function () {
     var EWorkerOperateType = wd.EWorkerOperateType;
 
     var MaterialData = wd.MaterialData;
+
+    var ERenderWorkerState = wdrd.ERenderWorkerState;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -18,31 +20,37 @@ describe("draw render command", function () {
         testRenderWorkerTool.clear(sandbox);
     });
 
-    describe("commit gl", function () {
-        describe("test in render worker", function() {
-            var gl;
-            var e;
+    describe("test in render worker", function () {
+        var gl;
+        var e;
 
-            beforeEach(function () {
-                gl = workerTool.createGL(sandbox);
-            });
+        beforeEach(function () {
+            gl = workerTool.createGL(sandbox);
 
-            it("test", function () {
-                e = {
-                    data:{
-                        operateType: EWorkerOperateType.DRAW,
-                        renderCommandBufferData:[],
-                        geometryData:null,
-                        materialData:null,
-                        disposeData: null
-                    }
+            e = {
+                data: {
+                    operateType: EWorkerOperateType.DRAW,
+                    renderCommandBufferData: [],
+                    geometryData: null,
+                    materialData: null,
+                    disposeData: null
                 }
+            }
+        });
 
-                workerTool.execRenderWorkerMessageHandler(e);
+        it("commit gl", function () {
+            workerTool.execRenderWorkerMessageHandler(e);
 
 
-                expect(gl.commit).toCalledOnce();
-            });
+            expect(gl.commit).toCalledOnce();
+        });
+        it("send DRAW_COMPLEMENT message", function () {
+            workerTool.execRenderWorkerMessageHandler(e);
+
+            var postMessage = workerTool.getWorkerPostMessage();
+            expect(postMessage.withArgs({
+                state: ERenderWorkerState.DRAW_COMPLETE
+            })).toCalledOnce();
         });
     });
 });

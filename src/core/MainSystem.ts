@@ -28,8 +28,8 @@ import { TagData } from "../component/tag/TagData";
 import { SceneData } from "./entityObject/scene/SceneData";
 import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
-import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
-import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
+// import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
+// import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { render_config } from "../renderer/data/render_config";
 import { RenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferData";
@@ -182,7 +182,7 @@ var _initData = () => {
 
     initGameObjectData(GameObjectData);
 
-    initWorkerTimeData(WorkerTimeData);
+    // initWorkerTimeData(WorkerTimeData);
 
     initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
 }

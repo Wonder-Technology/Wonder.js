@@ -60,16 +60,16 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             var data = e.data,
                 state = data.state;
 
-            SendDrawRenderCommandBufferData.state = ERenderWorkerState.INIT_COMPLETE;
+            SendDrawRenderCommandBufferData.state = state;
         };
 
         return state;
     }
 
     render = (state: Map<any, any>) => {
-        if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.INIT_COMPLETE) {
-            return state;
-        }
+        // if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.INIT_COMPLETE) {
+        //     return state;
+        // }
 
         return compose(
             sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
