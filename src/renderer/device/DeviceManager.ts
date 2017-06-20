@@ -1,6 +1,5 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
-import { ContextConfigData } from "../../core/MainSystem";
 // import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
 import { createGL, getGL, getViewport, setGL } from "./DeviceManagerSystem";
 import { View } from "../../structure/View";
@@ -12,6 +11,7 @@ import { getCanvas } from "../../structure/ViewSystem";
 import { fromJS } from "immutable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { DeviceManagerData } from "./DeviceManagerData";
+import { ContextConfigData } from "../../../mine/es6_do/core/data/MainData";
 
 //todo change to function
 

@@ -50,8 +50,7 @@ import { it, requireCheckFunc } from "../definition/typescript/decorator/contrac
 import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
 import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
-import { ContextConfigOptionsData } from "../renderer/type/dataType";
-import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
+import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../device/WorkerDetectSystem";
 import { DrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferData";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
@@ -75,7 +74,7 @@ export var setLibIsTest = (isTest: boolean) => {
     });
 }
 
-export var setConfig = (closeContractTest: boolean, MainData: any, {
+export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectData:any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -89,6 +88,9 @@ export var setConfig = (closeContractTest: boolean, MainData: any, {
             premultipliedAlpha: true,
             preserveDrawingBuffer: false
         }
+    },
+    workerConfig = {
+        renderWorkerFileDir:"/Wonder.js/dist/worker/"
     }
 }) => {
     return IO.of(() => {
@@ -104,6 +106,8 @@ export var setConfig = (closeContractTest: boolean, MainData: any, {
         }
 
         setIsTest(_isTest, MainData).run();
+
+        setWorkerConfig(workerConfig, WorkerDetectData).run();
 
         return fromJS({
             Main: {
@@ -188,14 +192,3 @@ var _initData = () => {
 }
 
 
-export type ContextConfigData = {
-    options: ContextConfigOptionsData;
-}
-
-export type MainConfigData = {
-    canvasId?: string;
-    isTest?: boolean;
-    screenSize?: any;
-    useDevicePixelRatio?: boolean;
-    contextConfig?: ContextConfigData;
-}

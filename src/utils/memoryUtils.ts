@@ -86,8 +86,6 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
         _setMapVal(newGameObjectMap, uid, val);
     }
 
-    //todo reallocate transformMap
-
     ThreeDTransformData.parentMap = newParentMap;
     ThreeDTransformData.childrenMap = newChildrenMap;
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;

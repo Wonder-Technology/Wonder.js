@@ -321,17 +321,60 @@ describe("Main", function() {
             });
 
             it("create renderWorker", function(){
-                var workerFilePath = "/Wonder.js/dist/worker/wd.renderWorker.js";
-                renderWorkerConfig.workerFilePath = workerFilePath;
-
                 Main.setConfig({
                     canvasId: "#a"
                 }).init();
 
                 worker = workerTool.getRenderWorker();
                 expect(worker).toBeInstanceOf(window.Worker);
-                expect(worker.filePath).toEqual(workerFilePath);
             });
+
+            describe("test render worker's file path", function() {
+                beforeEach(function(){
+
+                });
+
+                it("test default file path", function(){
+                    var workerFilePath = "/Wonder.js/dist/worker/wd.renderWorker.js";
+
+                    Main.setConfig({
+                        canvasId: "#a"
+                    }).init();
+
+                    worker = workerTool.getRenderWorker();
+                    expect(worker).toBeInstanceOf(window.Worker);
+                    expect(worker.filePath).toEqual(workerFilePath);
+                });
+
+                describe("set file dir by config", function () {
+                    it("test", function () {
+                        var workerFileDir = "/aaa/worker/";
+
+                        Main.setConfig({
+                            canvasId: "#a",
+                            workerConfig:{
+                                renderWorkerFileDir:workerFileDir
+                            }
+                        }).init();
+
+                        worker = workerTool.getRenderWorker();
+                        expect(worker.filePath).toEqual(workerFileDir + "wd.renderWorker.js");
+                    });
+                    it("if file dir not end with '/', add '/'", function () {
+                        var workerFileDir = "/aaa/worker";
+
+                        Main.setConfig({
+                            canvasId: "#a",
+                            workerConfig:{
+                                renderWorkerFileDir:workerFileDir
+                            }
+                        }).init();
+
+                        worker = workerTool.getRenderWorker();
+                        expect(worker.filePath).toEqual(workerFileDir + '/' + "wd.renderWorker.js");                    });
+                });
+            });
+
             it("send message to render worker", function () {
                 Main.setConfig({
                     canvasId: "#a"

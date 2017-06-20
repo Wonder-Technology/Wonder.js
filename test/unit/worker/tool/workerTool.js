@@ -1,5 +1,5 @@
 var workerTool = (function () {
-    var renderWorkerDT = 33;
+    // var renderWorkerDT = 33;
 
     return {
         init: function (sandbox) {

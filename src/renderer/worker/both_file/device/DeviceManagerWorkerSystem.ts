@@ -1,4 +1,3 @@
-import { renderWorkerConfig } from "../renderWorkerConfig";
 import { EWorkerOperateType } from "../EWorkerOperateType";
 import { IO } from "Wonder-Fantasy-Land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
@@ -17,10 +16,10 @@ import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 import { Color } from "../../../../structure/Color";
 
-export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData:any, contextConfig:Map<string, any>, viewportData:ViewportData) => {
+export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData:any, contextConfig:Map<string, any>, viewportData:ViewportData, renderWorkerFilePath:string) => {
     return IO.of(() => {
         var offscreen = (<any>canvas).transferControlToOffscreen(),
-        renderWorker = new Worker(renderWorkerConfig.workerFilePath);
+        renderWorker = new Worker(renderWorkerFilePath);
 
         renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_GL,
