@@ -4,13 +4,16 @@ var path = require("path");
 var karma = require("karma").server;
 var fs = require("fs-extra");
 
-var karmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
-var ciKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
+var noWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
 var renderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.renderWorker.js");
 
-gulp.task("testByKarma", function (done) {
+var ciNoWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
+var ciRenderWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.renderWorker.js");
+
+
+gulp.task("noWorkerTestByKarma", function (done) {
     karma.start({
-        configFile: karmaConfPath
+        configFile: noWorkerKarmaConfPath
     }, done);
 });
 
@@ -21,7 +24,7 @@ gulp.task("renderWorkerTestByKarma", function (done) {
 });
 
 /*!
-because "rollup" gulp task will first set wd.js file to be empty and after a while fill it, it needs to wait for wd.js file is be filled and then notice karma's watcher
+ because "rollup" gulp task will first set wd.js file to be empty and after a while fill it, it needs to wait for wd.js file is be filled and then notice karma's watcher
  */
 gulp.task("updateWDForTestFile", function (done) {
     var wdFilePath = path.join(process.cwd(), "dist/wd.js");
@@ -55,16 +58,24 @@ gulp.task("watchWDFile", function(){
 // gulp.task("test", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "testByKarma", "renderWorkerTestByKarma"]));
 
 
-gulp.task("testNoWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "testByKarma"]));
+gulp.task("testNoWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "noWorkerTestByKarma"]));
 
 
 gulp.task("testRenderWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "renderWorkerTestByKarma"]));
 
-//todo ci test worker?
-gulp.task("testInCI", function (done) {
+
+
+gulp.task("noWorkerTestInCI", function (done) {
     karma.start({
-        configFile: ciKarmaConfPath,
-        singleRun:true,
-        autoWatch:false
+        configFile: ciNoWorkerKarmaConfPath
     }, done);
 });
+
+gulp.task("renderWorkerTestInCI", function (done) {
+    karma.start({
+        configFile: ciRenderWorkerKarmaConfPath
+    }, done);
+});
+
+gulp.task("testInCI", gulpSync.sync(["noWorkerTestInCI", "renderWorkerTestInCI"]));
+
