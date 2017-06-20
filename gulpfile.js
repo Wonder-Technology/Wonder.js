@@ -76,10 +76,6 @@ gulp.task("generateDTS", function(done) {
     done();
 });
 
-gulp.task("rollup", function(done) {
-    package.rollup(path.join(process.cwd(), "./rollup.config.js"), done);
-});
-
 gulp.task("formatTs", function(done) {
     format.formatTs(tsFilePaths, "/", done);
 });
@@ -90,6 +86,16 @@ gulp.task("createShaderChunk", function() {
 });
 
 
+
+gulp.task("rollupRenderWorker", function(done) {
+    package.rollup(path.join(process.cwd(), "./rollup.config.js"), done);
+});
+
+gulp.task("rollupNoWorker", function(done) {
+    package.rollup(path.join(process.cwd(), "./rollup.config.renderWorker.js"), done);
+});
+
+gulp.task("rollup", gulpSync.sync(["rollupNoWorker", "rollupRenderWorker"]));
 
 gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
 
@@ -107,4 +113,16 @@ gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
     gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollup"]));
+});
+
+gulp.task("watchForTestNoWorker", function(){
+    var totalPaths = tsFilePaths.concat(glslFilePaths);
+
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollupNoWorker"]));
+});
+
+gulp.task("watchForTestRenderWorker", function(){
+    var totalPaths = tsFilePaths.concat(glslFilePaths);
+
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollupRenderWorker"]));
 });
