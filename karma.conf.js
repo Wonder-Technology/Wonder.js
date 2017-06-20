@@ -21,6 +21,7 @@
             'test/helper/jasmine/**',
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',
+            'test/unit/utils/**',
             'test/unit/**/*Tool.js',
 
             'test/unit/**',
@@ -33,7 +34,8 @@
 
         // list of files to exclude
         exclude: [
-            '**/temp/*'
+            '**/temp/*',
+            'test/unit/worker/**'
         ],
 
 
@@ -72,7 +74,7 @@
 
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: true,
+        autoWatch: false,
 
 
         // start these browsers

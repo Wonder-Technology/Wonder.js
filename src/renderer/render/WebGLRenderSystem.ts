@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import { getRenderList } from "../../component/renderer/MeshRendererSystem";
 import { MeshRendererData } from "../../component/renderer/MeshRendererData";
 import { compose } from "../../utils/functionalUtils";
-import { createRenderCommandBuffer } from "../command_buffer/RenderCommandBufferSystem";
+import { createRenderCommandBufferData } from "../command_buffer/RenderCommandBufferSystem";
 import { sendDrawData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { init as initMaterial } from "../../component/material/MaterialSystem";
 import { MaterialData } from "../../component/material/MaterialData";
@@ -74,7 +74,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         return compose(
             sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
             // sortRenderCommands(state),
-            createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }
@@ -95,7 +95,7 @@ else {
             draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
-            createRenderCommandBuffer(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }

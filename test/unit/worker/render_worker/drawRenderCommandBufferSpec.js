@@ -30,7 +30,7 @@ describe("draw render command buffer", function () {
             e = {
                 data: {
                     operateType: EWorkerOperateType.DRAW,
-                    renderCommandBufferData: [],
+                    renderCommandBufferData: null,
                     geometryData: null,
                     materialData: null,
                     disposeData: null

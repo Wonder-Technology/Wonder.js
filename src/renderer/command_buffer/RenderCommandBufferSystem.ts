@@ -23,7 +23,7 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 
-export var createRenderCommandBuffer = curry(requireCheckFunc((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })

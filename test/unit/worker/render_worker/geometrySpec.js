@@ -125,7 +125,7 @@ describe("geometry", function () {
                 e = {
                     data:{
                         operateType: EWorkerOperateType.DRAW,
-                        renderCommandBufferData:[],
+                        renderCommandBufferData:null,
                         materialData:null,
                         geometryData:null,
                         disposeData: null
@@ -156,7 +156,7 @@ describe("geometry", function () {
                 e = {
                     data:{
                         operateType: EWorkerOperateType.DRAW,
-                        renderCommandBufferData:[],
+                        renderCommandBufferData:null,
                         materialData:null,
                         geometryData:{
                             buffer:geometryDataBuffer,

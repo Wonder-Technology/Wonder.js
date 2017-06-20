@@ -102,7 +102,7 @@ describe("material", function () {
                 e = {
                     data:{
                         operateType: EWorkerOperateType.DRAW,
-                        renderCommandBufferData:[],
+                        renderCommandBufferData:null,
                         geometryData:null,
                         materialData:{
                             buffer:materialDataBuffer,

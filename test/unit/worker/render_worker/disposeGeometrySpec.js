@@ -111,7 +111,7 @@ describe("dispose geometry", function () {
                         e = {
                             data:{
                                 operateType: EWorkerOperateType.DRAW,
-                                renderCommandBufferData:[],
+                                renderCommandBufferData:null,
                                 materialData:null,
                                 geometryData:null,
                                 disposeData: {
