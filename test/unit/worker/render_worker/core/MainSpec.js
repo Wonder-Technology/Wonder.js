@@ -112,10 +112,16 @@ describe("Main", function() {
                 expect(fakeDomQuery.css).toCalledWith("margin", "0");
                 expect(view.x).toEqual(0);
                 expect(view.y).toEqual(0);
-                expect(view.width).toEqual(100);
-                expect(view.height).toEqual(200);
                 expect(dom.style.width).toEqual("100%");
                 expect(dom.style.height).toEqual("100%");
+
+
+                if(bowser.firefox){
+                    return;
+                }
+
+                expect(view.width).toEqual(100);
+                expect(view.height).toEqual(200);
             });
             it("support custom screen size and position", function(){
                 var view = device.view;
