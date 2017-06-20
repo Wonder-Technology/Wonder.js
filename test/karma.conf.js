@@ -25,11 +25,13 @@
         'test/helper/yoop/yOOP.js',
 
         'test/unit/utils/**',
-        'test/unit/**/*Tool.js',
+
+        'test/unit/**/no_worker/tool/*Tool.js',
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/**',
+        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/Camera*',
         // 'test/unit/**/reallocate*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
@@ -54,8 +56,7 @@
 
     // list of files to exclude
     exclude: [
-        '**/temp/*',
-        'test/unit/worker/**'
+        '**/temp/*'
     ],
 
 

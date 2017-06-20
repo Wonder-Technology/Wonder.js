@@ -22,9 +22,8 @@
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',
             'test/unit/utils/**',
-            'test/unit/**/*Tool.js',
 
-            'test/unit/**',
+            'test/unit/no_worker/**',
 
             {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
 
@@ -34,8 +33,7 @@
 
         // list of files to exclude
         exclude: [
-            '**/temp/*',
-            'test/unit/worker/**'
+            '**/temp/*'
         ],
 
 
