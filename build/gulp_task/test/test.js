@@ -77,5 +77,5 @@ gulp.task("renderWorkerTestInCI", function (done) {
     }, done);
 });
 
-gulp.task("testInCI", gulpSync.sync(["noWorkerTestInCI", "renderWorkerTestInCI"]));
+gulp.task("testInCI", gulpSync.sync(["renderWorkerTestInCI", "noWorkerTestInCI"]));
 
