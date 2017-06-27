@@ -88,11 +88,11 @@ gulp.task("createShaderChunk", function() {
 
 
 gulp.task("rollupRenderWorker", function(done) {
-    package.rollup(path.join(process.cwd(), "./rollup.config.js"), done);
+    package.rollup(path.join(process.cwd(), "./rollup.config.renderWorker.js"), done);
 });
 
 gulp.task("rollupNoWorker", function(done) {
-    package.rollup(path.join(process.cwd(), "./rollup.config.renderWorker.js"), done);
+    package.rollup(path.join(process.cwd(), "./rollup.config.js"), done);
 });
 
 gulp.task("rollup", gulpSync.sync(["rollupNoWorker", "rollupRenderWorker"]));
