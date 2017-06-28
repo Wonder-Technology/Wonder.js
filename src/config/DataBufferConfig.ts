@@ -5,7 +5,7 @@ export const DataBufferConfig = {
     geometryDataBufferCount: 1000 * 1000,
 
     //20k
-    materialDataBufferCount: 20 * 1000,
+    basicMaterialDataBufferCount: 20 * 1000,
 
     renderCommandBufferCount: 10 * 1024,
 

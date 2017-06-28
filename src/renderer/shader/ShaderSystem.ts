@@ -9,7 +9,7 @@ import {
 import { getIndices, getVertices } from "../../component/geometry/GeometrySystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
 import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "./glslSender/GLSLSenderSystem";
-import { RenderCommandUniformData } from "../type/dataType";
+import { MaterialDataMap, RenderCommandUniformData } from "../type/dataType";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
 import { IMaterialConfig } from "../data/material_config";
@@ -46,19 +46,19 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, MaterialData: any) => {
-        initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, MaterialDataMap:MaterialDataMap) => {
+        initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialDataMap);
     };
 
     sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, MaterialData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, renderCommandUniformData: RenderCommandUniformData) => {
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, BasicMaterialData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, renderCommandUniformData: RenderCommandUniformData) => {
         sendUniformDataUtils(gl, shaderIndex, {
             getUniformData: getUniformData,
             sendMatrix4: sendMatrix4,
             sendVector3: sendVector3,
             sendFloat1: sendFloat1
-        }, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
+        }, BasicMaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
     };
 
     bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {

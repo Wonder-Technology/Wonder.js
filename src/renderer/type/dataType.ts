@@ -67,3 +67,7 @@ export type BuildGLSLSourceFuncFuncDataMap = {
     getAlphaTest: Function;
     isTestAlpha: Function;
 }
+
+export type MaterialDataMap = {
+    BasicMaterialDataFromSystem: any;
+}

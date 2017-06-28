@@ -3,6 +3,7 @@ var shaderTool = (function () {
         disableVertexAttribArray: function (gl) {
           wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         },
+        //todo use BasicMaterialData?
         sendUniformData: function(gl, index, renderCommandUniformData){
             wd.sendUniformData(gl, index, wd.MaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
         },

@@ -1,6 +1,12 @@
 var basicMaterialTool = (function () {
     return {
-        create:wd.createBasicMaterial
+        create:wd.createBasicMaterial,
+        getColor:wd.getBasicMaterialColor,
+        setColor:wd.setBasicMaterialColor,
+        getOpacity:wd.getBasicMaterialOpacity,
+        setOpacity:wd.setBasicMaterialOpacity,
+        getAlphaTest: wd.getBasicMaterialAlphaTest,
+        setAlphaTest: wd.setBasicMaterialAlphaTest
     }
 })()
 

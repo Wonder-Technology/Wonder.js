@@ -30,6 +30,7 @@ import { buildDrawDataMap } from "../utils/draw/drawRenderCommandBufferUtils";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getRenderWorker } from "../worker/logic_file/worker_instance/WorkerInstanceSystem";
 import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
+import { BasicMaterialData } from "../../component/material/BasicMaterialData";
 
 export var init = null;
 
@@ -92,7 +93,7 @@ else {
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, BasicMaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

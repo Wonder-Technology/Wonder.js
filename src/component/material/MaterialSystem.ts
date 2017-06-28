@@ -34,6 +34,8 @@ import { LocationData } from "../../renderer/shader/location/LocationData";
 import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
+import { disposeComponent as disposeBasicMaterialComponent, initData as initBasicMaterialData } from "./BasicMaterialSystem";
+import { BasicMaterialData } from "./BasicMaterialData";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -56,21 +58,10 @@ export var create = requireCheckFunc((material: Material, className: string, Mat
 
     MaterialData.count += 1;
 
-    // _setMaterialClassName(index, className, MaterialData);
-
-    // setColor(index, _createDefaultColor(), MaterialData);
-    // setOpacity(index, 1, MaterialData);
-
     MaterialData.materialMap[index] = material;
 
     return material;
 })
-
-var _createDefaultColor = () => {
-    var color = Color.create();
-
-    return color.setColorByNum("#ffffff");
-}
 
 export var init = requireCheckFunc((state: MapImmutable<any, any>, MaterialData: any) => {
     checkIndexShouldEqualCount(MaterialData);
@@ -91,7 +82,9 @@ else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         var shaderIndex = getShaderIndex(index, MaterialData);
 
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, {
+            BasicMaterialDataFromSystem:BasicMaterialData
+        });
     }
 }
 
@@ -129,9 +122,9 @@ export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData
     _setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
 }
 
-export var getColor = (materialIndex: number, MaterialData: any) => {
+export var getColor = (materialIndex: number, SpecifyMaterialData: any) => {
     var color = Color.create(),
-        colors = MaterialData.colors,
+        colors = SpecifyMaterialData.colors,
         size = getColorDataSize(),
         index = materialIndex * size;
 
@@ -144,11 +137,11 @@ export var getColor = (materialIndex: number, MaterialData: any) => {
 
 export var getColorArr3 = getColorArr3Utils;
 
-export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
+export var setColor = (materialIndex: number, color: Color, SpecifyMaterialData: any) => {
     var r = color.r,
         g = color.g,
         b = color.b,
-        colors = MaterialData.colors,
+        colors = SpecifyMaterialData.colors,
         size = getColorDataSize(),
         index = materialIndex * size;
 
@@ -159,7 +152,7 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
 
 export var getOpacity = getOpacityUtils;
 
-export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number, MaterialData: any) => {
+export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number, SpecifyMaterialData: any) => {
     it("opacity should be number", () => {
         expect(opacity).be.a("number");
     });
@@ -167,16 +160,16 @@ export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number
         expect(opacity).lte(1);
         expect(opacity).gte(0);
     });
-}, (materialIndex: number, opacity: number, MaterialData: any) => {
+}, (materialIndex: number, opacity: number, SpecifyMaterialData: any) => {
     var size = getOpacityDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(MaterialData.opacities, index, opacity);
+    _setTypeArrayValue(SpecifyMaterialData.opacities, index, opacity);
 })
 
 export var getAlphaTest = getAlphaTestUtils;
 
-export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: number, MaterialData: any) => {
+export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: number, SpecifyMaterialData: any) => {
     it("alphaTest should be number", () => {
         expect(alphaTest).be.a("number");
     });
@@ -184,11 +177,11 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     //     expect(alphaTest).lte(1);
     //     expect(alphaTest).gte(0);
     // });
-}, (materialIndex: number, alphaTest: number, MaterialData: any) => {
+}, (materialIndex: number, alphaTest: number, SpecifyMaterialData: any) => {
     var size = getAlphaTestDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
+    _setTypeArrayValue(SpecifyMaterialData.alphaTests, index, alphaTest);
 })
 
 export var addComponent = (component: Material, gameObject: GameObject) => {
@@ -201,10 +194,7 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     _checkDisposeComponentWorker(component);
 }, (component: Material) => {
     var sourceIndex = component.index,
-        lastComponentIndex: number = null,
-        colorDataSize = getColorDataSize(),
-        opacityDataSize = getOpacityDataSize(),
-        alphaTestDataSize = getAlphaTestDataSize();
+        lastComponentIndex: number = null;
 
     MaterialData.count -= 1;
     MaterialData.index -= 1;
@@ -213,15 +203,11 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
 
     deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
 
-    //todo fix!
-    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
-
-    deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData.opacities, MaterialData.defaultOpacity);
-    deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, MaterialData.alphaTests, MaterialData.defaultAlphaTest);
-
     deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+
+    disposeBasicMaterialComponent(sourceIndex, lastComponentIndex, BasicMaterialData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }))
@@ -253,13 +239,7 @@ var _setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, 
 
 export var isTestAlpha = isTestAlphaUtils;
 
-export var initData = (MaterialData: any) => {
-    // MaterialData.shaderMap = createMap();
-    // MaterialData.materialClassNameMap = createMap();
-    // MaterialData.colorMap = createMap();
-    // MaterialData.opacityMap = createMap();
-    // MaterialData.alphaTestMap = createMap();
-
+export var initData = (MaterialData: any, BasicMaterialData:any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];
@@ -269,39 +249,27 @@ export var initData = (MaterialData: any) => {
 
     MaterialData.workerInitList = [];
 
-    MaterialData.defaultColorArr = _createDefaultColor().toVector3().toArray();
-    MaterialData.defaultOpacity = 1;
-    MaterialData.defaultAlphaTest = -1;
-
     _initBufferData(MaterialData);
 
     _initTable(MaterialData);
+
+    initBasicMaterialData(MaterialData, BasicMaterialData);
 }
 
 var _initBufferData = (MaterialData: any) => {
     var buffer: any = null,
-        count = DataBufferConfig.materialDataBufferCount,
-        size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize())
+        count = _getTotalMaterialBufferCount(DataBufferConfig),
+        size = Uint32Array.BYTES_PER_ELEMENT;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
     createTypeArrays(buffer, count, MaterialData);
 
     MaterialData.buffer = buffer;
-
-    _addDefaultTypeArrData(count, MaterialData);
 }
 
-var _addDefaultTypeArrData = (count: number, MaterialData: any) => {
-    var color = _createDefaultColor(),
-        opacity = MaterialData.defaultOpacity,
-        alphaTest = MaterialData.defaultAlphaTest;
-
-    for (let i = 0; i < count; i++) {
-        setColor(i, color, MaterialData);
-        setOpacity(i, opacity, MaterialData);
-        setAlphaTest(i, alphaTest, MaterialData);
-    }
+var _getTotalMaterialBufferCount = (DataBufferConfig:any) => {
+    return DataBufferConfig.basicMaterialDataBufferCount;
 }
 
 var _initTable = (MaterialData: any) => {

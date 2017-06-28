@@ -6,6 +6,7 @@ describe("Material", function() {
 
     var Color = wd.Color;
     var MaterialData = wd.MaterialData;
+    var BasicMaterialData = wd.BasicMaterialData;
     var Shader = wd.Shader;
     var DataBufferConfig = wd.DataBufferConfig;
 
@@ -34,7 +35,7 @@ describe("Material", function() {
         });
 
         it("default color is #ffffff", function(){
-            colorTool.judgeIsEqual(materialTool.getColor(material), Color.create("#ffffff"), expect);
+            colorTool.judgeIsEqual(basicMaterialTool.getColor(material), Color.create("#ffffff"), expect);
         });
     });
 
@@ -46,9 +47,9 @@ describe("Material", function() {
         it("set color", function(){
             var color = Color.create("#123456");
 
-            materialTool.setColor(material, color);
+            basicMaterialTool.setColor(material, color);
 
-            colorTool.judgeIsEqual(materialTool.getColor(material), color, expect);
+            colorTool.judgeIsEqual(basicMaterialTool.getColor(material), color, expect);
         });
     });
 
@@ -58,7 +59,7 @@ describe("Material", function() {
         });
 
         it("default is 1.0", function(){
-            expect(materialTool.getOpacity(material)).toEqual(1.0);
+            expect(basicMaterialTool.getOpacity(material)).toEqual(1.0);
         });
     });
 
@@ -68,7 +69,7 @@ describe("Material", function() {
         });
 
         it("default is -1", function(){
-            expect(materialTool.getAlphaTest(material)).toEqual(-1);
+            expect(basicMaterialTool.getAlphaTest(material)).toEqual(-1);
         });
     });
 
@@ -135,8 +136,8 @@ describe("Material", function() {
     describe("disposeComponent", function() {
         var count;
 
-        function judgeNotAlive(mat, methodName, expect) {
-            componentTool.judgeNotAlive(mat, methodName, materialTool, expect);
+        function judgeNotAlive(mat, methodName, expect, tool) {
+            componentTool.judgeNotAlive(mat, methodName, tool, expect);
         }
 
         beforeEach(function(){
@@ -168,7 +169,7 @@ describe("Material", function() {
 
                                 expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
                                 expect(gameObjectTool.hasComponent(obj2, wd.Material)).toBeTruthy();
-                                judgeNotAlive(material, "getGameObject", expect);
+                                judgeNotAlive(material, "getGameObject", expect, materialTool);
                                 expect(materialTool.getGameObject(mat2)).toEqual(obj2);
                                 expect(MaterialData.gameObjectMap.length).toEqual(1);
                             });
@@ -195,31 +196,31 @@ describe("Material", function() {
                         it("remove from colors", function () {
                             var color1 = Color.create("rgb(0.1,0.2,0.3)");
                             var color2 = Color.create("rgb(0.4,0.2,0.3)");
-                            materialTool.setColor(material, color1);
-                            materialTool.setColor(mat2, color2);
+                            basicMaterialTool.setColor(material, color1);
+                            basicMaterialTool.setColor(mat2, color2);
 
                             gameObjectTool.disposeComponent(obj, material);
 
-                            colorTool.judgeIsEqual(materialTool.getColor(componentTool.createComponent(0)), color2, expect);
-                            colorTool.judgeIsEqual(materialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(MaterialData), expect);
+                            colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(0)), color2, expect);
+                            colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(BasicMaterialData), expect);
                         });
                         it("remove from opacities", function () {
-                            materialTool.setOpacity(material, 0.3);
-                            materialTool.setOpacity(mat2, 0.5);
+                            basicMaterialTool.setOpacity(material, 0.3);
+                            basicMaterialTool.setOpacity(mat2, 0.5);
 
                             gameObjectTool.disposeComponent(obj, material);
 
-                            expect(MaterialData.opacities[0]).toEqual(0.5);
-                            expect(MaterialData.opacities[1]).toEqual(MaterialData.defaultOpacity);
+                            expect(BasicMaterialData.opacities[0]).toEqual(0.5);
+                            expect(BasicMaterialData.opacities[1]).toEqual(BasicMaterialData.defaultOpacity);
                         });
                         it("remove from alphaTests", function () {
-                            materialTool.setAlphaTest(material, 0.3);
-                            materialTool.setAlphaTest(mat2, 0.5);
+                            basicMaterialTool.setAlphaTest(material, 0.3);
+                            basicMaterialTool.setAlphaTest(mat2, 0.5);
 
                             gameObjectTool.disposeComponent(obj, material);
 
-                            expect(MaterialData.alphaTests[0]).toEqual(0.5);
-                            expect(MaterialData.alphaTests[1]).toEqual(MaterialData.defaultAlphaTest);
+                            expect(BasicMaterialData.alphaTests[0]).toEqual(0.5);
+                            expect(BasicMaterialData.alphaTests[1]).toEqual(BasicMaterialData.defaultAlphaTest);
                         });
                     });
                 });
@@ -254,18 +255,18 @@ describe("Material", function() {
 
             materialTool.initMaterial(mat2);
 
-            expect(materialTool.getColor(mat2)).toBeExist();
+            expect(basicMaterialTool.getColor(mat2)).toBeExist();
         });
         it("if material is disposed, operate it should error", function () {
             gameObjectTool.disposeComponent(obj, material);
 
-            judgeNotAlive(material, "getGameObject", expect);
-            judgeNotAlive(material, "getColor", expect);
-            judgeNotAlive(material, "setColor", expect, Color.create());
-            judgeNotAlive(material, "getOpacity", expect);
-            judgeNotAlive(material, "setOpacity", expect, 0.5);
-            judgeNotAlive(material, "getAlphaTest", expect);
-            judgeNotAlive(material, "setAlphaTest", expect, 0.5);
+            judgeNotAlive(material, "getGameObject", expect, materialTool);
+            judgeNotAlive(material, "getColor", expect, basicMaterialTool);
+            judgeNotAlive(material, "setColor", expect, basicMaterialTool, Color.create());
+            judgeNotAlive(material, "getOpacity", expect, basicMaterialTool);
+            judgeNotAlive(material, "setOpacity", expect, basicMaterialTool, 0.5);
+            judgeNotAlive(material, "getAlphaTest", expect, basicMaterialTool);
+            judgeNotAlive(material, "setAlphaTest", expect, basicMaterialTool, 0.5);
         });
     });
 
@@ -279,7 +280,7 @@ describe("Material", function() {
             var obj1,obj2;
 
             function prepareNotExceed() {
-                sandbox.stub(DataBufferConfig, "materialDataBufferCount", 1);
+                sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 1);
 
                 materialTool.resetData();
 
@@ -311,25 +312,25 @@ describe("Material", function() {
                 var errMsg = prepareNotExceed();
 
                 var color = Color.create("rgb(0.4,0.2,0.3)");
-                materialTool.setColor(mat1, color);
+                basicMaterialTool.setColor(mat1, color);
                 expect(function () {
-                    materialTool.setColor(mat2, color);
+                    basicMaterialTool.setColor(mat2, color);
                 }).toThrow(errMsg);
             });
             it("setOpacity", function(){
                 var errMsg = prepareNotExceed();
 
-                materialTool.setOpacity(mat1, 0.1)
+                basicMaterialTool.setOpacity(mat1, 0.1)
                 expect(function () {
-                    materialTool.setOpacity(mat2, 0.1)
+                    basicMaterialTool.setOpacity(mat2, 0.1)
                 }).toThrow(errMsg);
             });
             it("setAlphaTest", function(){
                 var errMsg = prepareNotExceed();
 
-                materialTool.setAlphaTest(mat1, 0.1)
+                basicMaterialTool.setAlphaTest(mat1, 0.1)
                 expect(function () {
-                    materialTool.setAlphaTest(mat2, 0.1)
+                    basicMaterialTool.setAlphaTest(mat2, 0.1)
                 }).toThrow(errMsg);
             });
         });

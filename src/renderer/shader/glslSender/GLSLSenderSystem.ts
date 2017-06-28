@@ -7,8 +7,13 @@ import { RenderCommandUniformData, UniformCacheMap, UniformShaderLocationMap } f
 import { getColorArr3, getOpacity } from "../../../component/material/MaterialSystem";
 import { getUniformLocation, isUniformLocationNotExist } from "../location/LocationSystem";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any) => {
-    return getUniformDataUtils(field, from, getColorArr3, getOpacity, renderCommandUniformData, MaterialData);
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, BasicMaterialData: any) => {
+    // return getUniformDataUtils(field, from, getColorArr3, getOpacity, renderCommandUniformData, BasicMaterialData);
+    return getUniformDataUtils(field, from, renderCommandUniformData, {
+        getColorArr3: getColorArr3,
+        getOpacity: getOpacity,
+        BasicMaterialDataFromSystem: BasicMaterialData
+    });
 };
 
 export var sendBuffer = sendBufferUtils;

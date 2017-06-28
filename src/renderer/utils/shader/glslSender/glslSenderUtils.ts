@@ -10,16 +10,17 @@ import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../utils/objectUtils";
 import { RenderCommandUniformData, UniformShaderLocationMap, SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
+import { BasicMaterialForGetUniformDataDataMap } from "../../../type/utilsType";
 
-export var getUniformData = (field: string, from: string, getColorArr3: Function, getOpacity: Function, renderCommandUniformData: RenderCommandUniformData, MaterialDataFromSystem: any) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
         case "cmd":
             data = renderCommandUniformData[field];
             break;
-        case "material":
-            data = _getUnifromDataFromMaterial(field, renderCommandUniformData.materialIndex, getColorArr3, getOpacity, MaterialDataFromSystem);
+        case "basicMaterial":
+            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, basicMaterialData);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));
@@ -29,15 +30,19 @@ export var getUniformData = (field: string, from: string, getColorArr3: Function
     return data;
 }
 
-var _getUnifromDataFromMaterial = (field: string, materialIndex: number, getColorArr3: Function, getOpacity: Function, MaterialDataFromSystem: any) => {
+var _getUnifromDataFromBasicMaterial = (field: string, materialIndex: number, {
+    getColorArr3,
+    getOpacity,
+    BasicMaterialDataFromSystem
+}) => {
     var data: any = null;
 
     switch (field) {
         case "color":
-            data = getColorArr3(materialIndex, MaterialDataFromSystem);
+            data = getColorArr3(materialIndex, BasicMaterialDataFromSystem);
             break;
         case "opacity":
-            data = getOpacity(materialIndex, MaterialDataFromSystem);
+            data = getOpacity(materialIndex, BasicMaterialDataFromSystem);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`field:${field}`));

@@ -76,6 +76,8 @@ var testTool = (function () {
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {
+            Main.isTest = true;
+
             testUtils.prepareBufferForTest(sandbox, data, bufferTool);
 
             this.clear(sandbox);

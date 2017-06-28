@@ -199,7 +199,7 @@ describe("BasicMaterial", function () {
                     colorVec3 = color.toVector3(),
                     pos = 0;
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_color").returns(pos);
-                materialTool.setColor(material, color);
+                basicMaterialTool.setColor(material, color);
 
 
                 directorTool.init(state);
@@ -228,7 +228,7 @@ describe("BasicMaterial", function () {
                 var opacity = 0.6,
                     pos = 0;
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_opacity").returns(pos);
-                materialTool.setOpacity(material, opacity);
+                basicMaterialTool.setOpacity(material, opacity);
 
 
                 directorTool.init(state);
@@ -262,7 +262,7 @@ describe("BasicMaterial", function () {
                 describe("test fs source", function () {
                     it("test if set material->alphaTest === true", function () {
                         var alphaTest = 0.2;
-                        materialTool.setAlphaTest(material, alphaTest);
+                        basicMaterialTool.setAlphaTest(material, alphaTest);
 
                         directorTool.init(state);
 

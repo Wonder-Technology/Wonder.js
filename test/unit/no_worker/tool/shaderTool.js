@@ -4,7 +4,7 @@ var shaderTool = (function () {
           wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         },
         sendUniformData: function(gl, index, renderCommandUniformData){
-            wd.sendUniformData(gl, index, wd.MaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
+            wd.sendUniformData(gl, index, wd.BasicMaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
         },
         sendAttributeData: function(gl, shaderIndex, geometryIndex){
           wd.sendAttributeData(gl, shaderIndex, geometryIndex, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, wd.GeometryData, wd.ArrayBufferData);

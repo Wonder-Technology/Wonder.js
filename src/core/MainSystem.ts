@@ -57,6 +57,7 @@ import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
 import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
+import { BasicMaterialData } from "../component/material/BasicMaterialData";
 
 export var getIsTest = (MainData: any) => {
     return MainData.isTest;
@@ -172,7 +173,7 @@ var _initData = () => {
 
     initGeometryData(DataBufferConfig, GeometryData);
 
-    initMaterialData(MaterialData);
+    initMaterialData(MaterialData, BasicMaterialData);
 
     initMeshRendererData(MeshRendererData);
 

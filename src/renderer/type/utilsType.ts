@@ -1,6 +1,6 @@
 export type DrawDataMap = {
     DeviceManagerDataFromSystem: any;
-    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
     ProgramDataFromSystem: any;
     LocationDataFromSystem: any;
     GLSLSenderDataFromSystem: any;
@@ -27,4 +27,10 @@ export type SendUniformDataFuncDataMap = {
     sendMatrix4: Function;
     sendVector3: Function;
     sendFloat1: Function;
+}
+
+export type BasicMaterialForGetUniformDataDataMap = {
+    getColorArr3:Function;
+    getOpacity:Function;
+    BasicMaterialDataFromSystem: any;
 }

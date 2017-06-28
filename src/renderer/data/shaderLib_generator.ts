@@ -60,7 +60,7 @@ export const shaderLib_generator = {
                 "uniform": [
                     {
                         "name": "u_color",
-                        "from": "material",
+                        "from": "basicMaterial",
                         "field": "color",
                         "type": "vec3"
                     }
@@ -77,7 +77,7 @@ export const shaderLib_generator = {
                 "uniform": [
                     {
                         "name": "u_opacity",
-                        "from": "material",
+                        "from": "basicMaterial",
                         "field": "opacity",
                         "type": "float"
                     }
@@ -89,8 +89,10 @@ export const shaderLib_generator = {
                 "func": (materialIndex: number, {
                     getAlphaTest,
                     isTestAlpha
-                }, MaterialDataFromSystem: any) => {
-                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+                }, {
+                    BasicMaterialDataFromSystem
+                }) => {
+                    var alphaTest = getAlphaTest(materialIndex, BasicMaterialDataFromSystem);
 
                     if (isTestAlpha(alphaTest)) {
                         return {
@@ -180,5 +182,5 @@ export interface ISendUniformConfig {
     name: string;
     field: string;
     type: "float" | "vec3" | "mat4";
-    from?: "cmd" | "material";
+    from?: "cmd" | "basicMaterial";
 }

@@ -11,10 +11,10 @@ export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config:
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any, ) => {
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, BasicMaterialDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any, ) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
-        MaterialDataFromSystem: MaterialDataFromSystem,
+        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
         ProgramDataFromSystem: ProgramDataFromSystem,
         LocationDataFromSystem: LocationDataFromSystem,
         GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
@@ -51,7 +51,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getVerticesCount
 }, {
                        DeviceManagerDataFromSystem,
-        MaterialDataFromSystem,
+        BasicMaterialDataFromSystem,
         ProgramDataFromSystem,
         LocationDataFromSystem,
         GLSLSenderDataFromSystem,
@@ -93,7 +93,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 
-        sendUniformData(gl, shaderIndex, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrices, pMatrices, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, BasicMaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrices, pMatrices, materialIndices[i]));
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);

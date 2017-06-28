@@ -184,7 +184,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
     sendMatrix4,
     sendVector3,
     sendFloat1
-}, MaterialWorkerData: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, renderCommandUniformData: RenderCommandUniformData) => {
+}, BasicMaterialDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, renderCommandUniformData: RenderCommandUniformData) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex],
         uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
@@ -195,7 +195,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, renderCommandUniformData, MaterialWorkerData);
+            data = getUniformData(field, from, renderCommandUniformData, BasicMaterialDataFromSystem);
 
         switch (type) {
             case EVariableType.MAT4:

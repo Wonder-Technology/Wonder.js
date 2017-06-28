@@ -6,7 +6,7 @@
 
     <script src="../../dist/wd.js" type="text/javascript"></script>
     <script src="../../examples/js/tool/threeDTransformTool.js"></script>
-    <script src="../../examples/js/tool/materialTool.js"></script>
+    <script src="../../examples/js/tool/basicMaterialTool.js"></script>
     <script src="../../examples/js/tool/basicMaterialTool.js"></script>
     <script src="../../examples/js/tool/boxGeometryTool.js"></script>
     <script src="../../examples/js/tool/geometryTool.js"></script>
@@ -275,17 +275,17 @@
             var material = basicMaterialTool.create();
 
 //            if(Math.random() > 0.5){
-//                materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
 //            }
 //            else{
-//                materialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
 //            }
             if(isRed){
-                materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
                 isRed = false;
             }
             else{
-                materialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
+                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
                 isRed = true;
             }
 
@@ -336,11 +336,11 @@
         function createBox(){
             var material = basicMaterialTool.create();
 
-//            materialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+//            basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
             var r = Math.random(),
                 g = Math.random(),
                 b = Math.random();
-            materialTool.setColor(material, wd.Color.create("rgb(" + r + "," + g + "," + b + ")"));
+            basicMaterialTool.setColor(material, wd.Color.create("rgb(" + r + "," + g + "," + b + ")"));
 
             var obj = gameObjectTool.create();
 

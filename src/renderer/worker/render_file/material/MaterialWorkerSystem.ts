@@ -49,6 +49,7 @@ export var isTestAlpha = isTestAlphaUtils;
 export var initData = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {
     createTypeArrays(materialData.buffer, DataBufferConfig.materialDataBufferCount, MaterialWorkerData);
 
+    //todo _setDefaultTypeArrData
     MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
     MaterialWorkerData.shaderIndexTable = materialData.shaderIndexTable;
 }

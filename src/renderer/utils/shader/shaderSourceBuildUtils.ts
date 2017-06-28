@@ -12,15 +12,15 @@ import { MaterialShaderLibConfig } from "../../data/material_config";
 import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
 import { forEach } from "../../../utils/arrayUtils";
-import { BuildGLSLSourceFuncFuncDataMap } from "../../type/dataType";
+import { BuildGLSLSourceFuncFuncDataMap, MaterialDataMap } from "../../type/dataType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibConfig, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => {
+}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap:MaterialDataMap) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -43,7 +43,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         var glslData = shaderLibData[shaderLibName].glsl,
             vs = null,
             fs = null,
-            func: (materialIndex: number, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataFromSystem: any) => any = null;
+            func: Function = null;
 
         if (!isConfigDataExist(glslData)) {
             return;
@@ -72,7 +72,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         }
 
         if (isConfigDataExist(func)) {
-            let funcConfig: IGLSLFuncConfig = func(materialIndex, funcDataMap, MaterialDataFromSystem);
+            let funcConfig: IGLSLFuncConfig = func(materialIndex, funcDataMap, MaterialDataMap);
 
             if (isConfigDataExist(funcConfig)) {
                 let vs = funcConfig.vs,

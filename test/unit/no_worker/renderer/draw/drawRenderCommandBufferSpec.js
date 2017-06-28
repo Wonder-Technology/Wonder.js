@@ -217,7 +217,7 @@ describe("draw render command", function () {
                 shaderTool.setSendUniformConfig(0, [
                     {
                         "name": "u_color",
-                        "from": "material",
+                        "from": "basicMaterial",
                         "field": "color",
                         "type": "vec3"
                     }
@@ -225,13 +225,13 @@ describe("draw render command", function () {
                 shaderTool.setSendUniformConfig(1, [
                     {
                         "name": "u_color",
-                        "from": "material",
+                        "from": "basicMaterial",
                         "field": "color",
                         "type": "vec3"
                     },
                     {
                         "name": "u_opacity",
-                        "from": "material",
+                        "from": "basicMaterial",
                         "field": "opacity",
                         "type": "float"
                     }
@@ -251,9 +251,9 @@ describe("draw render command", function () {
 
                 ShaderData = wd.ShaderData;
 
-                materialTool.setColor({index:0}, Color.create());
-                materialTool.setColor({index:1}, Color.create("#111222"));
-                materialTool.setOpacity({index:1}, 1);
+                basicMaterialTool.setColor({index:0}, Color.create());
+                basicMaterialTool.setColor({index:1}, Color.create("#111222"));
+                basicMaterialTool.setOpacity({index:1}, 1);
 
                 MaterialData = wd.MaterialData;
 
@@ -313,8 +313,8 @@ describe("draw render command", function () {
 
 
 
-                materialTool.setColor({index:0}, Color.create("#222222"));
-                materialTool.setOpacity({index:1}, 0.5);
+                basicMaterialTool.setColor({index:0}, Color.create("#222222"));
+                basicMaterialTool.setOpacity({index:1}, 0.5);
 
 
                 shaderTool.use(gl, 0);
@@ -342,7 +342,7 @@ describe("draw render command", function () {
 
             it("test", function () {
                 v = 1;
-                materialTool.setOpacity(material, 1);
+                basicMaterialTool.setOpacity(material, 1);
 
                 directorTool.init(state);
 
@@ -352,7 +352,7 @@ describe("draw render command", function () {
             });
             it("data should be number", function () {
                 expect(function () {
-                    materialTool.setOpacity(material, true);
+                    basicMaterialTool.setOpacity(material, true);
                 }).toThrow("to be number");
             });
 
@@ -362,7 +362,7 @@ describe("draw render command", function () {
 
                 it("if cached, return cached data", function () {
                     v = 1;
-                    materialTool.setOpacity(material, 1);
+                    basicMaterialTool.setOpacity(material, 1);
 
                     directorTool.init(state);
 
@@ -373,13 +373,13 @@ describe("draw render command", function () {
                 });
                 it("if data not equal, cache miss", function () {
                     v = 1;
-                    materialTool.setOpacity(material, 1);
+                    basicMaterialTool.setOpacity(material, 1);
 
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
 
-                    materialTool.setOpacity(material, 0.5);
+                    basicMaterialTool.setOpacity(material, 0.5);
 
                     directorTool.loopBody(state);
 
@@ -400,7 +400,7 @@ describe("draw render command", function () {
             })
 
             it("test", function () {
-                materialTool.setColor(material, v);
+                basicMaterialTool.setColor(material, v);
 
                 directorTool.init(state);
 
@@ -414,7 +414,7 @@ describe("draw render command", function () {
                 });
 
                 it("if cached, return cached data", function () {
-                    materialTool.setColor(material, v);
+                    basicMaterialTool.setColor(material, v);
 
                     directorTool.init(state);
 
@@ -424,13 +424,13 @@ describe("draw render command", function () {
                     expect(gl.uniform3f.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    materialTool.setColor(material, v);
+                    basicMaterialTool.setColor(material, v);
 
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
 
-                    materialTool.setColor(material, Color.create("#333333"));
+                    basicMaterialTool.setColor(material, Color.create("#333333"));
 
                     directorTool.loopBody(state);
 

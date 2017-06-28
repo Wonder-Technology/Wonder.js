@@ -98,6 +98,9 @@ var testTool = (function () {
             // if(isInit$){
             //     this.initForTest(sandbox);
             // }
+
+            Main.isTest = true;
+
             this._prepareBufferForTest(sandbox, data);
 
             this.clear(sandbox);
