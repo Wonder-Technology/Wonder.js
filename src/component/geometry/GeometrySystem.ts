@@ -23,7 +23,7 @@ import {
     getIndexType as getIndexTypeUtils,
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils, createBufferViews
+    hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize
 } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
@@ -86,10 +86,15 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
 
     let {
         vertices,
+        normals,
         indices
     } = computeDataFunc(index, GeometryData);
 
+    //todo compute normals
+
     setVertices(index, vertices, GeometryData);
+
+    setNormals(index, normals, GeometryData);
 
     setIndices(index, indices, GeometryData);
 }
@@ -106,6 +111,15 @@ export var setVertices = requireCheckFunc((index: number, vertices: Array<number
     // });
 }, (index: number, vertices: Array<number>, GeometryData: any) => {
     GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
+})
+
+export var getNormals = (index: number, GeometryData: any) => {
+    return _getPointData(index, GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList);
+}
+
+export var setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
+}, (index: number, normals: Array<number>, GeometryData: any) => {
+    GeometryData.normalsOffset = _setPointData(index, normals, getVertexDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
@@ -332,6 +346,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     GeometryData.configDataMap = createMap();
 
     GeometryData.verticesCacheMap = createMap();
+    GeometryData.normalsCacheMap = createMap();
     GeometryData.indicesCacheMap = createMap();
 
     GeometryData.computeDataFuncMap = createMap();
@@ -346,14 +361,17 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     _initBufferData(indicesArrayBytes, getUIntArrayClass(GeometryData.indexType), DataBufferConfig, GeometryData);
 
     GeometryData.verticesInfoList = [];
+    GeometryData.normalsInfoList = [];
     GeometryData.indicesInfoList = [];
 
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 
     GeometryData.disposedGeometryIndexArray = [];
 
     GeometryData.verticesOffset = 0;
+    GeometryData.normalsOffset = 0;
     GeometryData.indicesOffset = 0;
 
     GeometryData.disposeCount = 0;
@@ -364,7 +382,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
+        size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize()) + indicesArrayBytes * getIndexDataSize();
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 

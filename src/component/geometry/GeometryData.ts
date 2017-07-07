@@ -3,7 +3,7 @@ import { EBufferType } from "../../renderer/enum/EBufferType";
 import { ComponentGameObjectMap } from "../ComponentData";
 import { ComponentMap } from "../ComponentSystem";
 import {
-    GeometryIndicesCacheMap, GeometryInfoList, GeometryVerticesCacheMap,
+    GeometryIndicesCacheMap, GeometryInfoList, GeometryNormalsCacheMap, GeometryVerticesCacheMap,
     GeometryWorkerInfoList
 } from "../../definition/type/geometryType";
 
@@ -19,22 +19,28 @@ export class GeometryData {
     public static buffer: SharedArrayBuffer = null;
 
     public static verticesOffset: number = null;
+    public static normalsOffset: number = null;
     public static indicesOffset: number = null;
 
     public static verticesInfoList: GeometryInfoList = null;
+    public static normalsInfoList: GeometryInfoList = null;
     public static indicesInfoList: GeometryInfoList = null;
 
     public static isInit: boolean = null;
 
     public static verticesWorkerInfoList: GeometryWorkerInfoList = null;
+    //todo add normal worker data
+    public static normalsWorkerInfoList: GeometryWorkerInfoList = null;
     public static indicesWorkerInfoList: GeometryWorkerInfoList = null;
 
     public static disposedGeometryIndexArray: Array<number> = null;
 
     public static vertices: Float32Array = null;
+    public static normals: Float32Array = null;
     public static indices: Uint16Array | Uint32Array = null;
 
     public static verticesCacheMap: GeometryVerticesCacheMap = null;
+    public static normalsCacheMap: GeometryNormalsCacheMap = null;
     public static indicesCacheMap: GeometryIndicesCacheMap = null;
 
     public static indexType: EBufferType = null;
@@ -55,5 +61,6 @@ export type GeometryComputeDataFuncMap = {
 
 export type GeometryComputeData = {
     vertices: Float32Array;
+    normals: Float32Array;
     indices: Uint16Array | Uint32Array;
 }

@@ -31,8 +31,8 @@ import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
 import {
-    getLocalPositionCache, getLocalToWorldMatrixCache, getPositionCache, setLocalPositionCache,
-    setLocalToWorldMatrixCache, setPositionCache
+    getLocalPositionCache, getLocalToWorldMatrixCache, getNormalMatrixCache, getPositionCache, setLocalPositionCache,
+    setLocalToWorldMatrixCache, setNormalMatrixCache, setPositionCache
 } from "./cacheSystem";
 import { isDisposeTooManyComponents, reAllocateThreeDTransform } from "../../utils/memoryUtils";
 import { LinkList } from "./LinkList";
@@ -185,6 +185,19 @@ export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTran
         localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
 
     return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
+}))
+
+//todo test
+export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+    return isValidMapValue(getNormalMatrixCache(transform.uid, ThreeTransformData));
+}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+    return getNormalMatrixCache(transform.uid, ThreeTransformData);
+}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any, mat: Matrix4) => {
+    setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
+}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+    return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
 var _setTransformMap = (indexInArrayBuffer: number, transform: ThreeDTransform, ThreeDTransformData: any) => ThreeDTransformData.transformMap[indexInArrayBuffer] = transform;

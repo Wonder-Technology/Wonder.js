@@ -1,15 +1,55 @@
 export const material_config = {
-    "BasicMaterial": {
-        "shader": {
-            "shaderLib": [
-                "CommonShaderLib",
-                "VerticeCommonShaderLib",
-                "BasicMaterialColorShaderLib",
-                "BasicShaderLib",
-                "EndBasicShaderLib",
-                "EndShaderLib"
-            ]
+    "materials":{
+        "BasicMaterial": {
+            "shader": {
+                "shaderLib": [
+                    {"type":"group", "value":"engineMaterialTop"},
+
+                    "BasicMaterialColorShaderLib",
+                    "BasicShaderLib",
+                    "EndBasicShaderLib",
+
+                    {"type":"group", "value":"engineMaterialEnd"}
+                ]
+            }
+        },
+        "LightMaterial": {
+            "shader": {
+                "shaderLib": [
+                    {"type":"group", "value":"engineMaterialTop"},
+
+                    "NormalMatrixNoInstanceShaderLib",
+                    "NormalCommonShaderLib",
+                    "LightCommonShaderLib",
+                    "LightSetWorldPositionShaderLib",
+
+                    "NoLightMapShaderLib",
+                    "NoDiffuseMapShaderLib",
+                    "NoSpecularMapShaderLib",
+                    "NoEmissionMapShaderLib",
+                    "NoNormalMapShaderLib",
+                    "NoShadowMapShaderLib",
+                    "LightShaderLib",
+                    "AmbientLightShaderLib",
+                    "PointLightShaderLib",
+                    "DirectionLightShaderLib",
+                    "LightEndShaderLib",
+
+                    {"type":"group", "value":"engineMaterialEnd"}
+                ]
+            }
         }
+    },
+    "shaderLibGroups": {
+        "engineMaterialTop":[
+            "CommonShaderLib",
+            //todo test
+            "ModelMatrixNoInstanceShaderLib",
+            "VerticeCommonShaderLib"
+        ],
+        "engineMaterialEop":[
+            "EndShaderLib"
+        ]
     }
 }
 
@@ -25,4 +65,9 @@ export interface IShaderConfig {
     shaderLib: MaterialShaderLibConfig
 }
 
-export type MaterialShaderLibConfig = Array<string>
+export interface IShaderLibItem{
+    type:string;
+    value:any;
+}
+
+export type MaterialShaderLibConfig = Array<string|IShaderLibItem>;

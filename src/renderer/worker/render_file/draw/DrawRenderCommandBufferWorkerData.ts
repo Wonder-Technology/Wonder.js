@@ -1,7 +1,8 @@
-export class DrawRenderCommandBufferWorkerData {
+export class DrawRenderCommandBufferForDrawData {
     public static mMatrixFloatArrayForSend: Float32Array = null;
     public static vMatrixFloatArrayForSend: Float32Array = null;
     public static pMatrixFloatArrayForSend: Float32Array = null;
+    //todo add cameraPos,normalMatrix
 
     public static mMatrices: Float32Array = null;
     public static vMatrices: Float32Array = null;

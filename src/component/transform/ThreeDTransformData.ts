@@ -83,6 +83,7 @@ export type ThreeDTransformCacheData = {
     position: Vector3;
     localPosition: Vector3;
     localToWorldMatrix: Matrix4;
+    normalMatrix: Matrix4;
 }
 
 export type ThreeDTransformTempMap = {

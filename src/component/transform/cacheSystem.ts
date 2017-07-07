@@ -64,6 +64,14 @@ export var setLocalPositionCache = (uid: number, pos: Vector3, ThreeTransformDat
     ThreeTransformData.cacheMap[uid].localPosition = pos;
 }
 
+export var getNormalMatrixCache = (uid: number, ThreeTransformData: any) => {
+    return _getCache(uid, ThreeTransformData).normalMatrix;
+}
+
+export var setNormalMatrixCache = (uid: number, mat:Matrix4, ThreeTransformData: any) => {
+    _getCache(uid, ThreeTransformData).normalMatrix = mat;
+}
+
 var _getCache = (uid: number, ThreeTransformData: any) => {
     var cache = ThreeTransformData.cacheMap[uid];
 

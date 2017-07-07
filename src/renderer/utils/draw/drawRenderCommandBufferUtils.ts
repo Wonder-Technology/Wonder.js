@@ -1,20 +1,25 @@
 import { Map } from "immutable";
 import { EDrawMode } from "../../enum/EDrawMode";
-import { RenderCommandBufferWorkerData } from "../../type/dataType";
+import { RenderCommandBufferForDrawData } from "../../type/dataType";
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { IRenderConfig } from "../../data/render_config";
-import { getMatrix4DataSize } from "../../../utils/typeArrayUtils";
+import { getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
+import { createTypeArrays } from "./renderComandBufferUtils";
+import { DrawDataMap } from "../../type/utilsType";
 
-export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferWorkerData) => {
+export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferForDrawData) => {
     clearGL(gl, render_config.clearColor, DeviceManagerDataFromSystem);
 
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, BasicMaterialDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any, ) => {
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, BasicMaterialDataFromSystem:any, LightMaterialDataFromSystem:any, AmbientLightDataFromSystem, DirectionLightDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
+        AmbientLightDataFromSystem: AmbientLightDataFromSystem,
+        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
         ProgramDataFromSystem: ProgramDataFromSystem,
         LocationDataFromSystem: LocationDataFromSystem,
         GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
@@ -49,34 +54,45 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getIndexType,
     getIndexTypeSize,
     getVerticesCount
-}, {
-                       DeviceManagerDataFromSystem,
-        BasicMaterialDataFromSystem,
-        ProgramDataFromSystem,
-        LocationDataFromSystem,
-        GLSLSenderDataFromSystem,
-        GeometryDataFromSystem,
-        ArrayBufferDataFromSystem,
-        IndexBufferDataFromSystem,
-        DrawRenderCommandBufferDataFromSystem
-                   }, bufferData: RenderCommandBufferWorkerData) => {
-    var mat4Length = getMatrix4DataSize(),
+}, drawDataMap:DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
+    var {
+            DeviceManagerDataFromSystem,
+            BasicMaterialDataFromSystem,
+            LightMaterialDataFromSystem,
+            AmbientLightDataFromSystem,
+            DirectionLightDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem,
+            GeometryDataFromSystem,
+            ArrayBufferDataFromSystem,
+            IndexBufferDataFromSystem,
+            DrawRenderCommandBufferDataFromSystem
+        } = drawDataMap,
+        mat4Length = getMatrix4DataSize(),
+        cameraPositionLength = getVector3DataSize(),
         count = bufferData.count,
         buffer: any = bufferData.buffer,
         mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
         vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
         pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
+        cameraPositionForSend = DrawRenderCommandBufferDataFromSystem.cameraPositionForSend,
+        normalMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend,
         {
             mMatrices,
             vMatrices,
             pMatrices,
+            cameraPositions,
+            normalMatrices,
             materialIndices,
             shaderIndices,
             geometryIndices
-        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, mat4Length, DrawRenderCommandBufferDataFromSystem);
+        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
 
     _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat4Length, normalMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
 
     for (let i = 0; i < count; i++) {
         let matStartIndex = 16 * i,
@@ -93,7 +109,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 
-        sendUniformData(gl, shaderIndex, BasicMaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrices, pMatrices, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndices[i]));
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
@@ -132,34 +148,32 @@ var _updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, matStartI
     return targetMatrices;
 }
 
-var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, materialIndex: number) => {
+var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, cameraPosition:Float32Array, normalMatrices:Float32Array, materialIndex: number) => {
     return {
         mMatrix: mMatrices,
         vMatrix: vMatrices,
         pMatrix: pMatrices,
+        cameraPosition: cameraPosition,
+        normalMatrix: normalMatrices,
         materialIndex: materialIndex
     }
 }
 
-var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, mat4Length: number, DrawRenderCommandBufferDataFromSystem: any) => {
+var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawRenderCommandBufferDataFromSystem: any) => {
     if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
-        let count = DataBufferConfig.renderCommandBufferCount;
-
-        DrawRenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, 0, count * mat4Length);
-        DrawRenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
-        DrawRenderCommandBufferDataFromSystem.pMatrices = new Float32Array(buffer, (count + 1) * Float32Array.BYTES_PER_ELEMENT * mat4Length, 1 * mat4Length);
-        DrawRenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length, count);
-        DrawRenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT, count);
-        DrawRenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, (count + 2) * Float32Array.BYTES_PER_ELEMENT * mat4Length + count * Uint32Array.BYTES_PER_ELEMENT * 2, count);
+        createTypeArrays(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
     }
 
     return DrawRenderCommandBufferDataFromSystem;
 }
 
 export var initData = (DrawRenderCommandBufferDataFromSystem: any) => {
-    var mat4Length = getMatrix4DataSize();
+    var mat4Length = getMatrix4DataSize(),
+        cameraPositionLength = getVector3DataSize();
 
     DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
     DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
     DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.cameraPositionForSend = new Float32Array(cameraPositionLength);
+    DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend = new Float32Array(mat4Length);
 }

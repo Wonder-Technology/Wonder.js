@@ -1,7 +1,7 @@
 import {
     IShaderLibContentGenerator
 } from "../data/shaderLib_generator";
-import { MaterialShaderLibConfig } from "../data/material_config";
+import { IShaderLibItem, MaterialShaderLibConfig } from "../data/material_config";
 import { buildGLSLSource as buildGLSLSourceUtils } from "../utils/shader/shaderSourceBuildUtils";
 import { getAlphaTest, isTestAlpha } from "../../component/material/MaterialSystem";
 import { MaterialDataMap } from "../type/dataType";

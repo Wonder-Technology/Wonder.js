@@ -25,8 +25,8 @@ export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, name: s
     sendFloat1Utils(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var addSendAttributeConfig = addSendAttributeConfigUtils;
-
-export var addSendUniformConfig = addSendUniformConfigUtils;
+// export var addSendAttributeConfig = addSendAttributeConfigUtils;
+//
+// export var addSendUniformConfig = addSendUniformConfigUtils;
 
 export var initData = initDataUtils;

@@ -31,6 +31,10 @@ import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getRenderWorker } from "../worker/logic_file/worker_instance/WorkerInstanceSystem";
 import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
 import { BasicMaterialData } from "../../component/material/BasicMaterialData";
+import { LightMaterialData } from "../../component/material/LightMaterialData";
+import { GlobalTempData } from "../../definition/GlobalTempData";
+import { AmbientLightData } from "../../component/light/AmbientLightData";
+import { DirectionLightData } from "../../component/light/DirectionLightData";
 
 export var init = null;
 
@@ -75,7 +79,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         return compose(
             sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
             // sortRenderCommands(state),
-            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }
@@ -93,10 +97,10 @@ else {
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, BasicMaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
-            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }

@@ -4,7 +4,7 @@ import {
     clear, draw
 } from "./draw/DrawRenderCommandBufferWorkerSystem";
 import { render_config } from "../../data/render_config";
-import { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
+import { DrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferForDrawData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
     initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
@@ -40,7 +40,7 @@ import { initData as initLocationWorkerData } from "./shader/location/LocationWo
 import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
-import { initData as initDrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerSystem";
+import { initData as initDrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -93,7 +93,8 @@ export var onmessageHandler = (e) => {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
+            //todo fix
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
 
             self.postMessage({
                 state: ERenderWorkerState.DRAW_COMPLETE
@@ -116,7 +117,7 @@ var _initData = () => {
 
     initIndexBufferData(IndexBufferWorkerData);
 
-    initDrawRenderCommandBufferWorkerData(DrawRenderCommandBufferWorkerData);
+    initDrawRenderCommandBufferForDrawData(DrawRenderCommandBufferForDrawData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {

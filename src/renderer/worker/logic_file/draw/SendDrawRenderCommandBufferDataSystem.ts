@@ -7,11 +7,11 @@ import {
 } from "../../../../component/geometry/GeometrySystem";
 import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDataOperateType";
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
-import { RenderCommandBufferWorkerData } from "../../../type/dataType";
+import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
 import { getRenderWorker } from "../worker_instance/WorkerInstanceSystem";
 
-export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferWorkerData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         disposeData = null,
         materialData = null;

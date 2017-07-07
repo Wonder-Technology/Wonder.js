@@ -5,7 +5,7 @@ import {
 import { Map } from "immutable";
 import { clear as clearGL, getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 import { DrawDataMap } from "../../../type/utilsType";
-import { RenderCommandBufferWorkerData } from "../../../type/dataType";
+import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { IRenderConfig } from "../../../data/render_config";
 import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderWorkerSystem";
 import {
@@ -20,7 +20,7 @@ export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceMa
     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
 };
 
-export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferWorkerData) => {
+export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state);
 
 
@@ -31,7 +31,7 @@ export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: Dra
     _commitGL(gl, state);
 };
 
-var _isBufferDataExist = (bufferData: RenderCommandBufferWorkerData) => !!bufferData;
+var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 
 var _commitGL = (gl: any, state: Map<any, any>) => {
     gl.commit();

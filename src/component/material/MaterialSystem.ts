@@ -35,7 +35,9 @@ import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData"
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import { disposeComponent as disposeBasicMaterialComponent, initData as initBasicMaterialData } from "./BasicMaterialSystem";
+import { disposeComponent as disposeLightMaterialComponent, initData as initLightMaterialData } from "./LightMaterialSystem";
 import { BasicMaterialData } from "./BasicMaterialData";
+import { LightMaterialData } from "./LightMaterialData";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -83,7 +85,9 @@ else {
         var shaderIndex = getShaderIndex(index, MaterialData);
 
         initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, {
-            BasicMaterialDataFromSystem:BasicMaterialData
+            BasicMaterialDataFromSystem:BasicMaterialData,
+            //todo fix worker
+            LightMaterialDataFromSystem:LightMaterialData
         });
     }
 }
@@ -119,12 +123,15 @@ export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
 export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
 export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData: any) => {
-    _setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
+    setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
 }
 
 export var getColor = (materialIndex: number, SpecifyMaterialData: any) => {
+    return getColorData(materialIndex, SpecifyMaterialData.colors);
+}
+
+export var getColorData = (materialIndex: number, colors:Float32Array) => {
     var color = Color.create(),
-        colors = SpecifyMaterialData.colors,
         size = getColorDataSize(),
         index = materialIndex * size;
 
@@ -138,16 +145,19 @@ export var getColor = (materialIndex: number, SpecifyMaterialData: any) => {
 export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (materialIndex: number, color: Color, SpecifyMaterialData: any) => {
+    setColorData(materialIndex, color, SpecifyMaterialData.colors);
+}
+
+export var setColorData = (materialIndex: number, color: Color, colors:Float32Array) => {
     var r = color.r,
         g = color.g,
         b = color.b,
-        colors = SpecifyMaterialData.colors,
         size = getColorDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(colors, index, r);
-    _setTypeArrayValue(colors, index + 1, g);
-    _setTypeArrayValue(colors, index + 2, b);
+    setTypeArrayValue(colors, index, r);
+    setTypeArrayValue(colors, index + 1, g);
+    setTypeArrayValue(colors, index + 2, b);
 }
 
 export var getOpacity = getOpacityUtils;
@@ -164,7 +174,7 @@ export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number
     var size = getOpacityDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(SpecifyMaterialData.opacities, index, opacity);
+    setTypeArrayValue(SpecifyMaterialData.opacities, index, opacity);
 })
 
 export var getAlphaTest = getAlphaTestUtils;
@@ -181,7 +191,7 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     var size = getAlphaTestDataSize(),
         index = materialIndex * size;
 
-    _setTypeArrayValue(SpecifyMaterialData.alphaTests, index, alphaTest);
+    setTypeArrayValue(SpecifyMaterialData.alphaTests, index, alphaTest);
 })
 
 export var addComponent = (component: Material, gameObject: GameObject) => {
@@ -208,9 +218,23 @@ export var disposeComponent = ensureFunc((returnVal, component: Material) => {
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
     disposeBasicMaterialComponent(sourceIndex, lastComponentIndex, BasicMaterialData);
+    disposeLightMaterialComponent(sourceIndex, lastComponentIndex, LightMaterialData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }))
+
+export var disposeSpecifyMaterialData = (sourceIndex:number, lastComponentIndex:number, SpecifyMaterialData:any) => {
+    var colorDataSize = getColorDataSize(),
+        opacityDataSize = getOpacityDataSize(),
+        alphaTestDataSize = getAlphaTestDataSize();
+
+    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, SpecifyMaterialData.colors, colorDataSize, SpecifyMaterialData.defaultColorArr);
+
+    deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, SpecifyMaterialData.opacities, SpecifyMaterialData.defaultOpacity);
+    deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, SpecifyMaterialData.alphaTests, SpecifyMaterialData.defaultAlphaTest);
+}
+
+
 
 var _checkDisposeComponentWorker = null;
 
@@ -229,7 +253,7 @@ export var getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-var _setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, index: number, value: number) => {
+export var setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, index: number, value: number) => {
     it("should not exceed type arr's length", () => {
         expect(index).lte(typeArr.length - 1);
     });
@@ -239,7 +263,35 @@ var _setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, 
 
 export var isTestAlpha = isTestAlphaUtils;
 
-export var initData = (MaterialData: any, BasicMaterialData:any) => {
+export var setSpecifyMaterialDefaultData = (SpecifyMaterialData:any) => {
+    SpecifyMaterialData.defaultColorArr = createDefaultColor().toVector3().toArray();
+    SpecifyMaterialData.defaultOpacity = 1;
+    SpecifyMaterialData.defaultAlphaTest = -1;
+}
+
+export var getSpecifyMateiralBufferSize = () => {
+    return Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
+}
+
+export var setSpecifyMaterialDefaultTypeArrData = (count: number, SpecifyMaterialData: any) => {
+    var color = createDefaultColor(),
+        opacity = SpecifyMaterialData.defaultOpacity,
+        alphaTest = SpecifyMaterialData.defaultAlphaTest;
+
+    for (let i = 0; i < count; i++) {
+        setColor(i, color, SpecifyMaterialData);
+        setOpacity(i, opacity, SpecifyMaterialData);
+        setAlphaTest(i, alphaTest, SpecifyMaterialData);
+    }
+}
+
+export var createDefaultColor = () => {
+    var color = Color.create();
+
+    return color.setColorByNum("#ffffff");
+}
+
+export var initData = (MaterialData: any, BasicMaterialData:any, LightMaterialData:any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];
@@ -253,7 +305,8 @@ export var initData = (MaterialData: any, BasicMaterialData:any) => {
 
     _initTable(MaterialData);
 
-    initBasicMaterialData(MaterialData, BasicMaterialData);
+    initBasicMaterialData(BasicMaterialData);
+    initLightMaterialData(LightMaterialData);
 }
 
 var _initBufferData = (MaterialData: any) => {

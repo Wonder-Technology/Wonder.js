@@ -29,6 +29,10 @@ export type SendUniformConfigMap = {
     [index: number]: Array<ISendUniformConfig>
 }
 
+export type SendUniformFuncConfigMap = {
+    [index: number]: Function;
+}
+
 export type UniformCacheMap = {
     [index: number]: {
         [name: string]: any;
@@ -42,15 +46,17 @@ export type ArrayBufferDataMap = {
     }
 }
 
-export type RenderCommandBufferWorkerData = {
+export type RenderCommandBufferForDrawData = {
     buffer: SharedArrayBuffer;
     count: number
 }
 
 export type RenderCommandUniformData = {
-    mMatrices: Float32Array;
-    vMatrices: Float32Array;
-    pMatrices: Float32Array;
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
+    cameraPosition: Float32Array;
+    normalMatrix: Float32Array;
     materialIndex: number;
 }
 
@@ -70,4 +76,5 @@ export type BuildGLSLSourceFuncFuncDataMap = {
 
 export type MaterialDataMap = {
     BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
 }

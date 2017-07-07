@@ -10,9 +10,10 @@ import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../utils/objectUtils";
 import { RenderCommandUniformData, UniformShaderLocationMap, SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
-import { BasicMaterialForGetUniformDataDataMap } from "../../../type/utilsType";
+import { BasicMaterialForGetUniformDataDataMap, LightMaterialForGetUniformDataDataMap } from "../../../type/utilsType";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+//todo test send normalMatrix,cameraPos,light data, a_normal...
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, basicMaterialData:BasicMaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -22,6 +23,9 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
         case "basicMaterial":
             data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, basicMaterialData);
             break;
+        case "lightMaterial":
+            data = _getUnifromDataFromLightMaterial(field, renderCommandUniformData.materialIndex, lightMaterialData);
+            break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));
             break;
@@ -30,7 +34,7 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
     return data;
 }
 
-var _getUnifromDataFromBasicMaterial = (field: string, materialIndex: number, {
+var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
     getColorArr3,
     getOpacity,
     BasicMaterialDataFromSystem
@@ -39,10 +43,48 @@ var _getUnifromDataFromBasicMaterial = (field: string, materialIndex: number, {
 
     switch (field) {
         case "color":
-            data = getColorArr3(materialIndex, BasicMaterialDataFromSystem);
+            data = getColorArr3(index, BasicMaterialDataFromSystem);
             break;
         case "opacity":
-            data = getOpacity(materialIndex, BasicMaterialDataFromSystem);
+            data = getOpacity(index, BasicMaterialDataFromSystem);
+            break;
+        default:
+            Log.error(true, Log.info.FUNC_UNKNOW(`field:${field}`));
+            break;
+    }
+
+    return data;
+}
+
+var _getUnifromDataFromLightMaterial = (field: string, index: number, {
+    getColorArr3,
+    getEmissionColorArr3,
+    getOpacity,
+    getSpecularColorArr3,
+    getShininess,
+    getLightModel,
+    LightMaterialDataFromSystem
+}) => {
+    var data: any = null;
+
+    switch (field) {
+        case "color":
+            data = getColorArr3(index, LightMaterialDataFromSystem);
+            break;
+        case "emissionColor":
+            data = getEmissionColorArr3(index, LightMaterialDataFromSystem);
+            break;
+        case "opacity":
+            data = getOpacity(index, LightMaterialDataFromSystem);
+            break;
+        case "specularColor":
+            data = getSpecularColorArr3(index, LightMaterialDataFromSystem);
+            break;
+        case "shininess":
+            data = getShininess(index, LightMaterialDataFromSystem);
+            break;
+        case "lightModel":
+            data = getLightModel(index, LightMaterialDataFromSystem);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`field:${field}`));
@@ -161,26 +203,34 @@ export var addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, 
     sendAttributeConfigMap[shaderIndex] = sendDataArr;
 }))
 
-export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendUniformConfigMap: SendUniformConfigMap) => {
+export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, GLSLSenderDataFromSystem: any) => {
     it("sendUniformConfigMap should not has duplicate attribute name", () => {
-        expect(hasDuplicateItems(sendUniformConfigMap[shaderIndex])).false;
+        expect(hasDuplicateItems(GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex])).false;
     });
-}, requireCheckFunc((shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendUniformConfigMap: SendUniformConfigMap) => {
+}, requireCheckFunc((shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, GLSLSenderDataFromSystem: any) => {
     it("sendUniformConfigMap[shaderIndex] should not be defined", () => {
-        expect(sendUniformConfigMap[shaderIndex]).not.exist;
+        expect(GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex]).not.exist;
     });
-}, (shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sendUniformConfigMap: SendUniformConfigMap) => {
-    var sendDataArr: Array<ISendUniformConfig> = [];
+}, (shaderIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, GLSLSenderDataFromSystem: any) => {
+    var sendUniformDataArr: Array<ISendUniformConfig> = [],
+        sendUniformFuncDataArr: Array<Function> = [];
 
     forEach(materialShaderLibConfig, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send;
 
-        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.uniform)) {
-            sendDataArr = sendDataArr.concat(sendData.uniform);
-        }
-    })
+        if (isConfigDataExist(sendData)){
+            if(isConfigDataExist(sendData.uniform)){
+                sendUniformDataArr = sendUniformDataArr.concat(sendData.uniform);
+            }
 
-    sendUniformConfigMap[shaderIndex] = sendDataArr;
+            if(isConfigDataExist(sendData.uniformFunc)){
+                sendUniformFuncDataArr = sendUniformFuncDataArr.concat(sendData.uniformFunc);
+            }
+        }
+    });
+
+    GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex] = sendUniformDataArr;
+    GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex] = sendUniformDataArr;
 }))
 
 export var initData = (GLSLSenderDataFromSystem: any) => {
