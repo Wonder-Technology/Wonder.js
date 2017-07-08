@@ -43,6 +43,7 @@ import {
     getVector3DataSize
 } from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
+import { Matrix3 } from "../../math/Matrix3";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -194,7 +195,7 @@ export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, Globa
     return isValidMapValue(getNormalMatrixCache(transform.uid, ThreeTransformData));
 }, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
     return getNormalMatrixCache(transform.uid, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any, mat: Matrix4) => {
+}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any, mat: Matrix3) => {
     setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
 }, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();

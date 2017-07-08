@@ -1,5 +1,5 @@
-export var getPosition = (materialIndex: number, SpecifyMaterialData: any) => {
-    // return getColorData(materialIndex, SpecifyMaterialData.colors);
+import { initData as initSpecifyLightData } from "./SpecifyLightSystem";
+
+export var initData = (PointLightData: any) => {
+    initSpecifyLightData(PointLightData);
 }
-
-

@@ -8,34 +8,35 @@ import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment } from "../.
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { MaterialShaderLibConfig } from "../../data/material_config";
+import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
 import { forEach } from "../../../utils/arrayUtils";
 import { BuildGLSLSourceFuncFuncDataMap, MaterialDataMap } from "../../type/dataType";
 import { getAllRenderDataForNoWorker } from "../data/dataUtils";
+import { isString } from "../../../utils/JudgeUtils";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
     it("shaderLib should be defined", () => {
-        forEach(materialShaderLibConfig, (shaderLibName: string) => {
+        forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap:MaterialDataMap) => {
+}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
         vsFuncDeclare: string = "",
         vsFuncDefine: string = "",
         vsBody: string = "",
-        vsDefineList:Array<IGLSLDefineListItem> = [],
+        // vsDefineList:Array<IGLSLDefineListItem> = [],
         fsTop: string = "",
         fsDefine: string = "",
         fsVarDeclare: string = "",
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
-        fsBody: string = "",
-        fsDefineList:Array<IGLSLDefineListItem> = [];
+        fsBody: string = "";
+        // fsDefineList:Array<IGLSLDefineListItem> = [];
 
     var _setVs = (getGLSLPartData:Function, getGLSLDefineListData:Function, vs:IGLSLConfig) => {
             vsTop += getGLSLPartData(vs, "top");
@@ -59,7 +60,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
 
     fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
 
-    forEach(materialShaderLibConfig, (shaderLibName: string) => {
+    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var glslData = shaderLibData[shaderLibName].glsl,
             vs:IGLSLConfig = null,
             fs:IGLSLConfig = null,
@@ -101,20 +102,39 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
                 }
             }
         }
-    })
+    });
 
     vsBody += main_end;
     fsBody += main_end;
 
-    vsTop += _generateAttributeSource(materialShaderLibConfig, shaderLibData);
-    vsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
-    fsTop += _generateUniformSource(materialShaderLibConfig, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
+    vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
+    vsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
+    fsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
 
     return {
         vsSource: vsTop + vsDefine + vsVarDeclare + vsFuncDeclare + vsFuncDefine + vsBody,
         fsSource: fsTop + fsDefine + fsVarDeclare + fsFuncDeclare + fsFuncDefine + fsBody
     }
 })
+
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup:IMaterialShaderLibGroup) => {
+    var nameArr:Array<string> = [];
+
+    forEach(materialShaderLibConfig, (item: string|IShaderLibItem) => {
+        if(isString(item)){
+            nameArr.push(item as string);
+        }
+        else{
+            let i = item as IShaderLibItem;
+
+            if(i.type === "group"){
+                nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
+            }
+        }
+    });
+
+    return nameArr;
+}
 
 var _getEmptyFuncGLSLConfig = () => {
     return {
@@ -200,10 +220,10 @@ var _isInSource = (key: string, source: string) => {
     return source.indexOf(key) > -1;
 }
 
-var _generateAttributeSource = (materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator) => {
+var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator) => {
     var result = "";
 
-    forEach(materialShaderLibConfig, (shaderLibName: string) => {
+    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
             attributeData = null;
 
@@ -222,11 +242,11 @@ var _generateAttributeSource = (materialShaderLibConfig: MaterialShaderLibConfig
 }
 
 //todo test structure
-var _generateUniformSource = (materialShaderLibConfig: MaterialShaderLibConfig, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
+var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
             forEachArray((data: ISendUniformConfig) => {
-                result += `uniform ${data.type} ${data.name};\n`;
+                result += `uniform ${_generateUniformSourceType(data.type)} ${data.name};\n`;
             }),
             filterArray((data: ISendUniformConfig) => {
                 var name = data.name;
@@ -236,7 +256,7 @@ var _generateUniformSource = (materialShaderLibConfig: MaterialShaderLibConfig, 
             })
         );
 
-    forEach(materialShaderLibConfig, (shaderLibName: string) => {
+    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
             uniformData = null;
 
@@ -250,6 +270,21 @@ var _generateUniformSource = (materialShaderLibConfig: MaterialShaderLibConfig, 
     });
 
     return result;
+}
+
+var _generateUniformSourceType = (type:string) => {
+    var sourceType: string = null;
+
+    switch (type) {
+        case "float3":
+            sourceType = "vec3";
+            break;
+        default:
+            sourceType = type;
+            break;
+    }
+
+    return sourceType;
 }
 
 var _isUniformDataValue = (data: ISendUniformConfig) => {

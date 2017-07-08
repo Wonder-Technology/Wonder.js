@@ -12,6 +12,25 @@ import { ThreeDTransformData } from "../../component/transform/ThreeDTransformDa
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
 
+var _lightDefineList = [
+    {
+        "name": "DIRECTION_LIGHTS_COUNT",
+        "valueFunc": ({
+                          DirectionLightData
+                      }) => {
+            return DirectionLightData.count;
+        }
+    },
+    {
+        "name": "POINT_LIGHTS_COUNT",
+        "valueFunc": ({
+                          PointLightData
+                      }) => {
+            return PointLightData.count;
+        }
+    }
+]
+
 export const shaderLib_generator = {
     "shaderLibs": {
         "CommonShaderLib": {
@@ -85,7 +104,7 @@ export const shaderLib_generator = {
                         "name": "u_color",
                         "from": "basicMaterial",
                         "field": "color",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]
             }
@@ -147,7 +166,7 @@ export const shaderLib_generator = {
                     {
                         "name": "u_normalMatrix",
                         "field": "normalMatrix",
-                        "type": "mat4"
+                        "type": "mat3"
                     }
                 ]
             }
@@ -183,7 +202,7 @@ export const shaderLib_generator = {
                         "name": "u_specular",
                         "from": "lightMaterial",
                         "field": "specularColor",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]
             }
@@ -214,7 +233,7 @@ export const shaderLib_generator = {
                         "name": "u_diffuse",
                         "from": "lightMaterial",
                         "field": "color",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]
             }
@@ -238,7 +257,7 @@ export const shaderLib_generator = {
                         "name": "u_emission",
                         "from": "lightMaterial",
                         "field": "emissionColor",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]
             }
@@ -266,10 +285,12 @@ export const shaderLib_generator = {
         "LightShaderLib":{
             "glsl": {
                 "vs": {
-                    "source": light_vertex
+                    "source": light_vertex,
+                    "defineList": _lightDefineList
                 },
                 "fs": {
-                    "source": light_fragment
+                    "source": light_fragment,
+                    "defineList": _lightDefineList
                 }
             },
             "send": {
@@ -290,23 +311,28 @@ export const shaderLib_generator = {
                         "name": "u_lightModel",
                         "from": "lightMaterial",
                         "field": "lightModel",
-                        "type": "num"
+                        "type": "int"
                     },
                     {
                         "name": "u_cameraPos",
                         "from": "cmd",
                         "field": "cameraPosition",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]
             }
         },
 
         "AmbientLightShaderLib":{
+            "glsl": {
+                "fs": {
+                    "varDeclare": "uniform vec3 u_ambient;"
+                }
+            },
             "send": {
-                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number,
+                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number, program:WebGLProgram,
                                 {
-                                    sendVector3
+                                    sendFloat3
                                 },
                                 {
                                     AmbientLightDataFromSystem
@@ -315,7 +341,7 @@ export const shaderLib_generator = {
                         //todo use utils method!
                         let renderData:AmbientLightRenderData = getRenderData(i, AmbientLightDataFromSystem);
 
-                        sendVector3(gl, shaderIndex, "u_ambient", renderData.colorArr, uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, "u_ambient", renderData.colorArr, uniformLocationMap, uniformCacheMap);
                     }
                 }
             }
@@ -409,32 +435,6 @@ export const shaderLib_generator = {
         //     }
         // },
         "DirectionLightShaderLib":{
-            "glsl": {
-                "vs": {
-                    "defineList": [
-                        {
-                            "name": "DIRECTION_LIGHTS_COUNT",
-                            "valueFunc": ({
-                                              DirectionLightData
-                                          }) => {
-                                return DirectionLightData.count;
-                            }
-                        }
-                    ]
-                },
-                "fs": {
-                    "defineList": [
-                        {
-                            "name": "DIRECTION_LIGHTS_COUNT",
-                            "valueFunc": ({
-                                              DirectionLightData
-                                          }) => {
-                                return DirectionLightData.count;
-                            }
-                        }
-                    ]
-                }
-            },
             "send": {
                 // "uniform": [
                 //     {
@@ -478,10 +478,11 @@ export const shaderLib_generator = {
                 //     ]
                 // },
 
-                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number,
+                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number, program:WebGLProgram,
                                 {
                                     sendVector3,
-                                    sendFloat1
+                                    sendFloat1,
+                                    sendFloat3
                                 },
                                 {
                                     DirectionLightDataFromSystem
@@ -490,9 +491,9 @@ export const shaderLib_generator = {
                         //todo use directionLightUtils method!
                         let renderData:DirectionLightRenderData = getRenderData(i, DirectionLightDataFromSystem);
 
-                        sendVector3(gl, shaderIndex, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
-                        sendVector3(gl, shaderIndex, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].color, renderData.colorArr, uniformLocationMap, uniformCacheMap);
-                        sendFloat1(gl, shaderIndex, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].intensity, renderData.intensity, uniformLocationMap, uniformCacheMap);
+                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].color, renderData.colorArr, uniformLocationMap, uniformCacheMap);
+                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].intensity, renderData.intensity, uniformLocationMap, uniformCacheMap);
                     }
                 }
             }
@@ -604,7 +605,7 @@ export interface ISendAttributeConfig {
 export interface ISendUniformConfig {
     name: string;
     field: string;
-    type: "num" | "float" | "vec3" | "mat4";
+    type: "int" | "float" | "float3" | "vec3" | "mat3" | "mat4";
     fieldType?: "value" | "structure";
     from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
 }

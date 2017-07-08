@@ -3,7 +3,7 @@ import { EDrawMode } from "../../enum/EDrawMode";
 import { RenderCommandBufferForDrawData } from "../../type/dataType";
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { IRenderConfig } from "../../data/render_config";
-import { getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
+import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
 import { createTypeArrays } from "./renderComandBufferUtils";
 import { DrawDataMap } from "../../type/utilsType";
 
@@ -87,7 +87,8 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
             materialIndices,
             shaderIndices,
             geometryIndices
-        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
+        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem),
+        program:WebGLProgram = null;
 
     _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
@@ -101,15 +102,15 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
             geometryIndex = geometryIndices[i],
             drawMode = EDrawMode.TRIANGLES;
 
-        use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
         //todo set state
 
-        sendAttributeData(gl, shaderIndex, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+        sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 
-        sendUniformData(gl, shaderIndex, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndices[i]));
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
@@ -168,12 +169,13 @@ var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawRenderC
 }
 
 export var initData = (DrawRenderCommandBufferDataFromSystem: any) => {
-    var mat4Length = getMatrix4DataSize(),
+    var mat3Length = getMatrix3DataSize(),
+        mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize();
 
     DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
     DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
     DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
     DrawRenderCommandBufferDataFromSystem.cameraPositionForSend = new Float32Array(cameraPositionLength);
-    DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend = new Float32Array(mat4Length);
+    DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend = new Float32Array(mat3Length);
 }

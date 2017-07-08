@@ -1,5 +1,5 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { ensureGetter, assert, requireCheck, it } from "../definition/typescript/decorator/contract";
+import { ensureGetter, requireCheck, it } from "../definition/typescript/decorator/contract";
 import { Log } from "../utils/Log";
 import { Vector3 } from "../math/Vector3";
 import { Vector4 } from "../math/Vector4";
@@ -32,7 +32,9 @@ export class Color {
 
     private _r: number = null;
     @ensureGetter(function(r: number) {
-        assert(r >= 0, Log.info.FUNC_SHOULD("r", `>= 0, but actual is ${r}`));
+        it("r should >= 0", () => {
+            expect(r).gte(0);
+        });
     })
     get r() {
         return this._r;
@@ -47,7 +49,9 @@ export class Color {
 
     private _g: number = null;
     @ensureGetter(function(g: number) {
-        assert(g >= 0, Log.info.FUNC_SHOULD("g", `>= 0, but actual is ${g}`));
+        it("g should >= 0", () => {
+            expect(g).gte(0);
+        });
     })
     get g() {
         return this._g;
@@ -62,7 +66,9 @@ export class Color {
 
     private _b: number = null;
     @ensureGetter(function(b: number) {
-        assert(b >= 0, Log.info.FUNC_SHOULD("b", `>= 0, but actual is ${b}`));
+        it("b should >= 0", () => {
+            expect(b).gte(0);
+        });
     })
     get b() {
         return this._b;
@@ -77,7 +83,9 @@ export class Color {
 
     private _a: number = null;
     @ensureGetter(function(a: number) {
-        assert(a >= 0, Log.info.FUNC_SHOULD("a", `>= 0, but actual is ${a}`));
+        it("a should >= 0", () => {
+            expect(a).gte(0);
+        });
     })
     get a() {
         return this._a;

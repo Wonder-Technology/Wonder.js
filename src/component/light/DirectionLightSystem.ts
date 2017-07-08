@@ -1,19 +1,23 @@
 import { DirectionLight } from "./DirectionLight";
-import {
-    create as createLight
-} from "./LightSystem";
 import { Color } from "../../structure/Color";
 import {
-    disposeComponent as disposeSpecifyLightComponent, getPosition as getSpecifyLightPosition, getRenderData as getSpecifyLightRenderData,
+    create as createSpecifyLight,
+    disposeComponent as disposeSpecifyLightComponent, getPosition as getSpecifyLightPosition,
+    getRenderData as getSpecifyLightRenderData,
     initData as initSpecifyLightData,
-    setColor as setSpecifyLightColor
+    setColor as setSpecifyLightColor,
+    addComponent as addSpecifyLightComponent
 } from "./SpecifyLightSystem";
+import { DirectionLightData } from "./DirectionLightData";
+import { Light } from "./Light";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 
 //todo check: count <= 4
-export var create = (ShaderData: any, DirectionLightData:any) => {
+export var create = (DirectionLightData:any) => {
     var light = new DirectionLight();
 
-    light = createLight(light, DirectionLightData);
+    light = createSpecifyLight(light, DirectionLightData);
+    // light = createLight(light, LightData);
 
     _setDefaultRenderData(light.index, DirectionLightData);
 
@@ -43,8 +47,14 @@ export var setIntensity = (index: number, intensity:number, DirectionLightData: 
     DirectionLightData.renderDataMap[index].intensity = intensity;
 }
 
-export var disposeComponent = (sourceIndex:number, lastComponentIndex:number, DirectionLightData:any) => {
-    disposeSpecifyLightComponent(sourceIndex, lastComponentIndex, DirectionLightData.renderDataMap)
+export var addComponent = (component: Light, gameObject: GameObject) => {
+    addSpecifyLightComponent(component, gameObject, DirectionLightData);
+}
+
+export var disposeComponent = (component: Light) => {
+    var lastComponentIndex = DirectionLightData.count;
+
+    disposeSpecifyLightComponent(component.index, lastComponentIndex, DirectionLightData);
 }
 
 export var initData = (DirectionLightData: any) => {

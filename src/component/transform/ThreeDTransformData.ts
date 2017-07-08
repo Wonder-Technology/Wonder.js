@@ -5,6 +5,7 @@ import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
 import { Quaternion } from "../../math/Quaternion";
+import { Matrix3 } from "../../math/Matrix3";
 
 export class ThreeDTransformData {
     static get maxCount() {
@@ -83,7 +84,7 @@ export type ThreeDTransformCacheData = {
     position: Vector3;
     localPosition: Vector3;
     localToWorldMatrix: Matrix4;
-    normalMatrix: Matrix4;
+    normalMatrix: Matrix3;
 }
 
 export type ThreeDTransformTempMap = {

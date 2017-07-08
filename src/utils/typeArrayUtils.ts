@@ -3,6 +3,9 @@ import { Vector3 } from "../math/Vector3";
 import { Quaternion } from "../math/Quaternion";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { Matrix3 } from "../math/Matrix3";
+
+export var getMatrix3DataSize = () => 9;
 
 export var getMatrix4DataSize = () => 16;
 
@@ -36,6 +39,20 @@ export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: numb
 
 export var set = (typeArr: Float32Array | Uint32Array | Uint16Array, valArr: Array<number>, offset = 0) => {
     typeArr.set(valArr, offset);
+}
+
+export var setMatrices3 = (typeArr: Float32Array, mat: Matrix3, index: number) => {
+    var values = mat.values;
+
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
 }
 
 export var setMatrices = (typeArr: Float32Array, mat: Matrix4, index: number) => {

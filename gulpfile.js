@@ -118,11 +118,11 @@ gulp.task("watchForTest", function(){
 gulp.task("watchForTestNoWorker", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollupNoWorker"]));
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "createShaderChunk", "compileTsES2015", "rollupNoWorker"]));
 });
 
 gulp.task("watchForTestRenderWorker", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
-    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015", "rollupRenderWorker"]));
+    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "createShaderChunk", "compileTsES2015", "rollupRenderWorker"]));
 });

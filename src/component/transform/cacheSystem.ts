@@ -6,6 +6,7 @@ import { getUID } from "./utils";
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { ThreeDTransformCacheMap } from "./ThreeDTransformData";
+import { Matrix3 } from "../../math/Matrix3";
 
 export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
     var count: number = null,
@@ -68,7 +69,7 @@ export var getNormalMatrixCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).normalMatrix;
 }
 
-export var setNormalMatrixCache = (uid: number, mat:Matrix4, ThreeTransformData: any) => {
+export var setNormalMatrixCache = (uid: number, mat:Matrix3, ThreeTransformData: any) => {
     _getCache(uid, ThreeTransformData).normalMatrix = mat;
 }
 

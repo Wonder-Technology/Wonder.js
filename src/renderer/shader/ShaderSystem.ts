@@ -8,7 +8,7 @@ import {
 } from "../utils/shader/shaderUtils";
 import { getIndices, getNormals, getVertices } from "../../component/geometry/GeometrySystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
-import { getUniformData, sendBuffer, sendFloat1, sendMatrix4, sendVector3 } from "./glslSender/GLSLSenderSystem";
+import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
 import { MaterialDataMap, RenderCommandUniformData } from "../type/dataType";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
@@ -51,17 +51,20 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialDataMap);
     };
 
-    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, {
+    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
         getVertices:getVertices,
         getNormals: getNormals
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-        sendUniformDataUtils(gl, shaderIndex, {
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+        sendUniformDataUtils(gl, shaderIndex, program, {
             getUniformData: getUniformData,
+            sendMatrix3: sendMatrix3,
             sendMatrix4: sendMatrix4,
             sendVector3: sendVector3,
-            sendFloat1: sendFloat1
+            sendInt: sendInt,
+            sendFloat1: sendFloat1,
+            sendFloat3: sendFloat3
         }, drawDataMap, renderCommandUniformData);
     };
 

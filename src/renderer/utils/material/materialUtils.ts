@@ -58,8 +58,17 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
 }
 
 export var createSpecifyMaterialTypeArrays = (buffer: any, count: number, SpecifyMaterialDataFromSystem: any) => {
-    SpecifyMaterialDataFromSystem.colors = new Float32Array(buffer, count * Uint32Array.BYTES_PER_ELEMENT, count * getColorDataSize());
-    SpecifyMaterialDataFromSystem.opacities = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * getColorDataSize()), count * getOpacityDataSize());
-    SpecifyMaterialDataFromSystem.alphaTests = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize())), count * getAlphaTestDataSize());
+    var offset = 0;
+
+    SpecifyMaterialDataFromSystem.colors = new Float32Array(buffer, offset, count * getColorDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
+
+    SpecifyMaterialDataFromSystem.opacities = new Float32Array(buffer, offset, count * getOpacityDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getOpacityDataSize();
+
+    SpecifyMaterialDataFromSystem.alphaTests = new Float32Array(buffer, offset, count * getAlphaTestDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getAlphaTestDataSize();
+
+    return offset;
 }
 

@@ -59,6 +59,10 @@ import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
+import { initData as initLightData } from "../component/light/LightSystem";
+import { AmbientLightData } from "../component/light/AmbientLightData";
+import { DirectionLightData } from "../component/light/DirectionLightData";
+import { PointLightData } from "../component/light/PointLightData";
 
 export var getIsTest = (MainData: any) => {
     return MainData.isTest;
@@ -191,6 +195,8 @@ var _initData = () => {
     // initWorkerTimeData(WorkerTimeData);
 
     initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+
+    initLightData(AmbientLightData, DirectionLightData, PointLightData);
 }
 
 

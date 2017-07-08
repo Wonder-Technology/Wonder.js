@@ -18,7 +18,7 @@ export var create = (ShaderData: any, MaterialData: any) => {
     var material = new BasicMaterial(),
         materialClassName = "BasicMaterial";
 
-    material = createMaterial(material, materialClassName, MaterialData);
+    material = createMaterial(material, MaterialData);
 
     setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
 

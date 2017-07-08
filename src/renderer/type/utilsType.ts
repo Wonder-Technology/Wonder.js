@@ -27,9 +27,12 @@ export type DrawFuncDataMap = {
 
 export type SendUniformDataFuncDataMap = {
     getUniformData: Function;
+    sendMatrix3: Function;
     sendMatrix4: Function;
     sendVector3: Function;
+    sendInt: Function;
     sendFloat1: Function;
+    sendFloat3: Function;
 }
 
 export type BasicMaterialForGetUniformDataDataMap = {

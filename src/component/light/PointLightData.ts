@@ -1,4 +1,6 @@
-export class PointLightData {
+import { SpecifyLightData } from "./SpecifyLightData";
+
+export class PointLightData extends SpecifyLightData{
     public static renderDataMap:Array<PointLightRenderData> = null;
 }
 

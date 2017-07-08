@@ -51,9 +51,9 @@ export var addInitHandle = (_class: any) => {
     addInitHandleToMap(_class, initMaterial);
 }
 
-export var create = requireCheckFunc((material: Material, className: string, MaterialData: any) => {
+export var create = requireCheckFunc((material: Material, MaterialData: any) => {
     checkIndexShouldEqualCount(MaterialData);
-}, (material: Material, className: string, MaterialData: any) => {
+}, (material: Material, MaterialData: any) => {
     var index = generateComponentIndex(MaterialData);
 
     material.index = index;
@@ -270,7 +270,7 @@ export var setSpecifyMaterialDefaultData = (SpecifyMaterialData:any) => {
 }
 
 export var getSpecifyMateiralBufferSize = () => {
-    return Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
+    return Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
 }
 
 export var setSpecifyMaterialDefaultTypeArrData = (count: number, SpecifyMaterialData: any) => {
@@ -327,10 +327,12 @@ var _getTotalMaterialBufferCount = (DataBufferConfig:any) => {
 
 var _initTable = (MaterialData: any) => {
     MaterialData.shaderIndexTable = {
-        "BasicMaterial": 0
+        "BasicMaterial": 0,
+        "LightMaterial": 1
     }
 
     MaterialData.materialClassNameTable = {
-        0: "BasicMaterial"
+        0: "BasicMaterial",
+        1: "LightMaterial"
     }
 }

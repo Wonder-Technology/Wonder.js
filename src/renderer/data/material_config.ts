@@ -31,7 +31,7 @@ export const material_config = {
                     "NoShadowMapShaderLib",
                     "LightShaderLib",
                     "AmbientLightShaderLib",
-                    "PointLightShaderLib",
+                    // "PointLightShaderLib",
                     "DirectionLightShaderLib",
                     "LightEndShaderLib",
 
@@ -47,15 +47,22 @@ export const material_config = {
             "ModelMatrixNoInstanceShaderLib",
             "VerticeCommonShaderLib"
         ],
-        "engineMaterialEop":[
+        "engineMaterialEnd":[
             "EndShaderLib"
         ]
     }
 }
 
 export interface IMaterialConfig {
-    [materialClassName: string]: IMaterialContentConfig
+    materials:{
+        [materialClassName: string]: IMaterialContentConfig
+    };
+    shaderLibGroups: IMaterialShaderLibGroup;
 }
+
+export interface IMaterialShaderLibGroup {
+    [groupName:string]:Array<string>;
+};
 
 export interface IMaterialContentConfig {
     shader: IShaderConfig

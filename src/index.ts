@@ -11,12 +11,11 @@ export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./componen
 export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
 export {Geometry,getDrawMode,getVertices,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
-export {AmbientLight} from "./component/light/AmbientLight";
+export {AmbientLight,createAmbientLight,setAmbientLightColor} from "./component/light/AmbientLight";
 export {AmbientLightData} from "./component/light/AmbientLightData";
-export {DirectionLight} from "./component/light/DirectionLight";
+export {DirectionLight,createDirectionLight,setDirectionLightColor,setDirectionLightIntensity} from "./component/light/DirectionLight";
 export {DirectionLightData} from "./component/light/DirectionLightData";
 export {Light} from "./component/light/Light";
-export {LightData} from "./component/light/LightData";
 export {PointLightData} from "./component/light/PointLightData";
 export {SpecifyLightData} from "./component/light/SpecifyLightData";
 export {BasicMaterial,createBasicMaterial,getBasicMaterialColor,setBasicMaterialColor,getBasicMaterialOpacity,setBasicMaterialOpacity,getBasicMaterialAlphaTest,setBasicMaterialAlphaTest} from "./component/material/BasicMaterial";

@@ -16,7 +16,7 @@
     <script src="../../js/tool/lightMaterialTool.js"></script>
     <script src="../../js/tool/ambientLightTool.js"></script>
     <script src="../../js/tool/directionLightTool.js"></script>
-    <script src="../../js/tool/pointLightTool.js"></script>
+    <!--<script src="../../js/tool/pointLightTool.js"></script>-->
 </head>
 <body>
 
@@ -50,7 +50,7 @@
 
             sceneTool.addGameObject(createAmbientLight());
             sceneTool.addGameObject(createDirectionLight());
-            sceneTool.addGameObject(createPointLight());
+//            sceneTool.addGameObject(createPointLight());
 
 
 
@@ -60,9 +60,11 @@
         }
 
         function createBox() {
-            var material = basicMaterialTool.create();
+            var material = lightMaterialTool.create();
 
-            basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+            lightMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+            lightMaterialTool.setSpecularColor(material, wd.Color.create("#ffdd99"));
+            lightMaterialTool.setShininess(material, 32);
 
             var obj = gameObjectTool.create();
 
@@ -109,50 +111,52 @@
 
             var transform = gameObjectTool.getTransform(obj);
 
-            threeDTransformTool.setPosition(transform, wd.Vector3.create(0, 1000, 0));
+//            threeDTransformTool.setPosition(transform, wd.Vector3.create(100, 100, 100));
+            threeDTransformTool.setPosition(transform, wd.Vector3.create(1, 10, 0));
 
             return obj;
         }
 
-        function createPointLight() {
-            var pointLightComponent = pointLightTool.create();
-            pointLightTool.setColor(pointLightComponent, wd.Color.create("rgb(0.0, 1.0, 1.0)"));
-            pointLightTool.setIntensity(pointLightComponent, 10);
-            pointLightTool.setRangeLevel(pointLightComponent, 11);
 
-
-            var obj = gameObjectTool.create();
-
-            gameObjectTool.addComponent(obj, pointLightComponent);
-
-
-            var transform = gameObjectTool.getTransform(obj);
-
-            threeDTransformTool.setPosition(transform, wd.Vector3.create(0, 1000, 0));
-
-
-
-            var geo = boxGeometryTool.create();
-
-            boxGeometryTool.setConfigData(geo, {
-                width:5,
-                height:5,
-                depth:5
-            })
-
-            gameObjectTool.addComponent(obj, geo);
-
-
-            var mat = lightMaterialTool.create();
-            lightMaterialTool.setColor(mat, wd.Color.create("#122333"));
-
-            gameObjectTool.addComponent(obj, mat);
-
-            gameObjectTool.addComponent(obj, meshRendererTool.create());
-
-
-            return obj;
-        }
+//        function createPointLight() {
+//            var pointLightComponent = pointLightTool.create();
+//            pointLightTool.setColor(pointLightComponent, wd.Color.create("rgb(0.0, 1.0, 1.0)"));
+//            pointLightTool.setIntensity(pointLightComponent, 10);
+//            pointLightTool.setRangeLevel(pointLightComponent, 11);
+//
+//
+//            var obj = gameObjectTool.create();
+//
+//            gameObjectTool.addComponent(obj, pointLightComponent);
+//
+//
+//            var transform = gameObjectTool.getTransform(obj);
+//
+//            threeDTransformTool.setPosition(transform, wd.Vector3.create(0, 1000, 0));
+//
+//
+//
+//            var geo = boxGeometryTool.create();
+//
+//            boxGeometryTool.setConfigData(geo, {
+//                width:5,
+//                height:5,
+//                depth:5
+//            })
+//
+//            gameObjectTool.addComponent(obj, geo);
+//
+//
+//            var mat = lightMaterialTool.create();
+//            lightMaterialTool.setColor(mat, wd.Color.create("#122333"));
+//
+//            gameObjectTool.addComponent(obj, mat);
+//
+//            gameObjectTool.addComponent(obj, meshRendererTool.create());
+//
+//
+//            return obj;
+//        }
 
 
         function createCamera() {
@@ -172,7 +176,8 @@
 
             var transform = gameObjectTool.getTransform(cameraObj);
 
-            threeDTransformTool.setPosition(transform, wd.Vector3.create(0,0, 40));
+            threeDTransformTool.setPosition(transform, wd.Vector3.create(0,40, 100));
+//            threeDTransformTool.setPosition(transform, wd.Vector3.create(40,40, 100));
 
             return cameraObj;
         }

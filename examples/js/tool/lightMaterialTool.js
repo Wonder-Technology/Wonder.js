@@ -1,8 +1,9 @@
 var lightMaterialTool = (function () {
     return {
-        create:wd.createDirectionLight,
-        setColor:wd.setDirectionLightColor,
-        setIntensity:wd.setDirectionLightIntensity
+        create:wd.createLightMaterial,
+        setColor:wd.setLightMaterialColor,
+        setSpecularColor: wd.setLightMaterialSpecularColor,
+        setShininess: wd.setLightMaterialShininess
     }
 })()
 

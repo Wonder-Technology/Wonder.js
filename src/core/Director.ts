@@ -53,8 +53,11 @@ import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
-import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
-import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
+// import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
+// import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
+import { addAddComponentHandle as addLightAddComponentHandle, addDisposeHandle as addLightDisposeHandle } from "../component/light/LightSystem";
+import { AmbientLight } from "../component/light/AmbientLight";
+import { DirectionLight } from "../component/light/DirectionLight";
 
 @singleton(true)
 @registerClass("Director")
@@ -195,3 +198,5 @@ addThreeDTransformDisposeHandle(ThreeDTransform);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
 
+addLightAddComponentHandle(AmbientLight, DirectionLight);
+addLightDisposeHandle(AmbientLight, DirectionLight);
