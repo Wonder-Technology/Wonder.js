@@ -1,7 +1,10 @@
 var arrayBufferTool = (function () {
     return {
-        setBuffer: function (index, data) {
-            wd.ArrayBufferData.buffers[index] = data;
+        setVerticeBuffer: function (index, data) {
+            wd.ArrayBufferData.verticeBuffers[index] = data;
+        },
+        setNormalBuffer: function (index, data) {
+            wd.ArrayBufferData.normalBuffers[index] = data;
         },
         setBufferData: function (index, data) {
             wd.ArrayBufferData.bufferDataMap[index] = data;

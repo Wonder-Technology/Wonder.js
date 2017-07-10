@@ -246,7 +246,7 @@ describe("BasicMaterial", function () {
 
                 it("test vs source", function () {
                     var vs = materialTool.getVsSource(gl);
-                    expect(glslTool.contain(vs, "gl_Position = u_pMatrix * u_vMatrix * u_mMatrix * vec4(a_position, 1.0);\n")).toBeTruthy();
+                    expect(glslTool.contain(vs, "gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n")).toBeTruthy();
                 });
             });
         });

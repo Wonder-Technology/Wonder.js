@@ -3,11 +3,17 @@ var shaderTool = (function () {
         disableVertexAttribArray: function (gl) {
           wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         },
-        sendUniformData: function(gl, index, renderCommandUniformData){
-            wd.sendUniformData(gl, index, wd.BasicMaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
+        sendUniformData: function(gl, index, renderCommandUniformData, program){
+            wd.sendUniformData(gl, index, program || {}, {
+                MaterialDataFromSystem: wd.MaterialData,
+                BasicMaterialDataFromSystem: wd.BasicMaterialData,
+                ProgramDataFromSystem: wd.ProgramData,
+               LocationDataFromSystem: wd.LocationData,
+                GLSLSenderDataFromSystem:wd.GLSLSenderData
+            }, renderCommandUniformData);
         },
-        sendAttributeData: function(gl, shaderIndex, geometryIndex){
-          wd.sendAttributeData(gl, shaderIndex, geometryIndex, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, wd.GeometryData, wd.ArrayBufferData);
+        sendAttributeData: function(gl, shaderIndex, geometryIndex, program){
+          wd.sendAttributeData(gl, shaderIndex, program || {}, geometryIndex, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, wd.GeometryData, wd.ArrayBufferData);
         },
         use: function(gl, index){
             wd.useProgram(gl, index, wd.ProgramData, wd.LocationData, wd.GLSLSenderData);
@@ -20,6 +26,9 @@ var shaderTool = (function () {
         },
         setSendUniformConfig: function (index, data) {
             wd.GLSLSenderData.sendUniformConfigMap[index] = data;
+        },
+        setSendUniformFuncConfig: function (index, data) {
+            wd.GLSLSenderData.sendUniformFuncConfigMap[index] = data;
         },
         setUniformLocation: function (index, data) {
             wd.LocationData.uniformLocationMap[index] = data;

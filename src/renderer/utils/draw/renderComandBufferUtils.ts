@@ -10,6 +10,16 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
     RenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, offset, count * mat4Length);
     offset += count * Float32Array.BYTES_PER_ELEMENT * mat4Length;
 
+    RenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, offset, count);
+    offset += count * Uint32Array.BYTES_PER_ELEMENT;
+
+    RenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, offset, count);
+    offset += count * Uint32Array.BYTES_PER_ELEMENT;
+
+    RenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, offset, count);
+    offset += count * Uint32Array.BYTES_PER_ELEMENT;
+
+
     RenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, offset, mat4Length);
     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
 
@@ -19,16 +29,7 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
     RenderCommandBufferDataFromSystem.cameraPositions = new Float32Array(buffer, offset, cameraPositionLength);
     offset += Float32Array.BYTES_PER_ELEMENT * cameraPositionLength;
 
-
     RenderCommandBufferDataFromSystem.normalMatrices = new Float32Array(buffer, offset, mat3Length);
     offset += Float32Array.BYTES_PER_ELEMENT * mat3Length;
-
-    RenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, offset, count);
-    offset += Uint32Array.BYTES_PER_ELEMENT;
-
-    RenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, offset, count);
-    offset += Uint32Array.BYTES_PER_ELEMENT;
-
-    RenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, offset, count);
 }
 

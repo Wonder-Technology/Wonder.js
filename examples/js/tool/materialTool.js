@@ -7,7 +7,7 @@ var materialTool = (function () {
             return wd.getShaderIndex(materialIndex, wd.MaterialData);
         },
         resetData: function(){
-            wd.initMaterialData(wd.MaterialData, wd.BasicMaterialData);
+            wd.initMaterialData(wd.MaterialData, wd.BasicMaterialData, wd.LightMaterialData);
         },
         getVsSource: function (gl) {
             return gl.shaderSource.firstCall.args[1];

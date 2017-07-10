@@ -18,6 +18,7 @@ import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import {
+    getMatrix3DataSize,
     getMatrix4DataSize, getVector3DataSize, setMatrices, setMatrices3,
     setVectors
 } from "../../utils/typeArrayUtils";
@@ -78,13 +79,14 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
 }), 11)
 
 export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
-    var mat4Length = getMatrix4DataSize(),
+    var mat3Length = getMatrix3DataSize(),
+        mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
         size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
         buffer: any = null,
         count = DataBufferConfig.renderCommandBufferCount;
 
-    buffer = createSharedArrayBufferOrArrayBuffer(count * size + Float32Array.BYTES_PER_ELEMENT * (mat4Length * 3 + cameraPositionLength));
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size + Float32Array.BYTES_PER_ELEMENT * (mat3Length + mat4Length * 2 + cameraPositionLength));
 
     createTypeArrays(buffer, DataBufferConfig, RenderCommandBufferData);
 

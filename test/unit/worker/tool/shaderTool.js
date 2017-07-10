@@ -3,34 +3,19 @@ var shaderTool = (function () {
         disableVertexAttribArray: function (gl) {
           wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         },
-        //todo use BasicMaterialData?
-        sendUniformData: function(gl, index, renderCommandUniformData){
-            wd.sendUniformData(gl, index, wd.MaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
-        },
-        sendAttributeData: function(gl, shaderIndex, geometryIndex){
-          wd.sendAttributeData(gl, shaderIndex, geometryIndex, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, wd.GeometryData, wd.ArrayBufferData);
-        },
-        use: function(gl, index){
-            wd.useProgram(gl, index, wd.ProgramData, wd.LocationData, wd.GLSLSenderData);
-        },
-        setSendAttributeConfig: function (index, data) {
-            wd.GLSLSenderData.sendAttributeConfigMap[index] = data;
-        },
-        setAttributeLocation: function (index, data) {
-            wd.LocationData.attributeLocationMap[index] = data;
-        },
-        setSendUniformConfig: function (index, data) {
-            wd.GLSLSenderData.sendUniformConfigMap[index] = data;
-        },
-        setUniformLocation: function (index, data) {
-            wd.LocationData.uniformLocationMap[index] = data;
-        },
-        setUniformCache: function (index, data) {
-            wd.GLSLSenderData.uniformCacheMap[index] = data;
-        },
-        setProgram: function (index, data) {
-            wd.ProgramData.programMap[index] = data;
-        },
+        // //todo use BasicMaterialData?
+        // sendUniformData: function(gl, index, renderCommandUniformData){
+        //     wd.sendUniformData(gl, index, wd.MaterialData, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, renderCommandUniformData);
+        // },
+        // sendAttributeData: function(gl, shaderIndex, geometryIndex, program){
+        //   wd.sendAttributeData(gl, shaderIndex, program || {}, geometryIndex, wd.ProgramData, wd.LocationData, wd.GLSLSenderData, wd.GeometryData, wd.ArrayBufferData);
+        // },
+        // use: function(gl, index){
+        //     wd.useProgram(gl, index, wd.ProgramData, wd.LocationData, wd.GLSLSenderData);
+        // },
+        // setProgram: function (index, data) {
+        //     wd.ProgramData.programMap[index] = data;
+        // },
         resetData: function(){
             shaderUtils.resetData();
 

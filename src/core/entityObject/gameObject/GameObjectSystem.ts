@@ -118,7 +118,7 @@ export var addComponent = requireCheckFunc((gameObject: GameObject, component: C
     it("component should exist", () => {
         expect(component).exist;
     });
-    it("should not has this component of component, please dispose it", () => {
+    it("should not has this type of component, please dispose it", () => {
         expect(hasComponent(gameObject, getComponentIDFromComponent(component), GameObjectData)).false;
     });
 }, (gameObject: GameObject, component: Component, GameObjectData: any) => {

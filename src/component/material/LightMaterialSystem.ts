@@ -106,13 +106,15 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
-        lastComponentIndex: number = LightMaterialData.index,
+        lastComponentIndex: number = null,
         colorDataSize = getColorDataSize(),
         shininessDataSize = getShininessDataSize(),
         shadingDataSize = getShadingDataSize(),
         lightModelDataSize = getLightModelDataSize();
 
     LightMaterialData.index -= 1;
+
+    lastComponentIndex = LightMaterialData.index;
 
     disposeMaterialComponent(sourceIndex, lastComponentIndex, LightMaterialData);
 

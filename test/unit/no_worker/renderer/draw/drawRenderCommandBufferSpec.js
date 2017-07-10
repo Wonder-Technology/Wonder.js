@@ -87,8 +87,8 @@ describe("draw render command", function () {
 
 
 
-            arrayBufferTool.setBuffer(0, buffer1);
-            arrayBufferTool.setBuffer(1, buffer2);
+            arrayBufferTool.setVerticeBuffer(0, buffer1);
+            arrayBufferTool.setVerticeBuffer(1, buffer2);
 
             arrayBufferTool.setBufferData(0, {
                 size: 3,
@@ -219,7 +219,7 @@ describe("draw render command", function () {
                         "name": "u_color",
                         "from": "basicMaterial",
                         "field": "color",
-                        "type": "vec3"
+                        "type": "float3"
                     }
                 ]);
                 shaderTool.setSendUniformConfig(1, [
@@ -227,7 +227,7 @@ describe("draw render command", function () {
                         "name": "u_color",
                         "from": "basicMaterial",
                         "field": "color",
-                        "type": "vec3"
+                        "type": "float3"
                     },
                     {
                         "name": "u_opacity",
@@ -242,6 +242,11 @@ describe("draw render command", function () {
                 shaderTool.setUniformLocation(1, {
                     "u_color": pos,
                     "u_opacity": pos2
+                });
+                //todo test uniform func
+                shaderTool.setSendUniformFuncConfig(0, function () {
+                });
+                shaderTool.setSendUniformFuncConfig(1, function () {
                 });
                 shaderTool.setProgram(0, program1);
                 shaderTool.setProgram(1, program2);

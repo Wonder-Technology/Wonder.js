@@ -202,7 +202,7 @@ describe("Material", function() {
                             gameObjectTool.disposeComponent(obj, material);
 
                             colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(0)), color2, expect);
-                            colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(BasicMaterialData), expect);
+                            colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(MaterialData), expect);
                         });
                         it("remove from opacities", function () {
                             basicMaterialTool.setOpacity(material, 0.3);
@@ -210,8 +210,8 @@ describe("Material", function() {
 
                             gameObjectTool.disposeComponent(obj, material);
 
-                            expect(BasicMaterialData.opacities[0]).toEqual(0.5);
-                            expect(BasicMaterialData.opacities[1]).toEqual(BasicMaterialData.defaultOpacity);
+                            expect(MaterialData.opacities[0]).toEqual(0.5);
+                            expect(MaterialData.opacities[1]).toEqual(MaterialData.defaultOpacity);
                         });
                         it("remove from alphaTests", function () {
                             basicMaterialTool.setAlphaTest(material, 0.3);
@@ -219,8 +219,8 @@ describe("Material", function() {
 
                             gameObjectTool.disposeComponent(obj, material);
 
-                            expect(BasicMaterialData.alphaTests[0]).toEqual(0.5);
-                            expect(BasicMaterialData.alphaTests[1]).toEqual(BasicMaterialData.defaultAlphaTest);
+                            expect(MaterialData.alphaTests[0]).toEqual(0.5);
+                            expect(MaterialData.alphaTests[1]).toEqual(MaterialData.defaultAlphaTest);
                         });
                     });
                 });
@@ -281,6 +281,7 @@ describe("Material", function() {
 
             function prepareNotExceed() {
                 sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 1);
+                sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 0);
 
                 materialTool.resetData();
 

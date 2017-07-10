@@ -42,9 +42,11 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
-        lastComponentIndex: number = BasicMaterialData.index;
+        lastComponentIndex: number = null;
 
     BasicMaterialData.index -= 1;
+
+    lastComponentIndex = BasicMaterialData.index;
 
     disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
 
