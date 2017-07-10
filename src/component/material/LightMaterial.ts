@@ -20,43 +20,43 @@ export class LightMaterial extends Material {
 }
 
 export var createLightMaterial = () => {
-    return create(ShaderData, MaterialData);
+    return create(ShaderData, MaterialData, LightMaterialData);
 }
 
 export var getLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
-    return getColor(material.index, LightMaterialData);
+    return getColor(material.index, MaterialData);
 })
 
 export var setLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, color: Color) => {
-    setColor(material.index, color, LightMaterialData);
+    setColor(material.index, color, MaterialData);
 })
 
 export var getLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
-    return getOpacity(material.index, LightMaterialData);
+    return getOpacity(material.index, MaterialData);
 })
 
 export var setLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, opacity: number) => {
-    setOpacity(material.index, opacity, LightMaterialData);
+    setOpacity(material.index, opacity, MaterialData);
 })
 
 export var getLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
-    return getAlphaTest(material.index, LightMaterialData);
+    return getAlphaTest(material.index, MaterialData);
 })
 
 export var setLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, alphaTest: number) => {
-    setAlphaTest(material.index, alphaTest, LightMaterialData);
+    setAlphaTest(material.index, alphaTest, MaterialData);
 })
 
 export var getLightMaterialSpecularColor = requireCheckFunc((material: LightMaterial) => {

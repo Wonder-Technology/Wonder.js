@@ -13,15 +13,15 @@ import {
 } from "../../../component/material/LightMaterialSystem";
 import { Vector3 } from "../../../math/Vector3";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, BasicMaterialData: any, LightMaterialData:any) => {
-    return getUniformDataUtils(field, from, renderCommandUniformData, {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData:any, BasicMaterialData: any, LightMaterialData:any) => {
+    return getUniformDataUtils(field, from, renderCommandUniformData,{
         getColorArr3: getColorArr3,
         getOpacity: getOpacity,
+        MaterialDataFromSystem:MaterialData
+    }, {
         BasicMaterialDataFromSystem: BasicMaterialData
     }, {
-        getColorArr3: getColorArr3,
         getEmissionColorArr3: getEmissionColorArr3,
-        getOpacity: getOpacity,
         getSpecularColorArr3: getSpecularColorArr3,
         getLightModel: getLightModel,
         getShininess:getShininess,

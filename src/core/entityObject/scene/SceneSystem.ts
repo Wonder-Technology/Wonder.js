@@ -3,11 +3,11 @@ import {
     hasComponent
 } from "../gameObject/GameObjectSystem";
 import { GameObject } from "../gameObject/GameObject";
-import { getTypeIDFromClass } from "../../../component/ComponentTypeIDManager";
 import { CameraController } from "../../../component/camera/CameraController";
 import { Scene } from "./Scene";
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { getComponentIDFromClass } from "../../../component/ComponentComponentIDManager";
 
 export var create = (GameObjectData: any) => {
     return createGameObject(null, GameObjectData);
@@ -26,7 +26,7 @@ export var removeChild = (gameObject: GameObject, child: GameObject, ThreeDTrans
 }
 
 var _isCamera = (gameObject: GameObject, GameObjectData: any) => {
-    return hasComponent(gameObject, getTypeIDFromClass(CameraController), GameObjectData);
+    return hasComponent(gameObject, getComponentIDFromClass(CameraController), GameObjectData);
 }
 
 export var getCurrentCamera = ensureFunc((camera: GameObject, SceneData: any) => {

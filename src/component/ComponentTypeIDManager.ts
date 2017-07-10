@@ -29,8 +29,10 @@ var _typeID = 1;
 const _table = {};
 
 _addTypeID(["ThreeDTransform"], _table);
+//todo fix geometry
 _addTypeID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
-_addTypeID(["Material", "BasicMaterial", "LightMaterial"], _table);
+_addTypeID(["BasicMaterial"], _table);
+_addTypeID(["LightMaterial"], _table);
 _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);
 _addTypeID(["CameraController"], _table);

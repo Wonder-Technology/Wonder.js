@@ -58,6 +58,8 @@ import { Scheduler } from "./Scheduler";
 import { addAddComponentHandle as addLightAddComponentHandle, addDisposeHandle as addLightDisposeHandle } from "../component/light/LightSystem";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
+import { BasicMaterial } from "../component/material/BasicMaterial";
+import { LightMaterial } from "../component/material/LightMaterial";
 
 @singleton(true)
 @registerClass("Director")
@@ -182,9 +184,9 @@ addGeometryAddComponentHandle(Geometry);
 addGeometryDisposeHandle(Geometry);
 addGeometryInitHandle(Geometry);
 
-addMaterialAddComponentHandle(Material);
-addMaterialDisposeHandle(Material);
-addMaterialInitHandle(Material);
+addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
+addMaterialDisposeHandle(BasicMaterial, LightMaterial);
+addMaterialInitHandle(BasicMaterial, LightMaterial);
 
 addMeshRendererAddComponentHandle(MeshRenderer);
 addMeshRendererDisposeHandle(MeshRenderer);

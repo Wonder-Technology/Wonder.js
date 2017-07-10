@@ -75,6 +75,7 @@ export type BuildGLSLSourceFuncFuncDataMap = {
 }
 
 export type MaterialDataMap = {
+    MaterialDataFromSystem: any;
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
 }

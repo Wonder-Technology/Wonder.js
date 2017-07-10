@@ -1,47 +1,63 @@
 import { BasicMaterial } from "./BasicMaterial";
 import {
-    create as createMaterial, disposeSpecifyMaterialData, getSpecifyMateiralBufferSize, setAlphaTest, setColor,
-    setOpacity,
-    setShaderIndex, setSpecifyMaterialDefaultData, setSpecifyMaterialDefaultTypeArrData
+    addComponent as addMaterialComponent,
+    create as createMaterial, disposeComponent as disposeMaterialComponent, initMaterial as initMaterialMaterial
 } from "./MaterialSystem";
-import { create as createShader } from "../../renderer/shader/ShaderSystem";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { Color } from "../../structure/Color";
 import {
-    createSpecifyMaterialTypeArrays,
-    getAlphaTestDataSize, getColorDataSize,
-    getOpacityDataSize
-} from "../../renderer/utils/material/materialUtils";
+    initData as initSpecifyMaterialData
+} from "./SpecifyMaterialSystem";
+import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex } from "./bufferUtils";
+import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+import { Material } from "./Material";
+import { generateComponentIndex } from "../ComponentSystem";
+import { BasicMaterialData } from "./BasicMaterialData";
+import { MaterialData } from "./MaterialData";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Map } from "immutable";
 
-export var create = (ShaderData: any, MaterialData: any) => {
+export var create = ensureFunc((component:Material) => {
+    it("index should <= max count", () => {
+        expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
+    });
+}, (ShaderData: any, MaterialData:any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),
-        materialClassName = "BasicMaterial";
+        materialClassName = "BasicMaterial",
+        index = generateComponentIndex(BasicMaterialData);
 
-    material = createMaterial(material, MaterialData);
+    material.index = index;
 
-    setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
+    material = createMaterial(index, materialClassName, material, ShaderData, MaterialData);
 
     return material;
+})
+
+export var initMaterial = (index: number, state: Map<any, any>) => {
+    initMaterialMaterial(index, state, MaterialData);
 }
 
-export var disposeComponent = (sourceIndex:number, lastComponentIndex:number, BasicMaterialData:any) => {
-    disposeSpecifyMaterialData(sourceIndex, lastComponentIndex, BasicMaterialData);
+export var addComponent = (component: Material, gameObject: GameObject) => {
+    addMaterialComponent(component, gameObject, MaterialData);
+}
+
+export var disposeComponent = (component: Material) => {
+    var sourceIndex = component.index,
+        lastComponentIndex: number = BasicMaterialData.index;
+
+    BasicMaterialData.index -= 1;
+
+    disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
+
+    //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
+}
+
+export var createTypeArrays = (buffer:any, offset:number, count:number, BasicMaterialData:any) => {
+    return offset;
 }
 
 export var initData = (BasicMaterialData: any) => {
-    var buffer: any = null,
-        count = DataBufferConfig.basicMaterialDataBufferCount,
-        size = getSpecifyMateiralBufferSize();
-
-    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
-
-    createSpecifyMaterialTypeArrays(buffer, count, BasicMaterialData)
-
-    BasicMaterialData.buffer = buffer;
-
-    setSpecifyMaterialDefaultData(BasicMaterialData);
-
-    setSpecifyMaterialDefaultTypeArrData(count, BasicMaterialData);
+    initSpecifyMaterialData(getBasicMaterialBufferStartIndex(), BasicMaterialData);
 }
 
+export var setDefaultData = (BasicMaterialData:any) => {
+}

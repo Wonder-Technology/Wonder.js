@@ -14,12 +14,12 @@ export var getShaderIndexFromTable = ensureFunc((index: number) => {
     return shaderIndexTable[materialClassName];
 })
 
-export var getOpacity = (materialIndex: number, SpecifyMaterialDataFromSystem: any) => {
-    return getSingleSizeData(materialIndex, SpecifyMaterialDataFromSystem.opacities);
+export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => {
+    return getSingleSizeData(materialIndex, MaterialDataFromSystem.opacities);
 }
 
-export var getAlphaTest = (materialIndex: number, SpecifyMaterialDataFromSystem: any) => {
-    return getSingleSizeData(materialIndex, SpecifyMaterialDataFromSystem.alphaTests);
+export var getAlphaTest = (materialIndex: number, MaterialDataFromSystem: any) => {
+    return getSingleSizeData(materialIndex, MaterialDataFromSystem.alphaTests);
 }
 
 export var getSingleSizeData = (materialIndex: number, datas:Uint8Array|Float32Array) => {
@@ -27,8 +27,8 @@ export var getSingleSizeData = (materialIndex: number, datas:Uint8Array|Float32A
 }
 
 
-export var getColorArr3 = (materialIndex: number, SpecifyMaterialDataFromSystem: any) => {
-    var colors = SpecifyMaterialDataFromSystem.colors,
+export var getColorArr3 = (materialIndex: number, MaterialDataFromSystem: any) => {
+    var colors = MaterialDataFromSystem.colors,
         size = getColorDataSize(),
         index = materialIndex * size;
 
@@ -47,6 +47,8 @@ export var isTestAlpha = (alphaTest: number) => {
 }
 
 //todo refactor
+export var getShaderIndexDataSize = () => 1;
+
 export var getColorDataSize = () => 3;
 
 export var getOpacityDataSize = () => 1;
@@ -54,21 +56,19 @@ export var getOpacityDataSize = () => 1;
 export var getAlphaTestDataSize = () => 1;
 
 export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSystem: any) => {
-    MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, 0, count);
-}
-
-export var createSpecifyMaterialTypeArrays = (buffer: any, count: number, SpecifyMaterialDataFromSystem: any) => {
     var offset = 0;
 
-    SpecifyMaterialDataFromSystem.colors = new Float32Array(buffer, offset, count * getColorDataSize());
+    MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, offset, count * getShaderIndexDataSize());
+    offset += count * Uint32Array.BYTES_PER_ELEMENT * getShaderIndexDataSize();
+
+    MaterialDataFromSystem.colors = new Float32Array(buffer, offset, count * getColorDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
 
-    SpecifyMaterialDataFromSystem.opacities = new Float32Array(buffer, offset, count * getOpacityDataSize());
+    MaterialDataFromSystem.opacities = new Float32Array(buffer, offset, count * getOpacityDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getOpacityDataSize();
 
-    SpecifyMaterialDataFromSystem.alphaTests = new Float32Array(buffer, offset, count * getAlphaTestDataSize());
+    MaterialDataFromSystem.alphaTests = new Float32Array(buffer, offset, count * getAlphaTestDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getAlphaTestDataSize();
 
     return offset;
 }
-

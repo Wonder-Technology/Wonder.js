@@ -13,7 +13,6 @@ import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
 import {
     getPMatrix, getWorldToCameraMatrix
 } from "../../component/camera/CameraControllerSystem";
-import { getTypeIDFromClass } from "../../component/ComponentTypeIDManager";
 import { CameraController } from "../../component/camera/CameraController";
 import { IRenderConfig } from "../data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
@@ -26,6 +25,7 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createTypeArrays } from "../utils/draw/renderComandBufferUtils";
+import { getComponentIDFromClass } from "../../component/ComponentComponentIDManager";
 
 export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData:any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
@@ -43,7 +43,7 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
         shaderIndices = RenderCommandBufferData.shaderIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
         currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getTypeIDFromClass(CameraController), GameObjectData),
+        currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
         currentCameraTransform = getTransform(currentCamera, GameObjectData),
         mat4Length = getMatrix4DataSize();

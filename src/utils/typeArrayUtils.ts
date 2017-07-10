@@ -13,31 +13,31 @@ export var getVector3DataSize = () => 3;
 
 export var getQuaternionDataSize = () => 4;
 
-export var getSlice = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+export var getSlice = (typeArr: TypeArr, startIndex: number, endIndex: number) => {
     return typeArr.slice(startIndex, endIndex);
 }
 
-export var getSubarray = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+export var getSubarray = (typeArr: TypeArr, startIndex: number, endIndex: number) => {
     return typeArr.subarray(startIndex, endIndex);
 }
 
-export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array) => {
+export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
 }
 
-export var deleteBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array, length: number, defaultValueArr: Array<number>) => {
+export var deleteBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr, length: number, defaultValueArr: Array<number>) => {
     for (let i = 0; i < length; i++) {
         typeArr[sourceIndex + i] = typeArr[targetIndex + i];
         typeArr[targetIndex + i] = defaultValueArr[i];
     }
 }
 
-export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array, defaultValue: number) => {
+export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr, defaultValue: number) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
 }
 
-export var set = (typeArr: Float32Array | Uint32Array | Uint16Array, valArr: Array<number>, offset = 0) => {
+export var set = (typeArr: TypeArr, valArr: Array<number>, offset = 0) => {
     typeArr.set(valArr, offset);
 }
 
@@ -174,3 +174,5 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
 // }, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
 //     typeArr[startIndex + increment] = target;
 // })
+
+type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;

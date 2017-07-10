@@ -10,11 +10,14 @@ import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../utils/objectUtils";
 import { RenderCommandUniformData, UniformShaderLocationMap, SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
-import { BasicMaterialForGetUniformDataDataMap, LightMaterialForGetUniformDataDataMap } from "../../../type/utilsType";
+import {
+    BasicMaterialForGetUniformDataDataMap, LightMaterialForGetUniformDataDataMap,
+    MaterialForGetUniformDataDataMap
+} from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
 
 //todo test send normalMatrix,cameraPos,light data, a_normal...
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, basicMaterialData:BasicMaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -22,10 +25,10 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
             data = renderCommandUniformData[field];
             break;
         case "basicMaterial":
-            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, basicMaterialData);
+            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, materialData,  basicMaterialData);
             break;
         case "lightMaterial":
-            data = _getUnifromDataFromLightMaterial(field, renderCommandUniformData.materialIndex, lightMaterialData);
+            data = _getUnifromDataFromLightMaterial(field, renderCommandUniformData.materialIndex, materialData, lightMaterialData);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));
@@ -36,18 +39,21 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
 }
 
 var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
-    getColorArr3,
-    getOpacity,
-    BasicMaterialDataFromSystem
-}) => {
+                                            getColorArr3,
+                                            getOpacity,
+                                            MaterialDataFromSystem
+                                        },
+                                        {
+                                            BasicMaterialDataFromSystem
+                                        }) => {
     var data: any = null;
 
     switch (field) {
         case "color":
-            data = getColorArr3(index, BasicMaterialDataFromSystem);
+            data = getColorArr3(index, MaterialDataFromSystem);
             break;
         case "opacity":
-            data = getOpacity(index, BasicMaterialDataFromSystem);
+            data = getOpacity(index, MaterialDataFromSystem);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`field:${field}`));
@@ -57,26 +63,30 @@ var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
     return data;
 }
 
-var _getUnifromDataFromLightMaterial = (field: string, index: number, {
-    getColorArr3,
-    getEmissionColorArr3,
-    getOpacity,
-    getSpecularColorArr3,
-    getShininess,
-    getLightModel,
-    LightMaterialDataFromSystem
-}) => {
+var _getUnifromDataFromLightMaterial = (field: string, index: number,
+                                        {
+                                            getColorArr3,
+                                            getOpacity,
+                                            MaterialDataFromSystem
+                                        },
+                                        {
+                                            getEmissionColorArr3,
+                                            getSpecularColorArr3,
+                                            getShininess,
+                                            getLightModel,
+                                            LightMaterialDataFromSystem
+                                        }) => {
     var data: any = null;
 
     switch (field) {
         case "color":
-            data = getColorArr3(index, LightMaterialDataFromSystem);
+            data = getColorArr3(index, MaterialDataFromSystem);
             break;
         case "emissionColor":
             data = getEmissionColorArr3(index, LightMaterialDataFromSystem);
             break;
         case "opacity":
-            data = getOpacity(index, LightMaterialDataFromSystem);
+            data = getOpacity(index, MaterialDataFromSystem);
             break;
         case "specularColor":
             data = getSpecularColorArr3(index, LightMaterialDataFromSystem);

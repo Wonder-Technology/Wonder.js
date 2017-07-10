@@ -48,7 +48,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
             materialData: {
                 buffer: MaterialData.buffer,
-                materialCount: MaterialData.count,
+                //todo fix count(use startIndex, index instead)
+                // materialCount: MaterialData.count,
                 materialClassNameTable: MaterialData.materialClassNameTable,
                 shaderIndexTable: MaterialData.shaderIndexTable
             },
@@ -92,12 +93,12 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     init = (state: Map<any, any>) => {
-        initMaterial(state, MaterialData);
+        initMaterial(state, BasicMaterialData, LightMaterialData);
     }
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

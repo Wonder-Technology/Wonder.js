@@ -224,6 +224,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
     sendFloat1,
     sendFloat3
 }, {
+    MaterialDataFromSystem,
     BasicMaterialDataFromSystem,
     LightMaterialDataFromSystem,
     GLSLSenderDataFromSystem,
@@ -236,7 +237,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, renderCommandUniformData, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
+            data = getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
         switch (type) {
             //todo test

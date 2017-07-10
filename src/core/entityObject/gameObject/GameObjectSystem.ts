@@ -1,9 +1,8 @@
 import { GameObject, IUIDEntity } from "./GameObject";
 import { Component } from "../../../component/Component";
-import { getTypeIDFromClass, getTypeIDFromComponent } from "../../../component/ComponentTypeIDManager";
-import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../../utils/objectUtils";
+import { createMap, deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { setParent } from "../../../component/transform/ThreeDTransformSystem";
-import { GameObjectComponentData, GameObjectUIDMap } from "./GameObjectData";
+import { GameObjectComponentData } from "./GameObjectData";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
@@ -15,6 +14,7 @@ import { filter, forEach } from "../../../utils/arrayUtils";
 import { Map as MapImmutable } from "immutable";
 import { removeChildEntity } from "../../../utils/entityUtils";
 import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
+import { getComponentIDFromClass, getComponentIDFromComponent } from "../../../component/ComponentComponentIDManager";
 
 export var create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
@@ -118,12 +118,12 @@ export var addComponent = requireCheckFunc((gameObject: GameObject, component: C
     it("component should exist", () => {
         expect(component).exist;
     });
-    it("should not has this type of component, please dispose it", () => {
-        expect(hasComponent(gameObject, getTypeIDFromComponent(component), GameObjectData)).false;
+    it("should not has this component of component, please dispose it", () => {
+        expect(hasComponent(gameObject, getComponentIDFromComponent(component), GameObjectData)).false;
     });
 }, (gameObject: GameObject, component: Component, GameObjectData: any) => {
     var uid = gameObject.uid,
-        typeID = getTypeIDFromComponent(component),
+        componentID = getComponentIDFromComponent(component),
         data = _getComponentData(uid, GameObjectData);
 
     execHandle(component, "addComponentHandleMap", [component, gameObject]);
@@ -131,21 +131,21 @@ export var addComponent = requireCheckFunc((gameObject: GameObject, component: C
     if (!data) {
         let d = {};
 
-        d[typeID] = component;
+        d[componentID] = component;
         _setComponentData(uid, d, GameObjectData);
 
         return;
     }
 
-    data[typeID] = component;
+    data[componentID] = component;
 })
 
-var _removeComponent = (typeID: string, gameObject: GameObject, component: Component, GameObjectData: any) => {
+var _removeComponent = (componentID: string, gameObject: GameObject, component: Component, GameObjectData: any) => {
     var uid = gameObject.uid,
         data = _getComponentData(uid, GameObjectData);
 
     if (isValidMapValue(data)) {
-        deleteVal(typeID, data);
+        deleteVal(componentID, data);
     }
 }
 
@@ -154,19 +154,19 @@ var _removeComponent = (typeID: string, gameObject: GameObject, component: Compo
 // }
 
 export var disposeComponent = (gameObject: GameObject, component: Component, GameObjectData: any) => {
-    var typeID = getTypeIDFromComponent(component);
+    var componentID = getComponentIDFromComponent(component);
 
-    _removeComponent(typeID, gameObject, component, GameObjectData);
+    _removeComponent(componentID, gameObject, component, GameObjectData);
 
     execHandle(component, "disposeHandleMap");
 }
 
-export var getComponent = (gameObject: GameObject, componentTypeID: string, GameObjectData: any) => {
+export var getComponent = (gameObject: GameObject, componentID: string, GameObjectData: any) => {
     var uid = gameObject.uid,
         data = _getComponentData(uid, GameObjectData);
 
     if (isValidMapValue(data)) {
-        let component = data[componentTypeID];
+        let component = data[componentID];
 
         return isValidMapValue(component) ? component : null;
     }
@@ -178,20 +178,20 @@ var _getComponentData = (uid: number, GameObjectData: any) => GameObjectData.com
 
 var _setComponentData = (uid: number, data: GameObjectComponentData, GameObjectData: any) => GameObjectData.componentMap[uid] = data;
 
-export var hasComponent = (gameObject: GameObject, componentTypeID: string, GameObjectData: any) => {
-    return getComponent(gameObject, componentTypeID, GameObjectData) !== null;
+export var hasComponent = (gameObject: GameObject, componentID: string, GameObjectData: any) => {
+    return getComponent(gameObject, componentID, GameObjectData) !== null;
 }
 
 export var getTransform = (gameObject: GameObject, GameObjectData: any) => {
-    return getComponent(gameObject, getTypeIDFromClass(ThreeDTransform), GameObjectData);
+    return getComponent(gameObject, getComponentIDFromClass(ThreeDTransform), GameObjectData);
 }
 
 export var getGeometry = (gameObject: GameObject, GameObjectData: any) => {
-    return getComponent(gameObject, getTypeIDFromClass(Geometry), GameObjectData);
+    return getComponent(gameObject, getComponentIDFromClass(Geometry), GameObjectData);
 }
 
 export var getMaterial = (gameObject: GameObject, GameObjectData: any) => {
-    return getComponent(gameObject, getTypeIDFromClass(Material), GameObjectData);
+    return getComponent(gameObject, getComponentIDFromClass(Material), GameObjectData);
 }
 
 var _isParentExist = (parent: GameObject) => isNotUndefined(parent);

@@ -135,9 +135,9 @@ export const shaderLib_generator = {
                     getAlphaTest,
                     isTestAlpha
                 }, {
-                    BasicMaterialDataFromSystem
+                    MaterialDataFromSystem
                 }) => {
-                    var alphaTest = getAlphaTest(materialIndex, BasicMaterialDataFromSystem);
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
 
                     if (isTestAlpha(alphaTest)) {
                         return {
@@ -508,13 +508,14 @@ export const shaderLib_generator = {
                     "source": lightEnd_fragment
                 },
                 //todo use utils method!only pass data(fix basic shader lib also!)
+                //todo pass light data and basic data in one object
                 "func": (materialIndex: number, {
                     getAlphaTest,
                     isTestAlpha
                 }, {
-                             LightMaterialDataFromSystem
+                             MaterialDataFromSystem
                          }) => {
-                    var alphaTest = getAlphaTest(materialIndex, LightMaterialDataFromSystem);
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
 
                     if (isTestAlpha(alphaTest)) {
                         return {

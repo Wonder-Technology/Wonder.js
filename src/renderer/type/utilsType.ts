@@ -1,5 +1,6 @@
 export type DrawDataMap = {
     DeviceManagerDataFromSystem: any;
+    MaterialDataFromSystem: any;
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
     AmbientLightDataFromSystem: any;
@@ -35,15 +36,17 @@ export type SendUniformDataFuncDataMap = {
     sendFloat3: Function;
 }
 
-export type BasicMaterialForGetUniformDataDataMap = {
+export type MaterialForGetUniformDataDataMap = {
     getColorArr3:Function;
     getOpacity:Function;
+    MaterialDataFromSystem: any;
+}
+
+export type BasicMaterialForGetUniformDataDataMap = {
     BasicMaterialDataFromSystem: any;
 }
 
 export type LightMaterialForGetUniformDataDataMap = {
-    getColorArr3:Function;
-    getOpacity:Function;
     getSpecularColorArr3:Function;
     getEmissionColorArr3:Function;
     getShininess:Function;
