@@ -501,6 +501,33 @@ describe("ThreeDTransform", function () {
             });
         });
 
+        describe("get normalMatrix", function() {
+            beforeEach(function(){
+                
+            });
+            
+            it("test get after set position", function(){
+                var pos = Vector3.create(1, 2, 3);
+                threeDTransformTool.setPosition(tra1, pos.clone());
+
+                updateSystem(null, null);
+
+                expect(testTool.getValues(
+                    threeDTransformTool.getNormalMatrix(tra1, GlobalTempData, ThreeDTransformData).values
+                )).toEqual(
+                    [
+                        1, 0, 0, 0, 1, 0, 0, 0, 1
+                    ]
+                )
+            });
+            it("test get after set rotation", function () {
+                //todo test
+            });
+            it("test get after set scale", function () {
+                //todo test
+            });
+        });
+        
         describe("init", function () {
             var state;
 

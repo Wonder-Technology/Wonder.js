@@ -41,16 +41,19 @@ import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/B
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 
-export var addAddComponentHandle = (_class: any) => {
-    addAddComponentHandleToMap(_class, addComponent);
+export var addAddComponentHandle = (BoxGeometry:any, CustomGeometry:any) => {
+    addAddComponentHandleToMap(BoxGeometry, addComponent);
+    addAddComponentHandleToMap(CustomGeometry, addComponent);
 }
 
-export var addDisposeHandle = (_class: any) => {
-    addDisposeHandleToMap(_class, disposeComponent);
+export var addDisposeHandle = (BoxGeometry:any, CustomGeometry:any) => {
+    addDisposeHandleToMap(BoxGeometry, disposeComponent);
+    addDisposeHandleToMap(CustomGeometry, disposeComponent);
 }
 
-export var addInitHandle = (_class: any) => {
-    addInitHandleToMap(_class, initGeometry);
+export var addInitHandle = (BoxGeometry:any, CustomGeometry:any) => {
+    addInitHandleToMap(BoxGeometry, initGeometry);
+    addInitHandleToMap(CustomGeometry, initGeometry);
 }
 
 export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {

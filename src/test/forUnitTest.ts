@@ -1,6 +1,9 @@
 import { DomQuery as DomQueryFromCommonlib } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { fromArray as fromArrayFromFrp, Operator } from "wonder-frp/dist/es2015/global/Operator";
-import { initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
+import {
+    getNormalMatrix as getNormalMatrixSystem,
+    initData as initThreeDTransformDataSystem
+} from "../component/transform/ThreeDTransformSystem";
 import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import {
     hasIndices,
@@ -91,3 +94,5 @@ export var hasGeometryIndices = hasIndices;
 export var getShaderIndex = getShaderIndexSystem;
 
 export var updateSystem = updateAllSystems;
+
+export var getNormalMatrix = getNormalMatrixSystem;

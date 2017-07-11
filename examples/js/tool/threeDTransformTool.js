@@ -9,6 +9,7 @@ var threeDTransformTool = (function () {
         getParent: wd.getThreeDTransformParent,
         setParent: wd.setThreeDTransformParent,
         // dispose: wd.disposeThreeDTransform,
+        getNormalMatrix: wd.getNormalMatrix,
         create: wd.createThreeDTransform,
         getGameObject:wd.getThreeDTransformGameObject,
 

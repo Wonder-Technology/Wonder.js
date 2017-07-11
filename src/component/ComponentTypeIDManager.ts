@@ -29,8 +29,8 @@ var _typeID = 1;
 const _table = {};
 
 _addTypeID(["ThreeDTransform"], _table);
-//todo fix geometry
-_addTypeID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
+_addTypeID(["BoxGeometry"], _table);
+_addTypeID(["CustomGeometry"], _table);
 _addTypeID(["BasicMaterial"], _table);
 _addTypeID(["LightMaterial"], _table);
 _addTypeID(["MeshRenderer"], _table);

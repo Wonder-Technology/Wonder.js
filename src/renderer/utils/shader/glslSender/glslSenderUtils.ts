@@ -16,7 +16,6 @@ import {
 } from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
 
-//todo test send normalMatrix,cameraPos,light data, a_normal...
 export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
@@ -151,11 +150,19 @@ export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, progra
     })
 }
 
-export var sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendInt = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+    _sendNum1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, gl.uniform1i);
+}
+
+export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+    _sendNum1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, gl.uniform1f);
+}
+
+var _sendNum1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc:Function) => {
     it("data should be number", () => {
         expect(data).be.a("number");
     });
-}, (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+}, (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc:Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
 
     if (recordedData === data) {
@@ -165,25 +172,7 @@ export var sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: n
     _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
     _sendUniformData<number>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
-        gl.uniform1i(pos, data);
-    })
-})
-
-export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
-    it("data should be number", () => {
-        expect(data).be.a("number");
-    });
-}, (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
-    var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
-
-    if (recordedData === data) {
-        return;
-    }
-
-    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
-
-    _sendUniformData<number>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
-        gl.uniform1f(pos, data);
+        glFunc(pos, data);
     })
 })
 

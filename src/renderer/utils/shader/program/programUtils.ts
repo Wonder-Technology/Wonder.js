@@ -242,7 +242,6 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             data = getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
         switch (type) {
-            //todo test
             case EVariableType.MAT3:
                 sendMatrix3(gl, program, name, data, uniformLocationMap);
                 break;
@@ -252,14 +251,12 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             case EVariableType.VEC3:
                 sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;
-            //todo test
             case EVariableType.INT:
                 sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             case EVariableType.FLOAT:
                 sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;
-            //todo test
             case EVariableType.FLOAT3:
                 sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;

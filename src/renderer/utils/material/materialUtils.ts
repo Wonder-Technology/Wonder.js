@@ -46,7 +46,6 @@ export var isTestAlpha = (alphaTest: number) => {
     return alphaTest >= 0;
 }
 
-//todo refactor
 export var getShaderIndexDataSize = () => 1;
 
 export var getColorDataSize = () => 3;

@@ -721,18 +721,6 @@ describe("LightMaterial", function () {
                         expect(gl.uniform3f.withArgs(pos4)).toCalledWith(pos4, position4.x, position4.y, position4.z);
                     });
                 });
-
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "uniform vec3 u_ambient;")).toBeTruthy();
-                    });
-                });
             });
 
             describe("add LightEndShaderLib", function () {

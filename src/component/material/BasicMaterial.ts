@@ -12,7 +12,6 @@ import { Color } from "../../structure/Color";
 export class BasicMaterial extends Material {
 }
 
-//todo pass BasicMaterialData(change LightMaterial also!)
 export var createBasicMaterial = () => {
     return create(ShaderData, MaterialData, BasicMaterialData);
 }

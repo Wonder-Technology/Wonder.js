@@ -241,7 +241,6 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
     return result;
 }
 
-//todo test structure
 var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(

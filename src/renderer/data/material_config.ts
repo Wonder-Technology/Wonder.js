@@ -43,7 +43,6 @@ export const material_config = {
     "shaderLibGroups": {
         "engineMaterialTop":[
             "CommonShaderLib",
-            //todo test
             "ModelMatrixNoInstanceShaderLib",
             "VerticeCommonShaderLib"
         ],

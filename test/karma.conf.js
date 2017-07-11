@@ -30,8 +30,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
-        'test/unit/no_worker/**/*WebGLRenderer*',
+        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/*WebGLRenderer*',
         // 'test/unit/no_worker/**/*LightSpec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*Material*',

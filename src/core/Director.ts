@@ -60,6 +60,8 @@ import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
 import { BasicMaterial } from "../component/material/BasicMaterial";
 import { LightMaterial } from "../component/material/LightMaterial";
+import { BoxGeometry } from "../component/geometry/BoxGeometry";
+import { CustomGeometry } from "../component/geometry/CustomGeometry";
 
 @singleton(true)
 @registerClass("Director")
@@ -180,9 +182,9 @@ export class Director {
     }
 }
 
-addGeometryAddComponentHandle(Geometry);
-addGeometryDisposeHandle(Geometry);
-addGeometryInitHandle(Geometry);
+addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
+addGeometryDisposeHandle(BoxGeometry, CustomGeometry);
+addGeometryInitHandle(BoxGeometry, CustomGeometry);
 
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);

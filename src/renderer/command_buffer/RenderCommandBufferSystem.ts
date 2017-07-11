@@ -49,8 +49,6 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
         currentCameraTransform = getTransform(currentCamera, GameObjectData),
         mat4Length = getMatrix4DataSize();
 
-    //todo test cameraPosition,normalMatrix
-
     setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
     setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
     setVectors(cameraPositions, getPosition(currentCameraTransform, ThreeDTransformData), 0);

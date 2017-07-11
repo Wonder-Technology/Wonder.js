@@ -3,6 +3,7 @@ describe("BoxGeometry", function () {
     var geo;
     var director;
     var gameObject;
+    var state;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -20,6 +21,8 @@ describe("BoxGeometry", function () {
         gameObjectTool.addComponent(gameObject, geo);
 
         sceneTool.addGameObject(gameObject);
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -40,7 +43,7 @@ describe("BoxGeometry", function () {
                 depthSegments: 2
             })
 
-            director._init();
+            director._init(state);
 
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
@@ -69,7 +72,7 @@ describe("BoxGeometry", function () {
         });
 
         it("set default data when create", function () {
-            director._init();
+            director._init(state);
 
             expect(geometryTool.getConfigData(geo)).toEqual({
                 width: 10,
@@ -111,7 +114,7 @@ describe("BoxGeometry", function () {
                 depthSegments: 2
             })
 
-            director._init();
+            director._init(state);
 
             expect(geometryTool.getConfigData(geo)).toEqual({
                 width: 10,

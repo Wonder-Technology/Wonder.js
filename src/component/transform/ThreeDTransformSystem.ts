@@ -188,7 +188,6 @@ export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTran
     return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
-//todo test
 export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
 }, cacheFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {

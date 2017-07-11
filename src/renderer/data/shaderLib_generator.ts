@@ -176,7 +176,6 @@ export const shaderLib_generator = {
             "send": {
                 "attribute": [
                     {
-                        //todo support
                         "name": "a_normal",
                         "buffer": "normal",
                         "type": "vec3"
@@ -506,7 +505,6 @@ export const shaderLib_generator = {
                 "fs": {
                     "source": lightEnd_fragment
                 },
-                //todo pass light data and basic data in one object
                 "func": (materialIndex: number, {
                     getAlphaTest,
                     isTestAlpha
