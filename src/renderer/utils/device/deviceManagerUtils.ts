@@ -16,6 +16,8 @@ import { Map } from "immutable";
 import { trace } from "../../../utils/debugUtils";
 import { isValueExist } from "../../../utils/stateUtils";
 import { Color } from "../../../structure/Color";
+import { ESide } from "../../enum/ESide";
+import { Log } from "../../../utils/Log";
 
 export var getGL = (DeviceManagerDataFromSystem: any, state: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
@@ -193,6 +195,33 @@ export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeG
     }
 }
 
+export var setSide = (gl:WebGLRenderingContext, side:ESide, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.side !== side) {
+        switch (side) {
+            case ESide.NONE:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT_AND_BACK);
+                break;
+            case ESide.BOTH:
+                gl.disable(gl.CULL_FACE);
+                break;
+            case ESide.FRONT:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.BACK);
+                break;
+            case ESide.BACK:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT);
+                break;
+            default :
+                Log.error(true, Log.info.FUNC_UNEXPECT("side", side));
+                break;
+        }
+
+        DeviceManagerDataFromSystem.side = side;
+    }
+}
+
 export var initData = (DeviceManagerDataFromSystem: any) => {
     DeviceManagerDataFromSystem.gl = null;
     DeviceManagerDataFromSystem.clearColor = null;
@@ -201,4 +230,6 @@ export var initData = (DeviceManagerDataFromSystem: any) => {
     DeviceManagerDataFromSystem.writeGreen = null;
     DeviceManagerDataFromSystem.writeBlue = null;
     DeviceManagerDataFromSystem.writeAlpha = null;
+
+    DeviceManagerDataFromSystem.side = null;
 }

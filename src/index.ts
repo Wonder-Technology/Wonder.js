@@ -81,6 +81,7 @@ export {EBufferType} from "./renderer/enum/EBufferType";
 export {EDisposeDataOperateType} from "./renderer/enum/EDisposeDataOperateType";
 export {EDrawMode} from "./renderer/enum/EDrawMode";
 export {EGeometryWorkerDataOperateType} from "./renderer/enum/EGeometryWorkerDataOperateType";
+export {ESide} from "./renderer/enum/ESide";
 export {EVariableType} from "./renderer/enum/EVariableType";
 export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,noNormalMap_light_fragment,lightCommon_fragment,lightCommon_vertex,lightEnd_fragment,light_common,light_fragment,light_setWorldPosition_vertex,light_vertex,noDiffuseMap_fragment,noEmissionMap_fragment,noLightMap_fragment,noNormalMap_fragment,noNormalMap_vertex,noSpecularMap_fragment,modelMatrix_noInstance_vertex,normalMatrix_noInstance_vertex,noShadowMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
 export {GLSLSenderData} from "./renderer/shader/glslSender/GLSLSenderData";

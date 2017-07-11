@@ -35,6 +35,8 @@ import { LightMaterialData } from "../../component/material/LightMaterialData";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { AmbientLightData } from "../../component/light/AmbientLightData";
 import { DirectionLightData } from "../../component/light/DirectionLightData";
+import { getGL, setSide } from "../device/DeviceManagerSystem";
+import { ESide } from "../enum/ESide";
 
 export var init = null;
 
@@ -93,6 +95,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     init = (state: Map<any, any>) => {
+        _initState(state);
+
         initMaterial(state, BasicMaterialData, LightMaterialData);
     }
 
@@ -105,4 +109,10 @@ else {
             getRenderList(state)
         )(MeshRendererData)
     }
+}
+
+var _initState = (state: Map<any, any>) => {
+    var gl = getGL(DeviceManagerData, state);
+
+    setSide(gl, ESide.FRONT, DeviceManagerData);
 }

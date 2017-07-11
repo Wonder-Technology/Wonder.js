@@ -54,4 +54,18 @@ describe("WebGLRenderer", function() {
             });
         });
     });
+
+    describe("init", function() {
+        beforeEach(function(){
+        });
+
+        describe("init state", function(){
+            it("set front side", function () {
+                directorTool.init(state);
+
+                expect(gl.enable.withArgs(gl.CULL_FACE)).toCalledOnce();
+                expect(gl.cullFace.withArgs(gl.BACK)).toCalledOnce();
+            });
+        });
+    });
 });

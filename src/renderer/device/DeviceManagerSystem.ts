@@ -11,10 +11,11 @@ import {
     getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
-    setScreen as setScreenUtils,
+    setScreen as setScreenUtils, setSide as setSideUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/device/deviceManagerUtils";
 import { Color } from "../../structure/Color";
+import { ESide } from "../enum/ESide";
 
 export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
@@ -79,5 +80,7 @@ var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, s
 export var clear = clearUtils;
 
 export var setColorWrite = setColorWriteUtils;
+
+export var setSide = setSideUtils;
 
 export var initData = initDataUtils;
