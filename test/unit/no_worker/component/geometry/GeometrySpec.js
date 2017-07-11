@@ -7,6 +7,7 @@ describe("Geometry", function () {
     var DataBufferConfig = wd.DataBufferConfig;
 
     var defaultVerticesData,
+        defaultNormalsData,
         defaultIndicesData;
 
 
@@ -29,6 +30,8 @@ describe("Geometry", function () {
         defaultVerticesData = [
             -10, -10, 10, -10, 10, 10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, 10, 10, -10, 10, -10, 10, 10, 10, 10, 10, -10, 10, -10, 10, 10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10
         ];
+
+        defaultNormalsData = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0];
 
         defaultIndicesData = [
             0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
@@ -55,6 +58,13 @@ describe("Geometry", function () {
             expect(testTool.getValues(
                 geometryTool.getVertices(geo)
             )).toEqual([-10, -20, 30, -10, 20, 30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, 20, 30, -10, 20, -30, 10, 20, 30, 10, 20, -30, 10, -20, 30, 10, -20, -30, -10, -20, 30, -10, -20, -30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, -20, 30, -10, 20, 30]);
+        });
+        it("save normals to map", function () {
+            directorTool.init(sandbox);
+
+            expect(testTool.getValues(
+                geometryTool.getNormals(geo)
+            )).toEqual(defaultNormalsData);
         });
         it("save indices to map", function () {
             directorTool.init(sandbox);
@@ -174,6 +184,10 @@ describe("Geometry", function () {
             }).toThrow(errMsg);
 
             expect(function () {
+                geometryTool.getNormals(geo);
+            }).toThrow(errMsg);
+
+            expect(function () {
                 geometryTool.getDrawMode(geo);
             }).toThrow(errMsg);
 
@@ -192,15 +206,13 @@ describe("Geometry", function () {
 
         describe("if dispose too many components", function() {
             var MemoryConfig = wd.MemoryConfig;
-            var ArrayBufferData = wd.ArrayBufferData;
-            var IndexBufferData = wd.IndexBufferData;
 
             beforeEach(function(){
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
             });
 
             describe("dispose buffers", function(){
-                it("test", function () {
+                it("test dispose vertex buffers and index buffer", function () {
                     var geo1 = boxGeometryTool.create();
                     var geo2 = boxGeometryTool.create();
 
@@ -227,11 +239,6 @@ describe("Geometry", function () {
 
                     directorTool.loopBody(null, null);
 
-                    // var arrayBuffer1 = ArrayBufferData.buffers[geo1.index];
-                    // var arrayBuffer2 = ArrayBufferData.buffers[geo2.index];
-                    // var indexBuffer1 = IndexBufferData.buffers[geo1.index];
-                    // var indexBuffer2 = IndexBufferData.buffers[geo2.index];
-
 
                     gameObjectTool.disposeComponent(obj1, geo1);
 
@@ -248,6 +255,51 @@ describe("Geometry", function () {
                     expect(gl.deleteBuffer.thirdCall).toCalledWith(buffer3)
                     expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
                 });
+                it("test dispose normal buffers", function () {
+                    var geo1 = boxGeometryTool.create();
+                    var geo2 = boxGeometryTool.create();
+
+                    var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1, lightMaterialTool.create());
+                    var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);
+
+                    var obj1 = data1.gameObject,
+                        obj2 = data2.gameObject;
+
+                    directorTool.init(sandbox);
+
+
+                    var buffer1 = {},
+                        buffer2 = {a:2},
+                        buffer3 = {a:3},
+                        buffer4 = {a:4},
+                        buffer5 = {a:5};
+
+                    var gl = stateTool.getGLFromFakeGLState(null);
+                    gl.createBuffer.onCall(0).returns(buffer1);
+                    gl.createBuffer.onCall(1).returns(buffer2);
+                    gl.createBuffer.onCall(2).returns(buffer3);
+                    gl.createBuffer.onCall(3).returns(buffer4);
+                    gl.createBuffer.onCall(4).returns(buffer5);
+
+
+                    directorTool.loopBody(null, null);
+
+                    gameObjectTool.disposeComponent(obj1, geo1);
+
+
+                    expect(gl.deleteBuffer.callCount).toEqual(0);
+
+
+
+                    gameObjectTool.disposeComponent(obj2, geo2);
+
+                    expect(gl.deleteBuffer.callCount).toEqual(5);
+                    expect(gl.deleteBuffer.firstCall).toCalledWith(buffer1)
+                    expect(gl.deleteBuffer.secondCall).toCalledWith(buffer2)
+                    expect(gl.deleteBuffer.thirdCall).toCalledWith(buffer3)
+                    expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
+                    expect(gl.deleteBuffer.getCall(4)).toCalledWith(buffer5)
+                });
             });
         });
     });
@@ -260,6 +312,7 @@ describe("Geometry", function () {
             geometryTool.initGeometry(geo);
 
             expect(testTool.getValues(geometryTool.getVertices(geo))).toEqual(defaultVerticesData);
+            expect(testTool.getValues(geometryTool.getNormals(geo))).toEqual(defaultNormalsData);
             expect(testTool.getValues(geometryTool.getIndices(geo))).toEqual(defaultIndicesData);
         });
     });
@@ -314,6 +367,17 @@ describe("Geometry", function () {
 
                 expect(function () {
                     customGeometryTool.setVertices(geo, geoVerticesData)
+                }).toThrow(errMsg);
+            });
+            it("setNormals", function(){
+                var geoNormalsData = [
+                    -6, -6, 6, -6, 6, 6, 6, -6, 6,
+                    5, -6, 6,
+                ];
+                var errMsg = prepareNotExceed();
+
+                expect(function () {
+                    customGeometryTool.setNormals(geo, geoNormalsData)
                 }).toThrow(errMsg);
             });
             it("setIndices", function(){

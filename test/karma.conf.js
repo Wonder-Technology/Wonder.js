@@ -31,8 +31,8 @@
         // 'test/unit/**/BufferWriter.js',
 
         // 'test/unit/no_worker/**',
-        // 'test/unit/no_worker/**/*Geometry*',
-        'test/unit/no_worker/**/*Material*',
+        'test/unit/no_worker/**/*Geometry*',
+        // 'test/unit/no_worker/**/*Material*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*draw*',
         // 'test/unit/no_worker/**/*GameObject*',

@@ -9,7 +9,7 @@ export {getComponentIDFromClass,getComponentIDFromComponent} from "./component/C
 export {ComponentData} from "./component/ComponentData";
 export {getTypeIDFromClass,getTypeIDFromComponent} from "./component/ComponentTypeIDManager";
 export {BoxGeometry,createBoxGeometry,setBoxGeometryConfigData} from "./component/geometry/BoxGeometry";
-export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
+export {CustomGeometry,createCustomGeometry,setCustomGeometryVertices,setCustomGeometryNormals,setCustomGeometryIndices} from "./component/geometry/CustomGeometry";
 export {Geometry,getDrawMode,getVertices,getNormals,getIndices,getGeometryConfigData,initGeometry,getGeometryGameObject} from "./component/geometry/Geometry";
 export {GeometryData} from "./component/geometry/GeometryData";
 export {AmbientLight,createAmbientLight,setAmbientLightColor} from "./component/light/AmbientLight";

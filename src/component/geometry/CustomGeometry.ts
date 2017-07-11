@@ -2,7 +2,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Geometry } from "./Geometry";
 import { create } from "./CustomGeometrySystem";
 import { GeometryData } from "./GeometryData";
-import { setIndices, setVertices } from "./GeometrySystem";
+import { setIndices, setNormals, setVertices } from "./GeometrySystem";
 
 @registerClass("CustomGeometry")
 export class CustomGeometry extends Geometry {
@@ -14,6 +14,10 @@ export var createCustomGeometry = () => {
 
 export var setCustomGeometryVertices = (geometry: Geometry, vertices: Float32Array) => {
     return setVertices(geometry.index, vertices, GeometryData);
+}
+
+export var setCustomGeometryNormals = (geometry: Geometry, normals: Float32Array) => {
+    return setNormals(geometry.index, normals, GeometryData);
 }
 
 export var setCustomGeometryIndices = (geometry: Geometry, indices: Uint16Array | Uint32Array) => {
