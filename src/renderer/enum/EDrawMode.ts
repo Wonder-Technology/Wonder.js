@@ -1,10 +1,10 @@
 export enum EDrawMode {
-    POINTS = <any>"POINTS",
-    LINES = <any>"LINES",
-    LINE_LOOP = <any>"LINE_LOOP",
-    LINE_STRIP = <any>"LINE_STRIP",
-    TRIANGLES = <any>"TRIANGLES",
-    TRIANGLE_STRIP = <any>"TRIANGLE_STRIP",
-    TRANGLE_FAN = <any>"TRIANGLE_FAN"
+    POINTS = "POINTS",
+    LINES = "LINES",
+    LINE_LOOP = "LINE_LOOP",
+    LINE_STRIP = "LINE_STRIP",
+    TRIANGLES = "TRIANGLES",
+    TRIANGLE_STRIP = "TRIANGLE_STRIP",
+    TRANGLE_FAN = "TRIANGLE_FAN"
 }
 
