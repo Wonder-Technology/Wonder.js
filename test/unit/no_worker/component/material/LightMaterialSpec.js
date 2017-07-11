@@ -169,9 +169,6 @@ describe("LightMaterial", function () {
                     expect(LightMaterialData.index).toEqual(index - 1);
                 });
 
-                    beforeEach(function(){
-                    });
-
                 describe("reset removed one's value", function(){
                     function judgeColor(getMethodName, setMethodName, defaultColor) {
                         var color1 = Color.create("rgb(0.1,0.2,0.3)");

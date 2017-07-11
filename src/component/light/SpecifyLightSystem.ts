@@ -29,15 +29,23 @@ export var addComponent = (component: Light, gameObject: GameObject, SpecifyLigh
     addComponentToGameObjectMap(SpecifyLightData.gameObjectMap, component.index, gameObject);
 }
 
+export var getColorArr3 = (index: number, SpecifyLightData: any) => {
+    return SpecifyLightData.renderDataMap[index].colorArr;
+}
+
 export var setColor = (index: number, color: Color, SpecifyLightData: any) => {
     SpecifyLightData.renderDataMap[index].colorArr = [color.r, color.g, color.b];
 }
 
-export var disposeComponent = ensureFunc((returnVal, sourceIndex:number, lastComponentIndex:number, SpecifyLightData:any) => {
+export var disposeComponent = ensureFunc((returnVal, sourceIndex:number, SpecifyLightData:any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
-}, (sourceIndex:number, lastComponentIndex:number, SpecifyLightData:any) => {
+}, (sourceIndex:number, SpecifyLightData:any) => {
+    var lastComponentIndex:number = null;
+
     SpecifyLightData.count -= 1;
     SpecifyLightData.index -= 1;
+
+    lastComponentIndex = SpecifyLightData.count;
 
     deleteBySwap(sourceIndex, lastComponentIndex, SpecifyLightData.gameObjectMap);
 

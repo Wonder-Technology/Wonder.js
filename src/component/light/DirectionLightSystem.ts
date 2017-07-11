@@ -6,24 +6,28 @@ import {
 
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    addComponent as addSpecifyLightComponent
+    addComponent as addSpecifyLightComponent, getColorArr3 as getSpecifyLightColorArr3
 } from "./SpecifyLightSystem";
 import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { getPosition as getPositionUtils, getRenderData as getRenderDataUtils } from "../../renderer/utils/light/directionLightUtils";
+import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
-//todo check: count <= 4
-export var create = (DirectionLightData:any) => {
+export var create = ensureFunc((light:DirectionLight, DirectionLightData:any) => {
+    it("count should <= 4", () => {
+        expect(DirectionLightData.count).lte(4);
+    })
+}, (DirectionLightData:any) => {
     var light = new DirectionLight();
 
     light = createSpecifyLight(light, DirectionLightData);
-    // light = createLight(light, LightData);
 
     _setDefaultRenderData(light.index, DirectionLightData);
 
     return light;
-}
+})
 
 var _setDefaultRenderData = (index:number, DirectionLightData:any) => {
     DirectionLightData.renderDataMap[index] = {
@@ -40,8 +44,16 @@ export var getPosition = (index: number, ThreeDTransformData:any, GameObjectData
     return getPositionUtils(index, ThreeDTransformData, GameObjectData, DirectionLightData)
 }
 
+export var getColorArr3 = (index: number, DirectionLightData: any) => {
+    return getSpecifyLightColorArr3(index, DirectionLightData);
+}
+
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {
     setSpecifyLightColor(index, color, DirectionLightData);
+}
+
+export var getIntensity = (index: number, DirectionLightData: any) => {
+    return DirectionLightData.renderDataMap[index].intensity;
 }
 
 export var setIntensity = (index: number, intensity:number, DirectionLightData: any) => {
@@ -53,9 +65,7 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
 }
 
 export var disposeComponent = (component: Light) => {
-    var lastComponentIndex = DirectionLightData.count;
-
-    disposeSpecifyLightComponent(component.index, lastComponentIndex, DirectionLightData);
+    disposeSpecifyLightComponent(component.index, DirectionLightData);
 }
 
 export var initData = (DirectionLightData: any) => {

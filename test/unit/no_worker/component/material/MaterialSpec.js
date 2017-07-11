@@ -187,17 +187,15 @@ describe("Material", function() {
                     beforeEach(function(){
                     });
 
-                    describe("not reset removed one's value", function(){
+                    describe("swap with last one and remove the last one", function(){
                         it("remove from gameObject", function () {
-                            it("swap with last one and remove the last one", function () {
-                                gameObjectTool.disposeComponent(obj, material);
+                            gameObjectTool.disposeComponent(obj, material);
 
-                                expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
-                                expect(gameObjectTool.hasComponent(obj2, wd.Material)).toBeTruthy();
-                                judgeNotAlive(material, "getGameObject", expect, materialTool);
-                                expect(materialTool.getGameObject(mat2)).toEqual(obj2);
-                                expect(MaterialData.gameObjectMap.length).toEqual(1);
-                            });
+                            expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
+                            expect(gameObjectTool.hasComponent(obj2, wd.Material)).toBeTruthy();
+                            judgeNotAlive(material, "getGameObject", expect, materialTool);
+                            expect(materialTool.getGameObject(mat2)).toEqual(obj2);
+                            expect(MaterialData.gameObjectMap.length).toEqual(1);
                         });
                     });
                 });
