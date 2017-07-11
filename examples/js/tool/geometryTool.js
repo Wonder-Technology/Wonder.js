@@ -2,6 +2,7 @@ var geometryTool = (function () {
     return {
         create: wd.createGeometry,
         getVertices:wd.getVertices,
+        getNormals:wd.getNormals,
         getIndices:wd.getIndices,
         getDrawMode:wd.getDrawMode,
         getConfigData:wd.getGeometryConfigData,

@@ -30,6 +30,7 @@ import { initData as initRenderCommandBufferDataSystem } from "../renderer/comma
 import { IRenderConfig } from "../renderer/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
+import { initData as initLightDataSystem } from "../component/light/LightSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -60,6 +61,8 @@ export var initIndexBufferData = initIndexBufferDataSystem;
 export var initDeviceManagerData = initDeviceManagerDataSystem;
 
 export var initCameraControllerData = initCameraControllerDataSystem;
+
+export var initLightData = initLightDataSystem;
 
 export var initGameObjectData = initGameObjectDataSystem;
 

@@ -106,7 +106,9 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
+        lightMaterialSourceIndex = _computeLightBufferIndex(sourceIndex),
         lastComponentIndex: number = null,
+        lightMaterialLastComponentIndex:number = null,
         colorDataSize = getColorDataSize(),
         shininessDataSize = getShininessDataSize(),
         shadingDataSize = getShadingDataSize(),
@@ -116,19 +118,24 @@ export var disposeComponent = (component: Material) => {
 
     lastComponentIndex = LightMaterialData.index;
 
-    disposeMaterialComponent(sourceIndex, lastComponentIndex, LightMaterialData);
+    lightMaterialLastComponentIndex = _computeLightBufferIndex(lastComponentIndex);
 
-    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, LightMaterialData.specularColors, colorDataSize, MaterialData.defaultColorArr);
-    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, LightMaterialData.emissionColors, colorDataSize, MaterialData.defaultColorArr);
+    disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
+
+    deleteBySwapAndReset(lightMaterialSourceIndex * colorDataSize, lightMaterialLastComponentIndex * colorDataSize, LightMaterialData.specularColors, colorDataSize, MaterialData.defaultColorArr);
+    deleteBySwapAndReset(lightMaterialSourceIndex * colorDataSize, lightMaterialLastComponentIndex * colorDataSize, LightMaterialData.emissionColors, colorDataSize, LightMaterialData.emptyColorArr);
 
     //todo unit test
-    deleteOneItemBySwapAndReset(sourceIndex * shadingDataSize, lastComponentIndex * shadingDataSize, LightMaterialData.shadings, LightMaterialData.defaultShading);
-    deleteOneItemBySwapAndReset(sourceIndex * shininessDataSize, lastComponentIndex * shininessDataSize, LightMaterialData.shininess, LightMaterialData.defaultShininess);
-    deleteOneItemBySwapAndReset(sourceIndex * lightModelDataSize, lastComponentIndex * lightModelDataSize, LightMaterialData.lightModels, LightMaterialData.defaultLightModel);
+    deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shadingDataSize, lightMaterialLastComponentIndex * shadingDataSize, LightMaterialData.shadings, LightMaterialData.defaultShading);
+    deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shininessDataSize, lightMaterialLastComponentIndex * shininessDataSize, LightMaterialData.shininess, LightMaterialData.defaultShininess);
+    deleteOneItemBySwapAndReset(lightMaterialSourceIndex * lightModelDataSize, lightMaterialLastComponentIndex * lightModelDataSize, LightMaterialData.lightModels, LightMaterialData.defaultLightModel);
 }
 
 export var initData = (LightMaterialData: any) => {
     initSpecifyMaterialData(getLightMaterialBufferStartIndex(), LightMaterialData);
+
+    LightMaterialData.emptyColor = _createEmptyColor();
+    LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
 }
 
 export var createTypeArrays = (buffer: any, offset:number, count: number, LightMaterialData: any) => {
@@ -159,14 +166,19 @@ export var setDefaultData = (LightMaterialData:any) => {
 }
 
 var _setLightMaterialDefaultTypeArrData = (count:number, LightMaterialData:any) => {
-    var color = createDefaultColor(),
-        emptyColor = _createEmptyColor(),
+    var startIndex = getLightMaterialBufferStartIndex(),
+        color = createDefaultColor(),
+        emptyColor = LightMaterialData.emptyColor,
         shading = LightMaterialData.defaultShading,
-        lightModel = LightMaterialData.defaultLightModel;
+        lightModel = LightMaterialData.defaultLightModel,
+        shininess = LightMaterialData.defaultShininess;
 
-    for (let i = 0; i < count; i++) {
+    count += startIndex;
+
+    for (let i = startIndex; i < count; i++) {
         setSpecularColor(i, color, LightMaterialData);
         setEmissionColor(i, emptyColor, LightMaterialData);
+        setShininess(i, shininess, LightMaterialData);
         setShading(i, shading, LightMaterialData);
         setLightModel(i, lightModel, LightMaterialData);
     }

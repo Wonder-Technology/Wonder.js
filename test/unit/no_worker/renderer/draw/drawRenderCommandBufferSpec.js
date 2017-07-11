@@ -243,7 +243,6 @@ describe("draw render command", function () {
                     "u_color": pos,
                     "u_opacity": pos2
                 });
-                //todo test uniform func
                 shaderTool.setSendUniformFuncConfig(0, function () {
                 });
                 shaderTool.setSendUniformFuncConfig(1, function () {
@@ -394,7 +393,7 @@ describe("draw render command", function () {
             });
         });
 
-        describe("test send VECTOR_3", function () {
+        describe("test send FLOAT_3", function () {
             var vec3;
 
             beforeEach(function () {
@@ -456,6 +455,12 @@ describe("draw render command", function () {
             directorTool.loopBody(state);
 
             expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
+        });
+        it("test send FLOAT_MAT3", function () {
+            //todo
+        });
+        it("test send VECTOR_3", function () {
+
         });
     });
 

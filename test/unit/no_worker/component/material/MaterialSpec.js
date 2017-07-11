@@ -29,48 +29,51 @@ describe("Material", function() {
         sandbox.restore();
     });
 
-    describe("getColor", function() {
-        beforeEach(function(){
+    describe("test default value", function() {
+        describe("getColor", function() {
+            beforeEach(function(){
 
+            });
+
+            it("default color is #ffffff", function(){
+                colorTool.judgeIsEqual(basicMaterialTool.getColor(material), Color.create("#ffffff"), expect);
+            });
         });
 
-        it("default color is #ffffff", function(){
-            colorTool.judgeIsEqual(basicMaterialTool.getColor(material), Color.create("#ffffff"), expect);
-        });
-    });
+        describe("setColor", function() {
+            beforeEach(function(){
 
-    describe("setColor", function() {
-        beforeEach(function(){
+            });
 
-        });
+            it("set color", function(){
+                var color = Color.create("#123456");
 
-        it("set color", function(){
-            var color = Color.create("#123456");
+                basicMaterialTool.setColor(material, color);
 
-            basicMaterialTool.setColor(material, color);
-
-            colorTool.judgeIsEqual(basicMaterialTool.getColor(material), color, expect);
-        });
-    });
-
-    describe("getOpacity", function() {
-        beforeEach(function(){
-
+                colorTool.judgeIsEqual(basicMaterialTool.getColor(material), color, expect);
+            });
         });
 
-        it("default is 1.0", function(){
-            expect(basicMaterialTool.getOpacity(material)).toEqual(1.0);
-        });
-    });
+        describe("getOpacity", function() {
+            beforeEach(function(){
 
-    describe("getAlphaTest", function() {
-        beforeEach(function(){
+            });
 
+            it("default is 1.0", function(){
+                expect(basicMaterialTool.getOpacity(material)).toEqual(1.0);
+            });
         });
 
-        it("default is -1", function(){
-            expect(basicMaterialTool.getAlphaTest(material)).toEqual(-1);
+        describe("getAlphaTest", function() {
+            beforeEach(function(){
+
+            });
+
+            it("default is -1", function(){
+                expect(basicMaterialTool.getAlphaTest(material)).toEqual(-1);
+            });
         });
+
     });
 
     describe("create", function() {
@@ -80,14 +83,36 @@ describe("Material", function() {
         it("same Material(same class name) share one shader", function(){
             var mat2 = basicMaterialTool.create();
             var mat3 = basicMaterialTool.create();
-            var shaderIndex = 0;
+            var shaderIndex1 = 0;
 
-            expect(materialTool.getShaderIndex(material.index)).toEqual(shaderIndex);
-            expect(materialTool.getShaderIndex(mat2.index)).toEqual(shaderIndex);
-            expect(materialTool.getShaderIndex(mat3.index)).toEqual(shaderIndex);
+            var mat4 = lightMaterialTool.create();
+            var mat5 = lightMaterialTool.create();
+            var shaderIndex2 = 1;
+
+
+            expect(materialTool.getShaderIndex(material.index)).toEqual(shaderIndex1);
+            expect(materialTool.getShaderIndex(mat2.index)).toEqual(shaderIndex1);
+            expect(materialTool.getShaderIndex(mat3.index)).toEqual(shaderIndex1);
+
+
+            expect(materialTool.getShaderIndex(mat4.index)).toEqual(shaderIndex2);
+            expect(materialTool.getShaderIndex(mat5.index)).toEqual(shaderIndex2);
         });
     });
 
+    describe("all types of material share one buffer", function() {
+        beforeEach(function(){
+        });
+        
+        it("so can use MaterialSystem->getShaderIndex to get all types of material' shader index", function(){
+            var mat1 = basicMaterialTool.create();
+            var mat2 = lightMaterialTool.create();
+
+            expect(materialTool.getShaderIndex(mat1.index)).toEqual(0);
+            expect(materialTool.getShaderIndex(mat2.index)).toEqual(1);
+        });
+    });
+    
     describe("init", function() {
         beforeEach(function(){
 

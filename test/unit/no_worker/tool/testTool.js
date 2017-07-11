@@ -70,6 +70,7 @@ var testTool = (function () {
             indexBufferTool.resetData();
             deviceManagerTool.resetData();
             cameraControllerTool.resetData();
+            lightTool.resetData();
             renderCommandBufferTool.resetData();
             drawRenderCommandBufferTool.resetData();
             sceneTool.resetData();

@@ -7,10 +7,11 @@ import {
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 import { AmbientLightRenderData, DirectionLightRenderData } from "../../component/light/type";
-import { getPosition, getRenderData } from "../../component/light/DirectionLightSystem";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
+import { getPosition, getRenderData as getDirectionLightRenderData } from "../utils/light/directionLightUtils";
+import { getRenderData as getAmbientLightRenderData } from "../utils/light/ambientLightUtils";
 
 var _lightDefineList = [
     {
@@ -126,7 +127,7 @@ export const shaderLib_generator = {
                 ]
             }
         },
-        "EndBasicShaderLib": {
+        "BasicEndShaderLib": {
             "glsl": {
                 "fs": {
                     "source": end_basic_fragment
@@ -338,8 +339,7 @@ export const shaderLib_generator = {
                                     AmbientLightDataFromSystem
                                 }, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
                     for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++){
-                        //todo use utils method!
-                        let renderData:AmbientLightRenderData = getRenderData(i, AmbientLightDataFromSystem);
+                        let renderData:AmbientLightRenderData = getAmbientLightRenderData(i, AmbientLightDataFromSystem);
 
                         sendFloat3(gl, shaderIndex, program, "u_ambient", renderData.colorArr, uniformLocationMap, uniformCacheMap);
                     }
@@ -488,8 +488,7 @@ export const shaderLib_generator = {
                                     DirectionLightDataFromSystem
                                 }, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++){
-                        //todo use directionLightUtils method!
-                        let renderData:DirectionLightRenderData = getRenderData(i, DirectionLightDataFromSystem);
+                        let renderData:DirectionLightRenderData = getDirectionLightRenderData(i, DirectionLightDataFromSystem);
 
                         sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
                         sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].color, renderData.colorArr, uniformLocationMap, uniformCacheMap);
@@ -507,7 +506,6 @@ export const shaderLib_generator = {
                 "fs": {
                     "source": lightEnd_fragment
                 },
-                //todo use utils method!only pass data(fix basic shader lib also!)
                 //todo pass light data and basic data in one object
                 "func": (materialIndex: number, {
                     getAlphaTest,
@@ -520,7 +518,6 @@ export const shaderLib_generator = {
                     if (isTestAlpha(alphaTest)) {
                         return {
                             "fs": {
-                                //todo test:+ lightEnd_fragment.body
                                 "body":  `if (gl_FragColor.a < ${alphaTest}){
     discard;
 }\n` + lightEnd_fragment.body

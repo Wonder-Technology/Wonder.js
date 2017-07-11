@@ -275,15 +275,15 @@ export var initData = (MaterialData: any, BasicMaterialData:any, LightMaterialDa
 
     _setMaterialDefaultData(MaterialData);
 
-    _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
-
-    _initTable(MaterialData);
-
     initBasicMaterialData(BasicMaterialData);
     setBasicMaterialDefaultData(BasicMaterialData);
 
     initLightMaterialData(LightMaterialData);
     setLightMaterialDefaultData(LightMaterialData);
+
+    _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
+
+    _initTable(MaterialData);
 }
 
 var _setMaterialDefaultData = (MaterialData:any) => {

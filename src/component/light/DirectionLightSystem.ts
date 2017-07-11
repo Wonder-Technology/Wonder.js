@@ -2,8 +2,8 @@ import { DirectionLight } from "./DirectionLight";
 import { Color } from "../../structure/Color";
 import {
     create as createSpecifyLight,
-    disposeComponent as disposeSpecifyLightComponent, getPosition as getSpecifyLightPosition,
-    getRenderData as getSpecifyLightRenderData,
+    disposeComponent as disposeSpecifyLightComponent,
+
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
     addComponent as addSpecifyLightComponent
@@ -11,6 +11,7 @@ import {
 import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { getPosition as getPositionUtils, getRenderData as getRenderDataUtils } from "../../renderer/utils/light/directionLightUtils";
 
 //todo check: count <= 4
 export var create = (DirectionLightData:any) => {
@@ -32,11 +33,11 @@ var _setDefaultRenderData = (index:number, DirectionLightData:any) => {
 }
 
 export var getRenderData = (index: number, DirectionLightData: any) => {
-    return getSpecifyLightRenderData(index, DirectionLightData);
+    return getRenderDataUtils(index, DirectionLightData);
 }
 
 export var getPosition = (index: number, ThreeDTransformData:any, GameObjectData:any, DirectionLightData: any) => {
-    return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightData);
+    return getPositionUtils(index, ThreeDTransformData, GameObjectData, DirectionLightData)
 }
 
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {

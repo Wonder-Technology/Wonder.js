@@ -10,6 +10,8 @@ describe("BasicMaterial", function () {
 
     var Matrix4 = wd.Matrix4;
     var Color = wd.Color;
+    var BasicMaterialData = wd.BasicMaterialData;
+    var DataBufferConfig = wd.DataBufferConfig;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -69,6 +71,27 @@ describe("BasicMaterial", function () {
             directorTool.loopBody(state);
 
             expect(gl.createBuffer).toCalledTwice();
+        });
+    });
+
+    describe("initData", function() {
+        beforeEach(function(){
+        });
+
+        describe("separate buffer index into segements of corresponding material type", function() {
+            beforeEach(function(){
+
+            });
+
+            it("make BasicMaterialData.index be 0", function(){
+
+                sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 20);
+                sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 100);
+
+                materialTool.resetData();
+
+                expect(BasicMaterialData.index).toEqual(0);
+            });
         });
     });
 
@@ -251,7 +274,7 @@ describe("BasicMaterial", function () {
             });
         });
 
-        describe("add EndBasicShaderLib", function () {
+        describe("add BasicEndShaderLib", function () {
             beforeEach(function () {
             });
 

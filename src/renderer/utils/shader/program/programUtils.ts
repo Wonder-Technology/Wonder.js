@@ -168,14 +168,16 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     for (let sendData of sendDataArr) {
         let bufferName = sendData.buffer,
             buffer = _getOrCreateArrayBuffer(gl, geometryIndex, bufferName, getArrayBufferDataFuncMap, GeometryDataFromSystem, ArrayBufferDataFromSystem),
-            pos = getAttribLocation(gl, program, sendData.name, attributeLocationMap);
-
-        if (isAttributeLocationNotExist(pos)) {
-            return;
-        }
+            pos: number = null;
 
         if (lastBindedArrayBuffer === buffer) {
-            return;
+            continue;
+        }
+
+        pos = getAttribLocation(gl, program, sendData.name, attributeLocationMap);
+
+        if (isAttributeLocationNotExist(pos)) {
+            continue;
         }
 
         lastBindedArrayBuffer = buffer;
@@ -195,7 +197,7 @@ var _getOrCreateArrayBuffer = (gl:WebGLRenderingContext, geometryIndex:number, b
     switch (bufferName){
         case "vertice":
             buffer =  getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.verticeBuffers, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
-break;
+            break;
         case "normal":
             buffer =  getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);
             break;

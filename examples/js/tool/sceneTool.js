@@ -31,12 +31,20 @@ var sceneTool = (function () {
 
             return cameraObj;
         },
-        createGameObject: function(geometry){
+        createGameObject: function(geometry, material){
             var geo = null;
-            var material = basicMaterialTool.create();
+            var mat = null;
+
+            if(!!material){
+                mat = material;
+            }
+            else{
+                mat = basicMaterialTool.create();
+            }
+
             var obj = gameObjectTool.create();
 
-            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, mat);
             gameObjectTool.addComponent(obj, meshRendererTool.create());
 
 
@@ -52,12 +60,12 @@ var sceneTool = (function () {
             return {
                 geometry:geo,
                 gameObject:obj,
-                material:material
+                material:mat
             }
         },
-        prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry) {
+        prepareGameObjectAndAddToScene: function(isNotAddCamera, geometry, material) {
             var isNotAddCamera$ = isNotAddCamera === true ? true : false;
-            var data = sceneTool.createGameObject(geometry);
+            var data = sceneTool.createGameObject(geometry, material);
 
             sceneTool.addGameObject(data.gameObject);
 
@@ -74,6 +82,48 @@ var sceneTool = (function () {
                 geometry:data.geometry,
                 material:data.material
             }
+        },
+        addAmbientLight: function(pos, color){
+            var ambientLightComponent = ambientLightTool.create();
+            ambientLightTool.setColor(ambientLightComponent, color || wd.Color.create("#ffffff"));
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, ambientLightComponent);
+
+
+            if(!!pos){
+                var transform = gameObjectTool.getTransform(obj);
+
+                threeDTransformTool.setPosition(transform, pos);
+            }
+
+            sceneTool.addGameObject(obj)
+
+            return obj;
+        },
+        addDirectionLight: function(pos, color, intensity){
+            var directionLightComponent = directionLightTool.create();
+            directionLightTool.setColor(directionLightComponent, color || wd.Color.create("#ffffff"));
+            directionLightTool.setIntensity(directionLightComponent, intensity || 1);
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, directionLightComponent);
+
+
+
+            if(!!pos){
+                var transform = gameObjectTool.getTransform(obj);
+
+                threeDTransformTool.setPosition(transform, pos);
+            }
+
+            sceneTool.addGameObject(obj)
+
+            return obj;
         }
     }
 })()

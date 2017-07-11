@@ -7,7 +7,7 @@ export const material_config = {
 
                     "BasicMaterialColorShaderLib",
                     "BasicShaderLib",
-                    "EndBasicShaderLib",
+                    "BasicEndShaderLib",
 
                     {"type":"group", "value":"engineMaterialEnd"}
                 ]

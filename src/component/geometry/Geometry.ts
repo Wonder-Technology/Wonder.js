@@ -3,7 +3,7 @@ import { GeometryData } from "./GeometryData";
 import {
     getVertices as getGeometryVertices,
     getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem,
-    getGameObject, getDrawMode as getGeometryDrawMode,
+    getGameObject, getDrawMode as getGeometryDrawMode, getNormals as getGeometryNormals,
 } from "./GeometrySystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Component } from "../Component";
@@ -26,6 +26,12 @@ export var getVertices = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryVertices(geometry.index, GeometryData);
+})
+
+export var getNormals = requireCheckFunc((geometry: Geometry) => {
+    _checkShouldAlive(geometry, GeometryData);
+}, (geometry: Geometry) => {
+    return getGeometryNormals(geometry.index, GeometryData);
 })
 
 export var getIndices = requireCheckFunc((geometry: Geometry) => {

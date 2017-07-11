@@ -5,12 +5,12 @@ import { AmbientLight } from "./AmbientLight";
 import { Color } from "../../structure/Color";
 import {
     disposeComponent as disposeSpecifyLightComponent, initData as initSpecifyLightData,
-    getRenderData as getSpecifyLightRenderData,
     setColor as setSpecifyLightColor, create as createSpecifyLight, addComponent as addSpecifyLightComponent
 } from "./SpecifyLightSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
+import { getRenderData as getRenderDataUtils } from "../../renderer/utils/light/ambientLightUtils";
 
 //todo check: count <= 1
 export var create = (AmbientLightData:any) => {
@@ -30,8 +30,8 @@ var _setDefaultRenderData = (index:number, AmbientLightData:any) => {
     }
 }
 
-export var getRenderData = (index: number, DirectionLightData: any) => {
-    return getSpecifyLightRenderData(index, DirectionLightData);
+export var getRenderData = (index: number, AmbientLightData: any) => {
+    return getRenderDataUtils(index, AmbientLightData);
 }
 
 export var setColor = (index: number, color: Color, AmbientLightData: any) => {

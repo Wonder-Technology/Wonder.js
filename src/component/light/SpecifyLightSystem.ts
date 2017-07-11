@@ -33,19 +33,6 @@ export var setColor = (index: number, color: Color, SpecifyLightData: any) => {
     SpecifyLightData.renderDataMap[index].colorArr = [color.r, color.g, color.b];
 }
 
-export var getRenderData = (index: number, SpecifyLightData: any) => {
-    return SpecifyLightData.renderDataMap[index];
-}
-
-//todo move to utils
-export var getPosition = (index: number, ThreeDTransformData:any, GameObjectData:any, SpecifyLightData: any) => {
-    return getThreeDTransformPosition(getTransform(getGameObject(index, SpecifyLightData), GameObjectData), ThreeDTransformData);
-}
-
-export var getGameObject = (index: number, SpecifyLightData: any) => {
-    return getComponentGameObject(SpecifyLightData.gameObjectMap, index);
-}
-
 export var disposeComponent = ensureFunc((returnVal, sourceIndex:number, lastComponentIndex:number, SpecifyLightData:any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
 }, (sourceIndex:number, lastComponentIndex:number, SpecifyLightData:any) => {
