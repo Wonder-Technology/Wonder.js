@@ -6,6 +6,8 @@ describe("material", function () {
     var EWorkerOperateType = wd.EWorkerOperateType;
 
     var MaterialData = wd.MaterialData;
+    var BasicMaterialData = wd.BasicMaterialData;
+    var LightMaterialData = wd.LightMaterialData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -80,7 +82,14 @@ describe("material", function () {
                         geometryData: null,
                         materialData: {
                             buffer: materialDataBuffer,
-                            materialCount: MaterialData.count,
+                            basicMaterialData: {
+                                startIndex: materialBufferTool.getBasicMaterialBufferStartIndex(),
+                                index: BasicMaterialData.index
+                            },
+                            lightMaterialData: {
+                                startIndex: materialBufferTool.getLightMaterialBufferStartIndex(),
+                                index: LightMaterialData.index
+                            },
                             materialClassNameTable: MaterialData.materialClassNameTable,
                             shaderIndexTable: MaterialData.shaderIndexTable
                         }

@@ -47,7 +47,11 @@ export var updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, no
     _updatePointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-var _updatePointCacheData = (infoList: GeometryWorkerInfoList, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+var _updatePointCacheData = (infoList: GeometryWorkerInfoList|undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+    if(infoList === void 0){
+        return;
+    }
+
     for (let info of infoList) {
         let index = info.index,
             dataArr = getSlice(points, info.startIndex, info.endIndex);
@@ -72,13 +76,17 @@ export var setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfo
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList|undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     it("infoList should has no invalid value", () => {
         for (let info of infoList) {
             expect(isValidVal(info)).true;
         }
     });
-}, (infoList: GeometryInfoList, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+}, (infoList: GeometryInfoList|undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+    if(infoList === void 0){
+        return;
+    }
+
     for (let i = 0, len = infoList.length; i < len; i++) {
         let info = infoList[i],
             dataArr = getSlice(points, info.startIndex, info.endIndex);

@@ -123,7 +123,7 @@ export var getNormals = (index: number, GeometryData: any) => {
 
 export var setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
 }, (index: number, normals: Array<number>, GeometryData: any) => {
-    GeometryData.normalsOffset = _setPointData(index, normals, getVertexDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
+    GeometryData.normalsOffset = _setPointData(index, normals, getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
@@ -295,6 +295,7 @@ var _isInit = (GeometryData: any) => {
 
 export var clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 

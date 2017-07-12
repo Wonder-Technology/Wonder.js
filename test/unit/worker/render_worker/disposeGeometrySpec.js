@@ -122,34 +122,73 @@ describe("dispose geometry", function () {
                         }
                     });
 
-                    it("dispose buffers", function () {
-                        var buffer1 = {},
-                            buffer2 = { a: 2 },
-                            buffer3 = { a: 3 },
-                            buffer4 = { a: 4 };
+                    describe("dispose buffers", function () {
+                        var buffer1, buffer2;
 
-                        ArrayBufferWorkerData.buffers = [];
-                        ArrayBufferWorkerData.buffers[geo1Index] = buffer1;
-                        ArrayBufferWorkerData.buffers[geo2Index] = buffer2;
+                        beforeEach(function(){
+                            buffer1 = {};
+                            buffer2 = { a: 2 };
 
-                        IndexBufferWorkerData.buffers = [];
-                        IndexBufferWorkerData.buffers[geo1Index] = buffer3;
-                        IndexBufferWorkerData.buffers[geo2Index] = buffer4;
+                            IndexBufferWorkerData.buffers = [];
+                            IndexBufferWorkerData.buffers[geo1Index] = buffer1;
+                            IndexBufferWorkerData.buffers[geo2Index] = buffer2;
+
+                        });
+
+                        it("test only with vertex buffer", function () {
+                            var buffer3 = { a: 3 },
+                                buffer4 = { a: 4 };
+
+                            ArrayBufferWorkerData.verticeBuffers = [];
+                            ArrayBufferWorkerData.verticeBuffers[geo1Index] = buffer3;
+                            ArrayBufferWorkerData.verticeBuffers[geo2Index] = buffer4;
 
 
 
 
-                        workerTool.execRenderWorkerMessageHandler(e);
+                            workerTool.execRenderWorkerMessageHandler(e);
 
 
 
 
 
-                        expect(gl.deleteBuffer.callCount).toEqual(4);
-                        expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer1)
-                        expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer3)
-                        expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer2)
-                        expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
+                            expect(gl.deleteBuffer.callCount).toEqual(4);
+                            expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer3)
+                            expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer1)
+                            expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer4)
+                            expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer2)
+                        });
+                        it("test with normal buffer", function () {
+                            var buffer3 = { a: 3 },
+                                buffer4 = { a: 4 },
+                                buffer5 = { a: 5 },
+                                buffer6 = { a: 6 };
+
+                            ArrayBufferWorkerData.verticeBuffers = [];
+                            ArrayBufferWorkerData.verticeBuffers[geo1Index] = buffer3;
+                            ArrayBufferWorkerData.verticeBuffers[geo2Index] = buffer4;
+
+
+                            ArrayBufferWorkerData.normalBuffers = [];
+                            ArrayBufferWorkerData.normalBuffers[geo1Index] = buffer5;
+                            ArrayBufferWorkerData.normalBuffers[geo2Index] = buffer6;
+
+
+
+
+                            workerTool.execRenderWorkerMessageHandler(e);
+
+
+
+
+
+                            expect(gl.deleteBuffer.callCount).toEqual(6);
+                            expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer3)
+                            expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer5)
+                            expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer1)
+                            expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
+                            expect(gl.deleteBuffer.getCall(4)).toCalledWith(buffer6)
+                        });
                     });
                 });
             });
