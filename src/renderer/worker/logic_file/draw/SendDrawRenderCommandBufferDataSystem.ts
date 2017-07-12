@@ -21,6 +21,7 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
             buffer: GeometryData.buffer,
             type: EGeometryWorkerDataOperateType.ADD,
             verticesInfoList: GeometryData.verticesWorkerInfoList,
+            normalsInfoList: GeometryData.normalsWorkerInfoList,
             indicesInfoList: GeometryData.indicesWorkerInfoList
         };
     }
@@ -29,6 +30,7 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
             buffer: GeometryData.buffer,
             type: EGeometryWorkerDataOperateType.RESET,
             verticesInfoList: GeometryData.verticesInfoList,
+            normalsInfoList: GeometryData.normalsInfoList,
             indicesInfoList: GeometryData.indicesInfoList
         };
     }

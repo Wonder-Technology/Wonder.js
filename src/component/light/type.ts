@@ -1,10 +1,10 @@
 export type AmbientLightRenderData = {
-    colorArr:Array<number>;
+    colorArr: Array<number>;
 };
 
 export type DirectionLightRenderData = {
-    colorArr:Array<number>;
-    intensity:number;
+    colorArr: Array<number>;
+    intensity: number;
 }
 
 export type LightGLSLDataStructure = {

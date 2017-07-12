@@ -1,3 +1,3 @@
-export var initData = (startIndex:number, SpecifyMaterialData: any) => {
+export var initData = (startIndex: number, SpecifyMaterialData: any) => {
     SpecifyMaterialData.index = startIndex;
 }

@@ -15,11 +15,11 @@ import { getRenderData as getRenderDataUtils } from "../../renderer/utils/light/
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
-export var create = ensureFunc((light:AmbientLight, AmbientLightData:any) => {
+export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("count should <= 1", () => {
         expect(AmbientLightData.count).lte(1);
     })
-}, (AmbientLightData:any) => {
+}, (AmbientLightData: any) => {
     var light = new AmbientLight();
 
     light = createSpecifyLight(light, AmbientLightData);
@@ -29,9 +29,9 @@ export var create = ensureFunc((light:AmbientLight, AmbientLightData:any) => {
     return light;
 })
 
-var _setDefaultRenderData = (index:number, AmbientLightData:any) => {
+var _setDefaultRenderData = (index: number, AmbientLightData: any) => {
     AmbientLightData.renderDataMap[index] = {
-        colorArr:AmbientLightData.defaultColorArr
+        colorArr: AmbientLightData.defaultColorArr
     }
 }
 
@@ -51,7 +51,7 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
     addSpecifyLightComponent(component, gameObject, AmbientLightData);
 }
 
-export var disposeComponent = (component:Light) => {
+export var disposeComponent = (component: Light) => {
     disposeSpecifyLightComponent(component.index, AmbientLightData);
 }
 

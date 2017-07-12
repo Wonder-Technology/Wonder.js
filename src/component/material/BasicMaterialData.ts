@@ -1,4 +1,4 @@
 import { SpecifyMaterialData } from "./SpecifyMaterialData";
 
-export class BasicMaterialData extends SpecifyMaterialData{
+export class BasicMaterialData extends SpecifyMaterialData {
 }

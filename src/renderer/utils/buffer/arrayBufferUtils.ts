@@ -2,7 +2,7 @@ import { EBufferType } from "../../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
 import { createMap } from "../../../utils/objectUtils";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers:Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var buffer = buffers[geometryIndex];
 
     if (isBufferExist(buffer)) {

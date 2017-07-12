@@ -10,7 +10,6 @@ import { expect } from "wonder-expect.js";
 import { EScreenSize } from "../../device/EScreenSize";
 import { RectRegion } from "../../../structure/RectRegion";
 import { chain, compose } from "../../../utils/functionalUtils";
-import { DirectorData } from "../../../core/DirectorData";
 import { getRootProperty } from "../../../utils/rootUtils";
 import { Map } from "immutable";
 import { trace } from "../../../utils/debugUtils";
@@ -195,7 +194,7 @@ export var setColorWrite = (gl: WebGLRenderingContext, writeRed: boolean, writeG
     }
 }
 
-export var setSide = (gl:WebGLRenderingContext, side:ESide, DeviceManagerDataFromSystem: any) => {
+export var setSide = (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.side !== side) {
         switch (side) {
             case ESide.NONE:
@@ -213,7 +212,7 @@ export var setSide = (gl:WebGLRenderingContext, side:ESide, DeviceManagerDataFro
                 gl.enable(gl.CULL_FACE);
                 gl.cullFace(gl.FRONT);
                 break;
-            default :
+            default:
                 Log.error(true, Log.info.FUNC_UNEXPECT("side", side));
                 break;
         }

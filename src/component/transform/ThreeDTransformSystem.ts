@@ -44,6 +44,7 @@ import {
 } from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../../math/Matrix3";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -188,15 +189,15 @@ export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTran
     return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
 }))
 
-export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+}, cacheFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
     return isValidMapValue(getNormalMatrixCache(transform.uid, ThreeTransformData));
-}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
     return getNormalMatrixCache(transform.uid, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any, mat: Matrix3) => {
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any, mat: Matrix3) => {
     setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData:any, ThreeTransformData: any) => {
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 

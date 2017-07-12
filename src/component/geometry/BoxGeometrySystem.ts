@@ -56,12 +56,12 @@ var _computeData = (index: number, GeometryData: any) => {
     ];
 
     var faceNormals = [
-        [  0,  0,  1 ], // FRONT
-        [  0,  0, -1 ], // BACK
-        [  0,  1,  0 ], // TOP
-        [  0, -1,  0 ], // BOTTOM
-        [  1,  0,  0 ], // RIGHT
-        [ -1,  0,  0 ]  // LEFT
+        [0, 0, 1], // FRONT
+        [0, 0, -1], // BACK
+        [0, 1, 0], // TOP
+        [0, -1, 0], // BOTTOM
+        [1, 0, 0], // RIGHT
+        [-1, 0, 0]  // LEFT
     ];
     var corners = [
         Vector3.create(-width, -height, depth),

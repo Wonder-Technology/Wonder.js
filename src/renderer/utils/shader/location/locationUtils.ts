@@ -8,17 +8,17 @@ export var setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: a
     LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
 }
 
-export var getAttribLocation = ensureFunc((pos: number, gl:WebGLRenderingContext, program:WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
+export var getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
     // it(`${name}'s attrib location should be number`, () => {
     //     expect(pos).be.a("number");
     // });
-}, (gl:WebGLRenderingContext, program:WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
+}, (gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
     // return attributeLocationMap[name];
-    var pos:number = null;
+    var pos: number = null;
 
     pos = attributeLocationMap[name];
 
-    if(isValidMapValue(pos)){
+    if (isValidMapValue(pos)) {
         return pos;
     }
 
@@ -28,16 +28,16 @@ export var getAttribLocation = ensureFunc((pos: number, gl:WebGLRenderingContext
     return pos;
 })
 
-export var getUniformLocation = ensureFunc((pos: number, gl:WebGLRenderingContext, name: string, uniformLocationMap: UniformLocationMap) => {
+export var getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, name: string, uniformLocationMap: UniformLocationMap) => {
     // it(`${name}'s uniform location should exist in map`, () => {
     //     expect(isValidMapValue(pos)).true;
     // });
-}, (gl:WebGLRenderingContext, program:WebGLProgram, name: string, uniformLocationMap: UniformLocationMap) => {
-    var pos:WebGLUniformLocation = null;
+}, (gl: WebGLRenderingContext, program: WebGLProgram, name: string, uniformLocationMap: UniformLocationMap) => {
+    var pos: WebGLUniformLocation = null;
 
     pos = uniformLocationMap[name];
 
-    if(isValidMapValue(pos)){
+    if (isValidMapValue(pos)) {
         return pos;
     }
 

@@ -1,6 +1,5 @@
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { ComponentGameObjectMap } from "../ComponentData";
-import { Tag } from "./Tag";
+import { Component } from "../Component";
 
 export class TagData {
     public static tagArray: Array<string> = null;
@@ -23,5 +22,5 @@ export class TagData {
 }
 
 export type TagMap = {
-    [index: number]: Tag
+    [index: number]: Component
 }

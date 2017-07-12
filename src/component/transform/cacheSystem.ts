@@ -69,7 +69,7 @@ export var getNormalMatrixCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).normalMatrix;
 }
 
-export var setNormalMatrixCache = (uid: number, mat:Matrix3, ThreeTransformData: any) => {
+export var setNormalMatrixCache = (uid: number, mat: Matrix3, ThreeTransformData: any) => {
     _getCache(uid, ThreeTransformData).normalMatrix = mat;
 }
 

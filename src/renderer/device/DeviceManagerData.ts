@@ -11,6 +11,5 @@ export class DeviceManagerData {
     public static writeBlue: boolean = null;
     public static writeAlpha: boolean = null;
 
-    //todo fix worker
     public static side: ESide = null;
 }

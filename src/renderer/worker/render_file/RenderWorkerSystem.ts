@@ -4,7 +4,7 @@ import {
     clear, draw
 } from "./draw/DrawRenderCommandBufferWorkerSystem";
 import { render_config } from "../../data/render_config";
-import { DrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferForDrawData";
+import { DrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferWorkerData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
     initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
@@ -41,6 +41,10 @@ import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSe
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
 import { initData as initDrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferWorkerSystem";
+import { BasicMaterialWorkerData } from "./material/BasicMaterialWorkerData";
+import { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
+import { initState } from "../../utils/state/stateUtils";
+import { getGL, setSide } from "../both_file/device/DeviceManagerWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -54,11 +58,15 @@ export var onmessageHandler = (e) => {
         case EWorkerOperateType.INIT_GL:
             _initData();
 
-            setState(initGL(data).run(), StateData);
+            let state = initGL(data).run();
+
+            setState(state, StateData);
+
+            initState(state, getGL, setSide, DeviceManagerWorkerData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY:
             if (data.materialData !== null) {
-                _initMaterials(data.materialData, DataBufferConfig, MaterialWorkerData);
+                _initMaterials(data.materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
             }
 
             if (data.geometryData !== null) {
@@ -76,12 +84,14 @@ export var onmessageHandler = (e) => {
                 disposeData = data.disposeData,
                 materialData = data.materialData;
 
+            //todo fix geometry,material,dispose?
+
             if (geometryData !== null) {
                 if (_needUpdateGeometryWorkerData(geometryData)) {
-                    updatePointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                    updatePointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
                 else if (_needResetGeometryWorkerData(geometryData)) {
-                    resetPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                    resetPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
             }
 
@@ -93,15 +103,15 @@ export var onmessageHandler = (e) => {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
-            //todo fix
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
+            //todo add light data
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, null, null, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
 
             self.postMessage({
                 state: ERenderWorkerState.DRAW_COMPLETE
             });
             break;
         default:
-            Log.error(true, Log.info.FUNC_UNKOWN(`operateType:${operateType}`));
+            Log.error(true, Log.info.FUNC_UNKNOW(`operateType:${operateType}`));
             break;
     }
 };
@@ -128,15 +138,15 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (materialData: MaterialInitWorkerData, DataBufferConfig: any, MaterialWorkerData: any) => {
-    initMaterialWorkerData(materialData, DataBufferConfig, MaterialWorkerData);
+var _initMaterials = (materialData: MaterialInitWorkerData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+    initMaterialWorkerData(materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-    initMaterials(materialData.materialCount);
+    initMaterials(materialData.basicMaterialData, materialData.lightMaterialData);
 }
 
 var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
     initGeometryWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
 
-    setPointCacheDatas(geometryData.verticesInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+    setPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }
 

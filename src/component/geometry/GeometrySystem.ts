@@ -40,18 +40,19 @@ import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
 import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
-export var addAddComponentHandle = (BoxGeometry:any, CustomGeometry:any) => {
+export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addAddComponentHandleToMap(BoxGeometry, addComponent);
     addAddComponentHandleToMap(CustomGeometry, addComponent);
 }
 
-export var addDisposeHandle = (BoxGeometry:any, CustomGeometry:any) => {
+export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addDisposeHandleToMap(BoxGeometry, disposeComponent);
     addDisposeHandleToMap(CustomGeometry, disposeComponent);
 }
 
-export var addInitHandle = (BoxGeometry:any, CustomGeometry:any) => {
+export var addInitHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addInitHandleToMap(BoxGeometry, initGeometry);
     addInitHandleToMap(CustomGeometry, initGeometry);
 }

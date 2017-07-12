@@ -28,11 +28,11 @@ import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createTypeArrays } from "../utils/draw/renderComandBufferUtils";
 import { getComponentIDFromClass } from "../../component/ComponentComponentIDManager";
 
-export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData:any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })
-}, (state: Map<any, any>, GlobalTempData:any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+}, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     var count = renderGameObjectArray.length,
         buffer: any = RenderCommandBufferData.buffer,
         mMatrices = RenderCommandBufferData.mMatrices,

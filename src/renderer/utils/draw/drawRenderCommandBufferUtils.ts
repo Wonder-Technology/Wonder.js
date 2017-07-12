@@ -13,10 +13,10 @@ export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config:
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem:any, BasicMaterialDataFromSystem:any, LightMaterialDataFromSystem:any, AmbientLightDataFromSystem, DirectionLightDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
-        MaterialDataFromSystem:MaterialDataFromSystem,
+        MaterialDataFromSystem: MaterialDataFromSystem,
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
         LightMaterialDataFromSystem: LightMaterialDataFromSystem,
         AmbientLightDataFromSystem: AmbientLightDataFromSystem,
@@ -55,20 +55,20 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getIndexType,
     getIndexTypeSize,
     getVerticesCount
-}, drawDataMap:DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
+}, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
             DeviceManagerDataFromSystem,
-            BasicMaterialDataFromSystem,
-            LightMaterialDataFromSystem,
-            AmbientLightDataFromSystem,
-            DirectionLightDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            GeometryDataFromSystem,
-            ArrayBufferDataFromSystem,
-            IndexBufferDataFromSystem,
-            DrawRenderCommandBufferDataFromSystem
+        BasicMaterialDataFromSystem,
+        LightMaterialDataFromSystem,
+        AmbientLightDataFromSystem,
+        DirectionLightDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem,
+        GeometryDataFromSystem,
+        ArrayBufferDataFromSystem,
+        IndexBufferDataFromSystem,
+        DrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
@@ -89,7 +89,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
             shaderIndices,
             geometryIndices
         } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem),
-        program:WebGLProgram = null;
+        program: WebGLProgram = null;
 
     _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
@@ -150,7 +150,7 @@ var _updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, matStartI
     return targetMatrices;
 }
 
-var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, cameraPosition:Float32Array, normalMatrices:Float32Array, materialIndex: number) => {
+var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, cameraPosition: Float32Array, normalMatrices: Float32Array, materialIndex: number) => {
     return {
         mMatrix: mMatrices,
         vMatrix: vMatrices,

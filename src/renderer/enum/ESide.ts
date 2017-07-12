@@ -1,4 +1,4 @@
-export enum ESide{
+export enum ESide {
     NONE,
     BOTH,
     //CCW

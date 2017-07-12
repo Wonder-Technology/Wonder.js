@@ -36,17 +36,17 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
         fsBody: string = "";
-        // fsDefineList:Array<IGLSLDefineListItem> = [];
+    // fsDefineList:Array<IGLSLDefineListItem> = [];
 
-    var _setVs = (getGLSLPartData:Function, getGLSLDefineListData:Function, vs:IGLSLConfig) => {
-            vsTop += getGLSLPartData(vs, "top");
-            vsDefine += _buildSourceDefine(getGLSLDefineListData(vs)) + getGLSLPartData(vs, "define");
-            vsVarDeclare += getGLSLPartData(vs, "varDeclare");
-            vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
-            vsFuncDefine += getGLSLPartData(vs, "funcDefine");
-            vsBody += getGLSLPartData(vs, "body");
-        },
-        _setFs = (getGLSLPartData:Function, getGLSLDefineListData:Function, fs:IGLSLConfig) => {
+    var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IGLSLConfig) => {
+        vsTop += getGLSLPartData(vs, "top");
+        vsDefine += _buildSourceDefine(getGLSLDefineListData(vs)) + getGLSLPartData(vs, "define");
+        vsVarDeclare += getGLSLPartData(vs, "varDeclare");
+        vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
+        vsFuncDefine += getGLSLPartData(vs, "funcDefine");
+        vsBody += getGLSLPartData(vs, "body");
+    },
+        _setFs = (getGLSLPartData: Function, getGLSLDefineListData: Function, fs: IGLSLConfig) => {
             fsTop += getGLSLPartData(fs, "top");
             fsDefine += _buildSourceDefine(getGLSLDefineListData(fs)) + getGLSLPartData(fs, "define");
             fsVarDeclare += getGLSLPartData(fs, "varDeclare");
@@ -62,8 +62,8 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var glslData = shaderLibData[shaderLibName].glsl,
-            vs:IGLSLConfig = null,
-            fs:IGLSLConfig = null,
+            vs: IGLSLConfig = null,
+            fs: IGLSLConfig = null,
             func: Function = null;
 
         if (!isConfigDataExist(glslData)) {
@@ -117,17 +117,17 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup:IMaterialShaderLibGroup) => {
-    var nameArr:Array<string> = [];
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup) => {
+    var nameArr: Array<string> = [];
 
-    forEach(materialShaderLibConfig, (item: string|IShaderLibItem) => {
-        if(isString(item)){
+    forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
+        if (isString(item)) {
             nameArr.push(item as string);
         }
-        else{
+        else {
             let i = item as IShaderLibItem;
 
-            if(i.type === "group"){
+            if (i.type === "group") {
                 nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
             }
         }
@@ -147,14 +147,14 @@ var _getEmptyFuncGLSLConfig = () => {
     }
 }
 
-var _buildSourceDefine = (defineList:Array<IGLSLDefineListItem>) => {
+var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>) => {
     var result = "";
 
-    for(let item of defineList){
-        if(item.valueFunc === void 0){
+    for (let item of defineList) {
+        if (item.valueFunc === void 0) {
             result += `#define ${item.name}\n`;
         }
-        else{
+        else {
             result += `#define ${item.name} ${item.valueFunc(getAllRenderDataForNoWorker())}\n`;
         }
     }
@@ -271,7 +271,7 @@ var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLib
     return result;
 }
 
-var _generateUniformSourceType = (type:string) => {
+var _generateUniformSourceType = (type: string) => {
     var sourceType: string = null;
 
     switch (type) {

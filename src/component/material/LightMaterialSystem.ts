@@ -14,9 +14,11 @@ import { Color } from "../../structure/Color";
 import { EShading } from "./EShading";
 import { ELightModel } from "./ELightModel";
 import {
+    computeLightBufferIndex,
+    createTypeArrays as createTypeArraysUtils,
     getEmissionColorArr3 as getEmissionColorArr3Utils,
-    getLightModel as getLightModelUtils, getShading as getShadingUtils,
-    getShininess as getShininessUtils,
+    getLightModel as getLightModelUtils, getLightModelDataSize, getShading as getShadingUtils, getShadingDataSize,
+    getShininess as getShininessUtils, getShininessDataSize,
     getSpecularColorArr3 as getSpecularColorArr3Utils
 } from "../../renderer/utils/material/lightMaterialUtils";
 import { Material } from "./Material";
@@ -24,17 +26,17 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { MaterialData } from "./MaterialData";
 import { Map } from "immutable";
 import { initData as initSpecifyMaterialData } from "./SpecifyMaterialSystem";
-import { getBufferTotalCount, getLightMaterialBufferCount, getLightMaterialBufferStartIndex } from "./bufferUtils";
+import { getBufferTotalCount, getLightMaterialBufferCount, getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
 
-export var create = ensureFunc((component:Material) => {
+export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
         expect(component.index).lte(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
     });
-}, (ShaderData: any, MaterialData:any, LightMaterialData: any) => {
+}, (ShaderData: any, MaterialData: any, LightMaterialData: any) => {
     var material = new LightMaterial(),
         materialClassName = "LightMaterial",
         index = generateComponentIndex(LightMaterialData);
@@ -47,54 +49,52 @@ export var create = ensureFunc((component:Material) => {
 })
 
 export var getSpecularColor = (index: number, LightMaterialData: any) => {
-    return getColorData(_computeLightBufferIndex(index), LightMaterialData.specularColors);
+    return getColorData(computeLightBufferIndex(index), LightMaterialData.specularColors);
 }
 
 export var getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
-    return getSpecularColorArr3Utils(_computeLightBufferIndex(index), LightMaterialData);
+    return getSpecularColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
 }
 
 export var setSpecularColor = (index: number, color: Color, LightMaterialData: any) => {
-    setColorData(_computeLightBufferIndex(index), color, LightMaterialData.specularColors);
+    setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 }
 
 export var getEmissionColor = (index: number, LightMaterialData: any) => {
-    return getColorData(_computeLightBufferIndex(index), LightMaterialData.emissionColors);
+    return getColorData(computeLightBufferIndex(index), LightMaterialData.emissionColors);
 }
 
 export var getEmissionColorArr3 = (index: number, LightMaterialData: any) => {
-    return getEmissionColorArr3Utils(_computeLightBufferIndex(index), LightMaterialData);
+    return getEmissionColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
 }
 
 export var setEmissionColor = (index: number, color: Color, LightMaterialData: any) => {
-    setColorData(_computeLightBufferIndex(index), color, LightMaterialData.emissionColors);
+    setColorData(computeLightBufferIndex(index), color, LightMaterialData.emissionColors);
 }
 
 export var getShininess = (index: number, LightMaterialDataFromSystem: any) => {
-    return getShininessUtils(_computeLightBufferIndex(index), LightMaterialDataFromSystem);
+    return getShininessUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setShininess = (index: number, shininess:number, LightMaterialData: any) => {
-    setTypeArrayValue(LightMaterialData.shininess, _computeLightBufferIndex(index), shininess);
+export var setShininess = (index: number, shininess: number, LightMaterialData: any) => {
+    setTypeArrayValue(LightMaterialData.shininess, computeLightBufferIndex(index), shininess);
 }
 
 export var getShading = (index: number, LightMaterialDataFromSystem: any) => {
-    return getShadingUtils(_computeLightBufferIndex(index), LightMaterialDataFromSystem);
+    return getShadingUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setShading = (index: number, shading:EShading, LightMaterialData: any) => {
-    setTypeArrayValue(LightMaterialData.shadings, _computeLightBufferIndex(index), shading);
+export var setShading = (index: number, shading: EShading, LightMaterialData: any) => {
+    setTypeArrayValue(LightMaterialData.shadings, computeLightBufferIndex(index), shading);
 }
 
 export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
-    return getLightModelUtils(_computeLightBufferIndex(index), LightMaterialDataFromSystem);
+    return getLightModelUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setLightModel = (index: number, lightModel:ELightModel, LightMaterialData: any) => {
-    setTypeArrayValue(LightMaterialData.lightModels, _computeLightBufferIndex(index), lightModel);
+export var setLightModel = (index: number, lightModel: ELightModel, LightMaterialData: any) => {
+    setTypeArrayValue(LightMaterialData.lightModels, computeLightBufferIndex(index), lightModel);
 }
-
-var _computeLightBufferIndex = (index:number) => index - getLightMaterialBufferStartIndex();
 
 export var initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, MaterialData);
@@ -106,9 +106,9 @@ export var addComponent = (component: Material, gameObject: GameObject) => {
 
 export var disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
-        lightMaterialSourceIndex = _computeLightBufferIndex(sourceIndex),
+        lightMaterialSourceIndex = computeLightBufferIndex(sourceIndex),
         lastComponentIndex: number = null,
-        lightMaterialLastComponentIndex:number = null,
+        lightMaterialLastComponentIndex: number = null,
         colorDataSize = getColorDataSize(),
         shininessDataSize = getShininessDataSize(),
         shadingDataSize = getShadingDataSize(),
@@ -118,7 +118,7 @@ export var disposeComponent = (component: Material) => {
 
     lastComponentIndex = LightMaterialData.index;
 
-    lightMaterialLastComponentIndex = _computeLightBufferIndex(lastComponentIndex);
+    lightMaterialLastComponentIndex = computeLightBufferIndex(lastComponentIndex);
 
     disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
 
@@ -137,34 +137,21 @@ export var initData = (LightMaterialData: any) => {
     LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
 }
 
-export var createTypeArrays = (buffer: any, offset:number, count: number, LightMaterialData: any) => {
-    LightMaterialData.specularColors = new Float32Array(buffer, offset, count * getColorDataSize());
-    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
-
-    LightMaterialData.emissionColors = new Float32Array(buffer, offset, count * getColorDataSize());
-    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
-
-    LightMaterialData.shininess = new Float32Array(buffer, offset, count * getShininessDataSize());
-    offset += count * Float32Array.BYTES_PER_ELEMENT * getShininessDataSize();
-
-    LightMaterialData.shadings = new Uint8Array(buffer, offset, count * getShadingDataSize());
-    offset += count * Uint8Array.BYTES_PER_ELEMENT * getShadingDataSize();
-
-    LightMaterialData.lightModels = new Uint8Array(buffer, offset, count * getLightModelDataSize());
-    offset += count * Uint8Array.BYTES_PER_ELEMENT * getLightModelDataSize();
+export var createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialData: any) => {
+    var returnedOffset = createTypeArraysUtils(buffer, offset, count, LightMaterialData);
 
     _setLightMaterialDefaultTypeArrData(count, LightMaterialData);
 
-    return offset;
+    return returnedOffset;
 }
 
-export var setDefaultData = (LightMaterialData:any) => {
+export var setDefaultData = (LightMaterialData: any) => {
     LightMaterialData.defaultShininess = 32;
     LightMaterialData.defaultShading = 0;
     LightMaterialData.defaultLightModel = ELightModel.PHONG;
 }
 
-var _setLightMaterialDefaultTypeArrData = (count:number, LightMaterialData:any) => {
+var _setLightMaterialDefaultTypeArrData = (count: number, LightMaterialData: any) => {
     var startIndex = getLightMaterialBufferStartIndex(),
         color = createDefaultColor(),
         emptyColor = LightMaterialData.emptyColor,
@@ -188,9 +175,3 @@ var _createEmptyColor = () => {
 
     return color;
 }
-
-export var getShadingDataSize = () => 1;
-
-export var getLightModelDataSize = () => 1;
-
-export var getShininessDataSize = () => 1;

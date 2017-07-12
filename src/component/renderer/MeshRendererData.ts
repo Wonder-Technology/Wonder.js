@@ -1,10 +1,10 @@
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { MeshRenderer } from "./MeshRenderer";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { Component } from "../Component";
 
 export class MeshRendererData {
-    public static renderGameObjectArray: Array<GameObject> = null;
-    public static gameObjectMap: Array<GameObject> = null;
-    public static meshRendererMap: Array<MeshRenderer> = null;
+    public static renderGameObjectArray: Array<IUIDEntity> = null;
+    public static gameObjectMap: Array<IUIDEntity> = null;
+    public static meshRendererMap: Array<Component> = null;
 
     public static index: number = null;
     public static count: number = null;

@@ -25,7 +25,7 @@ export var create = requireCheckFunc((light: Light, SpecifyLightData: any) => {
     return light;
 })
 
-export var addComponent = (component: Light, gameObject: GameObject, SpecifyLightData:any) => {
+export var addComponent = (component: Light, gameObject: GameObject, SpecifyLightData: any) => {
     addComponentToGameObjectMap(SpecifyLightData.gameObjectMap, component.index, gameObject);
 }
 
@@ -37,10 +37,10 @@ export var setColor = (index: number, color: Color, SpecifyLightData: any) => {
     SpecifyLightData.renderDataMap[index].colorArr = [color.r, color.g, color.b];
 }
 
-export var disposeComponent = ensureFunc((returnVal, sourceIndex:number, SpecifyLightData:any) => {
+export var disposeComponent = ensureFunc((returnVal, sourceIndex: number, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
-}, (sourceIndex:number, SpecifyLightData:any) => {
-    var lastComponentIndex:number = null;
+}, (sourceIndex: number, SpecifyLightData: any) => {
+    var lastComponentIndex: number = null;
 
     SpecifyLightData.count -= 1;
     SpecifyLightData.index -= 1;

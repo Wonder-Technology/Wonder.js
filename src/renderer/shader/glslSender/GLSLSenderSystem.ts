@@ -13,50 +13,46 @@ import {
 } from "../../../component/material/LightMaterialSystem";
 import { Vector3 } from "../../../math/Vector3";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData:any, BasicMaterialData: any, LightMaterialData:any) => {
-    return getUniformDataUtils(field, from, renderCommandUniformData,{
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+    return getUniformDataUtils(field, from, renderCommandUniformData, {
         getColorArr3: getColorArr3,
         getOpacity: getOpacity,
-        MaterialDataFromSystem:MaterialData
+        MaterialDataFromSystem: MaterialData
     }, {
-        BasicMaterialDataFromSystem: BasicMaterialData
-    }, {
-        getEmissionColorArr3: getEmissionColorArr3,
-        getSpecularColorArr3: getSpecularColorArr3,
-        getLightModel: getLightModel,
-        getShininess:getShininess,
-        LightMaterialDataFromSystem: LightMaterialData
-    });
+            BasicMaterialDataFromSystem: BasicMaterialData
+        }, {
+            getEmissionColorArr3: getEmissionColorArr3,
+            getSpecularColorArr3: getSpecularColorArr3,
+            getLightModel: getLightModel,
+            getShininess: getShininess,
+            LightMaterialDataFromSystem: LightMaterialData
+        });
 };
 
 export var sendBuffer = sendBufferUtils;
 
-export var sendMatrix3 = (gl: WebGLRenderingContext, program:WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => {
     sendMatrix3Utils(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var sendMatrix4 = (gl: WebGLRenderingContext, program:WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendMatrix4 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => {
     sendMatrix4Utils(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendVector3Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var sendInt = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendInt = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendIntUtils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendFloat1Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
 
-export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
+export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendFloat3Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
-
-// export var addSendAttributeConfig = addSendAttributeConfigUtils;
-//
-// export var addSendUniformConfig = addSendUniformConfigUtils;
 
 export var initData = initDataUtils;

@@ -15,6 +15,7 @@ import { checkGameObjectShouldAlive } from "../../../utils/contractUtils";
 import { getState } from "../../DirectorSystem";
 import { DirectorData } from "../../DirectorData";
 import { getComponentIDFromClass } from "../../../component/ComponentComponentIDManager";
+import { IUIDEntity } from "./IUIDEntity";
 
 @registerClass("GameObject")
 export class GameObject implements IUIDEntity {
@@ -105,8 +106,3 @@ export var getGameObjectParent = requireCheckFunc((gameObject: GameObject) => {
 }, (gameObject: GameObject) => {
     return getParent(gameObject.uid, GameObjectData);
 })
-
-export interface IUIDEntity {
-    uid: number;
-}
-

@@ -1,5 +1,5 @@
-import { GameObject } from "./GameObject";
 import { Component } from "../../../component/Component";
+import { IUIDEntity } from "./IUIDEntity";
 
 export class GameObjectData {
     public static uid: number = null;
@@ -27,11 +27,11 @@ export type GameObjectComponentData = {
 }
 
 export type GameObjectParentMap = {
-    [uid: number]: GameObject
+    [uid: number]: IUIDEntity
 }
 
 export type GameObjectChildrenMap = {
-    [uid: number]: Array<GameObject>
+    [uid: number]: Array<IUIDEntity>
 }
 
 export type GameObjectUIDMap = {

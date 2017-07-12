@@ -24,6 +24,7 @@ export type GeometryInitWorkerData = {
     indexType: EBufferType;
     indexTypeSize: number;
     verticesInfoList: GeometryInfoList;
+    normalsInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }
 
@@ -31,6 +32,7 @@ export type GeometryUpdateWorkerData = {
     buffer: SharedArrayBuffer;
     type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryWorkerInfoList;
+    normalsInfoList: GeometryWorkerInfoList;
     indicesInfoList: GeometryWorkerInfoList;
 }
 
@@ -38,6 +40,7 @@ export type GeometryResetWorkerData = {
     buffer: SharedArrayBuffer;
     type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryInfoList;
+    normalsInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }
 
@@ -49,6 +52,6 @@ export type GeometryInfo = {
 };
 
 export type GetArrayBufferDataFuncMap = {
-    getVertices:Function;
-    getNormals:Function;
+    getVertices: Function;
+    getNormals: Function;
 }

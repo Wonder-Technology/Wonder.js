@@ -5,6 +5,7 @@ import {
     clear as clearUtils,
     getGL as getGLUtils, getViewport as getViewportUtils,
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils,
+    setSide as setSideUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
     setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils
 } from "../../../utils/device/deviceManagerUtils";
@@ -15,6 +16,7 @@ import { isValueExist } from "../../../../utils/stateUtils";
 import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 import { Color } from "../../../../structure/Color";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
+import { ESide } from "../../../enum/ESide";
 
 export var createGL = curry((canvas: HTMLCanvasElement, WorkerInstanceData: any, contextConfig: Map<string, any>, viewportData: ViewportData, renderWorkerFilePath: string) => {
     return IO.of(() => {
@@ -120,5 +122,7 @@ export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HT
 export var clear = clearUtils;
 
 export var setColorWrite = setColorWriteUtils;
+
+export var setSide = setSideUtils;
 
 export var initData = initDataUtils;

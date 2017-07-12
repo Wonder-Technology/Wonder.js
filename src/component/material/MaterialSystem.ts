@@ -19,7 +19,8 @@ import {
     createTypeArrays,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils, getShaderIndexDataSize
+    getAlphaTestDataSize, getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils, getShaderIndexDataSize,
+    buildMaterialData
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { init as initShader } from "../../renderer/shader/ShaderSystem";
@@ -47,25 +48,26 @@ import { LightMaterialData } from "./LightMaterialData";
 import {
     getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex, getBufferLength, getBufferTotalCount,
     getLightMaterialBufferCount, getLightMaterialBufferStartIndex
-} from "./bufferUtils";
+} from "../../renderer/utils/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
-export var addAddComponentHandle = (BasicMaterial:any, LightMaterial:any) => {
+export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
     addAddComponentHandleToMap(LightMaterial, addLightMaterialComponent);
 }
 
-export var addDisposeHandle = (BasicMaterial:any, LightMaterial:any) => {
+export var addDisposeHandle = (BasicMaterial: any, LightMaterial: any) => {
     addDisposeHandleToMap(BasicMaterial, disposeBasicMaterialComponent);
     addDisposeHandleToMap(LightMaterial, disposeLightMaterialComponent);
 }
 
-export var addInitHandle = (BasicMaterial:any, LightMaterial:any) => {
+export var addInitHandle = (BasicMaterial: any, LightMaterial: any) => {
     addInitHandleToMap(BasicMaterial, initBasicMaterial);
     addInitHandleToMap(LightMaterial, initLightMaterial);
 }
 
-export var create = (index:number, materialClassName:string, material: Material, ShaderData:any, MaterialData: any) => {
+export var create = (index: number, materialClassName: string, material: Material, ShaderData: any, MaterialData: any) => {
     MaterialData.materialMap[index] = material;
 
     setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
@@ -80,7 +82,7 @@ export var init = requireCheckFunc((state: MapImmutable<any, any>, BasicMaterial
     _initMaterials(state, getLightMaterialBufferStartIndex(), LightMaterialData);
 })
 
-var _initMaterials = (state: MapImmutable<any, any>, startIndex:number, SpecifyMaterialData:any) => {
+var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, SpecifyMaterialData: any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
         initMaterial(i, state);
     }
@@ -97,16 +99,7 @@ else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         var shaderIndex = getShaderIndex(index, MaterialData);
 
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, _buildMaterialDataMap(MaterialData, BasicMaterialData, LightMaterialData));
-    }
-}
-
-var _buildMaterialDataMap = (MaterialData:any, BasicMaterialData:any, LightMaterialData:any) => {
-    return {
-        MaterialDataFromSystem:MaterialData,
-        BasicMaterialDataFromSystem:BasicMaterialData,
-        //todo fix worker
-        LightMaterialDataFromSystem:LightMaterialData
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, buildMaterialData(MaterialData, BasicMaterialData, LightMaterialData));
     }
 }
 
@@ -140,7 +133,7 @@ export var getColor = (materialIndex: number, MaterialData: any) => {
     return getColorData(materialIndex, MaterialData.colors);
 }
 
-export var getColorData = (materialIndex: number, colors:Float32Array) => {
+export var getColorData = (materialIndex: number, colors: Float32Array) => {
     var color = Color.create(),
         size = getColorDataSize(),
         index = materialIndex * size;
@@ -158,7 +151,7 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
     setColorData(materialIndex, color, MaterialData.colors);
 }
 
-export var setColorData = (materialIndex: number, color: Color, colors:Float32Array) => {
+export var setColorData = (materialIndex: number, color: Color, colors: Float32Array) => {
     var r = color.r,
         g = color.g,
         b = color.b,
@@ -204,13 +197,13 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
 })
 
-export var addComponent = (component: Material, gameObject: GameObject, MaterialData:any) => {
+export var addComponent = (component: Material, gameObject: GameObject, MaterialData: any) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = requireCheckFunc((sourceIndex:number, lastComponentIndex:number, MaterialData:any) => {
+export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MaterialData: any) => {
     _checkDisposeComponentWorker(sourceIndex);
-}, (sourceIndex:number, lastComponentIndex:number, MaterialData:any) => {
+}, (sourceIndex: number, lastComponentIndex: number, MaterialData: any) => {
     var colorDataSize = getColorDataSize(),
         opacityDataSize = getOpacityDataSize(),
         alphaTestDataSize = getAlphaTestDataSize();
@@ -232,14 +225,14 @@ export var disposeComponent = requireCheckFunc((sourceIndex:number, lastComponen
 var _checkDisposeComponentWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _checkDisposeComponentWorker = (index:number) => {
+    _checkDisposeComponentWorker = (index: number) => {
         it("should not dispose the material which is inited in the same frame", () => {
             expect(MaterialData.workerInitList.indexOf(index)).equal(-1);
         });
     }
 }
 else {
-    _checkDisposeComponentWorker = (index:number) => { };
+    _checkDisposeComponentWorker = (index: number) => { };
 }
 
 export var getGameObject = (index: number, MaterialData: any) => {
@@ -262,11 +255,7 @@ export var createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-export var getBufferSize = () => {
-    return Float32Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
-}
-
-export var initData = (MaterialData: any, BasicMaterialData:any, LightMaterialData:any) => {
+export var initData = (MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];
@@ -286,7 +275,7 @@ export var initData = (MaterialData: any, BasicMaterialData:any, LightMaterialDa
     _initTable(MaterialData);
 }
 
-var _setMaterialDefaultData = (MaterialData:any) => {
+var _setMaterialDefaultData = (MaterialData: any) => {
     MaterialData.defaultShaderIndex = 0;
     MaterialData.defaultColorArr = createDefaultColor().toVector3().toArray();
     MaterialData.defaultOpacity = 1;
@@ -294,10 +283,10 @@ var _setMaterialDefaultData = (MaterialData:any) => {
 }
 
 
-var _initBufferData = (MaterialData: any, BasicMaterialData:any, LightMaterialData:any) => {
+var _initBufferData = (MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     var buffer: any = null,
         count = getBufferTotalCount(),
-        offset:number = null;
+        offset: number = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(getBufferLength());
 

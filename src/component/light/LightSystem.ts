@@ -17,12 +17,12 @@ import {
 } from "./DirectionLightSystem";
 import { initData as initPointLightData } from "./PointLightSystem";
 
-export var addAddComponentHandle = (AmbientLight:any, DirectionLight:any) => {
+export var addAddComponentHandle = (AmbientLight: any, DirectionLight: any) => {
     addAddComponentHandleToMap(AmbientLight, addAmbientLightComponent);
     addAddComponentHandleToMap(DirectionLight, addDirectionLightComponent);
 }
 
-export var addDisposeHandle = (AmbientLight:any, DirectionLight:any) => {
+export var addDisposeHandle = (AmbientLight: any, DirectionLight: any) => {
     addDisposeHandleToMap(AmbientLight, disposeAmbientLightComponent);
     addDisposeHandleToMap(DirectionLight, disposeDirectionLightComponent);
     //todo dispose point light
@@ -125,7 +125,7 @@ export var addDisposeHandle = (AmbientLight:any, DirectionLight:any) => {
 //     return result;
 // }
 
-export var initData = (AmbientLightData:any, DirectionLightData:any, PointLightData:any) => {
+export var initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     initAmbientLightData(AmbientLightData);
     initDirectionLightData(DirectionLightData);
     initPointLightData(PointLightData);

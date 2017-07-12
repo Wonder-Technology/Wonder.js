@@ -22,7 +22,7 @@ export var getAlphaTest = (materialIndex: number, MaterialDataFromSystem: any) =
     return getSingleSizeData(materialIndex, MaterialDataFromSystem.alphaTests);
 }
 
-export var getSingleSizeData = (materialIndex: number, datas:Uint8Array|Float32Array) => {
+export var getSingleSizeData = (materialIndex: number, datas: Uint8Array | Float32Array) => {
     return datas[materialIndex];
 }
 
@@ -35,7 +35,7 @@ export var getColorArr3 = (materialIndex: number, MaterialDataFromSystem: any) =
     return [colors[index], colors[index + 1], colors[index + 2]];
 }
 
-export var getColorArr3Data = (materialIndex: number, colors:Float32Array) => {
+export var getColorArr3Data = (materialIndex: number, colors: Float32Array) => {
     var size = getColorDataSize(),
         index = materialIndex * size;
 
@@ -71,3 +71,12 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
 
     return offset;
 }
+
+export var buildMaterialData = (MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any) => {
+    return {
+        MaterialDataFromSystem: MaterialDataFromSystem,
+        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem
+    }
+}
+

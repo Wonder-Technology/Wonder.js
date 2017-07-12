@@ -16,7 +16,7 @@ import {
 } from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -24,7 +24,7 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
             data = renderCommandUniformData[field];
             break;
         case "basicMaterial":
-            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, materialData,  basicMaterialData);
+            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, materialData, basicMaterialData);
             break;
         case "lightMaterial":
             data = _getUnifromDataFromLightMaterial(field, renderCommandUniformData.materialIndex, materialData, lightMaterialData);
@@ -39,10 +39,10 @@ export var getUniformData = (field: string, from: string, renderCommandUniformDa
 
 var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
                                             getColorArr3,
-                                            getOpacity,
-                                            MaterialDataFromSystem
+    getOpacity,
+    MaterialDataFromSystem
                                         },
-                                        {
+    {
                                             BasicMaterialDataFromSystem
                                         }) => {
     var data: any = null;
@@ -63,17 +63,17 @@ var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
 }
 
 var _getUnifromDataFromLightMaterial = (field: string, index: number,
-                                        {
+    {
                                             getColorArr3,
-                                            getOpacity,
-                                            MaterialDataFromSystem
+        getOpacity,
+        MaterialDataFromSystem
                                         },
-                                        {
+    {
                                             getEmissionColorArr3,
-                                            getSpecularColorArr3,
-                                            getShininess,
-                                            getLightModel,
-                                            LightMaterialDataFromSystem
+        getSpecularColorArr3,
+        getShininess,
+        getLightModel,
+        LightMaterialDataFromSystem
                                         }) => {
     var data: any = null;
 
@@ -107,7 +107,7 @@ var _getUnifromDataFromLightMaterial = (field: string, index: number,
 export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
     var {
             size,
-            type
+        type
         } = ArrayBufferData.bufferDataMap[geometryIndex],
         vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
@@ -121,19 +121,19 @@ export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBu
     }
 }
 
-export var sendMatrix3 = (gl: WebGLRenderingContext, program:WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     _sendUniformData<Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
         gl.uniformMatrix3fv(pos, false, data);
     })
 }
 
-export var sendMatrix4 = (gl: WebGLRenderingContext, program:WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendMatrix4 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     _sendUniformData<Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
         gl.uniformMatrix4fv(pos, false, data);
     })
 }
 
-export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap),
         x = data.x,
         y = data.y,
@@ -150,19 +150,11 @@ export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, progra
     })
 }
 
-export var sendInt = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
-    _sendNum1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, gl.uniform1i);
-}
-
-export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
-    _sendNum1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, gl.uniform1f);
-}
-
-var _sendNum1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc:Function) => {
+export var sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
     it("data should be number", () => {
         expect(data).be.a("number");
     });
-}, (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc:Function) => {
+}, (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
 
     if (recordedData === data) {
@@ -172,11 +164,29 @@ var _sendNum1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number
     _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
     _sendUniformData<number>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
-        glFunc(pos, data);
+        gl.uniform1i(pos, data);
     })
 })
 
-export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program:WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
+    it("data should be number", () => {
+        expect(data).be.a("number");
+    });
+}, (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
+    var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap);
+
+    if (recordedData === data) {
+        return;
+    }
+
+    _setUniformCache(shaderIndex, name, data, uniformCacheMap);
+
+    _sendUniformData<number>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
+        gl.uniform1f(pos, data);
+    })
+})
+
+export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap),
         x = data[0],
         y = data[1],
@@ -212,7 +222,7 @@ var _setUniformCache = (shaderIndex: number, name: string, data: any, uniformCac
     uniformCacheMap[shaderIndex][name] = data;
 }
 
-var _sendUniformData = <T>(gl: WebGLRenderingContext, program:WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
+var _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
     var pos = getUniformLocation(gl, program, name, uniformLocationMap);
 
     if (isUniformLocationNotExist(pos)) {
@@ -259,12 +269,12 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send;
 
-        if (isConfigDataExist(sendData)){
-            if(isConfigDataExist(sendData.uniform)){
+        if (isConfigDataExist(sendData)) {
+            if (isConfigDataExist(sendData.uniform)) {
                 sendUniformDataArr = sendUniformDataArr.concat(sendData.uniform);
             }
 
-            if(isConfigDataExist(sendData.uniformFunc)){
+            if (isConfigDataExist(sendData.uniformFunc)) {
                 sendUniformFuncDataArr = sendUniformFuncDataArr.concat(sendData.uniformFunc);
             }
         }

@@ -1,11 +1,18 @@
-import { getColorArr3Data, getSingleSizeData } from "./materialUtils";
+import { getColorArr3Data, getColorDataSize, getSingleSizeData } from "./materialUtils";
+import { getLightMaterialBufferStartIndex } from "./bufferUtils";
 
-export var getSpecularColorArr3 = (materialIndex: number, LightMaterialData: any) => {
-    return getColorArr3Data(materialIndex, LightMaterialData.specularColors);
+export var getShadingDataSize = () => 1;
+
+export var getLightModelDataSize = () => 1;
+
+export var getShininessDataSize = () => 1;
+
+export var getSpecularColorArr3 = (materialIndex: number, LightMaterialDataFromSystem: any) => {
+    return getColorArr3Data(materialIndex, LightMaterialDataFromSystem.specularColors);
 }
 
-export var getEmissionColorArr3 = (materialIndex: number, LightMaterialData: any) => {
-    return getColorArr3Data(materialIndex, LightMaterialData.emissionColors);
+export var getEmissionColorArr3 = (materialIndex: number, LightMaterialDataFromSystem: any) => {
+    return getColorArr3Data(materialIndex, LightMaterialDataFromSystem.emissionColors);
 }
 
 export var getShininess = (materialIndex: number, LightMaterialDataFromSystem: any) => {
@@ -18,4 +25,26 @@ export var getShading = (materialIndex: number, LightMaterialDataFromSystem: any
 
 export var getLightModel = (materialIndex: number, LightMaterialDataFromSystem: any) => {
     return getSingleSizeData(materialIndex, LightMaterialDataFromSystem.lightModels);
+}
+
+export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
+
+
+export var createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialDataFromSystem: any) => {
+    LightMaterialDataFromSystem.specularColors = new Float32Array(buffer, offset, count * getColorDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
+
+    LightMaterialDataFromSystem.emissionColors = new Float32Array(buffer, offset, count * getColorDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
+
+    LightMaterialDataFromSystem.shininess = new Float32Array(buffer, offset, count * getShininessDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getShininessDataSize();
+
+    LightMaterialDataFromSystem.shadings = new Uint8Array(buffer, offset, count * getShadingDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getShadingDataSize();
+
+    LightMaterialDataFromSystem.lightModels = new Uint8Array(buffer, offset, count * getLightModelDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getLightModelDataSize();
+
+    return offset;
 }

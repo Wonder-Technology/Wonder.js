@@ -37,6 +37,11 @@ import { AmbientLightData } from "../../component/light/AmbientLightData";
 import { DirectionLightData } from "../../component/light/DirectionLightData";
 import { getGL, setSide } from "../device/DeviceManagerSystem";
 import { ESide } from "../enum/ESide";
+import {
+    getBasicMaterialBufferStartIndex,
+    getLightMaterialBufferStartIndex
+} from "../utils/material/bufferUtils";
+import { initState } from "../utils/state/stateUtils";
 
 export var init = null;
 
@@ -50,8 +55,14 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
             materialData: {
                 buffer: MaterialData.buffer,
-                //todo fix count(use startIndex, index instead)
-                // materialCount: MaterialData.count,
+                basicMaterialData: {
+                    startIndex: getBasicMaterialBufferStartIndex(),
+                    index: BasicMaterialData.index
+                },
+                lightMaterialData: {
+                    startIndex: getLightMaterialBufferStartIndex(),
+                    index: LightMaterialData.index
+                },
                 materialClassNameTable: MaterialData.materialClassNameTable,
                 shaderIndexTable: MaterialData.shaderIndexTable
             },
@@ -60,6 +71,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 indexType: GeometryData.indexType,
                 indexTypeSize: GeometryData.indexTypeSize,
                 verticesInfoList: GeometryData.verticesInfoList,
+                normalsInfoList: GeometryData.normalsInfoList,
                 indicesInfoList: GeometryData.indicesInfoList
             }
         });
@@ -95,7 +107,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     init = (state: Map<any, any>) => {
-        _initState(state);
+        initState(state, getGL, setSide, DeviceManagerData);
 
         initMaterial(state, BasicMaterialData, LightMaterialData);
     }
@@ -109,10 +121,4 @@ else {
             getRenderList(state)
         )(MeshRendererData)
     }
-}
-
-var _initState = (state: Map<any, any>) => {
-    var gl = getGL(DeviceManagerData, state);
-
-    setSide(gl, ESide.FRONT, DeviceManagerData);
 }

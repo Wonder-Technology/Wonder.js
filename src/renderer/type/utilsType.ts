@@ -14,6 +14,12 @@ export type DrawDataMap = {
     DrawRenderCommandBufferDataFromSystem: any;
 }
 
+export type SendUniformDataDataMap = {
+    glslSenderData:SendUniformDataGLSLSenderDataMap;
+    ambientLightData:SendUniformDataAmbientLightDataMap;
+    directionLightData:SendUniformDataDirectionLightDataMap;
+}
+
 export type DrawFuncDataMap = {
     bindIndexBuffer: Function;
     sendAttributeData: Function;
@@ -26,7 +32,7 @@ export type DrawFuncDataMap = {
     getVerticesCount: Function;
 }
 
-export type SendUniformDataFuncDataMap = {
+export type SendUniformDataGLSLSenderDataMap = {
     getUniformData: Function;
     sendMatrix3: Function;
     sendMatrix4: Function;
@@ -34,11 +40,26 @@ export type SendUniformDataFuncDataMap = {
     sendInt: Function;
     sendFloat1: Function;
     sendFloat3: Function;
+
+    GLSLSenderDataFromSystem: any;
+}
+
+export type SendUniformDataAmbientLightDataMap = {
+    getRenderData: Function;
+
+    AmbientLightDataFromSystem: any;
+}
+
+export type SendUniformDataDirectionLightDataMap = {
+    getRenderData: Function;
+    getPosition: Function;
+
+    DirectionLightDataFromSystem: any;
 }
 
 export type MaterialForGetUniformDataDataMap = {
-    getColorArr3:Function;
-    getOpacity:Function;
+    getColorArr3: Function;
+    getOpacity: Function;
     MaterialDataFromSystem: any;
 }
 
@@ -47,9 +68,9 @@ export type BasicMaterialForGetUniformDataDataMap = {
 }
 
 export type LightMaterialForGetUniformDataDataMap = {
-    getSpecularColorArr3:Function;
-    getEmissionColorArr3:Function;
-    getShininess:Function;
-    getLightModel:Function;
+    getSpecularColorArr3: Function;
+    getEmissionColorArr3: Function;
+    getShininess: Function;
+    getLightModel: Function;
     LightMaterialDataFromSystem: any;
 }

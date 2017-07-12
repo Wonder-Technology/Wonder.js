@@ -7,11 +7,7 @@ import {
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 import { AmbientLightRenderData, DirectionLightRenderData } from "../../component/light/type";
-import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
-import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
-import { getPosition, getRenderData as getDirectionLightRenderData } from "../utils/light/directionLightUtils";
-import { getRenderData as getAmbientLightRenderData } from "../utils/light/ambientLightUtils";
 
 var _lightDefineList = [
     {
@@ -282,7 +278,7 @@ export const shaderLib_generator = {
             }
         },
 
-        "LightShaderLib":{
+        "LightShaderLib": {
             "glsl": {
                 "vs": {
                     "source": light_vertex,
@@ -323,22 +319,25 @@ export const shaderLib_generator = {
             }
         },
 
-        "AmbientLightShaderLib":{
+        "AmbientLightShaderLib": {
             "glsl": {
                 "fs": {
                     "varDeclare": "uniform vec3 u_ambient;"
                 }
             },
             "send": {
-                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number, program:WebGLProgram,
-                                {
-                                    sendFloat3
-                                },
-                                {
-                                    AmbientLightDataFromSystem
-                                }, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-                    for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++){
-                        let renderData:AmbientLightRenderData = getAmbientLightRenderData(i, AmbientLightDataFromSystem);
+                "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, {
+                    glslSenderData:{
+                        sendFloat3
+                    },
+                    directionLightData:{
+                        getRenderData,
+
+                        AmbientLightDataFromSystem
+                    }
+                }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+                    for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
+                        let renderData: AmbientLightRenderData = getRenderData(i, AmbientLightDataFromSystem);
 
                         sendFloat3(gl, shaderIndex, program, "u_ambient", renderData.colorArr, uniformLocationMap, uniformCacheMap);
                     }
@@ -433,7 +432,7 @@ export const shaderLib_generator = {
         //         ]
         //     }
         // },
-        "DirectionLightShaderLib":{
+        "DirectionLightShaderLib": {
             "send": {
                 // "uniform": [
                 //     {
@@ -477,19 +476,25 @@ export const shaderLib_generator = {
                 //     ]
                 // },
 
-                "uniformFunc": (gl:WebGLRenderingContext, shaderIndex:number, program:WebGLProgram,
+                "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
                                 {
-                                    sendVector3,
-                                    sendFloat1,
-                                    sendFloat3
-                                },
-                                {
-                                    DirectionLightDataFromSystem
-                                }, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-                    for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++){
-                        let renderData:DirectionLightRenderData = getDirectionLightRenderData(i, DirectionLightDataFromSystem);
+                                    glslSenderData:{
 
-                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
+                                        sendVector3,
+                                        sendFloat1,
+                                        sendFloat3
+                                    },
+                                    directionLightData:{
+                                        getRenderData,
+                                        getPosition,
+
+                                        DirectionLightDataFromSystem
+                                    }
+                                }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+                    for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
+                        let renderData: DirectionLightRenderData = getRenderData(i, DirectionLightDataFromSystem);
+
+                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i), uniformLocationMap, uniformCacheMap);
                         sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].color, renderData.colorArr, uniformLocationMap, uniformCacheMap);
                         sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].intensity, renderData.intensity, uniformLocationMap, uniformCacheMap);
                     }
@@ -516,7 +521,7 @@ export const shaderLib_generator = {
                     if (isTestAlpha(alphaTest)) {
                         return {
                             "fs": {
-                                "body":  `if (gl_FragColor.a < ${alphaTest}){
+                                "body": `if (gl_FragColor.a < ${alphaTest}){
     discard;
 }\n` + lightEnd_fragment.body
                             }
@@ -582,8 +587,8 @@ export interface IGLSLFuncGLSLConfig {
 }
 
 export interface IGLSLDefineListItem {
-    name:string;
-    valueFunc?:Function;
+    name: string;
+    valueFunc?: Function;
 }
 
 export interface IShaderLibSendConfig {

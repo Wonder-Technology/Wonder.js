@@ -5,7 +5,7 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
         count = DataBufferConfig.renderCommandBufferCount,
-        offset:number = 0;
+        offset: number = 0;
 
     RenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, offset, count * mat4Length);
     offset += count * Float32Array.BYTES_PER_ELEMENT * mat4Length;

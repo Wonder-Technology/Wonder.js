@@ -15,11 +15,11 @@ import { getPosition as getPositionUtils, getRenderData as getRenderDataUtils } 
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
-export var create = ensureFunc((light:DirectionLight, DirectionLightData:any) => {
+export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= 4", () => {
         expect(DirectionLightData.count).lte(4);
     })
-}, (DirectionLightData:any) => {
+}, (DirectionLightData: any) => {
     var light = new DirectionLight();
 
     light = createSpecifyLight(light, DirectionLightData);
@@ -29,7 +29,7 @@ export var create = ensureFunc((light:DirectionLight, DirectionLightData:any) =>
     return light;
 })
 
-var _setDefaultRenderData = (index:number, DirectionLightData:any) => {
+var _setDefaultRenderData = (index: number, DirectionLightData: any) => {
     DirectionLightData.renderDataMap[index] = {
         colorArr: DirectionLightData.defaultColorArr,
         intensity: DirectionLightData.defaultIntensity
@@ -40,7 +40,7 @@ export var getRenderData = (index: number, DirectionLightData: any) => {
     return getRenderDataUtils(index, DirectionLightData);
 }
 
-export var getPosition = (index: number, ThreeDTransformData:any, GameObjectData:any, DirectionLightData: any) => {
+export var getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
     return getPositionUtils(index, ThreeDTransformData, GameObjectData, DirectionLightData)
 }
 
@@ -56,7 +56,7 @@ export var getIntensity = (index: number, DirectionLightData: any) => {
     return DirectionLightData.renderDataMap[index].intensity;
 }
 
-export var setIntensity = (index: number, intensity:number, DirectionLightData: any) => {
+export var setIntensity = (index: number, intensity: number, DirectionLightData: any) => {
     DirectionLightData.renderDataMap[index].intensity = intensity;
 }
 
@@ -76,19 +76,19 @@ export var initData = (DirectionLightData: any) => {
     DirectionLightData.lightGLSLDataStructureMemberName = [
         {
             position: "u_directionLights[0].position",
-            color:"u_directionLights[0].color",
+            color: "u_directionLights[0].color",
             intensity: "u_directionLights[0].intensity"
         }, {
             position: "u_directionLights[1].position",
-            color:"u_directionLights[1].color",
+            color: "u_directionLights[1].color",
             intensity: "u_directionLights[1].intensity"
-        },{
+        }, {
             position: "u_directionLights[2].position",
-            color:"u_directionLights[2].color",
+            color: "u_directionLights[2].color",
             intensity: "u_directionLights[2].intensity"
-        },{
+        }, {
             position: "u_directionLights[3].position",
-            color:"u_directionLights[3].color",
+            color: "u_directionLights[3].color",
             intensity: "u_directionLights[3].intensity"
         }
     ];

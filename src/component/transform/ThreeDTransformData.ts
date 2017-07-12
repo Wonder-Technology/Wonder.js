@@ -1,11 +1,12 @@
 import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { ThreeDTransform } from "./ThreeDTransform";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+// import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
 import { Quaternion } from "../../math/Quaternion";
 import { Matrix3 } from "../../math/Matrix3";
+import { Component } from "../Component";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
 export class ThreeDTransformData {
     static get maxCount() {
@@ -63,17 +64,17 @@ export class ThreeDTransformRelationData {
 }
 
 export type ThreeDTransformParentMap = {
-    [uid: number]: ThreeDTransform
+    [uid: number]: Component
 }
 
 export type ThreeDTransformChildrenMap = {
-    [uid: number]: Array<ThreeDTransform>
+    [uid: number]: Array<Component>
 }
 
-export type ThreeDTransformGameObjectMap = Map<number, GameObject>
+export type ThreeDTransformGameObjectMap = Map<number, IUIDEntity>
 
 export type TransformMap = {
-    [index: number]: ThreeDTransform
+    [index: number]: Component
 }
 
 export type ThreeDTransformCacheMap = {

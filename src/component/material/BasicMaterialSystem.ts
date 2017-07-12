@@ -6,7 +6,7 @@ import {
 import {
     initData as initSpecifyMaterialData
 } from "./SpecifyMaterialSystem";
-import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex } from "./bufferUtils";
+import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
@@ -15,12 +15,13 @@ import { BasicMaterialData } from "./BasicMaterialData";
 import { MaterialData } from "./MaterialData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Map } from "immutable";
+import { createTypeArrays as createTypeArraysUtils } from "../../renderer/utils/material/basicMaterialUtils";
 
-export var create = ensureFunc((component:Material) => {
+export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
         expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
     });
-}, (ShaderData: any, MaterialData:any, BasicMaterialData: any) => {
+}, (ShaderData: any, MaterialData: any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),
         materialClassName = "BasicMaterial",
         index = generateComponentIndex(BasicMaterialData);
@@ -53,13 +54,13 @@ export var disposeComponent = (component: Material) => {
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }
 
-export var createTypeArrays = (buffer:any, offset:number, count:number, BasicMaterialData:any) => {
-    return offset;
+export var createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialData: any) => {
+    return createTypeArraysUtils(buffer, offset, count, BasicMaterialData);
 }
 
 export var initData = (BasicMaterialData: any) => {
     initSpecifyMaterialData(getBasicMaterialBufferStartIndex(), BasicMaterialData);
 }
 
-export var setDefaultData = (BasicMaterialData:any) => {
+export var setDefaultData = (BasicMaterialData: any) => {
 }

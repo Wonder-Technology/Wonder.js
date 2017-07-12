@@ -1,6 +1,6 @@
 import { MaterialClassNameTable, ShaderIndexTable } from "../../definition/type/materialType";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { Material } from "./Material";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { Component } from "../Component";
 
 export class MaterialData {
     public static buffer: SharedArrayBuffer = null;
@@ -15,9 +15,9 @@ export class MaterialData {
     public static defaultOpacity: number = null;
     public static defaultAlphaTest: number = null;
 
-    public static gameObjectMap: Array<GameObject> = null;
+    public static gameObjectMap: Array<IUIDEntity> = null;
 
-    public static materialMap: Array<Material> = null;
+    public static materialMap: Array<Component> = null;
 
     public static workerInitList: Array<number> = null;
 

@@ -29,7 +29,6 @@ export class GeometryData {
     public static isInit: boolean = null;
 
     public static verticesWorkerInfoList: GeometryWorkerInfoList = null;
-    //todo add normal worker data
     public static normalsWorkerInfoList: GeometryWorkerInfoList = null;
     public static indicesWorkerInfoList: GeometryWorkerInfoList = null;
 

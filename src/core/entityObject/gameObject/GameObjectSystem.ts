@@ -1,4 +1,4 @@
-import { GameObject, IUIDEntity } from "./GameObject";
+import { GameObject } from "./GameObject";
 import { Component } from "../../../component/Component";
 import { createMap, deleteVal, isValidMapValue } from "../../../utils/objectUtils";
 import { setParent } from "../../../component/transform/ThreeDTransformSystem";
@@ -15,6 +15,7 @@ import { Map as MapImmutable } from "immutable";
 import { removeChildEntity } from "../../../utils/entityUtils";
 import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
 import { getComponentIDFromClass, getComponentIDFromComponent } from "../../../component/ComponentComponentIDManager";
+import { IUIDEntity } from "./IUIDEntity";
 
 export var create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
