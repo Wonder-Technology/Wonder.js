@@ -15,8 +15,8 @@ import { Map } from "immutable";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 import { DrawDataMap } from "../../../type/utilsType";
-// import {  getRenderData as getAmbientLightRenderData  } from "../../../utils/light/directionLightUtils";
-// import { getRenderData as getDirectionLightRenderData } from "../../../utils/light/directionLightUtils";
+import { getColor as getAmbientLightColor } from "../light/AmbientLightWorkerSystem";
+import { getColor as getDirectionLightColor, getIntensity } from "../light/DirectionLightWorkerSystem";
 
 export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, MaterialDataMap: MaterialDataMap) => {
     initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialDataMap);
@@ -47,18 +47,17 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
         },
         ambientLightData:{
-            //todo get from xxxLightWorkerSystem
-            getRenderData:null,
+            getColor: getAmbientLightColor,
 
             AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
         },
         directionLightData:{
+            //todo test
             getPosition: (index:number) => {
-                // return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem);
-                //todo get from postMessage!
-                return null;
+                return drawDataMap.DirectionLightDataFromSystem.positionArr[index];
             },
-            getRenderData:null,
+            getColor: getDirectionLightColor,
+            getIntensity: getIntensity,
 
             DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
         }

@@ -6,7 +6,6 @@ import {
     noSpecularMap_fragment, noNormalMap_light_fragment, light_fragment
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
-import { AmbientLightRenderData, DirectionLightRenderData } from "../../component/light/type";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
 
 var _lightDefineList = [
@@ -330,16 +329,14 @@ export const shaderLib_generator = {
                     glslSenderData:{
                         sendFloat3
                     },
-                    directionLightData:{
-                        getRenderData,
+                    ambientLightData:{
+                        getColor,
 
                         AmbientLightDataFromSystem
                     }
                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
-                        let renderData: AmbientLightRenderData = getRenderData(i, AmbientLightDataFromSystem);
-
-                        sendFloat3(gl, shaderIndex, program, "u_ambient", renderData.colorArr, uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, "u_ambient", getColor(i, AmbientLightDataFromSystem), uniformLocationMap, uniformCacheMap);
                     }
                 }
             }
@@ -485,18 +482,17 @@ export const shaderLib_generator = {
                                         sendFloat3
                                     },
                                     directionLightData:{
-                                        getRenderData,
+                                        getColor,
+                                        getIntensity,
                                         getPosition,
 
                                         DirectionLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
-                        let renderData: DirectionLightRenderData = getRenderData(i, DirectionLightDataFromSystem);
-
-                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].position, getPosition(i), uniformLocationMap, uniformCacheMap);
-                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].color, renderData.colorArr, uniformLocationMap, uniformCacheMap);
-                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberName[i].intensity, renderData.intensity, uniformLocationMap, uniformCacheMap);
+                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i), uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColor(i, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
+                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
                     }
                 }
             }

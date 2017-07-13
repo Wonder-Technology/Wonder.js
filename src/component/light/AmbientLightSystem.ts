@@ -1,50 +1,35 @@
 import { AmbientLight } from "./AmbientLight";
-// import {
-//     create as createLight
-// } from "./LightSystem";
 import { Color } from "../../structure/Color";
 import {
     disposeComponent as disposeSpecifyLightComponent, initData as initSpecifyLightData,
-    getColorArr3 as getSpecifyLightColorArr3,
-    setColor as setSpecifyLightColor, create as createSpecifyLight, addComponent as addSpecifyLightComponent
+    setColor as setSpecifyLightColor, create as createSpecifyLight, addComponent as addSpecifyLightComponent,
+    createDefaultColor
 } from "./SpecifyLightSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
-import { getRenderData as getRenderDataUtils } from "../../renderer/utils/light/ambientLightUtils";
+import { createTypeArrays, getColor as getColorUtils, getColorDataSize } from "../../renderer/utils/light/ambientLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { DataBufferConfig } from "../../config/DataBufferConfig";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
-    it("count should <= 1", () => {
-        expect(AmbientLightData.count).lte(1);
+    it("count should <= max count", () => {
+        expect(AmbientLightData.count).lte(DataBufferConfig.ambientLightDataBufferCount);
     })
 }, (AmbientLightData: any) => {
     var light = new AmbientLight();
 
     light = createSpecifyLight(light, AmbientLightData);
 
-    _setDefaultRenderData(light.index, AmbientLightData);
-
     return light;
 })
 
-var _setDefaultRenderData = (index: number, AmbientLightData: any) => {
-    AmbientLightData.renderDataMap[index] = {
-        colorArr: AmbientLightData.defaultColorArr
-    }
-}
-
-export var getRenderData = (index: number, AmbientLightData: any) => {
-    return getRenderDataUtils(index, AmbientLightData);
-}
-
-export var getColorArr3 = (index: number, AmbientLightData: any) => {
-    return getSpecifyLightColorArr3(index, AmbientLightData);
-}
+export var getColor = getColorUtils;
 
 export var setColor = (index: number, color: Color, AmbientLightData: any) => {
-    setSpecifyLightColor(index, color, AmbientLightData);
+    setSpecifyLightColor(index, color, AmbientLightData.colors);
 }
 
 export var addComponent = (component: Light, gameObject: GameObject) => {
@@ -56,5 +41,22 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (AmbientLightData: any) => {
-    initSpecifyLightData(AmbientLightData);
+    var count = DataBufferConfig.ambientLightDataBufferCount,
+        size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize(),
+        buffer:any = null;
+
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
+
+    initSpecifyLightData(buffer, AmbientLightData);
+
+    createTypeArrays(buffer, count, AmbientLightData);
+    _setDefaultTypeArrData(count ,AmbientLightData);
+}
+
+var _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {
+    var color = createDefaultColor();
+
+    for (let i = 0; i < count; i++) {
+        setColor(i, color, AmbientLightData);
+    }
 }

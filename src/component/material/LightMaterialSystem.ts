@@ -1,10 +1,9 @@
 import { LightMaterial } from "./LightMaterial";
 import {
     addComponent as addMaterialComponent,
-    create as createMaterial, createDefaultColor, disposeComponent as disposeMaterialComponent, getColorData,
+    create as createMaterial, createDefaultColor, disposeComponent as disposeMaterialComponent,
     initMaterial as initMaterialMaterial,
-    setColorData,
-    setTypeArrayValue
+    setColorData
 } from "./MaterialSystem";
 import {
     getColorDataSize
@@ -31,6 +30,7 @@ import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
+import { getColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -49,7 +49,7 @@ export var create = ensureFunc((component: Material) => {
 })
 
 export var getSpecularColor = (index: number, LightMaterialData: any) => {
-    return getColorData(computeLightBufferIndex(index), LightMaterialData.specularColors);
+    return getColor3Data(computeLightBufferIndex(index), LightMaterialData.specularColors);
 }
 
 export var getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
@@ -61,7 +61,7 @@ export var setSpecularColor = (index: number, color: Color, LightMaterialData: a
 }
 
 export var getEmissionColor = (index: number, LightMaterialData: any) => {
-    return getColorData(computeLightBufferIndex(index), LightMaterialData.emissionColors);
+    return getColor3Data(computeLightBufferIndex(index), LightMaterialData.emissionColors);
 }
 
 export var getEmissionColorArr3 = (index: number, LightMaterialData: any) => {

@@ -1,6 +1,7 @@
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
 import { MaterialClassNameTable, ShaderIndexTable } from "../../../definition/type/materialType";
 import { expect } from "wonder-expect.js";
+import { getSingleSizeData } from "../common/operateBufferDataUtils";
 
 export var getMaterialClassNameFromTable = (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => {
     return materialClassNameTable[shaderIndex]
@@ -20,26 +21,6 @@ export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => 
 
 export var getAlphaTest = (materialIndex: number, MaterialDataFromSystem: any) => {
     return getSingleSizeData(materialIndex, MaterialDataFromSystem.alphaTests);
-}
-
-export var getSingleSizeData = (materialIndex: number, datas: Uint8Array | Float32Array) => {
-    return datas[materialIndex];
-}
-
-
-export var getColorArr3 = (materialIndex: number, MaterialDataFromSystem: any) => {
-    var colors = MaterialDataFromSystem.colors,
-        size = getColorDataSize(),
-        index = materialIndex * size;
-
-    return [colors[index], colors[index + 1], colors[index + 2]];
-}
-
-export var getColorArr3Data = (materialIndex: number, colors: Float32Array) => {
-    var size = getColorDataSize(),
-        index = materialIndex * size;
-
-    return [colors[index], colors[index + 1], colors[index + 2]];
 }
 
 export var isTestAlpha = (alphaTest: number) => {

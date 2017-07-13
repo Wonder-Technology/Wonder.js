@@ -10,11 +10,13 @@ import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
 import { getRenderWorker } from "../worker_instance/WorkerInstanceSystem";
+import { getAllPositionData } from "../../../../component/light/DirectionLightSystem";
 
-export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, data: RenderCommandBufferForDrawData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         disposeData = null,
-        materialData = null;
+        materialData = null,
+        lightData = null;
 
     if (hasNewPointData(GeometryData)) {
         geometryData = {
@@ -49,11 +51,22 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
         };
     }
 
+    lightData = {
+        ambientLightData: {
+            count:AmbientLightData.count
+        },
+        directionLightData: {
+            count:DirectionLightData.count,
+            positionArr: getAllPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
+        }
+    }
+
     getRenderWorker(WorkerInstanceData).postMessage({
         operateType: EWorkerOperateType.DRAW,
         renderCommandBufferData: data,
         materialData: materialData,
         geometryData: geometryData,
+        lightData: lightData,
         disposeData: disposeData
     });
 

@@ -79,3 +79,9 @@ export type MaterialDataMap = {
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
 }
+
+export type DirectionLightGLSLDataStructure = {
+    position: string;
+    color: string;
+    intensity: string;
+}

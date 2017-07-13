@@ -10,7 +10,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
-    getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils, buildMaterialData
+    isTestAlpha as isTestAlphaUtils, buildMaterialData
 } from "../../../utils/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
@@ -24,6 +24,7 @@ import { createTypeArrays as createBasicMaterialTypeArraysUtils } from "../../..
 import { createTypeArrays as createLightMaterialTypeArraysUtils } from "../../../utils/material/lightMaterialUtils";
 import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
+import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";
 
 export var initMaterials = (basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData) => {
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index);

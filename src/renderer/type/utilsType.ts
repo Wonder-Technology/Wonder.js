@@ -45,13 +45,14 @@ export type SendUniformDataGLSLSenderDataMap = {
 }
 
 export type SendUniformDataAmbientLightDataMap = {
-    getRenderData: Function;
+    getColor: Function;
 
     AmbientLightDataFromSystem: any;
 }
 
 export type SendUniformDataDirectionLightDataMap = {
-    getRenderData: Function;
+    getColor: Function;
+    getIntensity: Function;
     getPosition: Function;
 
     DirectionLightDataFromSystem: any;

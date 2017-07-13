@@ -1,5 +1,6 @@
-import { getColorArr3Data, getColorDataSize, getSingleSizeData } from "./materialUtils";
+import { getColorDataSize } from "./materialUtils";
 import { getLightMaterialBufferStartIndex } from "./bufferUtils";
+import { getColorArr3Data, getSingleSizeData } from "../common/operateBufferDataUtils";
 
 export var getShadingDataSize = () => 1;
 

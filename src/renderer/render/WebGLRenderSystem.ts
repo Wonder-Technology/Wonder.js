@@ -52,7 +52,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         var renderWorker = getRenderWorker(WorkerInstanceData);
 
         renderWorker.postMessage({
-            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
             materialData: {
                 buffer: MaterialData.buffer,
                 basicMaterialData: {
@@ -73,6 +73,9 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 verticesInfoList: GeometryData.verticesInfoList,
                 normalsInfoList: GeometryData.normalsInfoList,
                 indicesInfoList: GeometryData.indicesInfoList
+            },
+            lightData:{
+                directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
             }
         });
 
@@ -92,7 +95,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         // }
 
         return compose(
-            sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
+            sendDrawData(WorkerInstanceData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)

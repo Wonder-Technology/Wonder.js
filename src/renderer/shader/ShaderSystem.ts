@@ -16,10 +16,13 @@ import { IMaterialConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
 import { Map } from "immutable";
 import { DrawDataMap } from "../type/utilsType";
-import { getRenderData as getAmbientLightRenderData } from "../../component/light/AmbientLightSystem";
-import { getPosition, getRenderData as getDirectionLightRenderData } from "../../component/light/DirectionLightSystem";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
+import { getColor as getAmbientLightColor } from "../../component/light/AmbientLightSystem";
+import {
+    getColor as getDirectionLightColor, getIntensity,
+    getPosition
+} from "../../component/light/DirectionLightSystem";
 
 export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
     var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
@@ -80,7 +83,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
             },
             ambientLightData:{
-                getRenderData:getAmbientLightRenderData,
+                getColor: getAmbientLightColor,
 
                 AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
             },
@@ -88,7 +91,8 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 getPosition: (index:number) => {
                     return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem);
                 },
-                getRenderData:getDirectionLightRenderData,
+                getColor: getDirectionLightColor,
+                getIntensity: getIntensity,
 
                 DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
             }

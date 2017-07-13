@@ -19,7 +19,7 @@ import {
     createTypeArrays,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, getColorArr3 as getColorArr3Utils, isTestAlpha as isTestAlphaUtils, getShaderIndexDataSize,
+    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils,
     buildMaterialData
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
@@ -51,6 +51,8 @@ import {
 } from "../../renderer/utils/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { getColor3Data, setColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
+import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -130,19 +132,7 @@ export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData
 }
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
-    return getColorData(materialIndex, MaterialData.colors);
-}
-
-export var getColorData = (materialIndex: number, colors: Float32Array) => {
-    var color = Color.create(),
-        size = getColorDataSize(),
-        index = materialIndex * size;
-
-    color.r = colors[index];
-    color.g = colors[index + 1];
-    color.b = colors[index + 2];
-
-    return color;
+    return getColor3Data(materialIndex, MaterialData.colors);
 }
 
 export var getColorArr3 = getColorArr3Utils;
@@ -152,15 +142,7 @@ export var setColor = (materialIndex: number, color: Color, MaterialData: any) =
 }
 
 export var setColorData = (materialIndex: number, color: Color, colors: Float32Array) => {
-    var r = color.r,
-        g = color.g,
-        b = color.b,
-        size = getColorDataSize(),
-        index = materialIndex * size;
-
-    setTypeArrayValue(colors, index, r);
-    setTypeArrayValue(colors, index + 1, g);
-    setTypeArrayValue(colors, index + 2, b);
+    setColor3Data(materialIndex, color, colors);
 }
 
 export var getOpacity = getOpacityUtils;
@@ -238,14 +220,6 @@ else {
 export var getGameObject = (index: number, MaterialData: any) => {
     return getComponentGameObject(MaterialData.gameObjectMap, index);
 }
-
-export var setTypeArrayValue = requireCheckFunc((typeArr: Float32Array | Uint32Array, index: number, value: number) => {
-    it("should not exceed type arr's length", () => {
-        expect(index).lte(typeArr.length - 1);
-    });
-}, (typeArr: Float32Array, index: number, value: number) => {
-    typeArr[index] = value;
-})
 
 export var isTestAlpha = isTestAlphaUtils;
 

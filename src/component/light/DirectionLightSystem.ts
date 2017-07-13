@@ -3,61 +3,65 @@ import { Color } from "../../structure/Color";
 import {
     create as createSpecifyLight,
     disposeComponent as disposeSpecifyLightComponent,
-
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    addComponent as addSpecifyLightComponent, getColorArr3 as getSpecifyLightColorArr3
+    addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition
 } from "./SpecifyLightSystem";
 import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { getPosition as getPositionUtils, getRenderData as getRenderDataUtils } from "../../renderer/utils/light/directionLightUtils";
+import {
+    createTypeArrays,
+    getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize
+} from "../../renderer/utils/light/directionLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { DataBufferConfig } from "../../config/DataBufferConfig";
+import { getColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
+import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { Vector3 } from "../../math/Vector3";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
-    it("count should <= 4", () => {
-        expect(DirectionLightData.count).lte(4);
+    it("count should <= max count", () => {
+        expect(DirectionLightData.count).lte(DataBufferConfig.directionLightDataBufferCount);
     })
 }, (DirectionLightData: any) => {
     var light = new DirectionLight();
 
     light = createSpecifyLight(light, DirectionLightData);
 
-    _setDefaultRenderData(light.index, DirectionLightData);
-
     return light;
 })
 
-var _setDefaultRenderData = (index: number, DirectionLightData: any) => {
-    DirectionLightData.renderDataMap[index] = {
-        colorArr: DirectionLightData.defaultColorArr,
-        intensity: DirectionLightData.defaultIntensity
-    }
-}
-
-export var getRenderData = (index: number, DirectionLightData: any) => {
-    return getRenderDataUtils(index, DirectionLightData);
-}
-
 export var getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
-    return getPositionUtils(index, ThreeDTransformData, GameObjectData, DirectionLightData)
+    return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightData);
 }
 
-export var getColorArr3 = (index: number, DirectionLightData: any) => {
-    return getSpecifyLightColorArr3(index, DirectionLightData);
+export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
+    var positionArr:Array<Vector3> = [];
+
+    for(let i = 0, count = DirectionLightData.count; i < count; i++){
+        positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightData));
+    }
+
+    return positionArr;
+}
+
+export var getColor = (index: number, DirectionLightData: any) => {
+    return getColor3Data(index, DirectionLightData.colors);
 }
 
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {
-    setSpecifyLightColor(index, color, DirectionLightData);
+    setSpecifyLightColor(index, color, DirectionLightData.colors);
 }
 
-export var getIntensity = (index: number, DirectionLightData: any) => {
-    return DirectionLightData.renderDataMap[index].intensity;
-}
+export var getIntensity = getIntensityUtils;
 
 export var setIntensity = (index: number, intensity: number, DirectionLightData: any) => {
-    DirectionLightData.renderDataMap[index].intensity = intensity;
+    var size = getIntensityDataSize(),
+        i = index * size;
+
+    setTypeArrayValue(DirectionLightData.intensities, i, intensity);
 }
 
 export var addComponent = (component: Light, gameObject: GameObject) => {
@@ -69,11 +73,21 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (DirectionLightData: any) => {
-    initSpecifyLightData(DirectionLightData);
+    var count = DataBufferConfig.lightMaterialDataBufferCount,
+        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()),
+        buffer:any = null;
+
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size);
+
+    initSpecifyLightData(buffer, DirectionLightData);
+
+    createTypeArrays(buffer, count, DirectionLightData);
 
     DirectionLightData.defaultIntensity = 1;
 
-    DirectionLightData.lightGLSLDataStructureMemberName = [
+    _setDefaultTypeArrData(count, DirectionLightData);
+
+    DirectionLightData.lightGLSLDataStructureMemberNameArr = [
         {
             position: "u_directionLights[0].position",
             color: "u_directionLights[0].color",
@@ -92,5 +106,15 @@ export var initData = (DirectionLightData: any) => {
             intensity: "u_directionLights[3].intensity"
         }
     ];
+}
+
+var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
+    var color = createDefaultColor(),
+        intensity = DirectionLightData.defaultIntensity;
+
+    for (let i = 0; i < count; i++) {
+        setColor(i, color, DirectionLightData);
+        setIntensity(i, intensity, DirectionLightData);
+    }
 }
 

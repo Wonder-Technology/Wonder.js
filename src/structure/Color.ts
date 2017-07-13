@@ -101,6 +101,7 @@ export class Color {
     private _colorString: string = null;
     private _colorVec3Cache: Vector3 = null;
     private _colorVec4Cache: Vector4 = null;
+    private _colorArr3Cache: Array<number> = null;
 
     public initWhenCreate(colorVal?: string) {
         if (!colorVal) {
@@ -131,6 +132,18 @@ export class Color {
     })
     public toVector4() {
         return Vector4.create(this.r, this.g, this.b, this.a);
+    }
+
+    //todo test
+    @cache(function() {
+        return this._colorArr3Cache !== null;
+    }, function() {
+        return this._colorArr3Cache;
+    }, function(result) {
+        this._colorArr3Cache = result;
+    })
+    public toArray3() {
+        return [this.r, this.g, this.b];
     }
 
     public toString() {
@@ -249,5 +262,6 @@ export class Color {
     private _clearCache() {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
+        this._colorArr3Cache = null;
     }
 }
