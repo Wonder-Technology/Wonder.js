@@ -24,7 +24,7 @@ export class ThreeDTransformData {
     public static defaultLocalToWorldMatrice: Matrix4 = null;
 
     public static firstDirtyIndex: number = null;
-    public static indexInArrayBuffer: number = null;
+    public static index: number = null;
     public static notUsedIndexLinkList: LinkList<number> = null;
 
     public static isTranslateMap = null;
@@ -58,7 +58,7 @@ export class ThreeDTransformRelationData {
         return obj;
     }
 
-    public indexInArrayBuffer: number = null;
+    public index: number = null;
     public parent: ThreeDTransformRelationData = null;
     public children: Array<ThreeDTransformRelationData> = null;
 }
