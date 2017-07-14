@@ -66,7 +66,7 @@ import { setIsTest, setLibIsTest } from "../renderer/config/initConfigSystem";
 import { initWorkInstances } from "../worker/WorkerInstanceSystem";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData:any, {
-    canvasId = "",
+    canvasID = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
     useDevicePixelRatio = false,
@@ -107,7 +107,7 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
                 screenSize: screenSize
             },
             config: {
-                canvasId: canvasId,
+                canvasID: canvasID,
                 contextConfig: {
                     options: ExtendUtils.extend({
                         alpha: true,
@@ -132,7 +132,7 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
     return compose(
         chain(initDevice(configState.get("contextConfig"), gameState, configState)),
         createCanvas(DomQuery)
-    )(configState.get("canvasId"));
+    )(configState.get("canvasID"));
 });
 
 export var initData = null;
