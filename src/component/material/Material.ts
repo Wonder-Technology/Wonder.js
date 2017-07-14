@@ -10,7 +10,7 @@ import { requireCheckFunc } from "../../definition/typescript/decorator/contract
 import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../ComponentSystem";
 
 @registerClass("Material")
-export class Material extends Component {
+export abstract class Material extends Component {
 }
 
 export var getMaterialGameObject = requireCheckFunc((material: Material) => {
