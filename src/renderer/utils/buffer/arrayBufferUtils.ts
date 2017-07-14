@@ -15,11 +15,6 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
 
     _initBuffer(gl, getDatas(geometryIndex, GeometryDataFromSystem), buffer);
 
-    ArrayBufferDataFromSystem.bufferDataMap[geometryIndex] = {
-        size: 3,
-        type: EBufferType.FLOAT
-    };
-
     return buffer;
 }
 

@@ -28,7 +28,7 @@ describe("DirectionLight", function () {
 
         describe("contract check", function(){
             it("count should <= 4", function () {
-                var msg = "count should <= 4";
+                var msg = "count should <= max count";
                 directionLightTool.create();
                 directionLightTool.create();
                 directionLightTool.create();
@@ -45,12 +45,12 @@ describe("DirectionLight", function () {
             it("set colorArr to be [1,1,1]", function () {
                 var light = directionLightTool.create();
 
-                expect(DirectionLightData.renderDataMap[light.index].colorArr).toEqual([1,1,1]);
+                expect(directionLightTool.getColor(light).toArray3()).toEqual([1,1,1]);
             });
             it("set intensity to be 1", function () {
                 var light = directionLightTool.create();
 
-                expect(DirectionLightData.renderDataMap[light.index].intensity).toEqual(1);
+                expect(directionLightTool.getIntensity(light)).toEqual(1);
             });
         });
     });
@@ -84,6 +84,47 @@ describe("DirectionLight", function () {
             directionLightTool.setIntensity(light1, intensity);
 
             expect(directionLightTool.getIntensity(light1)).toEqual(intensity);
+        });
+    });
+
+    describe("disposeComponent", function() {
+        beforeEach(function(){
+        });
+
+        describe("remove by swap with last one", function() {
+            var obj1,light1;
+            var obj2,light2;
+
+            beforeEach(function(){
+                obj1 = sceneTool.addDirectionLight();
+                light1 = gameObjectTool.getComponent(obj1, Light);
+
+                obj2 = sceneTool.addDirectionLight();
+                light2 = gameObjectTool.getComponent(obj2, Light);
+            });
+
+            describe("test remove from map", function() {
+                beforeEach(function(){
+                });
+
+                describe("reset removed one's value", function(){
+                    function judgeSingleValue(getMethodName, setMethodName, defaultValue) {
+                        directionLightTool[setMethodName](light1, 1);
+                        directionLightTool[setMethodName](light2, 2);
+
+                        var index1 = light1.index;
+                        var index2 = light2.index;
+                        gameObjectTool.disposeComponent(obj1, light1);
+
+                        expect(directionLightTool[getMethodName](componentTool.createComponent(index1))).toEqual(2);
+                        expect(directionLightTool[getMethodName](componentTool.createComponent(index2))).toEqual(defaultValue);
+                    }
+
+                    it("remove from shininess", function () {
+                        judgeSingleValue("getIntensity", "setIntensity", DirectionLightData.defaultIntensity);
+                    });
+                });
+            });
         });
     });
 });

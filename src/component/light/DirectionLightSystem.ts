@@ -20,6 +20,7 @@ import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { Vector3 } from "../../math/Vector3";
+import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= max count", () => {
@@ -71,7 +72,13 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
 }
 
 export var disposeComponent = (component: Light) => {
-    disposeSpecifyLightComponent(component.index, DirectionLightData);
+    var intensityDataSize = getIntensityDataSize(),
+        sourceIndex = component.index,
+        lastComponentIndex:number = null;
+
+    lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, DirectionLightData);
+
+    deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, DirectionLightData.intensities, DirectionLightData.defaultIntensity);
 }
 
 export var initData = (DirectionLightData: any) => {

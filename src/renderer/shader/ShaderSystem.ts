@@ -89,7 +89,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
             },
             directionLightData:{
                 getPosition: (index:number) => {
-                    return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem);
+                    return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
                 },
                 getColorArr3: getDirectionLightColorArr3,
                 getIntensity: getIntensity,

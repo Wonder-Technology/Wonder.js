@@ -22,7 +22,7 @@ describe("LightMaterial", function () {
         sandbox.restore();
     });
 
-    describe("only test light material", function() {
+    describe("only test light material", function () {
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
 
@@ -48,22 +48,22 @@ describe("LightMaterial", function () {
             expect(glslTool.containSpecifyCount(fs, "gl_FragColor =", 1)).toBeTruthy();
         });
 
-        describe("test default value", function() {
-            describe("getSpecularColor", function() {
-                beforeEach(function(){
+        describe("test default value", function () {
+            describe("getSpecularColor", function () {
+                beforeEach(function () {
                 });
 
-                it("default color is #ffffff", function(){
+                it("default color is #ffffff", function () {
                     colorTool.judgeIsEqual(lightMaterialTool.getSpecularColor(material), Color.create("#ffffff"), expect);
                 });
             });
 
-            describe("setSpecularColor", function() {
-                beforeEach(function(){
+            describe("setSpecularColor", function () {
+                beforeEach(function () {
 
                 });
 
-                it("set color", function(){
+                it("set color", function () {
                     var color = Color.create("#123456");
 
                     lightMaterialTool.setSpecularColor(material, color);
@@ -72,21 +72,21 @@ describe("LightMaterial", function () {
                 });
             });
 
-            describe("getEmissionColor", function() {
-                beforeEach(function(){
+            describe("getEmissionColor", function () {
+                beforeEach(function () {
                 });
 
-                it("default color is #000000", function(){
+                it("default color is #000000", function () {
                     colorTool.judgeIsEqual(lightMaterialTool.getEmissionColor(material), Color.create("#000000"), expect);
                 });
             });
 
-            describe("setEmissionColor", function() {
-                beforeEach(function(){
+            describe("setEmissionColor", function () {
+                beforeEach(function () {
 
                 });
 
-                it("set color", function(){
+                it("set color", function () {
                     var color = Color.create("#123456");
 
                     lightMaterialTool.setEmissionColor(material, color);
@@ -95,47 +95,47 @@ describe("LightMaterial", function () {
                 });
             });
 
-            describe("getShininess", function() {
-                beforeEach(function(){
+            describe("getShininess", function () {
+                beforeEach(function () {
 
                 });
 
-                it("default is 32", function(){
+                it("default is 32", function () {
                     expect(lightMaterialTool.getShininess(material)).toEqual(32);
                 });
             });
 
-            describe("getShading", function() {
-                beforeEach(function(){
+            describe("getShading", function () {
+                beforeEach(function () {
 
                 });
 
-                it("default is EShading.FLAT", function(){
+                it("default is EShading.FLAT", function () {
                     expect(lightMaterialTool.getShading(material)).toEqual(EShading.FLAT);
                 });
             });
 
-            describe("getLightModel", function() {
-                beforeEach(function(){
+            describe("getLightModel", function () {
+                beforeEach(function () {
 
                 });
 
-                it("default is ELightModel.PHONG", function(){
+                it("default is ELightModel.PHONG", function () {
                     expect(lightMaterialTool.getLightModel(material)).toEqual(ELightModel.PHONG);
                 });
             });
         });
 
-        describe("initData", function() {
-            beforeEach(function(){
+        describe("initData", function () {
+            beforeEach(function () {
             });
 
-            describe("separate buffer index into segements of corresponding material type", function() {
-                beforeEach(function(){
+            describe("separate buffer index into segements of corresponding material type", function () {
+                beforeEach(function () {
 
                 });
 
-                it("make LightMaterialData.index after BasicMaterialData", function(){
+                it("make LightMaterialData.index after BasicMaterialData", function () {
 
                     sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 20);
                     sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 100);
@@ -147,14 +147,14 @@ describe("LightMaterial", function () {
             });
         });
 
-        describe("disposeComponent", function() {
-            beforeEach(function(){
+        describe("disposeComponent", function () {
+            beforeEach(function () {
             });
 
-            describe("remove by swap with last one", function() {
-                var obj2,mat2;
+            describe("remove by swap with last one", function () {
+                var obj2, mat2;
 
-                beforeEach(function(){
+                beforeEach(function () {
                     mat2 = lightMaterialTool.create();
                     obj2 = gameObjectTool.create();
                     gameObjectTool.addComponent(obj2, mat2);
@@ -169,7 +169,7 @@ describe("LightMaterial", function () {
                     expect(LightMaterialData.index).toEqual(index - 1);
                 });
 
-                describe("reset removed one's value", function(){
+                describe("reset removed one's value", function () {
                     function judgeColor(getMethodName, setMethodName, defaultColor) {
                         var color1 = Color.create("rgb(0.1,0.2,0.3)");
                         var color2 = Color.create("rgb(0.4,0.2,0.3)");
@@ -225,7 +225,7 @@ describe("LightMaterial", function () {
 
                 it("send u_normalMatrix", function () {
                     var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform),
-                        mat = Matrix4.create().setTranslate(1,2,3),
+                        mat = Matrix4.create().setTranslate(1, 2, 3),
                         position = mat.getTranslation(),
                         pos = 0;
 
@@ -262,7 +262,7 @@ describe("LightMaterial", function () {
                     var buffer;
 
                     beforeEach(function () {
-                        buffer = {b:1};
+                        buffer = { b: 1 };
 
                         gl.createBuffer.onCall(1).returns(buffer);
                     });
@@ -530,16 +530,14 @@ describe("LightMaterial", function () {
                     expect(gl.uniform1i).toCalledWith(pos, lightModel);
                 });
                 it("send u_cameraPos", function () {
-                    var cameraPos = Vector3.create(1,10,2),
+                    var cameraPos = Vector3.create(1, 10, 2),
                         pos = 0;
                     gl.getUniformLocation.withArgs(sinon.match.any, "u_cameraPos").returns(pos);
-
 
 
                     var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform);
 
                     threeDTransformTool.setPosition(transform, cameraPos);
-
 
 
                     directorTool.init(state);
@@ -606,7 +604,7 @@ describe("LightMaterial", function () {
 
                 it("send u_ambient", function () {
                     var color = Color.create("#123456")
-                        pos = 0;
+                    pos = 0;
                     gl.getUniformLocation.withArgs(sinon.match.any, "u_ambient").returns(pos);
 
 
@@ -616,7 +614,7 @@ describe("LightMaterial", function () {
                     directorTool.init(state);
                     directorTool.loopBody(state);
 
-                    expect(gl.uniform3f).toCalledWith(pos, color.r, color.g, color.b);
+                    expect(testTool.getValues(gl.uniform3f.withArgs(pos).args[0].slice(1, 4))).toEqual(testTool.getValues(color.toArray3()));
                 });
 
                 describe("test glsl", function () {
@@ -636,13 +634,13 @@ describe("LightMaterial", function () {
                 beforeEach(function () {
                 });
 
-                describe("send structure data", function() {
+                describe("send structure data", function () {
                     var position1, color1, intensity1;
                     var position2, color2, intensity2;
 
-                    beforeEach(function(){
-                        position1 = Vector3.create(1,1,2);
-                        position2 = Vector3.create(2,1,2);
+                    beforeEach(function () {
+                        position1 = Vector3.create(1, 1, 2);
+                        position2 = Vector3.create(2, 1, 2);
                         color1 = Color.create("#111111");
                         color2 = Color.create("#211111");
                         intensity1 = 1;
@@ -653,9 +651,10 @@ describe("LightMaterial", function () {
                     });
 
                     it("send light position", function () {
-                        var pos1 = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_directionLights[0].position").returns(pos1),
-                        pos2 = 1;
+                        var pos1 = 0,
+                            pos2 = 1;
+
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_directionLights[0].position").returns(pos1);
                         gl.getUniformLocation.withArgs(sinon.match.any, "u_directionLights[1].position").returns(pos2);
 
 
@@ -676,8 +675,8 @@ describe("LightMaterial", function () {
                         directorTool.init(state);
                         directorTool.loopBody(state);
 
-                        expect(gl.uniform3f.withArgs(pos1)).toCalledWith(pos1, color1.r, color1.g, color1.b);
-                        expect(gl.uniform3f.withArgs(pos2)).toCalledWith(pos2, color2.r, color2.g, color2.b);
+                        expect(testTool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testTool.getValues(color1.toArray3()));
+                        expect(testTool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testTool.getValues(color2.toArray3()));
                     });
                     it("send light intensity", function () {
                         var pos1 = 0;
@@ -694,18 +693,15 @@ describe("LightMaterial", function () {
                     });
 
                     it("at most support 4 direction lights", function () {
-                        var position3 = Vector3.create(3,3,4),
-                        position4 = Vector3.create(4,3,4),
-                        color3 = Color.create("#333333"),
-                        color4 = Color.create("#433333"),
-                        intensity3 = 3,
-                        intensity4 = 4;
+                        var position3 = Vector3.create(3, 3, 4),
+                            position4 = Vector3.create(4, 3, 4),
+                            color3 = Color.create("#333333"),
+                            color4 = Color.create("#433333"),
+                            intensity3 = 3,
+                            intensity4 = 4;
 
                         sceneTool.addDirectionLight(position3, color3, intensity3);
                         sceneTool.addDirectionLight(position4, color4, intensity4);
-
-
-
 
 
                         var pos3 = 0;
@@ -758,12 +754,12 @@ describe("LightMaterial", function () {
         });
     });
 
-    describe("test light material and light material together", function() {
+    describe("test light material and light material together", function () {
         var basicMaterial;
         var basicObj;
         var basicGeo;
 
-        beforeEach(function(){
+        beforeEach(function () {
             sandbox = sinon.sandbox.create();
 
             testTool.clearAndOpenContractCheck(sandbox);
@@ -781,17 +777,14 @@ describe("LightMaterial", function () {
             sceneTool.addGameObject(basicObj);
 
 
-
-
-
             state = stateTool.createAndSetFakeGLState(sandbox);
 
             gl = stateTool.getGLFromFakeGLState(state);
         });
 
-        it("switch program between different shader", function(){
+        it("switch program between different shader", function () {
             var program1 = {};
-            var program2 = {a:1};
+            var program2 = { a: 1 };
             gl.createProgram.onCall(0).returns(program1);
             gl.createProgram.onCall(1).returns(program2);
 

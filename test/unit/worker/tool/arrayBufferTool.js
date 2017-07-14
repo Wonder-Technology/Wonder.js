@@ -6,9 +6,6 @@ var arrayBufferTool = (function () {
         setNormalBuffer: function (index, data) {
             wd.ArrayBufferData.normalBuffers[index] = data;
         },
-        setBufferData: function (index, data) {
-            wd.ArrayBufferData.bufferDataMap[index] = data;
-        },
         resetData: function(){
             // wd.initArrayBufferData(wd.ArrayBufferData);
         }

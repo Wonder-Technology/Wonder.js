@@ -15,6 +15,7 @@ import {
     MaterialForGetUniformDataDataMap
 } from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
+import { EBufferType } from "../../../enum/EBufferType";
 
 export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
@@ -105,15 +106,10 @@ var _getUnifromDataFromLightMaterial = (field: string, index: number,
 }
 
 export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
-    //fix bufferDataMap?
-    var {
-            size,
-        type
-        } = ArrayBufferData.bufferDataMap[geometryIndex],
-        vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
+    var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.vertexAttribPointer(pos, size, gl[type], false, 0, 0);
+    gl.vertexAttribPointer(pos, 3, gl[EBufferType.FLOAT], false, 0, 0);
 
     if (vertexAttribHistory[pos] !== true) {
         gl.enableVertexAttribArray(pos);

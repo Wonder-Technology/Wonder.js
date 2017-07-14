@@ -134,7 +134,6 @@ export class Color {
         return Vector4.create(this.r, this.g, this.b, this.a);
     }
 
-    //todo test
     @cache(function() {
         return this._colorArr3Cache !== null;
     }, function() {

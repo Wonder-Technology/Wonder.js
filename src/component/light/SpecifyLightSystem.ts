@@ -11,6 +11,8 @@ import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { setColor3Data } from "../utils/operateBufferDataUtils";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { deleteBySwapAndReset } from "../../utils/typeArrayUtils";
+import { getColorDataSize } from "../../renderer/utils/light/specifyLightUtils";
 
 export var create = requireCheckFunc((light: Light, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
@@ -41,7 +43,8 @@ export var setColor = (index: number, color: Color, colors:Float32Array) => {
 export var disposeComponent = ensureFunc((returnVal, sourceIndex: number, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
 }, (sourceIndex: number, SpecifyLightData: any) => {
-    var lastComponentIndex: number = null;
+    var colorDataSize = getColorDataSize(),
+        lastComponentIndex: number = null;
 
     SpecifyLightData.count -= 1;
     SpecifyLightData.index -= 1;
@@ -52,7 +55,9 @@ export var disposeComponent = ensureFunc((returnVal, sourceIndex: number, Specif
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, SpecifyLightData.lightMap);
 
-    deleteBySwap(sourceIndex, lastComponentIndex, SpecifyLightData.renderDataMap);
+    deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, SpecifyLightData.colors, colorDataSize, SpecifyLightData.defaultColorArr);
+
+    return lastComponentIndex;
 })
 
 export var initData = (buffer, SpecifyLightData: any) => {

@@ -92,14 +92,14 @@ describe("draw render command", function () {
             arrayBufferTool.setVerticeBuffer(0, buffer1);
             arrayBufferTool.setVerticeBuffer(1, buffer2);
 
-            arrayBufferTool.setBufferData(0, {
-                size: 3,
-                type: "FLOAT"
-            });
-            arrayBufferTool.setBufferData(1, {
-                size: 3,
-                type: "FLOAT"
-            });
+            // arrayBufferTool.setBufferData(0, {
+            //     size: 3,
+            //     type: "FLOAT"
+            // });
+            // arrayBufferTool.setBufferData(1, {
+            //     size: 3,
+            //     type: "FLOAT"
+            // });
 
             ArrayBufferData = wd.ArrayBufferData;
         });

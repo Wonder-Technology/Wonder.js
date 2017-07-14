@@ -29,7 +29,7 @@ describe("Light", function () {
 
             directionLightTool.setColor(light1, color);
 
-            expect(directionLightTool.getColorArr3(light1)).toEqual([color.r, color.g, color.b]);
+            colorTool.judgeIsEqual(directionLightTool.getColor(light1), color, expect);
         });
     });
 
@@ -88,15 +88,6 @@ describe("Light", function () {
                         expect(directionLightTool.getGameObject(light2)).toEqual(obj2);
                         expect(AmbientLightData.gameObjectMap.length).toEqual(0);
                         expect(DirectionLightData.gameObjectMap.length).toEqual(2);
-                    });
-                    it("remove from renderDataMap", function () {
-                        directionLightTool.setIntensity(light2, 0.5);
-                        var light3Intensity = 0.7;
-                        directionLightTool.setIntensity(light3, light3Intensity);
-
-                        gameObjectTool.disposeComponent(obj2, light2);
-
-                        expect(DirectionLightData.renderDataMap[0].intensity).toEqual(light3Intensity);
                     });
                 });
             });

@@ -21,7 +21,7 @@ describe("AmbientLight", function () {
 
         describe("contract check", function(){
             it("count should <= 1", function () {
-                var msg = "count should <= 1";
+                var msg = "count should <= max count";
                 ambientLightTool.create();
 
                 expect(function(){
@@ -35,7 +35,7 @@ describe("AmbientLight", function () {
             it("set colorArr to be [1,1,1]", function () {
                 var light = ambientLightTool.create();
 
-                expect(AmbientLightData.renderDataMap[light.index].colorArr).toEqual([1,1,1]);
+                expect(ambientLightTool.getColor(light).toArray3()).toEqual([1,1,1]);
             });
         });
     });

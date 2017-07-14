@@ -103,6 +103,7 @@ export {GeometryWorkerData} from "./renderer/worker/render_file/geometry/Geometr
 export {initGL} from "./renderer/worker/render_file/initGL";
 export {AmbientLightWorkerData} from "./renderer/worker/render_file/light/AmbientLightWorkerData";
 export {DirectionLightWorkerData} from "./renderer/worker/render_file/light/DirectionLightWorkerData";
+export {PointLightWorkerData} from "./renderer/worker/render_file/light/PointLightWorkerData";
 export {SpecifyLightWorkerData} from "./renderer/worker/render_file/light/SpecifyLightWorkerData";
 export {BasicMaterialWorkerData} from "./renderer/worker/render_file/material/BasicMaterialWorkerData";
 export {LightMaterialWorkerData} from "./renderer/worker/render_file/material/LightMaterialWorkerData";
@@ -122,4 +123,3 @@ export {Log} from "./utils/Log";
 export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
-export {PointLightWorkerData} from "./renderer/worker/render_file/light/PointLightWorkerData";

@@ -1,7 +1,7 @@
 var directionLightTool = (function () {
     return {
         create:wd.createDirectionLight,
-        getColorArr3:wd.getDirectionLightColorArr3,
+        getColor:wd.getDirectionLightColor,
         setColor:wd.setDirectionLightColor,
         getIntensity:wd.getDirectionLightIntensity,
         setIntensity:wd.setDirectionLightIntensity,
