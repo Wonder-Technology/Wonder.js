@@ -45,7 +45,6 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { chain, compose } from "../utils/functionalUtils";
-import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
@@ -63,24 +62,10 @@ import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
 import { PointLightData } from "../component/light/PointLightData";
+import { setIsTest, setLibIsTest } from "../renderer/config/initConfigSystem";
+import { initWorkInstances } from "../worker/WorkerInstanceSystem";
 
-export var getIsTest = (MainData: any) => {
-    return MainData.isTest;
-}
-
-export var setIsTest = (isTest: boolean, MainData: any) => {
-    return IO.of(() => {
-        MainData.isTest = isTest;
-    });
-}
-
-export var setLibIsTest = (isTest: boolean) => {
-    return IO.of(() => {
-        Main.isTest = isTest;
-    });
-}
-
-export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectData: any, {
+export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData:any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -111,9 +96,11 @@ export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectD
             setLibIsTest(isTest).run();
         }
 
-        setIsTest(_isTest, MainData).run();
-
         setWorkerConfig(workerConfig, WorkerDetectData).run();
+
+        initWorkInstances(WorkerInstanceData);
+
+        setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
 
         return fromJS({
             Main: {

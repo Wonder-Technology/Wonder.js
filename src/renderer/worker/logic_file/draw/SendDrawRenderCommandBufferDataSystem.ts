@@ -9,7 +9,7 @@ import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDat
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
-import { getRenderWorker } from "../worker_instance/WorkerInstanceSystem";
+import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData } from "../../../../component/light/DirectionLightSystem";
 
 export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {

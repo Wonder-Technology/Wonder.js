@@ -29,8 +29,10 @@
         'test/unit/utils/**',
         'test/unit/worker/tool/*.js',
 
-        'test/unit/worker/render_worker/**',
-        // 'test/unit/worker/render_worker/**/lightSpec.js',
+        // 'test/unit/worker/render_worker/**',
+        'test/unit/worker/render_worker/**/MainSpec*',
+        // 'test/unit/worker/render_worker/**/lightSpec*',
+        // 'test/unit/worker/render_worker/**/DirectorSpec*',
 
         {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
         {pattern: 'dist/worker/wd.renderWorker.js.map', watched: false, included: false, served: true, nocache:true}

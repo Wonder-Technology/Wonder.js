@@ -58,6 +58,8 @@ var testRenderWorkerTool = (function () {
             this.clear(sandbox);
 
             Main.isTest = true;
+            wd.InitConfigWorkerData.isTest = true;
+            wdrd.InitConfigWorkerData.isTest = true;
         },
         closeContractCheck: function () {
             Main.isTest = false;

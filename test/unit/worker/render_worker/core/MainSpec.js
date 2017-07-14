@@ -12,11 +12,11 @@ describe("Main", function() {
         EScreenSize = wd.EScreenSize,
         RectRegion = wd.RectRegion;
 
-    var renderWorkerConfig = wd.renderWorkerConfig;
     var EWorkerOperateType = wd.EWorkerOperateType;
 
     var GPUDetector = wdrd.GPUDetector;
     var DeviceManagerWorkerData = wdrd.DeviceManagerWorkerData;
+    var InitConfigWorkerData = wdrd.InitConfigWorkerData;
 
     beforeEach(function() {
         sandbox = sinon.sandbox.create();
@@ -26,6 +26,61 @@ describe("Main", function() {
     afterEach(function() {
         testRenderWorkerTool.clearInstance(sandbox);
         sandbox.restore();
+    });
+
+    describe("isTest", function(){
+        describe("if it's true", function(){
+            beforeEach(function(){
+            });
+
+            it("send isTest data", function () {
+                Main.setConfig({
+                    isTest:true
+                });
+
+                worker = workerTool.getRenderWorker();
+                expect(worker.postMessage).toCalledWith({
+                    operateType: EWorkerOperateType.INIT_CONFIG,
+                    isTest: true
+                })
+            });
+            it("it will open wonder.js contract check", function () {
+                var meg = "configState should exist";
+                sandbox.stub(Main, "isTest", false);
+
+                expect(function(){
+                    Main.init();
+                }).not.toThrow(meg);
+
+                sandbox.stub(Main, "isTest", true);
+
+                expect(function(){
+                    Main.init(meg);
+                }).toThrow();
+            });
+
+            describe("test in render worker", function() {
+                var gl;
+                var e;
+
+                beforeEach(function () {
+                    gl = workerTool.createGL(sandbox);
+                });
+
+                it("set config data", function () {
+                    e = {
+                        data:{
+                            operateType: EWorkerOperateType.INIT_CONFIG,
+                            isTest: true
+                        }
+                    }
+
+                    workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(InitConfigWorkerData.isTest).toBeTruthy();
+                });
+            });
+        });
     });
 
     describe("test set config data", function() {

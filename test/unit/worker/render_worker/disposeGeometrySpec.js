@@ -63,7 +63,7 @@ describe("dispose geometry", function () {
                     workerTool.runRender(1);
 
                     worker = workerTool.getRenderWorker();
-                    expect(worker.postMessage.getCall(1)).toCalledWith({
+                    expect(worker.postMessage).toCalledWith({
                         operateType: EWorkerOperateType.DRAW,
                         renderCommandBufferData:sinon.match.any,
                         materialData:sinon.match.any,

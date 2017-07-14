@@ -1,6 +1,6 @@
 import curry from "wonder-lodash/curry";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
-import { getRenderWorkerFilePath, isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
@@ -16,7 +16,8 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { setCanvas } from "../../structure/ViewSystem";
 import { ViewportData } from "../type/messageDataType";
 import { Map } from "immutable";
-import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
+import { WorkerInstanceData } from "../../worker/WorkerInstanceData";
+import { getRenderWorker } from "../../worker/WorkerInstanceSystem";
 
 export var initDevice = null;
 
@@ -26,7 +27,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, state).run(),
                 viewportData: ViewportData = getViewportData(screenData, state);
 
-            createGLWorker(canvas, WorkerInstanceData, contextConfig, viewportData, getRenderWorkerFilePath()).run();
+            createGLWorker(canvas, getRenderWorker(WorkerInstanceData), contextConfig, viewportData).run();
 
             return compose(
                 setCanvas(canvas),

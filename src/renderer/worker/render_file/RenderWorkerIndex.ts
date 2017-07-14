@@ -25,4 +25,4 @@ export { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
 export { PointLightWorkerData } from "./light/PointLightWorkerData";
 export { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
-
+export { InitConfigWorkerData } from "./config/InitConfigWorkerData";

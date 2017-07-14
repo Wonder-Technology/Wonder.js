@@ -78,6 +78,10 @@ export var setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfo
 
 var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList|undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     it("infoList should has no invalid value", () => {
+        if(infoList === void 0){
+            return;
+        }
+
         for (let info of infoList) {
             expect(isValidVal(info)).true;
         }

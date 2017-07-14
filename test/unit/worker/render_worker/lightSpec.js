@@ -43,7 +43,7 @@ describe("light", function () {
 
 
             worker = workerTool.getRenderWorker();
-            expect(worker.postMessage.getCall(0)).toCalledWith({
+            expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
                 materialData: sinon.match.any,
                 geometryData: sinon.match.any,

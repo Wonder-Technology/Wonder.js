@@ -63,7 +63,7 @@ describe("geometry", function () {
             workerTool.runRender(2);
 
             worker = workerTool.getRenderWorker();
-            expect(worker.postMessage.getCall(2)).toCalledWith({
+            expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
                 renderCommandBufferData:sinon.match.any,
                 materialData:sinon.match.any,

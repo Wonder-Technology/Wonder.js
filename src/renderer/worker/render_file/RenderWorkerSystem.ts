@@ -41,11 +41,9 @@ import { BasicMaterialWorkerData } from "./material/BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
 import { initState } from "../../utils/state/stateUtils";
 import { getGL, setSide } from "../both_file/device/DeviceManagerWorkerSystem";
-import { setCount as setAmbientLightCount } from "./light/AmbientLightWorkerSystem";
 import { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 import {
-    setCount as setDirectionLightCount,
-    setLightGLSLDataStructureMemberNameArr, setPositionArr
+    setPositionArr
 } from "./light/DirectionLightWorkerSystem";
 import { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
 import {
@@ -54,6 +52,8 @@ import {
 } from "../../type/messageDataType";
 import { PointLightWorkerData } from "./light/PointLightWorkerData";
 import { initData as initLightData } from "./light/LightWorkerSystem";
+import { setIsTest } from "./config/InitConfigWorkerSystem";
+import { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -64,6 +64,9 @@ export var onmessageHandler = (e) => {
         operateType = data.operateType;
 
     switch (operateType) {
+        case EWorkerOperateType.INIT_CONFIG:
+            setIsTest(data.isTest, InitConfigWorkerData).run();
+            break;
         case EWorkerOperateType.INIT_GL:
             _initData();
 
