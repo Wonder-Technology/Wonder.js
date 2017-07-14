@@ -98,7 +98,7 @@ export {SendDrawRenderCommandBufferData} from "./renderer/worker/logic_file/draw
 export {WorkerInstanceData} from "./renderer/worker/logic_file/worker_instance/WorkerInstanceData";
 export {ArrayBufferWorkerData} from "./renderer/worker/render_file/buffer/ArrayBufferWorkerData";
 export {IndexBufferWorkerData} from "./renderer/worker/render_file/buffer/IndexBufferWorkerData";
-export {DrawRenderCommandBufferForDrawData} from "./renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerData";
+export {DrawRenderCommandBufferWorkerData} from "./renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerData";
 export {GeometryWorkerData} from "./renderer/worker/render_file/geometry/GeometryWorkerData";
 export {initGL} from "./renderer/worker/render_file/initGL";
 export {AmbientLightWorkerData} from "./renderer/worker/render_file/light/AmbientLightWorkerData";
@@ -115,7 +115,7 @@ export {getState,setState} from "./renderer/worker/render_file/state/StateSytem"
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initDeviceManagerWorkerData,initProgramWorkerData} from "./test/forRenderWorkerUnitTest";
+export {initDeviceManagerWorkerData,initProgramWorkerData,initGLSLSenderWorkerData,initLocationWorkerData,initLightWorkerData,initDrawRenderCommandBufferWorkerData,getPositionInShaderWorker} from "./test/forRenderWorkerUnitTest";
 export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initProgramData,initLocationData,initGLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initLightData,initGameObjectData,initSceneData,initRenderCommandBufferData,initDrawRenderCommandBufferData,createState,useProgram,sendAttributeData,sendUniformData,disableVertexAttribArray,setGeometryIndices,setGeometryVertices,hasGeometryIndices,getShaderIndex,updateSystem,getNormalMatrix} from "./test/forUnitTest";
 export {BufferUtilsForUnitTest} from "./utils/BufferUtilsForUnitTest";
 export {Log} from "./utils/Log";

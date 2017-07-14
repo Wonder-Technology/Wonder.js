@@ -4,7 +4,7 @@ import {
     clear, draw
 } from "./draw/DrawRenderCommandBufferWorkerSystem";
 import { render_config } from "../../data/render_config";
-import { DrawRenderCommandBufferForDrawData } from "./draw/DrawRenderCommandBufferWorkerData";
+import { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
     initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
@@ -52,7 +52,6 @@ import {
     GeometryInitWorkerData, GeometryResetWorkerData,
     GeometryUpdateWorkerData, LightDrawWorkerData, LightInitWorkerData
 } from "../../type/messageDataType";
-import { setCount as setPointLightCount } from "./light/PointLightWorkerSystem";
 import { PointLightWorkerData } from "./light/PointLightWorkerData";
 import { initData as initLightData } from "./light/LightWorkerSystem";
 
@@ -75,12 +74,17 @@ export var onmessageHandler = (e) => {
             initState(state, getGL, setSide, DeviceManagerWorkerData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT:
-            //todo test Direction/Point light count
-            _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+            if(data.lightData !== null){
+                _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+            }
 
-            _initMaterials(data.materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
-            _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
+            if(data.materialData !== null) {
+                _initMaterials(data.materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+            }
 
+            if(data.geometryData !== null) {
+                _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
+            }
 
             // self.postMessage({
             //     state: ERenderWorkerState.INIT_COMPLETE
@@ -113,9 +117,11 @@ export var onmessageHandler = (e) => {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
-            _setLightDrawData(lightData, DirectionLightWorkerData);
+            if(lightData !== null){
+                _setLightDrawData(lightData, DirectionLightWorkerData);
+            }
 
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
 
             self.postMessage({
                 state: ERenderWorkerState.DRAW_COMPLETE
@@ -138,7 +144,7 @@ var _initData = () => {
 
     initIndexBufferData(IndexBufferWorkerData);
 
-    initDrawRenderCommandBufferForDrawData(DrawRenderCommandBufferForDrawData);
+    initDrawRenderCommandBufferForDrawData(DrawRenderCommandBufferWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {

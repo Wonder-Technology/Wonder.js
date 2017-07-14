@@ -16,6 +16,7 @@ describe("Director", function () {
             renderCommandBufferData:sinon.match.any,
             materialData:sinon.match.any,
             geometryData:sinon.match.any,
+            lightData:sinon.match.any,
             disposeData:sinon.match.any
         }).callCount).toEqual(callCount);
     }

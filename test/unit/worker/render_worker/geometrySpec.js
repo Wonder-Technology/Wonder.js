@@ -68,6 +68,7 @@ describe("geometry", function () {
                 renderCommandBufferData:sinon.match.any,
                 materialData:sinon.match.any,
                 disposeData: sinon.match.any,
+                lightData: sinon.match.any,
                 geometryData:{
                     buffer:sinon.match.any,
                     type:EGeometryWorkerDataOperateType.ADD,
@@ -128,8 +129,9 @@ describe("geometry", function () {
 
                     e = {
                         data:{
-                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
                             materialData: null,
+                            lightData: null,
                             geometryData: {
                                 buffer: geometryDataBuffer,
                                 indexType: GeometryData.indexType,
@@ -157,6 +159,7 @@ describe("geometry", function () {
                             renderCommandBufferData:null,
                             materialData:null,
                             geometryData:null,
+                            lightData: null,
                             disposeData: null
                         }
                     }
@@ -196,6 +199,7 @@ describe("geometry", function () {
                             operateType: EWorkerOperateType.DRAW,
                             renderCommandBufferData:null,
                             materialData:null,
+                            lightData:null,
                             geometryData:{
                                 buffer:geometryDataBuffer,
                                 type:EGeometryWorkerDataOperateType.ADD,

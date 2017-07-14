@@ -69,6 +69,6 @@ export type LightInitWorkerData = {
 
 export type LightDrawWorkerData = {
     directionLightData:{
-        positionArr:Array<Vector3>;
+        positionArr:Array<Float32Array>;
     };
 }

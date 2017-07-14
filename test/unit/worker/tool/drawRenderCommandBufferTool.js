@@ -7,11 +7,11 @@ var drawRenderCommandBufferTool = (function () {
             }
         },
         resetData: function(){
-            drawRenderCommandBufferUtils.resetData();
-
-            var SendDrawRenderCommandBufferData = wd.SendDrawRenderCommandBufferData;
-
-            SendDrawRenderCommandBufferData.state = wd.ERenderWorkerState.DEFAULT;
+            wd.initDrawRenderCommandBufferWorkerData(wdrd.DrawRenderCommandBufferWorkerData);
+            //
+            // var SendDrawRenderCommandBufferData = wd.SendDrawRenderCommandBufferData;
+            //
+            // SendDrawRenderCommandBufferData.state = wd.ERenderWorkerState.DEFAULT;
         }
     }
 })()

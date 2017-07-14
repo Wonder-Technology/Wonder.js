@@ -11,6 +11,7 @@ export const DataBufferConfig = {
 
     ambientLightDataBufferCount: 1,
     directionLightDataBufferCount: 4,
+    pointLightDataBufferCount: 4,
 
 
     renderCommandBufferCount: 10 * 1024,

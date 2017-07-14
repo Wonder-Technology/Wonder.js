@@ -33,6 +33,7 @@ describe("draw render command buffer", function () {
                     renderCommandBufferData: null,
                     geometryData: null,
                     materialData: null,
+                    lightData: null,
                     disposeData: null
                 }
             }

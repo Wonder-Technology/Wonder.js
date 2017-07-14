@@ -52,7 +52,8 @@ describe("material", function () {
                     workerInitList:[mat1.index, mat2.index]
                 },
                 disposeData: sinon.match.any,
-                geometryData:sinon.match.any
+                geometryData:sinon.match.any,
+                lightData:sinon.match.any
             });
         });
 
@@ -78,8 +79,9 @@ describe("material", function () {
 
                 e = {
                     data:{
-                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
                         geometryData: null,
+                        lightData:null,
                         materialData: {
                             buffer: materialDataBuffer,
                             basicMaterialData: {
@@ -95,6 +97,7 @@ describe("material", function () {
                         }
                     }
                 }
+
                 workerTool.execRenderWorkerMessageHandler(e);
 
 
@@ -113,6 +116,7 @@ describe("material", function () {
                         operateType: EWorkerOperateType.DRAW,
                         renderCommandBufferData:null,
                         geometryData:null,
+                        lightData:null,
                         materialData:{
                             buffer:materialDataBuffer,
                             workerInitList:[mat2.index]

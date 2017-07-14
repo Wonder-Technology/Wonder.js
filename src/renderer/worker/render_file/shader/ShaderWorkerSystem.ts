@@ -52,9 +52,8 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
         },
         directionLightData:{
-            //todo test
             getPosition: (index:number) => {
-                return drawDataMap.DirectionLightDataFromSystem.positionArr[index];
+                return getPosition(index, drawDataMap);
             },
             getColorArr3: getDirectionLightColorArr3,
             getIntensity: getIntensity,
@@ -69,3 +68,7 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
 }
 
 export var use = useUtils;
+
+export var getPosition = (index:number, drawDataMap: DrawDataMap) => {
+    return drawDataMap.DirectionLightDataFromSystem.positionArr[index];
+}

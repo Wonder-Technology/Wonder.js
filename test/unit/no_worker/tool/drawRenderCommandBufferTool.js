@@ -1,7 +1,7 @@
 var drawRenderCommandBufferTool = (function () {
     return {
         resetData: function(){
-            drawRenderCommandBufferUtils.resetData();
+            wd.initDrawRenderCommandBufferData(wd.DrawRenderCommandBufferData);
         }
     }
 })()

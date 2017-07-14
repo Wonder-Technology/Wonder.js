@@ -86,5 +86,4 @@ export type InitShaderDataMap = {
     LightMaterialDataFromSystem: any;
     DirectionLightDataFromSystem: any;
     PointLightDataFromSystem: any;
-    any;
 }

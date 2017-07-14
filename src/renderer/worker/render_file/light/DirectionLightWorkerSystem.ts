@@ -5,6 +5,7 @@ import {
     createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
     getIntensity as getIntensityUtils
 } from "../../../utils/light/directionLightUtils";
+import { Color } from "../../../../structure/Color";
 
 export var setCount = setSpecifyLightCount;
 

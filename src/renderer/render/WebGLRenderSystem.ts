@@ -36,7 +36,6 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 import { AmbientLightData } from "../../component/light/AmbientLightData";
 import { DirectionLightData } from "../../component/light/DirectionLightData";
 import { getGL, setSide } from "../device/DeviceManagerSystem";
-import { ESide } from "../enum/ESide";
 import {
     getBasicMaterialBufferStartIndex,
     getLightMaterialBufferStartIndex
