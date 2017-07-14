@@ -3,8 +3,8 @@ import { SpecifyLightWorkerData } from "./SpecifyLightWorkerData";
 import { DirectionLightGLSLDataStructure } from "../../../type/dataType";
 
 export class DirectionLightWorkerData extends SpecifyLightWorkerData{
-    public static lightPositionArr: Array<Vector3> = null;
+    public static lightPositionArr: Array<Float32Array> = null;
 
-    public static lightGLSLDataStructureMemberNameArrArr: Array<DirectionLightGLSLDataStructure> = null;
+    public static lightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure> = null;
 }
 

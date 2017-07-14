@@ -19,8 +19,7 @@ import {
     createTypeArrays,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils,
-    buildMaterialData
+    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { init as initShader } from "../../renderer/shader/ShaderSystem";
@@ -53,6 +52,8 @@ import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { getColor3Data, setColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
+import { DirectionLightData } from "../light/DirectionLightData";
+import { PointLightData } from "../light/PointLightData";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -101,7 +102,7 @@ else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         var shaderIndex = getShaderIndex(index, MaterialData);
 
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, buildMaterialData(MaterialData, BasicMaterialData, LightMaterialData));
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
     }
 }
 

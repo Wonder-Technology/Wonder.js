@@ -12,17 +12,17 @@ var _lightDefineList = [
     {
         "name": "DIRECTION_LIGHTS_COUNT",
         "valueFunc": ({
-                          DirectionLightData
+                          DirectionLightDataFromSystem
                       }) => {
-            return DirectionLightData.count;
+            return DirectionLightDataFromSystem.count;
         }
     },
     {
         "name": "POINT_LIGHTS_COUNT",
         "valueFunc": ({
-                          PointLightData
+                          PointLightDataFromSystem
                       }) => {
-            return PointLightData.count;
+            return PointLightDataFromSystem.count;
         }
     }
 ]
@@ -330,13 +330,13 @@ export const shaderLib_generator = {
                         sendFloat3
                     },
                     ambientLightData:{
-                        getColor,
+                        getColorArr3,
 
                         AmbientLightDataFromSystem
                     }
                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
-                        sendFloat3(gl, shaderIndex, program, "u_ambient", getColor(i, AmbientLightDataFromSystem), uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, "u_ambient", getColorArr3(i, AmbientLightDataFromSystem), uniformCacheMap, uniformLocationMap);
                     }
                 }
             }
@@ -477,12 +477,11 @@ export const shaderLib_generator = {
                                 {
                                     glslSenderData:{
 
-                                        sendVector3,
                                         sendFloat1,
                                         sendFloat3
                                     },
                                     directionLightData:{
-                                        getColor,
+                                        getColorArr3,
                                         getIntensity,
                                         getPosition,
 
@@ -490,9 +489,9 @@ export const shaderLib_generator = {
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
-                        sendVector3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i), uniformLocationMap, uniformCacheMap);
-                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColor(i, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
-                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformLocationMap, uniformCacheMap);
+                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i), uniformCacheMap, uniformLocationMap);
+                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
                     }
                 }
             }

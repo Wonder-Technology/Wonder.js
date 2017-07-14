@@ -45,13 +45,13 @@ export type SendUniformDataGLSLSenderDataMap = {
 }
 
 export type SendUniformDataAmbientLightDataMap = {
-    getColor: Function;
+    getColorArr3: Function;
 
     AmbientLightDataFromSystem: any;
 }
 
 export type SendUniformDataDirectionLightDataMap = {
-    getColor: Function;
+    getColorArr3: Function;
     getIntensity: Function;
     getPosition: Function;
 
@@ -74,4 +74,17 @@ export type LightMaterialForGetUniformDataDataMap = {
     getShininess: Function;
     getLightModel: Function;
     LightMaterialDataFromSystem: any;
+}
+
+export type InitShaderDataMap = {
+    DeviceManagerDataFromSystem: any;
+    ProgramDataFromSystem: any;
+    LocationDataFromSystem: any;
+    GLSLSenderDataFromSystem: any;
+    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+    DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
+    any;
 }

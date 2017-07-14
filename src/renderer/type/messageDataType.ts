@@ -1,5 +1,5 @@
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
-import { ContextConfigOptionsData } from "./dataType";
+import { ContextConfigOptionsData, DirectionLightGLSLDataStructure } from "./dataType";
 import { Vector3 } from "../../math/Vector3";
 import { EBufferType } from "../enum/EBufferType";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
@@ -51,12 +51,24 @@ export type GeometryResetWorkerData = {
     indicesInfoList: GeometryInfoList;
 }
 
-export type LightDrawWorkerData = {
+export type LightInitWorkerData = {
     ambientLightData: {
+        buffer: SharedArrayBuffer;
         count:number;
     };
     directionLightData:{
+        buffer: SharedArrayBuffer;
         count:number;
-        positionArr:Array<Vector3>;
+        directionLightGLSLDataStructureMemberNameArr:Array<DirectionLightGLSLDataStructure>;
+    };
+    pointLightData:{
+        buffer: SharedArrayBuffer;
+        count:number;
     }
+}
+
+export type LightDrawWorkerData = {
+    directionLightData:{
+        positionArr:Array<Vector3>;
+    };
 }

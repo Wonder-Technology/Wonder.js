@@ -1,9 +1,13 @@
-import { getSingleSizeData } from "../common/operateBufferDataUtils";
+import { getColorArr3 as getColorArr3Utils, getSingleSizeData } from "../common/operateBufferDataUtils";
 import { getColor3Data } from "../../../component/utils/operateBufferDataUtils";
 import { Color } from "../../../structure/Color";
 
 export var getColor = (index: number, DirectionLightDataFromSystem: any) => {
     return getColor3Data(index, DirectionLightDataFromSystem.colors);
+}
+
+export var getColorArr3 = (index: number, DirectionLightDataFromSystem: any) => {
+    return getColorArr3Utils(index, DirectionLightDataFromSystem);
 }
 
 export var getIntensity = (index: number, DirectionLightDataFromSystem: any) => {

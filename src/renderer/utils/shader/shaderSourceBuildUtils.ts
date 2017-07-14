@@ -12,17 +12,17 @@ import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from
 import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
 import { forEach } from "../../../utils/arrayUtils";
-import { BuildGLSLSourceFuncFuncDataMap, MaterialDataMap } from "../../type/dataType";
-import { getAllRenderDataForNoWorker } from "../data/dataUtils";
+import { BuildGLSLSourceFuncFuncDataMap } from "../../type/dataType";
 import { isString } from "../../../utils/JudgeUtils";
+import { InitShaderDataMap } from "../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, MaterialDataMap: MaterialDataMap) => {
+}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -40,7 +40,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
 
     var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IGLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
-        vsDefine += _buildSourceDefine(getGLSLDefineListData(vs)) + getGLSLPartData(vs, "define");
+        vsDefine += _buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
         vsVarDeclare += getGLSLPartData(vs, "varDeclare");
         vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
         vsFuncDefine += getGLSLPartData(vs, "funcDefine");
@@ -48,7 +48,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     },
         _setFs = (getGLSLPartData: Function, getGLSLDefineListData: Function, fs: IGLSLConfig) => {
             fsTop += getGLSLPartData(fs, "top");
-            fsDefine += _buildSourceDefine(getGLSLDefineListData(fs)) + getGLSLPartData(fs, "define");
+            fsDefine += _buildSourceDefine(getGLSLDefineListData(fs), initShaderDataMap) + getGLSLPartData(fs, "define");
             fsVarDeclare += getGLSLPartData(fs, "varDeclare");
             fsFuncDeclare += getGLSLPartData(fs, "funcDeclare");
             fsFuncDefine += getGLSLPartData(fs, "funcDefine");
@@ -83,7 +83,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         }
 
         if (isConfigDataExist(func)) {
-            let funcConfig: IGLSLFuncConfig = func(materialIndex, funcDataMap, MaterialDataMap);
+            let funcConfig: IGLSLFuncConfig = func(materialIndex, funcDataMap, initShaderDataMap);
 
             if (isConfigDataExist(funcConfig)) {
                 let vs = funcConfig.vs,
@@ -147,7 +147,7 @@ var _getEmptyFuncGLSLConfig = () => {
     }
 }
 
-var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>) => {
+var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShaderDataMap:InitShaderDataMap) => {
     var result = "";
 
     for (let item of defineList) {
@@ -155,7 +155,7 @@ var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>) => {
             result += `#define ${item.name}\n`;
         }
         else {
-            result += `#define ${item.name} ${item.valueFunc(getAllRenderDataForNoWorker())}\n`;
+            result += `#define ${item.name} ${item.valueFunc(initShaderDataMap)}\n`;
         }
     }
 

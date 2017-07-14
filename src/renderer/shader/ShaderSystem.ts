@@ -9,18 +9,18 @@ import {
 import { getIndices, getNormals, getVertices } from "../../component/geometry/GeometrySystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
 import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
-import { MaterialDataMap, RenderCommandUniformData } from "../type/dataType";
+import { RenderCommandUniformData } from "../type/dataType";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
 import { IMaterialConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
 import { Map } from "immutable";
-import { DrawDataMap } from "../type/utilsType";
+import { DrawDataMap, InitShaderDataMap } from "../type/utilsType";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-import { getColor as getAmbientLightColor } from "../../component/light/AmbientLightSystem";
+import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
 import {
-    getColor as getDirectionLightColor, getIntensity,
+    getColorArr3 as getDirectionLightColorArr3, getIntensity,
     getPosition
 } from "../../component/light/DirectionLightSystem";
 
@@ -54,8 +54,8 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, MaterialDataMap: MaterialDataMap) => {
-        initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialDataMap);
+    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+        initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, initShaderDataMap);
     };
 
     sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
@@ -83,7 +83,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
             },
             ambientLightData:{
-                getColor: getAmbientLightColor,
+                getColorArr3: getAmbientLightColorArr3,
 
                 AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
             },
@@ -91,7 +91,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 getPosition: (index:number) => {
                     return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem);
                 },
-                getColor: getDirectionLightColor,
+                getColorArr3: getDirectionLightColorArr3,
                 getIntensity: getIntensity,
 
                 DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem

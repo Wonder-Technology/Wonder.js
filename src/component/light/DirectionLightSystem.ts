@@ -11,7 +11,7 @@ import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import {
-    createTypeArrays,
+    createTypeArrays, getColorArr3 as getColorArr3Utils,
     getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize
 } from "../../renderer/utils/light/directionLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
@@ -37,11 +37,11 @@ export var getPosition = (index: number, ThreeDTransformData: any, GameObjectDat
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightData);
 }
 
-export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
-    var positionArr:Array<Vector3> = [];
+export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any):Array<Float32Array> => {
+    var positionArr:Array<Float32Array> = [];
 
     for(let i = 0, count = DirectionLightData.count; i < count; i++){
-        positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightData));
+        positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightData).values);
     }
 
     return positionArr;
@@ -50,6 +50,8 @@ export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, 
 export var getColor = (index: number, DirectionLightData: any) => {
     return getColor3Data(index, DirectionLightData.colors);
 }
+
+export var getColorArr3 =  getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {
     setSpecifyLightColor(index, color, DirectionLightData.colors);

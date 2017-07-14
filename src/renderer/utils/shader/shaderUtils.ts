@@ -11,13 +11,19 @@ import {
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/glslSenderUtils";
 import { MaterialDataMap, RenderCommandUniformData } from "../../type/dataType";
 import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
-import { DrawDataMap, SendUniformDataDataMap } from "../../type/utilsType";
+import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, buildGLSLSource: Function, getGL: Function, DeviceManagerDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, MaterialDataMap: MaterialDataMap) => {
-    var program = getProgram(shaderIndex, ProgramDataFromSystem);
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, buildGLSLSource: Function, getGL: Function, initShaderDataMap:InitShaderDataMap) => {
+    var {
+            DeviceManagerDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem
+        } = initShaderDataMap,
+        program = getProgram(shaderIndex, ProgramDataFromSystem);
 
     if (isProgramExist(program)) {
         return;
@@ -29,7 +35,7 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
         {
             vsSource,
             fsSource
-        } = buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, MaterialDataMap),
+        } = buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap),
         gl = getGL(DeviceManagerDataFromSystem, state);
 
     program = gl.createProgram();

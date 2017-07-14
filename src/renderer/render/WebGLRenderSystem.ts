@@ -75,7 +75,20 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 indicesInfoList: GeometryData.indicesInfoList
             },
             lightData:{
-                directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                ambientLightData: {
+                    buffer: AmbientLightData.buffer,
+                    count:AmbientLightData.count
+                },
+                directionLightData: {
+                    buffer: DirectionLightData.buffer,
+                    count:DirectionLightData.count,
+                    directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                },
+                //todo fix
+                pointLightData: {
+                    buffer:null,
+                    count:0
+                }
             }
         });
 

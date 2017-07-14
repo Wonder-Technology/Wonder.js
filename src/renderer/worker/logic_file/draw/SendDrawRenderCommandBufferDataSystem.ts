@@ -52,13 +52,17 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
     }
 
     lightData = {
-        ambientLightData: {
-            count:AmbientLightData.count
-        },
+        // ambientLightData: {
+        //     count:AmbientLightData.count
+        // },
         directionLightData: {
-            count:DirectionLightData.count,
+            // count:DirectionLightData.count,
             positionArr: getAllPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
         }
+        // //todo fix
+        // pointLightData: {
+        //     count:0
+        // }
     }
 
     getRenderWorker(WorkerInstanceData).postMessage({

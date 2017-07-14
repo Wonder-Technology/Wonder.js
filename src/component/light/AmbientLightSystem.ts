@@ -8,7 +8,10 @@ import {
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
-import { createTypeArrays, getColor as getColorUtils, getColorDataSize } from "../../renderer/utils/light/ambientLightUtils";
+import {
+    createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
+    getColorDataSize
+} from "../../renderer/utils/light/ambientLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
@@ -27,6 +30,8 @@ export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
 })
 
 export var getColor = getColorUtils;
+
+export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, AmbientLightData: any) => {
     setSpecifyLightColor(index, color, AmbientLightData.colors);

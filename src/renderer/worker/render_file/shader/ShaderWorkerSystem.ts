@@ -14,12 +14,12 @@ import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { Map } from "immutable";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
-import { DrawDataMap } from "../../../type/utilsType";
-import { getColor as getAmbientLightColor } from "../light/AmbientLightWorkerSystem";
-import { getColor as getDirectionLightColor, getIntensity } from "../light/DirectionLightWorkerSystem";
+import { DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
+import { getColorArr3 as getAmbientLightColorArr3 } from "../light/AmbientLightWorkerSystem";
+import { getColorArr3 as getDirectionLightColorArr3, getIntensity } from "../light/DirectionLightWorkerSystem";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DeviceManagerWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, MaterialDataMap: MaterialDataMap) => {
-    initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialDataMap);
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+    initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, initShaderDataMap);
 };
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
@@ -47,7 +47,7 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
         },
         ambientLightData:{
-            getColor: getAmbientLightColor,
+            getColorArr3: getAmbientLightColorArr3,
 
             AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
         },
@@ -56,7 +56,7 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             getPosition: (index:number) => {
                 return drawDataMap.DirectionLightDataFromSystem.positionArr[index];
             },
-            getColor: getDirectionLightColor,
+            getColorArr3: getDirectionLightColorArr3,
             getIntensity: getIntensity,
 
             DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem

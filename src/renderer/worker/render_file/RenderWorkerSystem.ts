@@ -50,8 +50,11 @@ import {
 import { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
 import {
     GeometryInitWorkerData, GeometryResetWorkerData,
-    GeometryUpdateWorkerData, LightDrawWorkerData
+    GeometryUpdateWorkerData, LightDrawWorkerData, LightInitWorkerData
 } from "../../type/messageDataType";
+import { setCount as setPointLightCount } from "./light/PointLightWorkerSystem";
+import { PointLightWorkerData } from "./light/PointLightWorkerData";
+import { initData as initLightData } from "./light/LightWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -72,9 +75,12 @@ export var onmessageHandler = (e) => {
             initState(state, getGL, setSide, DeviceManagerWorkerData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT:
+            //todo test Direction/Point light count
+            _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+
             _initMaterials(data.materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
             _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
-            setLightGLSLDataStructureMemberNameArr(data.lightData.directionLightGLSLDataStructureMemberNameArr, DirectionLightWorkerData);
+
 
             // self.postMessage({
             //     state: ERenderWorkerState.INIT_COMPLETE
@@ -107,10 +113,9 @@ export var onmessageHandler = (e) => {
                 disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
             }
 
-            _setLightData(lightData, AmbientLightWorkerData, DirectionLightWorkerData);
+            _setLightDrawData(lightData, DirectionLightWorkerData);
 
-            //todo add light data
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, null, null, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferForDrawData), data.renderCommandBufferData);
 
             self.postMessage({
                 state: ERenderWorkerState.DRAW_COMPLETE
@@ -156,11 +161,12 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
     setPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
 }
 
-var _setLightData = (lightData:LightDrawWorkerData, AmbientLightWorkerData:any, DirectionLightWorkerData:any) => {
+var _initLights = (lightData:LightInitWorkerData, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any) => {
+    initLightData(lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+}
+
+var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData:any) => {
     var directionLightData = lightData.directionLightData;
 
-    setAmbientLightCount(lightData.ambientLightData.count, AmbientLightWorkerData);
-
-    setDirectionLightCount(directionLightData.count, DirectionLightWorkerData);
     setPositionArr(directionLightData.positionArr, DirectionLightWorkerData);
 }

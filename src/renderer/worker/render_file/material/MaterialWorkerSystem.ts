@@ -10,7 +10,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
-    isTestAlpha as isTestAlphaUtils, buildMaterialData
+    isTestAlpha as isTestAlphaUtils,  buildInitShaderDataMap
 } from "../../../utils/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
@@ -25,6 +25,8 @@ import { createTypeArrays as createLightMaterialTypeArraysUtils } from "../../..
 import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
 import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";
+import { DirectionLightWorkerData } from "../light/DirectionLightWorkerData";
+import { PointLightWorkerData } from "../light/PointLightWorkerData";
 
 export var initMaterials = (basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData) => {
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index);
@@ -40,7 +42,7 @@ var _initSpecifyMaterials = (startIndex: number, index: number) => {
 export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
     var shaderIndex = getShaderIndex(materialIndex, MaterialWorkerData);
 
-    initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, buildMaterialData(MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData));
+    initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
 }
 
 export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {

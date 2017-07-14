@@ -53,11 +53,16 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
     return offset;
 }
 
-export var buildMaterialData = (MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any) => {
+export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, DirectionLightDataFromSystem:any, PointLightDataFromSystem:any) => {
     return {
+        DeviceManagerDataFromSystem:DeviceManagerDataFromSystem,
+        ProgramDataFromSystem: ProgramDataFromSystem,
+        LocationDataFromSystem:LocationDataFromSystem,
+        GLSLSenderDataFromSystem:GLSLSenderDataFromSystem,
         MaterialDataFromSystem: MaterialDataFromSystem,
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
-        LightMaterialDataFromSystem: LightMaterialDataFromSystem
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
+        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
+        PointLightDataFromSystem: PointLightDataFromSystem
     }
 }
-
