@@ -27,7 +27,7 @@ describe("DirectionLight", function () {
         });
 
         describe("contract check", function(){
-            it("count should <= 4", function () {
+            it("count should <= max count", function () {
                 var msg = "count should <= max count";
                 directionLightTool.create();
                 directionLightTool.create();
@@ -120,7 +120,7 @@ describe("DirectionLight", function () {
                         expect(directionLightTool[getMethodName](componentTool.createComponent(index2))).toEqual(defaultValue);
                     }
 
-                    it("remove from shininess", function () {
+                    it("remove from intensity", function () {
                         judgeSingleValue("getIntensity", "setIntensity", DirectionLightData.defaultIntensity);
                     });
                 });

@@ -20,7 +20,7 @@ describe("AmbientLight", function () {
         });
 
         describe("contract check", function(){
-            it("count should <= 1", function () {
+            it("count should <= max count", function () {
                 var msg = "count should <= max count";
                 ambientLightTool.create();
 

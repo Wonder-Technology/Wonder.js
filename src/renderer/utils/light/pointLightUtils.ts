@@ -61,6 +61,6 @@ export var createTypeArrays = (buffer: any, count: number, PointLightDataFromSys
     PointLightDataFromSystem.quadratics = new Float32Array(buffer, offset, count * getQuadraticDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getQuadraticDataSize();
 
-    PointLightDataFromSystem.ranges = new Uint16Array(buffer, offset, count * getRangeDataSize());
-    offset += count * Uint16Array.BYTES_PER_ELEMENT * getRangeDataSize();
+    PointLightDataFromSystem.ranges = new Float32Array(buffer, offset, count * getRangeDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getRangeDataSize();
 }

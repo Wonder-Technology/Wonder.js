@@ -16,6 +16,7 @@ describe("LightMaterial", function () {
     var DataBufferConfig = wd.DataBufferConfig;
     var EShading = wd.EShading;
     var ELightModel = wd.ELightModel;
+    var PointLight = wd.PointLight;
 
     afterEach(function () {
         testTool.clear(sandbox);
@@ -579,7 +580,7 @@ describe("LightMaterial", function () {
 
                             var fs = materialTool.getFsSource(gl);
 
-                            expect(glslTool.contain(fs, "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec3 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec3 materialSpecular = u_specular;\n        vec3 materialEmission = getMaterialEmission();\n\n        float specularStrength = getSpecularStrength();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = materialEmission;\n\n        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;\n\n\n        if(u_lightModel == 3){\n            return vec4(emissionColor + ambientColor, 1.0);\n        }\n\n        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;\n\n        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);\n//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), 1.0);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(light.range == NULL || distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec3 materialLight = getMaterialLight();\n        vec4 materialDiffuse = getMaterialDiffuse();\n        vec3 materialSpecular = u_specular;\n        vec3 materialEmission = getMaterialEmission();\n\n        float specularStrength = getSpecularStrength();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = materialEmission;\n\n        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;\n\n\n        if(u_lightModel == 3){\n            return vec4(emissionColor + ambientColor, 1.0);\n        }\n\n        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;\n\n        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);\n//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), 1.0);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec4 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n        }\n    #endif\n\n        return totalLight;\n}\n")).toBeTruthy();
                         });
                         it("test define DIRECTION_LIGHTS_COUNT", function () {
                             sceneTool.addDirectionLight(null, null, null);
@@ -708,6 +709,116 @@ describe("LightMaterial", function () {
                         gl.getUniformLocation.withArgs(sinon.match.any, "u_directionLights[2].position").returns(pos3),
                             pos4 = 1;
                         gl.getUniformLocation.withArgs(sinon.match.any, "u_directionLights[3].position").returns(pos4);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform3f.withArgs(pos3)).toCalledWith(pos3, position3.x, position3.y, position3.z);
+                        expect(gl.uniform3f.withArgs(pos4)).toCalledWith(pos4, position4.x, position4.y, position4.z);
+                    });
+                });
+            });
+
+            describe("add PointLightShaderLib", function () {
+                beforeEach(function () {
+                });
+
+                describe("send structure data", function () {
+                    var light1, position1, color1, intensity1;
+                    var light2, position2, color2, intensity2;
+
+                    function judgeSendSingleValue(name, setMethodName, value1, value2){
+                        var pos1 = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0]." + name).returns(pos1),
+                            pos2 = 1;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1]." + name).returns(pos2);
+
+                        pointLightTool[setMethodName](light1, value1);
+                        pointLightTool[setMethodName](light2, value2);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform1f.withArgs(pos1)).toCalledWith(pos1, value1);
+                        expect(gl.uniform1f.withArgs(pos2)).toCalledWith(pos2, value2);
+                    }
+
+                    beforeEach(function () {
+                        position1 = Vector3.create(1, 1, 2);
+                        position2 = Vector3.create(2, 1, 2);
+                        color1 = Color.create("#111111");
+                        color2 = Color.create("#211111");
+
+                        var obj1 = sceneTool.addPointLight(position1, color1);
+                        light1 = gameObjectTool.getComponent(obj1, PointLight);
+
+
+                        var obj2 = sceneTool.addPointLight(position2, color2);
+                        light2 = gameObjectTool.getComponent(obj2, PointLight);
+                    });
+
+                    it("send light position", function () {
+                        var pos1 = 0,
+                            pos2 = 1;
+
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].position").returns(pos1);
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].position").returns(pos2);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform3f.withArgs(pos1)).toCalledWith(pos1, position1.x, position1.y, position1.z);
+                        expect(gl.uniform3f.withArgs(pos2)).toCalledWith(pos2, position2.x, position2.y, position2.z);
+                    });
+
+                    it("send light color", function () {
+                        var pos1 = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].color").returns(pos1),
+                            pos2 = 1;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].color").returns(pos2);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(testTool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testTool.getValues(color1.toArray3()));
+                        expect(testTool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testTool.getValues(color2.toArray3()));
+                    });
+                    it("send light intensity", function () {
+                        judgeSendSingleValue("intensity", "setIntensity", 1, 2);
+                    });
+                    it("send light constant", function () {
+                        judgeSendSingleValue("constant", "setConstant", 1, 2);
+                    });
+                    it("send light linear", function () {
+                        judgeSendSingleValue("linear", "setLinear", 1, 2);
+                    });
+                    it("send light quadratic", function () {
+                        judgeSendSingleValue("quadratic", "setQuadratic", 1, 2);
+                    });
+                    it("send light range", function () {
+                        judgeSendSingleValue("range", "setRange", 1, 2);
+                    });
+
+                    it("at most support 4 point lights", function () {
+                        var position3 = Vector3.create(3, 3, 4),
+                            position4 = Vector3.create(4, 3, 4),
+                            color3 = Color.create("#333333"),
+                            color4 = Color.create("#433333"),
+                            intensity3 = 3,
+                            intensity4 = 4;
+
+                        sceneTool.addPointLight(position3, color3, intensity3);
+                        sceneTool.addPointLight(position4, color4, intensity4);
+
+
+                        var pos3 = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[2].position").returns(pos3),
+                            pos4 = 1;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[3].position").returns(pos4);
 
 
                         directorTool.init(state);

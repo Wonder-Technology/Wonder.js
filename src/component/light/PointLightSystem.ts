@@ -184,7 +184,7 @@ export var disposeComponent = (component: Light) => {
 
 export var initData = (PointLightData: any) => {
     var count = DataBufferConfig.pointLightDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize()) + Uint16Array.BYTES_PER_ELEMENT * getRangeDataSize(),
+        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()),
         buffer:any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
@@ -217,7 +217,7 @@ export var initData = (PointLightData: any) => {
             constant: "u_pointLights[1].constant",
             linear: "u_pointLights[1].linear",
             quadratic: "u_pointLights[1].quadratic",
-            range: "u_pointLights[0].range"
+            range: "u_pointLights[1].range"
         }, {
             position: "u_pointLights[2].position",
             color: "u_pointLights[2].color",

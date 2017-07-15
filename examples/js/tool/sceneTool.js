@@ -124,6 +124,39 @@ var sceneTool = (function () {
             sceneTool.addGameObject(obj)
 
             return obj;
+        },
+        addPointLight: function(pos, color, intensity, constant, linear, quadratic, range, rangeLevel){
+            var pointLightComponent = pointLightTool.create();
+            pointLightTool.setColor(pointLightComponent, color || wd.Color.create("#ffffff"));
+            pointLightTool.setIntensity(pointLightComponent, intensity || 1);
+            pointLightTool.setConstant(pointLightComponent, constant || 0);
+            pointLightTool.setLinear(pointLightComponent, linear || 0);
+            pointLightTool.setQuadratic(pointLightComponent, quadratic || 0);
+
+            if(!!range){
+                pointLightTool.setRange(pointLightComponent, range);
+            }
+
+            if(!!rangeLevel){
+                pointLightTool.setRangeLevel(pointLightComponent, rangeLevel);
+            }
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, pointLightComponent);
+
+
+
+            if(!!pos){
+                var transform = gameObjectTool.getTransform(obj);
+
+                threeDTransformTool.setPosition(transform, pos);
+            }
+
+            sceneTool.addGameObject(obj)
+
+            return obj;
         }
     }
 })()

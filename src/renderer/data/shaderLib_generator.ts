@@ -346,7 +346,6 @@ export const shaderLib_generator = {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
                                 {
                                     glslSenderData:{
-
                                         sendFloat1,
                                         sendFloat3
                                     },
