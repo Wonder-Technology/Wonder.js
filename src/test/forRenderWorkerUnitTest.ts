@@ -4,7 +4,10 @@ import { initData as initLightWorkerDataSystem } from "../renderer/worker/render
 import { initData as initDrawRenderCommandBufferWorkerDataSystem } from "../renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerSystem";
 import { initData as initGLSLSenderWorkerDataSystem } from "../renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initLocationWorkerDataSystem } from "../renderer/worker/render_file/shader/location/LocationWorkerSystem";
-import { getPosition } from "../renderer/worker/render_file/shader/ShaderWorkerSystem";
+import {
+    getDirectionLightPosition,
+    getPointLightPosition
+} from "../renderer/worker/render_file/shader/ShaderWorkerSystem";
 
 export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 
@@ -18,4 +21,6 @@ export var initLightWorkerData = initLightWorkerDataSystem;
 
 export var initDrawRenderCommandBufferWorkerData = initDrawRenderCommandBufferWorkerDataSystem;
 
-export var getPositionInShaderWorker = getPosition;
+export var getDirectionLightPositionInShaderWorker = getDirectionLightPosition;
+
+export var getPointLightPositionInShaderWorker = getPointLightPosition;

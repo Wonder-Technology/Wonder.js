@@ -29,14 +29,21 @@ describe("light", function () {
 
     describe("init lights", function () {
         beforeEach(function () {
-
         });
 
         it("send light init data to render worker", function () {
+            testRenderWorkerTool.clearAndOpenContractCheck(sandbox, {
+                transformDataBufferCount:20
+            });
+
             sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             sceneTool.addAmbientLight();
             sceneTool.addDirectionLight();
             sceneTool.addDirectionLight();
+            sceneTool.addPointLight();
+            sceneTool.addPointLight();
+            sceneTool.addPointLight();
+            sceneTool.addPointLight();
 
 
             directorTool.init(sandbox);
@@ -50,16 +57,20 @@ describe("light", function () {
                 lightData: {
                     ambientLightData: {
                         buffer: AmbientLightData.buffer,
-                        count: AmbientLightData.count
+                        bufferCount: DataBufferConfig.ambientLightDataBufferCount,
+                        lightCount: AmbientLightData.count
                     },
                     directionLightData: {
                         buffer: DirectionLightData.buffer,
-                        count: DirectionLightData.count,
+                        bufferCount: DataBufferConfig.directionLightDataBufferCount,
+                        lightCount: DirectionLightData.count,
                         directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
                     },
                     pointLightData: {
-                        buffer: null,
-                        count: PointLightData.count
+                        buffer: PointLightData.buffer,
+                        bufferCount: DataBufferConfig.pointLightDataBufferCount,
+                        lightCount: PointLightData.count,
+                        pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
                     }
                 }
             });
@@ -76,7 +87,11 @@ describe("light", function () {
             describe("init light data", function () {
                 var ambientLightCount,
                     directionLightCount, directionLightGLSLDataStructureMemberNameArr,
-                    pointLightCount;
+                    pointLightCount,
+                    pointLightGLSLDataStructureMemberNameArr = [{a:1}];
+
+                var ambientLightBufferCount,
+                    directionLightBufferCount, pointLightBufferCount;
 
 
                 var ambientLightBuffer,
@@ -85,6 +100,11 @@ describe("light", function () {
 
                 beforeEach(function () {
                     var maxBufferLength = 1000;
+
+                    ambientLightBufferCount = 10;
+                    directionLightBufferCount = 20;
+                    pointLightBufferCount = 30;
+
                     ambientLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
                     directionLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
                     pointLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
@@ -101,16 +121,20 @@ describe("light", function () {
                             lightData: {
                                 ambientLightData: {
                                     buffer: ambientLightBuffer,
-                                    count: ambientLightCount
+                                    bufferCount: ambientLightBufferCount,
+                                   lightCount: ambientLightCount
                                 },
                                 directionLightData: {
                                     buffer: directionLightBuffer,
-                                    count: directionLightCount,
+                                    bufferCount: directionLightBufferCount,
+                                    lightCount: directionLightCount,
                                     directionLightGLSLDataStructureMemberNameArr: directionLightGLSLDataStructureMemberNameArr
                                 },
                                 pointLightData: {
                                     buffer: pointLightBuffer,
-                                    count: pointLightCount
+                                    bufferCount: pointLightBufferCount,
+                                    lightCount: pointLightCount,
+                                    pointLightGLSLDataStructureMemberNameArr: pointLightGLSLDataStructureMemberNameArr
 
                                 }
                             },
@@ -126,7 +150,7 @@ describe("light", function () {
 
                     var colors = AmbientLightWorkerData.colors;
                     expect(colors).toBeInstanceOf(Float32Array);
-                    expect(colors.byteLength).toEqual(DataBufferConfig.ambientLightDataBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
+                    expect(colors.byteLength).toEqual(ambientLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
                 });
                 it("init direction light data", function () {
                     expect(DirectionLightWorkerData.count).toEqual(directionLightCount);
@@ -134,17 +158,41 @@ describe("light", function () {
 
                     var colors = DirectionLightWorkerData.colors;
                     expect(colors).toBeInstanceOf(Float32Array);
-                    expect(colors.byteLength).toEqual(directionLightCount * Float32Array.BYTES_PER_ELEMENT * 3);
+                    expect(colors.byteLength).toEqual(directionLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
 
 
                     var intensities = DirectionLightWorkerData.intensities;
                     expect(intensities).toBeInstanceOf(Float32Array);
-                    expect(intensities.byteLength).toEqual(directionLightCount * Float32Array.BYTES_PER_ELEMENT * 1);
+                    expect(intensities.byteLength).toEqual(directionLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
                 });
                 it("init point light data", function () {
                     expect(PointLightWorkerData.count).toEqual(pointLightCount);
+                    expect(PointLightWorkerData.lightGLSLDataStructureMemberNameArr).toEqual(pointLightGLSLDataStructureMemberNameArr);
 
-                    //todo judge type array buffer
+                    var colors = PointLightWorkerData.colors;
+                    expect(colors).toBeInstanceOf(Float32Array);
+                    expect(colors.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
+
+
+                    var intensities = PointLightWorkerData.intensities;
+                    expect(intensities).toBeInstanceOf(Float32Array);
+                    expect(intensities.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+                    var constants = PointLightWorkerData.constants;
+                    expect(constants).toBeInstanceOf(Float32Array);
+                    expect(constants.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+                    var linears = PointLightWorkerData.linears;
+                    expect(linears).toBeInstanceOf(Float32Array);
+                    expect(linears.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+                    var quadratics = PointLightWorkerData.quadratics;
+                    expect(quadratics).toBeInstanceOf(Float32Array);
+                    expect(quadratics.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+                    var ranges = PointLightWorkerData.ranges;
+                    expect(ranges).toBeInstanceOf(Float32Array);
+                    expect(ranges.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
                 });
             });
         });
@@ -156,11 +204,15 @@ describe("light", function () {
 
             it("send direction light positionArr", function () {
                 var pos1 = Vector3.create(1, 2, 3),
-                    pos2 = Vector3.create(2, 2, 4);
+                    pos2 = Vector3.create(2, 2, 4),
+                    pos3 = Vector3.create(10, 2, 3),
+                    pos4 = Vector3.create(20, 2, 4);
 
                 sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
                 sceneTool.addDirectionLight(pos1);
                 sceneTool.addDirectionLight(pos2);
+                sceneTool.addPointLight(pos3);
+                sceneTool.addPointLight(pos4);
 
 
                 directorTool.init(sandbox);
@@ -181,6 +233,12 @@ describe("light", function () {
                                 pos1.values,
                                 pos2.values
                             ]
+                        },
+                        pointLightData: {
+                            positionArr: [
+                                pos3.values,
+                                pos4.values
+                            ]
                         }
                     }
                 });
@@ -197,7 +255,9 @@ describe("light", function () {
 
                 it("set direction light positionArr", function () {
                     var pos1 = Vector3.create(1, 2, 3),
-                        pos2 = Vector3.create(2, 2, 4);
+                        pos2 = Vector3.create(2, 2, 4),
+                        pos3 = Vector3.create(10, 2, 3),
+                        pos4 = Vector3.create(20, 2, 4);
 
                     e = {
                         data: {
@@ -212,6 +272,12 @@ describe("light", function () {
                                         pos1.values,
                                         pos2.values
                                     ]
+                                },
+                                pointLightData: {
+                                    positionArr: [
+                                        pos3.values,
+                                        pos4.values
+                                    ]
                                 }
                             }
                         }
@@ -223,6 +289,10 @@ describe("light", function () {
                     expect(DirectionLightWorkerData.positionArr).toEqual([
                         pos1.values,
                         pos2.values
+                    ])
+                    expect(PointLightWorkerData.positionArr).toEqual([
+                        pos3.values,
+                        pos4.values
                     ])
                 });
             });
@@ -245,7 +315,9 @@ describe("light", function () {
             describe("send direction uniform data", function(){
                 it("send position from DirectionLightData.positionArr", function () {
                     var pos1 = Vector3.create(1, 2, 3),
-                        pos2 = Vector3.create(2, 2, 4);
+                        pos2 = Vector3.create(2, 2, 4),
+                        pos3 = Vector3.create(10, 2, 3),
+                        pos4 = Vector3.create(20, 2, 4);
 
                     e = {
                         data: {
@@ -260,6 +332,12 @@ describe("light", function () {
                                         pos1.values,
                                         pos2.values
                                     ]
+                                },
+                                pointLightData: {
+                                    positionArr: [
+                                        pos3.values,
+                                        pos4.values
+                                    ]
                                 }
                             }
                         }
@@ -270,6 +348,9 @@ describe("light", function () {
 
                     expect(shaderTool.getDirectionLightPositionForSend(0)).toEqual(pos1.values)
                     expect(shaderTool.getDirectionLightPositionForSend(1)).toEqual(pos2.values)
+
+                    expect(shaderTool.getPointLightPositionForSend(0)).toEqual(pos3.values)
+                    expect(shaderTool.getPointLightPositionForSend(1)).toEqual(pos4.values)
                 });
             });
         });

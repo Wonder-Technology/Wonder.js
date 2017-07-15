@@ -24,6 +24,7 @@ import {
     getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize
 } from "../../renderer/utils/light/pointLightUtils";
 import { Log } from "../../utils/Log";
+import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     it("count should <= max count", () => {
@@ -41,16 +42,15 @@ export var getPosition = (index: number, ThreeDTransformData: any, GameObjectDat
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, PointLightData);
 }
 
-//todo fix worker
-// export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any):Array<Float32Array> => {
-//     var positionArr:Array<Float32Array> = [];
-//
-//     for(let i = 0, count = PointLightData.count; i < count; i++){
-//         positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, PointLightData).values);
-//     }
-//
-//     return positionArr;
-// }
+export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any):Array<Float32Array> => {
+    var positionArr:Array<Float32Array> = [];
+
+    for(let i = 0, count = PointLightData.count; i < count; i++){
+        positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, PointLightData).values);
+    }
+
+    return positionArr;
+}
 
 export var getColor = (index: number, PointLightData: any) => {
     return getColor3Data(index, PointLightData.colors);
@@ -183,7 +183,7 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (PointLightData: any) => {
-    var count = DataBufferConfig.pointLightDataBufferCount,
+    var count = getPointLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()),
         buffer:any = null;
 

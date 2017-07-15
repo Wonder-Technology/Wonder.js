@@ -16,7 +16,15 @@ import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 import { DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
 import { getColorArr3 as getAmbientLightColorArr3 } from "../light/AmbientLightWorkerSystem";
-import { getColorArr3 as getDirectionLightColorArr3, getIntensity } from "../light/DirectionLightWorkerSystem";
+import { getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity } from "../light/DirectionLightWorkerSystem";
+import {
+    getColorArr3 as getPointLightColorArr3,
+    getIntensity as getPointLightIntensity,
+    getConstant as getPointLightConstant,
+    getLinear as getPointLightLinear,
+    getQuadratic as getPointLightQuadratic,
+    getRange as getPointLightRange,
+} from "../light/PointLightWorkerSystem";
 
 export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
     initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, initShaderDataMap);
@@ -53,12 +61,25 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
         },
         directionLightData:{
             getPosition: (index:number) => {
-                return getPosition(index, drawDataMap);
+                return getDirectionLightPosition(index, drawDataMap);
             },
             getColorArr3: getDirectionLightColorArr3,
-            getIntensity: getIntensity,
+            getIntensity: getDirectionLightIntensity,
 
             DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
+        },
+        pointLightData:{
+            getPosition: (index:number) => {
+                return getPointLightPosition(index, drawDataMap);
+            },
+            getColorArr3: getPointLightColorArr3,
+            getIntensity: getPointLightIntensity,
+            getConstant: getPointLightConstant,
+            getLinear: getPointLightLinear,
+            getQuadratic: getPointLightQuadratic,
+            getRange: getPointLightRange,
+
+            PointLightDataFromSystem:drawDataMap.PointLightDataFromSystem
         }
     }
 }
@@ -69,6 +90,14 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
 
 export var use = useUtils;
 
-export var getPosition = (index:number, drawDataMap: DrawDataMap) => {
-    return drawDataMap.DirectionLightDataFromSystem.positionArr[index];
+export var getDirectionLightPosition = (index:number, drawDataMap: DrawDataMap) => {
+    return _getLightPosition(index, drawDataMap.DirectionLightDataFromSystem);
+}
+
+export var getPointLightPosition = (index:number, drawDataMap: DrawDataMap) => {
+    return _getLightPosition(index, drawDataMap.PointLightDataFromSystem);
+}
+
+var _getLightPosition = (index:number, LightDataFromSystem:any) => {
+    return LightDataFromSystem.positionArr[index];
 }

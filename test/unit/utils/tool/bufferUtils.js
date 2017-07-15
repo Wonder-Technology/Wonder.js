@@ -1,7 +1,7 @@
 var bufferUtils = (function () {
     return {
         minBufferCount: function(sandbox, data, DataBufferConfig){
-            var transformDataBufferCount = 10;
+            var transformDataBufferCount = (data && data.transformDataBufferCount) || 10;
             var geometryDataBufferCount = (data && data.geometryDataBufferCount) || 200;
 
             testTool.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {

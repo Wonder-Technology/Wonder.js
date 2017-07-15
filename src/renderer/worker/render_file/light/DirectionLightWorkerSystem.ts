@@ -7,12 +7,6 @@ import {
 } from "../../../utils/light/directionLightUtils";
 import { Color } from "../../../../structure/Color";
 
-export var setCount = setSpecifyLightCount;
-
-export var setLightGLSLDataStructureMemberNameArr = (lightGLSLDataStructureMemberNameArr:Array<DirectionLightGLSLDataStructure>, DirectionLightWorkerData:any) => {
-    DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr = lightGLSLDataStructureMemberNameArr;
-}
-
 export var setPositionArr = (positionArr:Array<Float32Array>, DirectionLightWorkerData:any) => {
     DirectionLightWorkerData.positionArr = positionArr;
 }
@@ -25,12 +19,15 @@ export var getIntensity = getIntensityUtils;
 
 export var initData = ({
                            buffer,
-                           count,
+                           bufferCount,
+                           lightCount,
                            directionLightGLSLDataStructureMemberNameArr
                        }, DirectionLightWorkerData: any) => {
-    setCount(count, DirectionLightWorkerData);
+    _setCount(lightCount, DirectionLightWorkerData);
 
-    setLightGLSLDataStructureMemberNameArr(directionLightGLSLDataStructureMemberNameArr, DirectionLightWorkerData);
+    DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr = directionLightGLSLDataStructureMemberNameArr;
 
-    createTypeArrays(buffer, count, DirectionLightWorkerData);
+    createTypeArrays(buffer, bufferCount, DirectionLightWorkerData);
 }
+
+var _setCount = setSpecifyLightCount;

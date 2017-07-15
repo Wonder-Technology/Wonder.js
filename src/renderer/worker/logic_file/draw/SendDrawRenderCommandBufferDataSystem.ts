@@ -10,7 +10,9 @@ import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
 import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
-import { getAllPositionData } from "../../../../component/light/DirectionLightSystem";
+import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
+import { PointLightData } from "../../../../component/light/PointLightData";
+import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
 
 export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
@@ -53,7 +55,10 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
 
     lightData = {
         directionLightData: {
-            positionArr: getAllPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
+            positionArr: getAllDirectionLightPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
+        },
+        pointLightData: {
+            positionArr: getPointLightAllPositionData(ThreeDTransformData, GameObjectData, PointLightData)
         }
     }
 

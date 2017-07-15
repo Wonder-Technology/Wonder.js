@@ -19,8 +19,13 @@ var shaderTool = (function () {
             wd.GLSLSenderData.sendUniformConfigMap = {};
         },
         getDirectionLightPositionForSend: function(index){
-            return wd.getPositionInShaderWorker(index, {
+            return wd.getDirectionLightPositionInShaderWorker(index, {
                 DirectionLightDataFromSystem:wdrd.DirectionLightWorkerData
+            });
+        },
+        getPointLightPositionForSend: function(index){
+            return wd.getPointLightPositionInShaderWorker(index, {
+                PointLightDataFromSystem:wdrd.PointLightWorkerData
             });
         }
     }

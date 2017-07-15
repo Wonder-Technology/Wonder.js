@@ -42,6 +42,10 @@ import {
 } from "../utils/material/bufferUtils";
 import { initState } from "../utils/state/stateUtils";
 import { PointLightData } from "../../component/light/PointLightData";
+import {
+    getAmbientLightBufferCount, getDirectionLightBufferCount,
+    getPointLightBufferCount
+} from "../utils/light/bufferUtils";
 
 export var init = null;
 
@@ -77,17 +81,21 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             lightData:{
                 ambientLightData: {
                     buffer: AmbientLightData.buffer,
-                    count:AmbientLightData.count
+                    bufferCount:getAmbientLightBufferCount(),
+                    lightCount:AmbientLightData.count
+
                 },
                 directionLightData: {
                     buffer: DirectionLightData.buffer,
-                    count:DirectionLightData.count,
+                    bufferCount:getDirectionLightBufferCount(),
+                    lightCount:DirectionLightData.count,
                     directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
                 },
-                //todo fix
                 pointLightData: {
-                    buffer:null,
-                    count:0
+                    buffer:PointLightData.buffer,
+                    bufferCount:getPointLightBufferCount(),
+                    lightCount:PointLightData.count,
+                    pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
                 }
             }
         });

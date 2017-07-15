@@ -16,6 +16,7 @@ import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+import { getAmbientLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("count should <= max count", () => {
@@ -46,7 +47,7 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (AmbientLightData: any) => {
-    var count = DataBufferConfig.ambientLightDataBufferCount,
+    var count = getAmbientLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize(),
         buffer:any = null;
 

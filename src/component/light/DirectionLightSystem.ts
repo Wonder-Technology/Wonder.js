@@ -21,6 +21,7 @@ import { getColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtil
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { Vector3 } from "../../math/Vector3";
 import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
+import { getDirectionLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= max count", () => {
@@ -82,7 +83,7 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (DirectionLightData: any) => {
-    var count = DataBufferConfig.directionLightDataBufferCount,
+    var count = getDirectionLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()),
         buffer:any = null;
 
