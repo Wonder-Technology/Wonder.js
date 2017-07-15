@@ -41,6 +41,7 @@ import {
     getLightMaterialBufferStartIndex
 } from "../utils/material/bufferUtils";
 import { initState } from "../utils/state/stateUtils";
+import { PointLightData } from "../../component/light/PointLightData";
 
 export var init = null;
 
@@ -129,7 +130,7 @@ else {
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

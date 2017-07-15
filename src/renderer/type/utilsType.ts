@@ -5,6 +5,7 @@ export type DrawDataMap = {
     LightMaterialDataFromSystem: any;
     AmbientLightDataFromSystem: any;
     DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
     ProgramDataFromSystem: any;
     LocationDataFromSystem: any;
     GLSLSenderDataFromSystem: any;

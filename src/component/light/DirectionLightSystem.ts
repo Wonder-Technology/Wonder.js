@@ -82,7 +82,7 @@ export var disposeComponent = (component: Light) => {
 }
 
 export var initData = (DirectionLightData: any) => {
-    var count = DataBufferConfig.lightMaterialDataBufferCount,
+    var count = DataBufferConfig.directionLightDataBufferCount,
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()),
         buffer:any = null;
 

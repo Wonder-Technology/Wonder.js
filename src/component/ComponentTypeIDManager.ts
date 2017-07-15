@@ -37,5 +37,5 @@ _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);
 _addTypeID(["CameraController"], _table);
 _addTypeID(["AmbientLight"], _table);
-_addTypeID(["PointLight"], _table);
 _addTypeID(["DirectionLight"], _table);
+_addTypeID(["PointLight"], _table);

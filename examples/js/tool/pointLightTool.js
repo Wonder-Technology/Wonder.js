@@ -3,7 +3,12 @@ var pointLightTool = (function () {
         create:wd.createPointLight,
         setColor:wd.setPointLightColor,
         setIntensity:wd.setPointLightIntensity,
-        setRangeLevel:wd.setPointLightRangeLevel
+        setConstant:wd.setPointLightConstant,
+        setQuadratic:wd.setPointLightQuadratic,
+        setRange:wd.setPointLightRange,
+        setRangeLevel:wd.setPointLightRangeLevel,
+        getGameObject:wd.getPointLightGameObject,
+        getPosition:wd.getPointLightPosition
     }
 })()
 

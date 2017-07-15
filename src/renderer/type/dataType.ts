@@ -85,3 +85,16 @@ export type DirectionLightGLSLDataStructure = {
     color: string;
     intensity: string;
 }
+
+export type PointLightGLSLDataStructure = {
+    position: string;
+    color: string;
+    intensity: string;
+    constant: string;
+    linear: string;
+    quadratic: string;
+    range: string;
+}
+
+export type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
+type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;

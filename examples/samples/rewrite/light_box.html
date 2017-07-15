@@ -16,7 +16,7 @@
     <script src="../../js/tool/lightMaterialTool.js"></script>
     <script src="../../js/tool/ambientLightTool.js"></script>
     <script src="../../js/tool/directionLightTool.js"></script>
-    <!--<script src="../../js/tool/pointLightTool.js"></script>-->
+    <script src="../../js/tool/pointLightTool.js"></script>
 </head>
 <body>
 
@@ -50,7 +50,7 @@
 
             sceneTool.addGameObject(createAmbientLight());
             sceneTool.addGameObject(createDirectionLight());
-//            sceneTool.addGameObject(createPointLight());
+            sceneTool.addGameObject(createPointLight());
 
 
 
@@ -118,45 +118,45 @@
         }
 
 
-//        function createPointLight() {
-//            var pointLightComponent = pointLightTool.create();
-//            pointLightTool.setColor(pointLightComponent, wd.Color.create("rgb(0.0, 1.0, 1.0)"));
-//            pointLightTool.setIntensity(pointLightComponent, 10);
-//            pointLightTool.setRangeLevel(pointLightComponent, 11);
-//
-//
-//            var obj = gameObjectTool.create();
-//
-//            gameObjectTool.addComponent(obj, pointLightComponent);
-//
-//
-//            var transform = gameObjectTool.getTransform(obj);
-//
-//            threeDTransformTool.setPosition(transform, wd.Vector3.create(0, 1000, 0));
-//
-//
-//
-//            var geo = boxGeometryTool.create();
-//
-//            boxGeometryTool.setConfigData(geo, {
-//                width:5,
-//                height:5,
-//                depth:5
-//            })
-//
-//            gameObjectTool.addComponent(obj, geo);
-//
-//
-//            var mat = lightMaterialTool.create();
-//            lightMaterialTool.setColor(mat, wd.Color.create("#122333"));
-//
-//            gameObjectTool.addComponent(obj, mat);
-//
-//            gameObjectTool.addComponent(obj, meshRendererTool.create());
-//
-//
-//            return obj;
-//        }
+        function createPointLight() {
+            var pointLightComponent = pointLightTool.create();
+            pointLightTool.setColor(pointLightComponent, wd.Color.create("rgb(0.0, 1.0, 1.0)"));
+            pointLightTool.setIntensity(pointLightComponent, 2);
+            pointLightTool.setRangeLevel(pointLightComponent, 10);
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, pointLightComponent);
+
+
+            var transform = gameObjectTool.getTransform(obj);
+
+            threeDTransformTool.setPosition(transform, wd.Vector3.create(10, 0, 0));
+
+
+
+            var geo = boxGeometryTool.create();
+
+            boxGeometryTool.setConfigData(geo, {
+                width:2,
+                height:2,
+                depth:2
+            })
+
+            gameObjectTool.addComponent(obj, geo);
+
+
+            var mat = basicMaterialTool.create();
+            lightMaterialTool.setColor(mat, wd.Color.create("#555555"));
+
+            gameObjectTool.addComponent(obj, mat);
+
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            return obj;
+        }
 
 
         function createCamera() {

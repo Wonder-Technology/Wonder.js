@@ -17,6 +17,7 @@ export {AmbientLightData} from "./component/light/AmbientLightData";
 export {DirectionLight,createDirectionLight,getDirectionLightGameObject,getDirectionLightPosition,getDirectionLightColor,setDirectionLightColor,getDirectionLightIntensity,setDirectionLightIntensity} from "./component/light/DirectionLight";
 export {DirectionLightData} from "./component/light/DirectionLightData";
 export {Light,checkLightShouldAlive} from "./component/light/Light";
+export {PointLight,createPointLight,getPointLightGameObject,getPointLightPosition,getPointLightColor,setPointLightColor,getPointLightIntensity,setPointLightIntensity,getPointLightConstant,setPointLightConstant,getPointLightLinear,setPointLightLinear,getPointLightQuadratic,setPointLightQuadratic,getPointLightRange,setPointLightRange,setPointLightRangeLevel} from "./component/light/PointLight";
 export {PointLightData} from "./component/light/PointLightData";
 export {SpecifyLightData} from "./component/light/SpecifyLightData";
 export {BasicMaterial,createBasicMaterial,getBasicMaterialColor,setBasicMaterialColor,getBasicMaterialOpacity,setBasicMaterialOpacity,getBasicMaterialAlphaTest,setBasicMaterialAlphaTest} from "./component/material/BasicMaterial";
@@ -84,7 +85,7 @@ export {EGeometryWorkerDataOperateType} from "./renderer/enum/EGeometryWorkerDat
 export {ELightWorkerDataOperateType} from "./renderer/enum/ELightWorkerDataOperateType";
 export {ESide} from "./renderer/enum/ESide";
 export {EVariableType} from "./renderer/enum/EVariableType";
-export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,noNormalMap_light_fragment,lightCommon_fragment,lightCommon_vertex,lightEnd_fragment,light_common,light_fragment,light_setWorldPosition_vertex,light_vertex,modelMatrix_noInstance_vertex,normalMatrix_noInstance_vertex,noDiffuseMap_fragment,noEmissionMap_fragment,noLightMap_fragment,noNormalMap_fragment,noNormalMap_vertex,noSpecularMap_fragment,noShadowMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
+export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,noNormalMap_light_fragment,lightCommon_fragment,lightCommon_vertex,lightEnd_fragment,light_common,light_fragment,light_setWorldPosition_vertex,light_vertex,noDiffuseMap_fragment,noEmissionMap_fragment,noLightMap_fragment,noNormalMap_fragment,noNormalMap_vertex,noSpecularMap_fragment,modelMatrix_noInstance_vertex,normalMatrix_noInstance_vertex,noShadowMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
 export {GLSLSenderData} from "./renderer/shader/glslSender/GLSLSenderData";
 export {LocationData} from "./renderer/shader/location/LocationData";
 export {ProgramData} from "./renderer/shader/program/ProgramData";

@@ -31,8 +31,8 @@ export const material_config = {
                     "NoShadowMapShaderLib",
                     "LightShaderLib",
                     "AmbientLightShaderLib",
-                    // "PointLightShaderLib",
                     "DirectionLightShaderLib",
+                    "PointLightShaderLib",
                     "LightEndShaderLib",
 
                     { "type": "group", "value": "engineMaterialEnd" }

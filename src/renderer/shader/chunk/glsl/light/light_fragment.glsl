@@ -71,7 +71,7 @@ vec4 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         float attenuation = 0.0;
 
-        if(light.range == NULL || distance < light.range)
+        if(distance < light.range)
         {
             attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
         }

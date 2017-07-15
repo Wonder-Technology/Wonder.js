@@ -1,15 +1,17 @@
 import { SpecifyLightData } from "./SpecifyLightData";
+import { PointLightGLSLDataStructure } from "../../renderer/type/dataType";
 
 export class PointLightData extends SpecifyLightData {
-    public static renderDataMap: Array<PointLightRenderData> = null;
-}
+    public static intensities: Float32Array = null;
+    public static constants: Float32Array = null;
+    public static linears: Float32Array = null;
+    public static quadratics: Float32Array = null;
+    public static ranges: Uint16Array = null;
 
-export type PointLightRenderData = {
-    colorArr: Array<number>;
-    intensity: number;
-    constant: number;
-    linear: number;
-    quadratic: number;
-    range: number;
-}
+    public static defaultIntensity: number = null;
+    public static defaultConstant: number = null;
+    public static defaultLinear: number = null;
+    public static defaultQuadratic: number = null;
+    public static defaultRange: number = null;
 
+    public static lightGLSLDataStructureMemberNameArr: Array<PointLightGLSLDataStructure> = null;}

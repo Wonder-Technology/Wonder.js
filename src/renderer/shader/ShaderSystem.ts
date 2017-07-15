@@ -21,8 +21,13 @@ import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectDat
 import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
 import {
     getColorArr3 as getDirectionLightColorArr3, getIntensity,
-    getPosition
+    getPosition as getDirectionLightPosition,
 } from "../../component/light/DirectionLightSystem";
+import {
+    getPosition as getPointLightPosition,
+    getColorArr3 as getPointLightColorArr3, getConstant,
+    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
+} from "../../component/light/PointLightSystem";
 
 export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
     var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
@@ -89,12 +94,25 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
             },
             directionLightData:{
                 getPosition: (index:number) => {
-                    return getPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+                    return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
                 },
                 getColorArr3: getDirectionLightColorArr3,
                 getIntensity: getIntensity,
 
                 DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
+            },
+            pointLightData:{
+                getPosition: (index:number) => {
+                    return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+                },
+                getColorArr3: getPointLightColorArr3,
+                getIntensity: getPointLightIntensity,
+                getConstant: getConstant,
+                getLinear: getLinear,
+                getQuadratic: getQuadratic,
+                getRange: getRange,
+
+                PointLightDataFromSystem:drawDataMap.PointLightDataFromSystem
             }
         }
     }

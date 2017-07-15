@@ -341,138 +341,41 @@ export const shaderLib_generator = {
                 }
             }
         },
-        // "PointLightShaderLib":{
-        //     "glsl": {
-        //         "vs": {
-        //             "defineList": [
-        //                 {
-        //                     "name": "POINT_LIGHTS_COUNT",
-        //                     "valueFunc": ({
-        //                                       PointLightData
-        //                                   }) => {
-        //                         return PointLightData.count;
-        //                     }
-        //                 }
-        //             ]
-        //         },
-        //         "fs": {
-        //             "defineList": [
-        //                 {
-        //                     "name": "POINT_LIGHTS_COUNT",
-        //                     "valueFunc": ({
-        //                                       PointLightData
-        //                                   }) => {
-        //                         return PointLightData.count;
-        //                     }
-        //                 }
-        //             ]
-        //         }
-        //     },
-        //     "send": {
-        //         "uniform": [
-        //             {
-        //                 "name": "position",
-        //                 "from": "pointLight",
-        //                 "field": "position",
-        //                 "fieldType": "structure",
-        //                 "type": "vec3"
-        //             },
-        //             {
-        //                 "name": "color",
-        //                 "from": "pointLight",
-        //                 "field": "color",
-        //                 "fieldType": "structure",
-        //                 "type": "vec3"
-        //             },
-        //             {
-        //                 "name": "intensity",
-        //                 "from": "pointLight",
-        //                 "field": "intensity",
-        //                 "fieldType": "structure",
-        //                 "type": "float"
-        //             },
-        //             {
-        //                 "name": "position",
-        //                 "from": "pointLight",
-        //                 "field": "position",
-        //                 "fieldType": "structure",
-        //                 "type": "vec3"
-        //             },
-        //             {
-        //                 "name": "constant",
-        //                 "from": "pointLight",
-        //                 "field": "constant",
-        //                 "fieldType": "structure",
-        //                 "type": "float"
-        //             },
-        //             {
-        //                 "name": "linear",
-        //                 "from": "pointLight",
-        //                 "field": "linear",
-        //                 "fieldType": "structure",
-        //                 "type": "float"
-        //             },
-        //             {
-        //                 "name": "quadratic",
-        //                 "from": "pointLight",
-        //                 "field": "quadratic",
-        //                 "fieldType": "structure",
-        //                 "type": "float"
-        //             },
-        //             {
-        //                 "name": "range",
-        //                 "from": "pointLight",
-        //                 "field": "range",
-        //                 "fieldType": "structure",
-        //                 "type": "float"
-        //             }
-        //         ]
-        //     }
-        // },
+        "PointLightShaderLib":{
+            "send": {
+                "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
+                                {
+                                    glslSenderData:{
+
+                                        sendFloat1,
+                                        sendFloat3
+                                    },
+                                    pointLightData:{
+                                        getColorArr3,
+                                        getIntensity,
+                                        getConstant,
+                                        getLinear,
+                                        getQuadratic,
+                                        getRange,
+                                        getPosition,
+
+                                        PointLightDataFromSystem
+                                    }
+                                }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+                    for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
+                        sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i), uniformCacheMap, uniformLocationMap);
+                        sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].constant, getConstant(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].linear, getLinear(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].quadratic, getQuadratic(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].range, getRange(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                    }
+                }
+            }
+        },
         "DirectionLightShaderLib": {
             "send": {
-                // "uniform": [
-                //     {
-                //         "name": "position",
-                //         "from": "directionLight",
-                //         "field": "position",
-                //         "fieldType": "structure",
-                //         "type": "vec3"
-                //     }
-                //     // {
-                //     //     "name": "color",
-                //     //     "from": "directionLight",
-                //     //     "field": "color",
-                //     //     "fieldType": "structure",
-                //     //     "type": "vec3"
-                //     // },
-                //     // {
-                //     //     "name": "intensity",
-                //     //     "from": "directionLight",
-                //     //     "field": "intensity",
-                //     //     "fieldType": "structure",
-                //     //     "type": "float"
-                //     // }
-                // ],
-                // "uniformGroup": {
-                //     "directionLight":[
-                //         {
-                //             "name": "color",
-                //             // "from": "directionLight",
-                //             "field": "color",
-                //             "fieldType": "structure",
-                //             "type": "vec3"
-                //         },
-                //         {
-                //             "name": "intensity",
-                //             // "from": "directionLight",
-                //             "field": "intensity",
-                //             "fieldType": "structure",
-                //             "type": "float"
-                //         }
-                //     ]
-                // },
-
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
                                 {
                                     glslSenderData:{

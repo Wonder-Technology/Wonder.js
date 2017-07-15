@@ -4,6 +4,7 @@ import { Quaternion } from "../math/Quaternion";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../math/Matrix3";
+import { TypeArr } from "../renderer/type/dataType";
 
 export var getMatrix3DataSize = () => 9;
 
@@ -174,5 +175,3 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
 // }, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
 //     typeArr[startIndex + increment] = target;
 // })
-
-type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;

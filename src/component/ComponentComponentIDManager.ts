@@ -34,4 +34,4 @@ _addComponentID(["Material", "BasicMaterial", "LightMaterial"], _table);
 _addComponentID(["MeshRenderer"], _table);
 _addComponentID(["Tag"], _table);
 _addComponentID(["CameraController"], _table);
-_addComponentID(["Light", "AmbientLight", "DirectionLight"], _table);
+_addComponentID(["Light", "AmbientLight", "DirectionLight", "PointLight"], _table);
