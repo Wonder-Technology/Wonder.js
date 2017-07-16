@@ -71,6 +71,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
         IndexBufferDataFromSystem,
         DrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
+        mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
         count = bufferData.count,
@@ -94,7 +95,7 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
 
     _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
-    _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat4Length, normalMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
 
     for (let i = 0; i < count; i++) {
