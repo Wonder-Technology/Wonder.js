@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script src="../../dist/wd.js" type="text/javascript"></script>
+    <script src="../../examples/js/tool/threeDTransformTool.js"></script>
+    <script src="../../examples/js/tool/basicMaterialTool.js"></script>
+    <script src="../../examples/js/tool/basicMaterialTool.js"></script>
+    <script src="../../examples/js/tool/lightMaterialTool.js"></script>
+    <script src="../../examples/js/tool/ambientLightTool.js"></script>
+    <script src="../../examples/js/tool/directionLightTool.js"></script>
+    <script src="../../examples/js/tool/pointLightTool.js"></script>
+    <script src="../../examples/js/tool/boxGeometryTool.js"></script>
+    <script src="../../examples/js/tool/geometryTool.js"></script>
+    <script src="../../examples/js/tool/customGeometryTool.js"></script>
+    <script src="../../examples/js/tool/gameObjectTool.js"></script>
+    <script src="../../examples/js/tool/cameraControllerTool.js"></script>
+    <script src="../../examples/js/tool/tagTool.js"></script>
+    <script src="../../examples/js/tool/meshRendererTool.js"></script>
+    <script src="../../examples/js/tool/sceneTool.js"></script>
+</head>
+<body>
+
+<script>
+    window.onload = function () {
+        wd.Main.setConfig({
+            isTest:false,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
+
+        var director = wd.Director.getInstance();
+
+        var boxes = createBoxes();
+
+//        director.scene.addChildren(boxes);
+
+
+        boxes.forEach(function(box){
+            sceneTool.addGameObject(box);
+        })
+
+        sceneTool.addGameObject(createCamera());
+
+
+        sceneTool.addGameObject(createAmbientLight());
+        sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
+        sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
+        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.5, 0.5, 0.5)"), wd.Vector3.create(10, 100, 100)));
+
+        function createAmbientLight() {
+            var ambientLightComponent = ambientLightTool.create();
+            ambientLightTool.setColor(ambientLightComponent, wd.Color.create("rgb(30, 30, 30)"));
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, ambientLightComponent);
+
+            return obj;
+        }
+
+        function createDirectionLight(color, pos) {
+            var directionLightComponent = directionLightTool.create();
+            directionLightTool.setColor(directionLightComponent, color);
+            directionLightTool.setIntensity(directionLightComponent, 10);
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, directionLightComponent);
+
+
+            var transform = gameObjectTool.getTransform(obj);
+
+//            threeDTransformTool.setPosition(transform, wd.Vector3.create(100, 100, 100));
+            threeDTransformTool.setPosition(transform, pos);
+
+            return obj;
+        }
+
+
+        function createPointLight(color, pos) {
+            var pointLightComponent = pointLightTool.create();
+            pointLightTool.setColor(pointLightComponent, color);
+            pointLightTool.setIntensity(pointLightComponent, 2);
+            pointLightTool.setRangeLevel(pointLightComponent, 10);
+
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, pointLightComponent);
+
+
+            var transform = gameObjectTool.getTransform(obj);
+
+            threeDTransformTool.setPosition(transform, pos);
+
+
+
+            var geo = boxGeometryTool.create();
+
+            boxGeometryTool.setConfigData(geo, {
+                width:2,
+                height:2,
+                depth:2
+            })
+
+            gameObjectTool.addComponent(obj, geo);
+
+
+            var mat = basicMaterialTool.create();
+            lightMaterialTool.setColor(mat, wd.Color.create("#555555"));
+
+            gameObjectTool.addComponent(obj, mat);
+
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            return obj;
+        }
+
+
+
+//        director.scene.addChild(createCamera());
+
+        function _setData() {
+            function getRandom(num){
+                return Math.floor(Math.random() * num);
+            }
+
+            boxes.forEach(function(box){
+//                var pos = box.transform.position;
+//                var localPos = box.transform.localPosition;
+
+                var transform = gameObjectTool.getTransform(box);
+
+                var pos = threeDTransformTool.getPosition(transform);
+                var localPos = threeDTransformTool.getLocalPosition(transform);
+
+
+                if(pos.x >= 500){
+//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+
+                        threeDTransformTool.setLocalPosition(transform, wd.Vector3.create(100,localPos.y,localPos.z));
+
+                }
+                else if(pos.x < 500){
+//                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
+                    threeDTransformTool.setPosition(transform, pos.add(wd.Vector3.create(10,0,0)));
+                }
+//                threeDTransformTool.setPosition(transform, wd.Vector3.create(getRandom(500),getRandom(500),getRandom(500)));
+            })
+        }
+
+        function setData() {
+            wd.Director.getInstance().scheduler.scheduleLoop(function(){
+                _setData();
+            });
+        }
+
+        function setParent() {
+            for (var i = 1, len = 10; i < len; i++) {
+//            for (var i = 1, len = boxes.length; i < len; i++) {
+                var box = boxes[i];
+//                var transform = gameObjectTool.getTransform(box);
+//                var parentTransform = gameObjectTool.getTransform(boxes[i - 1]);
+//
+//                threeDTransformTool.setParent(transform, parentTransform);
+
+                gameObjectTool.add(boxes[i - 1], box);
+//                box.transform.parent = boxes[i - 1].transform;
+            }
+
+            wd.Director.getInstance().scheduler.scheduleLoop(function(){
+                for (var i = 11, len = boxes.length - 1; i < len; i++) {
+                    var box = boxes[i];
+
+//                    box.transform.parent = boxes[getRandomParentIndex(10)].transform;
+//                    var transform = gameObjectTool.getTransform(box);
+//                    var parentTransform = gameObjectTool.getTransform(boxes[getRandomParentIndex(10)]);
+
+//                    threeDTransformTool.setParent(transform, parentTransform);
+
+                    gameObjectTool.add(boxes[getRandomParentIndex(10)], box);
+                }
+
+                _setData();
+            });
+        }
+
+        function getRandomParentIndex(num) {
+            return Math.floor(Math.random() * num);
+        }
+
+
+        function batchSet() {
+            wd.Director.getInstance().scheduler.scheduleLoop(function(){
+                var batchTransformDatas = [];
+
+                for(var i = 0, len = boxes.length - 1; i < len; i++){
+                    var box = boxes[i];
+//                    var pos = box.transform.position;
+//                    var localPos = box.transform.localPosition;
+
+
+
+                    var transform = gameObjectTool.getTransform(box);
+
+                    var pos = threeDTransformTool.getPosition(transform);
+                    var localPos = threeDTransformTool.getLocalPosition(transform);
+
+
+
+//                    var uid = box.transform.uid;
+                    var data = {
+//                        uid:uid,
+//                        index: box.transform.index
+                        transform: transform
+                    };
+
+                    data.index = transform.index;
+
+                    if(pos.x >= 500){
+                        data.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
+
+                    }
+                    else if(pos.x < 500){
+                        data.position = pos.add(wd.Vector3.create(10,0,0));
+                    }
+
+                    batchTransformDatas.push(data);
+                }
+
+                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+//                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+            });
+        }
+
+        function createAndDisposeGameObjects() {
+            wd.Director.getInstance().scheduler.scheduleLoop(function(){
+
+//                gameObjectTool.disposeBatchChildren(boxes, sceneTool.getScene());
+
+                var box = boxes[0];
+                var geo = gameObjectTool.getComponent(box, wd.Geometry);
+
+                var vertices = geometryTool.getVertices(geo),
+                    indices = geometryTool.getIndices(geo);
+
+
+
+                var oldBoxes = boxes;
+
+                oldBoxes.forEach(function (box) {
+                    gameObjectTool.dispose(box);
+                })
+
+
+                boxes = createCustomGeometryBoxes(vertices, indices);
+
+
+//                for (var i = 11, len = boxes.length - 1; i < len; i++) {
+//                    var box = boxes[i];
+//
+//                    gameObjectTool.add(boxes[getRandomParentIndex(10)], box);
+//                }
+
+
+//                boxes = createBoxes();
+
+                boxes.forEach(function(box){
+                    sceneTool.addGameObject(box);
+                    gameObjectTool.init(box);
+                })
+
+
+            });
+
+
+
+//            setInterval(function() {
+//                var box = boxes[0];
+//                var geo = gameObjectTool.getComponent(box, wd.Geometry);
+//
+//                var vertices = geometryTool.getVertices(geo),
+//                    indices = geometryTool.getIndices(geo);
+//
+//                boxes.forEach(function (box) {
+//                    gameObjectTool.dispose(box);
+//                })
+//
+////                gameObjectTool.disposeBatchChildren(boxes, sceneTool.getScene());
+//
+//
+//
+//                boxes = createCustomGeometryBoxes(vertices, indices);
+//
+//
+////                for (var i = 11, len = boxes.length - 1; i < len; i++) {
+////                    var box = boxes[i];
+////
+////                    gameObjectTool.add(boxes[getRandomParentIndex(10)], box);
+////                }
+//
+//
+////                boxes = createBoxes();
+//
+//                boxes.forEach(function(box){
+//                    sceneTool.addGameObject(box);
+//                    gameObjectTool.init(box);
+//                })
+//            }, 30);
+        }
+
+
+//        setData();
+//        setParent();
+        batchSet();
+
+//        createAndDisposeGameObjects();
+
+
+        director.start();
+
+
+
+        function createCustomGeometryBoxes(vertices, indices){
+            var resultArr = [],
+                playgroundSize = 500;
+
+            for (var index = 0; index < 1000; index++) {
+                var customGeo = customGeometryTool.create();
+                customGeometryTool.setVertices(customGeo, vertices);
+                customGeometryTool.setIndices(customGeo, indices);
+
+                var box = createCustomGeometryBox(customGeo);
+
+                var transform = gameObjectTool.getTransform(box);
+                threeDTransformTool.setPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
+
+                resultArr.push(box);
+            }
+
+            return resultArr;
+        }
+
+        var isRed = true;
+        function createCustomGeometryBox(geo){
+            var material = basicMaterialTool.create();
+
+//            if(Math.random() > 0.5){
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+//            }
+//            else{
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
+//            }
+            if(isRed){
+                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+                isRed = false;
+            }
+            else{
+                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
+                isRed = true;
+            }
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            gameObjectTool.addComponent(obj, geo);
+
+//            var tag = tagTool.create();
+//            tagTool.addTag(tag, "box1");
+//            tagTool.addTag(tag, "box2");
+
+//            gameObjectTool.addComponent(obj, tag);
+
+
+            return obj;
+        }
+
+
+        function createBoxes(){
+            var resultArr = [],
+                playgroundSize = 500;
+
+            for (var index = 0; index < 3000; index++) {
+                var box = createBox();
+
+//                var scale = Math.random() * 0.8 + 0.6;
+//                box.transform.scale = wd.Vector3.create(scale, scale, scale);
+//                box.transform.position = wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize)
+
+                var transform = gameObjectTool.getTransform(box);
+                threeDTransformTool.setPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
+
+                resultArr.push(box);
+            }
+
+            return resultArr;
+
+
+//            return [createBox()]
+        }
+
+
+
+        function createBox(){
+            var material = null;
+//
+//            if(Math.random() < 0.5){
+//                material = _createBasicMaterial();
+//            }
+//            else{
+                material = _createLightMaterial();
+//            }
+
+            var obj = gameObjectTool.create();
+
+            gameObjectTool.addComponent(obj, material);
+            gameObjectTool.addComponent(obj, meshRendererTool.create());
+
+
+            var geo = boxGeometryTool.create();
+
+            boxGeometryTool.setConfigData(geo, {
+                width:5,
+                height:5,
+                depth:5
+            })
+
+            gameObjectTool.addComponent(obj, geo);
+
+
+            return obj;
+        }
+
+        function _createBasicMaterial() {
+            var material = basicMaterialTool.create();
+
+            var r = Math.random(),
+                g = Math.random(),
+                b = Math.random();
+            basicMaterialTool.setColor(material, wd.Color.create("rgb(" + r + "," + g + "," + b + ")"));
+
+            return material;
+        }
+
+        function _createLightMaterial() {
+            var material = lightMaterialTool.create();
+
+            var r = Math.random(),
+                g = Math.random(),
+                b = Math.random();
+
+            lightMaterialTool.setColor(material, wd.Color.create("#ffffff"));
+
+            return material;
+        }
+
+
+        function createCamera() {
+//            var camera = wd.GameObject.create(),
+//                view = wd.Director.getInstance().view,
+//                cameraComponent = wd.PerspectiveCamera.create();
+//
+//            cameraComponent.fovy = 60;
+//            cameraComponent.aspect = view.width / view.height;
+//            cameraComponent.near = 0.1;
+//            cameraComponent.far = 2000;
+//
+//            var controller = wd.BasicCameraController.create(cameraComponent);
+//
+//            camera.addComponent(controller);
+//
+////            camera.transform.translate(wd.Vector3.create(0, 0, 1500));
+//            camera.transform.position = wd.Vector3.create(0, 0, 1500);
+//
+//            return camera;
+
+            var view = wd.Director.getInstance().view;
+
+            var cameraObj = gameObjectTool.create();
+            var cameraController = cameraControllerTool.create();
+
+            cameraControllerTool.setCameraNear(cameraController, 0.1);
+            cameraControllerTool.setCameraFar(cameraController, 2000);
+            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 60);
+//            cameraControllerTool.setPerspectiveCameraAspect(cameraController, view.width / view.height);
+            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 1);
+
+            gameObjectTool.addComponent(cameraObj, cameraController);
+
+
+            var transform = gameObjectTool.getTransform(cameraObj);
+
+            threeDTransformTool.setPosition(transform, wd.Vector3.create(0,0, 1500));
+
+            return cameraObj;
+        }
+    }
+</script>
+</body>
+</html>
+
