@@ -32,7 +32,7 @@ import {
 
 } from "../../renderer/utils/geometry/geometryUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { getSubarray } from "../../utils/typeArrayUtils";
+import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
@@ -166,7 +166,7 @@ var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, po
 
     infoList[index] = _buildInfo(startIndex, offset);
 
-    _fillTypeArr(points, dataArr, startIndex, count);
+    fillTypeArr(points, dataArr, startIndex, count);
 
     _removeCache(index, cacheMap);
 
@@ -176,17 +176,6 @@ var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, po
 
     return offset;
 }
-
-var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
-    it("should not exceed type arr's length", () => {
-        expect(count + startIndex).lte(typeArr.length);
-    });
-}, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
-    for (let i = 0; i < count; i++) {
-        typeArr[i + startIndex] = dataArr[i];
-    }
-    // typeArr.set(dataArr, startIndex);
-})
 
 var _removeCache = (index: number, cacheMap: object) => {
     deleteVal(index, cacheMap);

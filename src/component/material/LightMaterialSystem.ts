@@ -8,7 +8,7 @@ import {
 import {
     getColorDataSize
 } from "../../renderer/utils/material/materialUtils";
-import { deleteBySwapAndReset, deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
+import { deleteBySwapAndReset, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { Color } from "../../structure/Color";
 import { EShading } from "./EShading";
 import { ELightModel } from "./ELightModel";
@@ -30,7 +30,7 @@ import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
-import { getColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
+import { getColor3Data } from "../utils/operateBufferDataUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {

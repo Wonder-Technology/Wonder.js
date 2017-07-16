@@ -2,6 +2,7 @@ import { Color } from "../../structure/Color";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { TypeArr } from "../../renderer/type/dataType";
+import { setTypeArrayValue } from "../../utils/typeArrayUtils";
 
 export var getColor3Data = (index: number, colors: Float32Array) => {
     var color = Color.create(),
@@ -26,19 +27,4 @@ export var setColor3Data = (index: number, color: Color, colors: Float32Array) =
     setTypeArrayValue(colors, index, r);
     setTypeArrayValue(colors, index + 1, g);
     setTypeArrayValue(colors, index + 2, b);
-}
-
-export var setTypeArrayValue = requireCheckFunc((typeArr: TypeArr, index: number, value: number) => {
-    it("should not exceed type arr's length", () => {
-        expect(index).lte(typeArr.length - 1);
-    });
-}, (typeArr: Float32Array, index: number, value: number) => {
-    typeArr[index] = value;
-})
-
-export var setSingleValue = (typeArr:TypeArr, index:number, value:number) => {
-    var size = 1,
-        i = index * size;
-
-    setTypeArrayValue(typeArr, i, value);
 }

@@ -13,9 +13,9 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { getColor3Data, setSingleValue } from "../utils/operateBufferDataUtils";
+import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
+import { deleteOneItemBySwapAndReset, setSingleValue } from "../../utils/typeArrayUtils";
 import {
     getConstant as getConstantUtils, getConstantDataSize, getLinearDataSize,
     getLinear as getLinearUtils,

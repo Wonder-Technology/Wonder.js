@@ -19,6 +19,7 @@ export type SendUniformDataDataMap = {
     glslSenderData:SendUniformDataGLSLSenderDataMap;
     ambientLightData:SendUniformDataAmbientLightDataMap;
     directionLightData:SendUniformDataDirectionLightDataMap;
+    pointLightData:SendUniformDataPointLightDataMap;
 }
 
 export type DrawFuncDataMap = {
@@ -57,6 +58,18 @@ export type SendUniformDataDirectionLightDataMap = {
     getPosition: Function;
 
     DirectionLightDataFromSystem: any;
+}
+
+export type SendUniformDataPointLightDataMap = {
+    getColorArr3: Function;
+    getIntensity: Function;
+    getConstant: Function;
+    getLinear: Function;
+    getQuadratic: Function;
+    getRange: Function;
+    getPosition: Function;
+
+    PointLightDataFromSystem: any;
 }
 
 export type MaterialForGetUniformDataDataMap = {

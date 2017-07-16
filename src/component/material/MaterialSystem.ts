@@ -13,7 +13,7 @@ import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import {
     deleteBySwapAndNotReset, deleteBySwapAndReset,
-    deleteOneItemBySwapAndReset
+    deleteOneItemBySwapAndReset, setTypeArrayValue
 } from "../../utils/typeArrayUtils";
 import {
     createTypeArrays,
@@ -50,7 +50,7 @@ import {
 } from "../../renderer/utils/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
-import { getColor3Data, setColor3Data, setTypeArrayValue } from "../utils/operateBufferDataUtils";
+import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
 import { PointLightData } from "../light/PointLightData";

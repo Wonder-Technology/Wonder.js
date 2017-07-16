@@ -175,3 +175,29 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
 // }, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
 //     typeArr[startIndex + increment] = target;
 // })
+
+export var fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(count + startIndex).lte(typeArr.length);
+    });
+}, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    // for (let i = 0; i < count; i++) {
+    //     typeArr[i + startIndex] = dataArr[i];
+    // }
+    typeArr.set(dataArr, startIndex);
+})
+
+export var setTypeArrayValue = requireCheckFunc((typeArr: TypeArr, index: number, value: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index).lte(typeArr.length - 1);
+    });
+}, (typeArr: Float32Array, index: number, value: number) => {
+    typeArr[index] = value;
+})
+
+export var setSingleValue = (typeArr:TypeArr, index:number, value:number) => {
+    var size = 1,
+        i = index * size;
+
+    setTypeArrayValue(typeArr, i, value);
+}

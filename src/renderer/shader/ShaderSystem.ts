@@ -73,8 +73,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     };
 
     var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
-        //todo optimize: cache
-
         return {
             glslSenderData: {
                 getUniformData: getUniformData,

@@ -58,11 +58,6 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getVerticesCount
 }, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
-            DeviceManagerDataFromSystem,
-        BasicMaterialDataFromSystem,
-        LightMaterialDataFromSystem,
-        AmbientLightDataFromSystem,
-        DirectionLightDataFromSystem,
         ProgramDataFromSystem,
         LocationDataFromSystem,
         GLSLSenderDataFromSystem,
