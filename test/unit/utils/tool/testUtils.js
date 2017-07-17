@@ -23,5 +23,9 @@ var testUtils = (function () {
 
             bufferTool.minBufferCount(sandbox, data);
         },
+
+        initForTest: function(sandbox){
+            sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
+        }
     }
 })();

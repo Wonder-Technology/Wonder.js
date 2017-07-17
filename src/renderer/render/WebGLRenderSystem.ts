@@ -56,61 +56,62 @@ export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     init = (state: Map<any, any>) => {
-        var renderWorker = getRenderWorker(WorkerInstanceData);
-
-        renderWorker.postMessage({
-            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
-            materialData: {
-                buffer: MaterialData.buffer,
-                basicMaterialData: {
-                    startIndex: getBasicMaterialBufferStartIndex(),
-                    index: BasicMaterialData.index
-                },
-                lightMaterialData: {
-                    startIndex: getLightMaterialBufferStartIndex(),
-                    index: LightMaterialData.index
-                },
-                materialClassNameTable: MaterialData.materialClassNameTable,
-                shaderIndexTable: MaterialData.shaderIndexTable
-            },
-            geometryData: {
-                buffer: GeometryData.buffer,
-                indexType: GeometryData.indexType,
-                indexTypeSize: GeometryData.indexTypeSize,
-                verticesInfoList: GeometryData.verticesInfoList,
-                normalsInfoList: GeometryData.normalsInfoList,
-                indicesInfoList: GeometryData.indicesInfoList
-            },
-            lightData:{
-                ambientLightData: {
-                    buffer: AmbientLightData.buffer,
-                    bufferCount:getAmbientLightBufferCount(),
-                    lightCount:AmbientLightData.count
-
-                },
-                directionLightData: {
-                    buffer: DirectionLightData.buffer,
-                    bufferCount:getDirectionLightBufferCount(),
-                    lightCount:DirectionLightData.count,
-                    directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-                },
-                pointLightData: {
-                    buffer:PointLightData.buffer,
-                    bufferCount:getPointLightBufferCount(),
-                    lightCount:PointLightData.count,
-                    pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
-                }
-            }
-        });
-
-        renderWorker.onmessage = (e) => {
-            var data = e.data,
-                state = data.state;
-
-            SendDrawRenderCommandBufferData.state = state;
-        };
-
-        return state;
+        // var renderWorker = getRenderWorker(WorkerInstanceData);
+        //
+        // //todo fix materialClassNameTable
+        // renderWorker.postMessage({
+        //     operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
+        //     materialData: {
+        //         buffer: MaterialData.buffer,
+        //         basicMaterialData: {
+        //             startIndex: getBasicMaterialBufferStartIndex(),
+        //             index: BasicMaterialData.index
+        //         },
+        //         lightMaterialData: {
+        //             startIndex: getLightMaterialBufferStartIndex(),
+        //             index: LightMaterialData.index
+        //         },
+        //         materialClassNameTable: MaterialData.materialClassNameTable,
+        //         shaderIndexTable: MaterialData.shaderIndexTable
+        //     },
+        //     geometryData: {
+        //         buffer: GeometryData.buffer,
+        //         indexType: GeometryData.indexType,
+        //         indexTypeSize: GeometryData.indexTypeSize,
+        //         verticesInfoList: GeometryData.verticesInfoList,
+        //         normalsInfoList: GeometryData.normalsInfoList,
+        //         indicesInfoList: GeometryData.indicesInfoList
+        //     },
+        //     lightData:{
+        //         ambientLightData: {
+        //             buffer: AmbientLightData.buffer,
+        //             bufferCount:getAmbientLightBufferCount(),
+        //             lightCount:AmbientLightData.count
+        //
+        //         },
+        //         directionLightData: {
+        //             buffer: DirectionLightData.buffer,
+        //             bufferCount:getDirectionLightBufferCount(),
+        //             lightCount:DirectionLightData.count,
+        //             directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+        //         },
+        //         pointLightData: {
+        //             buffer:PointLightData.buffer,
+        //             bufferCount:getPointLightBufferCount(),
+        //             lightCount:PointLightData.count,
+        //             pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+        //         }
+        //     }
+        // });
+        //
+        // renderWorker.onmessage = (e) => {
+        //     var data = e.data,
+        //         state = data.state;
+        //
+        //     SendDrawRenderCommandBufferData.state = state;
+        // };
+        //
+        // return state;
     }
 
     render = (state: Map<any, any>) => {
@@ -136,7 +137,7 @@ else {
     init = (state: Map<any, any>) => {
         initState(state, getGL, setSide, DeviceManagerData);
 
-        initMaterial(state, getGL(DeviceManagerData, state), TextureData, BasicMaterialData, LightMaterialData);
+        initMaterial(state, getGL(DeviceManagerData, state), TextureData, MaterialData, BasicMaterialData, LightMaterialData);
     }
 
     render = (state: Map<any, any>) => {

@@ -9,7 +9,6 @@ import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
-    getShaderIndexFromTable as getShaderIndexFromTableUtils, getMaterialClassNameFromTable,
     isTestAlpha as isTestAlphaUtils,  buildInitShaderDataMap
 } from "../../../utils/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
@@ -50,7 +49,7 @@ export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => 
     return MaterialWorkerData.shaderIndices[materialIndex];
 }
 
-export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
+// export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
 export var initNewInitedMaterials = (workerInitList: Array<number>) => {
     for (let index of workerInitList) {
@@ -69,7 +68,8 @@ export var isTestAlpha = isTestAlphaUtils;
 export var initData = (materialData: MaterialInitWorkerData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     _initBufferData(materialData.buffer, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-    MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
+    //todo fix
+    // MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
     // MaterialWorkerData.shaderIndexTable = materialData.shaderIndexTable;
 }
 

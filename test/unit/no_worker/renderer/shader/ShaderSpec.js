@@ -37,8 +37,8 @@ describe("Shader", function() {
             });
 
             it("if program already exist, return", function () {
-                materialTool.initMaterial(material);
-                materialTool.initMaterial(material);
+                basicMaterialTool.initMaterial(material);
+                basicMaterialTool.initMaterial(material);
 
                 expect(gl.createProgram).toCalledOnce();
             });
@@ -170,4 +170,55 @@ describe("Shader", function() {
     //     it("", function(){
     //     });
     // });
+
+
+    describe("one type material map to multi shader index", function() {
+        beforeEach(function(){
+
+        });
+
+        it("basic material with map send a_texCoords, but the material with no map not send a_texCoords", function(){
+            bufferTool.makeCreateDifferentBuffer(gl);
+
+            var texture = textureTool.create();
+            textureTool.setSource(texture, null);
+
+            basicMaterialTool.addMap(material, texture);
+
+
+            var material2;
+
+            material2 = basicMaterialTool.create();
+
+
+            var obj2 = sceneTool.createGameObject(null, material2);
+            sceneTool.addGameObject(obj2);
+
+
+
+
+            var name = "a_texCoord",
+            size = 2;
+
+            var pos1 = 10;
+            var pos2 = 11;
+
+            gl.getAttribLocation.withArgs(sinon.match.any, name).onCall(0).returns(pos1);
+
+            gl.getAttribLocation.withArgs(sinon.match.any, name).onCall(1).returns(pos2);
+
+
+            directorTool.init(state);
+
+            var data = geometryTool.getTexCoords(geo);
+
+
+            directorTool.loopBody(state);
+
+            expect(gl.createBuffer.callCount).toEqual(5);
+            expect(gl.vertexAttribPointer).toCalledWith(pos1,size,"FLOAT",false,0,0);
+            expect(gl.vertexAttribPointer).not.toCalledWith(pos2,size,"FLOAT",false,0,0);
+
+        });
+    });
 });

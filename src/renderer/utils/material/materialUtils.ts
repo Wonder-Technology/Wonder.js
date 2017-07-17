@@ -1,19 +1,19 @@
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
-import { MaterialClassNameTable, ShaderIndexTable } from "../../../definition/type/materialType";
+// import { MaterialClassNameTable, ShaderIndexTable } from "../../../definition/type/materialType";
 import { expect } from "wonder-expect.js";
 import { getSingleSizeData } from "../common/operateBufferDataUtils";
 
-export var getMaterialClassNameFromTable = (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => {
-    return materialClassNameTable[shaderIndex]
-}
-
-export var getShaderIndexFromTable = ensureFunc((index: number) => {
-    it("shader index should be defined in materialClassNameTable", () => {
-        expect(index).gte(0);
-    })
-}, (materialClassName: string, shaderIndexTable: ShaderIndexTable) => {
-    return shaderIndexTable[materialClassName];
-})
+// export var getMaterialClassNameFromTable = (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => {
+//     return materialClassNameTable[shaderIndex]
+// }
+//
+// export var getShaderIndexFromTable = ensureFunc((index: number) => {
+//     it("shader index should be defined in materialClassNameTable", () => {
+//         expect(index).gte(0);
+//     })
+// }, (materialClassName: string, shaderIndexTable: ShaderIndexTable) => {
+//     return shaderIndexTable[materialClassName];
+// })
 
 export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => {
     return getSingleSizeData(materialIndex, MaterialDataFromSystem.opacities);
@@ -53,12 +53,13 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
     return offset;
 }
 
-export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, DirectionLightDataFromSystem:any, PointLightDataFromSystem:any) => {
+export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, DirectionLightDataFromSystem:any, PointLightDataFromSystem:any) => {
     return {
         DeviceManagerDataFromSystem:DeviceManagerDataFromSystem,
         ProgramDataFromSystem: ProgramDataFromSystem,
         LocationDataFromSystem:LocationDataFromSystem,
         GLSLSenderDataFromSystem:GLSLSenderDataFromSystem,
+        ShaderDataFromSystem: ShaderDataFromSystem,
         MapManagerDataFromSystem: MapManagerDataFromSystem,
         MaterialDataFromSystem: MaterialDataFromSystem,
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,

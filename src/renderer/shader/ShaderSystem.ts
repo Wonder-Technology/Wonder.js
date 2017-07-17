@@ -1,6 +1,4 @@
-import { Shader } from "./Shader";
-import { createMap, isValidMapValue } from "../../utils/objectUtils";
-import { getShaderIndexFromTable } from "../../component/material/MaterialSystem";
+// import { Shader } from "./Shader";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
     bindIndexBuffer as bindIndexBufferUtils, init as initUtils, sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
@@ -29,25 +27,27 @@ import {
     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
 } from "../../component/light/PointLightSystem";
 import { getMapCount } from "../texture/MapManagerSystem";
+import { createMap } from "../../utils/objectUtils";
 
-export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
-    var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
-        shader = ShaderData.shaderMap[index];
+// export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
+export var create = (ShaderData: any) => {
+    // var index = getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable),
+    // var shader = ShaderData.shaderMap[index];
 
-    if (_isShaderExist(shader)) {
-        return shader;
-    }
+    // if (_isShaderExist(shader)) {
+    //     return shader;
+    // }
 
-    shader = new Shader();
+    // var shader = new Shader();
 
-    shader.index = index;
+    // shader.index = index;
 
     ShaderData.count += 1;
 
-    return shader;
+    // return shader;
 }
 
-var _isShaderExist = (shader: Shader) => isValidMapValue(shader);
+// var _isShaderExist = (shader: Shader) => isValidMapValue(shader);
 
 export var init = null;
 
@@ -60,8 +60,8 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
-        initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+        return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
 
     //todo fix worker
@@ -157,5 +157,5 @@ export var initData = (ShaderData: any) => {
     ShaderData.index = 0;
     ShaderData.count = 0;
 
-    ShaderData.shaderMap = createMap();
+    ShaderData.shaderLibWholeNameMap = createMap();
 }

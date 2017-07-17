@@ -16,7 +16,10 @@ import { BasicMaterialData } from "./BasicMaterialData";
 import { MaterialData } from "./MaterialData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Map } from "immutable";
-import { createTypeArrays as createTypeArraysUtils } from "../../renderer/utils/material/basicMaterialUtils";
+import {
+    createTypeArrays as createTypeArraysUtils,
+    getClassName
+} from "../../renderer/utils/material/basicMaterialUtils";
 import { addMap as addMapByMapManager, getMap as getMapByMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 
@@ -26,18 +29,18 @@ export var create = ensureFunc((component: Material) => {
     });
 }, (ShaderData: any, MaterialData: any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),
-        materialClassName = "BasicMaterial",
+        // materialClassName = "BasicMaterial",
         index = generateComponentIndex(BasicMaterialData);
 
     material.index = index;
 
-    material = createMaterial(index, materialClassName, material, ShaderData, MaterialData);
+    material = createMaterial(index, material, ShaderData, MaterialData);
 
     return material;
 })
 
 export var initMaterial = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, MaterialData);
+    initMaterialMaterial(index, state, getClassName(), MaterialData);
 }
 
 // export var getMap = (materialIndex: number, MapManagerData:any) => {

@@ -76,29 +76,29 @@ describe("Material", function() {
 
     });
 
-    describe("create", function() {
-        beforeEach(function(){
-        });
-
-        it("same Material(same class name) share one shader", function(){
-            var mat2 = basicMaterialTool.create();
-            var mat3 = basicMaterialTool.create();
-            var shaderIndex1 = 0;
-
-            var mat4 = lightMaterialTool.create();
-            var mat5 = lightMaterialTool.create();
-            var shaderIndex2 = 1;
-
-
-            expect(materialTool.getShaderIndex(material.index)).toEqual(shaderIndex1);
-            expect(materialTool.getShaderIndex(mat2.index)).toEqual(shaderIndex1);
-            expect(materialTool.getShaderIndex(mat3.index)).toEqual(shaderIndex1);
-
-
-            expect(materialTool.getShaderIndex(mat4.index)).toEqual(shaderIndex2);
-            expect(materialTool.getShaderIndex(mat5.index)).toEqual(shaderIndex2);
-        });
-    });
+    // describe("create", function() {
+    //     beforeEach(function(){
+    //     });
+    //
+    //     it("Material with same shader lib arrs share one shader", function(){
+    //         var mat2 = basicMaterialTool.create();
+    //         var mat3 = basicMaterialTool.create();
+    //         var shaderIndex1 = 0;
+    //
+    //         var mat4 = lightMaterialTool.create();
+    //         var mat5 = lightMaterialTool.create();
+    //         var shaderIndex2 = 1;
+    //
+    //
+    //         expect(materialTool.getShaderIndex(material.index)).toEqual(shaderIndex1);
+    //         expect(materialTool.getShaderIndex(mat2.index)).toEqual(shaderIndex1);
+    //         expect(materialTool.getShaderIndex(mat3.index)).toEqual(shaderIndex1);
+    //
+    //
+    //         expect(materialTool.getShaderIndex(mat4.index)).toEqual(shaderIndex2);
+    //         expect(materialTool.getShaderIndex(mat5.index)).toEqual(shaderIndex2);
+    //     });
+    // });
 
     describe("all types of material share one buffer", function() {
         beforeEach(function(){
@@ -107,6 +107,9 @@ describe("Material", function() {
         it("so can use MaterialSystem->getShaderIndex to get all types of material' shader index", function(){
             var mat1 = basicMaterialTool.create();
             var mat2 = lightMaterialTool.create();
+
+            basicMaterialTool.initMaterial(mat1);
+            lightMaterialTool.initMaterial(mat2);
 
             expect(materialTool.getShaderIndex(mat1.index)).toEqual(0);
             expect(materialTool.getShaderIndex(mat2.index)).toEqual(1);
@@ -276,7 +279,7 @@ describe("Material", function() {
 
             gameObjectTool.addComponent(obj, mat2);
 
-            materialTool.initMaterial(mat2);
+            basicMaterialTool.initMaterial(mat2);
 
             expect(basicMaterialTool.getColor(mat2)).toBeExist();
         });
@@ -324,14 +327,6 @@ describe("Material", function() {
                 gameObjectTool.addComponent(obj2, mat2);
             });
 
-            it("setShaderIndex", function () {
-                var errMsg = prepareNotExceed();
-
-                basicMaterialTool.create();
-                expect(function () {
-                    basicMaterialTool.create();
-                }).toThrow(errMsg);
-            });
             it("setColor", function(){
                 var errMsg = prepareNotExceed();
 

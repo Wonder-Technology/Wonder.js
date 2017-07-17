@@ -1,5 +1,6 @@
 import { IMaterialConfig } from "../../data/material_config";
 import {
+    IShaderLibContentGenerator,
     IShaderLibGenerator
 } from "../../data/shaderLib_generator";
 import { Map } from "immutable";
@@ -15,28 +16,35 @@ import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap, SendUniformDataD
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
+import { isValidMapValue } from "../../../utils/objectUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     var {
+            ShaderDataFromSystem,
             DeviceManagerDataFromSystem,
             ProgramDataFromSystem,
             LocationDataFromSystem,
             GLSLSenderDataFromSystem
         } = initShaderDataMap,
-        program = getProgram(shaderIndex, ProgramDataFromSystem);
+        materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
+        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
+        shaderIndex = _genereateShaderIndex(materialShaderLibNameArr, ShaderDataFromSystem),
+        program = getProgram(shaderIndex, ProgramDataFromSystem),
+        shaderLibDataFromSystem:IShaderLibContentGenerator = null,
+        gl = null;
 
     if (isProgramExist(program)) {
-        return;
+        return shaderIndex;
     }
 
-    let materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
-        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
-        shaderLibDataFromSystem = shaderLib_generator.shaderLibs,
-        {
-            vsSource,
-            fsSource
-        } = initShaderFuncDataMap.buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap),
-        gl = initShaderFuncDataMap.getGL(DeviceManagerDataFromSystem, state);
+    shaderLibDataFromSystem = shaderLib_generator.shaderLibs;
+
+    let {
+        vsSource,
+        fsSource
+    } = initShaderFuncDataMap.buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap);
+
+    gl = initShaderFuncDataMap.getGL(DeviceManagerDataFromSystem, state);
 
     program = gl.createProgram();
 
@@ -48,7 +56,27 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
 
     addSendAttributeConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);
     addSendUniformConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem);
+
+    return shaderIndex;
 }
+
+var _genereateShaderIndex = (materialShaderLibNameArr:Array<string>, ShaderDataFromSystem:any) => {
+    var shaderLibWholeName = materialShaderLibNameArr.join(''),
+        index = ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName];
+
+    if(isValidMapValue(index)){
+        return index;
+    }
+
+    index = ShaderDataFromSystem.index;
+
+    ShaderDataFromSystem.index += 1;
+
+    ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName] = index;
+
+    return index;
+}
+
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);

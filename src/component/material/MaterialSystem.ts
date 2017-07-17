@@ -9,7 +9,7 @@ import {
     getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { Shader } from "../../renderer/shader/Shader";
+// import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import {
     deleteBySwapAndNotReset, deleteBySwapAndReset,
@@ -17,8 +17,8 @@ import {
 } from "../../utils/typeArrayUtils";
 import {
     createTypeArrays,
-    getShaderIndexFromTable as getShaderIndexFromTableUtils, getOpacity as getOpacityUtils,
-    getAlphaTest as getAlphaTestUtils, getMaterialClassNameFromTable, getColorDataSize, getOpacityDataSize,
+    getOpacity as getOpacityUtils,
+    getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize,
     getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
@@ -61,6 +61,9 @@ import {
 } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/material/basicMaterialUtils";
+import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
+import { ShaderData } from "../../renderer/shader/ShaderData";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -77,44 +80,56 @@ export var addInitHandle = (BasicMaterial: any, LightMaterial: any) => {
     addInitHandleToMap(LightMaterial, initLightMaterial);
 }
 
-export var create = (index: number, materialClassName: string, material: Material, ShaderData: any, MaterialData: any) => {
+// export var create = (index: number, materialClassName: string, material: Material, ShaderData: any, MaterialData: any) => {
+export var create = (index: number, material: Material, ShaderData: any, MaterialData: any) => {
     MaterialData.materialMap[index] = material;
 
-    setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
+    // setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
+    // MaterialData.shaderMap[index] = createShader(materialClassName, MaterialData, ShaderData);
+    createShader(ShaderData);
 
     return material;
 }
 
-export var init = requireCheckFunc((state: MapImmutable<any, any>, BasicMaterialData: any, LightMaterialData: any) => {
-    // checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, gl:WebGLRenderingContext, TextureData:any, BasicMaterialData: any, LightMaterialData: any) => {
-    _initMaterials(state, getBasicMaterialBufferStartIndex(), BasicMaterialData);
-    _initMaterials(state, getLightMaterialBufferStartIndex(), LightMaterialData);
+export var init = (state: MapImmutable<any, any>, gl:WebGLRenderingContext, TextureData:any, MaterialData:any, BasicMaterialData: any, LightMaterialData: any) => {
+    _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
+    _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
 
     initMapManagers(gl, TextureData);
-})
+}
 
-var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, SpecifyMaterialData: any) => {
+var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className:string, SpecifyMaterialData: any, MaterialData:any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
-        initMaterial(i, state);
+        initMaterial(i, state, className, MaterialData);
     }
 }
 
 export var initMaterial = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initMaterial = (index: number, state: MapImmutable<any, any>) => {
+    initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
         MaterialData.workerInitList.push(index);
     }
 }
 else {
-    initMaterial = (index: number, state: MapImmutable<any, any>) => {
-        var shaderIndex = getShaderIndex(index, MaterialData);
+    initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
+        // var shaderIndex = getShaderIndex(index, MaterialData);
 
         //todo fix worker
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
+        // initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
+        var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
+
+        setShaderIndex(index, shaderIndex, MaterialData);
     }
 }
+
+// var _updateShaderIndex = requireCheckFunc ((materialIndex: number, shaderIndex:number, MaterialData: any) => {
+//     it("shader should exist in map", () => {
+//         expect(MaterialData.shaderMap[materialIndex]).exist;
+//     });
+// }, (materialIndex: number, shaderIndex:number, MaterialData: any) => {
+//     MaterialData.shaderMap[materialIndex].index = shaderIndex;
+// })
 
 export var clearWorkerInitList = null;
 
@@ -136,10 +151,10 @@ export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
     return MaterialData.shaderIndices[materialIndex];
 }
 
-export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
+// export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export var setShaderIndex = (materialIndex: number, shader: Shader, MaterialData: any) => {
-    setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
+export var setShaderIndex = (materialIndex: number, shaderIndex:number, MaterialData: any) => {
+    setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shaderIndex);
 }
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
@@ -261,7 +276,7 @@ export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any
 
     MaterialData.gameObjectMap = [];
 
-    MaterialData.mapManagers = [];
+    // MaterialData.shaderMap = [];
 
     MaterialData.workerInitList = [];
 
@@ -274,8 +289,6 @@ export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any
     setLightMaterialDefaultData(LightMaterialData);
 
     _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
-
-    _initTable(MaterialData);
 
     initMapManagerData(TextureCacheData, TextureData, MapManagerData);
 }
@@ -303,18 +316,6 @@ var _initBufferData = (MaterialData: any, BasicMaterialData: any, LightMaterialD
     offset = createLightMaterialTypeArrays(buffer, offset, getLightMaterialBufferCount(), LightMaterialData);
 
     MaterialData.buffer = buffer;
-}
-
-var _initTable = (MaterialData: any) => {
-    MaterialData.shaderIndexTable = {
-        "BasicMaterial": 0,
-        "LightMaterial": 1
-    }
-
-    MaterialData.materialClassNameTable = {
-        0: "BasicMaterial",
-        1: "LightMaterial"
-    }
 }
 
 var _setMaterialDefaultTypeArrData = (count: number, MaterialData: any) => {

@@ -159,7 +159,6 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
     }
 }
 
-
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],

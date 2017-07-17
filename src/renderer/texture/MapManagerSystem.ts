@@ -3,7 +3,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { expect } from "wonder-expect.js";
 import { Texture } from "./Texture";
 import { MapManagerData } from "./MapManagerData";
-import { isNotValidVal } from "../../utils/arrayUtils";
+import { isNotValidVal, isValidVal } from "../../utils/arrayUtils";
 import {
     bindToUnit, dispose as disposeTextureSystem, initData as initTextureData, initTextures, needUpdate,
     update
@@ -45,19 +45,27 @@ export var addMap = (materialIndex: number, map: Texture, MapManagerData:any) =>
 
 export var getMapList = ensureFunc((mapList:Array<Texture>, materialIndex: number, MapManagerData:any) => {
     it("only support max texture count <= 1", () => {
+        if(_isMapListNotExist(mapList)){
+            return;
+        }
+
         expect(mapList.length).lte(1);
     });
 }, (materialIndex: number, MapManagerData:any) => {
     return MapManagerData.textureMap[materialIndex];
 })
 
-export var getMapCount = requireCheckFunc((materialIndex: number, MapManagerData:any) => {
-    it("map list should exist", () => {
-        expect(getMapList(materialIndex, MapManagerData)).exist;
-    })
-}, (materialIndex: number, MapManagerData:any) => {
-    return getMapList(materialIndex, MapManagerData).length;
-})
+export var getMapCount = (materialIndex: number, MapManagerData:any) => {
+    var mapList = getMapList(materialIndex, MapManagerData);
+
+    if(_isMapListNotExist(mapList)){
+        return 0;
+    }
+
+    return mapList.length;
+}
+
+var _isMapListNotExist = (mapList:Array<Texture>) => isNotValidVal(mapList);
 
 //todo support multi textures
 
@@ -69,6 +77,10 @@ export var getMapCount = requireCheckFunc((materialIndex: number, MapManagerData
 
 export var bindAndUpdate = (gl:WebGLRenderingContext, materialIndex: number, TextureCacheData:any, TextureData:any, MapManagerData:any) => {
     var mapList = getMapList(materialIndex, MapManagerData);
+
+    if(_isMapListNotExist(mapList)){
+        return;
+    }
 
     for(let i = 0, len = mapList.length; i < len; i++){
         let texture = mapList[i],

@@ -99,6 +99,7 @@ export type InitShaderDataMap = {
     ProgramDataFromSystem: any;
     LocationDataFromSystem: any;
     GLSLSenderDataFromSystem: any;
+    ShaderDataFromSystem: any;
     MaterialDataFromSystem: any;
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;

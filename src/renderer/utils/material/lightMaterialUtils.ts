@@ -49,3 +49,5 @@ export var createTypeArrays = (buffer: any, offset: number, count: number, Light
 
     return offset;
 }
+
+export var getClassName = () => "LightMaterial";

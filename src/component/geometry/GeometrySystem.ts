@@ -382,6 +382,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.verticesOffset = 0;
     GeometryData.normalsOffset = 0;
+    GeometryData.texCoordsOffset = 0;
     GeometryData.indicesOffset = 0;
 
     GeometryData.disposeCount = 0;

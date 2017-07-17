@@ -12,6 +12,7 @@ describe("BasicMaterial", function () {
     var Color = wd.Color;
     var BasicMaterialData = wd.BasicMaterialData;
     var DataBufferConfig = wd.DataBufferConfig;
+    var GPUDetector = wd.GPUDetector;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -84,7 +85,6 @@ describe("BasicMaterial", function () {
             });
 
             it("make BasicMaterialData.index be 0", function(){
-
                 sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 20);
                 sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 100);
 
@@ -270,6 +270,90 @@ describe("BasicMaterial", function () {
                 it("test vs source", function () {
                     var vs = materialTool.getVsSource(gl);
                     expect(glslTool.contain(vs, "gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n")).toBeTruthy();
+                });
+            });
+        });
+
+        describe("add map shader lib", function () {
+            beforeEach(function () {
+            });
+
+            describe("if has one map, add BasicMapShaderLib", function(){
+                beforeEach(function () {
+                    var texture = textureTool.create();
+                    textureTool.setSource(texture, null);
+
+                    basicMaterialTool.addMap(material, texture);
+                });
+
+                describe("send a_texCoord", function () {
+                    var name,size,pos;
+                    var buffer;
+
+                    beforeEach(function () {
+                        name = "a_texCoord";
+                        size = 2;
+
+                        pos = 10;
+
+                        gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+                    });
+
+                    it("create buffer and init it when first get", function () {
+                        directorTool.init(state);
+
+                        var data = geometryTool.getTexCoords(geo);
+
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.createBuffer.callCount).toEqual(3);
+                        expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                        expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                    });
+                    it("not create buffer after first get", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.createBuffer.callCount).toEqual(3);
+
+
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.createBuffer.callCount).toEqual(3);
+                    });
+                })
+
+                it("send u_sampler2D0", function () {
+                    var pos = 0;
+                    gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos);
+
+                    directorTool.init(state);
+                    directorTool.loopBody(state);
+
+                    expect(gl.uniform1i).toCalledWith(pos, 0);
+                });
+
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        directorTool.init(state);
+                    });
+
+                    it("test vs source", function () {
+                        var vs = materialTool.getVsSource(gl);
+
+                        expect(glslTool.contain(vs, "varying vec2 v_mapCoord0;\n")).toBeTruthy();
+                        expect(glslTool.contain(vs, "v_mapCoord0 = a_texCoord;")).toBeTruthy();
+                    });
+                    it("test fs source", function () {
+                        var fs = materialTool.getFsSource(gl);
+
+                        expect(glslTool.contain(fs, "varying vec2 v_mapCoord0;\n")).toBeTruthy();
+                        expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D0;\n")).toBeTruthy();
+                        expect(glslTool.contain(fs, "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
+                    });
                 });
             });
         });

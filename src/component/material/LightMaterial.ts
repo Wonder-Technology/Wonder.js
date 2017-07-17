@@ -1,6 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
-import { create } from "./LightMaterialSystem";
+import { create, initMaterial } from "./LightMaterialSystem";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
@@ -14,6 +14,8 @@ import {
     setShininess,
     setSpecularColor
 } from "./LightMaterialSystem";
+import { getState } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
 
 @registerClass("LightMaterial")
 export class LightMaterial extends Material {
@@ -21,6 +23,10 @@ export class LightMaterial extends Material {
 
 export var createLightMaterial = () => {
     return create(ShaderData, MaterialData, LightMaterialData);
+}
+
+export var initLightMaterial = (material: LightMaterial) => {
+    initMaterial(material.index, getState(DirectorData));
 }
 
 export var getLightMaterialColor = requireCheckFunc((material: LightMaterial) => {

@@ -1,4 +1,3 @@
-import { Texture } from "./Texture";
 import { GPUDetector } from "../device/GPUDetector";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";

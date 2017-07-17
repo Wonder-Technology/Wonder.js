@@ -14,7 +14,7 @@ import { EShading } from "./EShading";
 import { ELightModel } from "./ELightModel";
 import {
     computeLightBufferIndex,
-    createTypeArrays as createTypeArraysUtils,
+    createTypeArrays as createTypeArraysUtils, getClassName,
     getEmissionColorArr3 as getEmissionColorArr3Utils,
     getLightModel as getLightModelUtils, getLightModelDataSize, getShading as getShadingUtils, getShadingDataSize,
     getShininess as getShininessUtils, getShininessDataSize,
@@ -38,12 +38,11 @@ export var create = ensureFunc((component: Material) => {
     });
 }, (ShaderData: any, MaterialData: any, LightMaterialData: any) => {
     var material = new LightMaterial(),
-        materialClassName = "LightMaterial",
         index = generateComponentIndex(LightMaterialData);
 
     material.index = index;
 
-    material = createMaterial(index, materialClassName, material, ShaderData, MaterialData);
+    material = createMaterial(index, material, ShaderData, MaterialData);
 
     return material;
 })
@@ -97,7 +96,7 @@ export var setLightModel = (index: number, lightModel: ELightModel, LightMateria
 }
 
 export var initMaterial = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, MaterialData);
+    initMaterialMaterial(index, state, getClassName(), MaterialData);
 }
 
 export var addComponent = (component: Material, gameObject: GameObject) => {

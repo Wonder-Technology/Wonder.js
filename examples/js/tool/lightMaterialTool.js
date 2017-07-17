@@ -1,6 +1,7 @@
 var lightMaterialTool = (function () {
     return {
         create:wd.createLightMaterial,
+        initMaterial: wd.initLightMaterial,
         setColor:wd.setLightMaterialColor,
         setOpacity: wd.setLightMaterialOpacity,
         getOpacity: wd.getLightMaterialOpacity,

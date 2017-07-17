@@ -11,6 +11,9 @@ var bufferUtils = (function () {
 
             sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 10);
             sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 10);
+
+            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 10);
+
             sandbox.stub(DataBufferConfig, "geometryDataBufferCount", geometryDataBufferCount);
             sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 10);
         }

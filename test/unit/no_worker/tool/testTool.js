@@ -84,19 +84,10 @@ var testTool = (function () {
             this.clear(sandbox);
 
             Main.isTest = true;
+
+            testUtils.initForTest(sandbox);
         },
 
-        // initForTest: function(sandbox){
-        //     // wd.ProgramTable.addProgram("\n", wd.Program.create());
-        //     //
-        //     //
-        //     //
-        //     //
-        //     // sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
-        //     this.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
-        //         return 10;
-        //     });
-        // },
         openContractCheck: function () {
             Main.isTest = true;
         },
