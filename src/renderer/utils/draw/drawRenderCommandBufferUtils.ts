@@ -13,9 +13,13 @@ export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config:
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
+//todo fix worker
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
+        TextureDataFromSystem: TextureDataFromSystem,
+        TextureCacheDataFromSystem: TextureCacheDataFromSystem,
+        MapManagerDataFromSystem: MapManagerDataFromSystem,
         MaterialDataFromSystem: MaterialDataFromSystem,
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
         LightMaterialDataFromSystem: LightMaterialDataFromSystem,
@@ -32,7 +36,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, MaterialDataFro
     }
 }
 
-export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function) => {
+export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate:Function) => {
     return {
         bindIndexBuffer: bindIndexBuffer,
         sendAttributeData: sendAttributeData,
@@ -42,7 +46,8 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
         getIndicesCount: getIndicesCount,
         getIndexType: getIndexType,
         getIndexTypeSize: getIndexTypeSize,
-        getVerticesCount: getVerticesCount
+        getVerticesCount: getVerticesCount,
+        bindAndUpdate: bindAndUpdate
     }
 }
 
@@ -55,16 +60,20 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getIndicesCount,
     getIndexType,
     getIndexTypeSize,
-    getVerticesCount
+    getVerticesCount,
+    bindAndUpdate
 }, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
-        ProgramDataFromSystem,
-        LocationDataFromSystem,
-        GLSLSenderDataFromSystem,
-        GeometryDataFromSystem,
-        ArrayBufferDataFromSystem,
-        IndexBufferDataFromSystem,
-        DrawRenderCommandBufferDataFromSystem
+            TextureDataFromSystem,
+            TextureCacheDataFromSystem,
+            MapManagerDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem,
+            GeometryDataFromSystem,
+            ArrayBufferDataFromSystem,
+            IndexBufferDataFromSystem,
+            DrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
         mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
@@ -98,17 +107,20 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
             matEndIndex = matStartIndex + 16,
             shaderIndex = shaderIndices[i],
             geometryIndex = geometryIndices[i],
+            materialIndex = materialIndices[i],
             drawMode = EDrawMode.TRIANGLES;
 
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
         //todo set state
 
+        bindAndUpdate(gl, materialIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+
         sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 
-        sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndices[i]));
+        sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);

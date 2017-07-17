@@ -54,6 +54,13 @@ import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
 import { PointLightData } from "../light/PointLightData";
+import { isNotValidMapValue } from "../../utils/objectUtils";
+import {
+    disposeTexture as disposeTextureSystem, initData as initMapManagerData,
+    initMapManagers
+} from "../../renderer/texture/MapManagerSystem";
+import { Texture } from "../../renderer/texture/Texture";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -80,9 +87,11 @@ export var create = (index: number, materialClassName: string, material: Materia
 
 export var init = requireCheckFunc((state: MapImmutable<any, any>, BasicMaterialData: any, LightMaterialData: any) => {
     // checkIndexShouldEqualCount(MaterialData);
-}, (state: MapImmutable<any, any>, BasicMaterialData: any, LightMaterialData: any) => {
+}, (state: MapImmutable<any, any>, gl:WebGLRenderingContext, TextureData:any, BasicMaterialData: any, LightMaterialData: any) => {
     _initMaterials(state, getBasicMaterialBufferStartIndex(), BasicMaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), LightMaterialData);
+
+    initMapManagers(gl, TextureData);
 })
 
 var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, SpecifyMaterialData: any) => {
@@ -102,7 +111,8 @@ else {
     initMaterial = (index: number, state: MapImmutable<any, any>) => {
         var shaderIndex = getShaderIndex(index, MaterialData);
 
-        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
+        //todo fix worker
+        initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
     }
 }
 
@@ -230,10 +240,28 @@ export var createDefaultColor = () => {
     return color.setColorByNum("#ffffff");
 }
 
-export var initData = (MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+// export var getOrCreateMapManager = (materialIndex:number, MapManagerData:any) => {
+//     var mapManager = MaterialData.mapManagers[materialIndex];
+//
+//     if(isNotValidMapValue(mapManager)){
+//         mapManager = createMapManager(MapManagerData);
+//     }
+//
+//     MaterialData.mapManagers[materialIndex] = mapManager;
+//
+//     return mapManager;
+// }
+
+export var disposeTexture = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
+    disposeTextureSystem(gl, texture, TextureCacheData, TextureData);
+}
+
+export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];
+
+    MaterialData.mapManagers = [];
 
     MaterialData.workerInitList = [];
 
@@ -248,6 +276,8 @@ export var initData = (MaterialData: any, BasicMaterialData: any, LightMaterialD
     _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
 
     _initTable(MaterialData);
+
+    initMapManagerData(TextureCacheData, TextureData, MapManagerData);
 }
 
 var _setMaterialDefaultData = (MaterialData: any) => {

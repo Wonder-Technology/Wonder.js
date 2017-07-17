@@ -13,9 +13,9 @@ import {
 import { getUniformLocation, isUniformLocationNotExist } from "../location/LocationWorkerSystem";
 import { Vector3 } from "../../../../../math/Vector3";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+export var getUniformData = (field: string, from: string, value:any|undefined, renderCommandUniformData: RenderCommandUniformData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
 
-    return getUniformDataUtils(field, from, renderCommandUniformData, {
+    return getUniformDataUtils(field, from, value, renderCommandUniformData, {
         getColorArr3: getColorArr3,
         getOpacity: getOpacity,
         MaterialDataFromSystem: MaterialWorkerData

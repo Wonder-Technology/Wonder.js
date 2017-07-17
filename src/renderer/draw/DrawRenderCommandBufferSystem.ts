@@ -13,13 +13,14 @@ import {
 } from "../../component/geometry/GeometrySystem";
 import { IRenderConfig } from "../data/render_config";
 import { RenderCommandBufferForDrawData } from "../type/dataType";
+import { bindAndUpdate } from "../texture/MapManagerSystem";
 
 export var clear = curry((state: Map<any, any>, render_config: IRenderConfig, DeviceManagerData: any, data: RenderCommandBufferForDrawData) => {
     return clearUtils(getGL(DeviceManagerData, state), clearGL, render_config, DeviceManagerData, data);
 });
 
 export var draw = curry((state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    return drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData)
+    return drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate), drawDataMap, bufferData)
 });
 
 export var initData = initDataUtils;

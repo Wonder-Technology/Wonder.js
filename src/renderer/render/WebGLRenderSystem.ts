@@ -46,6 +46,9 @@ import {
     getAmbientLightBufferCount, getDirectionLightBufferCount,
     getPointLightBufferCount
 } from "../utils/light/bufferUtils";
+import { TextureData } from "../texture/TextureData";
+import { MapManagerData } from "../texture/MapManagerData";
+import { TextureCacheData } from "../texture/TextureCacheData";
 
 export var init = null;
 
@@ -133,12 +136,12 @@ else {
     init = (state: Map<any, any>) => {
         initState(state, getGL, setSide, DeviceManagerData);
 
-        initMaterial(state, BasicMaterialData, LightMaterialData);
+        initMaterial(state, getGL(DeviceManagerData, state), TextureData, BasicMaterialData, LightMaterialData);
     }
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

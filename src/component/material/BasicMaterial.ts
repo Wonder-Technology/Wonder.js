@@ -1,12 +1,14 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
-import { create } from "./BasicMaterialSystem";
+import { addMap, create } from "./BasicMaterialSystem";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BasicMaterialData } from "./BasicMaterialData";
 import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
 import { Color } from "../../structure/Color";
+import { Texture } from "../../renderer/texture/Texture";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
 
 @registerClass("BasicMaterial")
 export class BasicMaterial extends Material {
@@ -52,3 +54,8 @@ export var setBasicMaterialAlphaTest = requireCheckFunc((material: BasicMaterial
     setAlphaTest(material.index, alphaTest, MaterialData);
 })
 
+export var addBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map:Texture) => {
+    checkShouldAlive(material);
+}, (material: BasicMaterial, map:Texture) => {
+    addMap(material.index, map, MapManagerData);
+})

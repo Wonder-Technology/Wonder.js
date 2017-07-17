@@ -1,5 +1,8 @@
 export type DrawDataMap = {
     DeviceManagerDataFromSystem: any;
+    TextureDataFromSystem: any;
+    TextureCacheDataFromSystem: any;
+    MapManagerDataFromSystem: any;
     MaterialDataFromSystem: any;
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
@@ -32,6 +35,7 @@ export type DrawFuncDataMap = {
     getIndexType: Function;
     getIndexTypeSize: Function;
     getVerticesCount: Function;
+    bindAndUpdate: Function;
 }
 
 export type SendUniformDataGLSLSenderDataMap = {
@@ -98,6 +102,13 @@ export type InitShaderDataMap = {
     MaterialDataFromSystem: any;
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
+    MapManagerDataFromSystem: any;
     DirectionLightDataFromSystem: any;
     PointLightDataFromSystem: any;
+}
+
+export type InitShaderFuncDataMap = {
+    buildGLSLSource: Function;
+    getGL: Function;
+    getMapCount: Function;
 }

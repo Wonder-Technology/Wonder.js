@@ -9,6 +9,8 @@ export var getVertexDataSize = () => 3;
 
 export var getNormalDataSize = () => 3;
 
+export var getTexCoordsDataSize = () => 2;
+
 export var getIndexDataSize = () => 1;
 
 export var getUIntArrayClass = (indexType: EBufferType) => {
@@ -56,5 +58,6 @@ export var getIndicesCount = (index: number, getIndices: Function, GeometryDataF
 export var createBufferViews = (buffer: any, count: number, UintArray: any, GeometryDataFromSystem: any) => {
     GeometryDataFromSystem.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
     GeometryDataFromSystem.normals = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getVertexDataSize());
-    GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize()), count * getIndexDataSize());
+    GeometryDataFromSystem.texCoords = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize()), count * getTexCoordsDataSize());
+    GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()), count * getIndexDataSize());
 }

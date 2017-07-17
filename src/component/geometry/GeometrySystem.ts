@@ -23,7 +23,7 @@ import {
     getIndexType as getIndexTypeUtils,
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize
+    hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize
 } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
@@ -91,6 +91,7 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
     let {
         vertices,
         normals,
+        texCoords,
         indices
     } = computeDataFunc(index, GeometryData);
 
@@ -99,6 +100,8 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
     setVertices(index, vertices, GeometryData);
 
     setNormals(index, normals, GeometryData);
+
+    setTexCoords(index, texCoords, GeometryData);
 
     setIndices(index, indices, GeometryData);
 }
@@ -124,6 +127,15 @@ export var getNormals = (index: number, GeometryData: any) => {
 export var setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
 }, (index: number, normals: Array<number>, GeometryData: any) => {
     GeometryData.normalsOffset = _setPointData(index, normals, getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
+})
+
+export var getTexCoords = (index: number, GeometryData: any) => {
+    return _getPointData(index, GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList);
+}
+
+export var setTexCoords = requireCheckFunc((index: number, texCoords: Array<number>, GeometryData: any) => {
+}, (index: number, texCoords: Array<number>, GeometryData: any) => {
+    GeometryData.texCoordsOffset = _setPointData(index, texCoords, getTexCoordsDataSize(), GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList, GeometryData.texCoordsWorkerInfoList, GeometryData.texCoordsOffset, GeometryData);
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
@@ -285,6 +297,7 @@ var _isInit = (GeometryData: any) => {
 export var clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 
@@ -341,6 +354,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.verticesCacheMap = createMap();
     GeometryData.normalsCacheMap = createMap();
+    GeometryData.texCoordsCacheMap = createMap();
     GeometryData.indicesCacheMap = createMap();
 
     GeometryData.computeDataFuncMap = createMap();
@@ -356,10 +370,12 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 
     GeometryData.verticesInfoList = [];
     GeometryData.normalsInfoList = [];
+    GeometryData.texCoordsInfoList = [];
     GeometryData.indicesInfoList = [];
 
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 
     GeometryData.disposedGeometryIndexArray = [];
@@ -376,7 +392,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize()) + indicesArrayBytes * getIndexDataSize();
+        size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()) + indicesArrayBytes * getIndexDataSize();
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 

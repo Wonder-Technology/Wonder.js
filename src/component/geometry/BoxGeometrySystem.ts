@@ -27,11 +27,11 @@ export var create = (GeometryData: any) => {
 var _computeData = (index: number, GeometryData: any) => {
     var {
             width,
-        height,
-        depth,
-        widthSegments,
-        heightSegments,
-        depthSegments
+            height,
+            depth,
+            widthSegments,
+            heightSegments,
+            depthSegments
         } = _getConfigData(index, GeometryData),
         sides = {
             FRONT: 0,
@@ -43,7 +43,7 @@ var _computeData = (index: number, GeometryData: any) => {
         },
         vertices = [],
         normals = [],
-        // var texCoords = [];
+        texCoords = [],
         indices = [];
 
     var faceAxes = [
@@ -95,7 +95,7 @@ var _computeData = (index: number, GeometryData: any) => {
 
                 vertices.push(r.x, r.y, r.z);
                 normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
-                // texCoords.push(u, v);
+                texCoords.push(u, v);
 
                 if ((i < uSegments) && (j < vSegments)) {
                     indices.push(offset + j + i * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1), offset + j + i * (uSegments + 1) + 1);
@@ -116,6 +116,7 @@ var _computeData = (index: number, GeometryData: any) => {
     return {
         vertices: vertices,
         normals: normals,
+        texCoords: texCoords,
         indices: indices
     };
 }

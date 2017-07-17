@@ -7,6 +7,19 @@ export const material_config = {
 
                     "BasicMaterialColorShaderLib",
                     "BasicShaderLib",
+
+                    {
+                        "type": "branch",
+                        "branch": (materialIndex, {
+                            getMapCount
+                        }, {
+                                       MapManagerDataFromSystem
+                                   }) => {
+                            return getMapCount(materialIndex, MapManagerDataFromSystem) === 1
+                        }, "value": "BasicMapShaderLib"
+                    },
+
+
                     "BasicEndShaderLib",
 
                     { "type": "group", "value": "engineMaterialEnd" }
@@ -72,7 +85,8 @@ export interface IShaderConfig {
 }
 
 export interface IShaderLibItem {
-    type: string;
+    type: "group" | "branch";
+    branch?:Function;
     value: any;
 }
 

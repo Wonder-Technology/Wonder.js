@@ -25,7 +25,8 @@ export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: Dra
 
 
     if (_isBufferDataExist(bufferData)) {
-        drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData);
+        //todo fix
+        // drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount), drawDataMap, bufferData);
     }
 
     _commitGL(gl, state);

@@ -9,6 +9,7 @@ import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from ".
 import { Log } from "../../../../utils/Log";
 import { DrawDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
+import { isNotUndefined } from "../../../../utils/JudgeUtils";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     it("program should exist", () => {
@@ -181,7 +182,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
 
         lastBindedArrayBuffer = buffer;
 
-        sendBuffer(gl, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferDataFromSystem);
+        sendBuffer(gl, sendData.type, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferDataFromSystem);
     }
 
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
@@ -189,7 +190,8 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
 
 var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
     getVertices,
-    getNormals
+    getNormals,
+    getTexCoords
 }, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var buffer: WebGLBuffer = null;
 
@@ -199,6 +201,9 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
             break;
         case "normal":
             buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        case "texCoord":
+            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.texCoordBuffers, getTexCoords, GeometryDataFromSystem, ArrayBufferDataFromSystem);
             break;
         default:
             Log.error(true, Log.info.FUNC_INVALID(`name:${name}`));
@@ -238,7 +243,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
+            data = getUniformData(field, from, sendData.value, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
         switch (type) {
             case EVariableType.MAT3:
@@ -251,6 +256,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
                 sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             case EVariableType.INT:
+            case EVariableType.SAMPLER_2D:
                 sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
                 break;
             case EVariableType.FLOAT:

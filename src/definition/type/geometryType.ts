@@ -29,4 +29,5 @@ export type GeometryInfo = {
 export type GetArrayBufferDataFuncMap = {
     getVertices: Function;
     getNormals: Function;
+    getTexCoords: Function;
 }

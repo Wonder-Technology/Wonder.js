@@ -1,7 +1,8 @@
 import { BasicMaterial } from "./BasicMaterial";
 import {
     addComponent as addMaterialComponent,
-    create as createMaterial, disposeComponent as disposeMaterialComponent, initMaterial as initMaterialMaterial
+    create as createMaterial, disposeComponent as disposeMaterialComponent,
+    initMaterial as initMaterialMaterial
 } from "./MaterialSystem";
 import {
     initData as initSpecifyMaterialData
@@ -16,6 +17,8 @@ import { MaterialData } from "./MaterialData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Map } from "immutable";
 import { createTypeArrays as createTypeArraysUtils } from "../../renderer/utils/material/basicMaterialUtils";
+import { addMap as addMapByMapManager, getMap as getMapByMapManager } from "../../renderer/texture/MapManagerSystem";
+import { Texture } from "../../renderer/texture/Texture";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -35,6 +38,14 @@ export var create = ensureFunc((component: Material) => {
 
 export var initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, MaterialData);
+}
+
+// export var getMap = (materialIndex: number, MapManagerData:any) => {
+//     return getMapByMapManager(materialIndex, MapManagerData);
+// }
+
+export var addMap = (materialIndex: number, map: Texture, MapManagerData:any) => {
+    addMapByMapManager(materialIndex, map, MapManagerData);
 }
 
 export var addComponent = (component: Material, gameObject: GameObject) => {

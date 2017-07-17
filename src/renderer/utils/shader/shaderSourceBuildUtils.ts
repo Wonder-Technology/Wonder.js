@@ -14,7 +14,7 @@ import { compose, filterArray, forEachArray } from "../../../utils/functionalUti
 import { forEach } from "../../../utils/arrayUtils";
 import { BuildGLSLSourceFuncFuncDataMap } from "../../type/dataType";
 import { isString } from "../../../utils/JudgeUtils";
-import { InitShaderDataMap } from "../../type/utilsType";
+import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 
 export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     it("shaderLib should be defined", () => {
@@ -117,7 +117,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup) => {
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     var nameArr: Array<string> = [];
 
     forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
@@ -127,14 +127,28 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
         else {
             let i = item as IShaderLibItem;
 
-            if (i.type === "group") {
-                nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
+            switch (i.type){
+                case "group":
+                    nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
+                    break;
+                case "branch":
+                    if(_execBranch(i, materialIndex, initShaderFuncDataMap, initShaderDataMap)){
+                        nameArr.push(i.value);
+                    }
             }
         }
     });
 
     return nameArr;
 }
+
+var _execBranch = requireCheckFunc ((i:IShaderLibItem, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+    it("branch should exist", () => {
+        expect(i.branch).exist;
+    });
+}, (i:IShaderLibItem, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+    return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
+})
 
 var _getEmptyFuncGLSLConfig = () => {
     return {

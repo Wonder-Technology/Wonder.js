@@ -11,12 +11,12 @@ import {
 import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/glslSenderUtils";
 import { MaterialDataMap, RenderCommandUniformData } from "../../type/dataType";
 import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
-import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../type/utilsType";
+import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap, SendUniformDataDataMap } from "../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, buildGLSLSource: Function, getGL: Function, initShaderDataMap:InitShaderDataMap) => {
+export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     var {
             DeviceManagerDataFromSystem,
             ProgramDataFromSystem,
@@ -30,13 +30,13 @@ export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: num
     }
 
     let materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
-        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups),
+        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
         shaderLibDataFromSystem = shaderLib_generator.shaderLibs,
         {
             vsSource,
             fsSource
-        } = buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap),
-        gl = getGL(DeviceManagerDataFromSystem, state);
+        } = initShaderFuncDataMap.buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap),
+        gl = initShaderFuncDataMap.getGL(DeviceManagerDataFromSystem, state);
 
     program = gl.createProgram();
 

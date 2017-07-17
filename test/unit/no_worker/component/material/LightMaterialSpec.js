@@ -570,7 +570,14 @@ describe("LightMaterial", function () {
                             expect(glslTool.contain(vs, "#define DIRECTION_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                         it("test define POINT_LIGHTS_COUNT", function () {
-                            //todo test after add point light
+                            sceneTool.addPointLight(null, null, null);
+                            sceneTool.addPointLight(null, null, null);
+
+                            directorTool.init(state);
+
+                            var vs = materialTool.getVsSource(gl);
+
+                            expect(glslTool.contain(vs, "#define POINT_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                     });
 
@@ -593,7 +600,14 @@ describe("LightMaterial", function () {
                             expect(glslTool.contain(fs, "#define DIRECTION_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                         it("test define POINT_LIGHTS_COUNT", function () {
-                            //todo test after add point light
+                            sceneTool.addPointLight(null, null, null);
+                            sceneTool.addPointLight(null, null, null);
+
+                            directorTool.init(state);
+
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "#define POINT_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                     });
                 });

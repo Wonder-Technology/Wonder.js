@@ -1,6 +1,7 @@
 var basicMaterialTool = (function () {
     return {
         create:wd.createBasicMaterial,
+        addMap:wd.addBasicMaterialMap,
         getColor:wd.getBasicMaterialColor,
         setColor:wd.setBasicMaterialColor,
         getOpacity:wd.getBasicMaterialOpacity,

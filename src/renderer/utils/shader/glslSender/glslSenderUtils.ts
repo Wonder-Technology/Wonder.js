@@ -16,9 +16,14 @@ import {
 } from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
 import { EBufferType } from "../../../enum/EBufferType";
+import { isNotUndefined } from "../../../../utils/JudgeUtils";
 
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+export var getUniformData = (field: string, from: string, value:any|undefined,renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
+
+    if(isNotUndefined(value)){
+        return value;
+    }
 
     switch (from) {
         case "cmd":
@@ -105,17 +110,36 @@ var _getUnifromDataFromLightMaterial = (field: string, index: number,
     return data;
 }
 
-export var sendBuffer = (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
+export var sendBuffer = (gl: WebGLRenderingContext, type:string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
     var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.vertexAttribPointer(pos, 3, gl[EBufferType.FLOAT], false, 0, 0);
+    //todo fix: texCoord->size is 2!
+    gl.vertexAttribPointer(pos, _getBufferSizeByType(type), gl[EBufferType.FLOAT], false, 0, 0);
 
     if (vertexAttribHistory[pos] !== true) {
         gl.enableVertexAttribArray(pos);
 
         vertexAttribHistory[pos] = true;
     }
+}
+
+var _getBufferSizeByType = (type:string) => {
+    var size:number = null;
+
+    switch(type){
+        case "vec2":
+            size = 2;
+            break;
+        case "vec3":
+            size = 3;
+            break;
+        default:
+            Log.error(true, Log.info.FUNC_INVALID(`type:${type}`));
+            break;
+    }
+
+    return size;
 }
 
 export var sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {

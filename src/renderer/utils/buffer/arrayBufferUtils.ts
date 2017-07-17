@@ -1,6 +1,5 @@
 import { EBufferType } from "../../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
-import { createMap } from "../../../utils/objectUtils";
 
 export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var buffer = buffers[geometryIndex];
@@ -33,5 +32,5 @@ var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
 export var initData = (ArrayBufferDataFromSystemFromSystem: any) => {
     ArrayBufferDataFromSystemFromSystem.verticeBuffers = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
-    ArrayBufferDataFromSystemFromSystem.bufferDataMap = createMap();
+    ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 }

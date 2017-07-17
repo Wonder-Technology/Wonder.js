@@ -9,6 +9,9 @@ export const DataBufferConfig = {
     lightMaterialDataBufferCount: 20 * 1000,
 
 
+    textureDataBufferCount: 20 * 1000,
+
+
     ambientLightDataBufferCount: 1,
     directionLightDataBufferCount: 4,
     pointLightDataBufferCount: 4,

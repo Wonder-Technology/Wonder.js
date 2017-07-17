@@ -64,6 +64,9 @@ import { DirectionLightData } from "../component/light/DirectionLightData";
 import { PointLightData } from "../component/light/PointLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/initConfigSystem";
 import { initWorkInstances } from "../worker/WorkerInstanceSystem";
+import { TextureCacheData } from "../renderer/texture/TextureCacheData";
+import { TextureData } from "../renderer/texture/TextureData";
+import { MapManagerData } from "../renderer/texture/MapManagerData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData:any, {
     canvasID = "",
@@ -165,7 +168,7 @@ var _initData = () => {
 
     initGeometryData(DataBufferConfig, GeometryData);
 
-    initMaterialData(MaterialData, BasicMaterialData, LightMaterialData);
+    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
 
     initMeshRendererData(MeshRendererData);
 

@@ -19,6 +19,8 @@ export class MaterialData {
 
     public static materialMap: Array<Component> = null;
 
+    // public static mapManagers: Array<Map> = null;
+
     public static workerInitList: Array<number> = null;
 
     public static materialClassNameTable: MaterialClassNameTable = null;

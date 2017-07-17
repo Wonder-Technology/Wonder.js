@@ -3,7 +3,9 @@ import {
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex, light_common, lightEnd_fragment,
     light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment, noShadowMap_fragment,
     noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
-    noSpecularMap_fragment, noNormalMap_light_fragment, light_fragment
+    noSpecularMap_fragment, noNormalMap_light_fragment, light_fragment,
+    map_forBasic_vertex,
+    map_forBasic_fragment
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
@@ -149,6 +151,34 @@ export const shaderLib_generator = {
                 }
             }
         },
+
+        "BasicMapShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": map_forBasic_vertex
+                },
+                "fs": {
+                    "source": map_forBasic_fragment
+                }
+            },
+            "send": {
+                "attribute": [
+                    {
+                        "name": "a_texCoord",
+                        "buffer": "texCoord",
+                        "type": "vec2"
+                    }
+                ],
+                "uniform": [
+                    {
+                        "name": "u_sampler2D0",
+                        "type": "sampler2D",
+                        "value": 0
+                    }
+                ]
+            }
+        },
+
 
 
         "NormalMatrixNoInstanceShaderLib": {
@@ -497,13 +527,13 @@ export interface IShaderLibSendConfig {
 export interface ISendAttributeConfig {
     name: string;
     buffer: string;
-    type: "vec3";
+    type: "vec2" | "vec3";
 }
 
 export interface ISendUniformConfig {
     name: string;
     field: string;
-    type: "int" | "float" | "float3" | "vec3" | "mat3" | "mat4";
+    type: "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
     fieldType?: "value" | "structure";
     from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
 }
