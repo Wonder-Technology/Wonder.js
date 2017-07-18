@@ -1,11 +1,9 @@
-import { generateComponentIndex } from "../../component/ComponentSystem";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Texture } from "./Texture";
-import { MapManagerData } from "./MapManagerData";
-import { isNotValidVal, isValidVal } from "../../utils/arrayUtils";
+import { isNotValidVal } from "../../utils/arrayUtils";
 import {
-    bindToUnit, dispose as disposeTextureSystem, initData as initTextureData, initTextures, needUpdate,
+    bindToUnit, initData as initTextureData, initTextures, needUpdate,
     update
 } from "./TextureSystem";
 
@@ -92,10 +90,6 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, materialIndex: number, Tex
             update(gl, textureIndex, TextureData);
         }
     }
-}
-
-export var disposeTexture = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
-    disposeTextureSystem(gl, texture, TextureCacheData, TextureData);
 }
 
 //todo unit test comment

@@ -31,10 +31,11 @@ import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
-        expect(component.index).lte(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
+        expect(component.index).lt(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
     });
 }, (ShaderData: any, MaterialData: any, LightMaterialData: any) => {
     var material = new LightMaterial(),
@@ -119,7 +120,7 @@ export var disposeComponent = (component: Material) => {
 
     lightMaterialLastComponentIndex = computeLightBufferIndex(lastComponentIndex);
 
-    disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
+    disposeMaterialComponent(sourceIndex, lastComponentIndex, MapManagerData, MaterialData);
 
     deleteBySwapAndReset(lightMaterialSourceIndex * colorDataSize, lightMaterialLastComponentIndex * colorDataSize, LightMaterialData.specularColors, colorDataSize, MaterialData.defaultColorArr);
     deleteBySwapAndReset(lightMaterialSourceIndex * colorDataSize, lightMaterialLastComponentIndex * colorDataSize, LightMaterialData.emissionColors, colorDataSize, LightMaterialData.emptyColorArr);

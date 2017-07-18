@@ -97,7 +97,7 @@ export {ProgramData} from "./renderer/shader/program/ProgramData";
 export {ShaderData} from "./renderer/shader/ShaderData";
 export {main_begin,main_end,setPos_mvp} from "./renderer/shader/snippet/ShaderSnippet";
 export {MapManagerData} from "./renderer/texture/MapManagerData";
-export {Texture,createTexture,setTextureSource} from "./renderer/texture/Texture";
+export {Texture,createTexture,disposeTexture,getTextureSource,setTextureSource,getTextureWidth,setTextureWidth,getTextureHeight,setTextureHeight,getTextureIsNeedUpdate,setTextureIsNeedUpdate} from "./renderer/texture/Texture";
 export {TextureCacheData} from "./renderer/texture/TextureCacheData";
 export {TextureData} from "./renderer/texture/TextureData";
 export {DeviceManagerWorkerData} from "./renderer/worker/both_file/device/DeviceManagerWorkerData";

@@ -56,7 +56,8 @@ import { DirectionLightData } from "../light/DirectionLightData";
 import { PointLightData } from "../light/PointLightData";
 import { isNotValidMapValue } from "../../utils/objectUtils";
 import {
-    disposeTexture as disposeTextureSystem, initData as initMapManagerData,
+    dispose as disposeMapManager,
+    initData as initMapManagerData,
     initMapManagers
 } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
@@ -209,9 +210,9 @@ export var addComponent = (component: Material, gameObject: GameObject, Material
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MaterialData: any) => {
+export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData:any, MaterialData: any) => {
     _checkDisposeComponentWorker(sourceIndex);
-}, (sourceIndex: number, lastComponentIndex: number, MaterialData: any) => {
+}, (sourceIndex: number, lastComponentIndex: number, MapManagerData:any, MaterialData: any) => {
     var colorDataSize = getColorDataSize(),
         opacityDataSize = getOpacityDataSize(),
         alphaTestDataSize = getAlphaTestDataSize();
@@ -226,6 +227,8 @@ export var disposeComponent = requireCheckFunc((sourceIndex: number, lastCompone
     deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+
+    disposeMapManager(sourceIndex, MapManagerData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
@@ -266,10 +269,6 @@ export var createDefaultColor = () => {
 //
 //     return mapManager;
 // }
-
-export var disposeTexture = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
-    disposeTextureSystem(gl, texture, TextureCacheData, TextureData);
-}
 
 export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     MaterialData.materialMap = [];

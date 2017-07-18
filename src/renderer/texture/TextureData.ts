@@ -1,10 +1,12 @@
+import { Texture } from "./Texture";
+
 export class TextureData{
     public static index:number = null;
 
-    public static textures:Array<WebGLTexture> = null;
+    public static glTextures:Array<WebGLTexture> = null;
 
     public static sourceMap:Array<HTMLImageElement> = null;
-    // public static isNeedUpdateMap:Array<boolean> = null;
+    public static textureMap:Array<Texture> = null;
 
     public static buffer: SharedArrayBuffer = null;
 

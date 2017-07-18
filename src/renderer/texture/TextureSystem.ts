@@ -3,12 +3,12 @@ import {
     isCached
 } from "./TextureCacheSystem";
 import { ETextureTarget } from "../enum/ETextureTarget";
-import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { deleteBySwap, isValidVal } from "../../utils/arrayUtils";
 import { ETextureFilterMode } from "../enum/ETextureFilterMode";
 import { Texture } from "./Texture";
-import { generateComponentIndex } from "../../component/ComponentSystem";
+import { deleteComponentBySwapArray, generateComponentIndex } from "../../component/ComponentSystem";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import {
@@ -27,14 +27,20 @@ import { ETextureWrapMode } from "../enum/ETextureWrapMode";
 import { ETextureFormat } from "../enum/ETextureFormat";
 import { ETextureType } from "../enum/ETextureType";
 
-export var create = (TextureData:any) => {
+export var create = ensureFunc((component: Texture) => {
+    it("index should <= max count", () => {
+        expect(component.index).lt(_getBufferCount());
+    });
+}, (TextureData:any) => {
     var texture = new Texture(),
         index = generateComponentIndex(TextureData);
 
     texture.index = index;
 
+    TextureData.textureMap[index] = texture;
+
     return texture;
-}
+})
 
 export var getSource = (textureIndex:number, TextureData:any) => {
     return TextureData.sourceMap[textureIndex];
@@ -94,7 +100,7 @@ export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureInd
 }
 
 var _getWebglTexture = (textureIndex:number, TextureData:any) => {
-    return TextureData.textures[textureIndex];
+    return TextureData.glTextures[textureIndex];
 }
 
 export var initTextures = (gl:WebGLRenderingContext, TextureData:any) => {
@@ -114,7 +120,7 @@ var _createWebglTexture = (gl:WebGLRenderingContext, textureIndex:number, Textur
         return;
     }
 
-    TextureData.textures[textureIndex] = gl.createTexture();
+    TextureData.glTextures[textureIndex] = gl.createTexture();
 }
 
 var _isGLTextureExist = (glTexture:WebGLTexture) => isValidVal(glTexture);
@@ -137,21 +143,6 @@ export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: nu
         expect(_isTextureExist(textureIndex, TextureData)).true;
     });
 }, (gl:WebGLRenderingContext, textureIndex: number, TextureData:any) => {
-    // var {
-    //         width,
-    //         height,
-    //         wrapS,
-    //         wrapT,
-    //         magFilter,
-    //         minFilter
-    //     } = TextureData.sourceDataMap[textureIndex],
-    //     {
-    //         format,
-    //         type
-    //     } = TextureData.drawDataMap[textureIndex],
-    //     {
-    //         flipY
-    //     } = TextureData.configDataMap[textureIndex],
     var width = getWidth(textureIndex, TextureData),
         height = getHeight(textureIndex, TextureData),
         wrapS = getWrapS(textureIndex, TextureData),
@@ -246,10 +237,10 @@ var _isPowerOfTwo = (value:number) => {
 //     return width > maxSize || height > maxSize;
 // }
 
-var _isSourceExist = (source:HTMLImageElement) => isValidVal(source);
+// var _isSourceExist = (source:HTMLImageElement) => isValidVal(source);
 
 var _isTextureExist = (textureIndex: number, TextureData:any) => {
-    return isValidVal(TextureData.textures[textureIndex]);
+    return isValidVal(TextureData.glTextures[textureIndex]);
 }
 
 export var dispose = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
@@ -267,16 +258,20 @@ export var dispose = (gl:WebGLRenderingContext, texture:Texture, TextureCacheDat
 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureData.sourceMap);
 
-    _disposeGLTexture(gl, texture, TextureCacheData, TextureData);
+    deleteComponentBySwapArray(sourceIndex, lastComponentIndex, TextureData.textureMap);
+
+    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
 }
 
-var _disposeGLTexture = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
-    var glTexture = _getWebglTexture(texture.index, TextureData);
+var _disposeGLTexture = (gl:WebGLRenderingContext, sourceIndex:number, lastComponentIndex:number, TextureCacheData:any, TextureData:any) => {
+    var glTexture = _getWebglTexture(sourceIndex, TextureData);
 
     gl.deleteTexture(glTexture);
     // delete glTexture;
 
     _unBindAllUnit(gl, TextureCacheData);
+
+    deleteBySwap(sourceIndex, lastComponentIndex, TextureData.glTextures);
 }
 
 var _unBindAllUnit = (gl:WebGLRenderingContext, TextureCacheData:any) => {
@@ -296,10 +291,10 @@ export var initData = (TextureCacheData:any, TextureData:any) => {
 
     TextureData.index = 0;
 
-    TextureData.textures = [];
+    TextureData.glTextures = [];
     TextureData.sourceMap = [];
 
-    TextureData.textures = [];
+    TextureData.textureMap = [];
 
     _setDefaultData(TextureData);
 
@@ -314,7 +309,7 @@ var _setDefaultData = (TextureData: any) => {
 
 var _initBufferData = (TextureData: any) => {
     var buffer: any = null,
-        count = DataBufferConfig.textureDataBufferCount,
+        count = _getBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getBufferDataSize() * 2) + Uint8Array.BYTES_PER_ELEMENT * (getBufferDataSize()) ,
         offset: number = null;
 
@@ -326,6 +321,8 @@ var _initBufferData = (TextureData: any) => {
 
     TextureData.buffer = buffer;
 }
+
+var _getBufferCount = () => DataBufferConfig.textureDataBufferCount;
 
 var _setDefaultTypeArrData = (count: number, TextureData: any) => {
     var width = TextureData.defaultWidth,

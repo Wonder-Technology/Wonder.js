@@ -22,10 +22,11 @@ import {
 } from "../../renderer/utils/material/basicMaterialUtils";
 import { addMap as addMapByMapManager, getMap as getMapByMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
-        expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
+        expect(component.index).lt(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
     });
 }, (ShaderData: any, MaterialData: any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),
@@ -63,7 +64,7 @@ export var disposeComponent = (component: Material) => {
 
     lastComponentIndex = BasicMaterialData.index;
 
-    disposeMaterialComponent(sourceIndex, lastComponentIndex, MaterialData);
+    disposeMaterialComponent(sourceIndex, lastComponentIndex, MapManagerData, MaterialData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }

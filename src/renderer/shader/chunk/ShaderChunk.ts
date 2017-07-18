@@ -19,13 +19,13 @@ export const light_setWorldPosition_vertex:GLSLChunk = {top: "",define: "",varDe
 export const light_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n"};
 export const map_forBasic_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n"};
 export const map_forBasic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n//\n//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n\n    v_mapCoord0 = a_texCoord;\n"};
+export const modelMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "mat4 mMatrix = u_mMatrix;\n"};
+export const normalMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "mat3 normalMatrix = u_normalMatrix;\n"};
 export const noDiffuseMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n",body: ""};
 export const noEmissionMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "vec3 getMaterialEmission() {\n        return u_emission;\n    }\n",body: ""};
 export const noLightMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n",body: ""};
 export const noNormalMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "vec3 getNormal();\n",funcDefine: "vec3 getNormal(){\n    return v_normal;\n}\n\n",body: ""};
 export const noNormalMap_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec3 v_normal;\n",funcDeclare: "",funcDefine: "",body: "v_normal = normalize(normalMatrix * a_normal);\n"};
 export const noSpecularMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "float getSpecularStrength() {\n        return 1.0;\n    }\n",body: ""};
-export const modelMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "mat4 mMatrix = u_mMatrix;\n"};
-export const normalMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "mat3 normalMatrix = u_normalMatrix;\n"};
 export const noShadowMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n",body: ""};
 export type GLSLChunk = {top:string;define:string;varDeclare:string;funcDeclare:string;funcDefine:string;body:string;}

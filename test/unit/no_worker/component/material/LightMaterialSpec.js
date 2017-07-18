@@ -186,15 +186,9 @@ describe("LightMaterial", function () {
                     }
 
                     function judgeSingleValue(getMethodName, setMethodName, defaultValue) {
-                        lightMaterialTool[setMethodName](material, 1);
-                        lightMaterialTool[setMethodName](mat2, 2);
-
-                        var materialIndex = material.index;
-                        var mat2Index = mat2.index;
-                        gameObjectTool.disposeComponent(obj, material);
-
-                        expect(lightMaterialTool[getMethodName](componentTool.createComponent(materialIndex))).toEqual(2);
-                        expect(lightMaterialTool[getMethodName](componentTool.createComponent(mat2Index))).toEqual(defaultValue);
+                        disposeTool.judgeSingleValue(lightMaterialTool, getMethodName, setMethodName, defaultValue, material, mat2, function(material){
+                            gameObjectTool.disposeComponent(obj, material);
+                        })
                     }
 
                     it("remove from specularColors", function () {
