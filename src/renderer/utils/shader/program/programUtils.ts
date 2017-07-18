@@ -196,7 +196,7 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
 
     switch (bufferName) {
         case "vertice":
-            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.verticeBuffers, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.vertexBuffer, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
             break;
         case "normal":
             buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);

@@ -4,7 +4,7 @@ import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWorkerData";
 
 export var disposeBuffer = (geometryIndex: number, ArrayBufferWorkerData: any) => {
-    disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.verticeBuffers, getGL, DeviceManagerWorkerData);
+    disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.vertexBuffer, getGL, DeviceManagerWorkerData);
     disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.normalBuffers, getGL, DeviceManagerWorkerData);
 }
 

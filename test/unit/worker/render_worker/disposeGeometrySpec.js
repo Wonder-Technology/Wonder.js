@@ -141,9 +141,9 @@ describe("dispose geometry", function () {
                             var buffer3 = { a: 3 },
                                 buffer4 = { a: 4 };
 
-                            ArrayBufferWorkerData.verticeBuffers = [];
-                            ArrayBufferWorkerData.verticeBuffers[geo1Index] = buffer3;
-                            ArrayBufferWorkerData.verticeBuffers[geo2Index] = buffer4;
+                            ArrayBufferWorkerData.vertexBuffer = [];
+                            ArrayBufferWorkerData.vertexBuffer[geo1Index] = buffer3;
+                            ArrayBufferWorkerData.vertexBuffer[geo2Index] = buffer4;
 
 
 
@@ -166,9 +166,9 @@ describe("dispose geometry", function () {
                                 buffer5 = { a: 5 },
                                 buffer6 = { a: 6 };
 
-                            ArrayBufferWorkerData.verticeBuffers = [];
-                            ArrayBufferWorkerData.verticeBuffers[geo1Index] = buffer3;
-                            ArrayBufferWorkerData.verticeBuffers[geo2Index] = buffer4;
+                            ArrayBufferWorkerData.vertexBuffer = [];
+                            ArrayBufferWorkerData.vertexBuffer[geo1Index] = buffer3;
+                            ArrayBufferWorkerData.vertexBuffer[geo2Index] = buffer4;
 
 
                             ArrayBufferWorkerData.normalBuffers = [];

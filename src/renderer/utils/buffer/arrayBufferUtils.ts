@@ -30,7 +30,7 @@ var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
 }
 
 export var initData = (ArrayBufferDataFromSystemFromSystem: any) => {
-    ArrayBufferDataFromSystemFromSystem.verticeBuffers = [];
+    ArrayBufferDataFromSystemFromSystem.vertexBuffer = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
     ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 }
