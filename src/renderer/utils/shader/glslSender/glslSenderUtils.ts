@@ -114,7 +114,6 @@ export var sendBuffer = (gl: WebGLRenderingContext, type:string, pos: number, bu
     var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    //todo fix: texCoord->size is 2!
     gl.vertexAttribPointer(pos, _getBufferSizeByType(type), gl[EBufferType.FLOAT], false, 0, 0);
 
     if (vertexAttribHistory[pos] !== true) {

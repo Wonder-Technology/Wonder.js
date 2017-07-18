@@ -92,7 +92,6 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, materialIndex: number, Tex
     }
 }
 
-//todo unit test comment
 /*!
 not dispose texture when dispose map manager(dispose material)!
 because different materials may use same texture, if dispose one material's texture which is shared, then will affect other materials!
