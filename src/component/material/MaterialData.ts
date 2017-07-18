@@ -1,6 +1,5 @@
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { Component } from "../Component";
-// import { Shader } from "../../renderer/shader/Shader";
 
 export class MaterialData {
     public static buffer: SharedArrayBuffer = null;

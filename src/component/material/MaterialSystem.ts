@@ -9,7 +9,6 @@ import {
     getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-// import { Shader } from "../../renderer/shader/Shader";
 import { MaterialData } from "./MaterialData";
 import {
     deleteBySwapAndNotReset, deleteBySwapAndReset,

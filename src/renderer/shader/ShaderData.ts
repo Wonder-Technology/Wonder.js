@@ -1,5 +1,3 @@
-// import { Shader } from "./Shader";
-
 export class ShaderData {
     public static index: number = null;
     public static count: number = null;
