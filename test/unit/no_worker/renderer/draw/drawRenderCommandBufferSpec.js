@@ -63,14 +63,14 @@ describe("draw render command", function () {
             shaderTool.setSendAttributeConfig(0, [
                 {
                     "name": "a_position",
-                    "buffer": "vertice",
+                    "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);
             shaderTool.setSendAttributeConfig(1, [
                 {
                     "name": "a_position",
-                    "buffer": "vertice",
+                    "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);

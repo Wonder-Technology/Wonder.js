@@ -80,7 +80,7 @@ export const shaderLib_generator = {
                 "attribute": [
                     {
                         "name": "a_position",
-                        "buffer": "vertice",
+                        "buffer": "vertex",
                         "type": "vec3"
                     }
                 ]
@@ -526,7 +526,7 @@ export interface IShaderLibSendConfig {
 
 export interface ISendAttributeConfig {
     name: string;
-    buffer: string;
+    buffer: "vertex" | "normal" | "texCoord";
     type: "vec2" | "vec3";
 }
 
