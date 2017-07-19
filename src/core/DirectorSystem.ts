@@ -48,6 +48,16 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     run = (elapsed: number, state: Map<any, any>, timeController: DirectorTimeController, scheduler: Scheduler) => {
         var resultState: Map<any, any> = state;
 
+        //todo unit test
+        //todo refactor
+        if (SendDrawRenderCommandBufferData.state === ERenderWorkerState.INIT_COMPLETE) {
+            SendDrawRenderCommandBufferData.isInitComplete = true;
+            SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
+        }
+        else if(!SendDrawRenderCommandBufferData.isInitComplete){
+            return resultState;
+        }
+
         if (SendDrawRenderCommandBufferData.state === ERenderWorkerState.DRAW_COMPLETE) {
             timeController.tick(elapsed);
             SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;

@@ -3,7 +3,7 @@ import { EBufferType } from "../../renderer/enum/EBufferType";
 import { ComponentGameObjectMap } from "../ComponentData";
 import { ComponentMap } from "../ComponentSystem";
 import {
-    GeometryIndicesCacheMap, GeometryInfoList, GeometryNormalsCacheMap, GeometryVerticesCacheMap,
+    GeometryIndicesCacheMap, GeometryInfoList, GeometryNormalsCacheMap, GeometryVertexCacheMap,
     GeometryWorkerInfoList
 } from "../../definition/type/geometryType";
 
@@ -42,7 +42,7 @@ export class GeometryData {
     public static texCoords: Float32Array = null;
     public static indices: Uint16Array | Uint32Array = null;
 
-    public static verticesCacheMap: GeometryVerticesCacheMap = null;
+    public static verticesCacheMap: GeometryVertexCacheMap = null;
     public static normalsCacheMap: GeometryNormalsCacheMap = null;
     public static texCoordsCacheMap: GeometryNormalsCacheMap = null;
     public static indicesCacheMap: GeometryIndicesCacheMap = null;

@@ -67,6 +67,8 @@ import { initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
 import { TextureData } from "../renderer/texture/TextureData";
 import { MapManagerData } from "../renderer/texture/MapManagerData";
+import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
+import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData:any, {
     canvasID = "",
@@ -187,6 +189,8 @@ var _initData = () => {
     initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
 
     initLightData(AmbientLightData, DirectionLightData, PointLightData);
+
+    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 }
 
 

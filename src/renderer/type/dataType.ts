@@ -80,6 +80,15 @@ export type MaterialDataMap = {
     LightMaterialDataFromSystem: any;
 }
 
+export type MaterialWorkerInitDataList = Array<{
+    index:number;
+    className:string;
+}>
+
+export type ShaderLibWholeNameMap = {
+    [shaderLibWholeName: string]: number
+}
+
 export type DirectionLightGLSLDataStructure = {
     position: string;
     color: string;
@@ -98,3 +107,9 @@ export type PointLightGLSLDataStructure = {
 
 export type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
 type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
+
+
+export type DisposedTextureDataMap = Array<{
+    sourceIndex:number;
+    lastComponentIndex:number;
+}>

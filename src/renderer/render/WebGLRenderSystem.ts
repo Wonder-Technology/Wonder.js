@@ -49,6 +49,7 @@ import {
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
+import { convertSourceMapToSrcArr } from "../texture/TextureSystem";
 
 export var init = null;
 
@@ -56,71 +57,75 @@ export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     init = (state: Map<any, any>) => {
-        // var renderWorker = getRenderWorker(WorkerInstanceData);
-        //
-        // //todo fix materialClassNameTable
-        // renderWorker.postMessage({
-        //     operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
-        //     materialData: {
-        //         buffer: MaterialData.buffer,
-        //         basicMaterialData: {
-        //             startIndex: getBasicMaterialBufferStartIndex(),
-        //             index: BasicMaterialData.index
-        //         },
-        //         lightMaterialData: {
-        //             startIndex: getLightMaterialBufferStartIndex(),
-        //             index: LightMaterialData.index
-        //         },
-        //         materialClassNameTable: MaterialData.materialClassNameTable,
-        //         shaderIndexTable: MaterialData.shaderIndexTable
-        //     },
-        //     geometryData: {
-        //         buffer: GeometryData.buffer,
-        //         indexType: GeometryData.indexType,
-        //         indexTypeSize: GeometryData.indexTypeSize,
-        //         verticesInfoList: GeometryData.verticesInfoList,
-        //         normalsInfoList: GeometryData.normalsInfoList,
-        //         indicesInfoList: GeometryData.indicesInfoList
-        //     },
-        //     lightData:{
-        //         ambientLightData: {
-        //             buffer: AmbientLightData.buffer,
-        //             bufferCount:getAmbientLightBufferCount(),
-        //             lightCount:AmbientLightData.count
-        //
-        //         },
-        //         directionLightData: {
-        //             buffer: DirectionLightData.buffer,
-        //             bufferCount:getDirectionLightBufferCount(),
-        //             lightCount:DirectionLightData.count,
-        //             directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-        //         },
-        //         pointLightData: {
-        //             buffer:PointLightData.buffer,
-        //             bufferCount:getPointLightBufferCount(),
-        //             lightCount:PointLightData.count,
-        //             pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
-        //         }
-        //     }
-        // });
-        //
-        // renderWorker.onmessage = (e) => {
-        //     var data = e.data,
-        //         state = data.state;
-        //
-        //     SendDrawRenderCommandBufferData.state = state;
-        // };
-        //
-        // return state;
+        var renderWorker = getRenderWorker(WorkerInstanceData);
+
+        renderWorker.postMessage({
+            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+            materialData: {
+                buffer: MaterialData.buffer,
+                basicMaterialData: {
+                    startIndex: getBasicMaterialBufferStartIndex(),
+                    index: BasicMaterialData.index
+                },
+                lightMaterialData: {
+                    startIndex: getLightMaterialBufferStartIndex(),
+                    index: LightMaterialData.index
+                }
+            },
+            geometryData: {
+                buffer: GeometryData.buffer,
+                indexType: GeometryData.indexType,
+                indexTypeSize: GeometryData.indexTypeSize,
+                verticesInfoList: GeometryData.verticesInfoList,
+                normalsInfoList: GeometryData.normalsInfoList,
+                //todo test
+                texCoordsInfoList: GeometryData.texCoordsInfoList,
+                indicesInfoList: GeometryData.indicesInfoList
+            },
+            lightData:{
+                ambientLightData: {
+                    buffer: AmbientLightData.buffer,
+                    bufferCount:getAmbientLightBufferCount(),
+                    lightCount:AmbientLightData.count
+
+                },
+                directionLightData: {
+                    buffer: DirectionLightData.buffer,
+                    bufferCount:getDirectionLightBufferCount(),
+                    lightCount:DirectionLightData.count,
+                    directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                },
+                pointLightData: {
+                    buffer:PointLightData.buffer,
+                    bufferCount:getPointLightBufferCount(),
+                    lightCount:PointLightData.count,
+                    pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+                }
+            },
+            //todo test
+            textureData: {
+                mapManagerBuffer: MapManagerData.buffer,
+                textureBuffer: TextureData.buffer,
+                index: TextureData.index,
+                imageSrcArr:convertSourceMapToSrcArr(TextureData.sourceMap)
+            }
+        });
+
+
+
+        renderWorker.onmessage = (e) => {
+            var data = e.data,
+                state = data.state;
+
+            SendDrawRenderCommandBufferData.state = state;
+        };
+
+        return state;
     }
 
     render = (state: Map<any, any>) => {
-        // if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.INIT_COMPLETE) {
-        //     return state;
-        // }
-
         return compose(
-            sendDrawData(WorkerInstanceData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
+            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)

@@ -2,6 +2,7 @@ import { ensureFunc, it } from "../../../definition/typescript/decorator/contrac
 // import { MaterialClassNameTable, ShaderIndexTable } from "../../../definition/type/materialType";
 import { expect } from "wonder-expect.js";
 import { getSingleSizeData } from "../common/operateBufferDataUtils";
+import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
 
 // export var getMaterialClassNameFromTable = (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => {
 //     return materialClassNameTable[shaderIndex]
@@ -14,6 +15,10 @@ import { getSingleSizeData } from "../common/operateBufferDataUtils";
 // }, (materialClassName: string, shaderIndexTable: ShaderIndexTable) => {
 //     return shaderIndexTable[materialClassName];
 // })
+
+export var setShaderIndex = (materialIndex: number, shaderIndex:number, MaterialDataFromSystem: any) => {
+    setTypeArrayValue(MaterialDataFromSystem.shaderIndices, materialIndex, shaderIndex);
+}
 
 export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => {
     return getSingleSizeData(materialIndex, MaterialDataFromSystem.opacities);

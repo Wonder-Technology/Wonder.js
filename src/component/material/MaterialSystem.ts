@@ -18,7 +18,7 @@ import {
     createTypeArrays,
     getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap
+    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { init as initShader } from "../../renderer/shader/ShaderSystem";
@@ -53,7 +53,6 @@ import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
 import { PointLightData } from "../light/PointLightData";
-import { isNotValidMapValue } from "../../utils/objectUtils";
 import {
     dispose as disposeMapManager,
     initData as initMapManagerData,
@@ -108,15 +107,18 @@ export var initMaterial = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
-        MaterialData.workerInitList.push(index);
+        MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
+    }
+
+    var _buildWorkerInitData = (index:number, className:string) => {
+        return {
+            index: index,
+            className: className
+        }
     }
 }
 else {
     initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
-        // var shaderIndex = getShaderIndex(index, MaterialData);
-
-        //todo fix worker
-        // initShader(state, index, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
         var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
 
         setShaderIndex(index, shaderIndex, MaterialData);
@@ -152,10 +154,6 @@ export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
 }
 
 // export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
-
-export var setShaderIndex = (materialIndex: number, shaderIndex:number, MaterialData: any) => {
-    setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shaderIndex);
-}
 
 export var getColor = (materialIndex: number, MaterialData: any) => {
     return getColor3Data(materialIndex, MaterialData.colors);
@@ -235,9 +233,11 @@ export var disposeComponent = requireCheckFunc((sourceIndex: number, lastCompone
 var _checkDisposeComponentWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _checkDisposeComponentWorker = (index: number) => {
+    _checkDisposeComponentWorker = (materialIndex: number) => {
         it("should not dispose the material which is inited in the same frame", () => {
-            expect(MaterialData.workerInitList.indexOf(index)).equal(-1);
+            for(let {index} of MaterialData.workerInitList){
+                expect(materialIndex).not.equal(index);
+            }
         });
     }
 }

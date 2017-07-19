@@ -2,7 +2,7 @@ import {
     bindIndexBuffer as bindIndexBufferUtils, init as initUtils, sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
     use as useUtils
 } from "../../../utils/shader/shaderUtils";
-import { getIndices, getNormals, getVertices } from "../geometry/GeometryWorkerSystem";
+import { getIndices, getNormals, getTexCoords, getVertices } from "../geometry/GeometryWorkerSystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationWorkerSystem";
 import {
     getUniformData, sendBuffer, sendFloat1, sendFloat3, sendInt, sendMatrix3, sendMatrix4,
@@ -25,17 +25,26 @@ import {
     getQuadratic as getPointLightQuadratic,
     getRange as getPointLightRange,
 } from "../light/PointLightWorkerSystem";
+import { getMapCount } from "../texture/MapManagerWorkerSystem";
+import { createMap } from "../../../../utils/objectUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, shaderIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
-    //todo fix
-    // initUtils(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, buildGLSLSource, getGL, initShaderDataMap);
+export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+    return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
+
+var _buildInitShaderFuncDataMap = () => {
+    return {
+        buildGLSLSource: buildGLSLSource,
+        getGL: getGL,
+        getMapCount: getMapCount
+    }
+}
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
     getVertices: getVertices,
     getNormals: getNormals,
     //todo fix
-    getTexCoords:null
+    getTexCoords:getTexCoords
 }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData);
 
 export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
@@ -103,4 +112,11 @@ export var getPointLightPosition = (index:number, drawDataMap: DrawDataMap) => {
 
 var _getLightPosition = (index:number, LightDataFromSystem:any) => {
     return LightDataFromSystem.positionArr[index];
+}
+
+export var initData = (ShaderWorkerData: any) => {
+    ShaderWorkerData.index = 0;
+    ShaderWorkerData.count = 0;
+
+    ShaderWorkerData.shaderLibWholeNameMap = createMap();
 }

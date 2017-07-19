@@ -85,7 +85,7 @@ export interface IShaderConfig {
 }
 
 export interface IShaderLibItem {
-    type: "group" | "branch";
+    type: string;
     branch?:Function;
     value: any;
 }

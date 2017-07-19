@@ -20,7 +20,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
 } from "../../renderer/utils/material/basicMaterialUtils";
-import { addMap as addMapByMapManager, getMap as getMapByMapManager } from "../../renderer/texture/MapManagerSystem";
+import { addMap as addMapByMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 

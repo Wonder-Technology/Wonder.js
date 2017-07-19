@@ -19,14 +19,23 @@ import { ESide } from "../enum/ESide";
 
 export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = getContext(contextConfig, canvas);
+        var gl = _getOnlyGL(canvas, contextConfig);
 
-        if (!gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
         return compose(setCanvas(canvas), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
 })
+
+var _getOnlyGL  = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
+    var gl = getContext(contextConfig, canvas);
+
+    if (!gl) {
+        DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+
+        return null;
+    }
+
+    return gl;
+}
 
 export var getGL = getGLUtils;
 

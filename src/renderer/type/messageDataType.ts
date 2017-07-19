@@ -1,5 +1,8 @@
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
-import { ContextConfigOptionsData, DirectionLightGLSLDataStructure, PointLightGLSLDataStructure } from "./dataType";
+import {
+    ContextConfigOptionsData, DirectionLightGLSLDataStructure, DisposedTextureDataMap,
+    PointLightGLSLDataStructure
+} from "./dataType";
 import { Vector3 } from "../../math/Vector3";
 import { EBufferType } from "../enum/EBufferType";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
@@ -32,6 +35,7 @@ export type GeometryInitWorkerData = {
     indexTypeSize: number;
     verticesInfoList: GeometryInfoList;
     normalsInfoList: GeometryInfoList;
+    texCoordsInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }
 
@@ -40,6 +44,7 @@ export type GeometryUpdateWorkerData = {
     type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryWorkerInfoList;
     normalsInfoList: GeometryWorkerInfoList;
+    texCoordsInfoList: GeometryWorkerInfoList;
     indicesInfoList: GeometryWorkerInfoList;
 }
 
@@ -48,6 +53,7 @@ export type GeometryResetWorkerData = {
     type: EGeometryWorkerDataOperateType;
     verticesInfoList: GeometryInfoList;
     normalsInfoList: GeometryInfoList;
+    texCoordsInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
 }
 
@@ -78,4 +84,18 @@ export type LightDrawWorkerData = {
     pointLightData:{
         positionArr:Array<Float32Array>;
     };
+}
+
+export type TextureInitWorkerData = {
+    mapManagerBuffer: SharedArrayBuffer;
+    textureBuffer: SharedArrayBuffer;
+    index: number;
+    imageSrcArr: Array<string>;
+}
+
+export type TextureUpdateWorkerData = {
+}
+
+export type TextureDisposeWorkerData = {
+    disposedTextureDataMap: DisposedTextureDataMap;
 }

@@ -1,3 +1,6 @@
+import "wonder-frp/dist/es2015/stream/ConcatStream";
+import "wonder-frp/dist/es2015/stream/MergeAllStream";
+import "wonder-frp/dist/es2015/stream/MergeStream";
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
 import {
@@ -26,7 +29,7 @@ import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandBufferUtils";
 import { initGL } from "./initGL";
-import { setState } from "./state/StateSytem";
+import { getState, setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
 import { disposeGeometryBuffers } from "../both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
@@ -48,13 +51,23 @@ import {
 import { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
 import {
     GeometryInitWorkerData, GeometryResetWorkerData,
-    GeometryUpdateWorkerData, LightDrawWorkerData, LightInitWorkerData
+    GeometryUpdateWorkerData, LightDrawWorkerData, LightInitWorkerData, TextureInitWorkerData
 } from "../../type/messageDataType";
 import { PointLightWorkerData } from "./light/PointLightWorkerData";
 import { initData as initLightData } from "./light/LightWorkerSystem";
 import { setIsTest } from "./config/InitConfigWorkerSystem";
 import { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 import { setPositionArr as setPointLightPositionArr } from "./light/PointLightWorkerSystem";
+import { TextureWorkerData } from "./texture/TextureWorkerData";
+import { TextureCacheWorkerData } from "./texture/TextureCacheWorkerData";
+import { MapManagerWorkerData } from "./texture/MapManagerWorkerData";
+import {
+    disposeSourceAndGLTexture, setIndex,
+    setSourceMapByImageSrcArrStream
+} from "./texture/TextureWorkerSystem";
+import { callFunc, empty, fromArray } from "wonder-frp/dist/es2015/global/Operator";
+import { initData as initShaderData } from "./shader/ShaderWorkerSystem";
+import { ShaderWorkerData } from "./shader/ShaderWorkerData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -77,22 +90,18 @@ export var onmessageHandler = (e) => {
 
             initState(state, getGL, setSide, DeviceManagerWorkerData);
             break;
-        case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT:
-            if(data.lightData !== null){
-                _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
-            }
-
-            if(data.materialData !== null) {
-                _initMaterials(data.materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
-            }
-
-            if(data.geometryData !== null) {
-                _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData);
-            }
-
-            // self.postMessage({
-            //     state: ERenderWorkerState.INIT_COMPLETE
-            // });
+        case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
+            fromArray([
+                _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
+                _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
+                _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
+            ]).mergeAll()
+                .concat(_initTextures(data.textureData, TextureWorkerData))
+                .subscribe(null, null, () => {
+                    self.postMessage({
+                        state: ERenderWorkerState.INIT_COMPLETE
+                    });
+                })
             break;
         case EWorkerOperateType.DRAW:
             clear(null, render_config, DeviceManagerWorkerData);
@@ -104,10 +113,10 @@ export var onmessageHandler = (e) => {
 
             if (geometryData !== null) {
                 if (_needUpdateGeometryWorkerData(geometryData)) {
-                    updatePointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                    updatePointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
                 else if (_needResetGeometryWorkerData(geometryData)) {
-                    resetPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+                    resetPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
                 }
             }
 
@@ -116,14 +125,21 @@ export var onmessageHandler = (e) => {
             }
 
             if (disposeData !== null) {
-                disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
+                if(disposeData.geometryDisposeData !== null){
+                    disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
+                }
+
+                if(disposeData.textureDisposeData !== null){
+                    // disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
+                    disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData);
+                }
             }
 
             if(lightData !== null){
                 _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
             }
 
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), data.renderCommandBufferData);
 
             self.postMessage({
                 state: ERenderWorkerState.DRAW_COMPLETE
@@ -147,6 +163,8 @@ var _initData = () => {
     initIndexBufferData(IndexBufferWorkerData);
 
     initDrawRenderCommandBufferForDrawData(DrawRenderCommandBufferWorkerData);
+
+    initShaderData(ShaderWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {
@@ -157,20 +175,39 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (materialData: MaterialInitWorkerData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
-    initMaterialWorkerData(materialData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+var _initMaterials = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData:any, TextureCacheWorkerData:any, TextureWorkerData:any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+    return callFunc(() => {
+        if(materialData === null){
+            return;
+        }
 
-    initMaterials(materialData.basicMaterialData, materialData.lightMaterialData);
+        initMaterialWorkerData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+
+        initMaterials(materialData.basicMaterialData, materialData.lightMaterialData, gl, TextureWorkerData);
+    })
 }
 
 var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
-    initGeometryWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
+    return callFunc(() => {
+        if(geometryData === null){
+            return;
+        }
 
-    setPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+        initGeometryWorkerData(geometryData.buffer, geometryData.indexType, geometryData.indexTypeSize, DataBufferConfig, GeometryWorkerData);
+
+        setPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+    })
 }
 
 var _initLights = (lightData:LightInitWorkerData, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any) => {
-    initLightData(lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+    return callFunc(() => {
+        if (lightData === null) {
+            return;
+        }
+
+        initLightData(lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+
+    })
 }
 
 var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData:any, PointLightWorkerData:any) => {
@@ -179,4 +216,14 @@ var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData
 
     setDirectionLightPositionArr(directionLightData.positionArr, DirectionLightWorkerData);
     setPointLightPositionArr(pointLightData.positionArr, PointLightWorkerData);
+}
+
+var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
+    if(textureData === null){
+        return empty();
+    }
+
+    setIndex(textureData.index, TextureWorkerData);
+
+    return setSourceMapByImageSrcArrStream(textureData.imageSrcArr, TextureWorkerData);
 }

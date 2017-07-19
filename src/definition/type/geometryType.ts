@@ -7,7 +7,7 @@ export type GeometryWorkerInfoList = Array<{
     endIndex: number;
 }>
 
-export type GeometryVerticesCacheMap = {
+export type GeometryVertexCacheMap = {
     [index: number]: Float32Array
 }
 

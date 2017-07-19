@@ -1,4 +1,5 @@
 import { Texture } from "./Texture";
+import { DisposedTextureDataMap } from "../type/dataType";
 
 export class TextureData{
     public static index:number = null;
@@ -18,5 +19,7 @@ export class TextureData{
     public static defaultWidth: number = null;
     public static defaultHeight: number = null;
     public static defaultIsNeedUpdate: number = null;
+
+    public static disposedTextureDataMap: DisposedTextureDataMap = null;
 }
 

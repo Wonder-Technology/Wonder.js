@@ -33,6 +33,14 @@ export var getNormals = ensureFunc((normals: Float32Array, index: number, Geomet
     return GeometryWorkerData.normalsCacheMap[index];
 })
 
+export var getTexCoords = ensureFunc((texCoords: Float32Array, index: number, GeometryWorkerData: any) => {
+    it("texCoords should exist", () => {
+        expect(texCoords).exist;
+    })
+}, (index: number, GeometryWorkerData: any) => {
+    return GeometryWorkerData.texCoordsCacheMap[index];
+})
+
 export var getIndices = ensureFunc((indices: Uint16Array | Uint32Array, index: number, GeometryWorkerData: any) => {
     it("indices should exist", () => {
         expect(indices).exist;
@@ -41,9 +49,10 @@ export var getIndices = ensureFunc((indices: Uint16Array | Uint32Array, index: n
     return GeometryWorkerData.indicesCacheMap[index];
 })
 
-export var updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, normalsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryWorkerInfoList, GeometryWorkerData: any) => {
+export var updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryWorkerInfoList, GeometryWorkerData: any) => {
     _updatePointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _updatePointCacheData(normalsInfoList, GeometryWorkerData.normals, GeometryWorkerData.normalsCacheMap);
+    _updatePointCacheData(texCoordsInfoList, GeometryWorkerData.texCoords, GeometryWorkerData.texCoordsCacheMap);
     _updatePointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
@@ -60,19 +69,22 @@ var _updatePointCacheData = (infoList: GeometryWorkerInfoList|undefined, points:
     }
 }
 
-export var resetPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
+export var resetPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.normalsCacheMap = createMap();
+    GeometryWorkerData.texCoordsCacheMap = createMap();
     GeometryWorkerData.indicesCacheMap = createMap();
 
     _setPointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _setPointCacheData(normalsInfoList, GeometryWorkerData.normals, GeometryWorkerData.normalsCacheMap);
+    _setPointCacheData(texCoordsInfoList, GeometryWorkerData.texCoords, GeometryWorkerData.texCoordsCacheMap);
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-export var setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
+export var setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryInfoList, texCoordsInfoList: GeometryInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
     _setPointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _setPointCacheData(normalsInfoList, GeometryWorkerData.normals, GeometryWorkerData.normalsCacheMap);
+    _setPointCacheData(texCoordsInfoList, GeometryWorkerData.texCoords, GeometryWorkerData.texCoordsCacheMap);
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
@@ -112,11 +124,9 @@ export var getVerticesCount = (index: number, GeometryWorkerData: any) => getVer
 export var getIndicesCount = (index: number, GeometryWorkerData: any) => getIndicesCountUtils(index, getIndices, GeometryWorkerData);
 
 export var initData = (buffer: SharedArrayBuffer, indexType: EBufferType, indexTypeSize: number, DataBufferConfig: any, GeometryWorkerData: any) => {
-    // GeometryWorkerData.verticesWorkerInfoList = [];
-    // GeometryWorkerData.indicesWorkerInfoList = [];
-
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.normalsCacheMap = createMap();
+    GeometryWorkerData.texCoordsCacheMap = createMap();
     GeometryWorkerData.indicesCacheMap = createMap();
 
     GeometryWorkerData.indexType = indexType;

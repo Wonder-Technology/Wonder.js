@@ -1,5 +1,6 @@
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { Component } from "../Component";
+import { MaterialWorkerInitDataList } from "../../renderer/type/dataType";
 
 export class MaterialData {
     public static buffer: SharedArrayBuffer = null;
@@ -18,9 +19,5 @@ export class MaterialData {
 
     public static materialMap: Array<Component> = null;
 
-    // public static shaderMap: Array<Shader> = null;
-
-    // public static mapManagers: Array<Map> = null;
-
-    public static workerInitList: Array<number> = null;
+    public static workerInitList: MaterialWorkerInitDataList = null;
 }

@@ -9,7 +9,7 @@ import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
-    isTestAlpha as isTestAlphaUtils,  buildInitShaderDataMap
+    isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
 } from "../../../utils/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
@@ -19,41 +19,53 @@ import {
     getBasicMaterialBufferCount, getBufferTotalCount,
     getLightMaterialBufferCount
 } from "../../../utils/material/bufferUtils";
-import { createTypeArrays as createBasicMaterialTypeArraysUtils } from "../../../utils/material/basicMaterialUtils";
-import { createTypeArrays as createLightMaterialTypeArraysUtils } from "../../../utils/material/lightMaterialUtils";
+import {
+    createTypeArrays as createBasicMaterialTypeArraysUtils,
+    getClassName as getBasicMaterialClassName
+} from "../../../utils/material/basicMaterialUtils";
+import {
+    createTypeArrays as createLightMaterialTypeArraysUtils,
+    getClassName as getLightMaterialClassName
+} from "../../../utils/material/lightMaterialUtils";
 import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
 import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";
 import { DirectionLightWorkerData } from "../light/DirectionLightWorkerData";
 import { PointLightWorkerData } from "../light/PointLightWorkerData";
+import { initData as initMapManagerData, initMapManagers } from "../texture/MapManagerWorkerSystem";
+import { TextureInitWorkerData } from "../../../type/messageDataType";
+import { MaterialWorkerInitDataList } from "../../../type/dataType";
+import { MapManagerWorkerData } from "../texture/MapManagerWorkerData";
+import { ShaderWorkerData } from "../shader/ShaderWorkerData";
 
-export var initMaterials = (basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData) => {
-    _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index);
-    _initSpecifyMaterials(lightMaterialData.startIndex, lightMaterialData.index);
+export var initMaterials = (basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData, gl:WebGLRenderingContext, TextureWorkerData:any) => {
+    _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index, getBasicMaterialClassName());
+    _initSpecifyMaterials(lightMaterialData.startIndex, lightMaterialData.index, getLightMaterialClassName());
+
+    initMapManagers(gl, TextureWorkerData);
 }
 
-var _initSpecifyMaterials = (startIndex: number, index: number) => {
+var _initSpecifyMaterials = (startIndex: number, index: number, className:string) => {
     for (let i = startIndex; i < index; i++) {
-        initMaterial(i, null);
+        initMaterial(i, null, className);
     }
 }
 
-export var initMaterial = (materialIndex: number, state: Map<any, any>) => {
-    var shaderIndex = getShaderIndex(materialIndex, MaterialWorkerData);
+export var initMaterial = (index: number, state: Map<any, any>, className:string) => {
+    var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
 
-    //todo fix
-    // initShader(state, materialIndex, shaderIndex, getMaterialClassNameFromTable(shaderIndex, MaterialWorkerData.materialClassNameTable), material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
+    setShaderIndex(index, shaderIndex, MaterialWorkerData);
 }
 
-export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
-    return MaterialWorkerData.shaderIndices[materialIndex];
-}
+// export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
+//     return MaterialWorkerData.shaderIndices[materialIndex];
+// }
 
 // export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export var initNewInitedMaterials = (workerInitList: Array<number>) => {
-    for (let index of workerInitList) {
-        initMaterial(index, null);
+export var initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList) => {
+    for (let {index, className} of workerInitList) {
+        initMaterial(index, null, className);
     }
 }
 
@@ -65,12 +77,10 @@ export var getAlphaTest = getAlphaTestUtils;
 
 export var isTestAlpha = isTestAlphaUtils;
 
-export var initData = (materialData: MaterialInitWorkerData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+export var initData = (materialData: MaterialInitWorkerData, textureData:TextureInitWorkerData, TextureCacheWorkerData:any, TextureWorkerData:any, MapManagerWorkerData:any,  MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     _initBufferData(materialData.buffer, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-    //todo fix
-    // MaterialWorkerData.materialClassNameTable = materialData.materialClassNameTable;
-    // MaterialWorkerData.shaderIndexTable = materialData.shaderIndexTable;
+    initMapManagerData(textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData);
 }
 
 var _initBufferData = (buffer: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {

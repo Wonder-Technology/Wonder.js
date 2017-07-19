@@ -8,24 +8,28 @@ import {
 import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDataOperateType";
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
-import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
+// import { EDisposeDataOperateType } from "../../../enum/EDisposeDataOperateType";
 import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
 import { PointLightData } from "../../../../component/light/PointLightData";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
+import { clearDisposedTextureDataMap, hasDisposedTextureDataMap } from "../../../texture/TextureSystem";
 
-export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, TextureData:any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
-        disposeData = null,
+        geometryDisposeData = null,
+        textureDisposeData = null,
         materialData = null,
         lightData = null;
 
+    //todo unit test:texCoords
     if (hasNewPointData(GeometryData)) {
         geometryData = {
             buffer: GeometryData.buffer,
             type: EGeometryWorkerDataOperateType.ADD,
             verticesInfoList: GeometryData.verticesWorkerInfoList,
             normalsInfoList: GeometryData.normalsWorkerInfoList,
+            texCoordsInfoList: GeometryData.texCoordsWorkerInfoList,
             indicesInfoList: GeometryData.indicesWorkerInfoList
         };
     }
@@ -35,14 +39,24 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
             type: EGeometryWorkerDataOperateType.RESET,
             verticesInfoList: GeometryData.verticesInfoList,
             normalsInfoList: GeometryData.normalsInfoList,
+            texCoordsInfoList: GeometryData.texCoordsInfoList,
             indicesInfoList: GeometryData.indicesInfoList
         };
     }
 
+    //todo test disposed texture data
+
     if (hasDisposedGeometryIndexArrayData(GeometryData)) {
-        disposeData = {
-            type: EDisposeDataOperateType.DISPOSE_BUFFER,
+        geometryDisposeData = {
+            // type: EDisposeDataOperateType.DISPOSE_BUFFER,
             disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray
+        };
+    }
+
+    if (hasDisposedTextureDataMap(TextureData)) {
+        textureDisposeData = {
+            // type: EDisposeDataOperateType.DISPOSE_BUFFER,
+            disposedTextureDataMap: TextureData.disposedTextureDataMap
         };
     }
 
@@ -68,10 +82,18 @@ export var sendDrawData = curry((WorkerInstanceData: any, MaterialData: any, Geo
         materialData: materialData,
         geometryData: geometryData,
         lightData: lightData,
-        disposeData: disposeData
+        disposeData: {
+            geometryDisposeData: geometryDisposeData,
+            textureDisposeData: textureDisposeData
+        }
     });
 
     clearWorkerInfoList(GeometryData);
     clearDisposedGeometryIndexArray(GeometryData);
+    clearDisposedTextureDataMap(TextureData);
     clearWorkerInitList(MaterialData);
 })
+
+export var initData = (SendDrawRenderCommandBufferData:any) => {
+    SendDrawRenderCommandBufferData.isInitComplete = false;
+}

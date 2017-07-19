@@ -13,7 +13,7 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 // import { CustomEvent } from "../event/object/CustomEvent";
 // import { EEngineEvent } from "../event/EEngineEvent";
 import {
-    init as initTransform, initData as initThreeDTransformData, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
+    init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
 } from "../component/transform/ThreeDTransformSystem";
 import { getState, render, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
@@ -22,14 +22,13 @@ import { Map } from "immutable";
 import { GlobalTempData } from "../definition/GlobalTempData";
 import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
-import { create, initData as initSceneData } from "./entityObject/scene/SceneSystem";
+import { create } from "./entityObject/scene/SceneSystem";
 import {
     addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
-    init as initGeometry, initData as initGeometryData
+    init as initGeometry
 } from "../component/geometry/GeometrySystem";
 import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
-import { Geometry } from "../component/geometry/Geometry";
 import {
     addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
     addInitHandle as addMaterialInitHandle
@@ -41,11 +40,9 @@ import {
 import { addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { Tag } from "../component/tag/Tag";
 import { ThreeDTransform } from "../component/transform/ThreeDTransform";
-import { Material } from "../component/material/Material";
 import { MeshRenderer } from "../component/renderer/MeshRenderer";
 import {
-    addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController,
-    update as updateCameraController
+    addAddComponentHandle as addCameraControllerAddComponentHandle, addDisposeHandle as addCameraControllerDisposeHandle, init as initCameraController
 } from "../component/camera/CameraControllerSystem";
 import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
 import { CameraData } from "../component/camera/CameraData";
@@ -53,8 +50,6 @@ import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
-// import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
-// import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 import { addAddComponentHandle as addLightAddComponentHandle, addDisposeHandle as addLightDisposeHandle } from "../component/light/LightSystem";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";

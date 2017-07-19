@@ -201,3 +201,5 @@ export var setSingleValue = (typeArr:TypeArr, index:number, value:number) => {
 
     setTypeArrayValue(typeArr, i, value);
 }
+
+export var computeBufferLength = (count:number, size:number) => count * size;
