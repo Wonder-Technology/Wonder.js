@@ -130,11 +130,11 @@ export var markNeedUpdate = (textureIndex, value:boolean, TextureDataFromSystem)
     }
 }
 
-export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: number, TextureDataFromSystem:any) => {
+export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
     it("texture should exist", () => {
         expect(_isTextureExist(textureIndex, TextureDataFromSystem)).true;
     });
-}, (gl:WebGLRenderingContext, textureIndex: number, TextureDataFromSystem:any) => {
+}, (gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
     var width = getWidth(textureIndex, TextureDataFromSystem),
         height = getHeight(textureIndex, TextureDataFromSystem),
         wrapS = getWrapS(textureIndex, TextureDataFromSystem),
@@ -148,8 +148,7 @@ export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: nu
         target = ETextureTarget.TEXTURE_2D,
         isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
 
-    //todo not worker in render worker!
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+    setFlipY(gl, flipY);
 
     //todo handle _needClampMaxSize
     // if(_needClampMaxSize(source, width, height)){

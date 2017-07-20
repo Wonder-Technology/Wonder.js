@@ -218,6 +218,7 @@ var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData
     setPointLightPositionArr(pointLightData.positionArr, PointLightWorkerData);
 }
 
+//todo test
 var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
     if(textureData === null){
         return empty();
@@ -225,5 +226,5 @@ var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any)
 
     setIndex(textureData.index, TextureWorkerData);
 
-    return setSourceMapByImageSrcArrStream(textureData.imageSrcArr, TextureWorkerData);
+    return setSourceMapByImageSrcArrStream(textureData.imageSrcIndexArr, TextureWorkerData);
 }

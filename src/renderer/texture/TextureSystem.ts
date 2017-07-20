@@ -4,7 +4,7 @@ import {
 } from "./TextureCacheSystem";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { deleteBySwap } from "../../utils/arrayUtils";
+import { deleteBySwap, isValidVal } from "../../utils/arrayUtils";
 import { Texture } from "./Texture";
 import { deleteComponentBySwapArray, generateComponentIndex } from "../../component/ComponentSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
@@ -21,11 +21,11 @@ import {
     update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas
 } from "../utils/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
-import { GPUDetector } from "../device/GPUDetector";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { getCanvas, getHeight as getCanvasHeight, getWidth as getCanvasWidth } from "../../structure/ViewSystem";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
+import { compose, filterArray, map } from "../../utils/functionalUtils";
 
 export var create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
@@ -110,7 +110,13 @@ export var initTextures = initTexturesUtils;
 
 export var needUpdate = needUpdateUtils;
 
-export var update = updateUtils;
+export var update = (gl:WebGLRenderingContext, textureIndex: number, TextureData:any) => {
+    updateUtils(gl, textureIndex, _setFlipY, TextureData);
+}
+
+var _setFlipY = (gl:WebGLRenderingContext, flipY:boolean) => {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
+}
 
 export var dispose = (gl:WebGLRenderingContext, texture:Texture, TextureCacheData:any, TextureData:any) => {
     var bufferDataSize = getBufferDataSize(),
@@ -164,7 +170,8 @@ export var clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-export var convertSourceMapToSrcArr = (sourceMap:Array<HTMLImageElement>) => {
+//todo test
+export var convertSourceMapToSrcIndexArr = (sourceMap:Array<HTMLImageElement>) => {
     // var imageDataArr = [],
     //     canvas = getCanvas(getState(DirectorData)),
     //     canvasWidth = getCanvasWidth(canvas),
@@ -180,25 +187,35 @@ export var convertSourceMapToSrcArr = (sourceMap:Array<HTMLImageElement>) => {
     //
     // return imageDataArr;
 
-    return sourceMap.map((source:HTMLImageElement) => source.src);
+    return compose(
+        map((source:HTMLImageElement, index:number) => {
+            return {
+                src: source.src,
+                index: index
+            }
+        }),
+        filterArray((source:HTMLImageElement) => _isSourceExist(source))
+    )(sourceMap)
 }
 
-export var convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
-    var imageDataArr = [],
-        canvas = getCanvas(getState(DirectorData)),
-        canvasWidth = getCanvasWidth(canvas),
-        canvasHeight = getCanvasHeight(canvas);
+var _isSourceExist = (source:HTMLImageElement) => isValidVal(source);
 
-    for(let source of sourceMap){
-        imageDataArr.push(drawPartOfTextureByCanvas(source, canvasWidth, canvasHeight, 0, 0).getImageData(0, 0, canvasWidth, canvasHeight));
-    }
-
-    var a = createImageBitmap(imageDataArr[0]).then((data) => {
-        console.log(data)
-    })
-
-    return imageDataArr;
-}
+// export var convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
+//     var imageDataArr = [],
+//         canvas = getCanvas(getState(DirectorData)),
+//         canvasWidth = getCanvasWidth(canvas),
+//         canvasHeight = getCanvasHeight(canvas);
+//
+//     for(let source of sourceMap){
+//         imageDataArr.push(drawPartOfTextureByCanvas(source, canvasWidth, canvasHeight, 0, 0).getImageData(0, 0, canvasWidth, canvasHeight));
+//     }
+//
+//     var a = createImageBitmap(imageDataArr[0]).then((data) => {
+//         console.log(data)
+//     })
+//
+//     return imageDataArr;
+// }
 
 export var initData = (TextureCacheData:any, TextureData:any) => {
     initTextureCacheData(TextureCacheData);

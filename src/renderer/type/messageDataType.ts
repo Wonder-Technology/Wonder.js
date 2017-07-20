@@ -90,7 +90,12 @@ export type TextureInitWorkerData = {
     mapManagerBuffer: SharedArrayBuffer;
     textureBuffer: SharedArrayBuffer;
     index: number;
-    imageSrcArr: Array<string>;
+    imageSrcIndexArr: Array<ImageSrcIndexData>;
+}
+
+export type ImageSrcIndexData = {
+    src: string;
+    index: number;
 }
 
 export type TextureUpdateWorkerData = {

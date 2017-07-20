@@ -119,6 +119,7 @@ export {MaterialWorkerData} from "./renderer/worker/render_file/material/Materia
 export {GLSLSenderWorkerData} from "./renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerData";
 export {LocationWorkerData} from "./renderer/worker/render_file/shader/location/LocationWorkerData";
 export {ProgramWorkerData} from "./renderer/worker/render_file/shader/program/ProgramWorkerData";
+export {ShaderWorkerData} from "./renderer/worker/render_file/shader/ShaderWorkerData";
 export {StateData} from "./renderer/worker/render_file/state/StateData";
 export {getState,setState} from "./renderer/worker/render_file/state/StateSytem";
 export {MapManagerWorkerData} from "./renderer/worker/render_file/texture/MapManagerWorkerData";
@@ -135,4 +136,3 @@ export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
 export {WorkerInstanceData} from "./worker/WorkerInstanceData";
-export {ShaderWorkerData} from "./renderer/worker/render_file/shader/ShaderWorkerData";

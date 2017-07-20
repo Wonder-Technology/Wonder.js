@@ -49,7 +49,7 @@ import {
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
-import { convertSourceMapToSrcArr } from "../texture/TextureSystem";
+import { convertSourceMapToSrcIndexArr } from "../texture/TextureSystem";
 
 export var init = null;
 
@@ -107,7 +107,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
                 index: TextureData.index,
-                imageSrcArr:convertSourceMapToSrcArr(TextureData.sourceMap)
+                imageSrcIndexArr:convertSourceMapToSrcIndexArr(TextureData.sourceMap)
             }
         });
 
