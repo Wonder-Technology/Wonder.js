@@ -225,7 +225,7 @@ export var disposeComponent = requireCheckFunc((sourceIndex: number, lastCompone
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
-    disposeMapManager(sourceIndex, MapManagerData);
+    disposeMapManager(sourceIndex, lastComponentIndex,  MapManagerData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })

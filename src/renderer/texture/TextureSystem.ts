@@ -10,21 +10,19 @@ import { deleteComponentBySwapArray, generateComponentIndex } from "../../compon
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import {
     createTypeArrays, getWidth as getWidthUtils, getHeight as getHeightUtils,
-    getWrapS as getWrapSUtils,
-    getWrapT as getWrapTUtils,
-    getMagFilter as getMagFilterUtils,
-    getMinFilter as getMinFilterUtils,
-    getFormat as getFormatUtils,
-    getType as getTypeUtils,
-    getFlipY as getFlipYUtils, getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
+    // getWrapS as getWrapSUtils,
+    // getWrapT as getWrapTUtils,
+    // getMagFilter as getMagFilterUtils,
+    // getMinFilter as getMinFilterUtils,
+    // getFormat as getFormatUtils,
+    // getType as getTypeUtils,
+    // getFlipY as getFlipYUtils,
+    getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
     bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
     update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas
 } from "../utils/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { getCanvas, getHeight as getCanvasHeight, getWidth as getCanvasWidth } from "../../structure/ViewSystem";
-import { getState } from "../../core/DirectorSystem";
-import { DirectorData } from "../../core/DirectorData";
 import { compose, filterArray, map } from "../../utils/functionalUtils";
 
 export var create = ensureFunc((component: Texture) => {

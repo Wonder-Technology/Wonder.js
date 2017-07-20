@@ -8,6 +8,7 @@ describe("MapManager", function() {
     var gl;
     var state;
 
+    var DataBufferConfig = wd.DataBufferConfig;
     var MapManagerData = wd.MapManagerData;
 
     beforeEach(function () {
@@ -40,7 +41,7 @@ describe("MapManager", function() {
         it("test add first map", function(){
             basicMaterialTool.addMap(material, texture);
 
-            expect(MapManagerData.textureMap[material.index]).toEqual([texture]);
+            expect(MapManagerData.textureIndices[material.index]).toEqual(texture.index);
         });
         it("test add second map", function () {
             var texture2 = textureTool.create();
@@ -48,7 +49,23 @@ describe("MapManager", function() {
             basicMaterialTool.addMap(material, texture);
             basicMaterialTool.addMap(material, texture2);
 
-            expect(MapManagerData.textureMap[material.index]).toEqual([texture, texture2]);
+            expect(MapManagerData.textureIndices[material.index]).toEqual(texture.index);
+            expect(MapManagerData.textureIndices[material.index + 1]).toEqual(texture2.index);
+        });
+        it("check: map count shouldn't exceed 16", function () {
+            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 100);
+            var texture = null;
+            for(var i = 0; i < 16; i++){
+                texture = textureTool.create();
+
+                basicMaterialTool.addMap(material, texture);
+            }
+
+            var texture2 = textureTool.create();
+
+            expect(function () {
+                basicMaterialTool.addMap(material, texture2);
+            }).toThrow("map count shouldn't exceed max count")
         });
     });
 
@@ -94,17 +111,39 @@ describe("MapManager", function() {
     // });
 
     describe("dispose", function(){
-        it("clear textureMap", function(){
-            var texture2 = textureTool.create();
+        describe("remove by swap with last one", function() {
+            var obj2, mat2;
 
-            basicMaterialTool.addMap(material, texture);
-            basicMaterialTool.addMap(material, texture2);
+            beforeEach(function () {
+                mat2 = basicMaterialTool.create();
+                obj2 = gameObjectTool.create();
+                gameObjectTool.addComponent(obj2, mat2);
+                sceneTool.addGameObject(obj2);
+            });
 
-            var index = material.index;
+            describe("test remove from type array", function() {
+                beforeEach(function () {
+                });
 
-            gameObjectTool.disposeComponent(obj, material);
+                describe("reset removed one's value", function() {
+                    it("remove from textureCounts", function () {
+                        var texture2 = textureTool.create();
 
-            expect(MapManagerData.textureMap[index]).toEqual([]);
+                        basicMaterialTool.addMap(material, texture);
+                        basicMaterialTool.addMap(material, texture2);
+
+                        basicMaterialTool.addMap(mat2, texture);
+
+                        var index1 = material.index;
+                        var index2 = mat2.index;
+
+                        gameObjectTool.disposeComponent(obj, material);
+
+                        expect(MapManagerData.textureCounts[index1]).toEqual(1);
+                        expect(MapManagerData.textureCounts[index2]).toEqual(0);
+                    });
+                });
+            });
         });
     });
 });

@@ -33,6 +33,12 @@ export var deleteBySwapAndReset = (sourceIndex: number, targetIndex: number, typ
     }
 }
 
+export var deleteSingleValueBySwapAndReset = (sourceIndex: number, lastIndex: number, typeArr: TypeArr, resetValue: any) => {
+    typeArr[sourceIndex] = typeArr[lastIndex];
+    typeArr[lastIndex] = resetValue;
+}
+
+
 export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr, defaultValue: number) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
