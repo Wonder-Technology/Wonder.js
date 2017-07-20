@@ -9,6 +9,7 @@ var shaderTool = (function () {
             wd.initProgramWorkerData(wdrd.ProgramWorkerData);
             wd.initLocationWorkerData(wdrd.LocationWorkerData);
             wd.initGLSLSenderWorkerData(wdrd.GLSLSenderWorkerData);
+            wd.initShaderWorkerData(wdrd.ShaderWorkerData);
         },
         clearShader: function () {
             wd.ProgramData.programMap = {};

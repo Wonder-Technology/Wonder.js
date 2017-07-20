@@ -9,7 +9,15 @@ export var initMapManagers = (gl:WebGLRenderingContext, TextureWorkerData:any) =
     initTextures(gl, TextureWorkerData);
 }
 
-export var getMapCount = getMapCountUtils;
+export var getMapCount = (materialIndex: number, MapManagerWorkerData:any) => {
+    var textureCounts = MapManagerWorkerData.textureCounts;
+
+    if(textureCounts === null){
+        return 0;
+    }
+
+    return textureCounts[materialIndex];
+}
 
 //todo support multi textures
 

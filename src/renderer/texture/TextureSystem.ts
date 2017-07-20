@@ -4,7 +4,7 @@ import {
 } from "./TextureCacheSystem";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { deleteBySwap, isValidVal } from "../../utils/arrayUtils";
+import { forEach, isNotValidVal } from "../../utils/arrayUtils";
 import { Texture } from "./Texture";
 import { deleteComponentBySwapArray, generateComponentIndex } from "../../component/ComponentSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
@@ -23,7 +23,7 @@ import {
 } from "../utils/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { compose, filterArray, map } from "../../utils/functionalUtils";
+import { ImageSrcIndexData } from "../type/messageDataType";
 
 export var create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
@@ -133,17 +133,18 @@ export var dispose = (gl:WebGLRenderingContext, texture:Texture, TextureCacheDat
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, TextureData.textureMap);
 
-    //todo fix like geometry buffer
-    disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
 
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 }
 
-//todo test batch disposes in worker
-
-var _addDisposeDataForWorker = null;
+var _disposeGLTexture = null,
+    _addDisposeDataForWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    _disposeGLTexture = (gl:WebGLRenderingContext, sourceIndex:number, lastComponentIndex:number, TextureCacheData:any, TextureData:any) => {
+    }
+
     _addDisposeDataForWorker = (sourceIndex:number, lastComponentIndex:number, TextureData:any) => {
         TextureData.disposedTextureDataMap.push(_buildDisposedTextureData(sourceIndex, lastComponentIndex));
     }
@@ -156,6 +157,10 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
+    _disposeGLTexture = (gl:WebGLRenderingContext, sourceIndex:number, lastComponentIndex:number, TextureCacheData:any, TextureData:any) => {
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    }
+
     _addDisposeDataForWorker = (sourceIndex:number, lastComponentIndex:number, TextureData:any) => {
     }
 }
@@ -168,35 +173,24 @@ export var clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-//todo test
 export var convertSourceMapToSrcIndexArr = (sourceMap:Array<HTMLImageElement>) => {
-    // var imageDataArr = [],
-    //     canvas = getCanvas(getState(DirectorData)),
-    //     canvasWidth = getCanvasWidth(canvas),
-    //     canvasHeight = getCanvasHeight(canvas);
-    //
-    // for(let source of sourceMap){
-    //     imageDataArr.push(drawPartOfTextureByCanvas(source, canvasWidth, canvasHeight, 0, 0).getImageData(0, 0, canvasWidth, canvasHeight));
-    // }
-    //
-    // var a = createImageBitmap(imageDataArr[0]).then((data) => {
-    //     console.log(data)
-    // })
-    //
-    // return imageDataArr;
+    var arr:Array<ImageSrcIndexData> = [];
 
-    return compose(
-        map((source:HTMLImageElement, index:number) => {
-            return {
-                src: source.src,
-                index: index
-            }
-        }),
-        filterArray((source:HTMLImageElement) => _isSourceExist(source))
-    )(sourceMap)
+    forEach(sourceMap, (source:HTMLImageElement, index:number) => {
+        if(_isSourceNotExist(source)){
+            return;
+        }
+
+        arr.push({
+            src: source.src,
+            index: index
+        })
+    })
+
+    return arr;
 }
 
-var _isSourceExist = (source:HTMLImageElement) => isValidVal(source);
+var _isSourceNotExist = (source:HTMLImageElement) => isNotValidVal(source);
 
 // export var convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
 //     var imageDataArr = [],

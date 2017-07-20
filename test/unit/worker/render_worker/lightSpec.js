@@ -51,9 +51,10 @@ describe("light", function () {
 
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage).toCalledWith({
-                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
+                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
                 materialData: sinon.match.any,
                 geometryData: sinon.match.any,
+                textureData: sinon.match.any,
                 lightData: {
                     ambientLightData: {
                         buffer: AmbientLightData.buffer,
@@ -116,8 +117,9 @@ describe("light", function () {
 
                     e = {
                         data: {
-                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
+                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
                             geometryData: null,
+                            textureData: null,
                             lightData: {
                                 ambientLightData: {
                                     buffer: ambientLightBuffer,
@@ -214,8 +216,9 @@ describe("light", function () {
                 sceneTool.addPointLight(pos3);
                 sceneTool.addPointLight(pos4);
 
-
                 directorTool.init(sandbox);
+                sendDrawRendercommandBufferTool.markInitComplete();
+
 
                 workerTool.runRender(1);
 
@@ -266,6 +269,7 @@ describe("light", function () {
                             disposeData: null,
                             materialData: null,
                             geometryData: null,
+                            textureData: null,
                             lightData: {
                                 directionLightData: {
                                     positionArr: [
@@ -326,6 +330,7 @@ describe("light", function () {
                             disposeData: null,
                             materialData: null,
                             geometryData: null,
+                            textureData: null,
                             lightData: {
                                 directionLightData: {
                                     positionArr: [

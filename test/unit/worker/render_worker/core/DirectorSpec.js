@@ -113,58 +113,79 @@ describe("Director", function () {
             directorTool.init(state);
         });
 
-        it("in the first frame, not sync, only render", function(){
+        it("wait for init_complete", function () {
             directorTool.loopBody(state, 1);
+
+            judgeInvokeSyncCount(0, expect);
+            judgeInvokeRenderWorkerCount(0, expect);
+
+
+            sendDrawRendercommandBufferTool.markInitComplete();
+
+            directorTool.loopBody(state, 2);
 
             judgeInvokeSyncCount(0, expect);
             judgeInvokeRenderWorkerCount(1, expect);
         });
 
-        describe("test sync", function() {
+        describe("if init complete", function() {
             beforeEach(function(){
+                sendDrawRendercommandBufferTool.markInitComplete();
+            });
+
+            it("in the first frame, not sync, only render", function(){
                 directorTool.loopBody(state, 1);
 
-                SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_COMPLETE;
-
-                directorTool.loopBody(state, 2);
-            });
-
-            it("sync after complete draw", function () {
-                judgeInvokeSyncCount(1, expect);
-            });
-            it("not render when sync", function () {
+                judgeInvokeSyncCount(0, expect);
                 judgeInvokeRenderWorkerCount(1, expect);
             });
 
-            it("tick when sync", function () {
-                expect(directorTool.getDirector()._timeController.tick.callCount).toEqual(1);
+            describe("test sync", function() {
+                beforeEach(function(){
+                    directorTool.loopBody(state, 1);
+
+                    SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_COMPLETE;
+
+                    directorTool.loopBody(state, 2);
+                });
+
+                it("sync after complete draw", function () {
+                    judgeInvokeSyncCount(1, expect);
+                });
+                it("not render when sync", function () {
+                    judgeInvokeRenderWorkerCount(1, expect);
+                });
+
+                it("tick when sync", function () {
+                    expect(directorTool.getDirector()._timeController.tick.callCount).toEqual(1);
+                });
             });
-        });
 
-        it("not render when draw is not complete", function () {
-            directorTool.loopBody(state, 1);
+            it("not render when draw is not complete", function () {
+                directorTool.loopBody(state, 1);
 
-            directorTool.loopBody(state, 2);
+                directorTool.loopBody(state, 2);
 
-            judgeInvokeRenderWorkerCount(1, expect);
+                judgeInvokeRenderWorkerCount(1, expect);
 
-            SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_COMPLETE;
+                SendDrawRenderCommandBufferData.state = ERenderWorkerState.DRAW_COMPLETE;
 
-            directorTool.loopBody(state, 3);
+                directorTool.loopBody(state, 3);
 
-            judgeInvokeRenderWorkerCount(1, expect);
-
+                judgeInvokeRenderWorkerCount(1, expect);
 
 
-            directorTool.loopBody(state, 4);
+
+                directorTool.loopBody(state, 4);
 
 
-            judgeInvokeRenderWorkerCount(2, expect);
+                judgeInvokeRenderWorkerCount(2, expect);
 
 
-            directorTool.loopBody(state, 5);
+                directorTool.loopBody(state, 5);
 
-            judgeInvokeRenderWorkerCount(2, expect);
+                judgeInvokeRenderWorkerCount(2, expect);
+            });
         });
     });
 });

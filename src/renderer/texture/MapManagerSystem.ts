@@ -27,7 +27,6 @@ export var getMapIndex = (materialIndex: number, MapManagerData:any) => {
 }
 
 export var addMap = requireCheckFunc((materialIndex: number, map: Texture, MapManagerData:any) => {
-    //todo test check
     it("map count shouldn't exceed max count", () => {
         expect(getMapCount(materialIndex, MapManagerData) + 1).lte(getMaxTextureCount());
     });
@@ -53,7 +52,6 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, materialIndex: number, Tex
     bindAndUpdateUtils(gl, getMapCount(materialIndex, MapManagerData), TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
 }
 
-//todo unit test
 /*!
  not dispose texture when dispose map manager(dispose material)!
  because different materials may use same texture, if dispose one material's texture which is shared, then will affect other materials!

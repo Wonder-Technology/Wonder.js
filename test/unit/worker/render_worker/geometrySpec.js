@@ -33,6 +33,7 @@ describe("geometry", function () {
 
 
             directorTool.init(sandbox);
+            sendDrawRendercommandBufferTool.markInitComplete();
 
             workerTool.runRender(1);
 
@@ -49,6 +50,14 @@ describe("geometry", function () {
                 -10, -3, 3, -3, 3, 3, 3, -3, 3
             ];
 
+            var geo2TexCoordsData = [
+                0.1,0.2,
+                0.3,0.2,
+                0.1,0.2,
+                0.1,0.2
+            ];
+
+
             var geo2IndicesData = [
                 2,3,1, 1,3,0
             ]
@@ -57,6 +66,7 @@ describe("geometry", function () {
 
             customGeometryTool.setVertices(geo2, geo2VerticesData)
             customGeometryTool.setNormals(geo2, geo2NormalsData)
+            customGeometryTool.setTexCoords(geo2, geo2TexCoordsData)
             customGeometryTool.setIndices(geo2, geo2IndicesData)
 
 
@@ -74,6 +84,7 @@ describe("geometry", function () {
                     type:EGeometryWorkerDataOperateType.ADD,
                     "verticesInfoList": [{ "index": geo2.index, "startIndex": 72, "endIndex": 84 }],
                     "normalsInfoList": [{ "index": geo2.index, "startIndex": 72, "endIndex": 84 }],
+                    "texCoordsInfoList": [{"index": geo2.index, "startIndex":48,"endIndex":56}],
                     "indicesInfoList": [{ "index": geo2.index, "startIndex": 36, "endIndex": 42 }]
                 }
             });
@@ -90,7 +101,7 @@ describe("geometry", function () {
             });
 
             describe("update point cache datas", function () {
-                function judgeWithAllDatas(isWithNoNormal) {
+                function judgeWithAllDatas(isWithNoNormal, isWithNoTexCoord) {
                     if(bowser.firefox){
                         expect().toPass();
                         return;
@@ -107,6 +118,13 @@ describe("geometry", function () {
                         -3, -3, 3, -3, 3, 3, 3, -3, 3
                     ];
 
+                    var geo1TexCoordsData = [
+                        0.1,0.2,
+                        0.3,0.2,
+                        0.1,0.2,
+                        0.1,0.2
+                    ];
+
                     var geo1IndicesData = [
                         2,3,1, 1,3,0
                     ]
@@ -120,6 +138,9 @@ describe("geometry", function () {
                         customGeometryTool.setNormals(geo1, geo1NormalsData)
                     }
 
+                    if(isWithNoTexCoord !== true){
+                        customGeometryTool.setTexCoords(geo1, geo1TexCoordsData)
+                    }
 
 
                     geometryDataBuffer = GeometryData.buffer;
@@ -129,9 +150,10 @@ describe("geometry", function () {
 
                     e = {
                         data:{
-                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
+                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
                             materialData: null,
                             lightData: null,
+                            textureData: null,
                             geometryData: {
                                 buffer: geometryDataBuffer,
                                 indexType: GeometryData.indexType,
@@ -147,6 +169,9 @@ describe("geometry", function () {
                         e.data.geometryData.normalsInfoList = GeometryData.normalsInfoList;
                     }
 
+                    if(isWithNoTexCoord !== true){
+                        e.data.geometryData.texCoordsInfoList = GeometryData.texCoordsInfoList;
+                    }
 
                     workerTool.execRenderWorkerMessageHandler(e);
 
@@ -178,6 +203,13 @@ describe("geometry", function () {
                         -300, -3, 3, -3, 3, 3, 3, -3, 3
                     ];
 
+                    var geo2TexCoordsData = [
+                        0.3,0.2,
+                        0.1,0.1,
+                        0.4,0.8,
+                        0.1,0.3
+                    ];
+
                     var geo2IndicesData = [
                         1,2,3, 1,3,0
                     ]
@@ -192,6 +224,9 @@ describe("geometry", function () {
                         customGeometryTool.setNormals(geo2, geo2NormalsData);
                     }
 
+                    if(isWithNoTexCoord !== true){
+                        customGeometryTool.setTexCoords(geo2, geo2TexCoordsData);
+                    }
 
 
                     e = {
@@ -215,6 +250,10 @@ describe("geometry", function () {
                         e.data.geometryData.normalsInfoList = [{ "index": geo2.index, "startIndex": 12, "endIndex": 24 }];
                     }
 
+                    if(isWithNoTexCoord !== true){
+                        e.data.geometryData.texCoordsInfoList = [{ "index": geo2.index, "startIndex": 8, "endIndex": 16 }];
+                    }
+
                     workerTool.execRenderWorkerMessageHandler(e);
 
 
@@ -231,13 +270,21 @@ describe("geometry", function () {
                             GeometryWorkerData.normalsCacheMap[geo2.index]
                         )).toEqual(geo2NormalsData)
                     }
+                    if(isWithNoTexCoord !== true){
+                        expect(testRenderWorkerTool.getValues(
+                            GeometryWorkerData.texCoordsCacheMap[geo2.index]
+                        )).toEqual(geo2TexCoordsData)
+                    }
                 }
 
                 it("test only with vertex data", function () {
-                    judgeWithAllDatas(true);
+                    judgeWithAllDatas(true, true);
                 });
                 it("test with normal data", function () {
-                    judgeWithAllDatas(false);
+                    judgeWithAllDatas(false, true);
+                });
+                it("test with texCoord data", function () {
+                    judgeWithAllDatas(true, false);
                 });
             });
         });

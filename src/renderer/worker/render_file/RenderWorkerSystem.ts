@@ -17,7 +17,7 @@ import { GeometryWorkerData } from "./geometry/GeometryWorkerData";
 import { DataBufferConfig } from "../../../config/DataBufferConfig";
 import { EGeometryWorkerDataOperateType } from "../../enum/EGeometryWorkerDataOperateType";
 import {
-    initData as initMaterialWorkerData, initMaterials,
+    initData as initMaterialData, initMaterials,
     initNewInitedMaterials
 } from "./material/MaterialWorkerSystem";
 import { MaterialInitWorkerData, MaterialWorkerData } from "./material/MaterialWorkerData";
@@ -93,10 +93,14 @@ export var onmessageHandler = (e) => {
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             fromArray([
                 _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
-                _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
+                _initMaterialData(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
+                // _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
                 _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
             ]).mergeAll()
-                .concat(_initTextures(data.textureData, TextureWorkerData))
+                .concat(
+                    _initTextures(data.textureData, TextureWorkerData),
+                    _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, TextureWorkerData)
+                )
                 .subscribe(null, null, () => {
                     self.postMessage({
                         state: ERenderWorkerState.INIT_COMPLETE
@@ -126,11 +130,10 @@ export var onmessageHandler = (e) => {
 
             if (disposeData !== null) {
                 if(disposeData.geometryDisposeData !== null){
-                    disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
+                    disposeGeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
                 }
 
                 if(disposeData.textureDisposeData !== null){
-                    // disposeGeometryBuffers(disposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
                     disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData);
                 }
             }
@@ -175,15 +178,29 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData:any, TextureCacheWorkerData:any, TextureWorkerData:any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+var _initMaterials = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData:any) => {
     return callFunc(() => {
         if(materialData === null){
             return;
         }
 
-        initMaterialWorkerData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+        // initMaterialData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+
+        if(textureData !== null){
+            setIndex(textureData.index, TextureWorkerData);
+        }
 
         initMaterials(materialData.basicMaterialData, materialData.lightMaterialData, gl, TextureWorkerData);
+    })
+}
+
+var _initMaterialData = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData:any, TextureCacheWorkerData:any, TextureWorkerData:any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+    return callFunc(() => {
+        if(materialData === null){
+            return;
+        }
+
+        initMaterialData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
     })
 }
 
@@ -218,13 +235,10 @@ var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData
     setPointLightPositionArr(pointLightData.positionArr, PointLightWorkerData);
 }
 
-//todo test
 var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
     if(textureData === null){
         return empty();
     }
-
-    setIndex(textureData.index, TextureWorkerData);
 
     return setSourceMapByImageSrcArrStream(textureData.imageSrcIndexArr, TextureWorkerData);
 }

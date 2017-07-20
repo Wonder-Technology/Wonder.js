@@ -63,7 +63,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
 
-    //todo fix worker
     var _buildInitShaderFuncDataMap = () => {
         return {
             buildGLSLSource: buildGLSLSource,
@@ -75,7 +74,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
         getVertices: getVertices,
         getNormals: getNormals,
-        //todo fix worker
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 

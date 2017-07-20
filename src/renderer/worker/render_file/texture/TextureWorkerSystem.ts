@@ -11,10 +11,6 @@ import {
 import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messageDataType";
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 
-// export var setSourceMap = (sourceMap:Array<HTMLImageElement>, TextureWorkerData:any) => {
-//     TextureWorkerData.sourceMap = sourceMap;
-// }
-
 export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureIndex:number, TextureCacheWorkerData:any, TextureWorkerData:any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, isCached, addActiveTexture);
 }
@@ -34,7 +30,6 @@ var _setFlipY = (gl:WebGLRenderingContext, flipY:boolean) => {
      */
 }
 
-//todo test
 export var disposeSourceAndGLTexture = (disposeData:TextureDisposeWorkerData, gl:WebGLRenderingContext, TextureCacheWorkerData:any, TextureWorkerData:any) => {
     for (let {
         sourceIndex,
@@ -72,16 +67,10 @@ var _convertImageSrcToImageBitmapStream = (imageSrcIndexArr:Array<ImageSrcIndexD
     });
 }
 
-// export var convertImageDataArrToSourceMapStream = (imageDataArr:Array<any>) => {
-//     // return fromArray([imageDataArr]).flatMap(_convertImageDataArrToImageBitmap);
-// }
-
-// var _convertImageDataArrToImageBitmap = (imageData:any) => {
-//     return fromPromise(createImageBitmap(imageData));
-// }
-
 export var initData = (buffer:any, TextureCacheWorkerData:any, TextureWorkerData:any) => {
     initTextureCacheData(TextureCacheWorkerData);
+
+    TextureWorkerData.index = 0;
 
     TextureWorkerData.glTextures = [];
 

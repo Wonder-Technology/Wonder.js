@@ -324,7 +324,11 @@ describe("Geometry", function () {
                     var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1);
                     var mat1 = data1.material;
 
-                    basicMaterialTool.addMap(mat1, textureTool.create());
+
+                    var texture = textureTool.create();
+                    textureTool.setSource(texture, {})
+
+                    basicMaterialTool.addMap(mat1, texture);
 
 
                     var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);

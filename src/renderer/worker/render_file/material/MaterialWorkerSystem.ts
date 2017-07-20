@@ -77,10 +77,12 @@ export var getAlphaTest = getAlphaTestUtils;
 
 export var isTestAlpha = isTestAlphaUtils;
 
-export var initData = (materialData: MaterialInitWorkerData, textureData:TextureInitWorkerData, TextureCacheWorkerData:any, TextureWorkerData:any, MapManagerWorkerData:any,  MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+export var initData = (materialData: MaterialInitWorkerData, textureData:TextureInitWorkerData|null, TextureCacheWorkerData:any, TextureWorkerData:any, MapManagerWorkerData:any,  MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     _initBufferData(materialData.buffer, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-    initMapManagerData(textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData);
+    if(textureData !== null){
+        initMapManagerData(textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData);
+    }
 }
 
 var _initBufferData = (buffer: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {

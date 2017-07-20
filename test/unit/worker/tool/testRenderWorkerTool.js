@@ -38,6 +38,7 @@ var testRenderWorkerTool = (function () {
             tagTool.resetData();
             geometryTool.resetData();
             materialTool.resetData();
+            materialWorkerTool.resetData();
             shaderTool.resetData();
             meshRendererTool.resetData();
             arrayBufferTool.resetData();
@@ -47,6 +48,7 @@ var testRenderWorkerTool = (function () {
             lightTool.resetData();
             renderCommandBufferTool.resetData();
             drawRenderCommandBufferTool.resetData();
+            sendDrawRendercommandBufferTool.resetData();
             sceneTool.resetData();
         },
 
@@ -66,6 +68,8 @@ var testRenderWorkerTool = (function () {
 
         closeContractCheck: function () {
             Main.isTest = false;
+            wd.InitConfigWorkerData.isTest = false;
+            wdrd.InitConfigWorkerData.isTest = false;
         }
     }
 }());

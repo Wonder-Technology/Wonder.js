@@ -111,6 +111,7 @@ describe("Texture", function () {
 
     describe("bindToUnit", function () {
         beforeEach(function () {
+            testTool.closeContractCheck();
         });
 
         it("if texture of the specific unit is cached, not bind and active it again", function () {
@@ -188,6 +189,7 @@ describe("Texture", function () {
         beforeEach(function () {
             directorTool.init(state);
 
+            textureTool.setSource(texture, {});
         });
 
         // it("if repeat texture and draw part of texture by changing texcoords in glsl, warn", function () {
@@ -202,6 +204,8 @@ describe("Texture", function () {
         //     expect(wd.Log.warn).toCalledWith("the glsl->texCoord data may be wrong due to both repeating texture and drawing part of texture by changing texcoords in glsl");
         // });
         it("set pixelStorei", function () {
+            // testTool.closeContractCheck();
+
             directorTool.loopBody(state);
 
             expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL, true)).toCalledOnce();

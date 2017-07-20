@@ -6,6 +6,7 @@ import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWor
 export var disposeBuffer = (geometryIndex: number, ArrayBufferWorkerData: any) => {
     disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.vertexBuffer, getGL, DeviceManagerWorkerData);
     disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.normalBuffers, getGL, DeviceManagerWorkerData);
+    disposeBufferUtils(geometryIndex, ArrayBufferWorkerData.texCoordBuffers, getGL, DeviceManagerWorkerData);
 }
 
 export var initData = initDataUtils;

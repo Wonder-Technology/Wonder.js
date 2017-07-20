@@ -78,7 +78,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 indexTypeSize: GeometryData.indexTypeSize,
                 verticesInfoList: GeometryData.verticesInfoList,
                 normalsInfoList: GeometryData.normalsInfoList,
-                //todo test
                 texCoordsInfoList: GeometryData.texCoordsInfoList,
                 indicesInfoList: GeometryData.indicesInfoList
             },
@@ -102,7 +101,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
                 }
             },
-            //todo test
             textureData: {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
@@ -110,8 +108,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 imageSrcIndexArr:convertSourceMapToSrcIndexArr(TextureData.sourceMap)
             }
         });
-
-
 
         renderWorker.onmessage = (e) => {
             var data = e.data,
@@ -131,12 +127,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             getRenderList(state)
         )(MeshRendererData)
     }
-
-    let _initData = (SendDrawRenderCommandBufferData: any) => {
-        SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
-    }
-
-    _initData(SendDrawRenderCommandBufferData);
 }
 else {
     init = (state: Map<any, any>) => {

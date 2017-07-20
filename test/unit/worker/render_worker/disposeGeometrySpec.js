@@ -4,7 +4,6 @@ describe("dispose geometry", function () {
     var worker;
 
     var EWorkerOperateType = wd.EWorkerOperateType;
-    var EDisposeDataOperateType = wd.EDisposeDataOperateType;
     var MemoryConfig = wd.MemoryConfig;
 
     var ArrayBufferWorkerData = wdrd.ArrayBufferWorkerData;
@@ -51,6 +50,7 @@ describe("dispose geometry", function () {
 
                 it("send disposed geometry index array to render worker", function () {
                     directorTool.init(sandbox);
+                    sendDrawRendercommandBufferTool.markInitComplete();
 
 
 
@@ -63,6 +63,7 @@ describe("dispose geometry", function () {
                     workerTool.runRender(1);
 
                     worker = workerTool.getRenderWorker();
+
                     expect(worker.postMessage).toCalledWith({
                         operateType: EWorkerOperateType.DRAW,
                         renderCommandBufferData:sinon.match.any,
@@ -70,8 +71,10 @@ describe("dispose geometry", function () {
                         geometryData:sinon.match.any,
                         lightData:sinon.match.any,
                         disposeData: {
-                            type:EDisposeDataOperateType.DISPOSE_BUFFER,
-                            disposedGeometryIndexArray: [geo1Index, geo2Index]
+                            geometryDisposeData:{
+                                disposedGeometryIndexArray: [geo1Index, geo2Index],
+                            },
+                            textureDisposeData:null
                         }
                     })
                 });
@@ -117,8 +120,10 @@ describe("dispose geometry", function () {
                                 geometryData:null,
                                 lightData:null,
                                 disposeData: {
-                                    type:EDisposeDataOperateType.DISPOSE_BUFFER,
-                                    disposedGeometryIndexArray: [geo1Index, geo2Index]
+                                    geometryDisposeData:{
+                                        disposedGeometryIndexArray: [geo1Index, geo2Index]
+                                    },
+                                    textureDisposeData: null
                                 }
                             }
                         }
@@ -126,6 +131,38 @@ describe("dispose geometry", function () {
 
                     describe("dispose buffers", function () {
                         var buffer1, buffer2;
+
+                        function judgeOtherBuffer(buffersName) {
+                            var buffer3 = { a: 3 },
+                                buffer4 = { a: 4 },
+                                buffer5 = { a: 5 },
+                                buffer6 = { a: 6 };
+
+                            ArrayBufferWorkerData.vertexBuffer = [];
+                            ArrayBufferWorkerData.vertexBuffer[geo1Index] = buffer3;
+                            ArrayBufferWorkerData.vertexBuffer[geo2Index] = buffer4;
+
+
+                            ArrayBufferWorkerData[buffersName] = [];
+                            ArrayBufferWorkerData[buffersName][geo1Index] = buffer5;
+                            ArrayBufferWorkerData[buffersName][geo2Index] = buffer6;
+
+
+
+
+                            workerTool.execRenderWorkerMessageHandler(e);
+
+
+
+
+
+                            expect(gl.deleteBuffer.callCount).toEqual(6);
+                            expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer3)
+                            expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer5)
+                            expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer1)
+                            expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
+                            expect(gl.deleteBuffer.getCall(4)).toCalledWith(buffer6)
+                        }
 
                         beforeEach(function(){
                             buffer1 = {};
@@ -161,35 +198,10 @@ describe("dispose geometry", function () {
                             expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer2)
                         });
                         it("test with normal buffer", function () {
-                            var buffer3 = { a: 3 },
-                                buffer4 = { a: 4 },
-                                buffer5 = { a: 5 },
-                                buffer6 = { a: 6 };
-
-                            ArrayBufferWorkerData.vertexBuffer = [];
-                            ArrayBufferWorkerData.vertexBuffer[geo1Index] = buffer3;
-                            ArrayBufferWorkerData.vertexBuffer[geo2Index] = buffer4;
-
-
-                            ArrayBufferWorkerData.normalBuffers = [];
-                            ArrayBufferWorkerData.normalBuffers[geo1Index] = buffer5;
-                            ArrayBufferWorkerData.normalBuffers[geo2Index] = buffer6;
-
-
-
-
-                            workerTool.execRenderWorkerMessageHandler(e);
-
-
-
-
-
-                            expect(gl.deleteBuffer.callCount).toEqual(6);
-                            expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer3)
-                            expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer5)
-                            expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer1)
-                            expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4)
-                            expect(gl.deleteBuffer.getCall(4)).toCalledWith(buffer6)
+                            judgeOtherBuffer("normalBuffers");
+                        });
+                        it("test with texCoord buffer", function () {
+                            judgeOtherBuffer("texCoordBuffers");
                         });
                     });
                 });

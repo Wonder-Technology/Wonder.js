@@ -14,6 +14,7 @@ import { getAllPositionData as getAllDirectionLightPositionData } from "../../..
 import { PointLightData } from "../../../../component/light/PointLightData";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
 import { clearDisposedTextureDataMap, hasDisposedTextureDataMap } from "../../../texture/TextureSystem";
+import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
 
 export var sendDrawData = curry((WorkerInstanceData: any, TextureData:any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData:any, DirectionLightData:any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
@@ -22,7 +23,6 @@ export var sendDrawData = curry((WorkerInstanceData: any, TextureData:any, Mater
         materialData = null,
         lightData = null;
 
-    //todo unit test:texCoords
     if (hasNewPointData(GeometryData)) {
         geometryData = {
             buffer: GeometryData.buffer,
@@ -44,18 +44,14 @@ export var sendDrawData = curry((WorkerInstanceData: any, TextureData:any, Mater
         };
     }
 
-    //todo test disposed texture data
-
     if (hasDisposedGeometryIndexArrayData(GeometryData)) {
         geometryDisposeData = {
-            // type: EDisposeDataOperateType.DISPOSE_BUFFER,
             disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray
         };
     }
 
     if (hasDisposedTextureDataMap(TextureData)) {
         textureDisposeData = {
-            // type: EDisposeDataOperateType.DISPOSE_BUFFER,
             disposedTextureDataMap: TextureData.disposedTextureDataMap
         };
     }
@@ -96,4 +92,5 @@ export var sendDrawData = curry((WorkerInstanceData: any, TextureData:any, Mater
 
 export var initData = (SendDrawRenderCommandBufferData:any) => {
     SendDrawRenderCommandBufferData.isInitComplete = false;
+    SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
 }

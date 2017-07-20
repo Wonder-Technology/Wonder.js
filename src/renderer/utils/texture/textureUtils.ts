@@ -111,6 +111,8 @@ var _createWebglTexture = (gl:WebGLRenderingContext, textureIndex:number, Textur
 
 var _isGLTextureExist = (glTexture:WebGLTexture) => isValidVal(glTexture);
 
+var _isSourceExist = (textureIndex:number, TextureDataFromSystem:any) => isValidVal(TextureDataFromSystem.sourceMap[textureIndex]);
+
 var _getWebglTexture = (textureIndex:number, TextureData:any) => {
     return TextureData.glTextures[textureIndex];
 }
@@ -131,8 +133,8 @@ export var markNeedUpdate = (textureIndex, value:boolean, TextureDataFromSystem)
 }
 
 export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
-    it("texture should exist", () => {
-        expect(_isTextureExist(textureIndex, TextureDataFromSystem)).true;
+    it("texture source should exist", () => {
+        expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
     });
 }, (gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
     var width = getWidth(textureIndex, TextureDataFromSystem),
@@ -229,11 +231,9 @@ var _isPowerOfTwo = (value:number) => {
 //     return width > maxSize || height > maxSize;
 // }
 
-// var _isSourceExist = (source:HTMLImageElement) => isValidVal(source);
-
-var _isTextureExist = (textureIndex: number, TextureDataFromSystem:any) => {
-    return isValidVal(TextureDataFromSystem.glTextures[textureIndex]);
-}
+// var _isGLTextureExist = (textureIndex: number, TextureDataFromSystem:any) => {
+//     return isValidVal(TextureDataFromSystem.glTextures[textureIndex]);
+// }
 
 export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureIndex:number, TextureCacheDataFromSystem:any, TextureDataFromSystem:any, isCached:Function, addActiveTexture:Function) => {
     var target = ETextureTarget.TEXTURE_2D;

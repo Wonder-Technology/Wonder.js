@@ -27,8 +27,10 @@ describe("material", function () {
         it("send new-inited-material data to render worker", function () {
             sceneTool.prepareGameObjectAndAddToScene(false);
 
-
             directorTool.init(sandbox);
+            sendDrawRendercommandBufferTool.markInitComplete();
+
+
 
             workerTool.runRender(1);
 
@@ -36,12 +38,11 @@ describe("material", function () {
             var mat1 = basicMaterialTool.create();
             var mat2 = basicMaterialTool.create();
 
-            materialTool.initMaterial(mat1);
-            materialTool.initMaterial(mat2);
+            basicMaterialTool.initMaterial(mat1);
+            basicMaterialTool.initMaterial(mat2);
 
 
             workerTool.runRender(2);
-
 
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage).toCalledWith({
@@ -49,7 +50,16 @@ describe("material", function () {
                 renderCommandBufferData:sinon.match.any,
                 materialData:{
                     buffer: MaterialData.buffer,
-                    workerInitList:[mat1.index, mat2.index]
+                    workerInitList:[
+                        {
+                            index: mat1.index,
+                            className: "BasicMaterial"
+                        },
+                        {
+                            index: mat2.index,
+                            className: "BasicMaterial"
+                        }
+                    ]
                 },
                 disposeData: sinon.match.any,
                 geometryData:sinon.match.any,
@@ -70,8 +80,6 @@ describe("material", function () {
             it("init new materials", function () {
                 var mat1 = basicMaterialTool.create();
 
-
-
                 materialDataBuffer = MaterialData.buffer;
 
 
@@ -79,22 +87,11 @@ describe("material", function () {
 
                 e = {
                     data:{
-                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT,
+                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
                         geometryData: null,
                         lightData:null,
-                        materialData: {
-                            buffer: materialDataBuffer,
-                            basicMaterialData: {
-                                startIndex: materialBufferTool.getBasicMaterialBufferStartIndex(),
-                                index: BasicMaterialData.index
-                            },
-                            lightMaterialData: {
-                                startIndex: materialBufferTool.getLightMaterialBufferStartIndex(),
-                                index: LightMaterialData.index
-                            },
-                            materialClassNameTable: MaterialData.materialClassNameTable,
-                            shaderIndexTable: MaterialData.shaderIndexTable
-                        }
+                        textureData: null,
+                        materialData: materialWorkerTool.buildSendInitMaterialData()
                     }
                 }
 
@@ -119,7 +116,16 @@ describe("material", function () {
                         lightData:null,
                         materialData:{
                             buffer:materialDataBuffer,
-                            workerInitList:[mat2.index]
+                            workerInitList:[
+                                // {
+                                //     index: mat1.index,
+                                //     className: "BasicMaterial"
+                                // },
+                                {
+                                    index: mat2.index,
+                                    className: "BasicMaterial"
+                                }
+                            ]
                         },
                         disposeData: null
                     }
@@ -139,7 +145,7 @@ describe("material", function () {
         var mat = data.material,
             obj = data.gameObject;
 
-        materialTool.initMaterial(mat);
+        basicMaterialTool.initMaterial(mat);
 
         expect(function(){
             gameObjectTool.disposeComponent(obj, mat);

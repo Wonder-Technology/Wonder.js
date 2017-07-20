@@ -34,6 +34,7 @@ import { IRenderConfig } from "../renderer/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initLightDataSystem } from "../component/light/LightSystem";
+import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -74,6 +75,8 @@ export var initSceneData = initSceneDataSystem;
 export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
 
 export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
+
+export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
 
 export var createState = createStateUtils;
 
