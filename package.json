@@ -62,7 +62,7 @@
     "wonder-commonlib": "^0.1.9",
     "wonder-expect.js": "^0.1.9",
     "wonder-fantasy-land": "^0.1.1",
-    "wonder-frp": "^0.1.18",
+    "wonder-frp": "^0.1.20",
     "wonder-lodash": "^0.1.3"
   }
 }

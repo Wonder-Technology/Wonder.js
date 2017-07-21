@@ -1,6 +1,3 @@
-import "wonder-frp/dist/es2015/stream/ConcatStream";
-import "wonder-frp/dist/es2015/stream/MergeAllStream";
-import "wonder-frp/dist/es2015/stream/MergeStream";
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
 import {

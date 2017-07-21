@@ -1,5 +1,3 @@
-import "wonder-frp/dist/es2015/stream/MapStream";
-import "wonder-frp/dist/es2015/stream/DoStream";
 import {
     addActiveTexture, initData as initTextureCacheData, isCached
 } from "./TextureCacheWorkerSystem";

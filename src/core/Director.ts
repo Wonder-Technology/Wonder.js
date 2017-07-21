@@ -1,6 +1,3 @@
-import "wonder-frp/dist/es2015/stream/ConcatStream";
-import "wonder-frp/dist/es2015/stream/IgnoreElementsStream";
-import "wonder-frp/dist/es2015/extend/root";
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { singleton } from "../definition/typescript/decorator/singleton";
 import { IDisposable } from "wonder-frp/dist/es2015/Disposable/IDisposable";
