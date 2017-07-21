@@ -63,6 +63,7 @@ describe("texture", function () {
                     mapManagerBuffer: sinon.match.any,
                     textureBuffer: sinon.match.any,
                     index: sinon.match.any,
+                    uniformSamplerNameMap: sinon.match.any,
                     imageSrcIndexArr:[
                         {
                             src:source1.src,
@@ -93,9 +94,36 @@ describe("texture", function () {
                     mapManagerBuffer: sinon.match.any,
                     textureBuffer: sinon.match.any,
                     index: 3,
+                    uniformSamplerNameMap: sinon.match.any,
                     imageSrcIndexArr:sinon.match.any
                 }
             });
+        });
+        it("send uniformSamplerNameMap to render worker", function () {
+            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var mat = data.material;
+
+            basicMaterialTool.addMap(mat, texture2);
+            basicMaterialTool.addMap(mat, texture3);
+
+            directorTool.init(sandbox);
+            sendDrawRendercommandBufferTool.markInitComplete();
+
+            worker = workerTool.getRenderWorker();
+
+            expect(worker.postMessage.withArgs({
+                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                materialData:sinon.match.any,
+                geometryData:sinon.match.any,
+                lightData:sinon.match.any,
+                textureData: sinon.match.any
+            }).args[0][0].textureData.uniformSamplerNameMap).toEqual(
+                [
+                    undefined,
+                    "u_sampler2D0",
+                    "u_sampler2D1"
+                ]
+            )
         });
 
         describe("test in render worker", function () {
@@ -119,7 +147,12 @@ describe("texture", function () {
                             mapManagerBuffer: mapManagerBuffer,
                             textureBuffer: textureBuffer,
                             index: 3,
-                            imageSrcIndexArr: []
+                            imageSrcIndexArr: [],
+                            uniformSamplerNameMap: [
+                                undefined,
+                                "u_sampler2D0",
+                                "u_sampler2D1"
+                            ]
                         }
                     }
                 }
@@ -131,6 +164,17 @@ describe("texture", function () {
                 workerTool.execRenderWorkerMessageHandler(e);
 
                 expect(TextureWorkerData.index).toEqual(3);
+            });
+            it("save uniformSamplerNameMap", function () {
+                testRenderWorkerTool.closeContractCheck();
+
+                workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(TextureWorkerData.uniformSamplerNameMap).toEqual([
+                    undefined,
+                    "u_sampler2D0",
+                    "u_sampler2D1"
+                ]);
             });
 
             describe("create webgl texture", function () {
