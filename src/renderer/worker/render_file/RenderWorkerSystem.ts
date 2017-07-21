@@ -63,7 +63,7 @@ import { TextureCacheWorkerData } from "./texture/TextureCacheWorkerData";
 import { MapManagerWorkerData } from "./texture/MapManagerWorkerData";
 import {
     disposeSourceAndGLTexture, setIndex,
-    setSourceMapByImageSrcArrStream
+    setSourceMapByImageSrcArrStream, setUniformSamplerNameMap
 } from "./texture/TextureWorkerSystem";
 import { callFunc, empty, fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { initData as initShaderData } from "./shader/ShaderWorkerSystem";
@@ -94,7 +94,6 @@ export var onmessageHandler = (e) => {
             fromArray([
                 _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
                 _initMaterialData(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
-                // _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
                 _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
             ]).mergeAll()
                 .concat(
@@ -239,6 +238,8 @@ var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any)
     if(textureData === null){
         return empty();
     }
+
+    setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
 
     return setSourceMapByImageSrcArrStream(textureData.imageSrcIndexArr, TextureWorkerData);
 }

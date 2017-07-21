@@ -56,7 +56,6 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     bindIndexBuffer,
     sendAttributeData,
     sendUniformData,
-    //todo fix
     directlySendUniformData,
     use,
     hasIndices,
@@ -64,7 +63,6 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getIndexType,
     getIndexTypeSize,
     getVerticesCount,
-    //todo fix
     getMapCount,
     bindAndUpdate
 }, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {

@@ -9,7 +9,6 @@ export class TextureData{
     public static sourceMap:Array<HTMLImageElement> = null;
     public static textureMap:Array<Texture> = null;
 
-    //todo fix worker: send to worker
     public static uniformSamplerNameMap:Array<string> = null;
 
     public static buffer: SharedArrayBuffer = null;

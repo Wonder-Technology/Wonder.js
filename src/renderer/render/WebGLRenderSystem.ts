@@ -18,7 +18,6 @@ import { CameraControllerData } from "../../component/camera/CameraControllerDat
 import { CameraData } from "../../component/camera/CameraData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { RenderCommandBufferData } from "../command_buffer/RenderCommandBufferData";
-import { ERenderWorkerState } from "../worker/both_file/ERenderWorkerState";
 import { SendDrawRenderCommandBufferData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { clear, draw } from "../draw/DrawRenderCommandBufferSystem";
@@ -49,7 +48,7 @@ import {
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
-import { convertSourceMapToSrcIndexArr } from "../texture/TextureSystem";
+import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 
 export var init = null;
 
@@ -105,7 +104,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
                 index: TextureData.index,
-                imageSrcIndexArr:convertSourceMapToSrcIndexArr(TextureData.sourceMap)
+                imageSrcIndexArr:convertSourceMapToSrcIndexArr(TextureData),
+                uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
             }
         });
 

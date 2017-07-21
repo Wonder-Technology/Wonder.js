@@ -57,13 +57,6 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCa
     bindAndUpdateUtils(gl, mapCount, TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
 }
 
-
-export var sendData = (gl:WebGLRenderingContext, mapCount:number,  TextureData:any, MapManagerData:any) => {
-    // bindAndUpdateUtils(gl, getMapCount(materialIndex, MapManagerData), TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
-
-
-}
-
 /*!
  not dispose texture when dispose map manager(dispose material)!
  because different materials may use same texture, if dispose one material's texture which is shared, then will affect other materials!

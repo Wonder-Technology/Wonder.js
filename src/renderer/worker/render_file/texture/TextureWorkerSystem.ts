@@ -44,6 +44,10 @@ export var setIndex = (index:number, TextureWorkerData:any) => {
     TextureWorkerData.index = index;
 }
 
+export var setUniformSamplerNameMap = (uniformSamplerNameMap:Array<string>, TextureWorkerData:any) => {
+    TextureWorkerData.uniformSamplerNameMap = uniformSamplerNameMap;
+}
+
 export var setSourceMapByImageSrcArrStream = (imageSrcIndexArr:Array<ImageSrcIndexData>, TextureWorkerData:any) => {
     return _convertImageSrcToImageBitmapStream(imageSrcIndexArr, TextureWorkerData)
         .do((imageBitmap:ImageBitmap) => {

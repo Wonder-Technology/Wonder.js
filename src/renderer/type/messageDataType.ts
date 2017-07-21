@@ -91,6 +91,7 @@ export type TextureInitWorkerData = {
     textureBuffer: SharedArrayBuffer;
     index: number;
     imageSrcIndexArr: Array<ImageSrcIndexData>;
+    uniformSamplerNameMap: Array<string>;
 }
 
 export type ImageSrcIndexData = {

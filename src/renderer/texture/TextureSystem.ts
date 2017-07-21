@@ -177,10 +177,10 @@ export var clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-export var convertSourceMapToSrcIndexArr = (sourceMap:Array<HTMLImageElement>) => {
+export var convertSourceMapToSrcIndexArr = (TextureData:any) => {
     var arr:Array<ImageSrcIndexData> = [];
 
-    forEach(sourceMap, (source:HTMLImageElement, index:number) => {
+    forEach(TextureData.sourceMap, (source:HTMLImageElement, index:number) => {
         if(_isSourceNotExist(source)){
             return;
         }
@@ -192,6 +192,10 @@ export var convertSourceMapToSrcIndexArr = (sourceMap:Array<HTMLImageElement>) =
     })
 
     return arr;
+}
+
+export var getUniformSamplerNameMap = (TextureData:any) => {
+    return TextureData.uniformSamplerNameMap;
 }
 
 var _isSourceNotExist = (source:HTMLImageElement) => isNotValidVal(source);
