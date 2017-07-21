@@ -49,6 +49,7 @@ import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
+import { getDiffuseMapIndex, getSpecularMapIndex } from "../../component/material/LightMaterialSystem";
 
 export var init = null;
 
@@ -68,7 +69,9 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 },
                 lightMaterialData: {
                     startIndex: getLightMaterialBufferStartIndex(),
-                    index: LightMaterialData.index
+                    index: LightMaterialData.index,
+                    diffuseMapIndex: getDiffuseMapIndex(LightMaterialData),
+                    specularMapIndex: getSpecularMapIndex(LightMaterialData)
                 }
             },
             geometryData: {

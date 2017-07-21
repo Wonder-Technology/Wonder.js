@@ -130,7 +130,7 @@ export interface IShaderConfig {
 export interface IShaderLibItem {
     type: string;
     branch?:(...args) => string;
-    value: any;
+    value?: any;
 }
 
 export type MaterialShaderLibConfig = Array<string | IShaderLibItem>;

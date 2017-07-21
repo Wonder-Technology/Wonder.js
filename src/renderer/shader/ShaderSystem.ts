@@ -65,13 +65,12 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     };
 
     var _buildInitShaderFuncDataMap = () => {
-        //todo fix worker
         return {
             buildGLSLSource: buildGLSLSource,
             getGL: getGL,
             getMapCount: getMapCount,
-            hasDiffuseMap: hasDiffuseMap,
-            hasSpecularMap: hasSpecularMap
+            hasSpecularMap: hasSpecularMap,
+            hasDiffuseMap: hasDiffuseMap
         }
     }
 

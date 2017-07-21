@@ -22,6 +22,8 @@ export type BasicMaterialInitWorkerData = {
 export type LightMaterialInitWorkerData = {
     startIndex: number;
     index: number;
+    diffuseMapIndex: number;
+    specularMapIndex: number;
 }
 
 export type MaterialUpdateWorkerData = {

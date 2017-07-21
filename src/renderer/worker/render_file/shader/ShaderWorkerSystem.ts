@@ -27,17 +27,19 @@ import {
 } from "../light/PointLightWorkerSystem";
 import { getMapCount } from "../texture/MapManagerWorkerSystem";
 import { createMap } from "../../../../utils/objectUtils";
+import { hasDiffuseMap, hasSpecularMap } from "../../../utils/material/lightMaterialUtils";
 
 export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
-    //todo fix
-    // return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
 var _buildInitShaderFuncDataMap = () => {
     return {
         buildGLSLSource: buildGLSLSource,
         getGL: getGL,
-        getMapCount: getMapCount
+        getMapCount: getMapCount,
+        hasSpecularMap: hasSpecularMap,
+        hasDiffuseMap: hasDiffuseMap
     }
 }
 

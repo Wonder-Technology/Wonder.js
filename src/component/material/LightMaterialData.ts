@@ -15,7 +15,6 @@ export class LightMaterialData extends SpecifyMaterialData {
     public static emptyColor: Color = null;
     public static emptyColorArr: Array<number> = null;
 
-    //todo send to worker
     public static diffuseMapIndex:number = null;
     public static specularMapIndex:number = null;
 }

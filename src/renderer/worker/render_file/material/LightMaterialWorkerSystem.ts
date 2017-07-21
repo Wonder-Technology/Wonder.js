@@ -24,3 +24,11 @@ export var getShading = (index: number, LightMaterialDataFromSystem: any) => {
 export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
     return getLightModelUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
+
+export var setDiffuseMapIndex = (textureIndex:number, LightMaterialData:any) => {
+    LightMaterialData.diffuseMapIndex = textureIndex;
+}
+
+export var setSpecularMapIndex = (textureIndex:number, LightMaterialData:any) => {
+    LightMaterialData.specularMapIndex = textureIndex;
+}

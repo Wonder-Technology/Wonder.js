@@ -4,4 +4,7 @@ export class LightMaterialWorkerData {
     public static shininess: Float32Array = null;
     public static shadings: Uint8Array = null;
     public static lightModels: Uint8Array = null;
+
+    public static diffuseMapIndex:number = null;
+    public static specularMapIndex:number = null;
 }
