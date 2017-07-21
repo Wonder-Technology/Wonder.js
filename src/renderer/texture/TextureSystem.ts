@@ -82,6 +82,10 @@ export var setIsNeedUpdate = (textureIndex:number, value:number, TextureData:any
 //
 // export var getFlipY = getFlipYUtils;
 
+export var setUniformSamplerName = (index:number, name:string, TextureData:any) => {
+    TextureData.uniformSamplerNameMap[index] = name;
+}
+
 export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureIndex:number, TextureCacheData:any, TextureData:any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, isCached, addActiveTexture);
 }
@@ -218,6 +222,8 @@ export var initData = (TextureCacheData:any, TextureData:any) => {
     TextureData.sourceMap = [];
 
     TextureData.textureMap = [];
+
+    TextureData.uniformSamplerNameMap = [];
 
     TextureData.disposedTextureDataMap = [];
 

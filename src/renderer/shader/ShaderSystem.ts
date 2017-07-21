@@ -77,8 +77,9 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-        sendUniformDataUtils(gl, shaderIndex, program, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
+    //todo fix worker
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+        sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
     };
 
     var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {

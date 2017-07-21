@@ -7,9 +7,10 @@ import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
 import { forEach } from "../../../../utils/arrayUtils";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
-import { DrawDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
+import { DrawDataMap, SendUniformDataDataMap, SendUniformDataGLSLSenderDataMap } from "../../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
 import { isNotUndefined } from "../../../../utils/JudgeUtils";
+import { sendData } from "../../texture/mapManagerUtils";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     it("program should exist", () => {
@@ -212,29 +213,23 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
     return buffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
     var uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
 
     _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, drawDataMap, uniformLocationMap, uniformCacheMap, renderCommandUniformData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
+
+    //todo test
+    sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, {
-    getUniformData,
-    sendMatrix3,
-    sendMatrix4,
-    sendVector3,
-    sendInt,
-    sendFloat1,
-    sendFloat3,
-    GLSLSenderDataFromSystem,
-}, {
+var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, {
                             MaterialDataFromSystem,
                             BasicMaterialDataFromSystem,
                             LightMaterialDataFromSystem,
                         }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: RenderCommandUniformData) => {
-    var sendUniformDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
+    var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
         let sendData = sendUniformDataArr[i],
@@ -242,32 +237,45 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, sendData.value, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
+            data = glslSenderData.getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
-        switch (type) {
-            case EVariableType.MAT3:
-                sendMatrix3(gl, program, name, data, uniformLocationMap);
-                break;
-            case EVariableType.MAT4:
-                sendMatrix4(gl, program, name, data, uniformLocationMap);
-                break;
-            case EVariableType.VEC3:
-                sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType.INT:
-            case EVariableType.SAMPLER_2D:
-                sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType.FLOAT:
-                sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType.FLOAT3:
-                sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            default:
-                Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
-                break;
-        }
+        directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap,uniformCacheMap);
+    }
+}
+
+export var directlySendUniformData = (gl: WebGLRenderingContext, name:string, shaderIndex:number, program: WebGLProgram, type:EVariableType, data:any, {
+    // getUniformData,
+    sendMatrix3,
+    sendMatrix4,
+    sendVector3,
+    sendInt,
+    sendFloat1,
+    sendFloat3,
+    // GLSLSenderDataFromSystem,
+}, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+    switch (type) {
+        case EVariableType.MAT3:
+            sendMatrix3(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType.MAT4:
+            sendMatrix4(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType.VEC3:
+            sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.INT:
+        case EVariableType.SAMPLER_2D:
+            sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.FLOAT:
+            sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.FLOAT3:
+            sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        default:
+            Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
+            break;
     }
 }
 

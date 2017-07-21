@@ -15,7 +15,8 @@ import {
     getVerticesCount,
     hasIndices
 } from "../geometry/GeometryWorkerSystem";
-import { bindAndUpdate } from "../texture/MapManagerWorkerSystem";
+import { bindAndUpdate, getMapCount } from "../texture/MapManagerWorkerSystem";
+import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
 
 export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceManagerWorkerData: any) => {
     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
@@ -26,7 +27,7 @@ export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: Dra
 
 
     if (_isBufferDataExist(bufferData)) {
-        drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate), drawDataMap, bufferData);
+        drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData);
     }
 
     _commitGL(gl, state);

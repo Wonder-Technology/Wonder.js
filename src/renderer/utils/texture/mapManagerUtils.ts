@@ -2,6 +2,9 @@ import { expect } from "wonder-expect.js";
 // import { isNotValidVal } from "../../utils/arrayUtils";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import { getBufferTotalCount } from "../material/bufferUtils";
+import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
+import { sendData as sendTextureData } from "./textureUtils";
+import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
 // import { initTextures } from "./textureUtils";
 // import { Texture } from "../../texture/Texture";
 
@@ -75,11 +78,11 @@ export var getTextureIndexDataSize = () => 1;
 
 export var getTextureCountDataSize = () => 1;
 
-export var bindAndUpdate = (gl:WebGLRenderingContext, count:number, TextureCacheDataFromSystem:any, TextureDataFromSystem:any, MapManagerDataFromSystem:any, bindToUnit:Function, needUpdate:Function, update:Function) => {
+export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCacheDataFromSystem:any, TextureDataFromSystem:any, MapManagerDataFromSystem:any, bindToUnit:Function, needUpdate:Function, update:Function) => {
     // var count = getMapCount(materialIndex, MapManagerDataFromSystem),
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
-    for(let i = 0; i < count; i++){
+    for(let i = 0; i < mapCount; i++){
         let textureIndex = textureIndices[i];
 
         bindToUnit(gl, i, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem);
@@ -87,6 +90,16 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, count:number, TextureCache
         if(needUpdate(textureIndex, TextureDataFromSystem)){
             update(gl, textureIndex, TextureDataFromSystem);
         }
+    }
+}
+
+export var sendData = (gl:WebGLRenderingContext, mapCount:number,  shaderIndex:number, program:WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData:Function, TextureData:any, MapManagerData:any) => {
+    var textureIndices = MapManagerData.textureIndices;
+
+    for(let i = 0; i < mapCount; i++){
+        let textureIndex = textureIndices[i];
+
+        sendTextureData(gl, mapCount, shaderIndex, textureIndex, i, program, glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureData);
     }
 }
 

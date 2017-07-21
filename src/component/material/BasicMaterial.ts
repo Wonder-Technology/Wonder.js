@@ -11,6 +11,7 @@ import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
+import { TextureData } from "../../renderer/texture/TextureData";
 
 @registerClass("BasicMaterial")
 export class BasicMaterial extends Material {
@@ -63,5 +64,5 @@ export var setBasicMaterialAlphaTest = requireCheckFunc((material: BasicMaterial
 export var addBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map:Texture) => {
     checkShouldAlive(material);
 }, (material: BasicMaterial, map:Texture) => {
-    addMap(material.index, map, MapManagerData);
+    addMap(material.index, map, MapManagerData, TextureData);
 })

@@ -5,7 +5,10 @@ import {
     bindAndUpdate as bindAndUpdateUtils,
     createTypeArrays, getBufferCount, getMapCount as getMapCountUtils, getMaxTextureCount
 } from "../utils/texture/mapManagerUtils";
-import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureSystem";
+import {
+    bindToUnit, initData as initTextureData, initTextures, needUpdate, setUniformSamplerName,
+    update
+} from "./TextureSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../utils/typeArrayUtils";
 
@@ -26,16 +29,18 @@ export var getMapIndex = (materialIndex: number, MapManagerData:any) => {
     return MapManagerData.textureIndices[materialIndex];
 }
 
-export var addMap = requireCheckFunc((materialIndex: number, map: Texture, MapManagerData:any) => {
+export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count:number, uniformSamplerName:string, MapManagerData:any, TextureData:any) => {
     it("map count shouldn't exceed max count", () => {
-        expect(getMapCount(materialIndex, MapManagerData) + 1).lte(getMaxTextureCount());
+        expect(count + 1).lte(getMaxTextureCount());
     });
-}, (materialIndex: number, map: Texture, MapManagerData:any) => {
-    var count = MapManagerData.textureCounts[materialIndex];
+}, (materialIndex: number, map: Texture, count:number, uniformSamplerName:string, MapManagerData:any, TextureData:any) => {
+    var textureIndex = map.index;
 
-    MapManagerData.textureIndices[materialIndex + count] = map.index;
+    MapManagerData.textureIndices[materialIndex + count] = textureIndex;
 
     MapManagerData.textureCounts[materialIndex] = count + 1;
+
+    setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
 })
 
 export var getMapCount = getMapCountUtils;
@@ -48,8 +53,15 @@ export var getMapCount = getMapCountUtils;
 //     }
 // }
 
-export var bindAndUpdate = (gl:WebGLRenderingContext, materialIndex: number, TextureCacheData:any, TextureData:any, MapManagerData:any) => {
-    bindAndUpdateUtils(gl, getMapCount(materialIndex, MapManagerData), TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
+export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCacheData:any, TextureData:any, MapManagerData:any) => {
+    bindAndUpdateUtils(gl, mapCount, TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
+}
+
+
+export var sendData = (gl:WebGLRenderingContext, mapCount:number,  TextureData:any, MapManagerData:any) => {
+    // bindAndUpdateUtils(gl, getMapCount(materialIndex, MapManagerData), TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
+
+
 }
 
 /*!

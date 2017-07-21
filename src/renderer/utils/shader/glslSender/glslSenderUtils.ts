@@ -16,14 +16,9 @@ import {
 } from "../../../type/utilsType";
 import { Vector3 } from "../../../../math/Vector3";
 import { EBufferType } from "../../../enum/EBufferType";
-import { isNotUndefined } from "../../../../utils/JudgeUtils";
 
-export var getUniformData = (field: string, from: string, value:any|undefined,renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
-
-    if(isNotUndefined(value)){
-        return value;
-    }
 
     switch (from) {
         case "cmd":

@@ -46,8 +46,8 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     getTexCoords:getTexCoords
 }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData);
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-    sendUniformDataUtils(gl, shaderIndex, program, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+    sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
 };
 
 var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {

@@ -20,7 +20,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
 } from "../../renderer/utils/material/basicMaterialUtils";
-import { addMap as addMapByMapManager } from "../../renderer/texture/MapManagerSystem";
+import { addMap as addMapByMapManager, getMapCount } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 
@@ -48,8 +48,10 @@ export var initMaterial = (index: number, state: Map<any, any>) => {
 //     return getMapByMapManager(materialIndex, MapManagerData);
 // }
 
-export var addMap = (materialIndex: number, map: Texture, MapManagerData:any) => {
-    addMapByMapManager(materialIndex, map, MapManagerData);
+export var addMap = (materialIndex: number, map: Texture, MapManagerData:any, TextureData:any) => {
+    var count = getMapCount(materialIndex, MapManagerData);
+
+    addMapByMapManager(materialIndex, map, count, `sampler2D${count}`, MapManagerData, TextureData);
 }
 
 export var addComponent = (component: Material, gameObject: GameObject) => {

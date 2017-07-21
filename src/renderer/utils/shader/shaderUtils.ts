@@ -82,8 +82,8 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-    sendUniformDataProgram(gl, shaderIndex, program, sendDataMap, drawDataMap, renderCommandUniformData);
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+    sendUniformDataProgram(gl, shaderIndex, program, mapCount, sendDataMap, drawDataMap, renderCommandUniformData);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {

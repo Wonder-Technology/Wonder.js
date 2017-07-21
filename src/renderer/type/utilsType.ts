@@ -29,6 +29,7 @@ export type DrawFuncDataMap = {
     bindIndexBuffer: Function;
     sendAttributeData: Function;
     sendUniformData: Function;
+    directlySendUniformData: Function;
     use: Function;
     hasIndices: Function;
     getIndicesCount: Function;
@@ -36,6 +37,7 @@ export type DrawFuncDataMap = {
     getIndexTypeSize: Function;
     getVerticesCount: Function;
     bindAndUpdate: Function;
+    getMapCount: Function;
 }
 
 export type SendUniformDataGLSLSenderDataMap = {

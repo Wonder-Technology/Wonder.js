@@ -1,5 +1,6 @@
 import { isConfigDataExist } from "../renderConfigUtils";
 import {
+    IDefineUniformConfig,
     IGLSLConfig, IGLSLDefineListItem, IGLSLFuncConfig, ISendAttributeConfig, ISendUniformConfig,
     IShaderLibContentGenerator
 } from "../../data/shaderLib_generator";
@@ -258,28 +259,33 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
 var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
-            forEachArray((data: ISendUniformConfig) => {
-                result += `uniform ${_generateUniformSourceType(data.type)} ${data.name};\n`;
+            forEachArray(({name, type}) => {
+                result += `uniform ${_generateUniformSourceType(type)} ${name};\n`;
             }),
-            filterArray((data: ISendUniformConfig) => {
-                var name = data.name;
-
-                return _isUniformDataValue(data)
-                    && (_isInSource(name, sourceVarDeclare) || _isInSource(name, sourceFuncDefine) || _isInSource(name, sourceBody));
+            filterArray(({name}) => {
+                return _isInSource(name, sourceVarDeclare) || _isInSource(name, sourceFuncDefine) || _isInSource(name, sourceBody);
             })
         );
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
-            uniformData = null;
+            uniform:Array<ISendUniformConfig> = null,
+            uniformDefine:Array<IDefineUniformConfig> = null;
 
-        if (!isConfigDataExist(sendData) || !isConfigDataExist(sendData.uniform)) {
+        if (!isConfigDataExist(sendData)) {
             return;
         }
 
-        uniformData = sendData.uniform;
+        uniform = sendData.uniform;
+        uniformDefine = sendData.uniformDefine;
 
-        generateFunc(uniformData);
+        if(isConfigDataExist(uniform)){
+            generateFunc(uniform);
+        }
+
+        if(isConfigDataExist(uniformDefine)){
+            generateFunc(uniformDefine);
+        }
     });
 
     return result;
@@ -298,8 +304,4 @@ var _generateUniformSourceType = (type: string) => {
     }
 
     return sourceType;
-}
-
-var _isUniformDataValue = (data: ISendUniformConfig) => {
-    return data.fieldType === void 0 || data.fieldType === "value";
 }

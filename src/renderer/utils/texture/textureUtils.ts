@@ -12,6 +12,9 @@ import { expect } from "wonder-expect.js";
 import { clearAllBindTextureUnitCache } from "./textureCacheUtils";
 import { GPUDetector } from "../../device/GPUDetector";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
+import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
+import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
+import { EVariableType } from "../../enum/EVariableType";
 
 export var getBufferDataSize = () => 1;
 
@@ -248,6 +251,35 @@ export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureInd
     gl.bindTexture(gl[target], _getWebglTexture(textureIndex, TextureDataFromSystem));
 
     return this;
+}
+
+export var sendData = (gl:WebGLRenderingContext, mapCount:number,  shaderIndex:number, textureIndex:number, unitIndex:number, program:WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData:Function, TextureDataFromSystem:any) => {
+    directlySendUniformData(gl, _getUniformSamplerName(textureIndex, TextureDataFromSystem), shaderIndex, program, _getSamplerType(_getTarget()), unitIndex, glslSenderData, uniformLocationMap,uniformCacheMap);
+}
+
+var _getSamplerType = (target:ETextureTarget) => {
+    var type = null;
+
+    switch(target){
+        case ETextureTarget.TEXTURE_2D:
+            type = EVariableType.SAMPLER_2D;
+            break;
+        // case ETextureTarget.TEXTURE_CUBE_MAP:
+        //     type = EVariableType.SAMPLER_CUBE;
+        //     break;
+        default:
+            break;
+    }
+
+    return type;
+}
+
+var _getTarget = () => {
+    return ETextureTarget.TEXTURE_2D;
+}
+
+var _getUniformSamplerName = (index:number, TextureDataFromSystem:any) => {
+    return TextureDataFromSystem.uniformSamplerNameMap[index];
 }
 
 export var disposeSourceMap = (sourceIndex:number, lastComponentIndex:number, TextureDataFromSystem:any) => {

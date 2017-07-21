@@ -169,11 +169,11 @@ export const shaderLib_generator = {
                         "type": "vec2"
                     }
                 ],
-                "uniform": [
+                //todo test
+                "uniformDefine": [
                     {
                         "name": "u_sampler2D0",
-                        "type": "sampler2D",
-                        "value": 0
+                        "type": "sampler2D"
                     }
                 ]
             }
@@ -521,6 +521,7 @@ export interface IGLSLDefineListItem {
 export interface IShaderLibSendConfig {
     attribute?: Array<ISendAttributeConfig>;
     uniform?: Array<ISendUniformConfig>;
+    uniformDefine?: Array<IDefineUniformConfig>;
     uniformFunc?: Function;
 }
 
@@ -530,11 +531,18 @@ export interface ISendAttributeConfig {
     type: "vec2" | "vec3";
 }
 
+export type UniformType = "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
+
+export interface IDefineUniformConfig {
+    name: string;
+    type: UniformType;
+}
+
 export interface ISendUniformConfig {
     name: string;
     field: string;
-    type: "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
-    fieldType?: "value" | "structure";
+    type: UniformType;
+    fieldType?: "structure";
     from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
 }
 
