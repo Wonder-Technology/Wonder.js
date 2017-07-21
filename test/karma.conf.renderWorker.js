@@ -34,6 +34,7 @@
         // 'test/unit/worker/render_worker/**/MainSpec*',
         // 'test/unit/worker/render_worker/**/texture*',
         // 'test/unit/worker/render_worker/**/material*',
+        // 'test/unit/worker/render_worker/**/lightMaterial*',
         // 'test/unit/worker/render_worker/**/disposeTexture*',
         // 'test/unit/worker/render_worker/**/lightSpec*',
         // 'test/unit/worker/render_worker/**/DirectorSpec*',

@@ -28,3 +28,4 @@ export { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBuffe
 export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 export { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 export { TextureWorkerData } from "./texture/TextureWorkerData";
+export { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
