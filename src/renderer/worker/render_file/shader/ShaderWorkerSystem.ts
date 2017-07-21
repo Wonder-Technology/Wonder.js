@@ -29,7 +29,8 @@ import { getMapCount } from "../texture/MapManagerWorkerSystem";
 import { createMap } from "../../../../utils/objectUtils";
 
 export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
-    return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    //todo fix
+    // return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
 var _buildInitShaderFuncDataMap = () => {

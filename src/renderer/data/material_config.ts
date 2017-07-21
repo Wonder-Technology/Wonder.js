@@ -15,8 +15,10 @@ export const material_config = {
                         }, {
                                        MapManagerDataFromSystem
                                    }) => {
-                            return getMapCount(materialIndex, MapManagerDataFromSystem) === 1
-                        }, "value": "BasicMapShaderLib"
+                            if(getMapCount(materialIndex, MapManagerDataFromSystem) === 1){
+                                return "BasicMapShaderLib";
+                            }
+                        }
                     },
 
 
@@ -36,9 +38,37 @@ export const material_config = {
                     "LightCommonShaderLib",
                     "LightSetWorldPositionShaderLib",
 
+                    "CommonLightMapShaderLib",
+                    {
+                        "type": "branch",
+                        "branch": (materialIndex, {
+                            hasDiffuseMap
+                        }, {
+                                       LightMaterialDataFromSystem
+                                   }) => {
+                            if(hasDiffuseMap(LightMaterialDataFromSystem)){
+                                return "DiffuseMapShaderLib";
+                            }
+
+                            return "NoDiffuseMapShaderLib";
+                        }
+                    },
+                    {
+                        "type": "branch",
+                        "branch": (materialIndex, {
+                            hasSpecularMap
+                        }, {
+                                       LightMaterialDataFromSystem
+                                   }) => {
+                            if(hasSpecularMap(LightMaterialDataFromSystem)){
+                                return "SpecularMapShaderLib";
+                            }
+
+                            return "NoSpecularMapShaderLib";
+                        }
+                    },
+
                     "NoLightMapShaderLib",
-                    "NoDiffuseMapShaderLib",
-                    "NoSpecularMapShaderLib",
                     "NoEmissionMapShaderLib",
                     "NoNormalMapShaderLib",
                     "NoShadowMapShaderLib",
@@ -86,7 +116,7 @@ export interface IShaderConfig {
 
 export interface IShaderLibItem {
     type: string;
-    branch?:Function;
+    branch?:(...args) => string;
     value: any;
 }
 

@@ -32,6 +32,9 @@ import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { Texture } from "../../renderer/texture/Texture";
+import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { getUniformSamplerNameMap } from "../../renderer/texture/TextureSystem";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -58,6 +61,22 @@ export var getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
 
 export var setSpecularColor = (index: number, color: Color, LightMaterialData: any) => {
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
+}
+
+export var setDiffuseMap = (index: number, map:Texture, MapManagerData:any, TextureData:any) => {
+    var count = getMapCount(index, MapManagerData);
+
+    addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
+
+    LightMaterialData.diffuseMapIndex = map.index;
+}
+
+export var setSpecularMap = (index: number, map:Texture, MapManagerData:any, TextureData:any) => {
+    var count = getMapCount(index, MapManagerData);
+
+    addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
+
+    LightMaterialData.specularMapIndex = map.index;
 }
 
 export var getEmissionColor = (index: number, LightMaterialData: any) => {
@@ -175,3 +194,4 @@ var _createEmptyColor = () => {
 
     return color;
 }
+

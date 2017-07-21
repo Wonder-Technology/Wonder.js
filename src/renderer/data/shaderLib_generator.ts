@@ -5,7 +5,9 @@ import {
     noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
     noSpecularMap_fragment, noNormalMap_light_fragment, light_fragment,
     map_forBasic_vertex,
-    map_forBasic_fragment
+    map_forBasic_fragment,
+    diffuseMap_vertex, diffuseMap_fragment,
+    specularMap_vertex, specularMap_fragment
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
@@ -238,11 +240,36 @@ export const shaderLib_generator = {
                 }
             }
         },
-        "NoLightMapShaderLib": {
+
+        "CommonLightMapShaderLib": {
+            "send": {
+                "attribute": [
+                    {
+                        "name": "a_texCoord",
+                        "buffer": "texCoord",
+                        "type": "vec2"
+                    }
+                ]
+            }
+        },
+
+
+        "DiffuseMapShaderLib": {
             "glsl": {
+                "vs": {
+                    "source": diffuseMap_vertex
+                },
                 "fs": {
-                    "source": noLightMap_fragment
+                    "source": diffuseMap_fragment
                 }
+            },
+            "send": {
+                "uniformDefine": [
+                    {
+                        "name": "u_diffuseMapSampler",
+                        "type": "sampler2D"
+                    }
+                ]
             }
         },
         "NoDiffuseMapShaderLib": {
@@ -262,10 +289,35 @@ export const shaderLib_generator = {
                 ]
             }
         },
+        "SpecularMapShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": specularMap_vertex
+                },
+                "fs": {
+                    "source": specularMap_fragment
+                }
+            },
+            "send": {
+                "uniformDefine": [
+                    {
+                        "name": "u_specularMapSampler",
+                        "type": "sampler2D"
+                    }
+                ]
+            }
+        },
         "NoSpecularMapShaderLib": {
             "glsl": {
                 "fs": {
                     "source": noSpecularMap_fragment
+                }
+            }
+        },
+        "NoLightMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": noLightMap_fragment
                 }
             }
         },

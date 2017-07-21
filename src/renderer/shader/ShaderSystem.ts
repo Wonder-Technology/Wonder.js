@@ -27,6 +27,7 @@ import {
 } from "../../component/light/PointLightSystem";
 import { getMapCount } from "../texture/MapManagerSystem";
 import { createMap } from "../../utils/objectUtils";
+import { hasDiffuseMap, hasSpecularMap } from "../utils/material/lightMaterialUtils";
 
 // export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
 export var create = (ShaderData: any) => {
@@ -64,10 +65,13 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     };
 
     var _buildInitShaderFuncDataMap = () => {
+        //todo fix worker
         return {
             buildGLSLSource: buildGLSLSource,
             getGL: getGL,
-            getMapCount: getMapCount
+            getMapCount: getMapCount,
+            hasDiffuseMap: hasDiffuseMap,
+            hasSpecularMap: hasSpecularMap
         }
     }
 

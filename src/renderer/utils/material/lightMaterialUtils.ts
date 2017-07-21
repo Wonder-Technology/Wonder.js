@@ -28,6 +28,16 @@ export var getLightModel = (materialIndex: number, LightMaterialDataFromSystem: 
     return getSingleSizeData(materialIndex, LightMaterialDataFromSystem.lightModels);
 }
 
+export var hasDiffuseMap = (LightMaterialDataFromSystem: any) => {
+    return _isLightMapExist(LightMaterialDataFromSystem.diffuseMapIndex);
+}
+
+export var hasSpecularMap = (LightMaterialDataFromSystem: any) => {
+    return _isLightMapExist(LightMaterialDataFromSystem.specularMapIndex);
+}
+
+var _isLightMapExist = (mapIndex:number) => mapIndex !== null;
+
 export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
 
 

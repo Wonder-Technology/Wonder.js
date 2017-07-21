@@ -17,6 +17,8 @@ var lightMaterialTool = (function () {
         getShading: wd.getLightMaterialShading,
         setLightModel: wd.setLightMaterialLightModel,
         getLightModel: wd.getLightMaterialLightModel,
+        setDiffuseMap: wd.setLightMaterialDiffuseMap,
+        setSpecularMap: wd.setLightMaterialSpecularMap,
 
         computeLightBufferIndex :function(index) {
             return index - wd.DataBufferConfig.basicMaterialDataBufferCount;

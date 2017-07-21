@@ -1,6 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
-import { create, initMaterial } from "./LightMaterialSystem";
+import { create, initMaterial, setSpecularMap, setDiffuseMap } from "./LightMaterialSystem";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
@@ -16,6 +16,9 @@ import {
 } from "./LightMaterialSystem";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
+import { Texture } from "../../renderer/texture/Texture";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { TextureData } from "../../renderer/texture/TextureData";
 
 @registerClass("LightMaterial")
 export class LightMaterial extends Material {
@@ -123,4 +126,16 @@ export var setLightMaterialLightModel = requireCheckFunc((material: LightMateria
     checkShouldAlive(material);
 }, (material: LightMaterial, lightModel: number) => {
     setLightModel(material.index, lightModel, LightMaterialData);
+})
+
+export var setLightMaterialDiffuseMap = requireCheckFunc((material: LightMaterial) => {
+    checkShouldAlive(material);
+}, (material: LightMaterial, map:Texture) => {
+    setDiffuseMap(material.index, map, MapManagerData, TextureData);
+})
+
+export var setLightMaterialSpecularMap = requireCheckFunc((material: LightMaterial) => {
+    checkShouldAlive(material);
+}, (material: LightMaterial, map:Texture) => {
+    setSpecularMap(material.index, map, MapManagerData, TextureData);
 })

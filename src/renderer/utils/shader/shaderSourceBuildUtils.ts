@@ -133,8 +133,10 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
                     nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
                     break;
                 case "branch":
-                    if(_execBranch(i, materialIndex, initShaderFuncDataMap, initShaderDataMap)){
-                        nameArr.push(i.value);
+                    let shaderLibName = _execBranch(i, materialIndex, initShaderFuncDataMap, initShaderDataMap);
+
+                    if(_isShaderLibNameExist(shaderLibName)){
+                        nameArr.push(shaderLibName);
                     }
             }
         }
@@ -150,6 +152,8 @@ var _execBranch = requireCheckFunc ((i:IShaderLibItem, materialIndex:number, ini
 }, (i:IShaderLibItem, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
+
+var _isShaderLibNameExist = (name:string) => !!name;
 
 var _getEmptyFuncGLSLConfig = () => {
     return {

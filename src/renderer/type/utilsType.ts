@@ -114,4 +114,5 @@ export type InitShaderFuncDataMap = {
     buildGLSLSource: Function;
     getGL: Function;
     getMapCount: Function;
+    hasSpecularMap: Function;
 }

@@ -8,6 +8,7 @@
     <script src="../../js/tool/threeDTransformTool.js"></script>
     <script src="../../js/tool/materialTool.js"></script>
     <script src="../../js/tool/basicMaterialTool.js"></script>
+    <script src="../../js/tool/textureTool.js"></script>
     <script src="../../js/tool/boxGeometryTool.js"></script>
     <script src="../../js/tool/gameObjectTool.js"></script>
     <script src="../../js/tool/cameraControllerTool.js"></script>
@@ -22,12 +23,28 @@
 
 <script>
     window.onload = function () {
-        wd.Main.setConfig({
-            isTest:true,
-            screenSize: wd.EScreenSize.FULL
-        }).init();
+//        wd.Main.setConfig({
+//            isTest:true,
+//            screenSize: wd.EScreenSize.FULL
+//        }).init();
 
-        initSample();
+//        initSample();
+
+
+        var image = new Image();
+
+        image.src = "../../asset/texture/1.jpg";
+
+        image.onload = function(){
+            wd.Main.setConfig({
+                isTest:true,
+                screenSize: wd.EScreenSize.FULL
+            }).init();
+
+            initSample();
+        }
+
+
 
         function initSample() {
             var director = wd.Director.getInstance();
@@ -65,6 +82,18 @@
             lightMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
             lightMaterialTool.setSpecularColor(material, wd.Color.create("#ffdd99"));
             lightMaterialTool.setShininess(material, 32);
+
+
+
+
+            var texture = textureTool.create();
+
+            textureTool.setSource(texture, image);
+
+//            lightMaterialTool.setSpecularMap(material, texture);
+            lightMaterialTool.setDiffuseMap(material, texture);
+
+
 
             var obj = gameObjectTool.create();
 
