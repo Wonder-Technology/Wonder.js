@@ -361,7 +361,7 @@ describe("LightMaterial", function () {
                 describe("if has map, add CommonLightMapShaderLib", function(){
                     beforeEach(function () {
                         var texture = textureTool.create();
-                        textureTool.setSource(texture, null);
+                        textureTool.setSource(texture, {});
 
                         lightMaterialTool.setSpecularMap(material, texture);
                     });
@@ -440,7 +440,7 @@ describe("LightMaterial", function () {
                 describe("if has diffuse map, add DiffuseMapShaderLib", function(){
                     beforeEach(function () {
                         var texture = textureTool.create();
-                        textureTool.setSource(texture, null);
+                        textureTool.setSource(texture, {});
 
                         lightMaterialTool.setDiffuseMap(material, texture);
                     });
@@ -507,7 +507,7 @@ describe("LightMaterial", function () {
                 describe("if has specular map, add SpecularMapShaderLib", function(){
                     beforeEach(function () {
                         var texture = textureTool.create();
-                        textureTool.setSource(texture, null);
+                        textureTool.setSource(texture, {});
 
                         lightMaterialTool.setSpecularMap(material, texture);
                     });

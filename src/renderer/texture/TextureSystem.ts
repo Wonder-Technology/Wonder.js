@@ -19,7 +19,7 @@ import {
     // getFlipY as getFlipYUtils,
     getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
     bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
-    update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas
+    update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas, getSource as getSourceUtils
 } from "../utils/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
@@ -40,9 +40,7 @@ export var create = ensureFunc((component: Texture) => {
     return texture;
 })
 
-export var getSource = (textureIndex:number, TextureData:any) => {
-    return TextureData.sourceMap[textureIndex];
-}
+export var getSource = getSourceUtils;
 
 export var setSource = (textureIndex:number, source:any, TextureData:any) => {
     TextureData.sourceMap[textureIndex] = source;

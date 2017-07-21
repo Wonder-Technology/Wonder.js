@@ -62,23 +62,23 @@ describe("Texture", function () {
 
         });
 
-        describe("getWidth", function () {
-            beforeEach(function () {
-            });
-
-            it("default value is 0", function () {
-                expect(textureTool.getWidth(texture)).toEqual(0);
-            });
-        });
-
-        describe("getHeight", function () {
-            beforeEach(function () {
-            });
-
-            it("default value is 0", function () {
-                expect(textureTool.getHeight(texture)).toEqual(0);
-            });
-        });
+        // describe("getWidth", function () {
+        //     beforeEach(function () {
+        //     });
+        //
+        //     it("default value is 0", function () {
+        //         expect(textureTool.getWidth(texture)).toEqual(0);
+        //     });
+        // });
+        //
+        // describe("getHeight", function () {
+        //     beforeEach(function () {
+        //     });
+        //
+        //     it("default value is 0", function () {
+        //         expect(textureTool.getHeight(texture)).toEqual(0);
+        //     });
+        // });
 
         describe("getIsNeedUpdate", function () {
             beforeEach(function () {
@@ -87,6 +87,72 @@ describe("Texture", function () {
             it("default value is 0", function () {
                 expect(textureTool.getIsNeedUpdate(texture)).toEqual(0);
             });
+        });
+    });
+    
+    describe("getWidth", function() {
+        beforeEach(function(){
+            
+        });
+        
+        describe("if set source", function(){
+            var source;
+
+            beforeEach(function(){
+                source = {
+                    width:100
+                };
+
+                textureTool.setSource(texture, source);
+            });
+
+            it("if width is 0, return source.width", function () {
+                textureTool.setWidth(texture, 0);
+
+                expect(textureTool.getWidth(texture)).toEqual(source.width);
+            });
+            it("else, return width", function () {
+                textureTool.setWidth(texture, 50);
+
+                expect(textureTool.getWidth(texture)).toEqual(50);
+            });
+        });
+
+        it("default value is 0", function () {
+            expect(textureTool.getWidth(texture)).toEqual(0);
+        });
+    });
+
+    describe("getHeight", function() {
+        beforeEach(function(){
+
+        });
+
+        describe("if set source", function(){
+            var source;
+
+            beforeEach(function(){
+                source = {
+                    height:100
+                };
+
+                textureTool.setSource(texture, source);
+            });
+
+            it("if height is 0, return source.height", function () {
+                textureTool.setHeight(texture, 0);
+
+                expect(textureTool.getHeight(texture)).toEqual(source.height);
+            });
+            it("else, return height", function () {
+                textureTool.setHeight(texture, 50);
+
+                expect(textureTool.getHeight(texture)).toEqual(50);
+            });
+        });
+
+        it("default value is 0", function () {
+            expect(textureTool.getHeight(texture)).toEqual(0);
         });
     });
 
@@ -277,7 +343,7 @@ describe("Texture", function () {
                 });
                 it("set filter by data", function () {
                     gl[ETextureFilterMode.LINEAR] = 0;
-                    gl[ETextureFilterMode.LINEAR_MIPMAP_LINEAR] = 1;
+                    gl[ETextureFilterMode.NEAREST] = 1;
 
                     directorTool.loopBody(state);
 
@@ -313,7 +379,7 @@ describe("Texture", function () {
                         directorTool.loopBody(state);
 
                         expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MAG_FILTER, 0)).toCalledOnce();
-                        expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MIN_FILTER, 0)).toCalledOnce();
+                        expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MIN_FILTER, 1)).toCalledOnce();
                     });
                     it("else, set LINEAR", function () {
                         //todo set filter data
@@ -321,7 +387,7 @@ describe("Texture", function () {
                         directorTool.loopBody(state);
 
                         expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MAG_FILTER, 0)).toCalledOnce();
-                        expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MIN_FILTER, 0)).toCalledOnce();
+                        expect(gl.texParameteri.withArgs(textureType, gl.TEXTURE_MIN_FILTER, 1)).toCalledOnce();
                     });
                 });
             });

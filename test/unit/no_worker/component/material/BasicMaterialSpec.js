@@ -281,7 +281,7 @@ describe("BasicMaterial", function () {
             describe("if has one map, add BasicMapShaderLib", function(){
                 beforeEach(function () {
                     var texture = textureTool.create();
-                    textureTool.setSource(texture, null);
+                    textureTool.setSource(texture, {});
 
                     basicMaterialTool.addMap(material, texture);
                 });

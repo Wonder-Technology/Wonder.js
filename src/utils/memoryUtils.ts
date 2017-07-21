@@ -1,7 +1,7 @@
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "./objectUtils";
 import { clearCacheMap } from "../component/transform/cacheSystem";
 import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
-import { isNotValidVal } from "./arrayUtils";
+import { isNotValidVal, isValidVal } from "./arrayUtils";
 import { MemoryConfig } from "../config/MemoryConfig";
 import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -330,13 +330,27 @@ export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) =
         // hasNewData = true;
 
         _updateInfoList(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo, newVerticesOffset);
-        _updateInfoList(newNormalsInfoList, newIndexInArrayBuffer, normalsInfo, newNormalsOffset);
-        _updateInfoList(newTexCoordsInfoList, newIndexInArrayBuffer, texCoordsInfo, newTexCoordsOffset);
+
+        if(isValidVal(normalsInfo)){
+            _updateInfoList(newNormalsInfoList, newIndexInArrayBuffer, normalsInfo, newNormalsOffset);
+        }
+
+        if(isValidVal(texCoordsInfo)){
+            _updateInfoList(newTexCoordsInfoList, newIndexInArrayBuffer, texCoordsInfo, newTexCoordsOffset);
+        }
+
         _updateInfoList(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo, newIndicesOffset);
 
         newVerticesOffset = _fillTypeArr(newVertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
-        newNormalsOffset = _fillTypeArr(newNormals, newNormalsOffset, normals, normalsInfo.startIndex, normalsInfo.endIndex);
-        newTexCoordsOffset = _fillTypeArr(newTexCoords, newTexCoordsOffset, texCoords, texCoordsInfo.startIndex, texCoordsInfo.endIndex);
+
+        if(isValidVal(normalsInfo)) {
+            newNormalsOffset = _fillTypeArr(newNormals, newNormalsOffset, normals, normalsInfo.startIndex, normalsInfo.endIndex);
+        }
+
+        if(isValidVal(texCoordsInfo)) {
+            newTexCoordsOffset = _fillTypeArr(newTexCoords, newTexCoordsOffset, texCoords, texCoordsInfo.startIndex, texCoordsInfo.endIndex);
+        }
+
         newIndicesOffset = _fillTypeArr(newIndices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
 
         _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);

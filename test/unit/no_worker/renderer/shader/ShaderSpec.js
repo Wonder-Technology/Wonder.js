@@ -181,7 +181,7 @@ describe("Shader", function() {
             bufferTool.makeCreateDifferentBuffer(gl);
 
             var texture = textureTool.create();
-            textureTool.setSource(texture, null);
+            textureTool.setSource(texture, {});
 
             basicMaterialTool.addMap(material, texture);
 

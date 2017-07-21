@@ -33,13 +33,36 @@ export var createTypeArrays = (buffer: any, count: number, TextureDataFromSystem
     return offset;
 }
 
-//todo fix: get source width,height?
+export var getSource = (textureIndex:number, TextureDataFromSystem:any) => {
+    return TextureDataFromSystem.sourceMap[textureIndex];
+}
+
 export var getWidth = (textureIndex: number, TextureDataFromSystem: any) => {
-    return getSingleSizeData(textureIndex, TextureDataFromSystem.widths);
+    var width = getSingleSizeData(textureIndex, TextureDataFromSystem.widths);
+
+    if(width === 0){
+        let source = getSource(textureIndex, TextureDataFromSystem);
+
+        if(_isSourceValueExist(source)){
+            return source.width;
+        }
+    }
+
+    return width;
 }
 
 export var getHeight = (textureIndex: number, TextureDataFromSystem: any) => {
-    return getSingleSizeData(textureIndex, TextureDataFromSystem.heights);
+    var height = getSingleSizeData(textureIndex, TextureDataFromSystem.heights);
+
+    if(height === 0){
+        let source = getSource(textureIndex, TextureDataFromSystem);
+
+        if(_isSourceValueExist(source)){
+            return source.height;
+        }
+    }
+
+    return height;
 }
 
 export var getWrapS = (textureIndex:number, TextureData:any) => {
@@ -63,7 +86,7 @@ export var getMagFilter = (textureIndex:number, TextureData:any) => {
 export var getMinFilter = (textureIndex:number, TextureData:any) => {
     //todo finish
 
-    return ETextureFilterMode.LINEAR_MIPMAP_LINEAR;
+    return ETextureFilterMode.NEAREST;
 }
 
 export var getFormat = (textureIndex:number, TextureData:any) => {
@@ -115,7 +138,9 @@ var _createWebglTexture = (gl:WebGLRenderingContext, textureIndex:number, Textur
 
 var _isGLTextureExist = (glTexture:WebGLTexture) => isValidVal(glTexture);
 
-var _isSourceExist = (textureIndex:number, TextureDataFromSystem:any) => isValidVal(TextureDataFromSystem.sourceMap[textureIndex]);
+var _isSourceExist = (textureIndex:number, TextureDataFromSystem:any) => _isSourceValueExist(TextureDataFromSystem.sourceMap[textureIndex]);
+
+var _isSourceValueExist = (source:any) => isValidVal(source);
 
 var _getWebglTexture = (textureIndex:number, TextureData:any) => {
     return TextureData.glTextures[textureIndex];
