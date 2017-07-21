@@ -201,8 +201,6 @@ export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: nu
     // }
 
     markNeedUpdate(textureIndex, false, TextureDataFromSystem);
-
-    return this;
 })
 
 var _setTextureParameters =(gl:WebGLRenderingContext, textureType:any, isSourcePowerOfTwo:boolean, wrapS:ETextureWrapMode, wrapT:ETextureWrapMode, magFilter:ETextureFilterMode, minFilter:ETextureFilterMode) => {
@@ -275,8 +273,6 @@ export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureInd
 
     gl.activeTexture(gl[`TEXTURE${unitIndex}`]);
     gl.bindTexture(gl[target], _getWebglTexture(textureIndex, TextureDataFromSystem));
-
-    return this;
 }
 
 export var sendData = (gl:WebGLRenderingContext, mapCount:number,  shaderIndex:number, textureIndex:number, unitIndex:number, program:WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData:Function, TextureDataFromSystem:any) => {
