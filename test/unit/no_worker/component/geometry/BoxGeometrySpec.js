@@ -100,6 +100,14 @@ describe("BoxGeometry", function () {
             )
 
             expect(testTool.getValues(
+                geometryTool.getTexCoords(geo)
+            )).toEqual(
+                [
+                    0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
+                ]
+            )
+
+            expect(testTool.getValues(
                 geometryTool.getIndices(geo)
             )).toEqual(
                 [

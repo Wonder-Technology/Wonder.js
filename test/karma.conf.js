@@ -30,7 +30,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*Texture*',

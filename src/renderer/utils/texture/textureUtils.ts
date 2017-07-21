@@ -33,6 +33,7 @@ export var createTypeArrays = (buffer: any, count: number, TextureDataFromSystem
     return offset;
 }
 
+//todo fix: get source width,height?
 export var getWidth = (textureIndex: number, TextureDataFromSystem: any) => {
     return getSingleSizeData(textureIndex, TextureDataFromSystem.widths);
 }

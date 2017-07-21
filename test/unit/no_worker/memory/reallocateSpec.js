@@ -572,9 +572,9 @@ describe("reallocate memory", function() {
 
             var obj1,obj2,obj3;
             var geo1, geo2,geo3;
-            var geo1VerticesData, geo1IndicesData;
-            var geo2VerticesData, geo2IndicesData;
-            var geo3VerticesData, geo3IndicesData;
+            var geo1VerticesData,geo1NormalsData,geo1TexCoordsData, geo1IndicesData;
+            var geo2VerticesData,geo2NormalsData,geo2TexCoordsData, geo2IndicesData;
+            var geo3VerticesData,geo3NormalsData,geo3TexCoordsData, geo3IndicesData;
 
             function judgeMap(mapName, oldMap){
                 var map = {};
@@ -590,6 +590,12 @@ describe("reallocate memory", function() {
                 geo1VerticesData = [
                     -10, -10, 10, -10, 10, 10, 10, -10, 10
                 ];
+                geo1NormalsData = [
+                    -8, -10, 10, -10, 10, 10, 10, -10, 10
+                ];
+                geo1TexCoordsData = [
+                    -1, -1, -1, 1, 1, -1
+                ];
 
                 geo1IndicesData = [
                     1,2,0
@@ -598,6 +604,8 @@ describe("reallocate memory", function() {
                 gameObjectTool.addComponent(obj1, geo1);
 
                 customGeometryTool.setVertices(geo1, geo1VerticesData)
+                customGeometryTool.setNormals(geo1, geo1NormalsData)
+                customGeometryTool.setTexCoords(geo1, geo1TexCoordsData)
                 customGeometryTool.setIndices(geo1, geo1IndicesData)
 
 
@@ -626,6 +634,12 @@ describe("reallocate memory", function() {
                     -5, -5, 5, -5, 5, 5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, 5, 5, -5, 5, -5, 5, 5, 5, 5, 5, -5, 5, -5, 5, 5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5, 5, 5, 5, -5, -5, 5, 5, -5, -5, -5, -5, -5, 5, -5, -5, -5, 5, -5, 5, 5
                 ];
 
+                geo2NormalsData = [
+                    0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0
+                ];
+
+                geo2TexCoordsData =  [0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 ];
+
                 geo2IndicesData = [
                     0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
                 ]
@@ -638,6 +652,16 @@ describe("reallocate memory", function() {
                     -6, -6, 6, -6, 6, 6, 6, -6, 6,
                     1,1,2
                 ];
+                geo3NormalsData = [
+                    10,1,2,
+                    -6, 66, 6, -6, 6, 6, 6, -6, 6
+                ];
+                geo3TexCoordsData = [
+                    0.6,0.4,
+                    0.5,0.4,
+                    0.4,0.4,
+                    0.2,0.7
+                ];
 
                 geo3IndicesData = [
                     2,0,1, 1,3,2
@@ -646,6 +670,8 @@ describe("reallocate memory", function() {
                 gameObjectTool.addComponent(obj3, geo3);
 
                 customGeometryTool.setVertices(geo3, geo3VerticesData)
+                customGeometryTool.setNormals(geo3, geo3NormalsData)
+                customGeometryTool.setTexCoords(geo3, geo3TexCoordsData)
                 customGeometryTool.setIndices(geo3, geo3IndicesData)
 
 
@@ -665,7 +691,7 @@ describe("reallocate memory", function() {
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
             });
 
-            describe("test type array data(vertices, indices)", function() {
+            describe("test type array data(vertices, normals, texCoords, indices)", function() {
                 beforeEach(function(){
 
                 });
@@ -675,16 +701,24 @@ describe("reallocate memory", function() {
                         gameObjectTool.disposeComponent(obj1, geo1);
 
                         expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
                         expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
                         expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
+                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
                         expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                     });
                     it("test2", function () {
                         gameObjectTool.disposeComponent(obj2, geo2);
 
                         expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo1VerticesData);
+                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo1NormalsData);
+                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo1TexCoordsData);
                         expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo1IndicesData);
                         expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
+                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                         expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                     });
                     it("test3", function () {
@@ -692,6 +726,8 @@ describe("reallocate memory", function() {
                         gameObjectTool.disposeComponent(obj3, geo3);
 
                         expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
                         expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
                     });
                 });
@@ -713,6 +749,14 @@ describe("reallocate memory", function() {
                         { startIndex: 0, endIndex: 72 },
                         { startIndex: 72, endIndex: 84 }
                     ]);
+                    expect(GeometryData.normalsInfoList).toEqual([
+                        { startIndex: 0, endIndex: 72 },
+                        { startIndex: 72, endIndex: 84 }
+                    ]);
+                    expect(GeometryData.texCoordsInfoList).toEqual([
+                        { startIndex: 0, endIndex: 48 },
+                        { startIndex: 48, endIndex: 56 }
+                    ]);
                     expect(GeometryData.indicesInfoList).toEqual([
                         { startIndex: 0, endIndex: 36 },
                         { startIndex: 36, endIndex: 42 }
@@ -722,6 +766,8 @@ describe("reallocate memory", function() {
                     gameObjectTool.disposeComponent(obj1, geo1);
 
                     expect(GeometryData.verticesInfoList.length).toEqual(2);
+                    expect(GeometryData.normalsInfoList.length).toEqual(2);
+                    expect(GeometryData.texCoordsInfoList.length).toEqual(2);
                     expect(GeometryData.indicesInfoList.length).toEqual(2);
                 });
             });
@@ -731,6 +777,8 @@ describe("reallocate memory", function() {
                 var oldComputeDataFuncMap = GeometryData.computeDataFuncMap;
                 var oldConfigDataMap = GeometryData.configDataMap;
                 var oldVerticesCacheMap = GeometryData.verticesCacheMap;
+                var oldNormalsCacheMap = GeometryData.normalsCacheMap;
+                var oldTexCoordsCacheMap = GeometryData.texCoordsCacheMap;
                 var oldIndicesCacheMap = GeometryData.indicesCacheMap;
                 var oldGeometryMap = GeometryData.geometryMap;
 
@@ -740,6 +788,8 @@ describe("reallocate memory", function() {
                 judgeMap("computeDataFuncMap", oldComputeDataFuncMap);
                 judgeMap("configDataMap", oldConfigDataMap);
                 judgeMap("verticesCacheMap", oldVerticesCacheMap);
+                judgeMap("normalsCacheMap", oldNormalsCacheMap);
+                judgeMap("texCoordsCacheMap", oldTexCoordsCacheMap);
                 judgeMap("indicesCacheMap", oldIndicesCacheMap);
                 judgeMap("geometryMap", oldGeometryMap);
             });
@@ -747,6 +797,8 @@ describe("reallocate memory", function() {
                 gameObjectTool.disposeComponent(obj1, geo1);
 
                 expect(GeometryData.verticesOffset).toEqual(geo2VerticesData.length + geo3VerticesData.length);
+                expect(GeometryData.normalsOffset).toEqual(geo2NormalsData.length + geo3NormalsData.length);
+                expect(GeometryData.texCoordsOffset).toEqual(geo2TexCoordsData.length + geo3TexCoordsData.length);
                 expect(GeometryData.indicesOffset).toEqual(geo2IndicesData.length + geo3IndicesData.length);
             });
             it("update index", function () {
@@ -790,6 +842,16 @@ describe("reallocate memory", function() {
                         -3, -3, 3, -3, 3, 3, 3, -3, 3,
                         5,6,7
                     ];
+                    var geo4NormalsData = [
+                        5,3,7,
+                        0, -3, 3, -3, 3, 3, 3, -3, 10
+                    ];
+                    var geo4TexCoordsData = [
+                        0.1,0.3,
+                        0.4,0.3,
+                        0.2,0.4,
+                        0.2,0.6
+                    ];
 
                     var geo4IndicesData = [
                         2,3,1, 1,3,0
@@ -798,13 +860,19 @@ describe("reallocate memory", function() {
                     gameObjectTool.addComponent(obj4, geo4);
 
                     customGeometryTool.setVertices(geo4, geo4VerticesData)
+                    customGeometryTool.setNormals(geo4, geo4NormalsData)
+                    customGeometryTool.setTexCoords(geo4, geo4TexCoordsData)
                     customGeometryTool.setIndices(geo4, geo4IndicesData)
 
 
 
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
                     expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
                     expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(2)))).toEqual(geo4VerticesData);
                     expect(testTool.getValues(geometryTool.getIndices(createGeometry(2)))).toEqual(geo4IndicesData);
@@ -824,7 +892,11 @@ describe("reallocate memory", function() {
 
 
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
 
                     expect(GeometryData.geometryMap[0]).toEqual(geo2);
                     expect(GeometryData.geometryMap[1]).toEqual(geo4);
@@ -843,6 +915,16 @@ describe("reallocate memory", function() {
                         -3, -3, 3, -3, 3, 3, 3, -3, 3,
                         5,6,7
                     ];
+                    var geo4NormalsData = [
+                        5,6,7,
+                        -3, 0, 3, -3, 3, 3, 3, -3, 3,
+                    ];
+                    var geo4TexCoordsData = [
+0.1,0.9,
+                        0.1,0.9,
+                        0.1,0.9,
+                        0.1,0.6
+                    ];
 
                     var geo4IndicesData = [
                         2,3,1, 1,3,0
@@ -851,6 +933,8 @@ describe("reallocate memory", function() {
                     gameObjectTool.addComponent(obj4, geo4);
 
                     customGeometryTool.setVertices(geo4, geo4VerticesData)
+                    customGeometryTool.setNormals(geo4, geo4NormalsData)
+                    customGeometryTool.setTexCoords(geo4, geo4TexCoordsData)
                     customGeometryTool.setIndices(geo4, geo4IndicesData)
 
 
@@ -860,7 +944,11 @@ describe("reallocate memory", function() {
 
 
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
                     expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
+                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
 
 
                     expect(GeometryData.geometryMap[0]).toEqual(geo2);

@@ -9,6 +9,7 @@
     <script src="../../examples/js/tool/basicMaterialTool.js"></script>
     <script src="../../examples/js/tool/basicMaterialTool.js"></script>
     <script src="../../examples/js/tool/lightMaterialTool.js"></script>
+    <script src="../../examples/js/tool/textureTool.js"></script>
     <script src="../../examples/js/tool/ambientLightTool.js"></script>
     <script src="../../examples/js/tool/directionLightTool.js"></script>
     <script src="../../examples/js/tool/pointLightTool.js"></script>
@@ -25,30 +26,76 @@
 
 <script>
     window.onload = function () {
-        wd.Main.setConfig({
-            isTest:false,
-            screenSize: wd.EScreenSize.FULL
-        }).init();
+        var image = new Image();
 
-        var director = wd.Director.getInstance();
+        image.src = "../../asset/texture/1.jpg";
 
-        var boxes = createBoxes();
+        image.onload = function(){
+            wd.Main.setConfig({
+                isTest:false,
+                screenSize: wd.EScreenSize.FULL
+            }).init();
+
+            initSample();
+        }
+
+        var boxes;
+        var texture;
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            texture = textureTool.create();
+
+            textureTool.setSource(texture, image);
+
+
+            boxes = createBoxes();
+
+
+
+//            var box = boxes[0];
+//            var geo = gameObjectTool.getComponent(box, wd.Geometry);
+//
+//            var vertices = [-10, -20, 30, -10, 20, 30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, 20, 30, -10, 20, -30, 10, 20, 30, 10, 20, -30, 10, -20, 30, 10, -20, -30, -10, -20, 30, -10, -20, -30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, -20, 30, -10, 20, 30 ],
+//                texCoords = [
+//                    0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
+//                ],
+//                indices = [
+//                    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
+//                ]
+//
+//
+//
+//            boxes = createCustomGeometryBoxes(vertices, texCoords, indices);
+
 
 //        director.scene.addChildren(boxes);
 
 
-        boxes.forEach(function(box){
-            sceneTool.addGameObject(box);
-        })
+            boxes.forEach(function(box){
+                sceneTool.addGameObject(box);
+            })
 
-        sceneTool.addGameObject(createCamera());
+            sceneTool.addGameObject(createCamera());
 
 
-        sceneTool.addGameObject(createAmbientLight());
+//            sceneTool.addGameObject(createAmbientLight());
 //        sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
-//        sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
-        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
+        sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
 //        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.5, 0.5, 0.5)"), wd.Vector3.create(10, 100, 100)));
+
+
+//        setData();
+//        setParent();
+            batchSet();
+
+//        createAndDisposeGameObjects();
+
+
+            director.start();
+        }
 
         function createAmbientLight() {
             var ambientLightComponent = ambientLightTool.create();
@@ -256,6 +303,7 @@
                 var geo = gameObjectTool.getComponent(box, wd.Geometry);
 
                 var vertices = geometryTool.getVertices(geo),
+                    texCoords = geometryTool.getTexCoords(geo),
                     indices = geometryTool.getIndices(geo);
 
 
@@ -267,7 +315,8 @@
                 })
 
 
-                boxes = createCustomGeometryBoxes(vertices, indices);
+                boxes = createCustomGeometryBoxes(vertices, texCoords, indices);
+//                boxes = createBoxes()
 
 
 //                for (var i = 11, len = boxes.length - 1; i < len; i++) {
@@ -324,25 +373,21 @@
         }
 
 
-//        setData();
-//        setParent();
-        batchSet();
-
-//        createAndDisposeGameObjects();
-
-
-        director.start();
 
 
 
-        function createCustomGeometryBoxes(vertices, indices){
+        function createCustomGeometryBoxes(vertices, texCoords, indices){
             var resultArr = [],
                 playgroundSize = 500;
 
             for (var index = 0; index < 1000; index++) {
                 var customGeo = customGeometryTool.create();
                 customGeometryTool.setVertices(customGeo, vertices);
+                customGeometryTool.setTexCoords(customGeo, texCoords);
                 customGeometryTool.setIndices(customGeo, indices);
+
+
+
 
                 var box = createCustomGeometryBox(customGeo);
 
@@ -365,14 +410,17 @@
 //            else{
 //                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
 //            }
-            if(isRed){
-                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
-                isRed = false;
-            }
-            else{
-                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
-                isRed = true;
-            }
+//            if(isRed){
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
+//                isRed = false;
+//            }
+//            else{
+//                basicMaterialTool.setColor(material, wd.Color.create("rgb(0.2,0.0,1.0)"));
+//                isRed = true;
+//            }
+
+
+            basicMaterialTool.addMap(material, texture);
 
             var obj = gameObjectTool.create();
 
@@ -431,6 +479,18 @@
             var obj = gameObjectTool.create();
 
             gameObjectTool.addComponent(obj, material);
+
+
+
+//            var texture = textureTool.create();
+//
+//            textureTool.setSource(texture, image);
+
+//            lightMaterialTool.setSpecularMap(material, texture);
+            lightMaterialTool.setDiffuseMap(material, texture);
+
+
+
             gameObjectTool.addComponent(obj, meshRendererTool.create());
 
 
