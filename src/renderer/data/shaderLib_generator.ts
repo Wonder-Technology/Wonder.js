@@ -169,7 +169,6 @@ export const shaderLib_generator = {
                         "type": "vec2"
                     }
                 ],
-                //todo test
                 "uniformDefine": [
                     {
                         "name": "u_sampler2D0",

@@ -51,7 +51,7 @@ export var initMaterial = (index: number, state: Map<any, any>) => {
 export var addMap = (materialIndex: number, map: Texture, MapManagerData:any, TextureData:any) => {
     var count = getMapCount(materialIndex, MapManagerData);
 
-    addMapByMapManager(materialIndex, map, count, `sampler2D${count}`, MapManagerData, TextureData);
+    addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
 }
 
 export var addComponent = (component: Material, gameObject: GameObject) => {

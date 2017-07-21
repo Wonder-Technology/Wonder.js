@@ -89,7 +89,7 @@ export {ETextureTarget} from "./renderer/enum/ETextureTarget";
 export {ETextureType} from "./renderer/enum/ETextureType";
 export {ETextureWrapMode} from "./renderer/enum/ETextureWrapMode";
 export {EVariableType} from "./renderer/enum/EVariableType";
-export {empty,NULL,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,noNormalMap_light_fragment,lightCommon_fragment,lightCommon_vertex,lightEnd_fragment,light_common,light_fragment,light_setWorldPosition_vertex,light_vertex,basic_materialColor_fragment,end_basic_fragment,modelMatrix_noInstance_vertex,normalMatrix_noInstance_vertex,noDiffuseMap_fragment,noEmissionMap_fragment,noLightMap_fragment,noNormalMap_fragment,noNormalMap_vertex,noSpecularMap_fragment,map_forBasic_fragment,map_forBasic_vertex,noShadowMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
+export {empty,NULL,basic_materialColor_fragment,end_basic_fragment,lightCommon_fragment,lightCommon_vertex,lightEnd_fragment,light_common,light_fragment,light_setWorldPosition_vertex,light_vertex,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,noNormalMap_light_fragment,map_forBasic_fragment,map_forBasic_vertex,modelMatrix_noInstance_vertex,normalMatrix_noInstance_vertex,noDiffuseMap_fragment,noEmissionMap_fragment,noLightMap_fragment,noNormalMap_fragment,noNormalMap_vertex,noSpecularMap_fragment,noShadowMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
 export {GLSLSenderData} from "./renderer/shader/glslSender/GLSLSenderData";
 export {LocationData} from "./renderer/shader/location/LocationData";
 export {ProgramData} from "./renderer/shader/program/ProgramData";

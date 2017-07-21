@@ -185,6 +185,31 @@ describe("Texture", function () {
         });
     });
 
+    describe("sendData", function () {
+        beforeEach(function(){
+            testTool.closeContractCheck();
+        });
+        
+        it("send unit index", function () {
+            var pos1 = 0;
+            var pos2 = 1;
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos1);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D1").returns(pos2);
+
+
+            var texture2 = textureTool.create();
+
+            basicMaterialTool.addMap(material, texture2);
+
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+            expect(gl.uniform1i.getCall(0)).toCalledWith(pos1, 0);
+            expect(gl.uniform1i.getCall(1)).toCalledWith(pos2, 1);
+        });
+    })
+
     describe("update", function () {
         beforeEach(function () {
             directorTool.init(state);

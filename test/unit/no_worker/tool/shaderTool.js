@@ -3,13 +3,14 @@ var shaderTool = (function () {
         disableVertexAttribArray: function (gl) {
           wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         },
-        sendUniformData: function(gl, index, renderCommandUniformData, program){
-            wd.sendUniformData(gl, index, program || {}, {
+        sendUniformData: function(gl, index, renderCommandUniformData, program, mapCount){
+            wd.sendUniformData(gl, index, program || {}, mapCount || 0, {
                 MaterialDataFromSystem: wd.MaterialData,
                 BasicMaterialDataFromSystem: wd.BasicMaterialData,
                 ProgramDataFromSystem: wd.ProgramData,
                LocationDataFromSystem: wd.LocationData,
-                GLSLSenderDataFromSystem:wd.GLSLSenderData
+                GLSLSenderDataFromSystem:wd.GLSLSenderData,
+                MapManagerDataFromSystem:wd.MapManagerData
             }, renderCommandUniformData);
         },
         sendAttributeData: function(gl, shaderIndex, geometryIndex, program){
