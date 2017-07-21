@@ -343,144 +343,312 @@ describe("LightMaterial", function () {
                 });
             });
 
-            describe("add NoLightMapShaderLib", function () {
-                beforeEach(function () {
-                });
 
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
-                    });
-                });
-            });
-
-            describe("add NoDiffuseMapShaderLib", function () {
-                beforeEach(function () {
-                });
-
-                it("send u_diffuse", function () {
-                    var color = Color.create("rgb(0.1,0.2,0.3)"),
-                        colorVec3 = color.toVector3(),
-                        pos = 0;
-                    gl.getUniformLocation.withArgs(sinon.match.any, "u_diffuse").returns(pos);
-                    lightMaterialTool.setColor(material, color);
-
+            describe("add map shader lib", function () {
+                function judgeSendUniformSampler(name) {
+                    var pos = 0;
+                    gl.getUniformLocation.withArgs(sinon.match.any, name).returns(pos);
 
                     directorTool.init(state);
                     directorTool.loopBody(state);
 
-                    expect(gl.uniform3f).toCalledWith(pos, colorVec3.x, colorVec3.y, colorVec3.z);
-                });
+                    expect(gl.uniform1i).toCalledWith(pos, 0);
+                }
 
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
-                    });
-                });
-            });
-
-            describe("add NoSpecularMapShaderLib", function () {
                 beforeEach(function () {
                 });
 
-                describe("test glsl", function () {
+                describe("if has map, add CommonLightMapShaderLib", function(){
                     beforeEach(function () {
-                        directorTool.init(state);
+                        var texture = textureTool.create();
+                        textureTool.setSource(texture, null);
+
+                        lightMaterialTool.setSpecularMap(material, texture);
                     });
 
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
+                    describe("send a_texCoord", function () {
+                        var name,size,pos;
+                        var buffer;
 
-                        expect(glslTool.contain(fs, "float getSpecularStrength() {\n        return 1.0;\n    }\n")).toBeTruthy();
+                        beforeEach(function () {
+                            name = "a_texCoord";
+                            size = 2;
+
+                            pos = 10;
+
+                            gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+                        });
+
+                        it("create buffer and init it when first get", function () {
+                            directorTool.init(state);
+
+                            var data = geometryTool.getTexCoords(geo);
+
+
+                            directorTool.loopBody(state);
+
+                            expect(gl.createBuffer.callCount).toEqual(4);
+                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                        });
+                        it("not create buffer after first get", function () {
+                            directorTool.init(state);
+
+                            directorTool.loopBody(state);
+
+                            expect(gl.createBuffer.callCount).toEqual(4);
+
+
+
+                            directorTool.loopBody(state);
+
+                            expect(gl.createBuffer.callCount).toEqual(4);
+                        });
+                    })
+
+                    // it("send u_sampler2D0", function () {
+                    //     var pos = 0;
+                    //     gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos);
+                    //
+                    //     directorTool.init(state);
+                    //     directorTool.loopBody(state);
+                    //
+                    //     expect(gl.uniform1i).toCalledWith(pos, 0);
+                    // });
+                    //
+                    // describe("test glsl", function () {
+                    //     beforeEach(function () {
+                    //         directorTool.init(state);
+                    //     });
+                    //
+                    //     it("test vs source", function () {
+                    //         var vs = materialTool.getVsSource(gl);
+                    //
+                    //         expect(glslTool.contain(vs, "varying vec2 v_mapCoord0;\n")).toBeTruthy();
+                    //         expect(glslTool.contain(vs, "v_mapCoord0 = a_texCoord;")).toBeTruthy();
+                    //     });
+                    //     it("test fs source", function () {
+                    //         var fs = materialTool.getFsSource(gl);
+                    //
+                    //         expect(glslTool.contain(fs, "varying vec2 v_mapCoord0;\n")).toBeTruthy();
+                    //         expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D0;\n")).toBeTruthy();
+                    //         expect(glslTool.contain(fs, "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
+                    //     });
+                    // });
+                });
+
+                describe("if has diffuse map, add DiffuseMapShaderLib", function(){
+                    beforeEach(function () {
+                        var texture = textureTool.create();
+                        textureTool.setSource(texture, null);
+
+                        lightMaterialTool.setDiffuseMap(material, texture);
+                    });
+
+                    it("send u_diffuseMapSampler", function () {
+                        judgeSendUniformSampler("u_diffuseMapSampler");
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test vs source", function () {
+                            var vs = materialTool.getVsSource(gl);
+
+                            expect(glslTool.contain(vs, "varying vec2 v_diffuseMapTexCoord;")).toBeTruthy();
+                            expect(glslTool.contain(vs, "v_diffuseMapTexCoord = a_texCoord;")).toBeTruthy();
+                        });
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "varying vec2 v_diffuseMapTexCoord;")).toBeTruthy();
+                            expect(glslTool.contain(fs, "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
+                            expect(glslTool.containMultiLine(fs, [
+                                "vec4 getMaterialDiffuse() {",
+                                "return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);",
+                                "}"
+                            ])).toBeTruthy();
+                        });
                     });
                 });
+                describe("else, add NoDiffuseMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    it("send u_diffuse", function () {
+                        var color = Color.create("rgb(0.1,0.2,0.3)"),
+                            colorVec3 = color.toVector3(),
+                            pos = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_diffuse").returns(pos);
+                        lightMaterialTool.setColor(material, color);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform3f).toCalledWith(pos, colorVec3.x, colorVec3.y, colorVec3.z);
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("if has specular map, add SpecularMapShaderLib", function(){
+                    beforeEach(function () {
+                        var texture = textureTool.create();
+                        textureTool.setSource(texture, null);
+
+                        lightMaterialTool.setSpecularMap(material, texture);
+                    });
+
+                    it("send u_specularMapSampler", function () {
+                        judgeSendUniformSampler("u_specularMapSampler");
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test vs source", function () {
+                            var vs = materialTool.getVsSource(gl);
+
+                            expect(glslTool.contain(vs, "varying vec2 v_specularMapTexCoord;")).toBeTruthy();
+                            expect(glslTool.contain(vs, "v_specularMapTexCoord = a_texCoord;")).toBeTruthy();
+                        });
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "varying vec2 v_specularMapTexCoord;")).toBeTruthy();
+                            expect(glslTool.contain(fs, "uniform sampler2D u_specularMapSampler;\n")).toBeTruthy();
+                            expect(glslTool.containMultiLine(fs, [
+                                "float getSpecularStrength() {",
+                                "return texture2D(u_specularMapSampler, v_specularMapTexCoord).r;",
+                                "}"
+                            ])).toBeTruthy();
+                        });
+                    });
+                });
+                describe("else, add NoSpecularMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "float getSpecularStrength() {\n        return 1.0;\n    }\n")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("add NoLightMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("add NoEmissionMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    it("send u_emission", function () {
+                        var color = Color.create("rgb(0.1,0.2,0.3)"),
+                            colorVec3 = color.toVector3(),
+                            pos = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_emission").returns(pos);
+                        lightMaterialTool.setEmissionColor(material, color);
+
+
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform3f).toCalledWith(pos, colorVec3.x, colorVec3.y, colorVec3.z);
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "vec3 getMaterialEmission() {\n        return u_emission;\n    }\n")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("add NoNormalMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test vs source", function () {
+                            var vs = materialTool.getVsSource(gl);
+
+                            expect(glslTool.contain(vs, "varying vec3 v_normal;\n")).toBeTruthy();
+                            expect(glslTool.contain(vs, "v_normal = normalize(normalMatrix * a_normal);\n")).toBeTruthy();
+                        });
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "varying vec3 v_normal;\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "vec3 getNormal(){\n    return v_normal;\n}\n\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\n")).toBeTruthy();
+                        });
+                    });
+                });
+
+                describe("add NoShadowMapShaderLib", function () {
+                    beforeEach(function () {
+                    });
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            directorTool.init(state);
+                        });
+
+                        it("test fs source", function () {
+                            var fs = materialTool.getFsSource(gl);
+
+                            expect(glslTool.contain(fs, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
+                        });
+                    });
+                });
+
             });
 
-            describe("add NoEmissionMapShaderLib", function () {
-                beforeEach(function () {
-                });
-
-                it("send u_emission", function () {
-                    var color = Color.create("rgb(0.1,0.2,0.3)"),
-                        colorVec3 = color.toVector3(),
-                        pos = 0;
-                    gl.getUniformLocation.withArgs(sinon.match.any, "u_emission").returns(pos);
-                    lightMaterialTool.setEmissionColor(material, color);
-
-
-                    directorTool.init(state);
-                    directorTool.loopBody(state);
-
-                    expect(gl.uniform3f).toCalledWith(pos, colorVec3.x, colorVec3.y, colorVec3.z);
-                });
-
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "vec3 getMaterialEmission() {\n        return u_emission;\n    }\n")).toBeTruthy();
-                    });
-                });
-            });
-
-
-            describe("add NoNormalMapShaderLib", function () {
-                beforeEach(function () {
-                });
-
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test vs source", function () {
-                        var vs = materialTool.getVsSource(gl);
-
-                        expect(glslTool.contain(vs, "varying vec3 v_normal;\n")).toBeTruthy();
-                        expect(glslTool.contain(vs, "v_normal = normalize(normalMatrix * a_normal);\n")).toBeTruthy();
-                    });
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "varying vec3 v_normal;\n")).toBeTruthy();
-                        expect(glslTool.contain(fs, "vec3 getNormal(){\n    return v_normal;\n}\n\n")).toBeTruthy();
-                        expect(glslTool.contain(fs, "#if POINT_LIGHTS_COUNT > 0\nvec3 getPointLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= POINT_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getPointLightDirByLightPos(u_pointLights[x].position);\n        }\n    }\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n#if DIRECTION_LIGHTS_COUNT > 0\nvec3 getDirectionLightDir(int index){\n    //workaround '[] : Index expression must be constant' error\n    for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {\n        if(x == index){\n            return getDirectionLightDirByLightPos(u_directionLights[x].position);\n        }\n    }\n\n    /*!\n    solve error in window7 chrome/firefox:\n    not all control paths return a value.\n    failed to create d3d shaders\n    */\n    return vec3(0.0);\n}\n#endif\n\n\nvec3 getViewDir(){\n    return normalize(u_cameraPos - v_worldPosition);\n}\n")).toBeTruthy();
-                    });
-                });
-            });
-
-            describe("add NoShadowMapShaderLib", function () {
-                beforeEach(function () {
-                });
-
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        directorTool.init(state);
-                    });
-
-                    it("test fs source", function () {
-                        var fs = materialTool.getFsSource(gl);
-
-                        expect(glslTool.contain(fs, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
-                    });
-                });
-            });
 
             describe("add LightShaderLib", function () {
                 beforeEach(function () {

@@ -38,7 +38,20 @@ export const material_config = {
                     "LightCommonShaderLib",
                     "LightSetWorldPositionShaderLib",
 
-                    "CommonLightMapShaderLib",
+                    {
+                        "type": "branch",
+                        "branch": (materialIndex, {
+                            hasDiffuseMap,
+                            hasSpecularMap
+                        }, {
+                                       LightMaterialDataFromSystem
+                                   }) => {
+                            if(hasDiffuseMap(LightMaterialDataFromSystem)
+                            || hasSpecularMap(LightMaterialDataFromSystem)){
+                                return "CommonLightMapShaderLib";
+                            }
+                        }
+                    },
                     {
                         "type": "branch",
                         "branch": (materialIndex, {

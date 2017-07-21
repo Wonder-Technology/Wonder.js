@@ -8,7 +8,6 @@
 //    vec2 sourceTexCoord = a_texCoord * u_diffuseMapSourceRegion.zw + u_diffuseMapSourceRegion.xy;
 //    v_diffuseMapTexCoord = sourceTexCoord * u_diffuseMapRepeatRegion.zw + u_diffuseMapRepeatRegion.xy;
 
-    vec2 sourceTexCoord = a_texCoord;
-    v_diffuseMapTexCoord = sourceTexCoord;
+    v_diffuseMapTexCoord = a_texCoord;
 @end
 

@@ -79,6 +79,8 @@ export var setSpecularMap = (index: number, map:Texture, MapManagerData:any, Tex
     LightMaterialData.specularMapIndex = map.index;
 }
 
+//todo add normal map, light map...
+
 export var getEmissionColor = (index: number, LightMaterialData: any) => {
     return getColor3Data(computeLightBufferIndex(index), LightMaterialData.emissionColors);
 }
@@ -151,6 +153,9 @@ export var disposeComponent = (component: Material) => {
 
 export var initData = (LightMaterialData: any) => {
     initSpecifyMaterialData(getLightMaterialBufferStartIndex(), LightMaterialData);
+
+    LightMaterialData.diffuseMapIndex = null;
+    LightMaterialData.specularMapIndex = null;
 
     LightMaterialData.emptyColor = _createEmptyColor();
     LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
