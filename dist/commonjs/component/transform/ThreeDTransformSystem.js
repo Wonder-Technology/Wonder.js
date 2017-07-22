@@ -71,9 +71,9 @@ exports.init = function (GlobalTempData, ThreeDTransformData, state) {
     return exports.update(null, GlobalTempData, ThreeDTransformData, state);
 };
 exports.addComponent = function (transform, gameObject) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid;
+    var index = transform.index, uid = transform.uid;
     ComponentSystem_1.addComponentToGameObjectMap(ThreeDTransformData_1.ThreeDTransformData.gameObjectMap, uid, gameObject);
-    return dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData_1.ThreeDTransformData);
+    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData_1.ThreeDTransformData);
 };
 exports.isAlive = function (transform, ThreeDTransformData) {
     return objectUtils_1.isValidMapValue(ThreeDTransformData.transformMap[transform.index]);
@@ -82,12 +82,12 @@ exports.isNotAlive = function (transform, ThreeDTransformData) {
     return !exports.isAlive(transform, ThreeDTransformData);
 };
 exports.disposeComponent = function (transform) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid;
-    if (dirtySystem_1.isNotDirty(indexInArrayBuffer, ThreeDTransformData_1.ThreeDTransformData.firstDirtyIndex)) {
-        _disposeFromNormalList(indexInArrayBuffer, uid, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
+    var index = transform.index, uid = transform.uid;
+    if (dirtySystem_1.isNotDirty(index, ThreeDTransformData_1.ThreeDTransformData.firstDirtyIndex)) {
+        _disposeFromNormalList(index, uid, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
     }
     else {
-        _disposeFromDirtyList(indexInArrayBuffer, uid, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
+        _disposeFromDirtyList(index, uid, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData);
     }
     ThreeDTransformData_1.ThreeDTransformData.count -= 1;
     ThreeDTransformData_1.ThreeDTransformData.disposeCount += 1;
@@ -125,17 +125,28 @@ exports.getPosition = contract_1.requireCheckFunc(function (transform, ThreeTran
 }, function (transform, ThreeTransformData, position) {
     cacheSystem_1.setPositionCache(transform.uid, position, ThreeTransformData);
 }, function (transform, ThreeTransformData) {
-    var indexInArrayBuffer = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index), localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
-    return _getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).position.set(localToWorldMatrices[indexInArrayBuffer + 12], localToWorldMatrices[indexInArrayBuffer + 13], localToWorldMatrices[indexInArrayBuffer + 14]);
+    var index = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index), localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
+    return _getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).position.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
 }));
-var _setTransformMap = function (indexInArrayBuffer, transform, ThreeDTransformData) { return ThreeDTransformData.transformMap[indexInArrayBuffer] = transform; };
+exports.getNormalMatrix = contract_1.requireCheckFunc(function (transform, GlobalTempData, ThreeTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
+}, cacheUtils_1.cacheFunc(function (transform, GlobalTempData, ThreeTransformData) {
+    return objectUtils_1.isValidMapValue(cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeTransformData));
+}, function (transform, GlobalTempData, ThreeTransformData) {
+    return cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeTransformData);
+}, function (transform, GlobalTempData, ThreeTransformData, mat) {
+    cacheSystem_1.setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
+}, function (transform, GlobalTempData, ThreeTransformData) {
+    return exports.getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData_1.ThreeDTransformData).invertTo3x3().transpose();
+}));
+var _setTransformMap = function (index, transform, ThreeDTransformData) { return ThreeDTransformData.transformMap[index] = transform; };
 exports.setPosition = contract_1.requireCheckFunc(function (transform, position, GlobalTempData, ThreeTransformData) {
     contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
 }, function (transform, position, GlobalTempData, ThreeTransformData) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid, parent = hierarchySystem_1.getParent(uid, ThreeDTransformData_1.ThreeDTransformData), vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
-    operateDataSystem_1.setPositionData(indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
+    var index = transform.index, uid = transform.uid, parent = hierarchySystem_1.getParent(uid, ThreeDTransformData_1.ThreeDTransformData), vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
+    operateDataSystem_1.setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
     isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
-    return dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
+    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
 exports.setBatchDatas = function (batchData, GlobalTempData, ThreeTransformData) { return batchSystem_1.setBatchDatas(batchData, GlobalTempData, ThreeDTransformData_1.ThreeDTransformData); };
 exports.getLocalPosition = contract_1.requireCheckFunc(function (transform, ThreeTransformData) {
@@ -152,29 +163,29 @@ exports.getLocalPosition = contract_1.requireCheckFunc(function (transform, Thre
 exports.setLocalPosition = contract_1.requireCheckFunc(function (transform, position, ThreeTransformData) {
     contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
 }, function (transform, position, ThreeTransformData) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(indexInArrayBuffer);
+    var index = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
     operateDataSystem_1.setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
     isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
-    return dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeTransformData);
+    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
 exports.update = function (elapsed, GlobalTempData, ThreeDTransformData, state) {
     return updateSystem_1.update(elapsed, GlobalTempData, ThreeDTransformData, state);
 };
-var _disposeItemInDataContainer = function (indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData) {
+var _disposeItemInDataContainer = function (index, uid, GlobalTempData, ThreeDTransformData) {
     hierarchySystem_1.removeHierarchyData(uid, ThreeDTransformData);
-    _disposeMapDatas(indexInArrayBuffer, uid, ThreeDTransformData);
+    _disposeMapDatas(index, uid, ThreeDTransformData);
     return ThreeDTransformData;
 };
-var _disposeMapDatas = function (indexInArrayBuffer, uid, ThreeDTransformData) {
-    objectUtils_1.deleteVal(indexInArrayBuffer, ThreeDTransformData.transformMap);
+var _disposeMapDatas = function (index, uid, ThreeDTransformData) {
+    objectUtils_1.deleteVal(index, ThreeDTransformData.transformMap);
 };
-var _disposeFromNormalList = function (indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData) {
-    dirtySystem_1.addNotUsedIndex(indexInArrayBuffer, ThreeDTransformData.notUsedIndexLinkList);
-    return _disposeItemInDataContainer(indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData);
+var _disposeFromNormalList = function (index, uid, GlobalTempData, ThreeDTransformData) {
+    dirtySystem_1.addNotUsedIndex(index, ThreeDTransformData.notUsedIndexLinkList);
+    return _disposeItemInDataContainer(index, uid, GlobalTempData, ThreeDTransformData);
 };
-var _disposeFromDirtyList = function (indexInArrayBuffer, uid, GlobalTempData, ThreeDTransformData) {
+var _disposeFromDirtyList = function (index, uid, GlobalTempData, ThreeDTransformData) {
     var firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
-    operateDataSystem_1.swap(indexInArrayBuffer, firstDirtyIndex, ThreeDTransformData);
+    operateDataSystem_1.swap(index, firstDirtyIndex, ThreeDTransformData);
     _disposeItemInDataContainer(firstDirtyIndex, uid, GlobalTempData, ThreeDTransformData);
     ThreeDTransformData.firstDirtyIndex = dirtySystem_1.addFirstDirtyIndex(ThreeDTransformData);
 };
@@ -205,7 +216,7 @@ exports.initData = function (GlobalTempData, ThreeDTransformData) {
     ThreeDTransformData.transformMap = objectUtils_1.createMap();
     ThreeDTransformData.gameObjectMap = objectUtils_1.createMap();
     ThreeDTransformData.firstDirtyIndex = ThreeDTransformData.maxCount;
-    ThreeDTransformData.indexInArrayBuffer = utils_1.getStartIndexInArrayBuffer();
+    ThreeDTransformData.index = utils_1.getStartIndexInArrayBuffer();
     ThreeDTransformData.uid = 0;
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;

@@ -24,24 +24,24 @@ var ClassUtils = (function () {
     ClassUtils.getClass = function (className) {
         return this._classMap[className];
     };
+    ClassUtils._classMap = {};
+    __decorate([
+        ensure(function (className) {
+            it("should exist class name", function () {
+                expect(className).exist;
+                expect(className !== "").true;
+            });
+        })
+    ], ClassUtils, "getClassNameByInstance", null);
+    __decorate([
+        ensure(function (className) {
+            it("should exist class name", function () {
+                expect(className).exist;
+                expect(className !== "").true;
+            });
+        })
+    ], ClassUtils, "getClassNameByClass", null);
     return ClassUtils;
 }());
 export { ClassUtils };
-ClassUtils._classMap = {};
-__decorate([
-    ensure(function (className) {
-        it("should exist class name", function () {
-            expect(className).exist;
-            expect(className !== "").true;
-        });
-    })
-], ClassUtils, "getClassNameByInstance", null);
-__decorate([
-    ensure(function (className) {
-        it("should exist class name", function () {
-            expect(className).exist;
-            expect(className !== "").true;
-        });
-    })
-], ClassUtils, "getClassNameByClass", null);
 //# sourceMappingURL=ClassUtils.js.map

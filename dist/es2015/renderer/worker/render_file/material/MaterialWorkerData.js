@@ -1,13 +1,11 @@
 var MaterialWorkerData = (function () {
     function MaterialWorkerData() {
     }
+    MaterialWorkerData.shaderIndices = null;
+    MaterialWorkerData.colors = null;
+    MaterialWorkerData.opacities = null;
+    MaterialWorkerData.alphaTests = null;
     return MaterialWorkerData;
 }());
 export { MaterialWorkerData };
-MaterialWorkerData.shaderIndices = null;
-MaterialWorkerData.materialClassNameTable = null;
-MaterialWorkerData.shaderIndexTable = null;
-MaterialWorkerData.colors = null;
-MaterialWorkerData.opacities = null;
-MaterialWorkerData.alphaTests = null;
 //# sourceMappingURL=MaterialWorkerData.js.map

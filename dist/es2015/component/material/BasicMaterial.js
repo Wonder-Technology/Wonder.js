@@ -15,22 +15,67 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
-import { Material } from "./Material";
-import { create } from "./BasicMaterialSystem";
+import { checkShouldAlive, Material } from "./Material";
+import { addMap, create, initMaterial } from "./BasicMaterialSystem";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
+import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { BasicMaterialData } from "./BasicMaterialData";
+import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
+import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { getState } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
+import { TextureData } from "../../renderer/texture/TextureData";
 var BasicMaterial = (function (_super) {
     __extends(BasicMaterial, _super);
     function BasicMaterial() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    BasicMaterial = __decorate([
+        registerClass("BasicMaterial")
+    ], BasicMaterial);
     return BasicMaterial;
 }(Material));
-BasicMaterial = __decorate([
-    registerClass("BasicMaterial")
-], BasicMaterial);
 export { BasicMaterial };
 export var createBasicMaterial = function () {
-    return create(ShaderData, MaterialData);
+    return create(ShaderData, MaterialData, BasicMaterialData);
 };
+export var initBasicMaterial = function (material) {
+    initMaterial(material.index, getState(DirectorData));
+};
+export var getBasicMaterialColor = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material) {
+    return getColor(material.index, MaterialData);
+});
+export var setBasicMaterialColor = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material, color) {
+    setColor(material.index, color, MaterialData);
+});
+export var getBasicMaterialOpacity = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material) {
+    return getOpacity(material.index, MaterialData);
+});
+export var setBasicMaterialOpacity = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material, opacity) {
+    setOpacity(material.index, opacity, MaterialData);
+});
+export var getBasicMaterialAlphaTest = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material) {
+    return getAlphaTest(material.index, MaterialData);
+});
+export var setBasicMaterialAlphaTest = requireCheckFunc(function (material) {
+    checkShouldAlive(material);
+}, function (material, alphaTest) {
+    setAlphaTest(material.index, alphaTest, MaterialData);
+});
+export var addBasicMaterialMap = requireCheckFunc(function (material, map) {
+    checkShouldAlive(material);
+}, function (material, map) {
+    addMap(material.index, map, MapManagerData, TextureData);
+});
 //# sourceMappingURL=BasicMaterial.js.map

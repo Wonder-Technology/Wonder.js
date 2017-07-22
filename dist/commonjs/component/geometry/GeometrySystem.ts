@@ -23,7 +23,7 @@ import {
     getIndexType as getIndexTypeUtils,
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
-    hasIndices as hasIndicesUtils, createBufferViews
+    hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize
 } from "../../renderer/utils/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
@@ -32,7 +32,7 @@ import {
 
 } from "../../renderer/utils/geometry/geometryUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { getSubarray } from "../../utils/typeArrayUtils";
+import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
@@ -40,17 +40,21 @@ import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
 import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
-export var addAddComponentHandle = (_class: any) => {
-    addAddComponentHandleToMap(_class, addComponent);
+export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
+    addAddComponentHandleToMap(BoxGeometry, addComponent);
+    addAddComponentHandleToMap(CustomGeometry, addComponent);
 }
 
-export var addDisposeHandle = (_class: any) => {
-    addDisposeHandleToMap(_class, disposeComponent);
+export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
+    addDisposeHandleToMap(BoxGeometry, disposeComponent);
+    addDisposeHandleToMap(CustomGeometry, disposeComponent);
 }
 
-export var addInitHandle = (_class: any) => {
-    addInitHandleToMap(_class, initGeometry);
+export var addInitHandle = (BoxGeometry: any, CustomGeometry: any) => {
+    addInitHandleToMap(BoxGeometry, initGeometry);
+    addInitHandleToMap(CustomGeometry, initGeometry);
 }
 
 export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {
@@ -86,10 +90,18 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
 
     let {
         vertices,
+        normals,
+        texCoords,
         indices
     } = computeDataFunc(index, GeometryData);
 
+    //todo compute normals
+
     setVertices(index, vertices, GeometryData);
+
+    setNormals(index, normals, GeometryData);
+
+    setTexCoords(index, texCoords, GeometryData);
 
     setIndices(index, indices, GeometryData);
 }
@@ -106,6 +118,24 @@ export var setVertices = requireCheckFunc((index: number, vertices: Array<number
     // });
 }, (index: number, vertices: Array<number>, GeometryData: any) => {
     GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
+})
+
+export var getNormals = (index: number, GeometryData: any) => {
+    return _getPointData(index, GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList);
+}
+
+export var setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
+}, (index: number, normals: Array<number>, GeometryData: any) => {
+    GeometryData.normalsOffset = _setPointData(index, normals, getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
+})
+
+export var getTexCoords = (index: number, GeometryData: any) => {
+    return _getPointData(index, GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList);
+}
+
+export var setTexCoords = requireCheckFunc((index: number, texCoords: Array<number>, GeometryData: any) => {
+}, (index: number, texCoords: Array<number>, GeometryData: any) => {
+    GeometryData.texCoordsOffset = _setPointData(index, texCoords, getTexCoordsDataSize(), GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList, GeometryData.texCoordsWorkerInfoList, GeometryData.texCoordsOffset, GeometryData);
 })
 
 export var getIndices = (index: number, GeometryData: any) => {
@@ -148,7 +178,7 @@ var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, po
 
     infoList[index] = _buildInfo(startIndex, offset);
 
-    _fillTypeArr(points, dataArr, startIndex, count);
+    fillTypeArr(points, dataArr, startIndex, count);
 
     _removeCache(index, cacheMap);
 
@@ -158,17 +188,6 @@ var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, po
 
     return offset;
 }
-
-var _fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
-    it("should not exceed type arr's length", () => {
-        expect(count + startIndex).lte(typeArr.length);
-    });
-}, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
-    for (let i = 0; i < count; i++) {
-        typeArr[i + startIndex] = dataArr[i];
-    }
-    // typeArr.set(dataArr, startIndex);
-})
 
 var _removeCache = (index: number, cacheMap: object) => {
     deleteVal(index, cacheMap);
@@ -277,6 +296,8 @@ var _isInit = (GeometryData: any) => {
 
 export var clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 
@@ -332,6 +353,8 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     GeometryData.configDataMap = createMap();
 
     GeometryData.verticesCacheMap = createMap();
+    GeometryData.normalsCacheMap = createMap();
+    GeometryData.texCoordsCacheMap = createMap();
     GeometryData.indicesCacheMap = createMap();
 
     GeometryData.computeDataFuncMap = createMap();
@@ -346,14 +369,20 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
     _initBufferData(indicesArrayBytes, getUIntArrayClass(GeometryData.indexType), DataBufferConfig, GeometryData);
 
     GeometryData.verticesInfoList = [];
+    GeometryData.normalsInfoList = [];
+    GeometryData.texCoordsInfoList = [];
     GeometryData.indicesInfoList = [];
 
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 
     GeometryData.disposedGeometryIndexArray = [];
 
     GeometryData.verticesOffset = 0;
+    GeometryData.normalsOffset = 0;
+    GeometryData.texCoordsOffset = 0;
     GeometryData.indicesOffset = 0;
 
     GeometryData.disposeCount = 0;
@@ -364,7 +393,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any) => {
 var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
-        size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
+        size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()) + indicesArrayBytes * getIndexDataSize();
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 

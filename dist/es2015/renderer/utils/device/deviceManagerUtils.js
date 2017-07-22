@@ -9,6 +9,8 @@ import { RectRegion } from "../../../structure/RectRegion";
 import { chain, compose } from "../../../utils/functionalUtils";
 import { getRootProperty } from "../../../utils/rootUtils";
 import { isValueExist } from "../../../utils/stateUtils";
+import { ESide } from "../../enum/ESide";
+import { Log } from "../../../utils/Log";
 export var getGL = function (DeviceManagerDataFromSystem, state) {
     return DeviceManagerDataFromSystem.gl;
 };
@@ -125,6 +127,31 @@ export var setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeA
         DeviceManagerDataFromSystem.writeAlpha = writeAlpha;
     }
 };
+export var setSide = function (gl, side, DeviceManagerDataFromSystem) {
+    if (DeviceManagerDataFromSystem.side !== side) {
+        switch (side) {
+            case ESide.NONE:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT_AND_BACK);
+                break;
+            case ESide.BOTH:
+                gl.disable(gl.CULL_FACE);
+                break;
+            case ESide.FRONT:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.BACK);
+                break;
+            case ESide.BACK:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT);
+                break;
+            default:
+                Log.error(true, Log.info.FUNC_UNEXPECT("side", side));
+                break;
+        }
+        DeviceManagerDataFromSystem.side = side;
+    }
+};
 export var initData = function (DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.gl = null;
     DeviceManagerDataFromSystem.clearColor = null;
@@ -132,5 +159,6 @@ export var initData = function (DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.writeGreen = null;
     DeviceManagerDataFromSystem.writeBlue = null;
     DeviceManagerDataFromSystem.writeAlpha = null;
+    DeviceManagerDataFromSystem.side = null;
 };
 //# sourceMappingURL=deviceManagerUtils.js.map

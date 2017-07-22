@@ -1,12 +1,50 @@
 export declare const material_config: {
-    "BasicMaterial": {
-        "shader": {
-            "shaderLib": string[];
+    "materials": {
+        "BasicMaterial": {
+            "shader": {
+                "shaderLib": (string | {
+                    "type": string;
+                    "value": string;
+                } | {
+                    "type": string;
+                    "branch": (materialIndex: any, {getMapCount}: {
+                        getMapCount: any;
+                    }, {MapManagerDataFromSystem}: {
+                        MapManagerDataFromSystem: any;
+                    }) => string;
+                })[];
+            };
         };
+        "LightMaterial": {
+            "shader": {
+                "shaderLib": (string | {
+                    "type": string;
+                    "value": string;
+                } | {
+                    "type": string;
+                    "branch": (materialIndex: any, {hasDiffuseMap, hasSpecularMap}: {
+                        hasDiffuseMap: any;
+                        hasSpecularMap: any;
+                    }, {LightMaterialDataFromSystem}: {
+                        LightMaterialDataFromSystem: any;
+                    }) => string;
+                })[];
+            };
+        };
+    };
+    "shaderLibGroups": {
+        "engineMaterialTop": string[];
+        "engineMaterialEnd": string[];
     };
 };
 export interface IMaterialConfig {
-    [materialClassName: string]: IMaterialContentConfig;
+    materials: {
+        [materialClassName: string]: IMaterialContentConfig;
+    };
+    shaderLibGroups: IMaterialShaderLibGroup;
+}
+export interface IMaterialShaderLibGroup {
+    [groupName: string]: Array<string>;
 }
 export interface IMaterialContentConfig {
     shader: IShaderConfig;
@@ -14,4 +52,9 @@ export interface IMaterialContentConfig {
 export interface IShaderConfig {
     shaderLib: MaterialShaderLibConfig;
 }
-export declare type MaterialShaderLibConfig = Array<string>;
+export interface IShaderLibItem {
+    type: string;
+    branch?: (...args) => string;
+    value?: any;
+}
+export declare type MaterialShaderLibConfig = Array<string | IShaderLibItem>;

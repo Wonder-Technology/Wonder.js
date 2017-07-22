@@ -29,6 +29,10 @@ export type SendUniformConfigMap = {
     [index: number]: Array<ISendUniformConfig>
 }
 
+export type SendUniformFuncConfigMap = {
+    [index: number]: Function;
+}
+
 export type UniformCacheMap = {
     [index: number]: {
         [name: string]: any;
@@ -42,15 +46,17 @@ export type ArrayBufferDataMap = {
     }
 }
 
-export type RenderCommandBufferWorkerData = {
+export type RenderCommandBufferForDrawData = {
     buffer: SharedArrayBuffer;
     count: number
 }
 
 export type RenderCommandUniformData = {
-    mMatrices: Float32Array;
-    vMatrices: Float32Array;
-    pMatrices: Float32Array;
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
+    cameraPosition: Float32Array;
+    normalMatrix: Float32Array;
     materialIndex: number;
 }
 
@@ -67,3 +73,43 @@ export type BuildGLSLSourceFuncFuncDataMap = {
     getAlphaTest: Function;
     isTestAlpha: Function;
 }
+
+export type MaterialDataMap = {
+    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+}
+
+export type MaterialWorkerInitDataList = Array<{
+    index: number;
+    className: string;
+}>
+
+export type ShaderLibWholeNameMap = {
+    [shaderLibWholeName: string]: number
+}
+
+export type DirectionLightGLSLDataStructure = {
+    position: string;
+    color: string;
+    intensity: string;
+}
+
+export type PointLightGLSLDataStructure = {
+    position: string;
+    color: string;
+    intensity: string;
+    constant: string;
+    linear: string;
+    quadratic: string;
+    range: string;
+}
+
+export type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
+type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
+
+
+export type DisposedTextureDataMap = Array<{
+    sourceIndex: number;
+    lastComponentIndex: number;
+}>

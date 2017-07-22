@@ -16,7 +16,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { GeometryData } from "./GeometryData";
-import { getVertices as getGeometryVertices, getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem, getGameObject, getDrawMode as getGeometryDrawMode, } from "./GeometrySystem";
+import { getVertices as getGeometryVertices, getIndices as getGeometryIndices, getConfigData, initGeometry as initGeometrySystem, getGameObject, getDrawMode as getGeometryDrawMode, getNormals as getGeometryNormals, getTexCoords as getGeometryTexCoords, } from "./GeometrySystem";
 import { Component } from "../Component";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
@@ -27,11 +27,11 @@ var Geometry = (function (_super) {
     function Geometry() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Geometry = __decorate([
+        registerClass("Geometry")
+    ], Geometry);
     return Geometry;
 }(Component));
-Geometry = __decorate([
-    registerClass("Geometry")
-], Geometry);
 export { Geometry };
 export var getDrawMode = requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData);
@@ -42,6 +42,16 @@ export var getVertices = requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData);
 }, function (geometry) {
     return getGeometryVertices(geometry.index, GeometryData);
+});
+export var getNormals = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
+    return getGeometryNormals(geometry.index, GeometryData);
+});
+export var getTexCoords = requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData);
+}, function (geometry) {
+    return getGeometryTexCoords(geometry.index, GeometryData);
 });
 export var getIndices = requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData);

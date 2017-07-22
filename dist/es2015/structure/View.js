@@ -64,10 +64,10 @@ var View = (function () {
         enumerable: true,
         configurable: true
     });
+    View = __decorate([
+        registerClass("View")
+    ], View);
     return View;
 }());
-View = __decorate([
-    registerClass("View")
-], View);
 export { View };
 //# sourceMappingURL=View.js.map

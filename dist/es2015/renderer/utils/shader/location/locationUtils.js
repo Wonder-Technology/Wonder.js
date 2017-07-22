@@ -1,56 +1,30 @@
-import { isConfigDataExist } from "../../renderConfigUtils";
-import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
+import { ensureFunc } from "../../../../definition/typescript/decorator/contract";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
-import { expect } from "wonder-expect.js";
-import { forEach } from "../../../../utils/arrayUtils";
-export var setLocationMap = ensureFunc(function (returnVal, gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
-    it("attribute should contain position at least", function () {
-        expect(LocationDataFromSystem.attributeLocationMap[shaderIndex]["a_position"]).be.a("number");
-    });
-}, requireCheckFunc(function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
-    it("not setted location before", function () {
-        expect(isValidMapValue(LocationDataFromSystem.attributeLocationMap[shaderIndex])).false;
-        expect(isValidMapValue(LocationDataFromSystem.uniformLocationMap[shaderIndex])).false;
-    });
-}, function (gl, shaderIndex, program, materialShaderLibConfig, shaderLibData, LocationDataFromSystem) {
-    var attributeLocationMap = {}, uniformLocationMap = {}, sendData = null, attributeName = null, uniformName = null;
-    forEach(materialShaderLibConfig, function (shaderLibName) {
-        var attribute = null, uniform = null;
-        sendData = shaderLibData[shaderLibName].send;
-        if (!isConfigDataExist(sendData)) {
-            return;
-        }
-        attribute = sendData.attribute;
-        uniform = sendData.uniform;
-        if (isConfigDataExist(attribute)) {
-            forEach(attribute, function (data) {
-                attributeName = data.name;
-                attributeLocationMap[attributeName] = gl.getAttribLocation(program, attributeName);
-            });
-        }
-        if (isConfigDataExist(uniform)) {
-            forEach(uniform, function (data) {
-                uniformName = data.name;
-                uniformLocationMap[uniformName] = gl.getUniformLocation(program, uniformName);
-            });
-        }
-    });
-    LocationDataFromSystem.attributeLocationMap[shaderIndex] = attributeLocationMap;
-    LocationDataFromSystem.uniformLocationMap[shaderIndex] = uniformLocationMap;
-}));
-export var getAttribLocation = ensureFunc(function (pos, name, attributeLocationMap) {
-    it(name + "'s attrib location should be number", function () {
-        expect(pos).be.a("number");
-    });
-}, function (name, attributeLocationMap) {
-    return attributeLocationMap[name];
+export var setEmptyLocationMap = function (shaderIndex, LocationDataFromSystem) {
+    LocationDataFromSystem.attributeLocationMap[shaderIndex] = createMap();
+    LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
+};
+export var getAttribLocation = ensureFunc(function (pos, gl, program, name, attributeLocationMap) {
+}, function (gl, program, name, attributeLocationMap) {
+    var pos = null;
+    pos = attributeLocationMap[name];
+    if (isValidMapValue(pos)) {
+        return pos;
+    }
+    pos = gl.getAttribLocation(program, name);
+    attributeLocationMap[name] = pos;
+    return pos;
 });
-export var getUniformLocation = ensureFunc(function (pos, name, uniformLocationMap) {
-    it(name + "'s uniform location should exist in map", function () {
-        expect(isValidMapValue(pos)).true;
-    });
-}, function (name, uniformLocationMap) {
-    return uniformLocationMap[name];
+export var getUniformLocation = ensureFunc(function (pos, gl, name, uniformLocationMap) {
+}, function (gl, program, name, uniformLocationMap) {
+    var pos = null;
+    pos = uniformLocationMap[name];
+    if (isValidMapValue(pos)) {
+        return pos;
+    }
+    pos = gl.getUniformLocation(program, name);
+    uniformLocationMap[name] = pos;
+    return pos;
 });
 export var isUniformLocationNotExist = function (pos) {
     return pos === null;

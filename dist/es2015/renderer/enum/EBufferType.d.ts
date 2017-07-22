@@ -1,9 +1,9 @@
 export declare enum EBufferType {
-    BYTE,
-    UNSIGNED_BYTE,
-    SHORT,
-    UNSIGNED_SHORT,
-    INT,
-    UNSIGNED_INT,
-    FLOAT,
+    BYTE = "BYTE",
+    UNSIGNED_BYTE = "UNSIGNED_BYTE",
+    SHORT = "SHORT",
+    UNSIGNED_SHORT = "UNSIGNED_SHORT",
+    INT = "INT",
+    UNSIGNED_INT = "UNSIGNED_INT",
+    FLOAT = "FLOAT",
 }

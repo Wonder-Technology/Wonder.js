@@ -33,15 +33,15 @@ var DeviceManager = (function () {
         enumerable: true,
         configurable: true
     });
-    DeviceManager.prototype.createGL = function (canvasId, contextConfig) {
-        return DeviceManagerSystem_1.createGL(canvasId, immutable_1.fromJS(contextConfig), DirectorSystem_1.getState(DirectorData_1.DirectorData));
+    DeviceManager.prototype.createGL = function (canvasID, contextConfig) {
+        return DeviceManagerSystem_1.createGL(canvasID, immutable_1.fromJS(contextConfig), DirectorSystem_1.getState(DirectorData_1.DirectorData));
     };
+    DeviceManager = __decorate([
+        singleton_1.singleton(),
+        registerClass_1.registerClass("DeviceManager")
+    ], DeviceManager);
     return DeviceManager;
 }());
-DeviceManager = __decorate([
-    singleton_1.singleton(),
-    registerClass_1.registerClass("DeviceManager")
-], DeviceManager);
 exports.DeviceManager = DeviceManager;
 exports.setDeviceManagerGL = function (gl) {
     return DeviceManagerSystem_1.setGL(gl, DeviceManagerData_1.DeviceManagerData, DirectorSystem_1.getState(DirectorData_1.DirectorData));

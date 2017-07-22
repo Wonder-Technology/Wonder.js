@@ -5,7 +5,7 @@ export type ContextConfigData = {
 }
 
 export type MainConfigData = {
-    canvasId?: string;
+    canvasID?: string;
     isTest?: boolean;
     screenSize?: any;
     useDevicePixelRatio?: boolean;

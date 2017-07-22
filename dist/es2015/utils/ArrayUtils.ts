@@ -7,15 +7,11 @@ export var isNotValidVal = (val: any) => isUndefined(val);
 export var isValidVal = (val: any) => isNotUndefined(val);
 
 export var deleteBySwap = (index: number, lastIndex: number, array: Array<any>) => {
-    var temp = null;
-
     if (lastIndex === -1) {
         return null;
     }
 
-    temp = array[lastIndex];
-
-    array[index] = temp;
+    array[index] = array[lastIndex];
 
     array.pop();
 }

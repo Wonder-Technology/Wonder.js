@@ -18,11 +18,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var Vector4_1 = require("../math/Vector4");
-var RectRegion = RectRegion_1 = (function (_super) {
+var RectRegion = (function (_super) {
     __extends(RectRegion, _super);
     function RectRegion() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    RectRegion_1 = RectRegion;
     Object.defineProperty(RectRegion.prototype, "width", {
         get: function () {
             return this.z;
@@ -52,11 +53,11 @@ var RectRegion = RectRegion_1 = (function (_super) {
             || this.width !== 0
             || this.height !== 0;
     };
+    RectRegion = RectRegion_1 = __decorate([
+        registerClass_1.registerClass("RectRegion")
+    ], RectRegion);
     return RectRegion;
+    var RectRegion_1;
 }(Vector4_1.Vector4));
-RectRegion = RectRegion_1 = __decorate([
-    registerClass_1.registerClass("RectRegion")
-], RectRegion);
 exports.RectRegion = RectRegion;
-var RectRegion_1;
 //# sourceMappingURL=RectRegion.js.map

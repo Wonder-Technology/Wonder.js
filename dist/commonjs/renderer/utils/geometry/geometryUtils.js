@@ -5,6 +5,8 @@ var EDrawMode_1 = require("../../enum/EDrawMode");
 var EBufferType_1 = require("../../enum/EBufferType");
 var Log_1 = require("../../../utils/Log");
 exports.getVertexDataSize = function () { return 3; };
+exports.getNormalDataSize = function () { return 3; };
+exports.getTexCoordsDataSize = function () { return 2; };
 exports.getIndexDataSize = function () { return 1; };
 exports.getUIntArrayClass = function (indexType) {
     switch (indexType) {
@@ -41,6 +43,8 @@ exports.getIndicesCount = function (index, getIndices, GeometryDataFromSystem) {
 };
 exports.createBufferViews = function (buffer, count, UintArray, GeometryDataFromSystem) {
     GeometryDataFromSystem.vertices = new Float32Array(buffer, 0, count * exports.getVertexDataSize());
-    GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * exports.getVertexDataSize(), count * exports.getIndexDataSize());
+    GeometryDataFromSystem.normals = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * exports.getVertexDataSize(), count * exports.getVertexDataSize());
+    GeometryDataFromSystem.texCoords = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (exports.getVertexDataSize() + exports.getNormalDataSize()), count * exports.getTexCoordsDataSize());
+    GeometryDataFromSystem.indices = new UintArray(buffer, count * Float32Array.BYTES_PER_ELEMENT * (exports.getVertexDataSize() + exports.getNormalDataSize() + exports.getTexCoordsDataSize()), count * exports.getIndexDataSize());
 };
 //# sourceMappingURL=geometryUtils.js.map

@@ -1,9 +1,11 @@
 import { RenderCommandUniformData, UniformCacheMap, UniformShaderLocationMap } from "../../type/dataType";
-export declare var getUniformData: (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any) => any;
-export declare var sendBuffer: (gl: WebGLRenderingContext, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => void;
-export declare var sendMatrix4: (gl: WebGLRenderingContext, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => void;
-export declare var sendVector3: (gl: WebGLRenderingContext, shaderIndex: number, name: string, data: number[], uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
-export declare var sendFloat1: (gl: WebGLRenderingContext, shaderIndex: number, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
-export declare var addSendAttributeConfig: Function;
-export declare var addSendUniformConfig: Function;
+import { Vector3 } from "../../../math/Vector3";
+export declare var getUniformData: (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => any;
+export declare var sendBuffer: (gl: WebGLRenderingContext, type: string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => void;
+export declare var sendMatrix3: (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => void;
+export declare var sendMatrix4: (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => void;
+export declare var sendVector3: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
+export declare var sendInt: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
+export declare var sendFloat1: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
+export declare var sendFloat3: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number[], uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => void;
 export declare var initData: (GLSLSenderDataFromSystem: any) => void;

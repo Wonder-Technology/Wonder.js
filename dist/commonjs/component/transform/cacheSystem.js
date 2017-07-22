@@ -42,6 +42,12 @@ exports.getLocalPositionCache = function (uid, ThreeTransformData) {
 exports.setLocalPositionCache = function (uid, pos, ThreeTransformData) {
     ThreeTransformData.cacheMap[uid].localPosition = pos;
 };
+exports.getNormalMatrixCache = function (uid, ThreeTransformData) {
+    return _getCache(uid, ThreeTransformData).normalMatrix;
+};
+exports.setNormalMatrixCache = function (uid, mat, ThreeTransformData) {
+    _getCache(uid, ThreeTransformData).normalMatrix = mat;
+};
 var _getCache = function (uid, ThreeTransformData) {
     var cache = ThreeTransformData.cacheMap[uid];
     if (objectUtils_1.isNotValidMapValue(cache)) {

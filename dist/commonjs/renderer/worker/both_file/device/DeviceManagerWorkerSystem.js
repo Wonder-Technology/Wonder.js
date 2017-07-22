@@ -6,18 +6,16 @@ var deviceManagerUtils_1 = require("../../../utils/device/deviceManagerUtils");
 var functionalUtils_1 = require("../../../../utils/functionalUtils");
 var ViewSystem_1 = require("../../../../structure/ViewSystem");
 var stateUtils_1 = require("../../../../utils/stateUtils");
-var WorkerInstanceSystem_1 = require("../../logic_file/worker_instance/WorkerInstanceSystem");
 var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
-exports.createGL = curry_1.default(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
+exports.createGL = curry_1.default(function (canvas, renderWorker, contextConfig, viewportData) {
     return IO_1.IO.of(function () {
-        var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);
+        var offscreen = canvas.transferControlToOffscreen();
         renderWorker.postMessage({
             operateType: EWorkerOperateType_1.EWorkerOperateType.INIT_GL,
             canvas: offscreen,
             options: contextConfig.get("options").toObject(),
             viewportData: viewportData
         }, [offscreen]);
-        WorkerInstanceSystem_1.setRenderWorker(renderWorker, WorkerInstanceData);
     });
 });
 exports.setContextConfig = deviceManagerUtils_1.setContextConfig;
@@ -71,5 +69,6 @@ exports.setCanvasPixelRatio = curry_1.default(function (useDevicePixelRatio, can
 });
 exports.clear = deviceManagerUtils_1.clear;
 exports.setColorWrite = deviceManagerUtils_1.setColorWrite;
+exports.setSide = deviceManagerUtils_1.setSide;
 exports.initData = deviceManagerUtils_1.initData;
 //# sourceMappingURL=DeviceManagerWorkerSystem.js.map

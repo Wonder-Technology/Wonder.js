@@ -1,4 +1,4 @@
-export declare var create: (materialClassName: string, MaterialData: any, ShaderData: any) => any;
+export declare var create: (ShaderData: any) => void;
 export declare var init: any;
 export declare var sendAttributeData: any;
 export declare var sendUniformData: any;

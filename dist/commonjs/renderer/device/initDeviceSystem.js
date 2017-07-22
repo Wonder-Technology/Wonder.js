@@ -11,13 +11,14 @@ var DeviceManagerWorkerSystem_1 = require("../worker/both_file/device/DeviceMana
 var DeviceManagerData_1 = require("./DeviceManagerData");
 var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
 var ViewSystem_1 = require("../../structure/ViewSystem");
-var WorkerInstanceData_1 = require("../worker/logic_file/worker_instance/WorkerInstanceData");
+var WorkerInstanceData_1 = require("../../worker/WorkerInstanceData");
+var WorkerInstanceSystem_1 = require("../../worker/WorkerInstanceSystem");
 exports.initDevice = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     exports.initDevice = curry_1.default(function (contextConfig, state, configState, canvas) {
         return IO_1.IO.of(function () {
             var screenData = DeviceManagerWorkerSystem_1.setScreen(canvas, null, state).run(), viewportData = DeviceManagerWorkerSystem_1.getViewportData(screenData, state);
-            DeviceManagerWorkerSystem_1.createGL(canvas, WorkerInstanceData_1.WorkerInstanceData, contextConfig, viewportData, WorkerDetectSystem_1.getRenderWorkerFilePath()).run();
+            DeviceManagerWorkerSystem_1.createGL(canvas, WorkerInstanceSystem_1.getRenderWorker(WorkerInstanceData_1.WorkerInstanceData), contextConfig, viewportData).run();
             return functionalUtils_1.compose(ViewSystem_1.setCanvas(canvas), DeviceManagerWorkerSystem_1.setContextConfig(contextConfig), DeviceManagerWorkerSystem_1.setViewport(viewportData), DeviceManagerWorkerSystem_1.setPixelRatio(DeviceManagerWorkerSystem_1.setCanvasPixelRatio(configState.get("useDevicePixelRatio"), canvas).run()))(state);
         });
     });

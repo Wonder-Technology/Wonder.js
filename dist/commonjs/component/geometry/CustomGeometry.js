@@ -26,17 +26,23 @@ var CustomGeometry = (function (_super) {
     function CustomGeometry() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    CustomGeometry = __decorate([
+        registerClass_1.registerClass("CustomGeometry")
+    ], CustomGeometry);
     return CustomGeometry;
 }(Geometry_1.Geometry));
-CustomGeometry = __decorate([
-    registerClass_1.registerClass("CustomGeometry")
-], CustomGeometry);
 exports.CustomGeometry = CustomGeometry;
 exports.createCustomGeometry = function () {
     return CustomGeometrySystem_1.create(GeometryData_1.GeometryData);
 };
 exports.setCustomGeometryVertices = function (geometry, vertices) {
     return GeometrySystem_1.setVertices(geometry.index, vertices, GeometryData_1.GeometryData);
+};
+exports.setCustomGeometryNormals = function (geometry, normals) {
+    return GeometrySystem_1.setNormals(geometry.index, normals, GeometryData_1.GeometryData);
+};
+exports.setCustomGeometryTexCoords = function (geometry, texCoords) {
+    return GeometrySystem_1.setTexCoords(geometry.index, texCoords, GeometryData_1.GeometryData);
 };
 exports.setCustomGeometryIndices = function (geometry, indices) {
     return GeometrySystem_1.setIndices(geometry.index, indices, GeometryData_1.GeometryData);

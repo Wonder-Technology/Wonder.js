@@ -1,6 +1,6 @@
 import { Component } from "./Component";
-import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { Map as MapImmutable } from "immutable";
+import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
 
 export class ComponentData {
     public static addComponentHandleMap: AddComponentHandleMap = {};
@@ -9,7 +9,7 @@ export class ComponentData {
 }
 
 export type AddComponentHandleMap = {
-    [typeID: string]: (component: Component, gameObject: GameObject) => void;
+    [typeID: string]: (component: Component, gameObject: IUIDEntity) => void;
 }
 
 export type DisposeHandleMap = {
@@ -21,5 +21,5 @@ export type InitHandleMap = {
 }
 
 export type ComponentGameObjectMap = {
-    [index: number]: GameObject;
+    [index: number]: IUIDEntity;
 }

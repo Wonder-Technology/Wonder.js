@@ -1,10 +1,19 @@
 import { Map } from "immutable";
-import { RenderCommandBufferWorkerData } from "../../type/dataType";
+import { RenderCommandBufferForDrawData } from "../../type/dataType";
 import { IRenderConfig } from "../../data/render_config";
-export declare var clear: (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferWorkerData) => RenderCommandBufferWorkerData;
-export declare var buildDrawDataMap: (DeviceManagerDataFromSystem: any, MaterialDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
+import { DrawDataMap } from "../../type/utilsType";
+export declare var clear: (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferForDrawData) => RenderCommandBufferForDrawData;
+export declare var buildDrawDataMap: (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
     DeviceManagerDataFromSystem: any;
+    TextureDataFromSystem: any;
+    TextureCacheDataFromSystem: any;
+    MapManagerDataFromSystem: any;
     MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+    AmbientLightDataFromSystem: any;
+    DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
     ProgramDataFromSystem: any;
     LocationDataFromSystem: any;
     GLSLSenderDataFromSystem: any;
@@ -13,36 +22,32 @@ export declare var buildDrawDataMap: (DeviceManagerDataFromSystem: any, Material
     IndexBufferDataFromSystem: any;
     DrawRenderCommandBufferDataFromSystem: any;
 };
-export declare var buildDrawFuncDataMap: (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function) => {
+export declare var buildDrawFuncDataMap: (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function) => {
     bindIndexBuffer: Function;
     sendAttributeData: Function;
     sendUniformData: Function;
+    directlySendUniformData: Function;
     use: Function;
     hasIndices: Function;
     getIndicesCount: Function;
     getIndexType: Function;
     getIndexTypeSize: Function;
     getVerticesCount: Function;
+    bindAndUpdate: Function;
+    getMapCount: Function;
 };
-export declare var draw: (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig: any, {bindIndexBuffer, sendAttributeData, sendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount}: {
+export declare var draw: (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig: any, {bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, getMapCount, bindAndUpdate}: {
     bindIndexBuffer: any;
     sendAttributeData: any;
     sendUniformData: any;
+    directlySendUniformData: any;
     use: any;
     hasIndices: any;
     getIndicesCount: any;
     getIndexType: any;
     getIndexTypeSize: any;
     getVerticesCount: any;
-}, {DeviceManagerDataFromSystem, MaterialDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem, IndexBufferDataFromSystem, DrawRenderCommandBufferDataFromSystem}: {
-    DeviceManagerDataFromSystem: any;
-    MaterialDataFromSystem: any;
-    ProgramDataFromSystem: any;
-    LocationDataFromSystem: any;
-    GLSLSenderDataFromSystem: any;
-    GeometryDataFromSystem: any;
-    ArrayBufferDataFromSystem: any;
-    IndexBufferDataFromSystem: any;
-    DrawRenderCommandBufferDataFromSystem: any;
-}, bufferData: RenderCommandBufferWorkerData) => Map<any, any>;
+    getMapCount: any;
+    bindAndUpdate: any;
+}, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => Map<any, any>;
 export declare var initData: (DrawRenderCommandBufferDataFromSystem: any) => void;

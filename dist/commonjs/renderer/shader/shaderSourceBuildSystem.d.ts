@@ -1,2 +1,3 @@
 import { IShaderLibContentGenerator } from "../data/shaderLib_generator";
-export declare var buildGLSLSource: (materialIndex: number, materialShaderLibConfig: string[], shaderLibData: IShaderLibContentGenerator, MaterialData: any) => any;
+import { MaterialDataMap } from "../type/dataType";
+export declare var buildGLSLSource: (materialIndex: number, materialShaderLibNameArr: string[], shaderLibData: IShaderLibContentGenerator, MaterialDataMap: MaterialDataMap) => any;

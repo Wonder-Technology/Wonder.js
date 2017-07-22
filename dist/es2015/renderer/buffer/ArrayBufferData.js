@@ -1,9 +1,10 @@
 var ArrayBufferData = (function () {
     function ArrayBufferData() {
     }
+    ArrayBufferData.vertexBuffer = null;
+    ArrayBufferData.normalBuffers = null;
+    ArrayBufferData.texCoordBuffers = null;
     return ArrayBufferData;
 }());
 export { ArrayBufferData };
-ArrayBufferData.buffers = null;
-ArrayBufferData.bufferDataMap = null;
 //# sourceMappingURL=ArrayBufferData.js.map

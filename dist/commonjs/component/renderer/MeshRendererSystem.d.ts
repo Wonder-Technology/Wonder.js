@@ -1,10 +1,11 @@
 import { MeshRenderer } from "./MeshRenderer";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 export declare var addAddComponentHandle: (_class: any) => void;
 export declare var addDisposeHandle: (_class: any) => void;
 export declare var create: Function;
 export declare var addComponent: (component: MeshRenderer, gameObject: GameObject) => void;
 export declare var disposeComponent: Function;
-export declare var getGameObject: (index: number, Data: any) => GameObject;
+export declare var getGameObject: (index: number, Data: any) => IUIDEntity;
 export declare var getRenderList: any;
 export declare var initData: (MeshRendererData: any) => void;

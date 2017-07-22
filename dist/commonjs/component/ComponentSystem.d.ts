@@ -2,6 +2,7 @@ import { ComponentGameObjectMap } from "./ComponentData";
 import { Component } from "./Component";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { Map as MapImmutable } from "immutable";
+import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
 export declare var addAddComponentHandle: (_class: any, handle: Function) => void;
 export declare var addDisposeHandle: (_class: any, handle: Function) => void;
 export declare var addInitHandle: (_class: any, handle: (index: number, state: MapImmutable<any, any>) => void) => void;
@@ -9,7 +10,7 @@ export declare var execHandle: (component: Component, handleMapName: string, arg
 export declare var execInitHandle: (typeID: string, index: number, state: MapImmutable<any, any>) => void;
 export declare var checkComponentShouldAlive: (component: Component, data: any, isAlive: (component: Component, data: any) => boolean) => void;
 export declare var addComponentToGameObjectMap: Function;
-export declare var getComponentGameObject: (gameObjectMap: ComponentGameObjectMap | GameObject[], index: number) => GameObject;
+export declare var getComponentGameObject: (gameObjectMap: ComponentGameObjectMap | GameObject[], index: number) => IUIDEntity;
 export declare var generateComponentIndex: (ComponentData: any) => number;
 export declare var deleteComponent: Function;
 export declare var deleteComponentBySwapArray: Function;

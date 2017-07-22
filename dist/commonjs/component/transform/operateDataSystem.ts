@@ -174,13 +174,13 @@ export var moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, T
 }
 
 
-export var setTransformDataInTypeArr = (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
-    // export var setTransformDataInTypeArr = (indexInArrayBuffer: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
-    setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
-    setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
-    setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+export var setTransformDataInTypeArr = (index: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    // export var setTransformDataInTypeArr = (index: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(index), ThreeDTransformData);
+    setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
+    setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
 
-    setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+    setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(index), ThreeDTransformData);
 }
 
 export var setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
@@ -205,13 +205,13 @@ export var setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, 
     return ThreeDTransformData;
 }
 
-export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
+export var setPositionData = (index: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     if (isParentExist(parent)) {
-        let indexInArrayBuffer = parent.index;
+        let index = parent.index;
 
         setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
-            uid: getUID(indexInArrayBuffer, ThreeDTransformData),
-            index: indexInArrayBuffer
+            uid: getUID(index, ThreeDTransformData),
+            index: index
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
@@ -219,8 +219,8 @@ export var setPositionData = (indexInArrayBuffer: number, parent: ThreeDTransfor
     }
 }
 
-export var getMatrix4DataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * getMatrix4DataSize();
+export var getMatrix4DataIndexInArrayBuffer = (index: number) => index * getMatrix4DataSize();
 
-export var getVector3DataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * getVector3DataSize();
+export var getVector3DataIndexInArrayBuffer = (index: number) => index * getVector3DataSize();
 
-export var getQuaternionDataIndexInArrayBuffer = (indexInArrayBuffer: number) => indexInArrayBuffer * getQuaternionDataSize();
+export var getQuaternionDataIndexInArrayBuffer = (index: number) => index * getQuaternionDataSize();

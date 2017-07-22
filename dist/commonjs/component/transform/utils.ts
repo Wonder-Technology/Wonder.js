@@ -2,34 +2,34 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { expect } from "wonder-expect.js";
 import { isValidMapValue } from "../../utils/objectUtils";
 
-export var getUID = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    it("indexInArrayBuffer should exist", () => {
-        expect(indexInArrayBuffer).exist;
+export var getUID = requireCheckFunc((index: number, ThreeDTransformData: any) => {
+    it("index should exist", () => {
+        expect(index).exist;
     });
     it("transform should exist", () => {
-        expect(ThreeDTransformData.transformMap[indexInArrayBuffer]).exist;
+        expect(ThreeDTransformData.transformMap[index]).exist;
     });
-}, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    return ThreeDTransformData.transformMap[indexInArrayBuffer].uid;
+}, (index: number, ThreeDTransformData: any) => {
+    return ThreeDTransformData.transformMap[index].uid;
 })
 
-export var isIndexUsed = ensureFunc((isExist: boolean, indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    // it("if(or not) exist data, the transform and its indexInArrayBuffer should be(or not) setted to data container;relation item should(or not) exist", () => {
+export var isIndexUsed = ensureFunc((isExist: boolean, index: number, ThreeDTransformData: any) => {
+    // it("if(or not) exist data, the transform and its index should be(or not) setted to data container;relation item should(or not) exist", () => {
     //     if (isExist) {
-    // expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).true;
-    // expect(_getTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[indexInArrayBuffer], ThreeDTransformData)).equal(indexInArrayBuffer);
+    // expect(_isValidArrayValue(ThreeDTransformData.transforms[index])).true;
+    // expect(_getTransformIndexInArrayBufferTable(ThreeDTransformData.transforms[index], ThreeDTransformData)).equal(index);
     //
-    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[indexInArrayBuffer])).true;
+    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[index])).true;
     //     }
     //     else {
-    //         // expect(_isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer])).false;
+    //         // expect(_isValidArrayValue(ThreeDTransformData.transforms[index])).false;
     //
-    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[indexInArrayBuffer])).false;
+    //         expect(_isRelationItemExist(ThreeDTransformData.relationMap[index])).false;
     //     }
     // });
-}, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    return isValidMapValue(ThreeDTransformData.transformMap[indexInArrayBuffer]);
-    // return _isValidArrayValue(ThreeDTransformData.transforms[indexInArrayBuffer]);
+}, (index: number, ThreeDTransformData: any) => {
+    return isValidMapValue(ThreeDTransformData.transformMap[index]);
+    // return _isValidArrayValue(ThreeDTransformData.transforms[index]);
 })
 
 /*!

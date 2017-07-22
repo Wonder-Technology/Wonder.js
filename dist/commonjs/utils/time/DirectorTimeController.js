@@ -61,10 +61,10 @@ var DirectorTimeController = (function (_super) {
             this.fps = 1000 / deltaTime;
         }
     };
+    DirectorTimeController = __decorate([
+        registerClass_1.registerClass("DirectorTimeController")
+    ], DirectorTimeController);
     return DirectorTimeController;
 }(TimeController_1.TimeController));
-DirectorTimeController = __decorate([
-    registerClass_1.registerClass("DirectorTimeController")
-], DirectorTimeController);
 exports.DirectorTimeController = DirectorTimeController;
 //# sourceMappingURL=DirectorTimeController.js.map

@@ -1,6 +1,6 @@
 import { DomQuery as DomQueryFromCommonlib } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { fromArray as fromArrayFromFrp } from "wonder-frp/dist/es2015/global/Operator";
-import { initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
+import { getNormalMatrix as getNormalMatrixSystem, initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
 import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import { hasIndices, initData as initGeometryDataSystem, setIndices, setVertices } from "../component/geometry/GeometrySystem";
 import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
@@ -20,6 +20,8 @@ import { initData as initSceneDataSystem } from "../core/entityObject/scene/Scen
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
+import { initData as initLightDataSystem } from "../component/light/LightSystem";
+import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 export var DomQuery = DomQueryFromCommonlib;
 export var fromArray = fromArrayFromFrp;
@@ -35,10 +37,12 @@ export var initArrayBufferData = initArrayBufferDataSystem;
 export var initIndexBufferData = initIndexBufferDataSystem;
 export var initDeviceManagerData = initDeviceManagerDataSystem;
 export var initCameraControllerData = initCameraControllerDataSystem;
+export var initLightData = initLightDataSystem;
 export var initGameObjectData = initGameObjectDataSystem;
 export var initSceneData = initSceneDataSystem;
 export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
 export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
+export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
 export var createState = createStateUtils;
 export var useProgram = use;
 export var sendAttributeData = sendAttributeDataSystem;
@@ -49,4 +53,5 @@ export var setGeometryVertices = setVertices;
 export var hasGeometryIndices = hasIndices;
 export var getShaderIndex = getShaderIndexSystem;
 export var updateSystem = updateAllSystems;
+export var getNormalMatrix = getNormalMatrixSystem;
 //# sourceMappingURL=forUnitTest.js.map

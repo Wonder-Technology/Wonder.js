@@ -26,11 +26,11 @@ var Tag = (function (_super) {
     function Tag() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Tag = __decorate([
+        registerClass("Tag")
+    ], Tag);
     return Tag;
 }(Component));
-Tag = __decorate([
-    registerClass("Tag")
-], Tag);
 export { Tag };
 export var createTag = function (slotCount) {
     if (slotCount === void 0) { slotCount = 4; }

@@ -1,7 +1,7 @@
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "./objectUtils";
 import { clearCacheMap } from "../component/transform/cacheSystem";
 import { getSlotCount, getUsedSlotCount, setNextIndexInTagArrayMap } from "../component/tag/TagSystem";
-import { isNotValidVal } from "./arrayUtils";
+import { isNotValidVal, isValidVal } from "./arrayUtils";
 import { MemoryConfig } from "../config/MemoryConfig";
 import { ensureFunc, it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -162,17 +162,29 @@ export var reAllocateTag = function (TagData) {
 export var reAllocateGeometry = ensureFunc(function (returnVal, GeometryData) {
     checkIndexShouldEqualCount(GeometryData);
 }, function (GeometryData) {
-    var val = null, index = GeometryData.index, vertices = GeometryData.vertices, indices = GeometryData.indices, verticesInfoList = GeometryData.verticesInfoList, indicesInfoList = GeometryData.indicesInfoList, gameObjectMap = GeometryData.gameObjectMap, geometryMap = GeometryData.geometryMap, computeDataFuncMap = GeometryData.computeDataFuncMap, configDataMap = GeometryData.configDataMap, verticesCacheMap = GeometryData.verticesCacheMap, indicesCacheMap = GeometryData.indicesCacheMap, newIndexInArrayBuffer = 0, newVerticesOffset = 0, newIndicesOffset = 0, newVertivesInfoList = [], newIndicesInfoList = [], newGameObjectMap = createMap(), newGeometryMap = createMap(), newComputeDatafuncMap = createMap(), newConfigDataMap = [], newVerticesCacheMap = [], newIndicesCacheMap = [], newVertices = [], newIndices = [], disposedIndexArray = [];
+    var val = null, index = GeometryData.index, vertices = GeometryData.vertices, normals = GeometryData.normals, texCoords = GeometryData.texCoords, indices = GeometryData.indices, verticesInfoList = GeometryData.verticesInfoList, normalsInfoList = GeometryData.normalsInfoList, texCoordsInfoList = GeometryData.texCoordsInfoList, indicesInfoList = GeometryData.indicesInfoList, gameObjectMap = GeometryData.gameObjectMap, geometryMap = GeometryData.geometryMap, computeDataFuncMap = GeometryData.computeDataFuncMap, configDataMap = GeometryData.configDataMap, verticesCacheMap = GeometryData.verticesCacheMap, normalsCacheMap = GeometryData.normalsCacheMap, texCoordsCacheMap = GeometryData.texCoordsCacheMap, indicesCacheMap = GeometryData.indicesCacheMap, newIndexInArrayBuffer = 0, newVerticesOffset = 0, newNormalsOffset = 0, newTexCoordsOffset = 0, newIndicesOffset = 0, newVertivesInfoList = [], newNormalsInfoList = [], newTexCoordsInfoList = [], newIndicesInfoList = [], newGameObjectMap = createMap(), newGeometryMap = createMap(), newComputeDatafuncMap = createMap(), newConfigDataMap = [], newVerticesCacheMap = [], newNormalsCacheMap = [], newTexCoordsCacheMap = [], newIndicesCacheMap = [], newVertices = [], newNormals = [], newTexCoords = [], newIndices = [], disposedIndexArray = [];
     for (var i = 0; i < index; i++) {
-        var verticesInfo = verticesInfoList[i], indicesInfo = indicesInfoList[i];
         val = geometryMap[i];
         if (isNotValidMapValue(val)) {
             disposedIndexArray.push(i);
             continue;
         }
+        var verticesInfo = verticesInfoList[i], normalsInfo = normalsInfoList[i], texCoordsInfo = texCoordsInfoList[i], indicesInfo = indicesInfoList[i];
         _updateInfoList(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo, newVerticesOffset);
+        if (isValidVal(normalsInfo)) {
+            _updateInfoList(newNormalsInfoList, newIndexInArrayBuffer, normalsInfo, newNormalsOffset);
+        }
+        if (isValidVal(texCoordsInfo)) {
+            _updateInfoList(newTexCoordsInfoList, newIndexInArrayBuffer, texCoordsInfo, newTexCoordsOffset);
+        }
         _updateInfoList(newIndicesInfoList, newIndexInArrayBuffer, indicesInfo, newIndicesOffset);
         newVerticesOffset = _fillTypeArr(newVertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
+        if (isValidVal(normalsInfo)) {
+            newNormalsOffset = _fillTypeArr(newNormals, newNormalsOffset, normals, normalsInfo.startIndex, normalsInfo.endIndex);
+        }
+        if (isValidVal(texCoordsInfo)) {
+            newTexCoordsOffset = _fillTypeArr(newTexCoords, newTexCoordsOffset, texCoords, texCoordsInfo.startIndex, texCoordsInfo.endIndex);
+        }
         newIndicesOffset = _fillTypeArr(newIndices, newIndicesOffset, indices, indicesInfo.startIndex, indicesInfo.endIndex);
         _updateComponentIndex(geometryMap, newGeometryMap, i, newIndexInArrayBuffer);
         val = computeDataFuncMap[i];
@@ -181,6 +193,10 @@ export var reAllocateGeometry = ensureFunc(function (returnVal, GeometryData) {
         _setMapVal(newConfigDataMap, newIndexInArrayBuffer, val);
         val = verticesCacheMap[i];
         _setMapVal(newVerticesCacheMap, newIndexInArrayBuffer, val);
+        val = normalsCacheMap[i];
+        _setMapVal(newNormalsCacheMap, newIndexInArrayBuffer, val);
+        val = texCoordsCacheMap[i];
+        _setMapVal(newTexCoordsCacheMap, newIndexInArrayBuffer, val);
         val = indicesCacheMap[i];
         _setMapVal(newIndicesCacheMap, newIndexInArrayBuffer, val);
         val = geometryMap[i];
@@ -190,16 +206,24 @@ export var reAllocateGeometry = ensureFunc(function (returnVal, GeometryData) {
         newIndexInArrayBuffer += 1;
     }
     set(GeometryData.vertices, newVertices);
+    set(GeometryData.normals, newNormals);
+    set(GeometryData.texCoords, newTexCoords);
     set(GeometryData.indices, newIndices);
     GeometryData.gameObjectMap = newGameObjectMap;
     GeometryData.verticesInfoList = newVertivesInfoList;
+    GeometryData.normalsInfoList = newNormalsInfoList;
+    GeometryData.texCoordsInfoList = newTexCoordsInfoList;
     GeometryData.indicesInfoList = newIndicesInfoList;
     GeometryData.geometryMap = newGeometryMap;
     GeometryData.computeDataFuncMap = newComputeDatafuncMap;
     GeometryData.configDataMap = newConfigDataMap;
     GeometryData.verticesCacheMap = newVerticesCacheMap;
+    GeometryData.normalsCacheMap = newNormalsCacheMap;
+    GeometryData.texCoordsCacheMap = newTexCoordsCacheMap;
     GeometryData.indicesCacheMap = newIndicesCacheMap;
     GeometryData.verticesOffset = newVerticesOffset;
+    GeometryData.normalsOffset = newNormalsOffset;
+    GeometryData.texCoordsOffset = newTexCoordsOffset;
     GeometryData.indicesOffset = newIndicesOffset;
     GeometryData.index = newIndexInArrayBuffer;
     return disposedIndexArray;

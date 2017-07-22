@@ -6,9 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("wonder-frp/dist/commonjs/stream/ConcatStream");
-require("wonder-frp/dist/commonjs/stream/IgnoreElementsStream");
-require("wonder-frp/dist/commonjs/extend/root");
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var singleton_1 = require("../definition/typescript/decorator/singleton");
 var DirectorTimeController_1 = require("../utils/time/DirectorTimeController");
@@ -23,13 +20,11 @@ var SceneSystem_1 = require("./entityObject/scene/SceneSystem");
 var GeometrySystem_1 = require("../component/geometry/GeometrySystem");
 var WebGLRenderSystem_1 = require("../renderer/render/WebGLRenderSystem");
 var GeometryData_1 = require("../component/geometry/GeometryData");
-var Geometry_1 = require("../component/geometry/Geometry");
 var MaterialSystem_1 = require("../component/material/MaterialSystem");
 var MeshRendererSystem_1 = require("../component/renderer/MeshRendererSystem");
 var TagSystem_1 = require("../component/tag/TagSystem");
 var Tag_1 = require("../component/tag/Tag");
 var ThreeDTransform_1 = require("../component/transform/ThreeDTransform");
-var Material_1 = require("../component/material/Material");
 var MeshRenderer_1 = require("../component/renderer/MeshRenderer");
 var CameraControllerSystem_1 = require("../component/camera/CameraControllerSystem");
 var PerspectiveCameraData_1 = require("../component/camera/PerspectiveCameraData");
@@ -38,6 +33,13 @@ var CameraControllerData_1 = require("../component/camera/CameraControllerData")
 var CameraController_1 = require("../component/camera/CameraController");
 var DeviceManager_1 = require("../renderer/device/DeviceManager");
 var Scheduler_1 = require("./Scheduler");
+var LightSystem_1 = require("../component/light/LightSystem");
+var AmbientLight_1 = require("../component/light/AmbientLight");
+var DirectionLight_1 = require("../component/light/DirectionLight");
+var BasicMaterial_1 = require("../component/material/BasicMaterial");
+var LightMaterial_1 = require("../component/material/LightMaterial");
+var BoxGeometry_1 = require("../component/geometry/BoxGeometry");
+var CustomGeometry_1 = require("../component/geometry/CustomGeometry");
 var Director = (function () {
     function Director() {
         this.scene = SceneSystem_1.create(GameObjectData_1.GameObjectData);
@@ -101,19 +103,19 @@ var Director = (function () {
         elapsed = this._timeController.computeElapseTime(time);
         return DirectorSystem_1.run(elapsed, state, this._timeController, this.scheduler);
     };
+    Director = __decorate([
+        singleton_1.singleton(true),
+        registerClass_1.registerClass("Director")
+    ], Director);
     return Director;
 }());
-Director = __decorate([
-    singleton_1.singleton(true),
-    registerClass_1.registerClass("Director")
-], Director);
 exports.Director = Director;
-GeometrySystem_1.addAddComponentHandle(Geometry_1.Geometry);
-GeometrySystem_1.addDisposeHandle(Geometry_1.Geometry);
-GeometrySystem_1.addInitHandle(Geometry_1.Geometry);
-MaterialSystem_1.addAddComponentHandle(Material_1.Material);
-MaterialSystem_1.addDisposeHandle(Material_1.Material);
-MaterialSystem_1.addInitHandle(Material_1.Material);
+GeometrySystem_1.addAddComponentHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+GeometrySystem_1.addDisposeHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+GeometrySystem_1.addInitHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+MaterialSystem_1.addAddComponentHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
+MaterialSystem_1.addDisposeHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
+MaterialSystem_1.addInitHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
 MeshRendererSystem_1.addAddComponentHandle(MeshRenderer_1.MeshRenderer);
 MeshRendererSystem_1.addDisposeHandle(MeshRenderer_1.MeshRenderer);
 TagSystem_1.addAddComponentHandle(Tag_1.Tag);
@@ -122,4 +124,6 @@ ThreeDTransformSystem_1.addAddComponentHandle(ThreeDTransform_1.ThreeDTransform)
 ThreeDTransformSystem_1.addDisposeHandle(ThreeDTransform_1.ThreeDTransform);
 CameraControllerSystem_1.addAddComponentHandle(CameraController_1.CameraController);
 CameraControllerSystem_1.addDisposeHandle(CameraController_1.CameraController);
+LightSystem_1.addAddComponentHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight);
+LightSystem_1.addDisposeHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight);
 //# sourceMappingURL=Director.js.map

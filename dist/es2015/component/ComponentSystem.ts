@@ -7,6 +7,7 @@ import { it, requireCheckFunc } from "../definition/typescript/decorator/contrac
 import { deleteBySwap, deleteVal, isNotValidMapValue } from "../utils/objectUtils";
 import { Map as MapImmutable } from "immutable";
 import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
+import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
 
 var _addHandle = (_class: any, handleMap: object, handle: Function) => {
     var typeID = getTypeIDFromClass(_class);

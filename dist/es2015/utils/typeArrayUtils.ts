@@ -3,6 +3,10 @@ import { Vector3 } from "../math/Vector3";
 import { Quaternion } from "../math/Quaternion";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { Matrix3 } from "../math/Matrix3";
+import { TypeArr } from "../renderer/type/dataType";
+
+export var getMatrix3DataSize = () => 9;
 
 export var getMatrix4DataSize = () => 16;
 
@@ -10,32 +14,52 @@ export var getVector3DataSize = () => 3;
 
 export var getQuaternionDataSize = () => 4;
 
-export var getSlice = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+export var getSlice = (typeArr: TypeArr, startIndex: number, endIndex: number) => {
     return typeArr.slice(startIndex, endIndex);
 }
 
-export var getSubarray = (typeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+export var getSubarray = (typeArr: TypeArr, startIndex: number, endIndex: number) => {
     return typeArr.subarray(startIndex, endIndex);
 }
 
-export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array) => {
+export var deleteBySwapAndNotReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
 }
 
-export var deleteBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array, length: number, defaultValueArr: Array<number>) => {
+export var deleteBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr, length: number, defaultValueArr: Array<number>) => {
     for (let i = 0; i < length; i++) {
         typeArr[sourceIndex + i] = typeArr[targetIndex + i];
         typeArr[targetIndex + i] = defaultValueArr[i];
     }
 }
 
-export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: Float32Array | Uint32Array | Uint16Array, defaultValue: number) => {
+export var deleteSingleValueBySwapAndReset = (sourceIndex: number, lastIndex: number, typeArr: TypeArr, resetValue: any) => {
+    typeArr[sourceIndex] = typeArr[lastIndex];
+    typeArr[lastIndex] = resetValue;
+}
+
+
+export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: number, typeArr: TypeArr, defaultValue: number) => {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
 }
 
-export var set = (typeArr: Float32Array | Uint32Array | Uint16Array, valArr: Array<number>, offset = 0) => {
+export var set = (typeArr: TypeArr, valArr: Array<number>, offset = 0) => {
     typeArr.set(valArr, offset);
+}
+
+export var setMatrices3 = (typeArr: Float32Array, mat: Matrix3, index: number) => {
+    var values = mat.values;
+
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
 }
 
 export var setMatrices = (typeArr: Float32Array, mat: Matrix4, index: number) => {
@@ -157,3 +181,31 @@ export var createVector3ByIndex = (vec: Vector3, typeArr: Float32Array, index: n
 // }, (typeArr: Float32Array, increment: number, startIndex: number, target: any) => {
 //     typeArr[startIndex + increment] = target;
 // })
+
+export var fillTypeArr = requireCheckFunc((typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(count + startIndex).lte(typeArr.length);
+    });
+}, (typeArr: Float32Array | Uint32Array | Uint16Array, dataArr: Array<number>, startIndex: number, count: number) => {
+    // for (let i = 0; i < count; i++) {
+    //     typeArr[i + startIndex] = dataArr[i];
+    // }
+    typeArr.set(dataArr, startIndex);
+})
+
+export var setTypeArrayValue = requireCheckFunc((typeArr: TypeArr, index: number, value: number) => {
+    it("should not exceed type arr's length", () => {
+        expect(index).lte(typeArr.length - 1);
+    });
+}, (typeArr: Float32Array, index: number, value: number) => {
+    typeArr[index] = value;
+})
+
+export var setSingleValue = (typeArr: TypeArr, index: number, value: number) => {
+    var size = 1,
+        i = index * size;
+
+    setTypeArrayValue(typeArr, i, value);
+}
+
+export var computeBufferLength = (count: number, size: number) => count * size;

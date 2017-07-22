@@ -1,8 +1,8 @@
 var SceneData = (function () {
     function SceneData() {
     }
+    SceneData.cameraArray = null;
     return SceneData;
 }());
 export { SceneData };
-SceneData.cameraArray = null;
 //# sourceMappingURL=SceneData.js.map

@@ -41,12 +41,12 @@ var TimeController = (function () {
         }
         return this.elapsed;
     };
+    __decorate([
+        contract_1.ensure(function () {
+            contract_1.assert(this.elapsed >= 0, Log_1.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+        })
+    ], TimeController.prototype, "computeElapseTime", null);
     return TimeController;
 }());
-__decorate([
-    contract_1.ensure(function () {
-        contract_1.assert(this.elapsed >= 0, Log_1.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
-    })
-], TimeController.prototype, "computeElapseTime", null);
 exports.TimeController = TimeController;
 //# sourceMappingURL=TimeController.js.map

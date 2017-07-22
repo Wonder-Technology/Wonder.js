@@ -1,1 +1,1 @@
-{"version":3,"file":"IndexBufferWorkerData.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/buffer/IndexBufferWorkerData.ts"],"names":[],"mappings":"AAAA;IAAA;IAEA,CAAC;IAAD,4BAAC;AAAD,CAAC,AAFD;;AACkB,6BAAO,GAAuB,IAAI,CAAC"}
+{"version":3,"file":"IndexBufferWorkerData.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/buffer/IndexBufferWorkerData.ts"],"names":[],"mappings":"AAAA;IAAA;IAEA,CAAC;IADiB,6BAAO,GAAuB,IAAI,CAAC;IACrD,4BAAC;CAAA,AAFD,IAEC;SAFY,qBAAqB"}

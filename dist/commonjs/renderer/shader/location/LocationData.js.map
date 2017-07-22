@@ -1,1 +1,1 @@
-{"version":3,"file":"LocationData.js","sourceRoot":"","sources":["../../../../../src/renderer/shader/location/LocationData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAIA,CAAC;IAAD,mBAAC;AAAD,CAAC,AAJD;AACkB,iCAAoB,GAAyB,IAAI,CAAC;AAClD,+BAAkB,GAAuB,IAAI,CAAC;AAFnD,oCAAY"}
+{"version":3,"file":"LocationData.js","sourceRoot":"","sources":["../../../../../src/renderer/shader/location/LocationData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAIA,CAAC;IAHiB,iCAAoB,GAAyB,IAAI,CAAC;IAClD,+BAAkB,GAAuB,IAAI,CAAC;IAEhE,mBAAC;CAAA,AAJD,IAIC;AAJY,oCAAY"}

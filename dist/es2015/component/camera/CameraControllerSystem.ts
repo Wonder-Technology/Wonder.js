@@ -20,6 +20,7 @@ import { Matrix4 } from "../../math/Matrix4";
 import { CameraControllerData } from "./CameraControllerData";
 import { PerspectiveCameraData } from "./PerspectiveCameraData";
 import { CameraData } from "./CameraData";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);

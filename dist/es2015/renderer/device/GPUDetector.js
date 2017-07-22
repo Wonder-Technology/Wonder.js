@@ -115,12 +115,12 @@ var GPUDetector = (function () {
             this.precision = EGPUPrecision.HIGHP;
         }
     };
+    GPUDetector = __decorate([
+        singleton(),
+        registerClass("GPUDetector")
+    ], GPUDetector);
     return GPUDetector;
 }());
-GPUDetector = __decorate([
-    singleton(),
-    registerClass("GPUDetector")
-], GPUDetector);
 export { GPUDetector };
 export var EGPUPrecision;
 (function (EGPUPrecision) {

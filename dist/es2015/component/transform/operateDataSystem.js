@@ -116,11 +116,11 @@ export var moveMapDataToIndex = ensureFunc(function (returnVal, sourceIndex, tar
 export var moveTypeArrDataToIndex = function (sourceIndex, targetIndex, ThreeDTransformData) {
     return _changeTypeArrData(sourceIndex, targetIndex, _moveToTypeArr, ThreeDTransformData);
 };
-export var setTransformDataInTypeArr = function (indexInArrayBuffer, mat, qua, positionVec, scaleVec, ThreeDTransformData) {
-    setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
-    setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
-    setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
-    setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(indexInArrayBuffer), ThreeDTransformData);
+export var setTransformDataInTypeArr = function (index, mat, qua, positionVec, scaleVec, ThreeDTransformData) {
+    setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(index), ThreeDTransformData);
+    setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
+    setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
+    setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(index), ThreeDTransformData);
 };
 export var setLocalToWorldMatricesData = function (mat, mat4IndexInArrayBuffer, ThreeDTransformData) {
     setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
@@ -137,19 +137,19 @@ export var setLocalScaleData = function (scale, vec3IndexInArrayBuffer, ThreeDTr
     setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
     return ThreeDTransformData;
 };
-export var setPositionData = function (indexInArrayBuffer, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData) {
+export var setPositionData = function (index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData) {
     if (isParentExist(parent)) {
-        var indexInArrayBuffer_1 = parent.index;
+        var index_1 = parent.index;
         setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
-            uid: getUID(indexInArrayBuffer_1, ThreeDTransformData),
-            index: indexInArrayBuffer_1
+            uid: getUID(index_1, ThreeDTransformData),
+            index: index_1
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }
     else {
         setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
 };
-export var getMatrix4DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getMatrix4DataSize(); };
-export var getVector3DataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getVector3DataSize(); };
-export var getQuaternionDataIndexInArrayBuffer = function (indexInArrayBuffer) { return indexInArrayBuffer * getQuaternionDataSize(); };
+export var getMatrix4DataIndexInArrayBuffer = function (index) { return index * getMatrix4DataSize(); };
+export var getVector3DataIndexInArrayBuffer = function (index) { return index * getVector3DataSize(); };
+export var getQuaternionDataIndexInArrayBuffer = function (index) { return index * getQuaternionDataSize(); };
 //# sourceMappingURL=operateDataSystem.js.map

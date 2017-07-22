@@ -6,6 +6,6 @@ export declare class DeviceManager {
     readonly viewport: any;
     view: View;
     private constructor();
-    createGL(canvasId: string, contextConfig: ContextConfigData): any;
+    createGL(canvasID: string, contextConfig: ContextConfigData): any;
 }
 export declare var setDeviceManagerGL: (gl: WebGLRenderingContext) => any;

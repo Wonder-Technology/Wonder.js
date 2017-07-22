@@ -1,9 +1,9 @@
 var LocationData = (function () {
     function LocationData() {
     }
+    LocationData.attributeLocationMap = null;
+    LocationData.uniformLocationMap = null;
     return LocationData;
 }());
 export { LocationData };
-LocationData.attributeLocationMap = null;
-LocationData.uniformLocationMap = null;
 //# sourceMappingURL=LocationData.js.map

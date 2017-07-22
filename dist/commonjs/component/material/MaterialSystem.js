@@ -4,9 +4,7 @@ var contract_1 = require("../../definition/typescript/decorator/contract");
 var Color_1 = require("../../structure/Color");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var ComponentSystem_1 = require("../ComponentSystem");
-var contractUtils_1 = require("../utils/contractUtils");
 var MaterialData_1 = require("./MaterialData");
-var DataBufferConfig_1 = require("../../config/DataBufferConfig");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
 var materialUtils_1 = require("../../renderer/utils/material/materialUtils");
 var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
@@ -19,45 +17,64 @@ var LocationData_1 = require("../../renderer/shader/location/LocationData");
 var GLSLSenderData_1 = require("../../renderer/shader/glslSender/GLSLSenderData");
 var arrayBufferUtils_1 = require("../../utils/arrayBufferUtils");
 var arrayUtils_1 = require("../../utils/arrayUtils");
-exports.addAddComponentHandle = function (_class) {
-    ComponentSystem_1.addAddComponentHandle(_class, exports.addComponent);
+var BasicMaterialSystem_1 = require("./BasicMaterialSystem");
+var LightMaterialSystem_1 = require("./LightMaterialSystem");
+var BasicMaterialData_1 = require("./BasicMaterialData");
+var LightMaterialData_1 = require("./LightMaterialData");
+var bufferUtils_1 = require("../../renderer/utils/material/bufferUtils");
+var ShaderSystem_2 = require("../../renderer/shader/ShaderSystem");
+var operateBufferDataUtils_1 = require("../utils/operateBufferDataUtils");
+var operateBufferDataUtils_2 = require("../../renderer/utils/common/operateBufferDataUtils");
+var DirectionLightData_1 = require("../light/DirectionLightData");
+var PointLightData_1 = require("../light/PointLightData");
+var MapManagerSystem_1 = require("../../renderer/texture/MapManagerSystem");
+var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
+var basicMaterialUtils_1 = require("../../renderer/utils/material/basicMaterialUtils");
+var lightMaterialUtils_1 = require("../../renderer/utils/material/lightMaterialUtils");
+var ShaderData_1 = require("../../renderer/shader/ShaderData");
+exports.addAddComponentHandle = function (BasicMaterial, LightMaterial) {
+    ComponentSystem_1.addAddComponentHandle(BasicMaterial, BasicMaterialSystem_1.addComponent);
+    ComponentSystem_1.addAddComponentHandle(LightMaterial, LightMaterialSystem_1.addComponent);
 };
-exports.addDisposeHandle = function (_class) {
-    ComponentSystem_1.addDisposeHandle(_class, exports.disposeComponent);
+exports.addDisposeHandle = function (BasicMaterial, LightMaterial) {
+    ComponentSystem_1.addDisposeHandle(BasicMaterial, BasicMaterialSystem_1.disposeComponent);
+    ComponentSystem_1.addDisposeHandle(LightMaterial, LightMaterialSystem_1.disposeComponent);
 };
-exports.addInitHandle = function (_class) {
-    ComponentSystem_1.addInitHandle(_class, exports.initMaterial);
+exports.addInitHandle = function (BasicMaterial, LightMaterial) {
+    ComponentSystem_1.addInitHandle(BasicMaterial, BasicMaterialSystem_1.initMaterial);
+    ComponentSystem_1.addInitHandle(LightMaterial, LightMaterialSystem_1.initMaterial);
 };
-exports.create = contract_1.requireCheckFunc(function (material, className, MaterialData) {
-    contractUtils_1.checkIndexShouldEqualCount(MaterialData);
-}, function (material, className, MaterialData) {
-    var index = ComponentSystem_1.generateComponentIndex(MaterialData);
-    material.index = index;
-    MaterialData.count += 1;
+exports.create = function (index, material, ShaderData, MaterialData) {
     MaterialData.materialMap[index] = material;
+    ShaderSystem_2.create(ShaderData);
     return material;
-});
-var _createDefaultColor = function () {
-    var color = Color_1.Color.create();
-    return color.setColorByNum("#ffffff");
 };
-exports.init = contract_1.requireCheckFunc(function (state, MaterialData) {
-    contractUtils_1.checkIndexShouldEqualCount(MaterialData);
-}, function (state, MaterialData) {
-    for (var i = 0, count = MaterialData.count; i < count; i++) {
-        exports.initMaterial(i, state);
+exports.init = function (state, gl, TextureData, MaterialData, BasicMaterialData, LightMaterialData) {
+    _initMaterials(state, bufferUtils_1.getBasicMaterialBufferStartIndex(), basicMaterialUtils_1.getClassName(), BasicMaterialData, MaterialData);
+    _initMaterials(state, bufferUtils_1.getLightMaterialBufferStartIndex(), lightMaterialUtils_1.getClassName(), LightMaterialData, MaterialData);
+    MapManagerSystem_1.initMapManagers(gl, TextureData);
+};
+var _initMaterials = function (state, startIndex, className, SpecifyMaterialData, MaterialData) {
+    for (var i = startIndex; i < SpecifyMaterialData.index; i++) {
+        exports.initMaterial(i, state, className, MaterialData);
     }
-});
+};
 exports.initMaterial = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
-    exports.initMaterial = function (index, state) {
-        MaterialData_1.MaterialData.workerInitList.push(index);
+    exports.initMaterial = function (index, state, className, MaterialData) {
+        MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
+    };
+    var _buildWorkerInitData = function (index, className) {
+        return {
+            index: index,
+            className: className
+        };
     };
 }
 else {
-    exports.initMaterial = function (index, state) {
-        var shaderIndex = exports.getShaderIndex(index, MaterialData_1.MaterialData);
-        ShaderSystem_1.init(state, index, shaderIndex, materialUtils_1.getMaterialClassNameFromTable(shaderIndex, MaterialData_1.MaterialData.materialClassNameTable), material_config_1.material_config, shaderLib_generator_1.shaderLib_generator, DeviceManagerData_1.DeviceManagerData, ProgramData_1.ProgramData, LocationData_1.LocationData, GLSLSenderData_1.GLSLSenderData, MaterialData_1.MaterialData);
+    exports.initMaterial = function (index, state, className, MaterialData) {
+        var shaderIndex = ShaderSystem_1.init(state, index, className, material_config_1.material_config, shaderLib_generator_1.shaderLib_generator, materialUtils_1.buildInitShaderDataMap(DeviceManagerData_1.DeviceManagerData, ProgramData_1.ProgramData, LocationData_1.LocationData, GLSLSenderData_1.GLSLSenderData, ShaderData_1.ShaderData, MapManagerData_1.MapManagerData, MaterialData, BasicMaterialData_1.BasicMaterialData, LightMaterialData_1.LightMaterialData, DirectionLightData_1.DirectionLightData, PointLightData_1.PointLightData));
+        materialUtils_1.setShaderIndex(index, shaderIndex, MaterialData);
     };
 }
 exports.clearWorkerInitList = null;
@@ -76,23 +93,15 @@ exports.hasNewInitedMaterial = function (MaterialData) {
 exports.getShaderIndex = function (materialIndex, MaterialData) {
     return MaterialData.shaderIndices[materialIndex];
 };
-exports.getShaderIndexFromTable = materialUtils_1.getShaderIndexFromTable;
-exports.setShaderIndex = function (materialIndex, shader, MaterialData) {
-    _setTypeArrayValue(MaterialData.shaderIndices, materialIndex, shader.index);
-};
 exports.getColor = function (materialIndex, MaterialData) {
-    var color = Color_1.Color.create(), colors = MaterialData.colors, size = materialUtils_1.getColorDataSize(), index = materialIndex * size;
-    color.r = colors[index];
-    color.g = colors[index + 1];
-    color.b = colors[index + 2];
-    return color;
+    return operateBufferDataUtils_1.getColor3Data(materialIndex, MaterialData.colors);
 };
-exports.getColorArr3 = materialUtils_1.getColorArr3;
+exports.getColorArr3 = operateBufferDataUtils_2.getColorArr3;
 exports.setColor = function (materialIndex, color, MaterialData) {
-    var r = color.r, g = color.g, b = color.b, colors = MaterialData.colors, size = materialUtils_1.getColorDataSize(), index = materialIndex * size;
-    _setTypeArrayValue(colors, index, r);
-    _setTypeArrayValue(colors, index + 1, g);
-    _setTypeArrayValue(colors, index + 2, b);
+    exports.setColorData(materialIndex, color, MaterialData.colors);
+};
+exports.setColorData = function (materialIndex, color, colors) {
+    operateBufferDataUtils_1.setColor3Data(materialIndex, color, colors);
 };
 exports.getOpacity = materialUtils_1.getOpacity;
 exports.setOpacity = contract_1.requireCheckFunc(function (materialIndex, opacity, MaterialData) {
@@ -105,7 +114,7 @@ exports.setOpacity = contract_1.requireCheckFunc(function (materialIndex, opacit
     });
 }, function (materialIndex, opacity, MaterialData) {
     var size = materialUtils_1.getOpacityDataSize(), index = materialIndex * size;
-    _setTypeArrayValue(MaterialData.opacities, index, opacity);
+    typeArrayUtils_1.setTypeArrayValue(MaterialData.opacities, index, opacity);
 });
 exports.getAlphaTest = materialUtils_1.getAlphaTest;
 exports.setAlphaTest = contract_1.requireCheckFunc(function (materialIndex, alphaTest, MaterialData) {
@@ -114,82 +123,79 @@ exports.setAlphaTest = contract_1.requireCheckFunc(function (materialIndex, alph
     });
 }, function (materialIndex, alphaTest, MaterialData) {
     var size = materialUtils_1.getAlphaTestDataSize(), index = materialIndex * size;
-    _setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
+    typeArrayUtils_1.setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
 });
-exports.addComponent = function (component, gameObject) {
-    ComponentSystem_1.addComponentToGameObjectMap(MaterialData_1.MaterialData.gameObjectMap, component.index, gameObject);
+exports.addComponent = function (component, gameObject, MaterialData) {
+    ComponentSystem_1.addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 };
-exports.disposeComponent = contract_1.ensureFunc(function (returnVal, component) {
-    contractUtils_1.checkIndexShouldEqualCount(MaterialData_1.MaterialData);
-}, contract_1.requireCheckFunc(function (component) {
-    _checkDisposeComponentWorker(component);
-}, function (component) {
-    var sourceIndex = component.index, lastComponentIndex = null, colorDataSize = materialUtils_1.getColorDataSize(), opacityDataSize = materialUtils_1.getOpacityDataSize(), alphaTestDataSize = materialUtils_1.getAlphaTestDataSize();
-    MaterialData_1.MaterialData.count -= 1;
-    MaterialData_1.MaterialData.index -= 1;
-    lastComponentIndex = MaterialData_1.MaterialData.count;
-    typeArrayUtils_1.deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData_1.MaterialData.shaderIndices);
-    typeArrayUtils_1.deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData_1.MaterialData.colors, colorDataSize, MaterialData_1.MaterialData.defaultColorArr);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData_1.MaterialData.opacities, MaterialData_1.MaterialData.defaultOpacity);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, MaterialData_1.MaterialData.alphaTests, MaterialData_1.MaterialData.defaultAlphaTest);
-    arrayUtils_1.deleteBySwap(sourceIndex, lastComponentIndex, MaterialData_1.MaterialData.gameObjectMap);
-    ComponentSystem_1.deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData_1.MaterialData.materialMap);
-}));
+exports.disposeComponent = contract_1.requireCheckFunc(function (sourceIndex, lastComponentIndex, MapManagerData, MaterialData) {
+    _checkDisposeComponentWorker(sourceIndex);
+}, function (sourceIndex, lastComponentIndex, MapManagerData, MaterialData) {
+    var colorDataSize = materialUtils_1.getColorDataSize(), opacityDataSize = materialUtils_1.getOpacityDataSize(), alphaTestDataSize = materialUtils_1.getAlphaTestDataSize();
+    typeArrayUtils_1.deleteBySwapAndNotReset(sourceIndex, lastComponentIndex, MaterialData.shaderIndices);
+    typeArrayUtils_1.deleteBySwapAndReset(sourceIndex * colorDataSize, lastComponentIndex * colorDataSize, MaterialData.colors, colorDataSize, MaterialData.defaultColorArr);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * opacityDataSize, lastComponentIndex * opacityDataSize, MaterialData.opacities, MaterialData.defaultOpacity);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * alphaTestDataSize, lastComponentIndex * alphaTestDataSize, MaterialData.alphaTests, MaterialData.defaultAlphaTest);
+    arrayUtils_1.deleteBySwap(sourceIndex, lastComponentIndex, MaterialData.gameObjectMap);
+    ComponentSystem_1.deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
+    MapManagerSystem_1.dispose(sourceIndex, lastComponentIndex, MapManagerData);
+});
 var _checkDisposeComponentWorker = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _checkDisposeComponentWorker = function (component) {
+    _checkDisposeComponentWorker = function (materialIndex) {
         contract_1.it("should not dispose the material which is inited in the same frame", function () {
-            wonder_expect_js_1.expect(MaterialData_1.MaterialData.workerInitList.indexOf(component.index)).equal(-1);
+            for (var _i = 0, _a = MaterialData_1.MaterialData.workerInitList; _i < _a.length; _i++) {
+                var index = _a[_i].index;
+                wonder_expect_js_1.expect(materialIndex).not.equal(index);
+            }
         });
     };
 }
 else {
-    _checkDisposeComponentWorker = function (component) { };
+    _checkDisposeComponentWorker = function (index) { };
 }
-exports.getGameObject = function (index, Data) {
-    return ComponentSystem_1.getComponentGameObject(Data.gameObjectMap, index);
+exports.getGameObject = function (index, MaterialData) {
+    return ComponentSystem_1.getComponentGameObject(MaterialData.gameObjectMap, index);
 };
-var _setTypeArrayValue = contract_1.requireCheckFunc(function (typeArr, index, value) {
-    contract_1.it("should not exceed type arr's length", function () {
-        wonder_expect_js_1.expect(index).lte(typeArr.length - 1);
-    });
-}, function (typeArr, index, value) {
-    typeArr[index] = value;
-});
 exports.isTestAlpha = materialUtils_1.isTestAlpha;
-exports.initData = function (MaterialData) {
+exports.createDefaultColor = function () {
+    var color = Color_1.Color.create();
+    return color.setColorByNum("#ffffff");
+};
+exports.initData = function (TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData) {
     MaterialData.materialMap = [];
     MaterialData.gameObjectMap = [];
-    MaterialData.index = 0;
-    MaterialData.count = 0;
     MaterialData.workerInitList = [];
-    MaterialData.defaultColorArr = _createDefaultColor().toVector3().toArray();
+    _setMaterialDefaultData(MaterialData);
+    BasicMaterialSystem_1.initData(BasicMaterialData);
+    BasicMaterialSystem_1.setDefaultData(BasicMaterialData);
+    LightMaterialSystem_1.initData(LightMaterialData);
+    LightMaterialSystem_1.setDefaultData(LightMaterialData);
+    _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
+    MapManagerSystem_1.initData(TextureCacheData, TextureData, MapManagerData);
+};
+var _setMaterialDefaultData = function (MaterialData) {
+    MaterialData.defaultShaderIndex = 0;
+    MaterialData.defaultColorArr = exports.createDefaultColor().toVector3().toArray();
     MaterialData.defaultOpacity = 1;
     MaterialData.defaultAlphaTest = -1;
-    _initBufferData(MaterialData);
-    _initTable(MaterialData);
 };
-var _initBufferData = function (MaterialData) {
-    var buffer = null, count = DataBufferConfig_1.DataBufferConfig.materialDataBufferCount, size = Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (materialUtils_1.getColorDataSize() + materialUtils_1.getOpacityDataSize() + materialUtils_1.getAlphaTestDataSize());
-    buffer = arrayBufferUtils_1.createSharedArrayBufferOrArrayBuffer(count * size);
-    materialUtils_1.createTypeArrays(buffer, count, MaterialData);
+var _initBufferData = function (MaterialData, BasicMaterialData, LightMaterialData) {
+    var buffer = null, count = bufferUtils_1.getBufferTotalCount(), offset = null;
+    buffer = arrayBufferUtils_1.createSharedArrayBufferOrArrayBuffer(bufferUtils_1.getBufferLength());
+    offset = materialUtils_1.createTypeArrays(buffer, count, MaterialData);
+    _setMaterialDefaultTypeArrData(count, MaterialData);
+    offset = BasicMaterialSystem_1.createTypeArrays(buffer, offset, bufferUtils_1.getBasicMaterialBufferCount(), BasicMaterialData);
+    offset = LightMaterialSystem_1.createTypeArrays(buffer, offset, bufferUtils_1.getLightMaterialBufferCount(), LightMaterialData);
     MaterialData.buffer = buffer;
-    _addDefaultTypeArrData(count, MaterialData);
 };
-var _addDefaultTypeArrData = function (count, MaterialData) {
-    var color = _createDefaultColor(), opacity = MaterialData.defaultOpacity, alphaTest = MaterialData.defaultAlphaTest;
+var _setMaterialDefaultTypeArrData = function (count, MaterialData) {
+    var shaderIndex = MaterialData.defaultShaderIndex, color = exports.createDefaultColor(), opacity = MaterialData.defaultOpacity, alphaTest = MaterialData.defaultAlphaTest;
     for (var i = 0; i < count; i++) {
+        materialUtils_1.setShaderIndex(i, shaderIndex, MaterialData);
         exports.setColor(i, color, MaterialData);
         exports.setOpacity(i, opacity, MaterialData);
         exports.setAlphaTest(i, alphaTest, MaterialData);
     }
-};
-var _initTable = function (MaterialData) {
-    MaterialData.shaderIndexTable = {
-        "BasicMaterial": 0
-    };
-    MaterialData.materialClassNameTable = {
-        0: "BasicMaterial"
-    };
 };
 //# sourceMappingURL=MaterialSystem.js.map

@@ -1,8 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Shader_1 = require("./Shader");
-var objectUtils_1 = require("../../utils/objectUtils");
-var MaterialSystem_1 = require("../../component/material/MaterialSystem");
 var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
 var shaderUtils_1 = require("../utils/shader/shaderUtils");
 var GeometrySystem_1 = require("../../component/geometry/GeometrySystem");
@@ -10,34 +7,80 @@ var LocationSystem_1 = require("./location/LocationSystem");
 var GLSLSenderSystem_1 = require("./glslSender/GLSLSenderSystem");
 var shaderSourceBuildSystem_1 = require("./shaderSourceBuildSystem");
 var DeviceManagerSystem_1 = require("../device/DeviceManagerSystem");
-exports.create = function (materialClassName, MaterialData, ShaderData) {
-    var index = MaterialSystem_1.getShaderIndexFromTable(materialClassName, MaterialData.shaderIndexTable), shader = ShaderData.shaderMap[index];
-    if (_isShaderExist(shader)) {
-        return shader;
-    }
-    shader = new Shader_1.Shader();
-    shader.index = index;
+var ThreeDTransformData_1 = require("../../component/transform/ThreeDTransformData");
+var GameObjectData_1 = require("../../core/entityObject/gameObject/GameObjectData");
+var AmbientLightSystem_1 = require("../../component/light/AmbientLightSystem");
+var DirectionLightSystem_1 = require("../../component/light/DirectionLightSystem");
+var PointLightSystem_1 = require("../../component/light/PointLightSystem");
+var MapManagerSystem_1 = require("../texture/MapManagerSystem");
+var objectUtils_1 = require("../../utils/objectUtils");
+var lightMaterialUtils_1 = require("../utils/material/lightMaterialUtils");
+exports.create = function (ShaderData) {
     ShaderData.count += 1;
-    return shader;
 };
-var _isShaderExist = function (shader) { return objectUtils_1.isValidMapValue(shader); };
 exports.init = null;
 exports.sendAttributeData = null;
 exports.sendUniformData = null;
 exports.bindIndexBuffer = null;
 exports.use = null;
 if (!WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
-    exports.init = function (state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData) {
-        shaderUtils_1.init(state, materialIndex, shaderIndex, materialClassName, material_config, shaderLib_generator, shaderSourceBuildSystem_1.buildGLSLSource, DeviceManagerSystem_1.getGL, DeviceManagerData, ProgramData, LocationData, GLSLSenderData, MaterialData);
+    exports.init = function (state, materialIndex, materialClassName, material_config, shaderLib_generator, initShaderDataMap) {
+        return shaderUtils_1.init(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
-    exports.sendAttributeData = function (gl, shaderIndex, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData) { return shaderUtils_1.sendAttributeData(gl, shaderIndex, geometryIndex, GeometrySystem_1.getVertices, LocationSystem_1.getAttribLocation, LocationSystem_1.isAttributeLocationNotExist, GLSLSenderSystem_1.sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData); };
-    exports.sendUniformData = function (gl, shaderIndex, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData) {
-        shaderUtils_1.sendUniformData(gl, shaderIndex, {
-            getUniformData: GLSLSenderSystem_1.getUniformData,
-            sendMatrix4: GLSLSenderSystem_1.sendMatrix4,
-            sendVector3: GLSLSenderSystem_1.sendVector3,
-            sendFloat1: GLSLSenderSystem_1.sendFloat1
-        }, MaterialData, ProgramData, LocationData, GLSLSenderData, renderCommandUniformData);
+    var _buildInitShaderFuncDataMap = function () {
+        return {
+            buildGLSLSource: shaderSourceBuildSystem_1.buildGLSLSource,
+            getGL: DeviceManagerSystem_1.getGL,
+            getMapCount: MapManagerSystem_1.getMapCount,
+            hasSpecularMap: lightMaterialUtils_1.hasSpecularMap,
+            hasDiffuseMap: lightMaterialUtils_1.hasDiffuseMap
+        };
+    };
+    exports.sendAttributeData = function (gl, shaderIndex, program, geometryIndex, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData) { return shaderUtils_1.sendAttributeData(gl, shaderIndex, program, geometryIndex, {
+        getVertices: GeometrySystem_1.getVertices,
+        getNormals: GeometrySystem_1.getNormals,
+        getTexCoords: GeometrySystem_1.getTexCoords
+    }, LocationSystem_1.getAttribLocation, LocationSystem_1.isAttributeLocationNotExist, GLSLSenderSystem_1.sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData); };
+    exports.sendUniformData = function (gl, shaderIndex, program, mapCount, drawDataMap, renderCommandUniformData) {
+        shaderUtils_1.sendUniformData(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
+    };
+    var _buildSendUniformDataDataMap = function (drawDataMap) {
+        return {
+            glslSenderData: {
+                getUniformData: GLSLSenderSystem_1.getUniformData,
+                sendMatrix3: GLSLSenderSystem_1.sendMatrix3,
+                sendMatrix4: GLSLSenderSystem_1.sendMatrix4,
+                sendVector3: GLSLSenderSystem_1.sendVector3,
+                sendInt: GLSLSenderSystem_1.sendInt,
+                sendFloat1: GLSLSenderSystem_1.sendFloat1,
+                sendFloat3: GLSLSenderSystem_1.sendFloat3,
+                GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
+            },
+            ambientLightData: {
+                getColorArr3: AmbientLightSystem_1.getColorArr3,
+                AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
+            },
+            directionLightData: {
+                getPosition: function (index) {
+                    return DirectionLightSystem_1.getPosition(index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+                },
+                getColorArr3: DirectionLightSystem_1.getColorArr3,
+                getIntensity: DirectionLightSystem_1.getIntensity,
+                DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
+            },
+            pointLightData: {
+                getPosition: function (index) {
+                    return PointLightSystem_1.getPosition(index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+                },
+                getColorArr3: PointLightSystem_1.getColorArr3,
+                getIntensity: PointLightSystem_1.getIntensity,
+                getConstant: PointLightSystem_1.getConstant,
+                getLinear: PointLightSystem_1.getLinear,
+                getQuadratic: PointLightSystem_1.getQuadratic,
+                getRange: PointLightSystem_1.getRange,
+                PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
+            }
+        };
     };
     exports.bindIndexBuffer = function (gl, geometryIndex, ProgramData, GeometryData, IndexBufferData) {
         shaderUtils_1.bindIndexBuffer(gl, geometryIndex, GeometrySystem_1.getIndices, ProgramData, GeometryData, IndexBufferData);
@@ -47,6 +90,6 @@ if (!WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
 exports.initData = function (ShaderData) {
     ShaderData.index = 0;
     ShaderData.count = 0;
-    ShaderData.shaderMap = objectUtils_1.createMap();
+    ShaderData.shaderLibWholeNameMap = objectUtils_1.createMap();
 };
 //# sourceMappingURL=ShaderSystem.js.map

@@ -24,25 +24,25 @@ export var setBatchDatas = requireCheckFunc(function (batchData, GlobalTempData,
 var _setBatchTransformData = curry(function (batchData, GlobalTempData, ThreeDTransformData) {
     for (var _i = 0, batchData_2 = batchData; _i < batchData_2.length; _i++) {
         var data = batchData_2[_i];
-        var transform = data.transform, indexInArrayBuffer = transform.index, uid = transform.uid, parent_1 = getParent(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(indexInArrayBuffer), position = data.position, localPosition = data.localPosition;
+        var transform = data.transform, index = transform.index, uid = transform.uid, parent_1 = getParent(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(index), position = data.position, localPosition = data.localPosition;
         if (localPosition) {
             setLocalPositionData(localPosition, vec3IndexInArrayBuffer, ThreeDTransformData);
         }
         if (position) {
-            setPositionData(indexInArrayBuffer, parent_1, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
+            setPositionData(index, parent_1, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
         }
     }
     return ThreeDTransformData;
 });
 var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry(function (batchData, ThreeDTransformData) {
     var notDirtyIndexArr = [], firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
-    var _getNotDirtyIndex = function (indexInArrayBuffer, uid, notDirtyIndexArr, isTranslate, ThreeDTransformData) {
+    var _getNotDirtyIndex = function (index, uid, notDirtyIndexArr, isTranslate, ThreeDTransformData) {
         var children = getChildren(uid, ThreeDTransformData);
         if (isTranslate) {
             setIsTranslate(uid, true, ThreeDTransformData);
         }
-        if (isNotDirty(indexInArrayBuffer, firstDirtyIndex)) {
-            notDirtyIndexArr.push(indexInArrayBuffer);
+        if (isNotDirty(index, firstDirtyIndex)) {
+            notDirtyIndexArr.push(index);
             firstDirtyIndex = minusFirstDirtyIndex(firstDirtyIndex);
         }
         if (isChildrenExist(children)) {
@@ -56,20 +56,20 @@ var _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry(function (batchDat
     };
     for (var _i = 0, batchData_3 = batchData; _i < batchData_3.length; _i++) {
         var data = batchData_3[_i];
-        var transform = data.transform, indexInArrayBuffer = transform.index;
-        _getNotDirtyIndex(indexInArrayBuffer, transform.uid, notDirtyIndexArr, isTranslate(data), ThreeDTransformData);
+        var transform = data.transform, index = transform.index;
+        _getNotDirtyIndex(index, transform.uid, notDirtyIndexArr, isTranslate(data), ThreeDTransformData);
     }
     return [notDirtyIndexArr, firstDirtyIndex];
 });
 var _addBatchToDirtyList = function (ThreeDTransformData, targetDirtyIndex, swapFunc, moveToIndexFunc, notDirtyIndexArr) {
     for (var _i = 0, notDirtyIndexArr_1 = notDirtyIndexArr; _i < notDirtyIndexArr_1.length; _i++) {
-        var indexInArrayBuffer = notDirtyIndexArr_1[_i];
+        var index = notDirtyIndexArr_1[_i];
         targetDirtyIndex = minusFirstDirtyIndex(targetDirtyIndex);
         if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
-            swapFunc(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+            swapFunc(index, targetDirtyIndex, ThreeDTransformData);
         }
         else {
-            moveToIndexFunc(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+            moveToIndexFunc(index, targetDirtyIndex, ThreeDTransformData);
         }
     }
     return targetDirtyIndex;

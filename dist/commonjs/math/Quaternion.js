@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var Vector3_1 = require("./Vector3");
 var Global_1 = require("./Global");
-var Quaternion = Quaternion_1 = (function () {
+var Quaternion = (function () {
     function Quaternion(x, y, z, w) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
@@ -24,6 +24,7 @@ var Quaternion = Quaternion_1 = (function () {
         this.z = z;
         this.w = w;
     }
+    Quaternion_1 = Quaternion;
     Quaternion.create = function (x, y, z, w) {
         var obj = new this(x, y, z, w);
         return obj;
@@ -278,11 +279,11 @@ var Quaternion = Quaternion_1 = (function () {
         this.set((num3 * left.x) + (num2 * right.x), (num3 * left.y) + (num2 * right.y), (num3 * left.z) + (num2 * right.z), (num3 * left.w) + (num2 * right.w));
         return this;
     };
+    Quaternion = Quaternion_1 = __decorate([
+        registerClass_1.registerClass("Quaternion")
+    ], Quaternion);
     return Quaternion;
+    var Quaternion_1;
 }());
-Quaternion = Quaternion_1 = __decorate([
-    registerClass_1.registerClass("Quaternion")
-], Quaternion);
 exports.Quaternion = Quaternion;
-var Quaternion_1;
 //# sourceMappingURL=Quaternion.js.map

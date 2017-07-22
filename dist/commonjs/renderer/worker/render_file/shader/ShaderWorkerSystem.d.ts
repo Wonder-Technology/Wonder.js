@@ -1,0 +1,13 @@
+import { RenderCommandUniformData } from "../../../type/dataType";
+import { IMaterialConfig } from "../../../data/material_config";
+import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
+import { Map } from "immutable";
+import { DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
+export declare var init: (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => any;
+export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => void;
+export declare var sendUniformData: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => void;
+export declare var bindIndexBuffer: (gl: WebGLRenderingContext, geometryIndex: number, ProgramWorkerData: any, GeometryWorkerData: any, IndexBufferWorkerData: any) => void;
+export declare var use: (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => any;
+export declare var getDirectionLightPosition: (index: number, drawDataMap: DrawDataMap) => any;
+export declare var getPointLightPosition: (index: number, drawDataMap: DrawDataMap) => any;
+export declare var initData: (ShaderWorkerData: any) => void;

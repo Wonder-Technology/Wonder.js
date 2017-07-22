@@ -1,5 +1,5 @@
-import { GameObject } from "./GameObject";
 import { Component } from "../../../component/Component";
+import { IUIDEntity } from "./IUIDEntity";
 export declare class GameObjectData {
     static uid: number;
     static disposeCount: number;
@@ -15,10 +15,10 @@ export declare type GameObjectComponentData = {
     [typeId: number]: Component;
 };
 export declare type GameObjectParentMap = {
-    [uid: number]: GameObject;
+    [uid: number]: IUIDEntity;
 };
 export declare type GameObjectChildrenMap = {
-    [uid: number]: Array<GameObject>;
+    [uid: number]: Array<IUIDEntity>;
 };
 export declare type GameObjectUIDMap = {
     [uid: number]: boolean;

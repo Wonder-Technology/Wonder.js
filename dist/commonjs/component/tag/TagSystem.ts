@@ -11,6 +11,7 @@ import { createMap, deleteVal } from "../../utils/objectUtils";
 import { forEach } from "../../utils/arrayUtils";
 import { TagData } from "./TagData";
 import { isDisposeTooManyComponents, reAllocateTag } from "../../utils/memoryUtils";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);

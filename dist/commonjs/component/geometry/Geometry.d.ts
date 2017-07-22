@@ -3,6 +3,8 @@ export declare abstract class Geometry extends Component {
 }
 export declare var getDrawMode: Function;
 export declare var getVertices: Function;
+export declare var getNormals: Function;
+export declare var getTexCoords: Function;
 export declare var getIndices: Function;
 export declare var getGeometryConfigData: Function;
 export declare var initGeometry: (geometry: Geometry) => void;

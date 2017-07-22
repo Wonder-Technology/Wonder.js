@@ -1,3 +1,4 @@
+import { IUIDEntity } from "./IUIDEntity";
 export declare class GameObject implements IUIDEntity {
     uid: number;
 }
@@ -15,6 +16,3 @@ export declare var removeGameObject: Function;
 export declare var hasGameObject: Function;
 export declare var getGameObjectChildren: Function;
 export declare var getGameObjectParent: Function;
-export interface IUIDEntity {
-    uid: number;
-}

@@ -3,12 +3,10 @@ export var deleteVal = function (key, arr) { return arr[key] = void 0; };
 export var isNotValidVal = function (val) { return isUndefined(val); };
 export var isValidVal = function (val) { return isNotUndefined(val); };
 export var deleteBySwap = function (index, lastIndex, array) {
-    var temp = null;
     if (lastIndex === -1) {
         return null;
     }
-    temp = array[lastIndex];
-    array[index] = temp;
+    array[index] = array[lastIndex];
     array.pop();
 };
 export var hasDuplicateItems = function (arr) {

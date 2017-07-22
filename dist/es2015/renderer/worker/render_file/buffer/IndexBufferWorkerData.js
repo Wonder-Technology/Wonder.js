@@ -1,8 +1,8 @@
 var IndexBufferWorkerData = (function () {
     function IndexBufferWorkerData() {
     }
+    IndexBufferWorkerData.buffers = null;
     return IndexBufferWorkerData;
 }());
 export { IndexBufferWorkerData };
-IndexBufferWorkerData.buffers = null;
 //# sourceMappingURL=IndexBufferWorkerData.js.map

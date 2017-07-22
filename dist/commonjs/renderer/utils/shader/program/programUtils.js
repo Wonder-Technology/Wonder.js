@@ -7,6 +7,7 @@ var arrayBufferUtils_1 = require("../../buffer/arrayBufferUtils");
 var objectUtils_1 = require("../../../../utils/objectUtils");
 var arrayUtils_1 = require("../../../../utils/arrayUtils");
 var Log_1 = require("../../../../utils/Log");
+var mapManagerUtils_1 = require("../../texture/mapManagerUtils");
 exports.use = contract_1.requireCheckFunc(function (gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) {
     contract_1.it("program should exist", function () {
         wonder_expect_js_1.expect(exports.getProgram(shaderIndex, ProgramDataFromSystem)).exist;
@@ -14,13 +15,14 @@ exports.use = contract_1.requireCheckFunc(function (gl, shaderIndex, ProgramData
 }, function (gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) {
     var program = exports.getProgram(shaderIndex, ProgramDataFromSystem);
     if (ProgramDataFromSystem.lastUsedProgram === program) {
-        return;
+        return program;
     }
     ProgramDataFromSystem.lastUsedProgram = program;
     gl.useProgram(program);
     exports.disableVertexAttribArray(gl, GLSLSenderDataFromSystem);
     ProgramDataFromSystem.lastBindedArrayBuffer = null;
     ProgramDataFromSystem.lastBindedIndexBuffer = null;
+    return program;
 });
 exports.disableVertexAttribArray = contract_1.requireCheckFunc(function (gl, GLSLSenderDataFromSystem) {
     contract_1.it("vertexAttribHistory should has not hole", function () {
@@ -41,7 +43,7 @@ exports.disableVertexAttribArray = contract_1.requireCheckFunc(function (gl, GLS
     GLSLSenderDataFromSystem.vertexAttribHistory = [];
 });
 exports.getMaterialShaderLibConfig = contract_1.requireCheckFunc(function (materialClassName, material_config) {
-    var materialData = material_config[materialClassName];
+    var materialData = material_config.materials[materialClassName];
     contract_1.it("materialClassName should be defined", function () {
         wonder_expect_js_1.expect(materialData).exist;
     });
@@ -49,7 +51,7 @@ exports.getMaterialShaderLibConfig = contract_1.requireCheckFunc(function (mater
         wonder_expect_js_1.expect(materialData.shader.shaderLib).be.a("array");
     });
 }, function (materialClassName, material_config) {
-    return material_config[materialClassName].shader.shaderLib;
+    return material_config.materials[materialClassName].shader.shaderLib;
 });
 exports.registerProgram = function (shaderIndex, ProgramDataFromSystem, program) {
     ProgramDataFromSystem.programMap[shaderIndex] = program;
@@ -86,41 +88,88 @@ var _compileShader = function (gl, glslSource, shader) {
         Log_1.Log.log("source:\n", glslSource);
     }
 };
-exports.sendAttributeData = function (gl, shaderIndex, geometryIndex, getVertices, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerData, ArrayBufferData) {
+exports.sendAttributeData = function (gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem) {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex], attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex], lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
     for (var _i = 0, sendDataArr_1 = sendDataArr; _i < sendDataArr_1.length; _i++) {
-        var sendData = sendDataArr_1[_i];
-        var buffer = arrayBufferUtils_1.getOrCreateBuffer(gl, geometryIndex, sendData.buffer, getVertices, GeometryWorkerData, ArrayBufferData), pos = getAttribLocation(sendData.name, attributeLocationMap);
-        if (isAttributeLocationNotExist(pos)) {
-            return;
-        }
+        var sendData_1 = sendDataArr_1[_i];
+        var bufferName = sendData_1.buffer, buffer = _getOrCreateArrayBuffer(gl, geometryIndex, bufferName, getArrayBufferDataFuncMap, GeometryDataFromSystem, ArrayBufferDataFromSystem), pos = null;
         if (lastBindedArrayBuffer === buffer) {
-            return;
+            continue;
+        }
+        pos = getAttribLocation(gl, program, sendData_1.name, attributeLocationMap);
+        if (isAttributeLocationNotExist(pos)) {
+            continue;
         }
         lastBindedArrayBuffer = buffer;
-        sendBuffer(gl, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferData);
+        sendBuffer(gl, sendData_1.type, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferDataFromSystem);
     }
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
 };
-exports.sendUniformData = function (gl, shaderIndex, _a, MaterialWorkerData, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, renderCommandUniformData) {
-    var getUniformData = _a.getUniformData, sendMatrix4 = _a.sendMatrix4, sendVector3 = _a.sendVector3, sendFloat1 = _a.sendFloat1;
-    var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex], uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex], uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
-    for (var i = 0, len = sendDataArr.length; i < len; i++) {
-        var sendData = sendDataArr[i], name_1 = sendData.name, field = sendData.field, type = sendData.type, from = sendData.from || "cmd", data = getUniformData(field, from, renderCommandUniformData, MaterialWorkerData);
-        switch (type) {
-            case EVariableType_1.EVariableType.MAT4:
-                sendMatrix4(gl, name_1, data, uniformLocationMap);
-                break;
-            case EVariableType_1.EVariableType.VEC3:
-                sendVector3(gl, shaderIndex, name_1, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType_1.EVariableType.FLOAT:
-                sendFloat1(gl, shaderIndex, name_1, data, uniformCacheMap, uniformLocationMap);
-                break;
-            default:
-                Log_1.Log.error(true, Log_1.Log.info.FUNC_INVALID("EVariableType:", type));
-                break;
-        }
+var _getOrCreateArrayBuffer = function (gl, geometryIndex, bufferName, _a, GeometryDataFromSystem, ArrayBufferDataFromSystem) {
+    var getVertices = _a.getVertices, getNormals = _a.getNormals, getTexCoords = _a.getTexCoords;
+    var buffer = null;
+    switch (bufferName) {
+        case "vertex":
+            buffer = arrayBufferUtils_1.getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.vertexBuffer, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        case "normal":
+            buffer = arrayBufferUtils_1.getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        case "texCoord":
+            buffer = arrayBufferUtils_1.getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.texCoordBuffers, getTexCoords, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        default:
+            Log_1.Log.error(true, Log_1.Log.info.FUNC_INVALID("name:" + name));
+            break;
+    }
+    return buffer;
+};
+exports.sendUniformData = function (gl, shaderIndex, program, mapCount, sendDataMap, drawDataMap, renderCommandUniformData) {
+    var uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex], uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
+    _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, drawDataMap, uniformLocationMap, uniformCacheMap, renderCommandUniformData);
+    _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
+    mapManagerUtils_1.sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, exports.directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
+};
+var _sendUniformData = function (gl, shaderIndex, program, glslSenderData, _a, uniformLocationMap, uniformCacheMap, renderCommandUniformData) {
+    var MaterialDataFromSystem = _a.MaterialDataFromSystem, BasicMaterialDataFromSystem = _a.BasicMaterialDataFromSystem, LightMaterialDataFromSystem = _a.LightMaterialDataFromSystem;
+    var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
+    for (var i = 0, len = sendUniformDataArr.length; i < len; i++) {
+        var sendData_2 = sendUniformDataArr[i], name_1 = sendData_2.name, field = sendData_2.field, type = sendData_2.type, from = sendData_2.from || "cmd", data = glslSenderData.getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
+        exports.directlySendUniformData(gl, name_1, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
+    }
+};
+exports.directlySendUniformData = function (gl, name, shaderIndex, program, type, data, _a, uniformLocationMap, uniformCacheMap) {
+    var sendMatrix3 = _a.sendMatrix3, sendMatrix4 = _a.sendMatrix4, sendVector3 = _a.sendVector3, sendInt = _a.sendInt, sendFloat1 = _a.sendFloat1, sendFloat3 = _a.sendFloat3;
+    switch (type) {
+        case EVariableType_1.EVariableType.MAT3:
+            sendMatrix3(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType_1.EVariableType.MAT4:
+            sendMatrix4(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType_1.EVariableType.VEC3:
+            sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType_1.EVariableType.INT:
+        case EVariableType_1.EVariableType.SAMPLER_2D:
+            sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType_1.EVariableType.FLOAT:
+            sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType_1.EVariableType.FLOAT3:
+            sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        default:
+            Log_1.Log.error(true, Log_1.Log.info.FUNC_INVALID("EVariableType:", type));
+            break;
+    }
+};
+var _sendUniformFuncData = function (gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap) {
+    var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];
+    for (var i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
+        var sendFunc = sendUniformFuncDataArr[i];
+        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap);
     }
 };
 exports.initData = function (ProgramDataFromSystem) {

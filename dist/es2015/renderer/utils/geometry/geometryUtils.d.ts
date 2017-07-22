@@ -1,6 +1,8 @@
 import { EDrawMode } from "../../enum/EDrawMode";
 import { EBufferType } from "../../enum/EBufferType";
 export declare var getVertexDataSize: () => number;
+export declare var getNormalDataSize: () => number;
+export declare var getTexCoordsDataSize: () => number;
 export declare var getIndexDataSize: () => number;
 export declare var getUIntArrayClass: (indexType: EBufferType) => Uint16ArrayConstructor | Uint32ArrayConstructor;
 export declare var getIndexType: (GeometryDataFromSystem: any) => any;

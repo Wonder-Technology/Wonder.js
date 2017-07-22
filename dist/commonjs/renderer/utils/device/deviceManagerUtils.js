@@ -11,6 +11,8 @@ var RectRegion_1 = require("../../../structure/RectRegion");
 var functionalUtils_1 = require("../../../utils/functionalUtils");
 var rootUtils_1 = require("../../../utils/rootUtils");
 var stateUtils_1 = require("../../../utils/stateUtils");
+var ESide_1 = require("../../enum/ESide");
+var Log_1 = require("../../../utils/Log");
 exports.getGL = function (DeviceManagerDataFromSystem, state) {
     return DeviceManagerDataFromSystem.gl;
 };
@@ -127,6 +129,31 @@ exports.setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeAlph
         DeviceManagerDataFromSystem.writeAlpha = writeAlpha;
     }
 };
+exports.setSide = function (gl, side, DeviceManagerDataFromSystem) {
+    if (DeviceManagerDataFromSystem.side !== side) {
+        switch (side) {
+            case ESide_1.ESide.NONE:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT_AND_BACK);
+                break;
+            case ESide_1.ESide.BOTH:
+                gl.disable(gl.CULL_FACE);
+                break;
+            case ESide_1.ESide.FRONT:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.BACK);
+                break;
+            case ESide_1.ESide.BACK:
+                gl.enable(gl.CULL_FACE);
+                gl.cullFace(gl.FRONT);
+                break;
+            default:
+                Log_1.Log.error(true, Log_1.Log.info.FUNC_UNEXPECT("side", side));
+                break;
+        }
+        DeviceManagerDataFromSystem.side = side;
+    }
+};
 exports.initData = function (DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.gl = null;
     DeviceManagerDataFromSystem.clearColor = null;
@@ -134,5 +161,6 @@ exports.initData = function (DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.writeGreen = null;
     DeviceManagerDataFromSystem.writeBlue = null;
     DeviceManagerDataFromSystem.writeAlpha = null;
+    DeviceManagerDataFromSystem.side = null;
 };
 //# sourceMappingURL=deviceManagerUtils.js.map

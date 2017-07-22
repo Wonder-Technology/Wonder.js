@@ -33,10 +33,10 @@ var CommonTimeController = (function (_super) {
         }
         return root.performance.now();
     };
+    CommonTimeController = __decorate([
+        registerClass("CommonTimeController")
+    ], CommonTimeController);
     return CommonTimeController;
 }(TimeController));
-CommonTimeController = __decorate([
-    registerClass("CommonTimeController")
-], CommonTimeController);
 export { CommonTimeController };
 //# sourceMappingURL=CommonTimeController.js.map

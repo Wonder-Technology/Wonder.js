@@ -1,5 +1,6 @@
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
+import { Matrix3 } from "../../math/Matrix3";
 export declare var clearCache: any;
 export declare var clearCacheMap: (ThreeDTransformData: any) => void;
 export declare var getLocalToWorldMatrixCache: (uid: number, ThreeTransformData: any) => any;
@@ -8,3 +9,5 @@ export declare var getPositionCache: (uid: number, ThreeTransformData: any) => a
 export declare var setPositionCache: (uid: number, pos: Vector3, ThreeTransformData: any) => void;
 export declare var getLocalPositionCache: (uid: number, ThreeTransformData: any) => any;
 export declare var setLocalPositionCache: (uid: number, pos: Vector3, ThreeTransformData: any) => void;
+export declare var getNormalMatrixCache: (uid: number, ThreeTransformData: any) => any;
+export declare var setNormalMatrixCache: (uid: number, mat: Matrix3, ThreeTransformData: any) => void;

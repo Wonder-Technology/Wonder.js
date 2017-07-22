@@ -1,37 +1,46 @@
-import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
-import { expect } from "wonder-expect.js";
-export var getMaterialClassNameFromTable = function (shaderIndex, materialClassNameTable) {
-    return materialClassNameTable[shaderIndex];
+import { getSingleSizeData } from "../common/operateBufferDataUtils";
+import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
+export var setShaderIndex = function (materialIndex, shaderIndex, MaterialDataFromSystem) {
+    setTypeArrayValue(MaterialDataFromSystem.shaderIndices, materialIndex, shaderIndex);
 };
-export var getShaderIndexFromTable = ensureFunc(function (index) {
-    it("shader index should be defined in materialClassNameTable", function () {
-        expect(index).gte(0);
-    });
-}, function (materialClassName, shaderIndexTable) {
-    return shaderIndexTable[materialClassName];
-});
 export var getOpacity = function (materialIndex, MaterialDataFromSystem) {
-    var size = getOpacityDataSize(), index = materialIndex * size;
-    return MaterialDataFromSystem.opacities[index];
+    return getSingleSizeData(materialIndex, MaterialDataFromSystem.opacities);
 };
 export var getAlphaTest = function (materialIndex, MaterialDataFromSystem) {
-    var size = getAlphaTestDataSize(), index = materialIndex * size;
-    return MaterialDataFromSystem.alphaTests[index];
-};
-export var getColorArr3 = function (materialIndex, MaterialMaterialDataFromSystem) {
-    var colors = MaterialMaterialDataFromSystem.colors, size = getColorDataSize(), index = materialIndex * size;
-    return [colors[index], colors[index + 1], colors[index + 2]];
+    return getSingleSizeData(materialIndex, MaterialDataFromSystem.alphaTests);
 };
 export var isTestAlpha = function (alphaTest) {
     return alphaTest >= 0;
 };
+export var getShaderIndexDataSize = function () { return 1; };
 export var getColorDataSize = function () { return 3; };
 export var getOpacityDataSize = function () { return 1; };
 export var getAlphaTestDataSize = function () { return 1; };
 export var createTypeArrays = function (buffer, count, MaterialDataFromSystem) {
-    MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, 0, count);
-    MaterialDataFromSystem.colors = new Float32Array(buffer, count * Uint32Array.BYTES_PER_ELEMENT, count * getColorDataSize());
-    MaterialDataFromSystem.opacities = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * getColorDataSize()), count * getOpacityDataSize());
-    MaterialDataFromSystem.alphaTests = new Float32Array(buffer, count * (Uint32Array.BYTES_PER_ELEMENT + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getOpacityDataSize())), count * getAlphaTestDataSize());
+    var offset = 0;
+    MaterialDataFromSystem.shaderIndices = new Uint32Array(buffer, offset, count * getShaderIndexDataSize());
+    offset += count * Uint32Array.BYTES_PER_ELEMENT * getShaderIndexDataSize();
+    MaterialDataFromSystem.colors = new Float32Array(buffer, offset, count * getColorDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
+    MaterialDataFromSystem.opacities = new Float32Array(buffer, offset, count * getOpacityDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getOpacityDataSize();
+    MaterialDataFromSystem.alphaTests = new Float32Array(buffer, offset, count * getAlphaTestDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getAlphaTestDataSize();
+    return offset;
+};
+export var buildInitShaderDataMap = function (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem, MapManagerDataFromSystem, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem, DirectionLightDataFromSystem, PointLightDataFromSystem) {
+    return {
+        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
+        ProgramDataFromSystem: ProgramDataFromSystem,
+        LocationDataFromSystem: LocationDataFromSystem,
+        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
+        ShaderDataFromSystem: ShaderDataFromSystem,
+        MapManagerDataFromSystem: MapManagerDataFromSystem,
+        MaterialDataFromSystem: MaterialDataFromSystem,
+        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
+        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
+        PointLightDataFromSystem: PointLightDataFromSystem
+    };
 };
 //# sourceMappingURL=materialUtils.js.map

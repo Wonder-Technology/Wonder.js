@@ -1,4 +1,5 @@
 import { Color } from "../../structure/Color";
+import { ESide } from "../enum/ESide";
 export declare class DeviceManagerData {
     static gl: WebGLRenderingContext;
     static clearColor: Color;
@@ -6,4 +7,5 @@ export declare class DeviceManagerData {
     static writeGreen: boolean;
     static writeBlue: boolean;
     static writeAlpha: boolean;
+    static side: ESide;
 }

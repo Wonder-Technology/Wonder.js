@@ -1,1 +1,1 @@
-{"version":3,"file":"SceneData.js","sourceRoot":"","sources":["../../../../../src/core/entityObject/scene/SceneData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAEA,CAAC;IAAD,gBAAC;AAAD,CAAC,AAFD;AACkB,qBAAW,GAAsB,IAAI,CAAC;AAD3C,8BAAS"}
+{"version":3,"file":"SceneData.js","sourceRoot":"","sources":["../../../../../src/core/entityObject/scene/SceneData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAEA,CAAC;IADiB,qBAAW,GAAsB,IAAI,CAAC;IACxD,gBAAC;CAAA,AAFD,IAEC;AAFY,8BAAS"}

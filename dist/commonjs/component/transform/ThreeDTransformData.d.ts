@@ -1,9 +1,10 @@
-import { ThreeDTransform } from "./ThreeDTransform";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix4 } from "../../math/Matrix4";
 import { LinkList } from "./LinkList";
 import { Quaternion } from "../../math/Quaternion";
+import { Matrix3 } from "../../math/Matrix3";
+import { Component } from "../Component";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 export declare class ThreeDTransformData {
     static readonly maxCount: number;
     static localToWorldMatrices: Float32Array;
@@ -15,7 +16,7 @@ export declare class ThreeDTransformData {
     static defaultScale: Vector3;
     static defaultLocalToWorldMatrice: Matrix4;
     static firstDirtyIndex: number;
-    static indexInArrayBuffer: number;
+    static index: number;
     static notUsedIndexLinkList: LinkList<number>;
     static isTranslateMap: any;
     static parentMap: ThreeDTransformParentMap;
@@ -33,19 +34,19 @@ export declare class ThreeDTransformData {
 }
 export declare class ThreeDTransformRelationData {
     static create(): ThreeDTransformRelationData;
-    indexInArrayBuffer: number;
+    index: number;
     parent: ThreeDTransformRelationData;
     children: Array<ThreeDTransformRelationData>;
 }
 export declare type ThreeDTransformParentMap = {
-    [uid: number]: ThreeDTransform;
+    [uid: number]: Component;
 };
 export declare type ThreeDTransformChildrenMap = {
-    [uid: number]: Array<ThreeDTransform>;
+    [uid: number]: Array<Component>;
 };
-export declare type ThreeDTransformGameObjectMap = Map<number, GameObject>;
+export declare type ThreeDTransformGameObjectMap = Map<number, IUIDEntity>;
 export declare type TransformMap = {
-    [index: number]: ThreeDTransform;
+    [index: number]: Component;
 };
 export declare type ThreeDTransformCacheMap = {
     [uid: number]: ThreeDTransformCacheData;
@@ -54,6 +55,7 @@ export declare type ThreeDTransformCacheData = {
     position: Vector3;
     localPosition: Vector3;
     localToWorldMatrix: Matrix4;
+    normalMatrix: Matrix3;
 };
 export declare type ThreeDTransformTempMap = {
     [uid: number]: ThreeDTransformTempData;

@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { Vector2 } from "./Vector2";
 import { DEG_TO_RAD } from "./Global";
-var Matrix3 = Matrix3_1 = (function () {
+var Matrix3 = (function () {
     function Matrix3() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -21,6 +21,7 @@ var Matrix3 = Matrix3_1 = (function () {
             this.values = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
         }
     }
+    Matrix3_1 = Matrix3;
     Matrix3.create = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -277,11 +278,11 @@ var Matrix3 = Matrix3_1 = (function () {
         var py = this._getDeltaTransformPoint(this, { x: 1, y: 0 });
         return ((180 / Math.PI) * Math.atan2(py.y, py.x));
     };
+    Matrix3 = Matrix3_1 = __decorate([
+        registerClass("Matrix3")
+    ], Matrix3);
     return Matrix3;
+    var Matrix3_1;
 }());
-Matrix3 = Matrix3_1 = __decorate([
-    registerClass("Matrix3")
-], Matrix3);
 export { Matrix3 };
-var Matrix3_1;
 //# sourceMappingURL=Matrix3.js.map

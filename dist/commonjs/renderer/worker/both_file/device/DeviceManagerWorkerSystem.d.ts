@@ -1,6 +1,7 @@
 import { Map } from "immutable";
 import { ScreenData } from "../../../type/messageDataType";
 import { Color } from "../../../../structure/Color";
+import { ESide } from "../../../enum/ESide";
 export declare var createGL: any;
 export declare var setContextConfig: any;
 export declare var getGL: (DeviceManagerDataFromSystem: any, state: Map<any, any>) => WebGLRenderingContext;
@@ -19,4 +20,5 @@ export declare var setScreen: any;
 export declare var setCanvasPixelRatio: any;
 export declare var clear: (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => void;
 export declare var setColorWrite: (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => void;
+export declare var setSide: (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataFromSystem: any) => void;
 export declare var initData: (DeviceManagerDataFromSystem: any) => void;

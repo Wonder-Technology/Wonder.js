@@ -1,5 +1,4 @@
-import { IUIDEntity } from "../core/entityObject/gameObject/GameObject";
-import { GameObjectUIDMap } from "../core/entityObject/gameObject/GameObjectData";
+import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
 
 export var removeChildEntity = (children: Array<IUIDEntity>, targetUID: number) => {
     for (let i = 0, len = children.length; i < len; ++i) {

@@ -26,16 +26,16 @@ export var minusFirstDirtyIndex = ensureFunc((firstDirtyIndex: number) => {
     return firstDirtyIndex - 1;
 })
 
-export var generateNotUsedIndexInArrayBuffer = ensureFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+export var generateNotUsedIndexInArrayBuffer = ensureFunc((index: number, ThreeDTransformData: any) => {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, index);
 }, (ThreeDTransformData: any) => {
-    var result = ThreeDTransformData.indexInArrayBuffer;
+    var result = ThreeDTransformData.index;
 
     if (result >= ThreeDTransformData.firstDirtyIndex) {
         return _getNotUsedIndexFromArr(ThreeDTransformData);
     }
 
-    ThreeDTransformData.indexInArrayBuffer += 1;
+    ThreeDTransformData.index += 1;
 
     return result;
 })
@@ -48,8 +48,8 @@ var _isValidLinkNode = (node: LinkNode<number>) => {
     return node !== null;
 }
 
-export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
-    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+export var generateNotUsedIndexInNormalList = ensureFunc((index: number, ThreeDTransformData: any) => {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, index);
 }, (ThreeDTransformData: any) => {
     var index = _getNotUsedIndexFromArr(ThreeDTransformData);
 
@@ -57,14 +57,14 @@ export var generateNotUsedIndexInNormalList = ensureFunc((indexInArrayBuffer: nu
         return index;
     }
 
-    index = ThreeDTransformData.indexInArrayBuffer;
+    index = ThreeDTransformData.index;
 
-    ThreeDTransformData.indexInArrayBuffer += 1;
+    ThreeDTransformData.index += 1;
 
     return index;
 })
 
-export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeDTransformData: any) => {
+export var addToDirtyList = requireCheckFunc((index: number, ThreeDTransformData: any) => {
     it("firstDirtyIndex should <= maxCount", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
@@ -73,16 +73,16 @@ export var addToDirtyList = requireCheckFunc((indexInArrayBuffer: number, ThreeD
     //
     //     expect(isIndexUsed(targetDirtyIndex, ThreeDTransformData)).false;
     // });
-}, (indexInArrayBuffer: number, ThreeDTransformData: any) => {
+}, (index: number, ThreeDTransformData: any) => {
     let targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
 
     ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
 
     if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
-        swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        swap(index, targetDirtyIndex, ThreeDTransformData);
     }
     else {
-        moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        moveToIndex(index, targetDirtyIndex, ThreeDTransformData);
     }
 
     return targetDirtyIndex;
@@ -119,8 +119,8 @@ export var addNotUsedIndex = (index: number, notUsedIndexLinkList: LinkList<numb
     notUsedIndexLinkList.push(LinkNode.create(index));
 };
 
-export var isNotDirty = (indexInArrayBuffer: number, firstDirtyIndex: number) => {
-    return indexInArrayBuffer < firstDirtyIndex;
+export var isNotDirty = (index: number, firstDirtyIndex: number) => {
+    return index < firstDirtyIndex;
 }
 
 export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid: number, ThreeDTransformData: any) => {
@@ -144,15 +144,15 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
     return ThreeDTransformData;
 }
 
-var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, indexInArrayBuffer: number) => {
+var _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, index: number) => {
     // it("notUsedIndexLinkList shouldn't contain the index", () => {
-    //     expect(ThreeDTransformData.notUsedIndexLinkList.indexOf(indexInArrayBuffer)).equal(-1);
+    //     expect(ThreeDTransformData.notUsedIndexLinkList.indexOf(index)).equal(-1);
     // });
-    it("indexInArrayBuffer should < firstDirtyIndex", () => {
-        expect(indexInArrayBuffer).exist;
-        expect(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
+    it("index should < firstDirtyIndex", () => {
+        expect(index).exist;
+        expect(index).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", () => {
-        expect(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
+        expect(isIndexUsed(index, ThreeDTransformData)).false;
     });
 }

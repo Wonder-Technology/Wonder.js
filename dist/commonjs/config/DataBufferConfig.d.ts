@@ -1,7 +1,12 @@
 export declare const DataBufferConfig: {
     transformDataBufferCount: number;
     geometryDataBufferCount: number;
-    materialDataBufferCount: number;
+    basicMaterialDataBufferCount: number;
+    lightMaterialDataBufferCount: number;
+    textureDataBufferCount: number;
+    ambientLightDataBufferCount: number;
+    directionLightDataBufferCount: number;
+    pointLightDataBufferCount: number;
     renderCommandBufferCount: number;
     geometryIndicesBufferBits: number;
 };

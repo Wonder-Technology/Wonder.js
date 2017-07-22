@@ -1,9 +1,6 @@
-import { Shader } from "./Shader";
+import { ShaderLibWholeNameMap } from "../type/dataType";
 export declare class ShaderData {
     static index: number;
     static count: number;
-    static shaderMap: ShaderShaderMap;
+    static shaderLibWholeNameMap: ShaderLibWholeNameMap;
 }
-export declare type ShaderShaderMap = {
-    [materialClassName: string]: Shader;
-};

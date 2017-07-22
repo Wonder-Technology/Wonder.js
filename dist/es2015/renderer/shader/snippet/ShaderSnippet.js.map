@@ -1,1 +1,1 @@
-{"version":3,"file":"ShaderSnippet.js","sourceRoot":"","sources":["../../../../../src/renderer/shader/snippet/ShaderSnippet.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAM,UAAU,GAAW,oBAAoB,CAAC;AACvD,MAAM,CAAC,IAAM,QAAQ,GAAW,KAAK,CAAC;AAEtC,MAAM,CAAC,IAAM,UAAU,GAAW,4EAA4E,CAAA"}
+{"version":3,"file":"ShaderSnippet.js","sourceRoot":"","sources":["../../../../../src/renderer/shader/snippet/ShaderSnippet.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAM,UAAU,GAAW,oBAAoB,CAAC;AACvD,MAAM,CAAC,IAAM,QAAQ,GAAW,KAAK,CAAC;AAEtC,MAAM,CAAC,IAAM,UAAU,GAAW,0EAA0E,CAAA"}

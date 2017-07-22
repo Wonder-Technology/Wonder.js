@@ -5,8 +5,12 @@ import { EVariableType } from "../../../enum/EVariableType";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
 import { forEach } from "../../../../utils/arrayUtils";
-import { RenderCommandUniformData } from "../../../type/dataType";
+import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
+import { DrawDataMap, SendUniformDataDataMap, SendUniformDataGLSLSenderDataMap } from "../../../type/utilsType";
+import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
+import { isNotUndefined } from "../../../../utils/JudgeUtils";
+import { sendData } from "../../texture/mapManagerUtils";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     it("program should exist", () => {
@@ -16,7 +20,7 @@ export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: numbe
     var program = getProgram(shaderIndex, ProgramDataFromSystem);
 
     if (ProgramDataFromSystem.lastUsedProgram === program) {
-        return;
+        return program;
     }
 
     ProgramDataFromSystem.lastUsedProgram = program;
@@ -27,6 +31,8 @@ export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: numbe
 
     ProgramDataFromSystem.lastBindedArrayBuffer = null;
     ProgramDataFromSystem.lastBindedIndexBuffer = null;
+
+    return program;
 })
 
 export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContext, GLSLSenderDataFromSystem: any) => {
@@ -54,7 +60,7 @@ export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContex
 })
 
 export var getMaterialShaderLibConfig = requireCheckFunc((materialClassName: string, material_config: IMaterialConfig) => {
-    var materialData = material_config[materialClassName];
+    var materialData = material_config.materials[materialClassName];
 
     it("materialClassName should be defined", () => {
         expect(materialData).exist;
@@ -63,7 +69,7 @@ export var getMaterialShaderLibConfig = requireCheckFunc((materialClassName: str
         expect(materialData.shader.shaderLib).be.a("array");
     });
 }, (materialClassName: string, material_config: IMaterialConfig) => {
-    return material_config[materialClassName].shader.shaderLib;
+    return material_config.materials[materialClassName].shader.shaderLib;
 })
 
 export var registerProgram = (shaderIndex: number, ProgramDataFromSystem: any, program: WebGLProgram) => {
@@ -154,63 +160,131 @@ var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: Web
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertices: Function, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerData: any, ArrayBufferData: any) => {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
 
     for (let sendData of sendDataArr) {
-        let buffer = getOrCreateArrayBuffer(gl, geometryIndex, sendData.buffer, getVertices, GeometryWorkerData, ArrayBufferData),
-            pos = getAttribLocation(sendData.name, attributeLocationMap);
-
-        if (isAttributeLocationNotExist(pos)) {
-            return;
-        }
+        let bufferName = sendData.buffer,
+            buffer = _getOrCreateArrayBuffer(gl, geometryIndex, bufferName, getArrayBufferDataFuncMap, GeometryDataFromSystem, ArrayBufferDataFromSystem),
+            pos: number = null;
 
         if (lastBindedArrayBuffer === buffer) {
-            return;
+            continue;
+        }
+
+        pos = getAttribLocation(gl, program, sendData.name, attributeLocationMap);
+
+        if (isAttributeLocationNotExist(pos)) {
+            continue;
         }
 
         lastBindedArrayBuffer = buffer;
 
-        sendBuffer(gl, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferData);
+        sendBuffer(gl, sendData.type, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferDataFromSystem);
     }
 
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, {
-    getUniformData,
-    sendMatrix4,
-    sendVector3,
-    sendFloat1
-}, MaterialWorkerData: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, renderCommandUniformData: RenderCommandUniformData) => {
-    var sendDataArr = GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex],
-        uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
-        uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
+var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
+    getVertices,
+    getNormals,
+    getTexCoords
+}, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+    var buffer: WebGLBuffer = null;
 
-    for (let i = 0, len = sendDataArr.length; i < len; i++) {
-        let sendData = sendDataArr[i],
+    switch (bufferName) {
+        case "vertex":
+            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.vertexBuffer, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        case "normal":
+            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        case "texCoord":
+            buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.texCoordBuffers, getTexCoords, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+            break;
+        default:
+            Log.error(true, Log.info.FUNC_INVALID(`name:${name}`));
+            break;
+    }
+
+    return buffer;
+}
+
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+    var uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
+        uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
+
+    _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, drawDataMap, uniformLocationMap, uniformCacheMap, renderCommandUniformData);
+    _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
+
+    sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
+}
+
+var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, {
+                            MaterialDataFromSystem,
+    BasicMaterialDataFromSystem,
+    LightMaterialDataFromSystem,
+                        }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: RenderCommandUniformData) => {
+    var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
+
+    for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
+        let sendData = sendUniformDataArr[i],
             name = sendData.name,
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = getUniformData(field, from, renderCommandUniformData, MaterialWorkerData);
+            data = glslSenderData.getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
-        switch (type) {
-            case EVariableType.MAT4:
-                sendMatrix4(gl, name, data, uniformLocationMap);
-                break;
-            case EVariableType.VEC3:
-                sendVector3(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            case EVariableType.FLOAT:
-                sendFloat1(gl, shaderIndex, name, data, uniformCacheMap, uniformLocationMap);
-                break;
-            default:
-                Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
-                break;
-        }
+        directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
+    }
+}
+
+export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
+    // getUniformData,
+    sendMatrix3,
+    sendMatrix4,
+    sendVector3,
+    sendInt,
+    sendFloat1,
+    sendFloat3,
+    // GLSLSenderDataFromSystem,
+}, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+    switch (type) {
+        case EVariableType.MAT3:
+            sendMatrix3(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType.MAT4:
+            sendMatrix4(gl, program, name, data, uniformLocationMap);
+            break;
+        case EVariableType.VEC3:
+            sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.INT:
+        case EVariableType.SAMPLER_2D:
+            sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.FLOAT:
+            sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        case EVariableType.FLOAT3:
+            sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+            break;
+        default:
+            Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
+            break;
+    }
+}
+
+var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+    var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];
+
+    for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
+        let sendFunc = sendUniformFuncDataArr[i];
+
+        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap);
     }
 }
 

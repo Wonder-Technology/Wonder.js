@@ -1,0 +1,14 @@
+import { Color } from "../../structure/Color";
+import { Light } from "./Light";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+export declare var create: Function;
+export declare var getPosition: (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => any;
+export declare var getAllPositionData: (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => Float32Array[];
+export declare var getColor: (index: number, DirectionLightData: any) => Color;
+export declare var getColorArr3: (index: number, DirectionLightDataFromSystem: any) => number[];
+export declare var setColor: (index: number, color: Color, DirectionLightData: any) => void;
+export declare var getIntensity: (index: number, DirectionLightDataFromSystem: any) => number;
+export declare var setIntensity: (index: number, intensity: number, DirectionLightData: any) => void;
+export declare var addComponent: (component: Light, gameObject: GameObject) => void;
+export declare var disposeComponent: (component: Light) => void;
+export declare var initData: (DirectionLightData: any) => void;

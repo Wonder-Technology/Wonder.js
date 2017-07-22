@@ -1,5 +1,6 @@
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+export var getMatrix3DataSize = function () { return 9; };
 export var getMatrix4DataSize = function () { return 16; };
 export var getVector3DataSize = function () { return 3; };
 export var getQuaternionDataSize = function () { return 4; };
@@ -18,6 +19,10 @@ export var deleteBySwapAndReset = function (sourceIndex, targetIndex, typeArr, l
         typeArr[targetIndex + i] = defaultValueArr[i];
     }
 };
+export var deleteSingleValueBySwapAndReset = function (sourceIndex, lastIndex, typeArr, resetValue) {
+    typeArr[sourceIndex] = typeArr[lastIndex];
+    typeArr[lastIndex] = resetValue;
+};
 export var deleteOneItemBySwapAndReset = function (sourceIndex, targetIndex, typeArr, defaultValue) {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
@@ -25,6 +30,18 @@ export var deleteOneItemBySwapAndReset = function (sourceIndex, targetIndex, typ
 export var set = function (typeArr, valArr, offset) {
     if (offset === void 0) { offset = 0; }
     typeArr.set(valArr, offset);
+};
+export var setMatrices3 = function (typeArr, mat, index) {
+    var values = mat.values;
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
 };
 export var setMatrices = function (typeArr, mat, index) {
     var values = mat.values;
@@ -97,4 +114,23 @@ export var createMatrix4ByIndex = function (mat, typeArr, index) {
 export var createVector3ByIndex = function (vec, typeArr, index) {
     return setVector3ByIndex(vec, typeArr, index);
 };
+export var fillTypeArr = requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
+    it("should not exceed type arr's length", function () {
+        expect(count + startIndex).lte(typeArr.length);
+    });
+}, function (typeArr, dataArr, startIndex, count) {
+    typeArr.set(dataArr, startIndex);
+});
+export var setTypeArrayValue = requireCheckFunc(function (typeArr, index, value) {
+    it("should not exceed type arr's length", function () {
+        expect(index).lte(typeArr.length - 1);
+    });
+}, function (typeArr, index, value) {
+    typeArr[index] = value;
+});
+export var setSingleValue = function (typeArr, index, value) {
+    var size = 1, i = index * size;
+    setTypeArrayValue(typeArr, i, value);
+};
+export var computeBufferLength = function (count, size) { return count * size; };
 //# sourceMappingURL=typeArrayUtils.js.map

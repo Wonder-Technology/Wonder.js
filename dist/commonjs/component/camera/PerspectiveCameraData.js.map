@@ -1,1 +1,1 @@
-{"version":3,"file":"PerspectiveCameraData.js","sourceRoot":"","sources":["../../../../src/component/camera/PerspectiveCameraData.ts"],"names":[],"mappings":";;AAAA;IAAA;IAGA,CAAC;IAAD,4BAAC;AAAD,CAAC,AAHD;AACkB,6BAAO,GAAY,IAAI,CAAC;AACxB,+BAAS,GAAc,IAAI,CAAC;AAFjC,sDAAqB"}
+{"version":3,"file":"PerspectiveCameraData.js","sourceRoot":"","sources":["../../../../src/component/camera/PerspectiveCameraData.ts"],"names":[],"mappings":";;AAAA;IAAA;IAGA,CAAC;IAFiB,6BAAO,GAAY,IAAI,CAAC;IACxB,+BAAS,GAAc,IAAI,CAAC;IAC9C,4BAAC;CAAA,AAHD,IAGC;AAHY,sDAAqB"}

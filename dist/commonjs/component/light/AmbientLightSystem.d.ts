@@ -1,0 +1,10 @@
+import { Color } from "../../structure/Color";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Light } from "./Light";
+export declare var create: Function;
+export declare var getColor: (index: number, AmbientLightDataFromSystem: any) => Color;
+export declare var getColorArr3: (index: number, AmbientLightDataFromSystem: any) => number[];
+export declare var setColor: (index: number, color: Color, AmbientLightData: any) => void;
+export declare var addComponent: (component: Light, gameObject: GameObject) => void;
+export declare var disposeComponent: (component: Light) => void;
+export declare var initData: (AmbientLightData: any) => void;

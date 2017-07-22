@@ -18,14 +18,17 @@ var IndexBufferData_1 = require("../../renderer/buffer/IndexBufferData");
 var BufferSystem_1 = require("../../renderer/worker/both_file/buffer/BufferSystem");
 var ArrayBufferSystem_1 = require("../../renderer/buffer/ArrayBufferSystem");
 var IndexBufferSystem_1 = require("../../renderer/buffer/IndexBufferSystem");
-exports.addAddComponentHandle = function (_class) {
-    ComponentSystem_1.addAddComponentHandle(_class, exports.addComponent);
+exports.addAddComponentHandle = function (BoxGeometry, CustomGeometry) {
+    ComponentSystem_1.addAddComponentHandle(BoxGeometry, exports.addComponent);
+    ComponentSystem_1.addAddComponentHandle(CustomGeometry, exports.addComponent);
 };
-exports.addDisposeHandle = function (_class) {
-    ComponentSystem_1.addDisposeHandle(_class, exports.disposeComponent);
+exports.addDisposeHandle = function (BoxGeometry, CustomGeometry) {
+    ComponentSystem_1.addDisposeHandle(BoxGeometry, exports.disposeComponent);
+    ComponentSystem_1.addDisposeHandle(CustomGeometry, exports.disposeComponent);
 };
-exports.addInitHandle = function (_class) {
-    ComponentSystem_1.addInitHandle(_class, exports.initGeometry);
+exports.addInitHandle = function (BoxGeometry, CustomGeometry) {
+    ComponentSystem_1.addInitHandle(BoxGeometry, exports.initGeometry);
+    ComponentSystem_1.addInitHandle(CustomGeometry, exports.initGeometry);
 };
 exports.create = contract_1.requireCheckFunc(function (geometry, GeometryData) {
 }, function (geometry, GeometryData) {
@@ -47,8 +50,10 @@ exports.initGeometry = function (index, state) {
     if (_isComputeDataFuncNotExist(computeDataFunc)) {
         return;
     }
-    var _a = computeDataFunc(index, GeometryData_1.GeometryData), vertices = _a.vertices, indices = _a.indices;
+    var _a = computeDataFunc(index, GeometryData_1.GeometryData), vertices = _a.vertices, normals = _a.normals, texCoords = _a.texCoords, indices = _a.indices;
     exports.setVertices(index, vertices, GeometryData_1.GeometryData);
+    exports.setNormals(index, normals, GeometryData_1.GeometryData);
+    exports.setTexCoords(index, texCoords, GeometryData_1.GeometryData);
     exports.setIndices(index, indices, GeometryData_1.GeometryData);
 };
 var _isComputeDataFuncNotExist = function (func) { return objectUtils_1.isNotValidMapValue(func); };
@@ -58,6 +63,20 @@ exports.getVertices = function (index, GeometryData) {
 exports.setVertices = contract_1.requireCheckFunc(function (index, vertices, GeometryData) {
 }, function (index, vertices, GeometryData) {
     GeometryData.verticesOffset = _setPointData(index, vertices, geometryUtils_1.getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
+});
+exports.getNormals = function (index, GeometryData) {
+    return _getPointData(index, GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList);
+};
+exports.setNormals = contract_1.requireCheckFunc(function (index, normals, GeometryData) {
+}, function (index, normals, GeometryData) {
+    GeometryData.normalsOffset = _setPointData(index, normals, geometryUtils_1.getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
+});
+exports.getTexCoords = function (index, GeometryData) {
+    return _getPointData(index, GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList);
+};
+exports.setTexCoords = contract_1.requireCheckFunc(function (index, texCoords, GeometryData) {
+}, function (index, texCoords, GeometryData) {
+    GeometryData.texCoordsOffset = _setPointData(index, texCoords, geometryUtils_1.getTexCoordsDataSize(), GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList, GeometryData.texCoordsWorkerInfoList, GeometryData.texCoordsOffset, GeometryData);
 });
 exports.getIndices = function (index, GeometryData) {
     return _getPointData(index, GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList);
@@ -84,22 +103,13 @@ var _setPointData = function (index, dataArr, dataSize, points, cacheMap, infoLi
     var count = dataArr.length, startIndex = offset;
     offset += count;
     infoList[index] = _buildInfo(startIndex, offset);
-    _fillTypeArr(points, dataArr, startIndex, count);
+    typeArrayUtils_1.fillTypeArr(points, dataArr, startIndex, count);
     _removeCache(index, cacheMap);
     if (_isInit(GeometryData)) {
         _addWorkerInfo(workerInfoList, index, startIndex, offset);
     }
     return offset;
 };
-var _fillTypeArr = contract_1.requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
-    contract_1.it("should not exceed type arr's length", function () {
-        wonder_expect_js_1.expect(count + startIndex).lte(typeArr.length);
-    });
-}, function (typeArr, dataArr, startIndex, count) {
-    for (var i = 0; i < count; i++) {
-        typeArr[i + startIndex] = dataArr[i];
-    }
-});
 var _removeCache = function (index, cacheMap) {
     objectUtils_1.deleteVal(index, cacheMap);
 };
@@ -174,6 +184,8 @@ var _isInit = function (GeometryData) {
 };
 exports.clearWorkerInfoList = function (GeometryData) {
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 exports.hasNewPointData = function (GeometryData) {
@@ -215,6 +227,8 @@ exports.initData = function (DataBufferConfig, GeometryData) {
     GeometryData.indexTypeSize = indicesArrayBytes;
     GeometryData.configDataMap = objectUtils_1.createMap();
     GeometryData.verticesCacheMap = objectUtils_1.createMap();
+    GeometryData.normalsCacheMap = objectUtils_1.createMap();
+    GeometryData.texCoordsCacheMap = objectUtils_1.createMap();
     GeometryData.indicesCacheMap = objectUtils_1.createMap();
     GeometryData.computeDataFuncMap = objectUtils_1.createMap();
     GeometryData.gameObjectMap = objectUtils_1.createMap();
@@ -223,17 +237,23 @@ exports.initData = function (DataBufferConfig, GeometryData) {
     GeometryData.count = 0;
     _initBufferData(indicesArrayBytes, geometryUtils_1.getUIntArrayClass(GeometryData.indexType), DataBufferConfig, GeometryData);
     GeometryData.verticesInfoList = [];
+    GeometryData.normalsInfoList = [];
+    GeometryData.texCoordsInfoList = [];
     GeometryData.indicesInfoList = [];
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
     GeometryData.disposedGeometryIndexArray = [];
     GeometryData.verticesOffset = 0;
+    GeometryData.normalsOffset = 0;
+    GeometryData.texCoordsOffset = 0;
     GeometryData.indicesOffset = 0;
     GeometryData.disposeCount = 0;
     GeometryData.isReallocate = false;
 };
 var _initBufferData = function (indicesArrayBytes, UintArray, DataBufferConfig, GeometryData) {
-    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * geometryUtils_1.getVertexDataSize() + indicesArrayBytes * geometryUtils_1.getIndexDataSize();
+    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * (geometryUtils_1.getVertexDataSize() + geometryUtils_1.getNormalDataSize() + geometryUtils_1.getTexCoordsDataSize()) + indicesArrayBytes * geometryUtils_1.getIndexDataSize();
     buffer = arrayBufferUtils_1.createSharedArrayBufferOrArrayBuffer(count * size);
     geometryUtils_1.createBufferViews(buffer, count, UintArray, GeometryData);
     GeometryData.buffer = buffer;

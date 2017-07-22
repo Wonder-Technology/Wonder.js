@@ -35,6 +35,13 @@ exports.updateSystem = function (elapsed, state) {
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     exports.run = function (elapsed, state, timeController, scheduler) {
         var resultState = state;
+        if (SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.state === ERenderWorkerState_1.ERenderWorkerState.INIT_COMPLETE) {
+            SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.isInitComplete = true;
+            SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.state = ERenderWorkerState_1.ERenderWorkerState.DEFAULT;
+        }
+        else if (!SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.isInitComplete) {
+            return resultState;
+        }
         if (SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.state === ERenderWorkerState_1.ERenderWorkerState.DRAW_COMPLETE) {
             timeController.tick(elapsed);
             SendDrawRenderCommandBufferData_1.SendDrawRenderCommandBufferData.state = ERenderWorkerState_1.ERenderWorkerState.DEFAULT;

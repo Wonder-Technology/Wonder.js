@@ -23,7 +23,7 @@ var _computeData = function (index, GeometryData) {
         BOTTOM: 3,
         RIGHT: 4,
         LEFT: 5
-    }, vertices = [], indices = [];
+    }, vertices = [], normals = [], texCoords = [], indices = [];
     var faceAxes = [
         [0, 1, 3],
         [4, 5, 7],
@@ -31,6 +31,14 @@ var _computeData = function (index, GeometryData) {
         [1, 0, 4],
         [1, 4, 2],
         [5, 0, 6]
+    ];
+    var faceNormals = [
+        [0, 0, 1],
+        [0, 0, -1],
+        [0, 1, 0],
+        [0, -1, 0],
+        [1, 0, 0],
+        [-1, 0, 0]
     ];
     var corners = [
         Vector3_1.Vector3.create(-width, -height, depth),
@@ -56,6 +64,8 @@ var _computeData = function (index, GeometryData) {
                 u = i / uSegments;
                 v = j / vSegments;
                 vertices.push(r.x, r.y, r.z);
+                normals.push(faceNormals[side][0], faceNormals[side][1], faceNormals[side][2]);
+                texCoords.push(u, v);
                 if ((i < uSegments) && (j < vSegments)) {
                     indices.push(offset + j + i * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1), offset + j + i * (uSegments + 1) + 1);
                     indices.push(offset + j + (i + 1) * (uSegments + 1), offset + j + (i + 1) * (uSegments + 1) + 1, offset + j + i * (uSegments + 1) + 1);
@@ -71,6 +81,8 @@ var _computeData = function (index, GeometryData) {
     generateFace(sides.LEFT, depthSegments, heightSegments);
     return {
         vertices: vertices,
+        normals: normals,
+        texCoords: texCoords,
         indices: indices
     };
 };

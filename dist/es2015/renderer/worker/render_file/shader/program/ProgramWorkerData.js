@@ -1,11 +1,11 @@
 var ProgramWorkerData = (function () {
     function ProgramWorkerData() {
     }
+    ProgramWorkerData.programMap = null;
+    ProgramWorkerData.lastUsedProgram = null;
+    ProgramWorkerData.lastBindedArrayBuffer = null;
+    ProgramWorkerData.lastBindedIndexBuffer = null;
     return ProgramWorkerData;
 }());
 export { ProgramWorkerData };
-ProgramWorkerData.programMap = null;
-ProgramWorkerData.lastUsedProgram = null;
-ProgramWorkerData.lastBindedArrayBuffer = null;
-ProgramWorkerData.lastBindedIndexBuffer = null;
 //# sourceMappingURL=ProgramWorkerData.js.map

@@ -15,11 +15,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
-import { getAlphaTest, getColor, getGameObject, getOpacity, initMaterial as initMaterialSystem, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
+import { getGameObject } from "./MaterialSystem";
 import { MaterialData } from "./MaterialData";
 import { Component } from "../Component";
-import { getState } from "../../core/DirectorSystem";
-import { DirectorData } from "../../core/DirectorData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../ComponentSystem";
 var Material = (function (_super) {
@@ -27,52 +25,19 @@ var Material = (function (_super) {
     function Material() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Material = __decorate([
+        registerClass("Material")
+    ], Material);
     return Material;
 }(Component));
-Material = __decorate([
-    registerClass("Material")
-], Material);
 export { Material };
-export var getMaterialColor = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material) {
-    return getColor(material.index, MaterialData);
-});
-export var setMaterialColor = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material, color) {
-    setColor(material.index, color, MaterialData);
-});
-export var getMaterialOpacity = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material) {
-    return getOpacity(material.index, MaterialData);
-});
-export var setMaterialOpacity = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material, opacity) {
-    setOpacity(material.index, opacity, MaterialData);
-});
-export var getMaterialAlphaTest = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material) {
-    return getAlphaTest(material.index, MaterialData);
-});
-export var setMaterialAlphaTest = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
-}, function (material, alphaTest) {
-    setAlphaTest(material.index, alphaTest, MaterialData);
-});
 export var getMaterialGameObject = requireCheckFunc(function (material) {
-    _checkShouldAlive(material, MaterialData);
+    checkShouldAlive(material);
 }, function (component) {
     return getGameObject(component.index, MaterialData);
 });
-export var initMaterial = function (material) {
-    initMaterialSystem(material.index, getState(DirectorData));
-};
-var _checkShouldAlive = function (material, MaterialData) {
-    checkComponentShouldAlive(material, MaterialData, function (material, MaterialData) {
+export var checkShouldAlive = function (material) {
+    checkComponentShouldAlive(material, null, function (material) {
         return isComponentIndexNotRemoved(material);
     });
 };

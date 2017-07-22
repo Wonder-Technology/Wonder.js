@@ -30,11 +30,11 @@ var ThreeDTransform = (function (_super) {
         _this.uid = null;
         return _this;
     }
+    ThreeDTransform = __decorate([
+        registerClass_1.registerClass("ThreeDTransform")
+    ], ThreeDTransform);
     return ThreeDTransform;
 }(Component_1.Component));
-ThreeDTransform = __decorate([
-    registerClass_1.registerClass("ThreeDTransform")
-], ThreeDTransform);
 exports.ThreeDTransform = ThreeDTransform;
 exports.createThreeDTransform = function () {
     return ThreeDTransformSystem_1.create(ThreeDTransformData_1.ThreeDTransformData);

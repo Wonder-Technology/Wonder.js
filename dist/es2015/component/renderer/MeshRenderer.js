@@ -25,11 +25,11 @@ var MeshRenderer = (function (_super) {
     function MeshRenderer() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    MeshRenderer = __decorate([
+        registerClass("MeshRenderer")
+    ], MeshRenderer);
     return MeshRenderer;
 }(Component));
-MeshRenderer = __decorate([
-    registerClass("MeshRenderer")
-], MeshRenderer);
 export { MeshRenderer };
 export var createMeshRenderer = function () {
     return create(MeshRendererData);

@@ -8,13 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var contract_1 = require("../definition/typescript/decorator/contract");
-var Log_1 = require("../utils/Log");
 var Vector3_1 = require("../math/Vector3");
 var Vector4_1 = require("../math/Vector4");
 var cache_1 = require("../definition/typescript/decorator/cache");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
-var Color = Color_1 = (function () {
+var Color = (function () {
     function Color() {
         this._r = null;
         this._g = null;
@@ -23,7 +22,9 @@ var Color = Color_1 = (function () {
         this._colorString = null;
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
+        this._colorArr3Cache = null;
     }
+    Color_1 = Color;
     Color.create = function (colorVal) {
         var obj = new this();
         obj.initWhenCreate(colorVal);
@@ -103,6 +104,9 @@ var Color = Color_1 = (function () {
     Color.prototype.toVector4 = function () {
         return Vector4_1.Vector4.create(this.r, this.g, this.b, this.a);
     };
+    Color.prototype.toArray3 = function () {
+        return [this.r, this.g, this.b];
+    };
     Color.prototype.toString = function () {
         return this._colorString;
     };
@@ -172,57 +176,75 @@ var Color = Color_1 = (function () {
     Color.prototype._clearCache = function () {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
+        this._colorArr3Cache = null;
     };
+    __decorate([
+        contract_1.ensureGetter(function (r) {
+            contract_1.it("r should >= 0", function () {
+                wonder_expect_js_1.expect(r).gte(0);
+            });
+        })
+    ], Color.prototype, "r", null);
+    __decorate([
+        contract_1.ensureGetter(function (g) {
+            contract_1.it("g should >= 0", function () {
+                wonder_expect_js_1.expect(g).gte(0);
+            });
+        })
+    ], Color.prototype, "g", null);
+    __decorate([
+        contract_1.ensureGetter(function (b) {
+            contract_1.it("b should >= 0", function () {
+                wonder_expect_js_1.expect(b).gte(0);
+            });
+        })
+    ], Color.prototype, "b", null);
+    __decorate([
+        contract_1.ensureGetter(function (a) {
+            contract_1.it("a should >= 0", function () {
+                wonder_expect_js_1.expect(a).gte(0);
+            });
+        })
+    ], Color.prototype, "a", null);
+    __decorate([
+        cache_1.cache(function () {
+            return this._colorVec3Cache !== null;
+        }, function () {
+            return this._colorVec3Cache;
+        }, function (result) {
+            this._colorVec3Cache = result;
+        })
+    ], Color.prototype, "toVector3", null);
+    __decorate([
+        cache_1.cache(function () {
+            return this._colorVec4Cache !== null;
+        }, function () {
+            return this._colorVec4Cache;
+        }, function (result) {
+            this._colorVec4Cache = result;
+        })
+    ], Color.prototype, "toVector4", null);
+    __decorate([
+        cache_1.cache(function () {
+            return this._colorArr3Cache !== null;
+        }, function () {
+            return this._colorArr3Cache;
+        }, function (result) {
+            this._colorArr3Cache = result;
+        })
+    ], Color.prototype, "toArray3", null);
+    __decorate([
+        contract_1.requireCheck(function (colorVal) {
+            contract_1.it("color should be #xxxxxx", function () {
+                wonder_expect_js_1.expect(REGEX_NUM.test(colorVal)).true;
+            });
+        })
+    ], Color.prototype, "setColorByNum", null);
+    Color = Color_1 = __decorate([
+        registerClass_1.registerClass("Color")
+    ], Color);
     return Color;
+    var Color_1;
 }());
-__decorate([
-    contract_1.ensureGetter(function (r) {
-        contract_1.assert(r >= 0, Log_1.Log.info.FUNC_SHOULD("r", ">= 0, but actual is " + r));
-    })
-], Color.prototype, "r", null);
-__decorate([
-    contract_1.ensureGetter(function (g) {
-        contract_1.assert(g >= 0, Log_1.Log.info.FUNC_SHOULD("g", ">= 0, but actual is " + g));
-    })
-], Color.prototype, "g", null);
-__decorate([
-    contract_1.ensureGetter(function (b) {
-        contract_1.assert(b >= 0, Log_1.Log.info.FUNC_SHOULD("b", ">= 0, but actual is " + b));
-    })
-], Color.prototype, "b", null);
-__decorate([
-    contract_1.ensureGetter(function (a) {
-        contract_1.assert(a >= 0, Log_1.Log.info.FUNC_SHOULD("a", ">= 0, but actual is " + a));
-    })
-], Color.prototype, "a", null);
-__decorate([
-    cache_1.cache(function () {
-        return this._colorVec3Cache !== null;
-    }, function () {
-        return this._colorVec3Cache;
-    }, function (result) {
-        this._colorVec3Cache = result;
-    })
-], Color.prototype, "toVector3", null);
-__decorate([
-    cache_1.cache(function () {
-        return this._colorVec4Cache !== null;
-    }, function () {
-        return this._colorVec4Cache;
-    }, function (result) {
-        this._colorVec4Cache = result;
-    })
-], Color.prototype, "toVector4", null);
-__decorate([
-    contract_1.requireCheck(function (colorVal) {
-        contract_1.it("color should be #xxxxxx", function () {
-            wonder_expect_js_1.expect(REGEX_NUM.test(colorVal)).true;
-        });
-    })
-], Color.prototype, "setColorByNum", null);
-Color = Color_1 = __decorate([
-    registerClass_1.registerClass("Color")
-], Color);
 exports.Color = Color;
-var Color_1;
 //# sourceMappingURL=Color.js.map

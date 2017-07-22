@@ -20,11 +20,11 @@ exports.setParent = contract_1.requireCheckFunc(function (transform, parent, Thr
         }
     });
 }, function (transform, parent, ThreeDTransformData) {
-    var indexInArrayBuffer = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = exports.getParent(uid, ThreeDTransformData), isCurrentParentExisit = exports.isParentExist(currentParent);
+    var index = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = exports.getParent(uid, ThreeDTransformData), isCurrentParentExisit = exports.isParentExist(currentParent);
     if (parent === null) {
         if (isCurrentParentExisit) {
             _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
-            dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
+            dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
         }
         return;
     }
@@ -36,7 +36,7 @@ exports.setParent = contract_1.requireCheckFunc(function (transform, parent, Thr
         _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
     }
     _addToParent(uid, transform, parent, ThreeDTransformData);
-    dirtySystem_1.addItAndItsChildrenToDirtyList(indexInArrayBuffer, uid, ThreeDTransformData);
+    dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 });
 var _isTransformEqual = function (tra1, tra2) { return tra1.uid === tra2.uid; };
 exports.getChildren = function (uid, ThreeDTransformData) {

@@ -20,9 +20,14 @@ var _addTypeID = function (componentClassNameArr, table) {
 var _typeID = 1;
 var _table = {};
 _addTypeID(["ThreeDTransform"], _table);
-_addTypeID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
-_addTypeID(["Material", "BasicMaterial"], _table);
+_addTypeID(["BoxGeometry"], _table);
+_addTypeID(["CustomGeometry"], _table);
+_addTypeID(["BasicMaterial"], _table);
+_addTypeID(["LightMaterial"], _table);
 _addTypeID(["MeshRenderer"], _table);
 _addTypeID(["Tag"], _table);
 _addTypeID(["CameraController"], _table);
+_addTypeID(["AmbientLight"], _table);
+_addTypeID(["DirectionLight"], _table);
+_addTypeID(["PointLight"], _table);
 //# sourceMappingURL=ComponentTypeIDManager.js.map

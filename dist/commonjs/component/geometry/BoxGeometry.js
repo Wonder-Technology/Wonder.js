@@ -25,11 +25,11 @@ var BoxGeometry = (function (_super) {
     function BoxGeometry() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    BoxGeometry = __decorate([
+        registerClass_1.registerClass("BoxGeometry")
+    ], BoxGeometry);
     return BoxGeometry;
 }(Geometry_1.Geometry));
-BoxGeometry = __decorate([
-    registerClass_1.registerClass("BoxGeometry")
-], BoxGeometry);
 exports.BoxGeometry = BoxGeometry;
 exports.createBoxGeometry = function () {
     return BoxGeometrySystem_1.create(GeometryData_1.GeometryData);

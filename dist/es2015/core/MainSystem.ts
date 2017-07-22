@@ -45,7 +45,6 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { chain, compose } from "../utils/functionalUtils";
-import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
@@ -57,25 +56,22 @@ import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
 import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
+import { BasicMaterialData } from "../component/material/BasicMaterialData";
+import { LightMaterialData } from "../component/material/LightMaterialData";
+import { initData as initLightData } from "../component/light/LightSystem";
+import { AmbientLightData } from "../component/light/AmbientLightData";
+import { DirectionLightData } from "../component/light/DirectionLightData";
+import { PointLightData } from "../component/light/PointLightData";
+import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
+import { initWorkInstances } from "../worker/WorkerInstanceSystem";
+import { TextureCacheData } from "../renderer/texture/TextureCacheData";
+import { TextureData } from "../renderer/texture/TextureData";
+import { MapManagerData } from "../renderer/texture/MapManagerData";
+import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
+import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 
-export var getIsTest = (MainData: any) => {
-    return MainData.isTest;
-}
-
-export var setIsTest = (isTest: boolean, MainData: any) => {
-    return IO.of(() => {
-        MainData.isTest = isTest;
-    });
-}
-
-export var setLibIsTest = (isTest: boolean) => {
-    return IO.of(() => {
-        Main.isTest = isTest;
-    });
-}
-
-export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectData: any, {
-    canvasId = "",
+export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, {
+    canvasID = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
     useDevicePixelRatio = false,
@@ -105,16 +101,18 @@ export var setConfig = (closeContractTest: boolean, MainData: any, WorkerDetectD
             setLibIsTest(isTest).run();
         }
 
-        setIsTest(_isTest, MainData).run();
-
         setWorkerConfig(workerConfig, WorkerDetectData).run();
+
+        initWorkInstances(WorkerInstanceData);
+
+        setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
 
         return fromJS({
             Main: {
                 screenSize: screenSize
             },
             config: {
-                canvasId: canvasId,
+                canvasID: canvasID,
                 contextConfig: {
                     options: ExtendUtils.extend({
                         alpha: true,
@@ -139,7 +137,7 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
     return compose(
         chain(initDevice(configState.get("contextConfig"), gameState, configState)),
         createCanvas(DomQuery)
-    )(configState.get("canvasId"));
+    )(configState.get("canvasID"));
 });
 
 export var initData = null;
@@ -172,7 +170,7 @@ var _initData = () => {
 
     initGeometryData(DataBufferConfig, GeometryData);
 
-    initMaterialData(MaterialData);
+    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
 
     initMeshRendererData(MeshRendererData);
 
@@ -189,6 +187,10 @@ var _initData = () => {
     // initWorkerTimeData(WorkerTimeData);
 
     initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+
+    initLightData(AmbientLightData, DirectionLightData, PointLightData);
+
+    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 }
 
 

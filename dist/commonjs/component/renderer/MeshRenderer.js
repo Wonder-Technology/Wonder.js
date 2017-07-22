@@ -27,11 +27,11 @@ var MeshRenderer = (function (_super) {
     function MeshRenderer() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    MeshRenderer = __decorate([
+        registerClass_1.registerClass("MeshRenderer")
+    ], MeshRenderer);
     return MeshRenderer;
 }(Component_1.Component));
-MeshRenderer = __decorate([
-    registerClass_1.registerClass("MeshRenderer")
-], MeshRenderer);
 exports.MeshRenderer = MeshRenderer;
 exports.createMeshRenderer = function () {
     return MeshRendererSystem_1.create(MeshRendererData_1.MeshRendererData);

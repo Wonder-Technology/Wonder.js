@@ -1,8 +1,18 @@
 import { EBufferType } from "../../../enum/EBufferType";
 import { EDrawMode } from "../../../enum/EDrawMode";
 export declare var getVertices: Function;
+export declare var getNormals: Function;
+export declare var getTexCoords: Function;
 export declare var getIndices: Function;
 export declare var updatePointCacheDatas: (verticesInfoList: {
+    index: number;
+    startIndex: number;
+    endIndex: number;
+}[], normalsInfoList: {
+    index: number;
+    startIndex: number;
+    endIndex: number;
+}[], texCoordsInfoList: {
     index: number;
     startIndex: number;
     endIndex: number;
@@ -14,11 +24,25 @@ export declare var updatePointCacheDatas: (verticesInfoList: {
 export declare var resetPointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
+}[], normalsInfoList: {
+    index: number;
+    startIndex: number;
+    endIndex: number;
+}[], texCoordsInfoList: {
+    index: number;
+    startIndex: number;
+    endIndex: number;
 }[], indicesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], GeometryWorkerData: any) => void;
 export declare var setPointCacheDatas: (verticesInfoList: {
+    startIndex: number;
+    endIndex: number;
+}[], normalsInfoList: {
+    startIndex: number;
+    endIndex: number;
+}[], texCoordsInfoList: {
     startIndex: number;
     endIndex: number;
 }[], indicesInfoList: {

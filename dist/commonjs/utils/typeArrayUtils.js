@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var contract_1 = require("../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
+exports.getMatrix3DataSize = function () { return 9; };
 exports.getMatrix4DataSize = function () { return 16; };
 exports.getVector3DataSize = function () { return 3; };
 exports.getQuaternionDataSize = function () { return 4; };
@@ -20,6 +21,10 @@ exports.deleteBySwapAndReset = function (sourceIndex, targetIndex, typeArr, leng
         typeArr[targetIndex + i] = defaultValueArr[i];
     }
 };
+exports.deleteSingleValueBySwapAndReset = function (sourceIndex, lastIndex, typeArr, resetValue) {
+    typeArr[sourceIndex] = typeArr[lastIndex];
+    typeArr[lastIndex] = resetValue;
+};
 exports.deleteOneItemBySwapAndReset = function (sourceIndex, targetIndex, typeArr, defaultValue) {
     typeArr[sourceIndex] = typeArr[targetIndex];
     typeArr[targetIndex] = defaultValue;
@@ -27,6 +32,18 @@ exports.deleteOneItemBySwapAndReset = function (sourceIndex, targetIndex, typeAr
 exports.set = function (typeArr, valArr, offset) {
     if (offset === void 0) { offset = 0; }
     typeArr.set(valArr, offset);
+};
+exports.setMatrices3 = function (typeArr, mat, index) {
+    var values = mat.values;
+    typeArr[index] = values[0];
+    typeArr[index + 1] = values[1];
+    typeArr[index + 2] = values[2];
+    typeArr[index + 3] = values[3];
+    typeArr[index + 4] = values[4];
+    typeArr[index + 5] = values[5];
+    typeArr[index + 6] = values[6];
+    typeArr[index + 7] = values[7];
+    typeArr[index + 8] = values[8];
 };
 exports.setMatrices = function (typeArr, mat, index) {
     var values = mat.values;
@@ -99,4 +116,23 @@ exports.createMatrix4ByIndex = function (mat, typeArr, index) {
 exports.createVector3ByIndex = function (vec, typeArr, index) {
     return exports.setVector3ByIndex(vec, typeArr, index);
 };
+exports.fillTypeArr = contract_1.requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
+    contract_1.it("should not exceed type arr's length", function () {
+        wonder_expect_js_1.expect(count + startIndex).lte(typeArr.length);
+    });
+}, function (typeArr, dataArr, startIndex, count) {
+    typeArr.set(dataArr, startIndex);
+});
+exports.setTypeArrayValue = contract_1.requireCheckFunc(function (typeArr, index, value) {
+    contract_1.it("should not exceed type arr's length", function () {
+        wonder_expect_js_1.expect(index).lte(typeArr.length - 1);
+    });
+}, function (typeArr, index, value) {
+    typeArr[index] = value;
+});
+exports.setSingleValue = function (typeArr, index, value) {
+    var size = 1, i = index * size;
+    exports.setTypeArrayValue(typeArr, i, value);
+};
+exports.computeBufferLength = function (count, size) { return count * size; };
 //# sourceMappingURL=typeArrayUtils.js.map

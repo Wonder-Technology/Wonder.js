@@ -1,11 +1,5 @@
-import { EBufferType } from "../enum/EBufferType";
 export declare class ArrayBufferData {
-    static buffers: Array<WebGLBuffer>;
-    static bufferDataMap: ArrayBufferDataMap;
+    static vertexBuffer: Array<WebGLBuffer>;
+    static normalBuffers: Array<WebGLBuffer>;
+    static texCoordBuffers: Array<WebGLBuffer>;
 }
-export declare type ArrayBufferDataMap = {
-    [geometryIndex: number]: {
-        size: number;
-        type: EBufferType;
-    };
-};

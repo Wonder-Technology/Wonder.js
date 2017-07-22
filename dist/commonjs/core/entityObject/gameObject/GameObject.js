@@ -9,22 +9,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../../../definition/typescript/decorator/registerClass");
 var GameObjectSystem_1 = require("./GameObjectSystem");
 var GameObjectData_1 = require("./GameObjectData");
-var ComponentTypeIDManager_1 = require("../../../component/ComponentTypeIDManager");
 var ThreeDTransformData_1 = require("../../../component/transform/ThreeDTransformData");
 var ThreeDTransformSystem_1 = require("../../../component/transform/ThreeDTransformSystem");
 var contract_1 = require("../../../definition/typescript/decorator/contract");
 var contractUtils_1 = require("../../../utils/contractUtils");
 var DirectorSystem_1 = require("../../DirectorSystem");
 var DirectorData_1 = require("../../DirectorData");
+var ComponentComponentIDManager_1 = require("../../../component/ComponentComponentIDManager");
 var GameObject = (function () {
     function GameObject() {
         this.uid = null;
     }
+    GameObject = __decorate([
+        registerClass_1.registerClass("GameObject")
+    ], GameObject);
     return GameObject;
 }());
-GameObject = __decorate([
-    registerClass_1.registerClass("GameObject")
-], GameObject);
 exports.GameObject = GameObject;
 exports.createGameObject = function () { return GameObjectSystem_1.create(ThreeDTransformSystem_1.create(ThreeDTransformData_1.ThreeDTransformData), GameObjectData_1.GameObjectData); };
 exports.addGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, component) {
@@ -50,14 +50,14 @@ exports.disposeGameObjectComponent = contract_1.requireCheckFunc(function (gameO
 exports.getGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, _class) {
     contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
 }, function (gameObject, _class) {
-    return GameObjectSystem_1.getComponent(gameObject, ComponentTypeIDManager_1.getTypeIDFromClass(_class), GameObjectData_1.GameObjectData);
+    return GameObjectSystem_1.getComponent(gameObject, ComponentComponentIDManager_1.getComponentIDFromClass(_class), GameObjectData_1.GameObjectData);
 });
 exports.getGameObjectTransform = function (gameObject) {
     return GameObjectSystem_1.getTransform(gameObject, GameObjectData_1.GameObjectData);
 };
 exports.hasGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, _class) {
 }, function (gameObject, _class) {
-    return GameObjectSystem_1.hasComponent(gameObject, ComponentTypeIDManager_1.getTypeIDFromClass(_class), GameObjectData_1.GameObjectData);
+    return GameObjectSystem_1.hasComponent(gameObject, ComponentComponentIDManager_1.getComponentIDFromClass(_class), GameObjectData_1.GameObjectData);
 });
 exports.isGameObjectAlive = function (gameObject) {
     return GameObjectSystem_1.isAlive(gameObject, GameObjectData_1.GameObjectData);

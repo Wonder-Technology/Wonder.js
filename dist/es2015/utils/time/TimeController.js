@@ -39,12 +39,12 @@ var TimeController = (function () {
         }
         return this.elapsed;
     };
+    __decorate([
+        ensure(function () {
+            assert(this.elapsed >= 0, Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+        })
+    ], TimeController.prototype, "computeElapseTime", null);
     return TimeController;
 }());
 export { TimeController };
-__decorate([
-    ensure(function () {
-        assert(this.elapsed >= 0, Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
-    })
-], TimeController.prototype, "computeElapseTime", null);
 //# sourceMappingURL=TimeController.js.map

@@ -1,6 +1,7 @@
 import { CameraController } from "./CameraController";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Map } from "immutable";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 export declare var addAddComponentHandle: (_class: any) => void;
 export declare var addDisposeHandle: (_class: any) => void;
 export declare var create: Function;
@@ -10,7 +11,7 @@ export declare var initCameraController: (state: Map<any, any>, index: number, P
 export declare var update: (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any) => void;
 export declare var addComponent: (component: CameraController, gameObject: GameObject) => void;
 export declare var disposeComponent: (component: CameraController) => void;
-export declare var getGameObject: (index: number, CameraControllerData: any) => GameObject;
+export declare var getGameObject: (index: number, CameraControllerData: any) => IUIDEntity;
 export declare var getWorldToCameraMatrix: (...args: any[]) => any;
 export declare var getPMatrix: (index: number, CameraData: any) => any;
 export declare var initData: (CameraControllerData: any, PerspectiveCameraData: any, CameraData: any) => void;

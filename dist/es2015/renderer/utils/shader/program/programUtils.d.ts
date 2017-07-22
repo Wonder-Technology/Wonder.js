@@ -1,4 +1,7 @@
-import { RenderCommandUniformData } from "../../../type/dataType";
+import { EVariableType } from "../../../enum/EVariableType";
+import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../../type/dataType";
+import { DrawDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
+import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
 export declare var use: Function;
 export declare var disableVertexAttribArray: Function;
 export declare var getMaterialShaderLibConfig: Function;
@@ -6,11 +9,14 @@ export declare var registerProgram: (shaderIndex: number, ProgramDataFromSystem:
 export declare var getProgram: Function;
 export declare var isProgramExist: (program: WebGLProgram) => boolean;
 export declare var initShader: (program: WebGLProgram, vsSource: string, fsSource: string, gl: WebGLRenderingContext) => void;
-export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, getVertices: Function, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerData: any, ArrayBufferData: any) => void;
-export declare var sendUniformData: (gl: WebGLRenderingContext, shaderIndex: number, {getUniformData, sendMatrix4, sendVector3, sendFloat1}: {
-    getUniformData: any;
+export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => void;
+export declare var sendUniformData: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => void;
+export declare var directlySendUniformData: (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {sendMatrix3, sendMatrix4, sendVector3, sendInt, sendFloat1, sendFloat3}: {
+    sendMatrix3: any;
     sendMatrix4: any;
     sendVector3: any;
+    sendInt: any;
     sendFloat1: any;
-}, MaterialWorkerData: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, renderCommandUniformData: RenderCommandUniformData) => void;
+    sendFloat3: any;
+}, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => void;
 export declare var initData: (ProgramDataFromSystem: any) => void;

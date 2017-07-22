@@ -8,12 +8,12 @@ export declare var swapTypeArrData: (index1: number, index2: number, ThreeDTrans
 export declare var moveToIndex: Function;
 export declare var moveMapDataToIndex: Function;
 export declare var moveTypeArrDataToIndex: (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => any;
-export declare var setTransformDataInTypeArr: (indexInArrayBuffer: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => void;
+export declare var setTransformDataInTypeArr: (index: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => void;
 export declare var setLocalToWorldMatricesData: (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => void;
 export declare var setLocalPositionData: (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => any;
 export declare var setLocalRotationData: (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => any;
 export declare var setLocalScaleData: (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => any;
-export declare var setPositionData: (indexInArrayBuffer: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => void;
-export declare var getMatrix4DataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;
-export declare var getVector3DataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;
-export declare var getQuaternionDataIndexInArrayBuffer: (indexInArrayBuffer: number) => number;
+export declare var setPositionData: (index: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => void;
+export declare var getMatrix4DataIndexInArrayBuffer: (index: number) => number;
+export declare var getVector3DataIndexInArrayBuffer: (index: number) => number;
+export declare var getQuaternionDataIndexInArrayBuffer: (index: number) => number;

@@ -1,5 +1,5 @@
 import { ComponentGameObjectMap } from "../ComponentData";
-import { Tag } from "./Tag";
+import { Component } from "../Component";
 export declare class TagData {
     static tagArray: Array<string>;
     static slotCountMap: Array<number>;
@@ -14,5 +14,5 @@ export declare class TagData {
     static disposeCount: number;
 }
 export declare type TagMap = {
-    [index: number]: Tag;
+    [index: number]: Component;
 };

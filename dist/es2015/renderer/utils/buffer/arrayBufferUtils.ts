@@ -1,10 +1,8 @@
 import { EBufferType } from "../../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
-import { createMap } from "../../../utils/objectUtils";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferType: string, getVertices: Function, GeometryWorkerData: any, ArrayBufferDataFromSystem: any) => {
-    var buffers = ArrayBufferDataFromSystem.buffers,
-        buffer = buffers[geometryIndex];
+export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+    var buffer = buffers[geometryIndex];
 
     if (isBufferExist(buffer)) {
         return buffer;
@@ -14,12 +12,7 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
 
     buffers[geometryIndex] = buffer;
 
-    _initBuffer(gl, getVertices(geometryIndex, GeometryWorkerData), buffer);
-
-    ArrayBufferDataFromSystem.bufferDataMap[geometryIndex] = {
-        size: 3,
-        type: EBufferType.FLOAT
-    };
+    _initBuffer(gl, getDatas(geometryIndex, GeometryDataFromSystem), buffer);
 
     return buffer;
 }
@@ -37,6 +30,7 @@ var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
 }
 
 export var initData = (ArrayBufferDataFromSystemFromSystem: any) => {
-    ArrayBufferDataFromSystemFromSystem.buffers = [];
-    ArrayBufferDataFromSystemFromSystem.bufferDataMap = createMap();
+    ArrayBufferDataFromSystemFromSystem.vertexBuffer = [];
+    ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
+    ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 }

@@ -34,7 +34,6 @@ import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { CompileConfig } from "../config/CompileConfig";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { chain, compose } from "../utils/functionalUtils";
-import { Main } from "wonder-frp/dist/es2015/core/Main";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { fromJS } from "immutable";
@@ -46,21 +45,21 @@ import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
 import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
-export var getIsTest = function (MainData) {
-    return MainData.isTest;
-};
-export var setIsTest = function (isTest, MainData) {
-    return IO.of(function () {
-        MainData.isTest = isTest;
-    });
-};
-export var setLibIsTest = function (isTest) {
-    return IO.of(function () {
-        Main.isTest = isTest;
-    });
-};
-export var setConfig = function (closeContractTest, MainData, WorkerDetectData, _a) {
-    var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
+import { BasicMaterialData } from "../component/material/BasicMaterialData";
+import { LightMaterialData } from "../component/material/LightMaterialData";
+import { initData as initLightData } from "../component/light/LightSystem";
+import { AmbientLightData } from "../component/light/AmbientLightData";
+import { DirectionLightData } from "../component/light/DirectionLightData";
+import { PointLightData } from "../component/light/PointLightData";
+import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
+import { initWorkInstances } from "../worker/WorkerInstanceSystem";
+import { TextureCacheData } from "../renderer/texture/TextureCacheData";
+import { TextureData } from "../renderer/texture/TextureData";
+import { MapManagerData } from "../renderer/texture/MapManagerData";
+import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
+import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
+export var setConfig = function (closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, _a) {
+    var _b = _a.canvasID, canvasID = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
         options: {
             alpha: true,
             depth: true,
@@ -82,14 +81,15 @@ export var setConfig = function (closeContractTest, MainData, WorkerDetectData, 
             _isTest = isTest;
             setLibIsTest(isTest).run();
         }
-        setIsTest(_isTest, MainData).run();
         setWorkerConfig(workerConfig, WorkerDetectData).run();
+        initWorkInstances(WorkerInstanceData);
+        setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
         return fromJS({
             Main: {
                 screenSize: screenSize
             },
             config: {
-                canvasId: canvasId,
+                canvasID: canvasID,
                 contextConfig: {
                     options: ExtendUtils.extend({
                         alpha: true,
@@ -110,7 +110,7 @@ export var init = requireCheckFunc(function (gameState, configState, DomQuery) {
         expect(configState.get("useDevicePixelRatio")).exist;
     });
 }, function (gameState, configState, DomQuery) {
-    return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState)), createCanvas(DomQuery))(configState.get("canvasId"));
+    return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState)), createCanvas(DomQuery))(configState.get("canvasID"));
 });
 export var initData = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
@@ -132,7 +132,7 @@ else {
 var _initData = function () {
     initShaderData(ShaderData);
     initGeometryData(DataBufferConfig, GeometryData);
-    initMaterialData(MaterialData);
+    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
     initMeshRendererData(MeshRendererData);
     initTagData(TagData);
     initThreeDTransformData(GlobalTempData, ThreeDTransformData);
@@ -140,5 +140,7 @@ var _initData = function () {
     initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
     initGameObjectData(GameObjectData);
     initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+    initLightData(AmbientLightData, DirectionLightData, PointLightData);
+    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 };
 //# sourceMappingURL=MainSystem.js.map

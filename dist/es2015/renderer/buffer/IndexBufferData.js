@@ -1,8 +1,8 @@
 var IndexBufferData = (function () {
     function IndexBufferData() {
     }
+    IndexBufferData.buffers = null;
     return IndexBufferData;
 }());
 export { IndexBufferData };
-IndexBufferData.buffers = null;
 //# sourceMappingURL=IndexBufferData.js.map

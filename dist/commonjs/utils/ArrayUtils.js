@@ -5,12 +5,10 @@ exports.deleteVal = function (key, arr) { return arr[key] = void 0; };
 exports.isNotValidVal = function (val) { return JudgeUtils_1.isUndefined(val); };
 exports.isValidVal = function (val) { return JudgeUtils_1.isNotUndefined(val); };
 exports.deleteBySwap = function (index, lastIndex, array) {
-    var temp = null;
     if (lastIndex === -1) {
         return null;
     }
-    temp = array[lastIndex];
-    array[index] = temp;
+    array[index] = array[lastIndex];
     array.pop();
 };
 exports.hasDuplicateItems = function (arr) {

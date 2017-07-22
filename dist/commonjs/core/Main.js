@@ -11,26 +11,28 @@ var CompileConfig_1 = require("../config/CompileConfig");
 var DirectorData_1 = require("./DirectorData");
 var DirectorSystem_1 = require("./DirectorSystem");
 var contract_1 = require("../definition/typescript/decorator/contract");
-var MainData_1 = require("./MainData");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var DomQuery_1 = require("wonder-commonlib/dist/commonjs/utils/DomQuery");
 var WorkerDetectData_1 = require("../device/WorkerDetectData");
+var WorkerInstanceData_1 = require("../worker/WorkerInstanceData");
+var InitConfigData_1 = require("../renderer/config/InitConfigData");
+var InitConfigSystem_1 = require("../renderer/config/InitConfigSystem");
 var Main = (function () {
     function Main() {
     }
     Object.defineProperty(Main, "isTest", {
         get: function () {
-            return MainSystem_1.getIsTest(MainData_1.MainData);
+            return InitConfigSystem_1.getIsTest(InitConfigData_1.InitConfigData);
         },
         set: function (isTest) {
-            MainSystem_1.setIsTest(isTest, MainData_1.MainData).run();
-            MainSystem_1.setLibIsTest(isTest).run();
+            InitConfigSystem_1.setIsTest(isTest, InitConfigData_1.InitConfigData, WorkerInstanceData_1.WorkerInstanceData).run();
+            InitConfigSystem_1.setLibIsTest(isTest).run();
         },
         enumerable: true,
         configurable: true
     });
     Main.setConfig = function (configState) {
-        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, MainData_1.MainData, WorkerDetectData_1.WorkerDetectData, configState).run();
+        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, InitConfigData_1.InitConfigData, WorkerDetectData_1.WorkerDetectData, WorkerInstanceData_1.WorkerInstanceData, configState).run();
         DirectorSystem_1.setState(DirectorSystem_1.getState(DirectorData_1.DirectorData).set("Main", this._configState.get("Main")), DirectorData_1.DirectorData).run();
         return this;
     };
@@ -39,15 +41,15 @@ var Main = (function () {
         DirectorSystem_1.setState(MainSystem_1.init(DirectorSystem_1.getState(DirectorData_1.DirectorData), this._configState.get("config"), DomQuery_1.DomQuery).run(), DirectorData_1.DirectorData).run();
         return this;
     };
+    Main._configState = null;
+    __decorate([
+        contract_1.requireCheck(function () {
+            contract_1.it("configState should exist", function () {
+                wonder_expect_js_1.expect(Main._configState).exist;
+            });
+        })
+    ], Main, "init", null);
     return Main;
 }());
-Main._configState = null;
-__decorate([
-    contract_1.requireCheck(function () {
-        contract_1.it("configState should exist", function () {
-            wonder_expect_js_1.expect(Main._configState).exist;
-        });
-    })
-], Main, "init", null);
 exports.Main = Main;
 //# sourceMappingURL=Main.js.map

@@ -7,8 +7,8 @@ export var getIsTranslate = (uid: number, ThreeDTransformData: any) => {
 }
 
 export var setIsTranslate = requireCheckFunc((uid: number, isTranslate: boolean, ThreeDTransformData: any) => {
-    // it("indexInArrayBuffer should be used", () => {
-    //     expect(_isIndexUsed(indexInArrayBuffer)).true;
+    // it("index should be used", () => {
+    //     expect(_isIndexUsed(index)).true;
     // });
 }, (uid: number, isTranslate: boolean, ThreeDTransformData: any) => {
     // ThreeDTransformData.isTranslateMap.set(uid, isTranslate);

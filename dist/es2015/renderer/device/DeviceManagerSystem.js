@@ -3,16 +3,21 @@ import { getContext, setCanvas, setHeight, setStyleHeight, setStyleWidth, setWid
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { chain, compose } from "../../utils/functionalUtils";
-import { clear as clearUtils, getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils } from "../utils/device/deviceManagerUtils";
+import { clear as clearUtils, getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setSide as setSideUtils, setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils } from "../utils/device/deviceManagerUtils";
 export var createGL = curry(function (canvas, contextConfig, DeviceManagerData, state) {
     return IO.of(function () {
-        var gl = getContext(contextConfig, canvas);
-        if (!gl) {
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
+        var gl = _getOnlyGL(canvas, contextConfig);
         return compose(setCanvas(canvas), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
 });
+var _getOnlyGL = function (canvas, contextConfig) {
+    var gl = getContext(contextConfig, canvas);
+    if (!gl) {
+        DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        return null;
+    }
+    return gl;
+};
 export var getGL = getGLUtils;
 export var setGL = setGLUtils;
 export var setContextConfig = setContextConfigUtils;
@@ -42,5 +47,6 @@ var _setScreenData = curry(function (DeviceManagerData, canvas, state, data) {
 });
 export var clear = clearUtils;
 export var setColorWrite = setColorWriteUtils;
+export var setSide = setSideUtils;
 export var initData = initDataUtils;
 //# sourceMappingURL=DeviceManagerSystem.js.map

@@ -18,23 +18,29 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { Geometry } from "./Geometry";
 import { create } from "./CustomGeometrySystem";
 import { GeometryData } from "./GeometryData";
-import { setIndices, setVertices } from "./GeometrySystem";
+import { setIndices, setNormals, setTexCoords, setVertices } from "./GeometrySystem";
 var CustomGeometry = (function (_super) {
     __extends(CustomGeometry, _super);
     function CustomGeometry() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    CustomGeometry = __decorate([
+        registerClass("CustomGeometry")
+    ], CustomGeometry);
     return CustomGeometry;
 }(Geometry));
-CustomGeometry = __decorate([
-    registerClass("CustomGeometry")
-], CustomGeometry);
 export { CustomGeometry };
 export var createCustomGeometry = function () {
     return create(GeometryData);
 };
 export var setCustomGeometryVertices = function (geometry, vertices) {
     return setVertices(geometry.index, vertices, GeometryData);
+};
+export var setCustomGeometryNormals = function (geometry, normals) {
+    return setNormals(geometry.index, normals, GeometryData);
+};
+export var setCustomGeometryTexCoords = function (geometry, texCoords) {
+    return setTexCoords(geometry.index, texCoords, GeometryData);
 };
 export var setCustomGeometryIndices = function (geometry, indices) {
     return setIndices(geometry.index, indices, GeometryData);

@@ -8,13 +8,18 @@ var functionalUtils_1 = require("../../utils/functionalUtils");
 var deviceManagerUtils_1 = require("../utils/device/deviceManagerUtils");
 exports.createGL = curry_1.default(function (canvas, contextConfig, DeviceManagerData, state) {
     return IO_1.IO.of(function () {
-        var gl = ViewSystem_1.getContext(contextConfig, canvas);
-        if (!gl) {
-            DomQuery_1.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        }
+        var gl = _getOnlyGL(canvas, contextConfig);
         return functionalUtils_1.compose(ViewSystem_1.setCanvas(canvas), exports.setContextConfig(contextConfig), exports.setGL(gl, DeviceManagerData))(state);
     });
 });
+var _getOnlyGL = function (canvas, contextConfig) {
+    var gl = ViewSystem_1.getContext(contextConfig, canvas);
+    if (!gl) {
+        DomQuery_1.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        return null;
+    }
+    return gl;
+};
 exports.getGL = deviceManagerUtils_1.getGL;
 exports.setGL = deviceManagerUtils_1.setGL;
 exports.setContextConfig = deviceManagerUtils_1.setContextConfig;
@@ -44,5 +49,6 @@ var _setScreenData = curry_1.default(function (DeviceManagerData, canvas, state,
 });
 exports.clear = deviceManagerUtils_1.clear;
 exports.setColorWrite = deviceManagerUtils_1.setColorWrite;
+exports.setSide = deviceManagerUtils_1.setSide;
 exports.initData = deviceManagerUtils_1.initData;
 //# sourceMappingURL=DeviceManagerSystem.js.map

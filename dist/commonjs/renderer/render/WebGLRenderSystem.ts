@@ -18,7 +18,6 @@ import { CameraControllerData } from "../../component/camera/CameraControllerDat
 import { CameraData } from "../../component/camera/CameraData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { RenderCommandBufferData } from "../command_buffer/RenderCommandBufferData";
-import { ERenderWorkerState } from "../worker/both_file/ERenderWorkerState";
 import { SendDrawRenderCommandBufferData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { clear, draw } from "../draw/DrawRenderCommandBufferSystem";
@@ -28,8 +27,29 @@ import { LocationData } from "../shader/location/LocationData";
 import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
 import { buildDrawDataMap } from "../utils/draw/drawRenderCommandBufferUtils";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { getRenderWorker } from "../worker/logic_file/worker_instance/WorkerInstanceSystem";
-import { WorkerInstanceData } from "../worker/logic_file/worker_instance/WorkerInstanceData";
+import { getRenderWorker } from "../../worker/WorkerInstanceSystem";
+import { WorkerInstanceData } from "../../worker/WorkerInstanceData";
+import { BasicMaterialData } from "../../component/material/BasicMaterialData";
+import { LightMaterialData } from "../../component/material/LightMaterialData";
+import { GlobalTempData } from "../../definition/GlobalTempData";
+import { AmbientLightData } from "../../component/light/AmbientLightData";
+import { DirectionLightData } from "../../component/light/DirectionLightData";
+import { getGL, setSide } from "../device/DeviceManagerSystem";
+import {
+    getBasicMaterialBufferStartIndex,
+    getLightMaterialBufferStartIndex
+} from "../utils/material/bufferUtils";
+import { initState } from "../utils/state/stateUtils";
+import { PointLightData } from "../../component/light/PointLightData";
+import {
+    getAmbientLightBufferCount, getDirectionLightBufferCount,
+    getPointLightBufferCount
+} from "../utils/light/bufferUtils";
+import { TextureData } from "../texture/TextureData";
+import { MapManagerData } from "../texture/MapManagerData";
+import { TextureCacheData } from "../texture/TextureCacheData";
+import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
+import { getDiffuseMapIndex, getSpecularMapIndex } from "../../component/material/LightMaterialSystem";
 
 export var init = null;
 
@@ -40,19 +60,55 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         var renderWorker = getRenderWorker(WorkerInstanceData);
 
         renderWorker.postMessage({
-            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY,
+            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
             materialData: {
                 buffer: MaterialData.buffer,
-                materialCount: MaterialData.count,
-                materialClassNameTable: MaterialData.materialClassNameTable,
-                shaderIndexTable: MaterialData.shaderIndexTable
+                basicMaterialData: {
+                    startIndex: getBasicMaterialBufferStartIndex(),
+                    index: BasicMaterialData.index
+                },
+                lightMaterialData: {
+                    startIndex: getLightMaterialBufferStartIndex(),
+                    index: LightMaterialData.index,
+                    diffuseMapIndex: getDiffuseMapIndex(LightMaterialData),
+                    specularMapIndex: getSpecularMapIndex(LightMaterialData)
+                }
             },
             geometryData: {
                 buffer: GeometryData.buffer,
                 indexType: GeometryData.indexType,
                 indexTypeSize: GeometryData.indexTypeSize,
                 verticesInfoList: GeometryData.verticesInfoList,
+                normalsInfoList: GeometryData.normalsInfoList,
+                texCoordsInfoList: GeometryData.texCoordsInfoList,
                 indicesInfoList: GeometryData.indicesInfoList
+            },
+            lightData: {
+                ambientLightData: {
+                    buffer: AmbientLightData.buffer,
+                    bufferCount: getAmbientLightBufferCount(),
+                    lightCount: AmbientLightData.count
+
+                },
+                directionLightData: {
+                    buffer: DirectionLightData.buffer,
+                    bufferCount: getDirectionLightBufferCount(),
+                    lightCount: DirectionLightData.count,
+                    directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                },
+                pointLightData: {
+                    buffer: PointLightData.buffer,
+                    bufferCount: getPointLightBufferCount(),
+                    lightCount: PointLightData.count,
+                    pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+                }
+            },
+            textureData: {
+                mapManagerBuffer: MapManagerData.buffer,
+                textureBuffer: TextureData.buffer,
+                index: TextureData.index,
+                imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
+                uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
             }
         });
 
@@ -67,35 +123,27 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     render = (state: Map<any, any>) => {
-        // if (SendDrawRenderCommandBufferData.state !== ERenderWorkerState.INIT_COMPLETE) {
-        //     return state;
-        // }
-
         return compose(
-            sendDrawData(WorkerInstanceData, MaterialData, GeometryData),
+            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
             // sortRenderCommands(state),
-            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }
-
-    let _initData = (SendDrawRenderCommandBufferData: any) => {
-        SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
-    }
-
-    _initData(SendDrawRenderCommandBufferData);
 }
 else {
     init = (state: Map<any, any>) => {
-        initMaterial(state, MaterialData);
+        initState(state, getGL, setSide, DeviceManagerData);
+
+        initMaterial(state, getGL(DeviceManagerData, state), TextureData, MaterialData, BasicMaterialData, LightMaterialData);
     }
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, MaterialData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
-            createRenderCommandBufferData(state, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)
         )(MeshRendererData)
     }

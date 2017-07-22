@@ -1,2 +1,12 @@
-import { BasicMaterial } from "./BasicMaterial";
-export declare var create: (ShaderData: any, MaterialData: any) => BasicMaterial;
+import { Material } from "./Material";
+import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Map } from "immutable";
+import { Texture } from "../../renderer/texture/Texture";
+export declare var create: Function;
+export declare var initMaterial: (index: number, state: Map<any, any>) => void;
+export declare var addMap: (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => void;
+export declare var addComponent: (component: Material, gameObject: GameObject) => void;
+export declare var disposeComponent: (component: Material) => void;
+export declare var createTypeArrays: (buffer: any, offset: number, count: number, BasicMaterialData: any) => number;
+export declare var initData: (BasicMaterialData: any) => void;
+export declare var setDefaultData: (BasicMaterialData: any) => void;

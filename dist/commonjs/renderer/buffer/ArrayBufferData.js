@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ArrayBufferData = (function () {
     function ArrayBufferData() {
     }
+    ArrayBufferData.vertexBuffer = null;
+    ArrayBufferData.normalBuffers = null;
+    ArrayBufferData.texCoordBuffers = null;
     return ArrayBufferData;
 }());
-ArrayBufferData.buffers = null;
-ArrayBufferData.bufferDataMap = null;
 exports.ArrayBufferData = ArrayBufferData;
 //# sourceMappingURL=ArrayBufferData.js.map

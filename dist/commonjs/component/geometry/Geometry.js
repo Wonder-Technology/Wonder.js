@@ -29,11 +29,11 @@ var Geometry = (function (_super) {
     function Geometry() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Geometry = __decorate([
+        registerClass_1.registerClass("Geometry")
+    ], Geometry);
     return Geometry;
 }(Component_1.Component));
-Geometry = __decorate([
-    registerClass_1.registerClass("Geometry")
-], Geometry);
 exports.Geometry = Geometry;
 exports.getDrawMode = contract_1.requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData_1.GeometryData);
@@ -44,6 +44,16 @@ exports.getVertices = contract_1.requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData_1.GeometryData);
 }, function (geometry) {
     return GeometrySystem_1.getVertices(geometry.index, GeometryData_1.GeometryData);
+});
+exports.getNormals = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
+    return GeometrySystem_1.getNormals(geometry.index, GeometryData_1.GeometryData);
+});
+exports.getTexCoords = contract_1.requireCheckFunc(function (geometry) {
+    _checkShouldAlive(geometry, GeometryData_1.GeometryData);
+}, function (geometry) {
+    return GeometrySystem_1.getTexCoords(geometry.index, GeometryData_1.GeometryData);
 });
 exports.getIndices = contract_1.requireCheckFunc(function (geometry) {
     _checkShouldAlive(geometry, GeometryData_1.GeometryData);

@@ -1,9 +1,6 @@
 import {
-    getAttribLocation as getAttribLocationUtils, getUniformLocation as getUniformLocationUtils, initData as initDataUtils, isAttributeLocationNotExist as isAttributeLocationNotExistUtils, isUniformLocationNotExist as isUniformLocationNotExistUtils,
-    setLocationMap as setLocationMapUtils
+    getAttribLocation as getAttribLocationUtils, getUniformLocation as getUniformLocationUtils, initData as initDataUtils, isAttributeLocationNotExist as isAttributeLocationNotExistUtils, isUniformLocationNotExist as isUniformLocationNotExistUtils
 } from "../../../../utils/shader/location/locationUtils";
-
-export var setLocationMap = setLocationMapUtils;
 
 export var getAttribLocation = getAttribLocationUtils;
 

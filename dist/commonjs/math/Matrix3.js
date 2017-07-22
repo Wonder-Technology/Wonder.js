@@ -9,7 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var Vector2_1 = require("./Vector2");
 var Global_1 = require("./Global");
-var Matrix3 = Matrix3_1 = (function () {
+var Matrix3 = (function () {
     function Matrix3() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -23,6 +23,7 @@ var Matrix3 = Matrix3_1 = (function () {
             this.values = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
         }
     }
+    Matrix3_1 = Matrix3;
     Matrix3.create = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -279,11 +280,11 @@ var Matrix3 = Matrix3_1 = (function () {
         var py = this._getDeltaTransformPoint(this, { x: 1, y: 0 });
         return ((180 / Math.PI) * Math.atan2(py.y, py.x));
     };
+    Matrix3 = Matrix3_1 = __decorate([
+        registerClass_1.registerClass("Matrix3")
+    ], Matrix3);
     return Matrix3;
+    var Matrix3_1;
 }());
-Matrix3 = Matrix3_1 = __decorate([
-    registerClass_1.registerClass("Matrix3")
-], Matrix3);
 exports.Matrix3 = Matrix3;
-var Matrix3_1;
 //# sourceMappingURL=Matrix3.js.map

@@ -11,10 +11,10 @@ var Component = (function () {
     function Component() {
         this.index = null;
     }
+    Component = __decorate([
+        registerClass_1.registerClass("Component")
+    ], Component);
     return Component;
 }());
-Component = __decorate([
-    registerClass_1.registerClass("Component")
-], Component);
 exports.Component = Component;
 //# sourceMappingURL=Component.js.map

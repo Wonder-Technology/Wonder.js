@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var IndexBufferData = (function () {
     function IndexBufferData() {
     }
+    IndexBufferData.buffers = null;
     return IndexBufferData;
 }());
-IndexBufferData.buffers = null;
 exports.IndexBufferData = IndexBufferData;
 //# sourceMappingURL=IndexBufferData.js.map

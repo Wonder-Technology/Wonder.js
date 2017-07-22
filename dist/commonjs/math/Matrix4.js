@@ -15,7 +15,7 @@ var Vector3_1 = require("./Vector3");
 var Vector4_1 = require("./Vector4");
 var Quaternion_1 = require("./Quaternion");
 var Global_1 = require("./Global");
-var Matrix4 = Matrix4_1 = (function () {
+var Matrix4 = (function () {
     function Matrix4() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -29,6 +29,7 @@ var Matrix4 = Matrix4_1 = (function () {
             this.values = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
         }
     }
+    Matrix4_1 = Matrix4;
     Matrix4.create = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -628,30 +629,30 @@ var Matrix4 = Matrix4_1 = (function () {
         m[15] = 1;
         return this;
     };
+    __decorate([
+        contract_1.requireCheck(function (angle, x, y, z) {
+            contract_1.it("axis's component shouldn't all be zero", function () {
+                wonder_expect_js_1.expect(x === 0 && y === 0 && z === 0).false;
+            });
+        })
+    ], Matrix4.prototype, "setRotate", null);
+    __decorate([
+        contract_1.requireCheck(function (left, right, bottom, top, near, far) {
+            contract_1.assert(left !== right && bottom !== top && near !== far, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+        })
+    ], Matrix4.prototype, "setOrtho", null);
+    __decorate([
+        contract_1.requireCheck(function (fovy, aspect, near, far) {
+            contract_1.assert(near !== far && aspect !== 0, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+            contract_1.assert(near > 0, Log_1.Log.info.FUNC_MUST("near", "> 0"));
+            contract_1.assert(far > 0, Log_1.Log.info.FUNC_MUST("far", "> 0"));
+        })
+    ], Matrix4.prototype, "setPerspective", null);
+    Matrix4 = Matrix4_1 = __decorate([
+        registerClass_1.registerClass("Matrix4")
+    ], Matrix4);
     return Matrix4;
+    var Matrix4_1;
 }());
-__decorate([
-    contract_1.requireCheck(function (angle, x, y, z) {
-        contract_1.it("axis's component shouldn't all be zero", function () {
-            wonder_expect_js_1.expect(x === 0 && y === 0 && z === 0).false;
-        });
-    })
-], Matrix4.prototype, "setRotate", null);
-__decorate([
-    contract_1.requireCheck(function (left, right, bottom, top, near, far) {
-        contract_1.assert(left !== right && bottom !== top && near !== far, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-    })
-], Matrix4.prototype, "setOrtho", null);
-__decorate([
-    contract_1.requireCheck(function (fovy, aspect, near, far) {
-        contract_1.assert(near !== far && aspect !== 0, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-        contract_1.assert(near > 0, Log_1.Log.info.FUNC_MUST("near", "> 0"));
-        contract_1.assert(far > 0, Log_1.Log.info.FUNC_MUST("far", "> 0"));
-    })
-], Matrix4.prototype, "setPerspective", null);
-Matrix4 = Matrix4_1 = __decorate([
-    registerClass_1.registerClass("Matrix4")
-], Matrix4);
 exports.Matrix4 = Matrix4;
-var Matrix4_1;
 //# sourceMappingURL=Matrix4.js.map

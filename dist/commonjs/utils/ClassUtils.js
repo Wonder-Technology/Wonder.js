@@ -26,24 +26,24 @@ var ClassUtils = (function () {
     ClassUtils.getClass = function (className) {
         return this._classMap[className];
     };
+    ClassUtils._classMap = {};
+    __decorate([
+        contract_1.ensure(function (className) {
+            contract_1.it("should exist class name", function () {
+                wonder_expect_js_1.expect(className).exist;
+                wonder_expect_js_1.expect(className !== "").true;
+            });
+        })
+    ], ClassUtils, "getClassNameByInstance", null);
+    __decorate([
+        contract_1.ensure(function (className) {
+            contract_1.it("should exist class name", function () {
+                wonder_expect_js_1.expect(className).exist;
+                wonder_expect_js_1.expect(className !== "").true;
+            });
+        })
+    ], ClassUtils, "getClassNameByClass", null);
     return ClassUtils;
 }());
-ClassUtils._classMap = {};
-__decorate([
-    contract_1.ensure(function (className) {
-        contract_1.it("should exist class name", function () {
-            wonder_expect_js_1.expect(className).exist;
-            wonder_expect_js_1.expect(className !== "").true;
-        });
-    })
-], ClassUtils, "getClassNameByInstance", null);
-__decorate([
-    contract_1.ensure(function (className) {
-        contract_1.it("should exist class name", function () {
-            wonder_expect_js_1.expect(className).exist;
-            wonder_expect_js_1.expect(className !== "").true;
-        });
-    })
-], ClassUtils, "getClassNameByClass", null);
 exports.ClassUtils = ClassUtils;
 //# sourceMappingURL=ClassUtils.js.map

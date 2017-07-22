@@ -5,14 +5,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-import { ensureGetter, assert, requireCheck, it } from "../definition/typescript/decorator/contract";
-import { Log } from "../utils/Log";
+import { ensureGetter, requireCheck, it } from "../definition/typescript/decorator/contract";
 import { Vector3 } from "../math/Vector3";
 import { Vector4 } from "../math/Vector4";
 import { cache } from "../definition/typescript/decorator/cache";
 import { expect } from "wonder-expect.js";
 var REGEX_RGBA = /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([^\)]+)\)$/i, REGEX_RGBA_2 = /^rgba\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+),\s*([^\)]+)\)$/i, REGEX_RGB = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i, REGEX_RGB_2 = /^rgb\((\d+\.\d+),\s*(\d+\.\d+),\s*(\d+\.\d+)\)$/i, REGEX_NUM = /^\#([0-9a-f]{6})$/i;
-var Color = Color_1 = (function () {
+var Color = (function () {
     function Color() {
         this._r = null;
         this._g = null;
@@ -21,7 +20,9 @@ var Color = Color_1 = (function () {
         this._colorString = null;
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
+        this._colorArr3Cache = null;
     }
+    Color_1 = Color;
     Color.create = function (colorVal) {
         var obj = new this();
         obj.initWhenCreate(colorVal);
@@ -101,6 +102,9 @@ var Color = Color_1 = (function () {
     Color.prototype.toVector4 = function () {
         return Vector4.create(this.r, this.g, this.b, this.a);
     };
+    Color.prototype.toArray3 = function () {
+        return [this.r, this.g, this.b];
+    };
     Color.prototype.toString = function () {
         return this._colorString;
     };
@@ -170,57 +174,75 @@ var Color = Color_1 = (function () {
     Color.prototype._clearCache = function () {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
+        this._colorArr3Cache = null;
     };
+    __decorate([
+        ensureGetter(function (r) {
+            it("r should >= 0", function () {
+                expect(r).gte(0);
+            });
+        })
+    ], Color.prototype, "r", null);
+    __decorate([
+        ensureGetter(function (g) {
+            it("g should >= 0", function () {
+                expect(g).gte(0);
+            });
+        })
+    ], Color.prototype, "g", null);
+    __decorate([
+        ensureGetter(function (b) {
+            it("b should >= 0", function () {
+                expect(b).gte(0);
+            });
+        })
+    ], Color.prototype, "b", null);
+    __decorate([
+        ensureGetter(function (a) {
+            it("a should >= 0", function () {
+                expect(a).gte(0);
+            });
+        })
+    ], Color.prototype, "a", null);
+    __decorate([
+        cache(function () {
+            return this._colorVec3Cache !== null;
+        }, function () {
+            return this._colorVec3Cache;
+        }, function (result) {
+            this._colorVec3Cache = result;
+        })
+    ], Color.prototype, "toVector3", null);
+    __decorate([
+        cache(function () {
+            return this._colorVec4Cache !== null;
+        }, function () {
+            return this._colorVec4Cache;
+        }, function (result) {
+            this._colorVec4Cache = result;
+        })
+    ], Color.prototype, "toVector4", null);
+    __decorate([
+        cache(function () {
+            return this._colorArr3Cache !== null;
+        }, function () {
+            return this._colorArr3Cache;
+        }, function (result) {
+            this._colorArr3Cache = result;
+        })
+    ], Color.prototype, "toArray3", null);
+    __decorate([
+        requireCheck(function (colorVal) {
+            it("color should be #xxxxxx", function () {
+                expect(REGEX_NUM.test(colorVal)).true;
+            });
+        })
+    ], Color.prototype, "setColorByNum", null);
+    Color = Color_1 = __decorate([
+        registerClass("Color")
+    ], Color);
     return Color;
+    var Color_1;
 }());
-__decorate([
-    ensureGetter(function (r) {
-        assert(r >= 0, Log.info.FUNC_SHOULD("r", ">= 0, but actual is " + r));
-    })
-], Color.prototype, "r", null);
-__decorate([
-    ensureGetter(function (g) {
-        assert(g >= 0, Log.info.FUNC_SHOULD("g", ">= 0, but actual is " + g));
-    })
-], Color.prototype, "g", null);
-__decorate([
-    ensureGetter(function (b) {
-        assert(b >= 0, Log.info.FUNC_SHOULD("b", ">= 0, but actual is " + b));
-    })
-], Color.prototype, "b", null);
-__decorate([
-    ensureGetter(function (a) {
-        assert(a >= 0, Log.info.FUNC_SHOULD("a", ">= 0, but actual is " + a));
-    })
-], Color.prototype, "a", null);
-__decorate([
-    cache(function () {
-        return this._colorVec3Cache !== null;
-    }, function () {
-        return this._colorVec3Cache;
-    }, function (result) {
-        this._colorVec3Cache = result;
-    })
-], Color.prototype, "toVector3", null);
-__decorate([
-    cache(function () {
-        return this._colorVec4Cache !== null;
-    }, function () {
-        return this._colorVec4Cache;
-    }, function (result) {
-        this._colorVec4Cache = result;
-    })
-], Color.prototype, "toVector4", null);
-__decorate([
-    requireCheck(function (colorVal) {
-        it("color should be #xxxxxx", function () {
-            expect(REGEX_NUM.test(colorVal)).true;
-        });
-    })
-], Color.prototype, "setColorByNum", null);
-Color = Color_1 = __decorate([
-    registerClass("Color")
-], Color);
 export { Color };
-var Color_1;
 //# sourceMappingURL=Color.js.map

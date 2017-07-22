@@ -1,0 +1,9 @@
+export declare var getMaterialBufferSize: () => number;
+export declare var getBasicMaterialBufferCount: () => number;
+export declare var getBasicMaterialBufferSize: () => number;
+export declare var getLightMaterialBufferCount: () => number;
+export declare var getLightMaterialBufferSize: () => number;
+export declare var getBufferLength: () => number;
+export declare var getBufferTotalCount: () => number;
+export declare var getBasicMaterialBufferStartIndex: () => number;
+export declare var getLightMaterialBufferStartIndex: () => number;

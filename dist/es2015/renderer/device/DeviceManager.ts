@@ -38,8 +38,8 @@ export class DeviceManager {
 
     private constructor() { }
 
-    public createGL(canvasId: string, contextConfig: ContextConfigData) {
-        return createGL(canvasId, fromJS(contextConfig), getState(DirectorData));
+    public createGL(canvasID: string, contextConfig: ContextConfigData) {
+        return createGL(canvasID, fromJS(contextConfig), getState(DirectorData));
     }
 
     //todo open setScreen

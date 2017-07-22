@@ -2,6 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var DeviceManagerWorkerSystem_1 = require("../renderer/worker/both_file/device/DeviceManagerWorkerSystem");
 var ProgramWorkerSystem_1 = require("../renderer/worker/render_file/shader/program/ProgramWorkerSystem");
+var LightWorkerSystem_1 = require("../renderer/worker/render_file/light/LightWorkerSystem");
+var DrawRenderCommandBufferWorkerSystem_1 = require("../renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerSystem");
+var GLSLSenderWorkerSystem_1 = require("../renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerSystem");
+var LocationWorkerSystem_1 = require("../renderer/worker/render_file/shader/location/LocationWorkerSystem");
+var ShaderWorkerSystem_1 = require("../renderer/worker/render_file/shader/ShaderWorkerSystem");
+var TextureWorkerSystem_1 = require("../renderer/worker/render_file/texture/TextureWorkerSystem");
 exports.initDeviceManagerWorkerData = DeviceManagerWorkerSystem_1.initData;
 exports.initProgramWorkerData = ProgramWorkerSystem_1.initData;
+exports.initGLSLSenderWorkerData = GLSLSenderWorkerSystem_1.initData;
+exports.initLocationWorkerData = LocationWorkerSystem_1.initData;
+exports.initShaderWorkerData = ShaderWorkerSystem_1.initData;
+exports.initLightWorkerData = LightWorkerSystem_1.initData;
+exports.initDrawRenderCommandBufferWorkerData = DrawRenderCommandBufferWorkerSystem_1.initData;
+exports.getDirectionLightPositionInShaderWorker = ShaderWorkerSystem_1.getDirectionLightPosition;
+exports.getPointLightPositionInShaderWorker = ShaderWorkerSystem_1.getPointLightPosition;
+exports.updateTextureWorker = TextureWorkerSystem_1.update;
 //# sourceMappingURL=forRenderWorkerUnitTest.js.map

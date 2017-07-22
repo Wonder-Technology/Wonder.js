@@ -21,14 +21,14 @@ export var minusFirstDirtyIndex = ensureFunc(function (firstDirtyIndex) {
 }, function (firstDirtyIndex) {
     return firstDirtyIndex - 1;
 });
-export var generateNotUsedIndexInArrayBuffer = ensureFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+export var generateNotUsedIndexInArrayBuffer = ensureFunc(function (index, ThreeDTransformData) {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, index);
 }, function (ThreeDTransformData) {
-    var result = ThreeDTransformData.indexInArrayBuffer;
+    var result = ThreeDTransformData.index;
     if (result >= ThreeDTransformData.firstDirtyIndex) {
         return _getNotUsedIndexFromArr(ThreeDTransformData);
     }
-    ThreeDTransformData.indexInArrayBuffer += 1;
+    ThreeDTransformData.index += 1;
     return result;
 });
 var _isValidArrayValue = function (val) {
@@ -37,29 +37,29 @@ var _isValidArrayValue = function (val) {
 var _isValidLinkNode = function (node) {
     return node !== null;
 };
-export var generateNotUsedIndexInNormalList = ensureFunc(function (indexInArrayBuffer, ThreeDTransformData) {
-    _checkGeneratedNotUsedIndex(ThreeDTransformData, indexInArrayBuffer);
+export var generateNotUsedIndexInNormalList = ensureFunc(function (index, ThreeDTransformData) {
+    _checkGeneratedNotUsedIndex(ThreeDTransformData, index);
 }, function (ThreeDTransformData) {
     var index = _getNotUsedIndexFromArr(ThreeDTransformData);
     if (_isValidArrayValue(index)) {
         return index;
     }
-    index = ThreeDTransformData.indexInArrayBuffer;
-    ThreeDTransformData.indexInArrayBuffer += 1;
+    index = ThreeDTransformData.index;
+    ThreeDTransformData.index += 1;
     return index;
 });
-export var addToDirtyList = requireCheckFunc(function (indexInArrayBuffer, ThreeDTransformData) {
+export var addToDirtyList = requireCheckFunc(function (index, ThreeDTransformData) {
     it("firstDirtyIndex should <= maxCount", function () {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount);
     });
-}, function (indexInArrayBuffer, ThreeDTransformData) {
+}, function (index, ThreeDTransformData) {
     var targetDirtyIndex = minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex);
     ThreeDTransformData.firstDirtyIndex = targetDirtyIndex;
     if (isIndexUsed(targetDirtyIndex, ThreeDTransformData)) {
-        swap(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        swap(index, targetDirtyIndex, ThreeDTransformData);
     }
     else {
-        moveToIndex(indexInArrayBuffer, targetDirtyIndex, ThreeDTransformData);
+        moveToIndex(index, targetDirtyIndex, ThreeDTransformData);
     }
     return targetDirtyIndex;
 });
@@ -80,8 +80,8 @@ var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
 export var addNotUsedIndex = function (index, notUsedIndexLinkList) {
     notUsedIndexLinkList.push(LinkNode.create(index));
 };
-export var isNotDirty = function (indexInArrayBuffer, firstDirtyIndex) {
-    return indexInArrayBuffer < firstDirtyIndex;
+export var isNotDirty = function (index, firstDirtyIndex) {
+    return index < firstDirtyIndex;
 };
 export var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, uid, ThreeDTransformData) {
     var indexInArraybuffer = rootIndexInArrayBuffer, children = getChildren(uid, ThreeDTransformData);
@@ -98,13 +98,13 @@ export var addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, ui
     }
     return ThreeDTransformData;
 };
-var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, indexInArrayBuffer) {
-    it("indexInArrayBuffer should < firstDirtyIndex", function () {
-        expect(indexInArrayBuffer).exist;
-        expect(indexInArrayBuffer).lt(ThreeDTransformData.firstDirtyIndex);
+var _checkGeneratedNotUsedIndex = function (ThreeDTransformData, index) {
+    it("index should < firstDirtyIndex", function () {
+        expect(index).exist;
+        expect(index).lt(ThreeDTransformData.firstDirtyIndex);
     });
     it("index should not be used", function () {
-        expect(isIndexUsed(indexInArrayBuffer, ThreeDTransformData)).false;
+        expect(isIndexUsed(index, ThreeDTransformData)).false;
     });
 };
 //# sourceMappingURL=dirtySystem.js.map

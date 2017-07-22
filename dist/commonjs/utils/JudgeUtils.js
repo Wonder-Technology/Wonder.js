@@ -23,6 +23,7 @@ var JudgeUtils = (function (_super) {
     return JudgeUtils;
 }(JudgeUtils_1.JudgeUtils));
 exports.JudgeUtils = JudgeUtils;
+exports.isString = JudgeUtils.isString;
 exports.isUndefined = function (v) { return v === void 0; };
 exports.isNotUndefined = function (v) { return v !== void 0; };
 //# sourceMappingURL=JudgeUtils.js.map

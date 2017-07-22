@@ -1,1 +1,0 @@
-{"version":3,"file":"WorkerInstanceSystem.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/logic_file/worker_instance/WorkerInstanceSystem.ts"],"names":[],"mappings":";;AAAW,QAAA,eAAe,GAAG,UAAC,kBAAuB;IACjD,MAAM,CAAC,kBAAkB,CAAC,YAAY,CAAC;AAC3C,CAAC,CAAA;AAEU,QAAA,eAAe,GAAG,UAAC,MAAc,EAAE,kBAAuB;IACjE,kBAAkB,CAAC,YAAY,GAAG,MAAM,CAAC;AAC7C,CAAC,CAAA"}

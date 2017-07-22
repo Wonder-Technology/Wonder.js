@@ -25,11 +25,11 @@ var CameraController = (function (_super) {
     function CameraController() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    CameraController = __decorate([
+        registerClass_1.registerClass("CameraController")
+    ], CameraController);
     return CameraController;
 }(Component_1.Component));
-CameraController = __decorate([
-    registerClass_1.registerClass("CameraController")
-], CameraController);
 exports.CameraController = CameraController;
 exports.createCameraController = function () {
     return CameraControllerSystem_1.create(CameraControllerData_1.CameraControllerData);

@@ -4,11 +4,11 @@ import { EBufferType } from "../../renderer/enum/EBufferType";
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
 import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponent, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
 import { GeometryData } from "./GeometryData";
-import { getIndexDataSize, getUIntArrayClass, getVertexDataSize, getIndexTypeSize as getIndexTypeSizeUtils, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, createBufferViews } from "../../renderer/utils/geometry/geometryUtils";
+import { getIndexDataSize, getUIntArrayClass, getVertexDataSize, getIndexTypeSize as getIndexTypeSizeUtils, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize } from "../../renderer/utils/geometry/geometryUtils";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { getSubarray } from "../../utils/typeArrayUtils";
+import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
 import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
@@ -16,14 +16,17 @@ import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
 import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
-export var addAddComponentHandle = function (_class) {
-    addAddComponentHandleToMap(_class, addComponent);
+export var addAddComponentHandle = function (BoxGeometry, CustomGeometry) {
+    addAddComponentHandleToMap(BoxGeometry, addComponent);
+    addAddComponentHandleToMap(CustomGeometry, addComponent);
 };
-export var addDisposeHandle = function (_class) {
-    addDisposeHandleToMap(_class, disposeComponent);
+export var addDisposeHandle = function (BoxGeometry, CustomGeometry) {
+    addDisposeHandleToMap(BoxGeometry, disposeComponent);
+    addDisposeHandleToMap(CustomGeometry, disposeComponent);
 };
-export var addInitHandle = function (_class) {
-    addInitHandleToMap(_class, initGeometry);
+export var addInitHandle = function (BoxGeometry, CustomGeometry) {
+    addInitHandleToMap(BoxGeometry, initGeometry);
+    addInitHandleToMap(CustomGeometry, initGeometry);
 };
 export var create = requireCheckFunc(function (geometry, GeometryData) {
 }, function (geometry, GeometryData) {
@@ -45,8 +48,10 @@ export var initGeometry = function (index, state) {
     if (_isComputeDataFuncNotExist(computeDataFunc)) {
         return;
     }
-    var _a = computeDataFunc(index, GeometryData), vertices = _a.vertices, indices = _a.indices;
+    var _a = computeDataFunc(index, GeometryData), vertices = _a.vertices, normals = _a.normals, texCoords = _a.texCoords, indices = _a.indices;
     setVertices(index, vertices, GeometryData);
+    setNormals(index, normals, GeometryData);
+    setTexCoords(index, texCoords, GeometryData);
     setIndices(index, indices, GeometryData);
 };
 var _isComputeDataFuncNotExist = function (func) { return isNotValidMapValue(func); };
@@ -56,6 +61,20 @@ export var getVertices = function (index, GeometryData) {
 export var setVertices = requireCheckFunc(function (index, vertices, GeometryData) {
 }, function (index, vertices, GeometryData) {
     GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
+});
+export var getNormals = function (index, GeometryData) {
+    return _getPointData(index, GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList);
+};
+export var setNormals = requireCheckFunc(function (index, normals, GeometryData) {
+}, function (index, normals, GeometryData) {
+    GeometryData.normalsOffset = _setPointData(index, normals, getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
+});
+export var getTexCoords = function (index, GeometryData) {
+    return _getPointData(index, GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList);
+};
+export var setTexCoords = requireCheckFunc(function (index, texCoords, GeometryData) {
+}, function (index, texCoords, GeometryData) {
+    GeometryData.texCoordsOffset = _setPointData(index, texCoords, getTexCoordsDataSize(), GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList, GeometryData.texCoordsWorkerInfoList, GeometryData.texCoordsOffset, GeometryData);
 });
 export var getIndices = function (index, GeometryData) {
     return _getPointData(index, GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList);
@@ -82,22 +101,13 @@ var _setPointData = function (index, dataArr, dataSize, points, cacheMap, infoLi
     var count = dataArr.length, startIndex = offset;
     offset += count;
     infoList[index] = _buildInfo(startIndex, offset);
-    _fillTypeArr(points, dataArr, startIndex, count);
+    fillTypeArr(points, dataArr, startIndex, count);
     _removeCache(index, cacheMap);
     if (_isInit(GeometryData)) {
         _addWorkerInfo(workerInfoList, index, startIndex, offset);
     }
     return offset;
 };
-var _fillTypeArr = requireCheckFunc(function (typeArr, dataArr, startIndex, count) {
-    it("should not exceed type arr's length", function () {
-        expect(count + startIndex).lte(typeArr.length);
-    });
-}, function (typeArr, dataArr, startIndex, count) {
-    for (var i = 0; i < count; i++) {
-        typeArr[i + startIndex] = dataArr[i];
-    }
-});
 var _removeCache = function (index, cacheMap) {
     deleteVal(index, cacheMap);
 };
@@ -172,6 +182,8 @@ var _isInit = function (GeometryData) {
 };
 export var clearWorkerInfoList = function (GeometryData) {
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 export var hasNewPointData = function (GeometryData) {
@@ -213,6 +225,8 @@ export var initData = function (DataBufferConfig, GeometryData) {
     GeometryData.indexTypeSize = indicesArrayBytes;
     GeometryData.configDataMap = createMap();
     GeometryData.verticesCacheMap = createMap();
+    GeometryData.normalsCacheMap = createMap();
+    GeometryData.texCoordsCacheMap = createMap();
     GeometryData.indicesCacheMap = createMap();
     GeometryData.computeDataFuncMap = createMap();
     GeometryData.gameObjectMap = createMap();
@@ -221,17 +235,23 @@ export var initData = function (DataBufferConfig, GeometryData) {
     GeometryData.count = 0;
     _initBufferData(indicesArrayBytes, getUIntArrayClass(GeometryData.indexType), DataBufferConfig, GeometryData);
     GeometryData.verticesInfoList = [];
+    GeometryData.normalsInfoList = [];
+    GeometryData.texCoordsInfoList = [];
     GeometryData.indicesInfoList = [];
     GeometryData.verticesWorkerInfoList = [];
+    GeometryData.normalsWorkerInfoList = [];
+    GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
     GeometryData.disposedGeometryIndexArray = [];
     GeometryData.verticesOffset = 0;
+    GeometryData.normalsOffset = 0;
+    GeometryData.texCoordsOffset = 0;
     GeometryData.indicesOffset = 0;
     GeometryData.disposeCount = 0;
     GeometryData.isReallocate = false;
 };
 var _initBufferData = function (indicesArrayBytes, UintArray, DataBufferConfig, GeometryData) {
-    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * getVertexDataSize() + indicesArrayBytes * getIndexDataSize();
+    var buffer = null, count = DataBufferConfig.geometryDataBufferCount, size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()) + indicesArrayBytes * getIndexDataSize();
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
     createBufferViews(buffer, count, UintArray, GeometryData);
     GeometryData.buffer = buffer;

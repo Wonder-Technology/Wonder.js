@@ -13,9 +13,11 @@ export declare class Color {
     private _colorString;
     private _colorVec3Cache;
     private _colorVec4Cache;
+    private _colorArr3Cache;
     initWhenCreate(colorVal?: string): void;
     toVector3(): Vector3;
     toVector4(): any;
+    toArray3(): number[];
     toString(): string;
     clone(): Color;
     isEqual(color: Color): boolean;

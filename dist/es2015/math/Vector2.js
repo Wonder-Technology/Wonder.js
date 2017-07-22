@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../definition/typescript/decorator/registerClass";
-var Vector2 = Vector2_1 = (function () {
+var Vector2 = (function () {
     function Vector2() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -17,6 +17,7 @@ var Vector2 = Vector2_1 = (function () {
             this.values[1] = args[1];
         }
     }
+    Vector2_1 = Vector2;
     Vector2.create = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -71,11 +72,11 @@ var Vector2 = Vector2_1 = (function () {
     Vector2.prototype.clone = function () {
         return Vector2_1.create(this.x, this.y);
     };
+    Vector2 = Vector2_1 = __decorate([
+        registerClass("Vector2")
+    ], Vector2);
     return Vector2;
+    var Vector2_1;
 }());
-Vector2 = Vector2_1 = __decorate([
-    registerClass("Vector2")
-], Vector2);
 export { Vector2 };
-var Vector2_1;
 //# sourceMappingURL=Vector2.js.map

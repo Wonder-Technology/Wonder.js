@@ -1,21 +1,19 @@
 import { EWorkerOperateType } from "../EWorkerOperateType";
 import curry from "wonder-lodash/curry";
-import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/device/deviceManagerUtils";
+import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setSide as setSideUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { isValueExist } from "../../../../utils/stateUtils";
-import { setRenderWorker } from "../../logic_file/worker_instance/WorkerInstanceSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-export var createGL = curry(function (canvas, WorkerInstanceData, contextConfig, viewportData, renderWorkerFilePath) {
+export var createGL = curry(function (canvas, renderWorker, contextConfig, viewportData) {
     return IO.of(function () {
-        var offscreen = canvas.transferControlToOffscreen(), renderWorker = new Worker(renderWorkerFilePath);
+        var offscreen = canvas.transferControlToOffscreen();
         renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_GL,
             canvas: offscreen,
             options: contextConfig.get("options").toObject(),
             viewportData: viewportData
         }, [offscreen]);
-        setRenderWorker(renderWorker, WorkerInstanceData);
     });
 });
 export var setContextConfig = setContextConfigUtils;
@@ -69,5 +67,6 @@ export var setCanvasPixelRatio = curry(function (useDevicePixelRatio, canvas) {
 });
 export var clear = clearUtils;
 export var setColorWrite = setColorWriteUtils;
+export var setSide = setSideUtils;
 export var initData = initDataUtils;
 //# sourceMappingURL=DeviceManagerWorkerSystem.js.map

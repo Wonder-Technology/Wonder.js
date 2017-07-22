@@ -21,6 +21,7 @@ var JudgeUtils = (function (_super) {
     return JudgeUtils;
 }(JudgeUtils$));
 export { JudgeUtils };
+export var isString = JudgeUtils.isString;
 export var isUndefined = function (v) { return v === void 0; };
 export var isNotUndefined = function (v) { return v !== void 0; };
 //# sourceMappingURL=JudgeUtils.js.map

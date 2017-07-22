@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { Vector3 } from "./Vector3";
-var Vector4 = Vector4_1 = (function () {
+var Vector4 = (function () {
     function Vector4() {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -20,6 +20,7 @@ var Vector4 = Vector4_1 = (function () {
             this.values[3] = args[3];
         }
     }
+    Vector4_1 = Vector4;
     Vector4.create = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -121,11 +122,11 @@ var Vector4 = Vector4_1 = (function () {
         }
         return result;
     };
+    Vector4 = Vector4_1 = __decorate([
+        registerClass("Vector4")
+    ], Vector4);
     return Vector4;
+    var Vector4_1;
 }());
-Vector4 = Vector4_1 = __decorate([
-    registerClass("Vector4")
-], Vector4);
 export { Vector4 };
-var Vector4_1;
 //# sourceMappingURL=Vector4.js.map
