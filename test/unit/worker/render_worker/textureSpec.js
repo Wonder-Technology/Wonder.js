@@ -245,22 +245,27 @@ describe("texture", function () {
                         expect(TextureWorkerData.sourceMap[2]).toBeInstanceOf(ImageBitmap);
                     }, expect)
                 });
-                it("if filpY, filpY the imageBitmap by set createImageBitmap's option's imageOrientation", function (done) {
-                    //todo set flipY
 
-                    sandbox.spy(window, "createImageBitmap");
+                if(bowser.chrome){
+                    it("if filpY, filpY the imageBitmap by set createImageBitmap's option's imageOrientation", function (done) {
+                        //todo set flipY
 
-                    workerTool.execRenderWorkerMessageHandler(e);
+                        sandbox.spy(window, "createImageBitmap");
 
-                    judgeWaitForInitComplete(done, function(expect){
-                        expect(window.createImageBitmap.getCall(0).args[1]).toEqual({
-                            imageOrientation: "flipY"
-                        })
-                        expect(window.createImageBitmap.getCall(1).args[1]).toEqual({
-                            imageOrientation: "flipY"
-                        })
-                    }, expect)
-                });
+                        workerTool.execRenderWorkerMessageHandler(e);
+
+                        judgeWaitForInitComplete(done, function(expect){
+                            expect(window.createImageBitmap.getCall(0).args[1]).toEqual({
+                                imageOrientation: "flipY"
+                            })
+                            expect(window.createImageBitmap.getCall(1).args[1]).toEqual({
+                                imageOrientation: "flipY"
+                            })
+                        }, expect)
+                    });
+                }
+                else if(bowser.firefox){
+                }
             });
         });
     });
@@ -277,23 +282,44 @@ describe("texture", function () {
                 gl = workerTool.createGL(sandbox);
             });
 
-            it("not set pixelStorei", function () {
-                var textureIndex = 0;
+            if(bowser.chrome){
+                it("not set pixelStorei", function () {
+                    var textureIndex = 0;
 
-                TextureWorkerData = {
-                    index:1,
-                    glTextures:[{}],
-                    sourceMap:[{}],
-                    widths: [0],
-                    heights: [0],
-                    widths: [0],
-                    isNeedUpdates: [0]
-                }
+                    TextureWorkerData = {
+                        index:1,
+                        glTextures:[{}],
+                        sourceMap:[{}],
+                        widths: [0],
+                        heights: [0],
+                        widths: [0],
+                        isNeedUpdates: [0]
+                    }
 
-                textureWorkerTool.update(gl, textureIndex, TextureWorkerData);
+                    textureWorkerTool.update(gl, textureIndex, TextureWorkerData);
 
-                expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL)).not.toCalled();
-            });
+                    expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL)).not.toCalled();
+                });
+            }
+            else if(bowser.firefox){
+                it("set pixelStorei", function () {
+                    var textureIndex = 0;
+
+                    TextureWorkerData = {
+                        index:1,
+                        glTextures:[{}],
+                        sourceMap:[{}],
+                        widths: [0],
+                        heights: [0],
+                        widths: [0],
+                        isNeedUpdates: [0]
+                    }
+
+                    textureWorkerTool.update(gl, textureIndex, TextureWorkerData);
+
+                    expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL, true)).toCalledOnce();
+                });
+            }
         });
     });
 });
