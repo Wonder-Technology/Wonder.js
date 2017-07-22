@@ -62,7 +62,7 @@ import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
 import { PointLightData } from "../component/light/PointLightData";
-import { setIsTest, setLibIsTest } from "../renderer/config/initConfigSystem";
+import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
 import { initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
 import { TextureData } from "../renderer/texture/TextureData";
