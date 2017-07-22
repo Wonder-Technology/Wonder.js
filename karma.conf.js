@@ -24,8 +24,10 @@
             'test/helper/sinonJs/*.js',
             'test/helper/yoop/yOOP.js',
             'test/unit/utils/**',
+            'test/unit/**/no_worker/tool/*.js',
 
             'test/unit/no_worker/**',
+            // 'test/unit/no_worker/**/Texture*',
 
             {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
 

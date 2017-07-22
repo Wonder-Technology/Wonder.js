@@ -188,33 +188,10 @@ describe("texture", function () {
             });
 
             describe("set TextureWorkerData's sourceMap", function () {
-                var count;
                 var postMessage;
 
-                var intervalId;
-
                 function judgeWaitForInitComplete(done, judgeFunc, expect){
-                    intervalId = setInterval(function(){
-                        if (postMessage.withArgs({
-                                state: ERenderWorkerState.INIT_COMPLETE
-                            }).callCount === 1 ){
-
-                            clearInterval(intervalId);
-
-                            judgeFunc(expect);
-
-                            done();
-                        }
-                        else if(count <= 20){
-                            count++;
-                        }
-                        else{
-                            clearInterval(intervalId);
-
-                            expect().toFail();
-                            done();
-                        }
-                    }, 30);
+                    renderWorkerTool.judgeWaitForInitComplete(done, postMessage, judgeFunc, expect);
                 }
 
                 beforeEach(function(){
@@ -229,8 +206,6 @@ describe("texture", function () {
                             src:resUtls.getRes("2.png"), index: 3
                         }
                     ]
-
-                    count = 0;
 
                     postMessage = workerTool.getWorkerPostMessage();
                 })

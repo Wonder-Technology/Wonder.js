@@ -77,33 +77,10 @@ describe("dispose texture", function () {
             var gl;
             var e;
 
-            var count;
             var postMessage;
 
-            var intervalId;
-
             function judgeWaitForInitComplete(done, judgeFunc, expect){
-                intervalId = setInterval(function(){
-                    if (postMessage.withArgs({
-                            state: ERenderWorkerState.INIT_COMPLETE
-                        }).callCount === 1 ){
-
-                        clearInterval(intervalId);
-
-                        judgeFunc(expect);
-
-                        done();
-                    }
-                    else if(count <= 50){
-                        count++;
-                    }
-                    else{
-                        clearInterval(intervalId);
-
-                        expect().toFail();
-                        done();
-                    }
-                }, 30);
+                renderWorkerTool.judgeWaitForInitComplete(done, postMessage, judgeFunc, expect);
             }
 
             function buildDrawData() {
@@ -164,8 +141,6 @@ describe("dispose texture", function () {
                     }
                 }
 
-
-                count = 0;
 
                 postMessage = workerTool.getWorkerPostMessage();
 

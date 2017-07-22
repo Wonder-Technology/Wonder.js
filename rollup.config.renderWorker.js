@@ -19,7 +19,8 @@ export default {
             namedExports: {
                 "./node_modules/immutable/dist/immutable.js": ["fromJS", "Map"],
                 "./node_modules/wonder-expect.js/dist/wdet.js": ["expect"],
-                "./node_modules/wonder-expect.js/index.js": ["expect"]
+                "./node_modules/wonder-expect.js/index.js": ["expect"],
+                "./node_modules/bowser/src/bowser.js": ["chrome", "firefox"]
             },
             extensions: [".js", ".ts"]
         })

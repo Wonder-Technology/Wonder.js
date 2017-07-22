@@ -48,7 +48,7 @@
     "util": "^0.10.3",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.27",
+    "wonder-package": "^0.1.29",
     "wonder-rollup-plugin-typescript": "^0.1.1",
     "wonder-tool-generate_es2015_index": "^0.1.4"
   },

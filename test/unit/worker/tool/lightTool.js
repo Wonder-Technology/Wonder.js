@@ -8,16 +8,16 @@ var lightTool = (function () {
             wd.initLightWorkerData(
                 {
                     ambientLightData: {
-                        buffer: null,
+                        buffer: {},
                         count: DataBufferConfig.ambientLightDataBufferCount
                     },
                     directionLightData: {
-                        buffer: null,
+                        buffer: {},
                         count: DataBufferConfig.directionLightDataBufferCount,
                         directionLightGLSLDataStructureMemberNameArr: []
                     },
                     pointLightData: {
-                        buffer: null,
+                        buffer: {},
                         count: DataBufferConfig.pointLightDataBufferCount
                     }
                 }, wdrd.AmbientLightWorkerData, wdrd.DirectionLightWorkerData, wdrd.PointLightWorkerData);

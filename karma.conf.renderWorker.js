@@ -28,11 +28,15 @@
 
           'test/unit/utils/**',
           'test/unit/worker/tool/*.js',
+          'test/unit/worker/utils/*.js',
 
           'test/unit/worker/render_worker/**',
+          // 'test/unit/worker/render_worker/**/texture*',
 
           {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
-          {pattern: 'dist/worker/wd.renderWorker.js.map', watched: false, included: false, served: true, nocache:true}
+          {pattern: 'dist/worker/wd.renderWorker.js.map', watched: false, included: false, served: true, nocache:true},
+
+          {pattern: 'test/res/**', watched: false, included: false, served: true}
       ],
 
 
