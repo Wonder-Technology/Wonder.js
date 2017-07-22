@@ -213,6 +213,7 @@ describe("texture", function () {
                 it("fetch src and createImageBitmap", function (done) {
                     if(bowser.firefox){
                         done();
+                        return;
                     }
 
                     workerTool.execRenderWorkerMessageHandler(e);
@@ -229,6 +230,7 @@ describe("texture", function () {
                     it("if filpY, filpY the imageBitmap by set createImageBitmap's option's imageOrientation", function (done) {
                         if(bowser.firefox){
                             done();
+                            return;
                         }
 
                         //todo set flipY

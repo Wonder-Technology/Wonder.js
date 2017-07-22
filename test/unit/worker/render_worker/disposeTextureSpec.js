@@ -157,6 +157,7 @@ describe("dispose texture", function () {
                 it("delete texture", function (done) {
                     if(bowser.firefox){
                         done();
+                        return;
                     }
 
                     workerTool.execRenderWorkerMessageHandler(e);
@@ -186,6 +187,7 @@ describe("dispose texture", function () {
                 it("swap remove from glTextures", function (done) {
                     if(bowser.firefox){
                         done();
+                        return;
                     }
 
                     workerTool.execRenderWorkerMessageHandler(e);
@@ -214,6 +216,7 @@ describe("dispose texture", function () {
                 it("swap remove from sourceMap", function(done){
                     if(bowser.firefox){
                         done();
+                        return;
                     }
 
                     workerTool.execRenderWorkerMessageHandler(e);
