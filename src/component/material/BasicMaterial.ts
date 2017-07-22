@@ -61,8 +61,8 @@ export var setBasicMaterialAlphaTest = requireCheckFunc((material: BasicMaterial
     setAlphaTest(material.index, alphaTest, MaterialData);
 })
 
-export var addBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map:Texture) => {
+export var addBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map: Texture) => {
     checkShouldAlive(material);
-}, (material: BasicMaterial, map:Texture) => {
+}, (material: BasicMaterial, map: Texture) => {
     addMap(material.index, map, MapManagerData, TextureData);
 })

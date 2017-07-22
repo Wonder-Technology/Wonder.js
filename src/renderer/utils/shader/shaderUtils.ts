@@ -18,19 +18,19 @@ import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
 import { isValidMapValue } from "../../../utils/objectUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
-            DeviceManagerDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem
+        DeviceManagerDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem
         } = initShaderDataMap,
         materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
         shaderIndex = _genereateShaderIndex(materialShaderLibNameArr, ShaderDataFromSystem),
         program = getProgram(shaderIndex, ProgramDataFromSystem),
-        shaderLibDataFromSystem:IShaderLibContentGenerator = null,
+        shaderLibDataFromSystem: IShaderLibContentGenerator = null,
         gl = null;
 
     if (isProgramExist(program)) {
@@ -60,11 +60,11 @@ export var init = (state: Map<any, any>, materialIndex: number, materialClassNam
     return shaderIndex;
 }
 
-var _genereateShaderIndex = (materialShaderLibNameArr:Array<string>, ShaderDataFromSystem:any) => {
+var _genereateShaderIndex = (materialShaderLibNameArr: Array<string>, ShaderDataFromSystem: any) => {
     var shaderLibWholeName = materialShaderLibNameArr.join(''),
         index = ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName];
 
-    if(isValidMapValue(index)){
+    if (isValidMapValue(index)) {
         return index;
     }
 
@@ -82,7 +82,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
     sendUniformDataProgram(gl, shaderIndex, program, mapCount, sendDataMap, drawDataMap, renderCommandUniformData);
 }
 

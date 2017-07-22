@@ -94,8 +94,8 @@ export var onmessageHandler = (e) => {
                 _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
             ]).mergeAll()
                 .concat(
-                    _initTextures(data.textureData, TextureWorkerData),
-                    _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, TextureWorkerData)
+                _initTextures(data.textureData, TextureWorkerData),
+                _initMaterials(getGL(DeviceManagerWorkerData, getState(StateData)), data.materialData, data.textureData, TextureWorkerData)
                 )
                 .subscribe(null, null, () => {
                     self.postMessage({
@@ -125,16 +125,16 @@ export var onmessageHandler = (e) => {
             }
 
             if (disposeData !== null) {
-                if(disposeData.geometryDisposeData !== null){
+                if (disposeData.geometryDisposeData !== null) {
                     disposeGeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
                 }
 
-                if(disposeData.textureDisposeData !== null){
+                if (disposeData.textureDisposeData !== null) {
                     disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData);
                 }
             }
 
-            if(lightData !== null){
+            if (lightData !== null) {
                 _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
             }
 
@@ -174,15 +174,15 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData:any) => {
+var _initMaterials = (gl: WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any) => {
     return callFunc(() => {
-        if(materialData === null){
+        if (materialData === null) {
             return;
         }
 
         // initMaterialData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-        if(textureData !== null){
+        if (textureData !== null) {
             setIndex(textureData.index, TextureWorkerData);
         }
 
@@ -190,9 +190,9 @@ var _initMaterials = (gl:WebGLRenderingContext, materialData: MaterialInitWorker
     })
 }
 
-var _initMaterialData = (gl:WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData:any, TextureCacheWorkerData:any, TextureWorkerData:any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+var _initMaterialData = (gl: WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData: any, TextureCacheWorkerData: any, TextureWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     return callFunc(() => {
-        if(materialData === null){
+        if (materialData === null) {
             return;
         }
 
@@ -202,7 +202,7 @@ var _initMaterialData = (gl:WebGLRenderingContext, materialData: MaterialInitWor
 
 var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
     return callFunc(() => {
-        if(geometryData === null){
+        if (geometryData === null) {
             return;
         }
 
@@ -212,7 +212,7 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
     })
 }
 
-var _initLights = (lightData:LightInitWorkerData, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any) => {
+var _initLights = (lightData: LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     return callFunc(() => {
         if (lightData === null) {
             return;
@@ -223,7 +223,7 @@ var _initLights = (lightData:LightInitWorkerData, AmbientLightWorkerData:any, Di
     })
 }
 
-var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData:any, PointLightWorkerData:any) => {
+var _setLightDrawData = (lightData: LightDrawWorkerData, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     var directionLightData = lightData.directionLightData,
         pointLightData = lightData.pointLightData;
 
@@ -232,7 +232,7 @@ var _setLightDrawData = (lightData:LightDrawWorkerData, DirectionLightWorkerData
 }
 
 var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
-    if(textureData === null){
+    if (textureData === null) {
         return empty();
     }
 

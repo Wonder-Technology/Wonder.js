@@ -105,7 +105,7 @@ var _getUnifromDataFromLightMaterial = (field: string, index: number,
     return data;
 }
 
-export var sendBuffer = (gl: WebGLRenderingContext, type:string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
+export var sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
     var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -118,10 +118,10 @@ export var sendBuffer = (gl: WebGLRenderingContext, type:string, pos: number, bu
     }
 }
 
-var _getBufferSizeByType = (type:string) => {
-    var size:number = null;
+var _getBufferSizeByType = (type: string) => {
+    var size: number = null;
 
-    switch(type){
+    switch (type) {
         case "vec2":
             size = 2;
             break;
@@ -201,7 +201,7 @@ export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex
     })
 })
 
-export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>|Float32Array, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number> | Float32Array, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap),
         x = data[0],
         y = data[1],
@@ -213,7 +213,7 @@ export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program
 
     _setUniformCache(shaderIndex, name, data, uniformCacheMap);
 
-    _sendUniformData<Array<number>|Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
+    _sendUniformData<Array<number> | Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
         gl.uniform3f(pos, x, y, z);
     })
 }

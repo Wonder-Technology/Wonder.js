@@ -1,4 +1,4 @@
-export enum ETextureFormat{
+export enum ETextureFormat {
     RGB = "RGB",
     RGBA = "RGBA",
     ALPHA = "ALPHA",

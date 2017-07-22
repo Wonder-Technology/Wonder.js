@@ -13,7 +13,7 @@ export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config:
     return data;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem:any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         TextureDataFromSystem: TextureDataFromSystem,
@@ -35,7 +35,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
-export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData:Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate:Function, getMapCount:Function) => {
+export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function) => {
     return {
         bindIndexBuffer: bindIndexBuffer,
         sendAttributeData: sendAttributeData,
@@ -68,15 +68,15 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
 }, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
             TextureDataFromSystem,
-            TextureCacheDataFromSystem,
-            MapManagerDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            GeometryDataFromSystem,
-            ArrayBufferDataFromSystem,
-            IndexBufferDataFromSystem,
-            DrawRenderCommandBufferDataFromSystem
+        TextureCacheDataFromSystem,
+        MapManagerDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem,
+        GeometryDataFromSystem,
+        ArrayBufferDataFromSystem,
+        IndexBufferDataFromSystem,
+        DrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
         mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),

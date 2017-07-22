@@ -52,7 +52,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             SendDrawRenderCommandBufferData.isInitComplete = true;
             SendDrawRenderCommandBufferData.state = ERenderWorkerState.DEFAULT;
         }
-        else if(!SendDrawRenderCommandBufferData.isInitComplete){
+        else if (!SendDrawRenderCommandBufferData.isInitComplete) {
             return resultState;
         }
 

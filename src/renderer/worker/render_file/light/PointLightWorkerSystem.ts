@@ -5,7 +5,7 @@ import {
 } from "../../../utils/light/pointLightUtils";
 import { Color } from "../../../../structure/Color";
 
-export var setPositionArr = (positionArr:Array<Float32Array>, PointLightWorkerData:any) => {
+export var setPositionArr = (positionArr: Array<Float32Array>, PointLightWorkerData: any) => {
     PointLightWorkerData.positionArr = positionArr;
 }
 
@@ -25,8 +25,8 @@ export var getRange = getRangeUtils;
 
 export var initData = ({
                            buffer,
-                           bufferCount,
-                           lightCount,
+    bufferCount,
+    lightCount,
     pointLightGLSLDataStructureMemberNameArr
                        }, PointLightWorkerData: any) => {
     _setCount(lightCount, PointLightWorkerData);

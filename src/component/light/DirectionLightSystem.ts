@@ -39,10 +39,10 @@ export var getPosition = (index: number, ThreeDTransformData: any, GameObjectDat
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightData);
 }
 
-export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any):Array<Float32Array> => {
-    var positionArr:Array<Float32Array> = [];
+export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any): Array<Float32Array> => {
+    var positionArr: Array<Float32Array> = [];
 
-    for(let i = 0, count = DirectionLightData.count; i < count; i++){
+    for (let i = 0, count = DirectionLightData.count; i < count; i++) {
         positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, DirectionLightData).values);
     }
 
@@ -53,7 +53,7 @@ export var getColor = (index: number, DirectionLightData: any) => {
     return getColor3Data(index, DirectionLightData.colors);
 }
 
-export var getColorArr3 =  getColorArr3Utils;
+export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {
     setSpecifyLightColor(index, color, DirectionLightData.colors);
@@ -75,7 +75,7 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
 export var disposeComponent = (component: Light) => {
     var intensityDataSize = getIntensityDataSize(),
         sourceIndex = component.index,
-        lastComponentIndex:number = null;
+        lastComponentIndex: number = null;
 
     lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, DirectionLightData);
 
@@ -85,7 +85,7 @@ export var disposeComponent = (component: Light) => {
 export var initData = (DirectionLightData: any) => {
     var count = getDirectionLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()),
-        buffer:any = null;
+        buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 

@@ -331,11 +331,11 @@ export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) =
 
         _updateInfoList(newVertivesInfoList, newIndexInArrayBuffer, verticesInfo, newVerticesOffset);
 
-        if(isValidVal(normalsInfo)){
+        if (isValidVal(normalsInfo)) {
             _updateInfoList(newNormalsInfoList, newIndexInArrayBuffer, normalsInfo, newNormalsOffset);
         }
 
-        if(isValidVal(texCoordsInfo)){
+        if (isValidVal(texCoordsInfo)) {
             _updateInfoList(newTexCoordsInfoList, newIndexInArrayBuffer, texCoordsInfo, newTexCoordsOffset);
         }
 
@@ -343,11 +343,11 @@ export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) =
 
         newVerticesOffset = _fillTypeArr(newVertices, newVerticesOffset, vertices, verticesInfo.startIndex, verticesInfo.endIndex);
 
-        if(isValidVal(normalsInfo)) {
+        if (isValidVal(normalsInfo)) {
             newNormalsOffset = _fillTypeArr(newNormals, newNormalsOffset, normals, normalsInfo.startIndex, normalsInfo.endIndex);
         }
 
-        if(isValidVal(texCoordsInfo)) {
+        if (isValidVal(texCoordsInfo)) {
             newTexCoordsOffset = _fillTypeArr(newTexCoords, newTexCoordsOffset, texCoords, texCoordsInfo.startIndex, texCoordsInfo.endIndex);
         }
 

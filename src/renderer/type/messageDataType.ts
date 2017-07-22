@@ -60,29 +60,29 @@ export type GeometryResetWorkerData = {
 export type LightInitWorkerData = {
     ambientLightData: {
         buffer: SharedArrayBuffer;
-        bufferCount:number;
-        lightCount:number;
+        bufferCount: number;
+        lightCount: number;
     };
-    directionLightData:{
+    directionLightData: {
         buffer: SharedArrayBuffer;
-        bufferCount:number;
-        lightCount:number;
-        directionLightGLSLDataStructureMemberNameArr:Array<DirectionLightGLSLDataStructure>;
+        bufferCount: number;
+        lightCount: number;
+        directionLightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure>;
     };
-    pointLightData:{
+    pointLightData: {
         buffer: SharedArrayBuffer;
-        bufferCount:number;
-        lightCount:number;
-        pointLightGLSLDataStructureMemberNameArr:Array<PointLightGLSLDataStructure>;
+        bufferCount: number;
+        lightCount: number;
+        pointLightGLSLDataStructureMemberNameArr: Array<PointLightGLSLDataStructure>;
     }
 }
 
 export type LightDrawWorkerData = {
-    directionLightData:{
-        positionArr:Array<Float32Array>;
+    directionLightData: {
+        positionArr: Array<Float32Array>;
     };
-    pointLightData:{
-        positionArr:Array<Float32Array>;
+    pointLightData: {
+        positionArr: Array<Float32Array>;
     };
 }
 

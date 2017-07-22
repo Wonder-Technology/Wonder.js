@@ -83,23 +83,23 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 texCoordsInfoList: GeometryData.texCoordsInfoList,
                 indicesInfoList: GeometryData.indicesInfoList
             },
-            lightData:{
+            lightData: {
                 ambientLightData: {
                     buffer: AmbientLightData.buffer,
-                    bufferCount:getAmbientLightBufferCount(),
-                    lightCount:AmbientLightData.count
+                    bufferCount: getAmbientLightBufferCount(),
+                    lightCount: AmbientLightData.count
 
                 },
                 directionLightData: {
                     buffer: DirectionLightData.buffer,
-                    bufferCount:getDirectionLightBufferCount(),
-                    lightCount:DirectionLightData.count,
+                    bufferCount: getDirectionLightBufferCount(),
+                    lightCount: DirectionLightData.count,
                     directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
                 },
                 pointLightData: {
-                    buffer:PointLightData.buffer,
-                    bufferCount:getPointLightBufferCount(),
-                    lightCount:PointLightData.count,
+                    buffer: PointLightData.buffer,
+                    bufferCount: getPointLightBufferCount(),
+                    lightCount: PointLightData.count,
                     pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
                 }
             },
@@ -107,7 +107,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
                 index: TextureData.index,
-                imageSrcIndexArr:convertSourceMapToSrcIndexArr(TextureData),
+                imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
                 uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
             }
         });

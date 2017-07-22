@@ -5,8 +5,8 @@ export var getColorArr3 = getColorArr3Utils;
 
 export var initData = ({
                            buffer,
-                           bufferCount,
-                           lightCount
+    bufferCount,
+    lightCount
                        }, AmbientLightWorkerData: any) => {
     _setCount(lightCount, AmbientLightWorkerData);
 

@@ -70,7 +70,7 @@ import { MapManagerData } from "../renderer/texture/MapManagerData";
 import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 
-export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData:any, {
+export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, {
     canvasID = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,

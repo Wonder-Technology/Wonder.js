@@ -81,8 +81,8 @@ export type MaterialDataMap = {
 }
 
 export type MaterialWorkerInitDataList = Array<{
-    index:number;
-    className:string;
+    index: number;
+    className: string;
 }>
 
 export type ShaderLibWholeNameMap = {
@@ -110,6 +110,6 @@ type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Arra
 
 
 export type DisposedTextureDataMap = Array<{
-    sourceIndex:number;
-    lastComponentIndex:number;
+    sourceIndex: number;
+    lastComponentIndex: number;
 }>

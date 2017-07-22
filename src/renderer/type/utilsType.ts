@@ -19,10 +19,10 @@ export type DrawDataMap = {
 }
 
 export type SendUniformDataDataMap = {
-    glslSenderData:SendUniformDataGLSLSenderDataMap;
-    ambientLightData:SendUniformDataAmbientLightDataMap;
-    directionLightData:SendUniformDataDirectionLightDataMap;
-    pointLightData:SendUniformDataPointLightDataMap;
+    glslSenderData: SendUniformDataGLSLSenderDataMap;
+    ambientLightData: SendUniformDataAmbientLightDataMap;
+    directionLightData: SendUniformDataDirectionLightDataMap;
+    pointLightData: SendUniformDataPointLightDataMap;
 }
 
 export type DrawFuncDataMap = {

@@ -1,4 +1,4 @@
-export enum ETextureFilterMode{
+export enum ETextureFilterMode {
     NEAREST = "NEAREST",
     NEAREST_MIPMAP_MEAREST = "NEAREST_MIPMAP_MEAREST",
     NEAREST_MIPMAP_LINEAR = "NEAREST_MIPMAP_LINEAR",

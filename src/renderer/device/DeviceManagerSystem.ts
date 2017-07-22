@@ -25,7 +25,7 @@ export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<strin
     });
 })
 
-var _getOnlyGL  = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
+var _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
     var gl = getContext(contextConfig, canvas);
 
     if (!gl) {

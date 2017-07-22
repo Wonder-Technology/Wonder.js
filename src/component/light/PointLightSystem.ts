@@ -42,10 +42,10 @@ export var getPosition = (index: number, ThreeDTransformData: any, GameObjectDat
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, PointLightData);
 }
 
-export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any):Array<Float32Array> => {
-    var positionArr:Array<Float32Array> = [];
+export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any): Array<Float32Array> => {
+    var positionArr: Array<Float32Array> = [];
 
-    for(let i = 0, count = PointLightData.count; i < count; i++){
+    for (let i = 0, count = PointLightData.count; i < count; i++) {
         positionArr.push(getPosition(i, ThreeDTransformData, GameObjectData, PointLightData).values);
     }
 
@@ -56,7 +56,7 @@ export var getColor = (index: number, PointLightData: any) => {
     return getColor3Data(index, PointLightData.colors);
 }
 
-export var getColorArr3 =  getColorArr3Utils;
+export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, PointLightData: any) => {
     setSpecifyLightColor(index, color, PointLightData.colors);
@@ -154,7 +154,7 @@ export var setRangeLevel = (index: number, value: number, PointLightData: any) =
             setLinear(index, 0.0014, PointLightData);
             setQuadratic(index, 0.000007, PointLightData);
             break;
-        default :
+        default:
             Log.error(true, "over point light range");
             break;
     }
@@ -171,7 +171,7 @@ export var disposeComponent = (component: Light) => {
         quadraticDataSize = getQuadraticDataSize(),
         rangeDataSize = getRangeDataSize(),
         sourceIndex = component.index,
-        lastComponentIndex:number = null;
+        lastComponentIndex: number = null;
 
     lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, PointLightData);
 
@@ -185,7 +185,7 @@ export var disposeComponent = (component: Light) => {
 export var initData = (PointLightData: any) => {
     var count = getPointLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()),
-        buffer:any = null;
+        buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 

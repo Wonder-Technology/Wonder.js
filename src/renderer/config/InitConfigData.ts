@@ -1,3 +1,3 @@
-export class InitConfigData{
-    public static isTest:boolean = null;
+export class InitConfigData {
+    public static isTest: boolean = null;
 }

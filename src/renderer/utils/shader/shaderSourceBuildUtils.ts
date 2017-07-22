@@ -17,13 +17,13 @@ import { BuildGLSLSourceFuncFuncDataMap } from "../../type/dataType";
 import { isString } from "../../../utils/JudgeUtils";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -118,7 +118,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var nameArr: Array<string> = [];
 
     forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
@@ -128,14 +128,14 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
         else {
             let i = item as IShaderLibItem;
 
-            switch (i.type){
+            switch (i.type) {
                 case "group":
                     nameArr = nameArr.concat(materialShaderLibGroup[i.value]);
                     break;
                 case "branch":
                     let shaderLibName = _execBranch(i, materialIndex, initShaderFuncDataMap, initShaderDataMap);
 
-                    if(_isShaderLibNameExist(shaderLibName)){
+                    if (_isShaderLibNameExist(shaderLibName)) {
                         nameArr.push(shaderLibName);
                     }
             }
@@ -145,15 +145,15 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
     return nameArr;
 }
 
-var _execBranch = requireCheckFunc ((i:IShaderLibItem, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("branch should exist", () => {
         expect(i.branch).exist;
     });
-}, (i:IShaderLibItem, materialIndex:number, initShaderFuncDataMap:InitShaderFuncDataMap, initShaderDataMap:InitShaderDataMap) => {
+}, (i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
 
-var _isShaderLibNameExist = (name:string) => !!name;
+var _isShaderLibNameExist = (name: string) => !!name;
 
 var _getEmptyFuncGLSLConfig = () => {
     return {
@@ -166,7 +166,7 @@ var _getEmptyFuncGLSLConfig = () => {
     }
 }
 
-var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShaderDataMap:InitShaderDataMap) => {
+var _buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShaderDataMap: InitShaderDataMap) => {
     var result = "";
 
     for (let item of defineList) {
@@ -263,18 +263,18 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
 var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
-            forEachArray(({name, type}) => {
+            forEachArray(({ name, type }) => {
                 result += `uniform ${_generateUniformSourceType(type)} ${name};\n`;
             }),
-            filterArray(({name}) => {
+            filterArray(({ name }) => {
                 return _isInSource(name, sourceVarDeclare) || _isInSource(name, sourceFuncDefine) || _isInSource(name, sourceBody);
             })
         );
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
-            uniform:Array<ISendUniformConfig> = null,
-            uniformDefine:Array<IDefineUniformConfig> = null;
+            uniform: Array<ISendUniformConfig> = null,
+            uniformDefine: Array<IDefineUniformConfig> = null;
 
         if (!isConfigDataExist(sendData)) {
             return;
@@ -283,11 +283,11 @@ var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLib
         uniform = sendData.uniform;
         uniformDefine = sendData.uniformDefine;
 
-        if(isConfigDataExist(uniform)){
+        if (isConfigDataExist(uniform)) {
             generateFunc(uniform);
         }
 
-        if(isConfigDataExist(uniformDefine)){
+        if (isConfigDataExist(uniformDefine)) {
             generateFunc(uniformDefine);
         }
     });

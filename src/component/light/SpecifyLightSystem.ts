@@ -36,7 +36,7 @@ export var addComponent = (component: Light, gameObject: GameObject, SpecifyLigh
 //     return SpecifyLightData.renderDataMap[index].colorArr;
 // }
 
-export var setColor = (index: number, color: Color, colors:Float32Array) => {
+export var setColor = (index: number, color: Color, colors: Float32Array) => {
     setColor3Data(index, color, colors);
 }
 

@@ -407,10 +407,10 @@ export const shaderLib_generator = {
             },
             "send": {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, {
-                    glslSenderData:{
+                    glslSenderData: {
                         sendFloat3
                     },
-                    ambientLightData:{
+                    ambientLightData: {
                         getColorArr3,
 
                         AmbientLightDataFromSystem
@@ -422,24 +422,24 @@ export const shaderLib_generator = {
                 }
             }
         },
-        "PointLightShaderLib":{
+        "PointLightShaderLib": {
             "send": {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
-                                {
-                                    glslSenderData:{
+                    {
+                                    glslSenderData: {
                                         sendFloat1,
-                                        sendFloat3
+                        sendFloat3
                                     },
-                                    pointLightData:{
+                        pointLightData: {
                                         getColorArr3,
-                                        getIntensity,
-                                        getConstant,
-                                        getLinear,
-                                        getQuadratic,
-                                        getRange,
-                                        getPosition,
+                            getIntensity,
+                            getConstant,
+                            getLinear,
+                            getQuadratic,
+                            getRange,
+                            getPosition,
 
-                                        PointLightDataFromSystem
+                            PointLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
@@ -457,18 +457,18 @@ export const shaderLib_generator = {
         "DirectionLightShaderLib": {
             "send": {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
-                                {
-                                    glslSenderData:{
+                    {
+                                    glslSenderData: {
 
                                         sendFloat1,
-                                        sendFloat3
+                        sendFloat3
                                     },
-                                    directionLightData:{
+                        directionLightData: {
                                         getColorArr3,
-                                        getIntensity,
-                                        getPosition,
+                            getIntensity,
+                            getPosition,
 
-                                        DirectionLightDataFromSystem
+                            DirectionLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {

@@ -1,4 +1,4 @@
-export class TextureCacheData{
-    public static bindTextureUnitCache:Array<number> = null;
+export class TextureCacheData {
+    public static bindTextureUnitCache: Array<number> = null;
 }
 

@@ -27,11 +27,11 @@ export var create = (GeometryData: any) => {
 var _computeData = (index: number, GeometryData: any) => {
     var {
             width,
-            height,
-            depth,
-            widthSegments,
-            heightSegments,
-            depthSegments
+        height,
+        depth,
+        widthSegments,
+        heightSegments,
+        depthSegments
         } = _getConfigData(index, GeometryData),
         sides = {
             FRONT: 0,

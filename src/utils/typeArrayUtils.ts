@@ -201,11 +201,11 @@ export var setTypeArrayValue = requireCheckFunc((typeArr: TypeArr, index: number
     typeArr[index] = value;
 })
 
-export var setSingleValue = (typeArr:TypeArr, index:number, value:number) => {
+export var setSingleValue = (typeArr: TypeArr, index: number, value: number) => {
     var size = 1,
         i = index * size;
 
     setTypeArrayValue(typeArr, i, value);
 }
 
-export var computeBufferLength = (count:number, size:number) => count * size;
+export var computeBufferLength = (count: number, size: number) => count * size;

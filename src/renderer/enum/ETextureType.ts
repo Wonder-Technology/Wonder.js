@@ -1,4 +1,4 @@
-export enum ETextureType{
+export enum ETextureType {
     UNSIGNED_BYTE = "UNSIGNED_BYTE",
     UNSIGNED_SHORT_5_6_5 = "UNSIGNED_SHORT_5_6_5",
     UNSIGNED_SHORT_4_4_4_4 = "UNSIGNED_SHORT_4_4_4_4",

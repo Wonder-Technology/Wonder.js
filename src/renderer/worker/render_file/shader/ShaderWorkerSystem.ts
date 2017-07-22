@@ -29,7 +29,7 @@ import { getMapCount } from "../texture/MapManagerWorkerSystem";
 import { createMap } from "../../../../utils/objectUtils";
 import { hasDiffuseMap, hasSpecularMap } from "../../../utils/material/lightMaterialUtils";
 
-export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
     return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
@@ -46,10 +46,10 @@ var _buildInitShaderFuncDataMap = () => {
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GeometryWorkerData: any, ArrayBufferWorkerData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
     getVertices: getVertices,
     getNormals: getNormals,
-    getTexCoords:getTexCoords
+    getTexCoords: getTexCoords
 }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData);
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
     sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
 };
 
@@ -66,24 +66,24 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             sendFloat1: sendFloat1,
             sendFloat3: sendFloat3,
 
-            GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
+            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
         },
-        ambientLightData:{
+        ambientLightData: {
             getColorArr3: getAmbientLightColorArr3,
 
-            AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
+            AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
         },
-        directionLightData:{
-            getPosition: (index:number) => {
+        directionLightData: {
+            getPosition: (index: number) => {
                 return getDirectionLightPosition(index, drawDataMap);
             },
             getColorArr3: getDirectionLightColorArr3,
             getIntensity: getDirectionLightIntensity,
 
-            DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
+            DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
         },
-        pointLightData:{
-            getPosition: (index:number) => {
+        pointLightData: {
+            getPosition: (index: number) => {
                 return getPointLightPosition(index, drawDataMap);
             },
             getColorArr3: getPointLightColorArr3,
@@ -93,7 +93,7 @@ var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
             getQuadratic: getPointLightQuadratic,
             getRange: getPointLightRange,
 
-            PointLightDataFromSystem:drawDataMap.PointLightDataFromSystem
+            PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
         }
     }
 }
@@ -104,15 +104,15 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
 
 export var use = useUtils;
 
-export var getDirectionLightPosition = (index:number, drawDataMap: DrawDataMap) => {
+export var getDirectionLightPosition = (index: number, drawDataMap: DrawDataMap) => {
     return _getLightPosition(index, drawDataMap.DirectionLightDataFromSystem);
 }
 
-export var getPointLightPosition = (index:number, drawDataMap: DrawDataMap) => {
+export var getPointLightPosition = (index: number, drawDataMap: DrawDataMap) => {
     return _getLightPosition(index, drawDataMap.PointLightDataFromSystem);
 }
 
-var _getLightPosition = (index:number, LightDataFromSystem:any) => {
+var _getLightPosition = (index: number, LightDataFromSystem: any) => {
     return LightDataFromSystem.positionArr[index];
 }
 

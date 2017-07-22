@@ -213,7 +213,7 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
     return buffer;
 }
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, sendDataMap:SendUniformDataDataMap, drawDataMap:DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
     var uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
         uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
 
@@ -223,10 +223,10 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, pr
     sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, {
+var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, {
                             MaterialDataFromSystem,
-                            BasicMaterialDataFromSystem,
-                            LightMaterialDataFromSystem,
+    BasicMaterialDataFromSystem,
+    LightMaterialDataFromSystem,
                         }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: RenderCommandUniformData) => {
     var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
@@ -238,11 +238,11 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             from = sendData.from || "cmd",
             data = glslSenderData.getUniformData(field, from, renderCommandUniformData, MaterialDataFromSystem, BasicMaterialDataFromSystem, LightMaterialDataFromSystem);
 
-        directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap,uniformCacheMap);
+        directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
     }
 }
 
-export var directlySendUniformData = (gl: WebGLRenderingContext, name:string, shaderIndex:number, program: WebGLProgram, type:EVariableType, data:any, {
+export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
     // getUniformData,
     sendMatrix3,
     sendMatrix4,

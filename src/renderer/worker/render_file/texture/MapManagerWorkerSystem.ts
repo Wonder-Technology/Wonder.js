@@ -5,14 +5,14 @@ import {
 } from "../../../utils/texture/mapManagerUtils";
 import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
 
-export var initMapManagers = (gl:WebGLRenderingContext, TextureWorkerData:any) => {
+export var initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
     initTextures(gl, TextureWorkerData);
 }
 
-export var getMapCount = (materialIndex: number, MapManagerWorkerData:any) => {
+export var getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
     var textureCounts = MapManagerWorkerData.textureCounts;
 
-    if(textureCounts === null){
+    if (textureCounts === null) {
         return 0;
     }
 
@@ -27,19 +27,19 @@ export var getMapCount = (materialIndex: number, MapManagerWorkerData:any) => {
 //     }
 // }
 
-export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCacheWorkerData:any, TextureWorkerData:any, MapManagerWorkerData:any) => {
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any) => {
     bindAndUpdateUtils(gl, mapCount, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, bindToUnit, needUpdate, update);
 }
 
 // export var dispose = disposeUtils;
 
-export var initData = (textureData:TextureInitWorkerData, TextureCacheWorkerData:any, TextureWorkerData:any, MapManagerWorkerData:any) => {
+export var initData = (textureData: TextureInitWorkerData, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any) => {
     initTextureData(textureData.textureBuffer, TextureCacheWorkerData, TextureWorkerData);
 
     _initBufferData(textureData.mapManagerBuffer, MapManagerWorkerData);
 }
 
-var _initBufferData = (buffer:any, MapManagerWorkerData:any) => {
+var _initBufferData = (buffer: any, MapManagerWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), MapManagerWorkerData);
 }
 

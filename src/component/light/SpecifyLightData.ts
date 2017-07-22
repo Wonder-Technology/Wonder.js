@@ -5,7 +5,7 @@ export class SpecifyLightData {
     public static index: number = null;
     public static count: number = null;
 
-    public static buffer:any = null;
+    public static buffer: any = null;
 
     public static colors: Float32Array = null;
 

@@ -36,7 +36,7 @@ export var hasSpecularMap = (LightMaterialDataFromSystem: any) => {
     return _isLightMapExist(LightMaterialDataFromSystem.specularMapIndex);
 }
 
-var _isLightMapExist = (mapIndex:number) => mapIndex !== null;
+var _isLightMapExist = (mapIndex: number) => mapIndex !== null;
 
 export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
 

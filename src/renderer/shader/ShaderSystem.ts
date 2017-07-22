@@ -60,7 +60,7 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap:InitShaderDataMap) => {
+    init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
         return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
 
@@ -80,7 +80,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount:number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
         sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
     };
 
@@ -95,24 +95,24 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 sendFloat1: sendFloat1,
                 sendFloat3: sendFloat3,
 
-                GLSLSenderDataFromSystem:drawDataMap.GLSLSenderDataFromSystem
+                GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
             },
-            ambientLightData:{
+            ambientLightData: {
                 getColorArr3: getAmbientLightColorArr3,
 
-                AmbientLightDataFromSystem:drawDataMap.AmbientLightDataFromSystem
+                AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
             },
-            directionLightData:{
-                getPosition: (index:number) => {
+            directionLightData: {
+                getPosition: (index: number) => {
                     return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
                 },
                 getColorArr3: getDirectionLightColorArr3,
                 getIntensity: getIntensity,
 
-                DirectionLightDataFromSystem:drawDataMap.DirectionLightDataFromSystem
+                DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
             },
-            pointLightData:{
-                getPosition: (index:number) => {
+            pointLightData: {
+                getPosition: (index: number) => {
                     return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
                 },
                 getColorArr3: getPointLightColorArr3,
@@ -122,7 +122,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
                 getQuadratic: getQuadratic,
                 getRange: getRange,
 
-                PointLightDataFromSystem:drawDataMap.PointLightDataFromSystem
+                PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
             }
         }
     }

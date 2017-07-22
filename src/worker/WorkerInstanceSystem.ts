@@ -8,7 +8,7 @@ export var setRenderWorker = (worker: Worker, WorkerInstanceData: any) => {
     WorkerInstanceData.renderWorker = worker;
 }
 
-export var createWorker = (workerFilePath:string) => {
+export var createWorker = (workerFilePath: string) => {
     return new Worker(workerFilePath);
 }
 

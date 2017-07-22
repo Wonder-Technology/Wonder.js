@@ -16,19 +16,19 @@ export var getIsTest = getIsTestUtils;
 export var setIsTest = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    setIsTest = (isTest: boolean, InitConfigData: any, WorkerInstanceData:any) => {
+    setIsTest = (isTest: boolean, InitConfigData: any, WorkerInstanceData: any) => {
         return IO.of(() => {
             var renderWorker = getRenderWorker(WorkerInstanceData);
 
             renderWorker.postMessage({
                 operateType: EWorkerOperateType.INIT_CONFIG,
-                isTest:isTest
+                isTest: isTest
             });
         })
     }
 }
 else {
-    setIsTest = (isTest: boolean, InitConfigData: any, WorkerInstanceData:any) => {
+    setIsTest = (isTest: boolean, InitConfigData: any, WorkerInstanceData: any) => {
         return setIsTestUtils(isTest, InitConfigData);
     }
 }

@@ -130,12 +130,12 @@ export var setLightMaterialLightModel = requireCheckFunc((material: LightMateria
 
 export var setLightMaterialDiffuseMap = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
-}, (material: LightMaterial, map:Texture) => {
+}, (material: LightMaterial, map: Texture) => {
     setDiffuseMap(material.index, map, MapManagerData, TextureData);
 })
 
 export var setLightMaterialSpecularMap = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
-}, (material: LightMaterial, map:Texture) => {
+}, (material: LightMaterial, map: Texture) => {
     setSpecularMap(material.index, map, MapManagerData, TextureData);
 })

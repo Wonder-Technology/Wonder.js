@@ -48,7 +48,7 @@ export var initMaterial = (index: number, state: Map<any, any>) => {
 //     return getMapByMapManager(materialIndex, MapManagerData);
 // }
 
-export var addMap = (materialIndex: number, map: Texture, MapManagerData:any, TextureData:any) => {
+export var addMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(materialIndex, MapManagerData);
 
     addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);

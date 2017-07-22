@@ -14,4 +14,5 @@ export class PointLightData extends SpecifyLightData {
     public static defaultQuadratic: number = null;
     public static defaultRange: number = null;
 
-    public static lightGLSLDataStructureMemberNameArr: Array<PointLightGLSLDataStructure> = null;}
+    public static lightGLSLDataStructureMemberNameArr: Array<PointLightGLSLDataStructure> = null;
+}

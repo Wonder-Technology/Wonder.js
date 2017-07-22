@@ -33,17 +33,17 @@ export var createTypeArrays = (buffer: any, count: number, TextureDataFromSystem
     return offset;
 }
 
-export var getSource = (textureIndex:number, TextureDataFromSystem:any) => {
+export var getSource = (textureIndex: number, TextureDataFromSystem: any) => {
     return TextureDataFromSystem.sourceMap[textureIndex];
 }
 
 export var getWidth = (textureIndex: number, TextureDataFromSystem: any) => {
     var width = getSingleSizeData(textureIndex, TextureDataFromSystem.widths);
 
-    if(width === 0){
+    if (width === 0) {
         let source = getSource(textureIndex, TextureDataFromSystem);
 
-        if(_isSourceValueExist(source)){
+        if (_isSourceValueExist(source)) {
             return source.width;
         }
     }
@@ -54,10 +54,10 @@ export var getWidth = (textureIndex: number, TextureDataFromSystem: any) => {
 export var getHeight = (textureIndex: number, TextureDataFromSystem: any) => {
     var height = getSingleSizeData(textureIndex, TextureDataFromSystem.heights);
 
-    if(height === 0){
+    if (height === 0) {
         let source = getSource(textureIndex, TextureDataFromSystem);
 
-        if(_isSourceValueExist(source)){
+        if (_isSourceValueExist(source)) {
             return source.height;
         }
     }
@@ -65,43 +65,43 @@ export var getHeight = (textureIndex: number, TextureDataFromSystem: any) => {
     return height;
 }
 
-export var getWrapS = (textureIndex:number, TextureData:any) => {
+export var getWrapS = (textureIndex: number, TextureData: any) => {
     //todo finish: judge type array value, return enum value
 
     return ETextureWrapMode.CLAMP_TO_EDGE;
 }
 
-export var getWrapT = (textureIndex:number, TextureData:any) => {
+export var getWrapT = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return ETextureWrapMode.CLAMP_TO_EDGE;
 }
 
-export var getMagFilter = (textureIndex:number, TextureData:any) => {
+export var getMagFilter = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return ETextureFilterMode.LINEAR;
 }
 
-export var getMinFilter = (textureIndex:number, TextureData:any) => {
+export var getMinFilter = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return ETextureFilterMode.NEAREST;
 }
 
-export var getFormat = (textureIndex:number, TextureData:any) => {
+export var getFormat = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return ETextureFormat.RGBA;
 }
 
-export var getType = (textureIndex:number, TextureData:any) => {
+export var getType = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return ETextureType.UNSIGNED_BYTE;
 }
 
-export var getFlipY = (textureIndex:number, TextureData:any) => {
+export var getFlipY = (textureIndex: number, TextureData: any) => {
     //todo finish
 
     return true;
@@ -111,61 +111,61 @@ export var getIsNeedUpdate = (textureIndex: number, TextureDataFromSystem: any) 
     return getSingleSizeData(textureIndex, TextureDataFromSystem.isNeedUpdates);
 }
 
-export var setIsNeedUpdate = (textureIndex:number, value:number, TextureDataFromSystem:any) => {
+export var setIsNeedUpdate = (textureIndex: number, value: number, TextureDataFromSystem: any) => {
     setTypeArrayValue(TextureDataFromSystem.isNeedUpdates, textureIndex, value);
 }
 
 
-export var initTextures = (gl:WebGLRenderingContext, TextureDataFromSystem:any) => {
-    for(let i = 0; i < TextureDataFromSystem.index; i++){
+export var initTextures = (gl: WebGLRenderingContext, TextureDataFromSystem: any) => {
+    for (let i = 0; i < TextureDataFromSystem.index; i++) {
         initTexture(gl, i, TextureDataFromSystem);
     }
 }
 
-export var initTexture = (gl:WebGLRenderingContext, textureIndex:number, TextureDataFromSystem:any) => {
+export var initTexture = (gl: WebGLRenderingContext, textureIndex: number, TextureDataFromSystem: any) => {
     _createWebglTexture(gl, textureIndex, TextureDataFromSystem);
 }
 
-var _createWebglTexture = (gl:WebGLRenderingContext, textureIndex:number, TextureDataFromSystem:any) => {
+var _createWebglTexture = (gl: WebGLRenderingContext, textureIndex: number, TextureDataFromSystem: any) => {
     var glTexture = _getWebglTexture(textureIndex, TextureDataFromSystem);
 
-    if(_isGLTextureExist(glTexture)){
+    if (_isGLTextureExist(glTexture)) {
         return;
     }
 
     TextureDataFromSystem.glTextures[textureIndex] = gl.createTexture();
 }
 
-var _isGLTextureExist = (glTexture:WebGLTexture) => isValidVal(glTexture);
+var _isGLTextureExist = (glTexture: WebGLTexture) => isValidVal(glTexture);
 
-var _isSourceExist = (textureIndex:number, TextureDataFromSystem:any) => _isSourceValueExist(TextureDataFromSystem.sourceMap[textureIndex]);
+var _isSourceExist = (textureIndex: number, TextureDataFromSystem: any) => _isSourceValueExist(TextureDataFromSystem.sourceMap[textureIndex]);
 
-var _isSourceValueExist = (source:any) => isValidVal(source);
+var _isSourceValueExist = (source: any) => isValidVal(source);
 
-var _getWebglTexture = (textureIndex:number, TextureData:any) => {
+var _getWebglTexture = (textureIndex: number, TextureData: any) => {
     return TextureData.glTextures[textureIndex];
 }
 
 export var getBufferCount = () => DataBufferConfig.textureDataBufferCount;
 
-export var needUpdate = (textureIndex:number, TextureDataFromSystem:any) => {
+export var needUpdate = (textureIndex: number, TextureDataFromSystem: any) => {
     return getIsNeedUpdate(textureIndex, TextureDataFromSystem) === 0;
 }
 
-export var markNeedUpdate = (textureIndex, value:boolean, TextureDataFromSystem) => {
-    if(value === false){
+export var markNeedUpdate = (textureIndex, value: boolean, TextureDataFromSystem) => {
+    if (value === false) {
         setIsNeedUpdate(textureIndex, 1, TextureDataFromSystem);
     }
-    else{
+    else {
         setIsNeedUpdate(textureIndex, 0, TextureDataFromSystem);
     }
 }
 
-export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
+export var update = requireCheckFunc((gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
     it("texture source should exist", () => {
         expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
     });
-}, (gl:WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem:any) => {
+}, (gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
     var width = getWidth(textureIndex, TextureDataFromSystem),
         height = getHeight(textureIndex, TextureDataFromSystem),
         wrapS = getWrapS(textureIndex, TextureDataFromSystem),
@@ -203,8 +203,8 @@ export var update = requireCheckFunc((gl:WebGLRenderingContext, textureIndex: nu
     markNeedUpdate(textureIndex, false, TextureDataFromSystem);
 })
 
-var _setTextureParameters =(gl:WebGLRenderingContext, textureType:any, isSourcePowerOfTwo:boolean, wrapS:ETextureWrapMode, wrapT:ETextureWrapMode, magFilter:ETextureFilterMode, minFilter:ETextureFilterMode) => {
-    if (isSourcePowerOfTwo){
+var _setTextureParameters = (gl: WebGLRenderingContext, textureType: any, isSourcePowerOfTwo: boolean, wrapS: ETextureWrapMode, wrapT: ETextureWrapMode, magFilter: ETextureFilterMode, minFilter: ETextureFilterMode) => {
+    if (isSourcePowerOfTwo) {
         gl.texParameteri(textureType, gl.TEXTURE_WRAP_S, gl[wrapS]);
         gl.texParameteri(textureType, gl.TEXTURE_WRAP_T, gl[wrapT]);
 
@@ -220,7 +220,7 @@ var _setTextureParameters =(gl:WebGLRenderingContext, textureType:any, isSourceP
     }
 }
 
-var _filterFallback =(filter:ETextureFilterMode) => {
+var _filterFallback = (filter: ETextureFilterMode) => {
     if (filter === ETextureFilterMode.NEAREST || filter === ETextureFilterMode.NEAREST_MIPMAP_MEAREST || filter === ETextureFilterMode.NEAREST_MIPMAP_LINEAR) {
         return ETextureFilterMode.NEAREST;
     }
@@ -228,23 +228,23 @@ var _filterFallback =(filter:ETextureFilterMode) => {
     return ETextureFilterMode.LINEAR;
 }
 
-var _allocateSourceToTexture = (gl:WebGLRenderingContext, source:any, format:ETextureFormat, type:ETextureType) => {
+var _allocateSourceToTexture = (gl: WebGLRenderingContext, source: any, format: ETextureFormat, type: ETextureType) => {
     _drawNoMipmapTwoDTexture(gl, source, format, type);
 }
 
-var _drawNoMipmapTwoDTexture = (gl:WebGLRenderingContext, source:any, format:ETextureFormat, type:ETextureType) => {
+var _drawNoMipmapTwoDTexture = (gl: WebGLRenderingContext, source: any, format: ETextureFormat, type: ETextureType) => {
     _drawTexture(gl, gl.TEXTURE_2D, 0, source, format, type);
 }
 
-var _drawTexture = (gl:WebGLRenderingContext, glTarget:any, index:number, source:any, format:ETextureFormat, type:ETextureType) => {
+var _drawTexture = (gl: WebGLRenderingContext, glTarget: any, index: number, source: any, format: ETextureFormat, type: ETextureType) => {
     gl.texImage2D(glTarget, index, gl[format], gl[format], gl[type], source);
 }
 
-var _isSourcePowerOfTwo = (width:number, height:number) => {
+var _isSourcePowerOfTwo = (width: number, height: number) => {
     return _isPowerOfTwo(width) && _isPowerOfTwo(height);
 }
 
-var _isPowerOfTwo = (value:number) => {
+var _isPowerOfTwo = (value: number) => {
     return (value & (value - 1)) === 0 && value !== 0;
 }
 
@@ -262,10 +262,10 @@ var _isPowerOfTwo = (value:number) => {
 //     return isValidVal(TextureDataFromSystem.glTextures[textureIndex]);
 // }
 
-export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureIndex:number, TextureCacheDataFromSystem:any, TextureDataFromSystem:any, isCached:Function, addActiveTexture:Function) => {
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, isCached: Function, addActiveTexture: Function) => {
     var target = ETextureTarget.TEXTURE_2D;
 
-    if(isCached(unitIndex, textureIndex, TextureCacheDataFromSystem)){
+    if (isCached(unitIndex, textureIndex, TextureCacheDataFromSystem)) {
         return;
     }
 
@@ -275,14 +275,14 @@ export var bindToUnit = (gl:WebGLRenderingContext, unitIndex: number, textureInd
     gl.bindTexture(gl[target], _getWebglTexture(textureIndex, TextureDataFromSystem));
 }
 
-export var sendData = (gl:WebGLRenderingContext, mapCount:number,  shaderIndex:number, textureIndex:number, unitIndex:number, program:WebGLProgram, glslSenderData:SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData:Function, TextureDataFromSystem:any) => {
-    directlySendUniformData(gl, _getUniformSamplerName(textureIndex, TextureDataFromSystem), shaderIndex, program, _getSamplerType(_getTarget()), unitIndex, glslSenderData, uniformLocationMap,uniformCacheMap);
+export var sendData = (gl: WebGLRenderingContext, mapCount: number, shaderIndex: number, textureIndex: number, unitIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureDataFromSystem: any) => {
+    directlySendUniformData(gl, _getUniformSamplerName(textureIndex, TextureDataFromSystem), shaderIndex, program, _getSamplerType(_getTarget()), unitIndex, glslSenderData, uniformLocationMap, uniformCacheMap);
 }
 
-var _getSamplerType = (target:ETextureTarget) => {
+var _getSamplerType = (target: ETextureTarget) => {
     var type = null;
 
-    switch(target){
+    switch (target) {
         case ETextureTarget.TEXTURE_2D:
             type = EVariableType.SAMPLER_2D;
             break;
@@ -300,15 +300,15 @@ var _getTarget = () => {
     return ETextureTarget.TEXTURE_2D;
 }
 
-var _getUniformSamplerName = (index:number, TextureDataFromSystem:any) => {
+var _getUniformSamplerName = (index: number, TextureDataFromSystem: any) => {
     return TextureDataFromSystem.uniformSamplerNameMap[index];
 }
 
-export var disposeSourceMap = (sourceIndex:number, lastComponentIndex:number, TextureDataFromSystem:any) => {
+export var disposeSourceMap = (sourceIndex: number, lastComponentIndex: number, TextureDataFromSystem: any) => {
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.sourceMap);
 }
 
-export var disposeGLTexture = (gl:WebGLRenderingContext, sourceIndex:number, lastComponentIndex:number, TextureCacheDataFromSystem:any, TextureDataFromSystem:any) => {
+export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any) => {
     var glTexture = _getWebglTexture(sourceIndex, TextureDataFromSystem);
 
     gl.deleteTexture(glTexture);
@@ -319,7 +319,7 @@ export var disposeGLTexture = (gl:WebGLRenderingContext, sourceIndex:number, las
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.glTextures);
 }
 
-var _unBindAllUnit = (gl:WebGLRenderingContext, TextureCacheDataFromSystem:any) => {
+var _unBindAllUnit = (gl: WebGLRenderingContext, TextureCacheDataFromSystem: any) => {
     var maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
 
     for (let channel = 0; channel < maxTextureUnit; channel++) {
@@ -331,13 +331,13 @@ var _unBindAllUnit = (gl:WebGLRenderingContext, TextureCacheDataFromSystem:any) 
     clearAllBindTextureUnitCache(TextureCacheDataFromSystem);
 }
 
-var _getWebglTexture = (textureIndex:number, TextureDataFromSystem:any) => {
+var _getWebglTexture = (textureIndex: number, TextureDataFromSystem: any) => {
     return TextureDataFromSystem.glTextures[textureIndex];
 }
 
 
 // export var drawPartOfTextureByCanvas = (source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number, sWidth:number, sHeight:number, dx:number, wd:number, dWidth:number, dHeight:number) => {
-export var drawPartOfTextureByCanvas = (source:HTMLImageElement, canvasWidth:number, canvasHeight:number, sx:number, sy:number) => {
+export var drawPartOfTextureByCanvas = (source: HTMLImageElement, canvasWidth: number, canvasHeight: number, sx: number, sy: number) => {
     var canvas = DomQuery.create("<canvas></canvas>").get(0),
         ctx = null;
 

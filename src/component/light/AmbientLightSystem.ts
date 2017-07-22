@@ -49,14 +49,14 @@ export var disposeComponent = (component: Light) => {
 export var initData = (AmbientLightData: any) => {
     var count = getAmbientLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize(),
-        buffer:any = null;
+        buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
 
     initSpecifyLightData(buffer, AmbientLightData);
 
     createTypeArrays(buffer, count, AmbientLightData);
-    _setDefaultTypeArrData(count ,AmbientLightData);
+    _setDefaultTypeArrData(count, AmbientLightData);
 }
 
 var _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {

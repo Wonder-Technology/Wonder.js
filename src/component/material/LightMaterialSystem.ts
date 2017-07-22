@@ -63,11 +63,11 @@ export var setSpecularColor = (index: number, color: Color, LightMaterialData: a
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 }
 
-export var getDiffuseMapIndex = (LightMaterialData:any) => {
+export var getDiffuseMapIndex = (LightMaterialData: any) => {
     return LightMaterialData.diffuseMapIndex;
 }
 
-export var setDiffuseMap = (index: number, map:Texture, MapManagerData:any, TextureData:any) => {
+export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(index, MapManagerData);
 
     addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
@@ -75,11 +75,11 @@ export var setDiffuseMap = (index: number, map:Texture, MapManagerData:any, Text
     LightMaterialData.diffuseMapIndex = map.index;
 }
 
-export var getSpecularMapIndex = (LightMaterialData:any) => {
+export var getSpecularMapIndex = (LightMaterialData: any) => {
     return LightMaterialData.specularMapIndex;
 }
 
-export var setSpecularMap = (index: number, map:Texture, MapManagerData:any, TextureData:any) => {
+export var setSpecularMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(index, MapManagerData);
 
     addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);

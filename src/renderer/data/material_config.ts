@@ -15,7 +15,7 @@ export const material_config = {
                         }, {
                                        MapManagerDataFromSystem
                                    }) => {
-                            if(getMapCount(materialIndex, MapManagerDataFromSystem) === 1){
+                            if (getMapCount(materialIndex, MapManagerDataFromSystem) === 1) {
                                 return "BasicMapShaderLib";
                             }
                         }
@@ -46,8 +46,8 @@ export const material_config = {
                         }, {
                                        LightMaterialDataFromSystem
                                    }) => {
-                            if(hasDiffuseMap(LightMaterialDataFromSystem)
-                            || hasSpecularMap(LightMaterialDataFromSystem)){
+                            if (hasDiffuseMap(LightMaterialDataFromSystem)
+                                || hasSpecularMap(LightMaterialDataFromSystem)) {
                                 return "CommonLightMapShaderLib";
                             }
                         }
@@ -59,7 +59,7 @@ export const material_config = {
                         }, {
                                        LightMaterialDataFromSystem
                                    }) => {
-                            if(hasDiffuseMap(LightMaterialDataFromSystem)){
+                            if (hasDiffuseMap(LightMaterialDataFromSystem)) {
                                 return "DiffuseMapShaderLib";
                             }
 
@@ -73,7 +73,7 @@ export const material_config = {
                         }, {
                                        LightMaterialDataFromSystem
                                    }) => {
-                            if(hasSpecularMap(LightMaterialDataFromSystem)){
+                            if (hasSpecularMap(LightMaterialDataFromSystem)) {
                                 return "SpecularMapShaderLib";
                             }
 
@@ -129,7 +129,7 @@ export interface IShaderConfig {
 
 export interface IShaderLibItem {
     type: string;
-    branch?:(...args) => string;
+    branch?: (...args) => string;
     value?: any;
 }
 

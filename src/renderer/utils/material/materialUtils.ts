@@ -16,7 +16,7 @@ import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
 //     return shaderIndexTable[materialClassName];
 // })
 
-export var setShaderIndex = (materialIndex: number, shaderIndex:number, MaterialDataFromSystem: any) => {
+export var setShaderIndex = (materialIndex: number, shaderIndex: number, MaterialDataFromSystem: any) => {
     setTypeArrayValue(MaterialDataFromSystem.shaderIndices, materialIndex, shaderIndex);
 }
 
@@ -58,12 +58,12 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
     return offset;
 }
 
-export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, DirectionLightDataFromSystem:any, PointLightDataFromSystem:any) => {
+export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any) => {
     return {
-        DeviceManagerDataFromSystem:DeviceManagerDataFromSystem,
+        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         ProgramDataFromSystem: ProgramDataFromSystem,
-        LocationDataFromSystem:LocationDataFromSystem,
-        GLSLSenderDataFromSystem:GLSLSenderDataFromSystem,
+        LocationDataFromSystem: LocationDataFromSystem,
+        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
         ShaderDataFromSystem: ShaderDataFromSystem,
         MapManagerDataFromSystem: MapManagerDataFromSystem,
         MaterialDataFromSystem: MaterialDataFromSystem,

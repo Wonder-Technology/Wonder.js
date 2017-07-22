@@ -21,19 +21,19 @@ import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../util
 //     return mapManager;
 // }
 
-export var initMapManagers = (gl:WebGLRenderingContext, TextureData:any) => {
+export var initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => {
     initTextures(gl, TextureData);
 }
 
-export var getMapIndex = (materialIndex: number, MapManagerData:any) => {
+export var getMapIndex = (materialIndex: number, MapManagerData: any) => {
     return MapManagerData.textureIndices[materialIndex];
 }
 
-export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count:number, uniformSamplerName:string, MapManagerData:any, TextureData:any) => {
+export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
         expect(count + 1).lte(getMaxTextureCount());
     });
-}, (materialIndex: number, map: Texture, count:number, uniformSamplerName:string, MapManagerData:any, TextureData:any) => {
+}, (materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     var textureIndex = map.index;
 
     MapManagerData.textureIndices[materialIndex + count] = textureIndex;
@@ -53,7 +53,7 @@ export var getMapCount = getMapCountUtils;
 //     }
 // }
 
-export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCacheData:any, TextureData:any, MapManagerData:any) => {
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, TextureCacheData: any, TextureData: any, MapManagerData: any) => {
     bindAndUpdateUtils(gl, mapCount, TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
 }
 
@@ -63,11 +63,11 @@ export var bindAndUpdate = (gl:WebGLRenderingContext, mapCount:number, TextureCa
 
  so need user mannually dispose texture one by one!
  */
-export var dispose = (materialSourceIndex: number, materialLastComponentIndex:number, MapManagerData:any) => {
+export var dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
     deleteSingleValueBySwapAndReset(materialSourceIndex, materialLastComponentIndex, MapManagerData.textureCounts, 0);
 }
 
-export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any) => {
+export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {
     initTextureData(TextureCacheData, TextureData);
 
     _initBufferData(MapManagerData);
@@ -88,5 +88,5 @@ var _initBufferData = (MapManagerData: any) => {
     MapManagerData.buffer = buffer;
 }
 
-var _setDefaultTypeArrData = (count:number, MapManagerData:any) => {
+var _setDefaultTypeArrData = (count: number, MapManagerData: any) => {
 }

@@ -90,14 +90,14 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
     return material;
 }
 
-export var init = (state: MapImmutable<any, any>, gl:WebGLRenderingContext, TextureData:any, MaterialData:any, BasicMaterialData: any, LightMaterialData: any) => {
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
 
     initMapManagers(gl, TextureData);
 }
 
-var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className:string, SpecifyMaterialData: any, MaterialData:any) => {
+var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
         initMaterial(i, state, className, MaterialData);
     }
@@ -106,11 +106,11 @@ var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, classNa
 export var initMaterial = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
+    initMaterial = (index: number, state: MapImmutable<any, any>, className: string, MaterialData: any) => {
         MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
     }
 
-    var _buildWorkerInitData = (index:number, className:string) => {
+    var _buildWorkerInitData = (index: number, className: string) => {
         return {
             index: index,
             className: className
@@ -118,7 +118,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    initMaterial = (index: number, state: MapImmutable<any, any>, className:string, MaterialData:any) => {
+    initMaterial = (index: number, state: MapImmutable<any, any>, className: string, MaterialData: any) => {
         var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
 
         setShaderIndex(index, shaderIndex, MaterialData);
@@ -207,9 +207,9 @@ export var addComponent = (component: Material, gameObject: GameObject, Material
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData:any, MaterialData: any) => {
+export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     _checkDisposeComponentWorker(sourceIndex);
-}, (sourceIndex: number, lastComponentIndex: number, MapManagerData:any, MaterialData: any) => {
+}, (sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     var colorDataSize = getColorDataSize(),
         opacityDataSize = getOpacityDataSize(),
         alphaTestDataSize = getAlphaTestDataSize();
@@ -225,7 +225,7 @@ export var disposeComponent = requireCheckFunc((sourceIndex: number, lastCompone
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MaterialData.materialMap);
 
-    disposeMapManager(sourceIndex, lastComponentIndex,  MapManagerData);
+    disposeMapManager(sourceIndex, lastComponentIndex, MapManagerData);
 
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
@@ -235,7 +235,7 @@ var _checkDisposeComponentWorker = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _checkDisposeComponentWorker = (materialIndex: number) => {
         it("should not dispose the material which is inited in the same frame", () => {
-            for(let {index} of MaterialData.workerInitList){
+            for (let { index } of MaterialData.workerInitList) {
                 expect(materialIndex).not.equal(index);
             }
         });
@@ -269,7 +269,7 @@ export var createDefaultColor = () => {
 //     return mapManager;
 // }
 
-export var initData = (TextureCacheData:any, TextureData:any, MapManagerData:any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];

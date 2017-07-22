@@ -6,7 +6,7 @@ import { InitConfigWorkerData } from "../../../renderer/worker/render_file/confi
 var _describeContext = null;
 
 var _getIsTest = () => {
-    if(InitConfigData.isTest === true || InitConfigWorkerData.isTest === true){
+    if (InitConfigData.isTest === true || InitConfigWorkerData.isTest === true) {
         return true;
     }
 

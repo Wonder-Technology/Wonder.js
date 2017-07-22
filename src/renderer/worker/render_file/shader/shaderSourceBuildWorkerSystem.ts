@@ -6,7 +6,7 @@ import { getAlphaTest, isTestAlpha } from "../material/MaterialWorkerSystem";
 import { MaterialDataMap } from "../../../type/dataType";
 import { InitShaderDataMap } from "../../../type/utilsType";
 
-export var buildGLSLSource = (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, initShaderDataMap:InitShaderDataMap) => {
+export var buildGLSLSource = (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
     return buildGLSLSourceUtils(materialIndex, materialShaderLibNameArr, shaderLibData, {
         getAlphaTest: getAlphaTest,
         isTestAlpha: isTestAlpha
