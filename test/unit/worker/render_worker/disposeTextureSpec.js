@@ -155,6 +155,10 @@ describe("dispose texture", function () {
                 });
 
                 it("delete texture", function (done) {
+                    if(bowser.firefox){
+                        done();
+                    }
+
                     workerTool.execRenderWorkerMessageHandler(e);
 
 
@@ -180,6 +184,10 @@ describe("dispose texture", function () {
                     //already test in no worker
                 });
                 it("swap remove from glTextures", function (done) {
+                    if(bowser.firefox){
+                        done();
+                    }
+
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     judgeWaitForInitComplete(done, function(expect){
@@ -204,6 +212,10 @@ describe("dispose texture", function () {
                 });
 
                 it("swap remove from sourceMap", function(done){
+                    if(bowser.firefox){
+                        done();
+                    }
+
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     judgeWaitForInitComplete(done, function(expect){

@@ -211,6 +211,10 @@ describe("texture", function () {
                 })
 
                 it("fetch src and createImageBitmap", function (done) {
+                    if(bowser.firefox){
+                        done();
+                    }
+
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     judgeWaitForInitComplete(done, function(expect){
@@ -223,6 +227,10 @@ describe("texture", function () {
 
                 if(bowser.chrome){
                     it("if filpY, filpY the imageBitmap by set createImageBitmap's option's imageOrientation", function (done) {
+                        if(bowser.firefox){
+                            done();
+                        }
+
                         //todo set flipY
 
                         sandbox.spy(window, "createImageBitmap");
