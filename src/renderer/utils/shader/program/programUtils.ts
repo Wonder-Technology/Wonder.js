@@ -206,7 +206,7 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
             buffer = getOrCreateArrayBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.texCoordBuffers, getTexCoords, GeometryDataFromSystem, ArrayBufferDataFromSystem);
             break;
         default:
-            Log.error(true, Log.info.FUNC_INVALID(`name:${name}`));
+            Log.error(true, Log.info.FUNC_INVALID(`bufferName:${bufferName}`));
             break;
     }
 
