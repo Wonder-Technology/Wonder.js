@@ -252,6 +252,8 @@ mat4.perspective(projMatrix, Math.PI / 2, canvas.width / canvas.height, 0.1, 10.
 
 var viewMatrix = mat4.create();
 var eyePosition = vec3.fromValues(1, 1, 1);
+// var eyePosition = vec3.fromValues(4, 4, 4);
+// var eyePosition = vec3.fromValues(0.6, 0.6, 0.6);
 mat4.lookAt(viewMatrix, eyePosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
 var viewProjMatrix = mat4.create();
@@ -281,29 +283,32 @@ var matrixUniformBuffer = gl.createBuffer();
 gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, matrixUniformBuffer);
 gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
 
+//todo compute
+// var radius = 2;
+
 var lights = [
     {
         position: vec3.fromValues(0, 1, 0.5),
         color:    vec3.fromValues(0.8, 0.0, 0.0),
-        uniformData: new Float32Array(8),
+        uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(1, 1, 0.5),
         color:    vec3.fromValues(0.0, 0.0, 0.8),
-        uniformData: new Float32Array(8),
+        uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(1, 0, 0.5),
         color:    vec3.fromValues(0.0, 0.8, 0.0),
-        uniformData: new Float32Array(8),
+        uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(0.5, 0, 1),
         color:    vec3.fromValues(0.0, 0.8, 0.8),
-        uniformData: new Float32Array(8),
+        uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     }
 ];
@@ -312,11 +317,11 @@ var mvpMatrix = mat4.create();
 for (var i = 0, len = lights.length; i < len; ++i) {
     utils.xformMatrix(mvpMatrix, lights[i].position);
     mat4.multiply(mvpMatrix, viewProjMatrix, mvpMatrix);
-    // lights[i].uniformData.set(mvpMatrix);
-    // lights[i].uniformData.set(lights[i].position, 16);
-    // lights[i].uniformData.set(lights[i].color, 20);
-    lights[i].uniformData.set(lights[i].position, 0);
-    lights[i].uniformData.set(lights[i].color, 4);
+    lights[i].uniformData.set(mvpMatrix);
+    lights[i].uniformData.set(lights[i].position, 16);
+    lights[i].uniformData.set(lights[i].color, 20);
+    // lights[i].uniformData.set(lights[i].position, 0);
+    // lights[i].uniformData.set(lights[i].color, 4);
 
     gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, lights[i].uniformBuffer);
     gl.bufferData(gl.UNIFORM_BUFFER, lights[i].uniformData, gl.STATIC_DRAW);
@@ -380,7 +385,8 @@ image.onload = function() {
         gl.bindFramebuffer(gl.FRAMEBUFFER, gBuffer);
         gl.useProgram(geoProgram);
         gl.bindVertexArray(cubeVertexArray);
-        // gl.depthMask(true);
+        gl.depthMask(true);
+        gl.enable(gl.DEPTH_TEST);
         gl.disable(gl.BLEND);
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -408,16 +414,24 @@ image.onload = function() {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.useProgram(mainProgram);
         gl.bindVertexArray(sphereVertexArray);
-        // gl.depthMask(false);
+        gl.depthMask(false);
+        gl.disable(gl.DEPTH_TEST);
         gl.enable(gl.BLEND);
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ONE, gl.ONE);
+        gl.enable(gl.CULL_FACE);
+        gl.cullFace(gl.FRONT);
 
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
 
         for (var i = 0, len = lights.length; i < len; ++i) {
             gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, lights[i].uniformBuffer);
             gl.drawElements(gl.TRIANGLES, numSphereElements, gl.UNSIGNED_SHORT, 0);
         }
+
+        gl.cullFace(gl.BACK);
 
         requestAnimationFrame(draw);
     }

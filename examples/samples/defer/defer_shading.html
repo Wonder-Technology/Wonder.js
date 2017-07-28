@@ -57,14 +57,15 @@
         layout(location=0) in vec4 aPosition;
 
         uniform LightUniforms {
+            mat4 mvp;
             vec4 position;
             vec4 color;
         } uLight;
 
         void main() {
-            //gl_Position = uLight.mvp * aPosition;
+            gl_Position = uLight.mvp * aPosition;
             //render full screen quad(ndr)
-            gl_Position = aPosition;
+            //gl_Position = aPosition;
         }
     </script>
 <script id="main-fs" type="x-fragment-shader">
@@ -72,6 +73,7 @@
         precision highp float;
 
         uniform LightUniforms {
+            mat4 mvp;
             vec4 position;
             vec4 color;
         } uLight;
@@ -109,6 +111,8 @@
 
 <script src="utils/gl-matrix.js"></script>
 <script src="utils/utils.js"></script>
+
+<script src="three.js"></script>
 
 <script src="defer.js"></script>
 </body>
