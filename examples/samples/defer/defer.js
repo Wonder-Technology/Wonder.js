@@ -251,8 +251,8 @@ var projMatrix = mat4.create();
 mat4.perspective(projMatrix, Math.PI / 2, canvas.width / canvas.height, 0.1, 10.0);
 
 var viewMatrix = mat4.create();
-var eyePosition = vec3.fromValues(1, 1, 1);
-// var eyePosition = vec3.fromValues(4, 4, 4);
+// var eyePosition = vec3.fromValues(1, 1, 1);
+var eyePosition = vec3.fromValues(4, 4, 4);
 // var eyePosition = vec3.fromValues(0.6, 0.6, 0.6);
 mat4.lookAt(viewMatrix, eyePosition, vec3.fromValues(0, 0, 0), vec3.fromValues(0, 1, 0));
 
@@ -284,30 +284,34 @@ gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, matrixUniformBuffer);
 gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
 
 //todo compute
-// var radius = 2;
+var radius = 2;
 
 var lights = [
     {
         position: vec3.fromValues(0, 1, 0.5),
         color:    vec3.fromValues(0.8, 0.0, 0.0),
+        radius: radius,
         uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(1, 1, 0.5),
         color:    vec3.fromValues(0.0, 0.0, 0.8),
+        radius: radius,
         uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(1, 0, 0.5),
         color:    vec3.fromValues(0.0, 0.8, 0.0),
+        radius: radius,
         uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     },
     {
         position: vec3.fromValues(0.5, 0, 1),
         color:    vec3.fromValues(0.0, 0.8, 0.8),
+        radius: radius,
         uniformData: new Float32Array(24),
         uniformBuffer: gl.createBuffer()
     }
@@ -426,12 +430,33 @@ image.onload = function() {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
+        gl.enable(gl.SCISSOR_TEST);
+
+
         for (var i = 0, len = lights.length; i < len; ++i) {
+            let viewMat = new THREE.Matrix4();
+
+            viewMat.elements = viewMatrix;
+
+            let projMat = new THREE.Matrix4();
+
+            projMat.elements = projMatrix;
+
+
+            var sc = getScissorForLight(viewMat, projMat, lights[i], canvas.width, canvas.height);
+
+            if (sc) {
+                gl.scissor(sc[0], sc[1], sc[2], sc[3]);
+            }
+
+
             gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, lights[i].uniformBuffer);
             gl.drawElements(gl.TRIANGLES, numSphereElements, gl.UNSIGNED_SHORT, 0);
         }
 
         gl.cullFace(gl.BACK);
+
+        gl.disable(gl.SCISSOR_TEST);
 
         requestAnimationFrame(draw);
     }
@@ -439,5 +464,53 @@ image.onload = function() {
     requestAnimationFrame(draw);
 
 }
+
+var getScissorForLight = (function() {
+    // Pre-allocate for performance - avoids additional allocation
+    var a = new THREE.Vector4(0, 0, 0, 0);
+    var b = new THREE.Vector4(0, 0, 0, 0);
+    var minpt = new THREE.Vector2(0, 0);
+    var maxpt = new THREE.Vector2(0, 0);
+    var ret = [0, 0, 0, 0];
+
+    return function(view, proj, l, width, height) {
+        // front bottom-left corner of sphere's bounding cube
+        a.fromArray(l.position);
+        a.w = 1;
+        a.applyMatrix4(view);
+        a.x -= l.radius;
+        a.y -= l.radius;
+        a.z += l.radius;
+        a.applyMatrix4(proj);
+        a.divideScalar(a.w);
+
+        // front bottom-left corner of sphere's bounding cube
+        b.fromArray(l.position);
+        b.w = 1;
+        b.applyMatrix4(view);
+        b.x += l.radius;
+        b.y += l.radius;
+        b.z += l.radius;
+        b.applyMatrix4(proj);
+        b.divideScalar(b.w);
+
+        minpt.set(Math.max(-1, a.x), Math.max(-1, a.y));
+        maxpt.set(Math.min( 1, b.x), Math.min( 1, b.y));
+
+        if (maxpt.x < -1 || 1 < minpt.x ||
+            maxpt.y < -1 || 1 < minpt.y) {
+            return null;
+        }
+
+        minpt.addScalar(1.0); minpt.multiplyScalar(0.5);
+        maxpt.addScalar(1.0); maxpt.multiplyScalar(0.5);
+
+        ret[0] = Math.round(width * minpt.x);
+        ret[1] = Math.round(height * minpt.y);
+        ret[2] = Math.round(width * (maxpt.x - minpt.x));
+        ret[3] = Math.round(height * (maxpt.y - minpt.y));
+        return ret;
+    };
+})();
 
 image.src = "img/khronos_webgl.png";
