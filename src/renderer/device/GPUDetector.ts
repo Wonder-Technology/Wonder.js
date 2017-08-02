@@ -22,6 +22,7 @@ export class GPUDetector {
     public extensionDepthTexture: boolean = null;
     public extensionVAO: any = null;
     public extensionStandardDerivatives: boolean = null;
+    public extensionColorBufferFloat: boolean = null;
     public precision: number = null;
 
     private _isDetected: boolean = false;
@@ -46,6 +47,9 @@ export class GPUDetector {
         this.extensionDepthTexture = this._getExtension("depth_texture", state, gl);
         this.extensionVAO = this._getExtension("vao", state, gl);
         this.extensionStandardDerivatives = this._getExtension("standard_derivatives", state, gl);
+
+        //todo separate from webgl2
+        this.extensionColorBufferFloat = this._getExtension("EXT_color_buffer_float", state, gl);
     }
 
     private _detectCapabilty(state: Map<any, any>, gl: WebGLRenderingContext) {

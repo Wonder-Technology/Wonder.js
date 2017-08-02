@@ -28,15 +28,86 @@ export const material_config = {
                 ]
             }
         },
+        // "LightMaterial": {
+        //     "shader": {
+        //         "shaderLib": [
+        //             { "type": "group", "value": "engineMaterialTop" },
+        //
+        //             "NormalMatrixNoInstanceShaderLib",
+        //             "NormalCommonShaderLib",
+        //             "LightCommonShaderLib",
+        //             "LightSetWorldPositionShaderLib",
+        //
+        //             {
+        //                 "type": "branch",
+        //                 "branch": (materialIndex, {
+        //                     hasDiffuseMap,
+        //                     hasSpecularMap
+        //                 }, {
+        //                                LightMaterialDataFromSystem
+        //                            }) => {
+        //                     if (hasDiffuseMap(LightMaterialDataFromSystem)
+        //                         || hasSpecularMap(LightMaterialDataFromSystem)) {
+        //                         return "CommonLightMapShaderLib";
+        //                     }
+        //                 }
+        //             },
+        //             {
+        //                 "type": "branch",
+        //                 "branch": (materialIndex, {
+        //                     hasDiffuseMap
+        //                 }, {
+        //                                LightMaterialDataFromSystem
+        //                            }) => {
+        //                     if (hasDiffuseMap(LightMaterialDataFromSystem)) {
+        //                         return "DiffuseMapShaderLib";
+        //                     }
+        //
+        //                     return "NoDiffuseMapShaderLib";
+        //                 }
+        //             },
+        //             {
+        //                 "type": "branch",
+        //                 "branch": (materialIndex, {
+        //                     hasSpecularMap
+        //                 }, {
+        //                                LightMaterialDataFromSystem
+        //                            }) => {
+        //                     if (hasSpecularMap(LightMaterialDataFromSystem)) {
+        //                         return "SpecularMapShaderLib";
+        //                     }
+        //
+        //                     return "NoSpecularMapShaderLib";
+        //                 }
+        //             },
+        //
+        //             "NoLightMapShaderLib",
+        //             "NoEmissionMapShaderLib",
+        //             "NoNormalMapShaderLib",
+        //             "NoShadowMapShaderLib",
+        //             "LightShaderLib",
+        //             "AmbientLightShaderLib",
+        //             "DirectionLightShaderLib",
+        //             "PointLightShaderLib",
+        //             "LightEndShaderLib",
+        //
+        //             { "type": "group", "value": "engineMaterialEnd" }
+        //         ]
+        //     }
+        // }
+
+        //todo separate
         "LightMaterial": {
             "shader": {
                 "shaderLib": [
                     { "type": "group", "value": "engineMaterialTop" },
 
+                    // "LightModelDataShaderLib",
+
                     "NormalMatrixNoInstanceShaderLib",
                     "NormalCommonShaderLib",
-                    "LightCommonShaderLib",
-                    "LightSetWorldPositionShaderLib",
+                    "GBufferCommonShaderLib",
+                    "GBufferSetWorldPositionShaderLib",
 
                     {
                         "type": "branch",
@@ -81,16 +152,12 @@ export const material_config = {
                         }
                     },
 
-                    "NoLightMapShaderLib",
-                    "NoEmissionMapShaderLib",
+                    // "NoLightMapShaderLib",
+                    // "NoEmissionMapShaderLib",
                     "NoNormalMapShaderLib",
-                    "NoShadowMapShaderLib",
-                    "LightShaderLib",
-                    "AmbientLightShaderLib",
-                    "DirectionLightShaderLib",
-                    "PointLightShaderLib",
-                    "LightEndShaderLib",
-
+                    // "NoShadowMapShaderLib",
+                    "GBufferShaderLib",
+                    "GBufferEndShaderLib",
                     { "type": "group", "value": "engineMaterialEnd" }
                 ]
             }

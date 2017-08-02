@@ -50,6 +50,9 @@ import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { getDiffuseMapIndex, getSpecularMapIndex } from "../../component/material/LightMaterialSystem";
+import { GPUDetector } from "../device/GPUDetector";
+import { GBufferData } from "../defer/gbuffer/GBufferData";
+import { init as initDefer, draw as deferDraw  } from "../defer/DeferShadingSystem";
 
 export var init = null;
 
@@ -133,15 +136,28 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     init = (state: Map<any, any>) => {
+        var gl = getGL(DeviceManagerData, state);
+
         initState(state, getGL, setSide, DeviceManagerData);
 
-        initMaterial(state, getGL(DeviceManagerData, state), TextureData, MaterialData, BasicMaterialData, LightMaterialData);
+        initMaterial(state, gl, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
+
+        if(!GPUDetector.getInstance().extensionColorBufferFloat){
+            //todo use front render
+        }
+        else{
+            initDefer(gl, GBufferData);
+        }
     }
 
     render = (state: Map<any, any>) => {
         return compose(
-            draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
-            clear(null, render_config, DeviceManagerData),
+            // draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            //todo refactor defer draw, draw(clear, draw...  consider webgl2)
+            //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
+            deferDraw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            //todo fix front render(set state before clear)
+            // clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),
             createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
             getRenderList(state)

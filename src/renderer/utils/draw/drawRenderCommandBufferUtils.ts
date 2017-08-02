@@ -52,6 +52,7 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
     }
 }
 
+//todo extract from front draw, defer draw
 export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferConfig: any, {
     bindIndexBuffer,
     sendAttributeData,
@@ -118,7 +119,8 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
 
         //todo set state
 
-        bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+        //todo refactor in front render
+        // bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
 
         sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
 
