@@ -53,6 +53,7 @@ import { getDiffuseMapIndex, getSpecularMapIndex } from "../../component/materia
 import { GPUDetector } from "../device/GPUDetector";
 import { GBufferData } from "../defer/gbuffer/GBufferData";
 import { init as initDefer, draw as deferDraw  } from "../defer/DeferShadingSystem";
+import { buildInitShaderDataMap } from "../utils/material/materialUtils";
 
 export var init = null;
 
@@ -155,7 +156,7 @@ else {
             // draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             //todo refactor defer draw, draw(clear, draw...  consider webgl2)
             //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
-            deferDraw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
+            deferDraw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
             //todo fix front render(set state before clear)
             // clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),

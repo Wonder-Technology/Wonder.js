@@ -1,7 +1,11 @@
+//todo dispose gbuffer(textures...)
+
 export var init = (gl:any, GBufferData:any) => {
     //todo refactor:
     // support pass specular(if has specular map) in gbuffer or not in
     // support pass emission color in gbuffer or not in
+
+    //todo add gbuffer textures to gbuffer data?
 
     var gBuffer = gl.createFramebuffer();
 
@@ -59,4 +63,38 @@ export var init = (gl:any, GBufferData:any) => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     GBufferData.gBuffer = gBuffer;
+    GBufferData.positionTarget = positionTarget;
+    GBufferData.normalTarget = normalTarget;
+    GBufferData.colorTarget = colorTarget;
+    GBufferData.depthTexture = depthTexture;
 }
+
+export var bindGBufferTextures = (gl:any, GBufferData:any) => {
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, GBufferData.positionTarget);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, GBufferData.normalTarget);
+    gl.activeTexture(gl.TEXTURE2);
+    gl.bindTexture(gl.TEXTURE_2D, GBufferData.colorTarget);
+    gl.activeTexture(gl.TEXTURE3);
+}
+
+export var sendGBufferTextureData = (gl:any, lightPassProgram:WebGLProgram) => {
+    var positionBufferLocation = gl.getUniformLocation(lightPassProgram, "u_positionBuffer"),
+        normalBufferLocation = gl.getUniformLocation(lightPassProgram, "u_normalBuffer"),
+        colorBufferLocation = gl.getUniformLocation(lightPassProgram, "u_colorBuffer");
+
+    gl.uniform1i(positionBufferLocation, 0);
+    gl.uniform1i(normalBufferLocation, 1);
+    gl.uniform1i(colorBufferLocation, 2);
+}
+
+export var bindGBuffer = (gl:any, GBufferData:any) => {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, GBufferData.gBuffer);
+}
+
+export var unbindGBuffer = (gl:any) => {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+
+// export var getNewTextureUnitIndex = () => 3;

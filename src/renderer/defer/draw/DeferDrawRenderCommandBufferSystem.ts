@@ -28,13 +28,24 @@
 
 
 
-export var draw = curry((state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
+import { RenderCommandBufferForDrawData } from "../../type/dataType";
+import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
+import { bindGBuffer, bindGBufferTextures, sendGBufferTextureData, unbindGBuffer } from "../gbuffer/GBufferSystem";
+import { getNoMaterialShaderIndex } from "../../shader/ShaderSystem";
+import { drawFullScreenQuad, sendAttributeData } from "../light/DeferLightPassSystem";
+import { computeRadius } from "../../../component/light/PointLightSystem";
+
+export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+    //todo refactor DeviceManagerSystem->clear
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
     _drawGBufferPass();
     _drawLightPass();
-});
+};
 
-var _drawGBufferPass = () => {
-    bind gbuffer textures
+var _drawGBufferPass = (gl:any, GBufferData, bufferData: RenderCommandBufferForDrawData) => {
+    // bind gbuffer textures
+    // bindGBufferTextures(gl, GBufferData);
 
     // use program(use gbuffer shader -> program)
 
@@ -42,47 +53,105 @@ var _drawGBufferPass = () => {
 
 
     set state
+    // gl.bindVertexArray(cubeVertexArray);
+    gl.depthMask(true);
+    gl.enable(gl.DEPTH_TEST);
+    gl.disable(gl.BLEND);
 
-    // clear(null, render_config, DeviceManagerData),
+
     clear
+    // clear(null, render_config, DeviceManagerData),
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    use program(use gbuffer shader -> program)
+
+
     bind gbuffer
+    bindGBuffer(gl, GBufferData);
 
 
-    bind and update all possible textures(no gbuffer texture)
-    (only update the same texture once)
 
-    send texture data(no gbuffer texture)
-    (send all possible textures' unit)
+
+    // draw each gameObjects:
+    //     material use shader
+
+
+
+
 
 
     draw each gameObjects:
+
+
         // bind and update texture(no gbuffer texture)
     // (only update the same texture once)
 
         // send texture data(no gbuffer texture)
 
+        material use shader
+    // buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)
+
+
+
+        use program(use gbuffer shader -> program)
+
+    // bind and update all possible textures(no gbuffer texture)
+    bind and update textures(no gbuffer texture)
+    (only update the same texture once)
+
+
+    send texture data(no gbuffer texture)
+    // (send all possible textures' unit)
+    (send textures' unit)
+
+
+
     send attribute
     send uniform
     draw element/array
-    // drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData)
+
+    drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData)
 }
 
-var _drawLightPass = () => {
+var _drawLightPass = (gl:any, DeferLightPassData) => {
     not bind gbuffer
+    unbindGBuffer(gl);
+
     use program(use light pass shader -> program )
+    let shaderIndex = getNoMaterialShaderIndex("DeferLight", ShaderData);
+
+    let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+
+
+
+
 
     bind texture(gbuffer texture )
     send texture data(gbuffer texture )
-    // gl.uniform1i(positionBufferLocation, 0);
-    // gl.uniform1i(normalBufferLocation, 1);
-    // gl.uniform1i(uVBufferLocation, 2);
+
+    bindGBufferTextures(gl, GBufferData);
+    sendGBufferTextureData(gl, program);
+
+
+
+
 
     set state
+    gl.depthMask(false);
+    gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendEquation(gl.FUNC_ADD);
+    gl.blendFunc(gl.ONE, gl.ONE);
+    // gl.enable(gl.CULL_FACE);
+    // gl.cullFace(gl.FRONT);
 
-    // clear(null, render_config, DeviceManagerData),
+
     clear
+    // clear(null, render_config, DeviceManagerData),
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+
 
     gl.enable(gl.SCISSOR_TEST);
 
@@ -99,10 +168,49 @@ var _drawLightPass = () => {
     draw point light:
         send attribute(sphere)
     send uniform(light)
+
+    send light -> position, color
+
     draw element / array
 
 
+
+    sendAttributeData(gl, DeferLightPassData);
+
+
+    for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
+        //todo move to ubo
+
+        //todo add scissor optimize
+
+        let uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
+            uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap,
+            colorArr3 = getColorArr3(i, PointLightDataFromSystem),
+            constant = getConstant(i, PointLightDataFromSystem),
+            linear = getLinear(i, PointLightDataFromSystem),
+            quadratic = getQuadratic(i, PointLightDataFromSystem),
+            //todo replace range with radius
+            radius = computeRadius(colorArr3, constant, linear, quadratic);
+
+        sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i), uniformCacheMap, uniformLocationMap);
+        sendFloat3(gl, shaderIndex, program, "u_lightColor", getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightRange", getRange(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+
+        sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
+
+
+
+        drawFullScreenQuad(gl, DeferLightPassData);
+    }
+
+
+
     restore state:
-    gl.cullFace(gl.BACK);
+    // gl.cullFace(gl.BACK);
     gl.disable(gl.SCISSOR_TEST);
 }

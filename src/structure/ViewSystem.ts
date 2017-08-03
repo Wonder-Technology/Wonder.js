@@ -94,5 +94,6 @@ export var initCanvas = (dom: HTMLCanvasElement) => {
 export var getContext = (contextConfig: Map<string, any>, dom: HTMLCanvasElement): WebGLRenderingContext => {
     var options: ContextConfigOptionsData = contextConfig.get("options").toObject();
 
-    return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options)) as WebGLRenderingContext;
+    // return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options)) as WebGLRenderingContext;
+    return dom.getContext("webgl2", options);
 }

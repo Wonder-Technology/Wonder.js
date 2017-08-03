@@ -1,5 +1,7 @@
 @funcDefine
     vec3 getMaterialEmission() {
-        return u_emission;
+    //todo support emission color
+//        return u_emission;
+        return vec3(0.0);
     }
 @end

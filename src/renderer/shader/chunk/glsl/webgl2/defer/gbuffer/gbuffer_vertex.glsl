@@ -30,5 +30,7 @@
 //    gl_Position = uMVP * a_position;
 
 //    gl_Position = u_vpMatrix * vec4(v_position, 1.0);
-    gl_Position = u_vpMatrix * vec4(v_worldPosition, 1.0);
+//todo use u_vpMatrix
+    gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);
+//    gl_Position = u_vpMatrix * vec4(v_worldPosition, 1.0);
 @end

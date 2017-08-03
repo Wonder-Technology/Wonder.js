@@ -1,6 +1,7 @@
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
-    bindIndexBuffer as bindIndexBufferUtils, init as initUtils, sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
+    bindIndexBuffer as bindIndexBufferUtils, initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils, sendAttributeData as sendAttributeDataUtils,
+    sendUniformData as sendUniformDataUtils,
     use as useUtils
 } from "../utils/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
@@ -9,7 +10,7 @@ import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVe
 import { RenderCommandUniformData } from "../type/dataType";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
-import { IMaterialConfig } from "../data/material_config";
+import { IMaterialConfig, MaterialShaderLibConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
 import { Map } from "immutable";
 import { DrawDataMap, InitShaderDataMap } from "../type/utilsType";
@@ -49,7 +50,13 @@ export var create = (ShaderData: any) => {
 
 // var _isShaderExist = (shader: Shader) => isValidMapValue(shader);
 
-export var init = null;
+export var getNoMaterialShaderIndex = (shaderName: string, ShaderData: any) => {
+    return ShaderData.shaderIndexMap[shaderName];
+}
+
+export var initNoMaterialShader = null;
+
+export var initMaterialShader = null;
 
 export var sendAttributeData = null;
 
@@ -60,8 +67,12 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
-        return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
+        initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    };
+
+    initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
+        return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
 
     var _buildInitShaderFuncDataMap = () => {
@@ -80,8 +91,8 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-        sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, startUnitIndex:number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
+        sendUniformDataUtils(gl, shaderIndex, program, mapCount, startUnitIndex, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
     };
 
     var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
@@ -158,4 +169,6 @@ export var initData = (ShaderData: any) => {
     ShaderData.count = 0;
 
     ShaderData.shaderLibWholeNameMap = createMap();
+    //todo fix render worker
+    ShaderData.shaderIndexMap = createMap();
 }

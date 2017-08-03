@@ -60,13 +60,14 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
             geometry = getGeometry(gameObject, GameObjectData),
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
-            materialIndex = material.index,
-            shaderIndex = getShaderIndex(materialIndex, MaterialData);
+            materialIndex = material.index;
+            //todo not get and set shaderIndex?
+            // shaderIndex = getShaderIndex(materialIndex, MaterialData);
 
         setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
 
         materialIndices[i] = materialIndex;
-        shaderIndices[i] = shaderIndex;
+        // shaderIndices[i] = shaderIndex;
         geometryIndices[i] = geometry.index;
     }
 

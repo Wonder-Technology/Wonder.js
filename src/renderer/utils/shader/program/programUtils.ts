@@ -1,6 +1,6 @@
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { IMaterialConfig } from "../../../data/material_config";
+import { IMaterialConfig, MaterialShaderLibConfig } from "../../../data/material_config";
 import { EVariableType } from "../../../enum/EVariableType";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
@@ -59,18 +59,20 @@ export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContex
     GLSLSenderDataFromSystem.vertexAttribHistory = [];
 })
 
-export var getMaterialShaderLibConfig = requireCheckFunc((materialClassName: string, material_config: IMaterialConfig) => {
-    var materialData = material_config.materials[materialClassName];
-
-    it("materialClassName should be defined", () => {
-        expect(materialData).exist;
-    })
-    it("shaderLib should be array", () => {
-        expect(materialData.shader.shaderLib).be.a("array");
+export var getMaterialShaderLibConfig = ensureFunc((shaderLibConfig:MaterialShaderLibConfig, shaderName: string, material_config: IMaterialConfig) => {
+    it("shaderLib config should be array", () => {
+        expect(shaderLibConfig).exist;
+        expect(shaderLibConfig).be.a("array");
     });
-}, (materialClassName: string, material_config: IMaterialConfig) => {
-    return material_config.materials[materialClassName].shader.shaderLib;
-})
+}, requireCheckFunc((shaderName: string, material_config: IMaterialConfig) => {
+    // var materialData = material_config.materials[materialClassName];
+    //
+    // it("materialClassName should be defined", () => {
+    //     expect(materialData).exist;
+    // })
+}, (shaderName: string, material_config: IMaterialConfig) => {
+    return material_config.shaders.materialShaders[shaderName];
+}))
 
 export var registerProgram = (shaderIndex: number, ProgramDataFromSystem: any, program: WebGLProgram) => {
     ProgramDataFromSystem.programMap[shaderIndex] = program;
@@ -221,7 +223,7 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, pr
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 
     //todo refactor in front render
-    // sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
+    sendData(gl, mapCount, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, drawDataMap.TextureDataFromSystem, drawDataMap.MapManagerDataFromSystem);
 }
 
 var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, {

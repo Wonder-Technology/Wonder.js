@@ -15,7 +15,13 @@ import {
     gbuffer_setWorldPosition_vertex,
     gbuffer_vertex,
     gbuffer_fragment,
-    gbuffer_end_fragment
+    gbuffer_end_fragment,
+
+    deferLight_common,
+    deferLight_vertex,
+    deferLight_fragment,
+    deferLight_end_fragment
+
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
@@ -802,8 +808,9 @@ export const shaderLib_generator = {
                 },
                 "fs": {
                     "source": noNormalMap_fragment,
-                    "varDeclare": noNormalMap_light_fragment.varDeclare,
-                    "funcDefine": noNormalMap_fragment.funcDefine + noNormalMap_light_fragment.funcDefine
+                    // "varDeclare": noNormalMap_light_fragment.varDeclare,
+                    // "funcDefine": noNormalMap_fragment.funcDefine + noNormalMap_light_fragment.funcDefine
+                    "funcDefine": noNormalMap_fragment.funcDefine
                 }
             }
         },
@@ -852,7 +859,111 @@ export const shaderLib_generator = {
 
 
 
+        "DeferLightCommonShaderLib": {
+            "glsl": {
+                // "vs": {
+                //     // "funcDeclare": deferLight_common.funcDeclare,
+                //     // "funcDefine": deferLight_common.funcDefine
+                // },
+                "fs": {
+                    "source": deferLight_common
+                    // "funcDeclare": deferLight_common.funcDeclare,
+                    // "funcDefine": deferLight_common.funcDefine
+                }
+            }
+            // "send": {
+            //     "uniform": [
+            //         {
+            //             "name": "u_specular",
+            //             "from": "lightMaterial",
+            //             "field": "specularColor",
+            //             "type": "float3"
+            //         }
+            //     ]
+            // }
+        },
 
+        "NoLightMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": noLightMap_fragment
+                }
+            }
+        },
+        "NoEmissionMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": noEmissionMap_fragment
+                }
+            }
+            // "send": {
+            //     "uniform": [
+            //         {
+            //             "name": "u_emission",
+            //             "from": "lightMaterial",
+            //             "field": "emissionColor",
+            //             "type": "float3"
+            //         }
+            //     ]
+            // }
+        },
+
+        "DeferLightShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": deferLight_vertex
+                },
+                "fs": {
+                    "source": deferLight_fragment,
+                    "varDeclare": noNormalMap_light_fragment.varDeclare,
+                    "funcDefine": noNormalMap_light_fragment.funcDefine
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_opacity",
+                        "from": "lightMaterial",
+                        "field": "opacity",
+                        "type": "float"
+                    },
+                    {
+                        "name": "u_lightModel",
+                        "from": "lightMaterial",
+                        "field": "lightModel",
+                        "type": "int"
+                    },
+                    {
+                        "name": "u_cameraPos",
+                        "from": "cmd",
+                        "field": "cameraPosition",
+                        "type": "float3"
+                    }
+                ],
+                "uniformDefine": [
+                    {
+                        "name": "u_positionBuffer",
+                        "type": "sampler2D"
+                    },
+                    {
+                        "name": "u_normalBuffer",
+                        "type": "sampler2D"
+                    },
+                    {
+                        "name": "u_colorBuffer",
+                        "type": "sampler2D"
+                    }
+                ]
+            }
+        },
+
+        "DeferLightEndShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLight_end_fragment
+                },
+            }
+        },
 
 
 
@@ -942,3 +1053,4 @@ export interface ISendUniformConfig {
     from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
 }
 
+//todo fix type(e.g. add location, uniformUBO...)

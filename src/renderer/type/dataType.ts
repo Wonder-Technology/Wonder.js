@@ -89,6 +89,10 @@ export type ShaderLibWholeNameMap = {
     [shaderLibWholeName: string]: number
 }
 
+export type ShaderIndexMap = {
+    [shaderName:string]: number
+}
+
 export type DirectionLightGLSLDataStructure = {
     position: string;
     color: string;
