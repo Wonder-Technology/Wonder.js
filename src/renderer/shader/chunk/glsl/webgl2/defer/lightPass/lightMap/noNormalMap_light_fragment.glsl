@@ -1,5 +1,6 @@
 @varDeclare
-varying vec3 v_normal;
+//varying vec3 v_normal;
+in vec3 v_normal;
 @end
 
 @funcDefine
@@ -41,7 +42,7 @@ vec3 getPointLightDir(vec3 worldPosition){
 //#endif
 
 
-vec3 getViewDir(worldPosition){
+vec3 getViewDir(vec3 worldPosition){
     return normalize(u_cameraPos - worldPosition);
 }
 @end

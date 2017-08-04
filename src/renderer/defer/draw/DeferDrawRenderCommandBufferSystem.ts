@@ -29,44 +29,129 @@
 
 
 import { RenderCommandBufferForDrawData } from "../../type/dataType";
-import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
+import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import { bindGBuffer, bindGBufferTextures, sendGBufferTextureData, unbindGBuffer } from "../gbuffer/GBufferSystem";
-import { getNoMaterialShaderIndex } from "../../shader/ShaderSystem";
-import { drawFullScreenQuad, sendAttributeData } from "../light/DeferLightPassSystem";
-import { computeRadius } from "../../../component/light/PointLightSystem";
+import {
+    bindIndexBuffer, getNoMaterialShaderIndex, sendAttributeData, sendUniformData, use
+} from "../../shader/ShaderSystem";
+import { drawFullScreenQuad, sendAttributeData as sendDeferLightPassAttributeData } from "../light/DeferLightPassSystem";
+import {
+    computeRadius, getColorArr3, getConstant, getIntensity, getLinear, getPosition,
+    getQuadratic, getRange
+} from "../../../component/light/PointLightSystem";
+import { buildDrawFuncDataMap, draw as drawUtils } from "../../utils/draw/drawRenderCommandBufferUtils";
+import { directlySendUniformData } from "../../utils/shader/program/programUtils";
+import { getIndexType, getIndicesCount, hasIndices, getIndexTypeSize, getVerticesCount } from "../../../component/geometry/GeometrySystem";
+import { bindAndUpdate, getMapCount } from "../../texture/MapManagerSystem";
+import { sendFloat1, sendFloat3, sendInt } from "../../shader/glslSender/GLSLSenderSystem";
+import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
+import { GameObjectData } from "../../../core/entityObject/gameObject/GameObjectData";
+import { unbindVAO } from "../../vao/VAOSystem";
+import { EDrawMode } from "../../enum/EDrawMode";
+import { useShader } from "../../../component/material/MaterialSystem";
+import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
+import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
+import { createTypeArrays } from "../../utils/draw/renderComandBufferUtils";
+import { ELightModel } from "../../../component/material/ELightModel";
 
-export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
+    return {
+        GBufferDataFromSystem: GBufferDataFromSystem,
+        DeferLightPassDataFromSystem: DeferLightPassDataFromSystem
+    }
+}
+
+export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     //todo refactor DeviceManagerSystem->clear
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-    _drawGBufferPass();
-    _drawLightPass();
+
+
+
+    var {
+            // TextureDataFromSystem,
+            // TextureCacheDataFromSystem,
+            // MapManagerDataFromSystem,
+            // ProgramDataFromSystem,
+            // LocationDataFromSystem,
+            // GLSLSenderDataFromSystem,
+            // GeometryDataFromSystem,
+            // ArrayBufferDataFromSystem,
+            // IndexBufferDataFromSystem,
+            DrawRenderCommandBufferDataFromSystem
+        } = drawDataMap,
+        mat3Length = getMatrix3DataSize(),
+        mat4Length = getMatrix4DataSize(),
+        cameraPositionLength = getVector3DataSize(),
+        // count = bufferData.count,
+        buffer: any = bufferData.buffer,
+        // mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
+        vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
+        pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
+        cameraPositionForSend = DrawRenderCommandBufferDataFromSystem.cameraPositionForSend,
+        normalMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend,
+        drawRenderCommandBufferDataFromSystem = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
+        // program: WebGLProgram = null;
+
+
+    var {
+            // mMatrices,
+            vMatrices,
+            pMatrices,
+            cameraPositions,
+            normalMatrices,
+            // materialIndices,
+            // shaderIndices,
+            // geometryIndices
+        } = drawRenderCommandBufferDataFromSystem;
+
+
+    _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
+    _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
+
+
+
+
+
+
+
+
+
+    _drawGBufferPass(gl, DataBufferConfig, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
+    _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
 };
 
-var _drawGBufferPass = (gl:any, GBufferData, bufferData: RenderCommandBufferForDrawData) => {
-    // bind gbuffer textures
-    // bindGBufferTextures(gl, GBufferData);
-
-    // use program(use gbuffer shader -> program)
-
-
-
-
-    set state
-    // gl.bindVertexArray(cubeVertexArray);
+var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, {
+    GBufferDataFromSystem
+}, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
+            mMatrices,
+            // vMatrices,
+            // pMatrices,
+            // cameraPositions,
+            // normalMatrices,
+            materialIndices,
+            shaderIndices,
+            geometryIndices
+        }) => {
+    // set state
     gl.depthMask(true);
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
 
-    clear
+
+
+
+    // bind gbuffer
+    bindGBuffer(gl, GBufferDataFromSystem);
+
+    // clear
     // clear(null, render_config, DeviceManagerData),
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
-
-    bind gbuffer
-    bindGBuffer(gl, GBufferData);
 
 
 
@@ -79,45 +164,208 @@ var _drawGBufferPass = (gl:any, GBufferData, bufferData: RenderCommandBufferForD
 
 
 
-    draw each gameObjects:
-
-
-        // bind and update texture(no gbuffer texture)
+    // draw each gameObjects:
+    //
+    //
+    //     // bind and update texture(no gbuffer texture)
+    // // (only update the same texture once)
+    //
+    //     // send texture data(no gbuffer texture)
+    //
+    //     material use shader
+    // // buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)
+    //
+    //
+    //
+    //     use program(use gbuffer shader -> program)
+    //
+    // // bind and update all possible textures(no gbuffer texture)
+    // bind and update textures(no gbuffer texture)
     // (only update the same texture once)
-
-        // send texture data(no gbuffer texture)
-
-        material use shader
-    // buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)
-
-
-
-        use program(use gbuffer shader -> program)
-
-    // bind and update all possible textures(no gbuffer texture)
-    bind and update textures(no gbuffer texture)
-    (only update the same texture once)
-
-
-    send texture data(no gbuffer texture)
-    // (send all possible textures' unit)
-    (send textures' unit)
+    //
+    //
+    // send texture data(no gbuffer texture)
+    // // (send all possible textures' unit)
+    // (send textures' unit)
+    //
+    //
+    //
+    // send attribute
+    // send uniform
+    // draw element/array
 
 
 
-    send attribute
-    send uniform
-    draw element/array
 
-    drawUtils(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData)
+    var state = null;
+
+
+
+    var {
+            TextureDataFromSystem,
+            TextureCacheDataFromSystem,
+            MapManagerDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem,
+            GeometryDataFromSystem,
+            ArrayBufferDataFromSystem,
+            IndexBufferDataFromSystem,
+            DrawRenderCommandBufferDataFromSystem
+        } = drawDataMap,
+        // mat3Length = getMatrix3DataSize(),
+        // mat4Length = getMatrix4DataSize(),
+        // cameraPositionLength = getVector3DataSize(),
+        count = bufferData.count,
+        buffer: any = bufferData.buffer,
+        mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
+        // vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
+        // pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
+        // cameraPositionForSend = DrawRenderCommandBufferDataFromSystem.cameraPositionForSend,
+        // normalMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend,
+        // {
+        //     mMatrices,
+        //     vMatrices,
+        //     pMatrices,
+        //     cameraPositions,
+        //     normalMatrices,
+        //     materialIndices,
+        //     shaderIndices,
+        //     geometryIndices
+        // } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem),
+        program: WebGLProgram = null;
+
+    // _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
+
+
+    for (let i = 0; i < count; i++) {
+        let matStartIndex = 16 * i,
+            matEndIndex = matStartIndex + 16,
+            // shaderIndex = shaderIndices[i],
+            geometryIndex = geometryIndices[i],
+            materialIndex = materialIndices[i],
+            mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
+            drawMode = EDrawMode.TRIANGLES;
+
+        //todo move system method to utils
+        let shaderIndex = useShader(materialIndex, "GBuffer", state, initShaderDataMap);
+
+        program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+        //todo refactor in front render
+        bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+
+        sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+
+        _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
+
+        ////todo move system method to utils: getNewTextureUnitIndex
+        // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+        sendUniformData(gl, shaderIndex, program, mapCount, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+
+        if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
+            bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
+
+            _drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);
+        }
+        else {
+            _drawArray(gl, geometryIndex, drawMode, getVerticesCount, GeometryDataFromSystem);
+        }
+    }
+
+
+
+    // drawUtils(gl, null, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, initShaderDataMap, bufferData);
 }
 
-var _drawLightPass = (gl:any, DeferLightPassData) => {
-    not bind gbuffer
+var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawRenderCommandBufferDataFromSystem: any) => {
+    if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
+        createTypeArrays(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
+    }
+
+    return DrawRenderCommandBufferDataFromSystem;
+}
+
+
+
+var _updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, matStartIndex: number, matEndIndex: number, targetMatrices: Float32Array) => {
+    for (let i = matStartIndex; i < matEndIndex; i++) {
+        targetMatrices[i - matStartIndex] = sourceMatrices[i];
+    }
+
+    return targetMatrices;
+}
+
+
+var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, cameraPosition: Float32Array, normalMatrices: Float32Array, materialIndex: number) => {
+    return {
+        mMatrix: mMatrices,
+        vMatrix: vMatrices,
+        pMatrix: pMatrices,
+        cameraPosition: cameraPosition,
+        normalMatrix: normalMatrices,
+        materialIndex: materialIndex
+    }
+}
+
+
+var _drawElements = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: EDrawMode, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, GeometryDataFromSystem: any) => {
+    var startOffset: number = 0,
+        count = getIndicesCount(geometryIndex, GeometryDataFromSystem),
+        type = getIndexType(GeometryDataFromSystem),
+        typeSize = getIndexTypeSize(GeometryDataFromSystem);
+
+    gl.drawElements(gl[drawMode], count, gl[type], typeSize * startOffset);
+}
+
+var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: EDrawMode, getVerticesCount: Function, GeometryDataFromSystem: any) => {
+    var startOffset: number = 0,
+        count = getVerticesCount(geometryIndex, GeometryDataFromSystem);
+
+    gl.drawArrays(gl[drawMode], startOffset, count);
+}
+
+
+
+
+
+
+
+
+
+
+
+var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
+                          GBufferDataFromSystem,
+                          DeferLightPassDataFromSystem
+                      }, initShaderDataMap:InitShaderDataMap,
+                      vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend
+) => {
+    var {
+        ShaderDataFromSystem
+    } = initShaderDataMap;
+    var {
+    PointLightDataFromSystem,
+    TextureDataFromSystem,
+    TextureCacheDataFromSystem,
+    MapManagerDataFromSystem,
+    ProgramDataFromSystem,
+    LocationDataFromSystem,
+    GLSLSenderDataFromSystem,
+    GeometryDataFromSystem,
+    ArrayBufferDataFromSystem,
+    IndexBufferDataFromSystem,
+    DrawRenderCommandBufferDataFromSystem
+} = drawDataMap;
+
+    // not bind gbuffer
     unbindGBuffer(gl);
 
-    use program(use light pass shader -> program )
-    let shaderIndex = getNoMaterialShaderIndex("DeferLight", ShaderData);
+    // use program(use light pass shader -> program )
+    let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem);
 
     let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
@@ -126,17 +374,17 @@ var _drawLightPass = (gl:any, DeferLightPassData) => {
 
 
 
-    bind texture(gbuffer texture )
-    send texture data(gbuffer texture )
+    // bind texture(gbuffer texture )
+    // send texture data(gbuffer texture )
 
-    bindGBufferTextures(gl, GBufferData);
-    sendGBufferTextureData(gl, program);
-
-
+    // bindGBufferTextures(gl, GBufferDataFromSystem);
+    // sendGBufferTextureData(gl, program);
 
 
 
-    set state
+
+
+    // set state
     gl.depthMask(false);
     gl.disable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -146,14 +394,15 @@ var _drawLightPass = (gl:any, DeferLightPassData) => {
     // gl.cullFace(gl.FRONT);
 
 
-    clear
+    // clear
     // clear(null, render_config, DeviceManagerData),
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
+    sendDeferLightPassAttributeData(gl, DeferLightPassDataFromSystem);
 
 
-    gl.enable(gl.SCISSOR_TEST);
+    // gl.enable(gl.SCISSOR_TEST);
 
 
     // bind and update texture
@@ -165,17 +414,26 @@ var _drawLightPass = (gl:any, DeferLightPassData) => {
 
     //todo support ambient, direction light
 
-    draw point light:
-        send attribute(sphere)
-    send uniform(light)
+    // draw point light:
+    //     send attribute(sphere)
+    // send uniform(light)
+    //
+    // send light -> position, color
+    //
+    // draw element / array
 
-    send light -> position, color
 
-    draw element / array
+    let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
+        uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
 
+    //todo refactor: move lightModel to config
+    sendInt(gl, shaderIndex, program, "u_lightModel", ELightModel.PHONG, uniformCacheMap, uniformLocationMap);
 
-    sendAttributeData(gl, DeferLightPassData);
+    sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
+    // sendFloat3(gl, shaderIndex, program, "u_cameraPos", [0,0,0], uniformCacheMap, uniformLocationMap);
+
+
 
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
@@ -183,16 +441,14 @@ var _drawLightPass = (gl:any, DeferLightPassData) => {
 
         //todo add scissor optimize
 
-        let uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
-            uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap,
-            colorArr3 = getColorArr3(i, PointLightDataFromSystem),
+        let colorArr3 = getColorArr3(i, PointLightDataFromSystem),
             constant = getConstant(i, PointLightDataFromSystem),
             linear = getLinear(i, PointLightDataFromSystem),
             quadratic = getQuadratic(i, PointLightDataFromSystem),
             //todo replace range with radius
             radius = computeRadius(colorArr3, constant, linear, quadratic);
 
-        sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i), uniformCacheMap, uniformLocationMap);
+        sendFloat3(gl, shaderIndex, program, "u_lightPosition", _getPosition(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
         sendFloat3(gl, shaderIndex, program, "u_lightColor", getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
@@ -204,13 +460,27 @@ var _drawLightPass = (gl:any, DeferLightPassData) => {
         sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
 
 
+        // var materialIndex = null;
+        // var mMatrixFloatArrayForSend = null;
 
-        drawFullScreenQuad(gl, DeferLightPassData);
+        // sendUniformData(gl, shaderIndex, program, 0, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+
+
+
+        drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
     }
 
+    unbindVAO(gl);
 
 
-    restore state:
-    // gl.cullFace(gl.BACK);
-    gl.disable(gl.SCISSOR_TEST);
+    // restore state:
+    //// gl.cullFace(gl.BACK);
+    // gl.disable(gl.SCISSOR_TEST);
+}
+
+//todo refactor with ShaderSystem->126
+var _getPosition = (index: number, PointLightDataFromSystem:any) => {
+    //todo refactor: drawDataMap add ThreeDTransformData, GameObjectData?
+
+    return getPosition(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem).values;
 }

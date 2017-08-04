@@ -1,3 +1,10 @@
+@funcDefine
+
+mat4 getModelMatrix(){
+    return u_mMatrix;
+}
+@end
+
 @body
-mat4 mMatrix = u_mMatrix;
+mat4 mMatrix = getModelMatrix();
 @end

@@ -5,7 +5,7 @@ import {
     IShaderLibContentGenerator
 } from "../../data/shaderLib_generator";
 import { main_begin, main_end } from "../../shader/snippet/ShaderSnippet";
-import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment } from "../../shader/chunk/ShaderChunk";
+import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment, version } from "../../shader/chunk/ShaderChunk";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
@@ -59,6 +59,11 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += main_begin;
     fsBody += main_begin;
 
+    //todo separate #version (webgl1/webgl2)
+
+    vsTop += version.top;
+
+    fsTop += version.top;
     fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
@@ -108,7 +113,8 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += main_end;
     fsBody += main_end;
 
-    vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
+    //todo restore and separate(webgl1/webgl2)
+    // vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
     vsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
     fsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
 

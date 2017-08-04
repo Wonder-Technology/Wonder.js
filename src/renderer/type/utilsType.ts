@@ -18,6 +18,11 @@ export type DrawDataMap = {
     DrawRenderCommandBufferDataFromSystem: any;
 }
 
+export type DeferDrawDataMap = {
+    GBufferDataFromSystem: any;
+    DeferLightPassDataFromSystem: any;
+}
+
 export type SendUniformDataDataMap = {
     glslSenderData: SendUniformDataGLSLSenderDataMap;
     ambientLightData: SendUniformDataAmbientLightDataMap;

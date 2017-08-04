@@ -165,7 +165,7 @@ export const material_config = {
 
                 // "NoLightMapShaderLib",
                 // "NoEmissionMapShaderLib",
-                "NoNormalMapShaderLib",
+                "GBufferNoNormalMapShaderLib",
                 // "NoShadowMapShaderLib",
                 "GBufferShaderLib",
                 "GBufferEndShaderLib",
@@ -173,16 +173,17 @@ export const material_config = {
             ]
         },
         "noMaterialShaders": {
-            "DeferLight": [
+            "DeferLightPass": [
                 // { "type": "group", "value": "engineMaterialTop" },
                 "VerticeCommonShaderLib",
 
-                "DeferLightCommonShaderLib",
-                "NoNormalMapShaderLib",
+                "DeferLightPassCommonShaderLib",
+                "DeferLightPassNoNormalMapShaderLib",
                 "NoLightMapShaderLib",
                 "NoEmissionMapShaderLib",
-                "DeferLightShaderLib",
-                "DeferLightEndShaderLib"
+                "NoShadowMapShaderLib",
+                "DeferLightPassShaderLib",
+                "DeferLightPassEndShaderLib"
             ]
         }
     },

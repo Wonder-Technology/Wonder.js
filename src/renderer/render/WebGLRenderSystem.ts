@@ -20,7 +20,7 @@ import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { RenderCommandBufferData } from "../command_buffer/RenderCommandBufferData";
 import { SendDrawRenderCommandBufferData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { clear, draw } from "../draw/DrawRenderCommandBufferSystem";
+// import { clear, draw } from "../draw/DrawRenderCommandBufferSystem";
 import { DrawRenderCommandBufferData } from "../draw/DrawRenderCommandBufferData";
 import { ProgramData } from "../shader/program/ProgramData";
 import { LocationData } from "../shader/location/LocationData";
@@ -54,6 +54,9 @@ import { GPUDetector } from "../device/GPUDetector";
 import { GBufferData } from "../defer/gbuffer/GBufferData";
 import { init as initDefer, draw as deferDraw  } from "../defer/DeferShadingSystem";
 import { buildInitShaderDataMap } from "../utils/material/materialUtils";
+import { DeferLightPassData } from "../defer/light/DeferLightPassData";
+import { ShaderData } from "../shader/ShaderData";
+import { buildDrawDataMap as buildDeferDrawDataMap } from "../defer/draw/DeferDrawRenderCommandBufferSystem";
 
 export var init = null;
 
@@ -147,7 +150,7 @@ else {
             //todo use front render
         }
         else{
-            initDefer(gl, GBufferData);
+            initDefer(gl, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
         }
     }
 
@@ -156,7 +159,7 @@ else {
             // draw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData)),
             //todo refactor defer draw, draw(clear, draw...  consider webgl2)
             //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
-            deferDraw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
+            deferDraw(null, DataBufferConfig, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
             //todo fix front render(set state before clear)
             // clear(null, render_config, DeviceManagerData),
             // sortRenderCommands(state),

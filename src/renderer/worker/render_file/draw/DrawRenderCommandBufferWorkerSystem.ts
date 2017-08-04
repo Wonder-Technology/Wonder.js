@@ -22,16 +22,17 @@ export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceMa
     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
 };
 
-export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    var gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state);
-
-
-    if (_isBufferDataExist(bufferData)) {
-        drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData);
-    }
-
-    _commitGL(gl, state);
-};
+//todo fix
+// export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {
+//     var gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state);
+//
+//
+//     if (_isBufferDataExist(bufferData)) {
+//         drawUtils(gl, state, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, bufferData);
+//     }
+//
+//     _commitGL(gl, state);
+// };
 
 var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 

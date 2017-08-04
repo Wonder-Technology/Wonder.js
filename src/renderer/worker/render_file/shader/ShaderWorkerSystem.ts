@@ -1,5 +1,7 @@
 import {
-    bindIndexBuffer as bindIndexBufferUtils, init as initUtils, sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
+    bindIndexBuffer as bindIndexBufferUtils,
+    // init as initUtils,
+    sendAttributeData as sendAttributeDataUtils, sendUniformData as sendUniformDataUtils,
     use as useUtils
 } from "../../../utils/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../geometry/GeometryWorkerSystem";
@@ -30,7 +32,8 @@ import { createMap } from "../../../../utils/objectUtils";
 import { hasDiffuseMap, hasSpecularMap } from "../../../utils/material/lightMaterialUtils";
 
 export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
-    return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    //todo fix
+    // return initUtils(state, materialIndex, materialClassName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
 var _buildInitShaderFuncDataMap = () => {

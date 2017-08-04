@@ -53,9 +53,10 @@ var _initSpecifyMaterials = (startIndex: number, index: number, className: strin
 }
 
 export var initMaterial = (index: number, state: Map<any, any>, className: string) => {
-    var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
-
-    setShaderIndex(index, shaderIndex, MaterialWorkerData);
+    //todo fix
+    // var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
+    //
+    // setShaderIndex(index, shaderIndex, MaterialWorkerData);
 }
 
 // export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {

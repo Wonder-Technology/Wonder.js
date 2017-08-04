@@ -1,6 +1,6 @@
 @funcDeclare
 //vec3 getDirectionLightDirByLightPos(vec3 lightPos);
-vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
+//vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 @end
 
 @funcDefine

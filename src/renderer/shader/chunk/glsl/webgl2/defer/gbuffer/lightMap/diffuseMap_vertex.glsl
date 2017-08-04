@@ -1,5 +1,6 @@
 @varDeclare
-	varying vec2 v_diffuseMapTexCoord;
+//	varying vec2 v_diffuseMapTexCoord;
+	out vec2 v_diffuseMapTexCoord;
 @end
 
 @body

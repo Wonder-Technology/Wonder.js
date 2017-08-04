@@ -1,3 +1,5 @@
+import { WebGLVertexArrayObject } from "../extend/interface";
+
 export var bindVAO = (gl:any, vao:WebGLVertexArrayObject) => {
     gl.bindVertexArray(vao);
 }

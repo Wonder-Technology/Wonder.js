@@ -1,13 +1,19 @@
 import {
     basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
-    GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex, light_common, lightEnd_fragment,
-    light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment, noShadowMap_fragment,
+    GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
+    // light_common, lightEnd_fragment,
+    // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
+    noShadowMap_fragment,
     noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
-    noSpecularMap_fragment, noNormalMap_light_fragment, light_fragment,
+    noSpecularMap_fragment, noNormalMap_light_fragment,
+    // light_fragment,
     map_forBasic_vertex,
     map_forBasic_fragment,
     diffuseMap_vertex, diffuseMap_fragment,
     specularMap_vertex, specularMap_fragment,
+
+    version,
+
     // light_model_ubo,
     // common_ubo,
     gbuffer_common_vertex,
@@ -17,10 +23,10 @@ import {
     gbuffer_fragment,
     gbuffer_end_fragment,
 
-    deferLight_common,
-    deferLight_vertex,
-    deferLight_fragment,
-    deferLight_end_fragment
+    deferLightPass_common,
+    deferLightPass_vertex,
+    deferLightPass_fragment,
+    deferLightPass_end_fragment
 
 } from "../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
@@ -801,26 +807,17 @@ export const shaderLib_generator = {
         //         ]
         //     }
         // },
-        "NoNormalMapShaderLib": {
+        "GBufferNoNormalMapShaderLib": {
             "glsl": {
                 "vs": {
                     "source": noNormalMap_vertex
                 },
                 "fs": {
                     "source": noNormalMap_fragment,
-                    // "varDeclare": noNormalMap_light_fragment.varDeclare,
-                    // "funcDefine": noNormalMap_fragment.funcDefine + noNormalMap_light_fragment.funcDefine
-                    "funcDefine": noNormalMap_fragment.funcDefine
+                    "varDeclare": noNormalMap_light_fragment.varDeclare,
                 }
             }
         },
-        // "NoShadowMapShaderLib": {
-        //     "glsl": {
-        //         "fs": {
-        //             "source": noShadowMap_fragment
-        //         }
-        //     }
-        // },
 
         // "LightShaderLib": {
         "GBufferShaderLib": {
@@ -859,16 +856,16 @@ export const shaderLib_generator = {
 
 
 
-        "DeferLightCommonShaderLib": {
+        "DeferLightPassCommonShaderLib": {
             "glsl": {
                 // "vs": {
-                //     // "funcDeclare": deferLight_common.funcDeclare,
-                //     // "funcDefine": deferLight_common.funcDefine
+                //     // "funcDeclare": deferLightPass_common.funcDeclare,
+                //     // "funcDefine": deferLightPass_common.funcDefine
                 // },
                 "fs": {
-                    "source": deferLight_common
-                    // "funcDeclare": deferLight_common.funcDeclare,
-                    // "funcDefine": deferLight_common.funcDefine
+                    "source": deferLightPass_common
+                    // "funcDeclare": deferLightPass_common.funcDeclare,
+                    // "funcDefine": deferLightPass_common.funcDefine
                 }
             }
             // "send": {
@@ -907,39 +904,54 @@ export const shaderLib_generator = {
             //     ]
             // }
         },
+        "NoShadowMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": noShadowMap_fragment
+                }
+            }
+        },
 
-        "DeferLightShaderLib": {
+        "DeferLightPassNoNormalMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "funcDefine": noNormalMap_light_fragment.funcDefine
+                }
+            }
+        },
+
+        "DeferLightPassShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": deferLight_vertex
+                    "source": deferLightPass_vertex
                 },
                 "fs": {
-                    "source": deferLight_fragment,
-                    "varDeclare": noNormalMap_light_fragment.varDeclare,
-                    "funcDefine": noNormalMap_light_fragment.funcDefine
+                    "source": deferLightPass_fragment
                 }
             },
             "send": {
-                "uniform": [
-                    {
-                        "name": "u_opacity",
-                        "from": "lightMaterial",
-                        "field": "opacity",
-                        "type": "float"
-                    },
-                    {
-                        "name": "u_lightModel",
-                        "from": "lightMaterial",
-                        "field": "lightModel",
-                        "type": "int"
-                    },
-                    {
-                        "name": "u_cameraPos",
-                        "from": "cmd",
-                        "field": "cameraPosition",
-                        "type": "float3"
-                    }
-                ],
+                // "uniform": [
+                //     {
+                //         "name": "u_opacity",
+                //         "from": "lightMaterial",
+                //         "field": "opacity",
+                //         "type": "float"
+                //     },
+                //todo move to ubo(global light ubo)
+                //     {
+                //         "name": "u_lightModel",
+                //         "from": "lightMaterial",
+                //         "field": "lightModel",
+                //         "type": "int"
+                //     },
+                //todo move to ubo
+                //     {
+                //         "name": "u_cameraPos",
+                //         "from": "cmd",
+                //         "field": "cameraPosition",
+                //         "type": "float3"
+                //     }
+                // ],
                 "uniformDefine": [
                     {
                         "name": "u_positionBuffer",
@@ -957,10 +969,10 @@ export const shaderLib_generator = {
             }
         },
 
-        "DeferLightEndShaderLib": {
+        "DeferLightPassEndShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": deferLight_end_fragment
+                    "source": deferLightPass_end_fragment
                 },
             }
         },
