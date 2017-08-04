@@ -25,9 +25,9 @@ export type DeferDrawDataMap = {
 
 export type SendUniformDataDataMap = {
     glslSenderData: SendUniformDataGLSLSenderDataMap;
-    ambientLightData: SendUniformDataAmbientLightDataMap;
-    directionLightData: SendUniformDataDirectionLightDataMap;
-    pointLightData: SendUniformDataPointLightDataMap;
+    // ambientLightData: SendUniformDataAmbientLightDataMap;
+    // directionLightData: SendUniformDataDirectionLightDataMap;
+    // pointLightData: SendUniformDataPointLightDataMap;
 }
 
 export type DrawFuncDataMap = {

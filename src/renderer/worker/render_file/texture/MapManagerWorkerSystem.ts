@@ -28,7 +28,8 @@ export var getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
 // }
 
 export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any) => {
-    bindAndUpdateUtils(gl, mapCount, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, bindToUnit, needUpdate, update);
+    //todo fix
+    // bindAndUpdateUtils(gl, mapCount, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, bindToUnit, needUpdate, update);
 }
 
 // export var dispose = disposeUtils;

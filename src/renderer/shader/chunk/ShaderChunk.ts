@@ -11,10 +11,10 @@ export const lowp_fragment:GLSLChunk = {top: "precision lowp float;\nprecision l
 export const mediump_fragment:GLSLChunk = {top: "precision mediump float;\nprecision mediump int;\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const map_forBasic_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n"};
 export const map_forBasic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n//\n//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n\n    v_mapCoord0 = a_texCoord;\n"};
-export const common_ubo:GLSLChunk = {top: "",define: "",varDeclare: "layout(std140) uniform CameraData {\n    mat4 u_vMatrix;\n    mat4 u_pMatrix;\n//    mat4 u_vpMatrix;\n    vec3 u_cameraPos;\n};\n\n",funcDeclare: "",funcDefine: "",body: ""};
-export const version:GLSLChunk = {top: "#version 300 es\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const modelMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "mat4 getModelMatrix(){\n    return u_mMatrix;\n}\n",body: "mat4 mMatrix = getModelMatrix();\n"};
 export const normalMatrix_noInstance_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "mat3 normalMatrix = u_normalMatrix;\n"};
+export const common_ubo:GLSLChunk = {top: "",define: "",varDeclare: "layout(std140) uniform CameraData {\n    mat4 u_vMatrix;\n    mat4 u_pMatrix;\n//    mat4 u_vpMatrix;\n    vec3 u_cameraPos;\n};\n\n",funcDeclare: "",funcDefine: "",body: ""};
+export const version:GLSLChunk = {top: "#version 300 es\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const light_model_ubo:GLSLChunk = {top: "",define: "",varDeclare: "layout(std140) uniform LightModelData {\n    mat4 u_mMarix;\n    mat3 u_normalMatrix;\n};\n",funcDeclare: "",funcDefine: "",body: ""};
 export const gbuffer_common_fragment:GLSLChunk = {top: "",define: "",varDeclare: "//varying vec3 v_worldPosition;\nin vec3 v_worldPosition;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const gbuffer_common_vertex:GLSLChunk = {top: "",define: "",varDeclare: "//varying vec3 v_worldPosition;\nout vec3 v_worldPosition;\n",funcDeclare: "",funcDefine: "",body: ""};

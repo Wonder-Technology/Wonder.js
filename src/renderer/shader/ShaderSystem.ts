@@ -7,13 +7,13 @@ import {
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
 import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
-import { RenderCommandUniformData } from "../type/dataType";
+import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../type/dataType";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
 import { Map } from "immutable";
-import { DrawDataMap, InitShaderDataMap } from "../type/utilsType";
+import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../type/utilsType";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
@@ -91,52 +91,9 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, mapCount: number, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData) => {
-        sendUniformDataUtils(gl, shaderIndex, program, mapCount, _buildSendUniformDataDataMap(drawDataMap), drawDataMap, renderCommandUniformData);
+    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+        sendUniformDataUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
     };
-
-    var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
-        return {
-            glslSenderData: {
-                getUniformData: getUniformData,
-                sendMatrix3: sendMatrix3,
-                sendMatrix4: sendMatrix4,
-                sendVector3: sendVector3,
-                sendInt: sendInt,
-                sendFloat1: sendFloat1,
-                sendFloat3: sendFloat3,
-
-                GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
-            },
-            ambientLightData: {
-                getColorArr3: getAmbientLightColorArr3,
-
-                AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
-            },
-            directionLightData: {
-                getPosition: (index: number) => {
-                    return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
-                },
-                getColorArr3: getDirectionLightColorArr3,
-                getIntensity: getIntensity,
-
-                DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
-            },
-            pointLightData: {
-                getPosition: (index: number) => {
-                    return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
-                },
-                getColorArr3: getPointLightColorArr3,
-                getIntensity: getPointLightIntensity,
-                getConstant: getConstant,
-                getLinear: getLinear,
-                getQuadratic: getQuadratic,
-                getRange: getRange,
-
-                PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
-            }
-        }
-    }
 
     bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
         bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);

@@ -101,4 +101,4 @@ export var unbindGBuffer = (gl:any) => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
-// export var getNewTextureUnitIndex = () => 3;
+export var getNewTextureUnitIndex = () => 3;

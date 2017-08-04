@@ -29,21 +29,22 @@
 
 
 import { RenderCommandBufferForDrawData } from "../../type/dataType";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
-import { bindGBuffer, bindGBufferTextures, sendGBufferTextureData, unbindGBuffer } from "../gbuffer/GBufferSystem";
+import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../type/utilsType";
+import {
+    bindGBuffer, bindGBufferTextures, getNewTextureUnitIndex, sendGBufferTextureData,
+    unbindGBuffer
+} from "../gbuffer/GBufferSystem";
 import {
     bindIndexBuffer, getNoMaterialShaderIndex, sendAttributeData, sendUniformData, use
 } from "../../shader/ShaderSystem";
 import { drawFullScreenQuad, sendAttributeData as sendDeferLightPassAttributeData } from "../light/DeferLightPassSystem";
-import {
-    computeRadius, getColorArr3, getConstant, getIntensity, getLinear, getPosition,
-    getQuadratic, getRange
-} from "../../../component/light/PointLightSystem";
-import { buildDrawFuncDataMap, draw as drawUtils } from "../../utils/draw/drawRenderCommandBufferUtils";
 import { directlySendUniformData } from "../../utils/shader/program/programUtils";
 import { getIndexType, getIndicesCount, hasIndices, getIndexTypeSize, getVerticesCount } from "../../../component/geometry/GeometrySystem";
 import { bindAndUpdate, getMapCount } from "../../texture/MapManagerSystem";
-import { sendFloat1, sendFloat3, sendInt } from "../../shader/glslSender/GLSLSenderSystem";
+import {
+    getUniformData, sendFloat1, sendFloat3, sendInt, sendMatrix3, sendMatrix4,
+    sendVector3
+} from "../../shader/glslSender/GLSLSenderSystem";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../../core/entityObject/gameObject/GameObjectData";
 import { unbindVAO } from "../../vao/VAOSystem";
@@ -53,6 +54,19 @@ import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../.
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { createTypeArrays } from "../../utils/draw/renderComandBufferUtils";
 import { ELightModel } from "../../../component/material/ELightModel";
+import { sendData } from "../../utils/texture/mapManagerUtils";
+// import { getColorArr3 as getAmbientLightColorArr3 } from "../../../component/light/AmbientLightSystem";
+// import {
+//     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
+//     getPosition as getDirectionLightPosition,
+// } from "../../../component/light/DirectionLightSystem";
+import {
+    computeRadius, getConstant, getLinear,
+    getQuadratic, getRange,
+    getPosition as getPointLightPosition,
+    getColorArr3 as getPointLightColorArr3,
+    getIntensity as getPointLightIntensity
+} from "../../../component/light/PointLightSystem";
 
 export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
     return {
@@ -113,19 +127,21 @@ export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, defe
 
 
 
+    let sendDataMap = _buildSendUniformDataDataMap(drawDataMap);
 
 
 
 
 
 
-    _drawGBufferPass(gl, DataBufferConfig, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
-    _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
+
+    _drawGBufferPass(gl, DataBufferConfig, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
+    _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
 };
 
 var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, {
     GBufferDataFromSystem
-}, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
+}, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
             mMatrices,
             // vMatrices,
             // pMatrices,
@@ -255,16 +271,23 @@ var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap,
 
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-        //todo refactor in front render
-        bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
-
         sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 
         ////todo move system method to utils: getNewTextureUnitIndex
         // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
-        sendUniformData(gl, shaderIndex, program, mapCount, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+        let uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
+            uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
+
+
+        sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
+
+        let textureStartUnitIndex = getNewTextureUnitIndex();
+
+        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+
+        sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
@@ -280,6 +303,55 @@ var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap,
 
     // drawUtils(gl, null, DataBufferConfig, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount), drawDataMap, initShaderDataMap, bufferData);
 }
+
+
+
+var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
+    return {
+        glslSenderData: {
+            getUniformData: getUniformData,
+            sendMatrix3: sendMatrix3,
+            sendMatrix4: sendMatrix4,
+            sendVector3: sendVector3,
+            sendInt: sendInt,
+            sendFloat1: sendFloat1,
+            sendFloat3: sendFloat3,
+
+            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
+        }
+        //todo move to front render
+        // ambientLightData: {
+        //     getColorArr3: getAmbientLightColorArr3,
+        //
+        //     AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
+        // },
+        // directionLightData: {
+        //     getPosition: (index: number) => {
+        //         return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+        //     },
+        //     getColorArr3: getDirectionLightColorArr3,
+        //     getIntensity: getDirectionLightIntensity,
+        //
+        //     DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
+        // },
+        // pointLightData: {
+        //     getPosition: (index: number) => {
+        //         return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+        //     },
+        //     getColorArr3: getPointLightColorArr3,
+        //     getIntensity: getPointLightIntensity,
+        //     getConstant: getConstant,
+        //     getLinear: getLinear,
+        //     getQuadratic: getQuadratic,
+        //     getRange: getRange,
+        //
+        //     PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
+        // }
+    }
+}
+
+
+
 
 var _createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawRenderCommandBufferDataFromSystem: any) => {
     if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
@@ -341,7 +413,7 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
 var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
                           GBufferDataFromSystem,
                           DeferLightPassDataFromSystem
-                      }, initShaderDataMap:InitShaderDataMap,
+                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap,
                       vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend
 ) => {
     var {
@@ -431,17 +503,13 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
     sendInt(gl, shaderIndex, program, "u_lightModel", ELightModel.PHONG, uniformCacheMap, uniformLocationMap);
 
     sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
-    // sendFloat3(gl, shaderIndex, program, "u_cameraPos", [0,0,0], uniformCacheMap, uniformLocationMap);
-
-
-
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
         //todo move to ubo
 
         //todo add scissor optimize
 
-        let colorArr3 = getColorArr3(i, PointLightDataFromSystem),
+        let colorArr3 = getPointLightColorArr3(i, PointLightDataFromSystem),
             constant = getConstant(i, PointLightDataFromSystem),
             linear = getLinear(i, PointLightDataFromSystem),
             quadratic = getQuadratic(i, PointLightDataFromSystem),
@@ -449,8 +517,8 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
             radius = computeRadius(colorArr3, constant, linear, quadratic);
 
         sendFloat3(gl, shaderIndex, program, "u_lightPosition", _getPosition(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-        sendFloat3(gl, shaderIndex, program, "u_lightColor", getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        sendFloat3(gl, shaderIndex, program, "u_lightColor", colorArr3, uniformCacheMap, uniformLocationMap);
+        sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getPointLightIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
@@ -482,5 +550,5 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
 var _getPosition = (index: number, PointLightDataFromSystem:any) => {
     //todo refactor: drawDataMap add ThreeDTransformData, GameObjectData?
 
-    return getPosition(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem).values;
+    return getPointLightPosition(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem).values;
 }

@@ -78,14 +78,14 @@ export var getTextureIndexDataSize = () => 1;
 
 export var getTextureCountDataSize = () => 1;
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     // var count = getMapCount(materialIndex, MapManagerDataFromSystem),
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
     for (let i = 0; i < mapCount; i++) {
         let textureIndex = textureIndices[i];
 
-        bindToUnit(gl, i, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem);
+        bindToUnit(gl, i + startIndex, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem);
 
         if (needUpdate(textureIndex, TextureDataFromSystem)) {
             update(gl, textureIndex, TextureDataFromSystem);
@@ -93,13 +93,13 @@ export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, Texture
     }
 }
 
-export var sendData = (gl: WebGLRenderingContext, mapCount: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
+export var sendData = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
     var textureIndices = MapManagerData.textureIndices;
 
     for (let i = 0; i < mapCount; i++) {
         let textureIndex = textureIndices[i];
 
-        sendTextureData(gl, mapCount, shaderIndex, textureIndex, i, program, glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureData);
+        sendTextureData(gl, mapCount, shaderIndex, textureIndex, i + startIndex, program, glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureData);
     }
 }
 
