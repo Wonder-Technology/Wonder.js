@@ -1,4 +1,4 @@
-import { bindVAO } from "../../vao/VAOSystem";
+import { bindVAO } from "../../../vao/VAOSystem";
 
 export var init = (gl:any, DeferLightPassData:any) => {
     _setFullScreenQuadVAOData(gl, DeferLightPassData);

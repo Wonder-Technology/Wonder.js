@@ -13,5 +13,7 @@ module.exports.tsconfigFile = "src/tsconfig.json";
 
 
 module.exports.glslFilePaths = [
-    "src/renderer/shader/chunk/glsl/**/*.glsl"
+    "src/renderer/shader/chunk/glsl/**/*.glsl",
+    "src/renderer/webgl1/shader/chunk/glsl/**/*.glsl",
+    "src/renderer/webgl2/shader/chunk/glsl/**/*.glsl"
 ];

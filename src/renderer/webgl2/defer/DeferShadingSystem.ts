@@ -1,12 +1,14 @@
 import { bindGBufferTextures, init as initGBuffer, sendGBufferTextureData } from "./gbuffer/GBufferSystem";
 import { draw as deferDraw } from "./draw/DeferDrawRenderCommandBufferSystem";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../type/utilsType";
+import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import curry from "wonder-lodash/curry";
-import { RenderCommandBufferForDrawData } from "../type/dataType";
-import { getGL } from "../device/DeviceManagerSystem";
+import { RenderCommandBufferForDrawData } from "../../type/dataType";
+import { getGL } from "../../device/DeviceManagerSystem";
 import { init as initDeferLightPass } from "./light/DeferLightPassSystem";
 import { Map } from "immutable";
-import { getNoMaterialShaderIndex, use } from "../shader/ShaderSystem";
+import { getNoMaterialShaderIndex, use } from "../../shader/ShaderSystem";
+import { IShaderLibGenerator } from "../../data/shaderLib_generator";
+import { IMaterialConfig } from "../../data/material_config";
 
 export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:any, ProgramData, LocationData, GLSLSenderData) => {
     // create gbuffer shader, program
@@ -34,6 +36,6 @@ export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:a
     sendGBufferTextureData(gl, program);
 }
 
-export var draw = curry((state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), DataBufferConfig, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
+export var draw = curry((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
 })

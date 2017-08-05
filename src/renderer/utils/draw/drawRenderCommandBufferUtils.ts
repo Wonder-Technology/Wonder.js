@@ -159,81 +159,81 @@ export var draw = (gl: WebGLRenderingContext, state: Map<any, any>, DataBufferCo
     getMapCount,
     bindAndUpdate
 }, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    var {
-            TextureDataFromSystem,
-            TextureCacheDataFromSystem,
-            MapManagerDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            GeometryDataFromSystem,
-            ArrayBufferDataFromSystem,
-            IndexBufferDataFromSystem,
-            DrawRenderCommandBufferDataFromSystem
-        } = drawDataMap,
-        mat3Length = getMatrix3DataSize(),
-        mat4Length = getMatrix4DataSize(),
-        cameraPositionLength = getVector3DataSize(),
-        count = bufferData.count,
-        buffer: any = bufferData.buffer,
-        mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
-        vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
-        pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
-        cameraPositionForSend = DrawRenderCommandBufferDataFromSystem.cameraPositionForSend,
-        normalMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend,
-        {
-            mMatrices,
-            vMatrices,
-            pMatrices,
-            cameraPositions,
-            normalMatrices,
-            materialIndices,
-            shaderIndices,
-            geometryIndices
-        } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem),
-        program: WebGLProgram = null;
-
-    _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
-    _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
-    _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
-    _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
-
-    for (let i = 0; i < count; i++) {
-        let matStartIndex = 16 * i,
-            matEndIndex = matStartIndex + 16,
-            // shaderIndex = shaderIndices[i],
-            geometryIndex = geometryIndices[i],
-            materialIndex = materialIndices[i],
-            mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
-            drawMode = EDrawMode.TRIANGLES;
-
-        //todo move system method to utils
-       let shaderIndex = useShader(materialIndex, "GBuffer", state, initShaderDataMap);
-
-        program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
-
-        //todo refactor in front render
-        bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
-
-        sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
-
-        _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
-
-        ////todo move system method to utils: getNewTextureUnitIndex
-        // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
-        sendUniformData(gl, shaderIndex, program, mapCount, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
-
-        if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
-            bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
-
-            _drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);
-        }
-        else {
-            _drawArray(gl, geometryIndex, drawMode, getVerticesCount, GeometryDataFromSystem);
-        }
-    }
-
-    return state;
+    // var {
+    //         TextureDataFromSystem,
+    //         TextureCacheDataFromSystem,
+    //         MapManagerDataFromSystem,
+    //         ProgramDataFromSystem,
+    //         LocationDataFromSystem,
+    //         GLSLSenderDataFromSystem,
+    //         GeometryDataFromSystem,
+    //         ArrayBufferDataFromSystem,
+    //         IndexBufferDataFromSystem,
+    //         DrawRenderCommandBufferDataFromSystem
+    //     } = drawDataMap,
+    //     mat3Length = getMatrix3DataSize(),
+    //     mat4Length = getMatrix4DataSize(),
+    //     cameraPositionLength = getVector3DataSize(),
+    //     count = bufferData.count,
+    //     buffer: any = bufferData.buffer,
+    //     mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
+    //     vMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend,
+    //     pMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend,
+    //     cameraPositionForSend = DrawRenderCommandBufferDataFromSystem.cameraPositionForSend,
+    //     normalMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend,
+    //     {
+    //         mMatrices,
+    //         vMatrices,
+    //         pMatrices,
+    //         cameraPositions,
+    //         normalMatrices,
+    //         materialIndices,
+    //         shaderIndices,
+    //         geometryIndices
+    //     } = _createTypeArraysOnlyOnce(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem),
+    //     program: WebGLProgram = null;
+    //
+    // _updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
+    // _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
+    //
+    // for (let i = 0; i < count; i++) {
+    //     let matStartIndex = 16 * i,
+    //         matEndIndex = matStartIndex + 16,
+    //         // shaderIndex = shaderIndices[i],
+    //         geometryIndex = geometryIndices[i],
+    //         materialIndex = materialIndices[i],
+    //         mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
+    //         drawMode = EDrawMode.TRIANGLES;
+    //
+    //     //todo move system method to utils
+    //    let shaderIndex = useShader(materialIndex, "GBuffer", state, initShaderDataMap);
+    //
+    //     program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    //
+    //     //todo refactor in front render
+    //     bindAndUpdate(gl, mapCount, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+    //
+    //     sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+    //
+    //     _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
+    //
+    //     ////todo move system method to utils: getNewTextureUnitIndex
+    //     // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+    //     sendUniformData(gl, shaderIndex, program, mapCount, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
+    //
+    //     if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
+    //         bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
+    //
+    //         _drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);
+    //     }
+    //     else {
+    //         _drawArray(gl, geometryIndex, drawMode, getVerticesCount, GeometryDataFromSystem);
+    //     }
+    // }
+    //
+    // return state;
 }
 
 

@@ -4,7 +4,7 @@ import {
     MaterialWorkerData
 } from "./MaterialWorkerData";
 import { material_config } from "../../../data/material_config";
-import { shaderLib_generator } from "../../../data/shaderLib_generator";
+// import { shaderLib_generator } from "../../../data/shaderLib_generator";
 import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createTypeArrays as createTypeArraysUtils,

@@ -1,7 +1,7 @@
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import {
-    getContext, initCanvas, setX, setY, setStyleWidth, setStyleHeight,
+    initCanvas, setX, setY, setStyleWidth, setStyleHeight,
     setWidth, setHeight, setCanvas, getCanvas
 } from "../../../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";

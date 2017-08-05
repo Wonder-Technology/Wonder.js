@@ -200,15 +200,12 @@ export const material_config = {
 }
 
 export interface IMaterialConfig {
-    // materials: {
-    //     [materialClassName: string]: IMaterialContentConfig
-    // };
     shaders:{
         materialShaders:{
-            [shaderName: string]: Array<MaterialShaderLibConfig>
+            [shaderName: string]: MaterialShaderLibConfig
         };
         noMaterialShaders:{
-            [shaderName: string]: Array<MaterialShaderLibConfig>
+            [shaderName: string]: MaterialShaderLibConfig
         }
     };
     shaderLibGroups: IMaterialShaderLibGroup;

@@ -1,38 +1,39 @@
-// import {
-//     basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
-//     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
-//     // light_common, lightEnd_fragment,
-//     // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
-//     noShadowMap_fragment,
-//     noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
-//     noSpecularMap_fragment, noNormalMap_light_fragment,
-//     // light_fragment,
-//     map_forBasic_vertex,
-//     map_forBasic_fragment,
-//     diffuseMap_vertex, diffuseMap_fragment,
-//     specularMap_vertex, specularMap_fragment,
-//
-//     version,
-//
-//     // light_model_ubo,
-//     // common_ubo,
-//     gbuffer_common_vertex,
-//     gbuffer_common_fragment,
-//     gbuffer_setWorldPosition_vertex,
-//     gbuffer_vertex,
-//     gbuffer_fragment,
-//     gbuffer_end_fragment,
-//
-//     deferLightPass_common,
-//     deferLightPass_vertex,
-//     deferLightPass_fragment,
-//     deferLightPass_end_fragment
-//
-// } from "../shader/chunk/ShaderChunk";
+import {
+    basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
+    GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
+    // light_common, lightEnd_fragment,
+    // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
+    noShadowMap_fragment,
+    noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
+    noSpecularMap_fragment, noNormalMap_light_fragment,
+    // light_fragment,
+    map_forBasic_vertex,
+    map_forBasic_fragment,
+    diffuseMap_vertex, diffuseMap_fragment,
+    specularMap_vertex, specularMap_fragment,
+
+    version,
+
+    // light_model_ubo,
+    // common_ubo,
+    gbuffer_common_vertex,
+    gbuffer_common_fragment,
+    gbuffer_setWorldPosition_vertex,
+    gbuffer_vertex,
+    gbuffer_fragment,
+    gbuffer_end_fragment,
+
+    deferLightPass_common,
+    deferLightPass_vertex,
+    deferLightPass_fragment,
+    deferLightPass_end_fragment
+
+} from "../../shader/chunk/ShaderChunk";
 // import { setPos_mvp } from "../shader/snippet/ShaderSnippet";
 // import { UniformCacheMap, UniformLocationMap } from "../type/dataType";
 // import { set } from "../../utils/typeArrayUtils";
-
+// import { IShaderLibConfig } from "../../data/shaderLib_generator";
+//
 // var _lightDefineList = [
 //     {
 //         "name": "DIRECTION_LIGHTS_COUNT",
@@ -984,14 +985,76 @@
 //     }
 // }
 
-export interface IShaderLibGenerator {
-    // shaderLibs: IShaderLibContentGenerator
-    shaderLibs: any
+export interface IWebGL1ShaderLibContentGenerator {
+    [shaderLibName: string]: IWebGL1ShaderLibConfig
 }
 
-// export interface IShaderLibContentGenerator {
-//     [shaderLibName: string]: IShaderLibConfig
-// }
-//
-// export interface IShaderLibConfig {
-// }
+export interface IWebGL1ShaderLibConfig{
+    glsl?: {
+        vs?: IWebGL1GLSLConfig,
+        fs?: IWebGL1GLSLConfig,
+        func?: (materialIWebGL1ndex: number) => IWebGL1GLSLFuncConfig | null
+    },
+    send?: IWebGL1ShaderLibSendConfig
+}
+
+export interface IWebGL1GLSLConfig {
+    source?: GLSLChunk;
+    top?: string;
+    varDeclare?: string;
+    funcDeclare?: string;
+    funcDefine?: string;
+    body?: string;
+    define?: string;
+    defineList?: Array<IWebGL1GLSLDefineListIWebGL1tem>;
+
+    //todo support extension
+    // extension?:string,
+}
+
+export interface IWebGL1GLSLFuncConfig {
+    vs?: IWebGL1GLSLFuncGLSLConfig,
+    fs?: IWebGL1GLSLFuncGLSLConfig
+}
+
+export interface IWebGL1GLSLFuncGLSLConfig {
+    top?: string;
+    varDeclare?: string;
+    funcDeclare?: string;
+    funcDefine?: string;
+    body?: string;
+    define?: string;
+}
+
+export interface IWebGL1GLSLDefineListIWebGL1tem {
+    name: string;
+    valueFunc?: Function;
+}
+
+export interface IWebGL1ShaderLibSendConfig {
+    attribute?: Array<IWebGL1SendAttributeConfig>;
+    uniform?: Array<IWebGL1SendUniformConfig>;
+    uniformDefine?: Array<IWebGL1DefineUniformConfig>;
+    uniformFunc?: Function;
+}
+
+export interface IWebGL1SendAttributeConfig {
+    name: string;
+    buffer: "vertex" | "normal" | "texCoord";
+    type: "vec2" | "vec3";
+}
+
+export type WebGL1UniformType = "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
+
+export interface IWebGL1DefineUniformConfig {
+    name: string;
+    type: WebGL1UniformType;
+}
+
+export interface IWebGL1SendUniformConfig {
+    name: string;
+    field: string;
+    type: WebGL1UniformType;
+    fieldType?: "structure";
+    from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
+}

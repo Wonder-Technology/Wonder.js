@@ -1,6 +1,7 @@
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import {
-    getContext, setCanvas, setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX
+    setCanvas, setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX, getWebgl2Context,
+    getWebgl1Context
 } from "../../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
@@ -14,24 +15,44 @@ import {
     setScreen as setScreenUtils, setSide as setSideUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/device/deviceManagerUtils";
+import { Log } from "../../utils/Log";
+import { EWebGLVersion } from "./EWebGLVersion";
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
 
+export var isWebgl1 = (DeviceManagerData:any) => DeviceManagerData.webglVersion === EWebGLVersion.WEBGL1;
+
+export var isWebgl2 = (DeviceManagerData:any) => DeviceManagerData.webglVersion === EWebGLVersion.WEBGL2;
+
 export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = _getOnlyGL(canvas, contextConfig);
+        var gl = _getOnlyGL(canvas, contextConfig, DeviceManagerData);
 
         return compose(setCanvas(canvas), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
 })
 
-var _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
-    var gl = getContext(contextConfig, canvas);
+var _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData:any) => {
+    //todo test
+    //todo pass worker
+    var gl = getWebgl2Context(contextConfig, canvas);
 
     if (!gl) {
-        DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        gl = getWebgl1Context(contextConfig, canvas);
 
-        return null;
+        if(!gl){
+            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+
+            return null;
+        }
+        else{
+            Log.log("use webgl1");
+            DeviceManagerData.webglVersion = EWebGLVersion.WEBGL1;
+        }
+    }
+    else{
+        Log.log("use webgl2");
+        DeviceManagerData.webglVersion = EWebGLVersion.WEBGL2;
     }
 
     return gl;

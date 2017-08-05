@@ -1,5 +1,6 @@
-import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
 import { EBufferType } from "../enum/EBufferType";
+import { IWebGL1SendAttributeConfig, IWebGL1SendUniformConfig } from "../webgl1/data/shaderLib_generator";
+import { IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig } from "../webgl2/data/shaderLib_generator";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
@@ -21,12 +22,13 @@ export type UniformShaderLocationMap = {
     [name: string]: WebGLUniformLocation;
 }
 
+//todo separate?
 export type SendAttributeConfigMap = {
-    [index: number]: Array<ISendAttributeConfig>
+    [index: number]: Array<IWebGL1SendAttributeConfig | IWebGL2SendAttributeConfig>
 }
 
 export type SendUniformConfigMap = {
-    [index: number]: Array<ISendUniformConfig>
+    [index: number]: Array<IWebGL1SendUniformConfig | IWebGL2SendUniformConfig>
 }
 
 export type SendUniformFuncConfigMap = {

@@ -59,21 +59,6 @@ export var disableVertexAttribArray = requireCheckFunc((gl: WebGLRenderingContex
     GLSLSenderDataFromSystem.vertexAttribHistory = [];
 })
 
-export var getMaterialShaderLibConfig = ensureFunc((shaderLibConfig:MaterialShaderLibConfig, shaderName: string, material_config: IMaterialConfig) => {
-    it("shaderLib config should be array", () => {
-        expect(shaderLibConfig).exist;
-        expect(shaderLibConfig).be.a("array");
-    });
-}, requireCheckFunc((shaderName: string, material_config: IMaterialConfig) => {
-    // var materialData = material_config.materials[materialClassName];
-    //
-    // it("materialClassName should be defined", () => {
-    //     expect(materialData).exist;
-    // })
-}, (shaderName: string, material_config: IMaterialConfig) => {
-    return material_config.shaders.materialShaders[shaderName];
-}))
-
 export var registerProgram = (shaderIndex: number, ProgramDataFromSystem: any, program: WebGLProgram) => {
     ProgramDataFromSystem.programMap[shaderIndex] = program;
 }

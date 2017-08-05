@@ -28,33 +28,33 @@
 
 
 
-import { RenderCommandBufferForDrawData } from "../../type/dataType";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../type/utilsType";
+import { RenderCommandBufferForDrawData } from "../../../type/dataType";
+import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
 import {
     bindGBuffer, bindGBufferTextures, getNewTextureUnitIndex, sendGBufferTextureData,
     unbindGBuffer
 } from "../gbuffer/GBufferSystem";
 import {
     bindIndexBuffer, getNoMaterialShaderIndex, sendAttributeData, sendUniformData, use
-} from "../../shader/ShaderSystem";
+} from "../../../shader/ShaderSystem";
 import { drawFullScreenQuad, sendAttributeData as sendDeferLightPassAttributeData } from "../light/DeferLightPassSystem";
-import { directlySendUniformData } from "../../utils/shader/program/programUtils";
-import { getIndexType, getIndicesCount, hasIndices, getIndexTypeSize, getVerticesCount } from "../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount } from "../../texture/MapManagerSystem";
+import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
+import { getIndexType, getIndicesCount, hasIndices, getIndexTypeSize, getVerticesCount } from "../../../../component/geometry/GeometrySystem";
+import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
 import {
     getUniformData, sendFloat1, sendFloat3, sendInt, sendMatrix3, sendMatrix4,
     sendVector3
-} from "../../shader/glslSender/GLSLSenderSystem";
-import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
-import { GameObjectData } from "../../../core/entityObject/gameObject/GameObjectData";
-import { unbindVAO } from "../../vao/VAOSystem";
-import { EDrawMode } from "../../enum/EDrawMode";
-import { useShader } from "../../../component/material/MaterialSystem";
-import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
-import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
-import { createTypeArrays } from "../../utils/draw/renderComandBufferUtils";
-import { ELightModel } from "../../../component/material/ELightModel";
-import { sendData } from "../../utils/texture/mapManagerUtils";
+} from "../../../shader/glslSender/GLSLSenderSystem";
+import { ThreeDTransformData } from "../../../../component/transform/ThreeDTransformData";
+import { GameObjectData } from "../../../../core/entityObject/gameObject/GameObjectData";
+import { unbindVAO } from "../../../vao/VAOSystem";
+import { EDrawMode } from "../../../enum/EDrawMode";
+import { useShader } from "../../../../component/material/MaterialSystem";
+import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../utils/typeArrayUtils";
+import { BufferUtilsForUnitTest } from "../../../../utils/BufferUtilsForUnitTest";
+import { createTypeArrays } from "../../../utils/draw/renderComandBufferUtils";
+import { ELightModel } from "../../../../component/material/ELightModel";
+import { sendData } from "../../../utils/texture/mapManagerUtils";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../component/light/AmbientLightSystem";
 // import {
 //     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
@@ -66,7 +66,9 @@ import {
     getPosition as getPointLightPosition,
     getColorArr3 as getPointLightColorArr3,
     getIntensity as getPointLightIntensity
-} from "../../../component/light/PointLightSystem";
+} from "../../../../component/light/PointLightSystem";
+import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
+import { IMaterialConfig } from "../../../data/material_config";
 
 export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
     return {
@@ -75,10 +77,9 @@ export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFrom
     }
 }
 
-export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+export var draw = (gl:any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     //todo refactor DeviceManagerSystem->clear
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
 
 
 
@@ -135,11 +136,11 @@ export var draw = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, defe
 
 
 
-    _drawGBufferPass(gl, DataBufferConfig, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
+    _drawGBufferPass(gl, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
     _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
 };
 
-var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap, {
+var _drawGBufferPass = (gl:any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, {
     GBufferDataFromSystem
 }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
             mMatrices,
@@ -266,8 +267,7 @@ var _drawGBufferPass = (gl:any, DataBufferConfig: any, drawDataMap: DrawDataMap,
             mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
             drawMode = EDrawMode.TRIANGLES;
 
-        //todo move system method to utils
-        let shaderIndex = useShader(materialIndex, "GBuffer", state, initShaderDataMap);
+        let shaderIndex = useShader(materialIndex, "GBuffer", state, material_config, shaderLib_generator, initMaterialShader, initShaderDataMap);
 
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 

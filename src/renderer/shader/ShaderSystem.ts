@@ -1,6 +1,8 @@
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
-    bindIndexBuffer as bindIndexBufferUtils, initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils, sendAttributeData as sendAttributeDataUtils,
+    bindIndexBuffer as bindIndexBufferUtils,
+    // initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils,
+    sendAttributeData as sendAttributeDataUtils,
     sendUniformData as sendUniformDataUtils,
     use as useUtils
 } from "../utils/shader/shaderUtils";
@@ -8,7 +10,7 @@ import { getIndices, getNormals, getTexCoords, getVertices } from "../../compone
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
 import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../type/dataType";
-import { buildGLSLSource } from "./shaderSourceBuildSystem";
+// import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { getGL } from "../device/DeviceManagerSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../data/material_config";
 import { IShaderLibGenerator } from "../data/shaderLib_generator";
@@ -54,9 +56,9 @@ export var getNoMaterialShaderIndex = (shaderName: string, ShaderData: any) => {
     return ShaderData.shaderIndexMap[shaderName];
 }
 
-export var initNoMaterialShader = null;
-
-export var initMaterialShader = null;
+// export var initNoMaterialShader = null;
+//
+// export var initMaterialShader = null;
 
 export var sendAttributeData = null;
 
@@ -67,23 +69,23 @@ export var bindIndexBuffer = null;
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
-        initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
-    };
+    // initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, addSendAttributeConfig:Function, addSendUniformConfig:Function, initShaderDataMap: InitShaderDataMap) => {
+    //     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, addSendAttributeConfig, addSendUniformConfig, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    // };
+    //
+    // initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, addSendAttributeConfig:Function, addSendUniformConfig:Function, initShaderDataMap: InitShaderDataMap) => {
+    //     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, addSendAttributeConfig, addSendUniformConfig, _buildInitShaderFuncDataMap(), initShaderDataMap);
+    // };
 
-    initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
-        return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
-    };
-
-    var _buildInitShaderFuncDataMap = () => {
-        return {
-            buildGLSLSource: buildGLSLSource,
-            getGL: getGL,
-            getMapCount: getMapCount,
-            hasSpecularMap: hasSpecularMap,
-            hasDiffuseMap: hasDiffuseMap
-        }
-    }
+    // var _buildInitShaderFuncDataMap = () => {
+    //     return {
+    //         buildGLSLSource: buildGLSLSource,
+    //         getGL: getGL,
+    //         getMapCount: getMapCount,
+    //         hasSpecularMap: hasSpecularMap,
+    //         hasDiffuseMap: hasDiffuseMap
+    //     }
+    // }
 
     sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
         getVertices: getVertices,
