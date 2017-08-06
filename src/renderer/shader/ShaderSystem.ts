@@ -11,26 +11,26 @@ import { getAttribLocation, isAttributeLocationNotExist } from "./location/Locat
 import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../type/dataType";
 // import { buildGLSLSource } from "./shaderSourceBuildSystem";
-import { getGL } from "../device/DeviceManagerSystem";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../data/material_config";
-import { IShaderLibGenerator } from "../data/shaderLib_generator";
-import { Map } from "immutable";
+// import { getGL } from "../device/DeviceManagerSystem";
+// import { IMaterialConfig, MaterialShaderLibConfig } from "../webgl1/data/material_config";
+// import { IShaderLibGenerator } from "../data/shaderLib_generator";
+// import { Map } from "immutable";
 import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../type/utilsType";
-import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
-import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
-import {
-    getColorArr3 as getDirectionLightColorArr3, getIntensity,
-    getPosition as getDirectionLightPosition,
-} from "../../component/light/DirectionLightSystem";
-import {
-    getPosition as getPointLightPosition,
-    getColorArr3 as getPointLightColorArr3, getConstant,
-    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
-} from "../../component/light/PointLightSystem";
-import { getMapCount } from "../texture/MapManagerSystem";
+// import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
+// import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
+// import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
+// import {
+//     getColorArr3 as getDirectionLightColorArr3, getIntensity,
+//     getPosition as getDirectionLightPosition,
+// } from "../../component/light/DirectionLightSystem";
+// import {
+//     getPosition as getPointLightPosition,
+//     getColorArr3 as getPointLightColorArr3, getConstant,
+//     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
+// } from "../../component/light/PointLightSystem";
+// import { getMapCount } from "../texture/MapManagerSystem";
 import { createMap } from "../../utils/objectUtils";
-import { hasDiffuseMap, hasSpecularMap } from "../utils/material/lightMaterialUtils";
+// import { hasDiffuseMap, hasSpecularMap } from "../utils/material/lightMaterialUtils";
 
 // export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
 export var create = (ShaderData: any) => {

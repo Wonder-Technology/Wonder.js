@@ -1,16 +1,17 @@
 import {
-    basic_materialColor_fragment, end_basic_fragment, common_define, common_fragment, common_function, common_vertex,
+    // basic_materialColor_fragment, end_basic_fragment,
+    common_define, common_fragment, common_function, common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
     // light_common, lightEnd_fragment,
     // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
-    noShadowMap_fragment,
-    noDiffuseMap_fragment, noEmissionMap_fragment, noLightMap_fragment, noNormalMap_fragment, noNormalMap_vertex,
-    noSpecularMap_fragment, noNormalMap_light_fragment,
+    webgl2_noShadowMap_fragment,
+    webgl2_noDiffuseMap_fragment, webgl2_noEmissionMap_fragment, webgl2_noLightMap_fragment, webgl2_noNormalMap_fragment, webgl2_noNormalMap_vertex,
+    webgl2_noSpecularMap_fragment, webgl2_noNormalMap_light_fragment,
     // light_fragment,
-    map_forBasic_vertex,
-    map_forBasic_fragment,
-    diffuseMap_vertex, diffuseMap_fragment,
-    specularMap_vertex, specularMap_fragment,
+    // map_forBasic_vertex,
+    // map_forBasic_fragment,
+    webgl2_diffuseMap_vertex, webgl2_diffuseMap_fragment,
+    webgl2_specularMap_vertex, webgl2_specularMap_fragment,
 
     version,
 
@@ -29,31 +30,8 @@ import {
     deferLightPass_end_fragment
 
 } from "../../shader/chunk/ShaderChunk";
-// import { setPos_mvp } from "../../shader/snippet/ShaderSnippet";
-// import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
-// import { set } from "../../../utils/typeArrayUtils";
-// import { IShaderLibConfig } from "../../data/shaderLib_generator";
 
-var _lightDefineList = [
-    {
-        "name": "DIRECTION_LIGHTS_COUNT",
-        "valueFunc": ({
-                          DirectionLightDataFromSystem
-                      }) => {
-            return DirectionLightDataFromSystem.count;
-        }
-    },
-    {
-        "name": "POINT_LIGHTS_COUNT",
-        "valueFunc": ({
-                          PointLightDataFromSystem
-                      }) => {
-            return PointLightDataFromSystem.count;
-        }
-    }
-]
-
-export const shaderLib_generator = {
+export const webgl2_shaderLib_generator = {
     "shaderLibs": {
         "CommonShaderLib": {
             "glsl": {
@@ -303,10 +281,10 @@ export const shaderLib_generator = {
         "DiffuseMapShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": diffuseMap_vertex
+                    "source": webgl2_diffuseMap_vertex
                 },
                 "fs": {
-                    "source": diffuseMap_fragment
+                    "source": webgl2_diffuseMap_fragment
                 }
             },
             "send": {
@@ -321,7 +299,7 @@ export const shaderLib_generator = {
         "NoDiffuseMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": noDiffuseMap_fragment
+                    "source": webgl2_noDiffuseMap_fragment
                 }
             },
             "send": {
@@ -338,10 +316,10 @@ export const shaderLib_generator = {
         "SpecularMapShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": specularMap_vertex
+                    "source": webgl2_specularMap_vertex
                 },
                 "fs": {
-                    "source": specularMap_fragment
+                    "source": webgl2_specularMap_fragment
                 }
             },
             "send": {
@@ -356,7 +334,7 @@ export const shaderLib_generator = {
         "NoSpecularMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": noSpecularMap_fragment
+                    "source": webgl2_noSpecularMap_fragment
                 }
             }
         },
@@ -387,11 +365,11 @@ export const shaderLib_generator = {
         "GBufferNoNormalMapShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": noNormalMap_vertex
+                    "source": webgl2_noNormalMap_vertex
                 },
                 "fs": {
-                    "source": noNormalMap_fragment,
-                    "varDeclare": noNormalMap_light_fragment.varDeclare,
+                    "source": webgl2_noNormalMap_fragment,
+                    "varDeclare": webgl2_noNormalMap_light_fragment.varDeclare,
                 }
             }
         },
@@ -460,14 +438,14 @@ export const shaderLib_generator = {
         "NoLightMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": noLightMap_fragment
+                    "source": webgl2_noLightMap_fragment
                 }
             }
         },
         "NoEmissionMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": noEmissionMap_fragment
+                    "source": webgl2_noEmissionMap_fragment
                 }
             }
             // "send": {
@@ -484,7 +462,7 @@ export const shaderLib_generator = {
         "NoShadowMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": noShadowMap_fragment
+                    "source": webgl2_noShadowMap_fragment
                 }
             }
         },
@@ -492,7 +470,7 @@ export const shaderLib_generator = {
         "DeferLightPassNoNormalMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "funcDefine": noNormalMap_light_fragment.funcDefine
+                    "funcDefine": webgl2_noNormalMap_light_fragment.funcDefine
                 }
             }
         },

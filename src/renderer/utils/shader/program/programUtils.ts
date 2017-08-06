@@ -1,6 +1,5 @@
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../../data/material_config";
 import { EVariableType } from "../../../enum/EVariableType";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";

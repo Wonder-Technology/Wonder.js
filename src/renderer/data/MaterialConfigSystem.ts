@@ -1,6 +1,6 @@
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { IMaterialConfig, MaterialShaderLibConfig } from "./material_config";
 import { expect } from "wonder-expect.js";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 
 export var getMaterialShaderLibConfig = ensureFunc((shaderLibConfig:MaterialShaderLibConfig, shaderName: string, material_config: IMaterialConfig) => {
     it("shaderLib config should be array", () => {

@@ -21,7 +21,6 @@ import {
     getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { IMaterialConfig } from "../../renderer/data/material_config";
 import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
 import { ProgramData } from "../../renderer/shader/program/ProgramData";
@@ -63,6 +62,7 @@ import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/
 import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
+import { IMaterialConfig } from "../../renderer/data/material_config";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);

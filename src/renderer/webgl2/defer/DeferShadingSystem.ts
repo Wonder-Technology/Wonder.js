@@ -37,5 +37,5 @@ export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:a
 }
 
 export var draw = curry((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
+    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
 })

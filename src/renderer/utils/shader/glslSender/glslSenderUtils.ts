@@ -4,7 +4,6 @@ import { isConfigDataExist } from "../../renderConfigUtils";
     // ISendAttributeConfig, ISendUniformConfig,
     // IShaderLibContentGenerator
 // } from "../../../data/shaderLib_generator";
-import { MaterialShaderLibConfig } from "../../../data/material_config";
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../utils/objectUtils";

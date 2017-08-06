@@ -1,15 +1,15 @@
 import { addSendAttributeConfig, addSendUniformConfig } from "./shader/glslSender/glslSenderUtils";
-import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../data/shaderLib_generator";
+import { IWebGL1ShaderLibConfig, IWebGL1ShaderLibContentGenerator } from "../data/shaderLib_generator";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 import { Map } from "immutable";
 import { isValidMapValue } from "../../../utils/objectUtils";
 import { getProgram, initShader, isProgramExist, registerProgram } from "../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "./shader/shaderSourceBuildUtils";
-import { getMaterialShaderLibConfig } from "../../webgl1/data/MaterialConfigSystem";
+import { getMaterialShaderLibConfig } from "../data/MaterialConfigSystem";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 
-export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         } = initShaderDataMap,
@@ -18,11 +18,11 @@ export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, mate
     _setShaderIndexMap(shaderName, shaderIndex, ShaderDataFromSystem);
 }
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex:number, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var initMaterialShader = (state: Map<any, any>, materialIndex:number, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return _init(state, materialIndex, getMaterialShaderLibConfig(shaderName, material_config), material_config, shaderLib_generator, initShaderFuncDataMap, initShaderDataMap);
 }
 
-var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
             DeviceManagerDataFromSystem,
@@ -30,11 +30,10 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
             LocationDataFromSystem,
             GLSLSenderDataFromSystem
         } = initShaderDataMap,
-        // materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
         shaderIndex = _genereateShaderIndex(materialShaderLibNameArr, ShaderDataFromSystem),
         program = getProgram(shaderIndex, ProgramDataFromSystem),
-        shaderLibDataFromSystem: IWebGL2ShaderLibConfig = null,
+        shaderLibDataFromSystem: IWebGL1ShaderLibConfig = null,
         gl = null;
 
     if (isProgramExist(program)) {
@@ -55,7 +54,6 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     registerProgram(shaderIndex, ProgramDataFromSystem, program);
     initShader(program, vsSource, fsSource, gl);
 
-    // setLocationMap(gl, shaderIndex, program, materialShaderLibNameArr, shaderLibDataFromSystem, LocationDataFromSystem);
     setEmptyLocationMap(shaderIndex, LocationDataFromSystem);
 
     addSendAttributeConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);

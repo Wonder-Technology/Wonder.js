@@ -1,6 +1,6 @@
 import { isConfigDataExist } from "../../../utils/renderConfigUtils";
 import { main_begin, main_end } from "../../../shader/snippet/ShaderSnippet";
-import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment, version } from "../../../shader/chunk/ShaderChunk";
+import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment } from "../../../shader/chunk/ShaderChunk";
 import { ExtendUtils } from "Wonder-CommonLib/dist/es2015/utils/ExtendUtils";
 import { EGPUPrecision, GPUDetector } from "../../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
@@ -11,20 +11,20 @@ import { BuildGLSLSourceFuncFuncDataMap } from "../../../type/dataType";
 import { isString } from "../../../../utils/JudgeUtils";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../type/utilsType";
 import {
-    IWebGL2DefineUniformConfig,
-    IWebGL2GLSLConfig, IWebGL2GLSLDefineListItem, IWebGL2GLSLFuncConfig, IWebGL2SendAttributeConfig,
-    IWebGL2SendUniformConfig,
-    IWebGL2ShaderLibContentGenerator
+    IWebGL1GLSLConfig, IWebGL1GLSLDefineListItem, IWebGL1GLSLFuncConfig, IWebGL1SendAttributeConfig,
+    IWebGL1SendUniformConfig,
+    IWebGL1ShaderLibContentGenerator
 } from "../../data/shaderLib_generator";
+import { IWebGL1DefineUniformConfig } from "../../../webgl1/data/shaderLib_generator";
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
         })
     });
-}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+}, (materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var vsTop: string = "",
         vsDefine: string = "",
         vsVarDeclare: string = "",
@@ -40,7 +40,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         fsBody: string = "";
     // fsDefineList:Array<IGLSLDefineListItem> = [];
 
-    var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL2GLSLConfig) => {
+    var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
         vsDefine += _buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
         vsVarDeclare += getGLSLPartData(vs, "varDeclare");
@@ -48,7 +48,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         vsFuncDefine += getGLSLPartData(vs, "funcDefine");
         vsBody += getGLSLPartData(vs, "body");
     },
-        _setFs = (getGLSLPartData: Function, getGLSLDefineListData: Function, fs: IWebGL2GLSLConfig) => {
+        _setFs = (getGLSLPartData: Function, getGLSLDefineListData: Function, fs: IWebGL1GLSLConfig) => {
             fsTop += getGLSLPartData(fs, "top");
             fsDefine += _buildSourceDefine(getGLSLDefineListData(fs), initShaderDataMap) + getGLSLPartData(fs, "define");
             fsVarDeclare += getGLSLPartData(fs, "varDeclare");
@@ -60,17 +60,17 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += main_begin;
     fsBody += main_begin;
 
-    //todo separate #version (webgl1/webgl2)
+    ////todo separate #version (webgl1/webgl2)
 
-    vsTop += version.top;
+    // vsTop += version.top;
 
-    fsTop += version.top;
+    // fsTop += version.top;
     fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var glslData = shaderLibData[shaderLibName].glsl,
-            vs: IWebGL2GLSLConfig = null,
-            fs: IWebGL2GLSLConfig = null,
+            vs: IWebGL1GLSLConfig = null,
+            fs: IWebGL1GLSLConfig = null,
             func: Function = null;
 
         if (!isConfigDataExist(glslData)) {
@@ -90,7 +90,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         }
 
         if (isConfigDataExist(func)) {
-            let funcConfig: IWebGL2GLSLFuncConfig = func(materialIndex, funcDataMap, initShaderDataMap);
+            let funcConfig: IWebGL1GLSLFuncConfig = func(materialIndex, funcDataMap, initShaderDataMap);
 
             if (isConfigDataExist(funcConfig)) {
                 let vs = funcConfig.vs,
@@ -114,8 +114,8 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += main_end;
     fsBody += main_end;
 
-    //todo restore and separate(webgl1/webgl2)
-    // vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
+    ////todo restore and separate(webgl1/webgl2)
+    vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
     vsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
     fsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
 
@@ -173,7 +173,7 @@ var _getEmptyFuncGLSLConfig = () => {
     }
 }
 
-var _buildSourceDefine = (defineList: Array<IWebGL2GLSLDefineListItem>, initShaderDataMap: InitShaderDataMap) => {
+var _buildSourceDefine = (defineList: Array<IWebGL1GLSLDefineListItem>, initShaderDataMap: InitShaderDataMap) => {
     var result = "";
 
     for (let item of defineList) {
@@ -210,7 +210,7 @@ var _getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk
     return result;
 }
 
-var _getGLSLPartData = (glslConfig: IWebGL2GLSLConfig, partName: string) => {
+var _getGLSLPartData = (glslConfig: IWebGL1GLSLConfig, partName: string) => {
     var partConfig = glslConfig[partName];
 
     if (isConfigDataExist(partConfig)) {
@@ -224,7 +224,7 @@ var _getGLSLPartData = (glslConfig: IWebGL2GLSLConfig, partName: string) => {
 }
 
 
-var _getGLSLDefineListData = (glslConfig: IWebGL2GLSLConfig) => {
+var _getGLSLDefineListData = (glslConfig: IWebGL1GLSLConfig) => {
     var partConfig = glslConfig.defineList;
 
     if (isConfigDataExist(partConfig)) {
@@ -234,11 +234,11 @@ var _getGLSLDefineListData = (glslConfig: IWebGL2GLSLConfig) => {
     return [];
 }
 
-var _getFuncGLSLPartData = (glslConfig: IWebGL2GLSLConfig, partName: string) => {
+var _getFuncGLSLPartData = (glslConfig: IWebGL1GLSLConfig, partName: string) => {
     return glslConfig[partName];
 }
 
-var _getFuncGLSLDefineListData = (glslConfig: IWebGL2GLSLConfig) => {
+var _getFuncGLSLDefineListData = (glslConfig: IWebGL1GLSLConfig) => {
     return glslConfig.defineList;
 }
 
@@ -246,7 +246,7 @@ var _isInSource = (key: string, source: string) => {
     return source.indexOf(key) > -1;
 }
 
-var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator) => {
+var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator) => {
     var result = "";
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
@@ -259,7 +259,7 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
 
         attributeData = sendData.attribute;
 
-        forEach(attributeData, (data: IWebGL2SendAttributeConfig) => {
+        forEach(attributeData, (data: IWebGL1SendAttributeConfig) => {
             result += `attribute ${data.type} ${data.name};\n`;
         });
     });
@@ -267,7 +267,7 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
     return result;
 }
 
-var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
+var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
             forEachArray(({ name, type }) => {
@@ -280,8 +280,8 @@ var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLib
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
-            uniform: Array<IWebGL2SendUniformConfig> = null,
-            uniformDefine: Array<IWebGL2DefineUniformConfig> = null;
+            uniform: Array<IWebGL1SendUniformConfig> = null,
+            uniformDefine: Array<IWebGL1DefineUniformConfig> = null;
 
         if (!isConfigDataExist(sendData)) {
             return;

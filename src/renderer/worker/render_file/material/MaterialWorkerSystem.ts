@@ -3,7 +3,7 @@ import {
     BasicMaterialInitWorkerData, LightMaterialInitWorkerData, MaterialInitWorkerData,
     MaterialWorkerData
 } from "./MaterialWorkerData";
-import { material_config } from "../../../data/material_config";
+// import { material_config } from "../../../webgl1/data/material_config";
 // import { shaderLib_generator } from "../../../data/shaderLib_generator";
 import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {

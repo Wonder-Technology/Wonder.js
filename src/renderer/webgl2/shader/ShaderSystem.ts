@@ -4,7 +4,6 @@
 
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../../device/WorkerDetectSystem";
 import { Map } from "immutable";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config";
 import { IWebGL2ShaderLibContentGenerator } from "../data/shaderLib_generator";
 import { InitShaderDataMap } from "../../type/utilsType";
 import { getGL } from "../../device/DeviceManagerSystem";
@@ -12,6 +11,7 @@ import { getMapCount } from "../../texture/MapManagerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../utils/material/lightMaterialUtils";
 import { initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils } from "../utils/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
+import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config";
 
 export var initNoMaterialShader = null;
 

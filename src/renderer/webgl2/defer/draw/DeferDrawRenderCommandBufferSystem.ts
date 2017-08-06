@@ -68,6 +68,7 @@ import {
     getIntensity as getPointLightIntensity
 } from "../../../../component/light/PointLightSystem";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
+import { Map } from "immutable";
 import { IMaterialConfig } from "../../../data/material_config";
 
 export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
@@ -77,7 +78,7 @@ export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFrom
     }
 }
 
-export var draw = (gl:any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     //todo refactor DeviceManagerSystem->clear
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -136,11 +137,11 @@ export var draw = (gl:any, material_config:IMaterialConfig, shaderLib_generator:
 
 
 
-    _drawGBufferPass(gl, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
+    _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
     _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
 };
 
-var _drawGBufferPass = (gl:any, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, {
+var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, {
     GBufferDataFromSystem
 }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
             mMatrices,
@@ -214,7 +215,6 @@ var _drawGBufferPass = (gl:any, material_config:IMaterialConfig, shaderLib_gener
 
 
 
-    var state = null;
 
 
 
@@ -277,8 +277,8 @@ var _drawGBufferPass = (gl:any, material_config:IMaterialConfig, shaderLib_gener
 
         ////todo move system method to utils: getNewTextureUnitIndex
         // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
-        let uniformLocationMap = drawDataMap.LocationDataFromSystem.uniformLocationMap[shaderIndex],
-            uniformCacheMap = drawDataMap.GLSLSenderDataFromSystem.uniformCacheMap;
+        let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
+            uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
 
         sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);

@@ -1,4 +1,3 @@
-import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 // import {
 //     IShaderLibContentGenerator,
 //     IShaderLibGenerator
@@ -15,8 +14,6 @@ import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
 import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap, SendUniformDataDataMap } from "../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 // import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
-import { setEmptyLocationMap } from "./location/locationUtils";
-import { isValidMapValue } from "../../../utils/objectUtils";
 
 // export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, addSendAttributeConfig:Function, addSendUniformConfig:Function, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
 //     var {

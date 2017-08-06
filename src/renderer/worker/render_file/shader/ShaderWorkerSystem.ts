@@ -11,7 +11,6 @@ import {
     sendVector3
 } from "./glslSender/GLSLSenderWorkerSystem";
 import { MaterialDataMap, RenderCommandUniformData } from "../../../type/dataType";
-import { IMaterialConfig } from "../../../data/material_config";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { Map } from "immutable";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
@@ -30,6 +29,7 @@ import {
 import { getMapCount } from "../texture/MapManagerWorkerSystem";
 import { createMap } from "../../../../utils/objectUtils";
 import { hasDiffuseMap, hasSpecularMap } from "../../../utils/material/lightMaterialUtils";
+import { IMaterialConfig } from "../../../data/material_config";
 
 export var init = (state: Map<any, any>, materialIndex: number, materialClassName: string, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initShaderDataMap: InitShaderDataMap) => {
     //todo fix
