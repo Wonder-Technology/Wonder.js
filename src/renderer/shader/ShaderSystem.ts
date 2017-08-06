@@ -16,18 +16,18 @@ import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from ".
 // import { IShaderLibGenerator } from "../data/shaderLib_generator";
 // import { Map } from "immutable";
 import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../type/utilsType";
-// import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
-// import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-// import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
-// import {
-//     getColorArr3 as getDirectionLightColorArr3, getIntensity,
-//     getPosition as getDirectionLightPosition,
-// } from "../../component/light/DirectionLightSystem";
-// import {
-//     getPosition as getPointLightPosition,
-//     getColorArr3 as getPointLightColorArr3, getConstant,
-//     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
-// } from "../../component/light/PointLightSystem";
+import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
+import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
+import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
+import {
+    getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
+    getPosition as getDirectionLightPosition,
+} from "../../component/light/DirectionLightSystem";
+import {
+    getPosition as getPointLightPosition,
+    getColorArr3 as getPointLightColorArr3, getConstant,
+    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
+} from "../../component/light/PointLightSystem";
 // import { getMapCount } from "../texture/MapManagerSystem";
 import { createMap } from "../../utils/objectUtils";
 // import { hasDiffuseMap, hasSpecularMap } from "../utils/material/lightMaterialUtils";
@@ -68,6 +68,8 @@ export var bindIndexBuffer = null;
 
 export var use = null;
 
+export var buildSendUniformDataDataMap = null;
+
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     // initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, addSendAttributeConfig:Function, addSendUniformConfig:Function, initShaderDataMap: InitShaderDataMap) => {
     //     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, addSendAttributeConfig, addSendUniformConfig, _buildInitShaderFuncDataMap(), initShaderDataMap);
@@ -102,6 +104,49 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     use = useUtils;
+
+    buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
+        return {
+            glslSenderData: {
+                getUniformData: getUniformData,
+                sendMatrix3: sendMatrix3,
+                sendMatrix4: sendMatrix4,
+                sendVector3: sendVector3,
+                sendInt: sendInt,
+                sendFloat1: sendFloat1,
+                sendFloat3: sendFloat3,
+
+                GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
+            },
+            ambientLightData: {
+                getColorArr3: getAmbientLightColorArr3,
+
+                AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
+            },
+            directionLightData: {
+                getPosition: (index: number) => {
+                    return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+                },
+                getColorArr3: getDirectionLightColorArr3,
+                getIntensity: getDirectionLightIntensity,
+
+                DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
+            },
+            pointLightData: {
+                getPosition: (index: number) => {
+                    return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+                },
+                getColorArr3: getPointLightColorArr3,
+                getIntensity: getPointLightIntensity,
+                getConstant: getConstant,
+                getLinear: getLinear,
+                getQuadratic: getQuadratic,
+                getRange: getRange,
+
+                PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
+            }
+        }
+    }
 }
 
 // export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {

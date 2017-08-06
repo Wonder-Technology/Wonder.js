@@ -1,5 +1,6 @@
 import { SpecifyMaterialData } from "./SpecifyMaterialData";
 import { Color } from "../../structure/Color";
+import { LightMapMap } from "../../renderer/type/dataType";
 
 export class LightMaterialData extends SpecifyMaterialData {
     public static specularColors: Float32Array = null;
@@ -15,6 +16,6 @@ export class LightMaterialData extends SpecifyMaterialData {
     public static emptyColor: Color = null;
     public static emptyColorArr: Array<number> = null;
 
-    public static diffuseMapIndex: number = null;
-    public static specularMapIndex: number = null;
+    public static diffuseMapMap: LightMapMap = null;
+    public static specularMapMap: LightMapMap = null;
 }

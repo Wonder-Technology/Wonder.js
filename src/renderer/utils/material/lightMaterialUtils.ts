@@ -1,6 +1,7 @@
 import { getColorDataSize } from "./materialUtils";
 import { getLightMaterialBufferStartIndex } from "./bufferUtils";
 import { getColorArr3Data, getSingleSizeData } from "../common/operateBufferDataUtils";
+import { isValidMapValue } from "../../../utils/objectUtils";
 
 export var getShadingDataSize = () => 1;
 
@@ -28,15 +29,15 @@ export var getLightModel = (materialIndex: number, LightMaterialDataFromSystem: 
     return getSingleSizeData(materialIndex, LightMaterialDataFromSystem.lightModels);
 }
 
-export var hasDiffuseMap = (LightMaterialDataFromSystem: any) => {
-    return _isLightMapExist(LightMaterialDataFromSystem.diffuseMapIndex);
+export var hasDiffuseMap = (materialIndex:number, LightMaterialDataFromSystem: any) => {
+    return _isLightMapExist(LightMaterialDataFromSystem.diffuseMapMap[materialIndex]);
 }
 
-export var hasSpecularMap = (LightMaterialDataFromSystem: any) => {
-    return _isLightMapExist(LightMaterialDataFromSystem.specularMapIndex);
+export var hasSpecularMap = (materialIndex:number, LightMaterialDataFromSystem: any) => {
+    return _isLightMapExist(LightMaterialDataFromSystem.specularMapMap[materialIndex]);
 }
 
-var _isLightMapExist = (mapIndex: number) => mapIndex !== null;
+var _isLightMapExist = (mapIndex: number) => isValidMapValue(mapIndex);
 
 export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
 

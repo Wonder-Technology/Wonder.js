@@ -99,7 +99,6 @@ export const webgl2_material_config = {
     //
     //     //todo separate(e.g. material in webgl1/webgl2 has different shader)
     //
-    //     //todo test fix bug: if all material has no diffuse map before init material, then should pass material set diffuse map after init material
     //     // "LightMaterial": {
     //     //     // "shader": "GBuffer"
     //     //     "canUseShaderForCheck": [
@@ -182,15 +181,14 @@ export const webgl2_material_config = {
 
                 {
                     "type": "branch",
-                    //todo fix bug?: test one has map, one not has map?(should specify with materialIndex?)
                     "branch": (materialIndex, {
-                                   hasDiffuseMap,
-                                   hasSpecularMap
-                               }, {
+                        hasDiffuseMap,
+                        hasSpecularMap
+                    }, {
                                    LightMaterialDataFromSystem
                                }) => {
-                        if (hasDiffuseMap(LightMaterialDataFromSystem)
-                            || hasSpecularMap(LightMaterialDataFromSystem)) {
+                        if (hasDiffuseMap(materialIndex, LightMaterialDataFromSystem)
+                            || hasSpecularMap(materialIndex, LightMaterialDataFromSystem)) {
                             return "CommonLightMapShaderLib";
                         }
                     }
@@ -198,11 +196,11 @@ export const webgl2_material_config = {
                 {
                     "type": "branch",
                     "branch": (materialIndex, {
-                                   hasDiffuseMap
-                               }, {
+                        hasDiffuseMap
+                    }, {
                                    LightMaterialDataFromSystem
                                }) => {
-                        if (hasDiffuseMap(LightMaterialDataFromSystem)) {
+                        if (hasDiffuseMap(materialIndex, LightMaterialDataFromSystem)) {
                             return "DiffuseMapShaderLib";
                         }
 
@@ -212,11 +210,11 @@ export const webgl2_material_config = {
                 {
                     "type": "branch",
                     "branch": (materialIndex, {
-                                   hasSpecularMap
-                               }, {
+                        hasSpecularMap
+                    }, {
                                    LightMaterialDataFromSystem
                                }) => {
-                        if (hasSpecularMap(LightMaterialDataFromSystem)) {
+                        if (hasSpecularMap(materialIndex, LightMaterialDataFromSystem)) {
                             return "SpecularMapShaderLib";
                         }
 

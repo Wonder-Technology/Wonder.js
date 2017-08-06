@@ -119,3 +119,9 @@ export type DisposedTextureDataMap = Array<{
     sourceIndex: number;
     lastComponentIndex: number;
 }>
+
+export type TextureIndex = number;
+
+export type LightMapMap = {
+    [materialIndex: number]: TextureIndex;
+}

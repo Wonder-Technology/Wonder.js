@@ -20,7 +20,7 @@ describe("draw render command", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -38,7 +38,8 @@ describe("draw render command", function () {
 
     describe("use", function () {
         it("if the program is already used, not use again", function () {
-            sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneTool.createGameObject(null, lightMaterialTool.create());
+            sceneTool.addGameObject(data.gameObject);
 
             directorTool.init(state);
             directorTool.loopBody(state);
@@ -207,139 +208,43 @@ describe("draw render command", function () {
         });
 
         describe("test cache", function () {
-            var program1, program2;
-            var ShaderData;
-            var renderCommand1, renderCommand2;
-            var pos,pos2;
+            var mat;
+            var pos;
 
             beforeEach(function(){
-                pos = 0;
-                pos2 = 1;
-                program1 = {};
-                program2 = { p: 1 };
+                mat = lightMaterialTool.create();
 
-                shaderTool.setSendUniformConfig(0, [
-                    {
-                        "name": "u_color",
-                        "from": "basicMaterial",
-                        "field": "color",
-                        "type": "float3"
-                    }
-                ]);
-                shaderTool.setSendUniformConfig(1, [
-                    {
-                        "name": "u_color",
-                        "from": "basicMaterial",
-                        "field": "color",
-                        "type": "float3"
-                    },
-                    {
-                        "name": "u_opacity",
-                        "from": "basicMaterial",
-                        "field": "opacity",
-                        "type": "float"
-                    }
-                ]);
-                shaderTool.setUniformLocation(0, {
-                    "u_color": pos
-                });
-                shaderTool.setUniformLocation(1, {
-                    "u_color": pos,
-                    "u_opacity": pos2
-                });
-                shaderTool.setSendUniformFuncConfig(0, function () {
-                });
-                shaderTool.setSendUniformFuncConfig(1, function () {
-                });
-                shaderTool.setProgram(0, program1);
-                shaderTool.setProgram(1, program2);
+                var texture = textureTool.create();
+                textureTool.setSource(texture, {});
 
-                shaderTool.setUniformCache(0, {});
-                shaderTool.setUniformCache(1, {});
+                lightMaterialTool.setDiffuseMap(mat, texture);
 
-                ShaderData = wd.ShaderData;
 
-                basicMaterialTool.setColor({index:0}, Color.create());
-                basicMaterialTool.setColor({index:1}, Color.create("#111222"));
-                basicMaterialTool.setOpacity({index:1}, 1);
+                var data = sceneTool.createGameObject(null, mat);
 
-                MaterialData = wd.MaterialData;
 
-                renderCommand1 = {
-                    materialIndex:0
-                };
-                renderCommand2 = {
-                    materialIndex:1
-                };
+                sceneTool.addGameObject(data.gameObject);
+
+                pos = 1;
+
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_specular").returns(pos);
             });
 
             it("differenc shader's data of the same uniform data name are independent", function () {
-                shaderTool.use(gl, 0);
+                directorTool.init(state);
+                directorTool.loopBody(state);
 
-                shaderTool.sendUniformData(gl, 0, renderCommand1);
-
-
-                shaderTool.use(gl, 1);
-
-                shaderTool.sendUniformData(gl, 1, renderCommand2);
-
-
-
-                expect(gl.uniform3f).toCalledTwice();
-                expect(gl.uniform1f).toCalledOnce();
-
-
-
-
-
-
-
-                shaderTool.use(gl, 0);
-
-                shaderTool.sendUniformData(gl, 0, renderCommand1);
-
-
-                shaderTool.use(gl, 1);
-
-                shaderTool.sendUniformData(gl, 1, renderCommand2);
-
-
-                expect(gl.uniform3f).toCalledTwice();
-                expect(gl.uniform1f).toCalledOnce();
+                expect(gl.uniform3f.withArgs(pos).callCount).toEqual(2);
             });
             it("if data not equal, cache miss", function () {
-                shaderTool.use(gl, 0);
+                lightMaterialTool.setSpecularColor(mat, Color.create("#123333"));
 
-                shaderTool.sendUniformData(gl, 0, renderCommand1);
+                directorTool.init(state);
 
+                directorTool.loopBody(state);
+                directorTool.loopBody(state);
 
-                shaderTool.use(gl, 1);
-
-                shaderTool.sendUniformData(gl, 1, renderCommand2);
-
-
-
-
-
-                basicMaterialTool.setColor({index:0}, Color.create("#222222"));
-                basicMaterialTool.setOpacity({index:1}, 0.5);
-
-
-                shaderTool.use(gl, 0);
-
-                shaderTool.sendUniformData(gl, 0, renderCommand1);
-
-
-                shaderTool.use(gl, 1);
-
-                shaderTool.sendUniformData(gl, 1, renderCommand2);
-
-
-
-
-
-                expect(gl.uniform3f.callCount).toEqual(3);
-                expect(gl.uniform1f.callCount).toEqual(2);
+                expect(gl.uniform3f.withArgs(pos).callCount).toEqual(2);
             });
         });
 
@@ -398,14 +303,12 @@ describe("draw render command", function () {
         });
 
         describe("test send Int", function () {
-            var mat;
-
             beforeEach(function () {
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_lightModel").returns(pos);
 
 
-                var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-                mat = data.material;
+                // var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                // mat = data.material;
             })
 
             describe("test cache", function () {
@@ -414,7 +317,7 @@ describe("draw render command", function () {
 
                 it("if cached, return cached data", function () {
                     v = 1;
-                    lightMaterialTool.setLightModel(mat, 1);
+                    lightMaterialTool.setLightModel(material, 1);
 
                     directorTool.init(state);
 
@@ -425,13 +328,13 @@ describe("draw render command", function () {
                 });
                 it("if data not equal, cache miss", function () {
                     v = 1;
-                    lightMaterialTool.setLightModel(mat, 1);
+                    lightMaterialTool.setLightModel(material, 1);
 
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
 
-                    lightMaterialTool.setLightModel(mat, 2);
+                    lightMaterialTool.setLightModel(material, 2);
 
                     directorTool.loopBody(state);
 
@@ -445,14 +348,14 @@ describe("draw render command", function () {
             var vec3;
 
             beforeEach(function () {
-                gl.getUniformLocation.withArgs(sinon.match.any, "u_color").returns(pos);
+                gl.getUniformLocation.withArgs(sinon.match.any, "u_specular").returns(pos);
 
                 v = Color.create("#123456");
                 vec3 = v.toVector3();
             })
 
             it("test", function () {
-                basicMaterialTool.setColor(material, v);
+                lightMaterialTool.setSpecularColor(material, v);
 
                 directorTool.init(state);
 
@@ -466,7 +369,7 @@ describe("draw render command", function () {
                 });
 
                 it("if cached, return cached data", function () {
-                    basicMaterialTool.setColor(material, v);
+                    lightMaterialTool.setSpecularColor(material, v);
 
                     directorTool.init(state);
 
@@ -476,13 +379,13 @@ describe("draw render command", function () {
                     expect(gl.uniform3f.withArgs(pos)).toCalledOnce();
                 });
                 it("if data not equal, cache miss", function () {
-                    basicMaterialTool.setColor(material, v);
+                    lightMaterialTool.setSpecularColor(material, v);
 
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
 
-                    basicMaterialTool.setColor(material, Color.create("#333333"));
+                    lightMaterialTool.setSpecularColor(material, Color.create("#333333"));
 
                     directorTool.loopBody(state);
 

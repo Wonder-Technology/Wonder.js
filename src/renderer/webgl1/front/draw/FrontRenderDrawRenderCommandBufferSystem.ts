@@ -1,7 +1,7 @@
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
 import {
-    bindIndexBuffer, sendAttributeData, sendUniformData, use
+    bindIndexBuffer, buildSendUniformDataDataMap, sendAttributeData, sendUniformData, use
 } from "../../../shader/ShaderSystem";
 import { getIndexType, getIndicesCount, hasIndices, getIndexTypeSize, getVerticesCount } from "../../../../component/geometry/GeometrySystem";
 import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
@@ -13,22 +13,22 @@ import { createTypeArrays } from "../../../utils/draw/renderComandBufferUtils";
 import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../data/material_config";
-import {
-    getUniformData, sendFloat1, sendFloat3, sendInt, sendMatrix3, sendMatrix4,
-    sendVector3
-} from "../../../shader/glslSender/GLSLSenderSystem";
-import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../component/light/AmbientLightSystem";
-import {
-    getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
-    getPosition as getDirectionLightPosition,
-} from "../../../../component/light/DirectionLightSystem";
-import {
-    getPosition as getPointLightPosition,
-    getColorArr3 as getPointLightColorArr3, getConstant,
-    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
-} from "../../../../component/light/PointLightSystem";
-import { ThreeDTransformData } from "../../../../component/transform/ThreeDTransformData";
-import { GameObjectData } from "../../../../core/entityObject/gameObject/GameObjectData";
+// import {
+//     getUniformData, sendFloat1, sendFloat3, sendInt, sendMatrix3, sendMatrix4,
+//     sendVector3
+// } from "../../../shader/glslSender/GLSLSenderSystem";
+// import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../component/light/AmbientLightSystem";
+// import {
+//     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
+//     getPosition as getDirectionLightPosition,
+// } from "../../../../component/light/DirectionLightSystem";
+// import {
+//     getPosition as getPointLightPosition,
+//     getColorArr3 as getPointLightColorArr3, getConstant,
+//     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
+// } from "../../../../component/light/PointLightSystem";
+// import { ThreeDTransformData } from "../../../../component/transform/ThreeDTransformData";
+// import { GameObjectData } from "../../../../core/entityObject/gameObject/GameObjectData";
 import { sendData } from "../../../utils/texture/mapManagerUtils";
 import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
 import { clear } from "../../../utils/draw/drawRenderCommandBufferUtils";
@@ -76,7 +76,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
     _updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
     _updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
 
-    let sendDataMap = _buildSendUniformDataDataMap(drawDataMap);
+    let sendDataMap = buildSendUniformDataDataMap(drawDataMap);
 
     clear(gl, clearGL, render_config, DeviceManagerDataFromSystem);
 
@@ -154,50 +154,6 @@ var _buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float3
         cameraPosition: cameraPosition,
         normalMatrix: normalMatrices,
         materialIndex: materialIndex
-    }
-}
-
-var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
-    return {
-        //todo refactor with DeferDrawxxxSystem
-        glslSenderData: {
-            getUniformData: getUniformData,
-            sendMatrix3: sendMatrix3,
-            sendMatrix4: sendMatrix4,
-            sendVector3: sendVector3,
-            sendInt: sendInt,
-            sendFloat1: sendFloat1,
-            sendFloat3: sendFloat3,
-
-            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
-        },
-        ambientLightData: {
-            getColorArr3: getAmbientLightColorArr3,
-
-            AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
-        },
-        directionLightData: {
-            getPosition: (index: number) => {
-                return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
-            },
-            getColorArr3: getDirectionLightColorArr3,
-            getIntensity: getDirectionLightIntensity,
-
-            DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
-        },
-        pointLightData: {
-            getPosition: (index: number) => {
-                return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
-            },
-            getColorArr3: getPointLightColorArr3,
-            getIntensity: getPointLightIntensity,
-            getConstant: getConstant,
-            getLinear: getLinear,
-            getQuadratic: getQuadratic,
-            getRange: getRange,
-
-            PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
-        }
     }
 }
 

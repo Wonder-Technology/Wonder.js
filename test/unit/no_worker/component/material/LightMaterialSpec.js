@@ -18,6 +18,15 @@ describe("LightMaterial", function () {
     var ELightModel = wd.ELightModel;
     var PointLight = wd.PointLight;
 
+    beforeEach(function () {
+        sandbox = sinon.sandbox.create();
+
+        testTool.clearAndOpenContractCheck(sandbox);
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        gl = stateTool.getGLFromFakeGLState(state);
+    });
     afterEach(function () {
         testTool.clear(sandbox);
         sandbox.restore();
@@ -25,19 +34,11 @@ describe("LightMaterial", function () {
 
     describe("only test light material", function () {
         beforeEach(function () {
-            sandbox = sinon.sandbox.create();
-
-            testTool.clearAndOpenContractCheck(sandbox);
-
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
             cameraGameObject = data.cameraGameObject;
-
-            state = stateTool.createAndSetFakeGLState(sandbox);
-
-            gl = stateTool.getGLFromFakeGLState(state);
         });
 
         // it("glsl only set glPosition,glFragColor once", function () {
@@ -219,10 +220,6 @@ describe("LightMaterial", function () {
         var basicGeo;
 
         beforeEach(function () {
-            sandbox = sinon.sandbox.create();
-
-            testTool.clearAndOpenContractCheck(sandbox);
-
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
@@ -234,11 +231,6 @@ describe("LightMaterial", function () {
 
             basicObj = sceneTool.createGameObject(basicGeo, basicMaterial);
             sceneTool.addGameObject(basicObj);
-
-
-            state = stateTool.createAndSetFakeGLState(sandbox);
-
-            gl = stateTool.getGLFromFakeGLState(state);
         });
 
         it("switch program between different shader", function () {
@@ -253,6 +245,54 @@ describe("LightMaterial", function () {
 
             expect(gl.createProgram).toCalledTwice();
             expect(gl.useProgram).toCalledTwice();
+        });
+    });
+
+    describe("fix bug", function() {
+        beforeEach(function(){
+        });
+
+        it("if one material set diffuse map, one not, then the two should has different shaders", function(){
+            function getFirstMaterialFsSource(gl) {
+                return gl.shaderSource.secondCall.args[1];
+            }
+
+            function getSecondMaterialFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
+            }
+
+            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            obj = data.gameObject;
+            geo = data.geometry;
+            material = data.material;
+
+
+            var mat = lightMaterialTool.create();
+
+            var texture = textureTool.create();
+            textureTool.setSource(texture, {});
+
+            lightMaterialTool.setDiffuseMap(mat, texture);
+
+
+            var data = sceneTool.createGameObject(null, mat);
+
+
+            sceneTool.addGameObject(data.gameObject);
+
+
+
+            var pos = 1;
+
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_specular").returns(pos);
+
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+
+            expect(glslTool.contain(getFirstMaterialFsSource(gl), "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
+            expect(glslTool.contain(getSecondMaterialFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
         });
     });
 });

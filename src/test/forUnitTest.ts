@@ -86,7 +86,7 @@ export var sendAttributeData = sendAttributeDataSystem;
 
 export var sendUniformData = sendUniformDataSystem;
 
-export var disableVertexAttribArray = disableVertexAttribArrayUtils
+export var disableVertexAttribArray = disableVertexAttribArrayUtils;
 
 export var setGeometryIndices = setIndices;
 

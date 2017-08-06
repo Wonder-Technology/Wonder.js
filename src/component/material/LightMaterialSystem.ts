@@ -35,6 +35,7 @@ import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { Texture } from "../../renderer/texture/Texture";
 import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
 import { getUniformSamplerNameMap } from "../../renderer/texture/TextureSystem";
+import { createMap } from "../../utils/objectUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -72,7 +73,7 @@ export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, Te
 
     addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
 
-    LightMaterialData.diffuseMapIndex = map.index;
+    LightMaterialData.diffuseMapMap[index] = map.index;
 }
 
 export var getSpecularMapIndex = (LightMaterialData: any) => {
@@ -84,7 +85,7 @@ export var setSpecularMap = (index: number, map: Texture, MapManagerData: any, T
 
     addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
 
-    LightMaterialData.specularMapIndex = map.index;
+    LightMaterialData.specularMapMap[index] = map.index;
 }
 
 //todo add normal map, light map...
@@ -157,13 +158,15 @@ export var disposeComponent = (component: Material) => {
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shadingDataSize, lightMaterialLastComponentIndex * shadingDataSize, LightMaterialData.shadings, LightMaterialData.defaultShading);
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shininessDataSize, lightMaterialLastComponentIndex * shininessDataSize, LightMaterialData.shininess, LightMaterialData.defaultShininess);
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * lightModelDataSize, lightMaterialLastComponentIndex * lightModelDataSize, LightMaterialData.lightModels, LightMaterialData.defaultLightModel);
+
+    //todo dispose
 }
 
 export var initData = (LightMaterialData: any) => {
     initSpecifyMaterialData(getLightMaterialBufferStartIndex(), LightMaterialData);
 
-    LightMaterialData.diffuseMapIndex = null;
-    LightMaterialData.specularMapIndex = null;
+    LightMaterialData.diffuseMapMap = createMap();
+    LightMaterialData.specularMapMap = createMap();
 
     LightMaterialData.emptyColor = _createEmptyColor();
     LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
