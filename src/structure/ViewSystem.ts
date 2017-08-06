@@ -91,14 +91,23 @@ export var initCanvas = (dom: HTMLCanvasElement) => {
     });
 }
 
-export var getWebgl1Context = (contextConfig: Map<string, any>, dom: HTMLCanvasElement): WebGLRenderingContext => {
+export var getWebgl1Context = (contextConfig: Map<string, any>, dom: HTMLCanvasElement) => {
     var options: ContextConfigOptionsData = contextConfig.get("options").toObject();
 
-    return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options)) as WebGLRenderingContext;
+    return getOnlyWebgl1Context(options, dom);
 }
 
-export var getWebgl2Context = (contextConfig: Map<string, any>, dom: HTMLCanvasElement): WebGLRenderingContext => {
+export var getWebgl2Context = (contextConfig: Map<string, any>, dom: HTMLCanvasElement) => {
     var options: ContextConfigOptionsData = contextConfig.get("options").toObject();
 
-    return (dom.getContext("webgl2", options)) as WebGLRenderingContext;
+    return getOnlyWebgl2Context(options, dom);
 }
+
+export var getOnlyWebgl1Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+    return dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options);
+}
+
+export var getOnlyWebgl2Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+    return dom.getContext("webgl2", options);
+}
+

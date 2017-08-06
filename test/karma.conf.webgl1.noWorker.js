@@ -11,6 +11,7 @@
 
     // list of files / patterns to load in the browser
     files: [
+        'test/unit/environment/webgl1.js',
         'test/unit/environment/noWorker.js',
 
         'dist/wd.forTest.js',
@@ -30,7 +31,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
@@ -44,9 +45,11 @@
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',
+        'test/unit/no_worker/**/*LightMaterial*',
+        'test/unit/no_worker/**/frontRender*',
         // 'test/unit/no_worker/**/*draw*',
         // 'test/unit/no_worker/**/*GameObject*',
-        // 'test/unit/no_worker/**/Camera*',
+        // 'test/unit/no_worker/**/*Camera*',
         // 'test/unit/**/reallocate*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',

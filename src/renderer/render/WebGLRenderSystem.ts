@@ -34,7 +34,7 @@ import { LightMaterialData } from "../../component/material/LightMaterialData";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 import { AmbientLightData } from "../../component/light/AmbientLightData";
 import { DirectionLightData } from "../../component/light/DirectionLightData";
-import { getGL, isWebgl1, isWebgl2, setSide } from "../device/DeviceManagerSystem";
+import { getGL, setSide } from "../device/DeviceManagerSystem";
 import {
     getBasicMaterialBufferStartIndex,
     getLightMaterialBufferStartIndex
@@ -67,6 +67,7 @@ import { webgl2_shaderLib_generator } from "../webgl2/data/shaderLib_generator";
 import { webgl1_material_config } from "../webgl1/data/material_config";
 import { webgl2_material_config } from "../webgl2/data/material_config";
 import { initMaterialShader as initMaterialShaderWebGL1,   initNoMaterialShader as initNoMaterialShaderWebGL1  } from "../webgl1/shader/ShaderSystem";
+import { isWebgl1 } from "../../device/WebGLDetectSystem";
 
 export var init = null;
 
@@ -149,7 +150,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    if(isWebgl1(DeviceManagerData)){
+    if(isWebgl1()){
         init = (state: Map<any, any>) => {
             var gl = getGL(DeviceManagerData, state);
 
@@ -164,7 +165,7 @@ else {
             return compose(
                 //todo refactor defer draw, draw(clear, draw...  consider webgl2)
                 //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
-                frontDraw(null, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
+                frontDraw(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
                 //todo fix front render(set state before clear)
                 // clear(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),

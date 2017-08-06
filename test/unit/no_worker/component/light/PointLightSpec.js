@@ -101,7 +101,6 @@ describe("PointLight", function () {
                 var light1 = gameObjectTool.getComponent(obj1, Light);
 
                 directorTool.init(state);
-                directorTool.loopBody(state);
 
 
                 expect(pointLightTool.getPosition(light1)).toEqual(pos);

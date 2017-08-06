@@ -86,6 +86,9 @@ var testTool = (function () {
             Main.isTest = true;
 
             testUtils.initForTest(sandbox);
+
+            //todo fix worker
+            wd.WebGLDetectData.version = wd.EWebGLVersion.WEBGL1;
         },
 
         openContractCheck: function () {

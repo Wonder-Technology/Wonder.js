@@ -16,47 +16,45 @@ import {
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/device/deviceManagerUtils";
 import { Log } from "../../utils/Log";
-import { EWebGLVersion } from "./EWebGLVersion";
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
-
-export var isWebgl1 = (DeviceManagerData:any) => DeviceManagerData.webglVersion === EWebGLVersion.WEBGL1;
-
-export var isWebgl2 = (DeviceManagerData:any) => DeviceManagerData.webglVersion === EWebGLVersion.WEBGL2;
+import { isWebgl1, isWebgl2 } from "../../device/WebGLDetectSystem";
 
 export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = _getOnlyGL(canvas, contextConfig, DeviceManagerData);
+        var gl = _getOnlyGL(canvas, contextConfig);
 
         return compose(setCanvas(canvas), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
 })
 
-var _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData:any) => {
-    //todo test
-    //todo pass worker
-    var gl = getWebgl2Context(contextConfig, canvas);
+//todo test
+//todo pass worker
+var _getOnlyGL = null;
 
-    if (!gl) {
-        gl = getWebgl1Context(contextConfig, canvas);
+if(isWebgl1()){
+    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
+        Log.log("use webgl1");
 
-        if(!gl){
-            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-
-            return null;
-        }
-        else{
-            Log.log("use webgl1");
-            DeviceManagerData.webglVersion = EWebGLVersion.WEBGL1;
-        }
+        return getWebgl1Context(contextConfig, canvas);
     }
-    else{
-        Log.log("use webgl2");
-        DeviceManagerData.webglVersion = EWebGLVersion.WEBGL2;
-    }
-
-    return gl;
 }
+else if(isWebgl2()){
+    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
+        Log.log("use webgl2");
+
+        return getWebgl2Context(contextConfig, canvas);
+    }
+}
+else{
+    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
+        DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+
+        return null;
+    }
+}
+
+
 
 export var getGL = getGLUtils;
 

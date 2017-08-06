@@ -9,7 +9,6 @@ import { Log } from "../../../../utils/Log";
 import { DrawDataMap, SendUniformDataDataMap, SendUniformDataGLSLSenderDataMap } from "../../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
 import { isNotUndefined } from "../../../../utils/JudgeUtils";
-import { sendData } from "../../texture/mapManagerUtils";
 
 export var use = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     it("program should exist", () => {

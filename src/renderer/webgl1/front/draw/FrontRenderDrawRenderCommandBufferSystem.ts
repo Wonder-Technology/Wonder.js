@@ -29,17 +29,15 @@ import {
 } from "../../../../component/light/PointLightSystem";
 import { ThreeDTransformData } from "../../../../component/transform/ThreeDTransformData";
 import { GameObjectData } from "../../../../core/entityObject/gameObject/GameObjectData";
+import { sendData } from "../../../utils/texture/mapManagerUtils";
+import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
+import { clear } from "../../../utils/draw/drawRenderCommandBufferUtils";
+import { clear as clearGL } from "../../../utils/device/deviceManagerUtils";
+import { IRenderConfig } from "../../../data/render_config";
 
-export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    //todo refactor DeviceManagerSystem->clear
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-
-    // clear
-    // clear(null, render_config, DeviceManagerData),
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
+export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
+            DeviceManagerDataFromSystem,
             TextureDataFromSystem,
             TextureCacheDataFromSystem,
             MapManagerDataFromSystem,
@@ -80,10 +78,11 @@ export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig,
 
     let sendDataMap = _buildSendUniformDataDataMap(drawDataMap);
 
+    clear(gl, clearGL, render_config, DeviceManagerDataFromSystem);
+
     for (let i = 0; i < count; i++) {
         let matStartIndex = 16 * i,
             matEndIndex = matStartIndex + 16,
-            // shaderIndex = shaderIndices[i],
             geometryIndex = geometryIndices[i],
             materialIndex = materialIndices[i],
             mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
@@ -94,23 +93,21 @@ export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig,
 
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-        let textureStartUnitIndex = 0;
-
-        //todo refactor in front render
-        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
-
         sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
 
         _updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
-
-        ////todo move system method to utils: getNewTextureUnitIndex
-        // sendUniformData(gl, shaderIndex, program, mapCount, getNewTextureUnitIndex(), drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex));
 
         let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
             uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
         sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
 
+
+        let textureStartUnitIndex = 0;
+
+        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+
+        sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);

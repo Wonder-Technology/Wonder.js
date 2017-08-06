@@ -66,7 +66,6 @@ describe("DirectionLight", function () {
             var light1 = gameObjectTool.getComponent(obj1, Light);
 
             directorTool.init(state);
-            directorTool.loopBody(state);
 
 
             expect(directionLightTool.getPosition(light1)).toEqual(pos);

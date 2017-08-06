@@ -2,7 +2,6 @@ describe("PerspectiveCamera", function () {
     var sandbox = null;
     var cameraGameObject;
     var cameraController;
-    var gameObject;
 
     var gl;
     var state;
@@ -14,11 +13,9 @@ describe("PerspectiveCamera", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         cameraGameObject = data.cameraGameObject;
         cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
-
-        gameObject = data.gameObject;
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -82,12 +79,12 @@ describe("PerspectiveCamera", function () {
         });
 
         it("remove fovy", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
 
             expect(cameraControllerTool.getPerspectiveCameraFovy(cameraController)).toBeUndefined();
         });
         it("remove aspect", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
 
             expect(cameraControllerTool.getPerspectiveCameraAspect(cameraController)).toBeUndefined();
         });

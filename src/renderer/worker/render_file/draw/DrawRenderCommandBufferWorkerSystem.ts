@@ -18,9 +18,9 @@ import {
 import { bindAndUpdate, getMapCount } from "../texture/MapManagerWorkerSystem";
 import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
 
-export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceManagerWorkerData: any) => {
-    return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
-};
+// export var clear = (state: Map<any, any>, render_config: IRenderConfig, DeviceManagerWorkerData: any) => {
+//     return clearUtils(getGL(DeviceManagerWorkerData, state), clearGL, render_config, DeviceManagerWorkerData, null);
+// };
 
 //todo fix
 // export var draw = (state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {

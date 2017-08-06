@@ -4,22 +4,37 @@ var path = require("path");
 var karma = require("karma").server;
 var fs = require("fs-extra");
 
-var noWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.js");
-var renderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.renderWorker.js");
+var webgl1NoWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl1.noWorker.js");
+var webgl2NoWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl2.noWorker.js");
+var webgl1RenderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl1.renderWorker.js");
+var webgl2RenderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl2.renderWorker.js");
 
+//todo pass ci test
 var ciNoWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
 var ciRenderWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.renderWorker.js");
 
 
-gulp.task("noWorkerTestByKarma", function (done) {
+gulp.task("webgl1NoWorkerTestByKarma", function (done) {
     karma.start({
-        configFile: noWorkerKarmaConfPath
+        configFile: webgl1NoWorkerKarmaConfPath
     }, done);
 });
 
-gulp.task("renderWorkerTestByKarma", function (done) {
+gulp.task("webgl2NoWorkerTestByKarma", function (done) {
     karma.start({
-        configFile: renderWorkerKarmaConfPath
+        configFile: webgl2NoWorkerKarmaConfPath
+    }, done);
+});
+
+gulp.task("webgl1RenderWorkerTestByKarma", function (done) {
+    karma.start({
+        configFile: webgl1RenderWorkerKarmaConfPath
+    }, done);
+});
+
+gulp.task("webgl2RenderWorkerTestByKarma", function (done) {
+    karma.start({
+        configFile: webgl2RenderWorkerKarmaConfPath
     }, done);
 });
 
@@ -58,10 +73,17 @@ gulp.task("watchWDFile", function(){
 // gulp.task("test", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "testByKarma", "renderWorkerTestByKarma"]));
 
 
-gulp.task("testNoWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "noWorkerTestByKarma"]));
+gulp.task("testWebGL1NoWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "webgl1NoWorkerTestByKarma"]));
+
+gulp.task("testWebGL2NoWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "webgl2NoWorkerTestByKarma"]));
 
 
-gulp.task("testRenderWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "renderWorkerTestByKarma"]));
+
+
+
+gulp.task("testWebGL1RenderWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "webgl1RenderWorkerTestByKarma"]));
+
+gulp.task("testWebGL2RenderWorker", gulpSync.sync(["updateWDForTestFile", "watchWDFile", "webgl2RenderWorkerTestByKarma"]));
 
 
 
