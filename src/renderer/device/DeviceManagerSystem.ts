@@ -28,7 +28,6 @@ export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<strin
     });
 })
 
-//todo test
 //todo pass worker
 var _getOnlyGL = null;
 

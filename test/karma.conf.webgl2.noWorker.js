@@ -40,15 +40,16 @@
         // 'test/unit/no_worker/**/shader*Spec*',
         // 'test/unit/no_worker/**/Shader*Spec*',
         // 'test/unit/no_worker/**/*WebGLRenderer*',
-        'test/unit/no_worker/**/*LightSpec*',
+        // 'test/unit/no_worker/**/*LightSpec*',
         // 'test/unit/no_worker/**/*PointLightSpec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',
         // 'test/unit/no_worker/**/*draw*',
         // 'test/unit/no_worker/**/*GameObject*',
-        'test/unit/no_worker/**/Camera*',
+        // 'test/unit/no_worker/**/Camera*',
         // 'test/unit/**/reallocate*',
+        'test/unit/no_worker/**/createGL*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
         // 'test/unit/**/WebGLRenderer*',
@@ -72,7 +73,8 @@
 
     // list of files to exclude
     exclude: [
-        '**/temp/*'
+        '**/temp/*',
+        'test/unit/**/webgl1/**'
     ],
 
 
