@@ -210,6 +210,36 @@ describe("LightMaterial", function () {
                         judgeSingleValue("getLightModel", "setLightModel", LightMaterialData.defaultLightModel);
                     });
                 });
+
+                describe("remove by swap the target one and the last one", function () {
+                    function judge(methodName, mapDataName) {
+                        var texture = textureTool.create();
+                        textureTool.setSource(texture, {});
+
+                        lightMaterialTool[methodName](material, texture);
+
+                        var texture2 = textureTool.create();
+                        textureTool.setSource(texture2, {});
+
+                        lightMaterialTool[methodName](mat2, texture2);
+
+                        var matIndex1 = material.index;
+                        var matIndex2 = mat2.index;
+
+                        gameObjectTool.disposeComponent(obj, material);
+
+
+                        expect(LightMaterialData[mapDataName][matIndex1]).toEqual(texture2.index);
+                        expect(LightMaterialData[mapDataName][matIndex2]).toBeUndefined();
+                    }
+
+                    it("remove diffuseMapMap", function () {
+                        judge("setDiffuseMap", "diffuseMapMap");
+                    });
+                    it("remove diffuseMapMap", function () {
+                        judge("setSpecularMap", "specularMapMap");
+                    });
+                });
             });
         });
     });

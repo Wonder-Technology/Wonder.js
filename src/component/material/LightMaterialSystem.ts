@@ -34,8 +34,7 @@ import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { Texture } from "../../renderer/texture/Texture";
 import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
-import { getUniformSamplerNameMap } from "../../renderer/texture/TextureSystem";
-import { createMap } from "../../utils/objectUtils";
+import { deleteBySwap } from "../../utils/arrayUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -159,14 +158,15 @@ export var disposeComponent = (component: Material) => {
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shininessDataSize, lightMaterialLastComponentIndex * shininessDataSize, LightMaterialData.shininess, LightMaterialData.defaultShininess);
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * lightModelDataSize, lightMaterialLastComponentIndex * lightModelDataSize, LightMaterialData.lightModels, LightMaterialData.defaultLightModel);
 
-    //todo dispose
+    deleteBySwap(sourceIndex, lastComponentIndex, LightMaterialData.diffuseMapMap);
+    deleteBySwap(sourceIndex, lastComponentIndex, LightMaterialData.specularMapMap);
 }
 
 export var initData = (LightMaterialData: any) => {
     initSpecifyMaterialData(getLightMaterialBufferStartIndex(), LightMaterialData);
 
-    LightMaterialData.diffuseMapMap = createMap();
-    LightMaterialData.specularMapMap = createMap();
+    LightMaterialData.diffuseMapMap = [];
+    LightMaterialData.specularMapMap = [];
 
     LightMaterialData.emptyColor = _createEmptyColor();
     LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
