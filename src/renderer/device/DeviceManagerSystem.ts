@@ -10,7 +10,8 @@ import { Map } from "immutable";
 import {
     clear as clearUtils,
     getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
-    initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setColorWrite as setColorWriteUtils,
+    initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setClearColor as setClearColorUtils,
+    setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
     setScreen as setScreenUtils, setSide as setSideUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
@@ -105,6 +106,8 @@ var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, s
 })
 
 export var clear = clearUtils;
+
+export var setClearColor = setClearColorUtils;
 
 export var setColorWrite = setColorWriteUtils;
 

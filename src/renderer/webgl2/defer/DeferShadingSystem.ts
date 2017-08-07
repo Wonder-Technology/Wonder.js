@@ -1,4 +1,4 @@
-import { bindGBufferTextures, init as initGBuffer, sendGBufferTextureData } from "./gbuffer/GBufferSystem";
+import { bindGBufferTargets, init as initGBuffer, sendGBufferTargetData } from "./gbuffer/GBufferSystem";
 import { draw as deferDraw } from "./draw/DeferDrawRenderCommandBufferSystem";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import curry from "wonder-lodash/curry";
@@ -9,6 +9,7 @@ import { Map } from "immutable";
 import { getNoMaterialShaderIndex, use } from "../../shader/ShaderSystem";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../data/material_config";
+import { IRenderConfig } from "../../data/render_config";
 
 export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:any, ProgramData, LocationData, GLSLSenderData) => {
     // create gbuffer shader, program
@@ -22,7 +23,7 @@ export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:a
     //todo optimize: when switch to defer shading, bind and send gbuffer textures
 
     // bind texture(gbuffer texture )
-    bindGBufferTextures(gl, GBufferData);
+    bindGBufferTargets(gl, GBufferData);
 
     // use program(use light pass shader -> program )
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderData);
@@ -33,9 +34,9 @@ export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:a
 
     // send texture data(gbuffer texture )
 
-    sendGBufferTextureData(gl, program);
+    sendGBufferTargetData(gl, program);
 }
 
-export var draw = curry((state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
+export var draw = curry((state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+    deferDraw(getGL(drawDataMap.DeviceManagerDataFromSystem, state), state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, bufferData);
 })

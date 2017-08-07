@@ -32,6 +32,7 @@
         // 'test/unit/**/BufferWriter.js',
 
         // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**/deferShading*',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
@@ -49,7 +50,7 @@
         // 'test/unit/no_worker/**/*GameObject*',
         // 'test/unit/no_worker/**/Camera*',
         // 'test/unit/**/reallocate*',
-        'test/unit/no_worker/**/createGL*',
+        // 'test/unit/no_worker/**/createGL*',
         // 'test/unit/**/Camera*',
         // 'test/unit/**/*Camera*',
         // 'test/unit/**/WebGLRenderer*',

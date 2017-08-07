@@ -148,9 +148,7 @@ export var setScreen = (canvas: HTMLCanvasElement, setScreenData: Function, Devi
     }));
 };
 
-export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
-    _setClearColor(gl, color, DeviceManagerDataFromSystem);
-
+export var clear = (gl: WebGLRenderingContext, DeviceManagerDataFromSystem: any) => {
     setColorWrite(gl, true, true, true, true, DeviceManagerDataFromSystem);
 
     /*! optimize in ANGLE:
@@ -168,7 +166,11 @@ export var clear = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFr
 }
 
 
-var _setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
+export var clearColorBuffer = (gl: WebGLRenderingContext) => {
+    gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+export var setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManagerDataFromSystem: any) => {
     var clearColor = DeviceManagerDataFromSystem.clearColor;
 
     if (clearColor && clearColor.isEqual(color)) {

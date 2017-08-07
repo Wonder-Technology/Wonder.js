@@ -81,17 +81,17 @@
 
 
 //            sceneTool.addGameObject(createAmbientLight());
-//        sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
+        sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
         sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
-//            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
-//        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.5, 0.5, 0.5)"), wd.Vector3.create(10, 100, 100)));
+            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
+        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.5, 0.5, 0.5)"), wd.Vector3.create(10, 100, 100)));
 
 
 //        setData();
 //        setParent();
 //            batchSet();
 
-        createAndDisposeGameObjects();
+//        createAndDisposeGameObjects();
 
 
             director.start();

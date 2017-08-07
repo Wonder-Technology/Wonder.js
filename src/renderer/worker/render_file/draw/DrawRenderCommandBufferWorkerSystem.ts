@@ -1,5 +1,7 @@
 import {
-    buildDrawFuncDataMap, clear as clearUtils, draw as drawUtils,
+    buildDrawFuncDataMap,
+    // clear as clearUtils,
+    draw as drawUtils,
     initData as initDataUtils
 } from "../../../utils/draw/drawRenderCommandBufferUtils";
 import { Map } from "immutable";

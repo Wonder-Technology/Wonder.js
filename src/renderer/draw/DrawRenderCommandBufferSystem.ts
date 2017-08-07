@@ -1,24 +1,18 @@
 import {
-    // buildDrawFuncDataMap, clear as clearUtils, draw as drawUtils,
+    clearColor as clearColorUtils,
     initData as initDataUtils
 } from "../utils/draw/drawRenderCommandBufferUtils";
-// import { clear as clearGL, getGL } from "../device/DeviceManagerSystem";
-// import curry from "wonder-lodash/curry";
-// import { Map } from "immutable";
-// import { DrawDataMap } from "../type/utilsType";
-// import { bindIndexBuffer, sendAttributeData, sendUniformData, use } from "../shader/ShaderSystem";
-// import {
-//     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
-//     hasIndices
-// } from "../../component/geometry/GeometrySystem";
-// import { IRenderConfig } from "../data/render_config";
-// import { RenderCommandBufferForDrawData } from "../type/dataType";
-// import { bindAndUpdate, getMapCount } from "../texture/MapManagerSystem";
-// import { directlySendUniformData } from "../utils/shader/program/programUtils";
+import curry from "wonder-lodash/curry";
+import { IRenderConfig } from "../data/render_config";
+import { RenderCommandBufferForDrawData } from "../type/dataType";
+import { getGL } from "../device/DeviceManagerSystem";
+import { Map } from "immutable";
 
-// export var clear = curry((state: Map<any, any>, render_config: IRenderConfig, DeviceManagerData: any, data: RenderCommandBufferForDrawData) => {
-//     return clearUtils(getGL(DeviceManagerData, state), clearGL, render_config, DeviceManagerData, data);
-// });
+export var clearColor = curry((state: Map<any, any>, render_config: IRenderConfig, DeviceManagerData: any, data: RenderCommandBufferForDrawData) => {
+    clearColorUtils(getGL(DeviceManagerData, state), render_config, DeviceManagerData);
+
+    return data;
+});
 
 //todo fix
 // export var draw = curry((state: Map<any, any>, DataBufferConfig: any, drawDataMap: DrawDataMap, bufferData: RenderCommandBufferForDrawData) => {

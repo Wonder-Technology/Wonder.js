@@ -31,7 +31,7 @@
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
 import {
-    bindGBuffer, bindGBufferTextures, getNewTextureUnitIndex, sendGBufferTextureData,
+    bindGBuffer, bindGBufferTargets, getNewTextureUnitIndex, sendGBufferTargetData,
     unbindGBuffer
 } from "../gbuffer/GBufferSystem";
 import {
@@ -53,7 +53,6 @@ import { useShader } from "../../../../component/material/MaterialSystem";
 import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../utils/typeArrayUtils";
 import { BufferUtilsForUnitTest } from "../../../../utils/BufferUtilsForUnitTest";
 import { createTypeArrays } from "../../../utils/draw/renderComandBufferUtils";
-import { ELightModel } from "../../../../component/material/ELightModel";
 import { sendData } from "../../../utils/texture/mapManagerUtils";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../component/light/AmbientLightSystem";
 // import {
@@ -70,6 +69,7 @@ import {
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { Map } from "immutable";
 import { IMaterialConfig } from "../../../data/material_config";
+import { IRenderConfig } from "../../../data/render_config";
 
 export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
     return {
@@ -78,12 +78,7 @@ export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFrom
     }
 }
 
-export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
-    //todo refactor DeviceManagerSystem->clear
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-
-
+export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     var {
             // TextureDataFromSystem,
             // TextureCacheDataFromSystem,
@@ -138,7 +133,7 @@ export var draw = (gl:any, state:Map<any, any>, material_config:IMaterialConfig,
 
 
     _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, bufferData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, drawRenderCommandBufferDataFromSystem);
-    _drawLightPass(gl, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
+    _drawLightPass(gl, render_config, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend);
 };
 
 var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, {
@@ -155,6 +150,11 @@ var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialCo
         }) => {
     // set state
     gl.depthMask(true);
+
+    // clear
+    // clear(null, render_config, DeviceManagerData),
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
@@ -164,10 +164,6 @@ var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialCo
 
     // bind gbuffer
     bindGBuffer(gl, GBufferDataFromSystem);
-
-    // clear
-    // clear(null, render_config, DeviceManagerData),
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
 
 
@@ -410,7 +406,7 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
 
 
 
-var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
+var _drawLightPass = (gl:any, render_config:IRenderConfig, drawDataMap:DrawDataMap, {
                           GBufferDataFromSystem,
                           DeferLightPassDataFromSystem
                       }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap,
@@ -436,10 +432,12 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
     // not bind gbuffer
     unbindGBuffer(gl);
 
-    // use program(use light pass shader -> program )
-    let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem);
 
-    let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+    // clear
+    // clear(null, render_config, DeviceManagerData),
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
 
 
 
@@ -449,8 +447,8 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
     // bind texture(gbuffer texture )
     // send texture data(gbuffer texture )
 
-    // bindGBufferTextures(gl, GBufferDataFromSystem);
-    // sendGBufferTextureData(gl, program);
+    // bindGBufferTargets(gl, GBufferDataFromSystem);
+    // sendGBufferTargetData(gl, program);
 
 
 
@@ -466,9 +464,12 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
     // gl.cullFace(gl.FRONT);
 
 
-    // clear
-    // clear(null, render_config, DeviceManagerData),
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // use program(use light pass shader -> program )
+    let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem);
+
+    let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+
 
 
     sendDeferLightPassAttributeData(gl, DeferLightPassDataFromSystem);
@@ -499,8 +500,8 @@ var _drawLightPass = (gl:any, drawDataMap:DrawDataMap, {
         uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
 
-    //todo refactor: move lightModel to config
-    sendInt(gl, shaderIndex, program, "u_lightModel", ELightModel.PHONG, uniformCacheMap, uniformLocationMap);
+    ////todo refactor: move lightModel to config
+    sendInt(gl, shaderIndex, program, "u_lightModel", render_config.defer.lightModel, uniformCacheMap, uniformLocationMap);
 
     sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
 

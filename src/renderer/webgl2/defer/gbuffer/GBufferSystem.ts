@@ -73,7 +73,7 @@ export var init = (gl:any, GBufferData:any) => {
     GBufferData.depthTexture = depthTexture;
 }
 
-export var bindGBufferTextures = (gl:any, GBufferData:any) => {
+export var bindGBufferTargets = (gl:any, GBufferData:any) => {
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, GBufferData.positionTarget);
     gl.activeTexture(gl.TEXTURE1);
@@ -83,7 +83,7 @@ export var bindGBufferTextures = (gl:any, GBufferData:any) => {
     gl.activeTexture(gl.TEXTURE3);
 }
 
-export var sendGBufferTextureData = (gl:any, lightPassProgram:WebGLProgram) => {
+export var sendGBufferTargetData = (gl:any, lightPassProgram:WebGLProgram) => {
     var positionBufferLocation = gl.getUniformLocation(lightPassProgram, "u_positionBuffer"),
         normalBufferLocation = gl.getUniformLocation(lightPassProgram, "u_normalBuffer"),
         colorBufferLocation = gl.getUniformLocation(lightPassProgram, "u_colorBuffer");

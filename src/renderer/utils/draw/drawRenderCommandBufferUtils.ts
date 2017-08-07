@@ -6,6 +6,7 @@ import { IRenderConfig } from "../../data/render_config";
 import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
 import { createTypeArrays } from "./renderComandBufferUtils";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
+import { setClearColor } from "../device/deviceManagerUtils";
 // import { useShader } from "../../../component/material/MaterialSystem";
 
 // export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any, data: RenderCommandBufferForDrawData) => {
@@ -14,8 +15,8 @@ import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 //     return data;
 // }
 
-export var clear = (gl: WebGLRenderingContext, clearGL: Function, render_config: IRenderConfig, DeviceManagerDataFromSystem: any) => {
-    clearGL(gl, render_config.clearColor, DeviceManagerDataFromSystem);
+export var clearColor = (gl: WebGLRenderingContext, render_config: IRenderConfig, DeviceManagerDataFromSystem: any) => {
+    setClearColor(gl, render_config.clearColor, DeviceManagerDataFromSystem);
 }
 
 export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {

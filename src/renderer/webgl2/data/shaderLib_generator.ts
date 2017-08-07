@@ -1,6 +1,6 @@
 import {
     // basic_materialColor_fragment, end_basic_fragment,
-    common_define, common_fragment, common_function, common_vertex,
+    webgl2_common_define, webgl2_common_fragment, webgl2_common_function, webgl2_common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
     // light_common, lightEnd_fragment,
     // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
@@ -16,7 +16,7 @@ import {
     version,
 
     // light_model_ubo,
-    // common_ubo,
+    // webgl2_common_ubo,
     gbuffer_common_vertex,
     gbuffer_common_fragment,
     gbuffer_setWorldPosition_vertex,
@@ -36,14 +36,14 @@ export const webgl2_shaderLib_generator = {
         "CommonShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": common_vertex,
-                    "define": common_define.define + common_vertex.define,
-                    "funcDefine": common_function.funcDefine + common_vertex.funcDefine
+                    "source": webgl2_common_vertex,
+                    "define": webgl2_common_define.define + webgl2_common_vertex.define,
+                    "funcDefine": webgl2_common_function.funcDefine + webgl2_common_vertex.funcDefine
                 },
                 "fs": {
-                    "source": common_fragment,
-                    "define": common_define.define + common_fragment.define,
-                    "funcDefine": common_function.funcDefine + common_fragment.funcDefine
+                    "source": webgl2_common_fragment,
+                    "define": webgl2_common_define.define + webgl2_common_fragment.define,
+                    "funcDefine": webgl2_common_function.funcDefine + webgl2_common_fragment.funcDefine
                 }
             },
             "send": {
@@ -97,17 +97,17 @@ export const webgl2_shaderLib_generator = {
         // "CommonShaderLib": {
         //     "glsl": {
         //         "vs": {
-        //             "source": common_vertex,
-        //             "define": common_define.define + common_vertex.define,
-        //             // "funcDefine": common_function.funcDefine + common_vertex.funcDefine
-        //             "funcDefine": common_vertex.funcDefine,
-        //             "varDeclare": common_ubo.varDeclare
+        //             "source": webgl2_common_vertex,
+        //             "define": webgl2_common_define.define + webgl2_common_vertex.define,
+        //             // "funcDefine": webgl2_common_function.funcDefine + webgl2_common_vertex.funcDefine
+        //             "funcDefine": webgl2_common_vertex.funcDefine,
+        //             "varDeclare": webgl2_common_ubo.varDeclare
         //         },
         //         "fs": {
-        //             "source": common_fragment,
-        //             "define": common_define.define + common_fragment.define,
-        //             // "funcDefine": common_function.funcDefine + common_fragment.funcDefine
-        //             "funcDefine": common_fragment.funcDefine
+        //             "source": webgl2_common_fragment,
+        //             "define": webgl2_common_define.define + webgl2_common_fragment.define,
+        //             // "funcDefine": webgl2_common_function.funcDefine + webgl2_common_fragment.funcDefine
+        //             "funcDefine": webgl2_common_fragment.funcDefine
         //         }
         //     },
         //     "send": {

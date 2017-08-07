@@ -31,7 +31,6 @@ import { IMaterialConfig } from "../../../data/material_config";
 // import { GameObjectData } from "../../../../core/entityObject/gameObject/GameObjectData";
 import { sendData } from "../../../utils/texture/mapManagerUtils";
 import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
-import { clear } from "../../../utils/draw/drawRenderCommandBufferUtils";
 import { clear as clearGL } from "../../../utils/device/deviceManagerUtils";
 import { IRenderConfig } from "../../../data/render_config";
 
@@ -78,7 +77,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
 
     let sendDataMap = buildSendUniformDataDataMap(drawDataMap);
 
-    clear(gl, clearGL, render_config, DeviceManagerDataFromSystem);
+    clearGL(gl, DeviceManagerDataFromSystem);
 
     for (let i = 0; i < count; i++) {
         let matStartIndex = 16 * i,

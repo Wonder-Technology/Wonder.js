@@ -46,6 +46,8 @@ var glslUtils = (function () {
                 UNPACK_PREMULTIPLY_ALPHA_WEBGL: "UNPACK_PREMULTIPLY_ALPHA_WEBGL",
                 UNPACK_COLORSPACE_CONVERSION_WEBGL: "UNPACK_COLORSPACE_CONVERSION_WEBGL",
 
+                DEPTH_COMPONENT16: "DEPTH_ATTACHMENT16",
+
                 COLOR_ATTACHMENT0: "COLOR_ATTACHMENT0",
                 DEPTH_ATTACHMENT: "DEPTH_ATTACHMENT",
 
@@ -60,6 +62,14 @@ var glslUtils = (function () {
                 VERTEX_SHADER: "VERTEX_SHADER",
                 FRAGMENT_SHADER: "FRAGMENT_SHADER",
                 COMPILE_STATUS: "COMPILE_STATUS",
+
+                COLOR_BUFFER_BIT: "COLOR_BUFFER_BIT",
+                DEPTH_BUFFER_BIT: "DEPTH_BUFFER_BIT",
+
+                DEPTH_TEST: "DEPTH_TEST",
+                BLEND: "BLEND",
+                FUNC_ADD: "FUNC_ADD",
+                ONE: "ONE",
 
 
                 // getActiveAttrib: sandbox.stub().returns(null),
@@ -140,7 +150,16 @@ var glslUtils = (function () {
                 blendEquationSeparate: sandbox.stub(),
                 createProgram: sandbox.stub().returns({}),
                 clearColor: sandbox.stub(),
-                clear: sandbox.stub()
+                clear: sandbox.stub(),
+
+
+
+
+
+                createVertexArray: sandbox.stub(),
+                bindVertexArray: sandbox.stub(),
+                texStorage2D: sandbox.stub(),
+                drawBuffers: sandbox.stub()
             }
 
             gl.getProgramParameter.withArgs(sinon.match.any, LINK_STATUS).returns(true);
