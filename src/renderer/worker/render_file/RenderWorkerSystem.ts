@@ -91,8 +91,8 @@ import { initData as initLightWorkerDataWebGL2 } from "../webgl2/render_file/lig
 import { initData as initLightWorkerDataWebGL1 } from "../webgl1/render_file/light/LightWorkerSystem";
 import { WebGL2LightInitWorkerData } from "../../webgl2/type/messageDataType";
 import { WebGL1LightInitWorkerData } from "../../webgl1/type/messageDataType";
-import { PointLightWorkerDataWebGL1 } from "../webgl1/render_file/light/PointLightWorkerData";
-import { PointLightWorkerDataWebGL2 } from "../webgl2/render_file/light/PointLightWorkerData";
+import { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
+import { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -121,18 +121,18 @@ export var onmessageHandler = (e) => {
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleInitRenderData(data, PointLightWorkerDataWebGL1);
+                _handleInitRenderData(data, WebGL1PointLightWorkerData);
             }
             else{
-                _handleInitRenderData(data, PointLightWorkerDataWebGL2);
+                _handleInitRenderData(data, WebGL2PointLightWorkerData);
             }
             break;
         case EWorkerOperateType.DRAW:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleDraw(data, PointLightWorkerDataWebGL1);
+                _handleDraw(data, WebGL1PointLightWorkerData);
             }
             else{
-                _handleDraw(data, PointLightWorkerDataWebGL2);
+                _handleDraw(data, WebGL2PointLightWorkerData);
             }
             break;
         default:
@@ -206,7 +206,7 @@ var _handleInitRenderData = (data:any, PointLightWorkerData:any) => {
         ]).mergeAll()
             .concat(
                 _initTextures(data.textureData, TextureWorkerData),
-                _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, PointLightWorkerDataWebGL1)
+                _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, WebGL1PointLightWorkerData)
             )
             .subscribe(null, null, () => {
                 self.postMessage({
