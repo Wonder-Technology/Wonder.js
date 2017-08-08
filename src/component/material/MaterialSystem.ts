@@ -50,7 +50,6 @@ import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
-import { PointLightData } from "../light/PointLightData";
 import {
     dispose as disposeMapManager,
     initData as initMapManagerData,
@@ -63,6 +62,9 @@ import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
 import { IMaterialConfig } from "../../renderer/data/material_config";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
+import { WebGL1PointLightData } from "../../renderer/webgl1/light/PointLightData";
+import { WebGL2PointLightData } from "../../renderer/webgl2/light/PointLightData";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -89,13 +91,27 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
 
 export var useShader = useShaderUtils;
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
-    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
+export var init = null;
 
-    _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
-    _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
+if(isWebgl1()){
+    init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+        initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL1PointLightData));
 
-    initMapManagers(gl, TextureData);
+        _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
+        _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
+
+        initMapManagers(gl, TextureData);
+    }
+}
+else{
+    init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+        initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL2PointLightData));
+
+        _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
+        _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
+
+        initMapManagers(gl, TextureData);
+    }
 }
 
 var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {

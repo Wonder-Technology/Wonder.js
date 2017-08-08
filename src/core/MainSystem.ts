@@ -61,7 +61,6 @@ import { LightMaterialData } from "../component/material/LightMaterialData";
 import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
-import { PointLightData } from "../component/light/PointLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
 import { getRenderWorker, initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
@@ -70,7 +69,9 @@ import { MapManagerData } from "../renderer/texture/MapManagerData";
 import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateType";
-import { getVersion } from "../renderer/device/WebGLDetectSystem";
+import { getVersion, isWebgl1 } from "../renderer/device/WebGLDetectSystem";
+import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
+import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -187,32 +188,64 @@ else {
     }
 }
 
-var _initData = () => {
-    initShaderData(ShaderData);
+var _initData = null;
 
-    initGeometryData(DataBufferConfig, GeometryData);
 
-    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+if(isWebgl1()){
+    _initData = () => {
+        initShaderData(ShaderData);
 
-    initMeshRendererData(MeshRendererData);
+        initGeometryData(DataBufferConfig, GeometryData);
 
-    initTagData(TagData);
+        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
 
-    initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+        initMeshRendererData(MeshRendererData);
 
-    initSceneData(SceneData);
+        initTagData(TagData);
 
-    initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
 
-    initGameObjectData(GameObjectData);
+        initSceneData(SceneData);
 
-    // initWorkerTimeData(WorkerTimeData);
+        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
 
-    initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+        initGameObjectData(GameObjectData);
 
-    initLightData(AmbientLightData, DirectionLightData, PointLightData);
+        // initWorkerTimeData(WorkerTimeData);
 
-    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+        initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+
+        initLightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
+
+        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+    }
 }
+else{
+    _initData = () => {
+        initShaderData(ShaderData);
 
+        initGeometryData(DataBufferConfig, GeometryData);
 
+        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+
+        initMeshRendererData(MeshRendererData);
+
+        initTagData(TagData);
+
+        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+
+        initSceneData(SceneData);
+
+        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+
+        initGameObjectData(GameObjectData);
+
+        // initWorkerTimeData(WorkerTimeData);
+
+        initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+
+        initLightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
+
+        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+    }
+}

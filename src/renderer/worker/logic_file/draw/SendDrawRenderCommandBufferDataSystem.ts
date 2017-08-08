@@ -10,12 +10,11 @@ import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
-import { PointLightData } from "../../../../component/light/PointLightData";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
 import { clearDisposedTextureDataMap, hasDisposedTextureDataMap } from "../../../texture/TextureSystem";
 import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
 
-export var sendDrawData = curry((WorkerInstanceData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, data: RenderCommandBufferForDrawData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData:any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         geometryDisposeData = null,
         textureDisposeData = null,

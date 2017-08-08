@@ -28,6 +28,7 @@
         'test/unit/utils/**',
 
         'test/unit/**/no_worker/tool/*.js',
+        'test/unit/**/no_worker/**/tool/*.js',
 
         // 'test/unit/**/BufferWriter.js',
 

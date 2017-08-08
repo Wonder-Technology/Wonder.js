@@ -10,10 +10,12 @@ import {
     initData as initDirectionLightData
 } from "./DirectionLightSystem";
 import {
-    addComponent as addPointLightComponent, disposeComponent as disposePointLightComponent,
-    initData as initPointLightData
+    addComponent as addPointLightComponent, disposeComponent as disposePointLightComponent
 } from "./PointLightSystem";
 import { PointLight } from "./PointLight";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
+import { initData as initWebGL1PointLightData } from "../../renderer/webgl1/light/PointLightSystem";
+import { initData as initWebGL2PointLightData } from "../../renderer/webgl2/light/PointLightSystem";
 
 export var addAddComponentHandle = (AmbientLight: any, DirectionLight: any) => {
     addAddComponentHandleToMap(AmbientLight, addAmbientLightComponent);
@@ -27,9 +29,19 @@ export var addDisposeHandle = (AmbientLight: any, DirectionLight: any) => {
     addDisposeHandleToMap(PointLight, disposePointLightComponent);
 }
 
-export var initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
-    initAmbientLightData(AmbientLightData);
-    initDirectionLightData(DirectionLightData);
-    initPointLightData(PointLightData);
-}
+export var initData = null;
 
+if(isWebgl1()){
+    initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
+        initAmbientLightData(AmbientLightData);
+        initDirectionLightData(DirectionLightData);
+        initWebGL1PointLightData(PointLightData);
+    }
+}
+else{
+    initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
+        initAmbientLightData(AmbientLightData);
+        initDirectionLightData(DirectionLightData);
+        initWebGL2PointLightData(PointLightData);
+    }
+}
