@@ -9,7 +9,6 @@ import {
     bindIndexBuffer, getDirectionLightPosition, getPointLightPosition, sendAttributeData,
     use
 } from "../../../render_file/shader/ShaderWorkerSystem";
-import { buildDrawFuncDataMap } from "../../../../utils/draw/drawRenderCommandBufferUtils";
 import { useShader } from "../../../render_file/material/MaterialWorkerSystem";
 import { directlySendUniformData } from "../../../../utils/shader/program/programUtils";
 import { hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount } from "../../../render_file/geometry/GeometryWorkerSystem";
@@ -24,6 +23,7 @@ import {
     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
 } from "../../../render_file/light/PointLightWorkerSystem";
 import { buildSendUniformDataDataMap, sendUniformData } from "../shader/ShaderWorkerSystem";
+import { buildDrawFuncDataMap } from "../../../../webgl1/utils/draw/drawRenderCommandBufferUtils";
 
 export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     frontDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(

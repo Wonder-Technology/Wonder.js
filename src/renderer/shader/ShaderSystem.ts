@@ -51,10 +51,6 @@ export var create = (ShaderData: any) => {
 
 // var _isShaderExist = (shader: Shader) => isValidMapValue(shader);
 
-export var getNoMaterialShaderIndex = (shaderName: string, ShaderData: any) => {
-    return ShaderData.shaderIndexMap[shaderName];
-}
-
 // export var initNoMaterialShader = null;
 //
 // export var initMaterialShader = null;

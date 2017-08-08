@@ -1,6 +1,6 @@
 import { addSendAttributeConfig, addSendUniformConfig } from "./shader/glslSender/glslSenderUtils";
-import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../data/shaderLib_generator";
-import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
+import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../worker/webgl2/both_file/data/shaderLib_generator";
+import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 import { Map } from "immutable";
 import { isValidMapValue } from "../../../utils/objectUtils";
 import { getProgram, initShader, isProgramExist, registerProgram } from "../../utils/shader/program/programUtils";
@@ -8,6 +8,17 @@ import { setEmptyLocationMap } from "../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "./shader/shaderSourceBuildUtils";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 import { getMaterialShaderLibConfig } from "../data/MaterialConfigSystem";
+import { WebGL2SendUniformDataDataMap } from "../type/utilsType";
+import { sendUniformData as sendUniformDataProgramUtils } from "./shader/program/programUtils";
+import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
+
+export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:WebGL2SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+    sendUniformDataProgramUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
+}
+
+export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
+    return ShaderDataFromSystem.shaderIndexMap[shaderName];
+}
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {

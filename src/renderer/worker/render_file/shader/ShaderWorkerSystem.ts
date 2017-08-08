@@ -76,4 +76,5 @@ export var initData = (ShaderWorkerData: any) => {
     ShaderWorkerData.count = 0;
 
     ShaderWorkerData.shaderLibWholeNameMap = createMap();
+    ShaderWorkerData.shaderIndexMap = createMap();
 }

@@ -58,25 +58,34 @@ import { init as initDefer, draw as deferDraw  } from "../webgl2/defer/DeferShad
 import { buildInitShaderDataMap } from "../utils/material/materialUtils";
 import { DeferLightPassData } from "../webgl2/defer/light/DeferLightPassData";
 import { ShaderData } from "../shader/ShaderData";
-import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/defer/draw/DeferDrawRenderCommandBufferSystem";
 import { initMaterialShader as initMaterialShaderWebGL2, initNoMaterialShader as initNoMaterialShaderWebGL2 } from "../webgl2/shader/ShaderSystem";
 import {
     draw as frontDraw
     // init as initFront
 } from "../webgl1/front/FrontRenderSystem";
 import { webgl1_shaderLib_generator } from "../worker/webgl1/both_file/data/shaderLib_generator";
-import { webgl2_shaderLib_generator } from "../webgl2/data/shaderLib_generator";
+import { webgl2_shaderLib_generator } from "../worker/webgl2/both_file/data/shaderLib_generator";
 import { webgl1_material_config } from "../worker/webgl1/both_file/data/material_config";
-import { webgl2_material_config } from "../webgl2/data/material_config";
+import { webgl2_material_config } from "../worker/webgl2/both_file/data/material_config";
 import { initMaterialShader as initMaterialShaderWebGL1,   initNoMaterialShader as initNoMaterialShaderWebGL1  } from "../webgl1/shader/ShaderSystem";
 import { isWebgl1 } from "../device/WebGLDetectSystem";
 import { Log } from "../../utils/Log";
+import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/defer/draw/deferDrawRenderCommandBufferUtils";
 
 export var init = null;
 
 export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    render = (state: Map<any, any>) => {
+        return compose(
+            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
+            // sortRenderCommands(state),
+            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+            getRenderList(state)
+        )(MeshRendererData)
+    }
+
     if(isWebgl1()){
         init = (state: Map<any, any>) => {
             var renderWorker = getRenderWorker(WorkerInstanceData);
@@ -143,18 +152,75 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 
             return state;
         }
-
-        render = (state: Map<any, any>) => {
-            return compose(
-                sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
-                // sortRenderCommands(state),
-                createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
-                getRenderList(state)
-            )(MeshRendererData)
-        }
     }
     else{
-        //todo
+        //todo refactor(extract repeat code with webgl1)
+
+        init = (state: Map<any, any>) => {
+            var renderWorker = getRenderWorker(WorkerInstanceData);
+
+            renderWorker.postMessage({
+                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                materialData: {
+                    buffer: MaterialData.buffer,
+                    basicMaterialData: {
+                        startIndex: getBasicMaterialBufferStartIndex(),
+                        index: BasicMaterialData.index
+                    },
+                    lightMaterialData: {
+                        startIndex: getLightMaterialBufferStartIndex(),
+                        index: LightMaterialData.index,
+                        diffuseMapMap: getDiffuseMapMap(LightMaterialData),
+                        specularMapMap: getSpecularMapMap(LightMaterialData)
+                    }
+                },
+                geometryData: {
+                    buffer: GeometryData.buffer,
+                    indexType: GeometryData.indexType,
+                    indexTypeSize: GeometryData.indexTypeSize,
+                    verticesInfoList: GeometryData.verticesInfoList,
+                    normalsInfoList: GeometryData.normalsInfoList,
+                    texCoordsInfoList: GeometryData.texCoordsInfoList,
+                    indicesInfoList: GeometryData.indicesInfoList
+                },
+                lightData: {
+                    // ambientLightData: {
+                    //     buffer: AmbientLightData.buffer,
+                    //     bufferCount: getAmbientLightBufferCount(),
+                    //     lightCount: AmbientLightData.count
+                    //
+                    // },
+                    // directionLightData: {
+                    //     buffer: DirectionLightData.buffer,
+                    //     bufferCount: getDirectionLightBufferCount(),
+                    //     lightCount: DirectionLightData.count,
+                    //     directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                    // },
+                    pointLightData: {
+                        buffer: PointLightData.buffer,
+                        bufferCount: getPointLightBufferCount(),
+                        lightCount: PointLightData.count
+                        // pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+                    }
+                },
+                textureData: {
+                    mapManagerBuffer: MapManagerData.buffer,
+                    textureBuffer: TextureData.buffer,
+                    index: TextureData.index,
+                    imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
+                    uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
+                }
+            });
+
+            renderWorker.onmessage = (e) => {
+                var data = e.data,
+                    state = data.state;
+
+                SendDrawRenderCommandBufferData.state = state;
+            };
+
+            return state;
+        }
     }
 }
 else {
@@ -201,7 +267,7 @@ else {
         render = (state: Map<any, any>) => {
             return compose(
                 //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
-                deferDraw(null, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
+                deferDraw(null, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData), ThreeDTransformData, GameObjectData),
                 clearColor(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

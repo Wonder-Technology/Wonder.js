@@ -15,7 +15,7 @@ import {
     IWebGL2GLSLConfig, IWebGL2GLSLDefineListItem, IWebGL2GLSLFuncConfig, IWebGL2SendAttributeConfig,
     IWebGL2SendUniformConfig,
     IWebGL2ShaderLibContentGenerator
-} from "../../data/shaderLib_generator";
+} from "../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config";
 
 export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {

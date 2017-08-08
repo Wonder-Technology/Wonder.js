@@ -4,6 +4,7 @@ import {
     getIntensity as getIntensityUtils, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getRange as getRangeUtils
 } from "../../../utils/light/pointLightUtils";
 import { Color } from "../../../../structure/Color";
+import { computeRadius as computeRadiusUtils } from "../../../webgl2/utils/light/pointLightUtils";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, PointLightWorkerData: any) => {
     PointLightWorkerData.positionArr = positionArr;
@@ -22,6 +23,8 @@ export var getLinear = getLinearUtils;
 export var getQuadratic = getQuadraticUtils;
 
 export var getRange = getRangeUtils;
+
+export var computeRadius = computeRadiusUtils;
 
 export var initData = ({
                            buffer,

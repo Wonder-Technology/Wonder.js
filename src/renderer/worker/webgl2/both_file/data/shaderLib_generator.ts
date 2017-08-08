@@ -29,7 +29,7 @@ import {
     deferLightPass_fragment,
     deferLightPass_end_fragment
 
-} from "../../shader/chunk/ShaderChunk";
+} from "../../../../shader/chunk/ShaderChunk";
 
 export const webgl2_shaderLib_generator = {
     "shaderLibs": {

@@ -23,22 +23,6 @@ export type DeferDrawDataMap = {
     DeferLightPassDataFromSystem: any;
 }
 
-export type DrawFuncDataMap = {
-    bindIndexBuffer: Function;
-    sendAttributeData: Function;
-    sendUniformData: Function;
-    directlySendUniformData: Function;
-    use: Function;
-    hasIndices: Function;
-    getIndicesCount: Function;
-    getIndexType: Function;
-    getIndexTypeSize: Function;
-    getVerticesCount: Function;
-    bindAndUpdate: Function;
-    getMapCount: Function;
-    useShader: Function;
-}
-
 export type SendUniformDataGLSLSenderDataMap = {
     getUniformData: Function;
     sendMatrix3: Function;

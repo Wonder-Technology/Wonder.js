@@ -3,7 +3,7 @@ import { SendAttributeConfigMap } from "../../../../type/dataType";
 import {
     IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig,
     IWebGL2ShaderLibContentGenerator
-} from "../../../data/shaderLib_generator";
+} from "../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { expect } from "wonder-expect.js";
 import { forEach, hasDuplicateItems } from "../../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../../../utils/renderConfigUtils";

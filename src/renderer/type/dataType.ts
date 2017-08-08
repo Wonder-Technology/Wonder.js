@@ -1,6 +1,6 @@
 import { EBufferType } from "../enum/EBufferType";
 import { IWebGL1SendAttributeConfig, IWebGL1SendUniformConfig } from "../worker/webgl1/both_file/data/shaderLib_generator";
-import { IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig } from "../webgl2/data/shaderLib_generator";
+import { IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig } from "../worker/webgl2/both_file/data/shaderLib_generator";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
