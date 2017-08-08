@@ -51,7 +51,6 @@ import {
     GeometryUpdateWorkerData, LightDrawWorkerData, LightInitWorkerData, TextureInitWorkerData
 } from "../../type/messageDataType";
 import { PointLightWorkerData } from "./light/PointLightWorkerData";
-import { initData as initLightData } from "./light/LightWorkerSystem";
 import { setIsTest } from "./config/InitConfigWorkerSystem";
 import { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 import { setPositionArr as setPointLightPositionArr } from "./light/PointLightWorkerSystem";
@@ -88,6 +87,8 @@ import {
     initNoMaterialShader as initNoMaterialShaderWebGL2
 } from "../webgl2/render_file/shader/ShaderWorkerSystem";
 import { buildDrawDataMap as buildDeferDrawDataMap } from "../../webgl2/utils/defer/draw/deferDrawRenderCommandBufferUtils";
+import { initData as initLightWorkerDataWebGL2 } from "../webgl2/render_file/light/LightWorkerSystem";
+import { initData as initLightWorkerDataWebGL1 } from "../webgl1/render_file/light/LightWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -185,7 +186,7 @@ var _handleInitRenderData = (data:any) => {
 
     if(isWebgl1(WebGLDetectWorkerData)){
         fromArray([
-            _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
+            _initWebGL1Lights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
             _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
             _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
         ]).mergeAll()
@@ -202,7 +203,7 @@ var _handleInitRenderData = (data:any) => {
     else{
         //todo refactor(repeat code)
         fromArray([
-            _initLights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
+            _initWebGL2Lights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
             _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
             _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
         ]).mergeAll()
@@ -293,13 +294,23 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
     })
 }
 
-var _initLights = (lightData: LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
+var _initWebGL1Lights = (lightData: LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     return callFunc(() => {
         if (lightData === null) {
             return;
         }
 
-        initLightData(lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+        initLightWorkerDataWebGL1(lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+    })
+}
+
+var _initWebGL2Lights = (lightData: LightInitWorkerData, PointLightWorkerData: any) => {
+    return callFunc(() => {
+        if (lightData === null) {
+            return;
+        }
+
+        initLightWorkerDataWebGL2(lightData, PointLightWorkerData);
     })
 }
 

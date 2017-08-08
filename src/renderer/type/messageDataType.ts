@@ -1,7 +1,6 @@
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import {
-    ContextConfigOptionsData, DirectionLightGLSLDataStructure, DisposedTextureDataMap,
-    PointLightGLSLDataStructure
+    ContextConfigOptionsData, DisposedTextureDataMap,
 } from "./dataType";
 import { Vector3 } from "../../math/Vector3";
 import { EBufferType } from "../enum/EBufferType";
@@ -55,26 +54,6 @@ export type GeometryResetWorkerData = {
     normalsInfoList: GeometryInfoList;
     texCoordsInfoList: GeometryInfoList;
     indicesInfoList: GeometryInfoList;
-}
-
-export type LightInitWorkerData = {
-    ambientLightData: {
-        buffer: SharedArrayBuffer;
-        bufferCount: number;
-        lightCount: number;
-    };
-    directionLightData: {
-        buffer: SharedArrayBuffer;
-        bufferCount: number;
-        lightCount: number;
-        directionLightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure>;
-    };
-    pointLightData: {
-        buffer: SharedArrayBuffer;
-        bufferCount: number;
-        lightCount: number;
-        pointLightGLSLDataStructureMemberNameArr: Array<PointLightGLSLDataStructure>;
-    }
 }
 
 export type LightDrawWorkerData = {
