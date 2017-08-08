@@ -50,6 +50,14 @@ describe("defer shading", function () {
             gl.createTexture.onCall(3).returns(depthTexture);
         }
 
+        it("if not support extensionColorBufferFloat, error", function () {
+            sandbox.stub(GPUDetector.getInstance(), "extensionColorBufferFloat", false);
+
+            expect(function () {
+                directorTool.init(state);
+            }).toThrow("defer shading need support extensionColorBufferFloat extension");
+        });
+
         describe("init DeferLightPass shader", function () {
             it("set shader index to map", function () {
                 directorTool.init(state);
