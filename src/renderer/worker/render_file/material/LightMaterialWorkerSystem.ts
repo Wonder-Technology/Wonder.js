@@ -5,30 +5,35 @@ import {
     getShininess as getShininessUtils, getSpecularColorArr3 as getSpecularColorArr3Utils
 } from "../../../utils/material/lightMaterialUtils";
 
-export var getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
-    return getSpecularColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
+export var getSpecularColorArr3 = (index: number, LightMaterialWorkerData: any) => {
+    return getSpecularColorArr3Utils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var getEmissionColorArr3 = (index: number, LightMaterialData: any) => {
-    return getEmissionColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
+export var getEmissionColorArr3 = (index: number, LightMaterialWorkerData: any) => {
+    return getEmissionColorArr3Utils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var getShininess = (index: number, LightMaterialDataFromSystem: any) => {
-    return getShininessUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
+export var getShininess = (index: number, LightMaterialWorkerData: any) => {
+    return getShininessUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var getShading = (index: number, LightMaterialDataFromSystem: any) => {
-    return getShadingUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
+export var getShading = (index: number, LightMaterialWorkerData: any) => {
+    return getShadingUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
-    return getLightModelUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
+export var getLightModel = (index: number, LightMaterialWorkerData: any) => {
+    return getLightModelUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var setDiffuseMapIndex = (textureIndex: number, LightMaterialData: any) => {
-    LightMaterialData.diffuseMapIndex = textureIndex;
+export var setDiffuseMapMap = (map:Array<number>, LightMaterialWorkerData: any) => {
+    LightMaterialWorkerData.diffuseMapMap = map;
 }
 
-export var setSpecularMapIndex = (textureIndex: number, LightMaterialData: any) => {
-    LightMaterialData.specularMapIndex = textureIndex;
+export var setSpecularMapMap = (map:Array<number>, LightMaterialWorkerData: any) => {
+    LightMaterialWorkerData.specularMapMap = map;
+}
+
+export var initData = (LightMaterialWorkerData: any) => {
+    LightMaterialWorkerData.diffuseMapMap = [];
+    LightMaterialWorkerData.specularMapMap = [];
 }

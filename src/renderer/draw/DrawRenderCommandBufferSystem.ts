@@ -3,7 +3,7 @@ import {
     initData as initDataUtils
 } from "../utils/draw/drawRenderCommandBufferUtils";
 import curry from "wonder-lodash/curry";
-import { IRenderConfig } from "../data/render_config";
+import { IRenderConfig } from "../worker/both_file/data/render_config";
 import { RenderCommandBufferForDrawData } from "../type/dataType";
 import { getGL } from "../device/DeviceManagerSystem";
 import { Map } from "immutable";

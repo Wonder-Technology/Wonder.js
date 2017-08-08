@@ -31,7 +31,7 @@ import { initData as initGameObjectData } from "./entityObject/gameObject/GameOb
 // import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
 // import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
-import { render_config } from "../renderer/data/render_config";
+import { render_config } from "../renderer/worker/both_file/data/render_config";
 import { RenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferData";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
@@ -63,14 +63,16 @@ import { AmbientLightData } from "../component/light/AmbientLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
 import { PointLightData } from "../component/light/PointLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
-import { initWorkInstances } from "../worker/WorkerInstanceSystem";
+import { getRenderWorker, initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
 import { TextureData } from "../renderer/texture/TextureData";
 import { MapManagerData } from "../renderer/texture/MapManagerData";
 import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
+import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateType";
+import { getVersion } from "../renderer/device/WebGLDetectSystem";
 
-export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, {
+export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -107,6 +109,9 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
 
         setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
 
+        //todo pass main test
+        passDataToRenderWorker(WorkerInstanceData, WebGLDetectData).run();
+
         return fromJS({
             Main: {
                 screenSize: screenSize
@@ -140,11 +145,23 @@ export var init = requireCheckFunc((gameState: Map<string, any>, configState: Ma
     )(configState.get("canvasID"));
 });
 
-export var initData = null;
+export var initData = null,
+    passDataToRenderWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initData = () => {
         _initData();
+    }
+
+    passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
+        return IO.of(() => {
+            var renderWorker = getRenderWorker(WorkerInstanceData);
+
+            renderWorker.postMessage({
+                operateType: EWorkerOperateType.INIT_DATA,
+                webglVersion: getVersion(WebGLDetectData)
+            });
+        });
     }
 }
 else {
@@ -162,6 +179,11 @@ else {
         initIndexBufferData(IndexBufferData);
 
         initDrawRenderCommandBufferData(DrawRenderCommandBufferData);
+    }
+
+    passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
+        return IO.of(() => {
+        });
     }
 }
 

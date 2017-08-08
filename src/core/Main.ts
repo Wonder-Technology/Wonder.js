@@ -13,6 +13,7 @@ import { WorkerDetectData } from "../device/WorkerDetectData";
 import { WorkerInstanceData } from "../worker/WorkerInstanceData";
 import { InitConfigData } from "../renderer/config/InitConfigData";
 import { getIsTest, setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
+import { WebGLDetectData } from "../renderer/device/WebGLDetectData";
 
 export class Main {
     static get isTest() {
@@ -27,7 +28,7 @@ export class Main {
     private static _configState: Map<any, any> = null;
 
     public static setConfig(configState: MainConfigData) {
-        this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, configState).run();
+        this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, configState).run();
 
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
 

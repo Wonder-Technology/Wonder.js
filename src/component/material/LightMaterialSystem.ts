@@ -63,8 +63,8 @@ export var setSpecularColor = (index: number, color: Color, LightMaterialData: a
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 }
 
-export var getDiffuseMapIndex = (LightMaterialData: any) => {
-    return LightMaterialData.diffuseMapIndex;
+export var getDiffuseMapMap = (LightMaterialData: any) => {
+    return LightMaterialData.diffuseMapMap;
 }
 
 export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
@@ -75,8 +75,8 @@ export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, Te
     LightMaterialData.diffuseMapMap[index] = map.index;
 }
 
-export var getSpecularMapIndex = (LightMaterialData: any) => {
-    return LightMaterialData.specularMapIndex;
+export var getSpecularMapMap = (LightMaterialData: any) => {
+    return LightMaterialData.specularMapMap;
 }
 
 export var setSpecularMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
@@ -158,6 +158,7 @@ export var disposeComponent = (component: Material) => {
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * shininessDataSize, lightMaterialLastComponentIndex * shininessDataSize, LightMaterialData.shininess, LightMaterialData.defaultShininess);
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * lightModelDataSize, lightMaterialLastComponentIndex * lightModelDataSize, LightMaterialData.lightModels, LightMaterialData.defaultLightModel);
 
+    //todo fix: notice render worker to update map!
     deleteBySwap(sourceIndex, lastComponentIndex, LightMaterialData.diffuseMapMap);
     deleteBySwap(sourceIndex, lastComponentIndex, LightMaterialData.specularMapMap);
 }

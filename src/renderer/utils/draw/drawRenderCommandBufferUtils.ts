@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { RenderCommandBufferForDrawData } from "../../type/dataType";
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
-import { IRenderConfig } from "../../data/render_config";
+import { IRenderConfig } from "../../worker/both_file/data/render_config";
 import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
 import { createTypeArrays } from "./renderComandBufferUtils";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
@@ -41,7 +41,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
-export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function) => {
+export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function) => {
     return {
         bindIndexBuffer: bindIndexBuffer,
         sendAttributeData: sendAttributeData,
@@ -54,7 +54,8 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
         getIndexTypeSize: getIndexTypeSize,
         getVerticesCount: getVerticesCount,
         bindAndUpdate: bindAndUpdate,
-        getMapCount: getMapCount
+        getMapCount: getMapCount,
+        useShader: useShader
     }
 }
 

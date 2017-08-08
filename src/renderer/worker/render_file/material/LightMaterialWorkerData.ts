@@ -5,6 +5,6 @@ export class LightMaterialWorkerData {
     public static shadings: Uint8Array = null;
     public static lightModels: Uint8Array = null;
 
-    public static diffuseMapIndex: number = null;
-    public static specularMapIndex: number = null;
+    public static diffuseMapMap: Array<number> = null;
+    public static specularMapMap: Array<number> = null;
 }

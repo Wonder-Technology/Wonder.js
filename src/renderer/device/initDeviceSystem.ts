@@ -18,6 +18,7 @@ import { ViewportData } from "../type/messageDataType";
 import { Map } from "immutable";
 import { WorkerInstanceData } from "../../worker/WorkerInstanceData";
 import { getRenderWorker } from "../../worker/WorkerInstanceSystem";
+import { WebGLDetectData } from "./WebGLDetectData";
 
 export var initDevice = null;
 
@@ -45,7 +46,7 @@ else {
             chain(setCanvasPixelRatioFromDeviceManagerSystem(configState.get("useDevicePixelRatio"), canvas)),
             chain(setScreenFromDeviceManagerSystem(canvas, DeviceManagerData)),
             createGL,
-        )(canvas, contextConfig, DeviceManagerData, state);
+        )(canvas, contextConfig, WebGLDetectData, DeviceManagerData, state);
     });
 }
 

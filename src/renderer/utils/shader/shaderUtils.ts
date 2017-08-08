@@ -6,12 +6,12 @@ import { Map } from "immutable";
 // import { setLocationMap } from "./location/locationUtils";
 import {
     getProgram, initShader, isProgramExist,
-    registerProgram, sendUniformData as sendUniformDataProgram, sendAttributeData as sendAttributeDataProgram,
+    registerProgram, sendAttributeData as sendAttributeDataProgram,
     use as useProgram
 } from "./program/programUtils";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
 import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
-import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap, SendUniformDataDataMap } from "../../type/utilsType";
+// import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 // import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 
@@ -95,10 +95,6 @@ import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
-}
-
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-    sendUniformDataProgram(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {

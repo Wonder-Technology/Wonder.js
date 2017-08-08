@@ -10,7 +10,7 @@ import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectDat
 import { GeometryData } from "../../component/geometry/GeometryData";
 import { ArrayBufferData } from "../buffer/ArrayBufferData";
 import { IndexBufferData } from "../buffer/IndexBufferData";
-import { render_config } from "../data/render_config";
+import { render_config } from "../worker/both_file/data/render_config";
 import { DeviceManagerData } from "../device/DeviceManagerData";
 import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
 import { SceneData } from "../../core/entityObject/scene/SceneData";
@@ -49,7 +49,9 @@ import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
-import { getDiffuseMapIndex, getSpecularMapIndex } from "../../component/material/LightMaterialSystem";
+import {
+    getDiffuseMapMap, getSpecularMapMap
+} from "../../component/material/LightMaterialSystem";
 import { GPUDetector } from "../device/GPUDetector";
 import { GBufferData } from "../webgl2/defer/gbuffer/GBufferData";
 import { init as initDefer, draw as deferDraw  } from "../webgl2/defer/DeferShadingSystem";
@@ -62,12 +64,12 @@ import {
     draw as frontDraw
     // init as initFront
 } from "../webgl1/front/FrontRenderSystem";
-import { webgl1_shaderLib_generator } from "../webgl1/data/shaderLib_generator";
+import { webgl1_shaderLib_generator } from "../worker/webgl1/both_file/data/shaderLib_generator";
 import { webgl2_shaderLib_generator } from "../webgl2/data/shaderLib_generator";
-import { webgl1_material_config } from "../webgl1/data/material_config";
+import { webgl1_material_config } from "../worker/webgl1/both_file/data/material_config";
 import { webgl2_material_config } from "../webgl2/data/material_config";
 import { initMaterialShader as initMaterialShaderWebGL1,   initNoMaterialShader as initNoMaterialShaderWebGL1  } from "../webgl1/shader/ShaderSystem";
-import { isWebgl1 } from "../../device/WebGLDetectSystem";
+import { isWebgl1 } from "../device/WebGLDetectSystem";
 import { Log } from "../../utils/Log";
 
 export var init = null;
@@ -75,79 +77,84 @@ export var init = null;
 export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    init = (state: Map<any, any>) => {
-        var renderWorker = getRenderWorker(WorkerInstanceData);
+    if(isWebgl1()){
+        init = (state: Map<any, any>) => {
+            var renderWorker = getRenderWorker(WorkerInstanceData);
 
-        renderWorker.postMessage({
-            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-            materialData: {
-                buffer: MaterialData.buffer,
-                basicMaterialData: {
-                    startIndex: getBasicMaterialBufferStartIndex(),
-                    index: BasicMaterialData.index
+            renderWorker.postMessage({
+                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                materialData: {
+                    buffer: MaterialData.buffer,
+                    basicMaterialData: {
+                        startIndex: getBasicMaterialBufferStartIndex(),
+                        index: BasicMaterialData.index
+                    },
+                    lightMaterialData: {
+                        startIndex: getLightMaterialBufferStartIndex(),
+                        index: LightMaterialData.index,
+                        diffuseMapMap: getDiffuseMapMap(LightMaterialData),
+                        specularMapMap: getSpecularMapMap(LightMaterialData)
+                    }
                 },
-                lightMaterialData: {
-                    startIndex: getLightMaterialBufferStartIndex(),
-                    index: LightMaterialData.index,
-                    diffuseMapIndex: getDiffuseMapIndex(LightMaterialData),
-                    specularMapIndex: getSpecularMapIndex(LightMaterialData)
+                geometryData: {
+                    buffer: GeometryData.buffer,
+                    indexType: GeometryData.indexType,
+                    indexTypeSize: GeometryData.indexTypeSize,
+                    verticesInfoList: GeometryData.verticesInfoList,
+                    normalsInfoList: GeometryData.normalsInfoList,
+                    texCoordsInfoList: GeometryData.texCoordsInfoList,
+                    indicesInfoList: GeometryData.indicesInfoList
+                },
+                lightData: {
+                    ambientLightData: {
+                        buffer: AmbientLightData.buffer,
+                        bufferCount: getAmbientLightBufferCount(),
+                        lightCount: AmbientLightData.count
+
+                    },
+                    directionLightData: {
+                        buffer: DirectionLightData.buffer,
+                        bufferCount: getDirectionLightBufferCount(),
+                        lightCount: DirectionLightData.count,
+                        directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                    },
+                    pointLightData: {
+                        buffer: PointLightData.buffer,
+                        bufferCount: getPointLightBufferCount(),
+                        lightCount: PointLightData.count,
+                        pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+                    }
+                },
+                textureData: {
+                    mapManagerBuffer: MapManagerData.buffer,
+                    textureBuffer: TextureData.buffer,
+                    index: TextureData.index,
+                    imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
+                    uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
                 }
-            },
-            geometryData: {
-                buffer: GeometryData.buffer,
-                indexType: GeometryData.indexType,
-                indexTypeSize: GeometryData.indexTypeSize,
-                verticesInfoList: GeometryData.verticesInfoList,
-                normalsInfoList: GeometryData.normalsInfoList,
-                texCoordsInfoList: GeometryData.texCoordsInfoList,
-                indicesInfoList: GeometryData.indicesInfoList
-            },
-            lightData: {
-                ambientLightData: {
-                    buffer: AmbientLightData.buffer,
-                    bufferCount: getAmbientLightBufferCount(),
-                    lightCount: AmbientLightData.count
+            });
 
-                },
-                directionLightData: {
-                    buffer: DirectionLightData.buffer,
-                    bufferCount: getDirectionLightBufferCount(),
-                    lightCount: DirectionLightData.count,
-                    directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-                },
-                pointLightData: {
-                    buffer: PointLightData.buffer,
-                    bufferCount: getPointLightBufferCount(),
-                    lightCount: PointLightData.count,
-                    pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
-                }
-            },
-            textureData: {
-                mapManagerBuffer: MapManagerData.buffer,
-                textureBuffer: TextureData.buffer,
-                index: TextureData.index,
-                imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
-                uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
-            }
-        });
+            renderWorker.onmessage = (e) => {
+                var data = e.data,
+                    state = data.state;
 
-        renderWorker.onmessage = (e) => {
-            var data = e.data,
-                state = data.state;
+                SendDrawRenderCommandBufferData.state = state;
+            };
 
-            SendDrawRenderCommandBufferData.state = state;
-        };
+            return state;
+        }
 
-        return state;
+        render = (state: Map<any, any>) => {
+            return compose(
+                sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
+                // sortRenderCommands(state),
+                createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
+                getRenderList(state)
+            )(MeshRendererData)
+        }
     }
-
-    render = (state: Map<any, any>) => {
-        return compose(
-            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData),
-            // sortRenderCommands(state),
-            createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
-            getRenderList(state)
-        )(MeshRendererData)
+    else{
+        //todo
     }
 }
 else {
@@ -166,7 +173,7 @@ else {
             return compose(
                 //todo refactor defer draw, draw(clear, draw...  consider webgl2)
                 //todo filter gameObjects by material: only light material use defer draw, basic material use basic draw(front draw?)
-                frontDraw(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData)),
+                frontDraw(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, DrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData), ThreeDTransformData, GameObjectData),
                 clearColor(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),

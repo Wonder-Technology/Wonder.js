@@ -9,30 +9,19 @@ import { Map } from "immutable";
 import { getNoMaterialShaderIndex, use } from "../../shader/ShaderSystem";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../data/material_config";
-import { IRenderConfig } from "../../data/render_config";
+import { IRenderConfig } from "../../worker/both_file/data/render_config";
 
 export var init = (gl:any, GBufferData:any, DeferLightPassData:any, ShaderData:any, ProgramData, LocationData, GLSLSenderData) => {
-    // create gbuffer shader, program
-    // create light pass shader, program
-
-
     initGBuffer(gl, GBufferData);
     initDeferLightPass(gl, DeferLightPassData);
 
-
     //todo optimize: when switch to defer shading, bind and send gbuffer textures
 
-    // bind texture(gbuffer texture )
     bindGBufferTargets(gl, GBufferData);
 
-    // use program(use light pass shader -> program )
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderData);
 
     let program = use(gl, shaderIndex, ProgramData, LocationData, GLSLSenderData);
-
-
-
-    // send texture data(gbuffer texture )
 
     sendGBufferTargetData(gl, program);
 }

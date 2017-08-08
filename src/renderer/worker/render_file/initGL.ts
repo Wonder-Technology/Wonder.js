@@ -13,18 +13,20 @@ import curry from "wonder-lodash/curry";
 import { MessageInitGLData } from "../../type/messageDataType";
 import { Map } from "immutable";
 import { setCanvas } from "../../../structure/ViewSystem";
+import { getOnlyGL } from "../../utils/device/deviceManagerUtils";
 
-export var initGL = (data: MessageInitGLData) => {
+export var initGL = (data: MessageInitGLData, WebGLDetectWorkerData:any) => {
     return compose(
         map(detect(getGL, DeviceManagerWorkerData)),
         chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)),
-        _createGL(data.canvas, data.options, DeviceManagerWorkerData)
+        _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData)
     )(createState());
 }
 
-var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any, state: Map<any, any>) => {
+var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData:any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = _getContext(canvas, options);
+        //todo test
+        var gl = getOnlyGL(canvas, options, WebGLDetectWorkerData);
 
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
@@ -33,7 +35,3 @@ var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsD
         return compose(setCanvas(canvas), setContextConfig(options), setGL(gl, DeviceManagerWorkerData))(state);
     });
 })
-
-var _getContext = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData): WebGLRenderingContext => {
-    return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
-}

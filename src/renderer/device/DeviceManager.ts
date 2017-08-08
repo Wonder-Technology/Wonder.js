@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
 // import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
-import { createGL, getGL, getViewport, setGL } from "./DeviceManagerSystem";
+import { getGL, getViewport, setGL } from "./DeviceManagerSystem";
 import { View } from "../../structure/View";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
@@ -37,10 +37,6 @@ export class DeviceManager {
     public view: View = View.create();
 
     private constructor() { }
-
-    public createGL(canvasID: string, contextConfig: ContextConfigData) {
-        return createGL(canvasID, fromJS(contextConfig), getState(DirectorData));
-    }
 
     //todo open setScreen
     // @requireCheck(() => {

@@ -1,6 +1,6 @@
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
-import { EWebGLVersion } from "./EWebGLVersion";
+import { EWebGLVersion } from "../enum/EWebGLVersion";
 
 export class DeviceManagerData {
     public static gl: WebGLRenderingContext = null;

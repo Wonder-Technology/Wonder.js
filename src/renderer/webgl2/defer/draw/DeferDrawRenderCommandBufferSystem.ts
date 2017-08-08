@@ -29,13 +29,16 @@
 
 
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
+// import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../../../type/utilsType";
+import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
 import {
     bindGBuffer, bindGBufferTargets, getNewTextureUnitIndex, sendGBufferTargetData,
     unbindGBuffer
 } from "../gbuffer/GBufferSystem";
 import {
-    bindIndexBuffer, getNoMaterialShaderIndex, sendAttributeData, sendUniformData, use
+    bindIndexBuffer, getNoMaterialShaderIndex, sendAttributeData,
+    // sendUniformData,
+    use
 } from "../../../shader/ShaderSystem";
 import { drawFullScreenQuad, sendAttributeData as sendDeferLightPassAttributeData } from "../light/DeferLightPassSystem";
 import { directlySendUniformData } from "../../../utils/shader/program/programUtils";
@@ -69,7 +72,7 @@ import {
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { Map } from "immutable";
 import { IMaterialConfig } from "../../../data/material_config";
-import { IRenderConfig } from "../../../data/render_config";
+import { IRenderConfig } from "../../../worker/both_file/data/render_config";
 
 export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
     return {
@@ -138,7 +141,9 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
 
 var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, {
     GBufferDataFromSystem
-}, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
+// }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
+    //todo fix
+}, initShaderDataMap:InitShaderDataMap, sendDataMap:any, bufferData: RenderCommandBufferForDrawData, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, {
             mMatrices,
             // vMatrices,
             // pMatrices,
@@ -277,7 +282,8 @@ var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialCo
             uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
 
-        sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
+        //todo fix
+        // sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
 
         let textureStartUnitIndex = getNewTextureUnitIndex();
 
@@ -301,7 +307,7 @@ var _drawGBufferPass = (gl:any, state:Map<any, any>, material_config:IMaterialCo
 }
 
 
-
+//todo move to webgl2->ShaderSystem
 var _buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
     return {
         glslSenderData: {
@@ -409,7 +415,9 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
 var _drawLightPass = (gl:any, render_config:IRenderConfig, drawDataMap:DrawDataMap, {
                           GBufferDataFromSystem,
                           DeferLightPassDataFromSystem
-                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap,
+                      // }, initShaderDataMap:InitShaderDataMap, sendDataMap:SendUniformDataDataMap,
+    //todo fix
+}, initShaderDataMap:InitShaderDataMap, sendDataMap:any,
                       vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend
 ) => {
     var {

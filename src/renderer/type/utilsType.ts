@@ -23,13 +23,6 @@ export type DeferDrawDataMap = {
     DeferLightPassDataFromSystem: any;
 }
 
-export type SendUniformDataDataMap = {
-    glslSenderData: SendUniformDataGLSLSenderDataMap;
-    // ambientLightData: SendUniformDataAmbientLightDataMap;
-    // directionLightData: SendUniformDataDirectionLightDataMap;
-    // pointLightData: SendUniformDataPointLightDataMap;
-}
-
 export type DrawFuncDataMap = {
     bindIndexBuffer: Function;
     sendAttributeData: Function;
@@ -43,6 +36,7 @@ export type DrawFuncDataMap = {
     getVerticesCount: Function;
     bindAndUpdate: Function;
     getMapCount: Function;
+    useShader: Function;
 }
 
 export type SendUniformDataGLSLSenderDataMap = {
@@ -55,32 +49,6 @@ export type SendUniformDataGLSLSenderDataMap = {
     sendFloat3: Function;
 
     GLSLSenderDataFromSystem: any;
-}
-
-export type SendUniformDataAmbientLightDataMap = {
-    getColorArr3: Function;
-
-    AmbientLightDataFromSystem: any;
-}
-
-export type SendUniformDataDirectionLightDataMap = {
-    getColorArr3: Function;
-    getIntensity: Function;
-    getPosition: Function;
-
-    DirectionLightDataFromSystem: any;
-}
-
-export type SendUniformDataPointLightDataMap = {
-    getColorArr3: Function;
-    getIntensity: Function;
-    getConstant: Function;
-    getLinear: Function;
-    getQuadratic: Function;
-    getRange: Function;
-    getPosition: Function;
-
-    PointLightDataFromSystem: any;
 }
 
 export type MaterialForGetUniformDataDataMap = {

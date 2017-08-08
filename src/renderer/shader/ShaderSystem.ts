@@ -3,7 +3,6 @@ import {
     bindIndexBuffer as bindIndexBufferUtils,
     // initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils,
     sendAttributeData as sendAttributeDataUtils,
-    sendUniformData as sendUniformDataUtils,
     use as useUtils
 } from "../utils/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
@@ -15,9 +14,9 @@ import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from ".
 // import { IMaterialConfig, MaterialShaderLibConfig } from "../webgl1/data/material_config";
 // import { IShaderLibGenerator } from "../data/shaderLib_generator";
 // import { Map } from "immutable";
-import { DrawDataMap, InitShaderDataMap, SendUniformDataDataMap } from "../type/utilsType";
-import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
-import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
+import { DrawDataMap } from "../type/utilsType";
+// import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
+// import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
 import {
     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
@@ -62,7 +61,7 @@ export var getNoMaterialShaderIndex = (shaderName: string, ShaderData: any) => {
 
 export var sendAttributeData = null;
 
-export var sendUniformData = null;
+// export var sendUniformData = null;
 
 export var bindIndexBuffer = null;
 
@@ -95,17 +94,13 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         getTexCoords: getTexCoords
     }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
-    sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-        sendUniformDataUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
-    };
-
     bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
         bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
     }
 
     use = useUtils;
 
-    buildSendUniformDataDataMap = (drawDataMap: DrawDataMap) => {
+    buildSendUniformDataDataMap = (drawDataMap: DrawDataMap, ThreeDTransformData:any, GameObjectData:any) => {
         return {
             glslSenderData: {
                 getUniformData: getUniformData,

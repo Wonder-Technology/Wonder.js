@@ -1,7 +1,5 @@
-import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import {
-    setCanvas, setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX, getWebgl2Context,
-    getWebgl1Context
+    setCanvas, setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX
 } from "../../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
@@ -9,7 +7,7 @@ import { chain, compose } from "../../utils/functionalUtils";
 import { Map } from "immutable";
 import {
     clear as clearUtils,
-    getGL as getGLUtils, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
+    getGL as getGLUtils, getOnlyGL, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils,
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setClearColor as setClearColorUtils,
     setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
@@ -19,42 +17,19 @@ import {
 import { Log } from "../../utils/Log";
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
-import { isWebgl1, isWebgl2 } from "../../device/WebGLDetectSystem";
+import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 
-export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, DeviceManagerData: any, state: Map<any, any>) => {
+export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, WebGLDetectData:any, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = _getOnlyGL(canvas, contextConfig);
+        var gl = getOnlyGL(canvas, contextConfig.get("options").toObject(), WebGLDetectData);
+
+        if (!gl) {
+            DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        }
 
         return compose(setCanvas(canvas), setContextConfig(contextConfig), setGL(gl, DeviceManagerData))(state);
     });
 })
-
-//todo pass worker
-var _getOnlyGL = null;
-
-if(isWebgl1()){
-    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
-        Log.log("use webgl1");
-
-        return getWebgl1Context(contextConfig, canvas);
-    }
-}
-else if(isWebgl2()){
-    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
-        Log.log("use webgl2");
-
-        return getWebgl2Context(contextConfig, canvas);
-    }
-}
-else{
-    _getOnlyGL = (canvas: HTMLCanvasElement, contextConfig: Map<string, any>) => {
-        DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-
-        return null;
-    }
-}
-
-
 
 export var getGL = getGLUtils;
 

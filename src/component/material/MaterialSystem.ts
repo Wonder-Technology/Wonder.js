@@ -18,7 +18,8 @@ import {
     createTypeArrays,
     getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
+    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex,
+    initNoMaterialShaders, useShader as useShaderUtils
 } from "../../renderer/utils/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
@@ -46,7 +47,6 @@ import {
     getLightMaterialBufferCount, getLightMaterialBufferStartIndex
 } from "../../renderer/utils/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
@@ -56,13 +56,13 @@ import {
     initData as initMapManagerData,
     initMapManagers
 } from "../../renderer/texture/MapManagerSystem";
-import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/material/basicMaterialUtils";
 import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
 import { IMaterialConfig } from "../../renderer/data/material_config";
+import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -87,19 +87,10 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
     return material;
 }
 
-export var useShader = ( index: number, shaderName:string, state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
-    //todo optimize: not init if inited
-    //todo check: shader->glsl shouldn't change after first init
-
-    var shaderIndex = initMaterialShader(state, index, shaderName, material_config, shaderLib_generator, initShaderDataMap);
-
-    setShaderIndex(index, shaderIndex, initShaderDataMap.MaterialDataFromSystem);
-
-    return shaderIndex;
-}
+export var useShader = useShaderUtils;
 
 export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
-    _initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, MaterialData);
+    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
 
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
@@ -110,18 +101,6 @@ export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, mat
 var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
         initMaterial(i, state, className, MaterialData);
-    }
-}
-
-//todo optimize: only init webgl1 or webgl2 shaders
-//todo test
-var _initNoMaterialShaders = (state: MapImmutable<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, MaterialData: any) => {
-    var shaders = material_config.shaders.noMaterialShaders;
-
-    for(let shaderName in shaders){
-        if(shaders.hasOwnProperty(shaderName)){
-            initNoMaterialShader(state, shaderName, shaders[shaderName], material_config, shaderLib_generator, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
-        }
     }
 }
 

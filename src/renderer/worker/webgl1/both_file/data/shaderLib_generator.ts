@@ -13,10 +13,10 @@ import {
     // map_forBasic_fragment,
     webgl1_diffuseMap_vertex, webgl1_diffuseMap_fragment,
     webgl1_specularMap_vertex, webgl1_specularMap_fragment,
-} from "../../shader/chunk/ShaderChunk";
-import { setPos_mvp } from "../../shader/snippet/ShaderSnippet";
-import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
-import { set } from "../../../utils/typeArrayUtils";
+} from "../../../../shader/chunk/ShaderChunk";
+import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
+import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
+import { set } from "../../../../../utils/typeArrayUtils";
 
 var _lightDefineList = [
     {

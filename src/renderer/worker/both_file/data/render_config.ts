@@ -1,5 +1,5 @@
-import { Color } from "../../structure/Color";
-import { ELightModel } from "../../component/material/ELightModel";
+import { Color } from "../../../../structure/Color";
+import { ELightModel } from "../../../../component/material/ELightModel";
 
 export const render_config = {
     "clearColor": Color.create("#000000"),

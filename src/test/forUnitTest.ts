@@ -12,7 +12,7 @@ import {
 import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
 import {
     initData as initShaderDataSystem,
-    sendAttributeData as sendAttributeDataSystem, sendUniformData as sendUniformDataSystem,
+    sendAttributeData as sendAttributeDataSystem,
     use
 } from "../renderer/shader/ShaderSystem";
 
@@ -30,7 +30,7 @@ import { initData as initLocationDataSystem } from "../renderer/shader/location/
 import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
-import { IRenderConfig } from "../renderer/data/render_config";
+import { IRenderConfig } from "../renderer/worker/both_file/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initLightDataSystem } from "../component/light/LightSystem";
@@ -84,7 +84,7 @@ export var useProgram = use;
 
 export var sendAttributeData = sendAttributeDataSystem;
 
-export var sendUniformData = sendUniformDataSystem;
+// export var sendUniformData = sendUniformDataSystem;
 
 export var disableVertexAttribArray = disableVertexAttribArrayUtils;
 

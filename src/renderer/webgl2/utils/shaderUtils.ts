@@ -6,8 +6,8 @@ import { isValidMapValue } from "../../../utils/objectUtils";
 import { getProgram, initShader, isProgramExist, registerProgram } from "../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "./shader/shaderSourceBuildUtils";
-import { getMaterialShaderLibConfig } from "../../webgl1/data/MaterialConfigSystem";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
+import { getMaterialShaderLibConfig } from "../data/MaterialConfigSystem";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {

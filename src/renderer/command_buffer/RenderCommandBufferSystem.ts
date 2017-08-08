@@ -14,7 +14,7 @@ import {
     getPMatrix, getWorldToCameraMatrix
 } from "../../component/camera/CameraControllerSystem";
 import { CameraController } from "../../component/camera/CameraController";
-import { IRenderConfig } from "../data/render_config";
+import { IRenderConfig } from "../worker/both_file/data/render_config";
 import { getShaderIndex } from "../../component/material/MaterialSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import {

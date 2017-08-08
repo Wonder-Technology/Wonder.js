@@ -3,6 +3,10 @@ import { ensureFunc, it } from "../../../definition/typescript/decorator/contrac
 import { expect } from "wonder-expect.js";
 import { getSingleSizeData } from "../common/operateBufferDataUtils";
 import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
+import { InitShaderDataMap } from "../../type/utilsType";
+import { IMaterialConfig } from "../../data/material_config";
+import { Map } from "immutable";
+import { IShaderLibGenerator } from "../../data/shaderLib_generator";
 
 // export var getMaterialClassNameFromTable = (shaderIndex: number, materialClassNameTable: MaterialClassNameTable) => {
 //     return materialClassNameTable[shaderIndex]
@@ -16,8 +20,29 @@ import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
 //     return shaderIndexTable[materialClassName];
 // })
 
+export var initNoMaterialShaders = (state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
+    var shaders = material_config.shaders.noMaterialShaders;
+
+    for(let shaderName in shaders){
+        if(shaders.hasOwnProperty(shaderName)){
+            initNoMaterialShader(state, shaderName, shaders[shaderName], material_config, shaderLib_generator, initShaderDataMap);
+        }
+    }
+}
+
 export var setShaderIndex = (materialIndex: number, shaderIndex: number, MaterialDataFromSystem: any) => {
     setTypeArrayValue(MaterialDataFromSystem.shaderIndices, materialIndex, shaderIndex);
+}
+
+export var useShader = ( index: number, shaderName:string, state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
+    //todo optimize: not init if inited
+    //todo check: shader->glsl shouldn't change after first init
+
+    var shaderIndex = initMaterialShader(state, index, shaderName, material_config, shaderLib_generator, initShaderDataMap);
+
+    setShaderIndex(index, shaderIndex, initShaderDataMap.MaterialDataFromSystem);
+
+    return shaderIndex;
 }
 
 export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => {

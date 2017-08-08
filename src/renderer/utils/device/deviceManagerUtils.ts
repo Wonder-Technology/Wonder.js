@@ -2,7 +2,7 @@ import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
 import {
     initCanvas, setX, setY, setStyleWidth, setStyleHeight,
-    setWidth, setHeight, setCanvas, getCanvas
+    setWidth, setHeight, setCanvas, getCanvas, getWebgl1Context, getWebgl2Context
 } from "../../../structure/ViewSystem";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
@@ -17,6 +17,8 @@ import { isValueExist } from "../../../utils/stateUtils";
 import { Color } from "../../../structure/Color";
 import { ESide } from "../../enum/ESide";
 import { Log } from "../../../utils/Log";
+import { ContextConfigOptionsData } from "../../type/dataType";
+import { isWebgl1, isWebgl2 } from "./webglDetectUtils";
 
 export var getGL = (DeviceManagerDataFromSystem: any, state: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
@@ -220,6 +222,22 @@ export var setSide = (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataF
         }
 
         DeviceManagerDataFromSystem.side = side;
+    }
+}
+
+export var getOnlyGL = (canvas: HTMLCanvasElement, options:ContextConfigOptionsData, WebGLDetectDataFromSystem:any) => {
+    if(isWebgl1(WebGLDetectDataFromSystem)) {
+        Log.log("use webgl1");
+
+        return getWebgl1Context(options, canvas);
+    }
+    else if(isWebgl2(WebGLDetectDataFromSystem)) {
+        Log.log("use webgl2");
+
+        return getWebgl2Context(options, canvas);
+    }
+    else {
+        return null;
     }
 }
 
