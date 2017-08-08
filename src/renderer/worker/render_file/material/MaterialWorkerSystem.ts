@@ -31,7 +31,6 @@ import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
 import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";
 import { DirectionLightWorkerData } from "../light/DirectionLightWorkerData";
-import { PointLightWorkerData } from "../light/PointLightWorkerData";
 import { initData as initMapManagerData, initMapManagers } from "../texture/MapManagerWorkerSystem";
 import { TextureInitWorkerData } from "../../../type/messageDataType";
 import { MaterialWorkerInitDataList } from "../../../type/dataType";
@@ -41,7 +40,7 @@ import { initData as initLightMaterialData, setDiffuseMapMap, setSpecularMapMap 
 import { IMaterialConfig } from "../../../data/material_config";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 
-export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData,  TextureWorkerData: any) => {
+export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData,  TextureWorkerData: any, PointLightWorkerData:any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
 
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index, getBasicMaterialClassName());

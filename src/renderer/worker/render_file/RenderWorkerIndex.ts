@@ -23,7 +23,8 @@ export { LocationWorkerData } from "./shader/location/LocationWorkerData";
 export { ShaderWorkerData } from "./shader/ShaderWorkerData";
 export { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 export { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
-export { PointLightWorkerData } from "./light/PointLightWorkerData";
+//todo fix(webgl1,webgl2)
+// export { PointLightWorkerData } from "./light/PointLightWorkerData";
 export { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 export { InitConfigWorkerData } from "./config/InitConfigWorkerData";

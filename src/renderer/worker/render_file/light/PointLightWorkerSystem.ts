@@ -1,6 +1,7 @@
 import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
 import {
-    createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils, getConstant as getConstantUtils,
+    // createTypeArrays,
+    getColor as getColorUtils, getColorArr3 as getColorArr3Utils, getConstant as getConstantUtils,
     getIntensity as getIntensityUtils, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getRange as getRangeUtils
 } from "../../../utils/light/pointLightUtils";
 import { Color } from "../../../../structure/Color";
@@ -26,17 +27,15 @@ export var getRange = getRangeUtils;
 
 export var computeRadius = computeRadiusUtils;
 
-export var initData = ({
-                           buffer,
-    bufferCount,
-    lightCount,
-    pointLightGLSLDataStructureMemberNameArr
-                       }, PointLightWorkerData: any) => {
-    _setCount(lightCount, PointLightWorkerData);
-
-    PointLightWorkerData.lightGLSLDataStructureMemberNameArr = pointLightGLSLDataStructureMemberNameArr;
-
-    createTypeArrays(buffer, bufferCount, PointLightWorkerData);
-}
-
-var _setCount = setSpecifyLightCount;
+// export var initData = ({
+//                            buffer,
+//     bufferCount,
+//     lightCount,
+//     pointLightGLSLDataStructureMemberNameArr
+//                        }, PointLightWorkerData: any) => {
+//     _setCount(lightCount, PointLightWorkerData);
+//
+//     PointLightWorkerData.lightGLSLDataStructureMemberNameArr = pointLightGLSLDataStructureMemberNameArr;
+//
+//     createTypeArrays(buffer, bufferCount, PointLightWorkerData);
+// }

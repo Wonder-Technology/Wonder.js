@@ -114,7 +114,6 @@ export {GeometryWorkerData} from "./renderer/worker/render_file/geometry/Geometr
 export {initGL} from "./renderer/worker/render_file/initGL";
 export {AmbientLightWorkerData} from "./renderer/worker/render_file/light/AmbientLightWorkerData";
 export {DirectionLightWorkerData} from "./renderer/worker/render_file/light/DirectionLightWorkerData";
-export {PointLightWorkerData} from "./renderer/worker/render_file/light/PointLightWorkerData";
 export {SpecifyLightWorkerData} from "./renderer/worker/render_file/light/SpecifyLightWorkerData";
 export {BasicMaterialWorkerData} from "./renderer/worker/render_file/material/BasicMaterialWorkerData";
 export {LightMaterialWorkerData} from "./renderer/worker/render_file/material/LightMaterialWorkerData";
@@ -130,10 +129,12 @@ export {TextureCacheWorkerData} from "./renderer/worker/render_file/texture/Text
 export {TextureWorkerData} from "./renderer/worker/render_file/texture/TextureWorkerData";
 export {webgl1_material_config} from "./renderer/worker/webgl1/both_file/data/material_config";
 export {webgl1_shaderLib_generator} from "./renderer/worker/webgl1/both_file/data/shaderLib_generator";
+export {PointLightWorkerDataWebGL1} from "./renderer/worker/webgl1/render_file/light/PointLightWorkerData";
 export {webgl2_material_config} from "./renderer/worker/webgl2/both_file/data/material_config";
 export {webgl2_shaderLib_generator} from "./renderer/worker/webgl2/both_file/data/shaderLib_generator";
 export {GBufferWorkerData} from "./renderer/worker/webgl2/render_file/defer/gbuffer/GBufferWorkerData";
 export {DeferLightPassWorkerData} from "./renderer/worker/webgl2/render_file/defer/light/DeferLightPassWorkerData";
+export {PointLightWorkerDataWebGL2} from "./renderer/worker/webgl2/render_file/light/PointLightWorkerData";
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
