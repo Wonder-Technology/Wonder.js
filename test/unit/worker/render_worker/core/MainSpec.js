@@ -10,13 +10,15 @@ describe("Main", function() {
         DomQuery = wd.DomQuery,
         DebugConfig = wd.DebugConfig,
         EScreenSize = wd.EScreenSize,
-        RectRegion = wd.RectRegion;
+        RectRegion = wd.RectRegion,
+        EWebGLVersion = wd.EWebGLVersion;
 
     var EWorkerOperateType = wd.EWorkerOperateType;
 
     var GPUDetector = wdrd.GPUDetector;
     var DeviceManagerWorkerData = wdrd.DeviceManagerWorkerData;
     var InitConfigWorkerData = wdrd.InitConfigWorkerData;
+    var WebGLDetectWorkerData = wdrd.WebGLDetectWorkerData;
 
     beforeEach(function() {
         sandbox = sinon.sandbox.create();
@@ -79,6 +81,46 @@ describe("Main", function() {
 
                 expect(InitConfigWorkerData.isTest).toBeTruthy();
                 });
+            });
+        });
+    });
+
+    describe("pass data to render worker", function(){
+        it("send webgl version", function () {
+            var version = EWebGLVersion.WEBGL2;
+            webglDetectWorkerTool.setVersion(version);
+
+            Main.setConfig({
+                isTest:true
+            });
+
+            worker = workerTool.getRenderWorker();
+            expect(worker.postMessage.getCall(1)).toCalledWith({
+                operateType: EWorkerOperateType.INIT_DATA,
+                webglVersion: version
+            })
+        });
+
+        describe("test in render worker", function() {
+            var gl;
+            var e;
+
+            beforeEach(function () {
+                gl = workerTool.createGL(sandbox);
+            });
+
+            it("set webgl version", function () {
+                var version = EWebGLVersion.WEBGL2;
+                e = {
+                    data:{
+                        operateType: EWorkerOperateType.INIT_DATA,
+                        webglVersion: version
+                    }
+                }
+
+                workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(WebGLDetectWorkerData.version).toEqual(version);
             });
         });
     });
@@ -220,7 +262,7 @@ describe("Main", function() {
                     }).init();
 
                     worker = workerTool.getRenderWorker();
-                    expect(worker.postMessage.getCall(1)).toCalledWith({
+                    expect(worker.postMessage.getCall(2)).toCalledWith({
                         operateType: EWorkerOperateType.INIT_GL,
                         canvas: offscreen,
                         options: sinon.match.any,

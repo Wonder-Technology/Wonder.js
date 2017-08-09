@@ -26,7 +26,7 @@ var shaderTool = (function () {
         },
         getPointLightPositionForSend: function(index){
             return wd.getPointLightPositionInShaderWorker(index, {
-                PointLightDataFromSystem:wdrd.PointLightWorkerData
+                PointLightDataFromSystem:wdrd.WebGL1PointLightWorkerData
             });
         }
     }

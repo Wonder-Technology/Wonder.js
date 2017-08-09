@@ -110,7 +110,6 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
 
         setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
 
-        //todo pass main test
         passDataToRenderWorker(WorkerInstanceData, WebGLDetectData).run();
 
         return fromJS({

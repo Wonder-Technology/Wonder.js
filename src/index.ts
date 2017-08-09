@@ -140,7 +140,7 @@ export {WebGL2PointLightWorkerData} from "./renderer/worker/webgl2/render_file/l
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initDeviceManagerWorkerData,initProgramWorkerData,initGLSLSenderWorkerData,initLocationWorkerData,initShaderWorkerData,initLightWorkerData,initDrawRenderCommandBufferWorkerData,getDirectionLightPositionInShaderWorker,getPointLightPositionInShaderWorker,updateTextureWorker} from "./test/forRenderWorkerUnitTest";
+export {initDeviceManagerWorkerData,initProgramWorkerData,initGLSLSenderWorkerData,initLocationWorkerData,initShaderWorkerData,initWebGL1LightWorkerData,initWebGL2LightWorkerData,initDrawRenderCommandBufferWorkerData,getDirectionLightPositionInShaderWorker,getPointLightPositionInShaderWorker,updateTextureWorker} from "./test/forRenderWorkerUnitTest";
 export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initShaderData,initProgramData,initLocationData,initGLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initLightData,initGameObjectData,initSceneData,initRenderCommandBufferData,initDrawRenderCommandBufferData,initSendDrawRenderCommandBufferData,createState,useProgram,sendAttributeData,disableVertexAttribArray,setGeometryIndices,setGeometryVertices,hasGeometryIndices,getShaderIndex,updateSystem,getNormalMatrix} from "./test/forUnitTest";
 export {BufferUtilsForUnitTest} from "./utils/BufferUtilsForUnitTest";
 export {Log} from "./utils/Log";

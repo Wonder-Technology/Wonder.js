@@ -4,6 +4,7 @@ describe("light material", function () {
     var worker;
 
     var EWorkerOperateType = wd.EWorkerOperateType;
+    var LightMaterialData = wd.LightMaterialData;
 
     var LightMaterialWorkerData = wdrd.LightMaterialWorkerData;
 
@@ -22,7 +23,7 @@ describe("light material", function () {
         beforeEach(function(){
         });
 
-        it("test send map index", function () {
+        it("test send mapMap", function () {
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             var mat = data.material;
 
@@ -43,8 +44,8 @@ describe("light material", function () {
                     lightMaterialData:{
                         startIndex:sinon.match.any,
                         index:sinon.match.any,
-                        diffuseMapIndex: 0,
-                        specularMapIndex: 1
+                        diffuseMapMap: LightMaterialData.diffuseMapMap,
+                        specularMapMap: LightMaterialData.specularMapMap
                     }
                 },
                 geometryData:sinon.match.any,
@@ -61,11 +62,11 @@ describe("light material", function () {
                 gl = workerTool.createGL(sandbox);
             });
 
-            it("set map index", function () {
+            it("set mapMap", function () {
                 var materialData = materialWorkerTool.buildSendInitMaterialData()
 
-                materialData.lightMaterialData.diffuseMapIndex = 0;
-                materialData.lightMaterialData.specularMapIndex = 1;
+                materialData.lightMaterialData.diffuseMapMap = [undefined, 0, undefined];
+                materialData.lightMaterialData.specularMapMap = [2, undefined, 1];
 
                 e = {
                     data:{
@@ -80,8 +81,8 @@ describe("light material", function () {
 
                 workerTool.execRenderWorkerMessageHandler(e);
 
-                expect(LightMaterialWorkerData.diffuseMapIndex).toEqual(0);
-                expect(LightMaterialWorkerData.specularMapIndex).toEqual(1);
+                expect(LightMaterialWorkerData.diffuseMapMap).toEqual(materialData.lightMaterialData.diffuseMapMap);
+                expect(LightMaterialWorkerData.specularMapMap).toEqual(materialData.lightMaterialData.specularMapMap);
             });
         });
     });

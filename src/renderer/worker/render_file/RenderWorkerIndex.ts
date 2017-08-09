@@ -23,10 +23,11 @@ export { LocationWorkerData } from "./shader/location/LocationWorkerData";
 export { ShaderWorkerData } from "./shader/ShaderWorkerData";
 export { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 export { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
-//todo fix(webgl1,webgl2)
-// export { PointLightWorkerData } from "./light/PointLightWorkerData";
 export { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 export { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 export { TextureWorkerData } from "./texture/TextureWorkerData";
 export { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
+export { WebGLDetectWorkerData } from "./device/WebGLDetectWorkerData";
+export { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
+export { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";

@@ -10,11 +10,11 @@ describe("light", function () {
 
     var AmbientLightData = wd.AmbientLightData;
     var DirectionLightData = wd.DirectionLightData;
-    var PointLightData = wd.PointLightData;
+    var PointLightData = wd.WebGL1PointLightData;
 
     var AmbientLightWorkerData = wdrd.AmbientLightWorkerData;
     var DirectionLightWorkerData = wdrd.DirectionLightWorkerData;
-    var PointLightWorkerData = wdrd.PointLightWorkerData;
+    var PointLightWorkerData = wdrd.WebGL1PointLightWorkerData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();

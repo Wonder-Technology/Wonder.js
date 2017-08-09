@@ -67,77 +67,77 @@ describe("material", function () {
             });
         });
 
-        describe("test in render worker", function() {
-            var gl;
-            var e;
-
-            var materialDataBuffer;
-
-            beforeEach(function () {
-                gl = workerTool.createGL(sandbox);
-            });
-
-            it("init new materials", function () {
-                var mat1 = basicMaterialTool.create();
-
-                materialDataBuffer = MaterialData.buffer;
-
-
-
-
-                e = {
-                    data:{
-                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-                        geometryData: null,
-                        lightData:null,
-                        textureData: null,
-                        materialData: materialWorkerTool.buildSendInitMaterialData()
-                    }
-                }
-
-                workerTool.execRenderWorkerMessageHandler(e);
-
-
-
-
-                var mat2 = basicMaterialTool.create();
-
-
-                var createProgramCallCount = gl.createProgram.callCount;
-
-
-                shaderTool.resetData();
-
-                e = {
-                    data:{
-                        operateType: EWorkerOperateType.DRAW,
-                        renderCommandBufferData:null,
-                        geometryData:null,
-                        lightData:null,
-                        materialData:{
-                            buffer:materialDataBuffer,
-                            workerInitList:[
-                                // {
-                                //     index: mat1.index,
-                                //     className: "BasicMaterial"
-                                // },
-                                {
-                                    index: mat2.index,
-                                    className: "BasicMaterial"
-                                }
-                            ]
-                        },
-                        disposeData: null
-                    }
-                }
-
-                workerTool.execRenderWorkerMessageHandler(e);
-
-
-
-                expect(gl.createProgram.callCount).toEqual(createProgramCallCount + 1);
-            });
-        });
+        // describe("test in render worker", function() {
+        //     var gl;
+        //     var e;
+        //
+        //     var materialDataBuffer;
+        //
+        //     beforeEach(function () {
+        //         gl = workerTool.createGL(sandbox);
+        //     });
+        //
+        //     it("init new materials", function () {
+                // var mat1 = basicMaterialTool.create();
+                //
+                // materialDataBuffer = MaterialData.buffer;
+                //
+                //
+                //
+                //
+                // e = {
+                //     data:{
+                //         operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                //         geometryData: null,
+                //         lightData:null,
+                //         textureData: null,
+                //         materialData: materialWorkerTool.buildSendInitMaterialData()
+                //     }
+                // }
+                //
+                // workerTool.execRenderWorkerMessageHandler(e);
+                //
+                //
+                //
+                //
+                // var mat2 = basicMaterialTool.create();
+                //
+                //
+                // var createProgramCallCount = gl.createProgram.callCount;
+                //
+                //
+                // shaderTool.resetData();
+                //
+                // e = {
+                //     data:{
+                //         operateType: EWorkerOperateType.DRAW,
+                //         renderCommandBufferData:null,
+                //         geometryData:null,
+                //         lightData:null,
+                //         materialData:{
+                //             buffer:materialDataBuffer,
+                //             workerInitList:[
+                //                 // {
+                //                 //     index: mat1.index,
+                //                 //     className: "BasicMaterial"
+                //                 // },
+                //                 {
+                //                     index: mat2.index,
+                //                     className: "BasicMaterial"
+                //                 }
+                //             ]
+                //         },
+                //         disposeData: null
+                //     }
+                // }
+                //
+                // workerTool.execRenderWorkerMessageHandler(e);
+                //
+                //
+                //
+                // expect(gl.createProgram.callCount).toEqual(createProgramCallCount + 1);
+            // });
+        // });
     });
 
     it("should not dispose the material which is inited in the same frame", function() {

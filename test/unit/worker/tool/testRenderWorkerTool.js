@@ -50,6 +50,8 @@ var testRenderWorkerTool = (function () {
             drawRenderCommandBufferTool.resetData();
             sendDrawRendercommandBufferTool.resetData();
             sceneTool.resetData();
+
+            webglDetectWorkerTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {

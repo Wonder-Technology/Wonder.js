@@ -8,6 +8,8 @@ import {
     getPointLightPosition, initData as initShaderWorkerDataSystem
 } from "../renderer/worker/render_file/shader/ShaderWorkerSystem";
 import { update } from "../renderer/worker/render_file/texture/TextureWorkerSystem";
+import { initData as initWebGL1LightWorkerDataSystem } from "../renderer/worker/webgl1/render_file/light/LightWorkerSystem";
+import { initData as initWebGL2LightWorkerDataSystem } from "../renderer/worker/webgl2/render_file/light/LightWorkerSystem";
 
 export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 
@@ -19,9 +21,9 @@ export var initLocationWorkerData = initLocationWorkerDataSystem;
 
 export var initShaderWorkerData = initShaderWorkerDataSystem;
 
-export var initLightWorkerData = () => {
-    //todo fix webgl1/webgl2 separate in render worker->unit test
-}
+export var initWebGL1LightWorkerData = initWebGL1LightWorkerDataSystem;
+
+export var initWebGL2LightWorkerData = initWebGL2LightWorkerDataSystem;
 
 export var initDrawRenderCommandBufferWorkerData = initDrawRenderCommandBufferWorkerDataSystem;
 
