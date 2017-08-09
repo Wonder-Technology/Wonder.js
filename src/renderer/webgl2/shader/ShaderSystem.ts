@@ -8,7 +8,6 @@ import { IWebGL2ShaderLibContentGenerator } from "../../worker/webgl2/both_file/
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getMapCount } from "../../texture/MapManagerSystem";
-import { hasDiffuseMap, hasSpecularMap } from "../../utils/material/lightMaterialUtils";
 import {
     initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils,
     sendUniformData as sendUniformDataUtils
@@ -17,6 +16,7 @@ import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config";
 import { WebGL2SendUniformDataDataMap } from "../type/utilsType";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
+import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
 
 export var initNoMaterialShader = null;
 

@@ -36,7 +36,7 @@ import { TextureInitWorkerData } from "../../../type/messageDataType";
 import { MaterialWorkerInitDataList } from "../../../type/dataType";
 import { MapManagerWorkerData } from "../texture/MapManagerWorkerData";
 import { ShaderWorkerData } from "../shader/ShaderWorkerData";
-import { initData as initLightMaterialData, setDiffuseMapMap, setSpecularMapMap } from "./LightMaterialWorkerSystem";
+import { initData as initLightMaterialData } from "./LightMaterialWorkerSystem";
 import { IMaterialConfig } from "../../../data/material_config";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 
@@ -90,9 +90,6 @@ export var initData = (materialData: MaterialInitWorkerData, textureData: Textur
     initLightMaterialData(LightMaterialWorkerData);
 
     let lightMaterialData = materialData.lightMaterialData;
-
-    setDiffuseMapMap(lightMaterialData.diffuseMapMap, LightMaterialWorkerData);
-    setSpecularMapMap(lightMaterialData.specularMapMap, LightMaterialWorkerData);
 
     if (textureData !== null) {
         initMapManagerData(textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData);

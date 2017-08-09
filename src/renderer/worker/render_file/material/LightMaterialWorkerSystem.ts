@@ -2,7 +2,7 @@ import {
     computeLightBufferIndex,
     getEmissionColorArr3 as getEmissionColorArr3Utils,
     getLightModel as getLightModelUtils, getShading as getShadingUtils,
-    getShininess as getShininessUtils, getSpecularColorArr3 as getSpecularColorArr3Utils
+    getShininess as getShininessUtils, getSpecularColorArr3 as getSpecularColorArr3Utils, hasDiffuseMap as hasDiffuseMapUtils, hasSpecularMap as hasSpecularMapUtils
 } from "../../../utils/material/lightMaterialUtils";
 
 export var getSpecularColorArr3 = (index: number, LightMaterialWorkerData: any) => {
@@ -25,15 +25,13 @@ export var getLightModel = (index: number, LightMaterialWorkerData: any) => {
     return getLightModelUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var setDiffuseMapMap = (map:Array<number>, LightMaterialWorkerData: any) => {
-    LightMaterialWorkerData.diffuseMapMap = map;
+export var hasDiffuseMap = (index:number, LightMaterialWorkerData: any) => {
+    return hasDiffuseMapUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var setSpecularMapMap = (map:Array<number>, LightMaterialWorkerData: any) => {
-    LightMaterialWorkerData.specularMapMap = map;
+export var hasSpecularMap = (index:number, LightMaterialWorkerData: any) => {
+    return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
 export var initData = (LightMaterialWorkerData: any) => {
-    LightMaterialWorkerData.diffuseMapMap = [];
-    LightMaterialWorkerData.specularMapMap = [];
 }

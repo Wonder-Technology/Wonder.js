@@ -25,10 +25,6 @@ export var initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => {
     initTextures(gl, TextureData);
 }
 
-export var getMapIndex = (materialIndex: number, MapManagerData: any) => {
-    return MapManagerData.textureIndices[materialIndex];
-}
-
 export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
         expect(count + 1).lte(getMaxTextureCount());

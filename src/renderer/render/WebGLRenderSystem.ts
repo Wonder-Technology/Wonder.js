@@ -48,9 +48,6 @@ import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
-import {
-    getDiffuseMapMap, getSpecularMapMap
-} from "../../component/material/LightMaterialSystem";
 import { GPUDetector } from "../device/GPUDetector";
 import { GBufferData } from "../webgl2/defer/gbuffer/GBufferData";
 import { init as initDefer, draw as deferDraw  } from "../webgl2/defer/DeferShadingSystem";
@@ -92,9 +89,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     },
                     lightMaterialData: {
                         startIndex: getLightMaterialBufferStartIndex(),
-                        index: LightMaterialData.index,
-                        diffuseMapMap: getDiffuseMapMap(LightMaterialData),
-                        specularMapMap: getSpecularMapMap(LightMaterialData)
+                        index: LightMaterialData.index
                     }
                 },
                 geometryData: {
@@ -132,7 +127,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     index: TextureData.index,
                     imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
                     uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
-                }
+                },
+                renderData: null
             });
 
             renderWorker.onmessage = (e) => {
@@ -171,9 +167,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     },
                     lightMaterialData: {
                         startIndex: getLightMaterialBufferStartIndex(),
-                        index: LightMaterialData.index,
-                        diffuseMapMap: getDiffuseMapMap(LightMaterialData),
-                        specularMapMap: getSpecularMapMap(LightMaterialData)
+                        index: LightMaterialData.index
                     }
                 },
                 geometryData: {

@@ -55,6 +55,7 @@ describe("light", function () {
                 materialData: sinon.match.any,
                 geometryData: sinon.match.any,
                 textureData: sinon.match.any,
+                renderData: sinon.match.any,
                 lightData: {
                     ambientLightData: {
                         buffer: AmbientLightData.buffer,

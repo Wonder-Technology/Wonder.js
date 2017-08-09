@@ -4,7 +4,7 @@ import {
     getColorDataSize, getOpacityDataSize,
     getShaderIndexDataSize
 } from "./materialUtils";
-import { getLightModelDataSize, getShininessDataSize } from "./lightMaterialUtils";
+import { getLightModelDataSize, getMapSize, getShininessDataSize } from "./lightMaterialUtils";
 
 export var getMaterialBufferSize = () => {
     return Float32Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getColorDataSize() + getOpacityDataSize() + getAlphaTestDataSize());
@@ -23,7 +23,7 @@ export var getLightMaterialBufferCount = () => {
 }
 
 export var getLightMaterialBufferSize = () => {
-    return getMaterialBufferSize() + Uint8Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getLightModelDataSize()) + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() * 2 + getShininessDataSize());
+    return getMaterialBufferSize() + Uint8Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getLightModelDataSize() + getMapSize() * 2) + Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() * 2 + getShininessDataSize());
 }
 
 export var getBufferLength = () => {

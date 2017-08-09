@@ -2,7 +2,6 @@ import { Map } from "immutable";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
 import { getMapCount } from "../../../render_file/texture/MapManagerWorkerSystem";
-import { hasDiffuseMap, hasSpecularMap } from "../../../../utils/material/lightMaterialUtils";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../../../data/material_config";
 import { IWebGL2ShaderLibContentGenerator } from "../../both_file/data/shaderLib_generator";
 import {
@@ -12,6 +11,7 @@ import {
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { WebGL2SendUniformDataDataMap } from "../../../../webgl2/type/utilsType";
+import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);

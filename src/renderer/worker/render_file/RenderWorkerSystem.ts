@@ -259,7 +259,7 @@ var _initDefer = (gl:any, renderData:WebGL2RenderInitWorkerData, GBufferWorkerDa
     })
 }
 
-var _isDataNotExist = (data:WebGL2RenderInitWorkerData) => data === null || data === void 0;
+var _isDataNotExist = (data:any) => data === null || data === void 0;
 
 var _initData = () => {
     initProgramWorkerData(ProgramWorkerData);
