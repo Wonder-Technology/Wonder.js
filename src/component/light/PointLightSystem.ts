@@ -5,7 +5,7 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition
+    createDefaultColor, getPosition as getSpecifyLightPosition
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -23,10 +23,6 @@ import {
 } from "../../renderer/utils/light/pointLightUtils";
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
-import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
-//todo separate
-import { WebGL1PointLightData } from "../../renderer/webgl1/light/PointLightData";
-import { WebGL2PointLightData } from "../../renderer/webgl2/light/PointLightData";
 import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 
@@ -165,58 +161,6 @@ export var setRangeLevel = (index: number, value: number, PointLightData: any) =
     }
 }
 
-export var addComponent = null;
-
-export var disposeComponent = null;
-
-if(isWebgl1()){
-    addComponent = (component: Light, gameObject: GameObject) => {
-        addSpecifyLightComponent(component, gameObject, WebGL1PointLightData);
-    }
-
-    disposeComponent = (component: Light) => {
-        var intensityDataSize = getIntensityDataSize(),
-            constantDataSize = getConstantDataSize(),
-            linearDataSize = getLinearDataSize(),
-            quadraticDataSize = getQuadraticDataSize(),
-            rangeDataSize = getRangeDataSize(),
-            sourceIndex = component.index,
-            lastComponentIndex: number = null;
-
-        lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, WebGL1PointLightData);
-
-        deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, WebGL1PointLightData.intensities, WebGL1PointLightData.defaultIntensity);
-        deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, WebGL1PointLightData.constants, WebGL1PointLightData.defaultConstant);
-        deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, WebGL1PointLightData.linears, WebGL1PointLightData.defaultLinear);
-        deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, WebGL1PointLightData.quadratics, WebGL1PointLightData.defaultQuadratic);
-        deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, WebGL1PointLightData.ranges, WebGL1PointLightData.defaultRange);
-    }
-
-}
-else{
-    addComponent = (component: Light, gameObject: GameObject) => {
-        addSpecifyLightComponent(component, gameObject, WebGL2PointLightData);
-    }
-
-    disposeComponent = (component: Light) => {
-        var intensityDataSize = getIntensityDataSize(),
-            constantDataSize = getConstantDataSize(),
-            linearDataSize = getLinearDataSize(),
-            quadraticDataSize = getQuadraticDataSize(),
-            rangeDataSize = getRangeDataSize(),
-            sourceIndex = component.index,
-            lastComponentIndex: number = null;
-
-        lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, WebGL2PointLightData);
-
-        deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, WebGL2PointLightData.intensities, WebGL2PointLightData.defaultIntensity);
-        deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, WebGL2PointLightData.constants, WebGL2PointLightData.defaultConstant);
-        deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, WebGL2PointLightData.linears, WebGL2PointLightData.defaultLinear);
-        deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, WebGL2PointLightData.quadratics, WebGL2PointLightData.defaultQuadratic);
-        deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, WebGL2PointLightData.ranges, WebGL2PointLightData.defaultRange);
-    }
-}
-
 export var initDataHelper = (PointLightData: any) => {
     var count = getPointLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()),
@@ -254,3 +198,23 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
         setRange(i, range, PointLightData);
     }
 }
+
+export var disposeComponent = (component: Light, PointLightData:any) => {
+    var intensityDataSize = getIntensityDataSize(),
+        constantDataSize = getConstantDataSize(),
+        linearDataSize = getLinearDataSize(),
+        quadraticDataSize = getQuadraticDataSize(),
+        rangeDataSize = getRangeDataSize(),
+        sourceIndex = component.index,
+        lastComponentIndex: number = null;
+
+    lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, PointLightData);
+
+    deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, PointLightData.intensities, PointLightData.defaultIntensity);
+    deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, PointLightData.constants, PointLightData.defaultConstant);
+    deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData.linears, PointLightData.defaultLinear);
+    deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
+    deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
+}
+
+
