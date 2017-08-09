@@ -58,7 +58,7 @@ import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
-import { initData as initLightData } from "../component/light/LightSystem";
+// import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
@@ -74,6 +74,8 @@ import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
 import { initData as initDirectorData } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
+import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
+import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -218,7 +220,7 @@ if(isWebgl1()){
 
         initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
 
-        initLightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
+        initWebGL1LightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
     }
@@ -249,7 +251,7 @@ else{
 
         initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
 
-        initLightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
+        initWebGL2LightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
     }

@@ -54,6 +54,7 @@ import { BasicMaterial } from "../component/material/BasicMaterial";
 import { LightMaterial } from "../component/material/LightMaterial";
 import { BoxGeometry } from "../component/geometry/BoxGeometry";
 import { CustomGeometry } from "../component/geometry/CustomGeometry";
+import { PointLight } from "../component/light/PointLight";
 
 @singleton(true)
 @registerClass("Director")
@@ -196,5 +197,6 @@ addThreeDTransformDisposeHandle(ThreeDTransform);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
 
-addLightAddComponentHandle(AmbientLight, DirectionLight);
-addLightDisposeHandle(AmbientLight, DirectionLight);
+addLightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
+addLightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+

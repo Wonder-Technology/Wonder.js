@@ -1,8 +1,8 @@
 var lightTool = (function () {
     return {
         resetData: function(){
-            wd.initLightData(wd.AmbientLightData, wd.DirectionLightData, wd.WebGL1PointLightData);
-        },
+            wd.initWebGL1LightData(wd.AmbientLightData, wd.DirectionLightData, wd.WebGL1PointLightData);
+        }
     }
 }());
 

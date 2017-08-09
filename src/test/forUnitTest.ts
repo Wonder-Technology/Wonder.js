@@ -32,9 +32,10 @@ import { initData as initSceneDataSystem } from "../core/entityObject/scene/Scen
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { IRenderConfig } from "../renderer/worker/both_file/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
-import { initData as initDirectorDataSystem, updateSystem as updateAllSystems } from "../core/DirectorSystem";
-import { initData as initLightDataSystem } from "../component/light/LightSystem";
+import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
+import { initData as initWebGL1LightDataSystem } from "../component/webgl1/light/LightSystem";
+import { initData as initWebGL2LightDataSystem } from "../component/webgl2/light/LightSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -66,7 +67,9 @@ export var initDeviceManagerData = initDeviceManagerDataSystem;
 
 export var initCameraControllerData = initCameraControllerDataSystem;
 
-export var initLightData = initLightDataSystem;
+export var initWebGL1LightData = initWebGL1LightDataSystem;
+
+export var initWebGL2LightData = initWebGL2LightDataSystem;
 
 export var initGameObjectData = initGameObjectDataSystem;
 
@@ -78,7 +81,7 @@ export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSyst
 
 export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
 
-export var initDirectorData = initDirectorDataSystem;
+// export var initDirectorData = initDirectorDataSystem;
 
 export var createState = createStateUtils;
 
