@@ -72,7 +72,7 @@ export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: 
 var _initBufferData = (MapManagerData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
+        size = Uint32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
         offset: number = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(computeBufferLength(count, size));

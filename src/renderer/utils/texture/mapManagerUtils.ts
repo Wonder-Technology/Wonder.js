@@ -125,8 +125,8 @@ export var getMaxTextureCount = () => 16;
 export var createTypeArrays = (buffer: any, count: number, MapManagerDataFromSystem: any) => {
     var offset = 0;
 
-    MapManagerDataFromSystem.textureIndices = new Float32Array(buffer, offset, count * getTextureIndexDataSize());
-    offset += count * Float32Array.BYTES_PER_ELEMENT * getTextureIndexDataSize();
+    MapManagerDataFromSystem.textureIndices = new Uint32Array(buffer, offset, count * getTextureIndexDataSize());
+    offset += count * Uint32Array.BYTES_PER_ELEMENT * getTextureIndexDataSize();
 
     MapManagerDataFromSystem.textureCounts = new Uint8Array(buffer, offset, count * getTextureCountDataSize());
     offset += count * Uint8Array.BYTES_PER_ELEMENT * getTextureCountDataSize();
