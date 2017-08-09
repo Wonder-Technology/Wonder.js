@@ -72,6 +72,8 @@ import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateT
 import { getVersion, isWebgl1 } from "../renderer/device/WebGLDetectSystem";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
+import { initData as initDirectorData } from "./DirectorSystem";
+import { DirectorData } from "./DirectorData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -192,6 +194,8 @@ var _initData = null;
 
 if(isWebgl1()){
     _initData = () => {
+        initDirectorData(DirectorData);
+
         initShaderData(ShaderData);
 
         initGeometryData(DataBufferConfig, GeometryData);
@@ -221,6 +225,8 @@ if(isWebgl1()){
 }
 else{
     _initData = () => {
+        initDirectorData(DirectorData);
+
         initShaderData(ShaderData);
 
         initGeometryData(DataBufferConfig, GeometryData);

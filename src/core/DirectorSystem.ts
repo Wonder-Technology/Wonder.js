@@ -13,6 +13,7 @@ import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
+import { createState } from "../utils/stateUtils";
 
 export var getState = (DirectorData: any) => {
     return DirectorData.state;
@@ -22,6 +23,14 @@ export var setState = (state: Map<any, any>, DirectorData: any) => {
     return IO.of(() => {
         DirectorData.state = state;
     });
+}
+
+export var markIsInit = (DirectorData:any) => {
+    DirectorData.isInit = true;
+}
+
+export var isInit = (DirectorData:any) => {
+    return DirectorData.isInit === true;
 }
 
 export var run = null;
@@ -95,4 +104,9 @@ else {
 
         return resultState;
     }
+}
+
+export var initData = (DirectorData:any) => {
+    // DirectorData.state = createState();
+    // DirectorData.isInit = false;
 }

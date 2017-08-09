@@ -11,7 +11,6 @@ import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteOneItemBySwapAndReset, setSingleValue } from "../../utils/typeArrayUtils";
@@ -28,9 +27,14 @@ import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
 //todo separate
 import { WebGL1PointLightData } from "../../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../../renderer/webgl2/light/PointLightData";
+import { isInit } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
 
-//todo check: shouldn't create after init
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
+    //todo check: shouldn't create after init(direction, ambient)
+    it("shouldn't create after Director->init", () => {
+        expect(isInit(DirectorData)).false;
+    });
 }, (PointLightData: any) => {
     var light = new PointLight();
 

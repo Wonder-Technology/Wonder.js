@@ -32,7 +32,7 @@ import { initData as initSceneDataSystem } from "../core/entityObject/scene/Scen
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { IRenderConfig } from "../renderer/worker/both_file/data/render_config";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
-import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
+import { initData as initDirectorDataSystem, updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initLightDataSystem } from "../component/light/LightSystem";
 import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 
@@ -77,6 +77,8 @@ export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
 export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
 
 export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
+
+export var initDirectorData = initDirectorDataSystem;
 
 export var createState = createStateUtils;
 

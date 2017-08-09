@@ -45,7 +45,7 @@
         // 'test/unit/no_worker/**/Shader*Spec*',
         // 'test/unit/no_worker/**/*WebGLRenderer*',
         // 'test/unit/no_worker/**/*LightSpec*',
-        // 'test/unit/no_worker/**/*PointLightSpec*',
+        'test/unit/no_worker/**/*PointLightSpec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',

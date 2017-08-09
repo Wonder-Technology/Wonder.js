@@ -60,6 +60,7 @@ var testTool = (function () {
 
         clearComponentData: function(){
             gameObjectTool.resetData();
+            gameObjectTool.resetData();
             threeDTransformTool.resetData();
             tagTool.resetData();
             geometryTool.resetData();
@@ -74,6 +75,8 @@ var testTool = (function () {
             renderCommandBufferTool.resetData();
             drawRenderCommandBufferTool.resetData();
             sceneTool.resetData();
+
+            directorSystemTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {
@@ -87,8 +90,7 @@ var testTool = (function () {
 
             testUtils.initForTest(sandbox);
 
-            //todo fix worker
-            wd.WebGLDetectData.version = wd.EWebGLVersion.WEBGL1;
+            webglTestTool.initForTest(sandbox);
         },
 
         openContractCheck: function () {

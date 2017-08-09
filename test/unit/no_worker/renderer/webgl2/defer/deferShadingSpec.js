@@ -667,18 +667,18 @@ describe("defer shading", function () {
 
                     gl.createProgram.onCall(0).returns({});
                     gl.createProgram.onCall(1).returns({a:1});
-
-                    directorTool.init(state);
-
-                    DeferLightPassData.fullScreenQuadVertexArray = vao;
                 });
 
                 it("use DeferLightPass program", function () {
+                    directorTool.init(state);
                     directorTool.loopBody(state);
 
                     judgeAfterUnBindGBuffer(gl.useProgram.withArgs(getDeferLightPassProgram()).getCall(1), gl);
                 });
                 it("bind full screen quad vao", function () {
+                    directorTool.init(state);
+                    DeferLightPassData.fullScreenQuadVertexArray = vao;
+
                     directorTool.loopBody(state);
 
                     judgeAfterUseDeferLightPassProgram(gl.bindVertexArray.withArgs(vao).getCall(0), gl);

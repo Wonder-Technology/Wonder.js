@@ -51,6 +51,8 @@ var testRenderWorkerTool = (function () {
             sendDrawRendercommandBufferTool.resetData();
             sceneTool.resetData();
 
+            directorSystemTool.resetData();
+
             webglDetectWorkerTool.resetData();
         },
 

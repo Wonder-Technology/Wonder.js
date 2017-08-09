@@ -10,9 +10,9 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 // import { CustomEvent } from "../event/object/CustomEvent";
 // import { EEngineEvent } from "../event/EEngineEvent";
 import {
-    init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle, update as updateTransform
+    init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle
 } from "../component/transform/ThreeDTransformSystem";
-import { getState, render, run, setState } from "./DirectorSystem";
+import { getState, markIsInit, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
@@ -118,6 +118,8 @@ export class Director {
 
     private _init(state: Map<any, any>) {
         var resultState = state;
+
+        markIsInit(DirectorData);
 
         // resultState = this._initGameObjectScene(resultState);
         resultState = this._initSystem(resultState);
