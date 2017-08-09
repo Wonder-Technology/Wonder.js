@@ -4,7 +4,6 @@ import { MeshRendererData } from "../../component/renderer/MeshRendererData";
 import { compose } from "../../utils/functionalUtils";
 import { createRenderCommandBufferData } from "../command_buffer/RenderCommandBufferSystem";
 import { sendDrawData } from "../worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
-import { init as initMaterial } from "../../component/material/MaterialSystem";
 import { MaterialData } from "../../component/material/MaterialData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { GeometryData } from "../../component/geometry/GeometryData";
@@ -71,6 +70,8 @@ import { WebGL1PointLightData } from "../webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../webgl2/light/PointLightData";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { init as initWebGL2Material } from "../../component/webgl2/material/MaterialSystem";
+import { init as initWebGL1Material } from "../../component/webgl1/material/MaterialSystem";
 
 var _checkLightCount = requireCheckFunc((PointLightData: any) => {
     it("count should <= max count", () => {
@@ -254,7 +255,7 @@ else {
 
             initState(state, getGL, setSide, DeviceManagerData);
 
-            initMaterial(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
+            initWebGL1Material(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
 
             //initFront(gl, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
 
@@ -280,7 +281,7 @@ else {
 
             initState(state, getGL, setSide, DeviceManagerData);
 
-            initMaterial(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
+            initWebGL2Material(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
 
             if(!GPUDetector.getInstance().extensionColorBufferFloat){
                 Log.error(true, "defer shading need support extensionColorBufferFloat extension");
