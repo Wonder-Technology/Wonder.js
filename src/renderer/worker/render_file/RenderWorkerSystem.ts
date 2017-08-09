@@ -234,7 +234,7 @@ var _handleWebGL2InitRenderData = (data:any, PointLightWorkerData:any) => {
         .concat(
             _initTextures(data.textureData, TextureWorkerData),
             _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, data.materialData, data.textureData, TextureWorkerData, PointLightWorkerData),
-            _initDefer(gl, renderData, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData)
+            _initDefer(gl, renderData, DataBufferConfig, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData)
         )
         .subscribe(null, null, () => {
             self.postMessage({
@@ -243,7 +243,7 @@ var _handleWebGL2InitRenderData = (data:any, PointLightWorkerData:any) => {
         })
 }
 
-var _initDefer = (gl:any, renderData:WebGL2RenderInitWorkerData, GBufferWorkerData: any, DeferLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any) => {
+var _initDefer = (gl:any, renderData:WebGL2RenderInitWorkerData, DataBufferConfig:any, GBufferWorkerData: any, DeferLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(renderData) || _isDataNotExist(renderData.deferShading) || renderData.deferShading.isInit === false) {
             return;
@@ -254,7 +254,7 @@ var _initDefer = (gl:any, renderData:WebGL2RenderInitWorkerData, GBufferWorkerDa
             Log.error(true, "defer shading need support extensionColorBufferFloat extension");
         }
         else{
-            initDeferUtils(gl, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData);
+            initDeferUtils(gl, DataBufferConfig, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData);
         }
     })
 }

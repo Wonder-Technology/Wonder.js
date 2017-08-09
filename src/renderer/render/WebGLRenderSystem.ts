@@ -69,6 +69,16 @@ import { Log } from "../../utils/Log";
 import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/defer/draw/deferDrawRenderCommandBufferUtils";
 import { WebGL1PointLightData } from "../webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../webgl2/light/PointLightData";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+
+var _checkLightCount = requireCheckFunc((PointLightData: any) => {
+    it("count should <= max count", () => {
+        expect(PointLightData.count).lte(DataBufferConfig.pointLightDataBufferCount);
+    })
+    //todo check direction, ambient
+}, () => {
+})
 
 export var init = null;
 
@@ -77,7 +87,9 @@ export var render = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     if(isWebgl1()){
         init = (state: Map<any, any>) => {
-            var renderWorker = getRenderWorker(WorkerInstanceData);
+            _checkLightCount(WebGL1PointLightData);
+
+            let renderWorker = getRenderWorker(WorkerInstanceData);
 
             renderWorker.postMessage({
                 operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
@@ -155,7 +167,9 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         //todo refactor(extract repeat code with webgl1)
 
         init = (state: Map<any, any>) => {
-            var renderWorker = getRenderWorker(WorkerInstanceData);
+            _checkLightCount(WebGL2PointLightData);
+
+            let renderWorker = getRenderWorker(WorkerInstanceData);
 
             renderWorker.postMessage({
                 operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
@@ -243,6 +257,8 @@ else {
             initMaterial(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData);
 
             //initFront(gl, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
+
+            _checkLightCount(WebGL1PointLightData);
         }
 
         render = (state: Map<any, any>) => {
@@ -270,8 +286,10 @@ else {
                 Log.error(true, "defer shading need support extensionColorBufferFloat extension");
             }
             else{
-                initDefer(gl, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
+                initDefer(gl, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
             }
+
+            _checkLightCount(WebGL2PointLightData);
         }
 
         render = (state: Map<any, any>) => {

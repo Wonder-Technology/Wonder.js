@@ -25,13 +25,12 @@ import {
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
+//todo separate
 import { WebGL1PointLightData } from "../../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../../renderer/webgl2/light/PointLightData";
 
+//todo check: shouldn't create after init
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
-    it("count should <= max count", () => {
-        expect(PointLightData.count).lte(DataBufferConfig.pointLightDataBufferCount);
-    })
 }, (PointLightData: any) => {
     var light = new PointLight();
 

@@ -919,5 +919,29 @@ describe("defer shading", function () {
             });
         });
     });
+    
+    describe("fix bug", function() {
+        var DataBufferConfig = wd.DataBufferConfig;
+
+        beforeEach(function(){
+        });
+        
+        it("expand max light count to be bigger than the one defined in front render", function(){
+            testTool.openContractCheck();
+
+            DataBufferConfig.pointLightDataBufferCount = 1;
+
+            sceneTool.addPointLight();
+            sceneTool.addPointLight();
+
+            expect(function () {
+                directorTool.init(state);
+            }).not.toThrow();
+
+            expect(DataBufferConfig.pointLightDataBufferCount).toEqual(1000);
+
+            //todo test direction, ambient
+        });
+    });
 });
 

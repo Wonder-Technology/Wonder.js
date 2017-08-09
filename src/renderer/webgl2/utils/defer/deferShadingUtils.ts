@@ -11,7 +11,9 @@ import { IRenderConfig } from "../../../worker/both_file/data/render_config";
 import { WebGL2DrawFuncDataMap, WebGL2SendUniformDataDataMap } from "../../type/utilsType";
 import { getNoMaterialShaderIndex } from "../shaderUtils";
 
-export var init = (gl:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
+export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
+    _resetLightDataBufferCount(DataBufferConfig);
+
     initGBuffer(gl, GBufferDataFromSystem);
     initDeferLightPass(gl, DeferLightPassDataFromSystem);
 
@@ -24,6 +26,12 @@ export var init = (gl:any, GBufferDataFromSystem:any, DeferLightPassDataFromSyst
     let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
     sendGBufferTargetData(gl, program);
+}
+
+var _resetLightDataBufferCount = (DataBufferConfig:any) => {
+    //todo fix direction, ambient
+
+    DataBufferConfig.pointLightDataBufferCount = 1000;
 }
 
 export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:WebGL2DrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2SendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
