@@ -18,4 +18,9 @@ export type WebGL2LightInitWorkerData = {
     }
 }
 
+export type WebGL2RenderInitWorkerData = {
+    deferShading:{
+        isInit:boolean;
+    }
+}
 

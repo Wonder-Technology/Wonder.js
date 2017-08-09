@@ -198,107 +198,107 @@ describe("light", function () {
                 });
             });
         });
+    });
 
-        describe("set draw light data", function () {
+    describe("set draw light data", function () {
+        beforeEach(function () {
+
+        });
+
+        it("send direction light positionArr", function () {
+            var pos1 = Vector3.create(1, 2, 3),
+                pos2 = Vector3.create(2, 2, 4),
+                pos3 = Vector3.create(10, 2, 3),
+                pos4 = Vector3.create(20, 2, 4);
+
+            sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            sceneTool.addDirectionLight(pos1);
+            sceneTool.addDirectionLight(pos2);
+            sceneTool.addPointLight(pos3);
+            sceneTool.addPointLight(pos4);
+
+            directorTool.init(sandbox);
+            sendDrawRendercommandBufferTool.markInitComplete();
+
+
+            workerTool.runRender(1);
+
+
+            worker = workerTool.getRenderWorker();
+            expect(worker.postMessage).toCalledWith({
+                operateType: EWorkerOperateType.DRAW,
+                renderCommandBufferData: sinon.match.any,
+                disposeData: sinon.match.any,
+                materialData: sinon.match.any,
+                geometryData: sinon.match.any,
+                lightData: {
+                    directionLightData: {
+                        positionArr: [
+                            pos1.values,
+                            pos2.values
+                        ]
+                    },
+                    pointLightData: {
+                        positionArr: [
+                            pos3.values,
+                            pos4.values
+                        ]
+                    }
+                }
+            });
+        });
+
+
+        describe("test in render worker", function () {
+            var gl;
+            var e;
+
             beforeEach(function () {
-
+                gl = workerTool.createGL(sandbox);
             });
 
-            it("send direction light positionArr", function () {
+            it("set direction light positionArr", function () {
                 var pos1 = Vector3.create(1, 2, 3),
                     pos2 = Vector3.create(2, 2, 4),
                     pos3 = Vector3.create(10, 2, 3),
                     pos4 = Vector3.create(20, 2, 4);
 
-                sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-                sceneTool.addDirectionLight(pos1);
-                sceneTool.addDirectionLight(pos2);
-                sceneTool.addPointLight(pos3);
-                sceneTool.addPointLight(pos4);
-
-                directorTool.init(sandbox);
-                sendDrawRendercommandBufferTool.markInitComplete();
-
-
-                workerTool.runRender(1);
-
-
-                worker = workerTool.getRenderWorker();
-                expect(worker.postMessage).toCalledWith({
-                    operateType: EWorkerOperateType.DRAW,
-                    renderCommandBufferData: sinon.match.any,
-                    disposeData: sinon.match.any,
-                    materialData: sinon.match.any,
-                    geometryData: sinon.match.any,
-                    lightData: {
-                        directionLightData: {
-                            positionArr: [
-                                pos1.values,
-                                pos2.values
-                            ]
-                        },
-                        pointLightData: {
-                            positionArr: [
-                                pos3.values,
-                                pos4.values
-                            ]
-                        }
-                    }
-                });
-            });
-
-
-            describe("test in render worker", function () {
-                var gl;
-                var e;
-
-                beforeEach(function () {
-                    gl = workerTool.createGL(sandbox);
-                });
-
-                it("set direction light positionArr", function () {
-                    var pos1 = Vector3.create(1, 2, 3),
-                        pos2 = Vector3.create(2, 2, 4),
-                        pos3 = Vector3.create(10, 2, 3),
-                        pos4 = Vector3.create(20, 2, 4);
-
-                    e = {
-                        data: {
-                            operateType: EWorkerOperateType.DRAW,
-                            renderCommandBufferData: null,
-                            disposeData: null,
-                            materialData: null,
-                            geometryData: null,
-                            textureData: null,
-                            lightData: {
-                                directionLightData: {
-                                    positionArr: [
-                                        pos1.values,
-                                        pos2.values
-                                    ]
-                                },
-                                pointLightData: {
-                                    positionArr: [
-                                        pos3.values,
-                                        pos4.values
-                                    ]
-                                }
+                e = {
+                    data: {
+                        operateType: EWorkerOperateType.DRAW,
+                        renderCommandBufferData: null,
+                        disposeData: null,
+                        materialData: null,
+                        geometryData: null,
+                        textureData: null,
+                        lightData: {
+                            directionLightData: {
+                                positionArr: [
+                                    pos1.values,
+                                    pos2.values
+                                ]
+                            },
+                            pointLightData: {
+                                positionArr: [
+                                    pos3.values,
+                                    pos4.values
+                                ]
                             }
                         }
                     }
+                }
 
-                    workerTool.execRenderWorkerMessageHandler(e);
+                workerTool.execRenderWorkerMessageHandler(e);
 
 
-                    expect(DirectionLightWorkerData.positionArr).toEqual([
-                        pos1.values,
-                        pos2.values
-                    ])
-                    expect(PointLightWorkerData.positionArr).toEqual([
-                        pos3.values,
-                        pos4.values
-                    ])
-                });
+                expect(DirectionLightWorkerData.positionArr).toEqual([
+                    pos1.values,
+                    pos2.values
+                ])
+                expect(PointLightWorkerData.positionArr).toEqual([
+                    pos3.values,
+                    pos4.values
+                ])
             });
         });
     });

@@ -29,16 +29,17 @@
 
         'test/unit/utils/**',
         'test/unit/worker/tool/*.js',
+        'test/unit/worker/**/tool/*.js',
         'test/unit/worker/utils/*.js',
 
-        'test/unit/worker/render_worker/**',
-        // 'test/unit/worker/render_worker/**/MainSpec*',
-        // 'test/unit/worker/render_worker/**/texture*',
-        // 'test/unit/worker/render_worker/**/material*',
-        // 'test/unit/worker/render_worker/**/lightMaterial*',
-        // 'test/unit/worker/render_worker/**/disposeTexture*',
-        // 'test/unit/worker/render_worker/**/lightSpec*',
-        // 'test/unit/worker/render_worker/**/DirectorSpec*',
+        'test/unit/worker/**',
+        // 'test/unit/worker/**/MainSpec*',
+        // 'test/unit/worker/**/texture*',
+        // 'test/unit/worker/**/material*',
+        // 'test/unit/worker/**/lightMaterial*',
+        // 'test/unit/worker/**/disposeTexture*',
+        // 'test/unit/worker/**/lightSpec*',
+        // 'test/unit/worker/**/DirectorSpec*',
 
         {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
         {pattern: 'dist/worker/wd.renderWorker.js.map', watched: false, included: false, served: true, nocache:true},
@@ -49,7 +50,8 @@
 
     // list of files to exclude
     exclude: [
-        '**/temp/*'
+        '**/temp/*',
+        'test/unit/**/webgl1/**'
     ],
 
 

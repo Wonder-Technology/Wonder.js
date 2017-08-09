@@ -59,6 +59,7 @@ describe("texture", function () {
                 materialData:sinon.match.any,
                 geometryData:sinon.match.any,
                 lightData:sinon.match.any,
+                renderData:sinon.match.any,
                 textureData: {
                     mapManagerBuffer: sinon.match.any,
                     textureBuffer: sinon.match.any,
@@ -90,6 +91,7 @@ describe("texture", function () {
                 materialData:sinon.match.any,
                 geometryData:sinon.match.any,
                 lightData:sinon.match.any,
+                renderData:sinon.match.any,
                 textureData: {
                     mapManagerBuffer: sinon.match.any,
                     textureBuffer: sinon.match.any,
@@ -116,6 +118,7 @@ describe("texture", function () {
                 materialData:sinon.match.any,
                 geometryData:sinon.match.any,
                 lightData:sinon.match.any,
+                renderData:sinon.match.any,
                 textureData: sinon.match.any
             }).args[0][0].textureData.uniformSamplerNameMap).toEqual(
                 [

@@ -211,6 +211,11 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     index: TextureData.index,
                     imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
                     uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
+                },
+                renderData: {
+                    deferShading:{
+                        isInit: true
+                    }
                 }
             });
 

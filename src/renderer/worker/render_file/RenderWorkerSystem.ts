@@ -89,7 +89,7 @@ import {
 import { buildDrawDataMap as buildDeferDrawDataMap } from "../../webgl2/utils/defer/draw/deferDrawRenderCommandBufferUtils";
 import { initData as initLightWorkerDataWebGL2 } from "../webgl2/render_file/light/LightWorkerSystem";
 import { initData as initLightWorkerDataWebGL1 } from "../webgl1/render_file/light/LightWorkerSystem";
-import { WebGL2LightInitWorkerData } from "../../webgl2/type/messageDataType";
+import { WebGL2RenderInitWorkerData, WebGL2LightInitWorkerData } from "../../webgl2/type/messageDataType";
 import { WebGL1LightInitWorkerData } from "../../webgl1/type/messageDataType";
 import { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
 import { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";
@@ -122,10 +122,10 @@ export var onmessageHandler = (e) => {
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleInitRenderData(data, WebGL1PointLightWorkerData);
+                _handleWebGL1InitRenderData(data, WebGL1PointLightWorkerData);
             }
             else{
-                _handleInitRenderData(data, WebGL2PointLightWorkerData);
+                _handleWebGL2InitRenderData(data, WebGL2PointLightWorkerData);
             }
             break;
         case EWorkerOperateType.DRAW:
@@ -200,48 +200,55 @@ var _handleDraw = (data:any, PointLightWorkerData:any) => {
 
 var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 
-var _handleInitRenderData = (data:any, PointLightWorkerData:any) => {
+var _handleWebGL1InitRenderData = (data:any, PointLightWorkerData:any) => {
     var state = getState(StateData),
         gl = getGL(DeviceManagerWorkerData, state);
 
-    if(isWebgl1(WebGLDetectWorkerData)){
-        fromArray([
-            _initWebGL1Lights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
-            _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
-            _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
-        ]).mergeAll()
-            .concat(
-                _initTextures(data.textureData, TextureWorkerData),
-                _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, WebGL1PointLightWorkerData)
-            )
-            .subscribe(null, null, () => {
-                self.postMessage({
-                    state: ERenderWorkerState.INIT_COMPLETE
-                });
-            })
-    }
-    else{
-        //todo refactor(repeat code)
-        fromArray([
-            _initWebGL2Lights(data.lightData, PointLightWorkerData),
-            _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
-            _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
-        ]).mergeAll()
-            .concat(
-                _initTextures(data.textureData, TextureWorkerData),
-                _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, data.materialData, data.textureData, TextureWorkerData, PointLightWorkerData),
-                _initDefer(gl, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData)
-            )
-            .subscribe(null, null, () => {
-                self.postMessage({
-                    state: ERenderWorkerState.INIT_COMPLETE
-                });
-            })
-    }
+    fromArray([
+        _initWebGL1Lights(data.lightData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData),
+        _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
+        _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
+    ]).mergeAll()
+        .concat(
+            _initTextures(data.textureData, TextureWorkerData),
+            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, WebGL1PointLightWorkerData)
+        )
+        .subscribe(null, null, () => {
+            self.postMessage({
+                state: ERenderWorkerState.INIT_COMPLETE
+            });
+        })
 }
 
-var _initDefer = (gl:any, GBufferWorkerData: any, DeferLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any) => {
+var _handleWebGL2InitRenderData = (data:any, PointLightWorkerData:any) => {
+    var state = getState(StateData),
+        gl = getGL(DeviceManagerWorkerData, state),
+        renderData = data.renderData;
+
+    //todo refactor(repeat code)
+    fromArray([
+        _initWebGL2Lights(data.lightData, PointLightWorkerData),
+        _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),
+        _initGeometrys(data.geometryData, DataBufferConfig, GeometryWorkerData)
+    ]).mergeAll()
+        .concat(
+            _initTextures(data.textureData, TextureWorkerData),
+            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, data.materialData, data.textureData, TextureWorkerData, PointLightWorkerData),
+            _initDefer(gl, renderData, GBufferWorkerData, DeferLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData)
+        )
+        .subscribe(null, null, () => {
+            self.postMessage({
+                state: ERenderWorkerState.INIT_COMPLETE
+            });
+        })
+}
+
+var _initDefer = (gl:any, renderData:WebGL2RenderInitWorkerData, GBufferWorkerData: any, DeferLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any) => {
     return callFunc(() => {
+        if (_isDataNotExist(renderData) || _isDataNotExist(renderData.deferShading) || renderData.deferShading.isInit === false) {
+            return;
+        }
+
         //todo refactor with no worker(repeat code)
         if(!GPUDetector.getInstance().extensionColorBufferFloat){
             Log.error(true, "defer shading need support extensionColorBufferFloat extension");
@@ -251,6 +258,8 @@ var _initDefer = (gl:any, GBufferWorkerData: any, DeferLightPassWorkerData: any,
         }
     })
 }
+
+var _isDataNotExist = (data:WebGL2RenderInitWorkerData) => data === null || data === void 0;
 
 var _initData = () => {
     initProgramWorkerData(ProgramWorkerData);
@@ -278,7 +287,7 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
 
 var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any, PointLightWorkerData:any) => {
     return callFunc(() => {
-        if (materialData === null) {
+        if (_isDataNotExist(materialData)){
             return;
         }
 
@@ -294,7 +303,7 @@ var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_
 
 var _initMaterialData = (gl: WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData: any, TextureCacheWorkerData: any, TextureWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     return callFunc(() => {
-        if (materialData === null) {
+        if (_isDataNotExist(materialData)){
             return;
         }
 
@@ -304,7 +313,7 @@ var _initMaterialData = (gl: WebGLRenderingContext, materialData: MaterialInitWo
 
 var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
     return callFunc(() => {
-        if (geometryData === null) {
+        if (_isDataNotExist(geometryData)){
             return;
         }
 
@@ -316,7 +325,7 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
 
 var _initWebGL1Lights = (lightData: WebGL1LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     return callFunc(() => {
-        if (lightData === null) {
+        if (_isDataNotExist(lightData)){
             return;
         }
 
@@ -326,7 +335,7 @@ var _initWebGL1Lights = (lightData: WebGL1LightInitWorkerData, AmbientLightWorke
 
 var _initWebGL2Lights = (lightData: WebGL2LightInitWorkerData, PointLightWorkerData: any) => {
     return callFunc(() => {
-        if (lightData === null) {
+        if (_isDataNotExist(lightData)){
             return;
         }
 
@@ -343,7 +352,7 @@ var _setLightDrawData = (lightData: LightDrawWorkerData, DirectionLightWorkerDat
 }
 
 var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
-    if (textureData === null) {
+    if (_isDataNotExist(textureData)){
         return empty();
     }
 

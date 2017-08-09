@@ -92,20 +92,20 @@ describe("dispose texture", function () {
                             geometryData:null,
                             lightData:null,
                             disposeData: {
-                            geometryDisposeData: null,
+                                geometryDisposeData: null,
                                 textureDisposeData:{
-                                disposedTextureDataMap: [
-                                    {
-                                        sourceIndex: 0,
-                                        lastComponentIndex: 2
-                                    },
-                                    {
-                                        sourceIndex: 0,
-                                        lastComponentIndex: 1
-                                    }
-                                ]
+                                    disposedTextureDataMap: [
+                                        {
+                                            sourceIndex: 0,
+                                            lastComponentIndex: 2
+                                        },
+                                        {
+                                            sourceIndex: 0,
+                                            lastComponentIndex: 1
+                                        }
+                                    ]
+                                }
                             }
-                        }
                     }
                 }
             }

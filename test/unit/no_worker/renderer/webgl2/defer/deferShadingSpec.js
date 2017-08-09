@@ -9,8 +9,8 @@ describe("defer shading", function () {
     var ProgramData = wd.ProgramData;
     var DeferLightPassData = wd.DeferLightPassData;
 
-    function enableDeferShading() {
-        sandbox.stub(GPUDetector.getInstance(), "extensionColorBufferFloat", true);
+    function enableDeferShading(sandbox) {
+        deferShadingTool.enableDeferShading(sandbox);
     }
 
     function getDeferLightPassProgram() {
@@ -28,7 +28,7 @@ describe("defer shading", function () {
 
         gl = stateTool.getGLFromFakeGLState(state);
 
-        enableDeferShading();
+        enableDeferShading(sandbox);
     });
     afterEach(function () {
         testTool.clear(sandbox);

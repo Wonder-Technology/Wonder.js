@@ -50,6 +50,7 @@ describe("light material", function () {
                 },
                 geometryData:sinon.match.any,
                 lightData:sinon.match.any,
+                renderData:sinon.match.any,
                 textureData: sinon.match.any
             });
         });

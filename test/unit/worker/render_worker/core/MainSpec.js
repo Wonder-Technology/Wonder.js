@@ -132,30 +132,15 @@ describe("Main", function() {
         var offscreen;
 
         function buildFakeDomQuery(canvasDom) {
-            return {
-                css: sandbox.stub(),
-                get: sandbox.stub().returns(canvasDom)
-            };
+            return mainWorkerTool.buildFakeDomQuery(sandbox, canvasDom);
         }
 
         function buildOffscreen(gl) {
-            return {
-                style:{},
-                width:1,
-                height:2,
-                getContext:sandbox.stub().returns(gl),
-            }
+            return mainWorkerTool.buildOffscreen(sandbox, gl);
         }
 
         function buildMessage(viewportData, options) {
-            return {
-                data: {
-                    operateType: EWorkerOperateType.INIT_GL,
-                    canvas: offscreen,
-                    options: options || {},
-                    viewportData: viewportData || {}
-                }
-            }
+            return mainWorkerTool.buildMessage(offscreen, viewportData, options);
         }
 
         beforeEach(function () {
@@ -366,7 +351,8 @@ describe("Main", function() {
 
                     workerTool.execRenderWorkerMessageHandler(e);
 
-                    expect(offscreen.getContext).toCalledWith("webgl", options);
+                    // expect(offscreen.getContext).toCalledWith("webgl", options);
+                    expect(offscreen.getContext).toCalledWith(sinon.match.any, options);
                 });
             });
         });

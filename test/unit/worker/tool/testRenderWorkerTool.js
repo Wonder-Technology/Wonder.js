@@ -57,7 +57,7 @@ var testRenderWorkerTool = (function () {
         clearAndOpenContractCheck: function (sandbox, data) {
             testUtils.prepareBufferForTest(sandbox, data, bufferTool);
 
-            workerTool.init(sandbox);
+            webglWorkerTool.init(sandbox);
 
             this.clear(sandbox);
 
