@@ -57,7 +57,6 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         vec3 materialLight = getMaterialLight();
 
-        //todo fix front render,basic render->diffuse: change vec4 to vec3
 //        vec4 materialDiffuse = getMaterialDiffuse();
 
 //        vec3 materialSpecular = u_specular;
