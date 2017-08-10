@@ -1,6 +1,7 @@
 import { expect } from "wonder-expect.js";
-import { GPUDetector } from "../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { getMaxTextureUnit } from "../../device/GPUDetectSystem";
+import { GPUDetectData } from "../../device/GPUDetectData";
 
 export var isCached = (unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any) => {
     return _getActiveTexture(unitIndex, TextureCacheDataFromSystem) === textureIndex;
@@ -19,7 +20,7 @@ export var addActiveTexture = requireCheckFunc((unitIndex: number, textureIndex:
 })
 
 var _checkUnit = (unitIndex: number) => {
-    var maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
+    var maxTextureUnit = getMaxTextureUnit(GPUDetectData);
 
     it(`texture unitIndex should >= 0, but actual is ${unitIndex}`, () => {
         expect(unitIndex).gte(0);

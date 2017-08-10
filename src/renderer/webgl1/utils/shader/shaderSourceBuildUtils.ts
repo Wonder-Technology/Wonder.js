@@ -2,7 +2,6 @@ import { isConfigDataExist } from "../../../utils/renderConfigUtils";
 import { main_begin, main_end } from "../../../shader/snippet/ShaderSnippet";
 import { GLSLChunk, highp_fragment, lowp_fragment, mediump_fragment } from "../../../shader/chunk/ShaderChunk";
 import { ExtendUtils } from "Wonder-CommonLib/dist/es2015/utils/ExtendUtils";
-import { EGPUPrecision, GPUDetector } from "../../../device/GPUDetector";
 import { it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../../../utils/functionalUtils";
@@ -17,6 +16,9 @@ import {
 } from "../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IWebGL1DefineUniformConfig } from "../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config";
+import { getPrecision } from "../../../device/GPUDetectSystem";
+import { EGPUPrecision } from "../../../enum/EGPUPrecision";
+import { getPrecisionSource } from "../../../utils/shader/shaderSourceBuildUtils";
 
 export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("shaderLib should be defined", () => {
@@ -60,12 +62,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += main_begin;
     fsBody += main_begin;
 
-    ////todo separate #version (webgl1/webgl2)
-
-    // vsTop += version.top;
-
-    // fsTop += version.top;
-    fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
+    fsTop += getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment, initShaderDataMap.GPUDetectDataFromSystem);
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var glslData = shaderLibData[shaderLibName].glsl,
@@ -183,28 +180,6 @@ var _buildSourceDefine = (defineList: Array<IWebGL1GLSLDefineListItem>, initShad
         else {
             result += `#define ${item.name} ${item.valueFunc(initShaderDataMap)}\n`;
         }
-    }
-
-    return result;
-}
-
-var _getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk) => {
-    var precision = GPUDetector.getInstance().precision,
-        result = null;
-
-    switch (precision) {
-        case EGPUPrecision.HIGHP:
-            result = highp_fragment.top;
-            break;
-        case EGPUPrecision.MEDIUMP:
-            result = mediump_fragment.top;
-            break;
-        case EGPUPrecision.LOWP:
-            result = lowp_fragment.top;
-            break;
-        default:
-            result = "";
-            break;
     }
 
     return result;

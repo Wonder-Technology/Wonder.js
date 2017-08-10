@@ -10,11 +10,11 @@ import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript
 import { ETextureTarget } from "../../enum/ETextureTarget";
 import { expect } from "wonder-expect.js";
 import { clearAllBindTextureUnitCache } from "./textureCacheUtils";
-import { GPUDetector } from "../../device/GPUDetector";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
 import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
 import { EVariableType } from "../../enum/EVariableType";
+import { getMaxTextureUnit } from "../../device/GPUDetectSystem";
 
 export var getBufferDataSize = () => 1;
 
@@ -308,19 +308,19 @@ export var disposeSourceMap = (sourceIndex: number, lastComponentIndex: number, 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.sourceMap);
 }
 
-export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any) => {
+export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectData:any) => {
     var glTexture = _getWebglTexture(sourceIndex, TextureDataFromSystem);
 
     gl.deleteTexture(glTexture);
     // delete glTexture;
 
-    _unBindAllUnit(gl, TextureCacheDataFromSystem);
+    _unBindAllUnit(gl, TextureCacheDataFromSystem, GPUDetectData);
 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.glTextures);
 }
 
-var _unBindAllUnit = (gl: WebGLRenderingContext, TextureCacheDataFromSystem: any) => {
-    var maxTextureUnit = GPUDetector.getInstance().maxTextureUnit;
+var _unBindAllUnit = (gl: WebGLRenderingContext, TextureCacheDataFromSystem: any, GPUDetectData:any) => {
+    var maxTextureUnit = getMaxTextureUnit(GPUDetectData);
 
     for (let channel = 0; channel < maxTextureUnit; channel++) {
         gl.activeTexture(gl[`TEXTURE${channel}`]);

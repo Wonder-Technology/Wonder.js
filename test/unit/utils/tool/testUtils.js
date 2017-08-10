@@ -25,7 +25,7 @@ var testUtils = (function () {
         },
 
         initForTest: function(sandbox){
-            sandbox.stub(wd.GPUDetector.getInstance(), "maxTextureUnit", 16);
+            gpuDetectTool.setGPUDetectData("maxTextureUnit", 16)
         }
     }
 })();

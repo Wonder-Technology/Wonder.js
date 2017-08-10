@@ -131,7 +131,7 @@ describe("Main", function() {
                     Main.init();
 
 
-                    expect(canvasDom.getContext).toCalledWith("webgl", {
+                    expect(canvasDom.getContext).toCalledWith(sinon.match.any, {
                         alpha:true,
                         depth:true,
                         stencil:false,
@@ -156,7 +156,7 @@ describe("Main", function() {
                     Main.init();
 
 
-                    expect(canvasDom.getContext).toCalledWith("webgl", {
+                    expect(canvasDom.getContext).toCalledWith(sinon.match.any, {
                         alpha:true,
                         depth:true,
                         stencil:true,

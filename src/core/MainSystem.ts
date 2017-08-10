@@ -76,6 +76,7 @@ import { initData as initDirectorData } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
+import { GPUDetectData } from "../renderer/device/GPUDetectData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -200,7 +201,7 @@ if(isWebgl1()){
 
         initShaderData(ShaderData);
 
-        initGeometryData(DataBufferConfig, GeometryData);
+        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
         initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
 
@@ -231,7 +232,7 @@ else{
 
         initShaderData(ShaderData);
 
-        initGeometryData(DataBufferConfig, GeometryData);
+        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
         initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
 

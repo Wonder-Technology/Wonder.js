@@ -3,7 +3,6 @@ describe("defer shading", function () {
     var gl;
     var state;
 
-    var GPUDetector = wd.GPUDetector;
     var GBufferData = wd.GBufferData;
     var ShaderData = wd.ShaderData;
     var ProgramData = wd.ProgramData;
@@ -51,7 +50,7 @@ describe("defer shading", function () {
         }
 
         it("if not support extensionColorBufferFloat, error", function () {
-            sandbox.stub(GPUDetector.getInstance(), "extensionColorBufferFloat", false);
+            gpuDetectTool.setGPUDetectData("extensionColorBufferFloat", false)
 
             expect(function () {
                 directorTool.init(state);

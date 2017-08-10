@@ -1,10 +1,9 @@
-import { GPUDetector } from "../../renderer/device/GPUDetector";
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Geometry } from "./Geometry";
 import { Map } from "immutable";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import {
-    createMap, deleteBySwap as deleteObjectBySwap, deleteVal, isNotValidMapValue,
+    createMap, deleteVal, isNotValidMapValue,
     isValidMapValue
 } from "../../utils/objectUtils";
 import {
@@ -41,6 +40,7 @@ import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/B
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { getExtensionUintIndices } from "../../renderer/device/GPUDetectSystem";
 
 export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addAddComponentHandleToMap(BoxGeometry, addComponent);
@@ -272,13 +272,12 @@ export var getConfigData = (index: number, GeometryData: any) => {
 //     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
 // }
 
-var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any) => {
+var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectData:any) => {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
 
-    //todo refactor: use function
-    return GPUDetector.getInstance().extensionUintIndices === true;
+    return getExtensionUintIndices(GPUDetectData) === true;
 }
 
 export var isIndicesBufferNeed32BitsByData = (GeometryData: any) => {
@@ -333,8 +332,8 @@ var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => 
     }
 }
 
-export var initData = (DataBufferConfig: any, GeometryData: any) => {
-    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig),
+export var initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData:any) => {
+    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig, GPUDetectData),
         indicesArrayBytes: number = null;
 
     if (isIndicesBufferNeed32Bits) {

@@ -7,7 +7,6 @@ describe("shader source build", function () {
     var gl;
     var state;
 
-    var GPUDetector = wd.GPUDetector;
     var EGPUPrecision = wd.EGPUPrecision;
 
     beforeEach(function () {
@@ -58,9 +57,9 @@ describe("shader source build", function () {
             expect(glslTool.containSpecifyCount(fs, "uniform float u_opacity;", 1)).toBeTruthy();
         });
 
-        describe("fs top define precision based on GPUDetector->precision", function () {
+        describe("fs top define precision based on GPUDetect->precision", function () {
             it("test LOWP", function () {
-                sandbox.stub(GPUDetector.getInstance(), "precision", EGPUPrecision.LOWP);
+                gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.LOWP)
 
                 directorTool.init(state);
 
@@ -68,7 +67,7 @@ describe("shader source build", function () {
                 expect(glslTool.containSpecifyCount(fs, "precision lowp float;\nprecision lowp int;\n", 1)).toBeTruthy();
             });
             it("test MEDIUMP", function () {
-                sandbox.stub(GPUDetector.getInstance(), "precision", EGPUPrecision.MEDIUMP);
+                gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.MEDIUMP)
 
                 directorTool.init(state);
 
@@ -76,7 +75,7 @@ describe("shader source build", function () {
                 expect(glslTool.containSpecifyCount(fs, "precision mediump float;\nprecision mediump int;\n", 1)).toBeTruthy();
             });
             it("test HIGHP", function () {
-                sandbox.stub(GPUDetector.getInstance(), "precision", EGPUPrecision.HIGHP);
+                gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.HIGHP)
 
                 directorTool.init(state);
 

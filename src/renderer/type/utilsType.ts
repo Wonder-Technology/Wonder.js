@@ -54,6 +54,7 @@ export type LightMaterialForGetUniformDataDataMap = {
 }
 
 export type InitShaderDataMap = {
+    GPUDetectDataFromSystem: any;
     DeviceManagerDataFromSystem: any;
     ProgramDataFromSystem: any;
     LocationDataFromSystem: any;

@@ -15,7 +15,6 @@ describe("Texture", function () {
     var ETextureFormat = wd.ETextureFormat;
     var ETextureType = wd.ETextureType;
     var ETextureTarget = wd.ETextureTarget;
-    var GPUDetector = wd.GPUDetector;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -551,7 +550,7 @@ describe("Texture", function () {
                 gl["TEXTURE0"] = glUnit0;
                 gl["TEXTURE1"] = glUnit1;
 
-                sandbox.stub(GPUDetector.getInstance(), "maxTextureUnit", 2);
+                gpuDetectTool.setGPUDetectData("maxTextureUnit", 2)
 
                 textureTool.dispose(texture);
 
