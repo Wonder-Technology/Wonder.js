@@ -22,7 +22,6 @@ export type UniformShaderLocationMap = {
     [name: string]: WebGLUniformLocation;
 }
 
-//todo separate?
 export type SendAttributeConfigMap = {
     [index: number]: Array<IWebGL1SendAttributeConfig | IWebGL2SendAttributeConfig>
 }
