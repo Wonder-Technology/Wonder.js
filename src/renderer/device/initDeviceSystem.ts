@@ -4,7 +4,6 @@ import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDe
 import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
-import { detect } from "./GPUDetectSystem";
 import {
     createGL as createGLWorker, getViewportData,
     setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem,
@@ -24,7 +23,7 @@ import { GPUDetectData } from "./GPUDetectData";
 export var initDevice = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect:Function, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
             var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, state).run(),
                 viewportData: ViewportData = getViewportData(screenData, state);
@@ -41,7 +40,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     });
 }
 else {
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, canvas: HTMLCanvasElement) => {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect:Function, canvas: HTMLCanvasElement) => {
         return compose(
             map(detect(getGL, DeviceManagerData, GPUDetectData)),
             chain(setCanvasPixelRatioFromDeviceManagerSystem(configState.get("useDevicePixelRatio"), canvas)),

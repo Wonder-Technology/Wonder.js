@@ -3,7 +3,6 @@ describe("defer shading", function () {
 
     var EWorkerOperateType = wd.EWorkerOperateType;
 
-    var GPUDetector = wdrd.GPUDetector;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -28,7 +27,7 @@ describe("defer shading", function () {
             });
 
             it("if not support extensionColorBufferFloat, error", function () {
-                sandbox.stub(GPUDetector.getInstance(), "extensionColorBufferFloat", false);
+                gpuDetectTool.setGPUDetectData("extensionColorBufferFloat", false);
 
                 expect(function () {
                     e = {

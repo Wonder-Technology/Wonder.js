@@ -26,7 +26,7 @@ var geometryTool = (function () {
             wd.GeometryData.indexTypeSize = size;
         },
         resetData: function(){
-            wd.initGeometryData(wd.DataBufferConfig, wd.GeometryData);
+            wd.initGeometryData(wd.DataBufferConfig, wd.GeometryData, wd.GPUDetectData);
         }
     }
 })()

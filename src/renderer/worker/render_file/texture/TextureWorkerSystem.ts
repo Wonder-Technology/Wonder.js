@@ -37,13 +37,13 @@ else if (firefox) {
     }
 }
 
-export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any) => {
+export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData:any) => {
     for (let {
         sourceIndex,
         lastComponentIndex
     } of disposeData.disposedTextureDataMap) {
         disposeSourceMap(sourceIndex, lastComponentIndex, TextureWorkerData);
-        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData);
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
     }
 }
 

@@ -71,8 +71,8 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { init as initWebGL2Material } from "../../component/webgl2/material/MaterialSystem";
 import { init as initWebGL1Material } from "../../component/webgl1/material/MaterialSystem";
-import { getExtensionColorBufferFloat } from "../device/GPUDetectSystem";
 import { GPUDetectData } from "../device/GPUDetectData";
+import { hasExtensionColorBufferFloat } from "../webgl2/device/GPUDetectorSystem";
 
 var _checkLightCount = requireCheckFunc((PointLightData: any) => {
     it("count should <= max count", () => {
@@ -284,7 +284,7 @@ else {
 
             initWebGL2Material(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData);
 
-            if(!getExtensionColorBufferFloat(GPUDetectData)){
+            if(!hasExtensionColorBufferFloat(GPUDetectData)){
                 Log.error(true, "defer shading need support extensionColorBufferFloat extension");
             }
             else{

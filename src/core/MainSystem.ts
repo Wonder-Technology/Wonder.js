@@ -77,6 +77,8 @@ import { DirectorData } from "./DirectorData";
 import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
 import { GPUDetectData } from "../renderer/device/GPUDetectData";
+import { detect as detectWebGL1 } from "../renderer/webgl1/device/GPUDetectorSystem";
+import { detect as detectWebGL2 } from "../renderer/webgl2/device/GPUDetectorSystem";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -139,19 +141,9 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
     });
 }
 
-export var init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
-    it("should set config before", () => {
-        expect(configState.get("useDevicePixelRatio")).exist;
-    })
-}, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
-    return compose(
-        chain(initDevice(configState.get("contextConfig"), gameState, configState)),
-        createCanvas(DomQuery)
-    )(configState.get("canvasID"));
-});
+export var initData = null;
 
-export var initData = null,
-    passDataToRenderWorker = null;
+export var passDataToRenderWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initData = () => {
@@ -192,8 +184,9 @@ else {
     }
 }
 
-var _initData = null;
+export var init = null;
 
+var _initData = null;
 
 if(isWebgl1()){
     _initData = () => {
@@ -225,6 +218,17 @@ if(isWebgl1()){
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
     }
+
+    init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
+        it("should set config before", () => {
+            expect(configState.get("useDevicePixelRatio")).exist;
+        })
+    }, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
+        return compose(
+            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL1)),
+            createCanvas(DomQuery)
+        )(configState.get("canvasID"));
+    });
 }
 else{
     _initData = () => {
@@ -256,4 +260,15 @@ else{
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
     }
+
+    init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
+        it("should set config before", () => {
+            expect(configState.get("useDevicePixelRatio")).exist;
+        })
+    }, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
+        return compose(
+            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2)),
+            createCanvas(DomQuery)
+        )(configState.get("canvasID"));
+    });
 }

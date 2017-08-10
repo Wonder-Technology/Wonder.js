@@ -7,7 +7,8 @@ describe("Main", function() {
         DomQuery = wd.DomQuery,
         DebugConfig = wd.DebugConfig,
         EScreenSize = wd.EScreenSize,
-        RectRegion = wd.RectRegion;
+        RectRegion = wd.RectRegion,
+        GPUDetectData = wd.GPUDetectData;
 
     beforeEach(function() {
         sandbox = sinon.sandbox.create();

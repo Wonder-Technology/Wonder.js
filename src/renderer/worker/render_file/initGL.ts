@@ -1,5 +1,4 @@
 import { chain, compose, map } from "../../../utils/functionalUtils";
-import { detect } from "../../device/GPUDetectorSystem";
 import {
     getGL, setContextConfig, setGL,
     setViewportOfGL
@@ -15,9 +14,9 @@ import { Map } from "immutable";
 import { setCanvas } from "../../../structure/ViewSystem";
 import { getOnlyGL } from "../../utils/device/deviceManagerUtils";
 
-export var initGL = (data: MessageInitGLData, WebGLDetectWorkerData:any) => {
+export var initGL = (data: MessageInitGLData, detect:Function, WebGLDetectWorkerData:any, GPUDetectWorkerData:any) => {
     return compose(
-        map(detect(getGL, DeviceManagerWorkerData)),
+        map(detect(getGL, DeviceManagerWorkerData, GPUDetectWorkerData)),
         chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)),
         _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData)
     )(createState());
@@ -25,7 +24,6 @@ export var initGL = (data: MessageInitGLData, WebGLDetectWorkerData:any) => {
 
 var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData:any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        //todo test
         var gl = getOnlyGL(canvas, options, WebGLDetectWorkerData);
 
         if (!gl) {

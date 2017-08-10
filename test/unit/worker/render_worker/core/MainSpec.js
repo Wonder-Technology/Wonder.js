@@ -15,7 +15,6 @@ describe("Main", function() {
 
     var EWorkerOperateType = wd.EWorkerOperateType;
 
-    var GPUDetector = wdrd.GPUDetector;
     var DeviceManagerWorkerData = wdrd.DeviceManagerWorkerData;
     var InitConfigWorkerData = wdrd.InitConfigWorkerData;
     var WebGLDetectWorkerData = wdrd.WebGLDetectWorkerData;
@@ -495,13 +494,6 @@ describe("Main", function() {
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     expect(DeviceManagerWorkerData.gl).toEqual(gl);
-                });
-                it("detect gpu", function () {
-                    sandbox.stub(GPUDetector.getInstance(), "detect");
-
-                    workerTool.execRenderWorkerMessageHandler(e);
-
-                    expect(GPUDetector.getInstance().detect).toCalledOnce();
                 });
             });
         });

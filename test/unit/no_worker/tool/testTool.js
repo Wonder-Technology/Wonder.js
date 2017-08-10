@@ -77,6 +77,8 @@ var testTool = (function () {
             sceneTool.resetData();
 
             directorSystemTool.resetData();
+
+            gpuDetectTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {

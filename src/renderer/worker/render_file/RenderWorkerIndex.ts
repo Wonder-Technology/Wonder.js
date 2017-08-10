@@ -12,7 +12,6 @@ onmessage = (e) => {
 export for unit test
  */
 export { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";
-export { GPUDetector } from "../../device/GPUDetector";
 export { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 export { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 export { DataBufferConfig } from "../../../config/DataBufferConfig";
@@ -31,3 +30,4 @@ export { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
 export { WebGLDetectWorkerData } from "./device/WebGLDetectWorkerData";
 export { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
 export { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";
+export { GPUDetectWorkerData } from "./device/GPUDetectWorkerData";
