@@ -2,7 +2,6 @@ import { addSendAttributeConfig, addSendUniformConfig } from "./shader/glslSende
 import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../worker/webgl2/both_file/data/shaderLib_generator";
 import { DrawDataMap, InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 import { Map } from "immutable";
-import { isValidMapValue } from "../../../utils/objectUtils";
 import { getProgram, initShader, isProgramExist, registerProgram } from "../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "./shader/shaderSourceBuildUtils";
@@ -11,9 +10,8 @@ import { getMaterialShaderLibConfig } from "../data/MaterialConfigSystem";
 import { WebGL2SendUniformDataDataMap } from "../type/utilsType";
 import { sendUniformData as sendUniformDataProgramUtils } from "./shader/program/programUtils";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
-import { isNotUndefined } from "../../../utils/JudgeUtils";
 import {
-    buildShaderIndexByMaterialIndexAndShaderNameMapKey,
+    buildShaderIndexByMaterialIndexAndShaderNameMapKey, genereateShaderIndex,
     getShaderIndexByMaterialIndexAndShaderName,
     initShader as initShaderUtils
 } from "../../utils/shader/shaderUtils";
@@ -47,7 +45,7 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
         } = initShaderDataMap,
         // materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
-        shaderIndex = _genereateShaderIndex(materialShaderLibNameArr, ShaderDataFromSystem),
+        shaderIndex = genereateShaderIndex(ShaderDataFromSystem),
         program = getProgram(shaderIndex, ProgramDataFromSystem),
         shaderLibDataFromSystem: IWebGL2ShaderLibConfig = null,
         gl = null;
@@ -79,19 +77,3 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     return shaderIndex;
 }
 
-var _genereateShaderIndex = (materialShaderLibNameArr: Array<string>, ShaderDataFromSystem: any) => {
-    var shaderLibWholeName = materialShaderLibNameArr.join(''),
-        index = ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName];
-
-    if (isValidMapValue(index)) {
-        return index;
-    }
-
-    index = ShaderDataFromSystem.index;
-
-    ShaderDataFromSystem.index += 1;
-
-    ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName] = index;
-
-    return index;
-}

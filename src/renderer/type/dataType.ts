@@ -87,10 +87,6 @@ export type MaterialWorkerInitDataList = Array<{
     className: string;
 }>
 
-export type ShaderLibWholeNameMap = {
-    [shaderLibWholeName: string]: number
-}
-
 export type ShaderIndexByMaterialIndexAndShaderNameMap = {
     [shaderKey:string]: number
 }

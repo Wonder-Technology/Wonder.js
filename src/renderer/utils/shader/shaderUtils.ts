@@ -47,6 +47,23 @@ export var buildShaderIndexByMaterialIndexAndShaderNameMapKey = (materialIndex:n
 
 var _isShaderIndexExist = (shaderIndex:number) => isNotUndefined(shaderIndex);
 
+export var genereateShaderIndex = (ShaderDataFromSystem: any) => {
+    // var shaderLibWholeName = materialShaderLibNameArr.join(''),
+        // index = ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName];
+
+    // if (isValidMapValue(index)) {
+    //     return index;
+    // }
+
+    var index = ShaderDataFromSystem.index;
+
+    ShaderDataFromSystem.index += 1;
+
+    // ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName] = index;
+
+    return index;
+}
+
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
 }

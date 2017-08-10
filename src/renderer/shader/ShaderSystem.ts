@@ -163,7 +163,5 @@ export var initData = (ShaderData: any) => {
     ShaderData.index = 0;
     ShaderData.count = 0;
 
-    ShaderData.shaderLibWholeNameMap = createMap();
-    //todo fix render worker
     ShaderData.shaderIndexByMaterialIndexAndShaderNameMap = createMap();
 }
