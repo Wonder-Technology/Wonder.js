@@ -34,7 +34,6 @@ describe("shader", function() {
         function getUsedShaderShaderIndex() {
             return 1;
         }
-        //todo optimize: not init if inited
 
         it("init material shader", function () {
             directorTool.init(state);

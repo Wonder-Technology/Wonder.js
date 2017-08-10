@@ -13,7 +13,7 @@ describe("Shader", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -33,7 +33,7 @@ describe("Shader", function() {
 
         describe("init shader", function() {
             beforeEach(function(){
-                
+
             });
 
             it("if program already exist, return", function () {
@@ -178,6 +178,14 @@ describe("Shader", function() {
         });
 
         it("basic material with map send a_texCoords, but the material with no map not send a_texCoords", function(){
+            sceneTool.removeGameObject(obj);
+
+            var data = sceneTool.prepareGameObjectAndAddToScene();
+            obj = data.gameObject;
+            geo = data.geometry;
+            material = data.material;
+
+
             bufferTool.makeCreateDifferentBuffer(gl);
 
             var texture = textureTool.create();
@@ -220,5 +228,22 @@ describe("Shader", function() {
             expect(gl.vertexAttribPointer).not.toCalledWith(pos2,size,"FLOAT",false,0,0);
 
         });
+    });
+
+    it("glsl shouldn't be changed after first init shader", function () {
+        directorTool.init(state);
+        directorTool.loopBody(state);
+
+        var shaderSourceCallCount = gl.shaderSource.callCount;
+
+        var texture = textureTool.create();
+        textureTool.setSource(texture, {});
+
+        lightMaterialTool.setSpecularMap(material, texture);
+
+
+        directorTool.loopBody(state);
+
+        expect(gl.shaderSource.callCount).toEqual(shaderSourceCallCount)
     });
 });

@@ -35,9 +35,6 @@ export var setShaderIndex = (materialIndex: number, shaderIndex: number, Materia
 }
 
 export var useShader = ( index: number, shaderName:string, state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
-    //todo optimize: not init if inited
-    //todo check: shader->glsl shouldn't change after first init
-
     var shaderIndex = initMaterialShader(state, index, shaderName, material_config, shaderLib_generator, initShaderDataMap);
 
     setShaderIndex(index, shaderIndex, initShaderDataMap.MaterialDataFromSystem);
