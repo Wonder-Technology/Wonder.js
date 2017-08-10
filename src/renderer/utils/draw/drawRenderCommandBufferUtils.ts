@@ -77,19 +77,9 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
         } = drawFuncDataMap,
         {
             mMatrices,
-            // vMatrices,
-            // pMatrices,
-            // cameraPositions,
-            // normalMatrices,
             materialIndices,
-            shaderIndices,
             geometryIndices
         } = DrawRenderCommandBufferDataFromSystem,
-        // mat3Length = getMatrix3DataSize(),
-        // mat4Length = getMatrix4DataSize(),
-        // cameraPositionLength = getVector3DataSize(),
-        // count = bufferData.count,
-        // buffer: any = bufferData.buffer,
         mMatrixFloatArrayForSend = DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend,
         program: WebGLProgram = null;
 
@@ -114,8 +104,6 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
 
 
         sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
-
-        // let textureStartUnitIndex = getNewTextureUnitIndex();
 
         bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
 

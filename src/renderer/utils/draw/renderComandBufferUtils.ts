@@ -13,9 +13,6 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
     RenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, offset, count);
     offset += count * Uint32Array.BYTES_PER_ELEMENT;
 
-    RenderCommandBufferDataFromSystem.shaderIndices = new Uint32Array(buffer, offset, count);
-    offset += count * Uint32Array.BYTES_PER_ELEMENT;
-
     RenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, offset, count);
     offset += count * Uint32Array.BYTES_PER_ELEMENT;
 

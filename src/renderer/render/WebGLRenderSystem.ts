@@ -132,7 +132,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 
-    let _init = (state: Map<any, any>, pointLightData:any, PointLightData:any) => {
+    let _init = (state: Map<any, any>, lightData:any, PointLightData:any) => {
             _checkLightCount(PointLightData);
 
             let renderWorker = getRenderWorker(WorkerInstanceData);
@@ -159,21 +159,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     texCoordsInfoList: GeometryData.texCoordsInfoList,
                     indicesInfoList: GeometryData.indicesInfoList
                 },
-                lightData: {
-                    ambientLightData: {
-                        buffer: AmbientLightData.buffer,
-                        bufferCount: getAmbientLightBufferCount(),
-                        lightCount: AmbientLightData.count
-
-                    },
-                    directionLightData: {
-                        buffer: DirectionLightData.buffer,
-                        bufferCount: getDirectionLightBufferCount(),
-                        lightCount: DirectionLightData.count,
-                        directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-                    },
-                    pointLightData: pointLightData
-                },
+                lightData: lightData,
                 textureData: {
                     mapManagerBuffer: MapManagerData.buffer,
                     textureBuffer: TextureData.buffer,

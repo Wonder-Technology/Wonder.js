@@ -41,7 +41,6 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
         cameraPositions = RenderCommandBufferData.cameraPositions,
         normalMatrices = RenderCommandBufferData.normalMatrices,
         materialIndices = RenderCommandBufferData.materialIndices,
-        shaderIndices = RenderCommandBufferData.shaderIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
         currentCamera = getCurrentCamera(SceneData),
         currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
@@ -61,13 +60,10 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
             material = getMaterial(gameObject, GameObjectData),
             transform = getTransform(gameObject, GameObjectData),
             materialIndex = material.index;
-            //todo not get and set shaderIndex?
-            // shaderIndex = getShaderIndex(materialIndex, MaterialData);
 
         setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
 
         materialIndices[i] = materialIndex;
-        // shaderIndices[i] = shaderIndex;
         geometryIndices[i] = geometry.index;
     }
 
@@ -81,7 +77,7 @@ export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
     var mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
-        size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 3,
+        size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 2,
         buffer: any = null,
         count = DataBufferConfig.renderCommandBufferCount;
 
