@@ -17,6 +17,7 @@ describe("LightMaterial", function () {
     var EShading = wd.EShading;
     var ELightModel = wd.ELightModel;
     var PointLight = wd.PointLight;
+    var ShaderData = wd.ShaderData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -194,6 +195,27 @@ describe("LightMaterial", function () {
                         })
                     }
 
+                    function judgeMap(setMapMethodName, hasMapMethodName) {
+                        var texture = textureTool.create();
+                        textureTool.setSource(texture, {});
+
+                        lightMaterialTool[setMapMethodName](material, texture);
+
+                        var texture2 = textureTool.create();
+                        textureTool.setSource(texture2, {});
+
+                        lightMaterialTool[setMapMethodName](mat2, texture2);
+
+                        var matIndex1 = material.index;
+                        var matIndex2 = mat2.index;
+
+                        gameObjectTool.disposeComponent(obj, material);
+
+
+                        expect(LightMaterialData[hasMapMethodName][lightMaterialTool.computeLightBufferIndex(matIndex1)]).toEqual(1);
+                        expect(LightMaterialData[hasMapMethodName][lightMaterialTool.computeLightBufferIndex(matIndex2)]).toEqual(0);
+                    }
+
                     it("remove from specularColors", function () {
                         judgeColor("getSpecularColor", "setSpecularColor", colorTool.createDefaultColor(MaterialData));
                     });
@@ -209,37 +231,43 @@ describe("LightMaterial", function () {
                     it("remove from lightModels", function () {
                         judgeSingleValue("getLightModel", "setLightModel", LightMaterialData.defaultLightModel);
                     });
-                });
-
-                describe("remove by swap the target one and the last one", function () {
-                    function judge(methodName, mapDataName) {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
-
-                        lightMaterialTool[methodName](material, texture);
-
-                        var texture2 = textureTool.create();
-                        textureTool.setSource(texture2, {});
-
-                        lightMaterialTool[methodName](mat2, texture2);
-
-                        var matIndex1 = material.index;
-                        var matIndex2 = mat2.index;
-
-                        gameObjectTool.disposeComponent(obj, material);
-
-
-                        expect(LightMaterialData[mapDataName][matIndex1]).toEqual(texture2.index);
-                        expect(LightMaterialData[mapDataName][matIndex2]).toBeUndefined();
-                    }
-
-                    it("remove diffuseMapMap", function () {
-                        judge("setDiffuseMap", "diffuseMapMap");
+                    it("remove from diffuseMaps", function () {
+                        judgeMap("setDiffuseMap", "hasDiffuseMaps");
                     });
-                    it("remove diffuseMapMap", function () {
-                        judge("setSpecularMap", "specularMapMap");
+                    it("remove from specularMaps", function () {
+                        judgeMap("setSpecularMap", "hasSpecularMaps");
                     });
                 });
+
+                // describe("remove by swap the target one and the last one", function () {
+                //     function judge(methodName, mapDataName) {
+                //         var texture = textureTool.create();
+                //         textureTool.setSource(texture, {});
+                //
+                //         lightMaterialTool[methodName](material, texture);
+                //
+                //         var texture2 = textureTool.create();
+                //         textureTool.setSource(texture2, {});
+                //
+                //         lightMaterialTool[methodName](mat2, texture2);
+                //
+                //         var matIndex1 = material.index;
+                //         var matIndex2 = mat2.index;
+                //
+                //         gameObjectTool.disposeComponent(obj, material);
+                //
+                //
+                //         expect(LightMaterialData[mapDataName][matIndex1]).toEqual(texture2.index);
+                //         expect(LightMaterialData[mapDataName][matIndex2]).toBeUndefined();
+                //     }
+                //
+                //     it("remove diffuseMapMap", function () {
+                //         judge("setDiffuseMap", "diffuseMapMap");
+                //     });
+                //     it("remove diffuseMapMap", function () {
+                //         judge("setSpecularMap", "specularMapMap");
+                //     });
+                // });
             });
         });
     });
@@ -283,12 +311,12 @@ describe("LightMaterial", function () {
         });
 
         it("if one material set diffuse map, one not, then the two should has different shaders", function(){
-            function getFirstMaterialFsSource(gl) {
-                return gl.shaderSource.secondCall.args[1];
+            function getFirstMaterialGBufferFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
             }
 
-            function getSecondMaterialFsSource(gl) {
-                return gl.shaderSource.getCall(3).args[1];
+            function getSecondMaterialGBufferFsSource(gl) {
+                return gl.shaderSource.getCall(5).args[1];
             }
 
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
@@ -312,17 +340,12 @@ describe("LightMaterial", function () {
 
 
 
-            var pos = 1;
-
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_specular").returns(pos);
-
-
             directorTool.init(state);
             directorTool.loopBody(state);
 
 
-            expect(glslTool.contain(getFirstMaterialFsSource(gl), "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
-            expect(glslTool.contain(getSecondMaterialFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
+            expect(glslTool.contain(getFirstMaterialGBufferFsSource(gl), "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
+            expect(glslTool.contain(getSecondMaterialGBufferFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
         });
     });
 });

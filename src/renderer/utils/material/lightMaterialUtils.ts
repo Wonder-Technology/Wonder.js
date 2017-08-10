@@ -32,11 +32,11 @@ export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => 
 }
 
 export var hasDiffuseMap = (index:number, LightMaterialDataFromSystem: any) => {
-    return _hasMap(index, LightMaterialDataFromSystem.hasDiffuseMaps, LightMaterialDataFromSystem);
+    return _hasMap(index, LightMaterialDataFromSystem.hasDiffuseMaps);
 }
 
 export var hasSpecularMap = (index:number, LightMaterialDataFromSystem: any) => {
-    return _hasMap(index, LightMaterialDataFromSystem.hasSpecularMaps, LightMaterialDataFromSystem);
+    return _hasMap(index, LightMaterialDataFromSystem.hasSpecularMaps);
 }
 
 export var markHasMap = (index:number, hasMapTypArray:Uint8Array) => {
@@ -49,12 +49,11 @@ export var markNotHasMap = (index:number, hasMapTypArray:Uint8Array) => {
 
 export var getNotHasMapValue = () => 0;
 
-var _hasMap = (index:number, hasMapTypArray:Uint8Array, LightMaterialDataFromSystem:any) => {
+var _hasMap = (index:number, hasMapTypArray:Uint8Array) => {
     return getSingleSizeData(index, hasMapTypArray) !== getNotHasMapValue();
 }
 
 export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
-
 
 export var createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialDataFromSystem: any) => {
     LightMaterialDataFromSystem.specularColors = new Float32Array(buffer, offset, count * getColorDataSize());
