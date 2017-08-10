@@ -89,7 +89,51 @@ export var render = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     if(isWebgl1()){
         init = (state: Map<any, any>) => {
-            _checkLightCount(WebGL1PointLightData);
+            return _init(state, {
+                    ambientLightData: {
+                        buffer: AmbientLightData.buffer,
+                        bufferCount: getAmbientLightBufferCount(),
+                        lightCount: AmbientLightData.count
+
+                    },
+                    directionLightData: {
+                        buffer: DirectionLightData.buffer,
+                        bufferCount: getDirectionLightBufferCount(),
+                        lightCount: DirectionLightData.count,
+                        directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                    },
+                    pointLightData: {
+                        buffer: WebGL1PointLightData.buffer,
+                        bufferCount: getPointLightBufferCount(),
+                        lightCount: WebGL1PointLightData.count,
+                        pointLightGLSLDataStructureMemberNameArr: WebGL1PointLightData.lightGLSLDataStructureMemberNameArr
+                    }
+                },  WebGL1PointLightData);
+        }
+
+        render = (state: Map<any, any>) => {
+            _render(state, WebGL1PointLightData);
+        }
+
+    }
+    else{
+        init = (state: Map<any, any>) => {
+            return _init(state, {
+                    pointLightData: {
+                        buffer: WebGL2PointLightData.buffer,
+                        bufferCount: getPointLightBufferCount(),
+                        lightCount: WebGL2PointLightData.count
+                    }
+                },  WebGL2PointLightData);
+        }
+
+        render = (state: Map<any, any>) => {
+            _render(state, WebGL2PointLightData);
+        }
+    }
+
+    let _init = (state: Map<any, any>, pointLightData:any, PointLightData:any) => {
+            _checkLightCount(PointLightData);
 
             let renderWorker = getRenderWorker(WorkerInstanceData);
 
@@ -128,12 +172,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                         lightCount: DirectionLightData.count,
                         directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
                     },
-                    pointLightData: {
-                        buffer: WebGL1PointLightData.buffer,
-                        bufferCount: getPointLightBufferCount(),
-                        lightCount: WebGL1PointLightData.count,
-                        pointLightGLSLDataStructureMemberNameArr: WebGL1PointLightData.lightGLSLDataStructureMemberNameArr
-                    }
+                    pointLightData: pointLightData
                 },
                 textureData: {
                     mapManagerBuffer: MapManagerData.buffer,
@@ -153,101 +192,16 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             };
 
             return state;
-        }
+        };
 
-        render = (state: Map<any, any>) => {
+    let _render = (state: Map<any, any>, PointLightData:any) => {
             return compose(
-                sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, WebGL1PointLightData),
+                sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
                 getRenderList(state)
             )(MeshRendererData)
         }
-
-    }
-    else{
-        //todo refactor(extract repeat code with webgl1)
-
-        init = (state: Map<any, any>) => {
-            _checkLightCount(WebGL2PointLightData);
-
-            let renderWorker = getRenderWorker(WorkerInstanceData);
-
-            renderWorker.postMessage({
-                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-                materialData: {
-                    buffer: MaterialData.buffer,
-                    basicMaterialData: {
-                        startIndex: getBasicMaterialBufferStartIndex(),
-                        index: BasicMaterialData.index
-                    },
-                    lightMaterialData: {
-                        startIndex: getLightMaterialBufferStartIndex(),
-                        index: LightMaterialData.index
-                    }
-                },
-                geometryData: {
-                    buffer: GeometryData.buffer,
-                    indexType: GeometryData.indexType,
-                    indexTypeSize: GeometryData.indexTypeSize,
-                    verticesInfoList: GeometryData.verticesInfoList,
-                    normalsInfoList: GeometryData.normalsInfoList,
-                    texCoordsInfoList: GeometryData.texCoordsInfoList,
-                    indicesInfoList: GeometryData.indicesInfoList
-                },
-                lightData: {
-                    // ambientLightData: {
-                    //     buffer: AmbientLightData.buffer,
-                    //     bufferCount: getAmbientLightBufferCount(),
-                    //     lightCount: AmbientLightData.count
-                    //
-                    // },
-                    // directionLightData: {
-                    //     buffer: DirectionLightData.buffer,
-                    //     bufferCount: getDirectionLightBufferCount(),
-                    //     lightCount: DirectionLightData.count,
-                    //     directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-                    // },
-                    pointLightData: {
-                        buffer: WebGL2PointLightData.buffer,
-                        bufferCount: getPointLightBufferCount(),
-                        lightCount: WebGL2PointLightData.count
-                        // pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
-                    }
-                },
-                textureData: {
-                    mapManagerBuffer: MapManagerData.buffer,
-                    textureBuffer: TextureData.buffer,
-                    index: TextureData.index,
-                    imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
-                    uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
-                },
-                renderData: {
-                    deferShading:{
-                        isInit: true
-                    }
-                }
-            });
-
-            renderWorker.onmessage = (e) => {
-                var data = e.data,
-                    state = data.state;
-
-                SendDrawRenderCommandBufferData.state = state;
-            };
-
-            return state;
-        }
-
-        render = (state: Map<any, any>) => {
-            return compose(
-                sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, WebGL2PointLightData),
-                // sortRenderCommands(state),
-                createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData),
-                getRenderList(state)
-            )(MeshRendererData)
-        }
-    }
 }
 else {
     if(isWebgl1()){
@@ -257,8 +211,6 @@ else {
             initState(state, getGL, setSide, DeviceManagerData);
 
             initWebGL1Material(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData);
-
-            //initFront(gl, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
 
             _checkLightCount(WebGL1PointLightData);
         }
