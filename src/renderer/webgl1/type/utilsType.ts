@@ -1,21 +1,5 @@
 import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
 
-export type WebGL1DrawFuncDataMap = {
-    bindIndexBuffer: Function;
-    sendAttributeData: Function;
-    sendUniformData: Function;
-    directlySendUniformData: Function;
-    use: Function;
-    hasIndices: Function;
-    getIndicesCount: Function;
-    getIndexType: Function;
-    getIndexTypeSize: Function;
-    getVerticesCount: Function;
-    bindAndUpdate: Function;
-    getMapCount: Function;
-    useShader: Function;
-}
-
 export type WebGL1SendUniformDataDataMap = {
     glslSenderData: SendUniformDataGLSLSenderDataMap;
     ambientLightData: WebGL1SendUniformDataAmbientLightDataMap;

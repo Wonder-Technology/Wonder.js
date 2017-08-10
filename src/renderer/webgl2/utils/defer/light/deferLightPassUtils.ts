@@ -27,12 +27,14 @@ export var drawFullScreenQuad = (gl:any, DeferLightPassDataFromSystem:any) => {
     // gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
+//todo dispose buffers
+
 var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
     //todo refactor: extract to VAOSystem
     var fullScreenQuadVertexArray = gl.createVertexArray();
     gl.bindVertexArray(fullScreenQuadVertexArray);
 
-    //todo create point light sphere for optimze(then no need to use scissor optimize)?
+    //todo create point light sphere for optimize(then no need to use scissor optimize)?
     // var sphere = createSphere({
     //     radius: 100
     // });
@@ -81,7 +83,6 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
 
 var _createFullScreenQuadData = () => {
     var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]),
-        // var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, 1, 0, 1, -1, 0]),
         indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
 
     var texCoords = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);

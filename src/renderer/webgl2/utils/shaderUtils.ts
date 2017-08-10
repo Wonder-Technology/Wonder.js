@@ -20,7 +20,6 @@ export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, pr
     sendUniformDataProgramUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 }
 
-//todo test
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);
 }

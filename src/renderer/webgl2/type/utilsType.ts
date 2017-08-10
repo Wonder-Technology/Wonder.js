@@ -1,23 +1,23 @@
 import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
 
-export type WebGL2DrawFuncDataMap = {
-    bindIndexBuffer: Function;
-    sendAttributeData: Function;
-    sendUniformData: Function;
-    directlySendUniformData: Function;
-    use: Function;
-    hasIndices: Function;
-    getIndicesCount: Function;
-    getIndexType: Function;
-    getIndexTypeSize: Function;
-    getVerticesCount: Function;
-    bindAndUpdate: Function;
-    getMapCount: Function;
-    useShader: Function;
-    bindGBuffer: Function;
-    unbindGBuffer: Function;
-    getNewTextureUnitIndex: Function;
-}
+// export type WebGL2DrawFuncDataMap = {
+//     bindIndexBuffer: Function;
+//     sendAttributeData: Function;
+//     sendUniformData: Function;
+//     directlySendUniformData: Function;
+//     use: Function;
+//     hasIndices: Function;
+//     getIndicesCount: Function;
+//     getIndexType: Function;
+//     getIndexTypeSize: Function;
+//     getVerticesCount: Function;
+//     bindAndUpdate: Function;
+//     getMapCount: Function;
+//     useShader: Function;
+//     bindGBuffer: Function;
+//     unbindGBuffer: Function;
+//     getNewTextureUnitIndex: Function;
+// }
 
 export type WebGL2SendUniformDataDataMap = {
     glslSenderData: SendUniformDataGLSLSenderDataMap;

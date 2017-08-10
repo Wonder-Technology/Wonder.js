@@ -8,8 +8,9 @@ import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../type/utilsType";
 import { RenderCommandBufferForDrawData } from "../../../type/dataType";
 import { IRenderConfig } from "../../../worker/both_file/data/render_config";
-import { WebGL2DrawFuncDataMap, WebGL2SendUniformDataDataMap } from "../../type/utilsType";
+import { WebGL2SendUniformDataDataMap } from "../../type/utilsType";
 import { getNoMaterialShaderIndex } from "../shaderUtils";
+import { IWebGL2DrawFuncDataMap } from "../../interface/IDraw";
 
 export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
     _resetLightDataBufferCount(DataBufferConfig);
@@ -34,6 +35,6 @@ var _resetLightDataBufferCount = (DataBufferConfig:any) => {
     DataBufferConfig.pointLightDataBufferCount = 1000;
 }
 
-export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:WebGL2DrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2SendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
+export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2SendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: RenderCommandBufferForDrawData) => {
     deferDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, sendDataMap, initShaderDataMap, bufferData);
 }

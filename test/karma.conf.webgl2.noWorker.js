@@ -35,7 +35,7 @@
         // 'test/unit/no_worker/**',
         'test/unit/no_worker/**/deferShading*',
         // 'test/unit/no_worker/**/glsl*',
-        'test/unit/no_worker/**/shaderSpec*',
+        // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',

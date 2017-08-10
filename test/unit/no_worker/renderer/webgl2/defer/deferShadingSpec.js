@@ -137,6 +137,11 @@ describe("defer shading", function () {
                 beforeEach(function(){
                 });
 
+                it("create texture before unbind gBuffer", function () {
+                    directorTool.init(state);
+
+                    expect(gl.createTexture.getCall(0)).toCalledBefore(gl.bindFramebuffer.withArgs(gl.FRAMEBUFFER, null).getCall(0));
+                });
                 describe("init position target", function () {
                     judge(0, "RGBA16F", "COLOR_ATTACHMENT0");
                 });
