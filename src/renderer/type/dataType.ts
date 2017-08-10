@@ -91,8 +91,8 @@ export type ShaderLibWholeNameMap = {
     [shaderLibWholeName: string]: number
 }
 
-export type ShaderIndexMap = {
-    [shaderName:string]: number
+export type ShaderIndexByMaterialIndexAndShaderNameMap = {
+    [shaderKey:string]: number
 }
 
 export type DirectionLightGLSLDataStructure = {

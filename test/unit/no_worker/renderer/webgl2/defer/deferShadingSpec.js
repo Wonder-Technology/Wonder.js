@@ -14,7 +14,7 @@ describe("defer shading", function () {
     }
 
     function getDeferLightPassProgram() {
-        var shaderIndex = ShaderData.shaderIndexMap["DeferLightPass"];
+        var shaderIndex = ShaderData.shaderIndexByMaterialIndexAndShaderNameMap["DeferLightPass"];
 
         return ProgramData.programMap[shaderIndex];
     }
@@ -62,7 +62,7 @@ describe("defer shading", function () {
             it("set shader index to map", function () {
                 directorTool.init(state);
 
-                expect(ShaderData.shaderIndexMap["DeferLightPass"]).toBeNumber();
+                expect(ShaderData.shaderIndexByMaterialIndexAndShaderNameMap["DeferLightPass"]).toBeNumber();
             });
             
             // describe("test glsl", function() {
@@ -454,7 +454,7 @@ describe("defer shading", function () {
                 //             // directorTool.init(state);
                 //             // directorTool.loopBody(state);
                 //             //
-                //             // expect(ShaderData.shaderIndexMap["GBuffer"]).toBeNumber();
+                //             // expect(ShaderData.shaderIndexByMaterialIndexAndShaderNameMap["GBuffer"]).toBeNumber();
                 //         });
                 //     });
                 //     it("set generated shader index", function () {

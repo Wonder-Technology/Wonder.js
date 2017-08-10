@@ -11,22 +11,18 @@ import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../
 import { sendUniformData as sendUniformDataProgramUtils } from "./shader/program/programUtils";
 import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
 import { WebGL1SendUniformDataDataMap } from "../type/utilsType";
+import { initShader as initShaderUtils } from "../../utils/shader/shaderUtils";
 
 export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:WebGL1SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
     sendUniformDataProgramUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 }
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
-    var {
-            ShaderDataFromSystem,
-        } = initShaderDataMap,
-        shaderIndex = _init(state, null, materialShaderLibConfig, material_config, shaderLib_generator, initShaderFuncDataMap, initShaderDataMap);
-
-    _setShaderIndexMap(shaderName, shaderIndex, ShaderDataFromSystem);
+    initShaderUtils(state, null, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
 export var initMaterialShader = (state: Map<any, any>, materialIndex:number, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
-    return _init(state, materialIndex, getMaterialShaderLibConfig(shaderName, material_config), material_config, shaderLib_generator, initShaderFuncDataMap, initShaderDataMap);
+    return initShaderUtils(state, materialIndex, shaderName, getMaterialShaderLibConfig(shaderName, material_config), material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
 var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
@@ -67,10 +63,6 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     addSendUniformConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem);
 
     return shaderIndex;
-}
-
-var _setShaderIndexMap = (shaderName:string, shaderIndex:number, ShaderData:any) => {
-    ShaderData.shaderIndexMap[shaderName] = shaderIndex;
 }
 
 var _genereateShaderIndex = (materialShaderLibNameArr: Array<string>, ShaderDataFromSystem: any) => {
