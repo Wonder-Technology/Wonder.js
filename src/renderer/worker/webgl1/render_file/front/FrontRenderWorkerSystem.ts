@@ -3,7 +3,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../both_file/data/render_config";
-import { draw as frontDraw } from "../../../../webgl1/utils/front/frontRenderUtils";
+import { draw as frontDraw } from "../../../../webgl1/utils/render/light/front/frontRenderUtils";
 import { RenderCommandBufferForDrawData } from "../../../../type/dataType";
 import {
     bindIndexBuffer, getDirectionLightPosition, getPointLightPosition, sendAttributeData,

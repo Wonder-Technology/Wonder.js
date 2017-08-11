@@ -24,7 +24,7 @@ import {
     addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
     init as initGeometry
 } from "../component/geometry/GeometrySystem";
-import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
+import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import {
     addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,

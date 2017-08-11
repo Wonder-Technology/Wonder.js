@@ -1,42 +1,20 @@
 import { Map } from "immutable";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { IRenderConfig } from "../../worker/both_file/data/render_config";
-import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import { setClearColor } from "../device/deviceManagerUtils";
 import { IMaterialConfig } from "../../data/material_config";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator";
-import { WebGL1SendUniformDataDataMap } from "../../webgl1/type/utilsType";
 import { WebGL2SendUniformDataDataMap } from "../../webgl2/type/utilsType";
 import { sendData } from "../texture/mapManagerUtils";
 import { IDrawFuncDataMap } from "../../interface/IDraw";
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
-import { createTypeArrays } from "./renderComandBufferUtils";
+import { WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap } from "../../webgl1/type/utilsType";
+import { initData as initBasicDrawRenderCommandBufferData } from "./basic/basicDrawRenderCommandBufferUtils";
+import { initData as initLightDrawRenderCommandBufferData } from "./light/lightDrawRenderCommandBufferUtils";
 
 export var clearColor = (gl: WebGLRenderingContext, render_config: IRenderConfig, DeviceManagerDataFromSystem: any) => {
     setClearColor(gl, render_config.clearColor, DeviceManagerDataFromSystem);
-}
-
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DrawRenderCommandBufferDataFromSystem: any) => {
-    return {
-        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
-        TextureDataFromSystem: TextureDataFromSystem,
-        TextureCacheDataFromSystem: TextureCacheDataFromSystem,
-        MapManagerDataFromSystem: MapManagerDataFromSystem,
-        MaterialDataFromSystem: MaterialDataFromSystem,
-        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
-        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
-        AmbientLightDataFromSystem: AmbientLightDataFromSystem,
-        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
-        PointLightDataFromSystem: PointLightDataFromSystem,
-        ProgramDataFromSystem: ProgramDataFromSystem,
-        LocationDataFromSystem: LocationDataFromSystem,
-        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
-        GeometryDataFromSystem: GeometryDataFromSystem,
-        ArrayBufferDataFromSystem: ArrayBufferDataFromSystem,
-        IndexBufferDataFromSystem: IndexBufferDataFromSystem,
-        DrawRenderCommandBufferDataFromSystem: DrawRenderCommandBufferDataFromSystem
-    }
 }
 
 export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, matStartIndex: number, matEndIndex: number, targetMatrices: Float32Array) => {
@@ -47,7 +25,8 @@ export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, mat
     return targetMatrices;
 }
 
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1SendUniformDataDataMap | WebGL2SendUniformDataDataMap, count: number, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend) => {
+//todo refactor sendDataMap on type?
+export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap | WebGL2SendUniformDataDataMap, count: number, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, DrawRenderCommandBufferDataFromSystem:any) => {
     var {
             TextureDataFromSystem,
             TextureCacheDataFromSystem,
@@ -57,8 +36,8 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
             GLSLSenderDataFromSystem,
             GeometryDataFromSystem,
             ArrayBufferDataFromSystem,
-            IndexBufferDataFromSystem,
-            DrawRenderCommandBufferDataFromSystem
+            IndexBufferDataFromSystem
+            // DrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
         {
             bindIndexBuffer,
@@ -102,7 +81,7 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
         let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
             uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
-
+        //todo refactor: not pass cameraPositionForSend, normalMatrixFloatArrayForSend? pass RenderCommandUniformData instead
         sendUniformData(gl, shaderIndex, program, drawDataMap, _buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, materialIndex), sendDataMap, uniformLocationMap, uniformCacheMap);
 
         bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
@@ -147,7 +126,7 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
     gl.drawArrays(gl[drawMode], startOffset, count);
 }
 
-export var createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawRenderCommandBufferDataFromSystem: any) => {
+export var createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, createTypeArrays:Function, DrawRenderCommandBufferDataFromSystem: any) => {
     if (BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem)) {
         createTypeArrays(buffer, DataBufferConfig, DrawRenderCommandBufferDataFromSystem);
     }
@@ -155,14 +134,7 @@ export var createTypeArraysOnlyOnce = (buffer: any, DataBufferConfig: any, DrawR
     return DrawRenderCommandBufferDataFromSystem;
 }
 
-export var initData = (DrawRenderCommandBufferDataFromSystem: any) => {
-    var mat3Length = getMatrix3DataSize(),
-        mat4Length = getMatrix4DataSize(),
-        cameraPositionLength = getVector3DataSize();
-
-    DrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
-    DrawRenderCommandBufferDataFromSystem.vMatrixFloatArrayForSend = new Float32Array(mat4Length);
-    DrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
-    DrawRenderCommandBufferDataFromSystem.cameraPositionForSend = new Float32Array(cameraPositionLength);
-    DrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend = new Float32Array(mat3Length);
+export var initData = (BasicRenderDataFromSystem: any, LightRenderDataFromSystem: any) => {
+    initBasicDrawRenderCommandBufferData(BasicRenderDataFromSystem);
+    initLightDrawRenderCommandBufferData(LightRenderDataFromSystem);
 }

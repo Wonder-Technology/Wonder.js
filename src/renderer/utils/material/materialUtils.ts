@@ -1,7 +1,7 @@
 import { ensureFunc, it } from "../../../definition/typescript/decorator/contract";
 // import { MaterialClassNameTable, ShaderIndexTable } from "../../../definition/type/materialType";
 import { expect } from "wonder-expect.js";
-import { getSingleSizeData } from "../common/operateBufferDataUtils";
+import { getColorArr3 as getColorArr3Utils, getSingleSizeData } from "../common/operateBufferDataUtils";
 import { setTypeArrayValue } from "../../../utils/typeArrayUtils";
 import { InitShaderDataMap } from "../../type/utilsType";
 import { IMaterialConfig } from "../../data/material_config";
@@ -41,6 +41,8 @@ export var useShader = ( index: number, shaderName:string, state: Map<any, any>,
 
     return shaderIndex;
 }
+
+export var getColorArr3 = getColorArr3Utils;
 
 export var getOpacity = (materialIndex: number, MaterialDataFromSystem: any) => {
     return getSingleSizeData(materialIndex, MaterialDataFromSystem.opacities);

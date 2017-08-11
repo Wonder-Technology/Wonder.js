@@ -1,5 +1,5 @@
 import {
-    // basic_materialColor_fragment, end_basic_fragment,
+    basic_materialColor_fragment, end_basic_fragment,
     common_define, common_fragment, common_function, common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
     frontLight_common, frontLightEnd_fragment,
@@ -9,8 +9,8 @@ import {
     webgl1_noSpecularMap_fragment,
     webgl1_noNormalMap_light_fragment,
     frontLight_fragment,
-    // map_forBasic_vertex,
-    // map_forBasic_fragment,
+    map_forBasic_vertex,
+    map_forBasic_fragment,
     webgl1_diffuseMap_vertex, webgl1_diffuseMap_fragment,
     webgl1_specularMap_vertex, webgl1_specularMap_fragment,
 } from "../../../../shader/chunk/ShaderChunk";
@@ -95,196 +95,196 @@ export const webgl1_shaderLib_generator = {
             }
         },
 //
-//
-//
-//
-//         //todo separate
-//
-//         // "CommonShaderLib": {
-//         //     "glsl": {
-//         //         "vs": {
-//         //             "source": common_vertex,
-//         //             "define": common_define.define + common_vertex.define,
-//         //             // "funcDefine": common_function.funcDefine + common_vertex.funcDefine
-//         //             "funcDefine": common_vertex.funcDefine,
-//         //             "varDeclare": common_ubo.varDeclare
-//         //         },
-//         //         "fs": {
-//         //             "source": common_fragment,
-//         //             "define": common_define.define + common_fragment.define,
-//         //             // "funcDefine": common_function.funcDefine + common_fragment.funcDefine
-//         //             "funcDefine": common_fragment.funcDefine
-//         //         }
-//         //     },
-//         //     "send": {
-//         //         //todo build
-//         //         "uniformUBO": [
-//         //             {
-//         //                 "name": "CameraData",
-//         //                 // "createTypeArrayFunc": () => {
-//         //                 //     return new Float32Array(16 * 3 + 3);
-//         //                 // },
-//         //                 "typeArray": {
-//         //                     "type": "float32",
-//         //                     "length": 16 * 3 + 3
-//         //                 },
-//         //                 "valueFunc": (gl, buffer, {
-//         //                     bindBufferFunc,
-//         //                     setBufferDataFunc
-//         //                 }, {
-//         //                                   typeArray,
-//         //                                   vMatrix,
-//         //                                   pMatrix,
-//         //                                   vpMatrix,
-//         //                                   cameraPosition
-//         //                               }) => {
-//         //                     // gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, buffer);
-//         //                     bindBufferFunc(gl, 0, buffer);
-//         //
-//         //                     set(typeArray, vMatrix);
-//         //                     set(typeArray, pMatrix, 16);
-//         //                     set(typeArray, vpMatrix, 32);
-//         //                     set(typeArray, cameraPosition, 48);
-//         //
-//         //                     setBufferDataFunc(gl, 0, typeArray);
-//         //                     // // gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
-//         //                     // gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
-//         //                 },
-//         //                 "frequence": "frame",
-//         //                 "usage": "dynamic"
-//         //             }
-//         //         ]
-//         //     }
-//         // },
-//         // "ModelMatrixNoInstanceShaderLib": {
-//         //     "glsl": {
-//         //         "vs": {
-//         //             "source": modelMatrix_noInstance_vertex,
-//         //         }
-//         //     }
-//         //     //todo set specific model ubo in specific material(basic, light)
-//         //     // "send": {
-//         //     //     "uniform": [
-//         //     //         {
-//         //     //             "name": "u_mMatrix",
-//         //     //             "field": "mMatrix",
-//         //     //             "type": "mat4"
-//         //     //         }
-//         //     //     ]
-//         //     // }
-//         // },
-//         // "VerticeCommonShaderLib": {
-//         //     "send": {
-//         //         "attribute": [
-//         //             {
-//         //                 "name": "a_position",
-//         //                 "buffer": "vertex",
-//         //                 "type": "vec3",
-//         //                 //todo set location
-//         //                 "location": 0
-//         //             }
-//         //         ]
-//         //     }
-//         // },
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//         "BasicMaterialColorShaderLib": {
-//             "glsl": {
-//                 "fs": {
-//                     "source": basic_materialColor_fragment
-//                 }
-//             },
-//             "send": {
-//                 "uniform": [
-//                     {
-//                         "name": "u_color",
-//                         "from": "basicMaterial",
-//                         "field": "color",
-//                         "type": "float3"
-//                     }
-//                 ]
-//             }
-//         },
-//         "BasicShaderLib": {
-//             "glsl": {
-//                 "vs": {
-//                     "body": setPos_mvp
-//                 }
-//             },
-//             "send": {
-//                 "uniform": [
-//                     {
-//                         "name": "u_opacity",
-//                         "from": "basicMaterial",
-//                         "field": "opacity",
-//                         "type": "float"
-//                     }
-//                 ]
-//             }
-//         },
-//         "BasicEndShaderLib": {
-//             "glsl": {
-//                 "fs": {
-//                     "source": end_basic_fragment
-//                 },
-//                 "func": (materialIndex: number, {
-//                     getAlphaTest,
-//                     isTestAlpha
-//                 }, {
-//                     MaterialDataFromSystem
-//                 }) => {
-//                     var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
-//
-//                     if (isTestAlpha(alphaTest)) {
-//                         return {
-//                             "fs": {
-//                                 "body": `if (gl_FragColor.a < ${alphaTest}){
-//     discard;
-// }\n` + end_basic_fragment.body
-//                             }
-//                         }
-//                     }
-//
-//                     return void 0;
-//                 }
-//             }
-//         },
-//
-//         "BasicMapShaderLib": {
-//             "glsl": {
-//                 "vs": {
-//                     "source": map_forBasic_vertex
-//                 },
-//                 "fs": {
-//                     "source": map_forBasic_fragment
-//                 }
-//             },
-//             "send": {
-//                 "attribute": [
-//                     {
-//                         "name": "a_texCoord",
-//                         "buffer": "texCoord",
-//                         "type": "vec2"
-//                     }
-//                 ],
-//                 "uniformDefine": [
-//                     {
-//                         "name": "u_sampler2D0",
-//                         "type": "sampler2D"
-//                     }
-//                 ]
-//             }
-//         },
-//
-//
+
+
+
+        //todo separate
+
+        // "CommonShaderLib": {
+        //     "glsl": {
+        //         "vs": {
+        //             "source": common_vertex,
+        //             "define": common_define.define + common_vertex.define,
+        //             // "funcDefine": common_function.funcDefine + common_vertex.funcDefine
+        //             "funcDefine": common_vertex.funcDefine,
+        //             "varDeclare": common_ubo.varDeclare
+        //         },
+        //         "fs": {
+        //             "source": common_fragment,
+        //             "define": common_define.define + common_fragment.define,
+        //             // "funcDefine": common_function.funcDefine + common_fragment.funcDefine
+        //             "funcDefine": common_fragment.funcDefine
+        //         }
+        //     },
+        //     "send": {
+        //         //todo build
+        //         "uniformUBO": [
+        //             {
+        //                 "name": "CameraData",
+        //                 // "createTypeArrayFunc": () => {
+        //                 //     return new Float32Array(16 * 3 + 3);
+        //                 // },
+        //                 "typeArray": {
+        //                     "type": "float32",
+        //                     "length": 16 * 3 + 3
+        //                 },
+        //                 "valueFunc": (gl, buffer, {
+        //                     bindBufferFunc,
+        //                     setBufferDataFunc
+        //                 }, {
+        //                                   typeArray,
+        //                                   vMatrix,
+        //                                   pMatrix,
+        //                                   vpMatrix,
+        //                                   cameraPosition
+        //                               }) => {
+        //                     // gl.bindBufferBase(gl.UNIFORM_BUFFER, 0, buffer);
+        //                     bindBufferFunc(gl, 0, buffer);
+        //
+        //                     set(typeArray, vMatrix);
+        //                     set(typeArray, pMatrix, 16);
+        //                     set(typeArray, vpMatrix, 32);
+        //                     set(typeArray, cameraPosition, 48);
+        //
+        //                     setBufferDataFunc(gl, 0, typeArray);
+        //                     // // gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
+        //                     // gl.bufferData(gl.UNIFORM_BUFFER, 128, gl.DYNAMIC_DRAW);
+        //                 },
+        //                 "frequence": "frame",
+        //                 "usage": "dynamic"
+        //             }
+        //         ]
+        //     }
+        // },
+        // "ModelMatrixNoInstanceShaderLib": {
+        //     "glsl": {
+        //         "vs": {
+        //             "source": modelMatrix_noInstance_vertex,
+        //         }
+        //     }
+        //     //todo set specific model ubo in specific material(basic, light)
+        //     // "send": {
+        //     //     "uniform": [
+        //     //         {
+        //     //             "name": "u_mMatrix",
+        //     //             "field": "mMatrix",
+        //     //             "type": "mat4"
+        //     //         }
+        //     //     ]
+        //     // }
+        // },
+        // "VerticeCommonShaderLib": {
+        //     "send": {
+        //         "attribute": [
+        //             {
+        //                 "name": "a_position",
+        //                 "buffer": "vertex",
+        //                 "type": "vec3",
+        //                 //todo set location
+        //                 "location": 0
+        //             }
+        //         ]
+        //     }
+        // },
+
+
+
+
+
+
+
+
+
+
+        "BasicMaterialColorShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": basic_materialColor_fragment
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_color",
+                        "from": "basicMaterial",
+                        "field": "color",
+                        "type": "float3"
+                    }
+                ]
+            }
+        },
+        "BasicShaderLib": {
+            "glsl": {
+                "vs": {
+                    "body": setPos_mvp
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_opacity",
+                        "from": "basicMaterial",
+                        "field": "opacity",
+                        "type": "float"
+                    }
+                ]
+            }
+        },
+        "BasicEndShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": end_basic_fragment
+                },
+                "func": (materialIndex: number, {
+                    getAlphaTest,
+                    isTestAlpha
+                }, {
+                    MaterialDataFromSystem
+                }) => {
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+
+                    if (isTestAlpha(alphaTest)) {
+                        return {
+                            "fs": {
+                                "body": `if (gl_FragColor.a < ${alphaTest}){
+    discard;
+}\n` + end_basic_fragment.body
+                            }
+                        }
+                    }
+
+                    return void 0;
+                }
+            }
+        },
+
+        "BasicMapShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": map_forBasic_vertex
+                },
+                "fs": {
+                    "source": map_forBasic_fragment
+                }
+            },
+            "send": {
+                "attribute": [
+                    {
+                        "name": "a_texCoord",
+                        "buffer": "texCoord",
+                        "type": "vec2"
+                    }
+                ],
+                "uniformDefine": [
+                    {
+                        "name": "u_sampler2D0",
+                        "type": "sampler2D"
+                    }
+                ]
+            }
+        },
+
+
 
         "NormalMatrixNoInstanceShaderLib": {
             "glsl": {

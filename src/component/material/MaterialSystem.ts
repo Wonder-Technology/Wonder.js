@@ -48,7 +48,6 @@ import {
 } from "../../renderer/utils/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
-import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
 import {
     dispose as disposeMapManager,
@@ -62,9 +61,7 @@ import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
 import { IMaterialConfig } from "../../renderer/data/material_config";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
-import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
-// import { WebGL1PointLightData } from "../../renderer/webgl1/light/PointLightData";
-// import { WebGL2PointLightData } from "../../renderer/webgl2/light/PointLightData";
+import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);

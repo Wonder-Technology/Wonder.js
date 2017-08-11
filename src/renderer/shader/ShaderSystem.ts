@@ -7,8 +7,7 @@ import {
 } from "../utils/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
 import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
-import { getUniformData, sendBuffer, sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "./glslSender/GLSLSenderSystem";
-import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../type/dataType";
+import { sendBuffer } from "./glslSender/GLSLSenderSystem";
 // import { buildGLSLSource } from "./shaderSourceBuildSystem";
 // import { getGL } from "../device/DeviceManagerSystem";
 // import { IMaterialConfig, MaterialShaderLibConfig } from "../webgl1/data/material_config";
@@ -63,8 +62,6 @@ export var bindIndexBuffer = null;
 
 export var use = null;
 
-export var buildSendUniformDataDataMap = null;
-
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     // initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, addSendAttributeConfig:Function, addSendUniformConfig:Function, initShaderDataMap: InitShaderDataMap) => {
     //     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, addSendAttributeConfig, addSendUniformConfig, _buildInitShaderFuncDataMap(), initShaderDataMap);
@@ -95,49 +92,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     use = useUtils;
-
-    buildSendUniformDataDataMap = (drawDataMap: DrawDataMap, ThreeDTransformData:any, GameObjectData:any) => {
-        return {
-            glslSenderData: {
-                getUniformData: getUniformData,
-                sendMatrix3: sendMatrix3,
-                sendMatrix4: sendMatrix4,
-                sendVector3: sendVector3,
-                sendInt: sendInt,
-                sendFloat1: sendFloat1,
-                sendFloat3: sendFloat3,
-
-                GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
-            },
-            ambientLightData: {
-                getColorArr3: getAmbientLightColorArr3,
-
-                AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
-            },
-            directionLightData: {
-                getPosition: (index: number) => {
-                    return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
-                },
-                getColorArr3: getDirectionLightColorArr3,
-                getIntensity: getDirectionLightIntensity,
-
-                DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
-            },
-            pointLightData: {
-                getPosition: (index: number) => {
-                    return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
-                },
-                getColorArr3: getPointLightColorArr3,
-                getIntensity: getPointLightIntensity,
-                getConstant: getConstant,
-                getLinear: getLinear,
-                getQuadratic: getQuadratic,
-                getRange: getRange,
-
-                PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
-            }
-        }
-    }
 }
 
 // export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {

@@ -31,11 +31,12 @@ import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSen
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { IRenderConfig } from "../renderer/worker/both_file/data/render_config";
-import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
+// import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/webgl1/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { initData as initWebGL1LightDataSystem } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightDataSystem } from "../component/webgl2/light/LightSystem";
+import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 

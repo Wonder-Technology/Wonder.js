@@ -32,13 +32,11 @@ import { initData as initGameObjectData } from "./entityObject/gameObject/GameOb
 // import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { render_config } from "../renderer/worker/both_file/data/render_config";
-import { RenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferData";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
 import { initData as initGLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { DebugConfig } from "../config/DebugConfig";
 import { EScreenSize } from "../renderer/device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
@@ -50,7 +48,6 @@ import { expect } from "wonder-expect.js";
 import { fromJS, Map } from "immutable";
 import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
 import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../device/WorkerDetectSystem";
-import { DrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferData";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
@@ -79,6 +76,11 @@ import { initData as initWebGL2LightData } from "../component/webgl2/light/Light
 import { GPUDetectData } from "../renderer/device/GPUDetectData";
 import { detect as detectWebGL1 } from "../renderer/webgl1/device/GPUDetectorSystem";
 import { detect as detectWebGL2 } from "../renderer/webgl2/device/GPUDetectorSystem";
+import { BasicRenderCommandBufferData } from "../renderer/command_buffer/BasicRenderCommandBufferData";
+import { LightRenderCommandBufferData } from "../renderer/command_buffer/LightRenderCommandBufferData";
+import { BasicDrawRenderCommandBufferData } from "../renderer/draw/basic/BasicDrawRenderCommandBufferData";
+import { LightDrawRenderCommandBufferData } from "../renderer/draw/light/LightDrawRenderCommandBufferData";
+import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -175,7 +177,7 @@ else {
 
         initIndexBufferData(IndexBufferData);
 
-        initDrawRenderCommandBufferData(DrawRenderCommandBufferData);
+        initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
     }
 
     passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
@@ -212,7 +214,7 @@ if(isWebgl1()){
 
         // initWorkerTimeData(WorkerTimeData);
 
-        initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
         initWebGL1LightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
 
@@ -254,7 +256,7 @@ else{
 
         // initWorkerTimeData(WorkerTimeData);
 
-        initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
+        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
         initWebGL2LightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
 

@@ -48,11 +48,39 @@ export type ArrayBufferDataMap = {
 }
 
 export type RenderCommandBufferForDrawData = {
+    basicData: BasicRenderCommandBufferForDrawData;
+    lightData: LightRenderCommandBufferForDrawData;
+}
+
+export type BasicRenderCommandBufferForDrawData = {
     buffer: SharedArrayBuffer;
     count: number
 }
 
-export type RenderCommandUniformData = {
+export type LightRenderCommandBufferForDrawData = {
+    buffer: SharedArrayBuffer;
+    count: number
+}
+
+// export type RenderCommandUniformData = {
+//     mMatrix: Float32Array;
+//     vMatrix: Float32Array;
+//     pMatrix: Float32Array;
+//     cameraPosition: Float32Array;
+//     normalMatrix: Float32Array;
+//     materialIndex: number;
+// }
+
+export type BasicRenderUniformData = {
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
+    // cameraPosition: Float32Array;
+    // normalMatrix: Float32Array;
+    materialIndex: number;
+}
+
+export type LightRenderUniformData = {
     mMatrix: Float32Array;
     vMatrix: Float32Array;
     pMatrix: Float32Array;

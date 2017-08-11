@@ -1,7 +1,7 @@
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { Map } from "immutable";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
-import { render as renderByWebGLRender } from "../renderer/render/WebGLRenderSystem";
+import { render as renderByWebGLRender } from "../renderer/core/WebGLRenderSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 import { Scheduler } from "./Scheduler";

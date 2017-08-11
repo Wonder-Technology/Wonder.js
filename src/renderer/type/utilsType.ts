@@ -15,7 +15,8 @@ export type DrawDataMap = {
     GeometryDataFromSystem: any;
     ArrayBufferDataFromSystem: any;
     IndexBufferDataFromSystem: any;
-    DrawRenderCommandBufferDataFromSystem: any;
+    BasicDrawRenderCommandBufferDataFromSystem: any;
+    LightDrawRenderCommandBufferDataFromSystem: any;
 }
 
 export type DeferDrawDataMap = {
@@ -24,7 +25,7 @@ export type DeferDrawDataMap = {
 }
 
 export type SendUniformDataGLSLSenderDataMap = {
-    getUniformData: Function;
+    // getUniformData: Function;
     sendMatrix3: Function;
     sendMatrix4: Function;
     sendVector3: Function;

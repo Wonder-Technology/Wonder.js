@@ -1,10 +1,8 @@
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { EVariableType } from "../../../enum/EVariableType";
 import { getOrCreateBuffer as getOrCreateArrayBuffer } from "../../buffer/arrayBufferUtils";
 import { createMap, isValidMapValue } from "../../../../utils/objectUtils";
 import { forEach } from "../../../../utils/arrayUtils";
-import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../../type/dataType";
 import { Log } from "../../../../utils/Log";
 import { GetArrayBufferDataFuncMap } from "../../../../definition/type/geometryType";
 
@@ -224,41 +222,41 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
 //     }
 // }
 
-export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
-    // getUniformData,
-    sendMatrix3,
-    sendMatrix4,
-    sendVector3,
-    sendInt,
-    sendFloat1,
-    sendFloat3,
-    // GLSLSenderDataFromSystem,
-}, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
-    switch (type) {
-        case EVariableType.MAT3:
-            sendMatrix3(gl, program, name, data, uniformLocationMap);
-            break;
-        case EVariableType.MAT4:
-            sendMatrix4(gl, program, name, data, uniformLocationMap);
-            break;
-        case EVariableType.VEC3:
-            sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-            break;
-        case EVariableType.INT:
-        case EVariableType.SAMPLER_2D:
-            sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-            break;
-        case EVariableType.FLOAT:
-            sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-            break;
-        case EVariableType.FLOAT3:
-            sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
-            break;
-        default:
-            Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
-            break;
-    }
-}
+// export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
+//     // getUniformData,
+//     sendMatrix3,
+//     sendMatrix4,
+//     sendVector3,
+//     sendInt,
+//     sendFloat1,
+//     sendFloat3,
+//     // GLSLSenderDataFromSystem,
+// }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+//     switch (type) {
+//         case EVariableType.MAT3:
+//             sendMatrix3(gl, program, name, data, uniformLocationMap);
+//             break;
+//         case EVariableType.MAT4:
+//             sendMatrix4(gl, program, name, data, uniformLocationMap);
+//             break;
+//         case EVariableType.VEC3:
+//             sendVector3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+//             break;
+//         case EVariableType.INT:
+//         case EVariableType.SAMPLER_2D:
+//             sendInt(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+//             break;
+//         case EVariableType.FLOAT:
+//             sendFloat1(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+//             break;
+//         case EVariableType.FLOAT3:
+//             sendFloat3(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap);
+//             break;
+//         default:
+//             Log.error(true, Log.info.FUNC_INVALID("EVariableType:", type));
+//             break;
+//     }
+// }
 
 // var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: SendUniformDataDataMap, drawDataMap: DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
 //     var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];

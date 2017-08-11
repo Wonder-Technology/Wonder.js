@@ -7,6 +7,7 @@ import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
 import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
+//todo fix not import worker/ files
 import { IWebGL2ShaderLibContentGenerator } from "../../worker/webgl2/both_file/data/shaderLib_generator";
 import { IWebGL1ShaderLibContentGenerator } from "../../worker/webgl1/both_file/data/shaderLib_generator";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
