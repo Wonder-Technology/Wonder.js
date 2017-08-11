@@ -4,7 +4,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../both_file/data/render_config";
-import { draw as deferDraw, init as initUtils } from "../../../../webgl2/utils/defer/deferShadingUtils";
+import { draw as deferDraw, init as initUtils } from "../../../../webgl2/utils/render/light/defer/deferShadingUtils";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { directlySendUniformData } from "../../../../utils/shader/program/programUtils";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../../component/light/AmbientLightSystem";
@@ -13,7 +13,7 @@ import { directlySendUniformData } from "../../../../utils/shader/program/progra
 //     getPosition as getDirectionLightPosition,
 // } from "../../../../../component/light/DirectionLightSystem";
 import { buildDrawFuncDataMap } from "../../../../webgl2/utils/draw/drawRenderCommandBufferUtils";
-import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../webgl2/utils/defer/gbuffer/gBufferUtils";
+import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../webgl2/utils/render/light/defer/gbuffer/gBufferUtils";
 import { buildSendUniformDataDataMap, sendUniformData } from "../shader/ShaderWorkerSystem";
 import {
     bindIndexBuffer, getPointLightPosition, sendAttributeData,

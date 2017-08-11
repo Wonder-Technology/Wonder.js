@@ -75,7 +75,7 @@ import { initMaterialShader as initMaterialShaderWebGL1, initNoMaterialShader as
 import { isWebgl1, setVersion } from "./device/WebGLDetectWorkerSystem";
 import { WebGLDetectWorkerData } from "./device/WebGLDetectWorkerData";
 import { buildInitShaderDataMap } from "../../utils/material/materialUtils";
-import { init as initDeferUtils } from "../../webgl2/utils/defer/deferShadingUtils";
+import { init as initDeferUtils } from "../../webgl2/utils/render/light/defer/deferShadingUtils";
 import { GBufferWorkerData } from "../webgl2/render_file/defer/gbuffer/GBufferWorkerData";
 import { DeferLightPassWorkerData } from "../webgl2/render_file/defer/light/DeferLightPassWorkerData";
 import { draw as deferDraw } from "../webgl2/render_file/defer/DeferShadingWorkerSystem";
@@ -85,7 +85,7 @@ import {
     initMaterialShader as initMaterialShaderWebGL2,
     initNoMaterialShader as initNoMaterialShaderWebGL2
 } from "../webgl2/render_file/shader/ShaderWorkerSystem";
-import { buildDrawDataMap as buildDeferDrawDataMap } from "../../webgl2/utils/defer/draw/deferDrawRenderCommandBufferUtils";
+import { buildDrawDataMap as buildDeferDrawDataMap } from "../../webgl2/utils/render/light/defer/draw/deferDrawRenderCommandBufferUtils";
 import { initData as initLightWorkerDataWebGL2 } from "../webgl2/render_file/light/LightWorkerSystem";
 import { initData as initLightWorkerDataWebGL1 } from "../webgl1/render_file/light/LightWorkerSystem";
 import { WebGL2RenderInitWorkerData, WebGL2LightInitWorkerData } from "../../webgl2/type/messageDataType";

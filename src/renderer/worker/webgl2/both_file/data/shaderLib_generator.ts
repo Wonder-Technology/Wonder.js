@@ -1,5 +1,5 @@
 import {
-    // basic_materialColor_fragment, end_basic_fragment,
+    webgl2_basic_materialColor_fragment, webgl2_basic_end_fragment,webgl2_basic_vertex,
     webgl2_common_define, webgl2_common_fragment, webgl2_common_function, webgl2_common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
     // light_common, lightEnd_fragment,
@@ -8,12 +8,10 @@ import {
     webgl2_noDiffuseMap_fragment, webgl2_noEmissionMap_fragment, webgl2_noLightMap_fragment, webgl2_noNormalMap_fragment, webgl2_noNormalMap_vertex,
     webgl2_noSpecularMap_fragment, webgl2_noNormalMap_light_fragment,
     // light_fragment,
-    // map_forBasic_vertex,
-    // map_forBasic_fragment,
+    webgl2_basic_map_vertex,
+    webgl2_basic_map_fragment,
     webgl2_diffuseMap_vertex, webgl2_diffuseMap_fragment,
     webgl2_specularMap_vertex, webgl2_specularMap_fragment,
-
-    version,
 
     // light_model_ubo,
     // webgl2_common_ubo,
@@ -30,6 +28,7 @@ import {
     deferLightPass_end_fragment
 
 } from "../../../../shader/chunk/ShaderChunk";
+import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
 
 export const webgl2_shaderLib_generator = {
     "shaderLibs": {
@@ -180,6 +179,111 @@ export const webgl2_shaderLib_generator = {
         //         ]
         //     }
         // },
+
+
+
+
+
+        "BasicMaterialColorShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": webgl2_basic_materialColor_fragment
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_color",
+                        "from": "basicMaterial",
+                        "field": "color",
+                        "type": "float3"
+                    }
+                ]
+            }
+        },
+        "BasicShaderLib": {
+            "glsl": {
+                "vs": {
+                    //todo remove after remove "a_position" define
+                    "varDeclare": webgl2_basic_vertex.varDeclare,
+
+
+                    "body": setPos_mvp
+                }
+            },
+            "send": {
+                "uniform": [
+                    {
+                        "name": "u_opacity",
+                        "from": "basicMaterial",
+                        "field": "opacity",
+                        "type": "float"
+                    }
+                ]
+            }
+        },
+        "BasicEndShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": webgl2_basic_end_fragment
+                },
+                "func": (materialIndex: number, {
+                    getAlphaTest,
+                    isTestAlpha
+                }, {
+                             MaterialDataFromSystem
+                         }) => {
+                    var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+
+                    if (isTestAlpha(alphaTest)) {
+                        return {
+                            "fs": {
+                                "body": `if (gl_FragColor.a < ${alphaTest}){
+    discard;
+}\n` + webgl2_basic_end_fragment.body
+                            }
+                        }
+                    }
+
+                    return void 0;
+                }
+            }
+        },
+
+        "BasicMapShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": webgl2_basic_map_vertex
+                },
+                "fs": {
+                    "source": webgl2_basic_map_fragment
+                }
+            },
+            "send": {
+                //todo add attribute to glsl
+                "attribute": [
+                    {
+                        "name": "a_texCoord",
+                        "buffer": "texCoord",
+                        "type": "vec2"
+                    }
+                ],
+                "uniformDefine": [
+                    {
+                        "name": "u_sampler2D0",
+                        "type": "sampler2D"
+                    }
+                ]
+            }
+        },
+
+
+
+
+
+
+
+
 
 
 

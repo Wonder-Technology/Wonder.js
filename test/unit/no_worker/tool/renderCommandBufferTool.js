@@ -34,7 +34,7 @@ var renderCommandBufferTool = (function () {
             // _cleanTypeArr(RenderCommandBufferData.shaderIndices);
             // _cleanTypeArr(RenderCommandBufferData.geometryIndices);
 
-            wd.initRenderCommandBufferData(wd.DataBufferConfig, wd.RenderCommandBufferData);
+            wd.initRenderCommandBufferData(wd.DataBufferConfig, wd.BasicRenderCommandBufferData, wd.LightRenderCommandBufferData);
         }
     }
 })()

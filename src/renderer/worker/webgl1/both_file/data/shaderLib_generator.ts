@@ -1,5 +1,5 @@
 import {
-    basic_materialColor_fragment, end_basic_fragment,
+    webgl1_basic_materialColor_fragment, webgl1_basic_end_fragment,
     common_define, common_fragment, common_function, common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
     frontLight_common, frontLightEnd_fragment,
@@ -9,14 +9,13 @@ import {
     webgl1_noSpecularMap_fragment,
     webgl1_noNormalMap_light_fragment,
     frontLight_fragment,
-    map_forBasic_vertex,
-    map_forBasic_fragment,
+    webgl1_basic_map_vertex,
+    webgl1_basic_map_fragment,
     webgl1_diffuseMap_vertex, webgl1_diffuseMap_fragment,
     webgl1_specularMap_vertex, webgl1_specularMap_fragment,
 } from "../../../../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
-import { set } from "../../../../../utils/typeArrayUtils";
 
 var _lightDefineList = [
     {
@@ -199,7 +198,7 @@ export const webgl1_shaderLib_generator = {
         "BasicMaterialColorShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": basic_materialColor_fragment
+                    "source": webgl1_basic_materialColor_fragment
                 }
             },
             "send": {
@@ -233,7 +232,7 @@ export const webgl1_shaderLib_generator = {
         "BasicEndShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": end_basic_fragment
+                    "source": webgl1_basic_end_fragment
                 },
                 "func": (materialIndex: number, {
                     getAlphaTest,
@@ -248,7 +247,7 @@ export const webgl1_shaderLib_generator = {
                             "fs": {
                                 "body": `if (gl_FragColor.a < ${alphaTest}){
     discard;
-}\n` + end_basic_fragment.body
+}\n` + webgl1_basic_end_fragment.body
                             }
                         }
                     }
@@ -261,10 +260,10 @@ export const webgl1_shaderLib_generator = {
         "BasicMapShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": map_forBasic_vertex
+                    "source": webgl1_basic_map_vertex
                 },
                 "fs": {
-                    "source": map_forBasic_fragment
+                    "source": webgl1_basic_map_fragment
                 }
             },
             "send": {

@@ -7,18 +7,11 @@ import { setEmptyLocationMap } from "../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "./shader/shaderSourceBuildUtils";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 import { getMaterialShaderLibConfig } from "../data/MaterialConfigSystem";
-import { WebGL2SendUniformDataDataMap } from "../type/utilsType";
-import { sendUniformData as sendUniformDataProgramUtils } from "./shader/program/programUtils";
-import { RenderCommandUniformData, UniformCacheMap, UniformLocationMap } from "../../type/dataType";
 import {
     buildShaderIndexByMaterialIndexAndShaderNameMapKey, genereateShaderIndex,
     getShaderIndexByMaterialIndexAndShaderName,
     initShader as initShaderUtils
 } from "../../utils/shader/shaderUtils";
-
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: RenderCommandUniformData, sendDataMap:WebGL2SendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-    sendUniformDataProgramUtils(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
-}
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);

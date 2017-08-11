@@ -12,7 +12,14 @@ describe("BasicMaterial", function () {
     var Color = wd.Color;
     var BasicMaterialData = wd.BasicMaterialData;
     var DataBufferConfig = wd.DataBufferConfig;
-    var GPUDetector = wd.GPUDetector;
+
+    function buildGLSL(state) {
+        var gl = directorTool.init(state);
+
+        directorTool.loopBody(state);
+
+        return gl;
+    }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -35,7 +42,7 @@ describe("BasicMaterial", function () {
     });
 
     it("glsl only set glPosition,glFragColor once", function () {
-        gl = directorTool.init(sandbox);
+        gl = buildGLSL(state);
 
         var vs = materialTool.getVsSource(gl);
         var fs = materialTool.getFsSource(gl);
@@ -151,7 +158,7 @@ describe("BasicMaterial", function () {
 
             describe("test glsl", function () {
                 beforeEach(function () {
-                    directorTool.init(state);
+                    buildGLSL(state);
                 });
 
                 it("test vs source", function () {
@@ -166,6 +173,31 @@ describe("BasicMaterial", function () {
                 });
             });
         });
+
+        //todo test ModelMatrixNoInstanceShaderLib
+        // describe("add ModelMatrixNoInstanceShaderLib", function () {
+        //     beforeEach(function () {
+        //     });
+        //
+        //     it("send u_mMatrix", function () {
+        //     });
+        //
+        //     describe("test glsl", function () {
+        //         beforeEach(function () {
+        //             directorTool.init(state);
+        //             directorTool.loopBody(state);
+        //         });
+        //
+        //         it("test vs source", function () {
+        //             var vs = getVsSource(gl);
+        //             expect(glslTool.containMultiLine(vs, [
+        //                 "mat4 getModelMatrix(){",
+        //                 "return u_mMatrix;\n}\n",
+        //                 "mat4 mMatrix = getModelMatrix();"
+        //             ])).toBeTruthy();
+        //         });
+        //     });
+        // });
 
         describe("add VerticeCommonShaderLib", function () {
             beforeEach(function () {
@@ -233,7 +265,7 @@ describe("BasicMaterial", function () {
 
             describe("test glsl", function () {
                 beforeEach(function () {
-                    directorTool.init(state);
+                    buildGLSL(state);
                 });
 
                 it("test fs source", function () {
@@ -264,7 +296,7 @@ describe("BasicMaterial", function () {
 
             describe("test glsl", function () {
                 beforeEach(function () {
-                    directorTool.init(state);
+                    buildGLSL(state);
                 });
 
                 it("test vs source", function () {
@@ -338,7 +370,7 @@ describe("BasicMaterial", function () {
 
                 describe("test glsl", function () {
                     beforeEach(function () {
-                        directorTool.init(state);
+                        buildGLSL(state);
                     });
 
                     it("test vs source", function () {
@@ -371,7 +403,7 @@ describe("BasicMaterial", function () {
                         var alphaTest = 0.2;
                         basicMaterialTool.setAlphaTest(material, alphaTest);
 
-                        directorTool.init(state);
+                        buildGLSL(state);
 
                         var fs = materialTool.getFsSource(gl);
                         expect(glslTool.containMultiLine(fs, [
@@ -389,7 +421,7 @@ describe("BasicMaterial", function () {
 
             describe("test glsl", function () {
                 beforeEach(function () {
-                    directorTool.init(state);
+                    buildGLSL(state);
                 });
 
                 it("test fs source", function () {

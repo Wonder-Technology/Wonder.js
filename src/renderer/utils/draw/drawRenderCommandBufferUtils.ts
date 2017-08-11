@@ -5,13 +5,13 @@ import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import { setClearColor } from "../device/deviceManagerUtils";
 import { IMaterialConfig } from "../../data/material_config";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator";
-import { WebGL2SendUniformDataDataMap } from "../../webgl2/type/utilsType";
 import { sendData } from "../texture/mapManagerUtils";
 import { IDrawFuncDataMap } from "../../interface/IDraw";
 import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap } from "../../webgl1/type/utilsType";
 import { initData as initBasicDrawRenderCommandBufferData } from "./basic/basicDrawRenderCommandBufferUtils";
 import { initData as initLightDrawRenderCommandBufferData } from "./light/lightDrawRenderCommandBufferUtils";
+import { WebGL2BasicSendUniformDataDataMap, WebGL2LightSendUniformDataDataMap } from "../../webgl2/type/utilsType";
 
 export var clearColor = (gl: WebGLRenderingContext, render_config: IRenderConfig, DeviceManagerDataFromSystem: any) => {
     setClearColor(gl, render_config.clearColor, DeviceManagerDataFromSystem);
@@ -26,7 +26,7 @@ export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, mat
 }
 
 //todo refactor sendDataMap on type?
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap | WebGL2SendUniformDataDataMap, count: number, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, DrawRenderCommandBufferDataFromSystem:any) => {
+export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap | WebGL2BasicSendUniformDataDataMap | WebGL2LightSendUniformDataDataMap, count: number, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrixFloatArrayForSend, DrawRenderCommandBufferDataFromSystem:any) => {
     var {
             TextureDataFromSystem,
             TextureCacheDataFromSystem,
