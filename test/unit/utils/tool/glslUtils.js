@@ -63,8 +63,9 @@ var glslUtils = (function () {
                 FRAGMENT_SHADER: "FRAGMENT_SHADER",
                 COMPILE_STATUS: "COMPILE_STATUS",
 
-                COLOR_BUFFER_BIT: "COLOR_BUFFER_BIT",
-                DEPTH_BUFFER_BIT: "DEPTH_BUFFER_BIT",
+                COLOR_BUFFER_BIT: 0,
+                DEPTH_BUFFER_BIT: 1,
+                STENCIL_BUFFER_BIT: 2,
 
                 DEPTH_TEST: "DEPTH_TEST",
                 BLEND: "BLEND",

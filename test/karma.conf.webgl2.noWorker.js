@@ -34,6 +34,7 @@
 
         // 'test/unit/no_worker/**',
         'test/unit/no_worker/**/deferShading*',
+        'test/unit/no_worker/**/basicRender*',
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',

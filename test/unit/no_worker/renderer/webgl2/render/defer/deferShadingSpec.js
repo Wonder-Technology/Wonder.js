@@ -397,6 +397,19 @@ describe("defer shading", function () {
             expect(gl.clearColor).toCalledWith(color.r, color.g, color.b, color.a);
         });
 
+        function unbindGBufferCall(gl) {
+            return gl.bindFramebuffer.withArgs(gl.FRAMEBUFFER, null).getCall(1)
+        }
+        it("clear color buffer before bind gbuffer for draw", function () {
+            directorTool.init(state);
+
+            var callCount = gl.bindFramebuffer.withArgs(gl.FRAMEBUFFER).callCount;
+
+            directorTool.loopBody(state);
+
+            expect(gl.clear.withArgs(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT).getCall(0)).toCalledBefore(gl.bindFramebuffer.withArgs(gl.FRAMEBUFFER).getCall(callCount));
+        });
+
         describe("draw gBuffer pass", function() {
             beforeEach(function(){
 
@@ -407,14 +420,14 @@ describe("defer shading", function () {
                 directorTool.loopBody(state);
 
                 expect(gl.depthMask).toCalledWith(true);
-                expect(gl.depthMask.withArgs(true)).toCalledBefore(gl.clear.getCall(0));
+                expect(gl.depthMask.withArgs(true)).toCalledBefore(gl.clear.getCall(1));
             });
             it("clear color buffer and depth buffer" +
                 "(An important point we must be careful about is to enable writing into the depth buffer before clearing it. gl.clear() does not touch the depth buffer if the depth mask is set to FALSE.)", function () {
                 directorTool.init(state);
                 directorTool.loopBody(state);
 
-                expect(gl.clear.getCall(0)).toCalledWith(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                expect(gl.clear.getCall(1)).toCalledWith(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             });
             it("enable depth test", function () {
                 directorTool.init(state);
@@ -629,18 +642,11 @@ describe("defer shading", function () {
                     directorTool.loopBody(state);
                 });
 
-
                 it("unbind gBuffer after finish gBuffer pass", function () {
                     directorTool.init(state);
                     directorTool.loopBody(state);
 
                     expect(unbindGBufferCall(gl)).toCalledAfter(gl.drawElements.getCall(0));
-                });
-                it("clear color buffer", function () {
-                    directorTool.init(state);
-                    directorTool.loopBody(state);
-
-                    expect(gl.clear.withArgs(gl.COLOR_BUFFER_BIT).getCall(0)).toCalledAfter(unbindGBufferCall(gl));
                 });
 
                 describe("set state", function() {

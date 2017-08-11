@@ -19,7 +19,6 @@ export var draw = curry((state: Map<any, any>, render_config: IRenderConfig, mat
 
     clear(gl, DeviceManagerDataFromSystem);
 
-    //todo test: if count === 0, not draw(not clear)
     if(basicData.count > 0){
         basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, initShaderDataMap, basicData);
     }

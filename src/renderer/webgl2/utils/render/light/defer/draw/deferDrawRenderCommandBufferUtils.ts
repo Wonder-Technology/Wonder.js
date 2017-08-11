@@ -60,10 +60,9 @@ var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMateria
 }, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, bufferData: LightRenderCommandBufferForDrawData, vMatrixFloatArrayForSend:Float32Array, pMatrixFloatArrayForSend:Float32Array, cameraPositionForSend:Float32Array, normalMatrixFloatArrayForSend:Float32Array, LightDrawRenderCommandBufferDataFromSystem:any) => {
     gl.depthMask(true);
 
-    //todo refactor
-    //todo test fix
     drawFuncDataMap.bindGBuffer(gl, GBufferDataFromSystem);
 
+    //todo refactor
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.enable(gl.DEPTH_TEST);
@@ -108,7 +107,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     unbindGBuffer(gl);
 
-    //todo test: only clear one time(if has/not has basic)
     // gl.clear(gl.COLOR_BUFFER_BIT);
 
     gl.depthMask(false);
