@@ -9,7 +9,7 @@ import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
 import { draw as deferDraw, init as initUtils } from "../../../utils/render/light/defer/deferShadingUtils";
 import { getGL } from "../../../../worker/both_file/device/DeviceManagerWorkerSystem";
-import { bindIndexBuffer, sendAttributeData, use } from "../../../../shader/ShaderSystem";
+import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";
 import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
@@ -33,6 +33,7 @@ import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { sendUniformData } from "../LightRenderSystem";
 import { directlySendUniformData } from "../../../../utils/render/renderUtils";
 import { buildDrawFuncDataMap } from "../../../utils/draw/lightDrawRenderCommandBufferUtils";
+import { sendAttributeData } from "../../RenderSystem";
 
 export var init = initUtils;
 

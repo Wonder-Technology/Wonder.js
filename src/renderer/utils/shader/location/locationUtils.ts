@@ -8,26 +8,6 @@ export var setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: a
     LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
 }
 
-export var getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
-    // it(`${name}'s attrib location should be number`, () => {
-    //     expect(pos).be.a("number");
-    // });
-}, (gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
-    // return attributeLocationMap[name];
-    var pos: number = null;
-
-    pos = attributeLocationMap[name];
-
-    if (isValidMapValue(pos)) {
-        return pos;
-    }
-
-    pos = gl.getAttribLocation(program, name);
-    attributeLocationMap[name] = pos;
-
-    return pos;
-})
-
 export var getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, name: string, uniformLocationMap: UniformLocationMap) => {
     // it(`${name}'s uniform location should exist in map`, () => {
     //     expect(isValidMapValue(pos)).true;
@@ -51,9 +31,7 @@ export var isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
     return pos === null;
 }
 
-export var isAttributeLocationNotExist = (pos: number) => {
-    return pos === -1;
-}
+//todo separate LocationDataFromSystem
 
 export var initData = (LocationDataFromSystem: any) => {
     LocationDataFromSystem.attributeLocationMap = createMap();

@@ -1,10 +1,8 @@
 import { Map } from "immutable";
 import {
-    sendAttributeData as sendAttributeDataProgram,
     use as useProgram
 } from "./program/programUtils";
 import { getOrCreateBuffer } from "../buffer/indexBufferUtils";
-import { GetArrayBufferDataFuncMap } from "../../../definition/type/geometryType";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
 //todo fix not import worker/ files
@@ -63,10 +61,6 @@ export var genereateShaderIndex = (ShaderDataFromSystem: any) => {
     // ShaderDataFromSystem.shaderLibWholeNameMap[shaderLibWholeName] = index;
 
     return index;
-}
-
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryWorkerDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
-    sendAttributeDataProgram(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryWorkerDataFromSystem, ArrayBufferDataFromSystem);
 }
 
 export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {

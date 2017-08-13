@@ -5,7 +5,7 @@ import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
 import { draw as frontDraw } from "../../../utils/render/light/front/frontRenderUtils";
-import { bindIndexBuffer, sendAttributeData, use } from "../../../../shader/ShaderSystem";
+import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";
 import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
@@ -27,6 +27,7 @@ import { buildDrawFuncDataMap } from "../../../utils/draw/drawRenderCommandBuffe
 import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { directlySendUniformData } from "../../../../utils/render/renderUtils";
 import { buildSendUniformDataDataMap, sendUniformData } from "../LightRenderSystem";
+import { sendAttributeData } from "../../RenderSystem";
 
 export var draw = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData) => {
     frontDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(

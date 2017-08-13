@@ -15,13 +15,13 @@ import { WebGL1BasicSendUniformDataDataMap } from "../../../type/utilsType";
 import { Log } from "../../../../../utils/Log";
 import { directlySendUniformData } from "../../../../utils/render/renderUtils";
 import { draw as basicDraw } from "../../draw/basic/basicDrawRenderCommandBufferUtils";
-import { getColorArr3, getOpacity } from "../../../../utils/material/materialUtils";
 
 export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
     basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData);
 }
 
 //todo extract code
+
 export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
     _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, basicMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);

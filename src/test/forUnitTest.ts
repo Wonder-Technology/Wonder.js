@@ -12,7 +12,6 @@ import {
 import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
 import {
     initData as initShaderDataSystem,
-    sendAttributeData as sendAttributeDataSystem,
     use
 } from "../renderer/shader/ShaderSystem";
 
@@ -30,13 +29,12 @@ import { initData as initLocationDataSystem } from "../renderer/shader/location/
 import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
-import { IRenderConfig } from "../renderer/worker/both_file/data/render_config";
-// import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/webgl1/draw/DrawRenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
 import { initData as initSendDrawRenderCommandBufferDataSystem } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { initData as initWebGL1LightDataSystem } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightDataSystem } from "../component/webgl2/light/LightSystem";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
+import { sendAttributeData as sendWebGL1AttributeDataSystem } from "../renderer/webgl1/render/RenderSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -88,7 +86,7 @@ export var createState = createStateUtils;
 
 export var useProgram = use;
 
-export var sendAttributeData = sendAttributeDataSystem;
+export var sendWebGL1AttributeData = sendWebGL1AttributeDataSystem;
 
 // export var sendUniformData = sendUniformDataSystem;
 

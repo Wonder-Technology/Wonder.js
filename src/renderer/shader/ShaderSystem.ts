@@ -1,34 +1,10 @@
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
     bindIndexBuffer as bindIndexBufferUtils,
-    // initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils,
-    sendAttributeData as sendAttributeDataUtils,
     use as useUtils
 } from "../utils/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
-import { getAttribLocation, isAttributeLocationNotExist } from "./location/LocationSystem";
-import { sendBuffer } from "./glslSender/GLSLSenderSystem";
-// import { buildGLSLSource } from "./shaderSourceBuildSystem";
-// import { getGL } from "../device/DeviceManagerSystem";
-// import { IMaterialConfig, MaterialShaderLibConfig } from "../webgl1/data/material_config";
-// import { IShaderLibGenerator } from "../data/shaderLib_generator";
-// import { Map } from "immutable";
-import { DrawDataMap } from "../type/utilsType";
-// import { ThreeDTransformData } from "../../component/transform/ThreeDTransformData";
-// import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
-import { getColorArr3 as getAmbientLightColorArr3 } from "../../component/light/AmbientLightSystem";
-import {
-    getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
-    getPosition as getDirectionLightPosition,
-} from "../../component/light/DirectionLightSystem";
-import {
-    getPosition as getPointLightPosition,
-    getColorArr3 as getPointLightColorArr3, getConstant,
-    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
-} from "../../component/light/PointLightSystem";
-// import { getMapCount } from "../texture/MapManagerSystem";
 import { createMap } from "../../utils/objectUtils";
-// import { hasDiffuseMap, hasSpecularMap } from "../utils/material/lightMaterialUtils";
 
 // export var create = (materialClassName: string, MaterialData: any, ShaderData: any) => {
 export var create = (ShaderData: any) => {
@@ -80,12 +56,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     //         hasDiffuseMap: hasDiffuseMap
     //     }
     // }
-
-    sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
-        getVertices: getVertices,
-        getNormals: getNormals,
-        getTexCoords: getTexCoords
-    }, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 
     bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
         bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
