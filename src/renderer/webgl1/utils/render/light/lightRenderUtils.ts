@@ -4,23 +4,18 @@ import {
     MaterialForGetUniformDataDataMap,
     SendUniformDataGLSLSenderDataMap
 } from "../../../../type/utilsType";
-import {
-    getEmissionColorArr3, getLightModel, getShininess,
-    getSpecularColorArr3
-} from "../../../../utils/material/lightMaterialUtils";
-import { getColorArr3, getOpacity } from "../../../../utils/material/materialUtils";
 import { directlySendUniformData } from "../../../../utils/render/renderUtils";
 import { Log } from "../../../../../utils/Log";
 import { WebGL1LightSendUniformDataDataMap } from "../../../type/utilsType";
 import { LightRenderUniformData, UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 
 //todo extract code
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap:WebGL1LightSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
-    _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, lightMaterialData);
+export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap:WebGL1LightSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
+    _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, lightMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap,  uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: LightRenderUniformData, materialData:MaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number,  shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap,  uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: LightRenderUniformData, materialData:MaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {
     var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
@@ -29,7 +24,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = _getUniformData(field, from, renderCommandUniformData, materialData, lightMaterialData);
+            data = _getUniformData(materialIndex, field, from, renderCommandUniformData, materialData, lightMaterialData);
 
         directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
     }
@@ -46,7 +41,7 @@ var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, prog
 }
 
 
-var _getUniformData = (field: string, from: string, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+var _getUniformData = (materialIndex:number, field: string, from: string, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -54,7 +49,7 @@ var _getUniformData = (field: string, from: string, renderCommandUniformData: Li
             data = renderCommandUniformData[field];
             break;
         case "lightMaterial":
-            data = _getUnifromDataFromLightMaterial(field, renderCommandUniformData.materialIndex, materialData, lightMaterialData);
+            data = _getUnifromDataFromLightMaterial(field, materialIndex, materialData, lightMaterialData);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));

@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import {  bindGBufferTargets, init as initGBuffer, sendGBufferTargetData  } from "./gbuffer/gBufferUtils";
 import { init as initDeferLightPass } from "./light/deferLightPassUtils";
 import { use } from "../../../../../utils/shader/shaderUtils";
-import { draw as deferDraw } from "./draw/deferDrawRenderCommandBufferUtils";
+import { draw as deferDraw } from "../../../draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { IMaterialConfig } from "../../../../../data/material_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";

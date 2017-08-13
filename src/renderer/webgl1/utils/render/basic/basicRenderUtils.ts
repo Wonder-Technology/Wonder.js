@@ -22,12 +22,12 @@ export var draw = (gl:any, state: Map<any, any>, render_config:IRenderConfig, ma
 
 //todo extract code
 
-export var sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
-    _sendUniformData(gl, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, basicMaterialData);
+export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+    _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, basicMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: BasicRenderUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: BasicRenderUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
     var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
@@ -36,7 +36,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program:
             field = sendData.field,
             type = sendData.type as any,
             from = sendData.from || "cmd",
-            data = _getUniformData(field, from, renderCommandUniformData, materialData, basicMaterialData);
+            data = _getUniformData(materialIndex, field, from, renderCommandUniformData, materialData, basicMaterialData);
 
         directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
     }
@@ -53,7 +53,7 @@ var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, prog
 }
 
 
-var _getUniformData = (field: string, from: string, renderCommandUniformData: BasicRenderUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
+var _getUniformData = (materialIndex:number, field: string, from: string, renderCommandUniformData: BasicRenderUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -61,7 +61,7 @@ var _getUniformData = (field: string, from: string, renderCommandUniformData: Ba
             data = renderCommandUniformData[field];
             break;
         case "basicMaterial":
-            data = _getUnifromDataFromBasicMaterial(field, renderCommandUniformData.materialIndex, materialData, basicMaterialData);
+            data = _getUnifromDataFromBasicMaterial(field, materialIndex, materialData, basicMaterialData);
             break;
         default:
             Log.error(true, Log.info.FUNC_UNKNOW(`from:${from}`));

@@ -18,7 +18,7 @@ import {
 } from "../../../type/dataType";
 import { directlySendUniformData } from "../../../utils/render/renderUtils";
 import { WebGL2BasicSendUniformDataDataMap } from "../../type/utilsType";
-import { buildDrawFuncDataMap } from "../../utils/draw/basicDrawRenderCommandBufferUtils1";
+import { buildDrawFuncDataMap } from "../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
 import { draw as basicDraw, sendUniformData } from "../../utils/render/basic/basicRenderUtils";
 import { sendAttributeData } from "../RenderSystem";
 
@@ -46,8 +46,8 @@ export var buildSendUniformDataDataMap = (
     }
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-    sendUniformData(gl, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, _buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), _buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+    sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, _buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), _buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };
 
 //todo refactor repeat code

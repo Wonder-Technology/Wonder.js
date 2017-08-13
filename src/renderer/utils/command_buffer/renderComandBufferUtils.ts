@@ -1,32 +1,32 @@
-// import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
+import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { Map } from "immutable";
+import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
+import { expect } from "wonder-expect.js";
+import { DataBufferConfig } from "../../../config/DataBufferConfig";
+import { ClassUtils } from "../../../utils/ClassUtils";
+import { getMaterial } from "../../../core/entityObject/gameObject/GameObjectSystem";
 
-// export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommandBufferDataFromSystem: any) => {
-//     var mat3Length = getMatrix3DataSize(),
-//         mat4Length = getMatrix4DataSize(),
-//         cameraPositionLength = getVector3DataSize(),
-//         count = DataBufferConfig.renderCommandBufferCount,
-//         offset: number = 0;
-//
-//     RenderCommandBufferDataFromSystem.mMatrices = new Float32Array(buffer, offset, count * mat4Length);
-//     offset += count * Float32Array.BYTES_PER_ELEMENT * mat4Length;
-//
-//     RenderCommandBufferDataFromSystem.materialIndices = new Uint32Array(buffer, offset, count);
-//     offset += count * Uint32Array.BYTES_PER_ELEMENT;
-//
-//     RenderCommandBufferDataFromSystem.geometryIndices = new Uint32Array(buffer, offset, count);
-//     offset += count * Uint32Array.BYTES_PER_ELEMENT;
-//
-//
-//     RenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, offset, mat4Length);
-//     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
-//
-//     RenderCommandBufferDataFromSystem.pMatrices = new Float32Array(buffer, offset, mat4Length);
-//     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
-//
-//     RenderCommandBufferDataFromSystem.cameraPositions = new Float32Array(buffer, offset, cameraPositionLength);
-//     offset += Float32Array.BYTES_PER_ELEMENT * cameraPositionLength;
-//
-//     RenderCommandBufferDataFromSystem.normalMatrices = new Float32Array(buffer, offset, mat3Length);
-//     offset += Float32Array.BYTES_PER_ELEMENT * mat3Length;
-// }
+export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData:Function, createLightRenderCommandBufferData:Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData:any, LightRenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
+    it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
+        expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
+    })
+}, (state: Map<any, any>, createBasicRenderCommandBufferData:Function, createLightRenderCommandBufferData:Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData:any, LightRenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
+    var basicMaterialGameObjectArr:Array<GameObject> = [],
+        lightMaterialGameObjectArr:Array<GameObject> = [];
 
+    for(let gameObject of renderGameObjectArray){
+        let material = getMaterial(gameObject, GameObjectData);
+
+        if(ClassUtils.getClassNameByInstance(material) === "BasicMaterial"){
+            basicMaterialGameObjectArr.push(gameObject);
+        }
+        else{
+            lightMaterialGameObjectArr.push(gameObject);
+        }
+    }
+
+    return {
+        basicData: createBasicRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, basicMaterialGameObjectArr),
+        lightData:createLightRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, LightRenderCommandBufferData, lightMaterialGameObjectArr)
+    }
+});

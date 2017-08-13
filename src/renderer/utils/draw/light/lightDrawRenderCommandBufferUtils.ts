@@ -11,3 +11,13 @@ export var initData = (LightDrawRenderCommandBufferDataFromSystem: any) => {
     LightDrawRenderCommandBufferDataFromSystem.cameraPositionForSend = new Float32Array(cameraPositionLength);
     LightDrawRenderCommandBufferDataFromSystem.normalMatrixFloatArrayForSend = new Float32Array(mat3Length);
 }
+
+export var buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array, cameraPosition:Float32Array, normalMatrices:Float32Array) => {
+    return {
+        mMatrix: mMatrices,
+        vMatrix: vMatrices,
+        pMatrix: pMatrices,
+        cameraPosition: cameraPosition,
+        normalMatrix: normalMatrices
+    }
+}

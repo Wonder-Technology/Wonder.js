@@ -1,62 +1,61 @@
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { GameObject } from "../../../../core/entityObject/gameObject/GameObject";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import {
     getComponent, getGeometry, getMaterial,
     getTransform
-} from "../../core/entityObject/gameObject/GameObjectSystem";
+} from "../../../../core/entityObject/gameObject/GameObjectSystem";
 import {
     getLocalToWorldMatrix, getNormalMatrix, getPosition,
     getTempLocalToWorldMatrix
-} from "../../component/transform/ThreeDTransformSystem";
-import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
+} from "../../../../component/transform/ThreeDTransformSystem";
+import { getCurrentCamera } from "../../../../core/entityObject/scene/SceneSystem";
 import {
     getPMatrix, getWorldToCameraMatrix
-} from "../../component/camera/CameraControllerSystem";
-import { CameraController } from "../../component/camera/CameraController";
-import { IRenderConfig } from "../worker/both_file/data/render_config";
-import { getShaderIndex } from "../../component/material/MaterialSystem";
-import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
+} from "../../../../component/camera/CameraControllerSystem";
+import { CameraController } from "../../../../component/camera/CameraController";
+import { IRenderConfig } from "../../both_file/data/render_config";
+import { getShaderIndex } from "../../../../component/material/MaterialSystem";
+import { createSharedArrayBufferOrArrayBuffer } from "../../../../utils/arrayBufferUtils";
 import {
     getMatrix3DataSize,
     getMatrix4DataSize, getVector3DataSize, setMatrices, setMatrices3,
     setVectors
-} from "../../utils/typeArrayUtils";
-import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+} from "../../../../utils/typeArrayUtils";
+import { it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { getComponentIDFromClass } from "../../component/ComponentComponentIDManager";
-import { createTypeArrays } from "../utils/command_buffer/basicRenderComandBufferUtils";
-import { ClassUtils } from "../../utils/ClassUtils";
+import { DataBufferConfig } from "../../../../config/DataBufferConfig";
+import { getComponentIDFromClass } from "../../../../component/ComponentComponentIDManager";
+import { createTypeArrays } from "../../../utils/command_buffer/lightRenderComandBufferUtils";
+import { ClassUtils } from "../../../../utils/ClassUtils";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
-    it("renderGameObject should be basic material gameObject", () => {
+export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+    it("renderGameObject should be light material gameObject", () => {
         for(let gameObject of renderGameObjectArray) {
-            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("BasicMaterial")
+            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("LightMaterial")
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     var count = renderGameObjectArray.length,
-        buffer: any = RenderCommandBufferData.buffer,
+        // buffer: any = RenderCommandBufferData.buffer,
         mMatrices = RenderCommandBufferData.mMatrices,
         vMatrices = RenderCommandBufferData.vMatrices,
         pMatrices = RenderCommandBufferData.pMatrices,
-        // cameraPositions = RenderCommandBufferData.cameraPositions,
-        // normalMatrices = RenderCommandBufferData.normalMatrices,
+        cameraPositions = RenderCommandBufferData.cameraPositions,
+        normalMatrices = RenderCommandBufferData.normalMatrices,
         materialIndices = RenderCommandBufferData.materialIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
         currentCamera = getCurrentCamera(SceneData),
         currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
-        // currentCameraTransform = getTransform(currentCamera, GameObjectData),
+        currentCameraTransform = getTransform(currentCamera, GameObjectData),
         mat4Length = getMatrix4DataSize();
 
     setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
     setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
-    // setVectors(cameraPositions, getPosition(currentCameraTransform, ThreeDTransformData), 0);
-    // setMatrices3(normalMatrices, getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData), 0);
+    setVectors(cameraPositions, getPosition(currentCameraTransform, ThreeDTransformData), 0);
+    setMatrices3(normalMatrices, getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData), 0);
 
-    //todo refactor
     for (let i = 0; i < count; i++) {
         let matIndex = mat4Length * i,
             gameObject = renderGameObjectArray[i],
@@ -72,24 +71,20 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     }
 
     return {
-        materialIndices:materialIndices,
-        geometryIndices:geometryIndices,
-        mMatrices: mMatrices,
-        vMatrices:vMatrices,
-        pMatrices:pMatrices,
+        buffer: buffer,
         count: count
     }
-})
+}), 11)
 
 export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
-    // var mat3Length = getMatrix3DataSize(),
-    var mat4Length = getMatrix4DataSize(),
-        // cameraPositionLength = getVector3DataSize(),
+    var mat3Length = getMatrix3DataSize(),
+        mat4Length = getMatrix4DataSize(),
+        cameraPositionLength = getVector3DataSize(),
         size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 2,
         buffer: any = null,
         count = DataBufferConfig.renderCommandBufferCount;
 
-    buffer = createSharedArrayBufferOrArrayBuffer(count * size + Float32Array.BYTES_PER_ELEMENT * (mat4Length * 2));
+    buffer = createSharedArrayBufferOrArrayBuffer(count * size + Float32Array.BYTES_PER_ELEMENT * (mat3Length + mat4Length * 2 + cameraPositionLength));
 
     createTypeArrays(buffer, DataBufferConfig, RenderCommandBufferData);
 

@@ -32,8 +32,8 @@ import { computeRadius } from "../../../light/PointLightSystem";
 import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { sendUniformData } from "../LightRenderSystem";
 import { directlySendUniformData } from "../../../../utils/render/renderUtils";
-import { buildDrawFuncDataMap } from "../../../utils/draw/lightDrawRenderCommandBufferUtils";
 import { sendAttributeData } from "../../RenderSystem";
+import { buildDrawFuncDataMap } from "../../../utils/draw/light/defer/deferDrawRenderCommandBufferUtils";
 
 export var init = initUtils;
 

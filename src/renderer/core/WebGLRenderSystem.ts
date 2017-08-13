@@ -56,7 +56,7 @@ import { webgl2_material_config } from "../worker/webgl2/both_file/data/material
 import { initMaterialShader as initMaterialShaderWebGL1,   initNoMaterialShader as initNoMaterialShaderWebGL1  } from "../webgl1/shader/ShaderSystem";
 import { isWebgl1 } from "../device/WebGLDetectSystem";
 import { Log } from "../../utils/Log";
-import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/render/light/defer/draw/deferDrawRenderCommandBufferUtils";
+import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { WebGL1PointLightData } from "../webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../webgl2/light/PointLightData";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";

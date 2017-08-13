@@ -71,7 +71,13 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
     }
 
     return {
-        buffer: buffer,
+        materialIndices:materialIndices,
+        geometryIndices:geometryIndices,
+        mMatrices: mMatrices,
+        vMatrices:vMatrices,
+        pMatrices:pMatrices,
+        cameraPositions:cameraPositions,
+        normalMatrices:normalMatrices,
         count: count
     }
 }), 11)
