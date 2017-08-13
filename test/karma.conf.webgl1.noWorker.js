@@ -32,7 +32,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
@@ -45,11 +45,11 @@
         // 'test/unit/no_worker/**/*PointLightSpec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
-        'test/unit/no_worker/**/*BasicMaterial*',
+        // 'test/unit/no_worker/**/*BasicMaterial*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/Material*',
-        'test/unit/no_worker/**/frontRender*',
-        'test/unit/no_worker/**/basicRender*',
+        // 'test/unit/no_worker/**/frontRender*',
+        // 'test/unit/no_worker/**/basicRender*',
         // 'test/unit/no_worker/**/*draw*',
         // 'test/unit/no_worker/**/*GameObject*',
         // 'test/unit/no_worker/**/*Camera*',

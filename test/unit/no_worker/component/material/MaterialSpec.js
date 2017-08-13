@@ -15,11 +15,6 @@ describe("Material", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-
-        var data = sceneTool.prepareGameObjectAndAddToScene();
-        obj = data.gameObject;
-        material = data.material;
-
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
@@ -30,11 +25,13 @@ describe("Material", function() {
     });
 
     describe("test default value", function() {
+        beforeEach(function(){
+            var data = sceneTool.prepareGameObjectAndAddToScene();
+            obj = data.gameObject;
+            material = data.material;
+        });
+
         describe("getColor", function() {
-            beforeEach(function(){
-
-            });
-
             it("default color is #ffffff", function(){
                 colorTool.judgeIsEqual(basicMaterialTool.getColor(material), Color.create("#ffffff"), expect);
             });
@@ -102,17 +99,24 @@ describe("Material", function() {
 
     describe("all types of material share one buffer", function() {
         beforeEach(function(){
+            sceneTool.addCameraObject();
         });
         
         it("so can use MaterialSystem->getShaderIndex to get all types of material' shader index", function(){
             var mat1 = basicMaterialTool.create();
             var mat2 = lightMaterialTool.create();
 
-            basicMaterialTool.initMaterial(mat1);
-            lightMaterialTool.initMaterial(mat2);
+            sceneTool.addGameObject(sceneTool.createGameObject(null, mat1).gameObject);
+            sceneTool.addGameObject(sceneTool.createGameObject(null, mat2).gameObject);
 
-            expect(materialTool.getShaderIndex(mat1.index)).toEqual(0);
-            expect(materialTool.getShaderIndex(mat2.index)).toEqual(1);
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+            var shaderIndex1 = materialTool.getShaderIndex(mat1.index);
+            var shaderIndex2 = materialTool.getShaderIndex(mat2.index);
+            expect(shaderIndex1).toBeNumber();
+            expect(shaderIndex2).toBeNumber();
+            expect(shaderIndex1).not.toEqual(shaderIndex2);
         });
     });
     
@@ -121,7 +125,6 @@ describe("Material", function() {
 
         });
 
-        // it("should not dispose any material before init", function(){
         it("can dispose any material before init", function(){
             var mat2 = basicMaterialTool.create();
 
@@ -133,16 +136,6 @@ describe("Material", function() {
             expect(function(){
                 directorTool.init(sandbox);
             }).not.toThrow();
-        });
-        it("shader should only be init once", function () {
-            var mat2 = basicMaterialTool.create();
-
-            var obj2 = gameObjectTool.create();
-            gameObjectTool.addComponent(obj2, mat2);
-
-            directorTool.init(state);
-
-            expect(gl.linkProgram).toCalledOnce();
         });
     });
 
@@ -170,6 +163,10 @@ describe("Material", function() {
 
         beforeEach(function(){
             count = MaterialData.count;
+
+            var data = sceneTool.prepareGameObjectAndAddToScene();
+            obj = data.gameObject;
+            material = data.material;
         });
 
         describe("test remove data", function() {

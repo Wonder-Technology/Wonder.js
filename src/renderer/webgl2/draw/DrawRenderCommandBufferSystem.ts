@@ -13,7 +13,7 @@ import { Log } from "../../../utils/Log";
 
 export var init = (gl:any, DataBufferConfig:any, GBufferData:any, DeferLightPassData: any, ShaderData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, GPUDetectData:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectData)){
-        Log.error(true, "defer shading need support extensionColorBufferFloat extension");
+        Log.warn("defer shading need support extensionColorBufferFloat extension");
     }
     else{
         deferInit(gl, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);

@@ -203,6 +203,7 @@ describe("GameObject", function() {
         describe("init gameObject's all added components", function(){
             var material,geo;
             var gl;
+            var state;
 
             beforeEach(function(){
                 var data = sceneTool.prepareGameObjectAndAddToScene(true);
@@ -210,18 +211,23 @@ describe("GameObject", function() {
                 material = data.material;
                 geo = data.geometry;
 
-                var state = stateTool.createFakeGLState(sandbox);
+                state = stateTool.createFakeGLState(sandbox);
                 stateTool.setState(state);
 
                 gl = stateTool.getGLFromFakeGLState(state);
-
-                gameObjectTool.init(gameObject);
             });
 
             it("init material", function () {
+                sceneTool.addCameraObject();
+
+                directorTool.init(state);
+                directorTool.loopBody(state);
+
                 expect(gl.attachShader).toCalled();
             });
             it("init geometry", function () {
+                gameObjectTool.init(gameObject);
+
                 expect(testTool.getValues(
                     geometryTool.getVertices(geo)
                 )).toEqual([

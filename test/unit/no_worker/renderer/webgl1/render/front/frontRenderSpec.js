@@ -32,12 +32,6 @@ describe("front render", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-        obj = data.gameObject;
-        geo = data.geometry;
-        material = data.material;
-        cameraGameObject = data.cameraGameObject;
-
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
@@ -48,6 +42,14 @@ describe("front render", function () {
     });
 
     describe("test front render light", function() {
+        beforeEach(function () {
+            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            obj = data.gameObject;
+            geo = data.geometry;
+            material = data.material;
+            cameraGameObject = data.cameraGameObject;
+        });
+
         describe("clear", function(){
             describe("clear gl", function(){
                 beforeEach(function(){
@@ -917,6 +919,49 @@ describe("front render", function () {
                     });
                 });
             });
+        });
+    });
+
+    describe("fix bug", function() {
+        beforeEach(function(){
+        });
+
+        it("if one material set diffuse map, one not, then the two should has different shaders", function(){
+            function getFirstFrontRenderFsSource(gl) {
+                return gl.shaderSource.getCall(1).args[1];
+            }
+
+            function getSecondFrontRenderFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
+            }
+
+            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            obj = data.gameObject;
+            geo = data.geometry;
+            material = data.material;
+
+
+            var mat = lightMaterialTool.create();
+
+            var texture = textureTool.create();
+            textureTool.setSource(texture, {});
+
+            lightMaterialTool.setDiffuseMap(mat, texture);
+
+
+            var data = sceneTool.createGameObject(null, mat);
+
+
+            sceneTool.addGameObject(data.gameObject);
+
+
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+
+            expect(glslTool.contain(getFirstFrontRenderFsSource(gl), "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n")).toBeTruthy();
+            expect(glslTool.contain(getSecondFrontRenderFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
         });
     });
 });

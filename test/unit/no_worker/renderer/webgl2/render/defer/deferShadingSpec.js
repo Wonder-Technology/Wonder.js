@@ -7,6 +7,7 @@ describe("defer shading", function () {
     var ShaderData = wd.ShaderData;
     var ProgramData = wd.ProgramData;
     var DeferLightPassData = wd.DeferLightPassData;
+    var Log = wd.Log;
 
     function enableDeferShading(sandbox) {
         deferShadingTool.enableDeferShading(sandbox);
@@ -49,12 +50,13 @@ describe("defer shading", function () {
             gl.createTexture.onCall(3).returns(depthTexture);
         }
 
-        it("if not support extensionColorBufferFloat, error", function () {
+        it("if not support extensionColorBufferFloat, warn", function () {
             gpuDetectTool.setGPUDetectData("extensionColorBufferFloat", false)
+            sandbox.stub(Log, "warn");
 
-            expect(function () {
-                directorTool.init(state);
-            }).toThrow("defer shading need support extensionColorBufferFloat extension");
+            directorTool.init(state);
+
+            expect(Log.warn).toCalledWith("defer shading need support extensionColorBufferFloat extension");
         });
 
         describe("init DeferLightPass shader", function () {
@@ -951,6 +953,43 @@ describe("defer shading", function () {
             expect(DataBufferConfig.pointLightDataBufferCount).toEqual(1000);
 
             //todo test direction, ambient
+        });
+        it("if one material set diffuse map, one not, then the two should has different shaders", function(){
+            function getFirstGBufferFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
+            }
+
+            function getSecondGBufferFsSource(gl) {
+                return gl.shaderSource.getCall(5).args[1];
+            }
+
+            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            obj = data.gameObject;
+            geo = data.geometry;
+            material = data.material;
+
+
+            var mat = lightMaterialTool.create();
+
+            var texture = textureTool.create();
+            textureTool.setSource(texture, {});
+
+            lightMaterialTool.setDiffuseMap(mat, texture);
+
+
+            var data = sceneTool.createGameObject(null, mat);
+
+
+            sceneTool.addGameObject(data.gameObject);
+
+
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+
+            expect(glslTool.contain(getFirstGBufferFsSource(gl), "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
+            expect(glslTool.contain(getSecondGBufferFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
         });
     });
 });

@@ -32,19 +32,24 @@ describe("Shader", function() {
         });
 
         describe("init shader", function() {
-            beforeEach(function(){
+            function initShader() {
+                // directorTool.init(state);
+                directorTool.loopBody(state);
+            }
 
+            beforeEach(function(){
+                directorTool.init(state);
             });
 
             it("if program already exist, return", function () {
-                basicMaterialTool.initMaterial(material);
-                basicMaterialTool.initMaterial(material);
+                initShader();
+                initShader();
 
                 expect(gl.createProgram).toCalledOnce();
             });
 
             it("create vs and fs shader", function () {
-                directorTool.init(state);
+                initShader();
 
                 expect(gl.createShader.withArgs(gl.VERTEX_SHADER)).toCalledOnce();
                 expect(gl.createShader.withArgs(gl.FRAGMENT_SHADER)).toCalledOnce();
@@ -52,7 +57,7 @@ describe("Shader", function() {
 
             describe("compile vs and fs shader", function(){
                 it("compile", function () {
-                    directorTool.init(state);
+                    initShader();
 
                     expect(gl.shaderSource).toCalledTwice();
                     expect(gl.compileShader).toCalledTwice();
@@ -60,7 +65,7 @@ describe("Shader", function() {
 
                 describe("check COMPILE_STATUS", function () {
                     it("invoke gl.getShaderParameter", function () {
-                        directorTool.init(state);
+                        initShader();
 
                         expect(gl.getShaderParameter).toCalledTwice();
                     });
@@ -68,7 +73,7 @@ describe("Shader", function() {
                         sandbox.stub(wd.Log, "log");
                         gl.getShaderParameter.withArgs(sinon.match.any, gl.COMPILE_STATUS).returns(false);
 
-                        directorTool.init(state);
+                        initShader();
 
                         // expect(gl.getShaderParameter).toCalledTwice();
                         expect(gl.getShaderInfoLog).toCalledTwice();
@@ -78,19 +83,19 @@ describe("Shader", function() {
             });
 
             it("attach vs and fs shader", function () {
-                directorTool.init(state);
+                initShader();
 
                 expect(gl.attachShader).toCalledTwice();
             });
             it("to avoid \"Attribute 0 is disabled.\". This has significant performance penalty", function () {
-                directorTool.init(state);
+                initShader();
 
                 expect(gl.bindAttribLocation.withArgs(sinon.match.any, 0, "a_position")).toCalledOnce();
             });
 
             describe("link program", function () {
                 it("test", function () {
-                    directorTool.init(state);
+                    initShader();
 
                     expect(gl.linkProgram).toCalledOnce();
                 });
@@ -99,13 +104,13 @@ describe("Shader", function() {
                     gl.getProgramInfoLog.returns("err");
 
                     expect(function(){
-                        directorTool.init(state);
+                        initShader();
                     }).toThrow("link program error:err");
                 });
             });
 
             it("delete vs and fs shader after link", function () {
-                directorTool.init(state);
+                initShader();
 
                 expect(gl.deleteShader).toCalledTwice();
                 expect(gl.deleteShader).toCalledAfter(gl.linkProgram);
@@ -223,7 +228,7 @@ describe("Shader", function() {
 
             directorTool.loopBody(state);
 
-            expect(gl.createBuffer.callCount).toEqual(5);
+            expect(gl.createBuffer.callCount).toEqual(8);
             expect(gl.vertexAttribPointer).toCalledWith(pos1,size,"FLOAT",false,0,0);
             expect(gl.vertexAttribPointer).not.toCalledWith(pos2,size,"FLOAT",false,0,0);
 

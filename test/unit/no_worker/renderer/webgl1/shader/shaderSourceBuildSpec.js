@@ -29,18 +29,23 @@ describe("shader source build", function () {
     });
 
     describe("build glsl source", function () {
+        function initShader() {
+            directorTool.init(state);
+            directorTool.loopBody(state);
+        }
+
         beforeEach(function () {
             shaderTool.clearShader();
         });
 
         it("declare attribute variables", function () {
-            directorTool.init(state);
+            initShader();
 
             var vs = materialTool.getVsSource(gl);
             expect(glslTool.containSpecifyCount(vs, "attribute vec3 a_position;", 1)).toBeTruthy();
         });
         it("declare uniform variables", function () {
-            directorTool.init(state);
+            initShader();
 
             var vs = materialTool.getVsSource(gl);
             expect(glslTool.containSpecifyCount(vs, "uniform mat4 u_mMatrix;", 1)).toBeTruthy();
@@ -61,7 +66,7 @@ describe("shader source build", function () {
             it("test LOWP", function () {
                 gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.LOWP)
 
-                directorTool.init(state);
+                initShader();
 
                 var fs = materialTool.getFsSource(gl);
                 expect(glslTool.containSpecifyCount(fs, "precision lowp float;\nprecision lowp int;\n", 1)).toBeTruthy();
@@ -69,7 +74,7 @@ describe("shader source build", function () {
             it("test MEDIUMP", function () {
                 gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.MEDIUMP)
 
-                directorTool.init(state);
+                initShader();
 
                 var fs = materialTool.getFsSource(gl);
                 expect(glslTool.containSpecifyCount(fs, "precision mediump float;\nprecision mediump int;\n", 1)).toBeTruthy();
@@ -77,7 +82,7 @@ describe("shader source build", function () {
             it("test HIGHP", function () {
                 gpuDetectTool.setGPUDetectData("precision", EGPUPrecision.HIGHP)
 
-                directorTool.init(state);
+                initShader();
 
                 var fs = materialTool.getFsSource(gl);
                 expect(glslTool.containSpecifyCount(fs, "precision highp float;\nprecision highp int;\n", 1)).toBeTruthy();

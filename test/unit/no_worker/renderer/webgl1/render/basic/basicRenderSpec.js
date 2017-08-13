@@ -59,6 +59,38 @@ describe("basic render", function () {
             expect(glslTool.containSpecifyCount(fs, "gl_FragColor =", 1)).toBeTruthy();
         });
 
+        describe("test send indices buffer data", function () {
+            var buffer;
+
+            beforeEach(function () {
+                buffer = {b:1};
+
+                gl.createBuffer.onCall(1).returns(buffer);
+            });
+
+            it("create buffer and init it when first get", function () {
+                directorTool.init(state);
+
+                var data = geometryTool.getIndices(geo);
+
+
+                directorTool.loopBody(state);
+
+                expect(gl.createBuffer).toCalledTwice();
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, buffer).callCount).toEqual(2);
+                expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, null)).toCalledOnce();
+            });
+            it("not create buffer after first get", function () {
+                directorTool.init(state);
+
+                directorTool.loopBody(state);
+                directorTool.loopBody(state);
+
+                expect(gl.createBuffer).toCalledTwice();
+            });
+        });
+
         describe("test glsl and send attribute,uniform data", function () {
             beforeEach(function () {
             });

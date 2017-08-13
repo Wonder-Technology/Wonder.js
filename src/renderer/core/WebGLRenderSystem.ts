@@ -45,7 +45,6 @@ import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
-import { init as initDefer, draw as deferDraw  } from "../webgl2/render/light/defer/DeferShadingSystem";
 import { buildInitShaderDataMap } from "../utils/material/materialUtils";
 import { DeferLightPassData } from "../webgl2/render/light/defer/light/DeferLightPassData";
 import { ShaderData } from "../shader/ShaderData";
