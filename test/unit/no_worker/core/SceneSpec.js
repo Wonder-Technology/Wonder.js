@@ -34,6 +34,19 @@ describe("Scene", function() {
 
             expect(threeDTransformTool.getParent(childTran)).toBeNull();
         });
+        it("if gameObject not be added to scene, it will still be rendered", function () {
+            sceneTool.addCameraObject();
+
+            sceneTool.createGameObject()
+
+            state = stateTool.createAndSetFakeGLState(sandbox);
+            gl = stateTool.getGLFromFakeGLState(state);
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+            expect(gl.drawElements).toCalledOnce();
+        });
     });
 
     describe("fix bug", function() {
