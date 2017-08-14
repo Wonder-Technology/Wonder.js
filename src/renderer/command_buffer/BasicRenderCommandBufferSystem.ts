@@ -1,36 +1,18 @@
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import {
-    getComponent, getGeometry, getMaterial,
-    getTransform
+    getMaterial
 } from "../../core/entityObject/gameObject/GameObjectSystem";
-import {
-    getLocalToWorldMatrix, getNormalMatrix, getPosition,
-    getTempLocalToWorldMatrix
-} from "../../component/transform/ThreeDTransformSystem";
-import { getCurrentCamera } from "../../core/entityObject/scene/SceneSystem";
-import {
-    getPMatrix, getWorldToCameraMatrix
-} from "../../component/camera/CameraControllerSystem";
-import { CameraController } from "../../component/camera/CameraController";
-import { IRenderConfig } from "../worker/both_file/data/render_config";
-import { getShaderIndex } from "../../component/material/MaterialSystem";
-import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import {
-    getMatrix3DataSize,
-    getMatrix4DataSize, getVector3DataSize, setMatrices, setMatrices3,
-    setVectors
-} from "../../utils/typeArrayUtils";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
-import { getComponentIDFromClass } from "../../component/ComponentComponentIDManager";
 import {
-    buildRenderCommandBufferForDrawData,
-    createTypeArrays
+    buildRenderCommandBufferForDrawData
 } from "../utils/command_buffer/basicRenderComandBufferUtils";
 import { ClassUtils } from "../../utils/ClassUtils";
+import {
+    createRenderCommandBufferData as createRenderCommandBufferDataUtils,
+    initData as initDataUtils
+} from "../utils/worker/logic_file/command_buffer/basicRenderComandBufferUtils";
 
 export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObject should be basic material gameObject", () => {
@@ -39,55 +21,9 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
-    var count = renderGameObjectArray.length,
-        buffer: any = RenderCommandBufferData.buffer,
-        mMatrices = RenderCommandBufferData.mMatrices,
-        vMatrices = RenderCommandBufferData.vMatrices,
-        pMatrices = RenderCommandBufferData.pMatrices,
-        // cameraPositions = RenderCommandBufferData.cameraPositions,
-        // normalMatrices = RenderCommandBufferData.normalMatrices,
-        materialIndices = RenderCommandBufferData.materialIndices,
-        geometryIndices = RenderCommandBufferData.geometryIndices,
-        currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
-        currentCameraIndex = currentCameraComponent.index,
-        // currentCameraTransform = getTransform(currentCamera, GameObjectData),
-        mat4Length = getMatrix4DataSize();
-
-    setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
-    setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
-    // setVectors(cameraPositions, getPosition(currentCameraTransform, ThreeDTransformData), 0);
-    // setMatrices3(normalMatrices, getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData), 0);
-
-    //todo refactor
-    for (let i = 0; i < count; i++) {
-        let matIndex = mat4Length * i,
-            gameObject = renderGameObjectArray[i],
-            geometry = getGeometry(gameObject, GameObjectData),
-            material = getMaterial(gameObject, GameObjectData),
-            transform = getTransform(gameObject, GameObjectData),
-            materialIndex = material.index;
-
-        setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
-
-        materialIndices[i] = materialIndex;
-        geometryIndices[i] = geometry.index;
-    }
-
-    return buildRenderCommandBufferForDrawData(count, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices);
+    return createRenderCommandBufferDataUtils(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray, (count:number, buffer:any, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array, vMatrices:Float32Array, pMatrices:Float32Array) => {
+        return buildRenderCommandBufferForDrawData(count, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices);
+    });
 })
 
-export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
-    // var mat3Length = getMatrix3DataSize(),
-    var mat4Length = getMatrix4DataSize(),
-        // cameraPositionLength = getVector3DataSize(),
-        size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 2,
-        buffer: any = null,
-        count = DataBufferConfig.renderCommandBufferCount;
-
-    buffer = createSharedArrayBufferOrArrayBuffer(count * size + Float32Array.BYTES_PER_ELEMENT * (mat4Length * 2));
-
-    createTypeArrays(buffer, DataBufferConfig, RenderCommandBufferData);
-
-    RenderCommandBufferData.buffer = buffer;
-}
+export var initData = initDataUtils;

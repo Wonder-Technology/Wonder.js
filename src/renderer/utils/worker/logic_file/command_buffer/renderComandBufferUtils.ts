@@ -1,10 +1,12 @@
-import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { DataBufferConfig } from "../../../../../config/DataBufferConfig";
+import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { Map } from "immutable";
-import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
+import { GameObject } from "../../../../../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../../config/DataBufferConfig";
-import { ClassUtils } from "../../../utils/ClassUtils";
-import { getMaterial } from "../../../core/entityObject/gameObject/GameObjectSystem";
+import { getMaterial } from "../../../../../core/entityObject/gameObject/GameObjectSystem";
+import { ClassUtils } from "../../../../../utils/ClassUtils";
+import { initData as initBasicRenderComandBufferData } from "./basicRenderComandBufferUtils";
+import { initData as initLightRenderComandBufferData } from "./lightRenderComandBufferUtils";
 
 export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData:Function, createLightRenderCommandBufferData:Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData:any, LightRenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
@@ -30,3 +32,8 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         lightData:createLightRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, LightRenderCommandBufferData, lightMaterialGameObjectArr)
     }
 });
+
+export var initData = (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => {
+    initBasicRenderComandBufferData(DataBufferConfig, BasicRenderCommandBufferData);
+    initLightRenderComandBufferData(DataBufferConfig, LightRenderCommandBufferData);
+}
