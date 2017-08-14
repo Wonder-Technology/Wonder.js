@@ -26,7 +26,10 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getComponentIDFromClass } from "../../component/ComponentComponentIDManager";
-import { createTypeArrays } from "../utils/command_buffer/lightRenderComandBufferUtils";
+import {
+    buildRenderCommandBufferForDrawData,
+    createTypeArrays
+} from "../utils/command_buffer/lightRenderComandBufferUtils";
 import { ClassUtils } from "../../utils/ClassUtils";
 
 export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
@@ -70,16 +73,7 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
         geometryIndices[i] = geometry.index;
     }
 
-    return {
-        materialIndices:materialIndices,
-        geometryIndices:geometryIndices,
-        mMatrices: mMatrices,
-        vMatrices:vMatrices,
-        pMatrices:pMatrices,
-        cameraPositions:cameraPositions,
-        normalMatrices:normalMatrices,
-        count: count
-    }
+    return buildRenderCommandBufferForDrawData(count, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices, cameraPositions, normalMatrices)
 }), 11)
 
 export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {

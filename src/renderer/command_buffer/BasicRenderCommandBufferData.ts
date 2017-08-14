@@ -1,4 +1,10 @@
-import { BasicRenderCommandBufferDataCommon } from "../utils/command_buffer/BasicRenderCommandBufferDataCommon";
+export class BasicRenderCommandBufferData {
+    public static buffer: SharedArrayBuffer = null;
 
-export class BasicRenderCommandBufferData extends BasicRenderCommandBufferDataCommon{
+    public static mMatrices: Float32Array = null;
+    public static materialIndices: Uint32Array = null;
+    public static geometryIndices: Uint32Array = null;
+
+    public static vMatrices: Float32Array = null;
+    public static pMatrices: Float32Array = null;
 }

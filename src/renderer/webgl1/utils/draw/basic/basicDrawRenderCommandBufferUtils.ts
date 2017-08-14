@@ -20,12 +20,12 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
         {
             vMatrices,
             pMatrices
-        } = bufferData,
+        } = bufferData.renderCommandBufferData,
         mat4Length = getMatrix4DataSize(),
         {
             mMatrixFloatArrayForSend,
             vMatrixFloatArrayForSend,
-         pMatrixFloatArrayForSend
+            pMatrixFloatArrayForSend
         } = BasicDrawRenderCommandBufferDataFromSystem;
 
     updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);

@@ -40,7 +40,7 @@ import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/B
 import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
 import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
-import { hasExtensionUintIndices } from "../../renderer/device/GPUDetectSystem";
+import { hasExtensionUintIndices } from "../../renderer/utils/device/gpuDetectUtils";
 
 export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addAddComponentHandleToMap(BoxGeometry, addComponent);

@@ -49,8 +49,8 @@ export var getMapCount = getMapCountUtils;
 //     }
 // }
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheData: any, TextureData: any, MapManagerData: any) => {
-    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData:any) => {
+    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
 }
 
 /*!

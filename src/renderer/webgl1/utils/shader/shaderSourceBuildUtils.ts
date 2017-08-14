@@ -16,7 +16,6 @@ import {
 } from "../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IWebGL1DefineUniformConfig } from "../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config";
-import { getPrecision } from "../../../device/GPUDetectSystem";
 import { EGPUPrecision } from "../../../enum/EGPUPrecision";
 import { getPrecisionSource } from "../../../utils/shader/shaderSourceBuildUtils";
 

@@ -120,3 +120,9 @@ export var getExtension = (name: string, state: Map<any, any>, gl: any) => {
 
     return extension;
 }
+
+export var hasExtensionUintIndices = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.extensionUintIndices === true;
+
+export var getMaxTextureUnit = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.maxTextureUnit;
+
+export var getPrecision = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.precision;

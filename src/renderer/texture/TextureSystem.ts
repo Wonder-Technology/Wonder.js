@@ -84,8 +84,8 @@ export var setUniformSamplerName = (index: number, name: string, TextureData: an
     TextureData.uniformSamplerNameMap[index] = name;
 }
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any) => {
-    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, isCached, addActiveTexture);
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData:any) => {
+    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 }
 //
 // var _getWebglTexture = (textureIndex:number, TextureData:any) => {

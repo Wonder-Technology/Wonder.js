@@ -78,14 +78,14 @@ export var getTextureIndexDataSize = () => 1;
 
 export var getTextureCountDataSize = () => 1;
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem:any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     // var count = getMapCount(materialIndex, MapManagerDataFromSystem),
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
     for (let i = 0; i < mapCount; i++) {
         let textureIndex = textureIndices[i];
 
-        bindToUnit(gl, i + startIndex, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem);
+        bindToUnit(gl, i + startIndex, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem, GPUDetectDataFromSystem);
 
         if (needUpdate(textureIndex, TextureDataFromSystem)) {
             update(gl, textureIndex, TextureDataFromSystem);

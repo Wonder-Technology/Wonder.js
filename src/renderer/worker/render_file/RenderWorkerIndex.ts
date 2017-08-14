@@ -22,7 +22,6 @@ export { LocationWorkerData } from "./shader/location/LocationWorkerData";
 export { ShaderWorkerData } from "./shader/ShaderWorkerData";
 export { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 export { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
-export { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 export { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 export { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 export { TextureWorkerData } from "./texture/TextureWorkerData";

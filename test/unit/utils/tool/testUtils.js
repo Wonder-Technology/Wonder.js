@@ -19,7 +19,7 @@ var testUtils = (function () {
             }
         },
         prepareBufferForTest: function(sandbox, data, bufferTool){
-            sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandBufferDataTypeArrayNotExist").returns(true);
+            // sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandBufferDataTypeArrayNotExist").returns(true);
 
             bufferTool.minBufferCount(sandbox, data);
         },

@@ -37,7 +37,7 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     var count = renderGameObjectArray.length,
-        // buffer: any = RenderCommandBufferData.buffer,
+        buffer: any = RenderCommandBufferData.buffer,
         mMatrices = RenderCommandBufferData.mMatrices,
         vMatrices = RenderCommandBufferData.vMatrices,
         pMatrices = RenderCommandBufferData.pMatrices,

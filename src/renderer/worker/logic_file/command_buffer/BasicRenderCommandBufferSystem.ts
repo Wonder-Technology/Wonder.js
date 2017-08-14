@@ -26,8 +26,9 @@ import { it, requireCheckFunc } from "../../../../definition/typescript/decorato
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../../../config/DataBufferConfig";
 import { getComponentIDFromClass } from "../../../../component/ComponentComponentIDManager";
-import { createTypeArrays } from "../utils/command_buffer/basicRenderComandBufferUtils";
+// import { createTypeArrays } from "../utils/command_buffer/basicRenderComandBufferUtils";
 import { ClassUtils } from "../../../../utils/ClassUtils";
+import { createTypeArrays } from "../../../utils/command_buffer/basicRenderComandBufferUtils";
 
 export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObject should be basic material gameObject", () => {
@@ -71,8 +72,8 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     }
 })
 
+//todo refactor
 export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
-    // var mat3Length = getMatrix3DataSize(),
     var mat4Length = getMatrix4DataSize(),
         // cameraPositionLength = getVector3DataSize(),
         size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 2,

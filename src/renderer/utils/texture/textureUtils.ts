@@ -14,7 +14,7 @@ import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { UniformCacheMap, UniformLocationMap } from "../../type/dataType";
 import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
 import { EVariableType } from "../../enum/EVariableType";
-import { getMaxTextureUnit } from "../../device/GPUDetectSystem";
+import { getMaxTextureUnit } from "../device/gpuDetectUtils";
 
 export var getBufferDataSize = () => 1;
 
@@ -262,14 +262,14 @@ var _isPowerOfTwo = (value: number) => {
 //     return isValidVal(TextureDataFromSystem.glTextures[textureIndex]);
 // }
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, isCached: Function, addActiveTexture: Function) => {
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem:any, isCached: Function, addActiveTexture: Function) => {
     var target = ETextureTarget.TEXTURE_2D;
 
-    if (isCached(unitIndex, textureIndex, TextureCacheDataFromSystem)) {
+    if (isCached(unitIndex, textureIndex, TextureCacheDataFromSystem, GPUDetectDataFromSystem)) {
         return;
     }
 
-    addActiveTexture(unitIndex, textureIndex, TextureCacheDataFromSystem);
+    addActiveTexture(unitIndex, textureIndex, TextureCacheDataFromSystem, GPUDetectDataFromSystem);
 
     gl.activeTexture(gl[`TEXTURE${unitIndex}`]);
     gl.bindTexture(gl[target], _getWebglTexture(textureIndex, TextureDataFromSystem));
@@ -308,13 +308,13 @@ export var disposeSourceMap = (sourceIndex: number, lastComponentIndex: number, 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.sourceMap);
 }
 
-export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectData:any) => {
+export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     var glTexture = _getWebglTexture(sourceIndex, TextureDataFromSystem);
 
     gl.deleteTexture(glTexture);
     // delete glTexture;
 
-    _unBindAllUnit(gl, TextureCacheDataFromSystem, GPUDetectData);
+    _unBindAllUnit(gl, TextureCacheDataFromSystem, GPUDetectDataFromSystem);
 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.glTextures);
 }

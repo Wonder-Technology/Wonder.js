@@ -1,6 +1,5 @@
 import { EWorkerOperateType } from "../both_file/EWorkerOperateType";
 import { Log } from "../../../utils/Log";
-import { DrawRenderCommandBufferWorkerData } from "./draw/DrawRenderCommandBufferWorkerData";
 import { ERenderWorkerState } from "../both_file/ERenderWorkerState";
 import {
     initData as initGeometryWorkerData, resetPointCacheDatas, setPointCacheDatas,
@@ -20,7 +19,7 @@ import { LocationWorkerData } from "./shader/location/LocationWorkerData";
 import { GLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerData";
 import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
-import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandBufferUtils";
+// import { buildDrawDataMap } from "../../utils/draw/drawRenderCommandBufferUtils";
 import { initGL } from "./initGL";
 import { getState, setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
@@ -64,7 +63,7 @@ import {
 import { callFunc, empty, fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { initData as initShaderData } from "./shader/ShaderWorkerSystem";
 import { ShaderWorkerData } from "./shader/ShaderWorkerData";
-import { draw as frontDraw } from "../webgl1/render_file/front/FrontRenderWorkerSystem";
+import { draw as frontDraw } from "../webgl1/render_file/render/light/front/FrontRenderWorkerSystem";
 import { render_config } from "../both_file/data/render_config";
 import { webgl1_material_config } from "../webgl1/both_file/data/material_config";
 import { webgl1_shaderLib_generator } from "../webgl1/both_file/data/shaderLib_generator";
@@ -99,6 +98,13 @@ import {
     hasExtensionColorBufferFloat
 } from "../webgl2/render_file/device/GPUDetectWorkerSystem";
 import { GPUDetectWorkerData } from "./device/GPUDetectWorkerData";
+import { render as webgl1Render } from "../webgl1/render_file/render/RenderWorkerSystem";
+import { buildDrawDataMap } from "../../utils/render/renderUtils";
+import { BasicDrawRenderCommandBufferWorkerData } from "./draw/basic/BasicDrawRenderCommandBufferWorkerData";
+import { LightDrawRenderCommandBufferWorkerData } from "./draw/light/LightDrawRenderCommandBufferWorkerData";
+import { createTypeArraysOnlyOnce } from "./command_buffer/RenderCommandBufferWorkerSystem";
+import { BasicRenderCommandBufferWorkerData } from "./command_buffer/BasicRenderCommandBufferWorkerData";
+import { LightRenderCommandBufferWorkerData } from "./command_buffer/LightRenderCommandBufferWorkerData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -194,18 +200,20 @@ var _handleDraw = (data:any, PointLightWorkerData:any, GPUDetectWorkerData:any) 
         _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
     }
 
-    let drawDataMap = buildDrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData),
+    let drawDataMap = buildDrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
         gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state),
         bufferData = data.renderCommandBufferData;
 
     clearColor(state, render_config, drawDataMap.DeviceManagerDataFromSystem);
 
     if (_isBufferDataExist(bufferData)) {
+        bufferData = createTypeArraysOnlyOnce(bufferData, DataBufferConfig, BasicRenderCommandBufferWorkerData, LightRenderCommandBufferWorkerData);
+
         if (isWebgl1(WebGLDetectWorkerData)) {
-            frontDraw(gl, state, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, drawDataMap, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData), bufferData);
+            webgl1Render(gl, state, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, drawDataMap, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData), bufferData);
         }
         else {
-            deferDraw(state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), buildDeferDrawDataMap(GBufferWorkerData, DeferLightPassWorkerData), buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData), bufferData);
+            // deferDraw(state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DrawRenderCommandBufferWorkerData), buildDeferDrawDataMap(GBufferWorkerData, DeferLightPassWorkerData), buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData), bufferData);
         }
     }
 
@@ -289,7 +297,7 @@ var _initData = () => {
 
     initIndexBufferData(IndexBufferWorkerData);
 
-    initDrawRenderCommandBufferForDrawData(DrawRenderCommandBufferWorkerData);
+    initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
 
     initShaderData(ShaderWorkerData);
 }

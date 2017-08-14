@@ -28,9 +28,11 @@ export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, mat
 
 //todo refactor sendDataMap on type?
 export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap | WebGL2BasicSendUniformDataDataMap | WebGL2LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
-    mMatrices,
-    materialIndices,
-    geometryIndices,
+    renderCommandBufferData:{
+        mMatrices,
+        materialIndices,
+        geometryIndices
+    },
     count
 }) => {
     var {
@@ -59,6 +61,9 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
             bindAndUpdate,
             useShader
         } = drawFuncDataMap,
+        {
+            GPUDetectDataFromSystem
+        } = initShaderDataMap,
         // {
         //     mMatrices,
         //     materialIndices,
@@ -88,7 +93,7 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
 
         sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 
-        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem);
+        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem, GPUDetectDataFromSystem);
 
         sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
@@ -119,7 +124,7 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
     gl.drawArrays(gl[drawMode], startOffset, count);
 }
 
-export var initData = (BasicRenderDataFromSystem: any, LightRenderDataFromSystem: any) => {
-    initBasicDrawRenderCommandBufferData(BasicRenderDataFromSystem);
-    initLightDrawRenderCommandBufferData(LightRenderDataFromSystem);
+export var initData = (BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
+    initBasicDrawRenderCommandBufferData(BasicDrawRenderCommandBufferDataFromSystem);
+    initLightDrawRenderCommandBufferData(LightDrawRenderCommandBufferDataFromSystem);
 }

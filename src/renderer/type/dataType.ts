@@ -53,23 +53,27 @@ export type RenderCommandBufferForDrawData = {
 }
 
 export type BasicRenderCommandBufferForDrawData = {
-    mMatrices: Float32Array;
-    materialIndices: Uint32Array;
-    geometryIndices: Uint32Array;
-    vMatrices: Float32Array;
-    pMatrices: Float32Array;
+    renderCommandBufferData:{
+        mMatrices: Float32Array;
+        materialIndices: Uint32Array;
+        geometryIndices: Uint32Array;
+        vMatrices: Float32Array;
+        pMatrices: Float32Array;
+    };
 
     count: number;
 }
 
 export type LightRenderCommandBufferForDrawData = {
-    mMatrices: Float32Array;
-    materialIndices: Uint32Array;
-    geometryIndices: Uint32Array;
-    vMatrices: Float32Array;
-    pMatrices: Float32Array;
-    cameraPositions: Float32Array;
-    normalMatrices: Float32Array;
+    renderCommandBufferData:{
+        mMatrices: Float32Array;
+        materialIndices: Uint32Array;
+        geometryIndices: Uint32Array;
+        vMatrices: Float32Array;
+        pMatrices: Float32Array;
+        cameraPositions: Float32Array;
+        normalMatrices: Float32Array;
+    };
 
     count: number;
 }

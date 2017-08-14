@@ -33,7 +33,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
             pMatrices,
             cameraPositions,
             normalMatrices
-        } = bufferData,
+        } = bufferData.renderCommandBufferData,
         mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),

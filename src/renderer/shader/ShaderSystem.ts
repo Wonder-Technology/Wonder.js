@@ -30,7 +30,7 @@ export var create = (ShaderData: any) => {
 //
 // export var initMaterialShader = null;
 
-export var sendAttributeData = null;
+// export var sendAttributeData = null;
 
 // export var sendUniformData = null;
 

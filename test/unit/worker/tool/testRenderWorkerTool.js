@@ -59,6 +59,8 @@ var testRenderWorkerTool = (function () {
 
         clearAndOpenContractCheck: function (sandbox, data) {
             testUtils.prepareBufferForTest(sandbox, data, bufferTool);
+            sandbox.stub(wd.BufferUtilsForUnitTest, "isBasicDrawRenderCommandBufferDataTypeArrayNotExist").returns(true);
+            sandbox.stub(wd.BufferUtilsForUnitTest, "isLightDrawRenderCommandBufferDataTypeArrayNotExist").returns(true);
 
             webglWorkerTool.init(sandbox);
 

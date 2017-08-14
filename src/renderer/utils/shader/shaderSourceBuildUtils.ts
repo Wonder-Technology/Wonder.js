@@ -1,6 +1,6 @@
-import { getPrecision } from "../../device/GPUDetectSystem";
 import { GLSLChunk } from "../../shader/chunk/ShaderChunk";
 import { EGPUPrecision } from "../../enum/EGPUPrecision";
+import { getPrecision } from "../device/gpuDetectUtils";
 
 export var getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk, GPUDetectData:any) => {
     var precision = getPrecision(GPUDetectData),
