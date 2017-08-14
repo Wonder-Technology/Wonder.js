@@ -1,23 +1,23 @@
 import { Map } from "immutable";
 import { sendAttributeData } from "../RenderWorkerSystem";
-import { render as basicRender, sendUniformData } from "../../../../../webgl1/utils/render/basic/basicRenderUtils";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { directlySendUniformData } from "../../../../../utils/render/renderUtils";
 import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../../../type/dataType";
-import { WebGL1BasicSendUniformDataDataMap } from "../../../../../webgl1/type/utilsType";
 import { DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../../data/material_config";
-import { buildDrawFuncDataMap } from "../../../../../webgl1/utils/draw/drawRenderCommandBufferUtils";
 import { bindIndexBuffer, use } from "../../../../render_file/shader/ShaderWorkerSystem";
 import {    getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices} from "../../../../render_file/geometry/GeometryWorkerSystem";
 import { getColorArr3, getOpacity, useShader } from "../../../../render_file/material/MaterialWorkerSystem";
 import { bindAndUpdate, getMapCount } from "../../../../render_file/texture/MapManagerWorkerSystem";
+import { WebGL2BasicSendUniformDataDataMap } from "../../../../../webgl2/type/utilsType";
+import { render as basicRender, sendUniformData } from "../../../../../webgl2/utils/render/basic/basicRenderUtils";
+import { buildDrawFuncDataMap } from "../../../../../webgl2/utils/draw/basic/basicDrawRenderCommandBufferUtils";
 
 export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
     basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
@@ -43,7 +43,7 @@ export var buildSendUniformDataDataMap = (
     }
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
     sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, _buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), _buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };
 

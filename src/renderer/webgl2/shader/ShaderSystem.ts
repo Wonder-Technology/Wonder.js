@@ -15,10 +15,6 @@ export var initNoMaterialShader = null;
 
 export var initMaterialShader = null;
 
-export var sendUniformData = null;
-
-export var buildSendUniformDataDataMap = null;
-
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
         initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
