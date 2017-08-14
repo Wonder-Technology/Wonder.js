@@ -36,7 +36,7 @@ var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, prog
     for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
         let sendFunc = sendUniformFuncDataArr[i];
 
-        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap);
+        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap, drawDataMap);
     }
 }
 
@@ -101,3 +101,20 @@ var _getUnifromDataFromLightMaterial = (field: string, index: number,
     return data;
 }
 
+export var buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpacity:Function, MaterialDataFromSystem:any) => {
+    return {
+        getColorArr3: getColorArr3,
+        getOpacity: getOpacity,
+        MaterialDataFromSystem: MaterialDataFromSystem
+    }
+}
+
+export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3:Function, getSpecularColorArr3:Function, getLightModel:Function, getShininess:Function, LightMaterialDataFromSystem:any) => {
+    return {
+        getEmissionColorArr3: getEmissionColorArr3,
+        getSpecularColorArr3: getSpecularColorArr3,
+        getLightModel: getLightModel,
+        getShininess: getShininess,
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem
+    }
+}

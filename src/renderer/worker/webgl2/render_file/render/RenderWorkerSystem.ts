@@ -11,7 +11,6 @@ import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { clear } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { render as deferRender } from "../defer/DeferShadingWorkerSystem";
 
-//todo refactor
 export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
     basicData,
     lightData

@@ -11,7 +11,6 @@ import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
 import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { clear } from "../../../both_file/device/DeviceManagerWorkerSystem";
 
-//todo refactor
 export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, {
     basicData,
     lightData

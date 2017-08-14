@@ -95,3 +95,35 @@ var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
 
     return data;
 }
+
+
+export var buildSendUniformDataDataMap = (
+    sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
+    drawDataMap: DrawDataMap) => {
+    return {
+        glslSenderData: {
+            sendMatrix3: sendMatrix3,
+            sendMatrix4: sendMatrix4,
+            sendVector3: sendVector3,
+            sendInt: sendInt,
+            sendFloat1: sendFloat1,
+            sendFloat3: sendFloat3,
+
+            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
+        }
+    }
+}
+
+export var buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpacity:Function, MaterialDataFromSystem:any) => {
+    return {
+        getColorArr3: getColorArr3,
+        getOpacity: getOpacity,
+        MaterialDataFromSystem: MaterialDataFromSystem
+    }
+}
+
+export var buildBasicMaterialDataForGetUniformData = (BasicMaterialDataFromSystem:any) => {
+    return {
+        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem
+    }
+}

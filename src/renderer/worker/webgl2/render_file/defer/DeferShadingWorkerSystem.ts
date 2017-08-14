@@ -36,7 +36,7 @@ import { getPointLightPosition } from "../../../render_file/render/RenderWorkerS
 export var init = initUtils;
 
 export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
-    deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
+    deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, _buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
@@ -45,7 +45,7 @@ export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, 
     ), initShaderDataMap, bufferData);
 }
 
-export var buildSendUniformDataDataMap = (
+var _buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
     // getAmbientLightColorArr3,
     // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
@@ -77,9 +77,7 @@ export var buildSendUniformDataDataMap = (
         //     DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
         // },
         pointLightData: {
-            getPosition: (index: number) => {
-                return getPointLightPosition(index, drawDataMap);
-            },
+            getPosition: getPointLightPosition,
             getColorArr3: getPointLightColorArr3,
             getIntensity: getPointLightIntensity,
             getConstant: getConstant,

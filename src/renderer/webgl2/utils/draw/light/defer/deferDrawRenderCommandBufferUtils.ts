@@ -147,7 +147,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             //todo replace range with radius
             radius = computeRadius(colorArr3, constant, linear, quadratic);
 
-        sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i), uniformCacheMap, uniformLocationMap);
+        sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
         sendFloat3(gl, shaderIndex, program, "u_lightColor", colorArr3, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);

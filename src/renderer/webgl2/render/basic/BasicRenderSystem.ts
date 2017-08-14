@@ -19,7 +19,11 @@ import {
 import { directlySendUniformData } from "../../../utils/render/renderUtils";
 import { WebGL2BasicSendUniformDataDataMap } from "../../type/utilsType";
 import { buildDrawFuncDataMap } from "../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
-import { render as basicRender, sendUniformData } from "../../utils/render/basic/basicRenderUtils";
+import {
+    buildBasicMaterialDataForGetUniformData,
+    buildMaterialDataForGetUniformData, buildSendUniformDataDataMap, render as basicRender,
+    sendUniformData
+} from "../../utils/render/basic/basicRenderUtils";
 import { sendAttributeData } from "../RenderSystem";
 
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
@@ -29,38 +33,6 @@ export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderC
     ), initShaderDataMap, bufferData);
 })
 
-export var buildSendUniformDataDataMap = (
-    sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    drawDataMap: DrawDataMap) => {
-    return {
-        glslSenderData: {
-            sendMatrix3: sendMatrix3,
-            sendMatrix4: sendMatrix4,
-            sendVector3: sendVector3,
-            sendInt: sendInt,
-            sendFloat1: sendFloat1,
-            sendFloat3: sendFloat3,
-
-            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
-        }
-    }
-}
-
 var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
-    sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, _buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), _buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
+    sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };
-
-//todo refactor repeat code
-var _buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpacity:Function, MaterialDataFromSystem:any) => {
-    return {
-        getColorArr3: getColorArr3,
-        getOpacity: getOpacity,
-        MaterialDataFromSystem: MaterialDataFromSystem
-    }
-}
-
-var _buildBasicMaterialDataForGetUniformData = (BasicMaterialDataFromSystem:any) => {
-    return {
-        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem
-    }
-}
