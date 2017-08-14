@@ -14,7 +14,7 @@ var renderWorkerTool = (function () {
 
                     done();
                 }
-                else if (count <= 20) {
+                else if (count <= 30) {
                     count++;
                 }
                 else {
