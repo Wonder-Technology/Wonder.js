@@ -3,6 +3,7 @@ describe("defer shading", function () {
 
     var EWorkerOperateType = wd.EWorkerOperateType;
 
+    var Log = wdrd.Log;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -26,27 +27,28 @@ describe("defer shading", function () {
                 gl = workerTool.createGL(sandbox);
             });
 
-            it("if not support extensionColorBufferFloat, error", function () {
+            it("if not support extensionColorBufferFloat, warn", function () {
                 gpuDetectTool.setGPUDetectData("extensionColorBufferFloat", false);
+                sandbox.stub(Log, "warn");
 
-                expect(function () {
-                    e = {
-                        data: {
-                            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-                            geometryData: null,
-                            textureData: null,
-                            lightData: null,
-                            materialData: null,
-                            renderData:{
-                                deferShading: {
-                                    isInit: true
-                                }
+                e = {
+                    data: {
+                        operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                        geometryData: null,
+                        textureData: null,
+                        lightData: null,
+                        materialData: null,
+                        renderData:{
+                            deferShading: {
+                                isInit: true
                             }
                         }
                     }
+                }
 
-                    workerTool.execRenderWorkerMessageHandler(e);
-                }).toThrow("defer shading need support extensionColorBufferFloat extension");
+                workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(Log.warn).toCalledWith("defer shading need support extensionColorBufferFloat extension")
             });
         });
     });

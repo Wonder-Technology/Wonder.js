@@ -30,3 +30,6 @@ export { WebGLDetectWorkerData } from "./device/WebGLDetectWorkerData";
 export { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
 export { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";
 export { GPUDetectWorkerData } from "./device/GPUDetectWorkerData";
+export { BasicDrawRenderCommandBufferWorkerData } from "./draw/basic/BasicDrawRenderCommandBufferWorkerData";
+export { LightDrawRenderCommandBufferWorkerData } from "./draw/light/LightDrawRenderCommandBufferWorkerData";
+export { Log } from "../../../utils/Log";
