@@ -4,8 +4,8 @@ import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../ty
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 // import { getNoMaterialShaderIndex, use } from "../../shader/ShaderSystem";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
 import { render as deferRender, init as initUtils } from "../../../utils/worker/render_file/render/light/defer/deferShadingUtils";
 import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";

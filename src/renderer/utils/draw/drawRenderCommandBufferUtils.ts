@@ -1,8 +1,8 @@
 import { Map } from "immutable";
 import { EDrawMode } from "../../enum/EDrawMode";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
-import { IMaterialConfig } from "../../data/material_config";
-import { IShaderLibGenerator } from "../../data/shaderLib_generator";
+import { IMaterialConfig } from "../../data/material_config_interface";
+import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { sendData } from "../worker/render_file/texture/mapManagerUtils";
 import { IDrawFuncDataMap } from "../../interface/IDraw";
 import { WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap } from "../../webgl1/type/utilsType";

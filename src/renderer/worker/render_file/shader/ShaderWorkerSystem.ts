@@ -4,7 +4,7 @@ import {
 } from "../../../utils/worker/render_file/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../geometry/GeometryWorkerSystem";
 import { MaterialDataMap } from "../../../type/dataType";
-import { IShaderLibGenerator } from "../../../data/shaderLib_generator";
+import { IShaderLibGenerator } from "../../../data/shaderLib_generator_interface";
 import { Map } from "immutable";
 import { buildGLSLSource } from "../../webgl1/render_file/shader/shaderSourceBuildWorkerSystem";
 import { getGL } from "../../both_file/device/DeviceManagerWorkerSystem";

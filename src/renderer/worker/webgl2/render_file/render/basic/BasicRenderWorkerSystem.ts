@@ -8,8 +8,8 @@ import {
 } from "../../../../../type/dataType";
 import { DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../both_file/data/render_config";
-import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { bindIndexBuffer, use } from "../../../../render_file/shader/ShaderWorkerSystem";
 import {    getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices} from "../../../../render_file/geometry/GeometryWorkerSystem";

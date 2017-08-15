@@ -1,8 +1,8 @@
 import { getSingleSizeData } from "../../../common/operateBufferDataUtils";
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { setTypeArrayValue } from "../../../../../utils/typeArrayUtils";
-import { IMaterialConfig } from "../../../../data/material_config";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
+import { IMaterialConfig } from "../../../../data/material_config_interface";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
 import { Map } from "immutable";
 
 export var initNoMaterialShaders = (state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {

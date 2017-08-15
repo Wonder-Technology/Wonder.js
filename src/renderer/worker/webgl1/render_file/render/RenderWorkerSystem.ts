@@ -4,9 +4,9 @@ import { getAttribLocation, isAttributeLocationNotExist } from "../../../../webg
 import { sendBuffer } from "../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { sendAttributeData as sendAttributeDataUtils } from "../../../../webgl1/utils/worker/render_file/render/renderUtils";
 import { Map } from "immutable";
-import { IMaterialConfig } from "../../../../data/material_config";
+import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../both_file/data/render_config";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
 import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
 import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { clear } from "../../../both_file/device/DeviceManagerWorkerSystem";

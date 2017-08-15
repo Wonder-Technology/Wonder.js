@@ -1,4 +1,4 @@
-import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config";
+import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config_interface";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../type/utilsType";
 import { it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";

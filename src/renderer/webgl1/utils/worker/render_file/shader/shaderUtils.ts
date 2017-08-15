@@ -4,7 +4,7 @@ import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/ut
 import { Map } from "immutable";
 import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { getMaterialShaderLibConfig } from "../../../../data/MaterialConfigSystem";
-import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config";
+import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config_interface";
 import { genereateShaderIndex, initShader as initShaderUtils } from "../../../../../utils/shader/shaderUtils";
 import { getProgram } from "../../../../../utils/worker/render_file/shader/program/programUtils";
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";

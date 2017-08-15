@@ -1,7 +1,7 @@
 import { DrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
 import { Map } from "immutable";
-import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { draw as frontDraw } from "../../../../../draw/light/front/frontDrawRenderCommandBufferUtils";
 import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/IDraw";

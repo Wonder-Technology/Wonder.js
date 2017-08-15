@@ -8,7 +8,7 @@ import {
     initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config";
+import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
 
 export var initNoMaterialShader = null;

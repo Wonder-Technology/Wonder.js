@@ -1,8 +1,8 @@
 import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
 import { render as frontRender } from "../../../utils/worker/render_file/render/light/front/frontRenderUtils";
 import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";

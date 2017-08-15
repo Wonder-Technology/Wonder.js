@@ -22,7 +22,7 @@ import {
     initNoMaterialShaders, useShader as useShaderUtils
 } from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
+import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator_interface";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
 import { ProgramData } from "../../renderer/shader/program/ProgramData";
 import { LocationData } from "../../renderer/shader/location/LocationData";
@@ -57,7 +57,7 @@ import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/
 import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
-import { IMaterialConfig } from "../../renderer/data/material_config";
+import { IMaterialConfig } from "../../renderer/data/material_config_interface";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
 import {

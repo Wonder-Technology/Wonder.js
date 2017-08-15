@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { getMapCount } from "../../../render_file/texture/MapManagerWorkerSystem";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../../../data/material_config";
+import { IMaterialConfig, MaterialShaderLibConfig } from "../../../../data/material_config_interface";
 import { IWebGL1ShaderLibContentGenerator } from "../../both_file/data/shaderLib_generator";
 import {
     initMaterialShader as initMaterialShaderUtils,

@@ -8,8 +8,8 @@ import { clear, getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
 import { render as frontRender } from "./light/front/FrontRenderSystem";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
-import { IMaterialConfig } from "../../data/material_config";
-import { IShaderLibGenerator } from "../../data/shaderLib_generator";
+import { IMaterialConfig } from "../../data/material_config_interface";
+import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
 
 export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {

@@ -2,8 +2,8 @@ import { LightRenderCommandBufferForDrawData } from "../../../../../type/dataTyp
 import { DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../../../utils/typeArrayUtils";
 import { Map } from "immutable";
-import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import {
     drawGameObjects,

@@ -1,8 +1,8 @@
 import { Map } from "immutable";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
-import { IMaterialConfig } from "../../../../data/material_config";
+import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { WebGL1BasicSendUniformDataDataMap } from "../../../../webgl1/type/utilsType";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
 import { IWebGL1DrawFuncDataMap } from "../../../../webgl1/interface/IDraw";
 import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
 import { BasicRenderCommandBufferForDrawData } from "../../../../type/dataType";

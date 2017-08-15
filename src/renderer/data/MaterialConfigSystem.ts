@@ -1,4 +1,4 @@
-import { IMaterialConfig, MaterialShaderLibConfig } from "./material_config";
+import { IMaterialConfig, MaterialShaderLibConfig } from "./material_config_interface";
 import { expect } from "wonder-expect.js";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 

@@ -3,8 +3,8 @@ import {
     SendUniformDataGLSLSenderDataMap
 } from "../../../../../../type/utilsType";
 import { Map } from "immutable";
-import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../../../data/material_config";
+import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator_interface";
+import { IMaterialConfig } from "../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../../worker/both_file/data/render_config";
 import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,

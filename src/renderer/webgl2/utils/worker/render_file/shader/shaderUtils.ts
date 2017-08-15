@@ -2,7 +2,7 @@ import { addSendAttributeConfig, addSendUniformConfig } from "../../../shader/gl
 import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
-import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config";
+import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config_interface";
 import { getMaterialShaderLibConfig } from "../../../../data/MaterialConfigSystem";
 import {
     buildShaderIndexByMaterialIndexAndShaderNameMapKey, genereateShaderIndex,
