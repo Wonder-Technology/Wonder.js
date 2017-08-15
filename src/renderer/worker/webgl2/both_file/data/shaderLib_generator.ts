@@ -5,8 +5,11 @@ import {
     // light_common, lightEnd_fragment,
     // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
     webgl2_noShadowMap_fragment,
-    webgl2_noDiffuseMap_fragment, webgl2_noEmissionMap_fragment, webgl2_noLightMap_fragment, webgl2_noNormalMap_fragment, webgl2_noNormalMap_vertex,
-    webgl2_noSpecularMap_fragment, webgl2_noNormalMap_light_fragment,
+    webgl2_noDiffuseMap_fragment, webgl2_noEmissionMap_fragment,
+    webgl2_noLightMap_fragment,
+    webgl2_gbuffer_noNormalMap_fragment, webgl2_gbuffer_noNormalMap_vertex,
+    webgl2_noSpecularMap_fragment,
+    webgl2_deferLightPass_noNormalMap_fragment,
     // light_fragment,
     webgl2_basic_map_vertex,
     webgl2_basic_map_fragment,
@@ -469,11 +472,10 @@ export const webgl2_shaderLib_generator = {
         "GBufferNoNormalMapShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": webgl2_noNormalMap_vertex
+                    "source": webgl2_gbuffer_noNormalMap_vertex
                 },
                 "fs": {
-                    "source": webgl2_noNormalMap_fragment,
-                    "varDeclare": webgl2_noNormalMap_light_fragment.varDeclare,
+                    "source": webgl2_gbuffer_noNormalMap_fragment
                 }
             }
         },
@@ -574,7 +576,7 @@ export const webgl2_shaderLib_generator = {
         "DeferLightPassNoNormalMapShaderLib": {
             "glsl": {
                 "fs": {
-                    "funcDefine": webgl2_noNormalMap_light_fragment.funcDefine
+                    "source": webgl2_deferLightPass_noNormalMap_fragment
                 }
             }
         },

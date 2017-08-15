@@ -7,7 +7,6 @@ import {
     webgl1_noShadowMap_fragment,
     webgl1_noDiffuseMap_fragment, webgl1_noEmissionMap_fragment, webgl1_noLightMap_fragment, webgl1_noNormalMap_fragment, webgl1_noNormalMap_vertex,
     webgl1_noSpecularMap_fragment,
-    webgl1_noNormalMap_light_fragment,
     frontLight_fragment,
     webgl1_basic_map_vertex,
     webgl1_basic_map_fragment,
@@ -448,9 +447,7 @@ export const webgl1_shaderLib_generator = {
                     "source": webgl1_noNormalMap_vertex
                 },
                 "fs": {
-                    "source": webgl1_noNormalMap_fragment,
-                    "varDeclare": webgl1_noNormalMap_light_fragment.varDeclare,
-                    "funcDefine": webgl1_noNormalMap_fragment.funcDefine + webgl1_noNormalMap_light_fragment.funcDefine
+                    "source": webgl1_noNormalMap_fragment
                 }
             }
         },

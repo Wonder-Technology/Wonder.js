@@ -1,3 +1,7 @@
+@varDeclare
+in vec3 v_normal;
+@end
+
 @funcDeclare
 vec3 getNormal();
 
