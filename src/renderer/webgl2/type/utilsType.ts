@@ -31,7 +31,6 @@ export type WebGL2SendUniformDataPointLightDataMap = {
     getConstant: Function;
     getLinear: Function;
     getQuadratic: Function;
-    getRange: Function;
     getPosition: Function;
     computeRadius: Function;
 

@@ -6,7 +6,7 @@ uniform float u_lightIntensity;
 uniform float u_lightConstant;
 uniform float u_lightLinera;
 uniform float u_lightQuadratic;
-uniform float u_lightRange;
+//uniform float u_lightRange;
 
 uniform float u_lightRadius;
 
@@ -117,17 +117,10 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
             return vec3(0.0);
         }
 
-//        if(distance < light.range)
-            //todo replace range with radius
-        if(distance < u_lightRange)
-        {
-//            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-            attenuation = 1.0 / (u_lightConstant + u_lightLinera * distance + u_lightQuadratic * (distance * distance));
-        }
+        attenuation = 1.0 / (u_lightConstant + u_lightLinera * distance + u_lightQuadratic * (distance * distance));
 
         lightDir = normalize(lightDir);
 
-//        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
         return calcLight(lightDir, u_lightColor, u_lightIntensity, attenuation, normal, viewDir, diffuseColor, specularStrength, shininess);
 }
 

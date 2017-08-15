@@ -25,7 +25,7 @@ import {
 import { useShader } from "../../../render_file/material/MaterialWorkerSystem";
 import {
     getColorArr3 as getPointLightColorArr3, getConstant,
-    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius
+    getIntensity as getPointLightIntensity, getLinear, getQuadratic, computeRadius
 } from "../../../render_file/light/PointLightWorkerSystem";
 import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { buildDrawFuncDataMap } from "../../../../webgl2/utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
@@ -40,7 +40,7 @@ export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, 
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
-        getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
+        getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, computeRadius,
         drawDataMap
     ), initShaderDataMap, bufferData);
 }
@@ -49,7 +49,7 @@ var _buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
     // getAmbientLightColorArr3,
     // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
-    getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
+    getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, computeRadius,
     drawDataMap: DrawDataMap) => {
     return {
         glslSenderData: {
@@ -83,7 +83,6 @@ var _buildSendUniformDataDataMap = (
             getConstant: getConstant,
             getLinear: getLinear,
             getQuadratic: getQuadratic,
-            getRange: getRange,
             computeRadius: computeRadius,
 
             PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem

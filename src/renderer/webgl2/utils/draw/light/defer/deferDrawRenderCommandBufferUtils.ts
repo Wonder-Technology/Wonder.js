@@ -90,7 +90,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             getConstant,
             getLinear,
             getQuadratic,
-            getRange,
             getPosition,
             computeRadius,
 
@@ -137,7 +136,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             constant = getConstant(i, PointLightDataFromSystem),
             linear = getLinear(i, PointLightDataFromSystem),
             quadratic = getQuadratic(i, PointLightDataFromSystem),
-            //todo replace range with radius
+            //todo optimize: cache radius
             radius = computeRadius(colorArr3, constant, linear, quadratic);
 
         sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
@@ -146,7 +145,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
         sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightRange", getRange(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        // sendFloat1(gl, shaderIndex, program, "u_lightRange", getRange(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
 
         sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);

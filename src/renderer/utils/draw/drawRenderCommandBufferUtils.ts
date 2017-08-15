@@ -17,7 +17,6 @@ export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, mat
     return targetMatrices;
 }
 
-//todo refactor sendDataMap on type?
 export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IDrawFuncDataMap, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap | WebGL2BasicSendUniformDataDataMap | WebGL2LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
     renderCommandBufferData:{
         mMatrices,
