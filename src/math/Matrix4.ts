@@ -231,8 +231,8 @@ export class Matrix4 {
      * @param z The Z value of a translation.
      * @return this
      */
-    public translate(x, y, z): Matrix4 {
-        this.applyMatrix(Matrix4.create().setTranslate(x, y, z));
+    public translate(x, y, z, GlobalTempData:any): Matrix4 {
+        this.applyMatrix(GlobalTempData.matrix4_1.setTranslate(x, y, z), GlobalTempData);
 
         return this;
     }
@@ -339,23 +339,25 @@ export class Matrix4 {
      * @param z The Z coordinate of vector of rotation axis.
      * @return this
      */
-    public rotate(angle, vector3: Vector3): Matrix4;
-    public rotate(angle, x, y, z): Matrix4;
+    public rotate(angle, vector3: Vector3, GlobalTempData:any): Matrix4;
+    public rotate(angle, x, y, z, GlobalTempData:any): Matrix4;
 
     public rotate(...args): Matrix4 {
         var angle = args[0];
 
-        if (args.length === 2) {
-            let vector3 = args[1];
+        if (args.length === 3) {
+            let vector3 = args[1],
+                GlobalTempData = args[2];
 
-            this.applyMatrix(Matrix4.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
+            this.applyMatrix(GlobalTempData.matrix4_1.setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]), GlobalTempData);
         }
-        else if (args.length === 4) {
+        else if (args.length === 5) {
             let x = args[1],
                 y = args[2],
-                z = args[3];
+                z = args[3],
+                GlobalTempData = args[4];
 
-            this.applyMatrix(Matrix4.create().setRotate(angle, x, y, z));
+            this.applyMatrix(GlobalTempData.matrix4_1.setRotate(angle, x, y, z), GlobalTempData);
         }
 
         return this;
@@ -384,90 +386,92 @@ export class Matrix4 {
      * @param z The scale factor along the Z axis
      * @return this
      */
-    public scale(x, y, z): Matrix4 {
-        this.applyMatrix(Matrix4.create().setScale(x, y, z));
+    public scale(x, y, z, GlobalTempData:any): Matrix4 {
+        this.applyMatrix(GlobalTempData.matrix4_1.setScale(x, y, z), GlobalTempData);
 
         return this;
     }
 
-    public setLookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
-    public setLookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
+    //todo fix GlobalTempData
+    // public setLookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
+    // public setLookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
 
-    /**
-     * @function
-     * @name setLookAt
-     * @description Sets the specified matrix to a viewing matrix derived from an eye point, a target point
-     * and an up vector. The matrix maps the target point to the negative z-axis and the eye point to the
-     * origin, so that when you use a typical projection matrix, the center of the scene maps to the center
-     * of the viewport. Similarly, the direction described by the up vector projected onto the viewing plane
-     * is mapped to the positive y-axis so that it points upward in the viewport. The up vector must not be
-     * parallel to the line of sight from the eye to the reference point.
-     * @param {Vec3} position 3-d vector holding view position.
-     * @param {Vec3} target 3-d vector holding reference point.
-     * @param {Vec3} up 3-d vector holding the up direction.
-     * @returns {Mat4} Self for chaining.
-     */
-    public setLookAt(...args) {
-        var x, y, z,
-            eye, center, up;
-
-        if (args.length === 3) {
-            eye = args[0];
-            center = args[1];
-            up = args[2]
-        }
-        else if (args.length === 9) {
-            eye = Vector3.create(args[0], args[1], args[2]);
-            center = Vector3.create(args[3], args[4], args[5]);
-            up = Vector3.create(args[6], args[7], args[8]);
-        }
-        x = Vector3.create();
-
-        z = eye.clone().sub(center).normalize();
-
-        y = up.clone().normalize();
-        x.cross(y, z).normalize();
-        y.cross(z, x);
-
-        var r = this.values;
-
-        r[0] = x.x;
-        r[1] = x.y;
-        r[2] = x.z;
-        r[3] = 0;
-        r[4] = y.x;
-        r[5] = y.y;
-        r[6] = y.z;
-        r[7] = 0;
-        r[8] = z.x;
-        r[9] = z.y;
-        r[10] = z.z;
-        r[11] = 0;
-        r[12] = eye.x;
-        r[13] = eye.y;
-        r[14] = eye.z;
-        r[15] = 1;
-
-        return this;
-    }
-
-    /**
-     * Multiply the viewing matrix from the right.
-     * @param eyeX, eyeY, eyeZ The position of the eye point.
-     * @param centerX, centerY, centerZ The position of the reference point.
-     * @param upX, upY, upZ The direction of the up vector.
-     * @return this
-     */
-    public lookAt(eye: Vector3, center: Vector3, up: Vector3): Matrix4;
-    public lookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number): Matrix4;
-
-    public lookAt(...args): Matrix4 {
-        var matrix = Matrix4.create();
-
-        this.applyMatrix(matrix.setLookAt.apply(matrix, args));
-
-        return this;
-    }
+    // /**
+    //  * @function
+    //  * @name setLookAt
+    //  * @description Sets the specified matrix to a viewing matrix derived from an eye point, a target point
+    //  * and an up vector. The matrix maps the target point to the negative z-axis and the eye point to the
+    //  * origin, so that when you use a typical projection matrix, the center of the scene maps to the center
+    //  * of the viewport. Similarly, the direction described by the up vector projected onto the viewing plane
+    //  * is mapped to the positive y-axis so that it points upward in the viewport. The up vector must not be
+    //  * parallel to the line of sight from the eye to the reference point.
+    //  * @param {Vec3} position 3-d vector holding view position.
+    //  * @param {Vec3} target 3-d vector holding reference point.
+    //  * @param {Vec3} up 3-d vector holding the up direction.
+    //  * @returns {Mat4} Self for chaining.
+    //  */
+    // public setLookAt(...args) {
+    //     var x, y, z,
+    //         eye, center, up;
+    //
+    //     if (args.length === 3) {
+    //         eye = args[0];
+    //         center = args[1];
+    //         up = args[2]
+    //     }
+    //     else if (args.length === 9) {
+    //         eye = Vector3.create(args[0], args[1], args[2]);
+    //         center = Vector3.create(args[3], args[4], args[5]);
+    //         up = Vector3.create(args[6], args[7], args[8]);
+    //     }
+    //     x = Vector3.create();
+    //
+    //     z = eye.clone().sub(center).normalize();
+    //
+    //     y = up.clone().normalize();
+    //     x.cross(y, z).normalize();
+    //     y.cross(z, x);
+    //
+    //     var r = this.values;
+    //
+    //     r[0] = x.x;
+    //     r[1] = x.y;
+    //     r[2] = x.z;
+    //     r[3] = 0;
+    //     r[4] = y.x;
+    //     r[5] = y.y;
+    //     r[6] = y.z;
+    //     r[7] = 0;
+    //     r[8] = z.x;
+    //     r[9] = z.y;
+    //     r[10] = z.z;
+    //     r[11] = 0;
+    //     r[12] = eye.x;
+    //     r[13] = eye.y;
+    //     r[14] = eye.z;
+    //     r[15] = 1;
+    //
+    //     return this;
+    // }
+    //
+    // /**
+    //  * Multiply the viewing matrix from the right.
+    //  * @param eyeX, eyeY, eyeZ The position of the eye point.
+    //  * @param centerX, centerY, centerZ The position of the reference point.
+    //  * @param upX, upY, upZ The direction of the up vector.
+    //  * @return this
+    //  */
+    // public lookAt(eye: Vector3, center: Vector3, up: Vector3, GlobalTempData:any): Matrix4;
+    // public lookAt(eyeX: number, eyeY: number, eyeZ: number, centerX: number, centerY: number, centerZ: number, upX: number, upY: number, upZ: number, GlobalTempData:any): Matrix4;
+    //
+    // public lookAt(...args): Matrix4 {
+    //     var matrix = Matrix4.create();
+    //
+    //     //todo optimize: not create Matrix4?
+    //     this.applyMatrix(matrix.setLookAt.apply(matrix, args));
+    //
+    //     return this;
+    // }
 
     @requireCheck(function(left: number, right: number, bottom: number, top: number, near: number, far: number) {
         assert(left !== right && bottom !== top && near !== far, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
@@ -505,8 +509,8 @@ export class Matrix4 {
         return this;
     }
 
-    public ortho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
-        this.applyMatrix(Matrix4.create().setOrtho(left, right, bottom, top, near, far));
+    public ortho(left: number, right: number, bottom: number, top: number, near: number, far: number, GlobalTempData:any): Matrix4 {
+        this.applyMatrix(Matrix4.create().setOrtho(left, right, bottom, top, near, far), GlobalTempData);
 
         return this;
     }
@@ -563,16 +567,15 @@ export class Matrix4 {
         return this;
     }
 
-    public perspective(fovy: number, aspect: number, near: number, far: number): Matrix4 {
-        this.applyMatrix(Matrix4.create().setPerspective(fovy, aspect, near, far));
+    public perspective(fovy: number, aspect: number, near: number, far: number, GlobalTempData:any): Matrix4 {
+        this.applyMatrix(Matrix4.create().setPerspective(fovy, aspect, near, far), GlobalTempData);
 
         return this;
     }
 
-    public applyMatrix(other: Matrix4, notChangeSelf: boolean = false): Matrix4 {
+    public applyMatrix(other: Matrix4, GlobalTempData:any, notChangeSelf: boolean = false): Matrix4 {
         var a = this,
-            //todo optimize:use temp matrix4
-            b = other.clone();
+            tempMat4 = GlobalTempData.matrix4_3;
 
         /*!
          b*a，而不是a*b
@@ -581,10 +584,10 @@ export class Matrix4 {
          */
 
         if (notChangeSelf) {
-            return b.multiply(a);
+            return tempMat4.multiply(other, a);
         }
 
-        this.values = b.multiply(a).values;
+        this.values = tempMat4.multiply(other, a).values;
 
         return this;
     }
