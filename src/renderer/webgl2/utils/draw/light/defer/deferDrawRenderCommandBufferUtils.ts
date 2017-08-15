@@ -16,6 +16,7 @@ import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light
 import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
 import { unbindVAO } from "../../../vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
+import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
     var {
@@ -54,8 +55,7 @@ var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMateria
 
     drawFuncDataMap.bindGBuffer(gl, GBufferDataFromSystem);
 
-    //todo refactor
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    clear(gl, drawDataMap.DeviceManagerDataFromSystem);
 
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);

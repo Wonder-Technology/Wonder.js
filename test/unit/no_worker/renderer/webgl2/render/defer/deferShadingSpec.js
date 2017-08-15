@@ -424,12 +424,12 @@ describe("defer shading", function () {
                 expect(gl.depthMask).toCalledWith(true);
                 expect(gl.depthMask.withArgs(true)).toCalledBefore(gl.clear.getCall(1));
             });
-            it("clear color buffer and depth buffer" +
+            it("clear color buffer and stencil buffer and depth buffer" +
                 "(An important point we must be careful about is to enable writing into the depth buffer before clearing it. gl.clear() does not touch the depth buffer if the depth mask is set to FALSE.)", function () {
                 directorTool.init(state);
                 directorTool.loopBody(state);
 
-                expect(gl.clear.getCall(1)).toCalledWith(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                expect(gl.clear.getCall(1)).toCalledWith(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
             });
             it("enable depth test", function () {
                 directorTool.init(state);
