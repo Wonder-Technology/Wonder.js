@@ -7,7 +7,7 @@ import {
 } from "./MaterialSystem";
 import {
     getColorDataSize
-} from "../../renderer/utils/material/materialUtils";
+} from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { deleteBySwapAndReset, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { Color } from "../../structure/Color";
 import { EShading } from "./EShading";
@@ -22,13 +22,13 @@ import {
     getShininess as getShininessUtils, getShininessDataSize,
     getSpecularColorArr3 as getSpecularColorArr3Utils, hasDiffuseMap as hasDiffuseMapUtils,
     hasSpecularMap as hasSpecularMapUtils, markHasMap, markNotHasMap,
-} from "../../renderer/utils/material/lightMaterialUtils";
+} from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
 import { Material } from "./Material";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { MaterialData } from "./MaterialData";
 import { Map } from "immutable";
 import { initData as initSpecifyMaterialData } from "./SpecifyMaterialSystem";
-import { getLightMaterialBufferCount, getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getLightMaterialBufferCount } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
@@ -37,6 +37,7 @@ import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { Texture } from "../../renderer/texture/Texture";
 import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {

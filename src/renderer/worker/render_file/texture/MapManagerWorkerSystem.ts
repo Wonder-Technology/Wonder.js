@@ -2,7 +2,7 @@ import { TextureInitWorkerData } from "../../../type/messageDataType";
 import {
     bindAndUpdate as bindAndUpdateUtils, createTypeArrays, getBufferCount,
     getMapCount as getMapCountUtils
-} from "../../../utils/texture/mapManagerUtils";
+} from "../../../utils/worker/render_file/texture/mapManagerUtils";
 import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
 
 export var initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {

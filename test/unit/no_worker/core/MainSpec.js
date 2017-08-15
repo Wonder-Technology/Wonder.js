@@ -276,6 +276,8 @@ describe("Main", function() {
             it("support full screen", function(){
                 var view = device.view;
 
+                DomQuery.aaa = 1;
+
                 Main.setConfig({
                     screenSize:EScreenSize.FULL,
                     canvasID: "#event-test"

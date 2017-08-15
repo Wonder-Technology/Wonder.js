@@ -12,16 +12,16 @@ import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import {
     createTypeArrays, getColorArr3 as getColorArr3Utils,
-    getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize
-} from "../../renderer/utils/light/directionLightUtils";
+    getIntensity as getIntensityUtils
+} from "../../renderer/utils/worker/render_file/light/directionLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { Vector3 } from "../../math/Vector3";
 import { deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { getDirectionLightBufferCount } from "../../renderer/utils/light/bufferUtils";
+import { getColorDataSize, getIntensityDataSize } from "../../renderer/utils/light/directionLightUtils";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= max count", () => {

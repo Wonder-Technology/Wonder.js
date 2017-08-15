@@ -12,7 +12,7 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { setColor3Data } from "../utils/operateBufferDataUtils";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { deleteBySwapAndReset } from "../../utils/typeArrayUtils";
-import { getColorDataSize } from "../../renderer/utils/light/specifyLightUtils";
+import { getColorDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 
 export var create = requireCheckFunc((light: Light, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);

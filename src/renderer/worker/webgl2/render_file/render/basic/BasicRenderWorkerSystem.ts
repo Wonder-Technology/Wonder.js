@@ -1,7 +1,7 @@
 import { Map } from "immutable";
 import { sendAttributeData } from "../RenderWorkerSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
-import { directlySendUniformData } from "../../../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../../../utils/worker/render_file/render/renderUtils";
 import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
@@ -20,8 +20,8 @@ import {
     buildBasicMaterialDataForGetUniformData, buildMaterialDataForGetUniformData,
     buildSendUniformDataDataMap, render as basicRender,
     sendUniformData
-} from "../../../../../webgl2/utils/render/basic/basicRenderUtils";
-import { buildDrawFuncDataMap } from "../../../../../webgl2/utils/draw/basic/basicDrawRenderCommandBufferUtils";
+} from "../../../../../webgl2/utils/worker/render_file/render/basic/basicRenderUtils";
+import { buildDrawFuncDataMap } from "../../../../../webgl2/utils/worker/render_file/draw/basic/basicDrawRenderCommandBufferUtils";
 
 export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
     basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(

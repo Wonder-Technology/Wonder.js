@@ -1,22 +1,13 @@
 import { Map } from "immutable";
 import { EDrawMode } from "../../enum/EDrawMode";
-import { IRenderConfig } from "../../worker/both_file/data/render_config";
 import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
-import { setClearColor } from "../device/deviceManagerUtils";
 import { IMaterialConfig } from "../../data/material_config";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator";
-import { sendData } from "../texture/mapManagerUtils";
+import { sendData } from "../worker/render_file/texture/mapManagerUtils";
 import { IDrawFuncDataMap } from "../../interface/IDraw";
-import { BufferUtilsForUnitTest } from "../../../utils/BufferUtilsForUnitTest";
 import { WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap } from "../../webgl1/type/utilsType";
-import { initData as initBasicDrawRenderCommandBufferData } from "./basic/basicDrawRenderCommandBufferUtils";
-import { initData as initLightDrawRenderCommandBufferData } from "./light/lightDrawRenderCommandBufferUtils";
 import { WebGL2BasicSendUniformDataDataMap, WebGL2LightSendUniformDataDataMap } from "../../webgl2/type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../type/dataType";
-
-export var clearColor = (gl: WebGLRenderingContext, render_config: IRenderConfig, DeviceManagerDataFromSystem: any) => {
-    setClearColor(gl, render_config.clearColor, DeviceManagerDataFromSystem);
-}
 
 export var updateSendMatrixFloat32ArrayData = (sourceMatrices: Float32Array, matStartIndex: number, matEndIndex: number, targetMatrices: Float32Array) => {
     for (let i = matStartIndex; i < matEndIndex; i++) {
@@ -122,9 +113,4 @@ var _drawArray = (gl: WebGLRenderingContext, geometryIndex: number, drawMode: ED
         count = getVerticesCount(geometryIndex, GeometryDataFromSystem);
 
     gl.drawArrays(gl[drawMode], startOffset, count);
-}
-
-export var initData = (BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
-    initBasicDrawRenderCommandBufferData(BasicDrawRenderCommandBufferDataFromSystem);
-    initLightDrawRenderCommandBufferData(LightDrawRenderCommandBufferDataFromSystem);
 }

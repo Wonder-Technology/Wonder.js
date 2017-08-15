@@ -2,7 +2,7 @@ import {
     initData as initDataUtils, sendBuffer as sendBufferUtils,
     sendFloat1 as sendFloat1Utils, sendFloat3 as sendFloat3Utils, sendInt as sendIntUtils, sendMatrix3 as sendMatrix3Utils, sendMatrix4 as sendMatrix4Utils,
     sendVector3 as sendVector3Utils
-} from "../../utils/shader/glslSender/glslSenderUtils";
+} from "../../utils/worker/render_file/shader/glslSender/glslSenderUtils";
 import { UniformCacheMap, UniformShaderLocationMap } from "../../type/dataType";
 import { getUniformLocation, isUniformLocationNotExist } from "../location/LocationSystem";
 import { Vector3 } from "../../../math/Vector3";

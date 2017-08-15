@@ -1,6 +1,6 @@
 import {
     getUniformLocation as getUniformLocationUtils, initData as initDataUtils, isUniformLocationNotExist as isUniformLocationNotExistUtils
-} from "../../../../utils/shader/location/locationUtils";
+} from "../../../../utils/worker/render_file/shader/location/locationUtils";
 
 export var getUniformLocation = getUniformLocationUtils;
 

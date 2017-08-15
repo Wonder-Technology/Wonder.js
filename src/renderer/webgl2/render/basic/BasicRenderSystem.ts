@@ -16,14 +16,14 @@ import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../type/dataType";
-import { directlySendUniformData } from "../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../utils/worker/render_file/render/renderUtils";
 import { WebGL2BasicSendUniformDataDataMap } from "../../type/utilsType";
-import { buildDrawFuncDataMap } from "../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
+import { buildDrawFuncDataMap } from "../../utils/worker/render_file/draw/basic/basicDrawRenderCommandBufferUtils";
 import {
     buildBasicMaterialDataForGetUniformData,
     buildMaterialDataForGetUniformData, buildSendUniformDataDataMap, render as basicRender,
     sendUniformData
-} from "../../utils/render/basic/basicRenderUtils";
+} from "../../utils/worker/render_file/render/basic/basicRenderUtils";
 import { sendAttributeData } from "../RenderSystem";
 
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {

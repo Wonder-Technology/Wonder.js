@@ -22,7 +22,7 @@ import { initData as initArrayBufferDataSystem } from "../renderer/buffer/ArrayB
 import { initData as initIndexBufferDataSystem } from "../renderer/buffer/IndexBufferSystem";
 import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectDataSystem } from "../core/entityObject/gameObject/GameObjectSystem";
-import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/shader/program/programUtils";
+import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/worker/render_file/shader/program/programUtils";
 import { initData as initDeviceManagerDataSystem } from "../renderer/device/DeviceManagerSystem";
 import { initData as initProgramDataSystem } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationDataSystem } from "../renderer/shader/location/LocationSystem";

@@ -23,7 +23,7 @@ import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
 // } from "../../../component/light/PointLightSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../shader/glslSender/GLSLSenderSystem";
 import { getColorArr3, getOpacity, useShader } from "../../../../component/material/MaterialSystem";
-import { buildDrawFuncDataMap } from "../../utils/draw/drawRenderCommandBufferUtils";
+import { buildDrawFuncDataMap } from "../../utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
@@ -34,8 +34,8 @@ import {
     buildBasicMaterialDataForGetUniformData,
     buildMaterialDataForGetUniformData, buildSendUniformDataDataMap, render as basicRender,
     sendUniformData
-} from "../../utils/render/basic/basicRenderUtils";
-import { directlySendUniformData } from "../../../utils/render/renderUtils";
+} from "../../utils/worker/render_file/render/basic/basicRenderUtils";
+import { directlySendUniformData } from "../../../utils/worker/render_file/render/renderUtils";
 import { sendAttributeData } from "../RenderSystem";
 
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {

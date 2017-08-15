@@ -30,11 +30,7 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 import { AmbientLightData } from "../../component/light/AmbientLightData";
 import { DirectionLightData } from "../../component/light/DirectionLightData";
 import { getGL, setSide } from "../device/DeviceManagerSystem";
-import {
-    getBasicMaterialBufferStartIndex,
-    getLightMaterialBufferStartIndex
-} from "../utils/material/bufferUtils";
-import { initState } from "../utils/state/stateUtils";
+import { initState } from "../utils/worker/render_file/state/stateUtils";
 import {
     getAmbientLightBufferCount, getDirectionLightBufferCount,
     getPointLightBufferCount
@@ -44,7 +40,7 @@ import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
-import { buildInitShaderDataMap } from "../utils/material/materialUtils";
+import { buildInitShaderDataMap } from "../utils/worker/render_file/material/materialUtils";
 import { DeferLightPassData } from "../webgl2/render/light/defer/light/DeferLightPassData";
 import { ShaderData } from "../shader/ShaderData";
 import { initMaterialShader as initMaterialShaderWebGL2, initNoMaterialShader as initNoMaterialShaderWebGL2 } from "../webgl2/shader/ShaderSystem";
@@ -54,7 +50,7 @@ import { webgl1_material_config } from "../worker/webgl1/both_file/data/material
 import { webgl2_material_config } from "../worker/webgl2/both_file/data/material_config";
 import { initMaterialShader as initMaterialShaderWebGL1,   initNoMaterialShader as initNoMaterialShaderWebGL1  } from "../webgl1/shader/ShaderSystem";
 import { isWebgl1 } from "../device/WebGLDetectSystem";
-import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/draw/light/defer/deferDrawRenderCommandBufferUtils";
+import { buildDrawDataMap as buildDeferDrawDataMap } from "../webgl2/utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { WebGL1PointLightData } from "../webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../webgl2/light/PointLightData";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
@@ -64,7 +60,7 @@ import { init as initWebGL1Material } from "../../component/webgl1/material/Mate
 import { GPUDetectData } from "../device/GPUDetectData";
 import { BasicRenderCommandBufferData } from "../command_buffer/BasicRenderCommandBufferData";
 import { LightRenderCommandBufferData } from "../command_buffer/LightRenderCommandBufferData";
-import { buildDrawDataMap } from "../utils/render/renderUtils";
+import { buildDrawDataMap } from "../utils/worker/render_file/render/renderUtils";
 import { BasicDrawRenderCommandBufferData } from "../draw/basic/BasicDrawRenderCommandBufferData";
 import { LightDrawRenderCommandBufferData } from "../draw/light/LightDrawRenderCommandBufferData";
 import { clearColor } from "../draw/DrawRenderCommandBufferSystem";
@@ -72,6 +68,8 @@ import { createRenderCommandBufferData as createRenderCommandBufferWorkerData } 
 import { render as webgl2Render, init as initWebGL2Render } from "../webgl2/render/RenderSystem";
 import { render as webgl1Render } from "../webgl1/render/RenderSystem";
 import { WebGL2RenderInitWorkerData } from "../webgl2/type/messageDataType";
+import { getLightMaterialBufferStartIndex } from "../utils/material/bufferUtils";
+import { getBasicMaterialBufferStartIndex } from "../utils/material/bufferUtils";
 
 var _checkLightCount = requireCheckFunc((PointLightData: any) => {
     it("count should <= max count", () => {

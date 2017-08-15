@@ -4,7 +4,7 @@ import { Texture } from "./Texture";
 import {
     bindAndUpdate as bindAndUpdateUtils,
     createTypeArrays, getBufferCount, getMapCount as getMapCountUtils, getMaxTextureCount
-} from "../utils/texture/mapManagerUtils";
+} from "../utils/worker/render_file/texture/mapManagerUtils";
 import {
     bindToUnit, initData as initTextureData, initTextures, needUpdate, setUniformSamplerName,
     update

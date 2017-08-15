@@ -3,9 +3,9 @@ import {
     // createTypeArrays,
     getColor as getColorUtils, getColorArr3 as getColorArr3Utils, getConstant as getConstantUtils,
     getIntensity as getIntensityUtils, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getRange as getRangeUtils
-} from "../../../utils/light/pointLightUtils";
+} from "../../../utils/worker/render_file/light/pointLightUtils";
 import { Color } from "../../../../structure/Color";
-import { computeRadius as computeRadiusUtils } from "../../../webgl2/utils/light/pointLightUtils";
+import { computeRadius as computeRadiusUtils } from "../../../webgl2/utils/worker/render_file/light/pointLightUtils";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, PointLightWorkerData: any) => {
     PointLightWorkerData.positionArr = positionArr;

@@ -8,15 +8,16 @@ import {
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
-import {
-    createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
-    getColorDataSize
-} from "../../renderer/utils/light/ambientLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { getAmbientLightBufferCount } from "../../renderer/utils/light/bufferUtils";
+import {
+    createTypeArrays, getColorArr3 as getColorArr3Utils,
+    getColorDataSize
+} from "../../renderer/utils/worker/render_file/light/ambientLightUtils";
+import { getColor as getColorUtils } from "../../renderer/utils/light/ambientLightUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("count should <= max count", () => {

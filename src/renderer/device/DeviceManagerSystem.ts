@@ -13,7 +13,7 @@ import {
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
     setScreen as setScreenUtils, setSide as setSideUtils,
     setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
-} from "../utils/device/deviceManagerUtils";
+} from "../utils/worker/both_file/device/deviceManagerUtils";
 import { Log } from "../../utils/Log";
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
@@ -59,8 +59,8 @@ export var setViewportOfGL = setViewportOfGLUtils;
 
 export var getScreenSize = getScreenSizeUtils;
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, state: Map<any, any>) => {
-    return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state);
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, DomQuery:any, state: Map<any, any>) => {
+    return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
 });
 
 var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {

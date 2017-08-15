@@ -19,8 +19,8 @@ import {
     // getFlipY as getFlipYUtils,
     getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
     bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
-    update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas, getSource as getSourceUtils
-} from "../utils/texture/textureUtils";
+    update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils
+} from "../utils/worker/render_file/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { ImageSrcIndexData } from "../type/messageDataType";

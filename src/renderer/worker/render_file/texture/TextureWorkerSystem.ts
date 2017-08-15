@@ -5,7 +5,7 @@ import {
     createTypeArrays, getBufferCount,
     initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils,
     bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY
-} from "../../../utils/texture/textureUtils";
+} from "../../../utils/worker/render_file/texture/textureUtils";
 import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messageDataType";
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";

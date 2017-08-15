@@ -2,7 +2,7 @@ import { getOrCreateBuffer as getOrCreateBufferUtils, initData as initDataUtils 
 import { getIndices } from "../../component/geometry/GeometrySystem";
 import { getGL } from "../device/DeviceManagerSystem";
 import { DeviceManagerData } from "../device/DeviceManagerData";
-import { disposeBuffer as disposeBufferUtils } from "../utils/buffer/bufferUtils";
+import { disposeBuffer as disposeBufferUtils } from "../utils/worker/render_file/buffer/bufferUtils";
 
 export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, GeometryData: any, IndexBufferData: any) => {
     return getOrCreateBufferUtils(gl, geometryIndex, getIndices, GeometryData, IndexBufferData);

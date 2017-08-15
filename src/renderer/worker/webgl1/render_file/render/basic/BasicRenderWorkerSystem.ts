@@ -5,9 +5,9 @@ import {
     buildMaterialDataForGetUniformData, buildSendUniformDataDataMap,
     render as basicRender,
     sendUniformData
-} from "../../../../../webgl1/utils/render/basic/basicRenderUtils";
+} from "../../../../../webgl1/utils/worker/render_file/render/basic/basicRenderUtils";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
-import { directlySendUniformData } from "../../../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../../../utils/worker/render_file/render/renderUtils";
 import {
     BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
@@ -17,7 +17,7 @@ import { DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../../data/material_config";
-import { buildDrawFuncDataMap } from "../../../../../webgl1/utils/draw/drawRenderCommandBufferUtils";
+import { buildDrawFuncDataMap } from "../../../../../webgl1/utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 import { bindIndexBuffer, use } from "../../../../render_file/shader/ShaderWorkerSystem";
 import {    getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices} from "../../../../render_file/geometry/GeometryWorkerSystem";

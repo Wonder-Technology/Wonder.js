@@ -7,7 +7,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
-import { render as deferRender, init as initUtils } from "../../../utils/render/light/defer/deferShadingUtils";
+import { render as deferRender, init as initUtils } from "../../../utils/worker/render_file/render/light/defer/deferShadingUtils";
 import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";
 import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
@@ -26,13 +26,13 @@ import {
 } from "../../../../../component/light/PointLightSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../shader/glslSender/GLSLSenderSystem";
 import { useShader } from "../../../../../component/material/MaterialSystem";
-import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../utils/render/light/defer/gbuffer/gBufferUtils";
+import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import { computeRadius } from "../../../light/PointLightSystem";
 import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { sendUniformData } from "../LightRenderSystem";
-import { directlySendUniformData } from "../../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { sendAttributeData } from "../../RenderSystem";
-import { buildDrawFuncDataMap } from "../../../utils/draw/light/defer/deferDrawRenderCommandBufferUtils";
+import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 
 export var init = initUtils;
 

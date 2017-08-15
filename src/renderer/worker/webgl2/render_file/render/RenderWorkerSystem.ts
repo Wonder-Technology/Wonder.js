@@ -1,7 +1,7 @@
 import { getNormals, getTexCoords, getVertices } from "../../../render_file/geometry/GeometryWorkerSystem";
-import { getAttribLocation, isAttributeLocationNotExist } from "../../../../webgl1/utils/shader/location/locationUtils";
+import { getAttribLocation, isAttributeLocationNotExist } from "../../../../webgl1/utils/worker/render_file/shader/location/locationUtils";
 import { sendBuffer } from "../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
-import { sendAttributeData as sendAttributeDataUtils } from "../../../../webgl1/utils/render/renderUtils";
+import { sendAttributeData as sendAttributeDataUtils } from "../../../../webgl1/utils/worker/render_file/render/renderUtils";
 import { Map } from "immutable";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../both_file/data/render_config";

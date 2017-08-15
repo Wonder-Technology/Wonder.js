@@ -1,7 +1,7 @@
 import {
     bindIndexBuffer as bindIndexBufferUtils,
     use as useUtils
-} from "../../../utils/shader/shaderUtils";
+} from "../../../utils/worker/render_file/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../geometry/GeometryWorkerSystem";
 import { MaterialDataMap } from "../../../type/dataType";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator";

@@ -12,7 +12,7 @@ import curry from "wonder-lodash/curry";
 import { MessageInitGLData } from "../../type/messageDataType";
 import { Map } from "immutable";
 import { setCanvas } from "../../../structure/ViewSystem";
-import { getOnlyGL } from "../../utils/device/deviceManagerUtils";
+import { getOnlyGL } from "../../utils/worker/both_file/device/deviceManagerUtils";
 
 export var initGL = (data: MessageInitGLData, detect:Function, WebGLDetectWorkerData:any, GPUDetectWorkerData:any) => {
     return compose(

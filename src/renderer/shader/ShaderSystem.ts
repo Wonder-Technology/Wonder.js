@@ -2,7 +2,7 @@ import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDe
 import {
     bindIndexBuffer as bindIndexBufferUtils,
     use as useUtils
-} from "../utils/shader/shaderUtils";
+} from "../utils/worker/render_file/shader/shaderUtils";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../component/geometry/GeometrySystem";
 import { createMap } from "../../utils/objectUtils";
 

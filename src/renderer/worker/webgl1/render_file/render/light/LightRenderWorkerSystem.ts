@@ -2,7 +2,7 @@
 import {
     buildLightMaterialDataForGetUniformData, buildMaterialDataForGetUniformData,
     sendUniformData as sendUniformDataUtils
-} from "../../../../../webgl1/utils/render/light/lightRenderUtils";
+} from "../../../../../webgl1/utils/worker/render_file/render/light/lightRenderUtils";
 import {    getEmissionColorArr3, getLightModel, getShininess,
     getSpecularColorArr3} from "../../../../render_file/material/LightMaterialWorkerSystem";
 import { getColorArr3, getOpacity } from "../../../../render_file/material/MaterialWorkerSystem";

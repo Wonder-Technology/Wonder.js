@@ -4,7 +4,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
-import { render as frontRender } from "../../../utils/render/light/front/frontRenderUtils";
+import { render as frontRender } from "../../../utils/worker/render_file/render/light/front/frontRenderUtils";
 import { bindIndexBuffer, use } from "../../../../shader/ShaderSystem";
 import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
@@ -23,9 +23,9 @@ import {
 } from "../../../../../component/light/PointLightSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../shader/glslSender/GLSLSenderSystem";
 import { useShader } from "../../../../../component/material/MaterialSystem";
-import { buildDrawFuncDataMap } from "../../../utils/draw/drawRenderCommandBufferUtils";
+import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
-import { directlySendUniformData } from "../../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { sendUniformData } from "../LightRenderSystem";
 import { sendAttributeData } from "../../RenderSystem";
 

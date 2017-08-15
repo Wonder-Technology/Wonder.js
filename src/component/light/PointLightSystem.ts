@@ -15,16 +15,21 @@ import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteOneItemBySwapAndReset, setSingleValue } from "../../utils/typeArrayUtils";
 import {
-    getConstant as getConstantUtils, getConstantDataSize, getLinearDataSize,
+    getConstant as getConstantUtils,
     getLinear as getLinearUtils,
-    getQuadratic as getQuadraticUtils, getQuadraticDataSize, getRange as getRangeUtils, getRangeDataSize,
+    getQuadratic as getQuadraticUtils, getRange as getRangeUtils,
     createTypeArrays, getColorArr3 as getColorArr3Utils,
-    getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize
-} from "../../renderer/utils/light/pointLightUtils";
+    getIntensity as getIntensityUtils
+} from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
+import {
+    getConstantDataSize, getIntensityDataSize,
+    getQuadraticDataSize, getRangeDataSize
+} from "../../renderer/utils/light/pointLightUtils";
+import { getColorDataSize, getLinearDataSize } from "../../renderer/utils/light/pointLightUtils";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)

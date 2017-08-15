@@ -20,7 +20,7 @@ import {
     getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize,
     getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex,
     initNoMaterialShaders, useShader as useShaderUtils
-} from "../../renderer/utils/material/materialUtils";
+} from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
@@ -40,12 +40,10 @@ import {
     disposeComponent as disposeLightMaterialComponent,
     initData as initLightMaterialData, initMaterial as initLightMaterial, setDefaultData as setLightMaterialDefaultData
 } from "./LightMaterialSystem";
-import { BasicMaterialData } from "./BasicMaterialData";
-import { LightMaterialData } from "./LightMaterialData";
 import {
-    getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex, getBufferLength, getBufferTotalCount,
-    getLightMaterialBufferCount, getLightMaterialBufferStartIndex
-} from "../../renderer/utils/material/bufferUtils";
+    getBasicMaterialBufferCount, getBufferLength, getBufferTotalCount,
+    getLightMaterialBufferCount
+} from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
 import { DirectionLightData } from "../light/DirectionLightData";
@@ -55,13 +53,17 @@ import {
     initMapManagers
 } from "../../renderer/texture/MapManagerSystem";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/material/basicMaterialUtils";
-import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
+import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
+import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
 import { IMaterialConfig } from "../../renderer/data/material_config";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
+import {
+    getBasicMaterialBufferStartIndex,
+    getLightMaterialBufferStartIndex
+} from "../../renderer/utils/material/bufferUtils";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);

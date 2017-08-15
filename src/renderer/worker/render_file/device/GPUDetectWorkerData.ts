@@ -1,4 +1,4 @@
-import { GPUDetectDataCommon } from "../../../utils/device/GPUDetectDataCommon";
+import { GPUDetectDataCommon } from "../../../utils/worker/render_file/device/GPUDetectDataCommon";
 
 export class GPUDetectWorkerData extends GPUDetectDataCommon{
 }

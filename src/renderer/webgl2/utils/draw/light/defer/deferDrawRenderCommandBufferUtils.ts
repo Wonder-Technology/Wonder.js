@@ -1,28 +1,21 @@
 import { Map } from "immutable";
-import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../../../utils/typeArrayUtils";
+import { WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
+import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IMaterialConfig } from "../../../../../data/material_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator";
-import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
-import { drawFullScreenQuad, sendAttributeData as sendDeferLightPassAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
-import { getNoMaterialShaderIndex } from "../../../shaderUtils";
-import { unbindVAO } from "../../../vao/vaoUtils";
+import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
+import { LightRenderCommandBufferForDrawData, LightRenderUniformData } from "../../../../../type/dataType";
+import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../../../utils/typeArrayUtils";
 import {
     drawGameObjects,
     updateSendMatrixFloat32ArrayData
 } from "../../../../../utils/draw/drawRenderCommandBufferUtils";
-import { getNewTextureUnitIndex } from "../../../render/light/defer/gbuffer/gBufferUtils";
-import { LightRenderCommandBufferForDrawData, LightRenderUniformData } from "../../../../../type/dataType";
-import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
-import { WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
-
-export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
-    return {
-        GBufferDataFromSystem: GBufferDataFromSystem,
-        DeferLightPassDataFromSystem: DeferLightPassDataFromSystem
-    }
-}
+import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light/defer/gbuffer/gBufferUtils";
+import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
+import { unbindVAO } from "../../../vao/vaoUtils";
+import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
     var {
@@ -121,7 +114,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
 
-    sendDeferLightPassAttributeData(gl, DeferLightPassDataFromSystem);
+    sendAttributeData(gl, DeferLightPassDataFromSystem);
 
 
     // gl.enable(gl.SCISSOR_TEST);
@@ -166,25 +159,4 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
     // restore state:
     //// gl.cullFace(gl.BACK);
     // gl.disable(gl.SCISSOR_TEST);
-}
-
-export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function, bindGBuffer:Function, unbindGBuffer:Function, getNewTextureUnitIndex:Function) => {
-    return {
-        bindIndexBuffer: bindIndexBuffer,
-        sendAttributeData: sendAttributeData,
-        sendUniformData: sendUniformData,
-        directlySendUniformData: directlySendUniformData,
-        use: use,
-        hasIndices: hasIndices,
-        getIndicesCount: getIndicesCount,
-        getIndexType: getIndexType,
-        getIndexTypeSize: getIndexTypeSize,
-        getVerticesCount: getVerticesCount,
-        bindAndUpdate: bindAndUpdate,
-        getMapCount: getMapCount,
-        useShader: useShader,
-        bindGBuffer: bindGBuffer,
-        unbindGBuffer: unbindGBuffer,
-        getNewTextureUnitIndex: getNewTextureUnitIndex
-    }
 }

@@ -10,7 +10,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
     isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, initNoMaterialShaders, useShader as useShaderUtils
-} from "../../../utils/material/materialUtils";
+} from "../../../utils/worker/render_file/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
 import { GLSLSenderWorkerData } from "../shader/glslSender/GLSLSenderWorkerData";
@@ -18,15 +18,15 @@ import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWor
 import {
     getBasicMaterialBufferCount, getBufferTotalCount,
     getLightMaterialBufferCount
-} from "../../../utils/material/bufferUtils";
+} from "../../../utils/worker/render_file/material/bufferUtils";
 import {
     createTypeArrays as createBasicMaterialTypeArraysUtils,
     getClassName as getBasicMaterialClassName
-} from "../../../utils/material/basicMaterialUtils";
+} from "../../../utils/worker/render_file/material/basicMaterialUtils";
 import {
     createTypeArrays as createLightMaterialTypeArraysUtils,
     getClassName as getLightMaterialClassName
-} from "../../../utils/material/lightMaterialUtils";
+} from "../../../utils/worker/render_file/material/lightMaterialUtils";
 import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
 import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";

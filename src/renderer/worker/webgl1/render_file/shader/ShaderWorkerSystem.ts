@@ -7,7 +7,7 @@ import { IWebGL1ShaderLibContentGenerator } from "../../both_file/data/shaderLib
 import {
     initMaterialShader as initMaterialShaderUtils,
     initNoMaterialShader as initNoMaterialShaderUtils
-} from "../../../../webgl1/utils/shaderUtils";
+} from "../../../../webgl1/utils/worker/render_file/shader/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
 

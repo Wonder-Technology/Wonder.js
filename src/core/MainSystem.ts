@@ -227,7 +227,7 @@ if(isWebgl1()){
         })
     }, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
         return compose(
-            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL1)),
+            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL1, DomQuery)),
             createCanvas(DomQuery)
         )(configState.get("canvasID"));
     });
@@ -269,7 +269,7 @@ else{
         })
     }, (gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
         return compose(
-            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2)),
+            chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2, DomQuery)),
             createCanvas(DomQuery)
         )(configState.get("canvasID"));
     });

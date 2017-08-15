@@ -8,7 +8,7 @@ import {
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
     hasIndices as hasIndicesUtils, getIndexTypeSize as getIndexTypeSizeUtils, createBufferViews
-} from "../../../utils/geometry/geometryUtils";
+} from "../../../utils/worker/render_file/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../../../definition/type/geometryType";
 import { EBufferType } from "../../../enum/EBufferType";
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";

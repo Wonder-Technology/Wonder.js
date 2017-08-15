@@ -4,14 +4,14 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
 import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../both_file/data/render_config";
-import { render as deferRender, init as initUtils } from "../../../../webgl2/utils/render/light/defer/deferShadingUtils";
+import { render as deferRender, init as initUtils } from "../../../../webgl2/utils/worker/render_file/render/light/defer/deferShadingUtils";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../../component/light/AmbientLightSystem";
 // import {
 //     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
 //     getPosition as getDirectionLightPosition,
 // } from "../../../../../component/light/DirectionLightSystem";
-import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../webgl2/utils/render/light/defer/gbuffer/gBufferUtils";
+import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../webgl2/utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import {
     bindIndexBuffer,
     use
@@ -27,8 +27,8 @@ import {
     getColorArr3 as getPointLightColorArr3, getConstant,
     getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius
 } from "../../../render_file/light/PointLightWorkerSystem";
-import { directlySendUniformData } from "../../../../utils/render/renderUtils";
-import { buildDrawFuncDataMap } from "../../../../webgl2/utils/draw/light/defer/deferDrawRenderCommandBufferUtils";
+import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
+import { buildDrawFuncDataMap } from "../../../../webgl2/utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { sendAttributeData } from "../render/RenderWorkerSystem";
 import { sendUniformData } from "../render/light/LightRenderWorkerSystem";
 import { getPointLightPosition } from "../../../render_file/render/RenderWorkerSystem";

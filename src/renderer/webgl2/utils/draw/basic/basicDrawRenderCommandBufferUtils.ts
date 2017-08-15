@@ -1,16 +1,13 @@
-import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
-import { getMatrix4DataSize } from "../../../../../utils/typeArrayUtils";
 import { Map } from "immutable";
-import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
-import { IMaterialConfig } from "../../../../data/material_config";
 import { IRenderConfig } from "../../../../worker/both_file/data/render_config";
-import {
-    drawGameObjects,
-    updateSendMatrixFloat32ArrayData
-} from "../../../../utils/draw/drawRenderCommandBufferUtils";
-import { IWebGL1DrawFuncDataMap } from "../../../../webgl1/interface/IDraw";
-import { BasicRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { IMaterialConfig } from "../../../../data/material_config";
 import { WebGL1BasicSendUniformDataDataMap } from "../../../../webgl1/type/utilsType";
+import { IShaderLibGenerator } from "../../../../data/shaderLib_generator";
+import { IWebGL1DrawFuncDataMap } from "../../../../webgl1/interface/IDraw";
+import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
+import { BasicRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { getMatrix4DataSize } from "../../../../../utils/typeArrayUtils";
+import { drawGameObjects, updateSendMatrixFloat32ArrayData } from "../../../../utils/draw/drawRenderCommandBufferUtils";
 import { buildRenderCommandUniformData } from "../../../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
@@ -35,22 +32,3 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
 
     return state;
 };
-
-export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function) => {
-    return {
-        bindIndexBuffer: bindIndexBuffer,
-        sendAttributeData: sendAttributeData,
-        sendUniformData: sendUniformData,
-        directlySendUniformData: directlySendUniformData,
-        use: use,
-        hasIndices: hasIndices,
-        getIndicesCount: getIndicesCount,
-        getIndexType: getIndexType,
-        getIndexTypeSize: getIndexTypeSize,
-        getVerticesCount: getVerticesCount,
-        bindAndUpdate: bindAndUpdate,
-        getMapCount: getMapCount,
-        useShader: useShader,
-    }
-}
-

@@ -4,7 +4,7 @@ import {
     MaterialForGetUniformDataDataMap,
     SendUniformDataGLSLSenderDataMap
 } from "../../../../type/utilsType";
-import { directlySendUniformData } from "../../../../utils/render/renderUtils";
+import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { Log } from "../../../../../utils/Log";
 import { LightRenderUniformData, UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { WebGL2LightSendUniformDataDataMap } from "../../../type/utilsType";
@@ -105,15 +105,5 @@ export var buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpaci
         getColorArr3: getColorArr3,
         getOpacity: getOpacity,
         MaterialDataFromSystem: MaterialDataFromSystem
-    }
-}
-
-export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3:Function, getSpecularColorArr3:Function, getLightModel:Function, getShininess:Function, LightMaterialDataFromSystem:any) => {
-    return {
-        getEmissionColorArr3: getEmissionColorArr3,
-        getSpecularColorArr3: getSpecularColorArr3,
-        getLightModel: getLightModel,
-        getShininess: getShininess,
-        LightMaterialDataFromSystem: LightMaterialDataFromSystem
     }
 }

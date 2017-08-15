@@ -4,7 +4,7 @@ import { Vector3 } from "../../../../math/Vector3";
 import {
     createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
     getIntensity as getIntensityUtils
-} from "../../../utils/light/directionLightUtils";
+} from "../../../utils/worker/render_file/light/directionLightUtils";
 import { Color } from "../../../../structure/Color";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, DirectionLightWorkerData: any) => {

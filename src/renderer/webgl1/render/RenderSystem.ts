@@ -1,6 +1,6 @@
-import { sendAttributeData as sendAttributeDataUtils } from "../utils/render/renderUtils";
+import { sendAttributeData as sendAttributeDataUtils } from "../utils/worker/render_file/render/renderUtils";
 import { getVertices, getNormals, getTexCoords } from "../../../component/geometry/GeometrySystem";
-import { getAttribLocation, isAttributeLocationNotExist } from "../utils/shader/location/locationUtils";
+import { getAttribLocation, isAttributeLocationNotExist } from "../utils/worker/render_file/shader/location/locationUtils";
 import { sendBuffer } from "../../shader/glslSender/GLSLSenderSystem";
 import curry from "wonder-lodash/curry";
 import { IRenderConfig } from "../../worker/both_file/data/render_config";

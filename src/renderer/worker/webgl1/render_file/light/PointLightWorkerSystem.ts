@@ -1,4 +1,4 @@
-import { createTypeArrays } from "../../../../utils/light/pointLightUtils";
+import { createTypeArrays } from "../../../../utils/worker/render_file/light/pointLightUtils";
 import { setCount } from "../../../render_file/light/SpecifyLightWorkerSystem";
 
 export var initData = ({

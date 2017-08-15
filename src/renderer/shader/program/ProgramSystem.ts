@@ -6,7 +6,7 @@ import {
     // sendAttributeData as sendAttributeDataUtils,
     // sendUniformData as sendUniformDataUtils,
     // use as useUtils
-} from "../../utils/shader/program/programUtils";
+} from "../../utils/worker/render_file/shader/program/programUtils";
 // import { getVertices } from "../../../component/geometry/GeometrySystem";
 
 // export var use = useUtils;

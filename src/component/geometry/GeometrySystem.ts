@@ -23,13 +23,13 @@ import {
     getIndicesCount as getIndicesCountUtils,
     getVerticesCount as getVerticesCountUtils,
     hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize
-} from "../../renderer/utils/geometry/geometryUtils";
+} from "../../renderer/utils/worker/render_file/geometry/geometryUtils";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
 
-} from "../../renderer/utils/geometry/geometryUtils";
+} from "../../renderer/utils/worker/render_file/geometry/geometryUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";

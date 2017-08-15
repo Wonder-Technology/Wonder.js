@@ -5,7 +5,7 @@ import {
     buildLightMaterialDataForGetUniformData,
     buildMaterialDataForGetUniformData,
     sendUniformData as sendUniformDataUtils
-} from "../../utils/render/light/lightRenderUtils";
+} from "../../utils/worker/render_file/render/light/lightRenderUtils";
 import { getColorArr3, getOpacity } from "../../../../component/material/MaterialSystem";
 import {
     getEmissionColorArr3, getLightModel, getShininess,
