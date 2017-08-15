@@ -7,22 +7,6 @@ import { UniformCacheMap, UniformShaderLocationMap } from "../../type/dataType";
 import { getUniformLocation, isUniformLocationNotExist } from "../location/LocationSystem";
 import { Vector3 } from "../../../math/Vector3";
 
-// export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
-//     return getUniformDataUtils(field, from, renderCommandUniformData, {
-//         getColorArr3: getColorArr3,
-//         getOpacity: getOpacity,
-//         MaterialDataFromSystem: MaterialData
-//     }, {
-//             BasicMaterialDataFromSystem: BasicMaterialData
-//         }, {
-//             getEmissionColorArr3: getEmissionColorArr3,
-//             getSpecularColorArr3: getSpecularColorArr3,
-//             getLightModel: getLightModel,
-//             getShininess: getShininess,
-//             LightMaterialDataFromSystem: LightMaterialData
-//         });
-// };
-
 export var sendBuffer = sendBufferUtils;
 
 export var sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap) => {

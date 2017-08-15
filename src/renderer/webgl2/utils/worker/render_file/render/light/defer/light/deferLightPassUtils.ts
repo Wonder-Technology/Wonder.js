@@ -5,6 +5,7 @@ export var init = (gl:any, DeferLightPassDataFromSystem:any) => {
 var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
     //todo refactor: extract to VAOSystem
     var fullScreenQuadVertexArray = gl.createVertexArray();
+
     gl.bindVertexArray(fullScreenQuadVertexArray);
 
     //todo create point light sphere for optimize(then no need to use scissor optimize)?
@@ -12,10 +13,9 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
     //     radius: 100
     // });
 
-    var fullScreenQuadData = _createFullScreenQuadData();
+    let fullScreenQuadData = _createFullScreenQuadData();
 
-
-    var positionBuffer = gl.createBuffer();
+    let positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, fullScreenQuadData.positions, gl.STATIC_DRAW);
 
@@ -26,7 +26,7 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
 
 
 
-    var texCoordBuffer = gl.createBuffer();
+    let texCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, fullScreenQuadData.texCoords, gl.STATIC_DRAW);
 
@@ -36,12 +36,7 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
     gl.enableVertexAttribArray(1);
 
 
-
-
-
-
-
-    var indexBuffer = gl.createBuffer();
+    let indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, fullScreenQuadData.indices, gl.STATIC_DRAW);
 
@@ -49,16 +44,12 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
 
     DeferLightPassDataFromSystem.fullScreenQuadVertexArray = fullScreenQuadVertexArray;
     DeferLightPassDataFromSystem.fullScreenQuadIndicesCount = fullScreenQuadData.indices.length;
-
-    // DeferLightPassDataFromSystem.fullScreenQuadPositionBuffer = positionBuffer;
-    // DeferLightPassDataFromSystem.fullScreenQuadIndexBuffer = indexBuffer;
 }
 
 var _createFullScreenQuadData = () => {
     var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]),
-        indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
-
-    var texCoords = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
+        indices = new Uint16Array([0, 1, 2, 0, 2, 3]),
+        texCoords = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
 
     return {
         positions:positions,

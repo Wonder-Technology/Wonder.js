@@ -31,15 +31,12 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         vsFuncDeclare: string = "",
         vsFuncDefine: string = "",
         vsBody: string = "",
-        // vsDefineList:Array<IGLSLDefineListItem> = [],
         fsTop: string = "",
         fsDefine: string = "",
         fsVarDeclare: string = "",
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
         fsBody: string = "";
-    // fsDefineList:Array<IGLSLDefineListItem> = [];
-
     var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
         vsDefine += _buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");

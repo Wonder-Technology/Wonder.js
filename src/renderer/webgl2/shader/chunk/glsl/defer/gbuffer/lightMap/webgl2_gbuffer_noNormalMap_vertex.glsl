@@ -1,5 +1,4 @@
 @varDeclare
-//varying vec3 v_normal;
 out vec3 v_normal;
 
 @end

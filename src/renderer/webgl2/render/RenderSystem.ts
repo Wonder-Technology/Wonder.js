@@ -6,7 +6,6 @@ import curry from "wonder-lodash/curry";
 import { IRenderConfig } from "../../worker/both_file/data/render_config";
 import { clear, getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
-// import { draw as frontDraw } from "../render/light/front/FrontRenderSystem";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
 import { IMaterialConfig } from "../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";

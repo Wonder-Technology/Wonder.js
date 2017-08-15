@@ -98,8 +98,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     unbindGBuffer(gl);
 
-    // gl.clear(gl.COLOR_BUFFER_BIT);
-
     gl.depthMask(false);
     gl.disable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -112,9 +110,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem),
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-
     sendAttributeData(gl, DeferLightPassDataFromSystem);
-
 
     // gl.enable(gl.SCISSOR_TEST);
 
@@ -145,8 +141,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
         sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
         sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
-        // sendFloat1(gl, shaderIndex, program, "u_lightRange", getRange(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-
 
         sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
 

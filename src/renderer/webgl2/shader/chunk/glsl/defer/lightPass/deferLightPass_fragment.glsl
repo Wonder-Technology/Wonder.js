@@ -57,14 +57,9 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         vec3 materialLight = getMaterialLight();
 
-//        vec4 materialDiffuse = getMaterialDiffuse();
-
-//        vec3 materialSpecular = u_specular;
         vec3 materialSpecular = getSpecularColor(materialDiffuse);
 
         vec3 materialEmission = getMaterialEmission();
-
-//        float specularStrength = getSpecularStrength();
 
         float dotResultBetweenNormAndLight = dot(normal, lightDir);
         float diff = max(dotResultBetweenNormAndLight, 0.0);
@@ -77,11 +72,9 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
 
         if(u_lightModel == 3){
-//            return vec4(emissionColor + ambientColor, 1.0);
             return emissionColor + ambientColor;
         }
 
-//        vec4 diffuseColor = vec4(color * materialDiffuse * diff * intensity, materialDiffuse.a);
         vec3 diffuseColor = color * materialDiffuse * diff * intensity;
 
         float spec = 0.0;
@@ -94,17 +87,12 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
         }
 
         vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
-//        vec3 specularColor = vec3(0.5);
 
-//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
         return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
-//        return color;
-//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), 1.0);
 }
 
 
 
-//        vec4 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
         vec3 calcPointLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 diffuseColor, float specularStrength, float shininess)
 {
         //lightDir is not normalize computing distance
@@ -127,12 +115,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 vec4 calcTotalLight(vec3 normal, vec3 position, vec3 viewDir, vec3 diffuseColor, float specularStrength, float shininess){
     vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
 
-//    #if POINT_LIGHTS_COUNT > 0
-//                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
-//                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir);
                 totalLight += vec4(calcPointLight(getPointLightDir(position), normal, viewDir, diffuseColor, specularStrength, shininess), 0.0);
-//        }
-//    #endif
 
 //    #if DIRECTION_LIGHTS_COUNT > 0
 //                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
@@ -146,10 +129,6 @@ vec4 calcTotalLight(vec3 normal, vec3 position, vec3 viewDir, vec3 diffuseColor,
 
 
 @body
-//            ivec2 fragCoord = ivec2(gl_FragCoord.xy);
-
-
-//            vec4 positionData = texelFetch(u_positionBuffer, fragCoord, 0);
             vec4 positionData = texture(u_positionBuffer,
 v_texcoord);
 
@@ -157,33 +136,17 @@ v_texcoord);
             float shininess = positionData.w;
 
 
-//            vec3 normal = normalize(texelFetch(u_normalBuffer, fragCoord, 0).xyz);
             vec3 normal = normalize(texture(u_normalBuffer, v_texcoord).rgb);
-//            vec4 colorData = texelFetch(u_colorBuffer, fragCoord, 0);
             vec4 colorData = texture(u_colorBuffer, v_texcoord);
 
             vec3 diffuseColor = colorData.xyz;
             float specularStrength  = colorData.w;
-
-//            vec4 colorData = texelFetch(u_colorBuffer, fragCoord, 0).xyzw;
 
 
 
 vec3 viewDir = normalize(getViewDir(position));
 
 vec4 totalColor = calcTotalLight(normal, position, viewDir, diffuseColor, specularStrength, shininess);
-//vec4 totalColor = vec4(1.0);
-
-//not pass u_opacity in defer shading
-//totalColor.a *= u_opacity;
-//totalColor.a = 1.0;
-
-
-//totalColor.rgb = totalColor.rgb * getShadowVisibility();
-//totalColor.rgb = normal;
-//totalColor.rgb = diffuseColor;
-//totalColor.rgb = totalColor.rgb;
-//totalColor.rgb = vec3(0.5);
 @end
 
 

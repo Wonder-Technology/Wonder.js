@@ -34,7 +34,6 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
             LocationDataFromSystem,
             GLSLSenderDataFromSystem
         } = initShaderDataMap,
-        // materialShaderLibConfig = getMaterialShaderLibConfig(materialClassName, material_config),
         materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
         shaderIndex = genereateShaderIndex(ShaderDataFromSystem),
         program = getProgram(shaderIndex, ProgramDataFromSystem),
@@ -59,7 +58,6 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     registerProgram(shaderIndex, ProgramDataFromSystem, program);
     initShader(program, vsSource, fsSource, gl);
 
-    // setLocationMap(gl, shaderIndex, program, materialShaderLibNameArr, shaderLibDataFromSystem, LocationDataFromSystem);
     setEmptyLocationMap(shaderIndex, LocationDataFromSystem);
 
     addSendAttributeConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);

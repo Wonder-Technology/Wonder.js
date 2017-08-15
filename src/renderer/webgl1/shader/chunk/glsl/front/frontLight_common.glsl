@@ -7,7 +7,6 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 @funcDefine
 vec3 getDirectionLightDirByLightPos(vec3 lightPos){
     return lightPos - vec3(0.0);
-    //return vec3(0.0) - lightPos;
 }
 vec3 getPointLightDirByLightPos(vec3 lightPos){
     return lightPos - v_worldPosition;

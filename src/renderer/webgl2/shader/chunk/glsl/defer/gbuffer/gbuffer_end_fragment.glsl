@@ -11,10 +11,4 @@ layout(location=2) out vec4 gbufferColor;
     gbufferNormal.w = 1.0;
     gbufferColor.xyz = getMaterialDiffuse().rgb;
     gbufferColor.w = getSpecularStrength();
-
-//    gl_FragData[0].xyz = v_worldPosition;
-//    gl_FragData[0].w = u_shininess;
-//    gl_FragData[1].xyz = getNormal();
-//    gl_FragData[2].xyz = getMaterialDiffuse().rgb;
-//    gl_FragData[2].w = getSpecularStrength();
 @end

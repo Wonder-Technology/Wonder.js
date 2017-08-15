@@ -34,31 +34,3 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 }
-
-// export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
-//     //todo finish
-//
-//     // _disposeProgram(gl, ShaderData.programMap[shaderIndex]);
-//     // deleteVal(shaderIndex, ShaderData.programMap);
-//
-//
-//     // deleteVal(shaderIndex, LocationData.attributeLocationMap);
-//     // deleteVal(shaderIndex, LocationData.uniformLocationMap);
-//     // deleteVal(shaderIndex, ShaderData.sendAttributeConfigMap);
-//     // deleteVal(shaderIndex, ShaderData.sendUniformConfigMap);
-//     // deleteVal(shaderIndex, ShaderData.vertexAttribHistory);
-//     // deleteVal(shaderIndex, ShaderData.shaderMap);
-// }
-
-// var _disposeProgram = (gl:WebGLRenderingContext, program:WebGLProgram) => {
-//     gl.deleteProgram(this.glProgram);
-// }
-
-// export var initData = (ShaderData: any) => {
-//     ShaderData.index = 0;
-//     ShaderData.count = 0;
-//
-//     ShaderData.shaderLibWholeNameMap = createMap();
-//     //todo fix render worker
-//     ShaderData.shaderIndexMap = createMap();
-// }
