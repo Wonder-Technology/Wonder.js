@@ -2,8 +2,8 @@ import {
     webgl1_basic_materialColor_fragment, webgl1_basic_end_fragment,
     common_define, common_fragment, common_function, common_vertex,
     GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
-    frontLight_common, frontLightEnd_fragment,
-    frontLight_setWorldPosition_vertex, frontLight_vertex, frontLightCommon_vertex, frontLightCommon_fragment,
+    frontLight_common, frontLight_end_fragment,
+    frontLight_setWorldPosition_vertex, frontLight_vertex, frontLight_common_vertex, frontLight_common_fragment,
     webgl1_noShadowMap_fragment,
     webgl1_noDiffuseMap_fragment, webgl1_noEmissionMap_fragment, webgl1_noLightMap_fragment, webgl1_noNormalMap_fragment, webgl1_noNormalMap_vertex,
     webgl1_noSpecularMap_fragment,
@@ -316,12 +316,12 @@ export const webgl1_shaderLib_generator = {
         "LightCommonShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": frontLightCommon_vertex,
+                    "source": frontLight_common_vertex,
                     "funcDeclare": frontLight_common.funcDeclare,
                     "funcDefine": frontLight_common.funcDefine
                 },
                 "fs": {
-                    "source": frontLightCommon_fragment,
+                    "source": frontLight_common_fragment,
                     "funcDeclare": frontLight_common.funcDeclare,
                     "funcDefine": frontLight_common.funcDefine
                 }
@@ -590,7 +590,7 @@ export const webgl1_shaderLib_generator = {
         "LightEndShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": frontLightEnd_fragment
+                    "source": frontLight_end_fragment
                 },
                 "func": (materialIndex: number, {
                     getAlphaTest,
@@ -605,7 +605,7 @@ export const webgl1_shaderLib_generator = {
                             "fs": {
                                 "body": `if (gl_FragColor.a < ${alphaTest}){
     discard;
-}\n` + frontLightEnd_fragment.body
+}\n` + frontLight_end_fragment.body
                             }
                         }
                     }
