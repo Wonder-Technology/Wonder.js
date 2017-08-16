@@ -13,14 +13,17 @@ import { render as basicRender } from "./basic/BasicRenderSystem";
 import { render as deferRender, init as deferInit} from "./light/defer/DeferShadingSystem";
 import { hasExtensionColorBufferFloat } from "../device/GPUDetectorSystem";
 import { Log } from "../../../utils/Log";
+import { bindFrameUboData, init as initUbo } from "../utils/worker/render_file/ubo/uboManagerUtils";
 
-export var init = (gl:any, DataBufferConfig:any, GBufferData:any, DeferLightPassData: any, ShaderData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, GPUDetectData:any) => {
+export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferData:any, DeferLightPassData: any, ShaderData: any, ProgramData: any, LocationData: any, GLSLSenderData: any, GPUDetectData:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectData)){
         Log.warn("defer shading need support extensionColorBufferFloat extension");
     }
     else{
         deferInit(gl, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData);
     }
+
+    initUbo(gl, render_config, GLSLSenderData);
 }
 
 export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
@@ -29,11 +32,14 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
     lightData
 }) => {
     var {
-            DeviceManagerDataFromSystem
+            DeviceManagerDataFromSystem,
+            GLSLSenderDataFromSystem
         } = drawDataMap,
         gl = getGL(DeviceManagerDataFromSystem, state);
 
     clear(gl, DeviceManagerDataFromSystem);
+
+    bindFrameUboData(gl, render_config, cameraData, GLSLSenderDataFromSystem);
 
     if(basicData.count > 0){
         basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, initShaderDataMap, basicData, cameraData);

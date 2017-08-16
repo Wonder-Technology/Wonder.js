@@ -32,5 +32,3 @@ export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program
 export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendFloat3Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
-
-export var initData = initDataUtils;

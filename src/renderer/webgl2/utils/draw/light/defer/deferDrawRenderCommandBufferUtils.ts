@@ -18,6 +18,7 @@ import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/sha
 import { unbindVAO } from "../../../vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
+import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,
@@ -33,7 +34,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
         } = LightDrawRenderCommandBufferDataFromSystem;
 
     _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix, cameraPosition, normalMatrix), bufferData);
-    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, cameraPosition);
+    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap);
 };
 
 var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, {
@@ -57,32 +58,32 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
                           unbindGBuffer
                       }, drawDataMap:DrawDataMap, {
                           DeferLightPassDataFromSystem
-                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap,
-                      cameraPositionForSend) => {
+                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap) => {
     var {
             ShaderDataFromSystem
         } = initShaderDataMap,
         {
             ProgramDataFromSystem,
             LocationDataFromSystem,
-            GLSLSenderDataFromSystem
-        } = drawDataMap,
-        {
-            sendInt,
-            sendFloat3,
-            sendFloat1
-        } = sendDataMap.glslSenderData,
-        {
-            getColorArr3,
-            getIntensity,
-            getConstant,
-            getLinear,
-            getQuadratic,
-            getPosition,
-            computeRadius,
-
+            GLSLSenderDataFromSystem,
             PointLightDataFromSystem
-        } = sendDataMap.pointLightData;
+        } = drawDataMap;
+        // {
+        //     sendInt,
+        //     sendFloat3,
+        //     sendFloat1
+        // } = sendDataMap.glslSenderData,
+        // {
+        //     getColorArr3,
+        //     getIntensity,
+        //     getConstant,
+        //     getLinear,
+        //     getQuadratic,
+        //     getPosition,
+        //     computeRadius,
+        //
+        //     PointLightDataFromSystem
+        // } = sendDataMap.pointLightData;
 
     unbindGBuffer(gl);
 
@@ -104,33 +105,35 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     //todo support ambient, direction light
 
-    let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
-        uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
+    // let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
+    //     uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
 
-    sendInt(gl, shaderIndex, program, "u_lightModel", render_config.defer.lightModel, uniformCacheMap, uniformLocationMap);
+    // sendInt(gl, shaderIndex, program, "u_lightModel", render_config.defer.lightModel, uniformCacheMap, uniformLocationMap);
 
-    sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
+    // sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
         //todo move to ubo
 
         //todo add scissor optimize
 
-        let colorArr3 = getColorArr3(i, PointLightDataFromSystem),
-            constant = getConstant(i, PointLightDataFromSystem),
-            linear = getLinear(i, PointLightDataFromSystem),
-            quadratic = getQuadratic(i, PointLightDataFromSystem),
-            //todo optimize: cache radius
-            radius = computeRadius(colorArr3, constant, linear, quadratic);
+        // let colorArr3 = getColorArr3(i, PointLightDataFromSystem),
+        //     constant = getConstant(i, PointLightDataFromSystem),
+        //     linear = getLinear(i, PointLightDataFromSystem),
+        //     quadratic = getQuadratic(i, PointLightDataFromSystem),
+        //     //todo optimize: cache radius
+        //     radius = computeRadius(colorArr3, constant, linear, quadratic);
+        //
+        // sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
+        // sendFloat3(gl, shaderIndex, program, "u_lightColor", colorArr3, uniformCacheMap, uniformLocationMap);
+        // sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        // sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
+        // sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
+        // sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
+        //
+        // sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
 
-        sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
-        sendFloat3(gl, shaderIndex, program, "u_lightColor", colorArr3, uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
-        sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
-
-        sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
+        bindPointLightUboData(gl, i, sendDataMap.pointLightData, drawDataMap, GLSLSenderDataFromSystem);
 
         drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
     }

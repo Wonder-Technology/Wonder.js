@@ -6,3 +6,5 @@ export var computeRadius = computeRadiusUtils;
 export var initData = (PointLightData: any) => {
     initDataHelper(PointLightData);
 }
+
+//todo dispose isDirtys

@@ -89,8 +89,6 @@ export const webgl2_material_config = {
             "GBuffer": [
                 { "type": "group", "value": "engineMaterialTop" },
 
-                // "LightModelDataShaderLib",
-
                 "NormalMatrixNoInstanceShaderLib",
                 "NormalCommonShaderLib",
                 "GBufferCommonShaderLib",
@@ -153,6 +151,10 @@ export const webgl2_material_config = {
                 // { "type": "group", "value": "engineMaterialTop" },
                 "VerticeCommonShaderLib",
 
+                "CameraUboShaderLib",
+
+                //todo test LightUboShaderLib
+                "LightUboShaderLib",
                 "DeferLightPassCommonShaderLib",
                 "DeferLightPassNoNormalMapShaderLib",
                 "NoLightMapShaderLib",
@@ -167,7 +169,8 @@ export const webgl2_material_config = {
         "engineMaterialTop": [
             "CommonShaderLib",
             "ModelMatrixNoInstanceShaderLib",
-            "VerticeCommonShaderLib"
+            "VerticeCommonShaderLib",
+            "CameraUboShaderLib"
         ],
         "engineMaterialEnd": [
             "EndShaderLib"

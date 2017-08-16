@@ -1,7 +1,8 @@
 import {
     webgl1_basic_materialColor_fragment, webgl1_basic_end_fragment,
     common_define, common_fragment, common_function, common_vertex,
-    GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
+    GLSLChunk, modelMatrix_noInstance_vertex,
+    webgl1_normalMatrix_noInstance_vertex,
     frontLight_common, frontLight_end_fragment,
     frontLight_setWorldPosition_vertex, frontLight_vertex, frontLight_common_vertex, frontLight_common_fragment,
     webgl1_noShadowMap_fragment,
@@ -288,7 +289,7 @@ export const webgl1_shaderLib_generator = {
         "NormalMatrixNoInstanceShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": normalMatrix_noInstance_vertex
+                    "source": webgl1_normalMatrix_noInstance_vertex
                 }
             },
             "send": {

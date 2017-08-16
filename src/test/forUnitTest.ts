@@ -26,7 +26,7 @@ import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../re
 import { initData as initDeviceManagerDataSystem } from "../renderer/device/DeviceManagerSystem";
 import { initData as initProgramDataSystem } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationDataSystem } from "../renderer/shader/location/LocationSystem";
-import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
+// import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
@@ -54,7 +54,8 @@ export var initProgramData = initProgramDataSystem;
 
 export var initLocationData = initLocationDataSystem;
 
-export var initGLSLSenderData = initGLSLSenderDataSystem;
+//todo fix
+// export var initGLSLSenderData = initGLSLSenderDataSystem;
 
 export var initMeshRendererData = initMeshRendererDataSystem;
 

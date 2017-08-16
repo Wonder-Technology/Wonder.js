@@ -34,7 +34,6 @@ import { initData as initRenderCommandBufferData } from "../renderer/command_buf
 import { render_config } from "../renderer/worker/both_file/data/render_config";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
-import { initData as initGLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
 import { DebugConfig } from "../config/DebugConfig";
@@ -50,7 +49,6 @@ import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
 import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../device/WorkerDetectSystem";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
-import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
 import { LocationData } from "../renderer/shader/location/LocationData";
 import { ProgramData } from "../renderer/shader/program/ProgramData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
@@ -81,6 +79,10 @@ import { LightRenderCommandBufferData } from "../renderer/command_buffer/LightRe
 import { BasicDrawRenderCommandBufferData } from "../renderer/draw/basic/BasicDrawRenderCommandBufferData";
 import { LightDrawRenderCommandBufferData } from "../renderer/draw/light/LightDrawRenderCommandBufferData";
 import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
+import { initData as initWebGL2GLSLSenderData } from "../renderer/webgl2/shader/glslSender/GLSLSenderSystem";
+import { WebGL2GLSLSenderData } from "../renderer/webgl2/shader/glslSender/GLSLSenderData";
+import { initData as initWebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
+import { WebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -171,8 +173,6 @@ else {
 
         initLocationData(LocationData);
 
-        initGLSLSenderData(GLSLSenderData);
-
         initArrayBufferData(ArrayBufferData);
 
         initIndexBufferData(IndexBufferData);
@@ -219,6 +219,8 @@ if(isWebgl1()){
         initWebGL1LightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+
+        initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
@@ -261,6 +263,8 @@ else{
         initWebGL2LightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+
+        initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {

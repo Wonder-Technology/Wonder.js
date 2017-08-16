@@ -1,20 +1,20 @@
 @varDeclare
 //todo move to light ubo
-uniform vec3 u_lightPosition;
-uniform vec3 u_lightColor;
-uniform float u_lightIntensity;
-uniform float u_lightConstant;
-uniform float u_lightLinera;
-uniform float u_lightQuadratic;
-//uniform float u_lightRange;
-
-uniform float u_lightRadius;
-
-
+//uniform vec3 u_lightPosition;
+//uniform vec3 u_lightColor;
+//uniform float u_lightIntensity;
+//uniform float u_lightConstant;
+//uniform float u_lightLinera;
+//uniform float u_lightQuadratic;
+////uniform float u_lightRange;
+//
+//uniform float u_lightRadius;
 
 
-uniform int u_lightModel;
-uniform vec3 u_cameraPos;
+
+
+//uniform int u_lightModel;
+//uniform vec3 u_cameraPos;
 
 
 
@@ -70,8 +70,9 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 //        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse;
         vec3 ambientColor = vec3(0.0);
 
+        float lightModel = lightUbo.lightModel.x;
 
-        if(u_lightModel == 3){
+        if(lightModel == 3.0){
             return emissionColor + ambientColor;
         }
 
@@ -79,10 +80,10 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         float spec = 0.0;
 
-        if(u_lightModel == 2){
+        if(lightModel == 2.0){
                 spec = getPhongShininess(shininess, normal, lightDir, viewDir, diff);
         }
-        else if(u_lightModel == 1){
+        else if(lightModel == 1.0){
                 spec = getBlinnShininess(shininess, normal, lightDir, viewDir, diff);
         }
 
@@ -100,16 +101,26 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         float attenuation = 0.0;
 
+        vec4 lightData = pointLightUbo.lightData;
+
+//        mat3 normalMatrix = cameraUbo.normalMatrix;
+
+//        if(normalMatrix[0][3] == 0.0){
+//            return vec3(0.5);
+//        }
+
         //todo test
-        if(distance >= u_lightRadius){
+        if(distance >= lightData.w){
             return vec3(0.0);
         }
 
-        attenuation = 1.0 / (u_lightConstant + u_lightLinera * distance + u_lightQuadratic * (distance * distance));
+        attenuation = 1.0 / (lightData.x + lightData.y * distance + lightData.z * (distance * distance));
 
         lightDir = normalize(lightDir);
 
-        return calcLight(lightDir, u_lightColor, u_lightIntensity, attenuation, normal, viewDir, diffuseColor, specularStrength, shininess);
+        vec4 lightColorData = pointLightUbo.lightColorData;
+
+        return calcLight(lightDir, lightColorData.xyz, lightColorData.w, attenuation, normal, viewDir, diffuseColor, specularStrength, shininess);
 }
 
 vec4 calcTotalLight(vec3 normal, vec3 position, vec3 viewDir, vec3 diffuseColor, float specularStrength, float shininess){

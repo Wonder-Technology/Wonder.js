@@ -1,3 +1,4 @@
+import { addSendAttributeConfig, addSendUniformConfig} from "./glslSender/glslSenderUtils";
 import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
@@ -11,7 +12,7 @@ import { getProgram } from "../../../../../utils/worker/render_file/shader/progr
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "../../../shader/shaderSourceBuildUtils";
-import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/glslSenderUtils";
+import { handleUboConfig } from "../ubo/uboManagerUtils";
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);
@@ -34,6 +35,10 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
             LocationDataFromSystem,
             GLSLSenderDataFromSystem
         } = initShaderDataMap,
+        {
+            buildGLSLSource,
+            getGL
+        } = initShaderFuncDataMap,
         materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap),
         shaderIndex = genereateShaderIndex(ShaderDataFromSystem),
         program = getProgram(shaderIndex, ProgramDataFromSystem),
@@ -49,9 +54,9 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     let {
         vsSource,
         fsSource
-    } = initShaderFuncDataMap.buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap);
+    } = buildGLSLSource(materialIndex, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap);
 
-    gl = initShaderFuncDataMap.getGL(DeviceManagerDataFromSystem, state);
+    gl = getGL(DeviceManagerDataFromSystem, state);
 
     program = gl.createProgram();
 
@@ -62,6 +67,8 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
 
     addSendAttributeConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);
     addSendUniformConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem);
+
+    handleUboConfig(gl, shaderIndex, program, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap, GLSLSenderDataFromSystem);
 
     return shaderIndex;
 }

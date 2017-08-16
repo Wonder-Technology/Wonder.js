@@ -7,6 +7,7 @@ import {
 import { expect } from "wonder-expect.js";
 import { forEach, hasDuplicateItems } from "../../../../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../../../../../utils/renderConfigUtils";
+import { initData as initDataUtils } from "../../../../../../utils/worker/render_file/shader/glslSender/glslSenderUtils";
 
 export var addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
     it("sendAttributeConfigMap should not has duplicate attribute name", () => {
@@ -59,3 +60,7 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
     GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex] = sendUniformDataArr;
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex] = sendUniformFuncDataArr;
 }))
+
+export var initData = (GLSLSenderDataFromSystem: any) => {
+    initDataUtils(GLSLSenderDataFromSystem);
+}

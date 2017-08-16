@@ -20,7 +20,6 @@ import { SendDrawRenderCommandBufferData } from "../worker/logic_file/draw/SendD
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { ProgramData } from "../shader/program/ProgramData";
 import { LocationData } from "../shader/location/LocationData";
-import { GLSLSenderData } from "../shader/glslSender/GLSLSenderData";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getRenderWorker } from "../../worker/WorkerInstanceSystem";
 import { WorkerInstanceData } from "../../worker/WorkerInstanceData";
@@ -70,6 +69,8 @@ import { render as webgl1Render } from "../webgl1/render/RenderSystem";
 import { WebGL2RenderInitWorkerData } from "../webgl2/type/messageDataType";
 import { getLightMaterialBufferStartIndex } from "../utils/material/bufferUtils";
 import { getBasicMaterialBufferStartIndex } from "../utils/material/bufferUtils";
+import { WebGL2GLSLSenderData } from "../webgl2/shader/glslSender/GLSLSenderData";
+import { WebGL1GLSLSenderData } from "../webgl1/shader/glslSender/GLSLSenderData";
 
 var _checkLightCount = requireCheckFunc((PointLightData: any) => {
     it("count should <= max count", () => {
@@ -84,116 +85,116 @@ export var init = null;
 export var render = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    if(isWebgl1()){
-        init = (state: Map<any, any>) => {
-            return _init(state, {
-                    ambientLightData: {
-                        buffer: AmbientLightData.buffer,
-                        bufferCount: getAmbientLightBufferCount(),
-                        lightCount: AmbientLightData.count
-
-                    },
-                    directionLightData: {
-                        buffer: DirectionLightData.buffer,
-                        bufferCount: getDirectionLightBufferCount(),
-                        lightCount: DirectionLightData.count,
-                        directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
-                    },
-                    pointLightData: {
-                        buffer: WebGL1PointLightData.buffer,
-                        bufferCount: getPointLightBufferCount(),
-                        lightCount: WebGL1PointLightData.count,
-                        pointLightGLSLDataStructureMemberNameArr: WebGL1PointLightData.lightGLSLDataStructureMemberNameArr
-                    }
-                },
-                null,
-                WebGL1PointLightData);
-        }
-
-        render = (state: Map<any, any>) => {
-            _render(state, WebGL1PointLightData);
-        }
-
-    }
-    else{
-        init = (state: Map<any, any>) => {
-            return _init(state, {
-                    pointLightData: {
-                        buffer: WebGL2PointLightData.buffer,
-                        bufferCount: getPointLightBufferCount(),
-                        lightCount: WebGL2PointLightData.count
-                    },
-                },
-                {
-                    deferShading:{
-                        isInit: true
-                    }
-                },
-                WebGL2PointLightData
-            );
-        }
-
-        render = (state: Map<any, any>) => {
-            _render(state, WebGL2PointLightData);
-        }
-    }
-
-    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData, PointLightData: any) => {
-        _checkLightCount(PointLightData);
-
-        let renderWorker = getRenderWorker(WorkerInstanceData);
-
-        renderWorker.postMessage({
-            operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-            materialData: {
-                buffer: MaterialData.buffer,
-                basicMaterialData: {
-                    startIndex: getBasicMaterialBufferStartIndex(),
-                    index: BasicMaterialData.index
-                },
-                lightMaterialData: {
-                    startIndex: getLightMaterialBufferStartIndex(),
-                    index: LightMaterialData.index
-                }
-            },
-            geometryData: {
-                buffer: GeometryData.buffer,
-                indexType: GeometryData.indexType,
-                indexTypeSize: GeometryData.indexTypeSize,
-                verticesInfoList: GeometryData.verticesInfoList,
-                normalsInfoList: GeometryData.normalsInfoList,
-                texCoordsInfoList: GeometryData.texCoordsInfoList,
-                indicesInfoList: GeometryData.indicesInfoList
-            },
-            lightData: lightData,
-            textureData: {
-                mapManagerBuffer: MapManagerData.buffer,
-                textureBuffer: TextureData.buffer,
-                index: TextureData.index,
-                imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
-                uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
-            },
-            renderData: renderData
-        });
-
-        renderWorker.onmessage = (e) => {
-            var data = e.data,
-                state = data.state;
-
-            SendDrawRenderCommandBufferData.state = state;
-        };
-
-        return state;
-    };
-
-    let _render = (state: Map<any, any>, PointLightData:any) => {
-        return compose(
-            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData),
-            // sortRenderCommands(state),
-            createRenderCommandBufferWorkerData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
-            getRenderList(state)
-        )(MeshRendererData)
-    }
+    // if(isWebgl1()){
+    //     init = (state: Map<any, any>) => {
+    //         return _init(state, {
+    //                 ambientLightData: {
+    //                     buffer: AmbientLightData.buffer,
+    //                     bufferCount: getAmbientLightBufferCount(),
+    //                     lightCount: AmbientLightData.count
+    //
+    //                 },
+    //                 directionLightData: {
+    //                     buffer: DirectionLightData.buffer,
+    //                     bufferCount: getDirectionLightBufferCount(),
+    //                     lightCount: DirectionLightData.count,
+    //                     directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+    //                 },
+    //                 pointLightData: {
+    //                     buffer: WebGL1PointLightData.buffer,
+    //                     bufferCount: getPointLightBufferCount(),
+    //                     lightCount: WebGL1PointLightData.count,
+    //                     pointLightGLSLDataStructureMemberNameArr: WebGL1PointLightData.lightGLSLDataStructureMemberNameArr
+    //                 }
+    //             },
+    //             null,
+    //             WebGL1PointLightData);
+    //     }
+    //
+    //     render = (state: Map<any, any>) => {
+    //         _render(state, WebGL1PointLightData);
+    //     }
+    //
+    // }
+    // else{
+    //     init = (state: Map<any, any>) => {
+    //         return _init(state, {
+    //                 pointLightData: {
+    //                     buffer: WebGL2PointLightData.buffer,
+    //                     bufferCount: getPointLightBufferCount(),
+    //                     lightCount: WebGL2PointLightData.count
+    //                 },
+    //             },
+    //             {
+    //                 deferShading:{
+    //                     isInit: true
+    //                 }
+    //             },
+    //             WebGL2PointLightData
+    //         );
+    //     }
+    //
+    //     render = (state: Map<any, any>) => {
+    //         _render(state, WebGL2PointLightData);
+    //     }
+    // }
+    //
+    // let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData, PointLightData: any) => {
+    //     _checkLightCount(PointLightData);
+    //
+    //     let renderWorker = getRenderWorker(WorkerInstanceData);
+    //
+    //     renderWorker.postMessage({
+    //         operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+    //         materialData: {
+    //             buffer: MaterialData.buffer,
+    //             basicMaterialData: {
+    //                 startIndex: getBasicMaterialBufferStartIndex(),
+    //                 index: BasicMaterialData.index
+    //             },
+    //             lightMaterialData: {
+    //                 startIndex: getLightMaterialBufferStartIndex(),
+    //                 index: LightMaterialData.index
+    //             }
+    //         },
+    //         geometryData: {
+    //             buffer: GeometryData.buffer,
+    //             indexType: GeometryData.indexType,
+    //             indexTypeSize: GeometryData.indexTypeSize,
+    //             verticesInfoList: GeometryData.verticesInfoList,
+    //             normalsInfoList: GeometryData.normalsInfoList,
+    //             texCoordsInfoList: GeometryData.texCoordsInfoList,
+    //             indicesInfoList: GeometryData.indicesInfoList
+    //         },
+    //         lightData: lightData,
+    //         textureData: {
+    //             mapManagerBuffer: MapManagerData.buffer,
+    //             textureBuffer: TextureData.buffer,
+    //             index: TextureData.index,
+    //             imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
+    //             uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
+    //         },
+    //         renderData: renderData
+    //     });
+    //
+    //     renderWorker.onmessage = (e) => {
+    //         var data = e.data,
+    //             state = data.state;
+    //
+    //         SendDrawRenderCommandBufferData.state = state;
+    //     };
+    //
+    //     return state;
+    // };
+    //
+    // let _render = (state: Map<any, any>, PointLightData:any) => {
+    //     return compose(
+    //         sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData),
+    //         // sortRenderCommands(state),
+    //         createRenderCommandBufferWorkerData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
+    //         getRenderList(state)
+    //     )(MeshRendererData)
+    // }
 }
 else {
     if(isWebgl1()){
@@ -202,14 +203,14 @@ else {
 
             initState(state, getGL, setSide, DeviceManagerData);
 
-            initWebGL1Material(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData);
+            initWebGL1Material(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, WebGL1GLSLSenderData);
 
             _checkLightCount(WebGL1PointLightData);
         }
 
         render = (state: Map<any, any>) => {
             return compose(
-                webgl1Render(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, WebGL1PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL1PointLightData, GPUDetectData), ThreeDTransformData, GameObjectData),
+                webgl1Render(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, WebGL1PointLightData, ProgramData, LocationData, WebGL1GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, WebGL1GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL1PointLightData, GPUDetectData), ThreeDTransformData, GameObjectData),
                 clearColor(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
@@ -223,16 +224,16 @@ else {
 
             initState(state, getGL, setSide, DeviceManagerData);
 
-            initWebGL2Material(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData);
+            initWebGL2Material(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, WebGL2GLSLSenderData);
 
-            initWebGL2Render(gl, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, GLSLSenderData, GPUDetectData);
+            initWebGL2Render(gl, render_config, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, ProgramData, LocationData, WebGL2GLSLSenderData, GPUDetectData);
 
             _checkLightCount(WebGL2PointLightData);
         }
 
         render = (state: Map<any, any>) => {
             return compose(
-                webgl2Render(null, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, WebGL2PointLightData, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL2PointLightData, GPUDetectData), ThreeDTransformData, GameObjectData),
+                webgl2Render(null, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildDrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, WebGL2PointLightData, ProgramData, LocationData, WebGL2GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, WebGL2GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, WebGL2PointLightData, GPUDetectData), ThreeDTransformData, GameObjectData),
                 clearColor(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),

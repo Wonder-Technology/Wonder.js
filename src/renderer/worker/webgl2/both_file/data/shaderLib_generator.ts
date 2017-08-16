@@ -1,7 +1,8 @@
 import {
-    webgl2_basic_materialColor_fragment, webgl2_basic_end_fragment,webgl2_basic_vertex,
+    webgl2_basic_materialColor_fragment, webgl2_basic_end_fragment, webgl2_basic_vertex,
     webgl2_common_define, webgl2_common_fragment, webgl2_common_function, webgl2_common_vertex,
-    GLSLChunk, modelMatrix_noInstance_vertex, normalMatrix_noInstance_vertex,
+    GLSLChunk, modelMatrix_noInstance_vertex,
+    webgl2_normalMatrix_noInstance_vertex,
     // light_common, lightEnd_fragment,
     // light_setWorldPosition_vertex, light_vertex, lightCommon_vertex, lightCommon_fragment,
     webgl2_noShadowMap_fragment,
@@ -28,7 +29,10 @@ import {
     deferLightPass_common,
     deferLightPass_vertex,
     deferLightPass_fragment,
-    deferLightPass_end_fragment
+    deferLightPass_end_fragment,
+    ubo_camera,
+    ubo_light,
+    ubo_point_light
 
 } from "../../../../shader/chunk/ShaderChunk";
 import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
@@ -49,18 +53,6 @@ export const webgl2_shaderLib_generator = {
                 }
             },
             "send": {
-                "uniform": [
-                    {
-                        "name": "u_vMatrix",
-                        "field": "vMatrix",
-                        "type": "mat4"
-                    },
-                    {
-                        "name": "u_pMatrix",
-                        "field": "pMatrix",
-                        "type": "mat4"
-                    }
-                ]
             }
         },
         "ModelMatrixNoInstanceShaderLib": {
@@ -86,6 +78,61 @@ export const webgl2_shaderLib_generator = {
                         "name": "a_position",
                         "buffer": "vertex",
                         "type": "vec3"
+                    }
+                ]
+            }
+        },
+
+
+
+        "CameraUboShaderLib": {
+            "glsl": {
+                "vs": {
+                    "source": ubo_camera
+                },
+                "fs": {
+                    "source": ubo_camera
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "CameraUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 16 * 2 + 4 + 16
+                        },
+                        "setBufferDataFunc": (gl, {
+                            uniformBlockBinding,
+                            buffer,
+                            typeArray
+                        }, {
+                                                  bindUniformBufferBase,
+                                                  bufferDynamicData,
+                                                  set
+                                              }, {
+                                                  // typeArray,
+                                                  vMatrix,
+                                                  pMatrix,
+                                                  // vpMatrix,
+                                                  cameraPosition,
+                                                  normalMatrix
+                                              }) => {
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            set(typeArray, vMatrix);
+                            set(typeArray, pMatrix, 16);
+                            set(typeArray, cameraPosition, 32);
+
+                            /*! refer to https://stackoverflow.com/questions/23628259/how-to-properly-pad-and-align-data-in-opengl-for-std430-layout */
+                            set(typeArray, [normalMatrix[0], normalMatrix[1], normalMatrix[2], 0], 36);
+                            set(typeArray, [normalMatrix[3], normalMatrix[4], normalMatrix[5], 0], 40);
+                            set(typeArray, [normalMatrix[6], normalMatrix[7], normalMatrix[8], 0], 44);
+
+                            bufferDynamicData(gl, typeArray);
+                        },
+                        "frequence": "frame",
+                        "usage": "dynamic"
                     }
                 ]
             }
@@ -184,7 +231,7 @@ export const webgl2_shaderLib_generator = {
         // },
 
 
-
+        //todo basic add ubo_basic_model shader lib
 
 
         "BasicMaterialColorShaderLib": {
@@ -295,19 +342,99 @@ export const webgl2_shaderLib_generator = {
 
 
 
-        //todo separate
+        //todo add
 
-        // "LightModelDataShaderLib": {
+        "LightUboShaderLib": {
+            "glsl": {
+                "fs": {
+                    "varDeclare": ubo_light.varDeclare
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "LightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4
+                        },
+                        "setBufferDataFunc": (gl, {
+                            uniformBlockBinding,
+                            buffer,
+                            typeArray
+                        }, {
+                            bindUniformBufferBase,
+                            bufferStaticData,
+                            // bufferDynamicData,
+                            set
+                        }, drawRenderCommandBufferDataMap, {
+                            render_config
+                                      }) => {
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            set(typeArray, [render_config.defer.lightModel]);
+
+                            bufferStaticData(gl, typeArray);
+                        },
+                        "frequence": "one",
+                        "usage": "static"
+                    }
+                ]
+            }
+        },
+
+
+
+        // "LightModelUboShaderLib": {
         //     "glsl": {
         //         "vs": {
-        //             "source":light_model_ubo
+        //             "source":ubo_light_model
         //         }
         //     },
         //     "send": {
-        //         "uniformUBO": [
+        //         "uniformUbo": [
         //             {
-        //                 "name": "LightModelData"
-        //                 //todo set ubo data
+        //                 "name": "LightModelUbo",
+        //                 // "createTypeArrayFunc": () => {
+        //                 //     return new Float32Array(16 * 3 + 3);
+        //                 // },
+        //                 "typeArray": {
+        //                     "type": "float32",
+        //                     "length": 16
+        //                 },
+        //                 // "count": 1,
+        //                 "initBufferDataFunc": (gl, {
+        //                     uniformBlockBinding,
+        //                     buffer,
+        //                     typeArray
+        //                 }, {
+        //                                   bindUniformBufferBase,
+        //                                   bufferDynamicData,
+        //                                   set
+        //                               }) => {
+        //                     bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+        //
+        //                     bufferDynamicData(gl, 16 * 4);
+        //                 },
+        //                 "setBufferDataFunc": (gl, {
+        //                     uniformBlockBinding,
+        //                     buffer,
+        //                     typeArray
+        //                 }, {
+        //                     bindUniformBufferBase,
+        //                     bufferDynamicData,
+        //                     set
+        //                 }, mMatrix) => {
+        //                     bindUniformBufferBase(gl, buffer, 0);
+        //
+        //
+        //                     set(typeArray, mMatrix);
+        //                     // set(typeArray, normalMatrix, 16);
+        //
+        //                     bufferDynamicData(gl, typeArray);
+        //                 },
+        //                 "frequence": "gameObject",
+        //                 "usage": "dynamic"
         //             }
         //         ]
         //     }
@@ -316,16 +443,16 @@ export const webgl2_shaderLib_generator = {
         "NormalMatrixNoInstanceShaderLib": {
             "glsl": {
                 "vs": {
-                    "source": normalMatrix_noInstance_vertex
+                    "source": webgl2_normalMatrix_noInstance_vertex
                 }
             },
             "send": {
                 "uniform": [
-                    {
-                        "name": "u_normalMatrix",
-                        "field": "normalMatrix",
-                        "type": "mat3"
-                    }
+                    // {
+                    //     "name": "u_normalMatrix",
+                    //     "field": "normalMatrix",
+                    //     "type": "mat3"
+                    // }
                 ]
             }
         },
@@ -587,7 +714,8 @@ export const webgl2_shaderLib_generator = {
                     "source": deferLightPass_vertex
                 },
                 "fs": {
-                    "source": deferLightPass_fragment
+                    "source": deferLightPass_fragment,
+                    "varDeclare": deferLightPass_fragment.varDeclare + ubo_point_light.varDeclare
                 }
             },
             "send": {
@@ -613,6 +741,70 @@ export const webgl2_shaderLib_generator = {
                 //         "type": "float3"
                 //     }
                 // ],
+                "uniformUbo": [
+                    {
+                        "name": "PointLightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4 * 3
+                        },
+                        // "count": 1,
+                        "setBufferDataFunc": (gl, pointLightIndex, {
+                                                  uniformBlockBinding,
+                                                  buffer,
+                                                  typeArray
+                                              }, {
+                                                  bindUniformBufferBase,
+                                                  bufferDynamicData,
+                                                  set
+                                              }, {
+                                                  getColorArr3,
+                                                  getIntensity,
+                                                  getConstant,
+                                                  getLinear,
+                                                  getQuadratic,
+                                                  computeRadius,
+                                                  // getRange,
+                                                  getPosition,
+
+                                                  // isColorDirty,
+                                                  // isPositionDirty,
+                                                  // isIntensityDirty,
+                                                  // isAttenuationDirty,
+                                                  // isDirty,
+
+                                                  PointLightDataFromSystem
+                                              },
+                                              drawDataMap
+                        ) => {
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            // if(isDirty(pointLightIndex, PointLightDataFromSystem)){
+                                set(typeArray, getPosition(pointLightIndex, drawDataMap));
+
+                                let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem),
+                           constant = getConstant(pointLightIndex, PointLightDataFromSystem)         ,
+                                    linear = getLinear(pointLightIndex, PointLightDataFromSystem),
+                                    quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
+                                    radius = computeRadius(colorArr3, constant, linear, quadratic);
+                                    // colorDataArr = [];
+                                    //
+                                    // colorDataArr = colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)
+
+
+
+                                set(typeArray, colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)), 4);
+
+
+                                set(typeArray, [constant, linear, quadratic, radius], 8);
+
+                                bufferDynamicData(gl, typeArray);
+                            // }
+                        },
+                        "frequence": "pointLight",
+                        "usage": "dynamic"
+                    }
+                ],
                 "uniformDefine": [
                     {
                         "name": "u_positionBuffer",
@@ -696,6 +888,7 @@ export interface IWebGL2ShaderLibSendConfig {
     uniform?: Array<IWebGL2SendUniformConfig>;
     uniformDefine?: Array<IWebGL2DefineUniformConfig>;
     uniformFunc?: Function;
+    uniformUbo?: Array<IWebGL2UboConfig>;
 }
 
 export interface IWebGL2SendAttributeConfig {
@@ -719,6 +912,20 @@ export interface IWebGL2SendUniformConfig {
     type: WebGL2UniformType;
     fieldType?: "structure";
     from?: "cmd" | "basicMaterial" | "lightMaterial" | "ambientLight" | "pointLight" | "directionLight";
+}
+
+export interface IWebGL2UboConfig {
+    name: string;
+    typeArray: IWebGL2UboTypeArrayConfig;
+    frequence: "one" | "frame" | "pointLight";
+    usage: "static" | "dynamic";
+    // initBufferDataFunc?:Function;
+    setBufferDataFunc:Function;
+}
+
+export interface IWebGL2UboTypeArrayConfig {
+    type:string;
+    length:number;
 }
 
 //todo fix type(e.g. add location, uniformUBO...)
