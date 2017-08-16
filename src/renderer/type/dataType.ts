@@ -1,6 +1,13 @@
 import { EBufferType } from "../enum/EBufferType";
-import { IWebGL1SendAttributeConfig, IWebGL1SendUniformConfig } from "../worker/webgl1/both_file/data/shaderLib_generator";
-import { IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig } from "../worker/webgl2/both_file/data/shaderLib_generator";
+import {
+    IWebGL1SendAttributeConfig,
+    IWebGL1SendUniformConfig
+} from "../worker/webgl1/both_file/data/shaderLib_generator";
+import {
+    IWebGL2SendAttributeConfig,
+    IWebGL2SendUniformConfig
+} from "../worker/webgl2/both_file/data/shaderLib_generator";
+import { CameraRenderCommandBufferForDrawData } from "../utils/worker/render_file/type/dataType";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
@@ -48,15 +55,9 @@ export type ArrayBufferDataMap = {
 }
 
 export type RenderCommandBufferForDrawData = {
+    cameraData: CameraRenderCommandBufferForDrawData;
     basicData: BasicRenderCommandBufferForDrawData;
     lightData: LightRenderCommandBufferForDrawData;
-}
-
-export type CameraRenderCommandBufferForDrawData = {
-    vMatrix: Float32Array;
-    pMatrix: Float32Array;
-    cameraPosition: Float32Array;
-    normalMatrix: Float32Array;
 }
 
 export type BasicRenderCommandBufferForDrawData = {
@@ -64,8 +65,6 @@ export type BasicRenderCommandBufferForDrawData = {
         mMatrices: Float32Array;
         materialIndices: Uint32Array;
         geometryIndices: Uint32Array;
-        // vMatrices: Float32Array;
-        // pMatrices: Float32Array;
     };
 
     count: number;
@@ -141,7 +140,6 @@ export type PointLightGLSLDataStructure = {
 }
 
 export type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
-type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
 
 
 export type DisposedTextureDataMap = Array<{

@@ -7,9 +7,9 @@ import { draw as frontDraw } from "../../../../../draw/light/front/frontDrawRend
 import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/IDraw";
 import { WebGL1LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
 import {
-    CameraRenderCommandBufferForDrawData,
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../type/dataType";
+import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 
 export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     frontDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);

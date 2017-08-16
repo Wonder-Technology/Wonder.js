@@ -32,17 +32,18 @@ import { buildDrawFuncDataMap } from "../../../../webgl2/utils/worker/render_fil
 import { sendAttributeData } from "../render/RenderWorkerSystem";
 import { sendUniformData } from "../render/light/LightRenderWorkerSystem";
 import { getPointLightPosition } from "../../../render_file/render/RenderWorkerSystem";
+import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 
 export var init = initUtils;
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, _buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
         getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, computeRadius,
         drawDataMap
-    ), initShaderDataMap, bufferData);
+    ), initShaderDataMap, bufferData, cameraData);
 }
 
 var _buildSendUniformDataDataMap = (

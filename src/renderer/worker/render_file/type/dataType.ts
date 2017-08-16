@@ -1,4 +1,7 @@
+import { CameraRenderCommandBufferForDrawData } from "../../../utils/worker/render_file/type/dataType";
+
 export type WorkerRenderCommandBufferForDrawData = {
+    cameraData: CameraRenderCommandBufferForDrawData;
     basicData: BasicWorkerRenderCommandBufferForDrawData;
     lightData: LightWorkerRenderCommandBufferForDrawData;
 }

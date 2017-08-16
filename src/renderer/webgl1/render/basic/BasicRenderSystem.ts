@@ -25,7 +25,7 @@ import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 
 import { getColorArr3, getOpacity, useShader } from "../../../../component/material/MaterialSystem";
 import { buildDrawFuncDataMap } from "../../utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 import {
-    BasicRenderCommandBufferForDrawData, BasicRenderUniformData, CameraRenderCommandBufferForDrawData, UniformCacheMap,
+    BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../type/dataType";
 // import { draw as basicDraw } from "../utils/basic/draw/basicRenderDrawRenderCommandBufferUtils";
@@ -37,6 +37,7 @@ import {
 } from "../../utils/worker/render_file/render/basic/basicRenderUtils";
 import { directlySendUniformData } from "../../../utils/worker/render_file/render/renderUtils";
 import { sendAttributeData } from "../RenderSystem";
+import { CameraRenderCommandBufferForDrawData } from "../../../utils/worker/render_file/type/dataType";
 
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(

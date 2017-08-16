@@ -1,4 +1,4 @@
-import { LightWorkerRenderCommandBufferForDrawData } from "../../logic_file/type/dataType";
+import { LightWorkerRenderCommandBufferForDrawData } from "../type/dataType";
 import { BufferUtilsForUnitTest } from "../../../../utils/BufferUtilsForUnitTest";
 import { createTypeArrays } from "../../../utils/command_buffer/lightRenderComandBufferUtils";
 

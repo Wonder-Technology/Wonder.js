@@ -23,15 +23,16 @@ import { sendAttributeData } from "../../RenderWorkerSystem";
 import {  sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3  } from "../../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../../type/dataType";
+import { CameraRenderCommandBufferForDrawData } from "../../../../../../utils/worker/render_file/type/dataType";
 
-export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
+export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, _buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3,
         getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
         getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange,
         drawDataMap
-    ), initShaderDataMap, bufferData);
+    ), initShaderDataMap, bufferData, cameraData);
 }
 
 var _buildSendUniformDataDataMap = (

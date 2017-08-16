@@ -6,7 +6,6 @@ import { IMaterialConfig } from "../../../../../../../data/material_config_inter
 import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator_interface";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
 import {
-    CameraRenderCommandBufferForDrawData,
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../type/dataType";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
@@ -14,6 +13,7 @@ import { getNoMaterialShaderIndex } from "../../../shader/shaderUtils";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/IDraw";
 import { WebGL2LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
 import { draw as deferDraw } from "../../../../../draw/light/defer/deferDrawRenderCommandBufferUtils";
+import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 
 export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
     _resetLightDataBufferCount(DataBufferConfig);

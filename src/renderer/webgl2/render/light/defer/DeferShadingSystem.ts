@@ -28,11 +28,12 @@ import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 
 import { useShader } from "../../../../../component/material/MaterialSystem";
 import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import { computeRadius } from "../../../light/PointLightSystem";
-import { CameraRenderCommandBufferForDrawData, LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { sendUniformData } from "../LightRenderSystem";
 import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { sendAttributeData } from "../../RenderSystem";
 import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
+import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 
 export var init = initUtils;
 

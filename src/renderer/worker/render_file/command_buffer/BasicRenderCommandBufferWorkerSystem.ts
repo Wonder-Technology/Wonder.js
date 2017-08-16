@@ -1,4 +1,4 @@
-import { BasicWorkerRenderCommandBufferForDrawData } from "../../logic_file/type/dataType";
+import { BasicWorkerRenderCommandBufferForDrawData } from "../type/dataType";
 import { createTypeArrays } from "../../../utils/command_buffer/basicRenderComandBufferUtils";
 import { BufferUtilsForUnitTest } from "../../../../utils/BufferUtilsForUnitTest";
 
