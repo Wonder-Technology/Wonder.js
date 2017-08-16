@@ -14,9 +14,9 @@ import {
     webgl1_diffuseMap_vertex, webgl1_diffuseMap_fragment,
     webgl1_specularMap_vertex, webgl1_specularMap_fragment,
 } from "../../../../shader/chunk/ShaderChunk";
-import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { DrawDataMap } from "../../../../type/utilsType";
+import { webgl1_setPos_mvp } from "../../../../webgl1/shader/snippet/ShaderSnippet";
 
 var _lightDefineList = [
     {
@@ -216,7 +216,7 @@ export const webgl1_shaderLib_generator = {
         "BasicShaderLib": {
             "glsl": {
                 "vs": {
-                    "body": setPos_mvp
+                    "body": webgl1_setPos_mvp
                 }
             },
             "send": {
@@ -544,6 +544,7 @@ export const webgl1_shaderLib_generator = {
                             PointLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, drawDataMap:DrawDataMap) => {
+                    //todo optimize
                     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
                         sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
                         sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);

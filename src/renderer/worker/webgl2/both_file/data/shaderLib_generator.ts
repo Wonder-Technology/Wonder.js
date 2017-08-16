@@ -35,7 +35,7 @@ import {
     ubo_point_light
 
 } from "../../../../shader/chunk/ShaderChunk";
-import { setPos_mvp } from "../../../../shader/snippet/ShaderSnippet";
+import { webgl2_setPos_mvp } from "../../../../webgl2/shader/snippet/ShaderSnippet";
 
 export const webgl2_shaderLib_generator = {
     "shaderLibs": {
@@ -258,7 +258,7 @@ export const webgl2_shaderLib_generator = {
                     "varDeclare": webgl2_basic_vertex.varDeclare,
 
 
-                    "body": setPos_mvp
+                    "body": webgl2_setPos_mvp
                 }
             },
             "send": {
@@ -777,7 +777,6 @@ export const webgl2_shaderLib_generator = {
                                               },
                                               drawDataMap
                         ) => {
-                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
                             // if(isDirty(pointLightIndex, PointLightDataFromSystem)){
                                 set(typeArray, getPosition(pointLightIndex, drawDataMap));
@@ -797,6 +796,11 @@ export const webgl2_shaderLib_generator = {
 
 
                                 set(typeArray, [constant, linear, quadratic, radius], 8);
+
+                            //todo if not dirty, not bind and buffer data
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+
 
                                 bufferDynamicData(gl, typeArray);
                             // }

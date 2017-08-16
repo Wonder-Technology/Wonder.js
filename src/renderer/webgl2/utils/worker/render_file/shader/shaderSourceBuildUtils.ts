@@ -1,5 +1,5 @@
 import { isConfigDataExist } from "../../../../../utils/renderConfigUtils";
-import { main_begin, main_end } from "../../../../../shader/snippet/ShaderSnippet";
+import { webgl2_main_begin, webgl2_main_end } from "../../../../shader/snippet/ShaderSnippet";
 import { highp_fragment, lowp_fragment, mediump_fragment, version } from "../../../../../shader/chunk/ShaderChunk";
 import { ExtendUtils } from "Wonder-CommonLib/dist/es2015/utils/ExtendUtils";
 import { it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
@@ -53,8 +53,8 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
             fsBody += getGLSLPartData(fs, "body");
         };
 
-    vsBody += main_begin;
-    fsBody += main_begin;
+    vsBody += webgl2_main_begin;
+    fsBody += webgl2_main_begin;
 
     vsTop += version.top;
 
@@ -105,8 +105,8 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         }
     });
 
-    vsBody += main_end;
-    fsBody += main_end;
+    vsBody += webgl2_main_end;
+    fsBody += webgl2_main_end;
 
     //todo restore and separate(webgl1/webgl2)
     // vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
