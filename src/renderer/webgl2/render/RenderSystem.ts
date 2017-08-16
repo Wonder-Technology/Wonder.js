@@ -24,6 +24,7 @@ export var init = (gl:any, DataBufferConfig:any, GBufferData:any, DeferLightPass
 }
 
 export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
+    cameraData,
     basicData,
     lightData
 }) => {
@@ -35,11 +36,11 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
     clear(gl, DeviceManagerDataFromSystem);
 
     if(basicData.count > 0){
-        basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, initShaderDataMap, basicData);
+        basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, initShaderDataMap, basicData, cameraData);
     }
 
     if(lightData.count > 0){
-        deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, ThreeDTransformData, GameObjectData, lightData);
+        deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawDataMap, deferDrawDataMap, initShaderDataMap, ThreeDTransformData, GameObjectData, lightData, cameraData);
     }
 })
 

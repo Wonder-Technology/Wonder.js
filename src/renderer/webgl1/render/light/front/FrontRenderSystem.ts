@@ -24,19 +24,19 @@ import {
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../shader/glslSender/GLSLSenderSystem";
 import { useShader } from "../../../../../component/material/MaterialSystem";
 import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/drawRenderCommandBufferUtils";
-import { LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { CameraRenderCommandBufferForDrawData, LightRenderCommandBufferForDrawData } from "../../../../type/dataType";
 import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { sendUniformData } from "../LightRenderSystem";
 import { sendAttributeData } from "../../RenderSystem";
 
-export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData) => {
+export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, _buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3,
         getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
         getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange,
         drawDataMap, ThreeDTransformData, GameObjectData
-    ), initShaderDataMap, bufferData);
+    ), initShaderDataMap, bufferData, cameraData);
 })
 
 var _buildSendUniformDataDataMap = (

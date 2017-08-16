@@ -1,4 +1,3 @@
-import { addSendAttributeConfig, addSendUniformConfig } from "../../../shader/glslSender/glslSenderUtils";
 import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
@@ -12,6 +11,7 @@ import { getProgram } from "../../../../../utils/worker/render_file/shader/progr
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "../../../shader/shaderSourceBuildUtils";
+import { addSendAttributeConfig, addSendUniformConfig } from "./glslSender/glslSenderUtils";
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);

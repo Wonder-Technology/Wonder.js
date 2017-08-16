@@ -21,8 +21,8 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
-    return createRenderCommandBufferDataUtils(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray, (count:number, buffer:any, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array, vMatrices:Float32Array, pMatrices:Float32Array) => {
-        return buildRenderCommandBufferForDrawData(count, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices);
+    return createRenderCommandBufferDataUtils(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray, (count:number, buffer:any, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array) => {
+        return buildRenderCommandBufferForDrawData(count, materialIndices, geometryIndices, mMatrices);
     });
 })
 

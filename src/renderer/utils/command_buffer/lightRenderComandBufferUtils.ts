@@ -30,16 +30,12 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
     offset += Float32Array.BYTES_PER_ELEMENT * mat3Length;
 }
 
-export var buildRenderCommandBufferForDrawData = (count:number, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array, vMatrices:Float32Array, pMatrices:Float32Array, cameraPositions:Float32Array, normalMatrices:Float32Array) => {
+export var buildRenderCommandBufferForDrawData = (count:number, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array) => {
     return {
         renderCommandBufferData: {
             materialIndices: materialIndices,
             geometryIndices: geometryIndices,
-            mMatrices: mMatrices,
-            vMatrices: vMatrices,
-            pMatrices: pMatrices,
-            cameraPositions: cameraPositions,
-            normalMatrices: normalMatrices,
+            mMatrices: mMatrices
         },
         count: count
     }

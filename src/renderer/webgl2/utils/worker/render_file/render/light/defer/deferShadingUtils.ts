@@ -5,7 +5,10 @@ import { use } from "../../../../../../../utils/worker/render_file/shader/shader
 import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator_interface";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
-import { LightRenderCommandBufferForDrawData } from "../../../../../../../type/dataType";
+import {
+    CameraRenderCommandBufferForDrawData,
+    LightRenderCommandBufferForDrawData
+} from "../../../../../../../type/dataType";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { getNoMaterialShaderIndex } from "../../../shader/shaderUtils";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/IDraw";
@@ -35,6 +38,6 @@ var _resetLightDataBufferCount = (DataBufferConfig:any) => {
     DataBufferConfig.pointLightDataBufferCount = 1000;
 }
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
-    deferDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, sendDataMap, initShaderDataMap, bufferData);
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+    deferDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }

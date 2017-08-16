@@ -26,17 +26,9 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     var count = renderGameObjectArray.length,
         buffer: any = RenderCommandBufferData.buffer,
         mMatrices = RenderCommandBufferData.mMatrices,
-        vMatrices = RenderCommandBufferData.vMatrices,
-        pMatrices = RenderCommandBufferData.pMatrices,
         materialIndices = RenderCommandBufferData.materialIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
-        currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
-        currentCameraIndex = currentCameraComponent.index,
         mat4Length = getMatrix4DataSize();
-
-    setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
-    setMatrices(pMatrices, getPMatrix(currentCameraIndex, CameraData), 0);
 
     for (let i = 0; i < count; i++) {
         let matIndex = mat4Length * i,
@@ -52,7 +44,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         geometryIndices[i] = geometry.index;
     }
 
-    return buildRenderCommandBufferForDrawData(count, buffer, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices);
+    return buildRenderCommandBufferForDrawData(count, buffer, materialIndices, geometryIndices, mMatrices);
 })
 
 export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {

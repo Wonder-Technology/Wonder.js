@@ -1,9 +1,7 @@
-import { getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
+import { getMatrix4DataSize } from "../../../utils/typeArrayUtils";
 
 export var createTypeArrays = (buffer: any, DataBufferConfig: any, BasicRenderCommandBufferDataFromSystem: any) => {
-    // var mat3Length = getMatrix3DataSize(),
     var mat4Length = getMatrix4DataSize(),
-        // cameraPositionLength = getVector3DataSize(),
         count = DataBufferConfig.renderCommandBufferCount,
         offset: number = 0;
 
@@ -17,27 +15,19 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, BasicRenderCo
     offset += count * Uint32Array.BYTES_PER_ELEMENT;
 
 
-    BasicRenderCommandBufferDataFromSystem.vMatrices = new Float32Array(buffer, offset, mat4Length);
+    BasicRenderCommandBufferDataFromSystem.vMatrix = new Float32Array(buffer, offset, mat4Length);
     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
 
-    BasicRenderCommandBufferDataFromSystem.pMatrices = new Float32Array(buffer, offset, mat4Length);
+    BasicRenderCommandBufferDataFromSystem.pMatrix = new Float32Array(buffer, offset, mat4Length);
     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
-
-    // BasicRenderCommandBufferDataFromSystem.cameraPositions = new Float32Array(buffer, offset, cameraPositionLength);
-    // offset += Float32Array.BYTES_PER_ELEMENT * cameraPositionLength;
-
-    // BasicRenderCommandBufferDataFromSystem.normalMatrices = new Float32Array(buffer, offset, mat3Length);
-    // offset += Float32Array.BYTES_PER_ELEMENT * mat3Length;
 }
 
-export var buildRenderCommandBufferForDrawData = (count:number, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array, vMatrices:Float32Array, pMatrices:Float32Array) => {
+export var buildRenderCommandBufferForDrawData = (count:number, materialIndices:Float32Array, geometryIndices:Float32Array, mMatrices:Float32Array) => {
     return {
         renderCommandBufferData:{
             materialIndices:materialIndices,
             geometryIndices:geometryIndices,
-            mMatrices: mMatrices,
-            vMatrices:vMatrices,
-            pMatrices:pMatrices
+            mMatrices: mMatrices
         },
         count: count
     }

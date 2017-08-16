@@ -5,11 +5,12 @@ import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
-import { LightRenderCommandBufferForDrawData, LightRenderUniformData } from "../../../../../type/dataType";
-import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../../../../utils/typeArrayUtils";
 import {
-    drawGameObjects,
-    updateSendMatrixFloat32ArrayData
+     LightRenderCommandBufferForDrawData,
+    LightRenderUniformData
+} from "../../../../../type/dataType";
+import {
+    drawGameObjects
 } from "../../../../../utils/draw/drawRenderCommandBufferUtils";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light/defer/gbuffer/gBufferUtils";
@@ -18,34 +19,21 @@ import { unbindVAO } from "../../../vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 
-export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData) => {
+export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
+    vMatrix,
+    pMatrix,
+    cameraPosition,
+    normalMatrix
+}) => {
     var {
             LightDrawRenderCommandBufferDataFromSystem
         } = drawDataMap,
         {
-            vMatrices,
-            pMatrices,
-            cameraPositions,
-            normalMatrices
-        } = bufferData.renderCommandBufferData,
-        mat3Length = getMatrix3DataSize(),
-        mat4Length = getMatrix4DataSize(),
-        cameraPositionLength = getVector3DataSize(),
-        {
-            mMatrixFloatArrayForSend,
-            vMatrixFloatArrayForSend,
-            pMatrixFloatArrayForSend,
-            cameraPositionForSend,
-            normalMatrixFloatArrayForSend
+            mMatrixFloatArrayForSend
         } = LightDrawRenderCommandBufferDataFromSystem;
 
-    updateSendMatrixFloat32ArrayData(vMatrices, 0, mat4Length, vMatrixFloatArrayForSend);
-    updateSendMatrixFloat32ArrayData(pMatrices, 0, mat4Length, pMatrixFloatArrayForSend);
-    updateSendMatrixFloat32ArrayData(normalMatrices, 0, mat3Length, normalMatrixFloatArrayForSend);
-    updateSendMatrixFloat32ArrayData(cameraPositions, 0, cameraPositionLength, cameraPositionForSend);
-
-    _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend, normalMatrices), bufferData);
-    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend);
+    _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix, cameraPosition, normalMatrix), bufferData);
+    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, cameraPosition);
 };
 
 var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, {
@@ -70,7 +58,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
                       }, drawDataMap:DrawDataMap, {
                           DeferLightPassDataFromSystem
                       }, initShaderDataMap:InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap,
-                      vMatrixFloatArrayForSend, pMatrixFloatArrayForSend, cameraPositionForSend) => {
+                      cameraPositionForSend) => {
     var {
             ShaderDataFromSystem
         } = initShaderDataMap,

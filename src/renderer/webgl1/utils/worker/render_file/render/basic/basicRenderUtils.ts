@@ -8,7 +8,7 @@ import { IMaterialConfig } from "../../../../../../data/material_config_interfac
 import { IRenderConfig } from "../../../../../../worker/both_file/data/render_config";
 import { IWebGL1DrawFuncDataMap } from "../../../../../interface/IDraw";
 import {
-    BasicRenderCommandBufferForDrawData, BasicRenderUniformData, UniformCacheMap,
+    BasicRenderCommandBufferForDrawData, BasicRenderUniformData, CameraRenderCommandBufferForDrawData, UniformCacheMap,
     UniformLocationMap
 } from "../../../../../../type/dataType";
 import { WebGL1BasicSendUniformDataDataMap } from "../../../../../type/utilsType";
@@ -16,8 +16,8 @@ import { Log } from "../../../../../../../utils/Log";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
 import { draw as basicDraw } from "../../../../draw/basic/basicDrawRenderCommandBufferUtils";
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData) => {
-    basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData);
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+    basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 
 //todo extract code
