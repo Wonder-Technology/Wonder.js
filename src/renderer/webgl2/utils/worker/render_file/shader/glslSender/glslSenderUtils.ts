@@ -1,12 +1,12 @@
-import { ensureFunc, it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
-import { SendAttributeConfigMap } from "../../../../type/dataType";
+import { ensureFunc, it, requireCheckFunc } from "../../../../../../../definition/typescript/decorator/contract";
+import { SendAttributeConfigMap } from "../../../../../../type/dataType";
 import {
     IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig,
     IWebGL2ShaderLibContentGenerator
-} from "../../../../worker/webgl2/both_file/data/shaderLib_generator";
+} from "../../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { expect } from "wonder-expect.js";
-import { forEach, hasDuplicateItems } from "../../../../../utils/arrayUtils";
-import { isConfigDataExist } from "../../../../utils/renderConfigUtils";
+import { forEach, hasDuplicateItems } from "../../../../../../../utils/arrayUtils";
+import { isConfigDataExist } from "../../../../../../utils/renderConfigUtils";
 
 export var addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
     it("sendAttributeConfigMap should not has duplicate attribute name", () => {
