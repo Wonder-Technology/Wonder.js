@@ -36,7 +36,7 @@ var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, prog
     for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
         let sendFunc = sendUniformFuncDataArr[i];
 
-        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap, drawDataMap);
+        sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap);
     }
 }
 

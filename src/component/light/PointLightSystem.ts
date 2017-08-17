@@ -113,6 +113,8 @@ export var getRange = getRangeUtils;
 
 export var setRange = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.ranges, index, value);
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var setRangeLevel = (index: number, value: number, PointLightData: any) => {

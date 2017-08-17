@@ -433,6 +433,9 @@ describe("test ubo shader lib", function () {
                     it("if point light quadratic data dirty, set its data", function () {
                         judgeSetData("setQuadratic");
                     });
+                    it("if point light range dirty, set its data", function () {
+                        judgeSetData("setRange");
+                    });
                     it("if point light range level dirty, set its data", function () {
                         judgeSetData("setRangeLevel");
                     });

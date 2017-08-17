@@ -29,7 +29,7 @@ var pointLightSystemTool = (function () {
                             gameObjectTool.disposeComponent(obj1, light1);
 
                             expect(pointLightTool[getMethodName](componentTool.createComponent(index1))).toEqual(2);
-                            expect(testWebGL2Tool.getValues(pointLightTool[getMethodName](componentTool.createComponent(index2)))).toEqual(defaultValue);
+                            expect(testTool.getValues(pointLightTool[getMethodName](componentTool.createComponent(index2)))).toEqual(defaultValue);
                         }
 
                         it("remove from intensity", function () {

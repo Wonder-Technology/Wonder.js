@@ -17,10 +17,11 @@ describe("front render", function () {
     var EShading = wd.EShading;
     var ELightModel = wd.ELightModel;
     var PointLight = wd.PointLight;
+    var PointLightData = wd.WebGL1PointLightData;
     var render_config = wd.render_config;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+        return glslWebGL1Tool.buildGLSL(sandbox, state);
     }
 
     beforeEach(function () {
@@ -782,13 +783,19 @@ describe("front render", function () {
                 });
 
                 describe("send structure data", function () {
-                    var light1, position1, color1, intensity1;
-                    var light2, position2, color2, intensity2;
+                    var pos1, pos2;
+                    var v1, v2
+                    var light1, position1, color1;
+                    var light2, position2, color2;
 
-                    function judgeSendSingleValue(name, setMethodName, value1, value2){
-                        var pos1 = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0]." + name).returns(pos1),
-                            pos2 = 1;
+                    function prepareSendSingleValue(name, setMethodName, value1, value2){
+                        v1 = value1;
+                        v2 = value2;
+
+                        pos1 = 0;
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0]." + name).returns(pos1);
+
+                        pos2 = 1;
                         gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1]." + name).returns(pos2);
 
                         pointLightTool[setMethodName](light1, value1);
@@ -797,9 +804,25 @@ describe("front render", function () {
 
                         directorTool.init(state);
                         directorTool.loopBody(state);
+                    }
 
-                        expect(gl.uniform1f.withArgs(pos1)).toCalledWith(pos1, value1);
-                        expect(gl.uniform1f.withArgs(pos2)).toCalledWith(pos2, value2);
+                    function judgeSendSingleValue() {
+                        expect(gl.uniform1f.withArgs(pos1)).toCalledWith(pos1, v1);
+                        expect(gl.uniform1f.withArgs(pos2)).toCalledWith(pos2, v2);
+                    }
+
+                    function judgeNotSend3F() {
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform3f.withArgs(pos1)).toCalledOnce();
+                        expect(gl.uniform3f.withArgs(pos2)).toCalledOnce();
+                    }
+
+                    function judgeNotSendSingleValue() {
+                        directorTool.loopBody(state);
+
+                        expect(gl.uniform1f.withArgs(pos1)).toCalledOnce();
+                        expect(gl.uniform1f.withArgs(pos2)).toCalledOnce();
                     }
 
                     beforeEach(function () {
@@ -816,48 +839,160 @@ describe("front render", function () {
                         light2 = gameObjectTool.getComponent(obj2, PointLight);
                     });
 
-                    it("send light position", function () {
-                        var pos1 = 0,
+                    describe("send light position", function () {
+                        beforeEach(function(){
+                            pos1 = 0;
+                                pos2 = 1;
+
+                            gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].position").returns(pos1);
+                            gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].position").returns(pos2);
+
+
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+                        });
+
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                expect(gl.uniform3f.withArgs(pos1)).toCalledWith(pos1, position1.x, position1.y, position1.z);
+                                expect(gl.uniform3f.withArgs(pos2)).toCalledWith(pos2, position2.x, position2.y, position2.z);
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isPositionDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSend3F();
+                        });
+                    });
+
+                    describe("send light color", function () {
+                        var pos1,pos2;
+
+                        beforeEach(function(){
+                            pos1 = 0;
                             pos2 = 1;
 
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].position").returns(pos1);
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].position").returns(pos2);
+                            gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].color").returns(pos1);
+                            gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].color").returns(pos2);
 
 
-                        directorTool.init(state);
-                        directorTool.loopBody(state);
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+                        });
 
-                        expect(gl.uniform3f.withArgs(pos1)).toCalledWith(pos1, position1.x, position1.y, position1.z);
-                        expect(gl.uniform3f.withArgs(pos2)).toCalledWith(pos2, position2.x, position2.y, position2.z);
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color1.toArray3()));
+                                expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color2.toArray3()));
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isColorDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSend3F();
+                        });
                     });
 
-                    it("send light color", function () {
-                        var pos1 = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[0].color").returns(pos1),
-                            pos2 = 1;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_pointLights[1].color").returns(pos2);
 
+                    describe("send light intensity", function () {
+                        beforeEach(function(){
+                            prepareSendSingleValue("intensity", "setIntensity", 1, 2);
+                        });
 
-                        directorTool.init(state);
-                        directorTool.loopBody(state);
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                judgeSendSingleValue();
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isIntensityDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
 
-                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color1.toArray3()));
-                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color2.toArray3()));
+                        it("else, not send data", function () {
+                            judgeNotSendSingleValue();
+                        });
                     });
-                    it("send light intensity", function () {
-                        judgeSendSingleValue("intensity", "setIntensity", 1, 2);
+
+                    describe("send light constant data", function () {
+                        beforeEach(function(){
+                            prepareSendSingleValue("constant", "setConstant", 1, 2);
+                        });
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                judgeSendSingleValue();
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isAttenuationDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSendSingleValue();
+                        });
                     });
-                    it("send light constant", function () {
-                        judgeSendSingleValue("constant", "setConstant", 1, 2);
+
+                    describe("send light linear data", function () {
+                        beforeEach(function(){
+                            prepareSendSingleValue("linear", "setLinear", 1, 2);
+                        });
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                judgeSendSingleValue();
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isAttenuationDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSendSingleValue();
+                        });
                     });
-                    it("send light linear", function () {
-                        judgeSendSingleValue("linear", "setLinear", 1, 2);
+
+                    describe("send light quadratic", function () {
+                        beforeEach(function(){
+                            prepareSendSingleValue("quadratic", "setQuadratic", 1, 2);
+                        });
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                judgeSendSingleValue();
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isIntensityDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSendSingleValue();
+                        });
                     });
-                    it("send light quadratic", function () {
-                        judgeSendSingleValue("quadratic", "setQuadratic", 1, 2);
-                    });
-                    it("send light range", function () {
-                        judgeSendSingleValue("range", "setRange", 1, 2);
+
+                    describe("send light range", function () {
+                        beforeEach(function(){
+                            prepareSendSingleValue("range", "setRange", 1, 2);
+                        });
+
+                        describe("if dirty", function () {
+                            it("send data", function () {
+                                judgeSendSingleValue();
+                            });
+                            it("clean dirty", function () {
+                                expect(lightTool.isDataNotDirty(PointLightData.isIntensityDirtys[light1.index])).toBeTruthy();
+                            });
+                        });
+
+                        it("else, not send data", function () {
+                            judgeNotSendSingleValue();
+                        });
                     });
 
                     it("at most support 4 point lights", function () {

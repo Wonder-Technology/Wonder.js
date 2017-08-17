@@ -2,6 +2,9 @@ var Main = wd.Main;
 
 var testWebGL1Tool = (function () {
     return {
+        getValues: function (values, digit) {
+            return testUtils.getValues(values, digit);
+        },
         clear: function(sandbox){
             this.clearInstance(sandbox);
             this.clearComponentData();
