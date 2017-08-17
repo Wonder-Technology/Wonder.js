@@ -20,7 +20,10 @@ import { createState as createStateUtils } from "../utils/stateUtils";
 import { Map } from "immutable";
 import { initData as initArrayBufferDataSystem } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferDataSystem } from "../renderer/buffer/IndexBufferSystem";
-import { initData as initCameraControllerDataSystem } from "../component/camera/CameraControllerSystem";
+import {
+    getWorldToCameraMatrix as getWorldToCameraMatrixSystem,
+    initData as initCameraControllerDataSystem
+} from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectDataSystem } from "../core/entityObject/gameObject/GameObjectSystem";
 import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/worker/render_file/shader/program/programUtils";
 import { initData as initDeviceManagerDataSystem } from "../renderer/device/DeviceManagerSystem";
@@ -35,6 +38,8 @@ import { initData as initWebGL1LightDataSystem } from "../component/webgl1/light
 import { initData as initWebGL2LightDataSystem } from "../component/webgl2/light/LightSystem";
 import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { sendAttributeData as sendWebGL1AttributeDataSystem } from "../renderer/webgl1/render/RenderSystem";
+import { initData as initWebGL1GLSLSenderDataSystem } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
+import { initData as initWebGL2GLSLSenderDataSystem } from "../renderer/webgl2/shader/glslSender/GLSLSenderSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -54,8 +59,9 @@ export var initProgramData = initProgramDataSystem;
 
 export var initLocationData = initLocationDataSystem;
 
-//todo fix
-// export var initGLSLSenderData = initGLSLSenderDataSystem;
+export var initWebGL1GLSLSenderData = initWebGL1GLSLSenderDataSystem;
+
+export var initWebGL2GLSLSenderData = initWebGL2GLSLSenderDataSystem;
 
 export var initMeshRendererData = initMeshRendererDataSystem;
 
@@ -104,3 +110,5 @@ export var getShaderIndex = getShaderIndexSystem;
 export var updateSystem = updateAllSystems;
 
 export var getNormalMatrix = getNormalMatrixSystem;
+
+export var getWorldToCameraMatrix = getWorldToCameraMatrixSystem;

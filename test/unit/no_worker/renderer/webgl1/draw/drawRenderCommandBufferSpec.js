@@ -18,7 +18,7 @@ describe("draw render command", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
@@ -32,7 +32,7 @@ describe("draw render command", function () {
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL1Tool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -49,28 +49,28 @@ describe("draw render command", function () {
             buffer1 = {};
             buffer2 = { a: 1 };
 
-            shaderTool.setSendAttributeConfig(0, [
+            shaderWebGL1Tool.setSendAttributeConfig(0, [
                 {
                     "name": "a_position",
                     "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);
-            shaderTool.setSendAttributeConfig(1, [
+            shaderWebGL1Tool.setSendAttributeConfig(1, [
                 {
                     "name": "a_position",
                     "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);
-            shaderTool.setAttributeLocation(0, {
+            shaderWebGL1Tool.setAttributeLocation(0, {
                 "a_position": pos
             });
-            shaderTool.setAttributeLocation(1, {
+            shaderWebGL1Tool.setAttributeLocation(1, {
                 "a_position": pos
             });
-            shaderTool.setProgram(0, program1);
-            shaderTool.setProgram(1, program2);
+            shaderWebGL1Tool.setProgram(0, program1);
+            shaderWebGL1Tool.setProgram(1, program2);
 
             ShaderData = wd.ShaderData;
 
@@ -96,14 +96,14 @@ describe("draw render command", function () {
         });
 
         it("bind array buffer", function () {
-            shaderTool.use(gl, 0);
+            shaderWebGL1Tool.use(gl, 0);
 
             shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
             expect(gl.bindBuffer).toCalledWith(gl.ARRAY_BUFFER, buffer1);
         });
         it("attach buffer to attribute", function () {
-            shaderTool.use(gl, 0);
+            shaderWebGL1Tool.use(gl, 0);
 
             shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
@@ -111,27 +111,27 @@ describe("draw render command", function () {
         });
         describe("enable attribute", function () {
             it("if already enabled since use this program, not enable", function () {
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(1);
             });
             it("else, enable", function () {
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
 
 
-                shaderTool.disableVertexAttribArray(gl);
+                shaderWebGL1Tool.disableVertexAttribArray(gl);
 
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 1);
 
@@ -139,12 +139,12 @@ describe("draw render command", function () {
             });
 
             it("differenc shader's vertexAttribHistory of the same attribute data pos are independent", function () {
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 1);
+                shaderWebGL1Tool.use(gl, 1);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 1, 1);
 
@@ -154,12 +154,12 @@ describe("draw render command", function () {
 
         describe("test cache", function () {
             it("if switch program, clear cache and send it and enableVertexAttribArray", function () {
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 1);
+                shaderWebGL1Tool.use(gl, 1);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 1, 1);
 
@@ -169,12 +169,12 @@ describe("draw render command", function () {
             });
 
             it("if last send buffers equal current send buffers, not send again", function () {
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
 
 
-                shaderTool.use(gl, 0);
+                shaderWebGL1Tool.use(gl, 0);
 
                 shaderWebGL1Tool.sendAttributeData(gl, 0, 0, GeometryData, ArrayBufferData);
 

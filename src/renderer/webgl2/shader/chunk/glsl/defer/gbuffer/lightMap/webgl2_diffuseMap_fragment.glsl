@@ -3,8 +3,8 @@
 @end
 
 @funcDefine
-    vec4 getMaterialDiffuse() {
-        return texture(u_diffuseMapSampler, v_diffuseMapTexCoord);
+    vec3 getMaterialDiffuse() {
+        return texture(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;
     }
 @end
 

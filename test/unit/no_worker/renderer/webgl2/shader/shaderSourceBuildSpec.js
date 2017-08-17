@@ -10,7 +10,7 @@ describe("shader source build", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
@@ -22,7 +22,7 @@ describe("shader source build", function () {
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -33,7 +33,7 @@ describe("shader source build", function () {
         }
 
         beforeEach(function () {
-            shaderTool.clearShader();
+            shaderWebGL2Tool.clearShader();
         });
 
         describe("add version to top", function () {

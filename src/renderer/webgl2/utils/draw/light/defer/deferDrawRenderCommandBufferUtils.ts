@@ -68,22 +68,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             GLSLSenderDataFromSystem,
             PointLightDataFromSystem
         } = drawDataMap;
-        // {
-        //     sendInt,
-        //     sendFloat3,
-        //     sendFloat1
-        // } = sendDataMap.glslSenderData,
-        // {
-        //     getColorArr3,
-        //     getIntensity,
-        //     getConstant,
-        //     getLinear,
-        //     getQuadratic,
-        //     getPosition,
-        //     computeRadius,
-        //
-        //     PointLightDataFromSystem
-        // } = sendDataMap.pointLightData;
 
     unbindGBuffer(gl);
 
@@ -105,16 +89,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     //todo support ambient, direction light
 
-    // let uniformLocationMap = LocationDataFromSystem.uniformLocationMap[shaderIndex],
-    //     uniformCacheMap = GLSLSenderDataFromSystem.uniformCacheMap;
-
-    // sendInt(gl, shaderIndex, program, "u_lightModel", render_config.defer.lightModel, uniformCacheMap, uniformLocationMap);
-
-    // sendFloat3(gl, shaderIndex, program, "u_cameraPos", cameraPositionForSend, uniformCacheMap, uniformLocationMap);
-
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-        //todo move to ubo
-
         //todo add scissor optimize
 
         // let colorArr3 = getColorArr3(i, PointLightDataFromSystem),

@@ -36,6 +36,7 @@ import { getColorDataSize, getLinearDataSize } from "../../renderer/utils/light/
 import { getIsTranslate } from "../transform/isTransformSystem";
 import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { registerEvent } from "../../event/EventManagerSystem";
+import { Map } from "immutable";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)
@@ -112,8 +113,6 @@ export var getRange = getRangeUtils;
 
 export var setRange = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.ranges, index, value);
-
-    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var setRangeLevel = (index: number, value: number, PointLightData: any) => {
@@ -203,9 +202,9 @@ export var initDataHelper = (PointLightData: any) => {
 
     PointLightData.defaultIntensity = 1;
     PointLightData.defaultConstant = 1;
-    PointLightData.defaultLinear = 0;
-    PointLightData.defaultQuadratic = 0;
-    PointLightData.defaultRange = 60000;
+    PointLightData.defaultLinear = 0.07;
+    PointLightData.defaultQuadratic = 0.017;
+    PointLightData.defaultRange = 65;
     PointLightData.defaultDirty = 0;
 
     _setDefaultTypeArrData(count, PointLightData);
@@ -253,7 +252,7 @@ export var disposeComponent = (component: Light, PointLightData:any) => {
     //todo dispose dirty
 }
 
-export var init = (PointLightData: any) => {
+export var init = (PointLightData: any, state:Map<any, any>) => {
     var eventName = "changePosition";
 
     for(let i = 0, count = PointLightData.count; i < count; i++){
@@ -263,6 +262,8 @@ export var init = (PointLightData: any) => {
 
         registerEvent(eventName, _markPositionDirty);
     }
+
+    return state;
 }
 
 export var isPositionDirty = isPositionDirtyUtils;

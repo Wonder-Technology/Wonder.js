@@ -14,14 +14,14 @@ describe("test glsl 3.0", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 

@@ -57,6 +57,10 @@ import { PointLight } from "../component/light/PointLight";
 import { isWebgl1 } from "../renderer/device/WebGLDetectSystem";
 import { addAddComponentHandle as addWebGL1LightAddComponentHandle, addDisposeHandle as addWebGL1LightDisposeHandle } from "../component/webgl1/light/LightSystem";
 import { addAddComponentHandle as addWebGL2LightAddComponentHandle, addDisposeHandle as addWebGL2LightDisposeHandle } from "../component/webgl2/light/LightSystem";
+import { init as initPointLight } from "../component/light/PointLightSystem";
+import { PointLightData } from "../component/light/PointLightData";
+import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
+import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
 
 @singleton(true)
 @registerClass("Director")
@@ -153,6 +157,8 @@ export class Director {
 
         resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
+        resultState = _initPointLight(state);
+
         return resultState;
     }
 
@@ -199,12 +205,23 @@ addThreeDTransformDisposeHandle(ThreeDTransform);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
 
+var _initPointLight = null;
+
 if(isWebgl1()){
     addWebGL1LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL1LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+
+    _initPointLight = (state: Map<any, any>) => {
+        return initPointLight(WebGL1PointLightData, state);
+    }
 }
 else{
     addWebGL2LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL2LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+
+
+    _initPointLight = (state: Map<any, any>) => {
+        return initPointLight(WebGL2PointLightData, state);
+    }
 }
 

@@ -1,4 +1,3 @@
-import { EBufferType } from "../../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
 
 export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {

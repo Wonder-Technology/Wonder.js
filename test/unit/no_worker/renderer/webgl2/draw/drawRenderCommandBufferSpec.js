@@ -18,7 +18,7 @@ describe("draw render command", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
@@ -32,7 +32,7 @@ describe("draw render command", function () {
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 

@@ -10,7 +10,7 @@ describe("shader", function() {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -22,7 +22,7 @@ describe("shader", function() {
         material = data.material;
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 

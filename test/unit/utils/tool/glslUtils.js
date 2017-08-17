@@ -160,7 +160,15 @@ var glslUtils = (function () {
                 createVertexArray: sandbox.stub(),
                 bindVertexArray: sandbox.stub(),
                 texStorage2D: sandbox.stub(),
-                drawBuffers: sandbox.stub()
+                drawBuffers: sandbox.stub(),
+
+
+                UNIFORM_BUFFER:"UNIFORM_BUFFER",
+
+                getUniformBlockIndex: sandbox.stub(),
+                uniformBlockBinding: sandbox.stub(),
+                bindBufferBase: sandbox.stub()
+
             }
 
             gl.getProgramParameter.withArgs(sinon.match.any, LINK_STATUS).returns(true);

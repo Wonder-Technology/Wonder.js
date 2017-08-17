@@ -127,11 +127,26 @@ var sceneTool = (function () {
         },
         addPointLight: function(pos, color, intensity, constant, linear, quadratic, range, rangeLevel){
             var pointLightComponent = pointLightTool.create();
-            pointLightTool.setColor(pointLightComponent, color || wd.Color.create("#ffffff"));
-            pointLightTool.setIntensity(pointLightComponent, intensity || 1);
-            pointLightTool.setConstant(pointLightComponent, constant || 0);
-            pointLightTool.setLinear(pointLightComponent, linear || 0);
-            pointLightTool.setQuadratic(pointLightComponent, quadratic || 0);
+
+            if(!!color){
+                pointLightTool.setColor(pointLightComponent, color);
+            }
+
+            if(!!intensity){
+                pointLightTool.setIntensity(pointLightComponent, intensity );
+            }
+
+            if(!!constant){
+                pointLightTool.setConstant(pointLightComponent, constant);
+            }
+
+            if(!!linear){
+                pointLightTool.setLinear(pointLightComponent, linear);
+            }
+
+            if(!!quadratic){
+                pointLightTool.setQuadratic(pointLightComponent, quadratic);
+            }
 
             if(!!range){
                 pointLightTool.setRange(pointLightComponent, range);

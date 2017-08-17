@@ -148,10 +148,6 @@ export const webgl2_material_config = {
         },
         "noMaterialShaders": {
             "DeferLightPass": [
-                // { "type": "group", "value": "engineMaterialTop" },
-                "VerticeCommonShaderLib",
-
-                //todo test LightUboShaderLib
                 "CameraUboShaderLib",
                 "LightUboShaderLib",
                 "PointLightUboShaderLib",

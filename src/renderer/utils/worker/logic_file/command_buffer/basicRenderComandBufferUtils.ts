@@ -3,14 +3,10 @@ import { it, requireCheckFunc } from "../../../../../definition/typescript/decor
 import { expect } from "wonder-expect.js";
 import { ClassUtils } from "../../../../../utils/ClassUtils";
 import {
-    getComponent, getGeometry, getMaterial,
+    getGeometry, getMaterial,
     getTransform
 } from "../../../../../core/entityObject/gameObject/GameObjectSystem";
-import { getCurrentCamera } from "../../../../../core/entityObject/scene/SceneSystem";
-import { getComponentIDFromClass } from "../../../../../component/ComponentComponentIDManager";
-import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import { getLocalToWorldMatrix, getTempLocalToWorldMatrix } from "../../../../../component/transform/ThreeDTransformSystem";
-import { CameraController } from "../../../../../component/camera/CameraController";
 import { Map } from "immutable";
 import { createTypeArrays } from "../../../command_buffer/basicRenderComandBufferUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../../../../utils/arrayBufferUtils";

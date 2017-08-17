@@ -90,8 +90,6 @@ export const webgl2_shaderLib_generator = {
 
 
 
-        //todo add
-
         "CameraUboShaderLib": {
             "glsl": {
                 "vs": {
@@ -118,10 +116,8 @@ export const webgl2_shaderLib_generator = {
                                                   bufferDynamicData,
                                                   set
                                               }, {
-                                                  // typeArray,
                                                   vMatrix,
                                                   pMatrix,
-                                                  // vpMatrix,
                                                   cameraPosition,
                                                   normalMatrix
                                               }) => {
@@ -165,7 +161,6 @@ export const webgl2_shaderLib_generator = {
                         }, {
                                                   bindUniformBufferBase,
                                                   bufferStaticData,
-                                                  // bufferDynamicData,
                                                   set
                                               }, drawRenderCommandBufferDataMap, {
                                                   render_config
@@ -196,7 +191,6 @@ export const webgl2_shaderLib_generator = {
                             "type": "float32",
                             "length": 4 * 3
                         },
-                        // "count": 1,
                         "setBufferDataFunc": (gl, pointLightIndex, {
                                                   uniformBlockBinding,
                                                   buffer,
@@ -228,11 +222,12 @@ export const webgl2_shaderLib_generator = {
                                                   PointLightDataFromSystem
                                               }
                         ) => {
-                            var isDirty = false;
+                            var isDirtyFlag = false,
+                                isColorDirtyFlag = false;
 
                             if(isPositionDirty(pointLightIndex, PointLightDataFromSystem)) {
                                 set(typeArray, getPosition(pointLightIndex, PointLightDataFromSystem));
-                                isDirty = true;
+                                isDirtyFlag = true;
 
 
                                 cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
@@ -246,32 +241,44 @@ export const webgl2_shaderLib_generator = {
 
                                 colorArr3Copy = colorArr3.slice();
 
-                                if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
-                                    set(typeArray, colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)), 4);
+                                set(typeArray, colorArr3, 4);
 
-                                    cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
-                                }
-                                else{
-                                    set(typeArray, colorArr3, 4);
-                                }
-
-                                isDirty = true;
+                                isColorDirtyFlag = true;
+                                isDirtyFlag = true;
 
                                 cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 
-                            if(isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
+                            if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
+                                set(typeArray, [getIntensity(pointLightIndex, PointLightDataFromSystem)], 7);
+
+                                isDirtyFlag = true;
+
+                                cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
+                            }
+
+                            if(isColorDirtyFlag || isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
                                 let constant = getConstant(pointLightIndex, PointLightDataFromSystem),
                                     linear = getLinear(pointLightIndex, PointLightDataFromSystem),
                                     quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
+                                    radius:number = null;
+
+                                if(colorArr3Copy === null){
+                                    radius = computeRadius(getColorArr3(pointLightIndex, PointLightDataFromSystem), constant, linear, quadratic);
+                                }
+                                else{
                                     radius = computeRadius(colorArr3Copy, constant, linear, quadratic);
+                                }
+
 
                                 set(typeArray, [constant, linear, quadratic, radius], 8);
+
+                                isDirtyFlag = true;
 
                                 cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 
-                            if(isDirty){
+                            if(isDirtyFlag){
                                 bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
                                 bufferDynamicData(gl, typeArray);
@@ -556,13 +563,6 @@ export const webgl2_shaderLib_generator = {
                 }
             },
             "send": {
-                "uniform": [
-                    // {
-                    //     "name": "u_normalMatrix",
-                    //     "field": "normalMatrix",
-                    //     "type": "mat3"
-                    // }
-                ]
             }
         },
         "NormalCommonShaderLib": {
@@ -587,19 +587,8 @@ export const webgl2_shaderLib_generator = {
                     "source": gbuffer_common_fragment
                 }
             }
-            // "send": {
-            //     "uniform": [
-            //         {
-            //             "name": "u_specular",
-            //             "from": "lightMaterial",
-            //             "field": "specularColor",
-            //             "type": "float3"
-            //         }
-            //     ]
-            // }
         },
-        // "LightSetWorldPositionShaderLib": {
-            "GBufferSetWorldPositionShaderLib": {
+        "GBufferSetWorldPositionShaderLib": {
             "glsl": {
                 "vs": {
                     "source": gbuffer_setWorldPosition_vertex
@@ -716,16 +705,13 @@ export const webgl2_shaderLib_generator = {
             }
         },
 
-        // "LightShaderLib": {
         "GBufferShaderLib": {
             "glsl": {
                 "vs": {
                     "source": gbuffer_vertex
-                    // "defineList": _lightDefineList
                 },
                 "fs": {
                     "source": gbuffer_fragment
-                    // "defineList": _lightDefineList
                 }
             },
             "send": {

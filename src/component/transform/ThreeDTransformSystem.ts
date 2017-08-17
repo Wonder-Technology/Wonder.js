@@ -198,7 +198,7 @@ export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, Globa
     return getNormalMatrixCache(transform.uid, ThreeTransformData);
 }, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any, mat: Matrix3) => {
     setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
@@ -250,8 +250,6 @@ export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, posi
 })
 
 var _triggerChangePositionEvent = (uid:number, ThreeTransformData:any) => {
-    // triggerEvent("changePosition", getGameObject(uid, ThreeTransformData).uid);
-    //todo test trigger
     triggerEvent("changePosition");
 }
 

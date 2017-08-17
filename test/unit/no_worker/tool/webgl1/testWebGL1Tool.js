@@ -1,0 +1,68 @@
+var Main = wd.Main;
+
+var testWebGL1Tool = (function () {
+    return {
+        clear: function(sandbox){
+            this.clearInstance(sandbox);
+            this.clearComponentData();
+        },
+        clearInstance: function (sandbox) {
+            for (var i in wd) {
+                if (wd.hasOwnProperty(i)) {
+                    if (wd[i]) {
+                        wd[i]._instance = null;
+                    }
+                }
+            }
+
+            this.closeContractCheck();
+        },
+
+        clearComponentData: function(){
+            gameObjectTool.resetData();
+            gameObjectTool.resetData();
+            threeDTransformTool.resetData();
+            tagTool.resetData();
+            geometryTool.resetData();
+            materialTool.resetData();
+            meshRendererTool.resetData();
+            arrayBufferTool.resetData();
+            indexBufferTool.resetData();
+            deviceManagerTool.resetData();
+            cameraControllerTool.resetData();
+            lightTool.resetData();
+            renderCommandBufferTool.resetData();
+            drawRenderCommandBufferTool.resetData();
+            sceneTool.resetData();
+
+            directorSystemTool.resetData();
+
+            gpuDetectTool.resetData();
+
+
+            shaderWebGL1Tool.resetData();
+        },
+
+        clearAndOpenContractCheck: function (sandbox, data) {
+            Main.isTest = true;
+
+            testUtils.prepareBufferForTest(sandbox, data, bufferTool);
+
+            this.clear(sandbox);
+
+            Main.isTest = true;
+
+            testUtils.initForTest(sandbox);
+
+            webglTestTool.initForTest(sandbox);
+        },
+
+        openContractCheck: function () {
+            Main.isTest = true;
+        },
+
+        closeContractCheck: function () {
+            Main.isTest = false;
+        }
+    }
+}());

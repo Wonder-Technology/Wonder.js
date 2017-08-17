@@ -53,20 +53,28 @@ describe("PointLight", function () {
 
                 expect(pointLightTool.getConstant(light)).toEqual(1);
             });
-            it("set linear to be 0", function () {
+            it("test set linear", function () {
                 var light = pointLightTool.create();
 
-                expect(pointLightTool.getLinear(light)).toEqual(0);
+                expect(
+                    testTool.getValues(
+                        pointLightTool.getLinear(light)
+                    )
+                ).toEqual(0.07);
             });
-            it("set quadratic to be 0", function () {
+            it("test set quadratic", function () {
                 var light = pointLightTool.create();
 
-                expect(pointLightTool.getQuadratic(light)).toEqual(0);
+                expect(
+                    testTool.getValues(
+                        pointLightTool.getQuadratic(light)
+                    )
+                ).toEqual(0.017);
             });
-            it("set range to be max value", function () {
+            it("test set range", function () {
                 var light = pointLightTool.create();
 
-                expect(pointLightTool.getRange(light)).toEqual(60000);
+                expect(pointLightTool.getRange(light)).toEqual(65);
             });
         });
     });

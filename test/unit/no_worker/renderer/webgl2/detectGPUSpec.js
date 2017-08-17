@@ -7,7 +7,7 @@ describe("detect gpu", function () {
         sandbox = sinon.sandbox.create();
     });
     afterEach(function () {
-        testTool.clearInstance(sandbox);
+        testWebGL2Tool.clearInstance(sandbox);
         sandbox.restore();
     });
 

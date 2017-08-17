@@ -17,14 +17,14 @@ describe("basic render", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL1Tool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -154,7 +154,7 @@ describe("basic render", function () {
 
                     var args = gl.uniform1f.firstCall.args;
                     expect(args[0]).toEqual(pos);
-                    expect(testTool.getValues(args[1])).toEqual(opacity);
+                    expect(testWebGL1Tool.getValues(args[1])).toEqual(opacity);
                 });
 
                 describe("test glsl", function () {

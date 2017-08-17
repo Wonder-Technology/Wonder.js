@@ -4,27 +4,30 @@ describe("basic render", function () {
     var state;
 
     var Color = wd.Color;
+    var Matrix4 = wd.Matrix4;
+    var CameraData = wd.CameraData;
+    var CameraControllerData = wd.CameraControllerData;
+    var ThreeDTransform = wd.ThreeDTransform;
+    var GlobalTempData = wd.GlobalTempData;
+    var ThreeDTransformData = wd.ThreeDTransformData;
+    var GameObjectData = wd.GameObjectData;
 
     function buildGLSL(sandbox, state) {
-        var gl = directorTool.init(sandbox);
-
-        directorTool.loopBody(state);
-
-        return gl;
+        return glslWebGL2Tool.buildGLSL(sandbox, state);
     }
 
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -64,18 +67,115 @@ describe("basic render", function () {
             beforeEach(function () {
             });
 
-            /*!
-            already test in defer shading
-             */
-
             describe("add CommonShaderLib", function () {
+                beforeEach(function () {
+                });
+
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+                    });
+
+                    it("test vs source", function () {
+                        var vs = getVsSource(gl);
+                        expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
+                        expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
+                    });
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.notContain(fs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
+                        expect(glslTool.notContain(fs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
+                    });
+                });
             });
 
             describe("add ModelMatrixNoInstanceShaderLib", function () {
+                beforeEach(function () {
+                });
+
+                it("send u_mMatrix", function () {
+                    var transform = gameObjectTool.getComponent(obj, ThreeDTransform),
+                        mat = Matrix4.create().setTranslate(1, 2, 3),
+                        position = mat.getTranslation(),
+                        pos = 0;
+
+                    threeDTransformTool.setPosition(transform, position);
+                    gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(pos);
+
+
+                    directorTool.init(state);
+                    directorTool.loopBody(state);
+
+                    expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
+                });
+
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+                    });
+
+                    it("test vs source", function () {
+                        var vs = getVsSource(gl);
+                        expect(glslTool.containMultiLine(vs, [
+                            "mat4 getModelMatrix(){",
+                            "return u_mMatrix;\n}\n",
+                            "}",
+                            "mat4 mMatrix = getModelMatrix();"
+                        ])).toBeTruthy();
+                    });
+                });
             });
 
             describe("add VerticeCommonShaderLib", function () {
+                describe("send a_position", function () {
+                    var buffer;
+
+                    beforeEach(function () {
+                        buffer = { b: 1 };
+
+                        gl.createBuffer.onCall(0).returns(buffer);
+                    });
+
+                    it("create buffer and init it when first get", function () {
+                        directorTool.init(state);
+
+                        var data = geometryTool.getVertices(geo);
+
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                    });
+                    it("not create buffer after first get", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+                        var callCount = gl.createBuffer.callCount;
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.createBuffer.callCount).toEqual(callCount);
+                    });
+                });
             });
+
+            describe("add CameraUboShaderLib", function () {
+                beforeEach(function () {
+                });
+
+                describe("send CameraUbo", function () {
+                    it("bind ubo", function () {
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("CameraUbo"))).toCalledOnce();
+                    });
+                });
+            });
+
 
             describe("add BasicMaterialColorShaderLib", function () {
                 beforeEach(function () {
@@ -123,7 +223,7 @@ describe("basic render", function () {
 
                     var args = gl.uniform1f.firstCall.args;
                     expect(args[0]).toEqual(pos);
-                    expect(testTool.getValues(args[1])).toEqual(opacity);
+                    expect(testWebGL2Tool.getValues(args[1])).toEqual(opacity);
                 });
 
                 describe("test glsl", function () {
@@ -131,9 +231,11 @@ describe("basic render", function () {
                         buildGLSL(state);
                     });
 
-                    it("test vs source", function () {
-                        var vs = getVsSource(gl);
-                        expect(glslTool.contain(vs, "gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);\n")).toBeTruthy();
+                    describe("test vs source", function () {
+                        it("set mvp by read cameraUbo data", function () {
+                            var vs = getVsSource(gl);
+                            expect(glslTool.contain(vs, "gl_Position = cameraUbo.pMatrix * cameraUbo.vMatrix * mMatrix * vec4(a_position, 1.0);\n")).toBeTruthy();
+                        });
                     });
                 });
             });
@@ -171,7 +273,6 @@ describe("basic render", function () {
 
                             directorTool.loopBody(state);
 
-                            expect(gl.createBuffer.callCount).toEqual(6);
                             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
                             expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
                         });
@@ -180,13 +281,13 @@ describe("basic render", function () {
 
                             directorTool.loopBody(state);
 
-                            expect(gl.createBuffer.callCount).toEqual(6);
 
+                            var callCount = gl.createBuffer.callCount;
 
 
                             directorTool.loopBody(state);
 
-                            expect(gl.createBuffer.callCount).toEqual(6);
+                            expect(gl.createBuffer.callCount).toEqual(callCount);
                         });
                     })
 
@@ -205,13 +306,20 @@ describe("basic render", function () {
                             buildGLSL(state);
                         });
 
-                        it("test vs source", function () {
-                            var vs = getVsSource(gl);
+                        describe("test vs source", function () {
+                            it("a_texCoord location = 1", function () {
+                                var vs = getVsSource(gl);
 
-                            expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;")).toBeTruthy();
-                            expect(glslTool.contain(vs, "out vec2 v_mapCoord0;\n")).toBeTruthy();
-                            expect(glslTool.contain(vs, "v_mapCoord0 = a_texCoord;")).toBeTruthy();
+                                expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;")).toBeTruthy();
+                            });
+                            it("set out v_mapCoord0", function () {
+                                var vs = getVsSource(gl);
+
+                                expect(glslTool.contain(vs, "out vec2 v_mapCoord0;\n")).toBeTruthy();
+                                expect(glslTool.contain(vs, "v_mapCoord0 = a_texCoord;")).toBeTruthy();
+                            });
                         });
+
                         it("test fs source", function () {
                             var fs = getFsSource(gl);
 
@@ -288,7 +396,7 @@ describe("basic render", function () {
             expect(gl.clear).toCalledTwice();
 
             /*!
-            ensure that gl.bindFramebuffer.getCall(callCount) is to bind gbuffer(not unbind)
+            ensure that gl.bindFramebuffer.getCall(callCount) has binded gbuffer
              */
             expect(gl.bindFramebuffer.getCall(callCount)).toCalledWith(gl.FRAMEBUFFER, sinon.match.object);
 
@@ -298,13 +406,13 @@ describe("basic render", function () {
             var pos1 = 0;
             gl.getUniformLocation.withArgs(sinon.match.any, "u_color").returns(pos1);
             var pos2 = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_lightModel").returns(pos2);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_shininess").returns(pos2);
 
 
             directorTool.init(state);
             directorTool.loopBody(state);
 
-            expect(gl.uniform3f.withArgs(pos1)).toCalledBefore(gl.uniform1i.withArgs(pos2));
+            expect(gl.uniform3f.withArgs(pos1)).toCalledBefore(gl.uniform1f.withArgs(pos2));
         });
     });
 });

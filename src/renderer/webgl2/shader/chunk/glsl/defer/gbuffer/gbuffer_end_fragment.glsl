@@ -9,6 +9,6 @@ layout(location=2) out vec4 gbufferColor;
     gbufferPosition.w = u_shininess;
     gbufferNormal.xyz = getNormal();
     gbufferNormal.w = 1.0;
-    gbufferColor.xyz = getMaterialDiffuse().rgb;
+    gbufferColor.xyz = getMaterialDiffuse();
     gbufferColor.w = getSpecularStrength();
 @end

@@ -9,6 +9,10 @@ describe("defer shading", function () {
     var DeferLightPassData = wd.DeferLightPassData;
     var Log = wd.Log;
 
+    function buildGLSL(sandbox, state) {
+        return glslWebGL2Tool.buildGLSL(sandbox, state);
+    }
+
     function enableDeferShading(sandbox) {
         deferShadingTool.enableDeferShading(sandbox);
     }
@@ -22,7 +26,7 @@ describe("defer shading", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testTool.clearAndOpenContractCheck(sandbox);
+        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -31,7 +35,7 @@ describe("defer shading", function () {
         enableDeferShading(sandbox);
     });
     afterEach(function () {
-        testTool.clear(sandbox);
+        testWebGL2Tool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -224,7 +228,7 @@ describe("defer shading", function () {
                         beforeEach(function(){
                             buffer = {b:1};
 
-                            gl.createBuffer.onCall(index).returns(buffer);
+                            gl.createBuffer.onCall(index + 2).returns(buffer);
                         });
 
                         it("bind buffer", function () {
@@ -253,7 +257,7 @@ describe("defer shading", function () {
                     it("create buffers", function () {
                         directorTool.init(state);
 
-                        expect(gl.createBuffer.callCount).toEqual(3);
+                        expect(gl.createBuffer.callCount).toEqual(2 + 3);
                     });
 
                     describe("create and set position buffer", function() {
@@ -270,7 +274,7 @@ describe("defer shading", function () {
                         beforeEach(function(){
                             buffer = {b:1};
 
-                            gl.createBuffer.onCall(2).returns(buffer);
+                            gl.createBuffer.onCall(2 + 2).returns(buffer);
                         });
 
                         it("bind buffer", function () {
@@ -378,12 +382,14 @@ describe("defer shading", function () {
 
         var material;
         var cameraGameObject;
+        var geo;
 
         beforeEach(function(){
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
             material = data.material;
             cameraGameObject = data.cameraGameObject;
+            geo = data.geometry;
         });
 
         it("set clear color", function(){
@@ -497,87 +503,421 @@ describe("defer shading", function () {
                         return gl.shaderSource.getCall(3).args[1];
                     }
 
+                    /*!
+                    already test in defer shading
+                     */
+
                     describe("add CommonShaderLib", function () {
-                        beforeEach(function () {
-                        });
-
-                        //todo test use ubo
-                        it("send u_vMatrix", function () {
-                        });
-                        it("send u_pMatrix", function () {
-                        });
-
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test vs source", function () {
-                                var vs = getVsSource(gl);
-                                expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
-                                expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
-                            });
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.notContain(fs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
-                                expect(glslTool.notContain(fs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
-                            });
-                        });
                     });
 
                     describe("add ModelMatrixNoInstanceShaderLib", function () {
-                        beforeEach(function () {
-                        });
-
-                        //todo test use ubo
-                        it("send u_mMatrix", function () {
-                        });
-
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test vs source", function () {
-                                var vs = getVsSource(gl);
-                                expect(glslTool.containMultiLine(vs, [
-                                    "mat4 getModelMatrix(){",
-                                    "return u_mMatrix;\n}\n",
-                                    "}",
-                                    "mat4 mMatrix = getModelMatrix();"
-                                ])).toBeTruthy();
-                            });
-                        });
                     });
-
-                    //todo finish test after use ubo,vao
 
                     describe("add VerticeCommonShaderLib", function () {
                     });
 
+
+
+
+
                     describe("add NormalMatrixNoInstanceShaderLib", function () {
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                gl = buildGLSL(sandbox, state);
+                            });
+
+                            describe("test vs source", function () {
+                                it("set normalMatrix by cameraUbo data", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "mat3 normalMatrix = mat3(\nvec3(cameraUbo.normalMatrixCol1),\nvec3(cameraUbo.normalMatrixCol2),\nvec3(cameraUbo.normalMatrixCol3)\n);\n")).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
+
+
+
+
+
                     describe("add NormalCommonShaderLib", function () {
+                        describe("send a_normal", function () {
+                            var buffer;
+
+                            beforeEach(function () {
+                                // buffer = { b: 1 };
+                                //
+                                // gl.createBuffer.onCall(1).returns(buffer);
+                            });
+
+                            it("create buffer and init it when first get", function () {
+                                directorTool.init(state);
+
+                                var data = geometryTool.getNormals(geo);
+
+
+                                directorTool.loopBody(state);
+
+                                expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                            });
+                        });
+
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                gl = buildGLSL(sandbox, state);
+                            });
+
+                            describe("test vs source", function () {
+                                it("a_normal location = 1", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "layout(location=1) in vec3 a_normal")).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
                     describe("add GBufferCommonShaderLib", function () {
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+                            });
 
+                            it("test vs source", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "out vec3 v_worldPosition;")).toBeTruthy();
+                            });
+
+                            describe("test fs source", function () {
+                                var fs;
+
+                                beforeEach(function(){
+                                    fs = getFsSource(gl);
+                                });
+
+                                it("define in v_worldPosition", function () {
+                                    expect(glslTool.contain(fs, "in vec3 v_worldPosition;")).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
                     describe("add GBufferSetWorldPositionShaderLib", function () {
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+                            });
+
+                            it("test vs source", function () {
+                                var vs = getVsSource(gl);
+
+                                expect(glslTool.contain(vs, "v_worldPosition = vec3(mMatrix * vec4(a_position, 1.0));")).toBeTruthy();
+                            });
+                        });
                     });
 
                     describe("add map shader lib", function () {
+                        function judgeSendUniformSampler(name) {
+                            var pos = 0;
+                            gl.getUniformLocation.withArgs(sinon.match.any, name).returns(pos);
+
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+
+                            expect(gl.uniform1i).toCalledWith(pos, 3);
+                        }
+
+                        beforeEach(function () {
+                        });
+
+                        describe("if has map, add CommonLightMapShaderLib", function(){
+                            beforeEach(function () {
+                                var texture = textureTool.create();
+                                textureTool.setSource(texture, {});
+
+                                lightMaterialTool.setSpecularMap(material, texture);
+                            });
+
+                            describe("send a_texCoord", function () {
+                                var name,size,pos;
+                                var buffer;
+
+                                beforeEach(function () {
+                                    name = "a_texCoord";
+                                    size = 2;
+
+                                    pos = 10;
+
+                                    gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+                                });
+
+                                it("create buffer and init it when first get", function () {
+                                    directorTool.init(state);
+
+                                    var data = geometryTool.getTexCoords(geo);
+
+
+                                    directorTool.loopBody(state);
+
+                                    // expect(gl.createBuffer.callCount).toEqual(4);
+                                    expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                                    expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                                });
+                            })
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    buildGLSL(state);
+                                });
+
+                                describe("test vs source", function () {
+                                    it("a_texCoord location = 2", function () {
+                                        var vs = getVsSource(gl);
+
+                                        expect(glslTool.contain(vs, "layout(location=2) in vec2 a_texCoord")).toBeTruthy();
+                                    });
+                                });
+                            });
+;
+                        });
+
+                        describe("if has diffuse map, add DiffuseMapShaderLib", function(){
+                            beforeEach(function () {
+                                var texture = textureTool.create();
+                                textureTool.setSource(texture, {});
+
+                                lightMaterialTool.setDiffuseMap(material, texture);
+                            });
+
+                            it("send u_diffuseMapSampler", function () {
+                                judgeSendUniformSampler("u_diffuseMapSampler");
+                            });
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    gl = buildGLSL(sandbox, state);
+                                });
+
+                                it("test vs source", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "out vec2 v_diffuseMapTexCoord;")).toBeTruthy();
+                                    expect(glslTool.contain(vs, "v_diffuseMapTexCoord = a_texCoord;")).toBeTruthy();
+                                });
+                                it("test fs source", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.contain(fs, "in vec2 v_diffuseMapTexCoord;")).toBeTruthy();
+                                    expect(glslTool.contain(fs, "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "vec3 getMaterialDiffuse() {",
+                                        "return texture(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb;",
+                                        "}"
+                                    ])).toBeTruthy();
+                                });
+                            });
+                        });
+
+                        describe("else, add NoDiffuseMapShaderLib", function () {
+                            beforeEach(function () {
+                            });
+
+                            it("send u_diffuse", function () {
+                                var color = Color.create("rgb(0.1,0.2,0.3)"),
+                                    colorVec3 = color.toVector3(),
+                                    pos = 0;
+                                gl.getUniformLocation.withArgs(sinon.match.any, "u_diffuse").returns(pos);
+                                lightMaterialTool.setColor(material, color);
+
+
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+
+                                expect(gl.uniform3f).toCalledWith(pos, colorVec3.x, colorVec3.y, colorVec3.z);
+                            });
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    gl = buildGLSL(sandbox, state);
+                                });
+
+                                it("test fs source", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.contain(fs, "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n")).toBeTruthy();
+                                });
+                            });
+                        });
+
+                        describe("if has specular map, add SpecularMapShaderLib", function(){
+                            beforeEach(function () {
+                                var texture = textureTool.create();
+                                textureTool.setSource(texture, {});
+
+                                lightMaterialTool.setSpecularMap(material, texture);
+                            });
+
+                            it("send u_specularMapSampler", function () {
+                                judgeSendUniformSampler("u_specularMapSampler");
+                            });
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    gl = buildGLSL(sandbox, state);
+                                });
+
+                                it("test vs source", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "out vec2 v_specularMapTexCoord;")).toBeTruthy();
+                                    expect(glslTool.contain(vs, "v_specularMapTexCoord = a_texCoord;")).toBeTruthy();
+                                });
+                                it("test fs source", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.contain(fs, "in vec2 v_specularMapTexCoord;")).toBeTruthy();
+                                    expect(glslTool.contain(fs, "uniform sampler2D u_specularMapSampler;\n")).toBeTruthy();
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "float getSpecularStrength() {",
+                                        "return texture(u_specularMapSampler, v_specularMapTexCoord).r;",
+                                        "}"
+                                    ])).toBeTruthy();
+                                });
+                            });
+                        });
+
+                        describe("else, add NoSpecularMapShaderLib", function () {
+                            beforeEach(function () {
+                            });
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    gl = buildGLSL(sandbox, state);
+                                });
+
+                                it("test fs source", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.contain(fs, "float getSpecularStrength() {\n        return 1.0;\n    }\n")).toBeTruthy();
+                                });
+                            });
+                        });
+
+                        describe("add GBufferNoNormalMapShaderLib", function () {
+                            beforeEach(function () {
+                            });
+
+                            describe("test glsl", function () {
+                                beforeEach(function () {
+                                    gl = buildGLSL(sandbox, state);
+                                });
+
+                                it("test vs source", function () {
+                                    var vs = getVsSource(gl);
+
+                                    expect(glslTool.contain(vs, "out vec3 v_normal;\n")).toBeTruthy();
+                                    expect(glslTool.contain(vs, "v_normal = normalize(normalMatrix * a_normal);\n")).toBeTruthy();
+                                });
+                                it("test fs source", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.contain(fs, "in vec3 v_normal;\n")).toBeTruthy();
+                                    expect(glslTool.contain(fs, "vec3 getNormal(){\n    return v_normal;\n}\n\n")).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
-
                     describe("add GBufferShaderLib", function () {
+                        beforeEach(function () {
+                        });
+
+                        it("send u_shininess", function () {
+                            var shininess = 30,
+                                pos = 0;
+                            gl.getUniformLocation.withArgs(sinon.match.any, "u_shininess").returns(pos);
+                            lightMaterialTool.setShininess(material, shininess);
+
+
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+
+                            expect(gl.uniform1f).toCalledWith(pos, shininess);
+                        });
+
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                gl = buildGLSL(sandbox, state);
+                            });
+
+                            describe("test vs source", function () {
+                                var vs;
+
+                                beforeEach(function(){
+                                    vs = getVsSource(gl);
+                                });
+
+                                it("a_position location = 0", function () {
+                                    expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;")).toBeTruthy();
+                                });
+                                it("set gl_Position by get cameraUbo data", function () {
+                                    expect(glslTool.contain(vs, "gl_Position = cameraUbo.pMatrix * cameraUbo.vMatrix * vec4(v_worldPosition, 1.0);")).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
                     describe("add GBufferEndShaderLib", function () {
+                        describe("test glsl", function () {
+                            beforeEach(function () {
+                                gl = buildGLSL(sandbox, state);
+                            });
+
+                            describe("test vs source", function () {
+                                var vs;
+
+                                beforeEach(function(){
+                                    vs = getVsSource(gl);
+                                });
+
+                                it("a_position location = 0", function () {
+                                    expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;")).toBeTruthy();
+                                });
+                                it("set gl_Position by get cameraUbo data", function () {
+                                    expect(glslTool.contain(vs, "gl_Position = cameraUbo.pMatrix * cameraUbo.vMatrix * vec4(v_worldPosition, 1.0);")).toBeTruthy();
+                                });
+                            });
+
+
+                            describe("test fs source", function () {
+                                var fs;
+
+                                beforeEach(function () {
+                                    fs = getFsSource(gl);
+                                });
+                                it("declare gbuffer target", function () {
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "layout(location=0) out vec4 gbufferPosition;",
+                                        "layout(location=1) out vec4 gbufferNormal;",
+                                        "layout(location=2) out vec4 gbufferColor;"
+                                    ])).toBeTruthy();
+                                });
+                                it("set gbuffer", function () {
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "gbufferPosition.xyz = v_worldPosition;",
+                                        "gbufferPosition.w = u_shininess;",
+                                        "gbufferNormal.xyz = getNormal();",
+                                        "gbufferNormal.w = 1.0;",
+                                        "gbufferColor.xyz = getMaterialDiffuse();",
+                                        "gbufferColor.w = getSpecularStrength();"
+                                    ])).toBeTruthy();
+                                });
+                            });
+                        });
                     });
 
                     describe("add EndShaderLib", function () {
@@ -705,9 +1045,66 @@ describe("defer shading", function () {
                         return gl.shaderSource.getCall(1).args[1];
                     }
 
-                    //todo test after vao
+                    // describe("test vao", function() {
+                    //     beforeEach(function(){
+                    //
+                    //     });
+                    //
+                    //     describe("test buffer vao data", function(){
+                    //         it("bind vao", function () {
+                    //             var vao = {};
+                    //             gl.createVertexArray.onCall(0).returns(vao);
+                    //
+                    //             directorTool.init(state);
+                    //
+                    //             expect(gl.bindVertexArray.withArgs(vao)).toCalledOnce();
+                    //         });
+                    //         it("", function () {
+                    //
+                    //         });
+                    //     });
+                    //
+                    //     it("bind vao before draw", function () {
+                    //
+                    //     });
+                    //     it("unbind vao after draw", function () {
+                    //
+                    //     });
+                    // });
 
-                    describe("add VerticeCommonShaderLib", function () {
+                    // describe("add VerticeCommonShaderLib", function () {
+                    //     describe("send a_position", function () {
+                    //         var buffer;
+                    //
+                    //         beforeEach(function () {
+                    //             buffer = { b: 1 };
+                    //             var buffer2 = { b: 2 };
+                    //
+                    //             gl.createBuffer.onCall(2 + 3 + 0).returns(buffer);
+                    //             gl.createBuffer.onCall(2 + 3 + 1).returns(buffer2);
+                    //         });
+                    //
+                    //         it("bind position buffer", function () {
+                    //             directorTool.init(state);
+                    //
+                    //             var data = geometryTool.getVertices(geo);
+                    //
+                    //
+                    //             directorTool.loopBody(state);
+                    //
+                    //             expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer)).toCalledTwice();
+                    //             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                    //         });
+                    //     });
+                    // });
+
+                    describe("add CameraUboShaderLib", function () {
+                        it("bind ubo", function () {
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+
+                            expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("CameraUbo"))).toCalledOnce();
+                        });
                     });
 
                     describe("add DeferLightPassCommonShaderLib", function () {
@@ -736,22 +1133,25 @@ describe("defer shading", function () {
                                 directorTool.loopBody(state);
                             });
 
-                            // it("test vs source", function () {
-                            //     var vs = getVsSource(gl);
-                            //     expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
-                            //     expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
-                            // });
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.containMultiLine(fs, [
-                                    "vec3 getPointLightDir(vec3 worldPosition){",
-                                    "return getPointLightDirByLightPos(u_lightPosition, worldPosition);",
-                                    "}",
+                            describe("test fs source", function () {
+                                it("define getPointLightDir func by get pointLightUbo data", function () {
+                                    var fs = getFsSource(gl);
 
-                                    "vec3 getViewDir(vec3 worldPosition){",
-                                    "return normalize(u_cameraPos - worldPosition);",
-                                    "}"
-                                ])).toBeTruthy();
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "vec3 getPointLightDir(vec3 worldPosition){",
+                                        "return getPointLightDirByLightPos(pointLightUbo.lightPosition.xyz, worldPosition);",
+                                        "}"
+                                    ])).toBeTruthy();
+                                });
+                                it("define getViewDir func by get cameraUbo data", function () {
+                                    var fs = getFsSource(gl);
+
+                                    expect(glslTool.containMultiLine(fs, [
+                                        "vec3 getViewDir(vec3 worldPosition){",
+                                        "return normalize(cameraUbo.cameraPos.xyz - worldPosition);",
+                                        "}"
+                                    ])).toBeTruthy();
+                                });
                             });
                         });
                     });
@@ -836,71 +1236,62 @@ describe("defer shading", function () {
                     });
                 });
 
-                describe("send u_lightModel", function () {
-                    it("defined in render_config", function () {
-                        var lightModel = ELightModel.CONSTANT;
-                        sandbox.stub(render_config.defer, "lightModel", lightModel);
-                        var pos = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_lightModel").returns(pos);
-                        lightMaterialTool.setLightModel(material, lightModel);
-
-
-                        directorTool.init(state);
-                        directorTool.loopBody(state);
-
-                        expect(gl.uniform1i).toCalledWith(pos, lightModel);
-                    });
-                });
-
-                it("send u_cameraPos", function () {
-                    var cameraPos = Vector3.create(1, 10, 2),
-                        pos = 0;
-                    gl.getUniformLocation.withArgs(sinon.match.any, "u_cameraPos").returns(pos);
-
-
-                    var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform);
-
-                    threeDTransformTool.setPosition(transform, cameraPos);
-
-
-                    directorTool.init(state);
-                    directorTool.loopBody(state);
-
-                    expect(gl.uniform3f).toCalledWith(pos, cameraPos.x, cameraPos.y, cameraPos.z);
-                });
+                // it("send u_cameraPos", function () {
+                //     var cameraPos = Vector3.create(1, 10, 2),
+                //         pos = 0;
+                //     gl.getUniformLocation.withArgs(sinon.match.any, "u_cameraPos").returns(pos);
+                //
+                //
+                //     var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform);
+                //
+                //     threeDTransformTool.setPosition(transform, cameraPos);
+                //
+                //
+                //     directorTool.init(state);
+                //     directorTool.loopBody(state);
+                //
+                //     expect(gl.uniform3f).toCalledWith(pos, cameraPos.x, cameraPos.y, cameraPos.z);
+                // });
 
                 describe("send light data", function() {
                     //todo test after ubo
 
-                    describe("send point light data", function(){
-                        var lightObj,
-                            lightComponent;
+                    // describe("send point light data", function(){
 
-                        beforeEach(function(){
-                            lightObj = sceneTool.addPointLight();
-                            lightComponent = gameObjectTool.getComponent(lightObj, Light);
+                        // it("send u_lightPosition", function () {
+                        //     var pos = 0;
+                        //     gl.getUniformLocation.withArgs(sinon.match.any, "u_lightPosition").returns(pos);
+                        //
+                        //     var position = Vector3.create(1,2,3);
+                        //     var transform = gameObjectTool.getTransform(lightObj);
+                        //     threeDTransformTool.setPosition(transform, position);
+                        //
+                        //     directorTool.init(state);
+                        //     directorTool.loopBody(state);
+                        //
+                        //     expect(gl.uniform3f).toCalledWith(pos, position.x, position.y, position.z);
+                        // });
+
+                        //todo more test after ubo
+                    // });
+
+                    describe("add LightUboShaderLib", function () {
+                        it("bind ubo", function () {
+                            directorTool.init(state);
+                            directorTool.loopBody(state);
+
+                            expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("LightUbo"))).toCalledOnce();
                         });
+                    });
 
-                        it("send u_lightPosition", function () {
-                            var pos = 0;
-                            gl.getUniformLocation.withArgs(sinon.match.any, "u_lightPosition").returns(pos);
-
-                            var position = Vector3.create(1,2,3);
-                            var transform = gameObjectTool.getTransform(lightObj);
-                            threeDTransformTool.setPosition(transform, position);
+                    describe("add PointLightUboShaderLib", function () {
+                        it("bind ubo", function () {
+                            sceneTool.addPointLight();
 
                             directorTool.init(state);
                             directorTool.loopBody(state);
 
-                            expect(gl.uniform3f).toCalledWith(pos, position.x, position.y, position.z);
-                        });
-
-                        //todo more test after ubo
-                    });
-
-                    describe("test two point light", function () {
-                        it("send u_lightModel,u_cameraPos only one time", function () {
-                            //todo test after ubo
+                            expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("PointLightUbo"))).toCalledOnce();
                         });
                     });
 
@@ -939,7 +1330,7 @@ describe("defer shading", function () {
         });
         
         it("expand max light count to be bigger than the one defined in front render", function(){
-            testTool.openContractCheck();
+            testWebGL2Tool.openContractCheck();
 
             DataBufferConfig.pointLightDataBufferCount = 1;
 
@@ -988,7 +1379,7 @@ describe("defer shading", function () {
             directorTool.loopBody(state);
 
 
-            expect(glslTool.contain(getFirstGBufferFsSource(gl), "vec4 getMaterialDiffuse() {\n        return vec4(u_diffuse, 1.0);\n    }\n")).toBeTruthy();
+            expect(glslTool.contain(getFirstGBufferFsSource(gl), "vec3 getMaterialDiffuse() {\n        return u_diffuse;\n    }\n")).toBeTruthy();
             expect(glslTool.contain(getSecondGBufferFsSource(gl), "uniform sampler2D u_diffuseMapSampler;\n")).toBeTruthy();
         });
     });
