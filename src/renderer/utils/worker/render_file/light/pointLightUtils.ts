@@ -2,9 +2,10 @@ import { getColorArr3 as getColorArr3Utils, getSingleSizeData } from "../../../c
 import { getColor3Data } from "../../../../../component/utils/operateBufferDataUtils";
 import { Color } from "../../../../../structure/Color";
 import {
-    getColorDataSize, getConstantDataSize, getIntensityDataSize,
+    getColorDataSize, getConstantDataSize, getDirtyDataSize, getIntensityDataSize,
     getLinearDataSize, getQuadraticDataSize, getRangeDataSize
 } from "../../../light/pointLightUtils";
+// import { getIsTranslate } from "../../../../../component/transform/isTransformSystem";
 
 export var getColor = (index: number, PointLightDataFromSystem: any) => {
     return getColor3Data(index, PointLightDataFromSystem.colors);
@@ -54,4 +55,54 @@ export var createTypeArrays = (buffer: any, count: number, PointLightDataFromSys
 
     PointLightDataFromSystem.ranges = new Float32Array(buffer, offset, count * getRangeDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getRangeDataSize();
+
+    PointLightDataFromSystem.isPositionDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+
+    PointLightDataFromSystem.isColorDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+
+    PointLightDataFromSystem.isIntensityDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+
+    PointLightDataFromSystem.isAttenuationDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
 }
+
+export var isPositionDirty = (index: number, PointLightDataFromSystem: any) => {
+    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isPositionDirtys));
+}
+
+export var isColorDirty = (index: number, PointLightDataFromSystem: any) => {
+    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isColorDirtys));
+}
+
+export var isIntensityDirty = (index: number, PointLightDataFromSystem: any) => {
+    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isIntensityDirtys));
+}
+
+export var isAttenuationDirty = (index: number, PointLightDataFromSystem: any) => {
+    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isAttenuationDirtys));
+}
+
+export var cleanPositionDirty = (index: number, PointLightDataFromSystem: any) => {
+    _cleanDirty(index, PointLightDataFromSystem.isPositionDirtys);
+}
+
+export var cleanColorDirty = (index: number, PointLightDataFromSystem: any) => {
+    _cleanDirty(index, PointLightDataFromSystem.isColorDirtys);
+}
+
+export var cleanIntensityDirty = (index: number, PointLightDataFromSystem: any) => {
+    _cleanDirty(index, PointLightDataFromSystem.isIntensityDirtys);
+}
+
+export var cleanAttenuationDirty = (index: number, PointLightDataFromSystem: any) => {
+    _cleanDirty(index, PointLightDataFromSystem.isAttenuationDirtys);
+}
+
+var _cleanDirty = (index: number, isDirtys:Uint8Array) => {
+    isDirtys[index] = 1;
+}
+
+var _isDirty = (value) => value === 0;

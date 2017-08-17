@@ -11,3 +11,5 @@ export var getLinearDataSize = () => 1;
 export var getQuadraticDataSize = () => 1;
 
 export var getRangeDataSize = () => 1;
+
+export var getDirtyDataSize = () => 1;

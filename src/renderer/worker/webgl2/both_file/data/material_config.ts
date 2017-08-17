@@ -151,10 +151,11 @@ export const webgl2_material_config = {
                 // { "type": "group", "value": "engineMaterialTop" },
                 "VerticeCommonShaderLib",
 
-                "CameraUboShaderLib",
-
                 //todo test LightUboShaderLib
+                "CameraUboShaderLib",
                 "LightUboShaderLib",
+                "PointLightUboShaderLib",
+
                 "DeferLightPassCommonShaderLib",
                 "DeferLightPassNoNormalMapShaderLib",
                 "NoLightMapShaderLib",

@@ -1,3 +1,4 @@
+import curry from "wonder-lodash/curry";
 import { PointLight } from "./PointLight";
 import { Color } from "../../structure/Color";
 import {
@@ -5,10 +6,9 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    createDefaultColor, getPosition as getSpecifyLightPosition
+    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
@@ -19,17 +19,23 @@ import {
     getLinear as getLinearUtils,
     getQuadratic as getQuadraticUtils, getRange as getRangeUtils,
     createTypeArrays, getColorArr3 as getColorArr3Utils,
-    getIntensity as getIntensityUtils
+    getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils,
+    isAttenuationDirty as isAttenuationDirtyUtils, cleanColorDirty as cleanColorDirtyUtils,
+    cleanIntensityDirty as cleanIntensityDirtyUtils, cleanAttenuationDirty as cleanAttenuationDirtyUtils,
+    cleanPositionDirty as cleanPositionDirtyUtils, isPositionDirty as isPositionDirtyUtils
 } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import {
-    getConstantDataSize, getIntensityDataSize,
+    getConstantDataSize, getDirtyDataSize, getIntensityDataSize,
     getQuadraticDataSize, getRangeDataSize
 } from "../../renderer/utils/light/pointLightUtils";
 import { getColorDataSize, getLinearDataSize } from "../../renderer/utils/light/pointLightUtils";
+import { getIsTranslate } from "../transform/isTransformSystem";
+import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
+import { registerEvent } from "../../event/EventManagerSystem";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)
@@ -66,36 +72,48 @@ export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, PointLightData: any) => {
     setSpecifyLightColor(index, color, PointLightData.colors);
+
+    _markDirty(index, PointLightData.isColorDirtys);
 }
 
 export var getIntensity = getIntensityUtils;
 
 export var setIntensity = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.intensities, index, value);
+
+    _markDirty(index, PointLightData.isIntensityDirtys);
 }
 
 export var getConstant = getConstantUtils;
 
 export var setConstant = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.constants, index, value);
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getLinear = getLinearUtils;
 
 export var setLinear = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.linears, index, value);
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getQuadratic = getQuadraticUtils;
 
 export var setQuadratic = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.quadratics, index, value);
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getRange = getRangeUtils;
 
 export var setRange = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.ranges, index, value);
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var setRangeLevel = (index: number, value: number, PointLightData: any) => {
@@ -164,11 +182,17 @@ export var setRangeLevel = (index: number, value: number, PointLightData: any) =
             Log.error(true, "over point light range");
             break;
     }
+
+    _markDirty(index, PointLightData.isAttenuationDirtys);
+}
+
+var _markDirty = (index: number, isDirtys:Uint8Array) => {
+    isDirtys[index] = 0;
 }
 
 export var initDataHelper = (PointLightData: any) => {
     var count = getPointLightBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()),
+        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize() + getDirtyDataSize() * 4),
         buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
@@ -182,6 +206,7 @@ export var initDataHelper = (PointLightData: any) => {
     PointLightData.defaultLinear = 0;
     PointLightData.defaultQuadratic = 0;
     PointLightData.defaultRange = 60000;
+    PointLightData.defaultDirty = 0;
 
     _setDefaultTypeArrData(count, PointLightData);
 }
@@ -193,6 +218,10 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
         linear = PointLightData.defaultLinear,
         quadratic = PointLightData.defaultQuadratic,
         range = PointLightData.defaultRange;
+
+    /*!
+    no need to set default dirty
+     */
 
     for (let i = 0; i < count; i++) {
         setColor(i, color, PointLightData);
@@ -220,6 +249,40 @@ export var disposeComponent = (component: Light, PointLightData:any) => {
     deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData.linears, PointLightData.defaultLinear);
     deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
     deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
+
+    //todo dispose dirty
 }
 
+export var init = (PointLightData: any) => {
+    var eventName = "changePosition";
+
+    for(let i = 0, count = PointLightData.count; i < count; i++){
+        var _markPositionDirty = () => {
+            _markDirty(i, PointLightData.isPositionDirtys);
+        }
+
+        registerEvent(eventName, _markPositionDirty);
+    }
+}
+
+export var isPositionDirty = isPositionDirtyUtils;
+
+export var isColorDirty = isColorDirtyUtils;
+
+//todo send position dirty data to render worker
+// export var isPositionDirty = (index: number, ThreeDTransformData: any, GameObjectData:any, PointLightData: any) => {
+//     return getIsTranslate(getTransform(getGameObject(index, PointLightData), GameObjectData).uid, ThreeDTransformData) === true;
+// }
+
+export var isIntensityDirty = isIntensityDirtyUtils;
+
+export var isAttenuationDirty = isAttenuationDirtyUtils;
+
+export var cleanPositionDirty = cleanPositionDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;
+
+export var cleanIntensityDirty = cleanIntensityDirtyUtils;
+
+export var cleanAttenuationDirty = cleanAttenuationDirtyUtils;
 

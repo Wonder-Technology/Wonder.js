@@ -45,6 +45,7 @@ import {
 import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../../math/Matrix3";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { triggerEvent } from "../../event/EventManagerSystem";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -214,6 +215,7 @@ export var setPosition = requireCheckFunc((transform: ThreeDTransform, position:
     setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
 
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
 
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 })
@@ -242,9 +244,16 @@ export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, posi
     setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
 
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
 
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 })
+
+var _triggerChangePositionEvent = (uid:number, ThreeTransformData:any) => {
+    // triggerEvent("changePosition", getGameObject(uid, ThreeTransformData).uid);
+    //todo test trigger
+    triggerEvent("changePosition");
+}
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: MapImmutable<any, any>) => {
     return updateSystem(elapsed, GlobalTempData, ThreeDTransformData, state);

@@ -112,7 +112,7 @@ export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformD
         //     initBufferDataFunc(gl, uboDataMap, uboFuncMap);
         // }
 
-        setBufferDataFunc(gl, pointLightIndex, uboDataMap, uboFuncMap, sendUniformDataPointLightDataMap, drawDataMap);
+        setBufferDataFunc(gl, pointLightIndex, uboDataMap, uboFuncMap, sendUniformDataPointLightDataMap);
     });
 
 

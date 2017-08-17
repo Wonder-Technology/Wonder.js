@@ -13,6 +13,3 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
 export var disposeComponent = (component: Light) => {
     disposePointLightComponent(component, WebGL2PointLightData);
 }
-
-
-

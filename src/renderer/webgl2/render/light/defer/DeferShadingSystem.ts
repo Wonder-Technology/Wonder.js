@@ -22,7 +22,9 @@ import { bindAndUpdate, getMapCount } from "../../../../texture/MapManagerSystem
 import {
     getPosition as getPointLightPosition,
     getColorArr3 as getPointLightColorArr3, getConstant,
-    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange
+    getIntensity as getPointLightIntensity, getLinear, getQuadratic, getRange, isColorDirty, isPositionDirty,
+    isIntensityDirty, isAttenuationDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
+    cleanPositionDirty
 } from "../../../../../component/light/PointLightSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../shader/glslSender/GLSLSenderSystem";
 import { useShader } from "../../../../../component/material/MaterialSystem";
@@ -42,7 +44,7 @@ export var render = curry((gl:any, state: Map<any, any>, render_config:IRenderCo
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
-        getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
+        getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius, isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
         drawDataMap,  ThreeDTransformData, GameObjectData
     ), initShaderDataMap, bufferData, cameraData);
 })
@@ -52,6 +54,7 @@ var _buildSendUniformDataDataMap = (
     // getAmbientLightColorArr3,
     // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
+    isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
     drawDataMap: DrawDataMap, ThreeDTransformData: any, GameObjectData: any) => {
     return {
         glslSenderData: {
@@ -80,8 +83,8 @@ var _buildSendUniformDataDataMap = (
         //     DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
         // },
         pointLightData: {
-            getPosition: (index: number, drawDataMap:DrawDataMap) => {
-                return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+            getPosition: (index: number, PointLightDataFromSystem:any) => {
+                return getPointLightPosition(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem).values;
             },
             getColorArr3: getPointLightColorArr3,
             getIntensity: getPointLightIntensity,
@@ -90,6 +93,18 @@ var _buildSendUniformDataDataMap = (
             getQuadratic: getQuadratic,
             getRange: getRange,
             computeRadius: computeRadius,
+
+            isPositionDirty: isPositionDirty,
+            isColorDirty: isColorDirty,
+            // isPositionDirty: (index: number, PointLightDataFromSystem:any) => {
+            //     return isPointLightPositionDirty(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem);
+            // },
+            isIntensityDirty: isIntensityDirty,
+            isAttenuationDirty: isAttenuationDirty,
+            cleanPositionDirty: cleanPositionDirty,
+            cleanColorDirty: cleanColorDirty,
+            cleanIntensityDirty: cleanIntensityDirty,
+            cleanAttenuationDirty: cleanAttenuationDirty,
 
             PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
         }

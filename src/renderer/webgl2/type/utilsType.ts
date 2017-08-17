@@ -33,6 +33,14 @@ export type WebGL2SendUniformDataPointLightDataMap = {
     getQuadratic: Function;
     getPosition: Function;
     computeRadius: Function;
+    isPositionDirty: Function;
+    isColorDirty: Function;
+    isIntensityDirty: Function;
+    isAttenuationDirty: Function;
+    cleanPositionDirty: Function;
+    cleanColorDirty: Function;
+    cleanIntensityDirty: Function;
+    cleanAttenuationDirty: Function;
 
     PointLightDataFromSystem: any;
 }

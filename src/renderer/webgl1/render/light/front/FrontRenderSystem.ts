@@ -63,8 +63,8 @@ var _buildSendUniformDataDataMap = (
             AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
         },
         directionLightData: {
-            getPosition: (index: number, drawDataMap:DrawDataMap) => {
-                return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+            getPosition: (index: number, DirectionLightDataFromSystem:any) => {
+                return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightDataFromSystem).values;
             },
             getColorArr3: getDirectionLightColorArr3,
             getIntensity: getDirectionLightIntensity,
@@ -72,8 +72,8 @@ var _buildSendUniformDataDataMap = (
             DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
         },
         pointLightData: {
-            getPosition: (index: number, drawDataMap:DrawDataMap) => {
-                return getPointLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.PointLightDataFromSystem).values;
+            getPosition: (index: number, PointLightDataFromSystem:any) => {
+                return getPointLightPosition(index, ThreeDTransformData, GameObjectData, PointLightDataFromSystem).values;
             },
             getColorArr3: getPointLightColorArr3,
             getIntensity: getPointLightIntensity,

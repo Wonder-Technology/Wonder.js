@@ -85,6 +85,13 @@ export const webgl2_shaderLib_generator = {
 
 
 
+
+
+
+
+
+        //todo add
+
         "CameraUboShaderLib": {
             "glsl": {
                 "vs": {
@@ -137,6 +144,150 @@ export const webgl2_shaderLib_generator = {
                 ]
             }
         },
+        "LightUboShaderLib": {
+            "glsl": {
+                "fs": {
+                    "varDeclare": ubo_light.varDeclare
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "LightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4
+                        },
+                        "setBufferDataFunc": (gl, {
+                            uniformBlockBinding,
+                            buffer,
+                            typeArray
+                        }, {
+                                                  bindUniformBufferBase,
+                                                  bufferStaticData,
+                                                  // bufferDynamicData,
+                                                  set
+                                              }, drawRenderCommandBufferDataMap, {
+                                                  render_config
+                                              }) => {
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            set(typeArray, [render_config.defer.lightModel]);
+
+                            bufferStaticData(gl, typeArray);
+                        },
+                        "frequence": "one",
+                        "usage": "static"
+                    }
+                ]
+            }
+        },
+        "PointLightUboShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": ubo_point_light
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "PointLightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4 * 3
+                        },
+                        // "count": 1,
+                        "setBufferDataFunc": (gl, pointLightIndex, {
+                                                  uniformBlockBinding,
+                                                  buffer,
+                                                  typeArray
+                                              }, {
+                                                  bindUniformBufferBase,
+                                                  bufferDynamicData,
+                                                  set
+                                              }, {
+                                                  getColorArr3,
+                                                  getIntensity,
+                                                  getConstant,
+                                                  getLinear,
+                                                  getQuadratic,
+                                                  computeRadius,
+                                                  // getRange,
+                                                  getPosition,
+
+                            isPositionDirty,
+                                                  isColorDirty,
+                                                  isIntensityDirty,
+                                                  isAttenuationDirty,
+
+                            cleanPositionDirty,
+                                                  cleanColorDirty,
+                                                  cleanIntensityDirty,
+                                                  cleanAttenuationDirty,
+
+                                                  PointLightDataFromSystem
+                                              }
+                        ) => {
+                            var isDirty = false;
+
+                            if(isPositionDirty(pointLightIndex, PointLightDataFromSystem)) {
+                                set(typeArray, getPosition(pointLightIndex, PointLightDataFromSystem));
+                                isDirty = true;
+
+
+                                cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
+                            }
+
+
+                            let colorArr3Copy:Array<number> = null;
+
+                            if(isColorDirty(pointLightIndex, PointLightDataFromSystem)) {
+                                let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem);
+
+                                colorArr3Copy = colorArr3.slice();
+
+                                if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
+                                    set(typeArray, colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)), 4);
+
+                                    cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
+                                }
+                                else{
+                                    set(typeArray, colorArr3, 4);
+                                }
+
+                                isDirty = true;
+
+                                cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
+                            }
+
+                            if(isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
+                                let constant = getConstant(pointLightIndex, PointLightDataFromSystem),
+                                    linear = getLinear(pointLightIndex, PointLightDataFromSystem),
+                                    quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
+                                    radius = computeRadius(colorArr3Copy, constant, linear, quadratic);
+
+                                set(typeArray, [constant, linear, quadratic, radius], 8);
+
+                                cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
+                            }
+
+                            if(isDirty){
+                                bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                                bufferDynamicData(gl, typeArray);
+                            }
+                        },
+                        "frequence": "pointLight",
+                        "usage": "dynamic"
+                    }
+                ]
+            }
+        },
+
+
+
+
+
 
 
 
@@ -340,48 +491,6 @@ export const webgl2_shaderLib_generator = {
 
 
 
-
-
-        //todo add
-
-        "LightUboShaderLib": {
-            "glsl": {
-                "fs": {
-                    "varDeclare": ubo_light.varDeclare
-                }
-            },
-            "send": {
-                "uniformUbo": [
-                    {
-                        "name": "LightUbo",
-                        "typeArray": {
-                            "type": "float32",
-                            "length": 4
-                        },
-                        "setBufferDataFunc": (gl, {
-                            uniformBlockBinding,
-                            buffer,
-                            typeArray
-                        }, {
-                            bindUniformBufferBase,
-                            bufferStaticData,
-                            // bufferDynamicData,
-                            set
-                        }, drawRenderCommandBufferDataMap, {
-                            render_config
-                                      }) => {
-                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
-
-                            set(typeArray, [render_config.defer.lightModel]);
-
-                            bufferStaticData(gl, typeArray);
-                        },
-                        "frequence": "one",
-                        "usage": "static"
-                    }
-                ]
-            }
-        },
 
 
 
@@ -714,101 +823,10 @@ export const webgl2_shaderLib_generator = {
                     "source": deferLightPass_vertex
                 },
                 "fs": {
-                    "source": deferLightPass_fragment,
-                    "varDeclare": deferLightPass_fragment.varDeclare + ubo_point_light.varDeclare
+                    "source": deferLightPass_fragment
                 }
             },
             "send": {
-                // "uniform": [
-                //     {
-                //         "name": "u_opacity",
-                //         "from": "lightMaterial",
-                //         "field": "opacity",
-                //         "type": "float"
-                //     },
-                //todo move to ubo(global light ubo)
-                //     {
-                //         "name": "u_lightModel",
-                //         "from": "lightMaterial",
-                //         "field": "lightModel",
-                //         "type": "int"
-                //     },
-                //todo move to ubo
-                //     {
-                //         "name": "u_cameraPos",
-                //         "from": "cmd",
-                //         "field": "cameraPosition",
-                //         "type": "float3"
-                //     }
-                // ],
-                "uniformUbo": [
-                    {
-                        "name": "PointLightUbo",
-                        "typeArray": {
-                            "type": "float32",
-                            "length": 4 * 3
-                        },
-                        // "count": 1,
-                        "setBufferDataFunc": (gl, pointLightIndex, {
-                                                  uniformBlockBinding,
-                                                  buffer,
-                                                  typeArray
-                                              }, {
-                                                  bindUniformBufferBase,
-                                                  bufferDynamicData,
-                                                  set
-                                              }, {
-                                                  getColorArr3,
-                                                  getIntensity,
-                                                  getConstant,
-                                                  getLinear,
-                                                  getQuadratic,
-                                                  computeRadius,
-                                                  // getRange,
-                                                  getPosition,
-
-                                                  // isColorDirty,
-                                                  // isPositionDirty,
-                                                  // isIntensityDirty,
-                                                  // isAttenuationDirty,
-                                                  // isDirty,
-
-                                                  PointLightDataFromSystem
-                                              },
-                                              drawDataMap
-                        ) => {
-
-                            // if(isDirty(pointLightIndex, PointLightDataFromSystem)){
-                                set(typeArray, getPosition(pointLightIndex, drawDataMap));
-
-                                let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem),
-                           constant = getConstant(pointLightIndex, PointLightDataFromSystem)         ,
-                                    linear = getLinear(pointLightIndex, PointLightDataFromSystem),
-                                    quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
-                                    radius = computeRadius(colorArr3, constant, linear, quadratic);
-                                    // colorDataArr = [];
-                                    //
-                                    // colorDataArr = colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)
-
-
-
-                                set(typeArray, colorArr3.concat(getIntensity(pointLightIndex, PointLightDataFromSystem)), 4);
-
-
-                                set(typeArray, [constant, linear, quadratic, radius], 8);
-
-                            //todo if not dirty, not bind and buffer data
-                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
-
-
-
-                                bufferDynamicData(gl, typeArray);
-                            // }
-                        },
-                        "frequence": "pointLight",
-                        "usage": "dynamic"
-                    }
-                ],
                 "uniformDefine": [
                     {
                         "name": "u_positionBuffer",
