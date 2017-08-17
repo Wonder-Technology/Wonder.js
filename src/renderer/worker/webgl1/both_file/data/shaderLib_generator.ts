@@ -15,7 +15,6 @@ import {
     webgl1_specularMap_vertex, webgl1_specularMap_fragment,
 } from "../../../../shader/chunk/ShaderChunk";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
-import { DrawDataMap } from "../../../../type/utilsType";
 import { webgl1_setPos_mvp } from "../../../../webgl1/shader/snippet/ShaderSnippet";
 
 var _lightDefineList = [
@@ -515,11 +514,20 @@ export const webgl1_shaderLib_generator = {
                     ambientLightData: {
                         getColorArr3,
 
+                        isColorDirty,
+
+                        cleanColorDirty,
+
                         AmbientLightDataFromSystem
                     }
                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
-                        sendFloat3(gl, shaderIndex, program, "u_ambient", getColorArr3(i, AmbientLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+                        if(isColorDirty(i, AmbientLightDataFromSystem)) {
+                            sendFloat3(gl, shaderIndex, program, "u_ambient", getColorArr3(i, AmbientLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+                            cleanColorDirty(i, AmbientLightDataFromSystem);
+                        }
                     }
                 }
             }
@@ -527,31 +535,31 @@ export const webgl1_shaderLib_generator = {
         "PointLightShaderLib": {
             "send": {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
-                    {
+                                {
                                     glslSenderData: {
                                         sendFloat1,
-                        sendFloat3
+                                        sendFloat3
                                     },
-                        pointLightData: {
+                                    pointLightData: {
                                         getColorArr3,
-                            getIntensity,
-                            getConstant,
-                            getLinear,
-                            getQuadratic,
-                            getRange,
-                            getPosition,
+                                        getIntensity,
+                                        getConstant,
+                                        getLinear,
+                                        getQuadratic,
+                                        getRange,
+                                        getPosition,
 
-                            isPositionDirty,
-                            isColorDirty,
-                            isIntensityDirty,
-                            isAttenuationDirty,
+                                        isPositionDirty,
+                                        isColorDirty,
+                                        isIntensityDirty,
+                                        isAttenuationDirty,
 
-                            cleanPositionDirty,
-                            cleanColorDirty,
-                            cleanIntensityDirty,
-                            cleanAttenuationDirty,
+                                        cleanPositionDirty,
+                                        cleanColorDirty,
+                                        cleanIntensityDirty,
+                                        cleanAttenuationDirty,
 
-                            PointLightDataFromSystem
+                                        PointLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
@@ -599,13 +607,35 @@ export const webgl1_shaderLib_generator = {
                             getIntensity,
                             getPosition,
 
+                            isPositionDirty,
+                            isColorDirty,
+                            isIntensityDirty,
+
+                            cleanPositionDirty,
+                            cleanColorDirty,
+                            cleanIntensityDirty,
+
                             DirectionLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
-                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-                        sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-                        sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+                        if(isPositionDirty(i, DirectionLightDataFromSystem)) {
+                            sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+                            cleanPositionDirty(i, DirectionLightDataFromSystem);
+                        }
+
+                        if(isColorDirty(i, DirectionLightDataFromSystem)) {
+                            sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+                            cleanColorDirty(i, DirectionLightDataFromSystem);
+                        }
+
+                        if(isIntensityDirty(i, DirectionLightDataFromSystem)) {
+                            sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+
+                            cleanIntensityDirty(i, DirectionLightDataFromSystem);
+                        }
                     }
                 }
             }

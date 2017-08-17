@@ -3,7 +3,7 @@ import { Color } from "../../structure/Color";
 import {
     disposeComponent as disposeSpecifyLightComponent, initData as initSpecifyLightData,
     setColor as setSpecifyLightColor, create as createSpecifyLight, addComponent as addSpecifyLightComponent,
-    createDefaultColor
+    createDefaultColor, markDirty
 } from "./SpecifyLightSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
@@ -14,10 +14,12 @@ import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { getAmbientLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import {
+    cleanColorDirty as cleanColorDirtyUtils,
     createTypeArrays, getColorArr3 as getColorArr3Utils,
-    getColorDataSize
+    getColorDataSize, isColorDirty as isColorDirtyUtils
 } from "../../renderer/utils/worker/render_file/light/ambientLightUtils";
 import { getColor as getColorUtils } from "../../renderer/utils/light/ambientLightUtils";
+import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("count should <= max count", () => {
@@ -37,6 +39,8 @@ export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, AmbientLightData: any) => {
     setSpecifyLightColor(index, color, AmbientLightData.colors);
+
+    markDirty(index, AmbientLightData.isColorDirtys);
 }
 
 export var addComponent = (component: Light, gameObject: GameObject) => {
@@ -49,7 +53,7 @@ export var disposeComponent = (component: Light) => {
 
 export var initData = (AmbientLightData: any) => {
     var count = getAmbientLightBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize(),
+        size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize() + Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize(),
         buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
@@ -67,3 +71,7 @@ var _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {
         setColor(i, color, AmbientLightData);
     }
 }
+
+export var isColorDirty = isColorDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;

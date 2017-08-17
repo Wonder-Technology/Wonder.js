@@ -8,10 +8,12 @@ export class SpecifyLightData {
     public static buffer: any = null;
 
     public static colors: Float32Array = null;
+    public static isColorDirtys: Uint8Array = null;
 
     public static gameObjectMap: Array<IUIDEntity> = null;
     public static lightMap: Array<Component> = null;
 
     public static defaultColorArr: Array<number> = null;
+    public static defaultDirty: number = null;
 }
 

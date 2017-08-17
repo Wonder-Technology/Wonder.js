@@ -6,7 +6,7 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject, markDirty
+    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject, markDirty, bindChangePositionEvent
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
@@ -22,17 +22,16 @@ import {
     getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils,
     isAttenuationDirty as isAttenuationDirtyUtils, cleanColorDirty as cleanColorDirtyUtils,
     cleanIntensityDirty as cleanIntensityDirtyUtils, cleanAttenuationDirty as cleanAttenuationDirtyUtils,
-    cleanPositionDirty as cleanPositionDirtyUtils, isPositionDirty as isPositionDirtyUtils
+    cleanPositionDirty as cleanPositionDirtyUtils, isPositionDirty as isPositionDirtyUtils, getColorDataSize,
+    getIntensityDataSize, getConstantDataSize, getQuadraticDataSize, getRangeDataSize
 } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import {
-    getConstantDataSize, getDirtyDataSize, getIntensityDataSize,
-    getQuadraticDataSize, getRangeDataSize
-} from "../../renderer/utils/light/pointLightUtils";
-import { getColorDataSize, getLinearDataSize } from "../../renderer/utils/light/pointLightUtils";
+    getDirtyDataSize} from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { getIsTranslate } from "../transform/isTransformSystem";
 import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { registerEvent } from "../../event/EventManagerSystem";
@@ -203,7 +202,6 @@ export var initDataHelper = (PointLightData: any) => {
     PointLightData.defaultLinear = 0.07;
     PointLightData.defaultQuadratic = 0.017;
     PointLightData.defaultRange = 65;
-    PointLightData.defaultDirty = 0;
 
     _setDefaultTypeArrData(count, PointLightData);
 }
@@ -247,21 +245,22 @@ export var disposeComponent = (component: Light, PointLightData:any) => {
     deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
     deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
 
-    //todo dispose dirty
+    //todo dispose dirty(point, direction, ambient)
 }
 
 export var init = (PointLightData: any, state:Map<any, any>) => {
-    var eventName = "changePosition";
-
-    for(let i = 0, count = PointLightData.count; i < count; i++){
-        var _markPositionDirty = () => {
-            markDirty(i, PointLightData.isPositionDirtys);
-        }
-
-        registerEvent(eventName, _markPositionDirty);
-    }
-
-    return state;
+    return bindChangePositionEvent(PointLightData, state);
+    // var eventName = "changePosition";
+    //
+    // for(let i = 0, count = PointLightData.count; i < count; i++){
+    //     var _markPositionDirty = () => {
+    //         markDirty(i, PointLightData.isPositionDirtys);
+    //     }
+    //
+    //     registerEvent(eventName, _markPositionDirty);
+    // }
+    //
+    // return state;
 }
 
 export var isPositionDirty = isPositionDirtyUtils;

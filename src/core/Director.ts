@@ -58,9 +58,11 @@ import { isWebgl1 } from "../renderer/device/WebGLDetectSystem";
 import { addAddComponentHandle as addWebGL1LightAddComponentHandle, addDisposeHandle as addWebGL1LightDisposeHandle } from "../component/webgl1/light/LightSystem";
 import { addAddComponentHandle as addWebGL2LightAddComponentHandle, addDisposeHandle as addWebGL2LightDisposeHandle } from "../component/webgl2/light/LightSystem";
 import { init as initPointLight } from "../component/light/PointLightSystem";
+import { init as initDirectionLight } from "../component/light/DirectionLightSystem";
 import { PointLightData } from "../component/light/PointLightData";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
+import { DirectionLightData } from "../component/light/DirectionLightData";
 
 @singleton(true)
 @registerClass("Director")
@@ -158,6 +160,7 @@ export class Director {
         resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
         resultState = _initPointLight(state);
+        resultState = initDirectionLight(DirectionLightData, state)
 
         return resultState;
     }

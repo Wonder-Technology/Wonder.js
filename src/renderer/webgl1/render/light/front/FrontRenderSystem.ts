@@ -11,10 +11,16 @@ import {
     hasIndices
 } from "../../../../../component/geometry/GeometrySystem";
 import { bindAndUpdate, getMapCount } from "../../../../texture/MapManagerSystem";
-import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../../component/light/AmbientLightSystem";
 import {
+    cleanColorDirty as cleanAmbientLightColorDirty,
+    getColorArr3 as getAmbientLightColorArr3,
+    isColorDirty as isAmbientLightColorDirty
+} from "../../../../../component/light/AmbientLightSystem";
+import {
+    cleanColorDirty as cleanDirectionLightColorDirty, cleanIntensityDirty as cleanDirectionLightIntensityDirty,
+    cleanPositionDirty as cleanDirectionLightPositionDirty,
     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
-    getPosition as getDirectionLightPosition,
+    getPosition as getDirectionLightPosition, isColorDirty as isDirectionLightColorDirty, isIntensityDirty as isDirectionLightIntensityDirty, isPositionDirty as isDirectionLightPositionDirty,
 } from "../../../../../component/light/DirectionLightSystem";
 import {
     getPosition as getPointLightPosition,
@@ -35,8 +41,10 @@ import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/r
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, _buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-        getAmbientLightColorArr3,
-        getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
+        getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
+
+        getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
+
         getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, isPointLightPositionDirty, isPointLightColorDirty, isPointLightIntensityDirty, isPointLightAttenuationDirty, cleanPointLightPositionDirty, cleanPointLightColorDirty, cleanPointLightIntensityDirty, cleanPointLightAttenuationDirty,
         drawDataMap, ThreeDTransformData, GameObjectData
     ), initShaderDataMap, bufferData, cameraData);
@@ -44,8 +52,8 @@ export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderC
 
 var _buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    getAmbientLightColorArr3,
-    getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
+    getAmbientLightColorArr3, isAmbientLightColorDirty,   cleanAmbientLightColorDirty,
+    getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty,  cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, isPointLightPositionDirty, isPointLightColorDirty, isPointLightIntensityDirty, isPointLightAttenuationDirty, cleanPointLightPositionDirty, cleanPointLightColorDirty, cleanPointLightIntensityDirty, cleanPointLightAttenuationDirty,
 
     drawDataMap: DrawDataMap, ThreeDTransformData: any, GameObjectData: any) => {
@@ -63,6 +71,9 @@ var _buildSendUniformDataDataMap = (
         ambientLightData: {
             getColorArr3: getAmbientLightColorArr3,
 
+            isColorDirty : isAmbientLightColorDirty,
+            cleanColorDirty: cleanAmbientLightColorDirty,
+
             AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
         },
         directionLightData: {
@@ -71,6 +82,13 @@ var _buildSendUniformDataDataMap = (
             },
             getColorArr3: getDirectionLightColorArr3,
             getIntensity: getDirectionLightIntensity,
+
+            isPositionDirty: isDirectionLightPositionDirty,
+            isColorDirty : isDirectionLightColorDirty,
+            isIntensityDirty : isDirectionLightIntensityDirty,
+            cleanPositionDirty: cleanDirectionLightPositionDirty,
+            cleanColorDirty: cleanDirectionLightColorDirty,
+            cleanIntensityDirty: cleanDirectionLightIntensityDirty,
 
             DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
         },

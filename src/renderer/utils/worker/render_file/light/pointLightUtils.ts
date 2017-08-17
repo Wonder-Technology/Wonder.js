@@ -1,11 +1,8 @@
 import { getColorArr3 as getColorArr3Utils, getSingleSizeData } from "../../../common/operateBufferDataUtils";
 import { getColor3Data } from "../../../../../component/utils/operateBufferDataUtils";
+import { cleanDirty, getDirtyDataSize, isDirty } from "./specifyLightUtils";
+import { getColorDataSize as getSpecifyLightColorDataSize } from "./specifyLightUtils";
 import { Color } from "../../../../../structure/Color";
-import {
-    getColorDataSize, getConstantDataSize, getDirtyDataSize, getIntensityDataSize,
-    getLinearDataSize, getQuadraticDataSize, getRangeDataSize
-} from "../../../light/pointLightUtils";
-// import { getIsTranslate } from "../../../../../component/transform/isTransformSystem";
 
 export var getColor = (index: number, PointLightDataFromSystem: any) => {
     return getColor3Data(index, PointLightDataFromSystem.colors);
@@ -34,6 +31,18 @@ export var getQuadratic = (index: number, PointLightDataFromSystem: any) => {
 export var getRange = (index: number, PointLightDataFromSystem: any) => {
     return getSingleSizeData(index, PointLightDataFromSystem.ranges);
 }
+
+export var getColorDataSize = getSpecifyLightColorDataSize;
+
+export var getIntensityDataSize = () => 1;
+
+export var getConstantDataSize = () => 1;
+
+export var getLinearDataSize = () => 1;
+
+export var getQuadraticDataSize = () => 1;
+
+export var getRangeDataSize = () => 1;
 
 export var createTypeArrays = (buffer: any, count: number, PointLightDataFromSystem: any) => {
     var offset = 0;
@@ -70,39 +79,33 @@ export var createTypeArrays = (buffer: any, count: number, PointLightDataFromSys
 }
 
 export var isPositionDirty = (index: number, PointLightDataFromSystem: any) => {
-    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isPositionDirtys));
+    return isDirty(getSingleSizeData(index, PointLightDataFromSystem.isPositionDirtys));
 }
 
 export var isColorDirty = (index: number, PointLightDataFromSystem: any) => {
-    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isColorDirtys));
+    return isDirty(getSingleSizeData(index, PointLightDataFromSystem.isColorDirtys));
 }
 
 export var isIntensityDirty = (index: number, PointLightDataFromSystem: any) => {
-    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isIntensityDirtys));
+    return isDirty(getSingleSizeData(index, PointLightDataFromSystem.isIntensityDirtys));
 }
 
 export var isAttenuationDirty = (index: number, PointLightDataFromSystem: any) => {
-    return _isDirty(getSingleSizeData(index, PointLightDataFromSystem.isAttenuationDirtys));
+    return isDirty(getSingleSizeData(index, PointLightDataFromSystem.isAttenuationDirtys));
 }
 
 export var cleanPositionDirty = (index: number, PointLightDataFromSystem: any) => {
-    _cleanDirty(index, PointLightDataFromSystem.isPositionDirtys);
+    cleanDirty(index, PointLightDataFromSystem.isPositionDirtys);
 }
 
 export var cleanColorDirty = (index: number, PointLightDataFromSystem: any) => {
-    _cleanDirty(index, PointLightDataFromSystem.isColorDirtys);
+    cleanDirty(index, PointLightDataFromSystem.isColorDirtys);
 }
 
 export var cleanIntensityDirty = (index: number, PointLightDataFromSystem: any) => {
-    _cleanDirty(index, PointLightDataFromSystem.isIntensityDirtys);
+    cleanDirty(index, PointLightDataFromSystem.isIntensityDirtys);
 }
 
 export var cleanAttenuationDirty = (index: number, PointLightDataFromSystem: any) => {
-    _cleanDirty(index, PointLightDataFromSystem.isAttenuationDirtys);
+    cleanDirty(index, PointLightDataFromSystem.isAttenuationDirtys);
 }
-
-var _cleanDirty = (index: number, isDirtys:Uint8Array) => {
-    isDirtys[index] = 1;
-}
-
-var _isDirty = (value) => value === 0;

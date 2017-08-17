@@ -7,7 +7,6 @@ export abstract class PointLightData extends SpecifyLightData {
     public static quadratics: Float32Array = null;
     public static ranges: Uint16Array = null;
     public static isPositionDirtys: Uint8Array = null;
-    public static isColorDirtys: Uint8Array = null;
     public static isIntensityDirtys: Uint8Array = null;
     public static isAttenuationDirtys: Uint8Array = null;
 
@@ -16,5 +15,4 @@ export abstract class PointLightData extends SpecifyLightData {
     public static defaultLinear: number = null;
     public static defaultQuadratic: number = null;
     public static defaultRange: number = null;
-    public static defaultDirty: number = null;
 }

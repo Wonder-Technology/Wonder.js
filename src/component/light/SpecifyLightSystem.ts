@@ -13,6 +13,8 @@ import { setColor3Data } from "../utils/operateBufferDataUtils";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { deleteBySwapAndReset } from "../../utils/typeArrayUtils";
 import { getColorDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { registerEvent } from "../../event/EventManagerSystem";
+import { Map } from "immutable";
 
 export var create = requireCheckFunc((light: Light, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
@@ -68,6 +70,7 @@ export var initData = (buffer, SpecifyLightData: any) => {
     SpecifyLightData.gameObjectMap = [];
 
     SpecifyLightData.defaultColorArr = createDefaultColor().toArray3();
+    SpecifyLightData.defaultDirty = 0;
 
     SpecifyLightData.buffer = buffer;
 }
@@ -86,4 +89,18 @@ export var getGameObject = (index: number, SpecifyLightData: any) => {
 
 export var markDirty = (index: number, isDirtys:Uint8Array) => {
     isDirtys[index] = 0;
+}
+
+export var bindChangePositionEvent = (SpecifyLightData: any, state:Map<any, any>) => {
+    var eventName = "changePosition";
+
+    for(let i = 0, count = SpecifyLightData.count; i < count; i++){
+        var _markPositionDirty = () => {
+            markDirty(i, SpecifyLightData.isPositionDirtys);
+        }
+
+        registerEvent(eventName, _markPositionDirty);
+    }
+
+    return state;
 }

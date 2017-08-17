@@ -5,14 +5,17 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition
+    addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition,
+    bindChangePositionEvent
 } from "./SpecifyLightSystem";
 import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import {
+    cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils,
+    cleanPositionDirty as cleanPositionDirtyUtils,
     createTypeArrays, getColorArr3 as getColorArr3Utils,
-    getIntensity as getIntensityUtils
+    getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils, isPositionDirty as isPositionDirtyUtils
 } from "../../renderer/utils/worker/render_file/light/directionLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
@@ -22,6 +25,8 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { getDirectionLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import { getColorDataSize, getIntensityDataSize } from "../../renderer/utils/light/directionLightUtils";
+import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { Map } from "immutable";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= max count", () => {
@@ -84,7 +89,7 @@ export var disposeComponent = (component: Light) => {
 
 export var initData = (DirectionLightData: any) => {
     var count = getDirectionLightBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()),
+        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()) + Uint8Array.BYTES_PER_ELEMENT + (getDirtyDataSize() * 3),
         buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
@@ -128,3 +133,23 @@ var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
     }
 }
 
+export var init = (DirectionLightData: any, state:Map<any, any>) => {
+    return bindChangePositionEvent(DirectionLightData, state);
+}
+
+export var isPositionDirty = isPositionDirtyUtils;
+
+export var isColorDirty = isColorDirtyUtils;
+
+//todo send position dirty data to render worker
+// export var isPositionDirty = (index: number, ThreeDTransformData: any, GameObjectData:any, PointLightData: any) => {
+//     return getIsTranslate(getTransform(getGameObject(index, PointLightData), GameObjectData).uid, ThreeDTransformData) === true;
+// }
+
+export var isIntensityDirty = isIntensityDirtyUtils;
+
+export var cleanPositionDirty = cleanPositionDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;
+
+export var cleanIntensityDirty = cleanIntensityDirtyUtils;

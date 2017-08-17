@@ -2,6 +2,7 @@ import { getColorArr3 as getColorArr3Utils, getSingleSizeData } from "../../../c
 import { getColor3Data } from "../../../../../component/utils/operateBufferDataUtils";
 import { Color } from "../../../../../structure/Color";
 import { getColorDataSize, getIntensityDataSize } from "../../../light/directionLightUtils";
+import { cleanDirty, getDirtyDataSize, isDirty } from "./specifyLightUtils";
 // import { getColorDataSize as getSpecifyLightColorDataSize } from "../../../light/specifyLightUtils";
 
 export var getColor = (index: number, DirectionLightDataFromSystem: any) => {
@@ -23,4 +24,38 @@ export var createTypeArrays = (buffer: any, count: number, DirectionLightDataFro
     offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
 
     DirectionLightDataFromSystem.intensities = new Float32Array(buffer, offset, count * getIntensityDataSize());
+    offset += count * Float32Array.BYTES_PER_ELEMENT * getIntensityDataSize();
+
+    DirectionLightDataFromSystem.isPositionDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+
+    DirectionLightDataFromSystem.isColorDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+
+    DirectionLightDataFromSystem.isIntensityDirtys = new Uint8Array(buffer, offset, count * getDirtyDataSize());
+    offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
+}
+
+export var isPositionDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    return isDirty(getSingleSizeData(index, DirectionLightDataFromSystem.isPositionDirtys));
+}
+
+export var isColorDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    return isDirty(getSingleSizeData(index, DirectionLightDataFromSystem.isColorDirtys));
+}
+
+export var isIntensityDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    return isDirty(getSingleSizeData(index, DirectionLightDataFromSystem.isIntensityDirtys));
+}
+
+export var cleanPositionDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    cleanDirty(index, DirectionLightDataFromSystem.isPositionDirtys);
+}
+
+export var cleanColorDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    cleanDirty(index, DirectionLightDataFromSystem.isColorDirtys);
+}
+
+export var cleanIntensityDirty = (index: number, DirectionLightDataFromSystem: any) => {
+    cleanDirty(index, DirectionLightDataFromSystem.isIntensityDirtys);
 }
