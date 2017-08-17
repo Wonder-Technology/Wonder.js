@@ -6,6 +6,9 @@ describe("DirectionLight", function () {
     var DirectionLight = wd.DirectionLight;
     var DirectionLightData = wd.DirectionLightData;
     var Vector3 = wd.Vector3;
+    var ThreeDTransform = wd.ThreeDTransform;
+    var Matrix4 = wd.Matrix4;
+    var Color = wd.Color;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -122,9 +125,42 @@ describe("DirectionLight", function () {
                     it("remove from intensity", function () {
                         judgeSingleValue("getIntensity", "setIntensity", DirectionLightData.defaultIntensity);
                     });
+
+
+                    describe("remove from isDirtys", function() {
+                        function judgeIsDirty(isDirtyTypeArrayName, setFunc) {
+                            specifyLightSystemTool.judgeIsDirty(light1, obj1, light2, obj2, isDirtyTypeArrayName, setFunc, DirectionLightData);
+                        }
+
+                        beforeEach(function(){
+
+                        });
+
+                        it("remove from isPositionDirtys", function () {
+                            judgeIsDirty("isPositionDirtys", function(light1, obj1){
+                                var transform = gameObjectTool.getComponent(obj1, ThreeDTransform),
+                                    mat = Matrix4.create().setTranslate(1, 2, 3),
+                                    position = mat.getTranslation();
+
+                                threeDTransformTool.setPosition(transform, position);
+                            });
+                        });
+                        it("remove from isColorDirtys", function () {
+                            judgeIsDirty("isColorDirtys", function(light1){
+                                directionLightTool.setColor(light1, Color.create("#111111"));
+                            });
+                        });
+                        it("remove from isIntensityDirtys", function () {
+                            judgeIsDirty("isIntensityDirtys", function(light1){
+                                directionLightTool["setIntensity"](light1, 1);
+                            });
+                        });
+                    });
                 });
             });
         });
+
+        specifyLightSystemTool.jugdgeDisposeComponent(directionLightTool, "addDirectionLight", describe, it, expect, DirectionLightData);
     });
 });
 

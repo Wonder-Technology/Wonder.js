@@ -2,6 +2,9 @@ var pointLightSystemTool = (function () {
     return {
         jugdgeDisposeComponent: function (describe, it, expect, PointLightData) {
             var Light = wd.Light;
+            var Color = wd.Color;
+            var ThreeDTransform = wd.ThreeDTransform;
+            var Matrix4 = wd.Matrix4;
 
             describe("remove by swap with last one", function () {
                 var obj1, light1;
@@ -47,9 +50,46 @@ var pointLightSystemTool = (function () {
                         it("remove from range", function () {
                             judgeSingleValue("getRange", "setRange", PointLightData.defaultRange);
                         });
+
+                        describe("remove from isDirtys", function() {
+                            function judgeIsDirty(isDirtyTypeArrayName, setFunc) {
+                                specifyLightSystemTool.judgeIsDirty(light1, obj1, light2, obj2, isDirtyTypeArrayName, setFunc, PointLightData);
+                            }
+
+                            beforeEach(function(){
+
+                            });
+
+                            it("remove from isPositionDirtys", function () {
+                                judgeIsDirty("isPositionDirtys", function(light1, obj1){
+                                    var transform = gameObjectTool.getComponent(obj1, ThreeDTransform),
+                                        mat = Matrix4.create().setTranslate(1, 2, 3),
+                                        position = mat.getTranslation();
+
+                                    threeDTransformTool.setPosition(transform, position);
+                                });
+                            });
+                            it("remove from isColorDirtys", function () {
+                                judgeIsDirty("isColorDirtys", function(light1){
+                                    pointLightTool.setColor(light1, Color.create("#111111"));
+                                });
+                            });
+                            it("remove from isIntensityDirtys", function () {
+                                judgeIsDirty("isIntensityDirtys", function(light1){
+                                    pointLightTool["setIntensity"](light1, 1);
+                                });
+                            });
+                            it("remove from isAttenuationDirtys", function () {
+                                judgeIsDirty("isAttenuationDirtys", function(light1){
+                                    pointLightTool.setRange(light1, 1);
+                                });
+                            });
+                        });
                     });
                 });
             });
+
+            specifyLightSystemTool.jugdgeDisposeComponent(pointLightTool, "addPointLight", describe, it, expect, PointLightData);
         }
     }
 })();

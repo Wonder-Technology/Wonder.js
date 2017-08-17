@@ -8,7 +8,7 @@ import {
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
-import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
@@ -20,6 +20,7 @@ import {
 } from "../../renderer/utils/worker/render_file/light/ambientLightUtils";
 import { getColor as getColorUtils } from "../../renderer/utils/light/ambientLightUtils";
 import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("count should <= max count", () => {
@@ -47,9 +48,17 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
     addSpecifyLightComponent(component, gameObject, AmbientLightData);
 }
 
-export var disposeComponent = (component: Light) => {
+export var disposeComponent = requireCheckFunc(() => {
+    it("should only has 1 ambient light", () => {
+        expect(AmbientLightData.count).equal(1);
+    });
+},(component: Light) => {
+    var sourceIndex = component.index;
+
     disposeSpecifyLightComponent(component.index, AmbientLightData);
-}
+
+    AmbientLightData.isColorDirtys[0] = AmbientLightData.defaultDirty;
+})
 
 export var initData = (AmbientLightData: any) => {
     var count = getAmbientLightBufferCount(),

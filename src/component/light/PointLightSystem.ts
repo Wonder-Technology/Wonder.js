@@ -1,4 +1,3 @@
-import curry from "wonder-lodash/curry";
 import { PointLight } from "./PointLight";
 import { Color } from "../../structure/Color";
 import {
@@ -6,7 +5,7 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject, markDirty, bindChangePositionEvent
+    createDefaultColor, getPosition as getSpecifyLightPosition, markDirty, bindChangePositionEvent
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
@@ -36,6 +35,7 @@ import { getIsTranslate } from "../transform/isTransformSystem";
 import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
 import { registerEvent } from "../../event/EventManagerSystem";
 import { Map } from "immutable";
+import { checkLastComponentIndexShouldNotEqualSourceComponentIndex } from "../utils/contractUtils";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)
@@ -228,12 +228,16 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
     }
 }
 
-export var disposeComponent = (component: Light, PointLightData:any) => {
+
+export var disposeComponent = ensureFunc((lastComponentIndex:number, component: Light, PointLightData:any) => {
+    checkLastComponentIndexShouldNotEqualSourceComponentIndex(lastComponentIndex, component.index);
+},(component: Light, PointLightData:any) => {
     var intensityDataSize = getIntensityDataSize(),
         constantDataSize = getConstantDataSize(),
         linearDataSize = getLinearDataSize(),
         quadraticDataSize = getQuadraticDataSize(),
         rangeDataSize = getRangeDataSize(),
+        dirtyDataSize = getDirtyDataSize(),
         sourceIndex = component.index,
         lastComponentIndex: number = null;
 
@@ -245,8 +249,13 @@ export var disposeComponent = (component: Light, PointLightData:any) => {
     deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
     deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
 
-    //todo dispose dirty(point, direction, ambient)
-}
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isPositionDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isColorDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isIntensityDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isAttenuationDirtys, PointLightData.defaultDirty);
+
+    return lastComponentIndex;
+})
 
 export var init = (PointLightData: any, state:Map<any, any>) => {
     return bindChangePositionEvent(PointLightData, state);

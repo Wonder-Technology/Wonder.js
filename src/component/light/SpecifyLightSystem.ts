@@ -5,7 +5,7 @@ import { getPosition as getThreeDTransformPosition } from "../transform/ThreeDTr
 import {
     addComponentToGameObjectMap, deleteComponentBySwapArray, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
-import { ensureFunc, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Light } from "./Light";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -42,7 +42,7 @@ export var setColor = (index: number, color: Color, colors: Float32Array) => {
     setColor3Data(index, color, colors);
 }
 
-export var disposeComponent = ensureFunc((returnVal, sourceIndex: number, SpecifyLightData: any) => {
+export var disposeComponent = ensureFunc((lastComponentIndex:number, sourceIndex: number, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
 }, (sourceIndex: number, SpecifyLightData: any) => {
     var colorDataSize = getColorDataSize(),

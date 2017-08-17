@@ -32,7 +32,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/Matrix4*',
         // 'test/unit/no_worker/**/Scene*',
@@ -43,8 +43,8 @@
         // 'test/unit/no_worker/**/shader*Spec*',
         // 'test/unit/no_worker/**/Shader*Spec*',
         // 'test/unit/no_worker/**/*WebGLRenderer*',
-        // 'test/unit/no_worker/**/*LightSpec*',
-        // 'test/unit/no_worker/**/*PointLightSpec*',
+        'test/unit/no_worker/**/*LightSpec*',
+        'test/unit/no_worker/**/*PointLightSpec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',

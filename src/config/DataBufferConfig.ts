@@ -12,6 +12,7 @@ export const DataBufferConfig = {
     textureDataBufferCount: 20 * 1000,
 
 
+    //todo webgl2->defer light should has bigger count
     ambientLightDataBufferCount: 1,
     directionLightDataBufferCount: 4,
     pointLightDataBufferCount: 4,

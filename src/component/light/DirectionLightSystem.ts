@@ -27,6 +27,7 @@ import { getDirectionLightBufferCount } from "../../renderer/utils/light/bufferU
 import { getColorDataSize, getIntensityDataSize } from "../../renderer/utils/light/directionLightUtils";
 import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { Map } from "immutable";
+import { checkLastComponentIndexShouldNotEqualSourceComponentIndex } from "../utils/contractUtils";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("count should <= max count", () => {
@@ -77,15 +78,22 @@ export var addComponent = (component: Light, gameObject: GameObject) => {
     addSpecifyLightComponent(component, gameObject, DirectionLightData);
 }
 
-export var disposeComponent = (component: Light) => {
+export var disposeComponent = ensureFunc((lastComponentIndex:number, component: Light, PointLightData:any) => {
+    checkLastComponentIndexShouldNotEqualSourceComponentIndex(lastComponentIndex, component.index);
+},(component: Light) => {
     var intensityDataSize = getIntensityDataSize(),
+        dirtyDataSize = getDirtyDataSize(),
         sourceIndex = component.index,
         lastComponentIndex: number = null;
 
     lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, DirectionLightData);
 
     deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, DirectionLightData.intensities, DirectionLightData.defaultIntensity);
-}
+
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isPositionDirtys, DirectionLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isColorDirtys, DirectionLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isIntensityDirtys, DirectionLightData.defaultDirty);
+})
 
 export var initData = (DirectionLightData: any) => {
     var count = getDirectionLightBufferCount(),
