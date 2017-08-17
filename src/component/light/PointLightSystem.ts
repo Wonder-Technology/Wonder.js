@@ -6,7 +6,7 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject
+    createDefaultColor, getPosition as getSpecifyLightPosition, getGameObject, markDirty
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
@@ -74,7 +74,7 @@ export var getColorArr3 = getColorArr3Utils;
 export var setColor = (index: number, color: Color, PointLightData: any) => {
     setSpecifyLightColor(index, color, PointLightData.colors);
 
-    _markDirty(index, PointLightData.isColorDirtys);
+    markDirty(index, PointLightData.isColorDirtys);
 }
 
 export var getIntensity = getIntensityUtils;
@@ -82,7 +82,7 @@ export var getIntensity = getIntensityUtils;
 export var setIntensity = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.intensities, index, value);
 
-    _markDirty(index, PointLightData.isIntensityDirtys);
+    markDirty(index, PointLightData.isIntensityDirtys);
 }
 
 export var getConstant = getConstantUtils;
@@ -90,7 +90,7 @@ export var getConstant = getConstantUtils;
 export var setConstant = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.constants, index, value);
 
-    _markDirty(index, PointLightData.isAttenuationDirtys);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getLinear = getLinearUtils;
@@ -98,7 +98,7 @@ export var getLinear = getLinearUtils;
 export var setLinear = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.linears, index, value);
 
-    _markDirty(index, PointLightData.isAttenuationDirtys);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getQuadratic = getQuadraticUtils;
@@ -106,7 +106,7 @@ export var getQuadratic = getQuadraticUtils;
 export var setQuadratic = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.quadratics, index, value);
 
-    _markDirty(index, PointLightData.isAttenuationDirtys);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var getRange = getRangeUtils;
@@ -114,7 +114,7 @@ export var getRange = getRangeUtils;
 export var setRange = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.ranges, index, value);
 
-    _markDirty(index, PointLightData.isAttenuationDirtys);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var setRangeLevel = (index: number, value: number, PointLightData: any) => {
@@ -184,16 +184,12 @@ export var setRangeLevel = (index: number, value: number, PointLightData: any) =
             break;
     }
 
-    _markDirty(index, PointLightData.isAttenuationDirtys);
-}
-
-var _markDirty = (index: number, isDirtys:Uint8Array) => {
-    isDirtys[index] = 0;
+    markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
 export var initDataHelper = (PointLightData: any) => {
     var count = getPointLightBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize() + getDirtyDataSize() * 4),
+        size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()) + Uint8Array.BYTES_PER_ELEMENT * (getDirtyDataSize() * 4),
         buffer: any = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
@@ -259,7 +255,7 @@ export var init = (PointLightData: any, state:Map<any, any>) => {
 
     for(let i = 0, count = PointLightData.count; i < count; i++){
         var _markPositionDirty = () => {
-            _markDirty(i, PointLightData.isPositionDirtys);
+            markDirty(i, PointLightData.isPositionDirtys);
         }
 
         registerEvent(eventName, _markPositionDirty);

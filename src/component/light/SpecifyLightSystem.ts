@@ -84,3 +84,6 @@ export var getGameObject = (index: number, SpecifyLightData: any) => {
     return getComponentGameObject(SpecifyLightData.gameObjectMap, index);
 }
 
+export var markDirty = (index: number, isDirtys:Uint8Array) => {
+    isDirtys[index] = 0;
+}
