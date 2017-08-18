@@ -1,12 +1,14 @@
+import { bindVao, createVao, unbindVao } from "../../../../vao/vaoUtils";
+
 export var init = (gl:any, DeferLightPassDataFromSystem:any) => {
-    _setFullScreenQuadVAOData(gl, DeferLightPassDataFromSystem);
+    _setFullScreenQuadVaoData(gl, DeferLightPassDataFromSystem);
 }
 
-var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
-    //todo refactor: extract to VAOSystem
-    var fullScreenQuadVertexArray = gl.createVertexArray();
+var _setFullScreenQuadVaoData = (gl:any, DeferLightPassDataFromSystem:any) => {
+    //todo refactor: extract to VaoSystem
+    var fullScreenQuadVertexArray = createVao(gl);
 
-    gl.bindVertexArray(fullScreenQuadVertexArray);
+    bindVao(gl, fullScreenQuadVertexArray);
 
     //todo create point light sphere for optimize(then no need to use scissor optimize)?
     // var sphere = createSphere({
@@ -40,7 +42,7 @@ var _setFullScreenQuadVAOData = (gl:any, DeferLightPassDataFromSystem:any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, fullScreenQuadData.indices, gl.STATIC_DRAW);
 
-    gl.bindVertexArray(null);
+    unbindVao(gl);
 
     DeferLightPassDataFromSystem.fullScreenQuadVertexArray = fullScreenQuadVertexArray;
     DeferLightPassDataFromSystem.fullScreenQuadIndicesCount = fullScreenQuadData.indices.length;

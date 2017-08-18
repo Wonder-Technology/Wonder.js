@@ -49,28 +49,28 @@ describe("draw render command", function () {
             buffer1 = {};
             buffer2 = { a: 1 };
 
-            shaderWebGL1Tool.setSendAttributeConfig(0, [
+            shaderTool.setSendAttributeConfig(0, [
                 {
                     "name": "a_position",
                     "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);
-            shaderWebGL1Tool.setSendAttributeConfig(1, [
+            shaderTool.setSendAttributeConfig(1, [
                 {
                     "name": "a_position",
                     "buffer": "vertex",
                     "type": "vec3"
                 }
             ]);
-            shaderWebGL1Tool.setAttributeLocation(0, {
+            shaderTool.setAttributeLocation(0, {
                 "a_position": pos
             });
-            shaderWebGL1Tool.setAttributeLocation(1, {
+            shaderTool.setAttributeLocation(1, {
                 "a_position": pos
             });
-            shaderWebGL1Tool.setProgram(0, program1);
-            shaderWebGL1Tool.setProgram(1, program2);
+            shaderTool.setProgram(0, program1);
+            shaderTool.setProgram(1, program2);
 
             ShaderData = wd.ShaderData;
 
@@ -96,57 +96,57 @@ describe("draw render command", function () {
         });
 
         it("bind array buffer", function () {
-            shaderWebGL1Tool.use(gl, 0);
+            shaderTool.use(gl, 0);
 
-            shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+            shaderTool.sendAttributeData(gl, 0, 0);
 
             expect(gl.bindBuffer).toCalledWith(gl.ARRAY_BUFFER, buffer1);
         });
         it("attach buffer to attribute", function () {
-            shaderWebGL1Tool.use(gl, 0);
+            shaderTool.use(gl, 0);
 
-            shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+            shaderTool.sendAttributeData(gl, 0, 0);
 
             expect(gl.vertexAttribPointer).toCalledWith(pos, 3, gl["FLOAT"], false, 0, 0);
         });
         describe("enable attribute", function () {
             it("if already enabled since use this program, not enable", function () {
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 1);
+                shaderTool.sendAttributeData(gl, 0, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(1);
             });
             it("else, enable", function () {
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
 
-                shaderWebGL1Tool.disableVertexAttribArray(gl);
+                shaderTool.disableVertexAttribArray(gl);
 
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 1);
+                shaderTool.sendAttributeData(gl, 0, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(2);
             });
 
             it("differenc shader's vertexAttribHistory of the same attribute data pos are independent", function () {
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderWebGL1Tool.use(gl, 1);
+                shaderTool.use(gl, 1);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 1, 1);
+                shaderTool.sendAttributeData(gl, 1, 1);
 
                 expect(gl.enableVertexAttribArray.withArgs(pos).callCount).toEqual(2);
             });
@@ -154,14 +154,14 @@ describe("draw render command", function () {
 
         describe("test cache", function () {
             it("if switch program, clear cache and send it and enableVertexAttribArray", function () {
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderWebGL1Tool.use(gl, 1);
+                shaderTool.use(gl, 1);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 1, 1);
+                shaderTool.sendAttributeData(gl, 1, 1);
 
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer1)).toCalledOnce();
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer2)).toCalledOnce();
@@ -169,14 +169,14 @@ describe("draw render command", function () {
             });
 
             it("if last send buffers equal current send buffers, not send again", function () {
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0);
+                shaderTool.sendAttributeData(gl, 0, 0);
 
 
-                shaderWebGL1Tool.use(gl, 0);
+                shaderTool.use(gl, 0);
 
-                shaderWebGL1Tool.sendAttributeData(gl, 0, 0, GeometryData, ArrayBufferData);
+                shaderTool.sendAttributeData(gl, 0, 0, GeometryData, ArrayBufferData);
 
                 expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer1)).toCalledOnce();
                 expect(gl.enableVertexAttribArray.callCount).toEqual(1);

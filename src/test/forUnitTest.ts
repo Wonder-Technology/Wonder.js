@@ -40,6 +40,7 @@ import { initData as initDrawRenderCommandBufferDataSystem } from "../renderer/d
 import { sendAttributeData as sendWebGL1AttributeDataSystem } from "../renderer/webgl1/render/RenderSystem";
 import { initData as initWebGL1GLSLSenderDataSystem } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
 import { initData as initWebGL2GLSLSenderDataSystem } from "../renderer/webgl2/shader/glslSender/GLSLSenderSystem";
+import { initData as initVaoDataSystem } from "../renderer/webgl2/vao/VaoSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -86,6 +87,8 @@ export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
 export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
 
 export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
+
+export var initVaoData = initVaoDataSystem;
 
 // export var initDirectorData = initDirectorDataSystem;
 

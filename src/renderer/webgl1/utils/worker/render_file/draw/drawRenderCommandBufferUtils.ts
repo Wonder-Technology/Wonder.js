@@ -14,6 +14,8 @@ import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../t
 import { EDrawMode } from "../../../../../enum/EDrawMode";
 import { sendData } from "../../../../../utils/worker/render_file/texture/mapManagerUtils";
 import { Map } from "immutable";
+import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
+import { getExtensionVao } from "../device/gpuDetectUtils";
 
 export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function) => {
     return {
@@ -100,7 +102,9 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
         sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
-            bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
+            if(!hasExtension(getExtensionVao(GPUDetectDataFromSystem))) {
+                bindIndexBuffer(gl, geometryIndex, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem);
+            }
 
             drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);
         }

@@ -43,7 +43,9 @@ var testWebGL2Tool = (function () {
             gpuDetectTool.resetData();
 
 
-            shaderWebGL2Tool.resetData();
+            shaderTool.resetData();
+
+            vaoTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {

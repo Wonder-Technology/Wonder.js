@@ -10,7 +10,7 @@ export class GPUDetectDataCommon {
     public static extensionInstancedArrays: any = null;
     public static extensionUintIndices: boolean = null;
     public static extensionDepthTexture: boolean = null;
-    public static extensionVAO: any = null;
+    public static extensionVao: any = null;
     public static extensionStandardDerivatives: boolean = null;
     public static extensionColorBufferFloat: boolean = null;
     public static precision: number = null;

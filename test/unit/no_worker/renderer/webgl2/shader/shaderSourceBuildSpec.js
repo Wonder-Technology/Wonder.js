@@ -33,7 +33,7 @@ describe("shader source build", function () {
         }
 
         beforeEach(function () {
-            shaderWebGL2Tool.clearShader();
+            shaderTool.clearShader();
         });
 
         describe("add version to top", function () {

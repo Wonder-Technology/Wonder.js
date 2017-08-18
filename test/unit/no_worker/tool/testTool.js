@@ -65,7 +65,13 @@ var testTool = (function () {
             tagTool.resetData();
             geometryTool.resetData();
             materialTool.resetData();
+
+
             shaderTool.resetData();
+
+            vaoTool.resetData();
+
+
             meshRendererTool.resetData();
             arrayBufferTool.resetData();
             indexBufferTool.resetData();

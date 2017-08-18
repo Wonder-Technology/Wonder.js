@@ -9,6 +9,6 @@ export var bindVao = (extension:any, vao:WebGLVertexArrayObject) => {
 }
 
 export var unbindVao = (extension:any) => {
-    extension.bindVertexArrayOES();
+    extension.bindVertexArrayOES(null);
 }
 

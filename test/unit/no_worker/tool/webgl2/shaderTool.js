@@ -1,15 +1,15 @@
-var shaderWebGL2Tool = (function () {
+var shaderTool = (function () {
     return {
         resetData: function(){
             shaderUtils.resetData();
 
-            wd.initProgramData(wd.ProgramData);
+            wd.initProgramData(wd.WebGL2ProgramData);
             wd.initLocationData(wd.LocationData);
             wd.initWebGL2GLSLSenderData(wd.WebGL2GLSLSenderData);
         },
 
         clearShader: function () {
-            wd.ProgramData.programMap = {};
+            wd.WebGL2ProgramData.programMap = {};
             wd.LocationData.attributeLocationMap = {};
             wd.LocationData.uniformLocationMap = {};
 

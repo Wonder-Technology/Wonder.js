@@ -43,7 +43,9 @@ var testWebGL1Tool = (function () {
             gpuDetectTool.resetData();
 
 
-            shaderWebGL1Tool.resetData();
+            shaderTool.resetData();
+
+            vaoTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {
@@ -56,6 +58,7 @@ var testWebGL1Tool = (function () {
             Main.isTest = true;
 
             testUtils.initForTest(sandbox);
+            gpuDetectTool.setGPUDetectData("extensionVao", null);
 
             webglTestTool.initForTest(sandbox);
         },

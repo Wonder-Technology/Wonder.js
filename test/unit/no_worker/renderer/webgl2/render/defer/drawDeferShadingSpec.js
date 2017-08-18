@@ -5,7 +5,7 @@ describe("defer shading", function () {
 
     var GBufferData = wd.GBufferData;
     var ShaderData = wd.ShaderData;
-    var ProgramData = wd.ProgramData;
+    var ProgramData = wd.WebGL2ProgramData;
     var DeferLightPassData = wd.DeferLightPassData;
     var Log = wd.Log;
 

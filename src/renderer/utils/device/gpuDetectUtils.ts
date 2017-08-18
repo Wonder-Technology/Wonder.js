@@ -8,7 +8,7 @@ export var detectExtension = (state: Map<any, any>, gl:any, GPUDetectDataFromSys
     GPUDetectDataFromSystem.extensionInstancedArrays = getExtension("ANGLE_instanced_arrays", state, gl);
     GPUDetectDataFromSystem.extensionUintIndices = getExtension("element_index_uint", state, gl);
     GPUDetectDataFromSystem.extensionDepthTexture = getExtension("depth_texture", state, gl);
-    GPUDetectDataFromSystem.extensionVAO = getExtension("vao", state, gl);
+    GPUDetectDataFromSystem.extensionVao = getExtension("vao", state, gl);
     GPUDetectDataFromSystem.extensionStandardDerivatives = getExtension("standard_derivatives", state, gl);
 }
 

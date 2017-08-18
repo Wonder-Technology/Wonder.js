@@ -35,7 +35,7 @@ describe("shader source build", function () {
         }
 
         beforeEach(function () {
-            shaderWebGL1Tool.clearShader();
+            shaderTool.clearShader();
         });
 
         it("declare attribute variables", function () {
