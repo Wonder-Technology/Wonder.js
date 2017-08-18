@@ -7,12 +7,13 @@ import { IRenderConfig } from "../../worker/both_file/data/render_config";
 import { clear, getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
 import { render as frontRender } from "./light/front/FrontRenderSystem";
-import { DrawDataMap, InitShaderDataMap } from "../../type/utilsType";
+import { InitShaderDataMap } from "../../type/utilsType";
 import { IMaterialConfig } from "../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
+import { WebGL1DrawDataMap } from "../type/utilsType";
 
-export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
+export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
     cameraData,
     basicData,
     lightData

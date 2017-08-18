@@ -1,3 +1,3 @@
-import { isValidMapValue } from "../../../utils/objectUtils";
+import { isValidVal } from "../../../utils/arrayUtils";
 
-export var isBufferExist = (buffer: WebGLBuffer) => isValidMapValue(buffer);
+export var isBufferExist = (buffer: WebGLBuffer) => isValidVal(buffer);

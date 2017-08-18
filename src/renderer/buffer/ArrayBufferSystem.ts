@@ -5,7 +5,7 @@ import { disposeBuffer as disposeBufferUtils } from "../utils/worker/render_file
 // import { disposeBuffer as disposeBufferUtils } from "../utils/buffer/bufferUtils";
 
 export var disposeBuffer = (geometryIndex: number, ArrayBufferData: any) => {
-    disposeBufferUtils(geometryIndex, ArrayBufferData.vertexBuffer, getGL, DeviceManagerData);
+    disposeBufferUtils(geometryIndex, ArrayBufferData.vertexBuffers, getGL, DeviceManagerData);
     disposeBufferUtils(geometryIndex, ArrayBufferData.normalBuffers, getGL, DeviceManagerData);
     disposeBufferUtils(geometryIndex, ArrayBufferData.texCoordBuffers, getGL, DeviceManagerData);
 }

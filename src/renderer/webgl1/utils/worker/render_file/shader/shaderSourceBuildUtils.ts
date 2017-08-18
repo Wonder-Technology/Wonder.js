@@ -8,7 +8,7 @@ import { compose, filterArray, forEachArray } from "../../../../../../utils/func
 import { forEach } from "../../../../../../utils/arrayUtils";
 import { BuildGLSLSourceFuncFuncDataMap } from "../../../../../type/dataType";
 import { isString } from "../../../../../../utils/JudgeUtils";
-import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../../type/utilsType";
 import {
     IWebGL1GLSLConfig, IWebGL1GLSLDefineListItem, IWebGL1GLSLFuncConfig, IWebGL1SendAttributeConfig,
     IWebGL1SendUniformConfig,
@@ -17,8 +17,9 @@ import {
 import { IWebGL1DefineUniformConfig } from "../../../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config_interface";
 import { getPrecisionSource } from "../../../../../utils/shader/shaderSourceBuildUtils";
+import { WebGL1InitShaderFuncDataMap } from "../../../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL1InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
@@ -117,7 +118,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var nameArr: Array<string> = [];
 
     forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
@@ -144,11 +145,11 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
     return nameArr;
 }
 
-var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("branch should exist", () => {
         expect(i.branch).exist;
     });
-}, (i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+}, (i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
 

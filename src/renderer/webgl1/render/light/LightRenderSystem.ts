@@ -1,6 +1,5 @@
-import { DrawDataMap } from "../../../type/utilsType";
 import { LightRenderUniformData, UniformCacheMap, UniformLocationMap } from "../../../type/dataType";
-import { WebGL1LightSendUniformDataDataMap } from "../../type/utilsType";
+import { WebGL1DrawDataMap, WebGL1LightSendUniformDataDataMap } from "../../type/utilsType";
 import {
     buildLightMaterialDataForGetUniformData,
     buildMaterialDataForGetUniformData,
@@ -12,6 +11,6 @@ import {
     getSpecularColorArr3
 } from "../../../../component/material/LightMaterialSystem";
 
-export var sendUniformData = (gl: any, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap:WebGL1LightSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+export var sendUniformData = (gl: any, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: WebGL1DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap:WebGL1LightSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
     sendUniformDataUtils(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), buildLightMaterialDataForGetUniformData(getEmissionColorArr3, getSpecularColorArr3, getLightModel, getShininess, drawDataMap.LightMaterialDataFromSystem));
 };

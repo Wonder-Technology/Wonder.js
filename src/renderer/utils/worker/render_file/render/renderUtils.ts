@@ -38,26 +38,3 @@ export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, s
     }
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem:any, LightDrawRenderCommandBufferDataFromSystem:any) => {
-    return {
-        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
-        TextureDataFromSystem: TextureDataFromSystem,
-        TextureCacheDataFromSystem: TextureCacheDataFromSystem,
-        MapManagerDataFromSystem: MapManagerDataFromSystem,
-        MaterialDataFromSystem: MaterialDataFromSystem,
-        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
-        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
-        AmbientLightDataFromSystem: AmbientLightDataFromSystem,
-        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
-        PointLightDataFromSystem: PointLightDataFromSystem,
-        ProgramDataFromSystem: ProgramDataFromSystem,
-        LocationDataFromSystem: LocationDataFromSystem,
-        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
-        GeometryDataFromSystem: GeometryDataFromSystem,
-        ArrayBufferDataFromSystem: ArrayBufferDataFromSystem,
-        IndexBufferDataFromSystem: IndexBufferDataFromSystem,
-        BasicDrawRenderCommandBufferDataFromSystem: BasicDrawRenderCommandBufferDataFromSystem,
-        LightDrawRenderCommandBufferDataFromSystem: LightDrawRenderCommandBufferDataFromSystem
-    }
-}
-

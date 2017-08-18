@@ -1,11 +1,12 @@
 import { IMaterialShaderLibGroup, IShaderLibItem, MaterialShaderLibConfig } from "../../../data/material_config_interface";
-import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../type/utilsType";
+import { InitShaderDataMap } from "../../../type/utilsType";
 import { it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { forEach } from "../../../../utils/arrayUtils";
 import { isString } from "../../../../utils/JudgeUtils";
+import { WebGL2InitShaderFuncDataMap } from "../../type/utilsType";
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var nameArr: Array<string> = [];
 
     forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
@@ -32,11 +33,11 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
     return nameArr;
 }
 
-var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     it("branch should exist", () => {
         expect(i.branch).exist;
     });
-}, (i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+}, (i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
 

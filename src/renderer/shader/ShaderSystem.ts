@@ -1,24 +1,16 @@
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import {
-    bindIndexBuffer as bindIndexBufferUtils,
     use as useUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
-import { getIndices } from "../../component/geometry/GeometrySystem";
 import { createMap } from "../../utils/objectUtils";
 
 export var create = (ShaderData: any) => {
     ShaderData.count += 1;
 }
 
-export var bindIndexBuffer = null;
-
 export var use = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
-    bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
-        bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
-    }
-
     use = useUtils;
 }
 

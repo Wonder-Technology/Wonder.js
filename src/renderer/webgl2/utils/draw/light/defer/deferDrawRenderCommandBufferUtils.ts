@@ -1,26 +1,24 @@
 import { Map } from "immutable";
-import { WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
+import { WebGL2DrawDataMap, WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
+import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
 import {
      LightRenderUniformData
 } from "../../../../../type/dataType";
-import {
-    drawGameObjects
-} from "../../../../../utils/draw/drawRenderCommandBufferUtils";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
-import { unbindVAO } from "../../../vao/vaoUtils";
+import { unbindVao } from "../../../vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
+import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
 
-export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
+export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,
     pMatrix,
     cameraPosition,
@@ -37,7 +35,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
     _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap);
 };
 
-var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, {
+var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, {
     GBufferDataFromSystem
 }, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, renderCommandUniformData: LightRenderUniformData, bufferData: LightRenderCommandBufferForDrawData) => {
     gl.depthMask(true);
@@ -56,7 +54,7 @@ var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMateria
 var _drawLightPass = (gl:any, render_config:IRenderConfig, {
                           use,
                           unbindGBuffer
-                      }, drawDataMap:DrawDataMap, {
+                      }, drawDataMap:WebGL2DrawDataMap, {
                           DeferLightPassDataFromSystem
                       }, initShaderDataMap:InitShaderDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap) => {
     var {
@@ -113,7 +111,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
         drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
     }
 
-    unbindVAO(gl);
+    unbindVao(gl);
 
     // restore state:
     //// gl.cullFace(gl.BACK);

@@ -77,7 +77,8 @@ export const webgl2_shaderLib_generator = {
                     {
                         "name": "a_position",
                         "buffer": "vertex",
-                        "type": "vec3"
+                        "type": "vec3",
+                        "location": 0
                     }
                 ]
             }
@@ -380,7 +381,8 @@ export const webgl2_shaderLib_generator = {
                     {
                         "name": "a_texCoord",
                         "buffer": "texCoord",
-                        "type": "vec2"
+                        "type": "vec2",
+                        "location": 1
                     }
                 ],
                 "uniformDefine": [
@@ -478,8 +480,8 @@ export const webgl2_shaderLib_generator = {
                     {
                         "name": "a_normal",
                         "buffer": "normal",
-                        "type": "vec3"
-                        // "location": 1
+                        "type": "vec3",
+                        "location": 1
                     }
                 ]
             }
@@ -509,8 +511,8 @@ export const webgl2_shaderLib_generator = {
                     {
                         "name": "a_texCoord",
                         "buffer": "texCoord",
-                        "type": "vec2"
-                        // "location": 2
+                        "type": "vec2",
+                        "location": 2
                     }
                 ]
             }
@@ -810,7 +812,6 @@ export interface IWebGL2SendAttributeConfig {
     name: string;
     buffer: "vertex" | "normal" | "texCoord";
     type: "vec2" | "vec3";
-    //todo separate interface define from webgl1
     location: number;
 }
 

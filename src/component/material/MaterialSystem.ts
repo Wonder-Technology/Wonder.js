@@ -24,7 +24,6 @@ import {
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator_interface";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
-import { ProgramData } from "../../renderer/shader/program/ProgramData";
 import { LocationData } from "../../renderer/shader/location/LocationData";
 // import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
@@ -90,7 +89,7 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
 
 export var useShader = useShaderUtils;
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any) => {
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData, GPUDetectData));
 
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
@@ -121,9 +120,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     initMaterial = (index: number, state: MapImmutable<any, any>, className: string, MaterialData: any) => {
-        // var shaderIndex = initMaterialShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
-        //
-        // setShaderIndex(index, shaderIndex, MaterialData);
     }
 }
 

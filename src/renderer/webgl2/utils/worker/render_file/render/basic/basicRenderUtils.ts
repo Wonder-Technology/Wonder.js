@@ -1,5 +1,5 @@
 import {
-    BasicMaterialForGetUniformDataDataMap, DrawDataMap, InitShaderDataMap, MaterialForGetUniformDataDataMap,
+    BasicMaterialForGetUniformDataDataMap, InitShaderDataMap, MaterialForGetUniformDataDataMap,
     SendUniformDataGLSLSenderDataMap
 } from "../../../../../../type/utilsType";
 import { Map } from "immutable";
@@ -10,7 +10,7 @@ import {
     BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../../../../type/dataType";
-import { WebGL2BasicSendUniformDataDataMap } from "../../../../../type/utilsType";
+import { WebGL2BasicSendUniformDataDataMap, WebGL2DrawDataMap } from "../../../../../type/utilsType";
 import { Log } from "../../../../../../../utils/Log";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
 import { IWebGL2BasicDrawFuncDataMap } from "../../../../../interface/IDraw";
@@ -20,12 +20,12 @@ import {
     CameraRenderCommandBufferForDrawData
 } from "../../../../../../utils/worker/render_file/type/dataType";
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2BasicDrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL2BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2BasicDrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, sendDataMap:WebGL2BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 
 //todo extract code
-export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: WebGL2DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL2BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
     _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, basicMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
@@ -45,7 +45,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderI
     }
 }
 
-var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: WebGL2BasicSendUniformDataDataMap, drawDataMap: DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: WebGL2BasicSendUniformDataDataMap, drawDataMap: WebGL2DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
@@ -100,7 +100,7 @@ var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
 
 export var buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    drawDataMap: DrawDataMap) => {
+    drawDataMap: WebGL2DrawDataMap) => {
     return {
         glslSenderData: {
             sendMatrix3: sendMatrix3,

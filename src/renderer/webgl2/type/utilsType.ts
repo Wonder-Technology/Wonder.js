@@ -45,3 +45,34 @@ export type WebGL2SendUniformDataPointLightDataMap = {
     PointLightDataFromSystem: any;
 }
 
+export type WebGL2InitShaderFuncDataMap = {
+    buildGLSLSource: Function;
+    getGL: Function;
+    getMapCount: Function;
+    hasSpecularMap: Function;
+    getVertices:Function;
+    getNormals:Function;
+    getTexCoords:Function;
+    getIndices:Function;
+}
+
+export type WebGL2DrawDataMap = {
+    DeviceManagerDataFromSystem: any;
+    TextureDataFromSystem: any;
+    TextureCacheDataFromSystem: any;
+    MapManagerDataFromSystem: any;
+    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+    AmbientLightDataFromSystem: any;
+    DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
+    ProgramDataFromSystem: any;
+    LocationDataFromSystem: any;
+    GLSLSenderDataFromSystem: any;
+    GeometryDataFromSystem: any;
+    IndexBufferDataFromSystem: any;
+    BasicDrawRenderCommandBufferDataFromSystem: any;
+    LightDrawRenderCommandBufferDataFromSystem: any;
+    VaoDataFromSystem:any;
+}

@@ -1,7 +1,7 @@
-import { bindVAO } from "../../../../vao/vaoUtils";
+import { bindVao } from "../../../../vao/vaoUtils";
 
 export var sendAttributeData = (gl:any, DeferLightPassDataFromSystem:any) => {
-    bindVAO(gl, DeferLightPassDataFromSystem.fullScreenQuadVertexArray);
+    bindVao(gl, DeferLightPassDataFromSystem.fullScreenQuadVertexArray);
     // gl.bindBuffer(gl.ARRAY_BUFFER, DeferLightPassDataFromSystem.fullScreenQuadPositionBuffer);
     //
     // gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);

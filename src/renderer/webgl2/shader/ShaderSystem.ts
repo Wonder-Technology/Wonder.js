@@ -10,6 +10,7 @@ import {
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
+import { getIndices, getNormals, getTexCoords, getVertices } from "../../../component/geometry/GeometrySystem";
 
 export var initNoMaterialShader = null;
 
@@ -30,7 +31,12 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
             getGL: getGL,
             getMapCount: getMapCount,
             hasSpecularMap: hasSpecularMap,
-            hasDiffuseMap: hasDiffuseMap
+            hasDiffuseMap: hasDiffuseMap,
+
+            getVertices: getVertices,
+            getNormals: getNormals,
+            getTexCoords: getTexCoords,
+            getIndices: getIndices
         }
     }
 }

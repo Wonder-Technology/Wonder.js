@@ -149,7 +149,6 @@ var _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, nam
 }
 
 export var initData = (GLSLSenderDataFromSystem: any) => {
-    GLSLSenderDataFromSystem.sendAttributeConfigMap = createMap();
     GLSLSenderDataFromSystem.sendUniformConfigMap = createMap();
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap = createMap();
     GLSLSenderDataFromSystem.vertexAttribHistory = [];

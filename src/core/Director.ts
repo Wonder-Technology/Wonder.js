@@ -160,7 +160,7 @@ export class Director {
         resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
         resultState = _initPointLight(state);
-        resultState = initDirectionLight(DirectionLightData, state)
+        resultState = initDirectionLight(DirectionLightData, state);
 
         return resultState;
     }

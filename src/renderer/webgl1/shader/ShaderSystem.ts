@@ -5,15 +5,18 @@ import { InitShaderDataMap } from "../../type/utilsType";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getMapCount } from "../../texture/MapManagerSystem";
 import {
-    initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils
+    initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils, bindIndexBuffer as bindIndexBufferUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
+import { getIndices } from "../../../component/geometry/GeometrySystem";
 
 export var initNoMaterialShader = null;
 
 export var initMaterialShader = null;
+
+export var bindIndexBuffer = null;
 
 if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
@@ -23,6 +26,10 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
         return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
+
+    bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramData: any, GeometryData: any, IndexBufferData: any) => {
+        bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
+    }
 
     var _buildInitShaderFuncDataMap = () => {
         return {

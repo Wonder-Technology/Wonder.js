@@ -1,15 +1,15 @@
-import { GetArrayBufferDataFuncMap } from "../../../../../../definition/type/geometryType";
-import { getOrCreateBuffer } from "../../../../../utils/buffer/arrayBufferUtils";
 import { Log } from "../../../../../../utils/Log";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
+import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindFrameUboData, init as initUbo } from "../ubo/uboManagerUtils";
 import { Map } from "immutable";
 import { hasExtensionColorBufferFloat } from "../device/gpuDetectUtils";
 import { init as initDefer } from "./light/defer/deferShadingUtils";
+import { bindVao, createAndInitVao, getVao, isVaoExist } from "../shader/shaderUtils";
+import { WebGL2DrawDataMap } from "../../../../type/utilsType";
 
 export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)){
@@ -22,7 +22,7 @@ export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GB
     initUbo(gl, render_config, GLSLSenderDataFromSystem);
 }
 
-export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender:Function, deferRender:Function, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
+export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender:Function, deferRender:Function, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
     cameraData,
     basicData,
     lightData
@@ -45,55 +45,37 @@ export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig,
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
-    var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
-        attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
-        lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
+    var vaoConfigData = GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex],
+        vaos = VaoDataFromSystem.vaos,
+        vao = getVao(geometryIndex, vaos);
 
-    for (let sendData of sendDataArr) {
-        let bufferName = sendData.buffer,
-            buffer = _getOrCreateArrayBuffer(gl, geometryIndex, bufferName, getArrayBufferDataFuncMap, GeometryDataFromSystem, ArrayBufferDataFromSystem),
-            pos: number = null;
-
-        if (lastBindedArrayBuffer === buffer) {
-            continue;
-        }
-
-        pos = getAttribLocation(gl, program, sendData.name, attributeLocationMap);
-
-        if (isAttributeLocationNotExist(pos)) {
-            continue;
-        }
-
-        lastBindedArrayBuffer = buffer;
-
-        sendBuffer(gl, sendData.type, pos, buffer, geometryIndex, GLSLSenderDataFromSystem, ArrayBufferDataFromSystem);
+    if(!isVaoExist(vao)){
+        vao = createAndInitVao(gl, geometryIndex, vaos, vaoConfigData, GeometryDataFromSystem);
     }
 
-    ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
+    bindVao(gl, vao, ProgramDataFromSystem);
 }
 
-var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
-    getVertices,
-    getNormals,
-    getTexCoords
-}, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
-    var buffer: WebGLBuffer = null;
-
-    switch (bufferName) {
-        case "vertex":
-            buffer = getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.vertexBuffer, getVertices, GeometryDataFromSystem, ArrayBufferDataFromSystem);
-            break;
-        case "normal":
-            buffer = getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.normalBuffers, getNormals, GeometryDataFromSystem, ArrayBufferDataFromSystem);
-            break;
-        case "texCoord":
-            buffer = getOrCreateBuffer(gl, geometryIndex, ArrayBufferDataFromSystem.texCoordBuffers, getTexCoords, GeometryDataFromSystem, ArrayBufferDataFromSystem);
-            break;
-        default:
-            Log.error(true, Log.info.FUNC_INVALID(`bufferName:${bufferName}`));
-            break;
+export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any,  BasicDrawRenderCommandBufferDataFromSystem:any, LightDrawRenderCommandBufferDataFromSystem:any, VaoDataFromSystem:any) => {
+    return {
+        DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
+        TextureDataFromSystem: TextureDataFromSystem,
+        TextureCacheDataFromSystem: TextureCacheDataFromSystem,
+        MapManagerDataFromSystem: MapManagerDataFromSystem,
+        MaterialDataFromSystem: MaterialDataFromSystem,
+        BasicMaterialDataFromSystem: BasicMaterialDataFromSystem,
+        LightMaterialDataFromSystem: LightMaterialDataFromSystem,
+        AmbientLightDataFromSystem: AmbientLightDataFromSystem,
+        DirectionLightDataFromSystem: DirectionLightDataFromSystem,
+        PointLightDataFromSystem: PointLightDataFromSystem,
+        ProgramDataFromSystem: ProgramDataFromSystem,
+        LocationDataFromSystem: LocationDataFromSystem,
+        GLSLSenderDataFromSystem: GLSLSenderDataFromSystem,
+        GeometryDataFromSystem: GeometryDataFromSystem,
+        VaoDataFromSystem: VaoDataFromSystem,
+        BasicDrawRenderCommandBufferDataFromSystem: BasicDrawRenderCommandBufferDataFromSystem,
+        LightDrawRenderCommandBufferDataFromSystem: LightDrawRenderCommandBufferDataFromSystem
     }
-
-    return buffer;
 }
+

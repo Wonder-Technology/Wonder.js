@@ -4,14 +4,14 @@ import { init as initDeferLightPass } from "./light/deferLightPassUtils";
 import { use } from "../../../../../../../utils/worker/render_file/shader/shaderUtils";
 import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
+import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
 import {
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { getNoMaterialShaderIndex } from "../../../shader/shaderUtils";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/IDraw";
-import { WebGL2LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
+import { WebGL2DrawDataMap, WebGL2LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
 import { draw as deferDraw } from "../../../../../draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 
@@ -38,7 +38,7 @@ var _resetLightDataBufferCount = (DataBufferConfig:any) => {
     DataBufferConfig.pointLightDataBufferCount = 1000;
 }
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     deferDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 
@@ -48,7 +48,7 @@ export var buildSendUniformDataDataMap = (
     // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
     isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
-    drawDataMap: DrawDataMap) => {
+    drawDataMap: WebGL2DrawDataMap) => {
     return {
         glslSenderData: {
             // getUniformData: getUniformData,

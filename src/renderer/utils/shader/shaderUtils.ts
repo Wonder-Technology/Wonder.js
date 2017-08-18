@@ -3,9 +3,11 @@ import { isNotUndefined } from "../../../utils/JudgeUtils";
 import { IWebGL2ShaderLibContentGenerator } from "../../worker/webgl2/both_file/data/shaderLib_generator";
 import { IWebGL1ShaderLibContentGenerator } from "../../worker/webgl1/both_file/data/shaderLib_generator";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config_interface";
-import { InitShaderDataMap, InitShaderFuncDataMap } from "../../type/utilsType";
+import { InitShaderDataMap } from "../../type/utilsType";
+import { WebGL1InitShaderFuncDataMap } from "../../webgl1/type/utilsType";
+import { WebGL2InitShaderFuncDataMap } from "../../webgl2/type/utilsType";
 
-export var initShader = (state: Map<any, any>, materialIndex:number | null, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var initShader = (state: Map<any, any>, materialIndex:number | null, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         } = initShaderDataMap,

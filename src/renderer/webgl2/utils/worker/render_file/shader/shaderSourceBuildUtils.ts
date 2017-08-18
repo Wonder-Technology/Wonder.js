@@ -7,7 +7,7 @@ import { expect } from "wonder-expect.js";
 import { compose, filterArray, forEachArray } from "../../../../../../utils/functionalUtils";
 import { forEach } from "../../../../../../utils/arrayUtils";
 import { BuildGLSLSourceFuncFuncDataMap } from "../../../../../type/dataType";
-import { InitShaderDataMap, InitShaderFuncDataMap } from "../../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../../type/utilsType";
 import {
     IWebGL2DefineUniformConfig,
     IWebGL2GLSLConfig, IWebGL2GLSLDefineListItem, IWebGL2GLSLFuncConfig, IWebGL2SendAttributeConfig,
@@ -15,8 +15,9 @@ import {
     IWebGL2ShaderLibContentGenerator
 } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { getPrecisionSource } from "../../../../../utils/shader/shaderSourceBuildUtils";
+import { WebGL2InitShaderFuncDataMap } from "../../../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL2InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;

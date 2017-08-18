@@ -31,7 +31,6 @@ import { initData as initGameObjectData } from "./entityObject/gameObject/GameOb
 // import { initData as initWorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeSystem";
 // import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
-import { render_config } from "../renderer/worker/both_file/data/render_config";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
 import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
@@ -50,7 +49,6 @@ import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../d
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
 import { LocationData } from "../renderer/shader/location/LocationData";
-import { ProgramData } from "../renderer/shader/program/ProgramData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
 // import { initData as initLightData } from "../component/light/LightSystem";
@@ -83,6 +81,10 @@ import { initData as initWebGL2GLSLSenderData } from "../renderer/webgl2/shader/
 import { WebGL2GLSLSenderData } from "../renderer/webgl2/shader/glslSender/GLSLSenderData";
 import { initData as initWebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
 import { WebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderData";
+import { WebGL1ProgramData } from "../renderer/webgl1/shader/program/ProgramData";
+import { WebGL2ProgramData } from "../renderer/webgl2/shader/program/ProgramData";
+import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
+import { VaoData } from "../renderer/webgl2/vao/VaoData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",
@@ -166,18 +168,36 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    initData = () => {
-        _initData();
+    if(isWebgl1()){
+        initData = () => {
+            _initData();
 
-        initProgramData(ProgramData);
+            initProgramData(WebGL1ProgramData);
 
-        initLocationData(LocationData);
+            initLocationData(LocationData);
 
-        initArrayBufferData(ArrayBufferData);
+            initArrayBufferData(ArrayBufferData);
 
-        initIndexBufferData(IndexBufferData);
+            initIndexBufferData(IndexBufferData);
 
-        initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+            initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+        }
+
+    }
+    else{
+        initData = () => {
+            _initData();
+
+            initProgramData(WebGL2ProgramData);
+
+            initLocationData(LocationData);
+
+            initArrayBufferData(ArrayBufferData);
+
+            initIndexBufferData(IndexBufferData);
+
+            initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+        }
     }
 
     passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
@@ -221,6 +241,8 @@ if(isWebgl1()){
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 
         initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
+
+        initVaoData(VaoData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
@@ -265,6 +287,8 @@ else{
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 
         initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
+
+        initVaoData(VaoData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {

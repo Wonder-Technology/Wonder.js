@@ -19,3 +19,18 @@ export type UboMultiBufferDataList = Array<{
     initBufferDataFunc:Function;
     setBufferDataFunc:Function;
 }>
+
+export type VaoConfigMap = {
+    [index: number]: VaoConfigData
+}
+
+export type VaoConfigData = {
+    positionLocation:number;
+    normalLocation?:number;
+    texCoordLocation?:number;
+
+    getVertices?:Function;
+    getNormals?:Function;
+    getTexCoords?:Function;
+    getIndices:Function;
+}
