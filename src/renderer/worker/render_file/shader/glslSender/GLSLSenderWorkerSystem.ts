@@ -1,5 +1,4 @@
 import {
-    initData as initDataUtils,
     sendBuffer as sendBufferUtils,
     sendFloat1 as sendFloat1Utils, sendFloat3 as sendFloat3Utils, sendInt as sendIntUtils, sendMatrix3 as sendMatrix3Utils, sendMatrix4 as sendMatrix4Utils,
     sendVector3 as sendVector3Utils
@@ -33,5 +32,3 @@ export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program
 export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendFloat3Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
-
-export var initData = initDataUtils;

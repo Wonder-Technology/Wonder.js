@@ -7,7 +7,6 @@ import {
     IWebGL2SendAttributeConfig,
     IWebGL2SendUniformConfig
 } from "../worker/webgl2/both_file/data/shaderLib_generator";
-import { CameraRenderCommandBufferForDrawData } from "../utils/worker/render_file/type/dataType";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
@@ -52,32 +51,6 @@ export type ArrayBufferDataMap = {
         size: number;
         type: EBufferType;
     }
-}
-
-export type RenderCommandBufferForDrawData = {
-    cameraData: CameraRenderCommandBufferForDrawData;
-    basicData: BasicRenderCommandBufferForDrawData;
-    lightData: LightRenderCommandBufferForDrawData;
-}
-
-export type BasicRenderCommandBufferForDrawData = {
-    renderCommandBufferData:{
-        mMatrices: Float32Array;
-        materialIndices: Uint32Array;
-        geometryIndices: Uint32Array;
-    };
-
-    count: number;
-}
-
-export type LightRenderCommandBufferForDrawData = {
-    renderCommandBufferData:{
-        mMatrices: Float32Array;
-        materialIndices: Uint32Array;
-        geometryIndices: Uint32Array;
-    };
-
-    count: number;
 }
 
 export type BasicRenderUniformData = {

@@ -1,11 +1,9 @@
-import { DrawDataMap } from "../../../type/utilsType";
-
-export var getDirectionLightPosition = (index: number, drawDataMap: DrawDataMap) => {
-    return _getLightPosition(index, drawDataMap.DirectionLightDataFromSystem);
+export var getDirectionLightPosition = (index: number, DirectionLightDataFromSystem:any) => {
+    return _getLightPosition(index, DirectionLightDataFromSystem);
 }
 
-export var getPointLightPosition = (index: number, drawDataMap: DrawDataMap) => {
-    return _getLightPosition(index, drawDataMap.PointLightDataFromSystem);
+export var getPointLightPosition = (index: number, PointLightDataFromSystem:any) => {
+    return _getLightPosition(index, PointLightDataFromSystem);
 }
 
 var _getLightPosition = (index: number, LightDataFromSystem: any) => {

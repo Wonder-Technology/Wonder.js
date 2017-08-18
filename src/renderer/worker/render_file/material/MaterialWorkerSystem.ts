@@ -13,7 +13,6 @@ import {
 } from "../../../utils/worker/render_file/material/materialUtils";
 import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
 import { LocationWorkerData } from "../shader/location/LocationWorkerData";
-import { GLSLSenderWorkerData } from "../shader/glslSender/GLSLSenderWorkerData";
 import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWorkerData";
 import {
     getBasicMaterialBufferCount, getBufferTotalCount,
@@ -40,7 +39,7 @@ import { initData as initLightMaterialData } from "./LightMaterialWorkerSystem";
 import { IMaterialConfig } from "../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator_interface";
 
-export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData,  TextureWorkerData: any, PointLightWorkerData:any, GPUDetectWorkerData:any, ) => {
+export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData,  TextureWorkerData: any, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData));
 
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index, getBasicMaterialClassName());

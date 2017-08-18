@@ -6,8 +6,7 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
 import {
-     LightRenderCommandBufferForDrawData,
-    LightRenderUniformData
+     LightRenderUniformData
 } from "../../../../../type/dataType";
 import {
     drawGameObjects
@@ -19,6 +18,7 @@ import { unbindVAO } from "../../../vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
+import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,

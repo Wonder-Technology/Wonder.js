@@ -1,7 +1,7 @@
 import { initData as initDeviceManagerWorkerDataSystem } from "../renderer/worker/both_file/device/DeviceManagerWorkerSystem";
 import { initData as initProgramWorkerDataSystem } from "../renderer/worker/render_file/shader/program/ProgramWorkerSystem";
 import { initData as initDrawRenderCommandBufferWorkerDataSystem } from "../renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerSystem";
-import { initData as initGLSLSenderWorkerDataSystem } from "../renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerSystem";
+// import { initData as initGLSLSenderWorkerDataSystem } from "../renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initLocationWorkerDataSystem } from "../renderer/worker/render_file/shader/location/LocationWorkerSystem";
 import {
    initData as initShaderWorkerDataSystem
@@ -13,12 +13,16 @@ import {
    getDirectionLightPosition,
    getPointLightPosition
 } from "../renderer/worker/render_file/render/RenderWorkerSystem";
+import { initData as initWebGL1GLSLSenderWorkerDataSystem } from "../renderer/worker/webgl1/render_file/shader/glslSender/GLSLSenderWorkerSystem";
+import { initData as initWebGL2GLSLSenderWorkerDataSystem } from "../renderer/worker/webgl2/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 
 export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 
 export var initProgramWorkerData = initProgramWorkerDataSystem;
 
-export var initGLSLSenderWorkerData = initGLSLSenderWorkerDataSystem;
+export var initWebGL1GLSLSenderWorkerData = initWebGL1GLSLSenderWorkerDataSystem;
+
+export var initWebGL2GLSLSenderWorkerData = initWebGL2GLSLSenderWorkerDataSystem;
 
 export var initLocationWorkerData = initLocationWorkerDataSystem;
 

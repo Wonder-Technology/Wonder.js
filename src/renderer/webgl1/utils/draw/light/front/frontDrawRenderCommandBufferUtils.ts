@@ -1,4 +1,4 @@
-import { LightRenderCommandBufferForDrawData } from "../../../../../type/dataType";
+import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { DrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";

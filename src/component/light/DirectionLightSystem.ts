@@ -149,11 +149,6 @@ export var isPositionDirty = isPositionDirtyUtils;
 
 export var isColorDirty = isColorDirtyUtils;
 
-//todo send position dirty data to render worker
-// export var isPositionDirty = (index: number, ThreeDTransformData: any, GameObjectData:any, PointLightData: any) => {
-//     return getIsTranslate(getTransform(getGameObject(index, PointLightData), GameObjectData).uid, ThreeDTransformData) === true;
-// }
-
 export var isIntensityDirty = isIntensityDirtyUtils;
 
 export var cleanPositionDirty = cleanPositionDirtyUtils;

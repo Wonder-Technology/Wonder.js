@@ -5,7 +5,7 @@ import { WebGL1BasicSendUniformDataDataMap } from "../../../../webgl1/type/utils
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
 import { IWebGL1DrawFuncDataMap } from "../../../../webgl1/interface/IDraw";
 import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
-import { BasicRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { BasicRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { drawGameObjects } from "../../../../utils/draw/drawRenderCommandBufferUtils";
 import { buildRenderCommandUniformData } from "../../../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
 

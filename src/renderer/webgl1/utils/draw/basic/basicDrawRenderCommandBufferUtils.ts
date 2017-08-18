@@ -8,7 +8,7 @@ import {
 } from "../../../../utils/draw/drawRenderCommandBufferUtils";
 import { IWebGL1DrawFuncDataMap } from "../../../interface/IDraw";
 import { WebGL1BasicSendUniformDataDataMap } from "../../../type/utilsType";
-import { BasicRenderCommandBufferForDrawData } from "../../../../type/dataType";
+import { BasicRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { buildRenderCommandUniformData } from "../../../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, {

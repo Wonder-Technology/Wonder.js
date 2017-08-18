@@ -1,4 +1,4 @@
-import { WebGLVertexArrayObject } from "../../../../../extend/interface";
+import { WebGLVertexArrayObject } from "../../../../../../../extend/interface";
 
 export class DeferLightPassWorkerData{
     public static fullScreenQuadVertexArray:WebGLVertexArrayObject = null;

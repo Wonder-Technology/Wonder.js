@@ -1,6 +1,6 @@
-import { SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../../type/dataType";
+import { SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../../../type/dataType";
 
-export class GLSLSenderWorkerData {
+export class WebGL1GLSLSenderWorkerData {
     public static uniformCacheMap: UniformCacheMap = null;
 
     public static sendAttributeConfigMap: SendAttributeConfigMap = null;

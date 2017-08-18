@@ -1,11 +1,16 @@
-import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
 import {
-    // createTypeArrays,
-    getColor as getColorUtils, getColorArr3 as getColorArr3Utils, getConstant as getConstantUtils,
-    getIntensity as getIntensityUtils, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getRange as getRangeUtils
+    cleanAttenuationDirty as cleanAttenuationDirtyUtils,
+    cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils,
+    cleanPositionDirty as cleanPositionDirtyUtils,
+    getColor as getColorUtils,
+    getColorArr3 as getColorArr3Utils,
+    getConstant as getConstantUtils,
+    getIntensity as getIntensityUtils,
+    getLinear as getLinearUtils,
+    getQuadratic as getQuadraticUtils,
+    getRange as getRangeUtils, isAttenuationDirty as isAttenuationDirtyUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils,
+    isPositionDirty as isPositionDirtyUtils
 } from "../../../utils/worker/render_file/light/pointLightUtils";
-import { Color } from "../../../../structure/Color";
-import { computeRadius as computeRadiusUtils } from "../../../webgl2/utils/worker/render_file/light/pointLightUtils";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, PointLightWorkerData: any) => {
     PointLightWorkerData.positionArr = positionArr;
@@ -25,8 +30,6 @@ export var getQuadratic = getQuadraticUtils;
 
 export var getRange = getRangeUtils;
 
-export var computeRadius = computeRadiusUtils;
-
 // export var initData = ({
 //                            buffer,
 //     bufferCount,
@@ -39,3 +42,19 @@ export var computeRadius = computeRadiusUtils;
 //
 //     createTypeArrays(buffer, bufferCount, PointLightWorkerData);
 // }
+
+export var isPositionDirty = isPositionDirtyUtils;
+
+export var isColorDirty = isColorDirtyUtils;
+
+export var isIntensityDirty = isIntensityDirtyUtils;
+
+export var isAttenuationDirty = isAttenuationDirtyUtils;
+
+export var cleanPositionDirty = cleanPositionDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;
+
+export var cleanIntensityDirty = cleanIntensityDirtyUtils;
+
+export var cleanAttenuationDirty = cleanAttenuationDirtyUtils;

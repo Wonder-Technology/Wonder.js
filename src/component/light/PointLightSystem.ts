@@ -31,9 +31,6 @@ import { DirectorData } from "../../core/DirectorData";
 import {
     getDirtyDataSize} from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
-import { getIsTranslate } from "../transform/isTransformSystem";
-import { getTransform } from "../../core/entityObject/gameObject/GameObjectSystem";
-import { registerEvent } from "../../event/EventManagerSystem";
 import { Map } from "immutable";
 import { checkLastComponentIndexShouldNotEqualSourceComponentIndex } from "../utils/contractUtils";
 
@@ -259,27 +256,11 @@ export var disposeComponent = ensureFunc((lastComponentIndex:number, component: 
 
 export var init = (PointLightData: any, state:Map<any, any>) => {
     return bindChangePositionEvent(PointLightData, state);
-    // var eventName = "changePosition";
-    //
-    // for(let i = 0, count = PointLightData.count; i < count; i++){
-    //     var _markPositionDirty = () => {
-    //         markDirty(i, PointLightData.isPositionDirtys);
-    //     }
-    //
-    //     registerEvent(eventName, _markPositionDirty);
-    // }
-    //
-    // return state;
 }
 
 export var isPositionDirty = isPositionDirtyUtils;
 
 export var isColorDirty = isColorDirtyUtils;
-
-//todo send position dirty data to render worker
-// export var isPositionDirty = (index: number, ThreeDTransformData: any, GameObjectData:any, PointLightData: any) => {
-//     return getIsTranslate(getTransform(getGameObject(index, PointLightData), GameObjectData).uid, ThreeDTransformData) === true;
-// }
 
 export var isIntensityDirty = isIntensityDirtyUtils;
 

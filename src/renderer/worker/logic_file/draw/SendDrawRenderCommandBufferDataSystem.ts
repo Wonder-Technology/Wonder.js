@@ -7,7 +7,7 @@ import {
 } from "../../../../component/geometry/GeometrySystem";
 import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDataOperateType";
 import { clearWorkerInitList, hasNewInitedMaterial } from "../../../../component/material/MaterialSystem";
-import { RenderCommandBufferForDrawData } from "../../../type/dataType";
+import { RenderCommandBufferForDrawData } from "../../../utils/worker/render_file/type/dataType";
 import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";

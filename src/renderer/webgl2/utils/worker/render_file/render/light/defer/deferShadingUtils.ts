@@ -7,7 +7,7 @@ import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generat
 import { DeferDrawDataMap, DrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
 import {
     LightRenderCommandBufferForDrawData
-} from "../../../../../../../type/dataType";
+} from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { getNoMaterialShaderIndex } from "../../../shader/shaderUtils";
 import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/IDraw";
@@ -40,4 +40,61 @@ var _resetLightDataBufferCount = (DataBufferConfig:any) => {
 
 export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     deferDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
+}
+
+export var buildSendUniformDataDataMap = (
+    sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
+    // getAmbientLightColorArr3,
+    // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
+    getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
+    isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
+    drawDataMap: DrawDataMap) => {
+    return {
+        glslSenderData: {
+            // getUniformData: getUniformData,
+            sendMatrix3: sendMatrix3,
+            sendMatrix4: sendMatrix4,
+            sendVector3: sendVector3,
+            sendInt: sendInt,
+            sendFloat1: sendFloat1,
+            sendFloat3: sendFloat3,
+
+            GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
+        },
+        // ambientLightData: {
+        //     getColorArr3: getAmbientLightColorArr3,
+        //
+        //     AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
+        // },
+        // directionLightData: {
+        //     getPosition: (index: number) => {
+        //         return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
+        //     },
+        //     getColorArr3: getDirectionLightColorArr3,
+        //     getIntensity: getDirectionLightIntensity,
+        //
+        //     DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
+        // },
+        pointLightData: {
+            getPosition: getPointLightPosition,
+            getColorArr3: getPointLightColorArr3,
+            getIntensity: getPointLightIntensity,
+            getConstant: getConstant,
+            getLinear: getLinear,
+            getQuadratic: getQuadratic,
+            getRange: getRange,
+            computeRadius: computeRadius,
+
+            isPositionDirty: isPositionDirty,
+            isColorDirty: isColorDirty,
+            isIntensityDirty: isIntensityDirty,
+            isAttenuationDirty: isAttenuationDirty,
+            cleanPositionDirty: cleanPositionDirty,
+            cleanColorDirty: cleanColorDirty,
+            cleanIntensityDirty: cleanIntensityDirty,
+            cleanAttenuationDirty: cleanAttenuationDirty,
+
+            PointLightDataFromSystem: drawDataMap.PointLightDataFromSystem
+        }
+    }
 }
