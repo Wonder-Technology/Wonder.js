@@ -8,8 +8,9 @@ import { bindFrameUboData, init as initUbo } from "../ubo/uboManagerUtils";
 import { Map } from "immutable";
 import { hasExtensionColorBufferFloat } from "../device/gpuDetectUtils";
 import { init as initDefer } from "./light/defer/deferShadingUtils";
-import { bindVao, createAndInitVao, getVao, isVaoExist } from "../shader/shaderUtils";
 import { WebGL2DrawDataMap } from "../../../../type/utilsType";
+import { getVao, isVaoExist } from "../../../../../utils/worker/render_file/shader/shaderUtils";
+import { bindVao, createAndInitVao } from "../shader/shaderUtils";
 
 export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)){
@@ -46,15 +47,7 @@ export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig,
 }
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
-    var vaoConfigData = GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex],
-        vaos = VaoDataFromSystem.vaos,
-        vao = getVao(geometryIndex, vaos);
-
-    if(!isVaoExist(vao)){
-        vao = createAndInitVao(gl, geometryIndex, vaos, vaoConfigData, GeometryDataFromSystem);
-    }
-
-    bindVao(gl, vao, ProgramDataFromSystem);
+    _bindVao(gl, shaderIndex, geometryIndex, ProgramDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, VaoDataFromSystem);
 }
 
 export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any,  BasicDrawRenderCommandBufferDataFromSystem:any, LightDrawRenderCommandBufferDataFromSystem:any, VaoDataFromSystem:any) => {
@@ -79,3 +72,14 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
+var _bindVao = (gl: WebGLRenderingContext, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
+    var vaoConfigData = GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex],
+        vaos = VaoDataFromSystem.vaos,
+        vao = getVao(geometryIndex, vaos);
+
+    if(!isVaoExist(vao)){
+        vao = createAndInitVao(gl, geometryIndex, vaos, vaoConfigData, GeometryDataFromSystem);
+    }
+
+    bindVao(gl, vao, ProgramDataFromSystem);
+}

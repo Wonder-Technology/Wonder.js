@@ -14,3 +14,4 @@ var _detectExtension = (state: Map<any, any>, gl:any, GPUDetectDataFromSystem:an
     detectExtensionSystem(state, gl, GPUDetectDataFromSystem);
 }
 
+export var getExtensionVao = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.extensionVAO;

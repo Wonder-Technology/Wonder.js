@@ -11,7 +11,7 @@ import {
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
-import { unbindVao } from "../../../vao/vaoUtils";
+import { unbindVao } from "../../../worker/render_file/vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";

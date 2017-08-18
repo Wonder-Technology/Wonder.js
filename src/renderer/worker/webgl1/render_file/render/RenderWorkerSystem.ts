@@ -31,6 +31,7 @@ export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig,
     }
 }
 
+//todo fix
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
     getVertices: getVertices,
     getNormals: getNormals,

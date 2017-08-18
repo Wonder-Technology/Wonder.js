@@ -1,8 +1,23 @@
 import { GetArrayBufferDataFuncMap } from "../../../../../../definition/type/geometryType";
 import { getOrCreateBuffer } from "../../../../../utils/buffer/arrayBufferUtils";
 import { Log } from "../../../../../../utils/Log";
+import { getExtensionVao } from "../device/gpuDetectUtils";
+import { bindVao, createAndInitVao } from "../shader/shaderUtils";
+import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
+import { getVao, isVaoExist } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, GPUDetectDataFromSystem:any, VaoDataFromSystem:any) => {
+    var vaoExtension = getExtensionVao(GPUDetectDataFromSystem);
+
+    if(hasExtension(vaoExtension)){
+        _bindVao(gl, vaoExtension, shaderIndex, geometryIndex, ProgramDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, VaoDataFromSystem);
+    }
+    else{
+        _sendVbo(gl, shaderIndex, program, geometryIndex, getArrayBufferDataFuncMap, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+    }
+}
+
+var _sendVbo = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
@@ -76,4 +91,16 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
         BasicDrawRenderCommandBufferDataFromSystem: BasicDrawRenderCommandBufferDataFromSystem,
         LightDrawRenderCommandBufferDataFromSystem: LightDrawRenderCommandBufferDataFromSystem
     }
+}
+
+var _bindVao = (gl: WebGLRenderingContext, extension:any, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
+    var vaoConfigData = GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex],
+        vaos = VaoDataFromSystem.vaos,
+        vao = getVao(geometryIndex, vaos);
+
+    if(!isVaoExist(vao)){
+        vao = createAndInitVao(gl, extension, geometryIndex, vaos, vaoConfigData, GeometryDataFromSystem);
+    }
+
+    bindVao(extension, vao, ProgramDataFromSystem);
 }

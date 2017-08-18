@@ -42,6 +42,10 @@ export type WebGL1InitShaderFuncDataMap = {
     getGL: Function;
     getMapCount: Function;
     hasSpecularMap: Function;
+    getVertices:Function;
+    getNormals:Function;
+    getTexCoords:Function;
+    getIndices:Function;
 }
 
 export type WebGL1DrawDataMap = {

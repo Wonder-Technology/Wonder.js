@@ -1,24 +1,33 @@
-import { addVaoConfig, addSendUniformConfig} from "./glslSender/glslSenderUtils";
-import { IWebGL2ShaderLibConfig, IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
+import { addSendUniformConfig, addVaoConfig } from "./glslSender/glslSenderUtils";
+import {
+    IWebGL2ShaderLibConfig,
+    IWebGL2ShaderLibContentGenerator
+} from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
-import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config_interface";
+import {
+    IMaterialConfig, IShaderLibItem,
+    MaterialShaderLibConfig
+} from "../../../../../data/material_config_interface";
 import { getMaterialShaderLibConfig } from "../../../../data/MaterialConfigSystem";
 import {
-    buildShaderIndexByMaterialIndexAndShaderNameMapKey, genereateShaderIndex,
-    getShaderIndexByMaterialIndexAndShaderName, initShader as initShaderUtils
+    buildShaderIndexByMaterialIndexAndShaderNameMapKey,
+    genereateShaderIndex,
+    getShaderIndexByMaterialIndexAndShaderName,
+    initShader as initShaderUtils
 } from "../../../../../utils/shader/shaderUtils";
 import { getProgram } from "../../../../../utils/worker/render_file/shader/program/programUtils";
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";
 import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "../../../shader/shaderSourceBuildUtils";
 import { handleUboConfig } from "../ubo/uboManagerUtils";
-import { bindVao as bindVaoUtils, unbindVao } from "../../../vao/vaoUtils";
-import { WebGLVertexArrayObject } from "../../../../../extend/interface";
-import { isValidVal } from "../../../../../../utils/arrayUtils";
-import { it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
-import { expect } from "wonder-expect.js";
 import { WebGL2InitShaderFuncDataMap } from "../../../../type/utilsType";
+import { WebGLVertexArrayObject } from "../../../../../extend/interface";
+import { bindVao as bindVaoUtils, createVao, unbindVao } from "../vao/vaoUtils";
+import {
+    createAndInitArrayBuffer,
+    createAndInitIndexBuffer
+} from "../../../../../utils/worker/render_file/shader/shaderUtils";
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);
@@ -81,7 +90,7 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     return shaderIndex;
 }
 
-export var bindVao = (gl: WebGLRenderingContext, vao:WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
+export var bindVao = (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
     if (ProgramDataFromSystem.lastBindedVao === vao) {
         return;
     }
@@ -91,11 +100,7 @@ export var bindVao = (gl: WebGLRenderingContext, vao:WebGLVertexArrayObject, Pro
     bindVaoUtils(gl, vao);
 }
 
-export var getVao = (geometryIndex: number, vaos:Array<WebGLVertexArrayObject>) => {
-    return vaos[geometryIndex];
-}
-
-export var createAndInitVao = (gl: any, geometryIndex: number, vaos:Array<WebGLVertexArrayObject>, {
+export var createAndInitVao = (gl: any, geometryIndex: number, vaos: Array<WebGLVertexArrayObject>, {
     positionLocation,
     normalLocation,
     texCoordLocation,
@@ -105,53 +110,27 @@ export var createAndInitVao = (gl: any, geometryIndex: number, vaos:Array<WebGLV
     getTexCoords,
     getIndices
 }, GeometryDataFromSystem: any) => {
-    var vao = gl.createVertexArray();
+    var vao = createVao(gl);
 
     vaos[geometryIndex] = vao;
 
     bindVaoUtils(gl, vao);
 
-    if(!!getVertices){
-        _createAndInitArrayBuffer(gl, getVertices(geometryIndex, GeometryDataFromSystem), positionLocation, 3);
+    if (!!getVertices) {
+        createAndInitArrayBuffer(gl, getVertices(geometryIndex, GeometryDataFromSystem), positionLocation, 3);
     }
 
-    if(!!getNormals){
-        _createAndInitArrayBuffer(gl, getNormals(geometryIndex, GeometryDataFromSystem), normalLocation, 3);
+    if (!!getNormals) {
+        createAndInitArrayBuffer(gl, getNormals(geometryIndex, GeometryDataFromSystem), normalLocation, 3);
     }
 
-    if(!!getTexCoords){
-        _createAndInitArrayBuffer(gl, getTexCoords(geometryIndex, GeometryDataFromSystem), texCoordLocation, 2);
+    if (!!getTexCoords) {
+        createAndInitArrayBuffer(gl, getTexCoords(geometryIndex, GeometryDataFromSystem), texCoordLocation, 2);
     }
 
-    _createAndInitIndexBuffer(gl, getIndices(geometryIndex, GeometryDataFromSystem));
+    createAndInitIndexBuffer(gl, getIndices(geometryIndex, GeometryDataFromSystem));
 
     unbindVao(gl);
 
     return vao;
-}
-
-export var isVaoExist = (vao:WebGLVertexArrayObject) => isValidVal(vao);
-
-var _createAndInitArrayBuffer = requireCheckFunc((gl: WebGLRenderingContext, data: Float32Array, location:number, size) => {
-    it("location should be defined", () => {
-        expect(location).exist;
-    });
-},(gl: WebGLRenderingContext, data: Float32Array, location:number, size) => {
-    var buffer = gl.createBuffer();
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-
-    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-
-    gl.vertexAttribPointer(location, size, gl.FLOAT, false, 0, 0);
-
-    gl.enableVertexAttribArray(location);
-})
-
-var _createAndInitIndexBuffer = (gl: WebGLRenderingContext, data: Float32Array) => {
-    var buffer = gl.createBuffer();
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
 }

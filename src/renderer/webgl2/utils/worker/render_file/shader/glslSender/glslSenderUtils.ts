@@ -1,70 +1,19 @@
 import { ensureFunc, it, requireCheckFunc } from "../../../../../../../definition/typescript/decorator/contract";
-import { SendAttributeConfigMap } from "../../../../../../type/dataType";
 import {
-    IWebGL2SendUniformConfig, IWebGL2ShaderLibConfig,
-    IWebGL2ShaderLibContentGenerator, IWebGL2UboConfig
+    IWebGL2SendUniformConfig,
+    IWebGL2ShaderLibConfig,
+    IWebGL2ShaderLibContentGenerator
 } from "../../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { expect } from "wonder-expect.js";
 import { forEach, hasDuplicateItems } from "../../../../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../../../../../utils/renderConfigUtils";
 import { createMap } from "../../../../../../../utils/objectUtils";
-import { initData as initDataUtils } from "../../../../../../utils/worker/render_file/shader/glslSender/glslSenderUtils";
+import {
+    initData as initDataUtils,
+    setVaoConfigData
+} from "../../../../../../utils/worker/render_file/shader/glslSender/glslSenderUtils";
+import { VaoConfigData, VaoConfigMap } from "../../../../../../type/dataType";
 import { Log } from "../../../../../../../utils/Log";
-import { VaoConfigData, VaoConfigMap } from "../../../../../type/dataType";
-
-export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap) => {
-    it("vaoConfigMap[shaderIndex] should not be defined", () => {
-        expect(vaoConfigMap[shaderIndex]).not.exist;
-    });
-}, (shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap, {
-    getVertices,
-    getNormals,
-    getTexCoords,
-    getIndices
-}) => {
-    var vaoConfigData: VaoConfigData = <any>{};
-
-    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
-        var sendData = shaderLibData[shaderLibName].send;
-
-        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
-            forEach(sendData.attribute, ({
-                buffer,
-                location
-            }) => {
-                switch (buffer) {
-                    case "vertex":
-                        _setVaoConfigData(vaoConfigData, "positionLocation", location);
-                        _setVaoConfigData(vaoConfigData, "getVertices", getVertices);
-                        break;
-                    case "normal":
-                        _setVaoConfigData(vaoConfigData, "normalLocation", location);
-                        _setVaoConfigData(vaoConfigData, "getNormals", getNormals);
-                        break;
-                    case "texCoord":
-                        _setVaoConfigData(vaoConfigData, "texCoordLocation", location);
-                        _setVaoConfigData(vaoConfigData, "getTexCoords", getTexCoords);
-                        break;
-                    default:
-                        Log.error(true, Log.info.FUNC_INVALID(`bufferName:${buffer}`));
-                        break;
-                }
-            })
-        }
-    })
-
-    _setVaoConfigData(vaoConfigData, "getIndices", getIndices);
-
-    vaoConfigMap[shaderIndex] = vaoConfigData;
-})
-
-var _setVaoConfigData = requireCheckFunc((data:VaoConfigData, name:string, value:any) => {
-    it("shouldn't exist duplicate data", () => {
-        expect(data[name]).not.exist;
-    });
-}, (data:VaoConfigData, name:string, value:any) => {
-    data[name] = value;
-})
 
 
 export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, GLSLSenderDataFromSystem: any) => {
@@ -97,6 +46,52 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex] = sendUniformFuncDataArr;
 }))
 
+export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap) => {
+    it("vaoConfigMap[shaderIndex] should not be defined", () => {
+        expect(vaoConfigMap[shaderIndex]).not.exist;
+    });
+}, (shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap, {
+    getVertices,
+    getNormals,
+    getTexCoords,
+    getIndices
+}) => {
+    var vaoConfigData: VaoConfigData = <any>{};
+
+    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
+        var sendData = shaderLibData[shaderLibName].send;
+
+        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
+            forEach(sendData.attribute, ({
+                                             buffer,
+                                             location
+                                         }) => {
+                switch (buffer) {
+                    case "vertex":
+                        setVaoConfigData(vaoConfigData, "positionLocation", location);
+                        setVaoConfigData(vaoConfigData, "getVertices", getVertices);
+                        break;
+                    case "normal":
+                        setVaoConfigData(vaoConfigData, "normalLocation", location);
+                        setVaoConfigData(vaoConfigData, "getNormals", getNormals);
+                        break;
+                    case "texCoord":
+                        setVaoConfigData(vaoConfigData, "texCoordLocation", location);
+                        setVaoConfigData(vaoConfigData, "getTexCoords", getTexCoords);
+                        break;
+                    default:
+                        Log.error(true, Log.info.FUNC_INVALID(`bufferName:${buffer}`));
+                        break;
+                }
+            })
+        }
+    })
+
+    setVaoConfigData(vaoConfigData, "getIndices", getIndices);
+
+    vaoConfigMap[shaderIndex] = vaoConfigData;
+})
+
 export var initData = (GLSLSenderDataFromSystem: any) => {
     initDataUtils(GLSLSenderDataFromSystem);
 
@@ -106,7 +101,4 @@ export var initData = (GLSLSenderDataFromSystem: any) => {
     GLSLSenderDataFromSystem.frameUboDataList = [];
     GLSLSenderDataFromSystem.gameObjectUboDataList = [];
     GLSLSenderDataFromSystem.lightUboDataList = [];
-
-    GLSLSenderDataFromSystem.vaoConfigMap = createMap();
 }
-

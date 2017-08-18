@@ -34,8 +34,8 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
     }
 })
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
+export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any, GPUDetectData:any, VaoData:any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
     getVertices: getVertices,
     getNormals: getNormals,
     getTexCoords: getTexCoords
-}, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
+}, getAttribLocation, isAttributeLocationNotExist, sendBuffer, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData, GPUDetectData, VaoData);

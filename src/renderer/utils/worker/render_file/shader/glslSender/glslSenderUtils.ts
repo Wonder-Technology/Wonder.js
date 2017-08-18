@@ -1,10 +1,14 @@
-import { ensureFunc, it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
+import { it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { createMap, isNotValidMapValue } from "../../../../../../utils/objectUtils";
-import { UniformShaderLocationMap, SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../../../type/dataType";
+import { UniformCacheMap, UniformShaderLocationMap, VaoConfigMap } from "../../../../../type/dataType";
 import { Log } from "../../../../../../utils/Log";
 import { Vector3 } from "../../../../../../math/Vector3";
 import { EBufferType } from "../../../../../enum/EBufferType";
+import { VaoConfigData} from "../../../../../type/dataType";
+import { IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
+import { forEach } from "../../../../../../utils/arrayUtils";
+import { isConfigDataExist } from "../../../../renderConfigUtils";
 
 export var sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
     var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
@@ -149,8 +153,18 @@ var _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, nam
 }
 
 export var initData = (GLSLSenderDataFromSystem: any) => {
+    GLSLSenderDataFromSystem.vaoConfigMap = createMap();
+
     GLSLSenderDataFromSystem.sendUniformConfigMap = createMap();
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap = createMap();
     GLSLSenderDataFromSystem.vertexAttribHistory = [];
     GLSLSenderDataFromSystem.uniformCacheMap = createMap();
 }
+
+export var setVaoConfigData = requireCheckFunc((data: VaoConfigData, name: string, value: any) => {
+    it("shouldn't exist duplicate data", () => {
+        expect(data[name]).not.exist;
+    });
+}, (data: VaoConfigData, name: string, value: any) => {
+    data[name] = value;
+})

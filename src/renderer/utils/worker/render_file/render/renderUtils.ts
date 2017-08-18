@@ -1,16 +1,15 @@
 import { EVariableType } from "../../../../enum/EVariableType";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { Log } from "../../../../../utils/Log";
+import { getVao, isVaoExist } from "../shader/shaderUtils";
 
 export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
-    // getUniformData,
     sendMatrix3,
     sendMatrix4,
     sendVector3,
     sendInt,
     sendFloat1,
     sendFloat3,
-    // GLSLSenderDataFromSystem,
 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     switch (type) {
         case EVariableType.MAT3:
@@ -37,4 +36,3 @@ export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, s
             break;
     }
 }
-

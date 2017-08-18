@@ -20,8 +20,6 @@ export var detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSy
 
     GPUDetectDataFromSystem.maxBoneCount = _getMaxBoneCount(state, gl);
 
-    GPUDetectDataFromSystem.maxUniformBufferBindings = gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS);
-
     //todo use map instead
     // alert("maxBoneCount:" + GPUDetectDataFromSystem.maxBoneCount);
 
@@ -128,3 +126,5 @@ export var hasExtensionUintIndices = (GPUDetectDataFromSystem:any) => GPUDetectD
 export var getMaxTextureUnit = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.maxTextureUnit;
 
 export var getPrecision = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.precision;
+
+export var hasExtension = (extension:any) => !!extension;

@@ -74,5 +74,4 @@ export type WebGL2DrawDataMap = {
     IndexBufferDataFromSystem: any;
     BasicDrawRenderCommandBufferDataFromSystem: any;
     LightDrawRenderCommandBufferDataFromSystem: any;
-    VaoDataFromSystem:any;
 }

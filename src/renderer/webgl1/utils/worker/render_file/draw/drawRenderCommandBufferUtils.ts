@@ -68,7 +68,8 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
             useShader
         } = drawFuncDataMap,
         {
-            GPUDetectDataFromSystem
+            GPUDetectDataFromSystem,
+            VaoDataFromSystem
         } = initShaderDataMap,
         mMatrixFloatArrayForSend = renderCommandUniformData.mMatrix,
         program: WebGLProgram = null;
@@ -85,7 +86,7 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
 
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-        sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem);
+        sendAttributeData(gl, shaderIndex, program, geometryIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, ArrayBufferDataFromSystem, GPUDetectDataFromSystem, VaoDataFromSystem);
 
         updateSendMatrixFloat32ArrayData(mMatrices, matStartIndex, matEndIndex, mMatrixFloatArrayForSend);
 

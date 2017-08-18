@@ -1,4 +1,4 @@
-import { bindVao } from "../../../../vao/vaoUtils";
+import { bindVao } from "../../../../worker/render_file/vao/vaoUtils";
 
 export var sendAttributeData = (gl:any, DeferLightPassDataFromSystem:any) => {
     bindVao(gl, DeferLightPassDataFromSystem.fullScreenQuadVertexArray);

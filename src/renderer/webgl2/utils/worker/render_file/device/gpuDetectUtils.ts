@@ -7,7 +7,7 @@ export var detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDetec
     var gl = getGL(DeviceManagerDataFromSystem, state);
 
     _detectExtension(state, gl, GPUDetectDataFromSystem);
-    detectCapabilty(state, gl, GPUDetectDataFromSystem);
+    _detectCapabilty(state, gl, GPUDetectDataFromSystem);
 
     return state;
 }
@@ -16,6 +16,12 @@ var _detectExtension = (state: Map<any, any>, gl:any, GPUDetectDataFromSystem:an
     detectExtensionSystem(state, gl, GPUDetectDataFromSystem);
 
     GPUDetectDataFromSystem.extensionColorBufferFloat = getExtension("EXT_color_buffer_float", state, gl);
+}
+
+var _detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem:any) => {
+    detectCapabilty(state, gl, GPUDetectDataFromSystem);
+
+    GPUDetectDataFromSystem.maxUniformBufferBindings = gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS);
 }
 
 export var getMaxUniformBufferBindings = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.maxUniformBufferBindings;

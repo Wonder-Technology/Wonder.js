@@ -1,11 +1,9 @@
 import {
     SendAttributeConfigMap, SendUniformConfigMap, SendUniformFuncConfigMap,
-    UniformCacheMap
+    UniformCacheMap, VaoConfigMap
 } from "../../../../../../type/dataType";
 import {
-    UboBindingPointMap, UboMultiBufferDataList, UboSingleBufferDataList,
-    VaoConfigMap
-} from "../../../../../type/dataType";
+    UboBindingPointMap, UboMultiBufferDataList, UboSingleBufferDataList} from "../../../../../type/dataType";
 
 export class WebGL2GLSLSenderDataCommon {
     public static vaoConfigMap: VaoConfigMap = null;
