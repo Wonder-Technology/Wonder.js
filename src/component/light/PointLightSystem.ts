@@ -32,7 +32,6 @@ import {
     getDirtyDataSize} from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Map } from "immutable";
-import { checkLastComponentIndexShouldNotEqualSourceComponentIndex } from "../utils/contractUtils";
 
 export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)
@@ -226,9 +225,7 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
 }
 
 
-export var disposeComponent = ensureFunc((lastComponentIndex:number, component: Light, PointLightData:any) => {
-    checkLastComponentIndexShouldNotEqualSourceComponentIndex(lastComponentIndex, component.index);
-},(component: Light, PointLightData:any) => {
+export var disposeComponent = (component: Light, PointLightData:any) => {
     var intensityDataSize = getIntensityDataSize(),
         constantDataSize = getConstantDataSize(),
         linearDataSize = getLinearDataSize(),
@@ -252,7 +249,7 @@ export var disposeComponent = ensureFunc((lastComponentIndex:number, component: 
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isAttenuationDirtys, PointLightData.defaultDirty);
 
     return lastComponentIndex;
-})
+}
 
 export var init = (PointLightData: any, state:Map<any, any>) => {
     return bindChangePositionEvent(PointLightData, state);

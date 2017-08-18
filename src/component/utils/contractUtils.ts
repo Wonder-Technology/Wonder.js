@@ -12,9 +12,3 @@ export var checkIndexShouldEqualCount = (ComponentData: any) => {
         expect(ComponentData.count).gte(0);
     });
 }
-
-export var checkLastComponentIndexShouldNotEqualSourceComponentIndex = (lastComponentIndex:number, sourceIndex:number) => {
-    it("lastComponentIndex !== sourceComponentIndex", () => {
-        expect(lastComponentIndex).not.equal(sourceIndex);
-    });
-}

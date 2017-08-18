@@ -64,7 +64,6 @@ import {
     getBasicMaterialBufferStartIndex,
     getLightMaterialBufferStartIndex
 } from "../../renderer/utils/material/bufferUtils";
-import { checkLastComponentIndexShouldNotEqualSourceComponentIndex } from "../utils/contractUtils";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -212,8 +211,6 @@ export var addComponent = (component: Material, gameObject: GameObject, Material
 
 export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     _checkDisposeComponentWorker(sourceIndex);
-
-    checkLastComponentIndexShouldNotEqualSourceComponentIndex(lastComponentIndex, sourceIndex);
 }, (sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     var colorDataSize = getColorDataSize(),
         opacityDataSize = getOpacityDataSize(),

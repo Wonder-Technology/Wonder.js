@@ -10,6 +10,10 @@ describe("Material", function() {
     var Shader = wd.Shader;
     var DataBufferConfig = wd.DataBufferConfig;
 
+    function getDefaultColor() {
+        return Color.create("#ffffff");
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -33,7 +37,7 @@ describe("Material", function() {
 
         describe("getColor", function() {
             it("default color is #ffffff", function(){
-                colorTool.judgeIsEqual(basicMaterialTool.getColor(material), Color.create("#ffffff"), expect);
+                colorTool.judgeIsEqual(basicMaterialTool.getColor(material), getDefaultColor(), expect);
             });
         });
 
@@ -263,6 +267,40 @@ describe("Material", function() {
 
                         expect(MaterialData.materialMap[0]).toEqual(mat2);
                         expect(MaterialData.materialMap.length).toEqual(1);
+                    });
+                });
+
+                describe("test dispose last component", function () {
+                    it("remove from colors", function () {
+                        var color1 = Color.create("rgb(0.1,0.2,0.3)");
+                        var color2 = Color.create("rgb(0.4,0.2,0.3)");
+                        basicMaterialTool.setColor(material, color1);
+                        basicMaterialTool.setColor(mat2, color2);
+
+                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectTool.disposeComponent(obj2, mat2);
+
+                        colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(0)), getDefaultColor(), expect);
+                    });
+
+                    describe("test remove from materialMap", function() {
+                        beforeEach(function(){
+
+                        });
+
+                        it("mark material removed", function () {
+                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectTool.disposeComponent(obj2, mat2);
+
+                            componentTool.judgeIsComponentIndexNotRemoved(material, expect);
+                            componentTool.judgeIsComponentIndexNotRemoved(mat2, expect);
+                        });
+                        it("swap with last one and remove the last one", function () {
+                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectTool.disposeComponent(obj2, mat2);
+
+                            expect(MaterialData.materialMap.length).toEqual(0);
+                        });
                     });
                 });
             });
