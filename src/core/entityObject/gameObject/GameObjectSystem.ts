@@ -16,6 +16,8 @@ import { removeChildEntity } from "../../../utils/entityUtils";
 import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
 import { getComponentIDFromClass, getComponentIDFromComponent } from "../../../component/ComponentComponentIDManager";
 import { IUIDEntity } from "./IUIDEntity";
+import { MeshRenderer } from "../../../component/renderer/MeshRenderer";
+import { create as createMeshRenderer } from "../../../component/renderer/MeshRendererSystem";
 
 export var create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
@@ -141,7 +143,7 @@ export var addComponent = requireCheckFunc((gameObject: GameObject, component: C
     data[componentID] = component;
 })
 
-var _removeComponent = (componentID: string, gameObject: GameObject, component: Component, GameObjectData: any) => {
+var _removeComponent = (componentID: string, gameObject: GameObject, GameObjectData: any) => {
     var uid = gameObject.uid,
         data = _getComponentData(uid, GameObjectData);
 
@@ -157,7 +159,7 @@ var _removeComponent = (componentID: string, gameObject: GameObject, component: 
 export var disposeComponent = (gameObject: GameObject, component: Component, GameObjectData: any) => {
     var componentID = getComponentIDFromComponent(component);
 
-    _removeComponent(componentID, gameObject, component, GameObjectData);
+    _removeComponent(componentID, gameObject, GameObjectData);
 
     execHandle(component, "disposeHandleMap");
 }
@@ -193,6 +195,10 @@ export var getGeometry = (gameObject: GameObject, GameObjectData: any) => {
 
 export var getMaterial = (gameObject: GameObject, GameObjectData: any) => {
     return getComponent(gameObject, getComponentIDFromClass(Material), GameObjectData);
+}
+
+export var getMeshRenderer = (gameObject: GameObject, GameObjectData: any) => {
+    return getComponent(gameObject, getComponentIDFromClass(MeshRenderer), GameObjectData);
 }
 
 var _isParentExist = (parent: GameObject) => isNotUndefined(parent);
@@ -237,6 +243,16 @@ var _addChild = (uid: number, child: GameObject, GameObjectData: any) => {
 
 export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
 }, (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
+    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+})
+
+export var addRemovedChild = (gameObject: GameObject, child: GameObject, MeshRendererData:any, ThreeDTransformData: any, GameObjectData: any) => {
+    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+
+    addComponent(child, createMeshRenderer(MeshRendererData), GameObjectData);
+}
+
+var _addChildHelper = (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
     var transform = getTransform(gameObject, GameObjectData),
         uid = gameObject.uid,
         childUID = child.uid,
@@ -253,7 +269,7 @@ export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObjec
     }
 
     _addChild(uid, child, GameObjectData);
-})
+}
 
 export var removeChild = requireCheckFunc((gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
     it("child should has transform component", () => {
@@ -261,7 +277,12 @@ export var removeChild = requireCheckFunc((gameObject: GameObject, child: GameOb
     });
 }, (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
     var uid = gameObject.uid,
-        childUID = child.uid;
+        childUID = child.uid,
+        meshRenderer = getMeshRenderer(child, GameObjectData);
+
+    if(_isComponentExist(meshRenderer)){
+        disposeComponent(child, getMeshRenderer(child, GameObjectData), GameObjectData);
+    }
 
     deleteVal(childUID, GameObjectData.parentMap);
 

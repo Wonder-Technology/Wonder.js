@@ -1,7 +1,8 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import {
     addChild,
-    addComponent, create, dispose, disposeComponent, getAliveChildren, getComponent, getParent, getTransform,
+    addComponent, addRemovedChild, create, dispose, disposeComponent, getAliveChildren, getComponent, getParent,
+    getTransform,
     hasChild,
     hasComponent, initGameObject as initGameObjectSystem,
     isAlive, removeChild
@@ -16,6 +17,7 @@ import { getState } from "../../DirectorSystem";
 import { DirectorData } from "../../DirectorData";
 import { getComponentIDFromClass } from "../../../component/ComponentComponentIDManager";
 import { IUIDEntity } from "./IUIDEntity";
+import { MeshRendererData } from "../../../component/renderer/MeshRendererData";
 
 @registerClass("GameObject")
 export class GameObject implements IUIDEntity {
@@ -44,9 +46,9 @@ export var disposeGameObject = requireCheckFunc((gameObject: GameObject) => {
 //     disposeBatchChildren(children, parent, ThreeDTransformData, GameObjectData);
 // })
 
-export var initGameObject = requireCheckFunc((gameObject: GameObject, component: Component) => {
+export var initGameObject = requireCheckFunc((gameObject: GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
-}, (gameObject: GameObject, component: Component) => {
+}, (gameObject: GameObject) => {
     initGameObjectSystem(gameObject, getState(DirectorData), GameObjectData);
 })
 
@@ -80,6 +82,12 @@ export var addGameObject = requireCheckFunc((gameObject: GameObject, child: Game
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, child: GameObject) => {
     addChild(gameObject, child, ThreeDTransformData, GameObjectData);
+})
+
+export var addRemovedGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject, child: GameObject) => {
+    addRemovedChild(gameObject, child, MeshRendererData, ThreeDTransformData, GameObjectData);
 })
 
 export var removeGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {

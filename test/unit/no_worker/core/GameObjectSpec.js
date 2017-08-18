@@ -425,7 +425,6 @@ describe("GameObject", function() {
 
     describe("removeChild", function() {
         beforeEach(function(){
-
         });
 
         it("if gameObject not alive, return null", function() {
@@ -476,6 +475,71 @@ describe("GameObject", function() {
             expect(gameObjectTool.has(parent, child3)).toBeTruthy();
             expect(gameObjectTool.has(child3, child31)).toBeFalsy();
             expect(gameObjectTool.has(child31, child311)).toBeTruthy();
+        });
+
+        describe("fix bug", function() {
+            var gameObject;
+            var state;
+            var gl;
+
+            beforeEach(function(){
+                var data = sceneTool.prepareGameObjectAndAddToScene();
+                gameObject = data.gameObject;
+
+                state = stateTool.createFakeGLState(sandbox);
+                stateTool.setState(state);
+
+                gl = stateTool.getGLFromFakeGLState(state);
+            });
+
+            it("removed gameObject shouldn't be rendered", function(){
+                directorTool.init(state);
+                directorTool.loopBody(state);
+
+
+                var callCount = gl.drawElements.callCount;
+
+                sceneTool.removeGameObject(gameObject);
+
+                directorTool.loopBody(state);
+
+                expect(gl.drawElements.callCount).toEqual(callCount);
+            });
+        });
+    });
+
+    describe("addRemovedChild", function() {
+            var gameObject;
+            var state;
+            var gl;
+
+        beforeEach(function(){
+            var data = sceneTool.prepareGameObjectAndAddToScene();
+            gameObject = data.gameObject;
+
+            state = stateTool.createFakeGLState(sandbox);
+            stateTool.setState(state);
+
+            gl = stateTool.getGLFromFakeGLState(state);
+        });
+
+        it("add removed child, add it to render list", function(){
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+
+            sceneTool.removeGameObject(gameObject);
+
+
+            directorTool.loopBody(state);
+
+            var callCount = gl.drawElements.callCount;
+
+            gameObjectTool.addRemoved(sceneTool.getScene(), gameObject);
+
+            directorTool.loopBody(state);
+
+            expect(gl.drawElements.callCount).toEqual(callCount + 1);
         });
     });
     

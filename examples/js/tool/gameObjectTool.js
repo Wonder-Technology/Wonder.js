@@ -13,6 +13,7 @@ var gameObjectTool = (function () {
         addComponent : wd.addGameObjectComponent,
         has: wd.hasGameObject,
         add: wd.addGameObject,
+        addRemoved: wd.addRemovedGameObject,
         init: wd.initGameObject,
         remove: wd.removeGameObject,
 
