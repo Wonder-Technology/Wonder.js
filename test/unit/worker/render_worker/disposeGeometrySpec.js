@@ -49,6 +49,8 @@ describe("dispose geometry", function () {
                 })
 
                 it("send disposed geometry index array to render worker", function () {
+                    testRenderWorkerTool.closeContractCheck();
+
                     directorTool.init(sandbox);
                     sendDrawRendercommandBufferTool.markInitComplete();
 
@@ -79,24 +81,16 @@ describe("dispose geometry", function () {
                     })
                 });
                 it("if disposed geometry index array multi times in one frame, contract error", function () {
-                    var data3 = sceneTool.prepareGameObjectAndAddToScene(true);
-                    var data4 = sceneTool.prepareGameObjectAndAddToScene(true);
-
-                    var obj3 = data3.gameObject,
-                        obj4 = data4.gameObject;
-
+                    sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
 
                     directorTool.init(sandbox);
 
 
-
                     gameObjectTool.dispose(obj1);
-                    gameObjectTool.dispose(obj2);
 
-                    gameObjectTool.dispose(obj3);
 
                     expect(function () {
-                        gameObjectTool.dispose(obj4);
+                        gameObjectTool.dispose(obj2);
                     }).toThrow("should not add data twice in one frame");
                 });
 

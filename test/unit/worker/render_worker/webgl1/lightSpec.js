@@ -100,8 +100,15 @@ describe("light", function () {
                     directionLightBuffer,
                     pointLightBuffer;
 
+                function judgeIsDirtys(dataName, bufferCount, LightWorkerData) {
+                    var isDirtys = LightWorkerData[dataName];
+
+                    expect(isDirtys).toBeInstanceOf(Uint8Array);
+                    expect(isDirtys.byteLength).toEqual(bufferCount * Uint8Array.BYTES_PER_ELEMENT * 1);
+                }
+
                 beforeEach(function () {
-                    var maxBufferLength = 1000;
+                    var maxBufferLength = 10000;
 
                     ambientLightBufferCount = 10;
                     directionLightBufferCount = 20;
@@ -154,6 +161,8 @@ describe("light", function () {
                     var colors = AmbientLightWorkerData.colors;
                     expect(colors).toBeInstanceOf(Float32Array);
                     expect(colors.byteLength).toEqual(ambientLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
+
+                    judgeIsDirtys("isColorDirtys", ambientLightBufferCount, AmbientLightWorkerData);
                 });
                 it("init direction light data", function () {
                     expect(DirectionLightWorkerData.count).toEqual(directionLightCount);
@@ -167,6 +176,11 @@ describe("light", function () {
                     var intensities = DirectionLightWorkerData.intensities;
                     expect(intensities).toBeInstanceOf(Float32Array);
                     expect(intensities.byteLength).toEqual(directionLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+
+                    judgeIsDirtys("isPositionDirtys", directionLightBufferCount, DirectionLightWorkerData);
+                    judgeIsDirtys("isColorDirtys", directionLightBufferCount, DirectionLightWorkerData);
+                    judgeIsDirtys("isIntensityDirtys", directionLightBufferCount, DirectionLightWorkerData);
                 });
                 it("init point light data", function () {
                     expect(PointLightWorkerData.count).toEqual(pointLightCount);
@@ -196,6 +210,12 @@ describe("light", function () {
                     var ranges = PointLightWorkerData.ranges;
                     expect(ranges).toBeInstanceOf(Float32Array);
                     expect(ranges.byteLength).toEqual(pointLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 1);
+
+
+                    judgeIsDirtys("isPositionDirtys", pointLightBufferCount, PointLightWorkerData);
+                    judgeIsDirtys("isColorDirtys", pointLightBufferCount, PointLightWorkerData);
+                    judgeIsDirtys("isIntensityDirtys", pointLightBufferCount, PointLightWorkerData);
+                    judgeIsDirtys("isAttenuationDirtys", pointLightBufferCount, PointLightWorkerData);
                 });
             });
         });
