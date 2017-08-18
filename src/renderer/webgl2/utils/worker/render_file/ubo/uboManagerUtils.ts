@@ -40,13 +40,13 @@ var _buildUboDataMap = (uniformBlockBinding:number, buffer:WebGLBuffer, typeArra
 }
 
 var _buildUboFuncMap = (bindUniformBufferBase:Function, bufferStaticData:Function, bufferDynamicData:Function, bufferSubDynamicData:Function, set:Function) => {
-return {
-                            bindUniformBufferBase: bindUniformBufferBase,
-    bufferStaticData: bufferStaticData,
-                            bufferDynamicData: bufferDynamicData,
-    bufferSubDynamicData: bufferSubDynamicData,
-                            set: set
-                        }
+    return {
+        bindUniformBufferBase: bindUniformBufferBase,
+        bufferStaticData: bufferStaticData,
+        bufferDynamicData: bufferDynamicData,
+        bufferSubDynamicData: bufferSubDynamicData,
+        set: set
+    }
 }
 
 var _buildGlobalRenderDataMap = (render_config:IRenderConfig) => {
@@ -62,62 +62,31 @@ export var bindFrameUboData = (gl:any, render_config:IRenderConfig, cameraData:C
     _bindSingleBufferUboData(gl, render_config, frameUboDataList, cameraData, uboBindingPointMap);
 }
 
-// export var bindGameObjectUboData = (gl:any, gameObjectIndex:number, mMatrix:Float32Array,  {
-//     gameObjectUboDataList,
-//     uboBindingPointMap
-// }) => {
-//     forEach(gameObjectUboDataList, ({
-//                                         name,
-//                                         typeArrays,
-//                                         buffers,
-//                                         initBufferDataFunc,
-//                                         setBufferDataFunc
-//                                     }) => {
-//         var typeArray = typeArrays[gameObjectIndex],
-//             buffer = buffers[gameObjectIndex],
-//             uboDataMap = _buildUboDataMap(uboBindingPointMap[name], buffer, typeArray),
-//             uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferDynamicData, bufferSubDynamicData, set);
-//
-//         if(isNotUndefined(initBufferDataFunc)){
-//             initBufferDataFunc(gl, uboDataMap, uboFuncMap);
-//         }
-//
-//         setBufferDataFunc(gl, uboDataMap, uboFuncMap, mMatrix);
-//     });
-// }
-
 export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformDataPointLightDataMap:WebGL2SendUniformDataPointLightDataMap, drawDataMap:DrawDataMap,  {
     lightUboDataList,
     uboBindingPointMap
 }) => {
     var uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferStaticData, bufferDynamicData, bufferSubDynamicData, set),
         firstUboData = lightUboDataList[0],
-    bindingPoint:number = null;
+        bindingPoint:number = null;
 
     if(isValidVal(firstUboData)){
         bindingPoint = uboBindingPointMap[firstUboData.name];
     }
 
     forEach(lightUboDataList, ({
-                                        // name,
-                                        typeArrays,
-                                        buffers,
-                                        // initBufferDataFunc,
-                                        setBufferDataFunc
-                                    }) => {
+                                   // name,
+                                   typeArrays,
+                                   buffers,
+                                   // initBufferDataFunc,
+                                   setBufferDataFunc
+                               }) => {
         var typeArray = typeArrays[pointLightIndex],
             buffer = buffers[pointLightIndex],
             uboDataMap = _buildUboDataMap(bindingPoint, buffer, typeArray);
 
-        // if(isNotUndefined(initBufferDataFunc)){
-        //     initBufferDataFunc(gl, uboDataMap, uboFuncMap);
-        // }
-
         setBufferDataFunc(gl, pointLightIndex, uboDataMap, uboFuncMap, sendUniformDataPointLightDataMap);
     });
-
-
-    // throw new Error("err")
 }
 
 var _bindSingleBufferUboData = (gl:any, render_config:IRenderConfig, singleBufferUboDataList:UboSingleBufferDataList, cameraData:CameraRenderCommandBufferForDrawData, uboBindingPointMap:UboBindingPointMap) => {
@@ -131,43 +100,15 @@ var _bindSingleBufferUboData = (gl:any, render_config:IRenderConfig, singleBuffe
     }
 
     forEach(singleBufferUboDataList, ({
-                                   // name,
-                                   typeArray,
-                                   buffer,
-        // initBufferDataFunc,
-        setBufferDataFunc
-                               }) => {
+                                          typeArray,
+                                          buffer,
+                                          setBufferDataFunc
+                                      }) => {
         var uboDataMap = _buildUboDataMap(bindingPoint, buffer, typeArray);
-
-        // if(isNotUndefined(initBufferDataFunc)){
-        //     initBufferDataFunc(gl, uboDataMap, uboFuncMap);
-        // }
 
         setBufferDataFunc(gl, uboDataMap, uboFuncMap, cameraData, globalRenderDataMap);
     });
 }
-
-// var _bindMultiBufferUboData = (gl:any, render_config:IRenderConfig, index:number, multiBufferUboDataList:UboMultiBufferDataList, cameraData:CameraRenderCommandBufferForDrawData, uboBindingPointMap:UboBindingPointMap) => {
-//     forEach(multiBufferUboDataList, ({
-//                                         name,
-//                                         typeArrays,
-//                                         buffers,
-//                                         initBufferDataFunc,
-//                                         setBufferDataFunc
-//                                     }) => {
-//         // var point = uboBindingPointMap[name];
-//         var typeArray = typeArrays[index],
-//             buffer = buffers[index],
-//             uboDataMap = _buildUboDataMap(uboBindingPointMap[name], buffer, typeArray),
-//             uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferDynamicData, set);
-//
-//         if(isNotUndefined(initBufferDataFunc)){
-//             initBufferDataFunc(gl, uboDataMap, uboFuncMap);
-//         }
-//
-//         setBufferDataFunc(gl, uboDataMap, uboFuncMap, mMatrix);
-//     });
-// }
 
 export var handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProgram, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, initShaderDataMap:InitShaderDataMap, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     // var uboDataArr: Array<IWebGL2UboConfig> = [];
@@ -259,7 +200,6 @@ var _addInitedUboFuncConfig = ensureFunc((list: UboSingleBufferDataList | UboMul
                 name: name,
                 typeArrays: typeArrays,
                 buffers: buffers,
-                // initBufferDataFunc: initBufferDataFunc,
                 setBufferDataFunc: setBufferDataFunc
             });
             break;
@@ -276,14 +216,12 @@ var _createSingleBufferData = (gl:any, name:string, typeArray:IWebGL2UboTypeArra
         name: name,
         typeArray: _createTypeArray(typeArray),
         buffer: gl.createBuffer(),
-        // initBufferDataFunc: initBufferDataFunc,
         setBufferDataFunc: setBufferDataFunc
     };
 }
 
 var _createTypeArray = ({
-    type,
-    length
+                            length
                         }) => {
     return new Float32Array(length);
 }

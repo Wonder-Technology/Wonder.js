@@ -1,6 +1,5 @@
 import { SpecifyLightWorkerData } from "./SpecifyLightWorkerData";
 
-//todo refactor
 export abstract class PointLightWorkerData extends SpecifyLightWorkerData {
     public static intensities: Float32Array = null;
     public static constants: Float32Array = null;
