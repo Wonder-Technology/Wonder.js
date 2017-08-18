@@ -20,6 +20,8 @@ export var detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSy
 
     GPUDetectDataFromSystem.maxBoneCount = _getMaxBoneCount(state, gl);
 
+    GPUDetectDataFromSystem.maxUniformBufferBindings = gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS);
+
     //todo use map instead
     // alert("maxBoneCount:" + GPUDetectDataFromSystem.maxBoneCount);
 

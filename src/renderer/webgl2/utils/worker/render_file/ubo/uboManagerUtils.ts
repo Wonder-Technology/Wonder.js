@@ -18,6 +18,7 @@ import { IRenderConfig } from "../../../../../worker/both_file/data/render_confi
 import { set } from "../../../../../../utils/typeArrayUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
+import { getMaxUniformBufferBindings } from "../device/gpuDetectUtils";
 
 export var init = (gl:any, render_config:IRenderConfig, {
     oneUboDataList,
@@ -168,7 +169,7 @@ var _bindSingleBufferUboData = (gl:any, render_config:IRenderConfig, singleBuffe
 //     });
 // }
 
-export var handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProgram, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, initShaderDataMap:InitShaderDataMap, GLSLSenderDataFromSystem: any) => {
+export var handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProgram, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, initShaderDataMap:InitShaderDataMap, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     // var uboDataArr: Array<IWebGL2UboConfig> = [];
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
@@ -179,14 +180,14 @@ export var handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProgra
                 forEach(sendData.uniformUbo, (data: IWebGL2UboConfig) => {
                     var name = data.name,
                         bindingPoint:number = null,
-                    uboBindingPointMap = GLSLSenderDataFromSystem.uboBindingPointMap,
+                        uboBindingPointMap = GLSLSenderDataFromSystem.uboBindingPointMap,
                         uboBindingPoint = uboBindingPointMap[name];
 
                     if (isValidMapValue(uboBindingPoint)) {
                         return;
                     }
 
-                    bindingPoint = _setUniqueBindingPoint(name, GLSLSenderDataFromSystem);
+                    bindingPoint = _setUniqueBindingPoint(name, GLSLSenderDataFromSystem, GPUDetectDataFromSystem);
 
 
                     bindUniformBlock(gl, program, name, bindingPoint);
@@ -197,17 +198,22 @@ export var handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProgra
         }
     });
 }
-var _setUniqueBindingPoint = (name: string, GLSLSenderDataFromSystem: any) => {
+
+var _setUniqueBindingPoint = ensureFunc((uboBindingPoint:number, name: string, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+    it("uboBindingPoint shouldn't exceed maxUniformBufferBindings", () => {
+        expect(uboBindingPoint).lte(getMaxUniformBufferBindings(GPUDetectDataFromSystem));
+    });
+},(name: string, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     var uboBindingPointMap = GLSLSenderDataFromSystem.uboBindingPointMap,
         uboBindingPoint:number = GLSLSenderDataFromSystem.uboBindingPoint;
 
-    //todo check not exceed max point
     uboBindingPointMap[name] = uboBindingPoint;
 
     GLSLSenderDataFromSystem.uboBindingPoint += 1;
 
     return uboBindingPoint;
-}
+})
+
 var _addInitedUboFuncConfig = ensureFunc((list: UboSingleBufferDataList | UboMultiBufferDataList) => {
     it("list shouldn't has duplicate ubo data", () => {
         expect(hasDuplicateItems(list)).false;

@@ -35,13 +35,24 @@ describe("test init ubo", function () {
 
             expect(gl.createBuffer.callCount).toEqual(5);
         });
-        it("allocate binding point", function () {
-            directorTool.init(state);
 
-            expect(uboTool.getBindingPoint("CameraUbo")).toEqual(0);
-            expect(uboTool.getBindingPoint("LightUbo")).toEqual(1);
-            expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(2);
+        describe("allocate binding point", function () {
+            it("test", function () {
+                directorTool.init(state);
+
+                expect(uboTool.getBindingPoint("CameraUbo")).toEqual(0);
+                expect(uboTool.getBindingPoint("LightUbo")).toEqual(1);
+                expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(2);
+            });
+            it("if binding point exceed maxUniformBufferBindings, error", function () {
+                gpuDetectTool.setGPUDetectData("maxUniformBufferBindings", 1);
+
+                expect(function(){
+                    directorTool.init(state);
+                }).toThrow("uboBindingPoint shouldn't exceed maxUniformBufferBindings");
+            });
         });
+
         it("bind uniform block", function () {
             var cameraUboLocation = 10;
             gl.getUniformBlockIndex.withArgs(sinon.match.any, "CameraUbo").returns(cameraUboLocation);

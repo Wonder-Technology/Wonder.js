@@ -33,7 +33,8 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
             DeviceManagerDataFromSystem,
             ProgramDataFromSystem,
             LocationDataFromSystem,
-            GLSLSenderDataFromSystem
+            GLSLSenderDataFromSystem,
+            GPUDetectDataFromSystem
         } = initShaderDataMap,
         {
             buildGLSLSource,
@@ -68,7 +69,7 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     addSendAttributeConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.sendAttributeConfigMap);
     addSendUniformConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem);
 
-    handleUboConfig(gl, shaderIndex, program, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap, GLSLSenderDataFromSystem);
+    handleUboConfig(gl, shaderIndex, program, materialShaderLibNameArr, shaderLibDataFromSystem, initShaderDataMap, GLSLSenderDataFromSystem, GPUDetectDataFromSystem);
 
     return shaderIndex;
 }

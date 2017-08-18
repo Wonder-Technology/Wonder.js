@@ -18,4 +18,6 @@ var _detectExtension = (state: Map<any, any>, gl:any, GPUDetectDataFromSystem:an
     GPUDetectDataFromSystem.extensionColorBufferFloat = getExtension("EXT_color_buffer_float", state, gl);
 }
 
+export var getMaxUniformBufferBindings = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.maxUniformBufferBindings;
+
 export var hasExtensionColorBufferFloat = (GPUDetectDataFromSystem:any) => !!GPUDetectDataFromSystem.extensionColorBufferFloat;

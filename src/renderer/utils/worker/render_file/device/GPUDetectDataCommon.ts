@@ -4,6 +4,7 @@ export class GPUDetectDataCommon {
     public static maxCubemapTextureSize: number = null;
     public static maxAnisotropy: number = null;
     public static maxBoneCount: number = null;
+    public static maxUniformBufferBindings: number = null;
     public static extensionCompressedTextureS3TC: any = null;
     public static extensionTextureFilterAnisotropic: any = null;
     public static extensionInstancedArrays: any = null;

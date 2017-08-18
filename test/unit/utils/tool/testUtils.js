@@ -26,6 +26,7 @@ var testUtils = (function () {
 
         initForTest: function(sandbox){
             gpuDetectTool.setGPUDetectData("maxTextureUnit", 16)
+            gpuDetectTool.setGPUDetectData("maxUniformBufferBindings", 10);
         }
     }
 })();

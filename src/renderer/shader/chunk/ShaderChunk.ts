@@ -32,15 +32,15 @@ export const webgl1_noSpecularMap_fragment:GLSLChunk = {top: "",define: "",varDe
 export const webgl1_specularMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_specularMapTexCoord;\n",funcDeclare: "",funcDefine: "float getSpecularStrength() {\n        return texture2D(u_specularMapSampler, v_specularMapTexCoord).r;\n    }\n",body: ""};
 export const webgl1_specularMap_vertex:GLSLChunk = {top: "",define: "",varDeclare: "varying vec2 v_specularMapTexCoord;\n",funcDeclare: "",funcDefine: "",body: "v_specularMapTexCoord = a_texCoord;\n"};
 export const webgl2_noShadowMap_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n",body: ""};
-export const webgl2_basic_end_fragment:GLSLChunk = {top: "",define: "",varDeclare: "out vec4 fragColor;\n",funcDeclare: "",funcDefine: "",body: "fragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n"};
-export const webgl2_basic_materialColor_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "vec4 totalColor = vec4(u_color, 1.0);\n"};
-export const webgl2_basic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "//todo remove define\nlayout(location=0) in vec3 a_position;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const ubo_camera:GLSLChunk = {top: "",define: "",varDeclare: "layout(std140) uniform CameraUbo {\n    mat4 vMatrix;\n    mat4 pMatrix;\n    vec4 cameraPos;\n    vec4 normalMatrixCol1;\n    vec4 normalMatrixCol2;\n    vec4 normalMatrixCol3;\n} cameraUbo;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const version:GLSLChunk = {top: "#version 300 es\n",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_define:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_function:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
+export const webgl2_basic_end_fragment:GLSLChunk = {top: "",define: "",varDeclare: "out vec4 fragColor;\n",funcDeclare: "",funcDefine: "",body: "fragColor = vec4(totalColor.rgb, totalColor.a * u_opacity);\n"};
+export const webgl2_basic_materialColor_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: "vec4 totalColor = vec4(u_color, 1.0);\n"};
+export const webgl2_basic_vertex:GLSLChunk = {top: "",define: "",varDeclare: "//todo remove define\nlayout(location=0) in vec3 a_position;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const ubo_light:GLSLChunk = {top: "",define: "",varDeclare: "layout(std140) uniform LightUbo {\n/*! vec4(lightModel, 0.0, 0.0, 0.0) */\n    vec4 lightModel;\n} lightUbo;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_basic_map_fragment:GLSLChunk = {top: "",define: "",varDeclare: "in vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n"};
 export const webgl2_basic_map_vertex:GLSLChunk = {top: "",define: "",varDeclare: "//todo remove define\nlayout(location=1) in vec2 a_texCoord;\nout vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n//\n//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n\n    v_mapCoord0 = a_texCoord;\n"};
