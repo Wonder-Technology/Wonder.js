@@ -1,11 +1,4 @@
-import { SendAttributeConfigMap, SendUniformConfigMap, UniformCacheMap } from "../../../../../type/dataType";
+import { WebGL1GLSLSenderDataCommon } from "../../../../../webgl1/utils/worker/render_file/shader/glslSender/GLSLSenderDataCommon";
 
-export class WebGL1GLSLSenderWorkerData {
-    public static uniformCacheMap: UniformCacheMap = null;
-
-    public static sendAttributeConfigMap: SendAttributeConfigMap = null;
-    public static sendUniformConfigMap: SendUniformConfigMap = null;
-
-    public static vertexAttribHistory: Array<boolean> = null;
-
+export class WebGL1GLSLSenderWorkerData extends WebGL1GLSLSenderDataCommon{
 }
