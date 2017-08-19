@@ -143,6 +143,32 @@ export var addComponent = requireCheckFunc((gameObject: GameObject, component: C
     data[componentID] = component;
 })
 
+export var addSharedComponent = requireCheckFunc((gameObject: GameObject, component: Component, GameObjectData: any) => {
+    it("component should exist", () => {
+        expect(component).exist;
+    });
+    it("should not has this type of component, please dispose it", () => {
+        expect(hasComponent(gameObject, getComponentIDFromComponent(component), GameObjectData)).false;
+    });
+}, (gameObject: GameObject, component: Component, GameObjectData: any) => {
+    var uid = gameObject.uid,
+        componentID = getComponentIDFromComponent(component),
+        data = _getComponentData(uid, GameObjectData);
+
+    execHandle(component, "addComponentHandleMap", [component, gameObject]);
+
+    if (!data) {
+        let d = {};
+
+        d[componentID] = component;
+        _setComponentData(uid, d, GameObjectData);
+
+        return;
+    }
+
+    data[componentID] = component;
+})
+
 var _removeComponent = (componentID: string, gameObject: GameObject, GameObjectData: any) => {
     var uid = gameObject.uid,
         data = _getComponentData(uid, GameObjectData);

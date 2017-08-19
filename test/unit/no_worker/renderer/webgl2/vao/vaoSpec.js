@@ -193,17 +193,39 @@ describe("test vao", function () {
 
             expect(getBindVaoMethod(gl).withArgs(vao).callCount).toEqual(callCount + 1);
         });
-        it("else, not bind", function () {
-            directorTool.init(state);
 
-            directorTool.loopBody(state);
+        describe("else, not bind", function () {
+            it("test one gameObject", function () {
+                directorTool.init(state);
+
+                directorTool.loopBody(state);
 
 
-            var callCount = getBindVaoMethod(gl).withArgs(vao).callCount;
+                var callCount = getBindVaoMethod(gl).withArgs(vao).callCount;
 
-            directorTool.loopBody(state);
+                directorTool.loopBody(state);
 
-            expect(getBindVaoMethod(gl).withArgs(vao).callCount).toEqual(callCount);
+                expect(getBindVaoMethod(gl).withArgs(vao).callCount).toEqual(callCount);
+            });
+            it("test two gameObject with the same geometry component", function () {
+                var gameObject2 = sceneTool.createGameObject(geo);
+
+                sceneTool.addGameObject(gameObject2);
+
+
+
+                directorTool.init(state);
+
+                directorTool.loopBody(state);
+
+                var callCount = getBindVaoMethod(gl).withArgs(vao).callCount;
+
+
+
+                directorTool.loopBody(state);
+
+                expect(getBindVaoMethod(gl).withArgs(vao).callCount).toEqual(callCount);
+            });
         });
     });
 

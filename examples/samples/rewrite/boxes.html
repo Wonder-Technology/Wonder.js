@@ -28,7 +28,11 @@
         function initSample() {
             var director = wd.Director.getInstance();
 
-            var box2 = createBox();
+            var box1 = createBox();
+
+            var geo1 = gameObjectTool.getComponent(box1, wd.Geometry);
+
+            var box2 = createBox(geo1);
 //            var box2 = box.clone();
 //            box2.transform.translate(20,0,0)
 
@@ -40,14 +44,14 @@
 //                box, box2
 //            ])
 
-//            sceneTool.addGameObject(box);
+            sceneTool.addGameObject(box1);
             sceneTool.addGameObject(box2);
             sceneTool.addGameObject(createCamera());
 
             director.start();
         }
 
-        function createBox() {
+        function createBox(geometry) {
             var material = basicMaterialTool.create();
 
             basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
@@ -58,7 +62,14 @@
             gameObjectTool.addComponent(obj, meshRendererTool.create());
 
 
-            var geo = boxGeometryTool.create();
+            var geo = null;
+
+            if(!!geometry){
+                geo = geometry;
+            }
+            else{
+                geo = boxGeometryTool.create();
+            }
 
             boxGeometryTool.setConfigData(geo, {
                 width:5,

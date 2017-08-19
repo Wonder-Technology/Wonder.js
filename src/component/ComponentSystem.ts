@@ -61,9 +61,9 @@ export var checkComponentShouldAlive = (component: Component, data: any, isAlive
 }
 
 export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
-    it("component should not exist in gameObject", () => {
-        expect(gameObjectMap[index]).not.exist;
-    });
+    // it("component should not exist in gameObject", () => {
+    //     expect(gameObjectMap[index]).not.exist;
+    // });
 }, (gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
     gameObjectMap[index] = gameObject;
 })
