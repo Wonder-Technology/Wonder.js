@@ -33,7 +33,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
@@ -43,7 +43,7 @@
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
-        'test/unit/no_worker/**/*Geometry*',
+        // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*Texture*',
         // 'test/unit/no_worker/**/ColorSpec*',
         // 'test/unit/no_worker/**/shader*Spec*',

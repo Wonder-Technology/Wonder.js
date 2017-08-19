@@ -7,11 +7,12 @@ import { Map } from "immutable";
 import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
-import { DrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../type/utilsType";
 import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { clear } from "../../../both_file/device/DeviceManagerWorkerSystem";
+import { WebGL1DrawDataMap } from "../../../../webgl1/utils/worker/render_file/type/utilsType";
 
-export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: DrawDataMap, initShaderDataMap: InitShaderDataMap, {
+export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, {
     cameraData,
     basicData,
     lightData
