@@ -10,7 +10,7 @@ import {
     getTransform
 } from "../../../../../core/entityObject/gameObject/GameObjectSystem";
 import { getCurrentCamera } from "../../../../../core/entityObject/scene/SceneSystem";
-import { getComponentIDFromClass } from "../../../../../component/ComponentComponentIDManager";
+import { getComponentIdFromClass } from "../../../../../component/ComponentComponentIdManager";
 import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import {
     getLocalToWorldMatrix, getNormalMatrix, getPosition,
@@ -39,7 +39,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         materialIndices = RenderCommandBufferData.materialIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
         currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
+        currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
         currentCameraTransform = getTransform(currentCamera, GameObjectData),
         mat4Length = getMatrix4DataSize();

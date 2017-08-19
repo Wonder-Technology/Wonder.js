@@ -13,7 +13,7 @@ import {
 import { WebGL2BasicSendUniformDataDataMap} from "../../../../../type/utilsType";
 import { Log } from "../../../../../../../utils/Log";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
-import { IWebGL2BasicDrawFuncDataMap } from "../../../../../interface/IDraw";
+import { IWebGL2BasicDrawFuncDataMap } from "../../../../../interface/Idraw";
 import { draw as basicDraw } from "../../../../draw/basic/basicDrawRenderCommandBufferUtils";
 import {
     BasicRenderCommandBufferForDrawData,

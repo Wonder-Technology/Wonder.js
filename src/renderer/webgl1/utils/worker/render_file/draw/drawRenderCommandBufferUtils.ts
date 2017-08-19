@@ -4,7 +4,7 @@ import {
 } from "../../../../../utils/draw/drawRenderCommandBufferUtils";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
-import { IWebGL1DrawFuncDataMap } from "../../../../interface/IDraw";
+import { IWebGL1DrawFuncDataMap } from "../../../../interface/Idraw";
 import {
     WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap
 } from "../../../../type/utilsType";

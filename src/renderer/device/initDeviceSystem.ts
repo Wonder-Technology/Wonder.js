@@ -50,25 +50,25 @@ else {
     });
 }
 
-export var createCanvas = curry((DomQuery: any, domID: string) => {
+export var createCanvas = curry((DomQuery: any, domId: string) => {
     return IO.of(() => {
-        if (domID !== "") {
-            return DomQuery.create(_getCanvasID(domID)).get(0);
+        if (domId !== "") {
+            return DomQuery.create(_getCanvasId(domId)).get(0);
         }
 
         return DomQuery.create("<canvas></canvas>").prependTo("body").get(0);
     })
 })
 
-var _getCanvasID = ensureFunc((id: string) => {
+var _getCanvasId = ensureFunc((id: string) => {
     it("dom id should be #string", () => {
         expect(/#[^#]+/.test(id)).true;
     });
-}, (domID: string) => {
-    if (domID.indexOf('#') > -1) {
-        return domID;
+}, (domId: string) => {
+    if (domId.indexOf('#') > -1) {
+        return domId;
     }
 
-    return `#${domID}`;
+    return `#${domId}`;
 });
 

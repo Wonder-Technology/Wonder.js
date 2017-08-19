@@ -87,7 +87,7 @@ import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
 import { VaoData } from "../renderer/vao/VaoData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
-    canvasID = "",
+    canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
     useDevicePixelRatio = false,
@@ -130,7 +130,7 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
                 screenSize: screenSize
             },
             config: {
-                canvasID: canvasID,
+                canvasId: canvasId,
                 contextConfig: {
                     options: ExtendUtils.extend({
                         alpha: true,
@@ -249,7 +249,7 @@ if(isWebgl1()){
         return compose(
             chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL1, DomQuery)),
             createCanvas(DomQuery)
-        )(configState.get("canvasID"));
+        )(configState.get("canvasId"));
     });
 }
 else{
@@ -295,6 +295,6 @@ else{
         return compose(
             chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2, DomQuery)),
             createCanvas(DomQuery)
-        )(configState.get("canvasID"));
+        )(configState.get("canvasId"));
     });
 }

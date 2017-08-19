@@ -8,7 +8,7 @@ import { ClassUtils } from "../../../../../utils/ClassUtils";
 import { initData as initBasicRenderComandBufferData } from "./basicRenderComandBufferUtils";
 import { initData as initLightRenderComandBufferData } from "./lightRenderComandBufferUtils";
 import { getCurrentCamera } from "../../../../../core/entityObject/scene/SceneSystem";
-import { getComponentIDFromClass } from "../../../../../component/ComponentComponentIDManager";
+import { getComponentIdFromClass } from "../../../../../component/ComponentComponentIdManager";
 import { CameraController } from "../../../../../component/camera/CameraController";
 import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import { getNormalMatrix, getPosition } from "../../../../../component/transform/ThreeDTransformSystem";
@@ -25,7 +25,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         cameraPosition:Float32Array = null,
         normalMatrix:Float32Array = null,
         currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIDFromClass(CameraController), GameObjectData),
+        currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
         currentCameraTransform = getTransform(currentCamera, GameObjectData);
 

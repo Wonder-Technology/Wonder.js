@@ -15,12 +15,12 @@ import { requireCheckFunc } from "../../../definition/typescript/decorator/contr
 import { checkGameObjectShouldAlive } from "../../../utils/contractUtils";
 import { getState } from "../../DirectorSystem";
 import { DirectorData } from "../../DirectorData";
-import { getComponentIDFromClass } from "../../../component/ComponentComponentIDManager";
-import { IUIDEntity } from "./IUIDEntity";
+import { getComponentIdFromClass } from "../../../component/ComponentComponentIdManager";
+import { IUIdEntity } from "./IUIdEntity";
 import { MeshRendererData } from "../../../component/renderer/MeshRendererData";
 
 @registerClass("GameObject")
-export class GameObject implements IUIDEntity {
+export class GameObject implements IUIdEntity {
     public uid: number = null;
 }
 
@@ -61,7 +61,7 @@ export var disposeGameObjectComponent = requireCheckFunc((gameObject: GameObject
 export var getGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, _class: any) => {
-    return getComponent(gameObject, getComponentIDFromClass(_class), GameObjectData);
+    return getComponent(gameObject, getComponentIdFromClass(_class), GameObjectData);
 })
 
 export var getGameObjectTransform = (gameObject: GameObject) => {
@@ -71,7 +71,7 @@ export var getGameObjectTransform = (gameObject: GameObject) => {
 export var hasGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
     // checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, _class: any) => {
-    return hasComponent(gameObject, getComponentIDFromClass(_class), GameObjectData);
+    return hasComponent(gameObject, getComponentIdFromClass(_class), GameObjectData);
 })
 
 export var isGameObjectAlive = (gameObject: GameObject) => {

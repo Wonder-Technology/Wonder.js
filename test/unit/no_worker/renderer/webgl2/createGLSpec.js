@@ -18,7 +18,7 @@ describe("create gl", function () {
 
     it("get webgl2 context", function () {
         Main.setConfig({
-            canvasID: "a"
+            canvasId: "a"
         });
         Main.init();
 

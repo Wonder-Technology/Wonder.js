@@ -57,7 +57,7 @@ import { getClassName as getLightMaterialClassName } from "../../renderer/utils/
 import { ShaderData } from "../../renderer/shader/ShaderData";
 import { InitShaderDataMap } from "../../renderer/type/utilsType";
 import { IMaterialConfig } from "../../renderer/data/material_config_interface";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
 import {
     getBasicMaterialBufferStartIndex,

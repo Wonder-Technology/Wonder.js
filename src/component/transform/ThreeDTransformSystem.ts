@@ -44,7 +44,7 @@ import {
 } from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../../math/Matrix3";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { triggerEvent } from "../../event/EventManagerSystem";
 
 export var addAddComponentHandle = (_class: any) => {
@@ -65,7 +65,7 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
 }, (ThreeDTransformData: any) => {
     var transform = new ThreeDTransform(),
         index = _generateIndexInArrayBuffer(ThreeDTransformData),
-        uid = _buildUID(ThreeDTransformData);
+        uid = _buildUId(ThreeDTransformData);
 
     transform.index = index;
     transform.uid = uid;
@@ -78,12 +78,12 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
 
     _setDefaultTypeArrData(index, ThreeDTransformData);
 
-    ThreeDTransformData.aliveUIDArray.push(uid);
+    ThreeDTransformData.aliveUIdArray.push(uid);
 
     return transform;
 })
 
-var _buildUID = (ThreeDTransformData: any) => {
+var _buildUId = (ThreeDTransformData: any) => {
     return ThreeDTransformData.uid++;
 }
 
@@ -336,7 +336,7 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.count = 0;
 
-    ThreeDTransformData.aliveUIDArray = [];
+    ThreeDTransformData.aliveUIdArray = [];
 }
 
 var _initBufferData = (ThreeDTransformData: any) => {

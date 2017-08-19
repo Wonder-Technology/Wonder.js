@@ -183,7 +183,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:EScreenSize.FULL,
-                    canvasID: "#event-test"
+                    canvasId: "#event-test"
                 }).init();
 
 
@@ -209,7 +209,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:RectRegion.create(10, 0, 50, 100),
-                    canvasID: "#event-test"
+                    canvasId: "#event-test"
                 }).init();
 
                 expect(view.x).toEqual(10);
@@ -228,7 +228,7 @@ describe("Main", function() {
                 it("set viewport", function () {
                     Main.setConfig({
                         screenSize:RectRegion.create(10, 0, 50, 100),
-                        canvasID: "#event-test"
+                        canvasId: "#event-test"
                     }).init();
 
                     expect(device.viewport).toEqual(RectRegion.create(10, 0, 50, 100));
@@ -237,12 +237,12 @@ describe("Main", function() {
                     var screenSize = RectRegion.create(10, 0, 50, 100);
                     Main.setConfig({
                         screenSize:screenSize,
-                        canvasID: "#event-test"
+                        canvasId: "#event-test"
                     }).init();
 
                     Main.setConfig({
                         screenSize:screenSize,
-                        canvasID: "#event-test"
+                        canvasId: "#event-test"
                     }).init();
 
                     worker = workerTool.getRenderWorker();
@@ -293,15 +293,15 @@ describe("Main", function() {
 
                 it("support pass canvas id", function(){
                     Main.setConfig({
-                        canvasID:"a"
+                        canvasId:"a"
                     });
                     Main.init();
 
                     expect(DomQuery.create).toCalledWith("#a");
                 });
-                it("support pass #canvasID", function(){
+                it("support pass #canvasId", function(){
                     Main.setConfig({
-                        canvasID:"#a"
+                        canvasId:"#a"
                     });
                     Main.init();
 
@@ -379,7 +379,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
-                    canvasID:"a",
+                    canvasId:"a",
                     useDevicePixelRatio:true
                 });
                 Main.init();
@@ -390,7 +390,7 @@ describe("Main", function() {
             it("else, not set it", function(){
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
-                    canvasID:"a",
+                    canvasId:"a",
                     useDevicePixelRatio:false
                 });
                 Main.init();
@@ -410,7 +410,7 @@ describe("Main", function() {
 
             it("create renderWorker", function(){
                 Main.setConfig({
-                    canvasID: "#a"
+                    canvasId: "#a"
                 }).init();
 
                 worker = workerTool.getRenderWorker();
@@ -426,7 +426,7 @@ describe("Main", function() {
                     var workerFilePath = "/Wonder.js/dist/worker/wd.renderWorker.js";
 
                     Main.setConfig({
-                        canvasID: "#a"
+                        canvasId: "#a"
                     }).init();
 
                     worker = workerTool.getRenderWorker();
@@ -439,7 +439,7 @@ describe("Main", function() {
                         var workerFileDir = "/aaa/worker/";
 
                         Main.setConfig({
-                            canvasID: "#a",
+                            canvasId: "#a",
                             workerConfig:{
                                 renderWorkerFileDir:workerFileDir
                             }
@@ -452,7 +452,7 @@ describe("Main", function() {
                         var workerFileDir = "/aaa/worker";
 
                         Main.setConfig({
-                            canvasID: "#a",
+                            canvasId: "#a",
                             workerConfig:{
                                 renderWorkerFileDir:workerFileDir
                             }
@@ -465,7 +465,7 @@ describe("Main", function() {
 
             it("send message to render worker", function () {
                 Main.setConfig({
-                    canvasID: "#a"
+                    canvasId: "#a"
                 }).init();
 
                 worker = workerTool.getRenderWorker();

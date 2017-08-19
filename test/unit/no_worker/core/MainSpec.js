@@ -87,15 +87,15 @@ describe("Main", function() {
 
                 it("support pass canvas id", function(){
                     Main.setConfig({
-                        canvasID:"a"
+                        canvasId:"a"
                     });
                     Main.init();
 
                     expect(device.gl).toBeDefined();
                 });
-                it("support pass #canvasID", function(){
+                it("support pass #canvasId", function(){
                     Main.setConfig({
-                        canvasID:"#a"
+                        canvasId:"#a"
                     });
                     Main.init();
 
@@ -127,7 +127,7 @@ describe("Main", function() {
             describe("set webgl context options", function(){
                 it("test default value", function(){
                     Main.setConfig({
-                        canvasID:"a"
+                        canvasId:"a"
                     });
                     Main.init();
 
@@ -144,7 +144,7 @@ describe("Main", function() {
 
                 it("can set webgl context options", function(){
                     Main.setConfig({
-                        canvasID:"a",
+                        canvasId:"a",
                         contextConfig:{
                             options:{
                                 stencil:true,
@@ -192,7 +192,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
-                    canvasID:"a",
+                    canvasId:"a",
                     useDevicePixelRatio:true
                 });
                 Main.init();
@@ -203,7 +203,7 @@ describe("Main", function() {
             it("else, not set it", function(){
                 Main.setConfig({
                     screenSize:RectRegion.create(0,0,screenWidth,screenHeight),
-                    canvasID:"a",
+                    canvasId:"a",
                     useDevicePixelRatio:false
                 });
                 Main.init();
@@ -280,7 +280,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:EScreenSize.FULL,
-                    canvasID: "#event-test"
+                    canvasId: "#event-test"
                 }).init();
 
 
@@ -303,7 +303,7 @@ describe("Main", function() {
 
                 Main.setConfig({
                     screenSize:RectRegion.create(10, 0, 50, 100),
-                    canvasID: "#event-test"
+                    canvasId: "#event-test"
                 }).init();
 
                 expect(view.x).toEqual(10);

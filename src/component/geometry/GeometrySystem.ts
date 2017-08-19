@@ -34,7 +34,7 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { hasExtensionUintIndices } from "../../renderer/utils/device/gpuDetectUtils";
 
 export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {

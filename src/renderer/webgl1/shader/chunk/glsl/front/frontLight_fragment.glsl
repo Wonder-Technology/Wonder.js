@@ -121,7 +121,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 @body
 vec3 normal = normalize(getNormal());
 
-#ifdef BOTH_SIDE
+#ifdef BOTH_SIdE
 normal = normal * (-1.0 + 2.0 * float(gl_FrontFacing));
 #endif
 

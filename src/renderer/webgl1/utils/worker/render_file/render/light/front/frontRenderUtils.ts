@@ -4,7 +4,7 @@ import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generat
 import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { draw as frontDraw } from "../../../../../draw/light/front/frontDrawRenderCommandBufferUtils";
-import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/IDraw";
+import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/Idraw";
 import { WebGL1LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
 import {
     LightRenderCommandBufferForDrawData

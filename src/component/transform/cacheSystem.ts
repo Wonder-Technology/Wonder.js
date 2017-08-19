@@ -2,7 +2,7 @@ import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import { deleteVal, isNotValidMapValue } from "../../utils/objectUtils";
 import { getIsTranslate, setIsTranslate } from "./isTransformSystem";
-import { getUID } from "./utils";
+import { getUId } from "./utils";
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
 import { ThreeDTransformCacheMap } from "./ThreeDTransformData";
@@ -22,7 +22,7 @@ export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) =
     cacheMap = ThreeDTransformData.cacheMap;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let uid = getUID(i, ThreeDTransformData),
+        let uid = getUId(i, ThreeDTransformData),
             isTranslate = getIsTranslate(uid, ThreeDTransformData);
 
         if (isTranslate) {

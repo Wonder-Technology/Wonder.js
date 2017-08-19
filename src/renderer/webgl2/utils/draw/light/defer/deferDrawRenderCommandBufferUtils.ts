@@ -4,7 +4,7 @@ import { IRenderConfig } from "../../../../../worker/both_file/data/render_confi
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
-import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
+import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/Idraw";
 import {
      LightRenderUniformData
 } from "../../../../../type/dataType";

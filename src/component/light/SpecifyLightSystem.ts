@@ -10,7 +10,7 @@ import { Light } from "./Light";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { setColor3Data } from "../utils/operateBufferDataUtils";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { deleteBySwapAndReset } from "../../utils/typeArrayUtils";
 import { getColorDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { registerEvent } from "../../event/EventManagerSystem";
