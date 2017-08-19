@@ -12,3 +12,6 @@ export var unbindVao = (extension:any) => {
     extension.bindVertexArrayOES(null);
 }
 
+export var disposeVao = (extension:any, vao:WebGLVertexArrayObject) => {
+    extension.deleteVertexArrayOES(vao);
+}

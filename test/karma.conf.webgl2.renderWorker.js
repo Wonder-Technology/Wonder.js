@@ -28,6 +28,8 @@
         'test/helper/yoop/yOOP.js',
 
         'test/unit/utils/**',
+
+        'test/unit/tool/*.js',
         'test/unit/worker/tool/*.js',
         'test/unit/worker/**/tool/*.js',
         'test/unit/worker/utils/*.js',
@@ -38,6 +40,7 @@
         // 'test/unit/worker/**/material*',
         // 'test/unit/worker/**/lightMaterial*',
         // 'test/unit/worker/**/disposeTexture*',
+        // 'test/unit/worker/**/disposeGeometry*',
         // 'test/unit/worker/**/lightSpec*',
         // 'test/unit/worker/**/DirectorSpec*',
 

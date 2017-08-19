@@ -192,10 +192,6 @@ else {
 
             initLocationData(LocationData);
 
-            initArrayBufferData(ArrayBufferData);
-
-            initIndexBufferData(IndexBufferData);
-
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
         }
     }

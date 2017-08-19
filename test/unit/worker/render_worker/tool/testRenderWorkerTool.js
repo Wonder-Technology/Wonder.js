@@ -55,6 +55,8 @@ var testRenderWorkerTool = (function () {
 
             webglDetectWorkerTool.resetData();
             gpuDetectTool.resetData();
+
+            vaoTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {

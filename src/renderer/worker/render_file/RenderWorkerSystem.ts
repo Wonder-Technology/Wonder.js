@@ -20,12 +20,10 @@ import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 import { initGL } from "./initGL";
 import { getState, setState } from "./state/StateSytem";
 import { StateData } from "./state/StateData";
-import { disposeGeometryBuffers } from "../both_file/buffer/BufferSystem";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
 import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
 import { initData as initLocationWorkerData } from "./shader/location/LocationWorkerSystem";
-// import { initData as initGLSLSenderWorkerData } from "./shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
 import {
@@ -46,7 +44,6 @@ import {
     GeometryInitWorkerData, GeometryResetWorkerData,
     GeometryUpdateWorkerData, LightDrawWorkerData, TextureInitWorkerData
 } from "../../type/messageDataType";
-// import { PointLightWorkerData } from "./light/PointLightWorkerData";
 import { setIsTest } from "./config/InitConfigWorkerSystem";
 import { InitConfigWorkerData } from "./config/InitConfigWorkerData";
 import { setPositionArr as setPointLightPositionArr } from "./light/PointLightWorkerSystem";
@@ -60,7 +57,6 @@ import {
 import { callFunc, empty, fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { initData as initShaderData } from "./shader/ShaderWorkerSystem";
 import { ShaderWorkerData } from "./shader/ShaderWorkerData";
-// import { draw as frontDraw } from "../webgl1/render_file/render/light/front/FrontRenderWorkerSystem";
 import { IRenderConfig, render_config } from "../both_file/data/render_config";
 import { webgl1_material_config } from "../webgl1/both_file/data/material_config";
 import { webgl1_shaderLib_generator } from "../webgl1/both_file/data/shaderLib_generator";
@@ -71,7 +67,6 @@ import { initMaterialShader as initMaterialShaderWebGL1, initNoMaterialShader as
 import { isWebgl1, setVersion } from "./device/WebGLDetectWorkerSystem";
 import { WebGLDetectWorkerData } from "./device/WebGLDetectWorkerData";
 import { buildInitShaderDataMap } from "../../utils/worker/render_file/material/materialUtils";
-// import { init as initDeferUtils } from "../../webgl2/utils/worker/render_file/render/light/defer/deferShadingUtils";
 import { GBufferWorkerData } from "../webgl2/render_file/render/light/defer/gbuffer/GBufferWorkerData";
 import { DeferLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferLightPassWorkerData";
 import { webgl2_material_config } from "../webgl2/both_file/data/material_config";
@@ -90,8 +85,7 @@ import { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLig
 import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/type/dataType";
 import { detect as detectWebGL1 } from "../webgl1/render_file/device/GPUDetectWorkerSystem";
 import {
-    detect as detectWebGL2,
-    hasExtensionColorBufferFloat
+    detect as detectWebGL2
 } from "../webgl2/render_file/device/GPUDetectWorkerSystem";
 import { GPUDetectWorkerData } from "./device/GPUDetectWorkerData";
 import { render as renderWebGL1 } from "../webgl1/render_file/render/RenderWorkerSystem";
@@ -114,6 +108,8 @@ import { WebGL2ProgramWorkerData } from "../webgl2/render_file/shader/program/Pr
 import { buildDrawDataMap as buildWebGL1DrawDataMap } from "../../webgl1/utils/worker/render_file/render/renderUtils";
 import { buildDrawDataMap as buildWebGL2DrawDataMap } from "../../webgl2/utils/worker/render_file/render/renderUtils";
 import { initData as initVaoData } from "./vao/VaoWorkerSystem";
+import { disposeBuffers as disposeWebGL1GeometryBuffers } from "../../webgl1/utils/worker/both_file/buffer/bufferUtils";
+import { disposeBuffers as disposeWebGL2GeometryBuffers } from "../../webgl2/utils/worker/both_file/buffer/bufferUtils";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -178,46 +174,10 @@ var _initWebGL2GL = (data:any, WebGLDetectWorkerData:any, GPUDetectWorkerData:an
     return initGL(data, detectWebGL2, WebGLDetectWorkerData, GPUDetectWorkerData).run();
 }
 
-var _initDrawData = (data:any, PointLightWorkerData:any,) => {
-    var state = null,
-        geometryData = data.geometryData,
-        disposeData = data.disposeData,
-        materialData = data.materialData,
-        lightData = data.lightData;
-
-    if (geometryData !== null) {
-        if (_needUpdateGeometryWorkerData(geometryData)) {
-            updatePointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
-        }
-        else if (_needResetGeometryWorkerData(geometryData)) {
-            resetPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
-        }
-    }
-
-    if (materialData !== null) {
-        initNewInitedMaterials(materialData.workerInitList);
-    }
-
-    if (disposeData !== null) {
-        if (disposeData.geometryDisposeData !== null) {
-            disposeGeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, ArrayBufferWorkerData, IndexBufferWorkerData, disposeArrayBuffer, disposeIndexBuffer);
-        }
-
-        if (disposeData.textureDisposeData !== null) {
-            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
-        }
-    }
-
-    if (lightData !== null) {
-        _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
-    }
-
-}
-
 var _handleWebGL1Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any) => {
     var state = null;
 
-    _initDrawData(data, PointLightWorkerData);
+    _initWebGL1DrawData(data, PointLightWorkerData);
 
     let drawDataMap = buildWebGL1DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL1ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
         gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state),
@@ -241,7 +201,7 @@ var _handleWebGL1Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerDat
 var _handleWebGL2Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any) => {
     var state = null;
 
-    _initDrawData(data, PointLightWorkerData);
+    _initWebGL2DrawData(data, PointLightWorkerData);
 
     let drawDataMap = buildWebGL2DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL2ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
         gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state),
@@ -260,6 +220,70 @@ var _handleWebGL2Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerDat
     self.postMessage({
         state: ERenderWorkerState.DRAW_COMPLETE
     });
+}
+
+var _initWebGL1DrawData = (data:any, PointLightWorkerData:any,) => {
+    _initOtherDrawData(data, PointLightWorkerData);
+    _initWebGL1DisposeDrawData(data);
+}
+
+var _initWebGL2DrawData = (data:any, PointLightWorkerData:any,) => {
+    _initOtherDrawData(data, PointLightWorkerData);
+    _initWebGL2DisposeDrawData(data);
+}
+
+var _initOtherDrawData = (data:any, PointLightWorkerData:any,) => {
+    var state = null,
+        geometryData = data.geometryData,
+        materialData = data.materialData,
+        lightData = data.lightData;
+
+    if (geometryData !== null) {
+        if (_needUpdateGeometryWorkerData(geometryData)) {
+            updatePointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+        }
+        else if (_needResetGeometryWorkerData(geometryData)) {
+            resetPointCacheDatas(geometryData.verticesInfoList, geometryData.normalsInfoList, geometryData.texCoordsInfoList, geometryData.indicesInfoList, GeometryWorkerData);
+        }
+    }
+
+    if (materialData !== null) {
+        initNewInitedMaterials(materialData.workerInitList);
+    }
+
+    if (lightData !== null) {
+        _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
+    }
+}
+
+var _initWebGL1DisposeDrawData = (data:any) => {
+    var state = null,
+        disposeData = data.disposeData;
+
+    if (disposeData !== null) {
+        if (disposeData.geometryDisposeData !== null) {
+            disposeWebGL1GeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, disposeArrayBuffer, disposeIndexBuffer, GPUDetectWorkerData, VaoWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData);
+        }
+
+        if (disposeData.textureDisposeData !== null) {
+            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
+        }
+    }
+}
+
+var _initWebGL2DisposeDrawData = (data:any) => {
+    var state = null,
+        disposeData = data.disposeData;
+
+    if (disposeData !== null) {
+        if (disposeData.geometryDisposeData !== null) {
+            disposeWebGL2GeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, DeviceManagerWorkerData, VaoWorkerData);
+        }
+
+        if (disposeData.textureDisposeData !== null) {
+            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
+        }
+    }
 }
 
 var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
@@ -343,10 +367,6 @@ var _initWebGL2Data = () => {
     initLocationWorkerData(LocationWorkerData);
 
     initWebGL2GLSLSenderWorkerData(WebGL2GLSLSenderWorkerData);
-
-    initArrayBufferData(ArrayBufferWorkerData);
-
-    initIndexBufferData(IndexBufferWorkerData);
 
     initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
 

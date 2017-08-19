@@ -12,3 +12,6 @@ export var unbindVao = (gl:any) => {
     gl.bindVertexArray(null);
 }
 
+export var disposeVao = (gl:any, vao:WebGLVertexArrayObject) => {
+    gl.deleteVertexArray(vao);
+}

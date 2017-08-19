@@ -35,3 +35,4 @@ export { WebGL1GLSLSenderWorkerData } from "../webgl1/render_file/shader/glslSen
 export { WebGL2GLSLSenderWorkerData } from "../webgl2/render_file/shader/glslSender/GLSLSenderWorkerData";
 export { WebGL1ProgramWorkerData } from "../webgl1/render_file/shader/program/ProgramWorkerData";
 export { WebGL2ProgramWorkerData } from "../webgl2/render_file/shader/program/ProgramWorkerData";
+export { VaoWorkerData } from "./vao/VaoWorkerData";

@@ -159,6 +159,7 @@ var glslUtils = (function () {
 
                 createVertexArray: sandbox.stub(),
                 bindVertexArray: sandbox.stub(),
+                deleteVertexArray: sandbox.stub(),
                 texStorage2D: sandbox.stub(),
                 drawBuffers: sandbox.stub(),
 

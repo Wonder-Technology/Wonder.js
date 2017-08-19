@@ -21,7 +21,7 @@ import { Scene } from "./entityObject/scene/Scene";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create } from "./entityObject/scene/SceneSystem";
 import {
-    addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle,
+    addAddComponentHandle as addGeometryAddComponentHandle, addInitHandle as addGeometryInitHandle,
     init as initGeometry
 } from "../component/geometry/GeometrySystem";
 import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
@@ -59,10 +59,11 @@ import { addAddComponentHandle as addWebGL1LightAddComponentHandle, addDisposeHa
 import { addAddComponentHandle as addWebGL2LightAddComponentHandle, addDisposeHandle as addWebGL2LightDisposeHandle } from "../component/webgl2/light/LightSystem";
 import { init as initPointLight } from "../component/light/PointLightSystem";
 import { init as initDirectionLight } from "../component/light/DirectionLightSystem";
-import { PointLightData } from "../component/light/PointLightData";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
 import { DirectionLightData } from "../component/light/DirectionLightData";
+import { addDisposeHandle as addWebGL1GeometryDisposeHandle } from "../component/webgl1/geometry/GeometrySystem";
+import { addDisposeHandle as addWebGL2GeometryDisposeHandle } from "../component/webgl2/geometry/GeometrySystem";
 
 @singleton(true)
 @registerClass("Director")
@@ -188,10 +189,6 @@ export class Director {
     }
 }
 
-addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
-addGeometryDisposeHandle(BoxGeometry, CustomGeometry);
-addGeometryInitHandle(BoxGeometry, CustomGeometry);
-
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);
 addMaterialInitHandle(BasicMaterial, LightMaterial);
@@ -208,11 +205,17 @@ addThreeDTransformDisposeHandle(ThreeDTransform);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
 
+addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
+addGeometryInitHandle(BoxGeometry, CustomGeometry);
+
+
 var _initPointLight = null;
 
 if(isWebgl1()){
     addWebGL1LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL1LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+
+    addWebGL1GeometryDisposeHandle(BoxGeometry, CustomGeometry);
 
     _initPointLight = (state: Map<any, any>) => {
         return initPointLight(WebGL1PointLightData, state);
@@ -222,6 +225,7 @@ else{
     addWebGL2LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL2LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
 
+    addWebGL2GeometryDisposeHandle(BoxGeometry, CustomGeometry);
 
     _initPointLight = (state: Map<any, any>) => {
         return initPointLight(WebGL2PointLightData, state);

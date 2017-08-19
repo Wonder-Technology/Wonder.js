@@ -8,7 +8,7 @@ import {
 } from "../../utils/objectUtils";
 import {
     addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap,
-    addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponent,
+    addInitHandle as addInitHandleToMap, deleteComponent,
     generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -34,11 +34,6 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
-import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
-import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
-import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
-import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
-import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
 import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { hasExtensionUintIndices } from "../../renderer/utils/device/gpuDetectUtils";
 
@@ -47,10 +42,10 @@ export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addAddComponentHandleToMap(CustomGeometry, addComponent);
 }
 
-export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
-    addDisposeHandleToMap(BoxGeometry, disposeComponent);
-    addDisposeHandleToMap(CustomGeometry, disposeComponent);
-}
+// export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
+//     addDisposeHandleToMap(BoxGeometry, disposeComponent);
+//     addDisposeHandleToMap(CustomGeometry, disposeComponent);
+// }
 
 export var addInitHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addInitHandleToMap(BoxGeometry, initGeometry);
@@ -204,7 +199,7 @@ export var addComponent = (component: Geometry, gameObject: GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = (component: Geometry) => {
+export var disposeComponent = (component: Geometry, disposeBuffers:Function) => {
     var sourceIndex = component.index;
 
     deleteComponent(sourceIndex, GeometryData.geometryMap);
@@ -216,29 +211,12 @@ export var disposeComponent = (component: Geometry) => {
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
         let disposedIndexArray = reAllocateGeometry(GeometryData);
 
-        _disposeBuffers(disposedIndexArray);
+        disposeBuffers(disposedIndexArray);
 
         clearWorkerInfoList(GeometryData);
         GeometryData.isReallocate = true;
 
         GeometryData.disposeCount = 0;
-    }
-}
-
-var _disposeBuffers = null;
-
-if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeBuffers = requireCheckFunc((disposedIndexArray: Array<number>) => {
-        it("should not add data twice in one frame", () => {
-            expect(GeometryData.disposedGeometryIndexArray.length).equal(0);
-        });
-    }, (disposedIndexArray: Array<number>) => {
-        GeometryData.disposedGeometryIndexArray = disposedIndexArray;
-    })
-}
-else {
-    _disposeBuffers = (disposedIndexArray: Array<number>) => {
-        disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeArrayBuffer, disposeIndexBuffer);
     }
 }
 
