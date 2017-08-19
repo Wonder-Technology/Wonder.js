@@ -416,5 +416,29 @@ describe("draw render command", function () {
             expect(gl.uniformMatrix3fv).toCalledWith(pos, false, mat.invertTo3x3().transpose().values);
         });
     });
+
+    describe("draw", function() {
+        beforeEach(function(){
+
+        });
+
+        it("if geometry has index buffer, bind index buffer and drawElements", function(){
+            directorTool.init(state);
+
+            var indexBuffer = {a:1};
+            indexBufferTool.setBuffers([indexBuffer]);
+
+            var indices = [1,2,3];
+            geometryTool.setIndices(0, indices);
+            geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
+            geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
+
+            directorTool.loopBody(state);
+
+
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)).toCalledOnce();
+            expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indices.length, GeometryData.indexType, GeometryData.indexTypeSize * 0);
+        });
+    });
 });
 

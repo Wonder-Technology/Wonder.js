@@ -36,12 +36,28 @@ describe("draw render command", function () {
         sandbox.restore();
     });
 
-    //todo test(vao, ubo)
+    describe("draw", function() {
+        beforeEach(function(){
 
-    describe("send attribute buffer", function () {
-    });
+        });
 
-    describe("sendUniformData", function () {
+        it("if geometry has index buffer, drawElements", function(){
+            directorTool.init(state);
+
+            var indexBuffer = {a:1};
+            indexBufferTool.setBuffers([indexBuffer]);
+
+            var indices = [1,2,3];
+            geometryTool.setIndices(0, indices);
+            geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
+            geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
+
+            directorTool.loopBody(state);
+
+
+            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)).not.toCalled();
+            expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indices.length, GeometryData.indexType, GeometryData.indexTypeSize * 0);
+        });
     });
 });
 

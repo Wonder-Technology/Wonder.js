@@ -32,9 +32,9 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/Material*',
-        'test/unit/no_worker/**/vao*',
+        // 'test/unit/no_worker/**/vao*',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/Matrix4*',
         // 'test/unit/no_worker/**/Scene*',

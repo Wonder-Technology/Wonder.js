@@ -62,25 +62,6 @@ describe("draw render command", function () {
 
             expect(gl.drawArrays).toCalledWith("TRIANGLES",0,72);
         });
-        it("else, bind index buffer and drawElements", function(){
-            directorTool.init(state);
-
-            var indexBuffer = {a:1};
-            indexBufferTool.setBuffers([indexBuffer]);
-
-            // geometryTool.setDrawMode({index:0}, "TRIANGLES");
-
-            var indices = [1,2,3];
-            geometryTool.setIndices(0, indices);
-            geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
-            geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
-
-            directorTool.loopBody(state);
-
-
-            expect(gl.bindBuffer.withArgs(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)).toCalledOnce();
-            expect(gl.drawElements).toCalledWith(gl.TRIANGLES, indices.length, GeometryData.indexType, GeometryData.indexTypeSize * 0);
-        });
     });
 
     describe("contract check", function() {

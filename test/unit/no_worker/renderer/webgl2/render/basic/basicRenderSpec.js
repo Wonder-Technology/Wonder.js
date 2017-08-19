@@ -5,12 +5,7 @@ describe("basic render", function () {
 
     var Color = wd.Color;
     var Matrix4 = wd.Matrix4;
-    var CameraData = wd.CameraData;
-    var CameraControllerData = wd.CameraControllerData;
     var ThreeDTransform = wd.ThreeDTransform;
-    var GlobalTempData = wd.GlobalTempData;
-    var ThreeDTransformData = wd.ThreeDTransformData;
-    var GameObjectData = wd.GameObjectData;
 
     function buildGLSL(sandbox, state) {
         return glslWebGL2Tool.buildGLSL(sandbox, state);
@@ -25,6 +20,8 @@ describe("basic render", function () {
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
+
+        deferShadingTool.disableDeferShading(sandbox);
     });
     afterEach(function () {
         testWebGL2Tool.clear(sandbox);
@@ -138,7 +135,7 @@ describe("basic render", function () {
                         gl.createBuffer.onCall(0).returns(buffer);
                     });
 
-                    it("create buffer and init it when first get", function () {
+                    it("create buffer and init it when set vao", function () {
                         directorTool.init(state);
 
                         var data = geometryTool.getVertices(geo);
@@ -147,17 +144,7 @@ describe("basic render", function () {
                         directorTool.loopBody(state);
 
                         expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
-                    });
-                    it("not create buffer after first get", function () {
-                        directorTool.init(state);
-
-                        directorTool.loopBody(state);
-
-                        var callCount = gl.createBuffer.callCount;
-
-                        directorTool.loopBody(state);
-
-                        expect(gl.createBuffer.callCount).toEqual(callCount);
+                        expect(gl.vertexAttribPointer.withArgs(0,3,"FLOAT",false,0,0)).toCalledOnce();
                     });
                 });
             });
@@ -260,9 +247,7 @@ describe("basic render", function () {
                             name = "a_texCoord";
                             size = 2;
 
-                            pos = 10;
-
-                            gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+                            pos = 1;
                         });
 
                         it("create buffer and init it when first get", function () {
@@ -275,19 +260,6 @@ describe("basic render", function () {
 
                             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
                             expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
-                        });
-                        it("not create buffer after first get", function () {
-                            directorTool.init(state);
-
-                            directorTool.loopBody(state);
-
-
-                            var callCount = gl.createBuffer.callCount;
-
-
-                            directorTool.loopBody(state);
-
-                            expect(gl.createBuffer.callCount).toEqual(callCount);
                         });
                     })
 

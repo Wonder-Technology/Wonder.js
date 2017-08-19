@@ -228,7 +228,7 @@ describe("Shader", function() {
 
             directorTool.loopBody(state);
 
-            expect(gl.createBuffer.callCount).toEqual(8);
+            expect(gl.createBuffer.callCount).toEqual(5);
             expect(gl.vertexAttribPointer).toCalledWith(pos1,size,"FLOAT",false,0,0);
             expect(gl.vertexAttribPointer).not.toCalledWith(pos2,size,"FLOAT",false,0,0);
 

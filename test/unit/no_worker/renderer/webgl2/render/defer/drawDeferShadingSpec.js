@@ -170,7 +170,7 @@ describe("defer shading", function () {
                     }
 
                     /*!
-                    already test in defer shading
+                    already test in basic shading
                      */
 
                     describe("add CommonShaderLib", function () {
@@ -316,12 +316,10 @@ describe("defer shading", function () {
                                     name = "a_texCoord";
                                     size = 2;
 
-                                    pos = 10;
-
-                                    gl.getAttribLocation.withArgs(sinon.match.any, name).returns(pos);
+                                    pos = 2;
                                 });
 
-                                it("create buffer and init it when first get", function () {
+                                it("create buffer and init it when set vao", function () {
                                     directorTool.init(state);
 
                                     var data = geometryTool.getTexCoords(geo);
@@ -329,7 +327,6 @@ describe("defer shading", function () {
 
                                     directorTool.loopBody(state);
 
-                                    // expect(gl.createBuffer.callCount).toEqual(4);
                                     expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
                                     expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
                                 });
@@ -711,59 +708,6 @@ describe("defer shading", function () {
                         return gl.shaderSource.getCall(1).args[1];
                     }
 
-                    // describe("test vao", function() {
-                    //     beforeEach(function(){
-                    //
-                    //     });
-                    //
-                    //     describe("test buffer vao data", function(){
-                    //         it("bind vao", function () {
-                    //             var vao = {};
-                    //             gl.createVertexArray.onCall(0).returns(vao);
-                    //
-                    //             directorTool.init(state);
-                    //
-                    //             expect(gl.bindVertexArray.withArgs(vao)).toCalledOnce();
-                    //         });
-                    //         it("", function () {
-                    //
-                    //         });
-                    //     });
-                    //
-                    //     it("bind vao before draw", function () {
-                    //
-                    //     });
-                    //     it("unbind vao after draw", function () {
-                    //
-                    //     });
-                    // });
-
-                    // describe("add VerticeCommonShaderLib", function () {
-                    //     describe("send a_position", function () {
-                    //         var buffer;
-                    //
-                    //         beforeEach(function () {
-                    //             buffer = { b: 1 };
-                    //             var buffer2 = { b: 2 };
-                    //
-                    //             gl.createBuffer.onCall(2 + 3 + 0).returns(buffer);
-                    //             gl.createBuffer.onCall(2 + 3 + 1).returns(buffer2);
-                    //         });
-                    //
-                    //         it("bind position buffer", function () {
-                    //             directorTool.init(state);
-                    //
-                    //             var data = geometryTool.getVertices(geo);
-                    //
-                    //
-                    //             directorTool.loopBody(state);
-                    //
-                    //             expect(gl.bindBuffer.withArgs(gl.ARRAY_BUFFER, buffer)).toCalledTwice();
-                    //             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
-                    //         });
-                    //     });
-                    // });
-
                     describe("add CameraUboShaderLib", function () {
                         it("bind ubo", function () {
                             directorTool.init(state);
@@ -983,7 +927,7 @@ describe("defer shading", function () {
 
                     directorTool.loopBody(state);
 
-                    expect(gl.bindVertexArray.withArgs(null).getCall(callCount)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
+                    expect(gl.bindVertexArray.withArgs(null).getCall(callCount + 1)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
                 });
             });
         });
