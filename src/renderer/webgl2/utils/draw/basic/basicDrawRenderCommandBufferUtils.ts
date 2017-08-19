@@ -7,7 +7,7 @@ import { IWebGL2DrawFuncDataMap } from "../../../../webgl2/interface/IDraw";
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { BasicRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { buildRenderCommandUniformData } from "../../../../utils/draw/basic/basicDrawRenderCommandBufferUtils";
-import { WebGL2DrawDataMap } from "../../../type/utilsType";
+import { WebGL2DrawDataMap } from "../../worker/render_file/type/utilsType";
 import { drawGameObjects } from "../../../../webgl2/utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, {

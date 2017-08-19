@@ -11,7 +11,7 @@ import {
     BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../../../../type/dataType";
-import { WebGL1BasicSendUniformDataDataMap, WebGL1DrawDataMap } from "../../../../../type/utilsType";
+import { WebGL1BasicSendUniformDataDataMap} from "../../../../../type/utilsType";
 import { Log } from "../../../../../../../utils/Log";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
 import { draw as basicDraw } from "../../../../draw/basic/basicDrawRenderCommandBufferUtils";
@@ -19,6 +19,7 @@ import {
     BasicRenderCommandBufferForDrawData,
     CameraRenderCommandBufferForDrawData
 } from "../../../../../../utils/worker/render_file/type/dataType";
+import { WebGL1DrawDataMap } from "../../type/utilsType";
 
 export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: WebGL1DrawDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     basicDraw(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);

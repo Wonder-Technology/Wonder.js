@@ -17,8 +17,9 @@ import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { set } from "../../../../../../utils/typeArrayUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
-import { WebGL2DrawDataMap, WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
+import { WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
 import { getMaxUniformBufferBindings } from "../device/gpuDetectUtils";
+import { WebGL2DrawDataMap } from "../type/utilsType";
 
 export var init = (gl:any, render_config:IRenderConfig, {
     oneUboDataList,

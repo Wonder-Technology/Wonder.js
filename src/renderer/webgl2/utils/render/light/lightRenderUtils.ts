@@ -6,7 +6,8 @@ import {
 import { directlySendUniformData } from "../../../../utils/worker/render_file/render/renderUtils";
 import { Log } from "../../../../../utils/Log";
 import { LightRenderUniformData, UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
-import { WebGL2DrawDataMap, WebGL2LightSendUniformDataDataMap } from "../../../type/utilsType";
+import { WebGL2LightSendUniformDataDataMap } from "../../../type/utilsType";
+import { WebGL2DrawDataMap } from "../../worker/render_file/type/utilsType";
 
 //todo extract code
 export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: WebGL2DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap:WebGL2LightSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, lightMaterialData:LightMaterialForGetUniformDataDataMap) => {

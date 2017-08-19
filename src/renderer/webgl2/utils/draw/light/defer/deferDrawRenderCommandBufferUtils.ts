@@ -1,5 +1,5 @@
 import { Map } from "immutable";
-import { WebGL2DrawDataMap, WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
+import { WebGL2LightSendUniformDataDataMap } from "../../../../type/utilsType";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
@@ -17,6 +17,7 @@ import { clear } from "../../../../../utils/worker/both_file/device/deviceManage
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
+import { WebGL2DrawDataMap } from "../../../worker/render_file/type/utilsType";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:WebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,

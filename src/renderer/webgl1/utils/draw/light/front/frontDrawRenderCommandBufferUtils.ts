@@ -5,9 +5,10 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IWebGL1DrawFuncDataMap } from "../../../../interface/IDraw";
-import { WebGL1DrawDataMap, WebGL1LightSendUniformDataDataMap } from "../../../../type/utilsType";
+import { WebGL1LightSendUniformDataDataMap } from "../../../../type/utilsType";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
+import { WebGL1DrawDataMap } from "../../../worker/render_file/type/utilsType";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: WebGL1DrawDataMap, sendDataMap:WebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,

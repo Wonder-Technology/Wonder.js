@@ -17,7 +17,7 @@ import {
     UniformLocationMap
 } from "../../../type/dataType";
 import { directlySendUniformData } from "../../../utils/worker/render_file/render/renderUtils";
-import { WebGL2BasicSendUniformDataDataMap, WebGL2DrawDataMap } from "../../type/utilsType";
+import { WebGL2BasicSendUniformDataDataMap} from "../../type/utilsType";
 import { buildDrawFuncDataMap } from "../../utils/worker/render_file/draw/basic/basicDrawRenderCommandBufferUtils";
 import {
     buildBasicMaterialDataForGetUniformData,
@@ -29,6 +29,7 @@ import {
     BasicRenderCommandBufferForDrawData,
     CameraRenderCommandBufferForDrawData
 } from "../../../utils/worker/render_file/type/dataType";
+import { WebGL2DrawDataMap } from "../../utils/worker/render_file/type/utilsType";
 
 export var render = curry((gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(

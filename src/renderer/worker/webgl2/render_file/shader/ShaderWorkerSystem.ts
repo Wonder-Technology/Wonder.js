@@ -10,6 +10,7 @@ import {
 } from "../../../../webgl2/utils/worker/render_file/shader/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
+import { getIndices, getNormals, getTexCoords, getVertices } from "../../../render_file/geometry/GeometryWorkerSystem";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
@@ -25,6 +26,11 @@ var _buildInitShaderFuncDataMap = () => {
         getGL: getGL,
         getMapCount: getMapCount,
         hasSpecularMap: hasSpecularMap,
-        hasDiffuseMap: hasDiffuseMap
+        hasDiffuseMap: hasDiffuseMap,
+
+        getVertices: getVertices,
+        getNormals: getNormals,
+        getTexCoords: getTexCoords,
+        getIndices: getIndices
     }
 }

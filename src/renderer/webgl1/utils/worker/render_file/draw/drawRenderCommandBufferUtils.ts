@@ -6,8 +6,7 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IWebGL1DrawFuncDataMap } from "../../../../interface/IDraw";
 import {
-    WebGL1BasicSendUniformDataDataMap, WebGL1DrawDataMap,
-    WebGL1LightSendUniformDataDataMap
+    WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap
 } from "../../../../type/utilsType";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
@@ -16,6 +15,7 @@ import { sendData } from "../../../../../utils/worker/render_file/texture/mapMan
 import { Map } from "immutable";
 import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getExtensionVao } from "../device/gpuDetectUtils";
+import { WebGL1DrawDataMap } from "../type/utilsType";
 
 export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function) => {
     return {

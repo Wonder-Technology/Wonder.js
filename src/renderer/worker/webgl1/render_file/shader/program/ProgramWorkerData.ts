@@ -1,6 +1,7 @@
-import { ProgramMap } from "../../../../type/dataType";
+import { ProgramMap } from "../../../../../type/dataType";
 
-export class ProgramWorkerData {
+//todo refactor:common
+export class WebGL1ProgramWorkerData {
     public static programMap: ProgramMap = null;
 
     public static lastUsedProgram: WebGLProgram = null;

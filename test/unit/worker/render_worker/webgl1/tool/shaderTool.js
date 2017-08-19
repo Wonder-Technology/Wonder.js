@@ -6,7 +6,7 @@ var shaderTool = (function () {
         resetData: function(){
             shaderUtils.resetData();
 
-            wd.initProgramWorkerData(wdrd.ProgramWorkerData);
+            wd.initProgramWorkerData(wdrd.WebGL1ProgramWorkerData);
             wd.initLocationWorkerData(wdrd.LocationWorkerData);
             wd.initWebGL1GLSLSenderWorkerData(wdrd.WebGL1GLSLSenderWorkerData);
             wd.initShaderWorkerData(wdrd.ShaderWorkerData);

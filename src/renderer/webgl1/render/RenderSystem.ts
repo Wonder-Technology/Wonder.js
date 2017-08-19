@@ -11,7 +11,7 @@ import { InitShaderDataMap } from "../../type/utilsType";
 import { IMaterialConfig } from "../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
-import { WebGL1DrawDataMap } from "../type/utilsType";
+import { WebGL1DrawDataMap } from "../utils/worker/render_file/type/utilsType";
 
 export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
     cameraData,

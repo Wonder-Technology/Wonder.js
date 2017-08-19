@@ -84,7 +84,7 @@ import { WebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLS
 import { WebGL1ProgramData } from "../renderer/webgl1/shader/program/ProgramData";
 import { WebGL2ProgramData } from "../renderer/webgl2/shader/program/ProgramData";
 import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
-import { VaoData } from "../renderer/webgl2/vao/VaoData";
+import { VaoData } from "../renderer/vao/VaoData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasID = "",

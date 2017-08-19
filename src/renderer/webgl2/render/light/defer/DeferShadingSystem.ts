@@ -36,7 +36,7 @@ import { directlySendUniformData } from "../../../../utils/worker/render_file/re
 import { sendAttributeData } from "../../RenderSystem";
 import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
-import { WebGL2DrawDataMap } from "../../../type/utilsType";
+import { WebGL2DrawDataMap } from "../../../utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 

@@ -12,7 +12,7 @@ import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
 import { render as deferRender} from "./light/defer/DeferShadingSystem";
 import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/type/dataType";
-import { WebGL2DrawDataMap } from "../type/utilsType";
+import { WebGL2DrawDataMap } from "../utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 
