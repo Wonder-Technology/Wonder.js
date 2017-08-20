@@ -16,7 +16,6 @@ export { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 export { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 export { DataBufferConfig } from "../../../config/DataBufferConfig";
 export { GeometryWorkerData } from "./geometry/GeometryWorkerData";
-export { LocationWorkerData } from "./shader/location/LocationWorkerData";
 export { ShaderWorkerData } from "./shader/ShaderWorkerData";
 export { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 export { DirectionLightWorkerData } from "./light/DirectionLightWorkerData";
@@ -36,3 +35,5 @@ export { WebGL2GLSLSenderWorkerData } from "../webgl2/render_file/shader/glslSen
 export { WebGL1ProgramWorkerData } from "../webgl1/render_file/shader/program/ProgramWorkerData";
 export { WebGL2ProgramWorkerData } from "../webgl2/render_file/shader/program/ProgramWorkerData";
 export { VaoWorkerData } from "./vao/VaoWorkerData";
+export { WebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/LocationWorkerData";
+export { WebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerData";
