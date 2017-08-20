@@ -19,12 +19,12 @@ describe("light", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     describe("init lights", function () {
@@ -32,7 +32,7 @@ describe("light", function () {
         });
 
         it("send light init data to render worker", function () {
-            testRenderWorkerTool.clearAndOpenContractCheck(sandbox, {
+            testTool.clearAndOpenContractCheck(sandbox, {
                 transformDataBufferCount:20
             });
 

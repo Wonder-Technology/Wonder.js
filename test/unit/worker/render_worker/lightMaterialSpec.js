@@ -11,12 +11,12 @@ describe("light material", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     // describe("send map data to render worker", function() {

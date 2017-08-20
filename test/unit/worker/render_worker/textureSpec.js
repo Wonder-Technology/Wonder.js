@@ -13,12 +13,12 @@ describe("texture", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     describe("send texture data to render worker", function () {
@@ -162,14 +162,14 @@ describe("texture", function () {
             });
 
             it("save texture count", function () {
-                testRenderWorkerTool.closeContractCheck();
+                testTool.closeContractCheck();
 
                 workerTool.execRenderWorkerMessageHandler(e);
 
                 expect(TextureWorkerData.index).toEqual(3);
             });
             it("save uniformSamplerNameMap", function () {
-                testRenderWorkerTool.closeContractCheck();
+                testTool.closeContractCheck();
 
                 workerTool.execRenderWorkerMessageHandler(e);
 
@@ -182,7 +182,7 @@ describe("texture", function () {
 
             describe("create webgl texture", function () {
                 it("test create", function () {
-                    testRenderWorkerTool.closeContractCheck();
+                    testTool.closeContractCheck();
 
                     workerTool.execRenderWorkerMessageHandler(e);
 

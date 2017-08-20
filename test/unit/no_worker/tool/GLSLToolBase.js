@@ -1,5 +1,5 @@
-var glslTool = (function () {
-    return {
+var GLSLToolBase = YYC.AClass({
+    Public: {
         contain: function(source, target){
             if(source.indexOf(target) > -1){
                 return true;
@@ -46,7 +46,9 @@ var glslTool = (function () {
             return true;
         },
         buildFakeGl: function (sandbox) {
-            return glslUtils.buildFakeGl(sandbox);
+            var gl = glslUtils.buildFakeGl(sandbox);
+
+            return gl;
         }
     }
-})();
+});

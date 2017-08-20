@@ -1,5 +1,5 @@
-var glslWebGL1Tool = (function () {
-    return {
+var GLSLTool = YYC.Class(GLSLToolBase, {
+    Public: {
         buildGLSL: function (sandbox, state) {
             var gl = directorTool.init(sandbox);
 
@@ -8,4 +8,6 @@ var glslWebGL1Tool = (function () {
             return gl;
         }
     }
-}());
+});
+
+var glslTool = new GLSLTool();

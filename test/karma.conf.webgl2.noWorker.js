@@ -37,7 +37,7 @@
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
-        // 'test/unit/no_worker/**/**DeferShading*',
+        // 'test/unit/no_worker/**/initDeferShading*',
         // 'test/unit/no_worker/**/basicRender*',
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',

@@ -1,7 +1,7 @@
 var Main = wd.Main;
 
-var testTool = (function () {
-    return {
+var TestToolBase = YYC.AClass({
+    Public: {
         getValues: function (values, digit) {
             return testUtils.getValues(values, digit);
         },
@@ -57,36 +57,6 @@ var testTool = (function () {
             //
             this.closeContractCheck();
         },
-
-        clearComponentData: function(){
-            gameObjectTool.resetData();
-            gameObjectTool.resetData();
-            threeDTransformTool.resetData();
-            tagTool.resetData();
-            geometryTool.resetData();
-            materialTool.resetData();
-
-
-            shaderTool.resetData();
-
-            vaoTool.resetData();
-
-
-            meshRendererTool.resetData();
-            arrayBufferTool.resetData();
-            indexBufferTool.resetData();
-            deviceManagerTool.resetData();
-            cameraControllerTool.resetData();
-            lightTool.resetData();
-            renderCommandBufferTool.resetData();
-            drawRenderCommandBufferTool.resetData();
-            sceneTool.resetData();
-
-            directorSystemTool.resetData();
-
-            gpuDetectTool.resetData();
-        },
-
         clearAndOpenContractCheck: function (sandbox, data) {
             Main.isTest = true;
 
@@ -109,4 +79,4 @@ var testTool = (function () {
             Main.isTest = false;
         }
     }
-}());
+});

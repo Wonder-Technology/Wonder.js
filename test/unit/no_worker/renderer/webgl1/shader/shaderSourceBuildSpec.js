@@ -12,7 +12,7 @@ describe("shader source build", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
@@ -24,7 +24,7 @@ describe("shader source build", function () {
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testWebGL1Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 

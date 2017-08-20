@@ -10,7 +10,7 @@ describe("defer shading", function () {
     var Log = wd.Log;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+        return glslTool.buildGLSL(sandbox, state);
     }
 
     function enableDeferShading(sandbox) {
@@ -26,7 +26,7 @@ describe("defer shading", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -35,7 +35,7 @@ describe("defer shading", function () {
         enableDeferShading(sandbox);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -71,9 +71,6 @@ describe("defer shading", function () {
             expect(gl.clearColor).toCalledWith(color.r, color.g, color.b, color.a);
         });
 
-        function unbindGBufferCall(gl) {
-            return gl.bindFramebuffer.withArgs(gl.FRAMEBUFFER, null).getCall(1)
-        }
         it("clear color buffer before bind gbuffer for draw", function () {
             directorTool.init(state);
 
@@ -638,7 +635,6 @@ describe("defer shading", function () {
             }
 
             beforeEach(function(){
-
             });
 
             describe("prepare", function() {
@@ -698,170 +694,6 @@ describe("defer shading", function () {
 
                     judgeAfterUseDeferLightPassProgram(gl.bindVertexArray.withArgs(vao).getCall(0), gl);
                 });
-
-                describe("test DeferLightPass shader's glsl", function () {
-                    function getVsSource(gl) {
-                        return gl.shaderSource.getCall(0).args[1];
-                    }
-
-                    function getFsSource(gl) {
-                        return gl.shaderSource.getCall(1).args[1];
-                    }
-
-                    describe("add CameraUboShaderLib", function () {
-                        it("bind ubo", function () {
-                            directorTool.init(state);
-                            directorTool.loopBody(state);
-
-                            expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("CameraUbo"))).toCalledOnce();
-                        });
-                    });
-
-                    describe("add DeferLightPassCommonShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            // it("test vs source", function () {
-                            //     var vs = getVsSource(gl);
-                            //     expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
-                            //     expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
-                            // });
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.contain(fs, "vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n")).toBeTruthy();
-                            });
-                        });
-                    });
-
-                    describe("add DeferLightPassNoNormalMapShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            describe("test fs source", function () {
-                                it("define getPointLightDir func by get pointLightUbo data", function () {
-                                    var fs = getFsSource(gl);
-
-                                    expect(glslTool.containMultiLine(fs, [
-                                        "vec3 getPointLightDir(vec3 worldPosition){",
-                                        "return getPointLightDirByLightPos(pointLightUbo.lightPosition.xyz, worldPosition);",
-                                        "}"
-                                    ])).toBeTruthy();
-                                });
-                                it("define getViewDir func by get cameraUbo data", function () {
-                                    var fs = getFsSource(gl);
-
-                                    expect(glslTool.containMultiLine(fs, [
-                                        "vec3 getViewDir(vec3 worldPosition){",
-                                        "return normalize(cameraUbo.cameraPos.xyz - worldPosition);",
-                                        "}"
-                                    ])).toBeTruthy();
-                                });
-                            });
-                        });
-                    });
-
-                    describe("add NoLightMapShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
-                            });
-                        });
-                    });
-
-                    describe("add NoEmissionMapShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.contain(fs, "vec3 getMaterialEmission() {\n    //todo support emission color\n//        return u_emission;\n        return vec3(0.0);\n    }\n")).toBeTruthy();
-                            });
-                        });
-                    });
-
-                    describe("add NoShadowMapShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.contain(fs, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
-                            });
-                        });
-                    });
-
-                    describe("add DeferLightPassShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            //todo test after refactor and ubo
-
-                            // it("test vs source", function () {
-                            //     var vs = getVsSource(gl);
-                            //     // expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
-                            // });
-                            // it("test fs source", function () {
-                            //     var fs = getFsSource(gl);
-                            //     // expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
-                            // });
-                        });
-                    });
-
-                    describe("add DeferLightPassEndShaderLib", function () {
-                        describe("test glsl", function () {
-                            beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
-                            });
-
-                            it("test fs source", function () {
-                                var fs = getFsSource(gl);
-                                expect(glslTool.containMultiLine(fs, [
-                                    "out vec4 fragColor;\n",
-                                    "fragColor = totalColor;\n"
-                                ])).toBeTruthy();
-                            });
-                        });
-                    });
-                });
-
-                // it("send u_cameraPos", function () {
-                //     var cameraPos = Vector3.create(1, 10, 2),
-                //         pos = 0;
-                //     gl.getUniformLocation.withArgs(sinon.match.any, "u_cameraPos").returns(pos);
-                //
-                //
-                //     var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform);
-                //
-                //     threeDTransformTool.setPosition(transform, cameraPos);
-                //
-                //
-                //     directorTool.init(state);
-                //     directorTool.loopBody(state);
-                //
-                //     expect(gl.uniform3f).toCalledWith(pos, cameraPos.x, cameraPos.y, cameraPos.z);
-                // });
 
                 describe("send light data", function() {
                     //todo test after ubo

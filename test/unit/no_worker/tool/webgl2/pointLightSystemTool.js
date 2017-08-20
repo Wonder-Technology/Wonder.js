@@ -1,5 +1,5 @@
-var pointLightWebGL2SystemTool = (function () {
-    return {
+var PointLightSystemTool= YYC.AClass(PointLightSystemToolBase, {
+    Public: {
         computeRadius: function(color, constant, linear, quadratic){
             var lightMax  = Math.max(color[0], color[1], color[2]);
 
@@ -7,4 +7,6 @@ var pointLightWebGL2SystemTool = (function () {
                 / (2 * quadratic);
         }
     }
-})();
+});
+
+var pointLightSystemTool = new PointLightSystemTool();

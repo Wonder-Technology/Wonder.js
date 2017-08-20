@@ -12,7 +12,7 @@ describe("create gl", function () {
         sandbox.stub(DomQuery, "create").returns(mainTool.buildFakeDomQuery(sandbox, canvasDom));
     });
     afterEach(function () {
-        testWebGL2Tool.clearInstance(sandbox);
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

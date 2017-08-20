@@ -9,8 +9,8 @@ describe("defer shading", function () {
     var DeferLightPassData = wd.DeferLightPassData;
     var Log = wd.Log;
 
-    function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+    function buildGLSL(state) {
+        directorTool.init(state);
     }
 
     function enableDeferShading(sandbox) {
@@ -26,7 +26,7 @@ describe("defer shading", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -35,7 +35,7 @@ describe("defer shading", function () {
         enableDeferShading(sandbox);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -369,6 +369,271 @@ describe("defer shading", function () {
                 expect(gl.uniform1i).toCalledWith(positionBufferLocation, 0);
                 expect(gl.uniform1i).toCalledWith(normalBufferLocation, 1);
                 expect(gl.uniform1i).toCalledWith(colorBufferLocation, 2);
+            });
+        });
+
+        describe("test DeferLightPass shader's glsl", function () {
+            function getVsSource(gl) {
+                return gl.shaderSource.getCall(0).args[1];
+            }
+
+            function getFsSource(gl) {
+                return gl.shaderSource.getCall(1).args[1];
+            }
+            
+            beforeEach(function(){
+                sceneTool.addCameraObject();
+            });
+
+            describe("add CameraUboShaderLib", function () {
+                it("bind ubo", function () {
+                    directorTool.init(state);
+                    directorTool.loopBody(state);
+
+                    expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("CameraUbo"))).toCalledOnce();
+                });
+            });
+
+            describe("add DeferLightPassCommonShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    // it("test vs source", function () {
+                    //     var vs = getVsSource(gl);
+                    //     expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
+                    //     expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
+                    // });
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.contain(fs, "vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n")).toBeTruthy();
+                    });
+                });
+            });
+
+            describe("add DeferLightPassNoNormalMapShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    describe("test fs source", function () {
+                        it("define getPointLightDir func by get pointLightUbo data", function () {
+                            var fs = getFsSource(gl);
+
+                            expect(glslTool.containMultiLine(fs, [
+                                "vec3 getPointLightDir(vec3 worldPosition){",
+                                "return getPointLightDirByLightPos(pointLightUbo.lightPosition.xyz, worldPosition);",
+                                "}"
+                            ])).toBeTruthy();
+                        });
+                        it("define getViewDir func by get cameraUbo data", function () {
+                            var fs = getFsSource(gl);
+
+                            expect(glslTool.containMultiLine(fs, [
+                                "vec3 getViewDir(vec3 worldPosition){",
+                                "return normalize(cameraUbo.cameraPos.xyz - worldPosition);",
+                                "}"
+                            ])).toBeTruthy();
+                        });
+                    });
+                });
+            });
+
+            describe("add NoLightMapShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                    });
+                });
+            });
+
+            describe("add NoEmissionMapShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.contain(fs, "vec3 getMaterialEmission() {\n    //todo support emission color\n//        return u_emission;\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                    });
+                });
+            });
+
+            describe("add NoShadowMapShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.contain(fs, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
+                    });
+                });
+            });
+
+            describe("add DeferLightPassShaderLib", function () {
+                var material;
+                var cameraGameObject;
+                var geo;
+
+                beforeEach(function(){
+                    var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+
+                    material = data.material;
+                    cameraGameObject = data.cameraGameObject;
+                    geo = data.geometry;
+                });
+
+                describe("set full screen quad vertex vao data", function() {
+                    var vao;
+
+                    beforeEach(function(){
+                        vao = {a:1};
+
+                        gl.createVertexArray.onCall(0).returns(vao);
+                    });
+
+                    it("create vao", function () {
+                        directorTool.init(state);
+
+                        expect(gl.createVertexArray).toCalledOnce();
+                    });
+                    it("bind vao", function () {
+                        directorTool.init(state);
+
+                        expect(gl.bindVertexArray.withArgs(vao)).toCalledOnce();
+                    });
+
+                    describe("set a_position array buffer", function () {
+                        var size,pos;
+
+                        beforeEach(function () {
+                            size = 3;
+
+                            pos = 0;
+                        });
+
+                        it("create buffer and init it when set vao", function () {
+
+                            directorTool.init(state);
+
+                            var data = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]);
+
+
+                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                        });
+                    });
+
+                    describe("set a_texCoord array buffer", function () {
+                        var size,pos;
+
+                        beforeEach(function () {
+                            size = 2;
+
+                            pos = 1;
+                        });
+
+                        it("create buffer and init it when set vao", function () {
+
+                            directorTool.init(state);
+
+                            var data = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
+
+
+                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                        });
+
+                        describe("set indices index buffer", function () {
+                            beforeEach(function () {
+                            });
+
+                            it("create buffer and init it when set vao", function () {
+
+                                directorTool.init(state);
+
+                                var data = new Uint16Array([0, 1, 2, 0, 2, 3]);
+
+
+                                expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                            });
+                        });
+                    });
+
+                    it("unbind vao", function () {
+                        directorTool.init(state);
+
+                        expect(gl.bindVertexArray.withArgs(null)).toCalledOnce();
+                    });
+                });
+
+
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state)
+                    });
+
+                    describe("test vs source", function () {
+                        var vs;
+
+                        beforeEach(function(){
+                            vs = getVsSource(gl);
+                        });
+
+                        it("define attribute", function () {
+                            expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;"));
+                            expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
+                        });
+                        it("set v_texcoord", function () {
+                            expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
+                            expect(glslTool.contain(vs, "v_texcoord = a_texCoord * 0.5 + vec2(0.5);"));
+                        });
+                        it("set gl_Position with full screen", function () {
+                            expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
+                        });
+                    });
+
+                    describe("test fs source", function () {
+                        var fs;
+
+                        beforeEach(function(){
+                            fs = getFsSource(gl);
+                        });
+
+                        it("in v_texCoord", function () {
+                            expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
+                        });
+                        it("test func define", function () {
+                            expect(glslTool.contain(fs, "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\n\n//todo optimize specular color\nvec3 getSpecularColor(vec3 diffuseColor)\n{\nreturn diffuseColor;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse, float specularStrength, float shininess)\n{\n        vec3 materialLight = getMaterialLight();\n\n        vec3 materialSpecular = getSpecularColor(materialDiffuse);\n\n        vec3 materialEmission = getMaterialEmission();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = materialEmission;\n\n        //todo pass ambient data: u_ambient\n//        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse;\n        vec3 ambientColor = vec3(0.0);\n\n        float lightModel = lightUbo.lightModel.x;\n\n        if(lightModel == 3.0){\n            return emissionColor + ambientColor;\n        }\n\n        vec3 diffuseColor = color * materialDiffuse * diff * intensity;\n\n        float spec = 0.0;\n\n        if(lightModel == 2.0){\n                spec = getPhongShininess(shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(lightModel == 1.0){\n                spec = getBlinnShininess(shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;\n\n        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);\n}\n\n\n\n        vec3 calcPointLight(vec3 lightDir, vec3 normal, vec3 viewDir, vec3 diffuseColor, float specularStrength, float shininess)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        vec4 lightData = pointLightUbo.lightData;\n\n//        mat3 normalMatrix = cameraUbo.normalMatrix;\n\n//        if(normalMatrix[0][3] == 0.0){\n//            return vec3(0.5);\n//        }\n\n        //todo test\n        if(distance >= lightData.w){\n            return vec3(0.0);\n        }\n\n        attenuation = 1.0 / (lightData.x + lightData.y * distance + lightData.z * (distance * distance));\n\n        lightDir = normalize(lightDir);\n\n        vec4 lightColorData = pointLightUbo.lightColorData;\n\n        return calcLight(lightDir, lightColorData.xyz, lightColorData.w, attenuation, normal, viewDir, diffuseColor, specularStrength, shininess);\n}\n\nvec4 calcTotalLight(vec3 normal, vec3 position, vec3 viewDir, vec3 diffuseColor, float specularStrength, float shininess){\n    vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);\n\n                totalLight += vec4(calcPointLight(getPointLightDir(position), normal, viewDir, diffuseColor, specularStrength, shininess), 0.0);\n\n//    #if DIRECTION_LIGHTS_COUNT > 0\n//                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n//                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);\n//        }\n//    #endif\n\n        return totalLight;\n}\n")).toBeTruthy();
+                        });
+                    });
+                });
+            });
+
+            describe("add DeferLightPassEndShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    it("test fs source", function () {
+                        var fs = getFsSource(gl);
+                        expect(glslTool.containMultiLine(fs, [
+                            "out vec4 fragColor;\n",
+                            "fragColor = totalColor;\n"
+                        ])).toBeTruthy();
+                    });
+                });
             });
         });
     });

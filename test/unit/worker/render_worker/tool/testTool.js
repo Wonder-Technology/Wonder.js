@@ -1,57 +1,27 @@
 var Main = wd.Main;
 
-var testTool = (function () {
-    return {
-        getValues: function (values, digit) {
-            var digit = digit === undefined ? 7 : digit;
-
-            if (values !== undefined) {
-                if (mathTestUtils.isArray(values) || mathTestUtils.isFloat32Array(values) || mathTestUtils.isUint16Array(values) || mathTestUtils.isUint8Array(values)) {
-                    return mathTestUtils.getValues(values, digit);
-                }
-                else if(values.values){
-                    return mathTestUtils.getValues(values.values, digit);
-                }
-                else if(values instanceof wd.Quaternion){
-                    return mathTestUtils.getValues([values.x, values.y, values.z, values.w], digit);
-                }
-                else {
-                    return mathTestUtils.toFixed(values, digit);
-                }
-            }
-
-            //return mathTestUtils.getValues(matrix.values);
-        },
-        stubGetter: function (sinon, object, attri, getterFunc) {
-            if(object[attri] === void 0){
-                Object.defineProperty(object, attri, {
-                    configurable: true,
-                    enumerable: true,
-                    get: getterFunc
-                })
-            }
-
-            sinon.stub(object, attri, {
-                get: getterFunc
-            });
-        },
-        stubSetter: function (sinon, object, attri, setterFunc) {
-            if(object[attri] === void 0){
-                Object.defineProperty(object, attri, {
-                    configurable: true,
-                    enumerable: true,
-                    set: setterFunc
-                })
-            }
-
-            sinon.stub(object, attri, {
-                set: setterFunc
-            });
-        },
-        clear: function(sandbox){
-            this.clearInstance(sandbox);
-            this.clearComponentData();
-        },
+var TestTool = YYC.Class(TestToolBase, {
+    Public: {
+        // getValues: function (values, digit) {
+        //     var digit = digit === undefined ? 7 : digit;
+        //
+        //     if (values !== undefined) {
+        //         if (mathTestUtils.isArray(values) || mathTestUtils.isFloat32Array(values) || mathTestUtils.isUint16Array(values) || mathTestUtils.isUint8Array(values)) {
+        //             return mathTestUtils.getValues(values, digit);
+        //         }
+        //         else if(values.values){
+        //             return mathTestUtils.getValues(values.values, digit);
+        //         }
+        //         else if(values instanceof wd.Quaternion){
+        //             return mathTestUtils.getValues([values.x, values.y, values.z, values.w], digit);
+        //         }
+        //         else {
+        //             return mathTestUtils.toFixed(values, digit);
+        //         }
+        //     }
+        //
+        //     //return mathTestUtils.getValues(matrix.values);
+        // },
         clearInstance: function (sandbox) {
             // wd.EventManager.off();
             //
@@ -81,6 +51,7 @@ var testTool = (function () {
             tagTool.resetData();
             geometryTool.resetData();
             materialTool.resetData();
+            materialWorkerTool.resetData();
             shaderTool.resetData();
             meshRendererTool.resetData();
             arrayBufferTool.resetData();
@@ -90,36 +61,37 @@ var testTool = (function () {
             lightTool.resetData();
             renderCommandBufferTool.resetData();
             drawRenderCommandBufferTool.resetData();
+            sendDrawRendercommandBufferTool.resetData();
             sceneTool.resetData();
+
+            directorSystemTool.resetData();
+
+            webglDetectWorkerTool.resetData();
+            gpuDetectTool.resetData();
+
+            vaoTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {
-            // var isInit$ = isInit === false ? false : true;
-            //
-            // if(isInit$){
-            //     this.initForTest(sandbox);
-            // }
+            testUtils.prepareBufferForTest(sandbox, data, bufferTool);
 
-            Main.isTest = true;
-
-            this._prepareBufferForTest(sandbox, data);
+            webglWorkerTool.init(sandbox);
 
             this.clear(sandbox);
 
             Main.isTest = true;
-        },
-        _prepareBufferForTest: function(sandbox, data){
-            sandbox.stub(wd.BufferUtilsForUnitTest, "isDrawRenderCommandDataTypeArrayNotExist").returns(true);
+            wd.InitConfigWorkerData.isTest = true;
+            wdrd.InitConfigWorkerData.isTest = true;
 
-            bufferTool.minBufferCount(sandbox, data);
-        },
-
-        openContractCheck: function () {
-            Main.isTest = true;
+            testUtils.initForTest(sandbox);
         },
 
         closeContractCheck: function () {
             Main.isTest = false;
+            wd.InitConfigWorkerData.isTest = false;
+            wdrd.InitConfigWorkerData.isTest = false;
         }
     }
-}());
+});
+
+var testTool = new TestTool();

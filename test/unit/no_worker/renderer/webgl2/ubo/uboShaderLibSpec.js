@@ -17,20 +17,20 @@ describe("test ubo shader lib", function () {
     var Light = wd.Light;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+        return glslTool.buildGLSL(sandbox, state);
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -236,7 +236,7 @@ describe("test ubo shader lib", function () {
                 return new Float32Array([
                     0, 0, 0, 0,
                     1, 1, 1, 1,
-                    getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic(), pointLightWebGL2SystemTool.computeRadius(getDefaultColorArr3(), getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic())
+                    getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic(), pointLightSystemTool.computeRadius(getDefaultColorArr3(), getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic())
                 ]);
             }
 
@@ -464,7 +464,7 @@ describe("test ubo shader lib", function () {
                             typeArrayTool.set(typeArr, colorArr3, 4);
 
 
-                            typeArrayTool.set(typeArr, [pointLightWebGL2SystemTool.computeRadius(colorArr3, getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic())], 8 + 3);
+                            typeArrayTool.set(typeArr, [pointLightSystemTool.computeRadius(colorArr3, getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic())], 8 + 3);
 
                             judgeIsSetUboDataOnce(typeArr);
                         });
@@ -483,7 +483,7 @@ describe("test ubo shader lib", function () {
 
                             var typeArr = getDefaultUboTypeArray();
 
-                            typeArrayTool.set(typeArr, [2, 0.1, getDefaultQuadratic(), pointLightWebGL2SystemTool.computeRadius(getDefaultColorArr3(), 2, 0.1, getDefaultQuadratic())], 8);
+                            typeArrayTool.set(typeArr, [2, 0.1, getDefaultQuadratic(), pointLightSystemTool.computeRadius(getDefaultColorArr3(), 2, 0.1, getDefaultQuadratic())], 8);
 
                             judgeIsSetUboDataOnce(typeArr);
                         });

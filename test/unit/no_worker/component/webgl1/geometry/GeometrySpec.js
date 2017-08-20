@@ -6,10 +6,10 @@ describe("Geometry", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function () {
-        testWebGL1Tool.clear(sandbox);
+        testTool.clear(sandbox);
 
         sandbox.restore();
     });

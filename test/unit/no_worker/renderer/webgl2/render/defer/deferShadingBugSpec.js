@@ -10,7 +10,7 @@ describe("defer shading", function () {
     var Log = wd.Log;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+        return glslTool.buildGLSL(sandbox, state);
     }
 
     function enableDeferShading(sandbox) {
@@ -26,7 +26,7 @@ describe("defer shading", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -35,7 +35,7 @@ describe("defer shading", function () {
         enableDeferShading(sandbox);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -46,7 +46,7 @@ describe("defer shading", function () {
         });
         
         it("expand max light count to be bigger than the one defined in front render", function(){
-            testWebGL2Tool.openContractCheck();
+            testTool.openContractCheck();
 
             DataBufferConfig.pointLightDataBufferCount = 1;
 

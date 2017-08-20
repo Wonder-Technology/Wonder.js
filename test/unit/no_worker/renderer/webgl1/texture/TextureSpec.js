@@ -19,7 +19,7 @@ describe("Texture", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
@@ -36,7 +36,7 @@ describe("Texture", function () {
         basicMaterialTool.addMap(material, texture);
     });
     afterEach(function () {
-        testWebGL1Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -61,7 +61,7 @@ describe("Texture", function () {
 
     describe("bindToUnit", function () {
         beforeEach(function () {
-            testWebGL1Tool.closeContractCheck();
+            testTool.closeContractCheck();
         });
 
         it("if texture of the specific unit is cached, not bind and active it again", function () {
@@ -87,7 +87,7 @@ describe("Texture", function () {
             var glUnit1 = "TEXTURE1";
 
             beforeEach(function () {
-                testWebGL1Tool.closeContractCheck();
+                testTool.closeContractCheck();
 
                 texture2 = textureTool.create();
                 basicMaterialTool.addMap(material, texture2);
@@ -137,7 +137,7 @@ describe("Texture", function () {
 
     describe("sendData", function () {
         beforeEach(function(){
-            testWebGL1Tool.closeContractCheck();
+            testTool.closeContractCheck();
         });
         
         it("send unit index", function () {

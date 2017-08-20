@@ -6,14 +6,14 @@ describe("test init ubo", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 

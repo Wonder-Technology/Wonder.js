@@ -8,14 +8,14 @@ describe("basic render", function () {
     var ThreeDTransform = wd.ThreeDTransform;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL2Tool.buildGLSL(sandbox, state);
+        return glslTool.buildGLSL(sandbox, state);
     }
 
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL2Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -24,7 +24,7 @@ describe("basic render", function () {
         deferShadingTool.disableDeferShading(sandbox);
     });
     afterEach(function () {
-        testWebGL2Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -210,7 +210,7 @@ describe("basic render", function () {
 
                     var args = gl.uniform1f.firstCall.args;
                     expect(args[0]).toEqual(pos);
-                    expect(testWebGL2Tool.getValues(args[1])).toEqual(opacity);
+                    expect(testTool.getValues(args[1])).toEqual(opacity);
                 });
 
                 describe("test glsl", function () {

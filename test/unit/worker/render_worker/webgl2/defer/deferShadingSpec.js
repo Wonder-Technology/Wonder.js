@@ -8,14 +8,14 @@ describe("defer shading", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         deferShadingWorkerTool.enableDeferShading(sandbox);
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     describe("init defer shading", function () {

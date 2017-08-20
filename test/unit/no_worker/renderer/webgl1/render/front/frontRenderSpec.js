@@ -18,20 +18,20 @@ describe("front render", function () {
     var AmbientLightData = wd.AmbientLightData;
 
     function buildGLSL(sandbox, state) {
-        return glslWebGL1Tool.buildGLSL(sandbox, state);
+        return glslTool.buildGLSL(sandbox, state);
     }
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testWebGL1Tool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
         gl = stateTool.getGLFromFakeGLState(state);
     });
     afterEach(function () {
-        testWebGL1Tool.clear(sandbox);
+        testTool.clear(sandbox);
         sandbox.restore();
     });
 
@@ -557,7 +557,7 @@ describe("front render", function () {
 
                     var args = gl.uniform1f.firstCall.args;
                     expect(args[0]).toEqual(pos);
-                    expect(testWebGL1Tool.getValues(args[1])).toEqual(opacity);
+                    expect(testTool.getValues(args[1])).toEqual(opacity);
                 });
                 it("send u_lightModel", function () {
                     var lightModel = ELightModel.CONSTANT,
@@ -694,7 +694,7 @@ describe("front render", function () {
 
                         describe("if dirty", function () {
                             it("send data", function () {
-                                expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color1.toArray3()));
+                                expect(testTool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testTool.getValues(color1.toArray3()));
                             });
                             it("clean dirty", function () {
                                 expect(lightTool.isDataNotDirty(AmbientLightData.isColorDirtys[light1.index])).toBeTruthy();
@@ -815,8 +815,8 @@ describe("front render", function () {
 
                                 describe("if dirty", function () {
                                     it("send data", function () {
-                                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color1.toArray3()));
-                                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color2.toArray3()));
+                                        expect(testTool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testTool.getValues(color1.toArray3()));
+                                        expect(testTool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testTool.getValues(color2.toArray3()));
                                     });
                                     it("clean dirty", function () {
                                         expect(lightTool.isDataNotDirty(DirectionLightData.isColorDirtys[light1.index])).toBeTruthy();
@@ -931,8 +931,8 @@ describe("front render", function () {
 
                                 describe("if dirty", function () {
                                     it("send data", function () {
-                                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color1.toArray3()));
-                                        expect(testWebGL1Tool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testWebGL1Tool.getValues(color2.toArray3()));
+                                        expect(testTool.getValues(gl.uniform3f.withArgs(pos1).args[0].slice(1, 4))).toEqual(testTool.getValues(color1.toArray3()));
+                                        expect(testTool.getValues(gl.uniform3f.withArgs(pos2).args[0].slice(1, 4))).toEqual(testTool.getValues(color2.toArray3()));
                                     });
                                     it("clean dirty", function () {
                                         expect(lightTool.isDataNotDirty(PointLightData.isColorDirtys[light1.index])).toBeTruthy();

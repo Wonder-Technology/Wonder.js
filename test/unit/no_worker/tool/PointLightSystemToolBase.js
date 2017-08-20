@@ -1,5 +1,5 @@
-var pointLightSystemTool = (function () {
-    return {
+var PointLightSystemToolBase = YYC.AClass({
+    Public: {
         jugdgeDisposeComponent: function (describe, it, expect, PointLightData) {
             var Light = wd.Light;
             var Color = wd.Color;
@@ -92,5 +92,4 @@ var pointLightSystemTool = (function () {
             specifyLightSystemTool.jugdgeDisposeComponent(pointLightTool, "addPointLight", describe, it, expect, PointLightData);
         }
     }
-})();
-
+});

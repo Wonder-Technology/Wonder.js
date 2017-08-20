@@ -1,14 +1,7 @@
 var Main = wd.Main;
 
-var testWebGL1Tool = (function () {
-    return {
-        getValues: function (values, digit) {
-            return testUtils.getValues(values, digit);
-        },
-        clear: function(sandbox){
-            this.clearInstance(sandbox);
-            this.clearComponentData();
-        },
+var TestTool = YYC.Class(TestToolBase, {
+    Public: {
         clearInstance: function (sandbox) {
             for (var i in wd) {
                 if (wd.hasOwnProperty(i)) {
@@ -61,14 +54,16 @@ var testWebGL1Tool = (function () {
             gpuDetectTool.setGPUDetectData("extensionVao", null);
 
             webglTestTool.initForTest(sandbox);
-        },
-
-        openContractCheck: function () {
-            Main.isTest = true;
-        },
-
-        closeContractCheck: function () {
-            Main.isTest = false;
         }
+        //
+        // openContractCheck: function () {
+        //     Main.isTest = true;
+        // },
+        //
+        // closeContractCheck: function () {
+        //     Main.isTest = false;
+        // }
     }
-}());
+});
+
+var testTool = new TestTool();

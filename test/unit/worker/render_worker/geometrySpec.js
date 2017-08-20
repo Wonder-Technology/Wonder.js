@@ -13,14 +13,14 @@ describe("geometry", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox, {
+        testTool.clearAndOpenContractCheck(sandbox, {
             geometryDataBufferCount: 200
         });
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     describe("allow set point data of new one after System->init", function() {
@@ -260,18 +260,18 @@ describe("geometry", function () {
 
 
 
-                    expect(testRenderWorkerTool.getValues(
+                    expect(testTool.getValues(
                         GeometryWorkerData.verticesCacheMap[geo2.index]
                     )).toEqual(geo2VerticesData)
 
 
                     if(isWithNoNormal !== true){
-                        expect(testRenderWorkerTool.getValues(
+                        expect(testTool.getValues(
                             GeometryWorkerData.normalsCacheMap[geo2.index]
                         )).toEqual(geo2NormalsData)
                     }
                     if(isWithNoTexCoord !== true){
-                        expect(testRenderWorkerTool.getValues(
+                        expect(testTool.getValues(
                             GeometryWorkerData.texCoordsCacheMap[geo2.index]
                         )).toEqual(geo2TexCoordsData)
                     }

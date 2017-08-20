@@ -4,10 +4,10 @@ describe("create gl", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox);
+        testTool.clearAndOpenContractCheck(sandbox);
     });
     afterEach(function () {
-        testRenderWorkerTool.clearInstance(sandbox);
+        testTool.clearInstance(sandbox);
         sandbox.restore();
     });
 

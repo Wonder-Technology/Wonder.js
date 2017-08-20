@@ -9,14 +9,14 @@ describe("dispose geometry", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
-        testRenderWorkerTool.clearAndOpenContractCheck(sandbox, {
+        testTool.clearAndOpenContractCheck(sandbox, {
             geometryDataBufferCount: 200
         });
     });
     afterEach(function () {
         sandbox.restore();
 
-        testRenderWorkerTool.clear(sandbox);
+        testTool.clear(sandbox);
     });
 
     describe("disposeComponent", function () {
@@ -45,7 +45,7 @@ describe("dispose geometry", function () {
                 })
 
                 it("send disposed geometry index array to render worker", function () {
-                    testRenderWorkerTool.closeContractCheck();
+                    testTool.closeContractCheck();
 
                     directorTool.init(sandbox);
                     sendDrawRendercommandBufferTool.markInitComplete();
