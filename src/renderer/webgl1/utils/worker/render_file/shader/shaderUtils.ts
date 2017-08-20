@@ -8,7 +8,6 @@ import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../
 import { genereateShaderIndex, initShader as initShaderUtils } from "../../../../../utils/shader/shaderUtils";
 import { getProgram } from "../../../../../utils/worker/render_file/shader/program/programUtils";
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";
-import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
 import { getOrCreateBuffer } from "../../../../../utils/buffer/indexBufferUtils";
 import { WebGL1InitShaderFuncDataMap } from "../../../../type/utilsType";
 import { bindVao as bindVaoUtils, createVao, unbindVao } from "../vao/vaoUtils";
@@ -19,7 +18,7 @@ import {
 } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getExtensionVao } from "../device/gpuDetectUtils";
-import { getAttribLocation } from "./location/locationUtils";
+import { setEmptyLocationMap } from "./location/locationUtils";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     initShaderUtils(state, null, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);

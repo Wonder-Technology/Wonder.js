@@ -1,6 +1,6 @@
 import { ensureFunc } from "../../../../../../../definition/typescript/decorator/contract";
 import { AttributeLocationMap } from "../../../../../../type/dataType";
-import { isValidMapValue } from "../../../../../../../utils/objectUtils";
+import { createMap, isValidMapValue } from "../../../../../../../utils/objectUtils";
 
 export var getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
     // it(`${name}'s attrib location should be number`, () => {
@@ -25,3 +25,7 @@ export var isAttributeLocationNotExist = (pos: number) => {
     return pos === -1;
 }
 
+export var setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: any) => {
+    LocationDataFromSystem.attributeLocationMap[shaderIndex] = createMap();
+    LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
+}

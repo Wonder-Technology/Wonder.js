@@ -18,7 +18,7 @@ import {
 } from "../../../../../utils/shader/shaderUtils";
 import { getProgram } from "../../../../../utils/worker/render_file/shader/program/programUtils";
 import { initShader, isProgramExist, registerProgram } from "../../../../../utils/shader/program/programUtils";
-import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
+// import { setEmptyLocationMap } from "../../../../../utils/shader/location/locationUtils";
 import { getMaterialShaderLibNameArr } from "../../../shader/shaderSourceBuildUtils";
 import { handleUboConfig } from "../ubo/uboManagerUtils";
 import { WebGL2InitShaderFuncDataMap } from "../../../../type/utilsType";
@@ -28,6 +28,7 @@ import {
     createAndInitArrayBuffer,
     createAndInitIndexBuffer
 } from "../../../../../utils/worker/render_file/shader/shaderUtils";
+import { setEmptyLocationMap } from "./location/locationUtils";
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return getShaderIndexByMaterialIndexAndShaderName(buildShaderIndexByMaterialIndexAndShaderNameMapKey(null, shaderName), ShaderDataFromSystem);
@@ -79,7 +80,6 @@ var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibC
     registerProgram(shaderIndex, ProgramDataFromSystem, program);
     initShader(program, vsSource, fsSource, gl);
 
-    //todo fix location
     setEmptyLocationMap(shaderIndex, LocationDataFromSystem);
 
     addVaoConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem.vaoConfigMap, initShaderFuncDataMap);

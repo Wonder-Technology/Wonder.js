@@ -48,7 +48,6 @@ import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
 import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../device/WorkerDetectSystem";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
-import { LocationData } from "../renderer/shader/location/LocationData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
 // import { initData as initLightData } from "../component/light/LightSystem";
@@ -85,6 +84,8 @@ import { WebGL1ProgramData } from "../renderer/webgl1/shader/program/ProgramData
 import { WebGL2ProgramData } from "../renderer/webgl2/shader/program/ProgramData";
 import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
 import { VaoData } from "../renderer/vao/VaoData";
+import { WebGL1LocationData } from "../renderer/webgl1/shader/location/LocationData";
+import { WebGL2LocationData } from "../renderer/webgl2/shader/location/LocationData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -174,7 +175,7 @@ else {
 
             initProgramData(WebGL1ProgramData);
 
-            initLocationData(LocationData);
+            initLocationData(WebGL1LocationData);
 
             initArrayBufferData(ArrayBufferData);
 
@@ -190,7 +191,7 @@ else {
 
             initProgramData(WebGL2ProgramData);
 
-            initLocationData(LocationData);
+            initLocationData(WebGL2LocationData);
 
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
         }

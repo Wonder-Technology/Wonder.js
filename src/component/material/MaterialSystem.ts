@@ -24,8 +24,6 @@ import {
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator_interface";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
-import { LocationData } from "../../renderer/shader/location/LocationData";
-// import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import {
@@ -89,7 +87,7 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
 
 export var useShader = useShaderUtils;
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any) => {
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any, LocationData:any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
 
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
