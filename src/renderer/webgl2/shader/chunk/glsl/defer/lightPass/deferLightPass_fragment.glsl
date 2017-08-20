@@ -1,24 +1,5 @@
 @varDeclare
-//todo move to light ubo
-//uniform vec3 u_lightPosition;
-//uniform vec3 u_lightColor;
-//uniform float u_lightIntensity;
-//uniform float u_lightConstant;
-//uniform float u_lightLinera;
-//uniform float u_lightQuadratic;
-////uniform float u_lightRange;
-//
-//uniform float u_lightRadius;
-
-
-
-
-//uniform int u_lightModel;
-//uniform vec3 u_cameraPos;
-
-
-
-    in vec2 v_texcoord;
+in vec2 v_texcoord;
 @end
 
 
@@ -50,7 +31,7 @@ float getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDi
 //todo optimize specular color
 vec3 getSpecularColor(vec3 diffuseColor)
 {
-return diffuseColor;
+    return diffuseColor;
 }
 
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse, float specularStrength, float shininess)

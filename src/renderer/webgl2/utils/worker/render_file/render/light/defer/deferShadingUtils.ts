@@ -16,8 +16,6 @@ import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../interface/IUtils";
 
 export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
-    _resetLightDataBufferCount(DataBufferConfig);
-
     initGBuffer(gl, GBufferDataFromSystem);
 
     //todo refactor: when switch to defer shading, bind and send gbuffer textures
@@ -31,12 +29,6 @@ export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, Defe
     let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
     sendGBufferTargetData(gl, program);
-}
-
-var _resetLightDataBufferCount = (DataBufferConfig:any) => {
-    //todo fix direction, ambient
-
-    DataBufferConfig.pointLightDataBufferCount = 1000;
 }
 
 export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {

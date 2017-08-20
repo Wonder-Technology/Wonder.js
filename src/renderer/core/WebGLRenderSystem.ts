@@ -76,9 +76,9 @@ import { buildDrawDataMap as buildWebGL1DrawDataMap } from "../webgl1/utils/work
 import { WebGL1LocationData } from "../webgl1/shader/location/LocationData";
 import { WebGL2LocationData } from "../webgl2/shader/location/LocationData";
 
-var _checkLightCount = requireCheckFunc((PointLightData: any) => {
+var _checkLightCount = requireCheckFunc((pointLightCount:number, PointLightData: any) => {
     it("count should <= max count", () => {
-        expect(PointLightData.count).lte(DataBufferConfig.pointLightDataBufferCount);
+        expect(PointLightData.count).lte(pointLightCount);
     })
     //todo check direction, ambient
 }, () => {
@@ -91,6 +91,8 @@ export var render = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     if(isWebgl1()){
         init = (state: Map<any, any>) => {
+            _checkLightCount(DataBufferConfig.frontPointLightCount, WebGL1PointLightData);
+
             return _init(state, {
                     ambientLightData: {
                         buffer: AmbientLightData.buffer,
@@ -111,8 +113,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                         pointLightGLSLDataStructureMemberNameArr: WebGL1PointLightData.lightGLSLDataStructureMemberNameArr
                     }
                 },
-                null,
-                WebGL1PointLightData);
+                null);
         }
 
         render = (state: Map<any, any>) => {
@@ -122,6 +123,9 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
     else{
         init = (state: Map<any, any>) => {
+            _checkLightCount(DataBufferConfig.deferPointLightCount, WebGL2PointLightData);
+
+
             return _init(state, {
                     pointLightData: {
                         buffer: WebGL2PointLightData.buffer,
@@ -133,8 +137,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                     deferShading:{
                         isInit: true
                     }
-                },
-                WebGL2PointLightData
+                }
             );
         }
 
@@ -143,9 +146,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 
-    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData, PointLightData: any) => {
-        _checkLightCount(PointLightData);
-
+    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData) => {
         let renderWorker = getRenderWorker(WorkerInstanceData);
 
         renderWorker.postMessage({
@@ -209,7 +210,7 @@ else {
 
             initWebGL1Material(state, gl, webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, WebGL1GLSLSenderData, WebGL1ProgramData, VaoData, WebGL1LocationData);
 
-            _checkLightCount(WebGL1PointLightData);
+            _checkLightCount(DataBufferConfig.frontPointLightCount, WebGL1PointLightData);
         }
 
         render = (state: Map<any, any>) => {
@@ -232,7 +233,7 @@ else {
 
             initWebGL2Render(gl, render_config, DataBufferConfig, GBufferData, DeferLightPassData, ShaderData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GPUDetectData);
 
-            _checkLightCount(WebGL2PointLightData);
+            _checkLightCount(DataBufferConfig.deferPointLightCount, WebGL2PointLightData);
         }
 
         render = (state: Map<any, any>) => {

@@ -29,20 +29,20 @@ describe("DirectionLight", function () {
 
         });
 
-        describe("contract check", function(){
-            it("count should <= max count", function () {
-                var msg = "count should <= max count";
-                directionLightTool.create();
-                directionLightTool.create();
-                directionLightTool.create();
-                directionLightTool.create();
-
-                expect(function(){
-
-                    directionLightTool.create();
-                }).toThrow(msg);
-            });
-        });
+        // describe("contract check", function(){
+        //     it("count should <= max count", function () {
+        //         var msg = "count should <= max count";
+        //         directionLightTool.create();
+        //         directionLightTool.create();
+        //         directionLightTool.create();
+        //         directionLightTool.create();
+        //
+        //         expect(function(){
+        //
+        //             directionLightTool.create();
+        //         }).toThrow(msg);
+        //     });
+        // });
 
         describe("set default render data", function () {
             it("set colorArr to be [1,1,1]", function () {

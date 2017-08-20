@@ -1,21 +1,65 @@
 var bufferUtils = (function () {
     return {
-        minBufferCount: function(sandbox, data, DataBufferConfig){
+        minBufferCount: function (sandbox, data, DataBufferConfig) {
             var transformDataBufferCount = (data && data.transformDataBufferCount) || 10;
             var geometryDataBufferCount = (data && data.geometryDataBufferCount) || 200;
+            var pointLightDataBufferCount = (data && data.pointLightDataBufferCount) || 10;
+            var deferPointLightCount = (data && data.deferPointLightCount) || 10;
+
 
             testTool.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
                 return transformDataBufferCount;
             });
             sandbox.stub(DataBufferConfig, "transformDataBufferCount", transformDataBufferCount);
 
-            sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 10);
-            sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 10);
+            sandbox.stub(DataBufferConfig, "basicMaterialDataBufferCount", 20);
+            sandbox.stub(DataBufferConfig, "lightMaterialDataBufferCount", 20);
 
-            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 10);
+            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 20);
 
             sandbox.stub(DataBufferConfig, "geometryDataBufferCount", geometryDataBufferCount);
-            sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 10);
+            sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 20);
+
+
+            sandbox.stub(DataBufferConfig, "ambientLightDataBufferCount", 20);
+            sandbox.stub(DataBufferConfig, "directionLightDataBufferCount", 20);
+            sandbox.stub(DataBufferConfig, "pointLightDataBufferCount", pointLightDataBufferCount);
+
+
+            sandbox.stub(DataBufferConfig, "deferPointLightCount", deferPointLightCount);
+        },
+        restoreBufferCount: function () {
+            wd.DataBufferConfig = {
+                //20k
+                transformDataBufferCount: 20 * 1000,
+                //1000k vertices
+                geometryDataBufferCount: 1000 * 1000,
+
+                //20k
+                basicMaterialDataBufferCount: 20 * 1000,
+                lightMaterialDataBufferCount: 20 * 1000,
+
+
+                textureDataBufferCount: 20 * 1000,
+
+
+                ambientLightDataBufferCount: 1,
+                directionLightDataBufferCount: 10,
+                pointLightDataBufferCount: 1000,
+
+                frontAmbientLightCount: 1,
+                frontDirectionLightCount: 4,
+                frontPointLightCount: 4,
+
+                deferPointLightCount: 1000,
+
+
+                renderCommandBufferCount: 10 * 1024,
+
+
+                //16 or 32
+                geometryIndicesBufferBits: 16
+            }
         }
     }
 })()

@@ -18,13 +18,13 @@ var threeDTransformTool = (function () {
         },
         isAlive: function(transform){
             expect(function(){
-                this.getPosition(transform)
+                threeDTransformTool.getPosition(transform)
             }).not.toThrow();
         },
         isNotAlive: function(transform){
             expect(function(){
-                this.getPosition(transform)
-            }).toThrow();
+                threeDTransformTool.getPosition(transform)
+            }).toThrow("component should alive");
         }
     }
 })()

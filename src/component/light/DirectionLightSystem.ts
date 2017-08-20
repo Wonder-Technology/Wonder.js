@@ -29,9 +29,9 @@ import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/
 import { Map } from "immutable";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
-    it("count should <= max count", () => {
-        expect(DirectionLightData.count).lte(DataBufferConfig.directionLightDataBufferCount);
-    })
+    // it("count should <= max count", () => {
+    //     expect(DirectionLightData.count).lte(DataBufferConfig.directionLightDataBufferCount);
+    // })
 }, (DirectionLightData: any) => {
     var light = new DirectionLight();
 

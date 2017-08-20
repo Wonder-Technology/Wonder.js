@@ -10,6 +10,8 @@ describe("PointLight", function () {
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
+
+
         testTool.clearAndOpenContractCheck(sandbox);
 
         var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
@@ -21,7 +23,18 @@ describe("PointLight", function () {
         sandbox.restore();
     });
 
-    describe("disposeComponent", function () {
-        pointLightSystemTool.jugdgeDisposeComponent(describe, it, expect, PointLightData);
+    // describe("disposeComponent", function () {
+    //     pointLightSystemTool.jugdgeDisposeComponent(describe, it, expect, PointLightData);
+    // });
+
+    //todo test direction, ambient light
+    it("buffer count should equal DataBufferConfig.pointLightDataBufferCount", function () {
+        testTool.clearAndOpenContractCheck(sandbox, {
+            pointLightDataBufferCount:4
+        });
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        expect(PointLightData.intensities.length).toEqual(4);
     });
 });

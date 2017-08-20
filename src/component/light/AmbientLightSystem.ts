@@ -23,9 +23,9 @@ import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/
 import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
-    it("count should <= max count", () => {
-        expect(AmbientLightData.count).lte(DataBufferConfig.ambientLightDataBufferCount);
-    })
+    // it("count should <= max count", () => {
+    //     expect(AmbientLightData.count).lte(DataBufferConfig.ambientLightCount);
+    // })
 }, (AmbientLightData: any) => {
     var light = new AmbientLight();
 

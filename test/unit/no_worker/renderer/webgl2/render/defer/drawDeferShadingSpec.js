@@ -696,27 +696,6 @@ describe("defer shading", function () {
                 });
 
                 describe("send light data", function() {
-                    //todo test after ubo
-
-                    // describe("send point light data", function(){
-
-                        // it("send u_lightPosition", function () {
-                        //     var pos = 0;
-                        //     gl.getUniformLocation.withArgs(sinon.match.any, "u_lightPosition").returns(pos);
-                        //
-                        //     var position = Vector3.create(1,2,3);
-                        //     var transform = gameObjectTool.getTransform(lightObj);
-                        //     threeDTransformTool.setPosition(transform, position);
-                        //
-                        //     directorTool.init(state);
-                        //     directorTool.loopBody(state);
-                        //
-                        //     expect(gl.uniform3f).toCalledWith(pos, position.x, position.y, position.z);
-                        // });
-
-                        //todo more test after ubo
-                    // });
-
                     describe("add LightUboShaderLib", function () {
                         it("bind ubo", function () {
                             directorTool.init(state);

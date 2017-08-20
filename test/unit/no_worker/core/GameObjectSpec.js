@@ -86,6 +86,8 @@ describe("GameObject", function() {
             expect(gameObjectTool.has(child, child11)).toBeFalsy();
         });
         it("its all components should be disposed", function () {
+            testTool.openContractCheck();
+
             var tra = gameObjectTool.getTransform(gameObject),
                 tra1 = gameObjectTool.getTransform(child),
                 tra11 = gameObjectTool.getTransform(child11);
@@ -103,6 +105,8 @@ describe("GameObject", function() {
             });
 
             it("should not affect dispose parent's datas", function () {
+                testTool.openContractCheck();
+
                 gameObjectTool.dispose(child11);
                 gameObjectTool.dispose(child);
 
@@ -319,6 +323,8 @@ describe("GameObject", function() {
             expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeFalsy();
         });
         it("dispose component", function () {
+            testTool.openContractCheck();
+
             var transform = gameObjectTool.getTransform(gameObject);
             var pos = wd.Vector3.create(1,2,3);
             threeDTransformTool.setPosition(transform, pos);

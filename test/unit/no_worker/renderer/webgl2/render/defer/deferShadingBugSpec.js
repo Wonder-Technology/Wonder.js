@@ -40,27 +40,40 @@ describe("defer shading", function () {
     });
 
     describe("fix bug", function() {
-        var DataBufferConfig = wd.DataBufferConfig;
-
         beforeEach(function(){
         });
-        
-        it("expand max light count to be bigger than the one defined in front render", function(){
-            testTool.openContractCheck();
 
-            DataBufferConfig.pointLightDataBufferCount = 1;
+        //todo test direction, ambient
+        describe("support DataBufferConfig.pointLightCount point lights", function () {
+            beforeEach(function () {
+                testTool.clearAndOpenContractCheck(sandbox, {
+                    pointLightCount:10,
+                    transformDataBufferCount:100
+                });
 
-            sceneTool.addPointLight();
-            sceneTool.addPointLight();
+                state = stateTool.createAndSetFakeGLState(sandbox);
+            });
 
-            expect(function () {
-                directorTool.init(state);
-            }).not.toThrow();
+            it("test not exceed", function () {
+                for(var i = 0; i < 10; i++){
+                    sceneTool.addPointLight();
+                }
 
-            expect(DataBufferConfig.pointLightDataBufferCount).toEqual(1000);
+                expect(function () {
+                    directorTool.init(state);
+                }).not.toThrow();
+            });
+            it("if exceed, error", function () {
+                for(var i = 0; i < 11; i++){
+                    sceneTool.addPointLight();
+                }
 
-            //todo test direction, ambient
+                expect(function () {
+                    directorTool.init(state);
+                }).toThrow("count should <= max count");
+            });
         });
+
         it("if one material set diffuse map, one not, then the two should has different shaders", function(){
             function getFirstGBufferFsSource(gl) {
                 return gl.shaderSource.getCall(3).args[1];

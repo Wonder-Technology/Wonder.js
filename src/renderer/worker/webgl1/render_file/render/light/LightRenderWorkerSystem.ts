@@ -1,4 +1,3 @@
-// import { sendUniformData as sendUniformDataUtils } from "../../utils/render/light/lightRenderUtils";
 import {    getEmissionColorArr3, getLightModel, getShininess,
     getSpecularColorArr3} from "../../../../render_file/material/LightMaterialWorkerSystem";
 import { getColorArr3, getOpacity } from "../../../../render_file/material/MaterialWorkerSystem";

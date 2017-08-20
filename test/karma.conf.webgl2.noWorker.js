@@ -33,11 +33,11 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
-        'test/unit/no_worker/**/initDeferShading*',
+        // 'test/unit/no_worker/**/initDeferShading*',
         // 'test/unit/no_worker/**/basicRender*',
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',
@@ -51,6 +51,7 @@
         // 'test/unit/no_worker/**/*WebGLRenderer*',
         // 'test/unit/no_worker/**/*LightSpec*',
         // 'test/unit/no_worker/**/*PointLightSpec*',
+        // 'test/unit/no_worker/**/Ambient*Spec*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',

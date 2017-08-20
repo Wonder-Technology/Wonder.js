@@ -20,17 +20,17 @@ describe("AmbientLight", function () {
 
         });
 
-        describe("contract check", function(){
-            it("count should <= max count", function () {
-                var msg = "count should <= max count";
-                ambientLightTool.create();
-
-                expect(function(){
-
-                    ambientLightTool.create();
-                }).toThrow(msg);
-            });
-        });
+        // describe("contract check", function(){
+        //     it("count should <= max count", function () {
+        //         var msg = "count should <= max count";
+        //         ambientLightTool.create();
+        //
+        //         expect(function(){
+        //
+        //             ambientLightTool.create();
+        //         }).toThrow(msg);
+        //     });
+        // });
 
         describe("set default render data", function () {
             it("set colorArr to be [1,1,1]", function () {

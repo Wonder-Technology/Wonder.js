@@ -10,6 +10,7 @@ var specifyLightSystemTool = (function () {
 
             setFunc(light1, obj1);
 
+            console.log(wd.DataBufferConfig)
 
 
             gameObjectTool.disposeComponent(obj1, light1);
