@@ -4,6 +4,13 @@ export interface IBasicSendUniformDataDataMap {
     glslSenderData: SendUniformDataGLSLSenderDataMap;
 }
 
+export interface ILightSendUniformDataDataMap{
+    glslSenderData: SendUniformDataGLSLSenderDataMap;
+    ambientLightData?: any;
+    directionLightData?: any;
+    pointLightData: any;
+}
+
 export interface IDrawDataMap {
     DeviceManagerDataFromSystem: any;
     TextureDataFromSystem: any;

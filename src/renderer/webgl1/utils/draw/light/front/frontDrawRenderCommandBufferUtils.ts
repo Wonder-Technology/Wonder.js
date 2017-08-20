@@ -5,12 +5,11 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IWebGL1DrawFuncDataMap } from "../../../../interface/Idraw";
-import { WebGL1LightSendUniformDataDataMap } from "../../../../type/utilsType";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
-import { IWebGL1DrawDataMap } from "../../../worker/render_file/interface/IUtils";
+import { IWebGL1DrawDataMap, IWebGL1LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";
 
-export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap:WebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
+export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap:IWebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,
     pMatrix,
     cameraPosition,

@@ -5,14 +5,13 @@ import { IMaterialConfig } from "../../../../../../../data/material_config_inter
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { draw as drawFront } from "../../../../../draw/light/front/frontDrawRenderCommandBufferUtils";
 import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/Idraw";
-import { WebGL1LightSendUniformDataDataMap } from "../../../../../../type/utilsType";
 import {
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
-import { IWebGL1DrawDataMap } from "../../../interface/IUtils";
+import { IWebGL1DrawDataMap, IWebGL1LightSendUniformDataDataMap } from "../../../interface/IUtils";
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap:WebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap:IWebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
     drawFront(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 

@@ -1,7 +1,4 @@
 import {
-    WebGL2LightSendUniformDataDataMap
-} from "../../../../type/utilsType";
-import {
     drawArray, drawElements,
     updateSendMatrixFloat32ArrayData
 } from "../../../../../utils/draw/drawRenderCommandBufferUtils";
@@ -13,9 +10,12 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
 import { IWebGL2DrawFuncDataMap } from "../../../../interface/Idraw";
-import { IWebGL2BasicSendUniformDataDataMap, IWebGL2DrawDataMap } from "../interface/IUtils";
+import {
+    IWebGL2BasicSendUniformDataDataMap, IWebGL2DrawDataMap,
+    IWebGL2LightSendUniformDataDataMap
+} from "../interface/IUtils";
 
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string, initMaterialShader: Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:IWebGL2BasicSendUniformDataDataMap | WebGL2LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
+export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string, initMaterialShader: Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
     renderCommandBufferData:{
         mMatrices,
         materialIndices,

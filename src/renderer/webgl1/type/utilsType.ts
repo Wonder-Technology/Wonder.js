@@ -1,12 +1,3 @@
-import { SendUniformDataGLSLSenderDataMap } from "../../type/utilsType";
-
-export type WebGL1LightSendUniformDataDataMap = {
-    glslSenderData: SendUniformDataGLSLSenderDataMap;
-    ambientLightData: WebGL1SendUniformDataAmbientLightDataMap;
-    directionLightData: WebGL1SendUniformDataDirectionLightDataMap;
-    pointLightData: WebGL1SendUniformDataPointLightDataMap;
-}
-
 export type WebGL1SendUniformDataAmbientLightDataMap = {
     getColorArr3: Function;
 
