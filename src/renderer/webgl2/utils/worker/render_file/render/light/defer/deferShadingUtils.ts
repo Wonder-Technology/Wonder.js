@@ -20,13 +20,14 @@ export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, Defe
     _resetLightDataBufferCount(DataBufferConfig);
 
     initGBuffer(gl, GBufferDataFromSystem);
-    initDeferLightPass(gl, DeferLightPassDataFromSystem);
 
-    //todo optimize: when switch to defer shading, bind and send gbuffer textures
+    //todo refactor: when switch to defer shading, bind and send gbuffer textures
 
     bindGBufferTargets(gl, GBufferDataFromSystem);
 
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem);
+
+    initDeferLightPass(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 
     let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 

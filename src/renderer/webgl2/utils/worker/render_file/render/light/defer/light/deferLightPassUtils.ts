@@ -1,12 +1,30 @@
 import { bindVao, createVao, unbindVao } from "../../../../vao/vaoUtils";
+import {
+    createAndInitArrayBuffer,
+    createAndInitIndexBuffer
+} from "../../../../../../../../utils/worker/render_file/shader/shaderUtils";
+import { getVaoConfig } from "../../../../shader/glslSender/glslSenderUtils";
+import { it, requireCheckFunc } from "../../../../../../../../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
-export var init = (gl:any, DeferLightPassDataFromSystem:any) => {
-    _setFullScreenQuadVaoData(gl, DeferLightPassDataFromSystem);
+export var init = (gl:any, shaderIndex:number, GLSLSenderDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
+    _setFullScreenQuadVaoData(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 }
 
-var _setFullScreenQuadVaoData = (gl:any, DeferLightPassDataFromSystem:any) => {
-    //todo refactor: extract to VaoSystem
-    var fullScreenQuadVertexArray = createVao(gl);
+var _setFullScreenQuadVaoData = requireCheckFunc((gl:any, shaderIndex:number, GLSLSenderDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
+    it("positionLocation, texCoordLocation should be defined in vaoConfig data", () => {
+        var vaoConfig = getVaoConfig(shaderIndex, GLSLSenderDataFromSystem);
+
+        expect(vaoConfig.positionLocation).be.a("number");
+        expect(vaoConfig.texCoordLocation).be.a("number");
+    });
+},(gl:any, shaderIndex:number, GLSLSenderDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
+    var fullScreenQuadVertexArray = createVao(gl),
+        fullScreenQuadData = _createFullScreenQuadData(),
+        {
+           positionLocation,
+            texCoordLocation
+        } = getVaoConfig(shaderIndex, GLSLSenderDataFromSystem);
 
     bindVao(gl, fullScreenQuadVertexArray);
 
@@ -15,38 +33,19 @@ var _setFullScreenQuadVaoData = (gl:any, DeferLightPassDataFromSystem:any) => {
     //     radius: 100
     // });
 
-    let fullScreenQuadData = _createFullScreenQuadData();
-
-    let positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, fullScreenQuadData.positions, gl.STATIC_DRAW);
-
-    //todo refactor position(here is 0= layout(location=0))
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-
-    gl.enableVertexAttribArray(0);
-
-
-
-    let texCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, fullScreenQuadData.texCoords, gl.STATIC_DRAW);
-
-    //todo refactor position(here is 1= layout(location=1))
-    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-
-    gl.enableVertexAttribArray(1);
-
-
-    let indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, fullScreenQuadData.indices, gl.STATIC_DRAW);
+    createAndInitArrayBuffer(gl, fullScreenQuadData.positions, positionLocation, _getPositionSize());
+    createAndInitArrayBuffer(gl, fullScreenQuadData.texCoords, texCoordLocation, _getTexCoordSize());
+    createAndInitIndexBuffer(gl, fullScreenQuadData.indices);
 
     unbindVao(gl);
 
     DeferLightPassDataFromSystem.fullScreenQuadVertexArray = fullScreenQuadVertexArray;
     DeferLightPassDataFromSystem.fullScreenQuadIndicesCount = fullScreenQuadData.indices.length;
-}
+})
+
+var _getPositionSize = () => 3;
+
+var _getTexCoordSize = () => 2;
 
 var _createFullScreenQuadData = () => {
     var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]),

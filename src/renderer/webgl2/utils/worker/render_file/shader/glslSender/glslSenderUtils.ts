@@ -92,6 +92,8 @@ export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderL
     vaoConfigMap[shaderIndex] = vaoConfigData;
 })
 
+export var getVaoConfig = (shaderIndex:number, GLSLSenderDataFromSystem:any) => GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex];
+
 export var initData = (GLSLSenderDataFromSystem: any) => {
     initDataUtils(GLSLSenderDataFromSystem);
 

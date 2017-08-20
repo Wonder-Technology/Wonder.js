@@ -30,7 +30,7 @@ export var createAndInitArrayBuffer = requireCheckFunc((gl: WebGLRenderingContex
     gl.enableVertexAttribArray(location);
 })
 
-export var createAndInitIndexBuffer = (gl: WebGLRenderingContext, data: Float32Array) => {
+export var createAndInitIndexBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array) => {
     var buffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
