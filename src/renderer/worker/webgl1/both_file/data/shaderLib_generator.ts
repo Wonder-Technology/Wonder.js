@@ -16,6 +16,11 @@ import {
 } from "../../../../shader/chunk/ShaderChunk";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { webgl1_setPos_mvp } from "../../../../webgl1/shader/snippet/ShaderSnippet";
+import {
+    IDefineUniformConfig,
+    IGLSLConfig, IGLSLDefineListItem, ISendUniformConfig,
+    IShaderLibContentGenerator
+} from "../../../../data/shaderLib_generator_interface";
 
 var _lightDefineList = [
     {
@@ -679,7 +684,7 @@ export const webgl1_shaderLib_generator = {
     }
 }
 
-export interface IWebGL1ShaderLibContentGenerator {
+export interface IWebGL1ShaderLibContentGenerator extends IShaderLibContentGenerator{
     [shaderLibName: string]: IWebGL1ShaderLibConfig
 }
 
@@ -692,18 +697,7 @@ export interface IWebGL1ShaderLibConfig{
     send?: IWebGL1ShaderLibSendConfig
 }
 
-export interface IWebGL1GLSLConfig {
-    source?: GLSLChunk;
-    top?: string;
-    varDeclare?: string;
-    funcDeclare?: string;
-    funcDefine?: string;
-    body?: string;
-    define?: string;
-    defineList?: Array<IWebGL1GLSLDefineListItem>;
-
-    //todo support extension
-    // extension?:string,
+export interface IWebGL1GLSLConfig extends IGLSLConfig{
 }
 
 export interface IWebGL1GLSLFuncConfig {
@@ -720,9 +714,7 @@ export interface IWebGL1GLSLFuncGLSLConfig {
     define?: string;
 }
 
-export interface IWebGL1GLSLDefineListItem {
-    name: string;
-    valueFunc?: Function;
+export interface IWebGL1GLSLDefineListItem extends IGLSLDefineListItem{
 }
 
 export interface IWebGL1ShaderLibSendConfig {
@@ -740,12 +732,12 @@ export interface IWebGL1SendAttributeConfig {
 
 export type WebGL1UniformType = "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
 
-export interface IWebGL1DefineUniformConfig {
+export interface IWebGL1DefineUniformConfig extends IDefineUniformConfig{
     name: string;
     type: WebGL1UniformType;
 }
 
-export interface IWebGL1SendUniformConfig {
+export interface IWebGL1SendUniformConfig extends ISendUniformConfig{
     name: string;
     field: string;
     type: WebGL1UniformType;

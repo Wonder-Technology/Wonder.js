@@ -2,7 +2,6 @@ import { addSendAttributeConfig, addSendUniformConfig, addVaoConfig } from "./gl
 import { IWebGL1ShaderLibConfig, IWebGL1ShaderLibContentGenerator } from "../../../../../worker/webgl1/both_file/data/shaderLib_generator";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { Map } from "immutable";
-import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { getMaterialShaderLibConfig } from "../../../../data/MaterialConfigSystem";
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../../data/material_config_interface";
 import { genereateShaderIndex, initShader as initShaderUtils } from "../../../../../utils/shader/shaderUtils";
@@ -19,6 +18,7 @@ import {
 import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getExtensionVao } from "../device/gpuDetectUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
+import { getMaterialShaderLibNameArr } from "../../../../../utils/shader/shaderSourceBuildUtils";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     initShaderUtils(state, null, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
