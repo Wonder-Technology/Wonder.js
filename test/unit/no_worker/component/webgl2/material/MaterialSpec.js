@@ -3,7 +3,7 @@ describe("Material", function() {
     var material = null;
     var gl;
 
-    var ShaderData = wd.ShaderData;
+    var ShaderData = wd.WebGL2ShaderData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -33,7 +33,7 @@ describe("Material", function() {
                 directorTool.init(state);
 
                 expect(gl.linkProgram).toCalledOnce();
-                expect(ShaderData.shaderIndexByMaterialIndexAndShaderNameMap["DeferLightPass"]).toBeNumber();
+                expect(ShaderData.shaderIndexByShaderNameMap["DeferLightPass"]).toBeNumber();
             });
         });
 

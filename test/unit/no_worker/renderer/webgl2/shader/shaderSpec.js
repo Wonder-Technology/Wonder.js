@@ -48,7 +48,24 @@ describe("shader", function() {
             expect(MaterialData.shaderIndices[material.index]).toEqual(getUsedShaderShaderIndex());
         });
 
-        describe("optimize", function () {
+    });
+
+    describe("optimize", function() {
+        beforeEach(function(){
+        });
+
+        it("only init the shader of the same shader name once", function () {
+            sceneTool.addGameObject(sceneTool.createGameObject(null, lightMaterialTool.create()));
+
+            directorTool.init(state);
+            directorTool.loopBody(state);
+
+            directorTool.loopBody(state);
+
+            expect(gl.createProgram.callCount).toEqual(2);
+        });
+
+        it("only exec branch func to get material shader lib name array of the same shader once", function () {
             function getFirstBranchShaderLibItem(material_config) {
                 return material_config.shaders.materialShaders.GBuffer.filter(function (data) {
                     return data.branch !== undefined;
@@ -59,16 +76,14 @@ describe("shader", function() {
                 sandbox.stub(getFirstBranchShaderLibItem(material_config), "branch");
             }
 
-            it("not init shader if is already inited before", function () {
-                stubBranchFunc(sandbox, material_config);
+            stubBranchFunc(sandbox, material_config);
 
-                directorTool.init(state);
-                directorTool.loopBody(state);
+            directorTool.init(state);
+            directorTool.loopBody(state);
 
-                directorTool.loopBody(state);
+            directorTool.loopBody(state);
 
-                expect(getFirstBranchShaderLibItem(material_config).branch).toCalledOnce();
-            });
+            expect(getFirstBranchShaderLibItem(material_config).branch).toCalledOnce();
         });
     });
 });

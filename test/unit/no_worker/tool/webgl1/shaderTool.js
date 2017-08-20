@@ -19,7 +19,7 @@ var shaderTool = (function () {
             wd.disableVertexAttribArray(gl, wd.WebGL1GLSLSenderData);
         },
         resetData: function(){
-            shaderUtils.resetData();
+            wd.initWebGL1ShaderData(wd.WebGL1ShaderData);
 
             wd.initProgramData(wd.WebGL1ProgramData);
             wd.initWebGL1LocationData(wd.WebGL1LocationData);

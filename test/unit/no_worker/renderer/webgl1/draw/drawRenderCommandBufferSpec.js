@@ -11,9 +11,7 @@ describe("draw render command", function () {
     var Color = wd.Color;
     var Matrix4 = wd.Matrix4;
     var GeometryData = wd.GeometryData;
-    var IndexBufferData = wd.IndexBufferData;
     var EBufferType = wd.EBufferType;
-    var DataBufferConfig = wd.DataBufferConfig;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -39,7 +37,7 @@ describe("draw render command", function () {
     describe("send attribute buffer", function () {
         var program1, program2;
         var buffer1, buffer2;
-        var ShaderData, GeometryData, ArrayBufferData;
+        var GeometryData, ArrayBufferData;
         var pos;
 
         beforeEach(function () {
@@ -72,7 +70,6 @@ describe("draw render command", function () {
             shaderTool.setProgram(0, program1);
             shaderTool.setProgram(1, program2);
 
-            ShaderData = wd.ShaderData;
 
 
 

@@ -4,7 +4,7 @@ describe("defer shading", function () {
     var state;
 
     var GBufferData = wd.GBufferData;
-    var ShaderData = wd.ShaderData;
+    var ShaderData = wd.WebGL2ShaderData;
     var ProgramData = wd.ProgramData;
     var DeferLightPassData = wd.DeferLightPassData;
     var Log = wd.Log;
@@ -18,7 +18,7 @@ describe("defer shading", function () {
     }
 
     function getDeferLightPassProgram() {
-        var shaderIndex = ShaderData.shaderIndexByMaterialIndexAndShaderNameMap["DeferLightPass"];
+        var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferLightPass"];
 
         return ProgramData.programMap[shaderIndex];
     }

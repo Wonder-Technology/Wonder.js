@@ -8,16 +8,12 @@ describe("LightMaterial", function () {
     var gl;
     var state;
 
-    var Vector3 = wd.Vector3;
-    var Matrix4 = wd.Matrix4;
     var Color = wd.Color;
     var MaterialData = wd.MaterialData;
     var LightMaterialData = wd.LightMaterialData;
     var DataBufferConfig = wd.DataBufferConfig;
     var EShading = wd.EShading;
     var ELightModel = wd.ELightModel;
-    var PointLight = wd.PointLight;
-    var ShaderData = wd.ShaderData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
