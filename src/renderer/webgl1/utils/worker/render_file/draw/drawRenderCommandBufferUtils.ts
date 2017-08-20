@@ -6,7 +6,7 @@ import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_int
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IWebGL1DrawFuncDataMap } from "../../../../interface/Idraw";
 import {
-    WebGL1BasicSendUniformDataDataMap, WebGL1LightSendUniformDataDataMap
+    WebGL1LightSendUniformDataDataMap
 } from "../../../../type/utilsType";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
@@ -15,7 +15,7 @@ import { sendData } from "../../../../../utils/worker/render_file/texture/mapMan
 import { Map } from "immutable";
 import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getExtensionVao } from "../device/gpuDetectUtils";
-import { WebGL1DrawDataMap } from "../type/utilsType";
+import { IWebGL1BasicSendUniformDataDataMap, IWebGL1DrawDataMap } from "../interface/IUtils";
 
 export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function) => {
     return {
@@ -35,7 +35,7 @@ export var buildDrawFuncDataMap = (bindIndexBuffer: Function, sendAttributeData:
     }
 }
 
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:WebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
+export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string,  initMaterialShader: Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:IWebGL1BasicSendUniformDataDataMap | WebGL1LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
     renderCommandBufferData:{
         mMatrices,
         materialIndices,

@@ -6,7 +6,7 @@ import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator_
 import { IMaterialConfig } from "../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../both_file/data/render_config";
 import {
-    render as deferRender, init as initUtils,
+    render as renderDefer, init as initUtils,
     buildSendUniformDataDataMap
 } from "../../../../../../webgl2/utils/worker/render_file/render/light/defer/deferShadingUtils";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../../component/light/AmbientLightSystem";
@@ -16,7 +16,6 @@ import {
 // } from "../../../../../component/light/DirectionLightSystem";
 import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../../../webgl2/utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import {
-    bindIndexBuffer,
     use
 } from "../../../../../render_file/shader/ShaderWorkerSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
@@ -41,12 +40,12 @@ import {
     CameraRenderCommandBufferForDrawData
 } from "../../../../../../utils/worker/render_file/type/dataType";
 import { computeRadius } from "../../../light/PointLightWorkerSystem";
-import { WebGL2DrawDataMap } from "../../../../../../webgl2/utils/worker/render_file/type/utilsType";
+import { IWebGL2DrawDataMap } from "../../../../../../webgl2/utils/worker/render_file/interface/IUtils";
 
 export var init = initUtils;
 
-export var render = curry((gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
-    deferRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
+export var render = curry((gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+    renderDefer(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,

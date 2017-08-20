@@ -6,8 +6,8 @@ import {
 import { LightRenderUniformData, UniformCacheMap, UniformLocationMap } from "../../../../../../type/dataType";
 import { directlySendUniformData } from "../../../../../../utils/worker/render_file/render/renderUtils";
 import { WebGL2LightSendUniformDataDataMap } from "../../../../../type/utilsType";
-import { WebGL2DrawDataMap } from "../../type/utilsType";
 import { Log } from "../../../../../../../utils/Log";
+import { IWebGL2DrawDataMap } from "../../interface/IUtils";
 
 export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3:Function, getSpecularColorArr3:Function, getLightModel:Function, getShininess:Function, LightMaterialDataFromSystem:any) => {
     return {
@@ -18,7 +18,7 @@ export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3:Funct
         LightMaterialDataFromSystem: LightMaterialDataFromSystem
     }
 }
-export var sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: WebGL2DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap: WebGL2LightSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+export var sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL2DrawDataMap, renderCommandUniformData: LightRenderUniformData, sendDataMap: WebGL2LightSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, lightMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
@@ -36,7 +36,7 @@ var _sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shader
         directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
     }
 }
-var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: WebGL2LightSendUniformDataDataMap, drawDataMap: WebGL2DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: WebGL2LightSendUniformDataDataMap, drawDataMap: IWebGL2DrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {

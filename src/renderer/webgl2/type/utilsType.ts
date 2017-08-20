@@ -7,10 +7,6 @@ export type WebGL2LightSendUniformDataDataMap = {
     pointLightData: WebGL2SendUniformDataPointLightDataMap;
 }
 
-export type WebGL2BasicSendUniformDataDataMap = {
-    glslSenderData: SendUniformDataGLSLSenderDataMap;
-}
-
 // export type SendUniformDataAmbientLightDataMap = {
 //     getColorArr3: Function;
 //

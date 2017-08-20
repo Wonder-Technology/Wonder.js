@@ -1,10 +1,7 @@
 import { Map } from "immutable";
 import { sendAttributeData } from "../RenderWorkerSystem";
 import {
-    buildBasicMaterialDataForGetUniformData,
-    buildMaterialDataForGetUniformData, buildSendUniformDataDataMap,
-    render as basicRender,
-    sendUniformData
+    render as renderBasic,
 } from "../../../../../webgl1/utils/worker/render_file/render/basic/basicRenderUtils";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../../render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { directlySendUniformData } from "../../../../../utils/worker/render_file/render/renderUtils";
@@ -12,7 +9,6 @@ import {
     BasicRenderUniformData, UniformCacheMap,
     UniformLocationMap
 } from "../../../../../type/dataType";
-import { WebGL1BasicSendUniformDataDataMap} from "../../../../../webgl1/type/utilsType";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
@@ -27,16 +23,25 @@ import {
     BasicRenderCommandBufferForDrawData,
     CameraRenderCommandBufferForDrawData
 } from "../../../../../utils/worker/render_file/type/dataType";
-import { WebGL1DrawDataMap } from "../../../../../webgl1/utils/worker/render_file/type/utilsType";
 import { bindIndexBuffer } from "../../shader/ShaderWorkerSystem";
+import {
+    IWebGL1BasicSendUniformDataDataMap,
+    IWebGL1DrawDataMap
+} from "../../../../../webgl1/utils/worker/render_file/interface/IUtils";
+import {
+    buildBasicMaterialDataForGetUniformData,
+    buildMaterialDataForGetUniformData,
+    buildSendUniformDataDataMap,
+    sendUniformData
+} from "../../../../../utils/worker/render_file/render/basic/basicRenderUtils";
 
-export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
-    basicRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
+export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+    renderBasic(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         drawDataMap
     ), initShaderDataMap, bufferData, cameraData);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: WebGL1DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:WebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL1DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:IWebGL1BasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap) => {
     sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };

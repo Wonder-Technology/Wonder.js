@@ -8,9 +8,9 @@ import { bindFrameUboData, init as initUbo } from "../ubo/uboManagerUtils";
 import { Map } from "immutable";
 import { hasExtensionColorBufferFloat } from "../device/gpuDetectUtils";
 import { init as initDefer } from "./light/defer/deferShadingUtils";
-import { WebGL2DrawDataMap } from "../type/utilsType";
 import { getVao, isVaoExist } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 import { bindVao, createAndInitVao } from "../shader/shaderUtils";
+import { IWebGL2DrawDataMap } from "../interface/IUtils";
 
 export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)){
@@ -23,7 +23,7 @@ export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GB
     initUbo(gl, render_config, GLSLSenderDataFromSystem);
 }
 
-export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender:Function, deferRender:Function, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
+export var render = (gl:any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender:Function, deferRender:Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
     cameraData,
     basicData,
     lightData

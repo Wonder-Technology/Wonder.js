@@ -12,11 +12,11 @@ import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
 import { render as deferRender} from "./light/defer/DeferShadingSystem";
 import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/type/dataType";
-import { WebGL2DrawDataMap } from "../utils/worker/render_file/type/utilsType";
+import { IWebGL2DrawDataMap } from "../utils/worker/render_file/interface/IUtils";
 
 export var init = initUtils;
 
-export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, renderCommandBufferForDrawData:RenderCommandBufferForDrawData) => {
+export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, renderCommandBufferForDrawData:RenderCommandBufferForDrawData) => {
     var {
             DeviceManagerDataFromSystem
         } = drawDataMap,
