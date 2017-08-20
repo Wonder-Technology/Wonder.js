@@ -1,6 +1,4 @@
-import { UniformLocationMap } from "../../../type/dataType";
+import { WebGL2LocationDataCommon } from "../../utils/worker/render_file/shader/location/LocationDataCommon";
 
-export class WebGL2LocationData {
-    public static uniformLocationMap: UniformLocationMap = null;
-
+export class WebGL2LocationData extends WebGL2LocationDataCommon{
 }

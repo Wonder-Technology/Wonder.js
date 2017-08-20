@@ -1,6 +1,4 @@
-import { WebGLVertexArrayObject } from "../../../extend/interface";
+import { VaoDataCommon } from "../../../utils/worker/render_file/vao/VaoDataCommon";
 
-//todo refactor: common
-export class VaoWorkerData{
-    public static vaos: Array<WebGLVertexArrayObject> = null;
+export class VaoWorkerData extends VaoDataCommon{
 }

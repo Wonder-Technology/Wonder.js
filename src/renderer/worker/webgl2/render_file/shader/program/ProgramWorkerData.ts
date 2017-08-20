@@ -1,10 +1,4 @@
-import { ProgramMap } from "../../../../../type/dataType";
+import { WebGL2ProgramDataCommon } from "../../../../../webgl2/utils/worker/render_file/shader/program/ProgramDataCommon";
 
-//todo refactor:common
-export class WebGL2ProgramWorkerData {
-    public static programMap: ProgramMap = null;
-
-    public static lastUsedProgram: WebGLProgram = null;
-
-    public static lastBindedVao: WebGLBuffer = null;
+export class WebGL2ProgramWorkerData extends WebGL2ProgramDataCommon{
 }

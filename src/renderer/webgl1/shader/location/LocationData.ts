@@ -1,7 +1,4 @@
-import { AttributeLocationMap, UniformLocationMap } from "../../../type/dataType";
+import { WebGL1LocationDataCommon } from "../../utils/worker/render_file/shader/location/LocationDataCommon";
 
-export class WebGL1LocationData {
-    public static attributeLocationMap: AttributeLocationMap = null;
-    public static uniformLocationMap: UniformLocationMap = null;
-
+export class WebGL1LocationData extends WebGL1LocationDataCommon{
 }

@@ -1,8 +1,4 @@
-//todo refactor common
-import { AttributeLocationMap, UniformLocationMap } from "../../../../../type/dataType";
+import { WebGL1LocationDataCommon } from "../../../../../webgl1/utils/worker/render_file/shader/location/LocationDataCommon";
 
-export class WebGL1LocationWorkerData {
-    public static attributeLocationMap: AttributeLocationMap = null;
-    public static uniformLocationMap: UniformLocationMap = null;
-
+export class WebGL1LocationWorkerData extends WebGL1LocationDataCommon{
 }
