@@ -31,10 +31,3 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
 // var _disposeProgram = (gl:WebGLRenderingContext, program:WebGLProgram) => {
 //     gl.deleteProgram(this.glProgram);
 // }
-
-export var initData = (ShaderData: any) => {
-    ShaderData.index = 0;
-    ShaderData.count = 0;
-
-    ShaderData.shaderIndexByMaterialIndexAndShaderNameMap = createMap();
-}

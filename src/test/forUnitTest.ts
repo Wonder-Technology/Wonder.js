@@ -11,7 +11,6 @@ import {
 } from "../component/geometry/GeometrySystem";
 import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
 import {
-    initData as initShaderDataSystem,
     use
 } from "../renderer/shader/ShaderSystem";
 
@@ -41,6 +40,8 @@ import { initData as initWebGL2GLSLSenderDataSystem } from "../renderer/webgl2/s
 import { initData as initVaoDataSystem } from "../renderer/webgl2/vao/VaoSystem";
 import { initData as initWebGL1LocationDataSystem } from "../renderer/webgl1/shader/location/LocationSystem";
 import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/shader/location/LocationSystem";
+import { initData as initWebGL1ShaderDataSystem } from "../renderer/webgl1/shader/ShaderSystem";
+import { initData as initWebGL2ShaderDataSystem } from "../renderer/webgl2/shader/ShaderSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -54,7 +55,9 @@ export var initGeometryData = initGeometryDataSystem;
 
 export var initMaterialData = initMaterialDataSystem;
 
-export var initShaderData = initShaderDataSystem;
+export var initWebGL1ShaderData = initWebGL1ShaderDataSystem;
+
+export var initWebGL2ShaderData = initWebGL2ShaderDataSystem;
 
 export var initProgramData = initProgramDataSystem;
 

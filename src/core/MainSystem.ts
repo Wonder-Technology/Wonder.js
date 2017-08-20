@@ -12,8 +12,6 @@ import {
 import {
     initData as initGeometryData
 } from "../component/geometry/GeometrySystem";
-import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
-import { ShaderData } from "../renderer/shader/ShaderData";
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
     initData as initMaterialData
@@ -87,6 +85,10 @@ import { WebGL1LocationData } from "../renderer/webgl1/shader/location/LocationD
 import { WebGL2LocationData } from "../renderer/webgl2/shader/location/LocationData";
 import { initData as initWebGL1LocationData } from "../renderer/webgl1/shader/location/LocationSystem";
 import { initData as initWebGL2LocationData } from "../renderer/webgl2/shader/location/LocationSystem";
+import { initData as initWebGL1ShaderData } from "../renderer/webgl1/shader/ShaderSystem";
+import { initData as initWebGL2ShaderData } from "../renderer/webgl2/shader/ShaderSystem";
+import { WebGL1ShaderData } from "../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../renderer/webgl2/shader/ShaderData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -212,7 +214,7 @@ if(isWebgl1()){
     _initData = () => {
         initDirectorData(DirectorData);
 
-        initShaderData(ShaderData);
+        initWebGL1ShaderData(WebGL1ShaderData);
 
         initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
@@ -258,7 +260,7 @@ else{
     _initData = () => {
         initDirectorData(DirectorData);
 
-        initShaderData(ShaderData);
+        initWebGL2ShaderData(WebGL2ShaderData);
 
         initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 

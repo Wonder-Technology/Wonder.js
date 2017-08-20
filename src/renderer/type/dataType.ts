@@ -92,14 +92,22 @@ export type MaterialWorkerInitDataList = Array<{
     className: string;
 }>
 
-export type ShaderIndexByMaterialIndexAndShaderNameMap = {
-    [shaderKey:string]: number
-}
-
 export type DirectionLightGLSLDataStructure = {
     position: string;
     color: string;
     intensity: string;
+}
+
+export type ShaderIndexMap = {
+    [shaderLibName:string]: number
+}
+
+export type ShaderIndexByShaderNameMap = {
+    [shaderName:string]: number
+}
+
+export type ShaderLibNameMap = {
+    [materialIndex:number]: string
 }
 
 export type PointLightGLSLDataStructure = {

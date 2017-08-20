@@ -5,7 +5,7 @@ import { InitShaderDataMap } from "../../type/utilsType";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { getMapCount } from "../../texture/MapManagerSystem";
 import {
-    initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils
+    initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils, initData as initDataUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
 import { buildGLSLSource } from "./shaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
@@ -40,3 +40,5 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 }
+
+export var initData = initDataUtils;
