@@ -15,7 +15,6 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 
 // export var dispose = (gl: WebGLRenderingContext, shaderIndex: number, ShaderData: any) => {
-//     //todo finish
 //
 //     // _disposeProgram(gl, ShaderData.programMap[shaderIndex]);
 //     // deleteVal(shaderIndex, ShaderData.programMap);

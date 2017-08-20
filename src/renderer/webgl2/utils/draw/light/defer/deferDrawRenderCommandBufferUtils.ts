@@ -90,22 +90,6 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
         //todo add scissor optimize
 
-        // let colorArr3 = getColorArr3(i, PointLightDataFromSystem),
-        //     constant = getConstant(i, PointLightDataFromSystem),
-        //     linear = getLinear(i, PointLightDataFromSystem),
-        //     quadratic = getQuadratic(i, PointLightDataFromSystem),
-        //     //todo optimize: cache radius
-        //     radius = computeRadius(colorArr3, constant, linear, quadratic);
-        //
-        // sendFloat3(gl, shaderIndex, program, "u_lightPosition", getPosition(i, drawDataMap), uniformCacheMap, uniformLocationMap);
-        // sendFloat3(gl, shaderIndex, program, "u_lightColor", colorArr3, uniformCacheMap, uniformLocationMap);
-        // sendFloat1(gl, shaderIndex, program, "u_lightIntensity", getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
-        // sendFloat1(gl, shaderIndex, program, "u_lightConstant", constant, uniformCacheMap, uniformLocationMap);
-        // sendFloat1(gl, shaderIndex, program, "u_lightLinear", linear, uniformCacheMap, uniformLocationMap);
-        // sendFloat1(gl, shaderIndex, program, "u_lightQuadratic", quadratic, uniformCacheMap, uniformLocationMap);
-        //
-        // sendFloat1(gl, shaderIndex, program, "u_lightRadius", radius, uniformCacheMap, uniformLocationMap);
-
         bindPointLightUboData(gl, i, sendDataMap.pointLightData, drawDataMap, GLSLSenderDataFromSystem);
 
         drawFullScreenQuad(gl, DeferLightPassDataFromSystem);

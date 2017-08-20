@@ -315,7 +315,6 @@ var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, PointL
         gl = getGL(DeviceManagerWorkerData, state),
         renderData = data.renderData;
 
-    //todo refactor(repeat code)
     fromArray([
         _initWebGL2Lights(data.lightData, PointLightWorkerData),
         _initMaterialData(getGL(DeviceManagerWorkerData, state), data.materialData, data.textureData, MapManagerWorkerData, TextureCacheWorkerData, TextureWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData),

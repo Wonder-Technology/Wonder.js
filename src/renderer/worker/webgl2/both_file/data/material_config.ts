@@ -35,7 +35,6 @@ export const webgl2_material_config = {
 
                 {
                     "type": "branch",
-                    //todo fix bug?: test one has map, one not has map?(should specify with materialIndex?)
                     "branch": (materialIndex, {
                         hasDiffuseMap,
                         hasSpecularMap
