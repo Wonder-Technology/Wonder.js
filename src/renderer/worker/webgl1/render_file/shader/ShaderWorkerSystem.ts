@@ -2,10 +2,10 @@ import { Map } from "immutable";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { getMapCount } from "../../../render_file/texture/MapManagerWorkerSystem";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../../../data/material_config_interface";
+import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../data/material_config_interface";
 import { IWebGL1ShaderLibContentGenerator } from "../../both_file/data/shaderLib_generator";
 import {
-    bindIndexBuffer as bindIndexBufferUtils,
+    bindIndexBuffer as bindIndexBufferUtils, initData as initDataUtils,
     initMaterialShader as initMaterialShaderUtils,
     initNoMaterialShader as initNoMaterialShaderUtils
 } from "../../../../webgl1/utils/worker/render_file/shader/shaderUtils";
@@ -43,3 +43,4 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
     bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramWorkerData, GeometryWorkerData, IndexBufferWorkerData);
 }
 
+export var initData = initDataUtils;

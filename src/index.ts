@@ -91,7 +91,7 @@ export {ETextureType} from "./renderer/enum/ETextureType";
 export {ETextureWrapMode} from "./renderer/enum/ETextureWrapMode";
 export {EVariableType} from "./renderer/enum/EVariableType";
 export {EWebGLVersion} from "./renderer/enum/EWebGLVersion";
-export {empty,NULL,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,modelMatrix_noInstance_vertex,webgl1_noShadowMap_fragment,webgl1_basic_end_fragment,webgl1_basic_materialColor_fragment,frontLight_common,frontLight_common_fragment,frontLight_common_vertex,frontLight_end_fragment,frontLight_fragment,frontLight_setWorldPosition_vertex,frontLight_vertex,webgl1_normalMatrix_noInstance_vertex,webgl1_basic_map_fragment,webgl1_basic_map_vertex,webgl1_diffuseMap_fragment,webgl1_diffuseMap_vertex,webgl1_noDiffuseMap_fragment,webgl1_noEmissionMap_fragment,webgl1_noLightMap_fragment,webgl1_noNormalMap_fragment,webgl1_noNormalMap_vertex,webgl1_noSpecularMap_fragment,webgl1_specularMap_fragment,webgl1_specularMap_vertex,webgl2_noShadowMap_fragment,webgl2_basic_end_fragment,webgl2_basic_materialColor_fragment,webgl2_basic_vertex,ubo_camera,version,webgl2_common_define,webgl2_common_fragment,webgl2_common_function,webgl2_common_vertex,ubo_light,webgl2_basic_map_fragment,webgl2_basic_map_vertex,gbuffer_common_fragment,gbuffer_common_vertex,gbuffer_end_fragment,gbuffer_fragment,gbuffer_setWorldPosition_vertex,gbuffer_vertex,deferLightPass_common,deferLightPass_end_fragment,deferLightPass_fragment,deferLightPass_vertex,ubo_point_light,webgl2_normalMatrix_noInstance_vertex,webgl2_diffuseMap_fragment,webgl2_diffuseMap_vertex,webgl2_gbuffer_noNormalMap_fragment,webgl2_gbuffer_noNormalMap_vertex,webgl2_noDiffuseMap_fragment,webgl2_noSpecularMap_fragment,webgl2_specularMap_fragment,webgl2_specularMap_vertex,webgl2_deferLightPass_noNormalMap_fragment,webgl2_noEmissionMap_fragment,webgl2_noLightMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
+export {empty,NULL,common_define,common_fragment,common_function,common_vertex,highp_fragment,lowp_fragment,mediump_fragment,modelMatrix_noInstance_vertex,webgl1_noShadowMap_fragment,frontLight_common,frontLight_common_fragment,frontLight_common_vertex,frontLight_end_fragment,frontLight_fragment,frontLight_setWorldPosition_vertex,frontLight_vertex,webgl1_basic_end_fragment,webgl1_basic_materialColor_fragment,webgl1_normalMatrix_noInstance_vertex,webgl1_diffuseMap_fragment,webgl1_diffuseMap_vertex,webgl1_noDiffuseMap_fragment,webgl1_noEmissionMap_fragment,webgl1_noLightMap_fragment,webgl1_noNormalMap_fragment,webgl1_noNormalMap_vertex,webgl1_noSpecularMap_fragment,webgl1_specularMap_fragment,webgl1_specularMap_vertex,webgl1_basic_map_fragment,webgl1_basic_map_vertex,webgl2_noShadowMap_fragment,webgl2_basic_end_fragment,webgl2_basic_materialColor_fragment,webgl2_basic_vertex,ubo_camera,version,webgl2_common_define,webgl2_common_fragment,webgl2_common_function,webgl2_common_vertex,ubo_light,webgl2_basic_map_fragment,webgl2_basic_map_vertex,gbuffer_common_fragment,gbuffer_common_vertex,gbuffer_end_fragment,gbuffer_fragment,gbuffer_setWorldPosition_vertex,gbuffer_vertex,webgl2_normalMatrix_noInstance_vertex,deferLightPass_common,deferLightPass_end_fragment,deferLightPass_fragment,deferLightPass_vertex,ubo_point_light,webgl2_diffuseMap_fragment,webgl2_diffuseMap_vertex,webgl2_gbuffer_noNormalMap_fragment,webgl2_gbuffer_noNormalMap_vertex,webgl2_noDiffuseMap_fragment,webgl2_noSpecularMap_fragment,webgl2_specularMap_fragment,webgl2_specularMap_vertex,webgl2_deferLightPass_noNormalMap_fragment,webgl2_noEmissionMap_fragment,webgl2_noLightMap_fragment} from "./renderer/shader/chunk/ShaderChunk";
 export {MapManagerData} from "./renderer/texture/MapManagerData";
 export {Texture,createTexture,disposeTexture,getTextureSource,setTextureSource,getTextureWidth,setTextureWidth,getTextureHeight,setTextureHeight,getTextureIsNeedUpdate,setTextureIsNeedUpdate} from "./renderer/texture/Texture";
 export {TextureCacheData} from "./renderer/texture/TextureCacheData";
@@ -108,6 +108,7 @@ export {webgl1_main_begin,webgl1_main_end,webgl1_setPos_mvp} from "./renderer/we
 export {WebGL1GLSLSenderDataCommon} from "./renderer/webgl1/utils/worker/render_file/shader/glslSender/GLSLSenderDataCommon";
 export {WebGL1LocationDataCommon} from "./renderer/webgl1/utils/worker/render_file/shader/location/LocationDataCommon";
 export {WebGL1ProgramDataCommon} from "./renderer/webgl1/utils/worker/render_file/shader/program/ProgramDataCommon";
+export {WebGL1ShaderDataCommon} from "./renderer/webgl1/utils/worker/render_file/shader/ShaderDataCommon";
 export {WebGL2PointLightData} from "./renderer/webgl2/light/PointLightData";
 export {GBufferData} from "./renderer/webgl2/render/light/defer/gbuffer/GBufferData";
 export {DeferLightPassData} from "./renderer/webgl2/render/light/defer/light/DeferLightPassData";
@@ -119,6 +120,7 @@ export {webgl2_main_begin,webgl2_main_end,webgl2_setPos_mvp} from "./renderer/we
 export {WebGL2GLSLSenderDataCommon} from "./renderer/webgl2/utils/worker/render_file/shader/glslSender/GLSLSenderDataCommon";
 export {WebGL2LocationDataCommon} from "./renderer/webgl2/utils/worker/render_file/shader/location/LocationDataCommon";
 export {WebGL2ProgramDataCommon} from "./renderer/webgl2/utils/worker/render_file/shader/program/ProgramDataCommon";
+export {WebGL2ShaderDataCommon} from "./renderer/webgl2/utils/worker/render_file/shader/ShaderDataCommon";
 export {render_config} from "./renderer/worker/both_file/data/render_config";
 export {DeviceManagerWorkerData} from "./renderer/worker/both_file/device/DeviceManagerWorkerData";
 export {ERenderWorkerState} from "./renderer/worker/both_file/ERenderWorkerState";
@@ -142,7 +144,6 @@ export {SpecifyLightWorkerData} from "./renderer/worker/render_file/light/Specif
 export {BasicMaterialWorkerData} from "./renderer/worker/render_file/material/BasicMaterialWorkerData";
 export {LightMaterialWorkerData} from "./renderer/worker/render_file/material/LightMaterialWorkerData";
 export {MaterialWorkerData} from "./renderer/worker/render_file/material/MaterialWorkerData";
-export {ShaderWorkerData} from "./renderer/worker/render_file/shader/ShaderWorkerData";
 export {StateData} from "./renderer/worker/render_file/state/StateData";
 export {getState,setState} from "./renderer/worker/render_file/state/StateSytem";
 export {MapManagerWorkerData} from "./renderer/worker/render_file/texture/MapManagerWorkerData";
@@ -155,6 +156,7 @@ export {WebGL1PointLightWorkerData} from "./renderer/worker/webgl1/render_file/l
 export {WebGL1GLSLSenderWorkerData} from "./renderer/worker/webgl1/render_file/shader/glslSender/GLSLSenderWorkerData";
 export {WebGL1LocationWorkerData} from "./renderer/worker/webgl1/render_file/shader/location/LocationWorkerData";
 export {WebGL1ProgramWorkerData} from "./renderer/worker/webgl1/render_file/shader/program/ProgramWorkerData";
+export {WebGL1ShaderWorkerData} from "./renderer/worker/webgl1/render_file/shader/ShaderWorkerData";
 export {webgl2_material_config} from "./renderer/worker/webgl2/both_file/data/material_config";
 export {webgl2_shaderLib_generator} from "./renderer/worker/webgl2/both_file/data/shaderLib_generator";
 export {WebGL2PointLightWorkerData} from "./renderer/worker/webgl2/render_file/light/PointLightWorkerData";
@@ -163,10 +165,11 @@ export {DeferLightPassWorkerData} from "./renderer/worker/webgl2/render_file/ren
 export {WebGL2GLSLSenderWorkerData} from "./renderer/worker/webgl2/render_file/shader/glslSender/GLSLSenderWorkerData";
 export {WebGL2LocationWorkerData} from "./renderer/worker/webgl2/render_file/shader/location/LocationWorkerData";
 export {WebGL2ProgramWorkerData} from "./renderer/worker/webgl2/render_file/shader/program/ProgramWorkerData";
+export {WebGL2ShaderWorkerData} from "./renderer/worker/webgl2/render_file/shader/ShaderWorkerData";
 export {Color} from "./structure/Color";
 export {RectRegion} from "./structure/RectRegion";
 export {View} from "./structure/View";
-export {initDeviceManagerWorkerData,initProgramWorkerData,initWebGL1GLSLSenderWorkerData,initWebGL2GLSLSenderWorkerData,initWebGL1LocationWorkerData,initWebGL2LocationWorkerData,initShaderWorkerData,initWebGL1LightWorkerData,initWebGL2LightWorkerData,initDrawRenderCommandBufferWorkerData,initArrayBufferWorkerData,initIndexBufferWorkerData,initVaoWorkerData,getDirectionLightPositionInShaderWorker,getPointLightPositionInShaderWorker,updateTextureWorker} from "./test/forRenderWorkerUnitTest";
+export {initDeviceManagerWorkerData,initProgramWorkerData,initWebGL1GLSLSenderWorkerData,initWebGL2GLSLSenderWorkerData,initWebGL1LocationWorkerData,initWebGL2LocationWorkerData,initWebGL1ShaderWorkerData,initWebGL2ShaderWorkerData,initWebGL1LightWorkerData,initWebGL2LightWorkerData,initDrawRenderCommandBufferWorkerData,initArrayBufferWorkerData,initIndexBufferWorkerData,initVaoWorkerData,getDirectionLightPositionInShaderWorker,getPointLightPositionInShaderWorker,updateTextureWorker} from "./test/forRenderWorkerUnitTest";
 export {initThreeDTransformData,DomQuery,fromArray,initTagData,initGeometryData,initMaterialData,initWebGL1ShaderData,initWebGL2ShaderData,initProgramData,initWebGL1LocationData,initWebGL2LocationData,initWebGL1GLSLSenderData,initWebGL2GLSLSenderData,initMeshRendererData,initArrayBufferData,initIndexBufferData,initDeviceManagerData,initCameraControllerData,initWebGL1LightData,initWebGL2LightData,initGameObjectData,initSceneData,initRenderCommandBufferData,initDrawRenderCommandBufferData,initSendDrawRenderCommandBufferData,initVaoData,createState,useProgram,sendWebGL1AttributeData,disableVertexAttribArray,setGeometryIndices,setGeometryVertices,hasGeometryIndices,getShaderIndex,updateSystem,getNormalMatrix,getWorldToCameraMatrix} from "./test/forUnitTest";
 export {BufferUtilsForUnitTest} from "./utils/BufferUtilsForUnitTest";
 export {Log} from "./utils/Log";

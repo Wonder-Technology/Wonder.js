@@ -4,12 +4,10 @@ var shaderTool = (function () {
         //   wd.disableVertexAttribArray(gl, wd.GLSLSenderData);
         // },
         resetData: function(){
-            shaderUtils.resetData();
-
             wd.initProgramWorkerData(wdrd.WebGL2ProgramWorkerData);
             wd.initWebGL2LocationWorkerData(wdrd.WebGL2LocationWorkerData);
             wd.initWebGL2GLSLSenderWorkerData(wdrd.WebGL2GLSLSenderWorkerData);
-            wd.initShaderWorkerData(wdrd.ShaderWorkerData);
+            wd.initWebGL2ShaderWorkerData(wdrd.WebGL2ShaderWorkerData);
         },
         // clearShader: function () {
         //     wd.ProgramData.programMap = {};

@@ -2,9 +2,10 @@ import { Map } from "immutable";
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { getMapCount } from "../../../render_file/texture/MapManagerWorkerSystem";
-import { IMaterialConfig, MaterialShaderLibConfig } from "../../../../data/material_config_interface";
+import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../../../data/material_config_interface";
 import { IWebGL2ShaderLibContentGenerator } from "../../both_file/data/shaderLib_generator";
 import {
+    initData as initDataUtils,
     initMaterialShader as initMaterialShaderUtils,
     initNoMaterialShader as initNoMaterialShaderUtils
 } from "../../../../webgl2/utils/worker/render_file/shader/shaderUtils";
@@ -34,3 +35,5 @@ var _buildInitShaderFuncDataMap = () => {
         getIndices: getIndices
     }
 }
+
+export var initData = initDataUtils;

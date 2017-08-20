@@ -1,11 +1,4 @@
-import { ShaderIndexByShaderNameMap, ShaderIndexMap, ShaderLibNameMap } from "../../type/dataType";
+import { WebGL2ShaderDataCommon } from "../utils/worker/render_file/shader/ShaderDataCommon";
 
-//todo refactor
-export class WebGL2ShaderData {
-    public static index: number = null;
-    public static count: number = null;
-
-    public static shaderIndexMap: ShaderIndexMap  = null;
-    public static shaderIndexByShaderNameMap: ShaderIndexByShaderNameMap  = null;
-    public static shaderLibNameMap: ShaderLibNameMap  = null;
+export class WebGL2ShaderData extends WebGL2ShaderDataCommon{
 }
