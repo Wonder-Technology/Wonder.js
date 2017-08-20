@@ -325,7 +325,6 @@ export const webgl2_shaderLib_generator = {
         "BasicShaderLib": {
             "glsl": {
                 "vs": {
-                    //todo remove after remove "a_position" define
                     "varDeclare": webgl2_basic_vertex.varDeclare,
 
 

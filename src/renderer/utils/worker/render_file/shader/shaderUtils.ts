@@ -2,7 +2,6 @@ import { use as useProgram } from "./program/programUtils";
 import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { WebGLVertexArrayObject } from "../../../../extend/interface";
-import { bindVao as bindVaoUtils, unbindVao } from "../../../../webgl2/utils/worker/render_file/vao/vaoUtils";
 import { isValidVal } from "../../../../../utils/arrayUtils";
 
 export var use = (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {

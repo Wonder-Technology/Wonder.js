@@ -113,7 +113,6 @@ export var getGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     return "";
 }
 
-
 export var getGLSLDefineListData = (glslConfig: IGLSLConfig) => {
     var partConfig = glslConfig.defineList;
 
@@ -149,7 +148,6 @@ export var generateUniformSource = (materialShaderLibNameArr: Array<string>, sha
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
         var sendData = shaderLibData[shaderLibName].send,
-            //todo refactor!
             uniform: Array<ISendUniformConfig> = null,
             uniformDefine: Array<IDefineUniformConfig> = null;
 
