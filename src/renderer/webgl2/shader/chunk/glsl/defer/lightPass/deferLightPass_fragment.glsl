@@ -109,7 +109,6 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 //            return vec3(0.5);
 //        }
 
-        //todo test
         if(distance >= lightData.w){
             return vec3(0.0);
         }
