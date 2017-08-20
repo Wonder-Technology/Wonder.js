@@ -3,7 +3,7 @@ import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { EWebGLVersion } from "../enum/EWebGLVersion";
 import { WebGLDetectData } from "./WebGLDetectData";
 import { root } from "../../definition/Variable";
-import { isWebgl1 as isWebgl1Utils, isWebgl2 as isWebgl2Utils } from "../utils/device/webglDetectUtils";
+import { isWebgl1 as isWebgl1Utils, isWebgl2 as isWebgl2Utils } from "../utils/worker/render_file/device/webglDetectUtils";
 
 export var detect = (WebGLDetectData: any) => {
     /*!
