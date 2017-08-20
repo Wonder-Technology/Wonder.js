@@ -1,7 +1,4 @@
 @varDeclare
-//todo remove define
-layout(location=1) in vec2 a_texCoord;
-
 out vec2 v_mapCoord0;
 @end
 

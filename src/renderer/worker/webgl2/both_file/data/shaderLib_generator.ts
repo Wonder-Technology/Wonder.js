@@ -376,7 +376,6 @@ export const webgl2_shaderLib_generator = {
                 }
             },
             "send": {
-                //todo add attribute to glsl
                 "attribute": [
                     {
                         "name": "a_texCoord",
@@ -722,6 +721,20 @@ export const webgl2_shaderLib_generator = {
                 }
             },
             "send": {
+                "attribute": [
+                    {
+                        "name": "a_position",
+                        "buffer": "vertex",
+                        "type": "vec3",
+                        "location": 0
+                    },
+                    {
+                        "name": "a_texCoord",
+                        "buffer": "texCoord",
+                        "type": "vec2",
+                        "location": 1
+                    }
+                ],
                 "uniformDefine": [
                     {
                         "name": "u_positionBuffer",
@@ -843,5 +856,3 @@ export interface IWebGL2UboTypeArrayConfig {
     type:string;
     length:number;
 }
-
-//todo fix type(e.g. add location, uniformUBO...)

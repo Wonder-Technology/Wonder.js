@@ -109,8 +109,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     vsBody += webgl2_main_end;
     fsBody += webgl2_main_end;
 
-    //todo restore and separate(webgl1/webgl2)
-    // vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
+    vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
     vsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
     fsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
 
@@ -195,14 +194,19 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
 
         attributeData = sendData.attribute;
 
-        forEach(attributeData, (data: IWebGL2SendAttributeConfig) => {
-            result += `attribute ${data.type} ${data.name};\n`;
+        forEach(attributeData, ({
+                                    name,
+                                    type,
+                                    location
+                                }) => {
+            result += `layout(location=${location}) in ${type} ${name};\n`;
         });
     });
 
     return result;
 }
 
+//todo refactor: common
 var _generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(

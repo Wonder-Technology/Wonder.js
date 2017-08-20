@@ -1,9 +1,4 @@
 @varDeclare
-//todo refactor: define by shadersourcebuilder(add location)
-layout(location=0) in vec3 a_position;
-layout(location=1) in vec2 a_texCoord;
-
-
     out vec2 v_texcoord;
 @end
 
