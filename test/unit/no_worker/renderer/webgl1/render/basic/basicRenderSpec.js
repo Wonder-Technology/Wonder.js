@@ -306,7 +306,7 @@ describe("basic render", function () {
             sceneTool.addDirectionLight();
         });
 
-        it("clear main framebuffer only one time in one frame", function(){
+        it("clear main framebuffer only once in one frame", function(){
             directorTool.init(state);
 
             directorTool.loopBody(state);

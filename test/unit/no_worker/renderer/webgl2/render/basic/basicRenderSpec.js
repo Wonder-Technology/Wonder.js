@@ -356,7 +356,7 @@ describe("basic render", function () {
             sceneTool.addPointLight();
         });
 
-        it("clear main framebuffer only one time in one frame", function(){
+        it("clear main framebuffer only once in one frame", function(){
             gl.createFramebuffer.returns({});
 
             directorTool.init(state);

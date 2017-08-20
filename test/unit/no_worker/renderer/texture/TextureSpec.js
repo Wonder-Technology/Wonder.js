@@ -300,7 +300,7 @@ describe("Texture", function () {
             });
         });
 
-        it("only update one time", function () {
+        it("only update once", function () {
             directorTool.loopBody(state);
             directorTool.loopBody(state);
             directorTool.loopBody(state);

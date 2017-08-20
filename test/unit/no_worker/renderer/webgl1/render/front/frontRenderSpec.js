@@ -56,7 +56,7 @@ describe("front render", function () {
                 });
             });
 
-            it("clear one time in one frame", function () {
+            it("clear once in one frame", function () {
                 var data = sceneTool.createGameObject(null, lightMaterialTool.create());
 
                 sceneTool.addGameObject(data.gameObject);
