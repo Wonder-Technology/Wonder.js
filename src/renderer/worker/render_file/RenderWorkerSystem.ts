@@ -22,7 +22,6 @@ import { StateData } from "./state/StateData";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
 import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
-import { initData as initLocationWorkerData } from "./shader/location/LocationWorkerSystem";
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
 import {
@@ -111,6 +110,8 @@ import { disposeBuffers as disposeWebGL1GeometryBuffers } from "../../webgl1/uti
 import { disposeBuffers as disposeWebGL2GeometryBuffers } from "../../webgl2/utils/worker/both_file/buffer/bufferUtils";
 import { WebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/LocationWorkerData";
 import { WebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerData";
+import { initData as initWebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/LocationWorkerSystem";
+import { initData as initWebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -347,7 +348,7 @@ var _isDataNotExist = (data:any) => data === null || data === void 0;
 var _initWebGL1Data = () => {
     initProgramWorkerData(WebGL1ProgramWorkerData);
 
-    initLocationWorkerData(WebGL1LocationWorkerData);
+    initWebGL1LocationWorkerData(WebGL1LocationWorkerData);
 
     initWebGL1GLSLSenderWorkerData(WebGL1GLSLSenderWorkerData);
 
@@ -365,7 +366,7 @@ var _initWebGL1Data = () => {
 var _initWebGL2Data = () => {
     initProgramWorkerData(WebGL2ProgramWorkerData);
 
-    initLocationWorkerData(WebGL2LocationWorkerData);
+    initWebGL2LocationWorkerData(WebGL2LocationWorkerData);
 
     initWebGL2GLSLSenderWorkerData(WebGL2GLSLSenderWorkerData);
 

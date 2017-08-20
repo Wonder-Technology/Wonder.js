@@ -32,7 +32,6 @@ import { initData as initGameObjectData } from "./entityObject/gameObject/GameOb
 // import { WorkerTimeData } from "../renderer/worker/logic_file/core/WorkerTimeData";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
-import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
 import { DebugConfig } from "../config/DebugConfig";
@@ -86,6 +85,8 @@ import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
 import { VaoData } from "../renderer/vao/VaoData";
 import { WebGL1LocationData } from "../renderer/webgl1/shader/location/LocationData";
 import { WebGL2LocationData } from "../renderer/webgl2/shader/location/LocationData";
+import { initData as initWebGL1LocationData } from "../renderer/webgl1/shader/location/LocationSystem";
+import { initData as initWebGL2LocationData } from "../renderer/webgl2/shader/location/LocationSystem";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -175,7 +176,7 @@ else {
 
             initProgramData(WebGL1ProgramData);
 
-            initLocationData(WebGL1LocationData);
+            initWebGL1LocationData(WebGL1LocationData);
 
             initArrayBufferData(ArrayBufferData);
 
@@ -191,7 +192,7 @@ else {
 
             initProgramData(WebGL2ProgramData);
 
-            initLocationData(WebGL2LocationData);
+            initWebGL2LocationData(WebGL2LocationData);
 
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
         }

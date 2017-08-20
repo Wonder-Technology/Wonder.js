@@ -4,3 +4,6 @@ export var setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: a
     LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
 }
 
+export var initData = (LocationDataFromSystem: any) => {
+    LocationDataFromSystem.uniformLocationMap = createMap();
+}

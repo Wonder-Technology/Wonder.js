@@ -25,10 +25,3 @@ export var getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingConte
 export var isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
     return pos === null;
 }
-
-//todo separate LocationDataFromSystem
-
-export var initData = (LocationDataFromSystem: any) => {
-    LocationDataFromSystem.attributeLocationMap = createMap();
-    LocationDataFromSystem.uniformLocationMap = createMap();
-}

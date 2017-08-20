@@ -28,8 +28,6 @@ import { initData as initGameObjectDataSystem } from "../core/entityObject/gameO
 import { disableVertexAttribArray as disableVertexAttribArrayUtils } from "../renderer/utils/worker/render_file/shader/program/programUtils";
 import { initData as initDeviceManagerDataSystem } from "../renderer/device/DeviceManagerSystem";
 import { initData as initProgramDataSystem } from "../renderer/shader/program/ProgramSystem";
-import { initData as initLocationDataSystem } from "../renderer/shader/location/LocationSystem";
-// import { initData as initGLSLSenderDataSystem } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initSceneDataSystem } from "../core/entityObject/scene/SceneSystem";
 import { initData as initRenderCommandBufferDataSystem } from "../renderer/command_buffer/RenderCommandBufferSystem";
 import { updateSystem as updateAllSystems } from "../core/DirectorSystem";
@@ -41,6 +39,8 @@ import { sendAttributeData as sendWebGL1AttributeDataSystem } from "../renderer/
 import { initData as initWebGL1GLSLSenderDataSystem } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
 import { initData as initWebGL2GLSLSenderDataSystem } from "../renderer/webgl2/shader/glslSender/GLSLSenderSystem";
 import { initData as initVaoDataSystem } from "../renderer/webgl2/vao/VaoSystem";
+import { initData as initWebGL1LocationDataSystem } from "../renderer/webgl1/shader/location/LocationSystem";
+import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/shader/location/LocationSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -58,7 +58,9 @@ export var initShaderData = initShaderDataSystem;
 
 export var initProgramData = initProgramDataSystem;
 
-export var initLocationData = initLocationDataSystem;
+export var initWebGL1LocationData = initWebGL1LocationDataSystem;
+
+export var initWebGL2LocationData = initWebGL2LocationDataSystem;
 
 export var initWebGL1GLSLSenderData = initWebGL1GLSLSenderDataSystem;
 

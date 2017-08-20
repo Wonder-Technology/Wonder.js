@@ -4,7 +4,7 @@ var shaderTool = (function () {
             shaderUtils.resetData();
 
             wd.initProgramData(wd.WebGL2ProgramData);
-            wd.initLocationData(wd.WebGL2LocationData);
+            wd.initWebGL2LocationData(wd.WebGL2LocationData);
             wd.initWebGL2GLSLSenderData(wd.WebGL2GLSLSenderData);
         },
 
