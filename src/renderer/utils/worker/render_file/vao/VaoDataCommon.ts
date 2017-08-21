@@ -1,5 +1,6 @@
-import { WebGLVertexArrayObject } from "../../../../extend/interface";
+import { VaoMap, VboArrayMap } from "../../../../type/dataType";
 
 export abstract class VaoDataCommon{
-    public static vaos: Array<WebGLVertexArrayObject> = null;
+    public static vaoMap: VaoMap = null;
+    public static vboArrayMap: VboArrayMap = null;
 }

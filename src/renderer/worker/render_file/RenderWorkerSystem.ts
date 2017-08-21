@@ -269,7 +269,7 @@ var _initWebGL1DisposeDrawData = (data:any) => {
 
     if (disposeData !== null) {
         if (disposeData.geometryDisposeData !== null) {
-            disposeWebGL1GeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, disposeArrayBuffer, disposeIndexBuffer, GPUDetectWorkerData, VaoWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData);
+            disposeWebGL1GeometryBuffers(disposeData.geometryDisposeData.disposedGeometryIndexArray, disposeArrayBuffer, disposeIndexBuffer, GPUDetectWorkerData, VaoWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, DeviceManagerWorkerData);
         }
 
         if (disposeData.textureDisposeData !== null) {

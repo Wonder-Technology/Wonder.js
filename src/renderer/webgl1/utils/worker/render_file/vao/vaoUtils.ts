@@ -1,5 +1,6 @@
 import { WebGLVertexArrayObject } from "../../../../../extend/interface";
 import { removeVao } from "../../../../../utils/worker/render_file/vao/vaoUtils";
+import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
 
 export var createVao = (extension:any) => {
     return extension.createVertexArrayOES();
@@ -13,8 +14,8 @@ export var unbindVao = (extension:any) => {
     extension.bindVertexArrayOES(null);
 }
 
-export var disposeVao = (extension:any, geometryIndex:number, vaos:Array<WebGLVertexArrayObject>) => {
-    extension.deleteVertexArrayOES(vaos[geometryIndex]);
+export var disposeVao = (gl:any, extension:any, geometryIndex:number, vaoMap:VaoMap, vboArrayMap:VboArrayMap) => {
+    extension.deleteVertexArrayOES(vaoMap[geometryIndex]);
 
-    removeVao(geometryIndex, vaos);
+    removeVao(gl, geometryIndex, vaoMap, vboArrayMap);
 }

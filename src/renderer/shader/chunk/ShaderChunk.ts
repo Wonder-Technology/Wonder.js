@@ -42,7 +42,7 @@ export const webgl2_common_define:GLSLChunk = {top: "",define: "",varDeclare: ""
 export const webgl2_common_fragment:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_function:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
 export const webgl2_common_vertex:GLSLChunk = {top: "",define: "",varDeclare: "",funcDeclare: "",funcDefine: "",body: ""};
-export const webgl2_basic_map_fragment:GLSLChunk = {top: "",define: "",varDeclare: "in vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n"};
+export const webgl2_basic_map_fragment:GLSLChunk = {top: "",define: "",varDeclare: "in vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "totalColor *= texture(u_sampler2D0, v_mapCoord0);\n"};
 export const webgl2_basic_map_vertex:GLSLChunk = {top: "",define: "",varDeclare: "out vec2 v_mapCoord0;\n",funcDeclare: "",funcDefine: "",body: "//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;\n//\n//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;\n\n    v_mapCoord0 = a_texCoord;\n"};
 export const gbuffer_common_fragment:GLSLChunk = {top: "",define: "",varDeclare: "in vec3 v_worldPosition;\n",funcDeclare: "",funcDefine: "",body: ""};
 export const gbuffer_common_vertex:GLSLChunk = {top: "",define: "",varDeclare: "out vec3 v_worldPosition;\n",funcDeclare: "",funcDefine: "",body: ""};

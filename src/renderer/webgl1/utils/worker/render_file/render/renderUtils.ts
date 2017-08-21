@@ -93,13 +93,15 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
-var _bindVao = (gl: WebGLRenderingContext, extension:any, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
+var _bindVao = (gl: WebGLRenderingContext, extension:any, shaderIndex:number, geometryIndex: number, ProgramDataFromSystem: any,  GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
+    vaoMap,
+    vboArrayMap
+}) => {
     var vaoConfigData = GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex],
-        vaos = VaoDataFromSystem.vaos,
-        vao = getVao(geometryIndex, vaos);
+        vao = getVao(geometryIndex, vaoMap);
 
     if(!isVaoExist(vao)){
-        vao = createAndInitVao(gl, extension, geometryIndex, vaos, vaoConfigData, GeometryDataFromSystem);
+        vao = createAndInitVao(gl, extension, geometryIndex, vaoMap, vboArrayMap, vaoConfigData, GeometryDataFromSystem);
     }
 
     bindVao(extension, vao, ProgramDataFromSystem);

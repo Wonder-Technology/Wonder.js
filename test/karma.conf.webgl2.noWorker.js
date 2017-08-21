@@ -43,7 +43,7 @@
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
         // 'test/unit/no_worker/**/*MapManager*',
-        // 'test/unit/no_worker/**/*Geometry*',
+        'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/*Texture*',
         // 'test/unit/no_worker/**/ColorSpec*',
         // 'test/unit/no_worker/**/shader*Spec*',

@@ -187,19 +187,81 @@ describe("Geometry", function () {
 
                     describe("test dispose vao", function () {
                         var state;
+                        var gl;
+                        var obj1,obj2;
+                        var buffer1,buffer2;
+
+                        function getCreateVertexArray() {
+                            return extension.createVertexArrayOES;
+                        }
+
+                        function getDeleteVertexArray() {
+                            return extension.deleteVertexArrayOES;
+                        }
 
                         beforeEach(function(){
                             state = stateTool.createAndSetFakeGLState(sandbox);
-                            geometrySystemTool.judgeDisposeVao(state, function () {
-                                return extension.createVertexArrayOES;
-                            }, function () {
-                                return extension.deleteVertexArrayOES;
-                            })
+
+                            gl = stateTool.getGLFromFakeGLState(state);
+
+
+                            var data = geometrySystemTool.prepareDisposeVao(state, getCreateVertexArray)
+
+                            obj1 = data.obj1;
+                            obj2 = data.obj2;
+                            buffer1 = data.buffer1;
+                            buffer2 = data.buffer2;
                         });
 
-                        it("test dispose", function () {
+                        it("delete vao", function () {
+                            directorTool.loopBody(state);
+
+
+                            gameObjectTool.dispose(obj1);
+
+
+                            expect(getDeleteVertexArray().callCount).toEqual(0);
+
+
+                            gameObjectTool.dispose(obj2);
+
+                            expect(getDeleteVertexArray().callCount).toEqual(2);
+                            expect(getDeleteVertexArray().firstCall).toCalledWith(buffer1)
+                            expect(getDeleteVertexArray().getCall(1)).toCalledWith(buffer2)
+                        });
+                        it("delete vbos in vao", function () {
+                            var buffer1 = {b:1};
+                            var buffer2 = {b:2};
+                            var buffer3 = {b:3};
+                            var buffer4 = {b:4};
+
+                            gl.createBuffer.onCall(0).returns(buffer1);
+                            gl.createBuffer.onCall(1).returns(buffer2);
+                            gl.createBuffer.onCall(2).returns(buffer3);
+                            gl.createBuffer.onCall(3).returns(buffer4);
+
+
+                            directorTool.loopBody(state);
+
+
+                            gameObjectTool.dispose(obj1);
+                            gameObjectTool.dispose(obj2);
+
+
+                            expect(gl.deleteBuffer.callCount).toEqual(4);
+                            expect(gl.deleteBuffer.getCall(0)).toCalledWith(buffer1);
+                            expect(gl.deleteBuffer.getCall(1)).toCalledWith(buffer2);
+                            expect(gl.deleteBuffer.getCall(2)).toCalledWith(buffer3);
+                            expect(gl.deleteBuffer.getCall(3)).toCalledWith(buffer4);
                         });
                         it("test bind vao when draw gameObject after dispose vao", function () {
+                            directorTool.loopBody(state);
+
+
+                            gameObjectTool.dispose(obj1);
+                            gameObjectTool.dispose(obj2);
+
+
                             var geo3 = boxGeometryTool.create();
                             var data3 = sceneTool.prepareGameObjectAndAddToScene(true, geo3);
 
@@ -208,7 +270,7 @@ describe("Geometry", function () {
 
                             directorTool.loopBody(null, null);
 
-                            expect(extension.createVertexArrayOES.callCount).toEqual(3)
+                            expect(getCreateVertexArray().callCount).toEqual(3)
                         });
                     });
                 });

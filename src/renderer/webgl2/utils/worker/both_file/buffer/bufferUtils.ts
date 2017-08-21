@@ -6,9 +6,10 @@ export var disposeBuffers = (disposedIndexArray: Array<number>, DeviceManagerDat
 }
 
 export var disposeGeometryVaoBuffers = (gl:any, disposedIndexArray: Array<number>, {
-    vaos
+    vaoMap,
+    vboArrayMap
 }) => {
     for (let index of disposedIndexArray) {
-        disposeVao(gl, index, vaos);
+        disposeVao(gl, index, vaoMap, vboArrayMap);
     }
 }

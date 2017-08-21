@@ -8,9 +8,9 @@
 // }
 //
 // export var disposeGeometryVaoBuffers = (, disposedIndexArray: Array<number>,  {
-//     vaos
+//     vaoMap
 // }) => {
 //     for (let index of disposedIndexArray) {
-//         disposeVao(, vaos[index]);
+//         disposeVao(, vaoMap[index]);
 //     }
 // }

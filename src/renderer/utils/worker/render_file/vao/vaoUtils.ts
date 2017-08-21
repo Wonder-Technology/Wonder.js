@@ -1,13 +1,26 @@
-import { deleteVal } from "../../../../../utils/objectUtils";
-import { WebGLVertexArrayObject } from "../../../../extend/interface";
+import { createMap, deleteVal } from "../../../../../utils/objectUtils";
+import { isNotValidVal } from "../../../../../utils/arrayUtils";
+import { VaoMap, VboArrayMap } from "../../../../type/dataType";
 
-export var removeVao = (index:number, vaos:Array<WebGLVertexArrayObject>) => {
+export var removeVao = (gl:any, index:number, vaoMap:VaoMap, vboArrayMap:VboArrayMap) => {
+    var vboArray = vboArrayMap[index];
+
     /*!
-     no need to consider the memory problem caused by not-used val in vaos, because geometry index will be repeat(geometry memory will be reallocated)
+     no need to consider the memory problem caused by not-used val in vaoMap, because geometry index will be repeat(geometry memory will be reallocated)
      */
-    deleteVal(index, vaos);
+    deleteVal(index, vaoMap);
+    deleteVal(index, vboArrayMap);
+
+    if(isNotValidVal(vboArray)){
+        return;
+
+    }
+    for(let vbo of vboArray){
+        gl.deleteBuffer(vbo);
+    }
 }
 
 export var initData = (VaoDataFromSystem:any) => {
-    VaoDataFromSystem.vaos = [];
+    VaoDataFromSystem.vaoMap = createMap();
+    VaoDataFromSystem.vboArrayMap = createMap();
 }

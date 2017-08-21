@@ -13,6 +13,7 @@ import { GPUDetectData } from "../../../renderer/device/GPUDetectData";
 import { VaoData } from "../../../renderer/vao/VaoData";
 import { addDisposeHandle as addDisposeHandleToMap } from "../../ComponentSystem";
 import { disposeGeometryWorkerBuffers } from "../../../renderer/utils/buffer/bufferUtils";
+import { DeviceManagerData } from "../../../renderer/device/DeviceManagerData";
 
 export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addDisposeHandleToMap(BoxGeometry, disposeComponent);
@@ -32,6 +33,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     _disposeBuffers = (disposedIndexArray: Array<number>) => {
-        disposeBuffers(disposedIndexArray, disposeArrayBuffer, disposeIndexBuffer, GPUDetectData, VaoData, ArrayBufferData, IndexBufferData);
+        disposeBuffers(disposedIndexArray, disposeArrayBuffer, disposeIndexBuffer, GPUDetectData, VaoData, ArrayBufferData, IndexBufferData, DeviceManagerData);
     }
 }

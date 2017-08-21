@@ -24,6 +24,7 @@ import {
 } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
 import { createMap } from "../../../../../../utils/objectUtils";
+import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
 
 export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName];
@@ -93,7 +94,7 @@ export var bindVao = (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, Pr
     bindVaoUtils(gl, vao);
 }
 
-export var createAndInitVao = (gl: any, geometryIndex: number, vaos: Array<WebGLVertexArrayObject>, {
+export var createAndInitVao = (gl: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap:VboArrayMap, {
     positionLocation,
     normalLocation,
     texCoordLocation,
@@ -106,7 +107,7 @@ export var createAndInitVao = (gl: any, geometryIndex: number, vaos: Array<WebGL
     var vao = createVao(gl),
         buffers = [];
 
-    vaos[geometryIndex] = vao;
+    vaoMap[geometryIndex] = vao;
 
     bindVaoUtils(gl, vao);
 
@@ -126,9 +127,7 @@ export var createAndInitVao = (gl: any, geometryIndex: number, vaos: Array<WebGL
 
     unbindVao(gl);
 
-    for(let buffer of buffers){
-        gl.deleteBuffer(buffer);
-    }
+    vboArrayMap[geometryIndex] = buffers;
 
     return vao;
 }

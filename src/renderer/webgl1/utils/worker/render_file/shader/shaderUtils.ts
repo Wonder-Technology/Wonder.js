@@ -21,6 +21,7 @@ import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getExtensionVao } from "../device/gpuDetectUtils";
 import { setEmptyLocationMap } from "./location/locationUtils";
 import { createMap } from "../../../../../../utils/objectUtils";
+import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
 
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     initNoMaterialShaderUtils(state, null, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
@@ -94,7 +95,7 @@ export var bindVao = (extension:any, vao: WebGLVertexArrayObject, ProgramDataFro
     bindVaoUtils(extension, vao);
 }
 
-export var createAndInitVao = (gl: any, extension:any, geometryIndex: number, vaos: Array<WebGLVertexArrayObject>, {
+export var createAndInitVao = (gl: any, extension:any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap:VboArrayMap, {
     positionLocation,
     normalLocation,
     texCoordLocation,
@@ -107,7 +108,7 @@ export var createAndInitVao = (gl: any, extension:any, geometryIndex: number, va
     var vao = createVao(extension),
         buffers = [];
 
-    vaos[geometryIndex] = vao;
+    vaoMap[geometryIndex] = vao;
 
     bindVaoUtils(extension, vao);
 
@@ -127,9 +128,7 @@ export var createAndInitVao = (gl: any, extension:any, geometryIndex: number, va
 
     unbindVao(extension);
 
-    for(let buffer of buffers){
-        gl.deleteBuffer(buffer);
-    }
+    vboArrayMap[geometryIndex] = buffers;
 
     return vao;
 }

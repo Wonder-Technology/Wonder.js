@@ -7,6 +7,7 @@ import {
     IWebGL2SendAttributeConfig,
     IWebGL2SendUniformConfig
 } from "../worker/webgl2/both_file/data/shaderLib_generator";
+import { WebGLVertexArrayObject } from "../extend/interface";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
@@ -141,4 +142,12 @@ export type VaoConfigData = {
     getNormals?: Function;
     getTexCoords?: Function;
     getIndices: Function;
+}
+
+export type VaoMap = {
+    [index: number]: WebGLVertexArrayObject
+}
+
+export type VboArrayMap = {
+    [index: number]: Array<WebGLBuffer>
 }

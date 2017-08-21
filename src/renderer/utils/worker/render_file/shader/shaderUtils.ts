@@ -3,13 +3,14 @@ import { it, requireCheckFunc } from "../../../../../definition/typescript/decor
 import { expect } from "wonder-expect.js";
 import { WebGLVertexArrayObject } from "../../../../extend/interface";
 import { isValidVal } from "../../../../../utils/arrayUtils";
+import { VaoMap } from "../../../../type/dataType";
 
 export var use = (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     return useProgram(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 }
 
-export var getVao = (geometryIndex: number, vaos: Array<WebGLVertexArrayObject>) => {
-    return vaos[geometryIndex];
+export var getVao = (geometryIndex: number, vaoMap: VaoMap) => {
+    return vaoMap[geometryIndex];
 }
 
 export var isVaoExist = (vao: WebGLVertexArrayObject) => isValidVal(vao);
