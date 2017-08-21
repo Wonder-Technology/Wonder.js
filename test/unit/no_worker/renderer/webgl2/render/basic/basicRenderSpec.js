@@ -297,7 +297,7 @@ describe("basic render", function () {
 
                             expect(glslTool.contain(fs, "in vec2 v_mapCoord0;\n")).toBeTruthy();
                             expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D0;\n")).toBeTruthy();
-                            expect(glslTool.contain(fs, "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "totalColor *= texture(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
                         });
                     });
                 });
