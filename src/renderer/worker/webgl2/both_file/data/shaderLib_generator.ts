@@ -284,9 +284,9 @@ export const webgl2_shaderLib_generator = {
                                 cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 
-                            if(isDirtyFlag){
-                                bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
+                            if(isDirtyFlag){
                                 bufferDynamicData(gl, typeArray);
                             }
                         },
@@ -411,62 +411,6 @@ export const webgl2_shaderLib_generator = {
 
 
 
-
-
-        // "LightModelUboShaderLib": {
-        //     "glsl": {
-        //         "vs": {
-        //             "source":ubo_light_model
-        //         }
-        //     },
-        //     "send": {
-        //         "uniformUbo": [
-        //             {
-        //                 "name": "LightModelUbo",
-        //                 // "createTypeArrayFunc": () => {
-        //                 //     return new Float32Array(16 * 3 + 3);
-        //                 // },
-        //                 "typeArray": {
-        //                     "type": "float32",
-        //                     "length": 16
-        //                 },
-        //                 // "count": 1,
-        //                 "initBufferDataFunc": (gl, {
-        //                     uniformBlockBinding,
-        //                     buffer,
-        //                     typeArray
-        //                 }, {
-        //                                   bindUniformBufferBase,
-        //                                   bufferDynamicData,
-        //                                   set
-        //                               }) => {
-        //                     bindUniformBufferBase(gl, buffer, uniformBlockBinding);
-        //
-        //                     bufferDynamicData(gl, 16 * 4);
-        //                 },
-        //                 "setBufferDataFunc": (gl, {
-        //                     uniformBlockBinding,
-        //                     buffer,
-        //                     typeArray
-        //                 }, {
-        //                     bindUniformBufferBase,
-        //                     bufferDynamicData,
-        //                     set
-        //                 }, mMatrix) => {
-        //                     bindUniformBufferBase(gl, buffer, 0);
-        //
-        //
-        //                     set(typeArray, mMatrix);
-        //                     // set(typeArray, normalMatrix, 16);
-        //
-        //                     bufferDynamicData(gl, typeArray);
-        //                 },
-        //                 "frequence": "gameObject",
-        //                 "usage": "dynamic"
-        //             }
-        //         ]
-        //     }
-        // },
 
         "NormalMatrixNoInstanceShaderLib": {
             "glsl": {

@@ -200,20 +200,24 @@ describe("test ubo shader lib", function () {
             var lightObj2,
                 lightComponent2;
 
-            function judgeIsBindAndSetUboDataOnce() {
-                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("PointLightUbo"))).toCalledTwice();
-            }
-
-            function judgeIsSetUboDataOnce(typeArray) {
-                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, typeArray, gl.DYNAMIC_DRAW)).toCalledTwice();
-            }
-
-            function judgeIsBindAndSetTwoPointLightsUboDataTwice() {
+            function judgeIsBindUboTwice() {
                 expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("PointLightUbo")).callCount).toEqual(2 + 2);
             }
 
-            function judgeIsBindAndSetSinglePointLightUboDataTwice() {
-                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("PointLightUbo")).callCount).toEqual(2 + 1);
+            function judgeIsSetUboDataOnce(loopCount) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * loopCount + 2);
+            }
+
+            function judgeIsSetUboDataWithTypeArrayOnce(typeArray) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, typeArray, gl.DYNAMIC_DRAW)).toCalledTwice();
+            }
+
+            function judgeIsSetTwoPointLightsUboDataTwice() {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * 2 + 4);
+            }
+
+            function judgeIsSetSinglePointLightUboDataTwice() {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * 2 + 3);
             }
 
             function getDefaultColorArr3() {
@@ -254,22 +258,23 @@ describe("test ubo shader lib", function () {
 
                     directorTool.loopBody(state);
 
-                    judgeIsBindAndSetUboDataOnce();
+                    judgeIsSetUboDataOnce(1);
                 });
-                it("clean dirty after set ubo data, so the second loop will not set ubo data if not change point light data in the second loop", function () {
+                it("clean dirty after set ubo data, so the second loop will not set ubo data but only bind ubo if not change point light data in the second loop", function () {
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
                     directorTool.loopBody(state);
 
-                    judgeIsBindAndSetUboDataOnce();
+                    judgeIsSetUboDataOnce(2);
+                    judgeIsBindUboTwice();
                 });
                 it("test set data in the first loop", function () {
                     directorTool.init(state);
 
                     directorTool.loopBody(state);
 
-                    judgeIsSetUboDataOnce(getDefaultUboTypeArray());
+                    judgeIsSetUboDataWithTypeArrayOnce(getDefaultUboTypeArray());
                 });
 
                 describe("test send position", function () {
@@ -289,7 +294,7 @@ describe("test ubo shader lib", function () {
                             directorTool.loopBody(state);
 
 
-                            judgeIsBindAndSetTwoPointLightsUboDataTwice();
+                            judgeIsSetTwoPointLightsUboDataTwice();
                         });
                         it("if point light gameObject's position changed, position dirty", function () {
                             directorTool.init(state);
@@ -304,7 +309,7 @@ describe("test ubo shader lib", function () {
                             directorTool.loopBody(state);
 
 
-                            judgeIsBindAndSetTwoPointLightsUboDataTwice();
+                            judgeIsSetTwoPointLightsUboDataTwice();
                         });
                     });
 
@@ -325,7 +330,7 @@ describe("test ubo shader lib", function () {
 
                         typeArrayTool.set(typeArr, position.values);
 
-                        judgeIsSetUboDataOnce(typeArr);
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
                     });
                 });
 
@@ -345,7 +350,7 @@ describe("test ubo shader lib", function () {
                         directorTool.loopBody(state);
 
 
-                        judgeIsBindAndSetSinglePointLightUboDataTwice();
+                        judgeIsSetSinglePointLightUboDataTwice();
                     });
                     it("test send color data", function () {
                         directorTool.init(state);
@@ -366,7 +371,7 @@ describe("test ubo shader lib", function () {
 
                         typeArrayTool.set(typeArr, colorArr3, 4);
 
-                        judgeIsSetUboDataOnce(typeArr);
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
                     });
                 });
 
@@ -385,7 +390,7 @@ describe("test ubo shader lib", function () {
                         directorTool.loopBody(state);
 
 
-                        judgeIsBindAndSetSinglePointLightUboDataTwice();
+                        judgeIsSetSinglePointLightUboDataTwice();
                     });
                     it("test send intensity data", function () {
                         directorTool.init(state);
@@ -404,7 +409,7 @@ describe("test ubo shader lib", function () {
 
                         typeArrayTool.set(typeArr, [intensity], 4 + 3);
 
-                        judgeIsSetUboDataOnce(typeArr);
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
                     });
                 });
 
@@ -421,7 +426,7 @@ describe("test ubo shader lib", function () {
                         directorTool.loopBody(state);
 
 
-                        judgeIsBindAndSetSinglePointLightUboDataTwice();
+                        judgeIsSetSinglePointLightUboDataTwice();
                     }
 
                     it("if point light constant data dirty, set its data", function () {
@@ -466,7 +471,7 @@ describe("test ubo shader lib", function () {
 
                             typeArrayTool.set(typeArr, [pointLightSystemTool.computeRadius(colorArr3, getDefaultConstant(), getDefaultLinear(), getDefaultQuadratic())], 8 + 3);
 
-                            judgeIsSetUboDataOnce(typeArr);
+                            judgeIsSetUboDataWithTypeArrayOnce(typeArr);
                         });
                         it("test send data", function () {
                             directorTool.init(state);
@@ -485,7 +490,7 @@ describe("test ubo shader lib", function () {
 
                             typeArrayTool.set(typeArr, [2, 0.1, getDefaultQuadratic(), pointLightSystemTool.computeRadius(getDefaultColorArr3(), 2, 0.1, getDefaultQuadratic())], 8);
 
-                            judgeIsSetUboDataOnce(typeArr);
+                            judgeIsSetUboDataWithTypeArrayOnce(typeArr);
                         });
                     });
                 });
