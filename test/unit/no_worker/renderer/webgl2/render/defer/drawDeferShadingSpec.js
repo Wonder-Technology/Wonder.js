@@ -8,6 +8,7 @@ describe("defer shading", function () {
     var ProgramData = wd.WebGL2ProgramData;
     var DeferLightPassData = wd.DeferLightPassData;
     var Log = wd.Log;
+    var Vector3 = wd.Vector3;
 
     function buildGLSL(sandbox, state) {
         return glslTool.buildGLSL(sandbox, state);
@@ -244,8 +245,7 @@ describe("defer shading", function () {
                     describe("add GBufferCommonShaderLib", function () {
                         describe("test glsl", function () {
                             beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
+                                buildGLSL(sandbox, state);
                             });
 
                             it("test vs source", function () {
@@ -271,8 +271,7 @@ describe("defer shading", function () {
                     describe("add GBufferSetWorldPositionShaderLib", function () {
                         describe("test glsl", function () {
                             beforeEach(function () {
-                                directorTool.init(state);
-                                directorTool.loopBody(state);
+                                buildGLSL(sandbox, state);
                             });
 
                             it("test vs source", function () {
@@ -331,7 +330,7 @@ describe("defer shading", function () {
 
                             describe("test glsl", function () {
                                 beforeEach(function () {
-                                    buildGLSL(state);
+                                    buildGLSL(sandbox, state);
                                 });
 
                                 describe("test vs source", function () {
@@ -660,8 +659,21 @@ describe("defer shading", function () {
                     it("disable depth test", function () {
                         judgeAfterUnBindGBuffer(gl.disable.withArgs(gl.DEPTH_TEST).getCall(0), gl);
                     });
-                    it("enable blend", function () {
-                        judgeAfterUnBindGBuffer(gl.enable.withArgs(gl.BLEND).getCall(0), gl);
+
+                    describe("set blend", function () {
+                        it("enable blend", function () {
+                            judgeAfterUnBindGBuffer(gl.enable.withArgs(gl.BLEND).getCall(0), gl);
+                        });
+                        it("set blendEquation", function () {
+                            judgeAfterUnBindGBuffer(gl.blendEquation.withArgs(gl.FUNC_ADD).getCall(0), gl);
+                        });
+                        it("set blendFunc", function () {
+                            judgeAfterUnBindGBuffer(gl.blendFunc.withArgs(gl.ONE, gl.ONE).getCall(0), gl);
+                        });
+                    });
+
+                    it("enable scissor test", function () {
+                        judgeAfterUnBindGBuffer(gl.enable.withArgs(gl.SCISSOR_TEST).getCall(0), gl);
                     });
                 });
             });
@@ -693,6 +705,44 @@ describe("defer shading", function () {
                     directorTool.loopBody(state);
 
                     judgeAfterUseDeferLightPassProgram(gl.bindVertexArray.withArgs(vao).getCall(0), gl);
+                });
+                
+                describe("scissor optimize", function() {
+                    var canvas;
+
+                    beforeEach(function(){
+                        canvas = {
+                            clientWidth:100,
+                            clientHeight:200,
+                            style:{
+                                left:"0px",
+                                top:"0px"
+                            }
+                        };
+
+                        state = stateTool.setCanvas(state, canvas);
+                    });
+                    
+                    it("if computed scissor region isn't null, scissor it", function(){
+                        sceneTool.addPointLight(Vector3.create(200,300,-900));
+
+
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.scissor).toCalledWith(65, 151, 11, 21);
+                    });
+                    it("else, scissor full screen", function(){
+                        sceneTool.addPointLight(Vector3.create(0, 0, 0));
+
+
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.scissor).toCalledWith(0, 0, canvas.clientWidth, canvas.clientHeight);
+                    });
                 });
 
                 describe("send light data", function() {
@@ -739,6 +789,22 @@ describe("defer shading", function () {
                     directorTool.loopBody(state);
 
                     expect(gl.bindVertexArray.withArgs(null).getCall(callCount + 1)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
+                });
+
+                describe("restore state", function() {
+                    it("disable scissor test", function () {
+                        sceneTool.addPointLight();
+
+
+                        directorTool.init(state);
+
+
+                        var callCount = gl.bindVertexArray.withArgs(null).callCount;
+
+                        directorTool.loopBody(state);
+
+                        expect(gl.disable.withArgs(gl.SCISSOR_TEST).getCall(0)).toCalledAfter(gl.bindVertexArray.withArgs(null).getCall(callCount + 1));
+                    });
                 });
             });
         });

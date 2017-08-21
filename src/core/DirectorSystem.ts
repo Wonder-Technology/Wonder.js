@@ -48,7 +48,7 @@ var _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
 export var updateSystem = (elapsed: number, state: Map<any, any>) => {
     var resultState = updateThreeDTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
 
-    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData);
+    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
     return resultState;
 }

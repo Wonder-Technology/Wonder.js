@@ -33,6 +33,8 @@ export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) =
 
         //todo clean more cache!
     }
+
+    return state;
 })
 
 export var clearCacheMap = (ThreeDTransformData: any) => {

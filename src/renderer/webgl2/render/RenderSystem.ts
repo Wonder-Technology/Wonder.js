@@ -23,6 +23,8 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
         gl = getGL(DeviceManagerDataFromSystem, state);
 
     renderUtils(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, basicRender, deferRender(ThreeDTransformData, GameObjectData), drawDataMap, deferDrawDataMap, initShaderDataMap, renderCommandBufferForDrawData);
+
+    return state;
 })
 
 export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, GLSLSenderData: any, GeometryData: any, VaoData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, ProgramData, GLSLSenderData, GeometryData, VaoData);

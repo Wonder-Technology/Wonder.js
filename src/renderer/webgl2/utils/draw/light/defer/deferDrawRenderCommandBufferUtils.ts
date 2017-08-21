@@ -17,6 +17,9 @@ import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManage
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";
+import { getCanvas, getHeight, getWidth, getX, getY } from "../../../../../../structure/ViewSystem";
+import { Vector4 } from "../../../../../../math/Vector4";
+import { Vector2 } from "../../../../../../math/Vector2";
 
 export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,
@@ -32,7 +35,7 @@ export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, mat
         } = LightDrawRenderCommandBufferDataFromSystem;
 
     _drawGBufferPass(gl, state, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix, cameraPosition, normalMatrix), bufferData);
-    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap);
+    _drawLightPass(gl, render_config, drawFuncDataMap, drawDataMap, deferDrawDataMap, initShaderDataMap, sendDataMap, vMatrix, pMatrix, state);
 };
 
 var _drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap:IWebGL2DeferDrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, {
@@ -56,7 +59,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
                           unbindGBuffer
                       }, drawDataMap:IWebGL2DrawDataMap, {
                           DeferLightPassDataFromSystem
-                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap) => {
+                      }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
     var {
             ShaderDataFromSystem
         } = initShaderDataMap,
@@ -65,7 +68,17 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             LocationDataFromSystem,
             GLSLSenderDataFromSystem,
             PointLightDataFromSystem
-        } = drawDataMap;
+        } = drawDataMap,
+        pointLightData = sendDataMap.pointLightData,
+        {
+            getPosition,
+
+            getColorArr3,
+            getConstant,
+            getLinear,
+            getQuadratic,
+            computeRadius
+        } = pointLightData;
 
     unbindGBuffer(gl);
 
@@ -74,30 +87,102 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
     gl.enable(gl.BLEND);
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE, gl.ONE);
-    // gl.enable(gl.CULL_FACE);
-    // gl.cullFace(gl.FRONT);
 
+    gl.enable(gl.SCISSOR_TEST);
 
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem),
-        program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem),
+        canvas = getCanvas(state),
+        canvasWidth = getWidth(canvas),
+        canvasHeight = getHeight(canvas),
+        fullScreenScissor = [getX(canvas), getY(canvas), canvasWidth, canvasHeight];
 
     sendAttributeData(gl, DeferLightPassDataFromSystem);
-
-    // gl.enable(gl.SCISSOR_TEST);
 
     //todo support ambient, direction light
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-        //todo add scissor optimize
+        //todo cache position, radius
 
-        bindPointLightUboData(gl, i, sendDataMap.pointLightData, drawDataMap, GLSLSenderDataFromSystem);
+        let position = getPosition(i, PointLightDataFromSystem),
+            constant = getConstant(i, PointLightDataFromSystem),
+            linear = getLinear(i, PointLightDataFromSystem),
+            quadratic = getQuadratic(i, PointLightDataFromSystem),
+            radius:number = computeRadius(getColorArr3(i, PointLightDataFromSystem), constant, linear, quadratic),
+            sc = _getScissorForLight(vMatrix, pMatrix, position, radius, canvasWidth, canvasHeight);
+        // var sc = [0,0,200,200];
+
+        if (sc !== null) {
+            gl.scissor(sc[0], sc[1], sc[2], sc[3]);
+        }
+        else{
+            gl.scissor(fullScreenScissor[0], fullScreenScissor[1], fullScreenScissor[2], fullScreenScissor[3]);
+        }
+
+        //todo optimize: send position, constant, ... to func!
+        bindPointLightUboData(gl, i, pointLightData, drawDataMap, GLSLSenderDataFromSystem);
 
         drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
     }
 
     unbindVao(gl);
 
-    // restore state:
-    //// gl.cullFace(gl.BACK);
-    // gl.disable(gl.SCISSOR_TEST);
+    gl.disable(gl.SCISSOR_TEST);
 }
+
+var _getScissorForLight = (function() {
+    // Pre-allocate for performance - avoids additional allocation
+    var a = Vector4.create();
+    var b = Vector4.create(0,0,0,0);
+    var minpt = Vector2.create(0, 0);
+    var maxpt = Vector2.create(0, 0);
+    var ret = [0, 0, 0, 0];
+
+    return function(vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) {
+        //todo optimize: use tiled-defer shading
+
+        //todo optimize?
+
+        // front bottom-left corner of sphere's bounding cube
+        a.set(position[0], position[1], position[2], 1);
+
+        // a.w = 1;
+        a.applyMatrix4(vMatrix, true);
+        a.x -= radius;
+        a.y -= radius;
+        a.z += radius;
+        a.applyMatrix4(pMatrix, true);
+        a.divideScalar(a.w);
+
+        // front bottom-left corner of sphere's bounding cube
+        b.set(position[0], position[1], position[2], 1);
+        // b.w = 1;
+        b.applyMatrix4(vMatrix, true);
+        b.x += radius;
+        b.y += radius;
+        b.z += radius;
+        b.applyMatrix4(pMatrix, true);
+        b.divideScalar(b.w);
+
+        minpt.set(Math.max(-1, a.x), Math.max(-1, a.y));
+        maxpt.set(Math.min( 1, b.x), Math.min( 1, b.y));
+
+        if (maxpt.x < -1 || 1 < minpt.x ||
+            maxpt.y < -1 || 1 < minpt.y) {
+            return null;
+        }
+
+        minpt.addScalar(1.0);
+        minpt.multiplyScalar(0.5);
+
+        maxpt.addScalar(1.0);
+        maxpt.multiplyScalar(0.5);
+
+        ret[0] = Math.round(width * minpt.x);
+        ret[1] = Math.round(height * minpt.y);
+        ret[2] = Math.round(width * (maxpt.x - minpt.x));
+        ret[3] = Math.round(height * (maxpt.y - minpt.y));
+
+        return ret;
+    };
+})();

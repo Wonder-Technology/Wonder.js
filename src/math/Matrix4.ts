@@ -641,17 +641,28 @@ export class Matrix4 {
         return this;
     }
 
-    public multiplyVector4(vector: Vector4): Vector4 {
+    public multiplyVector4(vector: Vector4, isChangeVector:boolean = false): Vector4 {
         var mat1 = this.values,
-            vec4 = vector.values;
-        var result = [];
+            vec4 = vector.values,
+            x:number = null,
+            y:number = null,
+            z:number = null,
+            w:number = null;
 
-        result[0] = vec4[0] * mat1[0] + vec4[1] * mat1[4] + vec4[2] * mat1[8] + vec4[3] * mat1[12];
-        result[1] = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[9] + vec4[3] * mat1[13];
-        result[2] = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
-        result[3] = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
+        // var result = [];
 
-        return Vector4.create(result[0], result[1], result[2], result[3]);
+        x = vec4[0] * mat1[0] + vec4[1] * mat1[4] + vec4[2] * mat1[8] + vec4[3] * mat1[12];
+        y = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[9] + vec4[3] * mat1[13];
+        z = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
+        w = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
+
+        if(isChangeVector){
+            vector.set(x, y, z, w);
+
+            return vector;
+        }
+
+        return Vector4.create(x, y, z, w);
     }
 
     public multiplyVector3(vector: Vector3): Vector3 {

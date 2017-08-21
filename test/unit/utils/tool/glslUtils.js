@@ -71,6 +71,7 @@ var glslUtils = (function () {
                 BLEND: "BLEND",
                 FUNC_ADD: "FUNC_ADD",
                 ONE: "ONE",
+                SCISSOR_TEST: "SCISSOR_TEST",
 
 
                 // getActiveAttrib: sandbox.stub().returns(null),

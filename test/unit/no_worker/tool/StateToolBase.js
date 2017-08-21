@@ -1,5 +1,5 @@
-var stateTool = (function () {
-    return {
+var StateToolBase = YYC.AClass({
+    Public: {
         createAndSetFakeGLState: function (sandbox) {
             var state = this.createFakeGLState(sandbox);
 
@@ -21,5 +21,4 @@ var stateTool = (function () {
         },
         setState: stateUtils.setState
     }
-})()
-
+});
