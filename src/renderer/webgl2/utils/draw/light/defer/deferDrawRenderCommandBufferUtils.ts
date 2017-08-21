@@ -181,9 +181,6 @@ var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:
     //todo optimize: use tiled-defer shading
 
     // front bottom-left corner of sphere's bounding cube
-    // a.set(position[0], position[1], position[2], 1);
-
-    // a.w = 1;
     a.applyMatrix4(vMatrix, true);
     a.x -= radius;
     a.y -= radius;
@@ -192,8 +189,6 @@ var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:
     a.divideScalar(a.w);
 
     // front bottom-left corner of sphere's bounding cube
-    // b.set(position[0], position[1], position[2], 1);
-    // b.w = 1;
     b.applyMatrix4(vMatrix, true);
     b.x += radius;
     b.y += radius;
@@ -237,5 +232,3 @@ var _buildPointLightValueDataMap = (position: Float32Array, colorArr3: Array<num
         isOtherValueDirty: isOtherValueDirty
     }
 }
-
-// var _isValueDirty = (value:any) => value !== null;

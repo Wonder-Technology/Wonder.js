@@ -117,6 +117,7 @@ import { initData as initWebGL1LocationWorkerData } from "../webgl1/render_file/
 import { initData as initWebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerSystem";
 import { WebGL1ShaderWorkerData } from "../webgl1/render_file/shader/ShaderWorkerData";
 import { WebGL2ShaderWorkerData } from "../webgl2/render_file/shader/ShaderWorkerData";
+import { initData as initDeferLightPassData } from "../webgl2/render_file/render/light/defer/light/DeferLightPassWorkerSystem";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -379,6 +380,8 @@ var _initWebGL2Data = () => {
     initWebGL2ShaderData(WebGL2ShaderWorkerData);
 
     initVaoData(VaoWorkerData);
+
+    initDeferLightPassData(DeferLightPassWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {

@@ -1,9 +1,5 @@
-import { WebGLVertexArrayObject } from "../../../../../extend/interface";
-import { ScissorRegionArrayCacheMap } from "../../../../type/utilsType";
+import { DeferLightPassDataCommon } from "../../../../utils/render/light/defer/light/DeferLightPassDataCommon";
 
-export class DeferLightPassData{
-    public static fullScreenQuadVertexArray:WebGLVertexArrayObject = null;
-    public static fullScreenQuadIndicesCount:number = null;
-    public static scissorRegionArrayCacheMap:ScissorRegionArrayCacheMap = null;
+export class DeferLightPassData extends DeferLightPassDataCommon{
 }
 

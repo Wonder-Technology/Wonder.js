@@ -177,3 +177,4 @@ export {CommonTimeController} from "./utils/time/CommonTimeController";
 export {DirectorTimeController} from "./utils/time/DirectorTimeController";
 export {TimeController} from "./utils/time/TimeController";
 export {WorkerInstanceData} from "./worker/WorkerInstanceData";
+export {DeferLightPassDataCommon} from "./renderer/webgl2/utils/render/light/defer/light/DeferLightPassDataCommon";

@@ -1,7 +1,5 @@
-import { WebGLVertexArrayObject } from "../../../../../../../extend/interface";
+import { DeferLightPassDataCommon } from "../../../../../../../webgl2/utils/render/light/defer/light/DeferLightPassDataCommon";
 
-export class DeferLightPassWorkerData{
-    public static fullScreenQuadVertexArray:WebGLVertexArrayObject = null;
-    public static fullScreenQuadIndicesCount:number = null;
+export class DeferLightPassWorkerData extends DeferLightPassDataCommon{
 }
 
