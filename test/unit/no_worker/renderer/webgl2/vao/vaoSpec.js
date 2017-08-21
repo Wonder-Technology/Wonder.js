@@ -19,6 +19,10 @@ describe("test vao", function () {
         return gl.bindVertexArray;
     }
 
+    function getDeleteVboMethod(gl) {
+        return gl.deleteBuffer;
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -171,6 +175,22 @@ describe("test vao", function () {
             directorTool.loopBody(state);
 
             expect(getBindVaoMethod(gl).withArgs(null)).toCalledOnce();
+        });
+        it("dispose all vbos in vao after unbind vao", function () {
+            directorTool.init(state);
+
+            var vbo1 = {b:1};
+            var vbo2 = {b:2};
+            gl.createBuffer.onCall(2).returns(vbo1);
+            gl.createBuffer.onCall(3).returns(vbo2);
+
+
+            directorTool.loopBody(state);
+
+            expect(getDeleteVboMethod(gl).getCall(0)).toCalledAfter(getBindVaoMethod(gl).withArgs(null).getCall(0));
+            expect(getDeleteVboMethod(gl).callCount).toEqual(2);
+            expect(getDeleteVboMethod(gl).getCall(0)).toCalledWith(vbo1);
+            expect(getDeleteVboMethod(gl).getCall(1)).toCalledWith(vbo2);
         });
     });
 

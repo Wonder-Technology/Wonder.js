@@ -103,27 +103,32 @@ export var createAndInitVao = (gl: any, geometryIndex: number, vaos: Array<WebGL
     getTexCoords,
     getIndices
 }, GeometryDataFromSystem: any) => {
-    var vao = createVao(gl);
+    var vao = createVao(gl),
+        buffers = [];
 
     vaos[geometryIndex] = vao;
 
     bindVaoUtils(gl, vao);
 
     if (!!getVertices) {
-        createAndInitArrayBuffer(gl, getVertices(geometryIndex, GeometryDataFromSystem), positionLocation, 3);
+        buffers.push(createAndInitArrayBuffer(gl, getVertices(geometryIndex, GeometryDataFromSystem), positionLocation, 3));
     }
 
     if (!!getNormals) {
-        createAndInitArrayBuffer(gl, getNormals(geometryIndex, GeometryDataFromSystem), normalLocation, 3);
+        buffers.push(createAndInitArrayBuffer(gl, getNormals(geometryIndex, GeometryDataFromSystem), normalLocation, 3));
     }
 
     if (!!getTexCoords) {
-        createAndInitArrayBuffer(gl, getTexCoords(geometryIndex, GeometryDataFromSystem), texCoordLocation, 2);
+        buffers.push(createAndInitArrayBuffer(gl, getTexCoords(geometryIndex, GeometryDataFromSystem), texCoordLocation, 2));
     }
 
-    createAndInitIndexBuffer(gl, getIndices(geometryIndex, GeometryDataFromSystem));
+    buffers.push(createAndInitIndexBuffer(gl, getIndices(geometryIndex, GeometryDataFromSystem)));
 
     unbindVao(gl);
+
+    for(let buffer of buffers){
+        gl.deleteBuffer(buffer);
+    }
 
     return vao;
 }

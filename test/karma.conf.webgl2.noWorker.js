@@ -33,7 +33,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
@@ -60,7 +60,7 @@
         // 'test/unit/no_worker/**/*GameObject*',
         // 'test/unit/no_worker/**/Camera*',
         // 'test/unit/no_worker/**/Main*',
-        // 'test/unit/no_worker/**/vao*',
+        'test/unit/no_worker/**/vao*',
         // 'test/unit/**/reallocate*',
         // 'test/unit/no_worker/**/detect*',
         // 'test/unit/no_worker/**/createGL*',
