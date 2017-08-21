@@ -18,6 +18,6 @@ export var disposeGeometryVaoBuffers = (extension:any, disposedIndexArray: Array
     vaos
 }) => {
     for (let index of disposedIndexArray) {
-        disposeVao(extension, vaos[index]);
+        disposeVao(extension, index, vaos);
     }
 }

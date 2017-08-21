@@ -185,41 +185,31 @@ describe("Geometry", function () {
                         gpuDetectTool.setGPUDetectData("extensionVao", extension);
                     });
 
-                    it("test dispose vao", function () {
-                        var geo1 = boxGeometryTool.create();
-                        var geo2 = boxGeometryTool.create();
+                    describe("test dispose vao", function () {
+                        var state;
 
-                        var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1);
-                        var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);
+                        beforeEach(function(){
+                            state = stateTool.createAndSetFakeGLState(sandbox);
+                            geometrySystemTool.judgeDisposeVao(state, function () {
+                                return extension.createVertexArrayOES;
+                            }, function () {
+                                return extension.deleteVertexArrayOES;
+                            })
+                        });
 
-                        var obj1 = data1.gameObject,
-                            obj2 = data2.gameObject;
+                        it("test dispose", function () {
+                        });
+                        it("test bind vao when draw gameObject after dispose vao", function () {
+                            var geo3 = boxGeometryTool.create();
+                            var data3 = sceneTool.prepareGameObjectAndAddToScene(true, geo3);
 
-                        directorTool.init(sandbox);
-
-
-                        var buffer1 = {},
-                            buffer2 = {a:2};
-
-                        extension.createVertexArrayOES.onCall(0).returns(buffer1);
-                        extension.createVertexArrayOES.onCall(1).returns(buffer2);
-
-
-                        directorTool.loopBody(null, null);
+                            gameObjectTool.init(data3.gameObject);
 
 
-                        gameObjectTool.disposeComponent(obj1, geo1);
+                            directorTool.loopBody(null, null);
 
-
-                        expect(extension.deleteVertexArrayOES.callCount).toEqual(0);
-
-
-
-                        gameObjectTool.disposeComponent(obj2, geo2);
-
-                        expect(extension.deleteVertexArrayOES.callCount).toEqual(2);
-                        expect(extension.deleteVertexArrayOES.firstCall).toCalledWith(buffer1)
-                        expect(extension.deleteVertexArrayOES.getCall(1)).toCalledWith(buffer2)
+                            expect(extension.createVertexArrayOES.callCount).toEqual(3)
+                        });
                     });
                 });
             });

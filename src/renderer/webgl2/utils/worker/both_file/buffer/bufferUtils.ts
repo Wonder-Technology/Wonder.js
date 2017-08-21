@@ -9,6 +9,6 @@ export var disposeGeometryVaoBuffers = (gl:any, disposedIndexArray: Array<number
     vaos
 }) => {
     for (let index of disposedIndexArray) {
-        disposeVao(gl, vaos[index]);
+        disposeVao(gl, index, vaos);
     }
 }

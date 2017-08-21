@@ -26,20 +26,34 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        var director = wd.Director.getInstance();
+        initSample();
 
-        var boxes = createBoxes();
+        var boxes;
+
+        function initSample() {
+            var director = wd.Director.getInstance();
+
+            boxes = createBoxes();
 
 //        director.scene.addChildren(boxes);
 
 
-        boxes.forEach(function(box){
-            sceneTool.addGameObject(box);
-        })
+            boxes.forEach(function(box){
+                sceneTool.addGameObject(box);
+            })
 
-        sceneTool.addGameObject(createCamera());
+            sceneTool.addGameObject(createCamera());
 
-//        director.scene.addChild(createCamera());
+
+//        setData();
+//        setParent();
+//        batchSet();
+
+        createAndDisposeGameObjects();
+
+
+            director.start();
+        }
 
         function _setData() {
             function getRandom(num){
@@ -239,22 +253,11 @@
         }
 
 
-//        setData();
-//        setParent();
-//        batchSet();
-
-//        createAndDisposeGameObjects();
-
-
-        director.start();
-
-
-
         function createCustomGeometryBoxes(vertices, indices){
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 1000; index++) {
+            for (var index = 0; index < 300; index++) {
                 var customGeo = customGeometryTool.create();
                 customGeometryTool.setVertices(customGeo, vertices);
                 customGeometryTool.setIndices(customGeo, indices);
