@@ -708,19 +708,17 @@ describe("defer shading", function () {
                 });
                 
                 describe("scissor optimize", function() {
-                    var canvas;
+                    var viewport;
 
                     beforeEach(function(){
-                        canvas = {
-                            clientWidth:100,
-                            clientHeight:200,
-                            style:{
-                                left:"0px",
-                                top:"0px"
-                            }
-                        };
+                        viewport = {
+                            x:0,
+                            y:0,
+                            width:100,
+                            height:200
+                        }
 
-                        state = stateTool.setCanvas(state, canvas);
+                        state = stateTool.setViewport(state, viewport);
                     });
                     
                     it("if computed scissor region isn't null, scissor it", function(){
@@ -741,7 +739,7 @@ describe("defer shading", function () {
 
                         directorTool.loopBody(state);
 
-                        expect(gl.scissor).toCalledWith(0, 0, canvas.clientWidth, canvas.clientHeight);
+                        expect(gl.scissor).toCalledWith(viewport.x, viewport.y, viewport.width, viewport.height);
                     });
                 });
 

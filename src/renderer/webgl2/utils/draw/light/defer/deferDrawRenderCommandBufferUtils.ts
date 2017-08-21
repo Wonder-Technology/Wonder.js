@@ -11,7 +11,10 @@ import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/l
 import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
 import { unbindVao } from "../../../worker/render_file/vao/vaoUtils";
-import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
+import {
+    drawFullScreenQuad, getScissorRegionArrayCache,
+    sendAttributeData, setScissorRegionArrayCache
+} from "../../../render/light/defer/light/deferLightPassUtils";
 import { clear, getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
@@ -59,6 +62,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
                       }, drawDataMap:IWebGL2DrawDataMap, {
                           DeferLightPassDataFromSystem
                       }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
+    //todo refactor
     var {
             ShaderDataFromSystem
         } = initShaderDataMap,
@@ -73,10 +77,16 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             getPosition,
 
             getColorArr3,
+            getIntensity,
             getConstant,
             getLinear,
             getQuadratic,
-            computeRadius
+            computeRadius,
+
+            isPositionDirty,
+            isColorDirty,
+            isIntensityDirty,
+            isAttenuationDirty
         } = pointLightData;
 
     unbindGBuffer(gl);
@@ -96,32 +106,63 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             y,
             width,
             height
-        } = getViewport(state),
-        fullScreenScissor = [x, y, width, height];
+        } = getViewport(state);
 
     sendAttributeData(gl, DeferLightPassDataFromSystem);
 
     //todo support ambient, direction light
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-        //todo cache position, radius
+        let position:Float32Array = null,
+            colorArr3:Array<number> = null,
+            intensity:number = null,
+            constant:number = null,
+            linear:number = null,
+            quadratic:number = null,
+            radius:number = null,
+            sc:Array<number> = null;
 
-        let position = getPosition(i, PointLightDataFromSystem),
-            constant = getConstant(i, PointLightDataFromSystem),
-            linear = getLinear(i, PointLightDataFromSystem),
-            quadratic = getQuadratic(i, PointLightDataFromSystem),
-            radius:number = computeRadius(getColorArr3(i, PointLightDataFromSystem), constant, linear, quadratic),
+        let isScDirtyFlag:boolean = null,
+            isIntensityDirtyFlag = isIntensityDirty(i, PointLightDataFromSystem),
+            isPositionDirtyFlag = isPositionDirty(i, PointLightDataFromSystem),
+            isColorDirtyFlag = isColorDirty(i, PointLightDataFromSystem),
+            isAttenuationDirtyFlag = isAttenuationDirty(i, PointLightDataFromSystem);
+
+        if(!isPositionDirtyFlag && !isColorDirtyFlag && !isAttenuationDirtyFlag){
+            isScDirtyFlag = false;
+        }
+        else{
+            isScDirtyFlag = true;
+        }
+
+        if(!isScDirtyFlag){
+            sc = getScissorRegionArrayCache(i, DeferLightPassDataFromSystem);
+        }
+        else{
+            position = getPosition(i, PointLightDataFromSystem);
+            colorArr3 = getColorArr3(i, PointLightDataFromSystem);
+            constant = getConstant(i, PointLightDataFromSystem);
+            linear = getLinear(i, PointLightDataFromSystem);
+            quadratic = getQuadratic(i, PointLightDataFromSystem);
+            radius = computeRadius(colorArr3, constant, linear, quadratic);
+
             sc = _getScissorForLight(vMatrix, pMatrix, position, radius, width, height);
+
+            setScissorRegionArrayCache(i, DeferLightPassDataFromSystem, sc);
+        }
 
         if (sc !== null) {
             gl.scissor(sc[0], sc[1], sc[2], sc[3]);
         }
         else{
-            gl.scissor(fullScreenScissor[0], fullScreenScissor[1], fullScreenScissor[2], fullScreenScissor[3]);
+            gl.scissor(x, y, width, height);
         }
 
-        //todo optimize: send position, constant, ... to func!
-        bindPointLightUboData(gl, i, pointLightData, drawDataMap, GLSLSenderDataFromSystem);
+        if(isIntensityDirtyFlag){
+            intensity = getIntensity(i, PointLightDataFromSystem);
+        }
+
+        bindPointLightUboData(gl, i, pointLightData, _buildPointLightValueDataMap(position, colorArr3, intensity, constant, linear, quadratic, radius, isIntensityDirtyFlag, isScDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
 
         drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
     }
@@ -131,59 +172,70 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
     gl.disable(gl.SCISSOR_TEST);
 }
 
-var _getScissorForLight = (function() {
-    // Pre-allocate for performance - avoids additional allocation
-    var a = Vector4.create();
-    var b = Vector4.create(0,0,0,0);
-    var minpt = Vector2.create(0, 0);
-    var maxpt = Vector2.create(0, 0);
-    var ret = [0, 0, 0, 0];
+var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) => {
+    var a = Vector4.create(position[0], position[1], position[2], 1),
+        b = Vector4.create(position[0], position[1], position[2], 1),
+        minpt:Vector2 = null,
+        maxpt:Vector2 = null,
+        ret:Array<number> = [];
+    //todo optimize: use tiled-defer shading
 
-    return function(vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) {
-        //todo optimize: use tiled-defer shading
+    // front bottom-left corner of sphere's bounding cube
+    // a.set(position[0], position[1], position[2], 1);
 
-        //todo optimize?
+    // a.w = 1;
+    a.applyMatrix4(vMatrix, true);
+    a.x -= radius;
+    a.y -= radius;
+    a.z += radius;
+    a.applyMatrix4(pMatrix, true);
+    a.divideScalar(a.w);
 
-        // front bottom-left corner of sphere's bounding cube
-        a.set(position[0], position[1], position[2], 1);
+    // front bottom-left corner of sphere's bounding cube
+    // b.set(position[0], position[1], position[2], 1);
+    // b.w = 1;
+    b.applyMatrix4(vMatrix, true);
+    b.x += radius;
+    b.y += radius;
+    b.z += radius;
+    b.applyMatrix4(pMatrix, true);
+    b.divideScalar(b.w);
 
-        // a.w = 1;
-        a.applyMatrix4(vMatrix, true);
-        a.x -= radius;
-        a.y -= radius;
-        a.z += radius;
-        a.applyMatrix4(pMatrix, true);
-        a.divideScalar(a.w);
+    minpt = Vector2.create(Math.max(-1, a.x), Math.max(-1, a.y));
+    maxpt = Vector2.create(Math.min( 1, b.x), Math.min( 1, b.y));
 
-        // front bottom-left corner of sphere's bounding cube
-        b.set(position[0], position[1], position[2], 1);
-        // b.w = 1;
-        b.applyMatrix4(vMatrix, true);
-        b.x += radius;
-        b.y += radius;
-        b.z += radius;
-        b.applyMatrix4(pMatrix, true);
-        b.divideScalar(b.w);
+    if (maxpt.x < -1 || 1 < minpt.x ||
+        maxpt.y < -1 || 1 < minpt.y) {
+        return null;
+    }
 
-        minpt.set(Math.max(-1, a.x), Math.max(-1, a.y));
-        maxpt.set(Math.min( 1, b.x), Math.min( 1, b.y));
+    minpt.addScalar(1.0);
+    minpt.multiplyScalar(0.5);
 
-        if (maxpt.x < -1 || 1 < minpt.x ||
-            maxpt.y < -1 || 1 < minpt.y) {
-            return null;
-        }
+    maxpt.addScalar(1.0);
+    maxpt.multiplyScalar(0.5);
 
-        minpt.addScalar(1.0);
-        minpt.multiplyScalar(0.5);
+    ret[0] = Math.round(width * minpt.x);
+    ret[1] = Math.round(height * minpt.y);
+    ret[2] = Math.round(width * (maxpt.x - minpt.x));
+    ret[3] = Math.round(height * (maxpt.y - minpt.y));
 
-        maxpt.addScalar(1.0);
-        maxpt.multiplyScalar(0.5);
+    return ret;
+};
 
-        ret[0] = Math.round(width * minpt.x);
-        ret[1] = Math.round(height * minpt.y);
-        ret[2] = Math.round(width * (maxpt.x - minpt.x));
-        ret[3] = Math.round(height * (maxpt.y - minpt.y));
+var _buildPointLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, constant: number, linear: number, quadratic: number, radius: number, isIntensityDirty:boolean, isOtherValueDirty:boolean) => {
+    return {
+        position: position,
+        colorArr3:colorArr3,
+        intensity:intensity,
+        constant:constant,
+        linear:linear,
+        quadratic:quadratic,
+        radius:radius,
 
-        return ret;
-    };
-})();
+        isIntensityDirty: isIntensityDirty,
+        isOtherValueDirty: isOtherValueDirty
+    }
+}
+
+// var _isValueDirty = (value:any) => value !== null;

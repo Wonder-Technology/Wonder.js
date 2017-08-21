@@ -89,6 +89,8 @@ import { initData as initWebGL1ShaderData } from "../renderer/webgl1/shader/Shad
 import { initData as initWebGL2ShaderData } from "../renderer/webgl2/shader/ShaderSystem";
 import { WebGL1ShaderData } from "../renderer/webgl1/shader/ShaderData";
 import { WebGL2ShaderData } from "../renderer/webgl2/shader/ShaderData";
+import { initData as initDeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
+import { DeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -289,6 +291,8 @@ else{
         initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
 
         initVaoData(VaoData);
+
+        initDeferLightPassData(DeferLightPassData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {

@@ -6,6 +6,7 @@ import {
 import { getVaoConfig } from "../../../../shader/glslSender/glslSenderUtils";
 import { it, requireCheckFunc } from "../../../../../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { createMap } from "../../../../../../../../../utils/objectUtils";
 
 export var init = (gl:any, shaderIndex:number, GLSLSenderDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
     _setFullScreenQuadVaoData(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
@@ -57,4 +58,8 @@ var _createFullScreenQuadData = () => {
         texCoords: texCoords,
         indices: indices
     }
+}
+
+export var initData = (DeferLightPassDataFromSystem:any) => {
+    DeferLightPassDataFromSystem.scissorRegionArrayCacheMap = createMap();
 }

@@ -3,19 +3,17 @@ var StateTool = YYC.Class(StateToolBase, {
         createAndSetFakeGLState: function (sandbox) {
             var state = this.base(sandbox);
 
-            var dom = {
-                clientWidth:100,
-                clientHeight:200,
-                style:{
-                    left:"0px",
-                    top:"0px"
-                }
+            var viewport = {
+                x:0,
+                y:0,
+                width:100,
+                height:200
             }
 
-            return state.setIn(["View", "dom"], dom);
+            return state.setIn(["DeviceManager", "viewport"], viewport);
         },
-        setCanvas: function (state, canvas) {
-            return state.setIn(["View", "dom"], canvas);
+        setViewport: function (state, viewport) {
+            return state.setIn(["DeviceManager", "viewport"], viewport);
         }
     }
 })

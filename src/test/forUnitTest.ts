@@ -42,6 +42,7 @@ import { initData as initWebGL1LocationDataSystem } from "../renderer/webgl1/sha
 import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/shader/location/LocationSystem";
 import { initData as initWebGL1ShaderDataSystem } from "../renderer/webgl1/shader/ShaderSystem";
 import { initData as initWebGL2ShaderDataSystem } from "../renderer/webgl2/shader/ShaderSystem";
+import { initData as initDeferLightPassDataSystem } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -95,7 +96,7 @@ export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBuffer
 
 export var initVaoData = initVaoDataSystem;
 
-// export var initDirectorData = initDirectorDataSystem;
+export var initDeferLightPassData = initDeferLightPassDataSystem;
 
 export var createState = createStateUtils;
 

@@ -206,19 +206,19 @@ export const webgl2_shaderLib_generator = {
                                                   bufferDynamicData,
                                                   set
                                               }, {
-                                                  getColorArr3,
-                                                  getIntensity,
-                                                  getConstant,
-                                                  getLinear,
-                                                  getQuadratic,
-                                                  computeRadius,
-                                                  // getRange,
-                                                  getPosition,
+                                                  // getColorArr3,
+                                                  // getIntensity,
+                                                  // getConstant,
+                                                  // getLinear,
+                                                  // getQuadratic,
+                                                  // computeRadius,
+                                                  // // getRange,
+                                                  // getPosition,
 
-                            isPositionDirty,
-                                                  isColorDirty,
-                                                  isIntensityDirty,
-                                                  isAttenuationDirty,
+                            // isPositionDirty,
+                                                  // isColorDirty,
+                                                  // isIntensityDirty,
+                                                  // isAttenuationDirty,
 
                             cleanPositionDirty,
                                                   cleanColorDirty,
@@ -226,61 +226,94 @@ export const webgl2_shaderLib_generator = {
                                                   cleanAttenuationDirty,
 
                                                   PointLightDataFromSystem
+                                              },
+                                              {
+                                                  position,
+                                                  colorArr3,
+                                                  intensity,
+                                                  constant,
+                                                  linear,
+                                                  quadratic,
+                                                  radius,
+
+                                                  isIntensityDirty,
+                                                  isOtherValueDirty
                                               }
                         ) => {
-                            var isDirtyFlag = false,
-                                isColorDirtyFlag = false;
+                            var isDirtyFlag = false;
+                                // isColorDirtyFlag = false;
 
-                            if(isPositionDirty(pointLightIndex, PointLightDataFromSystem)) {
-                                set(typeArray, getPosition(pointLightIndex, PointLightDataFromSystem));
-                                isDirtyFlag = true;
+                            // if(isPositionDirty(pointLightIndex, PointLightDataFromSystem)) {
+                            //     set(typeArray, getPosition(pointLightIndex, PointLightDataFromSystem));
+                            //     isDirtyFlag = true;
+                            //
+                            //
+                            //     cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
+                            // }
+                            //
+                            //
+                            // let colorArr3Copy:Array<number> = null;
+                            //
+                            // if(isColorDirty(pointLightIndex, PointLightDataFromSystem)) {
+                            //     let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem);
+                            //
+                            //     colorArr3Copy = colorArr3.slice();
+                            //
+                            //     set(typeArray, colorArr3, 4);
+                            //
+                            //     isColorDirtyFlag = true;
+                            //     isDirtyFlag = true;
+                            //
+                            //     cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
+                            // }
+                            //
+                            // if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
+                            //     set(typeArray, [getIntensity(pointLightIndex, PointLightDataFromSystem)], 7);
+                            //
+                            //     isDirtyFlag = true;
+                            //
+                            //     cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
+                            // }
+                            //
+                            // if(isColorDirtyFlag || isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
+                            //     let constant = getConstant(pointLightIndex, PointLightDataFromSystem),
+                            //         linear = getLinear(pointLightIndex, PointLightDataFromSystem),
+                            //         quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
+                            //         radius:number = null;
+                            //
+                            //     if(colorArr3Copy === null){
+                            //         radius = computeRadius(getColorArr3(pointLightIndex, PointLightDataFromSystem), constant, linear, quadratic);
+                            //     }
+                            //     else{
+                            //         radius = computeRadius(colorArr3Copy, constant, linear, quadratic);
+                            //     }
+                            //
+                            //
+                            //     set(typeArray, [constant, linear, quadratic, radius], 8);
+                            //
+                            //     isDirtyFlag = true;
+                            //
+                            //     cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
+                            // }
 
-
-                                cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
-                            }
-
-
-                            let colorArr3Copy:Array<number> = null;
-
-                            if(isColorDirty(pointLightIndex, PointLightDataFromSystem)) {
-                                let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem);
-
-                                colorArr3Copy = colorArr3.slice();
-
-                                set(typeArray, colorArr3, 4);
-
-                                isColorDirtyFlag = true;
-                                isDirtyFlag = true;
-
-                                cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
-                            }
-
-                            if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
-                                set(typeArray, [getIntensity(pointLightIndex, PointLightDataFromSystem)], 7);
+                            if(isIntensityDirty){
+                                set(typeArray, [intensity], 7);
 
                                 isDirtyFlag = true;
 
                                 cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 
-                            if(isColorDirtyFlag || isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
-                                let constant = getConstant(pointLightIndex, PointLightDataFromSystem),
-                                    linear = getLinear(pointLightIndex, PointLightDataFromSystem),
-                                    quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
-                                    radius:number = null;
-
-                                if(colorArr3Copy === null){
-                                    radius = computeRadius(getColorArr3(pointLightIndex, PointLightDataFromSystem), constant, linear, quadratic);
-                                }
-                                else{
-                                    radius = computeRadius(colorArr3Copy, constant, linear, quadratic);
-                                }
-
-
-                                set(typeArray, [constant, linear, quadratic, radius], 8);
-
+                            if(isOtherValueDirty){
                                 isDirtyFlag = true;
 
+                                set(typeArray, position);
+                                set(typeArray, colorArr3, 4);
+                                set(typeArray, [constant, linear, quadratic, radius], 8);
+
+
+                                cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
+                                cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
                                 cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 

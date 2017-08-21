@@ -14,3 +14,17 @@ export interface IWebGL2LightSendUniformDataDataMap extends ILightSendUniformDat
 
 export interface IWebGL2DrawDataMap extends IDrawDataMap{
 }
+
+export interface IWebGL2PointLightValueDataMap{
+    position: Float32Array;
+    colorArr3: Array<number>;
+    intensity: number;
+    constant: number;
+    linear: number;
+    quadratic: number;
+    radius: number;
+
+    // isValueDirty:(value:any) => boolean;
+    isIntensityDirty:boolean;
+    isOtherValueDirty:boolean;
+}

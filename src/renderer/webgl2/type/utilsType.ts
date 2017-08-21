@@ -43,3 +43,6 @@ export type WebGL2InitShaderFuncDataMap = {
     getIndices:Function;
 }
 
+export type ScissorRegionArrayCacheMap = {
+    [pointLightIndex:number]: Array<number>
+}

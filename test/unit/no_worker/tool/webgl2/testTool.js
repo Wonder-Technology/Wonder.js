@@ -35,10 +35,11 @@ var TestTool = YYC.Class(TestToolBase, {
 
             gpuDetectTool.resetData();
 
-
             shaderTool.resetData();
 
             vaoTool.resetData();
+
+            deferLightPassTool.resetData();
         },
 
         clearAndOpenContractCheck: function (sandbox, data) {

@@ -5,8 +5,8 @@ describe("basic render", function () {
 
     var Color = wd.Color;
 
-    function buildGLSL(sandbox, state) {
-        var gl = directorTool.init(sandbox);
+    function buildGLSL(state) {
+        var gl = directorTool.init(state);
 
         directorTool.loopBody(state);
 

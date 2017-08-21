@@ -7,10 +7,9 @@ describe("basic render", function () {
     var Matrix4 = wd.Matrix4;
     var ThreeDTransform = wd.ThreeDTransform;
 
-    function buildGLSL(sandbox, state) {
-        return glslTool.buildGLSL(sandbox, state);
+    function buildGLSL(state) {
+        return glslTool.buildGLSL(null, state);
     }
-
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();

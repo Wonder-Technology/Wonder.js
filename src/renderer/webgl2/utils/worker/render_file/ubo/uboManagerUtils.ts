@@ -19,7 +19,7 @@ import { set } from "../../../../../../utils/typeArrayUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
 import { getMaxUniformBufferBindings } from "../device/gpuDetectUtils";
-import { IWebGL2DrawDataMap } from "../interface/IUtils";
+import { IWebGL2DrawDataMap, IWebGL2PointLightValueDataMap } from "../interface/IUtils";
 
 export var init = (gl:any, render_config:IRenderConfig, {
     oneUboDataList,
@@ -63,7 +63,7 @@ export var bindFrameUboData = (gl:any, render_config:IRenderConfig, cameraData:C
     _bindSingleBufferUboData(gl, render_config, frameUboDataList, cameraData, uboBindingPointMap);
 }
 
-export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformDataPointLightDataMap:WebGL2SendUniformDataPointLightDataMap, drawDataMap:IWebGL2DrawDataMap,  {
+export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformDataPointLightDataMap:WebGL2SendUniformDataPointLightDataMap, pointLightValueMap:IWebGL2PointLightValueDataMap,  drawDataMap:IWebGL2DrawDataMap,  {
     lightUboDataList,
     uboBindingPointMap
 }) => {
@@ -86,7 +86,7 @@ export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformD
             buffer = buffers[pointLightIndex],
             uboDataMap = _buildUboDataMap(bindingPoint, buffer, typeArray);
 
-        setBufferDataFunc(gl, pointLightIndex, uboDataMap, uboFuncMap, sendUniformDataPointLightDataMap);
+        setBufferDataFunc(gl, pointLightIndex, uboDataMap, uboFuncMap, sendUniformDataPointLightDataMap, pointLightValueMap);
     });
 }
 
