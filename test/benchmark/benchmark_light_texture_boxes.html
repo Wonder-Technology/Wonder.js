@@ -54,25 +54,6 @@
 
 
 
-//            var box = boxes[0];
-//            var geo = gameObjectTool.getComponent(box, wd.Geometry);
-//
-//            var vertices = [-10, -20, 30, -10, 20, 30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, 20, 30, -10, 20, -30, 10, 20, 30, 10, 20, -30, 10, -20, 30, 10, -20, -30, -10, -20, 30, -10, -20, -30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, -20, 30, -10, 20, 30 ],
-//                texCoords = [
-//                    0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1
-//                ],
-//                indices = [
-//                    0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
-//                ]
-//
-//
-//
-//            boxes = createCustomGeometryBoxes(vertices, texCoords, indices);
-
-
-//        director.scene.addChildren(boxes);
-
-
             boxes.forEach(function(box){
                 sceneTool.addGameObject(box);
             })
@@ -81,21 +62,39 @@
 
 
 //            sceneTool.addGameObject(createAmbientLight());
-        sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
-        sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
-            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
-        sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.5, 0.5, 0.5)"), wd.Vector3.create(10, 100, 100)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
+
+            var pointLights = createPointLights(300);
+
+            pointLights.forEach(function(pointLight){
+                sceneTool.addGameObject(pointLight);
+            })
+
+
+            makePointLightMove(pointLights.slice(0, 150));
 
 
 //        setData();
 //        setParent();
-//            batchSet();
+//        batchSet();
+
 
 //        createAndDisposeGameObjects();
 
 
             director.start();
         }
+
+
+        function makePointLightMove(pointLights) {
+            wd.Director.getInstance().scheduler.scheduleLoop(function(){
+                moveGameObjects(pointLights)
+            });
+        }
+
+
 
         function createAmbientLight() {
             var ambientLightComponent = ambientLightTool.create();
@@ -128,11 +127,22 @@
             return obj;
         }
 
+        function createPointLights(count) {
+            var pointLights = [];
+            var playgroundSize = 500;
+
+            for(var i = 0; i < count; i++){
+                pointLights.push(createPointLight(wd.Color.create("rgb(" + Math.random() + ", 0.0, 0.5)"), generateRandomPosition(playgroundSize)));
+//                pointLights.push(createPointLight(wd.Color.create("rgb(" + 0.5 + ", 0.5, 0.5)"), generateRandomPosition(playgroundSize)));
+            }
+
+            return pointLights;
+        }
 
         function createPointLight(color, pos) {
             var pointLightComponent = pointLightTool.create();
             pointLightTool.setColor(pointLightComponent, color);
-            pointLightTool.setIntensity(pointLightComponent, 2);
+            pointLightTool.setIntensity(pointLightComponent, 5);
             pointLightTool.setRangeLevel(pointLightComponent, 10);
 
 
@@ -159,7 +169,7 @@
 
 
             var mat = basicMaterialTool.create();
-            lightMaterialTool.setColor(mat, wd.Color.create("#555555"));
+            basicMaterialTool.setColor(mat, wd.Color.create("#ffffff"));
 
             gameObjectTool.addComponent(obj, mat);
 
@@ -169,42 +179,27 @@
             return obj;
         }
 
-
-
-//        director.scene.addChild(createCamera());
-
-        function _setData() {
-            function getRandom(num){
-                return Math.floor(Math.random() * num);
-            }
-
-            boxes.forEach(function(box){
-//                var pos = box.transform.position;
-//                var localPos = box.transform.localPosition;
-
-                var transform = gameObjectTool.getTransform(box);
+        function moveGameObjects(gameObjects) {
+            gameObjects.forEach(function(gameObject){
+                var transform = gameObjectTool.getTransform(gameObject);
 
                 var pos = threeDTransformTool.getPosition(transform);
                 var localPos = threeDTransformTool.getLocalPosition(transform);
 
 
                 if(pos.x >= 500){
-//                    box.transform.localPosition = wd.Vector3.create(100,localPos.y,localPos.z);
-
-                        threeDTransformTool.setLocalPosition(transform, wd.Vector3.create(100,localPos.y,localPos.z));
+                    threeDTransformTool.setLocalPosition(transform, wd.Vector3.create(100,localPos.y,localPos.z));
 
                 }
                 else if(pos.x < 500){
-//                    box.transform.position = pos.add(wd.Vector3.create(10,0,0));
                     threeDTransformTool.setPosition(transform, pos.add(wd.Vector3.create(10,0,0)));
                 }
-//                threeDTransformTool.setPosition(transform, wd.Vector3.create(getRandom(500),getRandom(500),getRandom(500)));
-            })
+            });
         }
 
         function setData() {
             wd.Director.getInstance().scheduler.scheduleLoop(function(){
-                _setData();
+                moveGameObjects(boxes);
             });
         }
 
@@ -373,14 +368,16 @@
         }
 
 
-
+        function generateRandomPosition(playgroundSize) {
+            return wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize);
+        }
 
 
         function createCustomGeometryBoxes(vertices, texCoords, indices){
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 1000; index++) {
+            for (var index = 0; index < 500; index++) {
                 var customGeo = customGeometryTool.create();
                 customGeometryTool.setVertices(customGeo, vertices);
                 customGeometryTool.setTexCoords(customGeo, texCoords);
@@ -392,7 +389,7 @@
                 var box = createCustomGeometryBox(customGeo);
 
                 var transform = gameObjectTool.getTransform(box);
-                threeDTransformTool.setPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
+                threeDTransformTool.setPosition(transform, generateRandomPosition(playgroundSize));
 
                 resultArr.push(box);
             }
@@ -453,7 +450,8 @@
 //                box.transform.position = wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize)
 
                 var transform = gameObjectTool.getTransform(box);
-                threeDTransformTool.setPosition(transform, wd.Vector3.create(Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize));
+
+                threeDTransformTool.setPosition(transform, generateRandomPosition(playgroundSize));
 
                 resultArr.push(box);
             }
