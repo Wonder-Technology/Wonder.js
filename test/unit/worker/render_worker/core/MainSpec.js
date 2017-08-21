@@ -278,6 +278,17 @@ describe("Main", function() {
 
                         expect(gl.viewport).toCalledWith(viewportData.x, viewportData.y, viewportData.width, viewportData.height);
                     });
+                    it("save viewport data to state", function () {
+                        workerTool.execRenderWorkerMessageHandler(e);
+
+                        var state = stateTool.getState();
+
+                        var data = state.getIn(["DeviceManager", "viewport"]);
+                        expect(data.x).toEqual(viewportData.x);
+                        expect(data.y).toEqual(viewportData.y);
+                        expect(data.width).toEqual(viewportData.width);
+                        expect(data.height).toEqual(viewportData.height);
+                    });
                 });
             });
         });

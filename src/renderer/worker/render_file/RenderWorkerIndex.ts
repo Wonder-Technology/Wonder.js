@@ -38,3 +38,4 @@ export { WebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/
 export { WebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerData";
 export { WebGL1ShaderWorkerData } from "../webgl1/render_file/shader/ShaderWorkerData";
 export { WebGL2ShaderWorkerData } from "../webgl2/render_file/shader/ShaderWorkerData";
+export { StateWorkerData } from "./state/StateWorkerData";

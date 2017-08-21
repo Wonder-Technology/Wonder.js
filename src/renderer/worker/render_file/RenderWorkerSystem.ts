@@ -17,8 +17,8 @@ import { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorker
 import { IndexBufferWorkerData } from "./buffer/IndexBufferWorkerData";
 import { ArrayBufferWorkerData } from "./buffer/ArrayBufferWorkerData";
 import { initGL } from "./initGL";
-import { getState, setState } from "./state/StateSytem";
-import { StateData } from "./state/StateData";
+import { getState, setState } from "./state/StateWorkerSytem";
+import { StateWorkerData } from "./state/StateWorkerData";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
 import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
@@ -147,7 +147,7 @@ export var onmessageHandler = (e) => {
                 state = _initWebGL2GL(data, WebGLDetectWorkerData, GPUDetectWorkerData);
             }
 
-            setState(state, StateData);
+            setState(state, StateWorkerData);
 
             initState(state, getGL, setSide, DeviceManagerWorkerData);
             break;
@@ -161,10 +161,10 @@ export var onmessageHandler = (e) => {
             break;
         case EWorkerOperateType.DRAW:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleWebGL1Draw(data, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData);
+                _handleWebGL1Draw(data, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
             }
             else{
-                _handleWebGL2Draw(data, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData);
+                _handleWebGL2Draw(data, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
             }
             break;
         default:
@@ -181,8 +181,8 @@ var _initWebGL2GL = (data:any, WebGLDetectWorkerData:any, GPUDetectWorkerData:an
     return initGL(data, detectWebGL2, WebGLDetectWorkerData, GPUDetectWorkerData).run();
 }
 
-var _handleWebGL1Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any) => {
-    var state = null;
+var _handleWebGL1Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
+    var state = getState(StateWorkerData);
 
     _initWebGL1DrawData(data, PointLightWorkerData);
 
@@ -205,8 +205,8 @@ var _handleWebGL1Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerDat
     });
 }
 
-var _handleWebGL2Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any) => {
-    var state = null;
+var _handleWebGL2Draw = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
+    var state = getState(StateWorkerData);
 
     _initWebGL2DrawData(data, PointLightWorkerData);
 
@@ -273,7 +273,7 @@ var _initWebGL1DisposeDrawData = (data:any) => {
         }
 
         if (disposeData.textureDisposeData !== null) {
-            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
+            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateWorkerData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
         }
     }
 }
@@ -288,7 +288,7 @@ var _initWebGL2DisposeDrawData = (data:any) => {
         }
 
         if (disposeData.textureDisposeData !== null) {
-            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
+            disposeSourceAndGLTexture(disposeData.textureDisposeData, getGL(DeviceManagerWorkerData, getState(StateWorkerData)), TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
         }
     }
 }
@@ -296,7 +296,7 @@ var _initWebGL2DisposeDrawData = (data:any) => {
 var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 
 var _handleWebGL1InitRenderData = (data:any, PointLightWorkerData:any, GLSLSenderWorkerData:any) => {
-    var state = getState(StateData),
+    var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state);
 
     fromArray([
@@ -316,7 +316,7 @@ var _handleWebGL1InitRenderData = (data:any, PointLightWorkerData:any, GLSLSende
 }
 
 var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any) => {
-    var state = getState(StateData),
+    var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state),
         renderData = data.renderData;
 

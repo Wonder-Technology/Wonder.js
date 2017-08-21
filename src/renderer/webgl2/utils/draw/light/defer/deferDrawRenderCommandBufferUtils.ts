@@ -12,12 +12,11 @@ import { getNewTextureUnitIndex } from "../../../worker/render_file/render/light
 import { getNoMaterialShaderIndex } from "../../../worker/render_file/shader/shaderUtils";
 import { unbindVao } from "../../../worker/render_file/vao/vaoUtils";
 import { drawFullScreenQuad, sendAttributeData } from "../../../render/light/defer/light/deferLightPassUtils";
-import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
+import { clear, getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { drawGameObjects } from "../../../worker/render_file/draw/drawRenderCommandBufferUtils";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";
-import { getCanvas, getHeight, getWidth, getX, getY } from "../../../../../../structure/ViewSystem";
 import { Vector4 } from "../../../../../../math/Vector4";
 import { Vector2 } from "../../../../../../math/Vector2";
 
@@ -92,10 +91,13 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem),
         program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem),
-        canvas = getCanvas(state),
-        canvasWidth = getWidth(canvas),
-        canvasHeight = getHeight(canvas),
-        fullScreenScissor = [getX(canvas), getY(canvas), canvasWidth, canvasHeight];
+        {
+            x,
+            y,
+            width,
+            height
+        } = getViewport(state),
+        fullScreenScissor = [x, y, width, height];
 
     sendAttributeData(gl, DeferLightPassDataFromSystem);
 
@@ -109,8 +111,7 @@ var _drawLightPass = (gl:any, render_config:IRenderConfig, {
             linear = getLinear(i, PointLightDataFromSystem),
             quadratic = getQuadratic(i, PointLightDataFromSystem),
             radius:number = computeRadius(getColorArr3(i, PointLightDataFromSystem), constant, linear, quadratic),
-            sc = _getScissorForLight(vMatrix, pMatrix, position, radius, canvasWidth, canvasHeight);
-        // var sc = [0,0,200,200];
+            sc = _getScissorForLight(vMatrix, pMatrix, position, radius, width, height);
 
         if (sc !== null) {
             gl.scissor(sc[0], sc[1], sc[2], sc[3]);

@@ -1,6 +1,6 @@
 import { chain, compose, map } from "../../../utils/functionalUtils";
 import {
-    getGL, setContextConfig, setGL,
+    getGL, setContextConfig, setGL, setViewport,
     setViewportOfGL
 } from "../both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";
@@ -18,6 +18,7 @@ export var initGL = (data: MessageInitGLData, detect:Function, WebGLDetectWorker
     return compose(
         map(detect(getGL, DeviceManagerWorkerData, GPUDetectWorkerData)),
         chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)),
+        map(setViewport(data.viewportData)),
         _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData)
     )(createState());
 }
