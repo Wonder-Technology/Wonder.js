@@ -57,7 +57,7 @@ describe("LightMaterial", function () {
             directorTool.loopBody(state);
 
             expect(gl.createProgram.callCount).toEqual(createProgramCallCount + 2);
-            expect(gl.useProgram.callCount).toEqual(useProgramCallCount + 3);
+            expect(gl.useProgram.callCount).toEqual(useProgramCallCount);
         });
     });
 });

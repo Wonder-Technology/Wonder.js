@@ -155,16 +155,16 @@ describe("test vao", function () {
                 });
 
                 it("create and init position array buffer", function () {
-                    judgeArrayBuffer(8, 0, 3, "getVertices");
+                    judgeArrayBuffer(11, 0, 3, "getVertices");
                 });
                 it("create and init normal array buffer", function () {
-                    judgeArrayBuffer(9, 1, 3, "getNormals");
+                    judgeArrayBuffer(12, 1, 3, "getNormals");
                 });
                 it("create and init texCoord array buffer", function () {
-                    judgeArrayBuffer(10, 2, 2, "getTexCoords");
+                    judgeArrayBuffer(13, 2, 2, "getTexCoords");
                 });
                 it("create and init index buffer", function () {
-                    judgeIndexBuffer(11);
+                    judgeIndexBuffer(14);
                 });
             });
         });

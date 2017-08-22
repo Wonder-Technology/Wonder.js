@@ -1,7 +1,7 @@
 var deferLightPassTool = (function () {
     return {
         resetData: function () {
-            return wd.initDeferLightPassData(wd.DeferDirectionLightPassData, wd.DeferPointLightPassData);
+            return wd.initDeferLightPassData(wd.DeferAmbientLightPassData, wd.DeferDirectionLightPassData, wd.DeferPointLightPassData);
         }
     }
 })();

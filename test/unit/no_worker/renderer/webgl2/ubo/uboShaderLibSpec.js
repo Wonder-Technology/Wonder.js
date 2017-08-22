@@ -127,11 +127,11 @@ describe("test ubo shader lib", function () {
         var geo;
 
         function getVsSource(gl) {
-            return gl.shaderSource.getCall(0).args[1];
+            return gl.shaderSource.getCall(2).args[1];
         }
 
         function getFsSource(gl) {
-            return gl.shaderSource.getCall(1).args[1];
+            return gl.shaderSource.getCall(3).args[1];
         }
 
         beforeEach(function () {
@@ -194,6 +194,131 @@ describe("test ubo shader lib", function () {
             });
         });
 
+        describe("add AmbientLightUboShaderLib", function () {
+            var lightObj1,
+                lightComponent1;
+            var lightObj2,
+                lightComponent2;
+
+            function getFsSource(gl) {
+                return gl.shaderSource.getCall(1).args[1];
+            }
+
+            function judgeIsBindUboTwice() {
+                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("AmbientLightUbo")).callCount).toEqual(2 + 2);
+            }
+
+            function judgeIsSetUboDataOnce(loopCount) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * loopCount + 2);
+            }
+
+            function judgeIsSetUboDataWithTypeArrayOnce(typeArray) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, typeArray, gl.DYNAMIC_DRAW)).toCalledTwice();
+            }
+
+            function judgeIsSetSingleAmbientLightUboDataTwice() {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * 2 + 3);
+            }
+
+            function getDefaultUboTypeArray() {
+                return new Float32Array([
+                    1, 1, 1, 0
+                ]);
+            }
+
+            beforeEach(function () {
+                lightObj1 = sceneTool.addAmbientLight();
+                lightComponent1 = gameObjectTool.getComponent(lightObj1, Light);
+
+                lightObj2 = sceneTool.addAmbientLight();
+                lightComponent2 = gameObjectTool.getComponent(lightObj2, Light);
+            });
+
+            describe("set dyname ubo data before draw ambient light", function () {
+                it("set ubo data because ambient light data is dirty in the first loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataOnce(1);
+                });
+                it("clean dirty after set ubo data, so the second loop will not set ubo data but only bind ubo if not change ambient light data in the second loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataOnce(2);
+                    judgeIsBindUboTwice();
+                });
+                it("test set data in the first loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataWithTypeArrayOnce(getDefaultUboTypeArray());
+                });
+
+                describe("test send color", function () {
+                    it("if ambient light color dirty, set its data", function () {
+
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var color = Color.create("#111222");
+
+                        ambientLightTool.setColor(lightComponent1, color);
+
+
+                        directorTool.loopBody(state);
+
+
+                        judgeIsSetSingleAmbientLightUboDataTwice();
+                    });
+                    it("test send color data", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var color = Color.create("rgb(1.0, 0.5, 1.0)");
+                        var colorArr3 = color.toArray3();
+
+                        ambientLightTool.setColor(lightComponent1, color);
+
+
+                        directorTool.loopBody(state);
+
+
+                        var typeArr = getDefaultUboTypeArray();
+
+                        typeArrayTool.set(typeArr, colorArr3, 0);
+
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
+                    });
+                });
+            });
+
+            describe("test glsl", function () {
+                function getUboDeclareGLSL() {
+                    return "layout(std140) uniform AmbientLightUbo {\n/*! vec4(colorVec3, 0.0) */\nvec4 lightColorData;\n} ambientLightUbo;\n";
+                }
+
+                beforeEach(function () {
+                    directorTool.init(state);
+                    directorTool.loopBody(state);
+                });
+
+                it("test fs source", function () {
+                    var fs = getFsSource(gl);
+
+                    expect(glslTool.contain(fs, getUboDeclareGLSL())).toBeTruthy();
+                });
+            });
+        });
+
         describe("add DirectionLightUboShaderLib", function () {
             var lightObj1,
                 lightComponent1;
@@ -201,11 +326,11 @@ describe("test ubo shader lib", function () {
                 lightComponent2;
 
             function getVsSource(gl) {
-                return gl.shaderSource.getCall(0).args[1];
+                return gl.shaderSource.getCall(2).args[1];
             }
 
             function getFsSource(gl) {
-                return gl.shaderSource.getCall(1).args[1];
+                return gl.shaderSource.getCall(3).args[1];
             }
 
             function judgeIsBindUboTwice() {
@@ -438,7 +563,7 @@ describe("test ubo shader lib", function () {
             }
 
             function getFsSource(gl) {
-                return gl.shaderSource.getCall(3).args[1];
+                return gl.shaderSource.getCall(5).args[1];
             }
 
             function judgeIsBindUboTwice() {

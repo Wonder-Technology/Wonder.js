@@ -3,10 +3,12 @@ var bufferUtils = (function () {
         minBufferCount: function (sandbox, data, DataBufferConfig) {
             var transformDataBufferCount = (data && data.transformDataBufferCount) || 10;
             var geometryDataBufferCount = (data && data.geometryDataBufferCount) || 200;
+            var ambientLightDataBufferCount = (data && data.ambientLightDataBufferCount) || 10;
             var directionLightDataBufferCount = (data && data.directionLightDataBufferCount) || 10;
             var pointLightDataBufferCount = (data && data.pointLightDataBufferCount) || 10;
-            var deferPointLightCount = (data && data.deferPointLightCount) || 10;
+            var deferAmbientLightCount = (data && data.deferAmbientLightCount) || 10;
             var deferDirectionLightCount = (data && data.deferDirectionLightCount) || 10;
+            var deferPointLightCount = (data && data.deferPointLightCount) || 10;
 
 
             testTool.stubGetter(sinon, wd.ThreeDTransformData, "maxCount", function () {
@@ -23,11 +25,11 @@ var bufferUtils = (function () {
             sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 20);
 
 
-            sandbox.stub(DataBufferConfig, "ambientLightDataBufferCount", 20);
+            sandbox.stub(DataBufferConfig, "ambientLightDataBufferCount", ambientLightDataBufferCount);
             sandbox.stub(DataBufferConfig, "directionLightDataBufferCount", directionLightDataBufferCount);
             sandbox.stub(DataBufferConfig, "pointLightDataBufferCount", pointLightDataBufferCount);
 
-
+            sandbox.stub(DataBufferConfig, "deferAmbientLightCount", deferAmbientLightCount);
             sandbox.stub(DataBufferConfig, "deferPointLightCount", deferPointLightCount);
             sandbox.stub(DataBufferConfig, "deferDirectionLightCount", deferDirectionLightCount);
 

@@ -29,10 +29,18 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
             ShaderDataFromSystem
         } = initShaderDataMap,
         {
+
+            AmbientLightDataFromSystem,
+            DirectionLightDataFromSystem,
+            PointLightDataFromSystem,
+
             ProgramDataFromSystem,
             LocationDataFromSystem,
             GLSLSenderDataFromSystem
-        } = drawDataMap;
+        } = drawDataMap,
+        ambientLightCount = AmbientLightDataFromSystem.count,
+        directionLightCount = DirectionLightDataFromSystem.count,
+        pointLightCount = PointLightDataFromSystem.count;
 
     unbindGBuffer(gl);
 
@@ -42,17 +50,26 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE, gl.ONE);
 
-    //todo judge count;
-    _drawAmbientLightPass(gl, use, drawDataMap,sendDataMap.ambientLightData, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
-    _drawDirectionLightPass(gl, use, drawDataMap,sendDataMap.directionLightData, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
-    _drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    if(_hasLight(ambientLightCount)){
+        _drawAmbientLightPass(gl, use, drawDataMap,sendDataMap.ambientLightData, ambientLightCount, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    }
+
+    if(_hasLight(directionLightCount)){
+        _drawDirectionLightPass(gl, use, drawDataMap,sendDataMap.directionLightData, directionLightCount, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    }
+
+    if(_hasLight(pointLightCount)){
+        _drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, pointLightCount, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    }
 
     unbindVao(gl);
 
     _restoreState(gl);
 }
 
-var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, ambientLightData:IWebGL2SendUniformDataAmbientLightDataMap, DeferAmbientLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+var _hasLight = (count:number) => count > 0;
+
+var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, ambientLightData:IWebGL2SendUniformDataAmbientLightDataMap, ambientLightCount:number, DeferAmbientLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var shaderIndex:number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferAmbientLightPassDataFromSystem);
@@ -69,7 +86,7 @@ var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMa
         AmbientLightDataFromSystem
     } = ambientLightData;
 
-    for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
+    for (let i = 0; i < ambientLightCount; i++) {
         let colorArr3:Array<number> = null,
             isColorDirtyFlag = isColorDirty(i, AmbientLightDataFromSystem);
 
@@ -91,7 +108,7 @@ var _buildAmbientLightValueDataMap = (colorArr3: Array<number>, isColorDirty:boo
     }
 }
 
-var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, directionLightData:IWebGL2SendUniformDataDirectionLightDataMap, DeferDirectionLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, directionLightData:IWebGL2SendUniformDataDirectionLightDataMap, directionLightCount:number, DeferDirectionLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var shaderIndex:number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferDirectionLightPassDataFromSystem);
@@ -113,7 +130,7 @@ var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawData
         DirectionLightDataFromSystem
     } = directionLightData;
 
-    for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
+    for (let i = 0; i < directionLightCount; i++) {
         let position:Float32Array = null,
             colorArr3:Array<number> = null,
             intensity:number = null,
@@ -151,7 +168,7 @@ var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array
     }
 }
 
-var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, vMatrix:Float32Array, pMatrix:Float32Array, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, pointLightCount:number, vMatrix:Float32Array, pMatrix:Float32Array, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var {
             x,
             y,
@@ -197,9 +214,7 @@ var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMa
 
     use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-    //todo support ambient light
-
-    for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
+    for (let i = 0; i < pointLightCount; i++) {
         let isIntensityDirtyFlag = isIntensityDirty(i, PointLightDataFromSystem),
             isPositionDirtyFlag = isPositionDirty(i, PointLightDataFromSystem),
             isColorDirtyFlag = isColorDirty(i, PointLightDataFromSystem),

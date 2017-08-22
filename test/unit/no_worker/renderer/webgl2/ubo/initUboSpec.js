@@ -33,7 +33,7 @@ describe("test init ubo", function () {
         it("create uniform buffers", function(){
             directorTool.init(state);
 
-            expect(gl.createBuffer.callCount).toEqual(8);
+            expect(gl.createBuffer.callCount).toEqual(11);
         });
 
         describe("allocate binding point", function () {
@@ -41,9 +41,10 @@ describe("test init ubo", function () {
                 directorTool.init(state);
 
                 expect(uboTool.getBindingPoint("CameraUbo")).toEqual(0);
-                expect(uboTool.getBindingPoint("LightUbo")).toEqual(1);
-                expect(uboTool.getBindingPoint("DirectionLightUbo")).toEqual(2);
-                expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(3);
+                expect(uboTool.getBindingPoint("AmbientLightUbo")).toEqual(1);
+                expect(uboTool.getBindingPoint("LightUbo")).toEqual(2);
+                expect(uboTool.getBindingPoint("DirectionLightUbo")).toEqual(3);
+                expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(4);
             });
             it("if binding point exceed maxUniformBufferBindings, error", function () {
                 gpuDetectTool.setGPUDetectData("maxUniformBufferBindings", 1);
@@ -61,6 +62,9 @@ describe("test init ubo", function () {
             var lightUboLocation = 20;
             gl.getUniformBlockIndex.withArgs(sinon.match.any, "LightUbo").returns(lightUboLocation);
 
+            var ambientLightUboLocation = 21;
+            gl.getUniformBlockIndex.withArgs(sinon.match.any, "AmbientLightUbo").returns(ambientLightUboLocation);
+
             var directionLightUboLocation = 30;
             gl.getUniformBlockIndex.withArgs(sinon.match.any, "DirectionLightUbo").returns(directionLightUboLocation);
 
@@ -70,9 +74,10 @@ describe("test init ubo", function () {
             directorTool.init(state);
 
             expect(gl.uniformBlockBinding.withArgs(sinon.match.any, cameraUboLocation, 0)).toCalledOnce();
-            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, lightUboLocation, 1)).toCalledOnce();
-            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, directionLightUboLocation, 2)).toCalledOnce();
-            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, pointLightUboLocation, 3)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, ambientLightUboLocation, 1)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, lightUboLocation, 2)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, directionLightUboLocation, 3)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, pointLightUboLocation, 4)).toCalledOnce();
         });
     });
 });

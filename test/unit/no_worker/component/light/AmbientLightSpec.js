@@ -1,5 +1,6 @@
 describe("AmbientLight", function () {
     var sandbox = null;
+    var state;
 
     var AmbientLightData = wd.AmbientLightData;
     var Light = wd.Light;
@@ -9,6 +10,8 @@ describe("AmbientLight", function () {
         sandbox = sinon.sandbox.create();
 
         testTool.clearAndOpenContractCheck(sandbox);
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -17,20 +20,19 @@ describe("AmbientLight", function () {
 
     describe("create", function() {
         beforeEach(function(){
-
         });
 
-        // describe("contract check", function(){
-        //     it("count should <= max count", function () {
-        //         var msg = "count should <= max count";
-        //         ambientLightTool.create();
-        //
-        //         expect(function(){
-        //
-        //             ambientLightTool.create();
-        //         }).toThrow(msg);
-        //     });
-        // });
+        describe("contract check", function(){
+            it("shouldn't create after Director->init", function () {
+                ambientLightTool.create();
+
+                directorTool.init(state);
+
+                expect(function(){
+                    ambientLightTool.create();
+                }).toThrow("shouldn't create after Director->init");
+            });
+        });
 
         describe("set default render data", function () {
             it("set colorArr to be [1,1,1]", function () {
@@ -88,6 +90,18 @@ describe("AmbientLight", function () {
                 });
             });
         });
+    });
+
+    it("buffer count should equal DataBufferConfig.ambientLightDataBufferCount", function () {
+        var ambientLightDataBufferCount = 6;
+
+        testTool.clearAndOpenContractCheck(sandbox, {
+            ambientLightDataBufferCount:ambientLightDataBufferCount
+        });
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        expect(AmbientLightData.colors.length).toEqual(ambientLightDataBufferCount * 3);
     });
 });
 

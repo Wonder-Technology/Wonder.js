@@ -23,7 +23,6 @@ import { DirectorData } from "../../core/DirectorData";
 import { isInit } from "../../core/DirectorSystem";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
-    //todo test
     it("shouldn't create after Director->init", () => {
         expect(isInit(DirectorData)).false;
     });
@@ -58,7 +57,6 @@ export var disposeComponent = requireCheckFunc(() => {
 
     disposeSpecifyLightComponent(component.index, AmbientLightData);
 
-    //todo test
     AmbientLightData.isColorDirtys[0] = AmbientLightData.defaultDirty;
 })
 

@@ -5,7 +5,6 @@ import { bindVao } from "../../../../worker/render_file/shader/shaderUtils";
 export var sendAttributeData = (gl:any, ProgramDataFromSystem:any, {
     fullScreenQuadVertexArray
 }) => {
-    //todo test fix: gbuffer, light pass's binded vao should be different
     bindVao(gl, fullScreenQuadVertexArray, ProgramDataFromSystem);
 }
 

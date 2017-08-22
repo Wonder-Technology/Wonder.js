@@ -144,7 +144,6 @@ export const webgl2_material_config = {
         },
         "noMaterialShaders": {
             "DeferAmbientLightPass": [
-                //todo test: zero 0
                 { "type": "group", "value": "deferLightPassIndexZeroUbo" },
 
                 "AmbientLightUboShaderLib",

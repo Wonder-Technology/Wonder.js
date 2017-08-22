@@ -28,11 +28,11 @@ describe("shader", function() {
 
     describe("use shader for material", function(){
         function isInitShader(expect, gl) {
-            expect(gl.createProgram.callCount).toEqual(3);
+            expect(gl.createProgram.callCount).toEqual(4);
         }
 
         function getUsedShaderShaderIndex() {
-            return 2;
+            return 3;
         }
 
         it("init material shader", function () {

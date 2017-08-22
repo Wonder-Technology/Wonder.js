@@ -6,6 +6,7 @@ describe("defer shading", function () {
     var GBufferData = wd.GBufferData;
     var ShaderData = wd.WebGL2ShaderData;
     var ProgramData = wd.WebGL2ProgramData;
+    var DeferAmbientLightPassData = wd.DeferAmbientLightPassData;
     var DeferDirectionLightPassData = wd.DeferDirectionLightPassData;
     var DeferPointLightPassData = wd.DeferPointLightPassData;
 
@@ -153,11 +154,11 @@ describe("defer shading", function () {
 
                 describe("test GBuffer shader's glsl and send data", function () {
                     function getVsSource(gl) {
-                        return gl.shaderSource.getCall(4).args[1];
+                        return gl.shaderSource.getCall(6).args[1];
                     }
 
                     function getFsSource(gl) {
-                        return gl.shaderSource.getCall(5).args[1];
+                        return gl.shaderSource.getCall(7).args[1];
                     }
 
                     /*!
@@ -679,12 +680,72 @@ describe("defer shading", function () {
                     gl.createProgram.onCall(2).returns({a:2});
                 });
 
+                describe("draw ambient light", function() {
+                    function getDeferAmbientLightPassProgram() {
+                        var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferAmbientLightPass"];
+
+                        return ProgramData.programMap[shaderIndex];
+                    }
+
+                    beforeEach(function(){
+                        sceneTool.addAmbientLight();
+                    });
+
+                    it("bind full screen quad vao", function () {
+                        directorTool.init(state);
+                        DeferAmbientLightPassData.fullScreenQuadVertexArray = vao;
+
+                        directorTool.loopBody(state);
+
+                        judgeAfterUnBindGBuffer(gl.bindVertexArray.withArgs(vao).getCall(0), gl);
+                    });
+                    it("use DeferAmbientLightPass program", function () {
+                        directorTool.init(state);
+                        directorTool.loopBody(state);
+
+                        judgeAfterUnBindGBuffer(gl.useProgram.withArgs(getDeferAmbientLightPassProgram()).getCall(1), gl);
+                    });
+
+                    describe("send light data", function() {
+                        describe("add LightUboShaderLib", function () {
+                            it("bind ubo", function () {
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+
+                                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("LightUbo"))).toCalledOnce();
+                            });
+                        });
+
+                        describe("add AmbientLightUboShaderLib", function () {
+                            it("bind ubo", function () {
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+
+                                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("AmbientLightUbo"))).toCalledOnce();
+                            });
+                        });
+
+                        describe("commit to gpu", function () {
+                            it("draw full screen quad", function () {
+                                directorTool.init(state);
+                                directorTool.loopBody(state);
+
+                                expect(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0)).toCalledOnce();
+                            });
+                        });
+                    });
+                });
+
                 describe("draw direction light", function() {
                     function getDeferDirectionLightPassProgram() {
                         var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferDirectionLightPass"];
 
                         return ProgramData.programMap[shaderIndex];
                     }
+
+                    beforeEach(function(){
+                        sceneTool.addDirectionLight();
+                    });
 
                     it("bind full screen quad vao", function () {
                         directorTool.init(state);
@@ -713,8 +774,6 @@ describe("defer shading", function () {
 
                         describe("add DirectionLightUboShaderLib", function () {
                             it("bind ubo", function () {
-                                sceneTool.addDirectionLight();
-
                                 directorTool.init(state);
                                 directorTool.loopBody(state);
 
@@ -724,42 +783,11 @@ describe("defer shading", function () {
 
                         describe("commit to gpu", function () {
                             it("draw full screen quad", function () {
-                                sceneTool.addDirectionLight();
-
                                 directorTool.init(state);
                                 directorTool.loopBody(state);
 
                                 expect(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0)).toCalledOnce();
                             });
-                        });
-                    });
-
-                    it("unbind vao after commit to gpu", function () {
-                        sceneTool.addDirectionLight();
-
-
-                        directorTool.init(state);
-
-                        var callCount = gl.bindVertexArray.withArgs(null).callCount;
-
-                        directorTool.loopBody(state);
-
-                        expect(gl.bindVertexArray.withArgs(null).getCall(callCount + 1)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
-                    });
-
-                    describe("restore state", function() {
-                        it("disable scissor test", function () {
-                            sceneTool.addDirectionLight();
-
-
-                            directorTool.init(state);
-
-
-                            var callCount = gl.bindVertexArray.withArgs(null).callCount;
-
-                            directorTool.loopBody(state);
-
-                            expect(gl.disable.withArgs(gl.SCISSOR_TEST).getCall(0)).toCalledAfter(gl.bindVertexArray.withArgs(null).getCall(callCount + 1));
                         });
                     });
                 });
@@ -770,11 +798,10 @@ describe("defer shading", function () {
 
                         return ProgramData.programMap[shaderIndex];
                     }
-
-                    // function judgeAfterUseDeferLightPassProgram(expectVal, gl) {
-                    //     expect(expectVal).toCalledAfter(gl.useProgram.withArgs(getDeferPointLightPassProgram()).getCall(1))
-                    // }
-
+                    
+                    beforeEach(function(){
+                        sceneTool.addPointLight();
+                    });
 
                     it("enable scissor test", function () {
                         directorTool.init(state);
@@ -822,7 +849,7 @@ describe("defer shading", function () {
                             expect(gl.scissor).toCalledWith(65, 151, 11, 21);
                         });
                         it("else, scissor full screen", function(){
-                            sceneTool.addPointLight(Vector3.create(0, 0, 0));
+                            // sceneTool.addPointLight(Vector3.create(0, 0, 0));
 
 
                             directorTool.init(state);
@@ -845,7 +872,7 @@ describe("defer shading", function () {
 
                         describe("add PointLightUboShaderLib", function () {
                             it("bind ubo", function () {
-                                sceneTool.addPointLight();
+                                // sceneTool.addPointLight();
 
                                 directorTool.init(state);
                                 directorTool.loopBody(state);
@@ -856,7 +883,7 @@ describe("defer shading", function () {
 
                         describe("commit to gpu", function () {
                             it("draw full screen quad", function () {
-                                sceneTool.addPointLight();
+                                // sceneTool.addPointLight();
 
                                 directorTool.init(state);
                                 directorTool.loopBody(state);

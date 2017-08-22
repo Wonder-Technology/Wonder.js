@@ -22,6 +22,5 @@ export var drawGBufferPass = (gl: any, state: Map<any, any>, material_config: IM
     gl.enable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
-
     drawGameObjects(gl, state, material_config, shaderLib_generator, DataBufferConfig, getNewTextureUnitIndex(), "GBuffer", initMaterialShader, drawFuncDataMap, drawDataMap, initShaderDataMap, sendDataMap, renderCommandUniformData, bufferData);
 }

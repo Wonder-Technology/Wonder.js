@@ -6,6 +6,7 @@ describe("defer shading", function () {
     var GBufferData = wd.GBufferData;
     var ShaderData = wd.WebGL2ShaderData;
     var ProgramData = wd.WebGL2ProgramData;
+    var DeferAmbientLightPassData = wd.DeferAmbientLightPassData;
     var DeferDirectionLightPassData = wd.DeferDirectionLightPassData;
     var DeferPointLightPassData = wd.DeferPointLightPassData;
     var Log = wd.Log;
@@ -191,28 +192,33 @@ describe("defer shading", function () {
 
             describe("set full screen quad vao data", function () {
                 var vao1,
-                    vao2;
+                    vao2,
+                    vao3;
 
                 beforeEach(function(){
                     vao1 = {a:1};
                     vao2 = {a:2};
+                    vao3 = {a:3};
 
                     gl.createVertexArray.onCall(0).returns(vao1);
                     gl.createVertexArray.onCall(1).returns(vao2);
+                    gl.createVertexArray.onCall(2).returns(vao3);
                 });
 
                 it("create vao", function () {
                     directorTool.init(state);
 
-                    expect(gl.createVertexArray).toCalledTwice();
-                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
-                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
+                    expect(gl.createVertexArray.callCount).toEqual(3);
+                    expect(DeferAmbientLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
+                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
+                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao3);
                 });
                 it("bind vao", function () {
                     directorTool.init(state);
 
                     expect(gl.bindVertexArray.getCall(0)).toCalledWith(vao1);
                     expect(gl.bindVertexArray.getCall(2)).toCalledWith(vao2);
+                    expect(gl.bindVertexArray.getCall(4)).toCalledWith(vao3);
                 });
 
                 describe("create and set buffer", function() {
@@ -251,7 +257,7 @@ describe("defer shading", function () {
                     it("create buffers", function () {
                         directorTool.init(state);
 
-                        expect(gl.createBuffer.callCount).toEqual(2 + 3 + 3);
+                        expect(gl.createBuffer.callCount).toEqual(2 + 3 + 3 + 3);
                     });
 
                     describe("create and set position buffer", function() {
@@ -295,8 +301,9 @@ describe("defer shading", function () {
                 it("save vao", function () {
                     directorTool.init(state);
 
-                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
-                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
+                    expect(DeferAmbientLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
+                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
+                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao3);
                 });
                 it("save indices count", function () {
                     directorTool.init(state);
@@ -372,20 +379,28 @@ describe("defer shading", function () {
         });
 
         describe("test DeferLightPass shader's glsl", function () {
-            function getDeferDirectionLightPassVsSource(gl) {
+            function getDeferAmbientLightPassVsSource(gl) {
                 return gl.shaderSource.getCall(0).args[1];
             }
 
-            function getDeferDirectionLightPassFsSource(gl) {
+            function getDeferAmbientLightPassFsSource(gl) {
                 return gl.shaderSource.getCall(1).args[1];
             }
 
-            function getDeferPointLightPassVsSource(gl) {
+            function getDeferDirectionLightPassVsSource(gl) {
                 return gl.shaderSource.getCall(2).args[1];
             }
 
-            function getDeferPointLightPassFsSource(gl) {
+            function getDeferDirectionLightPassFsSource(gl) {
                 return gl.shaderSource.getCall(3).args[1];
+            }
+
+            function getDeferPointLightPassVsSource(gl) {
+                return gl.shaderSource.getCall(4).args[1];
+            }
+
+            function getDeferPointLightPassFsSource(gl) {
+                return gl.shaderSource.getCall(5).args[1];
             }
 
             beforeEach(function(){
@@ -531,192 +546,266 @@ describe("defer shading", function () {
                 });
             });
 
-            describe("add DeferDirectionLightPassShaderLib", function () {
-                var material;
-                var cameraGameObject;
-                var geo;
-
+            describe("add defer light pass shader lib", function() {
                 beforeEach(function(){
-                    var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
-                    material = data.material;
-                    cameraGameObject = data.cameraGameObject;
-                    geo = data.geometry;
                 });
 
-                describe("set full screen quad vertex vao data", function() {
-                    var vao1,
-                        vao2;
+                // describe("set full screen quad vertex vao data(ambient, direction, point light pass)", function() {
+                //     var vao1,
+                //         vao2;
+                //     var material;
+                //     var cameraGameObject;
+                //     var geo;
+                //
+                //     beforeEach(function(){
+                //         vao1 = {a:1};
+                //         vao2 = {a:2};
+                //
+                //         gl.createVertexArray.onCall(0).returns(vao1);
+                //         gl.createVertexArray.onCall(1).returns(vao2);
+                //
+                //
+                //         var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                //
+                //         material = data.material;
+                //         cameraGameObject = data.cameraGameObject;
+                //         geo = data.geometry;
+                //     });
+                //
+                //     describe("set a_position array buffer", function () {
+                //         var size,pos;
+                //
+                //         beforeEach(function () {
+                //             size = 3;
+                //
+                //             pos = 0;
+                //         });
+                //
+                //         it("create buffer and init it when set vao", function () {
+                //
+                //             directorTool.init(state);
+                //
+                //             var data = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]);
+                //
+                //
+                //             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW).callCount).toEqual(3);
+                //             expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0).callCount).toEqual(3);
+                //         });
+                //     });
+                //
+                //     describe("set a_texCoord array buffer", function () {
+                //         var size,pos;
+                //
+                //         beforeEach(function () {
+                //             size = 2;
+                //
+                //             pos = 1;
+                //         });
+                //
+                //         it("create buffer and init it when set vao", function () {
+                //
+                //             directorTool.init(state);
+                //
+                //             var data = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
+                //
+                //
+                //             expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW).callCount).toEqual(3);
+                //             expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0).callCount).toEqual(3);
+                //         });
+                //
+                //         describe("set indices index buffer", function () {
+                //             beforeEach(function () {
+                //             });
+                //
+                //             it("create buffer and init it when set vao", function () {
+                //
+                //                 directorTool.init(state);
+                //
+                //                 var data = new Uint16Array([0, 1, 2, 0, 2, 3]);
+                //
+                //
+                //                 expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW).callCount).toEqual(3);
+                //             });
+                //         });
+                //     });
+                //
+                //     it("unbind vao", function () {
+                //         directorTool.init(state);
+                //
+                //         expect(gl.bindVertexArray.withArgs(null).callCount).toEqual(3);
+                //     });
+                // });
+
+
+                describe("add DeferAmbientLightPassShaderLib", function () {
+                    var material;
+                    var cameraGameObject;
+                    var geo;
 
                     beforeEach(function(){
-                        vao1 = {a:1};
-                        vao2 = {a:2};
+                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
-                        gl.createVertexArray.onCall(0).returns(vao1);
-                        gl.createVertexArray.onCall(1).returns(vao2);
+                        material = data.material;
+                        cameraGameObject = data.cameraGameObject;
+                        geo = data.geometry;
                     });
 
-                    describe("set a_position array buffer", function () {
-                        var size,pos;
 
+                    describe("test glsl", function () {
                         beforeEach(function () {
-                            size = 3;
-
-                            pos = 0;
+                            buildGLSL(state)
                         });
 
-                        it("create buffer and init it when set vao", function () {
+                        describe("test vs source", function () {
+                            var vs;
 
-                            directorTool.init(state);
-
-                            var data = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]);
-
-
-                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
-                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledTwice();
-                        });
-                    });
-
-                    describe("set a_texCoord array buffer", function () {
-                        var size,pos;
-
-                        beforeEach(function () {
-                            size = 2;
-
-                            pos = 1;
-                        });
-
-                        it("create buffer and init it when set vao", function () {
-
-                            directorTool.init(state);
-
-                            var data = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
-
-
-                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
-                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledTwice();
-                        });
-
-                        describe("set indices index buffer", function () {
-                            beforeEach(function () {
+                            beforeEach(function(){
+                                vs = getDeferAmbientLightPassVsSource(gl);
                             });
 
-                            it("create buffer and init it when set vao", function () {
+                            it("define attribute", function () {
+                                expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;"));
 
-                                directorTool.init(state);
+                            });
+                            it("set v_texcoord", function () {
+                                expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
 
-                                var data = new Uint16Array([0, 1, 2, 0, 2, 3]);
+                            });
+                            it("set gl_Position with full screen", function () {
+                                expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
+                            });
+                        });
 
+                        describe("test fs source", function () {
+                            var fs;
 
-                                expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
+                            beforeEach(function(){
+                                fs = getDeferAmbientLightPassFsSource(gl);
+                            });
+
+                            it("in v_texCoord", function () {
+                                expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
+                            });
+                            it("test calc ambient color", function () {
+                                expect(glslTool.contain(fs, "vec3 materialLight = getMaterialLight();")).toBeTruthy();
+                                expect(glslTool.contain(fs, "(ambientLightUbo.lightColorData.xyz + materialLight) * materialDiffuse")).toBeTruthy();
                             });
                         });
                     });
+                });
 
-                    it("unbind vao", function () {
-                        directorTool.init(state);
+                describe("add DeferDirectionLightPassShaderLib", function () {
+                    var material;
+                    var cameraGameObject;
+                    var geo;
 
-                        expect(gl.bindVertexArray.withArgs(null)).toCalledTwice();
+                    beforeEach(function(){
+                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+
+                        material = data.material;
+                        cameraGameObject = data.cameraGameObject;
+                        geo = data.geometry;
+                    });
+
+
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            buildGLSL(state)
+                        });
+
+                        describe("test vs source", function () {
+                            var vs;
+
+                            beforeEach(function(){
+                                vs = getDeferDirectionLightPassVsSource(gl);
+                            });
+
+                            it("define attribute", function () {
+                                expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;"));
+
+                            });
+                            it("set v_texcoord", function () {
+                                expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
+
+                            });
+                            it("set gl_Position with full screen", function () {
+                                expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
+                            });
+                        });
+
+                        describe("test fs source", function () {
+                            var fs;
+
+                            beforeEach(function(){
+                                fs = getDeferDirectionLightPassFsSource(gl);
+                            });
+
+                            it("in v_texCoord", function () {
+                                expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
+                            });
+                            it("use diffuse color as specular color", function () {
+                                expect(glslTool.contain(fs, "vec3 getSpecularColor(vec3 diffuseColor)\n{\n    return diffuseColor;\n}")).toBeTruthy();
+                            });
+                        });
                     });
                 });
 
+                describe("add DeferPointLightPassShaderLib", function () {
+                    var material;
+                    var cameraGameObject;
+                    var geo;
 
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        buildGLSL(state)
+                    beforeEach(function(){
+                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+
+                        material = data.material;
+                        cameraGameObject = data.cameraGameObject;
+                        geo = data.geometry;
                     });
 
-                    describe("test vs source", function () {
-                        var vs;
-
-                        beforeEach(function(){
-                            vs = getDeferDirectionLightPassVsSource(gl);
+                    describe("test glsl", function () {
+                        beforeEach(function () {
+                            buildGLSL(state)
                         });
 
-                        it("define attribute", function () {
-                            expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;"));
+                        describe("test vs source", function () {
+                            var vs;
 
-                        });
-                        it("set v_texcoord", function () {
-                            expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
+                            beforeEach(function(){
+                                vs = getDeferPointLightPassVsSource(gl);
+                            });
 
-                        });
-                        it("set gl_Position with full screen", function () {
-                            expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
-                        });
-                    });
+                            it("define attribute", function () {
+                                expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
 
-                    describe("test fs source", function () {
-                        var fs;
-
-                        beforeEach(function(){
-                            fs = getDeferDirectionLightPassFsSource(gl);
-                        });
-
-                        it("in v_texCoord", function () {
-                            expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
-                        });
-                        it("use diffuse color as specular color", function () {
-                            expect(glslTool.contain(fs, "vec3 getSpecularColor(vec3 diffuseColor)\n{\n    return diffuseColor;\n}")).toBeTruthy();
-                        });
-                    });
-                });
-            });
-
-            describe("add DeferPointLightPassShaderLib", function () {
-                var material;
-                var cameraGameObject;
-                var geo;
-
-                beforeEach(function(){
-                    var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-
-                    material = data.material;
-                    cameraGameObject = data.cameraGameObject;
-                    geo = data.geometry;
-                });
-
-                describe("test glsl", function () {
-                    beforeEach(function () {
-                        buildGLSL(state)
-                    });
-
-                    describe("test vs source", function () {
-                        var vs;
-
-                        beforeEach(function(){
-                            vs = getDeferPointLightPassVsSource(gl);
+                                expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
+                            });
+                            it("set v_texcoord", function () {
+                                expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
+                                expect(glslTool.contain(vs, "v_texcoord = a_texCoord * 0.5 + vec2(0.5);"));
+                            });
+                            it("set gl_Position with full screen", function () {
+                                expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
+                            });
                         });
 
-                        it("define attribute", function () {
-                            expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
+                        describe("test fs source", function () {
+                            var fs;
 
-                            expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
-                        });
-                        it("set v_texcoord", function () {
-                            expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
-                            expect(glslTool.contain(vs, "v_texcoord = a_texCoord * 0.5 + vec2(0.5);"));
-                        });
-                        it("set gl_Position with full screen", function () {
-                            expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
-                        });
-                    });
+                            beforeEach(function(){
+                                fs = getDeferPointLightPassFsSource(gl);
+                            });
 
-                    describe("test fs source", function () {
-                        var fs;
-
-                        beforeEach(function(){
-                            fs = getDeferPointLightPassFsSource(gl);
-                        });
-
-                        it("in v_texCoord", function () {
-                            expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
-                        });
-                        it("optimize point light: if distance >= radius, set fragment color to be 0.0", function () {
-                            expect(glslTool.contain(fs, "if(distance >= lightData.w){\n            return vec3(0.0);\n        }")).toBeTruthy();
-                        });
-                        it("use diffuse color as specular color", function () {
-                            expect(glslTool.contain(fs, "vec3 getSpecularColor(vec3 diffuseColor)\n{\n    return diffuseColor;\n}")).toBeTruthy();
+                            it("in v_texCoord", function () {
+                                expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
+                            });
+                            it("optimize point light: if distance >= radius, set fragment color to be 0.0", function () {
+                                expect(glslTool.contain(fs, "if(distance >= lightData.w){\n            return vec3(0.0);\n        }")).toBeTruthy();
+                            });
+                            it("use diffuse color as specular color", function () {
+                                expect(glslTool.contain(fs, "vec3 getSpecularColor(vec3 diffuseColor)\n{\n    return diffuseColor;\n}")).toBeTruthy();
+                            });
                         });
                     });
                 });

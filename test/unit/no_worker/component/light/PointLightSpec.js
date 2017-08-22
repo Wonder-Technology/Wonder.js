@@ -149,7 +149,6 @@ describe("PointLight", function () {
         });
     });
 
-    //todo test ambient light
     it("buffer count should equal DataBufferConfig.pointLightDataBufferCount", function () {
         testTool.clearAndOpenContractCheck(sandbox, {
             pointLightDataBufferCount:4
