@@ -194,11 +194,252 @@ describe("test ubo shader lib", function () {
             });
         });
 
+        describe("add DirectionLightUboShaderLib", function () {
+            var lightObj1,
+                lightComponent1;
+            var lightObj2,
+                lightComponent2;
+
+            function getVsSource(gl) {
+                return gl.shaderSource.getCall(0).args[1];
+            }
+
+            function getFsSource(gl) {
+                return gl.shaderSource.getCall(1).args[1];
+            }
+
+            function judgeIsBindUboTwice() {
+                expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("DirectionLightUbo")).callCount).toEqual(2 + 2);
+            }
+
+            function judgeIsSetUboDataOnce(loopCount) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * loopCount + 2);
+            }
+
+            function judgeIsSetUboDataWithTypeArrayOnce(typeArray) {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, typeArray, gl.DYNAMIC_DRAW)).toCalledTwice();
+            }
+
+            function judgeIsSetTwoDirectionLightsUboDataTwice() {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * 2 + 4);
+            }
+
+            function judgeIsSetSingleDirectionLightUboDataTwice() {
+                expect(gl.bufferData.withArgs(gl.UNIFORM_BUFFER, sinon.match.any, gl.DYNAMIC_DRAW).callCount).toEqual(1 * 2 + 3);
+            }
+
+            function getDefaultColorArr3() {
+                return [1, 1, 1];
+            }
+
+            function getDefaultUboTypeArray() {
+                return new Float32Array([
+                    0, 0, 0, 0,
+                    1, 1, 1, 1
+                ]);
+            }
+
+            beforeEach(function () {
+                lightObj1 = sceneTool.addDirectionLight();
+                lightComponent1 = gameObjectTool.getComponent(lightObj1, Light);
+
+                lightObj2 = sceneTool.addDirectionLight();
+                lightComponent2 = gameObjectTool.getComponent(lightObj2, Light);
+            });
+
+            describe("set dyname ubo data before draw direction light", function () {
+                it("set ubo data because direction light data is dirty in the first loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataOnce(1);
+                });
+                it("clean dirty after set ubo data, so the second loop will not set ubo data but only bind ubo if not change direction light data in the second loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataOnce(2);
+                    judgeIsBindUboTwice();
+                });
+                it("test set data in the first loop", function () {
+                    directorTool.init(state);
+
+                    directorTool.loopBody(state);
+
+                    judgeIsSetUboDataWithTypeArrayOnce(getDefaultUboTypeArray());
+                });
+
+                describe("test send position", function () {
+                    describe("if position dirty, set position data", function () {
+
+                        it("if direction light gameObject's local position changed, position dirty", function () {
+                            directorTool.init(state);
+
+                            directorTool.loopBody(state);
+
+
+                            var position = Vector3.create(1, 2, 3);
+                            var transform = gameObjectTool.getTransform(lightObj1);
+                            threeDTransformTool.setLocalPosition(transform, position);
+
+
+                            directorTool.loopBody(state);
+
+
+                            judgeIsSetTwoDirectionLightsUboDataTwice();
+                        });
+                        it("if direction light gameObject's position changed, position dirty", function () {
+                            directorTool.init(state);
+
+                            directorTool.loopBody(state);
+
+
+                            var position = Vector3.create(1, 2, 3);
+                            var transform = gameObjectTool.getTransform(lightObj1);
+                            threeDTransformTool.setPosition(transform, position);
+
+                            directorTool.loopBody(state);
+
+
+                            judgeIsSetTwoDirectionLightsUboDataTwice();
+                        });
+                    });
+
+                    it("test send position data", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var position = Vector3.create(1, 2, 3);
+                        var transform = gameObjectTool.getTransform(lightObj1);
+                        threeDTransformTool.setPosition(transform, position);
+
+                        directorTool.loopBody(state);
+
+
+                        var typeArr = getDefaultUboTypeArray();
+
+                        typeArrayTool.set(typeArr, position.values);
+
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
+                    });
+                });
+
+                describe("test send color", function () {
+                    it("if direction light color dirty, set its data", function () {
+
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var color = Color.create("#111222");
+
+                        directionLightTool.setColor(lightComponent1, color);
+
+
+                        directorTool.loopBody(state);
+
+
+                        judgeIsSetSingleDirectionLightUboDataTwice();
+                    });
+                    it("test send color data", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var color = Color.create("rgb(1.0, 0.5, 1.0)");
+                        var colorArr3 = color.toArray3();
+
+                        directionLightTool.setColor(lightComponent1, color);
+
+
+                        directorTool.loopBody(state);
+
+
+                        var typeArr = getDefaultUboTypeArray();
+
+                        typeArrayTool.set(typeArr, colorArr3, 4);
+
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
+                    });
+                });
+
+                describe("test send intensity", function () {
+                    it("if direction light intensity dirty, set its data", function () {
+
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var intensity = 2;
+                        directionLightTool.setIntensity(lightComponent2, intensity);
+
+
+                        directorTool.loopBody(state);
+
+
+                        judgeIsSetSingleDirectionLightUboDataTwice();
+                    });
+                    it("test send intensity data", function () {
+                        directorTool.init(state);
+
+                        directorTool.loopBody(state);
+
+
+                        var intensity = 2;
+                        directionLightTool.setIntensity(lightComponent2, intensity);
+
+
+                        directorTool.loopBody(state);
+
+
+                        var typeArr = getDefaultUboTypeArray();
+
+                        typeArrayTool.set(typeArr, [intensity], 4 + 3);
+
+                        judgeIsSetUboDataWithTypeArrayOnce(typeArr);
+                    });
+                });
+            });
+
+            describe("test glsl", function () {
+                function getUboDeclareGLSL() {
+                    return "layout(std140) uniform DirectionLightUbo {\nvec4 lightPosition;\n/*! vec4(colorVec3, intensity) */\nvec4 lightColorData;\n} directionLightUbo;\n";
+                }
+
+                beforeEach(function () {
+                    directorTool.init(state);
+                    directorTool.loopBody(state);
+                });
+
+                it("test fs source", function () {
+                    var fs = getFsSource(gl);
+
+                    expect(glslTool.contain(fs, getUboDeclareGLSL())).toBeTruthy();
+                });
+            });
+        });
+
         describe("add PointLightUboShaderLib", function () {
             var lightObj1,
                 lightComponent1;
             var lightObj2,
                 lightComponent2;
+
+            function getVsSource(gl) {
+                return gl.shaderSource.getCall(2).args[1];
+            }
+
+            function getFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
+            }
 
             function judgeIsBindUboTwice() {
                 expect(gl.bindBufferBase.withArgs(gl.UNIFORM_BUFFER, uboTool.getBindingPoint("PointLightUbo")).callCount).toEqual(2 + 2);

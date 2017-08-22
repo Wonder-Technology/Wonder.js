@@ -42,7 +42,8 @@ describe("test init ubo", function () {
 
                 expect(uboTool.getBindingPoint("CameraUbo")).toEqual(0);
                 expect(uboTool.getBindingPoint("LightUbo")).toEqual(1);
-                expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(2);
+                expect(uboTool.getBindingPoint("DirectionLightUbo")).toEqual(2);
+                expect(uboTool.getBindingPoint("PointLightUbo")).toEqual(3);
             });
             it("if binding point exceed maxUniformBufferBindings, error", function () {
                 gpuDetectTool.setGPUDetectData("maxUniformBufferBindings", 1);
@@ -60,14 +61,18 @@ describe("test init ubo", function () {
             var lightUboLocation = 20;
             gl.getUniformBlockIndex.withArgs(sinon.match.any, "LightUbo").returns(lightUboLocation);
 
-            var pointLightUboLocation = 30;
+            var directionLightUboLocation = 30;
+            gl.getUniformBlockIndex.withArgs(sinon.match.any, "DirectionLightUbo").returns(directionLightUboLocation);
+
+            var pointLightUboLocation = 40;
             gl.getUniformBlockIndex.withArgs(sinon.match.any, "PointLightUbo").returns(pointLightUboLocation);
 
             directorTool.init(state);
 
             expect(gl.uniformBlockBinding.withArgs(sinon.match.any, cameraUboLocation, 0)).toCalledOnce();
             expect(gl.uniformBlockBinding.withArgs(sinon.match.any, lightUboLocation, 1)).toCalledOnce();
-            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, pointLightUboLocation, 2)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, directionLightUboLocation, 2)).toCalledOnce();
+            expect(gl.uniformBlockBinding.withArgs(sinon.match.any, pointLightUboLocation, 3)).toCalledOnce();
         });
     });
 });

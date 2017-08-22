@@ -6,7 +6,7 @@ import {
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
     createDefaultColor, getPosition as getSpecifyLightPosition,
-    bindChangePositionEvent
+    bindChangePositionEvent, markDirty
 } from "./SpecifyLightSystem";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
@@ -63,6 +63,8 @@ export var getColorArr3 = getColorArr3Utils;
 
 export var setColor = (index: number, color: Color, DirectionLightData: any) => {
     setSpecifyLightColor(index, color, DirectionLightData.colors);
+
+    markDirty(index, DirectionLightData.isColorDirtys);
 }
 
 export var getIntensity = getIntensityUtils;
@@ -72,6 +74,8 @@ export var setIntensity = (index: number, intensity: number, DirectionLightData:
         i = index * size;
 
     setTypeArrayValue(DirectionLightData.intensities, i, intensity);
+
+    markDirty(index, DirectionLightData.isIntensityDirtys);
 }
 
 export var disposeComponent = (component: Light, DirectionLightData:any) => {
