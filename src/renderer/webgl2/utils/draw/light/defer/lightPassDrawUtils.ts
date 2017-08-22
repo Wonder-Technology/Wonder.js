@@ -8,11 +8,11 @@ import {
     sendAttributeData, setScissorRegionArrayCache
 } from "../../../render/light/defer/light/deferLightPassUtils";
 import { getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
-import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
+import { bindDirectionLightUboData, bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";
 import { Vector4 } from "../../../../../../math/Vector4";
 import { Vector2 } from "../../../../../../math/Vector2";
-import { WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
+import { IWebGL2SendUniformDataPointLightDataMap } from "../../../worker/render_file/interface/IUtils";
 
 export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     use,
@@ -27,25 +27,91 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
             ProgramDataFromSystem,
             LocationDataFromSystem,
             GLSLSenderDataFromSystem,
+            DirectionLightDataFromSystem,
             PointLightDataFromSystem
         } = drawDataMap,
-        pointLightData = sendDataMap.pointLightData;
+        directionLightData = sendDataMap.directionLightData,
+        shaderIndex:number = null;
 
     unbindGBuffer(gl);
 
-    _setState(gl);
 
-    let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem),
-        {
-            x,
-            y,
-            width,
-            height
-        } = getViewport(state);
+    sendAttributeData(gl, DeferLightPassDataFromSystem);
+
+
+    gl.depthMask(false);
+    gl.disable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendEquation(gl.FUNC_ADD);
+    gl.blendFunc(gl.ONE, gl.ONE);
+
+
+
+
+
+    //todo refactor: extract direction light, point light draw
+
+    shaderIndex = getNoMaterialShaderIndex("DeferDirectionLightPass", ShaderDataFromSystem);
 
     use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-    sendAttributeData(gl, DeferLightPassDataFromSystem);
+
+    for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
+        let {
+                GLSLSenderDataFromSystem
+            } = drawDataMap,
+            {
+                getPosition,
+
+                getColorArr3,
+                getIntensity,
+
+                isPositionDirty,
+                isColorDirty,
+                isIntensityDirty,
+
+                DirectionLightDataFromSystem
+            } = directionLightData,
+            position:Float32Array = null,
+            colorArr3:Array<number> = null,
+            intensity:number = null,
+            isIntensityDirtyFlag = isIntensityDirty(i, DirectionLightDataFromSystem),
+            isPositionDirtyFlag = isPositionDirty(i, DirectionLightDataFromSystem),
+            isColorDirtyFlag = isColorDirty(i, DirectionLightDataFromSystem);
+
+        if(isPositionDirtyFlag){
+            position = getPosition(i, DirectionLightDataFromSystem);
+        }
+
+        if(isColorDirtyFlag){
+            colorArr3 = getColorArr3(i, DirectionLightDataFromSystem);
+        }
+
+        if(isIntensityDirtyFlag){
+            intensity = getIntensity(i, DirectionLightDataFromSystem);
+        }
+
+        bindDirectionLightUboData(gl, i, directionLightData, _buildDirectionLightValueDataMap(position, colorArr3, intensity, isPositionDirtyFlag, isColorDirtyFlag,  isIntensityDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
+
+        drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
+    }
+
+
+    _setState(gl);
+
+    let {
+        x,
+        y,
+        width,
+        height
+    } = getViewport(state),
+        pointLightData = sendDataMap.pointLightData;
+
+    shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
+
+    use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+    // sendAttributeData(gl, DeferLightPassDataFromSystem);
 
     //todo support ambient, direction light
 
@@ -58,13 +124,23 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     _restoreState(gl);
 }
 
-var _setState = (gl:any) => {
-    gl.depthMask(false);
-    gl.disable(gl.DEPTH_TEST);
-    gl.enable(gl.BLEND);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.blendFunc(gl.ONE, gl.ONE);
+var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty:boolean, isColorDirty:boolean, isIntensityDirty:boolean) => {
+    return {
+        position: position,
+        colorArr3:colorArr3,
+        intensity:intensity,
 
+        isPositionDirty: isPositionDirty,
+        isColorDirty: isColorDirty,
+        isIntensityDirty: isIntensityDirty
+    }
+}
+
+
+
+
+
+var _setState = (gl:any) => {
     gl.enable(gl.SCISSOR_TEST);
 
 }
@@ -73,7 +149,7 @@ var _restoreState = (gl:any) => {
     gl.disable(gl.SCISSOR_TEST);
 }
 
-var _draw = (gl:any, i:number, drawDataMap:IWebGL2DrawDataMap, pointLightData:WebGL2SendUniformDataPointLightDataMap, x:number, y:number, width:number, height:number, vMatrix:Float32Array, pMatrix:Float32Array, DeferLightPassDataFromSystem:any) => {
+var _draw = (gl:any, i:number, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, x:number, y:number, width:number, height:number, vMatrix:Float32Array, pMatrix:Float32Array, DeferLightPassDataFromSystem:any) => {
     var {
             GLSLSenderDataFromSystem
         } = drawDataMap,

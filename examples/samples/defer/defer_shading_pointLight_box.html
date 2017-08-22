@@ -76,6 +76,7 @@
 
 //            sceneTool.addGameObject(createAmbientLight());
 //            sceneTool.addGameObject(createDirectionLight());
+            sceneTool.addGameObject(createDirectionLight());
             sceneTool.addGameObject(createPointLight());
 
 
@@ -187,9 +188,9 @@
             gameObjectTool.addComponent(obj, geo);
 
 
-//            var mat = basicMaterialTool.create();
-            var mat = lightMaterialTool.create();
-            lightMaterialTool.setColor(mat, wd.Color.create("#555555"));
+            var mat = basicMaterialTool.create();
+//            var mat = lightMaterialTool.create();
+            basicMaterialTool.setColor(mat, wd.Color.create("#ffffff"));
 
             gameObjectTool.addComponent(obj, mat);
 

@@ -23,7 +23,7 @@ var _setFullScreenQuadVaoData = requireCheckFunc((gl:any, shaderIndex:number, GL
     var fullScreenQuadVertexArray = createVao(gl),
         fullScreenQuadData = _createFullScreenQuadData(),
         {
-           positionLocation,
+            positionLocation,
             texCoordLocation
         } = getVaoConfig(shaderIndex, GLSLSenderDataFromSystem);
 

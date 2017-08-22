@@ -61,9 +61,10 @@ import { init as initPointLight } from "../component/light/PointLightSystem";
 import { init as initDirectionLight } from "../component/light/DirectionLightSystem";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
-import { DirectionLightData } from "../component/light/DirectionLightData";
 import { addDisposeHandle as addWebGL1GeometryDisposeHandle } from "../component/webgl1/geometry/GeometrySystem";
 import { addDisposeHandle as addWebGL2GeometryDisposeHandle } from "../component/webgl2/geometry/GeometrySystem";
+import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
+import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
 
 @singleton(true)
 @registerClass("Director")
@@ -161,7 +162,7 @@ export class Director {
         resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
         resultState = _initPointLight(state);
-        resultState = initDirectionLight(DirectionLightData, state);
+        resultState = _initDirectionLight(state);
 
         return resultState;
     }
@@ -209,7 +210,8 @@ addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
 addGeometryInitHandle(BoxGeometry, CustomGeometry);
 
 
-var _initPointLight = null;
+var _initPointLight = null,
+    _initDirectionLight = null;
 
 if(isWebgl1()){
     addWebGL1LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
@@ -220,6 +222,10 @@ if(isWebgl1()){
     _initPointLight = (state: Map<any, any>) => {
         return initPointLight(WebGL1PointLightData, state);
     }
+
+    _initDirectionLight = (state: Map<any, any>) => {
+        return initDirectionLight(WebGL1DirectionLightData, state);
+    }
 }
 else{
     addWebGL2LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
@@ -229,6 +235,10 @@ else{
 
     _initPointLight = (state: Map<any, any>) => {
         return initPointLight(WebGL2PointLightData, state);
+    }
+
+    _initDirectionLight = (state: Map<any, any>) => {
+        return initDirectionLight(WebGL2DirectionLightData, state);
     }
 }
 

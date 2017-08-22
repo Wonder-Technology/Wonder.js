@@ -1,39 +1,4 @@
-@varDeclare
-in vec2 v_texcoord;
-@end
-
-
 @funcDefine
-float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
-        vec3 halfAngle = normalize(lightDir + viewDir);
-
-        float blinnTerm = dot(normal, halfAngle);
-
-        blinnTerm = clamp(blinnTerm, 0.0, 1.0);
-        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;
-        blinnTerm = pow(blinnTerm, shininess);
-
-        return blinnTerm;
-}
-
-float getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){
-        vec3 reflectDir = reflect(-lightDir, normal);
-        float phongTerm = dot(viewDir, reflectDir);
-
-        phongTerm = clamp(phongTerm, 0.0, 1.0);
-        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;
-        phongTerm = pow(phongTerm, shininess);
-
-        return phongTerm;
-}
-
-
-//todo optimize specular color
-vec3 getSpecularColor(vec3 diffuseColor)
-{
-    return diffuseColor;
-}
-
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse, float specularStrength, float shininess)
 {
         vec3 materialLight = getMaterialLight();
@@ -47,14 +12,14 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 emissionColor = materialEmission;
 
-        //todo pass ambient data: u_ambient
 //        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse;
-        vec3 ambientColor = vec3(0.0);
+//        vec3 ambientColor = vec3(0.0);
 
         float lightModel = lightUbo.lightModel.x;
 
         if(lightModel == 3.0){
-            return emissionColor + ambientColor;
+//            return emissionColor + ambientColor;
+            return emissionColor;
         }
 
         vec3 diffuseColor = color * materialDiffuse * diff * intensity;
@@ -70,7 +35,8 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
 
-        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
+//        return emissionColor + ambientColor + attenuation * (diffuseColor + specularColor);
+        return emissionColor + attenuation * (diffuseColor + specularColor);
 }
 
 
@@ -108,35 +74,12 @@ vec4 calcTotalLight(vec3 normal, vec3 position, vec3 viewDir, vec3 diffuseColor,
 
                 totalLight += vec4(calcPointLight(getPointLightDir(position), normal, viewDir, diffuseColor, specularStrength, shininess), 0.0);
 
-//    #if DIRECTION_LIGHTS_COUNT > 0
-//                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
-//                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir);
-//        }
-//    #endif
-
         return totalLight;
 }
 @end
 
 
 @body
-            vec4 positionData = texture(u_positionBuffer,
-v_texcoord);
-
-            vec3 position = positionData.xyz;
-            float shininess = positionData.w;
-
-
-            vec3 normal = normalize(texture(u_normalBuffer, v_texcoord).rgb);
-            vec4 colorData = texture(u_colorBuffer, v_texcoord);
-
-            vec3 diffuseColor = colorData.xyz;
-            float specularStrength  = colorData.w;
-
-
-
-vec3 viewDir = normalize(getViewDir(position));
-
 vec4 totalColor = calcTotalLight(normal, position, viewDir, diffuseColor, specularStrength, shininess);
 @end
 

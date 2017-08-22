@@ -3,13 +3,13 @@ import { GameObject } from "../../../core/entityObject/gameObject/GameObject";
 import {
     addComponent as addSpecifyLightComponent
 } from "../../light/SpecifyLightSystem";
-import { WebGL1PointLightData } from "../../../renderer/webgl1/light/PointLightData";
-import { disposeComponent as disposePointLightComponent } from "../../light/PointLightSystem";
+import { WebGL2DirectionLightData } from "../../../renderer/webgl2/light/DirectionLightData";
+import { disposeComponent as disposeDirectionLightComponent } from "../../light/DirectionLightSystem";
 
 export var addComponent = (component: Light, gameObject: GameObject) => {
-    addSpecifyLightComponent(component, gameObject, WebGL1PointLightData);
+    addSpecifyLightComponent(component, gameObject, WebGL2DirectionLightData);
 }
 
 export var disposeComponent = (component: Light) => {
-    disposePointLightComponent(component, WebGL1PointLightData);
+    disposeDirectionLightComponent(component, WebGL2DirectionLightData);
 }

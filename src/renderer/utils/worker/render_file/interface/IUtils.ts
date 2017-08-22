@@ -7,7 +7,7 @@ export interface IBasicSendUniformDataDataMap {
 export interface ILightSendUniformDataDataMap{
     glslSenderData: SendUniformDataGLSLSenderDataMap;
     ambientLightData?: any;
-    directionLightData?: any;
+    directionLightData: any;
     pointLightData: any;
 }
 

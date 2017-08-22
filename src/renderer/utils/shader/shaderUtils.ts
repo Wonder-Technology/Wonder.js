@@ -5,11 +5,11 @@ import { IWebGL1ShaderLibContentGenerator } from "../../worker/webgl1/both_file/
 import { IMaterialConfig, IShaderLibItem, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { InitShaderDataMap } from "../../type/utilsType";
 import { WebGL1InitShaderFuncDataMap } from "../../webgl1/type/utilsType";
-import { WebGL2InitShaderFuncDataMap } from "../../webgl2/type/utilsType";
+import { IWebGL2InitShaderFuncDataMap } from "../../webgl2/utils/worker/render_file/interface/IUtils";
 import { getMaterialShaderLibNameArr } from "./shaderSourceBuildUtils";
 import { getMaterialShaderLibConfig } from "../../data/MaterialConfigSystem";
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex:number | null, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var initMaterialShader = (state: Map<any, any>, materialIndex:number | null, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         } = initShaderDataMap,
@@ -42,20 +42,21 @@ export var initMaterialShader = (state: Map<any, any>, materialIndex:number | nu
     return shaderIndex;
 }
 
-export var initNoMaterialShader = (state: Map<any, any>, materialIndex:number | null, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+//todo test fix: test two no mateial shaders
+export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         } = initShaderDataMap,
         materialShaderLibNameArr = null,
         shaderIndex:number = null,
-        key = ShaderDataFromSystem.shaderLibNameMap[materialIndex];
+        key = ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName];
 
     if(!key){
-        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap);
+        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, null, initShaderFuncDataMap, initShaderDataMap);
 
         key = _buildShaderIndexMapKey(materialShaderLibNameArr);
 
-        ShaderDataFromSystem.shaderLibNameMap[materialIndex] = key;
+        ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName] = key;
     }
 
     shaderIndex = ShaderDataFromSystem.shaderIndexMap[key];
@@ -65,10 +66,10 @@ export var initNoMaterialShader = (state: Map<any, any>, materialIndex:number | 
     }
 
     if(!materialShaderLibNameArr){
-        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, materialIndex, initShaderFuncDataMap, initShaderDataMap);
+        materialShaderLibNameArr = getMaterialShaderLibNameArr(materialShaderLibConfig, material_config.shaderLibGroups, null, initShaderFuncDataMap, initShaderDataMap);
     }
 
-    shaderIndex = init(state, materialIndex, materialShaderLibNameArr, material_config, shaderLib_generator, initShaderFuncDataMap, initShaderDataMap);
+    shaderIndex = init(state, null, materialShaderLibNameArr, material_config, shaderLib_generator, initShaderFuncDataMap, initShaderDataMap);
 
     ShaderDataFromSystem.shaderIndexMap[key] = shaderIndex;
 

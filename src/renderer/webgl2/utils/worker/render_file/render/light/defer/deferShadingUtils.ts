@@ -22,11 +22,21 @@ export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, Defe
 
     bindGBufferTargets(gl, GBufferDataFromSystem);
 
-    let shaderIndex = getNoMaterialShaderIndex("DeferLightPass", ShaderDataFromSystem);
+    //todo fix, separate initDeferLightPass?
+    //todo fix, separate DeferLightPassDataFromSystem?
+    let program:WebGLProgram = null,
+        pointLightShaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
 
-    initDeferLightPass(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
+    initDeferLightPass(gl, pointLightShaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 
-    let program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    program = use(gl, pointLightShaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+    sendGBufferTargetData(gl, program);
+
+    //todo refactor
+    let directionLightShaderIndex = getNoMaterialShaderIndex("DeferDirectionLightPass", ShaderDataFromSystem);
+
+    program = use(gl, directionLightShaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
     sendGBufferTargetData(gl, program);
 }
@@ -38,7 +48,7 @@ export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, 
 export var buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
     // getAmbientLightColorArr3,
-    // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
+    getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity,isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
     isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
     drawDataMap: IWebGL2DrawDataMap) => {
@@ -59,15 +69,20 @@ export var buildSendUniformDataDataMap = (
         //
         //     AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
         // },
-        // directionLightData: {
-        //     getPosition: (index: number) => {
-        //         return getDirectionLightPosition(index, ThreeDTransformData, GameObjectData, drawDataMap.DirectionLightDataFromSystem).values;
-        //     },
-        //     getColorArr3: getDirectionLightColorArr3,
-        //     getIntensity: getDirectionLightIntensity,
-        //
-        //     DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
-        // },
+        directionLightData: {
+            getPosition: getDirectionLightPosition,
+            getColorArr3: getDirectionLightColorArr3,
+            getIntensity: getDirectionLightIntensity,
+
+            isPositionDirty: isDirectionLightPositionDirty,
+            isColorDirty: isDirectionLightColorDirty,
+            isIntensityDirty: isDirectionLightIntensityDirty,
+            cleanPositionDirty: cleanDirectionLightPositionDirty,
+            cleanColorDirty: cleanDirectionLightColorDirty,
+            cleanIntensityDirty: cleanDirectionLightIntensityDirty,
+
+            DirectionLightDataFromSystem: drawDataMap.DirectionLightDataFromSystem
+        },
         pointLightData: {
             getPosition: getPointLightPosition,
             getColorArr3: getPointLightColorArr3,

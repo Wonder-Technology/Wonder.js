@@ -5,10 +5,9 @@ import {
     disposeComponent as disposeSpecifyLightComponent,
     initData as initSpecifyLightData,
     setColor as setSpecifyLightColor,
-    addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition,
+    createDefaultColor, getPosition as getSpecifyLightPosition,
     bindChangePositionEvent
 } from "./SpecifyLightSystem";
-import { DirectionLightData } from "./DirectionLightData";
 import { Light } from "./Light";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import {
@@ -18,8 +17,6 @@ import {
     getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils, isPositionDirty as isPositionDirtyUtils
 } from "../../renderer/utils/worker/render_file/light/directionLightUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
-import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
@@ -27,11 +24,15 @@ import { getDirectionLightBufferCount } from "../../renderer/utils/light/bufferU
 import { getColorDataSize, getIntensityDataSize } from "../../renderer/utils/light/directionLightUtils";
 import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { Map } from "immutable";
+import { isInit } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
+import { expect } from "wonder-expect.js";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
-    // it("count should <= max count", () => {
-    //     expect(DirectionLightData.count).lte(DataBufferConfig.directionLightDataBufferCount);
-    // })
+    //todo test
+    it("shouldn't create after Director->init", () => {
+        expect(isInit(DirectorData)).false;
+    });
 }, (DirectionLightData: any) => {
     var light = new DirectionLight();
 
@@ -73,11 +74,7 @@ export var setIntensity = (index: number, intensity: number, DirectionLightData:
     setTypeArrayValue(DirectionLightData.intensities, i, intensity);
 }
 
-export var addComponent = (component: Light, gameObject: GameObject) => {
-    addSpecifyLightComponent(component, gameObject, DirectionLightData);
-}
-
-export var disposeComponent = (component: Light) => {
+export var disposeComponent = (component: Light, DirectionLightData:any) => {
     var intensityDataSize = getIntensityDataSize(),
         dirtyDataSize = getDirtyDataSize(),
         sourceIndex = component.index,
@@ -87,12 +84,13 @@ export var disposeComponent = (component: Light) => {
 
     deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, DirectionLightData.intensities, DirectionLightData.defaultIntensity);
 
+    //todo test
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isPositionDirtys, DirectionLightData.defaultDirty);
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isColorDirtys, DirectionLightData.defaultDirty);
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isIntensityDirtys, DirectionLightData.defaultDirty);
 }
 
-export var initData = (DirectionLightData: any) => {
+export var initDataHelper = (DirectionLightData: any) => {
     var count = getDirectionLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()) + Uint8Array.BYTES_PER_ELEMENT + (getDirtyDataSize() * 3),
         buffer: any = null;
@@ -106,26 +104,6 @@ export var initData = (DirectionLightData: any) => {
     DirectionLightData.defaultIntensity = 1;
 
     _setDefaultTypeArrData(count, DirectionLightData);
-
-    DirectionLightData.lightGLSLDataStructureMemberNameArr = [
-        {
-            position: "u_directionLights[0].position",
-            color: "u_directionLights[0].color",
-            intensity: "u_directionLights[0].intensity"
-        }, {
-            position: "u_directionLights[1].position",
-            color: "u_directionLights[1].color",
-            intensity: "u_directionLights[1].intensity"
-        }, {
-            position: "u_directionLights[2].position",
-            color: "u_directionLights[2].color",
-            intensity: "u_directionLights[2].intensity"
-        }, {
-            position: "u_directionLights[3].position",
-            color: "u_directionLights[3].color",
-            intensity: "u_directionLights[3].intensity"
-        }
-    ];
 }
 
 var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {

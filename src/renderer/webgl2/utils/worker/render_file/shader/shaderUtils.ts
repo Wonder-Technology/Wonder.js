@@ -15,7 +15,7 @@ import {
 import { getProgram } from "../../../../../utils/worker/render_file/shader/program/programUtils";
 import { initShader, registerProgram } from "../../../../../utils/shader/program/programUtils";
 import { handleUboConfig } from "../ubo/uboManagerUtils";
-import { WebGL2InitShaderFuncDataMap } from "../../../../type/utilsType";
+import { IWebGL2InitShaderFuncDataMap } from "../interface/IUtils";
 import { WebGLVertexArrayObject } from "../../../../../extend/interface";
 import { bindVao as bindVaoUtils, createVao, unbindVao } from "../vao/vaoUtils";
 import {
@@ -30,19 +30,19 @@ export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem:
     return ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName];
 }
 
-export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
-    var shaderIndex = initNoMaterialShaderUtils(state, null, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
+export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+    var shaderIndex = initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 
     initShaderDataMap.ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName] = shaderIndex;
 
     return shaderIndex;
 }
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex:number, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export var initMaterialShader = (state: Map<any, any>, materialIndex:number, shaderName:string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
-var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibNameArr:Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: WebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+var _init = (state: Map<any, any>, materialIndex:number|null, materialShaderLibNameArr:Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
             DeviceManagerDataFromSystem,

@@ -4,7 +4,6 @@ export type DeferDrawDataMap = {
 }
 
 export type SendUniformDataGLSLSenderDataMap = {
-    // getUniformData: Function;
     sendMatrix3: Function;
     sendMatrix4: Function;
     sendVector3: Function;

@@ -43,7 +43,6 @@ import {
 } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
-import { DirectionLightData } from "../light/DirectionLightData";
 import {
     dispose as disposeMapManager,
     initData as initMapManagerData,
@@ -85,7 +84,7 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
 
 export var useShader = useShaderUtils;
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any, LocationData:any, ShaderData:any) => {
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, DirectionLightData:any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any, LocationData:any, ShaderData:any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
 
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);

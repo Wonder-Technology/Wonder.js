@@ -5,11 +5,12 @@ import {
     addComponent as addAmbientLightComponent, disposeComponent as disposeAmbientLightComponent,
     initData as initAmbientLightData
 } from "../../light/AmbientLightSystem";
-import {
-    addComponent as addDirectionLightComponent, disposeComponent as disposeDirectionLightComponent,
-    initData as initDirectionLightData
-} from "../../light/DirectionLightSystem";
 import { initData as initWebGL1PointLightData } from "../../../renderer/webgl1/light/PointLightSystem";
+import { initData as initWebGL1DirectionLightData } from "../../../renderer/webgl1/light/DirectionLightSystem";
+import {
+    addComponent as addDirectionLightComponent,
+    disposeComponent as disposeDirectionLightComponent
+} from "../../webgl1/light/DirectionLightSystem";
 import {
     addComponent as addPointLightComponent,
     disposeComponent as disposePointLightComponent
@@ -29,6 +30,6 @@ export var addDisposeHandle = (AmbientLight: any, DirectionLight: any, PointLigh
 
 export var initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     initAmbientLightData(AmbientLightData);
-    initDirectionLightData(DirectionLightData);
+    initWebGL1DirectionLightData(DirectionLightData);
     initWebGL1PointLightData(PointLightData);
 }

@@ -224,7 +224,6 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
     }
 }
 
-
 export var disposeComponent = (component: Light, PointLightData:any) => {
     var intensityDataSize = getIntensityDataSize(),
         constantDataSize = getConstantDataSize(),

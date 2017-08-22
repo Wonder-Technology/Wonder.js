@@ -17,9 +17,9 @@ import {
     getGLSLDefineListData, getGLSLPartData,
     getPrecisionSource
 } from "../../../../../utils/shader/shaderSourceBuildUtils";
-import { WebGL2InitShaderFuncDataMap } from "../../../../type/utilsType";
+import { IWebGL2InitShaderFuncDataMap } from "../interface/IUtils";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL2InitShaderFuncDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: IWebGL2InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;

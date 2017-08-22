@@ -17,7 +17,11 @@ import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { set } from "../../../../../../utils/typeArrayUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
-import { WebGL2SendUniformDataPointLightDataMap } from "../../../../type/utilsType";
+import {
+    IWebGL2DirectionLightValueDataMap,
+    IWebGL2SendUniformDataDirectionLightDataMap,
+    IWebGL2SendUniformDataPointLightDataMap
+} from "../interface/IUtils";
 import { getMaxUniformBufferBindings } from "../device/gpuDetectUtils";
 import { IWebGL2DrawDataMap, IWebGL2PointLightValueDataMap } from "../interface/IUtils";
 
@@ -63,23 +67,47 @@ export var bindFrameUboData = (gl:any, render_config:IRenderConfig, cameraData:C
     _bindSingleBufferUboData(gl, render_config, frameUboDataList, cameraData, uboBindingPointMap);
 }
 
-export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformDataPointLightDataMap:WebGL2SendUniformDataPointLightDataMap, pointLightValueMap:IWebGL2PointLightValueDataMap,  drawDataMap:IWebGL2DrawDataMap,  {
-    lightUboDataList,
+//todo refactor: with bindPointLightUboData
+export var bindDirectionLightUboData = (gl:any, directionLightIndex:number, sendUniformDataDirectionLightDataMap:IWebGL2SendUniformDataDirectionLightDataMap, directionLightValueMap:IWebGL2DirectionLightValueDataMap, drawDataMap:IWebGL2DrawDataMap, {
+    directionLightUboDataList,
     uboBindingPointMap
 }) => {
     var uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferStaticData, bufferDynamicData, bufferSubDynamicData, set),
-        firstUboData = lightUboDataList[0],
+        firstUboData = directionLightUboDataList[0],
         bindingPoint:number = null;
 
     if(isValidVal(firstUboData)){
         bindingPoint = uboBindingPointMap[firstUboData.name];
     }
 
-    forEach(lightUboDataList, ({
-                                   // name,
+    forEach(directionLightUboDataList, ({
                                    typeArrays,
                                    buffers,
-                                   // initBufferDataFunc,
+                                   setBufferDataFunc
+                               }) => {
+        var typeArray = typeArrays[directionLightIndex],
+            buffer = buffers[directionLightIndex],
+            uboDataMap = _buildUboDataMap(bindingPoint, buffer, typeArray);
+
+        setBufferDataFunc(gl, directionLightIndex, uboDataMap, uboFuncMap, sendUniformDataDirectionLightDataMap, directionLightValueMap);
+    });
+}
+
+export var bindPointLightUboData = (gl:any, pointLightIndex:number, sendUniformDataPointLightDataMap:IWebGL2SendUniformDataPointLightDataMap, pointLightValueMap:IWebGL2PointLightValueDataMap, drawDataMap:IWebGL2DrawDataMap, {
+    pointLightUboDataList,
+    uboBindingPointMap
+}) => {
+    var uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferStaticData, bufferDynamicData, bufferSubDynamicData, set),
+        firstUboData = pointLightUboDataList[0],
+        bindingPoint:number = null;
+
+    if(isValidVal(firstUboData)){
+        bindingPoint = uboBindingPointMap[firstUboData.name];
+    }
+
+    forEach(pointLightUboDataList, ({
+                                   typeArrays,
+                                   buffers,
                                    setBufferDataFunc
                                }) => {
         var typeArray = typeArrays[pointLightIndex],
@@ -166,9 +194,12 @@ var _addInitedUboFuncConfig = ensureFunc((list: UboSingleBufferDataList | UboMul
     setBufferDataFunc,
     frequence
 }, {
+        DirectionLightDataFromSystem,
         PointLightDataFromSystem
     }, GLSLSenderDataFromSystem: any) => {
-    var list = null;
+    var list = null,
+        buffers:Array<WebGLBuffer> = null,
+        typeArrays:Array<Float32Array> = null;
 
     switch (frequence) {
         case "one":
@@ -181,16 +212,34 @@ var _addInitedUboFuncConfig = ensureFunc((list: UboSingleBufferDataList | UboMul
 
             list.push(_createSingleBufferData(gl, name, typeArray, setBufferDataFunc));
             break;
-        case "gameObject":
-            list = GLSLSenderDataFromSystem.gameObjectUboDataList;
+        // case "gameObject":
+        //     list = GLSLSenderDataFromSystem.gameObjectUboDataList;
+        //
+        //     list.push(_createSingleBufferData(gl, name, typeArray, setBufferDataFunc));
+        //     break;
+        case "directionLight":
+            buffers = [];
+            typeArrays = [];
 
-            list.push(_createSingleBufferData(gl, name, typeArray, setBufferDataFunc));
+            list = GLSLSenderDataFromSystem.directionLightUboDataList;
+
+            for(let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++){
+                typeArrays.push(_createTypeArray(typeArray));
+                buffers.push(gl.createBuffer());
+            }
+
+            list.push({
+                name: name,
+                typeArrays: typeArrays,
+                buffers: buffers,
+                setBufferDataFunc: setBufferDataFunc
+            });
             break;
         case "pointLight":
-            let buffers:Array<WebGLBuffer> = [],
-                typeArrays:Array<Float32Array> = [];
+            buffers = [];
+            typeArrays = [];
 
-            list = GLSLSenderDataFromSystem.lightUboDataList;
+            list = GLSLSenderDataFromSystem.pointLightUboDataList;
 
             for(let i = 0, count = PointLightDataFromSystem.count; i < count; i++){
                 typeArrays.push(_createTypeArray(typeArray));

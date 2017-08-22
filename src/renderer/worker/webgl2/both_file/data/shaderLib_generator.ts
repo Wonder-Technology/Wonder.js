@@ -10,7 +10,6 @@ import {
     webgl2_noLightMap_fragment,
     webgl2_gbuffer_noNormalMap_fragment, webgl2_gbuffer_noNormalMap_vertex,
     webgl2_noSpecularMap_fragment,
-    webgl2_deferLightPass_noNormalMap_fragment,
     // light_fragment,
     webgl2_basic_map_vertex,
     webgl2_basic_map_fragment,
@@ -28,11 +27,24 @@ import {
 
     deferLightPass_common,
     deferLightPass_vertex,
-    deferLightPass_fragment,
     deferLightPass_end_fragment,
+    webgl2_deferLightPass_noNormalMap_fragment,
+
+
+
+    deferLightPass_directionLight_common,
+    deferLightPass_directionLight_fragment,
+    webgl2_deferLightPass_directionLight_noNormalMap_fragment,
+
+
+    deferLightPass_pointLight_common,
+    deferLightPass_pointLight_fragment,
+    webgl2_deferLightPass_pointLight_noNormalMap_fragment,
+
     ubo_camera,
     ubo_light,
-    ubo_point_light
+    ubo_directionLight,
+    ubo_pointLight
 
 } from "../../../../shader/chunk/ShaderChunk";
 import { webgl2_setPos_mvp } from "../../../../webgl2/shader/snippet/ShaderSnippet";
@@ -183,10 +195,87 @@ export const webgl2_shaderLib_generator = {
                 ]
             }
         },
+        "DirectionLightUboShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": ubo_directionLight
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "DirectionLightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4 * 2
+                        },
+                        "setBufferDataFunc": (gl, directionLightIndex, {
+                                                  uniformBlockBinding,
+                                                  buffer,
+                                                  typeArray
+                                              }, {
+                                                  bindUniformBufferBase,
+                                                  bufferDynamicData,
+                                                  set
+                                              }, {
+                                                  cleanPositionDirty,
+                                                  cleanColorDirty,
+                                                  cleanIntensityDirty,
+
+                                                  DirectionLightDataFromSystem
+                                              },
+                                              {
+                                                  position,
+                                                  colorArr3,
+                                                  intensity,
+
+                                                  isPositionDirty,
+                                                  isColorDirty,
+                                                  isIntensityDirty
+                                              }
+                        ) => {
+                            var isDirtyFlag = false;
+
+                            if(isPositionDirty){
+                                isDirtyFlag = true;
+
+                                set(typeArray, position);
+
+                                cleanPositionDirty(directionLightIndex, DirectionLightDataFromSystem);
+                            }
+
+                            if(isColorDirty){
+                                isDirtyFlag = true;
+
+                                set(typeArray, colorArr3, 4);
+
+                                cleanColorDirty(directionLightIndex, DirectionLightDataFromSystem);
+                            }
+
+                            if(isIntensityDirty){
+                                set(typeArray, [intensity], 7);
+
+                                isDirtyFlag = true;
+
+                                cleanIntensityDirty(directionLightIndex, DirectionLightDataFromSystem);
+                            }
+
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            if(isDirtyFlag){
+                                bufferDynamicData(gl, typeArray);
+                            }
+                        },
+                        "frequence": "directionLight",
+                        "usage": "dynamic"
+                    }
+                ]
+            }
+        },
         "PointLightUboShaderLib": {
             "glsl": {
                 "fs": {
-                    "source": ubo_point_light
+                    "source": ubo_pointLight
                 }
             },
             "send": {
@@ -206,21 +295,7 @@ export const webgl2_shaderLib_generator = {
                                                   bufferDynamicData,
                                                   set
                                               }, {
-                                                  // getColorArr3,
-                                                  // getIntensity,
-                                                  // getConstant,
-                                                  // getLinear,
-                                                  // getQuadratic,
-                                                  // computeRadius,
-                                                  // // getRange,
-                                                  // getPosition,
-
-                            // isPositionDirty,
-                                                  // isColorDirty,
-                                                  // isIntensityDirty,
-                                                  // isAttenuationDirty,
-
-                            cleanPositionDirty,
+                                                  cleanPositionDirty,
                                                   cleanColorDirty,
                                                   cleanIntensityDirty,
                                                   cleanAttenuationDirty,
@@ -241,60 +316,6 @@ export const webgl2_shaderLib_generator = {
                                               }
                         ) => {
                             var isDirtyFlag = false;
-                                // isColorDirtyFlag = false;
-
-                            // if(isPositionDirty(pointLightIndex, PointLightDataFromSystem)) {
-                            //     set(typeArray, getPosition(pointLightIndex, PointLightDataFromSystem));
-                            //     isDirtyFlag = true;
-                            //
-                            //
-                            //     cleanPositionDirty(pointLightIndex, PointLightDataFromSystem);
-                            // }
-                            //
-                            //
-                            // let colorArr3Copy:Array<number> = null;
-                            //
-                            // if(isColorDirty(pointLightIndex, PointLightDataFromSystem)) {
-                            //     let colorArr3 = getColorArr3(pointLightIndex, PointLightDataFromSystem);
-                            //
-                            //     colorArr3Copy = colorArr3.slice();
-                            //
-                            //     set(typeArray, colorArr3, 4);
-                            //
-                            //     isColorDirtyFlag = true;
-                            //     isDirtyFlag = true;
-                            //
-                            //     cleanColorDirty(pointLightIndex, PointLightDataFromSystem);
-                            // }
-                            //
-                            // if(isIntensityDirty(pointLightIndex, PointLightDataFromSystem)){
-                            //     set(typeArray, [getIntensity(pointLightIndex, PointLightDataFromSystem)], 7);
-                            //
-                            //     isDirtyFlag = true;
-                            //
-                            //     cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
-                            // }
-                            //
-                            // if(isColorDirtyFlag || isAttenuationDirty(pointLightIndex, PointLightDataFromSystem)) {
-                            //     let constant = getConstant(pointLightIndex, PointLightDataFromSystem),
-                            //         linear = getLinear(pointLightIndex, PointLightDataFromSystem),
-                            //         quadratic = getQuadratic(pointLightIndex, PointLightDataFromSystem),
-                            //         radius:number = null;
-                            //
-                            //     if(colorArr3Copy === null){
-                            //         radius = computeRadius(getColorArr3(pointLightIndex, PointLightDataFromSystem), constant, linear, quadratic);
-                            //     }
-                            //     else{
-                            //         radius = computeRadius(colorArr3Copy, constant, linear, quadratic);
-                            //     }
-                            //
-                            //
-                            //     set(typeArray, [constant, linear, quadratic, radius], 8);
-                            //
-                            //     isDirtyFlag = true;
-                            //
-                            //     cleanAttenuationDirty(pointLightIndex, PointLightDataFromSystem);
-                            // }
 
                             if(isIntensityDirty){
                                 set(typeArray, [intensity], 7);
@@ -466,7 +487,6 @@ export const webgl2_shaderLib_generator = {
                 ]
             }
         },
-        // "LightCommonShaderLib": {
         "GBufferCommonShaderLib": {
             "glsl": {
                 "vs": {
@@ -559,30 +579,6 @@ export const webgl2_shaderLib_generator = {
                 }
             }
         },
-        // "NoLightMapShaderLib": {
-        //     "glsl": {
-        //         "fs": {
-        //             "source": noLightMap_fragment
-        //         }
-        //     }
-        // },
-        // "NoEmissionMapShaderLib": {
-        //     "glsl": {
-        //         "fs": {
-        //             "source": noEmissionMap_fragment
-        //         }
-        //     },
-        //     "send": {
-        //         "uniform": [
-        //             {
-        //                 "name": "u_emission",
-        //                 "from": "lightMaterial",
-        //                 "field": "emissionColor",
-        //                 "type": "float3"
-        //             }
-        //         ]
-        //     }
-        // },
         "GBufferNoNormalMapShaderLib": {
             "glsl": {
                 "vs": {
@@ -616,7 +612,6 @@ export const webgl2_shaderLib_generator = {
         },
 
 
-        // "LightEndShaderLib": {
         "GBufferEndShaderLib": {
             "glsl": {
                 "fs": {
@@ -630,26 +625,10 @@ export const webgl2_shaderLib_generator = {
 
         "DeferLightPassCommonShaderLib": {
             "glsl": {
-                // "vs": {
-                //     // "funcDeclare": deferLightPass_common.funcDeclare,
-                //     // "funcDefine": deferLightPass_common.funcDefine
-                // },
                 "fs": {
                     "source": deferLightPass_common
-                    // "funcDeclare": deferLightPass_common.funcDeclare,
-                    // "funcDefine": deferLightPass_common.funcDefine
                 }
             }
-            // "send": {
-            //     "uniform": [
-            //         {
-            //             "name": "u_specular",
-            //             "from": "lightMaterial",
-            //             "field": "specularColor",
-            //             "type": "float3"
-            //         }
-            //     ]
-            // }
         },
 
         "NoLightMapShaderLib": {
@@ -696,9 +675,6 @@ export const webgl2_shaderLib_generator = {
             "glsl": {
                 "vs": {
                     "source": deferLightPass_vertex
-                },
-                "fs": {
-                    "source": deferLightPass_fragment
                 }
             },
             "send": {
@@ -740,6 +716,65 @@ export const webgl2_shaderLib_generator = {
                 },
             }
         },
+
+
+
+
+
+        "DeferDirectionLightPassCommonShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_directionLight_common
+                }
+            }
+        },
+        "DeferDirectionLightPassNoNormalMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": webgl2_deferLightPass_directionLight_noNormalMap_fragment
+                }
+            }
+        },
+        "DeferDirectionLightPassShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_directionLight_fragment
+                }
+            },
+            "send": {
+            }
+        },
+
+
+
+
+
+        "DeferPointLightPassCommonShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_pointLight_common
+                }
+            }
+        },
+        "DeferPointLightPassNoNormalMapShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": webgl2_deferLightPass_pointLight_noNormalMap_fragment
+                }
+            }
+        },
+        "DeferPointLightPassShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_pointLight_fragment
+                }
+            },
+            "send": {
+            }
+        },
+
+
+
 
 
 
@@ -816,7 +851,7 @@ export interface IWebGL2SendUniformConfig extends ISendUniformConfig{
 export interface IWebGL2UboConfig {
     name: string;
     typeArray: IWebGL2UboTypeArrayConfig;
-    frequence: "one" | "frame" | "pointLight";
+    frequence: "one" | "frame" | "pointLight" | "directionLight";
     usage: "static" | "dynamic";
     setBufferDataFunc:Function;
 }

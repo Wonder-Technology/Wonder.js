@@ -136,27 +136,47 @@ export const webgl2_material_config = {
                     }
                 },
 
-                // "NoLightMapShaderLib",
-                // "NoEmissionMapShaderLib",
                 "GBufferNoNormalMapShaderLib",
-                // "NoShadowMapShaderLib",
                 "GBufferShaderLib",
                 "GBufferEndShaderLib",
                 { "type": "group", "value": "engineMaterialEnd" }
             ]
         },
         "noMaterialShaders": {
-            "DeferLightPass": [
-                "CameraUboShaderLib",
-                "LightUboShaderLib",
+            "DeferDirectionLightPass": [
+                { "type": "group", "value": "deferLightPassUbo" },
+
+                "DirectionLightUboShaderLib",
+
+                "DeferLightPassCommonShaderLib",
+                "DeferDirectionLightPassCommonShaderLib",
+
+                { "type": "group", "value": "deferLightPassLightMap" },
+                "DeferDirectionLightPassNoNormalMapShaderLib",
+
+
+                "DeferLightPassShaderLib",
+                "DeferDirectionLightPassShaderLib",
+
+
+                "DeferLightPassEndShaderLib"
+            ],
+            "DeferPointLightPass": [
+                { "type": "group", "value": "deferLightPassUbo" },
+
                 "PointLightUboShaderLib",
 
                 "DeferLightPassCommonShaderLib",
-                "DeferLightPassNoNormalMapShaderLib",
-                "NoLightMapShaderLib",
-                "NoEmissionMapShaderLib",
-                "NoShadowMapShaderLib",
+                "DeferPointLightPassCommonShaderLib",
+
+                { "type": "group", "value": "deferLightPassLightMap" },
+                "DeferPointLightPassNoNormalMapShaderLib",
+
+
                 "DeferLightPassShaderLib",
+                "DeferPointLightPassShaderLib",
+
+
                 "DeferLightPassEndShaderLib"
             ]
         }
@@ -168,6 +188,27 @@ export const webgl2_material_config = {
             "VerticeCommonShaderLib",
             "CameraUboShaderLib"
         ],
+
+        "deferLightPassUbo": [
+            "CameraUboShaderLib",
+            "LightUboShaderLib"
+        ],
+        "deferLightPassLightMap": [
+            "DeferLightPassNoNormalMapShaderLib",
+            "NoLightMapShaderLib",
+            "NoEmissionMapShaderLib",
+            "NoShadowMapShaderLib"
+        ],
+        // "deferLightPass": [
+        //         "CameraUboShaderLib",
+        //         "LightUboShaderLib",
+        //
+        //         "DeferLightPassCommonShaderLib",
+        //         "DeferLightPassNoNormalMapShaderLib",
+        //
+        //         "DeferLightPassShaderLib",
+        //         "DeferLightPassEndShaderLib"
+        // ],
         "engineMaterialEnd": [
             "EndShaderLib"
         ]

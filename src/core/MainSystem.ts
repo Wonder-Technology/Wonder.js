@@ -49,7 +49,6 @@ import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
 // import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
-import { DirectionLightData } from "../component/light/DirectionLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
 import { getRenderWorker, initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
@@ -91,6 +90,8 @@ import { WebGL1ShaderData } from "../renderer/webgl1/shader/ShaderData";
 import { WebGL2ShaderData } from "../renderer/webgl2/shader/ShaderData";
 import { initData as initDeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
 import { DeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassData";
+import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
+import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -238,7 +239,7 @@ if(isWebgl1()){
 
         initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
-        initWebGL1LightData(AmbientLightData, DirectionLightData, WebGL1PointLightData);
+        initWebGL1LightData(AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 
@@ -284,7 +285,7 @@ else{
 
         initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
-        initWebGL2LightData(AmbientLightData, DirectionLightData, WebGL2PointLightData);
+        initWebGL2LightData(AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
 
