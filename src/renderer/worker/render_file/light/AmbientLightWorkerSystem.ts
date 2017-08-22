@@ -19,7 +19,6 @@ export var initData = ({
 
 var _setCount = setSpecifyLightCount;
 
-
 export var isColorDirty = isColorDirtyUtils;
 
 export var cleanColorDirty = cleanColorDirtyUtils;

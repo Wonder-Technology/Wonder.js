@@ -30,19 +30,6 @@ export var getQuadratic = getQuadraticUtils;
 
 export var getRange = getRangeUtils;
 
-// export var initData = ({
-//                            buffer,
-//     bufferCount,
-//     lightCount,
-//     pointLightGLSLDataStructureMemberNameArr
-//                        }, PointLightWorkerData: any) => {
-//     _setCount(lightCount, PointLightWorkerData);
-//
-//     PointLightWorkerData.lightGLSLDataStructureMemberNameArr = pointLightGLSLDataStructureMemberNameArr;
-//
-//     createTypeArrays(buffer, bufferCount, PointLightWorkerData);
-// }
-
 export var isPositionDirty = isPositionDirtyUtils;
 
 export var isColorDirty = isColorDirtyUtils;

@@ -120,6 +120,7 @@ import { WebGL1DirectionLightWorkerData } from "../webgl1/render_file/light/Dire
 import { WebGL2DirectionLightWorkerData } from "../webgl2/render_file/light/DirectionLightWorkerData";
 import { DeferDirectionLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferDirectionLightPassWorkerData";
 import { DeferPointLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData";
+import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData";
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -156,18 +157,18 @@ export var onmessageHandler = (e) => {
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleWebGL1InitRenderData(data, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData);
+                _handleWebGL1InitRenderData(data, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData);
             }
             else{
-                _handleWebGL2InitRenderData(data, render_config, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, GPUDetectWorkerData, WebGL2GLSLSenderWorkerData);
+                _handleWebGL2InitRenderData(data, render_config, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, GPUDetectWorkerData, WebGL2GLSLSenderWorkerData);
             }
             break;
         case EWorkerOperateType.DRAW:
             if(isWebgl1(WebGLDetectWorkerData)) {
-                _handleWebGL1Draw(data, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
+                _handleWebGL1Draw(data, AmbientLightWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, WebGL1GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
             }
             else{
-                _handleWebGL2Draw(data, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
+                _handleWebGL2Draw(data, AmbientLightWorkerData, WebGL2DirectionLightWorkerData, WebGL2PointLightWorkerData, WebGL2GLSLSenderWorkerData, GPUDetectWorkerData, StateWorkerData);
             }
             break;
         default:
@@ -184,7 +185,7 @@ var _initWebGL2GL = (data:any, WebGLDetectWorkerData:any, GPUDetectWorkerData:an
     return initGL(data, detectWebGL2, WebGLDetectWorkerData, GPUDetectWorkerData).run();
 }
 
-var _handleWebGL1Draw = (data:any, DirectionLightWorkerData:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
+var _handleWebGL1Draw = (data:any, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
     var state = getState(StateWorkerData);
 
     _initWebGL1DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
@@ -198,7 +199,7 @@ var _handleWebGL1Draw = (data:any, DirectionLightWorkerData:any, PointLightWorke
     if (_isBufferDataExist(bufferData)) {
         bufferData = createTypeArraysOnlyOnce(bufferData, DataBufferConfig, BasicRenderCommandBufferWorkerData, LightRenderCommandBufferWorkerData);
 
-        renderWebGL1(gl, state, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, drawDataMap, buildInitShaderDataMap(DeviceManagerWorkerData, WebGL1ProgramWorkerData, WebGL1LocationWorkerData, GLSLSenderWorkerData, WebGL1ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData), bufferData);
+        renderWebGL1(gl, state, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, drawDataMap, buildInitShaderDataMap(DeviceManagerWorkerData, WebGL1ProgramWorkerData, WebGL1LocationWorkerData, GLSLSenderWorkerData, WebGL1ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData), bufferData);
     }
 
     commitGL(gl, state);
@@ -208,7 +209,7 @@ var _handleWebGL1Draw = (data:any, DirectionLightWorkerData:any, PointLightWorke
     });
 }
 
-var _handleWebGL2Draw = (data:any, DirectionLightWorkerData:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
+var _handleWebGL2Draw = (data:any, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any, GLSLSenderWorkerData, GPUDetectWorkerData:any, StateWorkerData:any) => {
     var state = getState(StateWorkerData);
 
     _initWebGL2DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
@@ -222,7 +223,7 @@ var _handleWebGL2Draw = (data:any, DirectionLightWorkerData:any, PointLightWorke
     if (_isBufferDataExist(bufferData)) {
         bufferData = createTypeArraysOnlyOnce(bufferData, DataBufferConfig, BasicRenderCommandBufferWorkerData, LightRenderCommandBufferWorkerData);
 
-        renderWebGL2(gl, state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, drawDataMap, buildDeferDrawDataMap(GBufferWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData), buildInitShaderDataMap(DeviceManagerWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, WebGL2ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData), bufferData);
+        renderWebGL2(gl, state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, drawDataMap, buildDeferDrawDataMap(GBufferWorkerData, DeferAmbientLightPassWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData), buildInitShaderDataMap(DeviceManagerWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, WebGL2ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData), bufferData);
     }
 
     commitGL(gl, state);
@@ -298,7 +299,7 @@ var _initWebGL2DisposeDrawData = (data:any) => {
 
 var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 
-var _handleWebGL1InitRenderData = (data:any, DirectionLightWorkerData, PointLightWorkerData:any, GLSLSenderWorkerData:any) => {
+var _handleWebGL1InitRenderData = (data:any, AmbientLightWorkerData:any, DirectionLightWorkerData, PointLightWorkerData:any, GLSLSenderWorkerData:any) => {
     var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state);
 
@@ -309,7 +310,7 @@ var _handleWebGL1InitRenderData = (data:any, DirectionLightWorkerData, PointLigh
     ]).mergeAll()
         .concat(
             _initTextures(data.textureData, TextureWorkerData),
-            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, WebGL1DirectionLightWorkerData, WebGL1PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, WebGL1ProgramWorkerData, VaoWorkerData, WebGL1LocationWorkerData, WebGL1ShaderWorkerData)
+            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl1_material_config, webgl1_shaderLib_generator, initNoMaterialShaderWebGL1, data.materialData, data.textureData, TextureWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, WebGL1ProgramWorkerData, VaoWorkerData, WebGL1LocationWorkerData, WebGL1ShaderWorkerData)
         )
         .subscribe(null, null, () => {
             self.postMessage({
@@ -318,7 +319,7 @@ var _handleWebGL1InitRenderData = (data:any, DirectionLightWorkerData, PointLigh
         })
 }
 
-var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, DirectionLightWorkerData, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any) => {
+var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, AmbientLightWorkerData:any, DirectionLightWorkerData, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any) => {
     var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state),
         renderData = data.renderData;
@@ -330,8 +331,8 @@ var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, Direct
     ]).mergeAll()
         .concat(
             _initTextures(data.textureData, TextureWorkerData),
-            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, data.materialData, data.textureData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, WebGL2ProgramWorkerData, VaoWorkerData, WebGL2LocationWorkerData, WebGL2ShaderWorkerData),
-            _initWebGL2Render(gl, render_config, renderData, DataBufferConfig, GBufferWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData, WebGL2ShaderWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, GPUDetectWorkerData)
+            _initMaterials(state, getGL(DeviceManagerWorkerData, state), webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, data.materialData, data.textureData, TextureWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, WebGL2ProgramWorkerData, VaoWorkerData, WebGL2LocationWorkerData, WebGL2ShaderWorkerData),
+            _initWebGL2Render(gl, render_config, renderData, DataBufferConfig, GBufferWorkerData, DeferAmbientLightPassWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData, WebGL2ShaderWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, GPUDetectWorkerData)
         )
         .subscribe(null, null, () => {
             self.postMessage({
@@ -340,13 +341,13 @@ var _handleWebGL2InitRenderData = (data:any, render_config:IRenderConfig, Direct
         })
 }
 
-var _initWebGL2Render = (gl:any, render_config:IRenderConfig, renderData:WebGL2RenderInitWorkerData, DataBufferConfig:any, GBufferWorkerData: any, DeferDirectionLightPassWorkerData:any, DeferPointLightPassWorkerData:any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GPUDetectWorkerData:any) => {
+var _initWebGL2Render = (gl:any, render_config:IRenderConfig, renderData:WebGL2RenderInitWorkerData, DataBufferConfig:any, GBufferWorkerData: any, DeferAmbientLightPassWorkerData:any, DeferDirectionLightPassWorkerData:any, DeferPointLightPassWorkerData:any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GPUDetectWorkerData:any) => {
     return callFunc(() => {
         if (_isDataNotExist(renderData) || _isDataNotExist(renderData.deferShading) || renderData.deferShading.isInit === false) {
             return;
         }
 
-        initWebGL2Render(gl, render_config, DataBufferConfig, GBufferWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GPUDetectWorkerData);
+        initWebGL2Render(gl, render_config, DataBufferConfig, GBufferWorkerData, DeferAmbientLightPassWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData, ShaderWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, GPUDetectWorkerData);
     })
 }
 
@@ -383,7 +384,7 @@ var _initWebGL2Data = () => {
 
     initVaoData(VaoWorkerData);
 
-    initDeferLightPassData(DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData);
+    initDeferLightPassData(DeferAmbientLightPassWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {
@@ -394,7 +395,7 @@ var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any, DirectionLightWorkerData, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any, ProgramWorkerData:any, VaoWorkerData:any, LocationWorkerData:any, ShaderWorkerData:any) => {
+var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any, AmbientLightWorkerData:any, DirectionLightWorkerData, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any, ProgramWorkerData:any, VaoWorkerData:any, LocationWorkerData:any, ShaderWorkerData:any) => {
     return callFunc(() => {
         if (_isDataNotExist(materialData)){
             return;
@@ -404,7 +405,7 @@ var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_
             setIndex(textureData.index, TextureWorkerData);
         }
 
-        initMaterials(state, gl, material_config, shaderLib_generator, initNoMaterialShader, materialData.basicMaterialData, materialData.lightMaterialData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, ProgramWorkerData, VaoWorkerData, LocationWorkerData, ShaderWorkerData);
+        initMaterials(state, gl, material_config, shaderLib_generator, initNoMaterialShader, materialData.basicMaterialData, materialData.lightMaterialData, TextureWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, ProgramWorkerData, VaoWorkerData, LocationWorkerData, ShaderWorkerData);
     })
 }
 

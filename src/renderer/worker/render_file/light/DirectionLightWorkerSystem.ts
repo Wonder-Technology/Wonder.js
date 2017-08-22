@@ -1,8 +1,7 @@
-import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
 import {
     cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils,
     cleanPositionDirty as cleanPositionDirtyUtils,
-    createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
+    getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
     getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils, isPositionDirty as isPositionDirtyUtils
 } from "../../../utils/worker/render_file/light/directionLightUtils";
 import { Color } from "../../../../structure/Color";
@@ -16,21 +15,6 @@ export var getColor = getColorUtils;
 export var getColorArr3 = getColorArr3Utils;
 
 export var getIntensity = getIntensityUtils;
-
-export var initData = ({
-                           buffer,
-    bufferCount,
-    lightCount,
-    directionLightGLSLDataStructureMemberNameArr
-                       }, DirectionLightWorkerData: any) => {
-    _setCount(lightCount, DirectionLightWorkerData);
-
-    DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr = directionLightGLSLDataStructureMemberNameArr;
-
-    createTypeArrays(buffer, bufferCount, DirectionLightWorkerData);
-}
-
-var _setCount = setSpecifyLightCount;
 
 export var isPositionDirty = isPositionDirtyUtils;
 
