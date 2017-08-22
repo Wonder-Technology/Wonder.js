@@ -16,6 +16,5 @@ export type UboMultiBufferDataList = Array<{
     name:string;
     typeArrays:Array<Float32Array>;
     buffers:Array<WebGLBuffer>;
-    initBufferDataFunc:Function;
     setBufferDataFunc:Function;
 }>

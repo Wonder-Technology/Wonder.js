@@ -9,7 +9,10 @@ import {
 } from "../../../render/light/defer/light/deferLightPassUtils";
 import { getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindDirectionLightUboData, bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
-import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";
+import {
+    IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap,
+    IWebGL2SendUniformDataDirectionLightDataMap
+} from "../../../worker/render_file/interface/IUtils";
 import { Vector4 } from "../../../../../../math/Vector4";
 import { Vector2 } from "../../../../../../math/Vector2";
 import { IWebGL2SendUniformDataPointLightDataMap } from "../../../worker/render_file/interface/IUtils";
@@ -19,7 +22,7 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     unbindGBuffer
 }, drawDataMap:IWebGL2DrawDataMap, {
                                 DeferDirectionLightPassDataFromSystem,
-    DeferPointLightPassDataFromSystem
+                                DeferPointLightPassDataFromSystem
                             }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
     var {
             ShaderDataFromSystem
@@ -27,15 +30,10 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
         {
             ProgramDataFromSystem,
             LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            DirectionLightDataFromSystem,
-            PointLightDataFromSystem
-        } = drawDataMap,
-        directionLightData = sendDataMap.directionLightData,
-        shaderIndex:number = null;
+            GLSLSenderDataFromSystem
+        } = drawDataMap;
 
     unbindGBuffer(gl);
-
 
     gl.depthMask(false);
     gl.disable(gl.DEPTH_TEST);
@@ -43,12 +41,16 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE, gl.ONE);
 
+    _drawDirectionLightPass(gl, use, drawDataMap,sendDataMap.directionLightData, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    _drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
+    unbindVao(gl);
 
+    _restoreState(gl);
+}
 
-
-    //todo refactor: extract direction light, point light draw
-
+var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, directionLightData:IWebGL2SendUniformDataDirectionLightDataMap, DeferDirectionLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+    var shaderIndex:number = null;
 
     sendAttributeData(gl, DeferDirectionLightPassDataFromSystem);
 
@@ -57,24 +59,21 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
+    let {
+        getPosition,
+
+        getColorArr3,
+        getIntensity,
+
+        isPositionDirty,
+        isColorDirty,
+        isIntensityDirty,
+
+        DirectionLightDataFromSystem
+    } = directionLightData;
 
     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
-        let {
-                GLSLSenderDataFromSystem
-            } = drawDataMap,
-            {
-                getPosition,
-
-                getColorArr3,
-                getIntensity,
-
-                isPositionDirty,
-                isColorDirty,
-                isIntensityDirty,
-
-                DirectionLightDataFromSystem
-            } = directionLightData,
-            position:Float32Array = null,
+        let position:Float32Array = null,
             colorArr3:Array<number> = null,
             intensity:number = null,
             isIntensityDirtyFlag = isIntensityDirty(i, DirectionLightDataFromSystem),
@@ -97,33 +96,6 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
         drawFullScreenQuad(gl, DeferDirectionLightPassDataFromSystem);
     }
-
-
-    _setState(gl);
-
-    let {
-        x,
-        y,
-        width,
-        height
-    } = getViewport(state),
-        pointLightData = sendDataMap.pointLightData;
-
-    sendAttributeData(gl, DeferPointLightPassDataFromSystem);
-
-    shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
-
-    use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
-
-    //todo support ambient light
-
-    for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-        _draw(gl, i, drawDataMap, pointLightData, x, y, width, height, vMatrix, pMatrix, DeferPointLightPassDataFromSystem);
-    }
-
-    unbindVao(gl);
-
-    _restoreState(gl);
 }
 
 var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty:boolean, isColorDirty:boolean, isIntensityDirty:boolean) => {
@@ -139,22 +111,17 @@ var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array
 }
 
 
-
-
-
-var _setState = (gl:any) => {
-    gl.enable(gl.SCISSOR_TEST);
-
-}
-
-var _restoreState = (gl:any) => {
-    gl.disable(gl.SCISSOR_TEST);
-}
-
-var _draw = (gl:any, i:number, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, x:number, y:number, width:number, height:number, vMatrix:Float32Array, pMatrix:Float32Array, DeferLightPassDataFromSystem:any) => {
+var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, vMatrix:Float32Array, pMatrix:Float32Array, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var {
-            GLSLSenderDataFromSystem
+            x,
+            y,
+            width,
+            height
+        } = getViewport(state),
+        {
+            PointLightDataFromSystem
         } = drawDataMap,
+        shaderIndex:number = null,
         {
             getPosition,
 
@@ -180,49 +147,72 @@ var _draw = (gl:any, i:number, drawDataMap:IWebGL2DrawDataMap, pointLightData:IW
         quadratic:number = null,
         radius:number = null,
         sc:Array<number> = null,
-        isScDirtyFlag:boolean = null,
-        isIntensityDirtyFlag = isIntensityDirty(i, PointLightDataFromSystem),
-        isPositionDirtyFlag = isPositionDirty(i, PointLightDataFromSystem),
-        isColorDirtyFlag = isColorDirty(i, PointLightDataFromSystem),
-        isAttenuationDirtyFlag = isAttenuationDirty(i, PointLightDataFromSystem);
+        isScDirtyFlag:boolean = null;
 
-    if(!isPositionDirtyFlag && !isColorDirtyFlag && !isAttenuationDirtyFlag){
-        isScDirtyFlag = false;
+
+    _setState(gl);
+
+    sendAttributeData(gl, DeferPointLightPassDataFromSystem);
+
+    shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
+
+    use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+    //todo support ambient light
+
+    for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
+        let isIntensityDirtyFlag = isIntensityDirty(i, PointLightDataFromSystem),
+            isPositionDirtyFlag = isPositionDirty(i, PointLightDataFromSystem),
+            isColorDirtyFlag = isColorDirty(i, PointLightDataFromSystem),
+            isAttenuationDirtyFlag = isAttenuationDirty(i, PointLightDataFromSystem);
+
+        if(!isPositionDirtyFlag && !isColorDirtyFlag && !isAttenuationDirtyFlag){
+            isScDirtyFlag = false;
+        }
+        else{
+            isScDirtyFlag = true;
+        }
+
+        if(!isScDirtyFlag){
+            sc = getScissorRegionArrayCache(i, DeferPointLightPassDataFromSystem);
+        }
+        else{
+            position = getPosition(i, PointLightDataFromSystem);
+            colorArr3 = getColorArr3(i, PointLightDataFromSystem);
+            constant = getConstant(i, PointLightDataFromSystem);
+            linear = getLinear(i, PointLightDataFromSystem);
+            quadratic = getQuadratic(i, PointLightDataFromSystem);
+            radius = computeRadius(colorArr3, constant, linear, quadratic);
+
+            sc = _getScissorForLight(vMatrix, pMatrix, position, radius, width, height);
+
+            setScissorRegionArrayCache(i, DeferPointLightPassDataFromSystem, sc);
+        }
+
+        if (sc !== null) {
+            gl.scissor(sc[0], sc[1], sc[2], sc[3]);
+        }
+        else{
+            gl.scissor(x, y, width, height);
+        }
+
+        if(isIntensityDirtyFlag){
+            intensity = getIntensity(i, PointLightDataFromSystem);
+        }
+
+        bindPointLightUboData(gl, i, pointLightData, _buildPointLightValueDataMap(position, colorArr3, intensity, constant, linear, quadratic, radius, isIntensityDirtyFlag, isScDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
+
+        drawFullScreenQuad(gl, DeferPointLightPassDataFromSystem);
     }
-    else{
-        isScDirtyFlag = true;
-    }
+}
 
-    if(!isScDirtyFlag){
-        sc = getScissorRegionArrayCache(i, DeferLightPassDataFromSystem);
-    }
-    else{
-        position = getPosition(i, PointLightDataFromSystem);
-        colorArr3 = getColorArr3(i, PointLightDataFromSystem);
-        constant = getConstant(i, PointLightDataFromSystem);
-        linear = getLinear(i, PointLightDataFromSystem);
-        quadratic = getQuadratic(i, PointLightDataFromSystem);
-        radius = computeRadius(colorArr3, constant, linear, quadratic);
+var _setState = (gl:any) => {
+    gl.enable(gl.SCISSOR_TEST);
 
-        sc = _getScissorForLight(vMatrix, pMatrix, position, radius, width, height);
+}
 
-        setScissorRegionArrayCache(i, DeferLightPassDataFromSystem, sc);
-    }
-
-    if (sc !== null) {
-        gl.scissor(sc[0], sc[1], sc[2], sc[3]);
-    }
-    else{
-        gl.scissor(x, y, width, height);
-    }
-
-    if(isIntensityDirtyFlag){
-        intensity = getIntensity(i, PointLightDataFromSystem);
-    }
-
-    bindPointLightUboData(gl, i, pointLightData, _buildPointLightValueDataMap(position, colorArr3, intensity, constant, linear, quadratic, radius, isIntensityDirtyFlag, isScDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
-
-    drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
+var _restoreState = (gl:any) => {
+    gl.disable(gl.SCISSOR_TEST);
 }
 
 var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) => {
