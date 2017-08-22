@@ -6,11 +6,9 @@ export var initData = ({
                            buffer,
                            bufferCount,
                            lightCount
-                           // pointLightGLSLDataStructureMemberNameArr
                        }, PointLightWorkerData: any) => {
     setCount(lightCount, PointLightWorkerData);
 
-    // PointLightWorkerData.lightGLSLDataStructureMemberNameArr = pointLightGLSLDataStructureMemberNameArr;
     createTypeArrays(buffer, bufferCount, PointLightWorkerData);
 }
 export var computeRadius = computeRadiusUtils;

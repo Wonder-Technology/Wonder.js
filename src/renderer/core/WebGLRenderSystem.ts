@@ -131,6 +131,11 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 
 
             return _init(state, {
+                    directionLightData: {
+                        buffer: WebGL2DirectionLightData.buffer,
+                        bufferCount: getDirectionLightBufferCount(),
+                        lightCount: WebGL2DirectionLightData.count
+                    },
                     pointLightData: {
                         buffer: WebGL2PointLightData.buffer,
                         bufferCount: getPointLightBufferCount(),

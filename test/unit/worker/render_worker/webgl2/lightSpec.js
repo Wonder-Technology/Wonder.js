@@ -9,12 +9,12 @@ describe("light", function () {
     var DataBufferConfig = wd.DataBufferConfig;
 
     var AmbientLightData = wd.AmbientLightData;
-    var DirectionLightData = wd.WebGL1DirectionLightData;
-    var PointLightData = wd.WebGL1PointLightData;
+    var DirectionLightData = wd.WebGL2DirectionLightData;
+    var PointLightData = wd.WebGL2PointLightData;
 
     var AmbientLightWorkerData = wdrd.AmbientLightWorkerData;
-    var DirectionLightWorkerData = wdrd.WebGL1DirectionLightWorkerData;
-    var PointLightWorkerData = wdrd.WebGL1PointLightWorkerData;
+    var DirectionLightWorkerData = wdrd.WebGL2DirectionLightWorkerData;
+    var PointLightWorkerData = wdrd.WebGL2PointLightWorkerData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -37,7 +37,7 @@ describe("light", function () {
             });
 
             sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-            sceneTool.addAmbientLight();
+            // sceneTool.addAmbientLight();
             sceneTool.addDirectionLight();
             sceneTool.addDirectionLight();
             sceneTool.addPointLight();
@@ -57,22 +57,22 @@ describe("light", function () {
                 textureData: sinon.match.any,
                 renderData: sinon.match.any,
                 lightData: {
-                    ambientLightData: {
-                        buffer: AmbientLightData.buffer,
-                        bufferCount: DataBufferConfig.ambientLightDataBufferCount,
-                        lightCount: AmbientLightData.count
-                    },
+                    // ambientLightData: {
+                    //     buffer: AmbientLightData.buffer,
+                    //     bufferCount: DataBufferConfig.ambientLightDataBufferCount,
+                    //     lightCount: AmbientLightData.count
+                    // },
                     directionLightData: {
                         buffer: DirectionLightData.buffer,
                         bufferCount: DataBufferConfig.directionLightDataBufferCount,
-                        lightCount: DirectionLightData.count,
-                        directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
+                        lightCount: DirectionLightData.count
+                        // directionLightGLSLDataStructureMemberNameArr: DirectionLightData.lightGLSLDataStructureMemberNameArr
                     },
                     pointLightData: {
                         buffer: PointLightData.buffer,
                         bufferCount: DataBufferConfig.pointLightDataBufferCount,
-                        lightCount: PointLightData.count,
-                        pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
+                        lightCount: PointLightData.count
+                        // pointLightGLSLDataStructureMemberNameArr: PointLightData.lightGLSLDataStructureMemberNameArr
                     }
                 }
             });
@@ -87,17 +87,17 @@ describe("light", function () {
             });
 
             describe("init light data", function () {
-                var ambientLightCount,
-                    directionLightCount, directionLightGLSLDataStructureMemberNameArr,
-                    pointLightCount,
-                    pointLightGLSLDataStructureMemberNameArr = [{a:1}];
+                // var ambientLightCount,
+                    var directionLightCount, directionLightGLSLDataStructureMemberNameArr,
+                    pointLightCount;
+                    // pointLightGLSLDataStructureMemberNameArr = [{a:1}];
 
-                var ambientLightBufferCount,
-                    directionLightBufferCount, pointLightBufferCount;
+                // var ambientLightBufferCount,
+                    var directionLightBufferCount, pointLightBufferCount;
 
 
-                var ambientLightBuffer,
-                    directionLightBuffer,
+                // var ambientLightBuffer,
+                var directionLightBuffer,
                     pointLightBuffer;
 
                 function judgeIsDirtys(dataName, bufferCount, LightWorkerData) {
@@ -110,15 +110,15 @@ describe("light", function () {
                 beforeEach(function () {
                     var maxBufferLength = 10000;
 
-                    ambientLightBufferCount = 10;
+                    // ambientLightBufferCount = 10;
                     directionLightBufferCount = 20;
                     pointLightBufferCount = 30;
 
-                    ambientLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
+                    // ambientLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
                     directionLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
                     pointLightBuffer = bufferTool.createSharedArrayBuffer(maxBufferLength);
 
-                    ambientLightCount = 1;
+                    // ambientLightCount = 1;
                     directionLightCount = 3;
                     directionLightGLSLDataStructureMemberNameArr = [{}];
                     pointLightCount = 0;
@@ -129,22 +129,22 @@ describe("light", function () {
                             geometryData: null,
                             textureData: null,
                             lightData: {
-                                ambientLightData: {
-                                    buffer: ambientLightBuffer,
-                                    bufferCount: ambientLightBufferCount,
-                                   lightCount: ambientLightCount
-                                },
+                                // ambientLightData: {
+                                //     buffer: ambientLightBuffer,
+                                //     bufferCount: ambientLightBufferCount,
+                                //    lightCount: ambientLightCount
+                                // },
                                 directionLightData: {
                                     buffer: directionLightBuffer,
                                     bufferCount: directionLightBufferCount,
                                     lightCount: directionLightCount,
-                                    directionLightGLSLDataStructureMemberNameArr: directionLightGLSLDataStructureMemberNameArr
+                                    // directionLightGLSLDataStructureMemberNameArr: directionLightGLSLDataStructureMemberNameArr
                                 },
                                 pointLightData: {
                                     buffer: pointLightBuffer,
                                     bufferCount: pointLightBufferCount,
                                     lightCount: pointLightCount,
-                                    pointLightGLSLDataStructureMemberNameArr: pointLightGLSLDataStructureMemberNameArr
+                                    // pointLightGLSLDataStructureMemberNameArr: pointLightGLSLDataStructureMemberNameArr
 
                                 }
                             },
@@ -155,18 +155,18 @@ describe("light", function () {
                     workerTool.execRenderWorkerMessageHandler(e);
                 });
 
-                it("init ambient light data", function () {
-                    expect(AmbientLightWorkerData.count).toEqual(ambientLightCount);
-
-                    var colors = AmbientLightWorkerData.colors;
-                    expect(colors).toBeInstanceOf(Float32Array);
-                    expect(colors.byteLength).toEqual(ambientLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
-
-                    judgeIsDirtys("isColorDirtys", ambientLightBufferCount, AmbientLightWorkerData);
-                });
+                // it("init ambient light data", function () {
+                //     expect(AmbientLightWorkerData.count).toEqual(ambientLightCount);
+                //
+                //     var colors = AmbientLightWorkerData.colors;
+                //     expect(colors).toBeInstanceOf(Float32Array);
+                //     expect(colors.byteLength).toEqual(ambientLightBufferCount * Float32Array.BYTES_PER_ELEMENT * 3);
+                //
+                //     judgeIsDirtys("isColorDirtys", ambientLightBufferCount, AmbientLightWorkerData);
+                // });
                 it("init direction light data", function () {
                     expect(DirectionLightWorkerData.count).toEqual(directionLightCount);
-                    expect(DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr).toEqual(directionLightGLSLDataStructureMemberNameArr);
+                    // expect(DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr).toEqual(directionLightGLSLDataStructureMemberNameArr);
 
                     var colors = DirectionLightWorkerData.colors;
                     expect(colors).toBeInstanceOf(Float32Array);
@@ -184,7 +184,7 @@ describe("light", function () {
                 });
                 it("init point light data", function () {
                     expect(PointLightWorkerData.count).toEqual(pointLightCount);
-                    expect(PointLightWorkerData.lightGLSLDataStructureMemberNameArr).toEqual(pointLightGLSLDataStructureMemberNameArr);
+                    // expect(PointLightWorkerData.lightGLSLDataStructureMemberNameArr).toEqual(pointLightGLSLDataStructureMemberNameArr);
 
                     var colors = PointLightWorkerData.colors;
                     expect(colors).toBeInstanceOf(Float32Array);

@@ -1,7 +1,6 @@
 import { initData as initDeviceManagerWorkerDataSystem } from "../renderer/worker/both_file/device/DeviceManagerWorkerSystem";
 import { initData as initProgramWorkerDataSystem } from "../renderer/worker/render_file/shader/program/ProgramWorkerSystem";
 import { initData as initDrawRenderCommandBufferWorkerDataSystem } from "../renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerSystem";
-// import { initData as initGLSLSenderWorkerDataSystem } from "../renderer/worker/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { update } from "../renderer/worker/render_file/texture/TextureWorkerSystem";
 import { initData as initWebGL1LightWorkerDataSystem } from "../renderer/worker/webgl1/render_file/light/LightWorkerSystem";
 import { initData as initWebGL2LightWorkerDataSystem } from "../renderer/worker/webgl2/render_file/light/LightWorkerSystem";

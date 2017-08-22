@@ -1,6 +1,4 @@
 import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
-import { DirectionLightGLSLDataStructure } from "../../../type/dataType";
-import { Vector3 } from "../../../../math/Vector3";
 import {
     cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils,
     cleanPositionDirty as cleanPositionDirtyUtils,

@@ -1,4 +1,4 @@
-import { initData as initDirectionLightData } from "../../../render_file/light/DirectionLightWorkerSystem";
+import { initData as initDirectionLightData } from "./DirectionLightWorkerSystem";
 import { initData as initAmbientLightData } from "../../../render_file/light/AmbientLightWorkerSystem";
 import { initData as initPointLightData } from "./PointLightWorkerSystem";
 import { WebGL1LightInitWorkerData } from "../../../../webgl1/type/messageDataType";

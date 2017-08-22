@@ -3,7 +3,7 @@ var lightTool = (function () {
         resetData: function () {
             var DataBufferConfig = wd.DataBufferConfig;
 
-            wd.initWebGL2LightData(wd.AmbientLightData, wd.WebGL1DirectionLightData, wd.WebGL2PointLightData);
+            wd.initWebGL2LightData(wd.AmbientLightData, wd.WebGL2DirectionLightData, wd.WebGL2PointLightData);
 
             wd.initWebGL2LightWorkerData(
                 {

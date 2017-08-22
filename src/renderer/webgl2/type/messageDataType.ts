@@ -4,12 +4,12 @@ export type WebGL2LightInitWorkerData = {
     //     bufferCount: number;
     //     lightCount: number;
     // };
-    // directionLightData: {
-    //     buffer: SharedArrayBuffer;
-    //     bufferCount: number;
-    //     lightCount: number;
-    //     directionLightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure>;
-    // };
+    directionLightData: {
+        buffer: SharedArrayBuffer;
+        bufferCount: number;
+        lightCount: number;
+        // directionLightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure>;
+    };
     pointLightData: {
         buffer: SharedArrayBuffer;
         bufferCount: number;

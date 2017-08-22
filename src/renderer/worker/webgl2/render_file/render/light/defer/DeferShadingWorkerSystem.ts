@@ -10,10 +10,10 @@ import {
     buildSendUniformDataDataMap
 } from "../../../../../../webgl2/utils/worker/render_file/render/light/defer/deferShadingUtils";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../../../component/light/AmbientLightSystem";
-// import {
-//     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
-//     getPosition as getDirectionLightPosition,
-// } from "../../../../../component/light/DirectionLightSystem";
+import {
+    getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
+    isPositionDirty as isDirectionLightPositionDirty,isColorDirty as isDirectionLightColorDirty,isIntensityDirty as isDirectionLightIntensityDirty, cleanPositionDirty as cleanDirectionLightPositionDirty,cleanColorDirty as cleanDirectionLightColorDirty,cleanIntensityDirty as cleanDirectionLightIntensityDirty,
+} from "../../../../../render_file/light/DirectionLightWorkerSystem";
 import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../../../webgl2/utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import {
     use
@@ -35,7 +35,7 @@ import { directlySendUniformData } from "../../../../../../utils/worker/render_f
 import { buildDrawFuncDataMap } from "../../../../../../webgl2/utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { sendAttributeData } from "../../RenderWorkerSystem";
 import { sendUniformData } from "../LightRenderWorkerSystem";
-import { getPointLightPosition } from "../../../../../render_file/render/RenderWorkerSystem";
+import { getDirectionLightPosition, getPointLightPosition } from "../../../../../render_file/render/RenderWorkerSystem";
 import {
     CameraRenderCommandBufferForDrawData
 } from "../../../../../../utils/worker/render_file/type/dataType";
@@ -49,7 +49,7 @@ export var render = curry((gl:any, state: Map<any, any>, render_config:IRenderCo
     renderDefer(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
-        // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,
+        getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
         getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius, isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
         drawDataMap
     ), initShaderDataMap, bufferData, cameraData);
