@@ -6,10 +6,9 @@ describe("defer shading", function () {
     var GBufferData = wd.GBufferData;
     var ShaderData = wd.WebGL2ShaderData;
     var ProgramData = wd.WebGL2ProgramData;
-    var DeferLightPassData = wd.DeferLightPassData;
+    var DeferDirectionLightPassData = wd.DeferDirectionLightPassData;
+    var DeferPointLightPassData = wd.DeferPointLightPassData;
     var Log = wd.Log;
-    var DataBufferConfig = wd.DataBufferConfig;
-    var PointLightData = wd.WebGL2PointLightData;
 
     function buildGLSL(state) {
         directorTool.init(state);
@@ -19,8 +18,8 @@ describe("defer shading", function () {
         deferShadingTool.enableDeferShading(sandbox);
     }
 
-    function getDeferLightPassProgram() {
-        var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferLightPass"];
+    function getDeferPointLightPassProgram() {
+        var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferPointLightPass"];
 
         return ProgramData.programMap[shaderIndex];
     }
@@ -69,20 +68,9 @@ describe("defer shading", function () {
             it("set shader index to map", function () {
                 directorTool.init(state);
 
-                expect(ShaderData.shaderIndexByShaderNameMap["DeferLightPass"]).toBeNumber();
+                expect(ShaderData.shaderIndexByShaderNameMap["DeferDirectionLightPass"]).toBeNumber();
+                expect(ShaderData.shaderIndexByShaderNameMap["DeferPointLightPass"]).toBeNumber();
             });
-
-            // describe("test glsl", function() {
-            //     beforeEach(function(){
-            //         directorTool.init(state);
-            //     });
-            //
-            //     it("test vs source", function () {
-            //         var vs = materialTool.getVsSource(gl);
-            //
-            //         expect(glslTool.contain(vs, "mat3 normalMatrix = u_normalMatrix;\n")).toBeTruthy();
-            //     });
-            // });
         });
 
         describe("init gBuffer", function () {
@@ -199,28 +187,32 @@ describe("defer shading", function () {
 
         describe("init defer light pass", function () {
             beforeEach(function () {
-
             });
 
             describe("set full screen quad vao data", function () {
-                var vao;
+                var vao1,
+                    vao2;
 
                 beforeEach(function(){
-                    vao = {};
+                    vao1 = {a:1};
+                    vao2 = {a:2};
 
-                    gl.createVertexArray.returns(vao);
+                    gl.createVertexArray.onCall(0).returns(vao1);
+                    gl.createVertexArray.onCall(1).returns(vao2);
                 });
 
                 it("create vao", function () {
                     directorTool.init(state);
 
-                    expect(gl.createVertexArray).toCalledOnce();
-                    expect(DeferLightPassData.fullScreenQuadVertexArray).toEqual(vao);
+                    expect(gl.createVertexArray).toCalledTwice();
+                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
+                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
                 });
                 it("bind vao", function () {
                     directorTool.init(state);
 
-                    expect(gl.bindVertexArray).toCalledWith(vao);
+                    expect(gl.bindVertexArray.getCall(0)).toCalledWith(vao1);
+                    expect(gl.bindVertexArray.getCall(2)).toCalledWith(vao2);
                 });
 
                 describe("create and set buffer", function() {
@@ -259,15 +251,17 @@ describe("defer shading", function () {
                     it("create buffers", function () {
                         directorTool.init(state);
 
-                        expect(gl.createBuffer.callCount).toEqual(2 + 3);
+                        expect(gl.createBuffer.callCount).toEqual(2 + 3 + 3);
                     });
 
                     describe("create and set position buffer", function() {
                         judge(0, 0, 3, new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]));
+                        judge(2, 0, 3, new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]));
                     });
 
                     describe("create and set texCoord buffer", function() {
                         judge(1, 1, 2, new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]));
+                        judge(3, 1, 2, new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]));
                     });
 
                     describe("create and set index buffer", function() {
@@ -295,17 +289,20 @@ describe("defer shading", function () {
                 it("unbind vao", function () {
                     directorTool.init(state);
 
-                    expect(gl.bindVertexArray).toCalledWith(null);
+                    expect(gl.bindVertexArray.getCall(1)).toCalledWith(null);
+                    expect(gl.bindVertexArray.getCall(3)).toCalledWith(null);
                 });
                 it("save vao", function () {
                     directorTool.init(state);
 
-                    expect(DeferLightPassData.fullScreenQuadVertexArray).toEqual(vao);
+                    expect(DeferDirectionLightPassData.fullScreenQuadVertexArray).toEqual(vao1);
+                    expect(DeferPointLightPassData.fullScreenQuadVertexArray).toEqual(vao2);
                 });
                 it("save indices count", function () {
                     directorTool.init(state);
 
-                    expect(DeferLightPassData.fullScreenQuadIndicesCount).toEqual(6);
+                    expect(DeferDirectionLightPassData.fullScreenQuadIndicesCount).toEqual(6);
+                    expect(DeferPointLightPassData.fullScreenQuadIndicesCount).toEqual(6);
                 });
             });
         });
@@ -346,7 +343,7 @@ describe("defer shading", function () {
             it("use DeferLightPass program", function () {
                 directorTool.init(state);
 
-                expect(gl.useProgram).toCalledWith(getDeferLightPassProgram());
+                expect(gl.useProgram).toCalledWith(getDeferPointLightPassProgram());
             });
             it("send position target data after use DeferLightPass program", function () {
                 var positionBufferLocation = 1;
@@ -354,7 +351,7 @@ describe("defer shading", function () {
 
                 directorTool.init(state);
 
-                expect(gl.uniform1i.withArgs(positionBufferLocation)).toCalledAfter(gl.useProgram.withArgs(getDeferLightPassProgram()));
+                expect(gl.uniform1i.withArgs(positionBufferLocation)).toCalledAfter(gl.useProgram.withArgs(getDeferPointLightPassProgram()));
             });
             it("send position,normal,color target datas", function () {
                 var positionBufferLocation = 1;
@@ -375,12 +372,20 @@ describe("defer shading", function () {
         });
 
         describe("test DeferLightPass shader's glsl", function () {
-            function getVsSource(gl) {
+            function getDeferDirectionLightPassVsSource(gl) {
                 return gl.shaderSource.getCall(0).args[1];
             }
 
-            function getFsSource(gl) {
+            function getDeferDirectionLightPassFsSource(gl) {
                 return gl.shaderSource.getCall(1).args[1];
+            }
+
+            function getDeferPointLightPassVsSource(gl) {
+                return gl.shaderSource.getCall(2).args[1];
+            }
+
+            function getDeferPointLightPassFsSource(gl) {
+                return gl.shaderSource.getCall(3).args[1];
             }
 
             beforeEach(function(){
@@ -396,25 +401,63 @@ describe("defer shading", function () {
                 });
             });
 
-            describe("add DeferLightPassCommonShaderLib", function () {
+            describe("add DeferDirectionLightPassCommonShaderLib", function () {
                 describe("test glsl", function () {
                     beforeEach(function () {
                         buildGLSL(state);
                     });
 
-                    // it("test vs source", function () {
-                    //     var vs = getVsSource(gl);
-                    //     expect(glslTool.notContain(vs, /mat2\stranspose\(mat2\sm\)/g)).toBeTruthy();
-                    //     expect(glslTool.notContain(vs, /mat3\stranspose\(mat3\sm\)/g)).toBeTruthy();
-                    // });
                     it("test fs source", function () {
-                        var fs = getFsSource(gl);
+                        var fs = getDeferDirectionLightPassFsSource(gl);
+
+                        expect(glslTool.contain(fs, "vec3 getDirectionLightDirByLightPos(vec3 lightPos){\n    return lightPos - vec3(0.0);\n}\n")).toBeTruthy();
+                    });
+                });
+            });
+
+            describe("add DeferPointLightPassCommonShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    it("test fs source", function () {
+                        var fs = getDeferPointLightPassFsSource(gl);
                         expect(glslTool.contain(fs, "vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){\n    return lightPos - worldPosition;\n}\n")).toBeTruthy();
                     });
                 });
             });
 
-            describe("add DeferLightPassNoNormalMapShaderLib", function () {
+            describe("add DeferDirectionLightPassNoNormalMapShaderLib", function () {
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state);
+                    });
+
+                    describe("test fs source", function () {
+                        it("define getDirectionLightDir func by get directionLightUbo data", function () {
+                            var fs = getDeferDirectionLightPassFsSource(gl);
+
+                            expect(glslTool.containMultiLine(fs, [
+                                "vec3 getDirectionLightDir(){",
+                                "return getDirectionLightDirByLightPos(directionLightUbo.lightPosition.xyz);",
+                                "}"
+                            ])).toBeTruthy();
+                        });
+                        it("define getViewDir func by get cameraUbo data", function () {
+                            var fs = getDeferDirectionLightPassFsSource(gl);
+
+                            expect(glslTool.containMultiLine(fs, [
+                                "vec3 getViewDir(vec3 worldPosition){",
+                                "return normalize(cameraUbo.cameraPos.xyz - worldPosition);",
+                                "}"
+                            ])).toBeTruthy();
+                        });
+                    });
+                });
+            });
+
+            describe("add DeferPointLightPassNoNormalMapShaderLib", function () {
                 describe("test glsl", function () {
                     beforeEach(function () {
                         buildGLSL(state);
@@ -422,7 +465,7 @@ describe("defer shading", function () {
 
                     describe("test fs source", function () {
                         it("define getPointLightDir func by get pointLightUbo data", function () {
-                            var fs = getFsSource(gl);
+                            var fs = getDeferPointLightPassFsSource(gl);
 
                             expect(glslTool.containMultiLine(fs, [
                                 "vec3 getPointLightDir(vec3 worldPosition){",
@@ -431,7 +474,7 @@ describe("defer shading", function () {
                             ])).toBeTruthy();
                         });
                         it("define getViewDir func by get cameraUbo data", function () {
-                            var fs = getFsSource(gl);
+                            var fs = getDeferPointLightPassFsSource(gl);
 
                             expect(glslTool.containMultiLine(fs, [
                                 "vec3 getViewDir(vec3 worldPosition){",
@@ -450,8 +493,10 @@ describe("defer shading", function () {
                     });
 
                     it("test fs source", function () {
-                        var fs = getFsSource(gl);
-                        expect(glslTool.contain(fs, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                        var fs1 = getDeferDirectionLightPassFsSource(gl);
+                        var fs2 = getDeferPointLightPassFsSource(gl);
+                        expect(glslTool.contain(fs1, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                        expect(glslTool.contain(fs2, "vec3 getMaterialLight() {\n        return vec3(0.0);\n    }\n")).toBeTruthy();
                     });
                 });
             });
@@ -463,8 +508,10 @@ describe("defer shading", function () {
                     });
 
                     it("test fs source", function () {
-                        var fs = getFsSource(gl);
-                        expect(glslTool.contain(fs, "vec3 getMaterialEmission() {\n    //todo support emission color\n//        return u_emission;\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                        var fs1 = getDeferDirectionLightPassFsSource(gl);
+                        var fs2 = getDeferPointLightPassFsSource(gl);
+                        expect(glslTool.contain(fs1, "vec3 getMaterialEmission() {\n    //todo support emission color\n//        return u_emission;\n        return vec3(0.0);\n    }\n")).toBeTruthy();
+                        expect(glslTool.contain(fs2, "vec3 getMaterialEmission() {\n    //todo support emission color\n//        return u_emission;\n        return vec3(0.0);\n    }\n")).toBeTruthy();
                     });
                 });
             });
@@ -476,13 +523,15 @@ describe("defer shading", function () {
                     });
 
                     it("test fs source", function () {
-                        var fs = getFsSource(gl);
-                        expect(glslTool.contain(fs, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
+                        var fs1 = getDeferDirectionLightPassFsSource(gl);
+                        var fs2 = getDeferPointLightPassFsSource(gl);
+                        expect(glslTool.contain(fs1, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
+                        expect(glslTool.contain(fs2, "vec3 getShadowVisibility() {\n        return vec3(1.0);\n    }\n")).toBeTruthy();
                     });
                 });
             });
 
-            describe("add DeferLightPassShaderLib", function () {
+            describe("add DeferDirectionLightPassShaderLib", function () {
                 var material;
                 var cameraGameObject;
                 var geo;
@@ -496,23 +545,15 @@ describe("defer shading", function () {
                 });
 
                 describe("set full screen quad vertex vao data", function() {
-                    var vao;
+                    var vao1,
+                        vao2;
 
                     beforeEach(function(){
-                        vao = {a:1};
+                        vao1 = {a:1};
+                        vao2 = {a:2};
 
-                        gl.createVertexArray.onCall(0).returns(vao);
-                    });
-
-                    it("create vao", function () {
-                        directorTool.init(state);
-
-                        expect(gl.createVertexArray).toCalledOnce();
-                    });
-                    it("bind vao", function () {
-                        directorTool.init(state);
-
-                        expect(gl.bindVertexArray.withArgs(vao)).toCalledOnce();
+                        gl.createVertexArray.onCall(0).returns(vao1);
+                        gl.createVertexArray.onCall(1).returns(vao2);
                     });
 
                     describe("set a_position array buffer", function () {
@@ -531,8 +572,8 @@ describe("defer shading", function () {
                             var data = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]);
 
 
-                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
-                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
+                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledTwice();
                         });
                     });
 
@@ -552,8 +593,8 @@ describe("defer shading", function () {
                             var data = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
 
 
-                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
-                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledOnce();
+                            expect(gl.bufferData.withArgs(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
+                            expect(gl.vertexAttribPointer.withArgs(pos,size,"FLOAT",false,0,0)).toCalledTwice();
                         });
 
                         describe("set indices index buffer", function () {
@@ -567,7 +608,7 @@ describe("defer shading", function () {
                                 var data = new Uint16Array([0, 1, 2, 0, 2, 3]);
 
 
-                                expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledOnce();
+                                expect(gl.bufferData.withArgs(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW)).toCalledTwice();
                             });
                         });
                     });
@@ -575,7 +616,7 @@ describe("defer shading", function () {
                     it("unbind vao", function () {
                         directorTool.init(state);
 
-                        expect(gl.bindVertexArray.withArgs(null)).toCalledOnce();
+                        expect(gl.bindVertexArray.withArgs(null)).toCalledTwice();
                     });
                 });
 
@@ -589,11 +630,67 @@ describe("defer shading", function () {
                         var vs;
 
                         beforeEach(function(){
-                            vs = getVsSource(gl);
+                            vs = getDeferDirectionLightPassVsSource(gl);
                         });
 
                         it("define attribute", function () {
                             expect(glslTool.contain(vs, "layout(location=0) in vec3 a_position;"));
+
+                        });
+                        it("set v_texcoord", function () {
+                            expect(glslTool.contain(vs, "out vec2 v_texcoord;"));
+
+                        });
+                        it("set gl_Position with full screen", function () {
+                            expect(glslTool.contain(vs, "gl_Position = vec4(a_position, 1.0);"));
+                        });
+                    });
+
+                    describe("test fs source", function () {
+                        var fs;
+
+                        beforeEach(function(){
+                            fs = getDeferDirectionLightPassFsSource(gl);
+                        });
+
+                        it("in v_texCoord", function () {
+                            expect(glslTool.contain(fs, "in vec2 v_texcoord;")).toBeTruthy();
+                        });
+                        it("use diffuse color as specular color", function () {
+                            expect(glslTool.contain(fs, "vec3 getSpecularColor(vec3 diffuseColor)\n{\n    return diffuseColor;\n}")).toBeTruthy();
+                        });
+                    });
+                });
+            });
+
+            describe("add DeferPointLightPassShaderLib", function () {
+                var material;
+                var cameraGameObject;
+                var geo;
+
+                beforeEach(function(){
+                    var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+
+                    material = data.material;
+                    cameraGameObject = data.cameraGameObject;
+                    geo = data.geometry;
+                });
+
+                describe("test glsl", function () {
+                    beforeEach(function () {
+                        buildGLSL(state)
+                    });
+
+                    describe("test vs source", function () {
+                        var vs;
+
+                        beforeEach(function(){
+                            vs = getDeferPointLightPassVsSource(gl);
+                        });
+
+                        it("define attribute", function () {
+                            expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
+
                             expect(glslTool.contain(vs, "layout(location=1) in vec2 a_texCoord;"));
                         });
                         it("set v_texcoord", function () {
@@ -609,7 +706,7 @@ describe("defer shading", function () {
                         var fs;
 
                         beforeEach(function(){
-                            fs = getFsSource(gl);
+                            fs = getDeferPointLightPassFsSource(gl);
                         });
 
                         it("in v_texCoord", function () {
@@ -632,8 +729,13 @@ describe("defer shading", function () {
                     });
 
                     it("test fs source", function () {
-                        var fs = getFsSource(gl);
-                        expect(glslTool.containMultiLine(fs, [
+                        var fs1 = getDeferDirectionLightPassFsSource(gl);
+                        var fs2 = getDeferPointLightPassFsSource(gl);
+                        expect(glslTool.containMultiLine(fs1, [
+                            "out vec4 fragColor;\n",
+                            "fragColor = totalColor;\n"
+                        ])).toBeTruthy();
+                        expect(glslTool.containMultiLine(fs2, [
                             "out vec4 fragColor;\n",
                             "fragColor = totalColor;\n"
                         ])).toBeTruthy();

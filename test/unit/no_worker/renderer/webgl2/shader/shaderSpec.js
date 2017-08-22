@@ -28,11 +28,11 @@ describe("shader", function() {
 
     describe("use shader for material", function(){
         function isInitShader(expect, gl) {
-            expect(gl.createProgram.callCount).toEqual(2);
+            expect(gl.createProgram.callCount).toEqual(3);
         }
 
         function getUsedShaderShaderIndex() {
-            return 1;
+            return 2;
         }
 
         it("init material shader", function () {
@@ -47,7 +47,6 @@ describe("shader", function() {
 
             expect(MaterialData.shaderIndices[material.index]).toEqual(getUsedShaderShaderIndex());
         });
-
     });
 
     describe("optimize", function() {
@@ -60,9 +59,11 @@ describe("shader", function() {
             directorTool.init(state);
             directorTool.loopBody(state);
 
+            var callCount = gl.createProgram.callCount;
+
             directorTool.loopBody(state);
 
-            expect(gl.createProgram.callCount).toEqual(2);
+            expect(gl.createProgram.callCount).toEqual(callCount);
         });
 
         it("only exec branch func to get material shader lib name array of the same shader once", function () {

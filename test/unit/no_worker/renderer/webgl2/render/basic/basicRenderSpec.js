@@ -34,11 +34,11 @@ describe("basic render", function () {
         var cameraGameObject;
 
         function getVsSource(gl) {
-            return gl.shaderSource.getCall(2).args[1];
+            return gl.shaderSource.getCall(4).args[1];
         }
 
         function getFsSource(gl) {
-            return gl.shaderSource.getCall(3).args[1];
+            return gl.shaderSource.getCall(5).args[1];
         }
 
         beforeEach(function(){

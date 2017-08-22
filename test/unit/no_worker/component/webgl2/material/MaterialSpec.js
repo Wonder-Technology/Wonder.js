@@ -25,15 +25,16 @@ describe("Material", function() {
         });
 
         describe("init all no material shaders", function () {
-            it("init DeferLightPass shader", function () {
+            it("init DeferDirectionLightPass,DeferPointLightPass shader", function () {
                 deferShadingTool.useDeferShading(sandbox);
 
                 sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
                 directorTool.init(state);
 
-                expect(gl.linkProgram).toCalledOnce();
-                expect(ShaderData.shaderIndexByShaderNameMap["DeferLightPass"]).toBeNumber();
+                expect(gl.linkProgram).toCalledTwice();
+                expect(ShaderData.shaderIndexByShaderNameMap["DeferDirectionLightPass"]).toBeNumber();
+                expect(ShaderData.shaderIndexByShaderNameMap["DeferPointLightPass"]).toBeNumber();
             });
         });
 

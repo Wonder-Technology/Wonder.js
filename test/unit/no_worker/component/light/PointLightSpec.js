@@ -148,5 +148,16 @@ describe("PointLight", function () {
             });
         });
     });
+
+    //todo test ambient light
+    it("buffer count should equal DataBufferConfig.pointLightDataBufferCount", function () {
+        testTool.clearAndOpenContractCheck(sandbox, {
+            pointLightDataBufferCount:4
+        });
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        expect(pointLightSystemTool.getData().intensities.length).toEqual(4);
+    });
 });
 

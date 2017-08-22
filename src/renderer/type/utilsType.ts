@@ -1,8 +1,3 @@
-export type DeferDrawDataMap = {
-    GBufferDataFromSystem: any;
-    DeferLightPassDataFromSystem: any;
-}
-
 export type SendUniformDataGLSLSenderDataMap = {
     sendMatrix3: Function;
     sendMatrix4: Function;

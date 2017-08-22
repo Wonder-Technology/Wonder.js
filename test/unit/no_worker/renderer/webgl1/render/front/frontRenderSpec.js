@@ -14,7 +14,7 @@ describe("front render", function () {
     var ELightModel = wd.ELightModel;
     var PointLight = wd.PointLight;
     var PointLightData = wd.WebGL1PointLightData;
-    var DirectionLightData = wd.DirectionLightData;
+    var DirectionLightData = wd.WebGL1DirectionLightData;
     var AmbientLightData = wd.AmbientLightData;
 
     function buildGLSL(sandbox, state) {

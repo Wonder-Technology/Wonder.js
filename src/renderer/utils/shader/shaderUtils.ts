@@ -42,7 +42,6 @@ export var initMaterialShader = (state: Map<any, any>, materialIndex:number | nu
     return shaderIndex;
 }
 
-//todo test fix: test two no mateial shaders
 export var initNoMaterialShader = (state: Map<any, any>, shaderName:string, materialShaderLibConfig:MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator | IWebGL2ShaderLibContentGenerator, init:Function, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap | IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,

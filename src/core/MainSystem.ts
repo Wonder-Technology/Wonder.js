@@ -89,9 +89,10 @@ import { initData as initWebGL2ShaderData } from "../renderer/webgl2/shader/Shad
 import { WebGL1ShaderData } from "../renderer/webgl1/shader/ShaderData";
 import { WebGL2ShaderData } from "../renderer/webgl2/shader/ShaderData";
 import { initData as initDeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
-import { DeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassData";
 import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
 import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
+import { DeferDirectionLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferDirectionLightPassData";
+import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferPointLightPassData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
     canvasId = "",
@@ -293,7 +294,7 @@ else{
 
         initVaoData(VaoData);
 
-        initDeferLightPassData(DeferLightPassData);
+        initDeferLightPassData(DeferDirectionLightPassData, DeferPointLightPassData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {

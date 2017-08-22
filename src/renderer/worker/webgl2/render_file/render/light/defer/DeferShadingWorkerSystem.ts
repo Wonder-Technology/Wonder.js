@@ -1,5 +1,5 @@
 import curry from "wonder-lodash/curry";
-import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../../../type/utilsType";
 import { LightRenderCommandBufferForDrawData} from "../../../../../../utils/worker/render_file/type/dataType";
 import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator_interface";
@@ -41,6 +41,7 @@ import {
 } from "../../../../../../utils/worker/render_file/type/dataType";
 import { computeRadius } from "../../../light/PointLightWorkerSystem";
 import { IWebGL2DrawDataMap } from "../../../../../../webgl2/utils/worker/render_file/interface/IUtils";
+import { DeferDrawDataMap } from "../../../../../../webgl2/utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 

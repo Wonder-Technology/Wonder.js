@@ -3,11 +3,7 @@ describe("Light", function () {
 
     var Color = wd.Color;
     var Light = wd.Light;
-    var AmbientLight = wd.AmbientLight;
     var AmbientLightData = wd.AmbientLightData;
-
-    var DirectionLight = wd.DirectionLight;
-    var DirectionLightData = wd.DirectionLightData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -87,7 +83,7 @@ describe("Light", function () {
                         judgeNotAlive(light1, "getGameObject", expect, ambientLightTool);
                         expect(directionLightTool.getGameObject(light2)).toEqual(obj2);
                         expect(AmbientLightData.gameObjectMap.length).toEqual(0);
-                        expect(DirectionLightData.gameObjectMap.length).toEqual(2);
+                        expect(directionLightSystemTool.getData().gameObjectMap.length).toEqual(2);
                     });
                 });
             });
@@ -101,9 +97,9 @@ describe("Light", function () {
                 it("swap with last one and remove the last one", function () {
                     gameObjectTool.disposeComponent(obj2, light2);
 
-                    expect(DirectionLightData.lightMap[0]).toEqual(light3);
+                    expect(directionLightSystemTool.getData().lightMap[0]).toEqual(light3);
                     expect(AmbientLightData.lightMap.length).toEqual(1);
-                    expect(DirectionLightData.lightMap.length).toEqual(1);
+                    expect(directionLightSystemTool.getData().lightMap.length).toEqual(1);
                 });
             });
         });

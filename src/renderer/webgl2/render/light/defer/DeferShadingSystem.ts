@@ -1,4 +1,4 @@
-import { DeferDrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../type/utilsType";
 import curry from "wonder-lodash/curry";
 import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
@@ -37,6 +37,7 @@ import { sendAttributeData } from "../../RenderSystem";
 import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap } from "../../../utils/worker/render_file/interface/IUtils";
+import { DeferDrawDataMap } from "../../../utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 

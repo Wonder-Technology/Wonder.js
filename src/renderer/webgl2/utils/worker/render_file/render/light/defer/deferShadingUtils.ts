@@ -4,7 +4,7 @@ import { init as initDeferLightPass } from "./light/deferLightPassUtils";
 import { use } from "../../../../../../../utils/worker/render_file/shader/shaderUtils";
 import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../../../../type/utilsType";
 import {
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../utils/worker/render_file/type/dataType";
@@ -14,29 +14,28 @@ import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/Idraw";
 import { draw as deferDraw } from "../../../../../draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../interface/IUtils";
+import { DeferDrawDataMap } from "../../../type/utilsType";
 
-export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
+export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
     initGBuffer(gl, GBufferDataFromSystem);
 
     //todo refactor: when switch to defer shading, bind and send gbuffer textures
 
     bindGBufferTargets(gl, GBufferDataFromSystem);
 
-    //todo fix, separate initDeferLightPass?
-    //todo fix, separate DeferLightPassDataFromSystem?
-    let program:WebGLProgram = null,
-        pointLightShaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
+    _initDeferLightPass(gl, "DeferDirectionLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferDirectionLightPassDataFromSystem);
+    _initDeferLightPass(gl, "DeferPointLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferPointLightPassDataFromSystem);
+}
 
-    initDeferLightPass(gl, pointLightShaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
+var _initDeferLightPass = (gl:any, shaderName:string, ShaderDataFromSystem:any, GLSLSenderDataFromSystem:any, ProgramDataFromSystem:any, LocationDataFromSystem:any, DeferLightPassDataFromSystem:any) => {
+    var program:WebGLProgram = null,
+        shaderIndex:number = null;
 
-    program = use(gl, pointLightShaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    shaderIndex = getNoMaterialShaderIndex(shaderName, ShaderDataFromSystem);
 
-    sendGBufferTargetData(gl, program);
+    initDeferLightPass(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 
-    //todo refactor
-    let directionLightShaderIndex = getNoMaterialShaderIndex("DeferDirectionLightPass", ShaderDataFromSystem);
-
-    program = use(gl, directionLightShaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    program = use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
     sendGBufferTargetData(gl, program);
 }

@@ -18,7 +18,8 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     use,
     unbindGBuffer
 }, drawDataMap:IWebGL2DrawDataMap, {
-                                DeferLightPassDataFromSystem
+                                DeferDirectionLightPassDataFromSystem,
+    DeferPointLightPassDataFromSystem
                             }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
     var {
             ShaderDataFromSystem
@@ -36,9 +37,6 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     unbindGBuffer(gl);
 
 
-    sendAttributeData(gl, DeferLightPassDataFromSystem);
-
-
     gl.depthMask(false);
     gl.disable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
@@ -50,6 +48,10 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
 
     //todo refactor: extract direction light, point light draw
+
+
+    sendAttributeData(gl, DeferDirectionLightPassDataFromSystem);
+
 
     shaderIndex = getNoMaterialShaderIndex("DeferDirectionLightPass", ShaderDataFromSystem);
 
@@ -93,7 +95,7 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
         bindDirectionLightUboData(gl, i, directionLightData, _buildDirectionLightValueDataMap(position, colorArr3, intensity, isPositionDirtyFlag, isColorDirtyFlag,  isIntensityDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
 
-        drawFullScreenQuad(gl, DeferLightPassDataFromSystem);
+        drawFullScreenQuad(gl, DeferDirectionLightPassDataFromSystem);
     }
 
 
@@ -107,16 +109,16 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     } = getViewport(state),
         pointLightData = sendDataMap.pointLightData;
 
+    sendAttributeData(gl, DeferPointLightPassDataFromSystem);
+
     shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
 
     use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
-    // sendAttributeData(gl, DeferLightPassDataFromSystem);
-
-    //todo support ambient, direction light
+    //todo support ambient light
 
     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-        _draw(gl, i, drawDataMap, pointLightData, x, y, width, height, vMatrix, pMatrix, DeferLightPassDataFromSystem);
+        _draw(gl, i, drawDataMap, pointLightData, x, y, width, height, vMatrix, pMatrix, DeferPointLightPassDataFromSystem);
     }
 
     unbindVao(gl);

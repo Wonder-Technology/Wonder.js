@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, InitShaderDataMap } from "../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../type/utilsType";
 import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { render as deferRender } from "./light/defer/DeferShadingWorkerSystem";
 import {
@@ -11,7 +11,7 @@ import {
     sendAttributeData as sendAttributeDataUtils
 } from "../../../../webgl2/utils/worker/render_file/render/renderUtils";
 import { RenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
-import { WebGL2DrawDataMap } from "../../../../webgl2/utils/worker/render_file/type/utilsType";
+import { DeferDrawDataMap, WebGL2DrawDataMap } from "../../../../webgl2/utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 

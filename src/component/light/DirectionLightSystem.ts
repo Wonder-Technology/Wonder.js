@@ -29,7 +29,6 @@ import { DirectorData } from "../../core/DirectorData";
 import { expect } from "wonder-expect.js";
 
 export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
-    //todo test
     it("shouldn't create after Director->init", () => {
         expect(isInit(DirectorData)).false;
     });
@@ -88,7 +87,6 @@ export var disposeComponent = (component: Light, DirectionLightData:any) => {
 
     deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, DirectionLightData.intensities, DirectionLightData.defaultIntensity);
 
-    //todo test
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isPositionDirtys, DirectionLightData.defaultDirty);
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isColorDirtys, DirectionLightData.defaultDirty);
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isIntensityDirtys, DirectionLightData.defaultDirty);

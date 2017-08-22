@@ -3,24 +3,8 @@ describe("defer shading", function () {
     var gl;
     var state;
 
-    var GBufferData = wd.GBufferData;
-    var ShaderData = wd.WebGL2ShaderData;
-    var ProgramData = wd.ProgramData;
-    var DeferLightPassData = wd.DeferLightPassData;
-    var Log = wd.Log;
-
-    function buildGLSL(sandbox, state) {
-        return glslTool.buildGLSL(sandbox, state);
-    }
-
     function enableDeferShading(sandbox) {
         deferShadingTool.enableDeferShading(sandbox);
-    }
-
-    function getDeferLightPassProgram() {
-        var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferLightPass"];
-
-        return ProgramData.programMap[shaderIndex];
     }
 
     beforeEach(function () {
@@ -43,11 +27,11 @@ describe("defer shading", function () {
         beforeEach(function(){
         });
 
-        //todo test direction, ambient
-        describe("support DataBufferConfig.pointLightCount point lights", function () {
+        //todo test ambient
+        describe("point lights' max count should be DataBufferConfig.deferPointLightCount", function () {
             beforeEach(function () {
                 testTool.clearAndOpenContractCheck(sandbox, {
-                    pointLightCount:10,
+                    deferPointLightCount:5,
                     transformDataBufferCount:100
                 });
 
@@ -55,7 +39,7 @@ describe("defer shading", function () {
             });
 
             it("test not exceed", function () {
-                for(var i = 0; i < 10; i++){
+                for(var i = 0; i < 5; i++){
                     sceneTool.addPointLight();
                 }
 
@@ -64,8 +48,38 @@ describe("defer shading", function () {
                 }).not.toThrow();
             });
             it("if exceed, error", function () {
-                for(var i = 0; i < 11; i++){
+                for(var i = 0; i < 6; i++){
                     sceneTool.addPointLight();
+                }
+
+                expect(function () {
+                    directorTool.init(state);
+                }).toThrow("count should <= max count");
+            });
+        });
+
+        describe("direction lights' max count should be DataBufferConfig.deferDirectionLightCount", function () {
+            beforeEach(function () {
+                testTool.clearAndOpenContractCheck(sandbox, {
+                    deferDirectionLightCount:5,
+                    transformDataBufferCount:100
+                });
+
+                state = stateTool.createAndSetFakeGLState(sandbox);
+            });
+
+            it("test not exceed", function () {
+                for(var i = 0; i < 5; i++){
+                    sceneTool.addDirectionLight();
+                }
+
+                expect(function () {
+                    directorTool.init(state);
+                }).not.toThrow();
+            });
+            it("if exceed, error", function () {
+                for(var i = 0; i < 6; i++){
+                    sceneTool.addDirectionLight();
                 }
 
                 expect(function () {
@@ -76,11 +90,11 @@ describe("defer shading", function () {
 
         it("if one material set diffuse map, one not, then the two should has different shaders", function(){
             function getFirstGBufferFsSource(gl) {
-                return gl.shaderSource.getCall(3).args[1];
+                return gl.shaderSource.getCall(5).args[1];
             }
 
             function getSecondGBufferFsSource(gl) {
-                return gl.shaderSource.getCall(5).args[1];
+                return gl.shaderSource.getCall(7).args[1];
             }
 
             var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());

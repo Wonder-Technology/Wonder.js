@@ -2,7 +2,7 @@ import { Log } from "../../../../../../utils/Log";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
-import { DeferDrawDataMap, InitShaderDataMap } from "../../../../../type/utilsType";
+import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { clear } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindFrameUboData, init as initUbo } from "../ubo/uboManagerUtils";
 import { Map } from "immutable";
@@ -11,13 +11,14 @@ import { init as initDefer } from "./light/defer/deferShadingUtils";
 import { getVao, isVaoExist } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 import { bindVao, createAndInitVao } from "../shader/shaderUtils";
 import { IWebGL2DrawDataMap } from "../interface/IUtils";
+import { DeferDrawDataMap } from "../type/utilsType";
 
-export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)){
         Log.warn("defer shading need support extensionColorBufferFloat extension");
     }
     else{
-        initDefer(gl, DataBufferConfig, GBufferDataFromSystem, DeferLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        initDefer(gl, DataBufferConfig, GBufferDataFromSystem, DeferDirectionLightPassDataFromSystem, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
     initUbo(gl, render_config, GLSLSenderDataFromSystem);

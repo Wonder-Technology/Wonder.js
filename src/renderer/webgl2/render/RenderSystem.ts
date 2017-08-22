@@ -6,13 +6,14 @@ import curry from "wonder-lodash/curry";
 import { IRenderConfig } from "../../worker/both_file/data/render_config";
 import { getGL } from "../../device/DeviceManagerSystem";
 import { Map } from "immutable";
-import { DeferDrawDataMap, InitShaderDataMap } from "../../type/utilsType";
+import { InitShaderDataMap } from "../../type/utilsType";
 import { IMaterialConfig } from "../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
 import { render as deferRender} from "./light/defer/DeferShadingSystem";
 import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap } from "../utils/worker/render_file/interface/IUtils";
+import { DeferDrawDataMap } from "../utils/worker/render_file/type/utilsType";
 
 export var init = initUtils;
 

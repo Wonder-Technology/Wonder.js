@@ -37,7 +37,6 @@ import { TextureCacheData } from "../texture/TextureCacheData";
 import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
 import { buildInitShaderDataMap } from "../utils/worker/render_file/material/materialUtils";
-import { DeferLightPassData } from "../webgl2/render/light/defer/light/DeferLightPassData";
 import { initMaterialShader as initMaterialShaderWebGL2, initNoMaterialShader as initNoMaterialShaderWebGL2 } from "../webgl2/shader/ShaderSystem";
 import { webgl1_shaderLib_generator } from "../worker/webgl1/both_file/data/shaderLib_generator";
 import { webgl2_shaderLib_generator } from "../worker/webgl2/both_file/data/shaderLib_generator";
@@ -77,10 +76,11 @@ import { WebGL1ShaderData } from "../webgl1/shader/ShaderData";
 import { WebGL2ShaderData } from "../webgl2/shader/ShaderData";
 import { WebGL1DirectionLightData } from "../webgl1/light/DirectionLightData";
 import { WebGL2DirectionLightData } from "../webgl2/light/DirectionLightData";
+import { DeferDirectionLightPassData } from "../webgl2/render/light/defer/light/DeferDirectionLightPassData";
+import { DeferPointLightPassData } from "../webgl2/render/light/defer/light/DeferPointLightPassData";
 
 var _checkLightCount = requireCheckFunc((directionLightCount:number, pointLightCount:number, DirectionLightData:any, PointLightData: any) => {
     it("count should <= max count", () => {
-        //todo test check direction
         expect(DirectionLightData.count).lte(directionLightCount);
         expect(PointLightData.count).lte(pointLightCount);
     })
@@ -235,14 +235,14 @@ else {
 
             initWebGL2Material(state, gl, webgl2_material_config, webgl2_shaderLib_generator, initNoMaterialShaderWebGL2, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, WebGL2GLSLSenderData, WebGL2ProgramData, VaoData, WebGL2LocationData, WebGL2ShaderData);
 
-            initWebGL2Render(gl, render_config, DataBufferConfig, GBufferData, DeferLightPassData, WebGL2ShaderData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GPUDetectData);
+            initWebGL2Render(gl, render_config, DataBufferConfig, GBufferData, DeferDirectionLightPassData, DeferPointLightPassData, WebGL2ShaderData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GPUDetectData);
 
             _checkLightCount(DataBufferConfig.deferDirectionLightCount, DataBufferConfig.deferPointLightCount, WebGL2DirectionLightData, WebGL2PointLightData);
         }
 
         render = (state: Map<any, any>) => {
             return compose(
-                renderWebGL2(state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildWebGL2DrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GeometryData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferLightPassData), buildInitShaderDataMap(DeviceManagerData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, WebGL2ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, WebGL2DirectionLightData, WebGL2PointLightData, GPUDetectData, VaoData), ThreeDTransformData, GameObjectData),
+                renderWebGL2(state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildWebGL2DrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GeometryData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferDirectionLightPassData, DeferPointLightPassData), buildInitShaderDataMap(DeviceManagerData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, WebGL2ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, WebGL2DirectionLightData, WebGL2PointLightData, GPUDetectData, VaoData), ThreeDTransformData, GameObjectData),
                 clearColor(null, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),

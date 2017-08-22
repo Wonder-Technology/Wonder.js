@@ -33,7 +33,7 @@ describe("test init ubo", function () {
         it("create uniform buffers", function(){
             directorTool.init(state);
 
-            expect(gl.createBuffer.callCount).toEqual(5);
+            expect(gl.createBuffer.callCount).toEqual(8);
         });
 
         describe("allocate binding point", function () {

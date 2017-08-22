@@ -3,17 +3,18 @@ describe("DirectionLight", function () {
     var state;
 
     var Light = wd.Light;
-    var DirectionLight = wd.DirectionLight;
-    var DirectionLightData = wd.DirectionLightData;
     var Vector3 = wd.Vector3;
     var ThreeDTransform = wd.ThreeDTransform;
     var Matrix4 = wd.Matrix4;
     var Color = wd.Color;
+    var DirectionLightData = null;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
         testTool.clearAndOpenContractCheck(sandbox);
+
+        DirectionLightData = directionLightSystemTool.getData();
 
         var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
@@ -29,20 +30,17 @@ describe("DirectionLight", function () {
 
         });
 
-        // describe("contract check", function(){
-        //     it("count should <= max count", function () {
-        //         var msg = "count should <= max count";
-        //         directionLightTool.create();
-        //         directionLightTool.create();
-        //         directionLightTool.create();
-        //         directionLightTool.create();
-        //
-        //         expect(function(){
-        //
-        //             directionLightTool.create();
-        //         }).toThrow(msg);
-        //     });
-        // });
+        describe("contract check", function(){
+            it("shouldn't create after Director->init", function () {
+                directionLightTool.create();
+
+                directorTool.init(state);
+
+                expect(function(){
+                    directionLightTool.create();
+                }).toThrow("shouldn't create after Director->init");
+            });
+        });
 
         describe("set default render data", function () {
             it("set colorArr to be [1,1,1]", function () {
@@ -160,7 +158,17 @@ describe("DirectionLight", function () {
             });
         });
 
-        specifyLightSystemTool.jugdgeDisposeComponent(directionLightTool, "addDirectionLight", describe, it, expect, DirectionLightData);
+        specifyLightSystemTool.jugdgeDisposeComponent(directionLightTool, "addDirectionLight", describe, it, expect, directionLightSystemTool.getData());
+    });
+
+    it("buffer count should equal DataBufferConfig.directionLightDataBufferCount", function () {
+        testTool.clearAndOpenContractCheck(sandbox, {
+            directionLightDataBufferCount:4
+        });
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        expect(directionLightSystemTool.getData().intensities.length).toEqual(4);
     });
 });
 

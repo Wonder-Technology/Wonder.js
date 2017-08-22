@@ -3,7 +3,7 @@ var lightTool = (function () {
         resetData: function () {
             var DataBufferConfig = wd.DataBufferConfig;
 
-            wd.initWebGL1LightData(wd.AmbientLightData, wd.DirectionLightData, wd.WebGL1PointLightData);
+            wd.initWebGL1LightData(wd.AmbientLightData, wd.WebGL1DirectionLightData, wd.WebGL1PointLightData);
 
             wd.initWebGL1LightWorkerData(
                 {
@@ -20,7 +20,7 @@ var lightTool = (function () {
                         buffer: {},
                         count: DataBufferConfig.pointLightDataBufferCount
                     }
-                }, wdrd.AmbientLightWorkerData, wdrd.DirectionLightWorkerData, wdrd.WebGL1PointLightWorkerData);
+                }, wdrd.AmbientLightWorkerData, wdrd.WebGL1DirectionLightWorkerData, wdrd.WebGL1PointLightWorkerData);
         }
     }
 }());
