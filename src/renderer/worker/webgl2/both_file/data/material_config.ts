@@ -143,12 +143,29 @@ export const webgl2_material_config = {
             ]
         },
         "noMaterialShaders": {
+            "DeferAmbientLightPass": [
+                //todo test: zero 0
+                { "type": "group", "value": "deferLightPassIndexZeroUbo" },
+
+                "AmbientLightUboShaderLib",
+
+                "DeferLightPassCommonShaderLib",
+
+                "NoLightMapShaderLib",
+
+                "DeferLightPassShaderLib",
+                "DeferAmbientLightPassShaderLib",
+
+                "DeferLightPassEndShaderLib"
+            ],
             "DeferDirectionLightPass": [
+                { "type": "group", "value": "deferLightPassIndexZeroUbo" },
                 { "type": "group", "value": "deferLightPassUbo" },
 
                 "DirectionLightUboShaderLib",
 
                 "DeferLightPassCommonShaderLib",
+                "DeferDirectionLightPointLightPassCommonShaderLib",
                 "DeferDirectionLightPassCommonShaderLib",
 
                 { "type": "group", "value": "deferLightPassLightMap" },
@@ -162,11 +179,13 @@ export const webgl2_material_config = {
                 "DeferLightPassEndShaderLib"
             ],
             "DeferPointLightPass": [
+                { "type": "group", "value": "deferLightPassIndexZeroUbo" },
                 { "type": "group", "value": "deferLightPassUbo" },
 
                 "PointLightUboShaderLib",
 
                 "DeferLightPassCommonShaderLib",
+                "DeferDirectionLightPointLightPassCommonShaderLib",
                 "DeferPointLightPassCommonShaderLib",
 
                 { "type": "group", "value": "deferLightPassLightMap" },
@@ -189,8 +208,10 @@ export const webgl2_material_config = {
             "CameraUboShaderLib"
         ],
 
+        "deferLightPassIndexZeroUbo": [
+            "CameraUboShaderLib"
+        ],
         "deferLightPassUbo": [
-            "CameraUboShaderLib",
             "LightUboShaderLib"
         ],
         "deferLightPassLightMap": [
@@ -199,16 +220,6 @@ export const webgl2_material_config = {
             "NoEmissionMapShaderLib",
             "NoShadowMapShaderLib"
         ],
-        // "deferLightPass": [
-        //         "CameraUboShaderLib",
-        //         "LightUboShaderLib",
-        //
-        //         "DeferLightPassCommonShaderLib",
-        //         "DeferLightPassNoNormalMapShaderLib",
-        //
-        //         "DeferLightPassShaderLib",
-        //         "DeferLightPassEndShaderLib"
-        // ],
         "engineMaterialEnd": [
             "EndShaderLib"
         ]

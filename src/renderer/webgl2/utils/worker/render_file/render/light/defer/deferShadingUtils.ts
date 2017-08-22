@@ -16,13 +16,14 @@ import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../interface/IUtils";
 import { DeferDrawDataMap } from "../../../type/utilsType";
 
-export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
+export var init = (gl:any, DataBufferConfig:any, GBufferDataFromSystem:any, DeferAmbientLightPassDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem:any, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem) => {
     initGBuffer(gl, GBufferDataFromSystem);
 
     //todo refactor: when switch to defer shading, bind and send gbuffer textures
 
     bindGBufferTargets(gl, GBufferDataFromSystem);
 
+    _initDeferLightPass(gl, "DeferAmbientLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferAmbientLightPassDataFromSystem);
     _initDeferLightPass(gl, "DeferDirectionLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferDirectionLightPassDataFromSystem);
     _initDeferLightPass(gl, "DeferPointLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferPointLightPassDataFromSystem);
 }
@@ -46,14 +47,13 @@ export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, 
 
 export var buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    // getAmbientLightColorArr3,
+    getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
     getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity,isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, computeRadius,
     isPositionDirty, isColorDirty, isIntensityDirty, isAttenuationDirty, cleanPositionDirty, cleanColorDirty, cleanIntensityDirty, cleanAttenuationDirty,
     drawDataMap: IWebGL2DrawDataMap) => {
     return {
         glslSenderData: {
-            // getUniformData: getUniformData,
             sendMatrix3: sendMatrix3,
             sendMatrix4: sendMatrix4,
             sendVector3: sendVector3,
@@ -63,11 +63,15 @@ export var buildSendUniformDataDataMap = (
 
             GLSLSenderDataFromSystem: drawDataMap.GLSLSenderDataFromSystem
         },
-        // ambientLightData: {
-        //     getColorArr3: getAmbientLightColorArr3,
-        //
-        //     AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
-        // },
+        ambientLightData: {
+            getColorArr3: getAmbientLightColorArr3,
+
+            isColorDirty: isAmbientLightColorDirty,
+
+            cleanColorDirty: cleanAmbientLightColorDirty,
+
+            AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
+        },
         directionLightData: {
             getPosition: getDirectionLightPosition,
             getColorArr3: getDirectionLightColorArr3,

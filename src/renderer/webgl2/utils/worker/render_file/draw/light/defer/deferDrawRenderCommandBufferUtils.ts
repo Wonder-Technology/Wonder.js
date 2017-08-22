@@ -1,6 +1,7 @@
-export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any) => {
+export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferAmbientLightPassDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any) => {
     return {
         GBufferDataFromSystem: GBufferDataFromSystem,
+        DeferAmbientLightPassDataFromSystem: DeferAmbientLightPassDataFromSystem,
         DeferDirectionLightPassDataFromSystem: DeferDirectionLightPassDataFromSystem,
         DeferPointLightPassDataFromSystem: DeferPointLightPassDataFromSystem,
     }

@@ -60,6 +60,6 @@ var _createFullScreenQuadData = () => {
     }
 }
 
-export var initData = (DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any) => {
+export var initData = (DeferAmbientLightPassDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any) => {
     DeferPointLightPassDataFromSystem.scissorRegionArrayCacheMap = createMap();
 }

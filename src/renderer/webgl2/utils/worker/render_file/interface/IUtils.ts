@@ -8,6 +8,14 @@ import { SendUniformDataGLSLSenderDataMap } from "../../../../../type/utilsType"
 export interface IWebGL2BasicSendUniformDataDataMap extends IBasicSendUniformDataDataMap{
 }
 
+export interface IWebGL2SendUniformDataAmbientLightDataMap {
+    getColorArr3: Function;
+    isColorDirty: Function;
+    cleanColorDirty: Function;
+
+    AmbientLightDataFromSystem: any;
+}
+
 export interface IWebGL2SendUniformDataDirectionLightDataMap {
     getColorArr3: Function;
     getIntensity: Function;
@@ -55,11 +63,18 @@ export interface IWebGL2InitShaderFuncDataMap {
 
 export interface IWebGL2LightSendUniformDataDataMap extends ILightSendUniformDataDataMap{
     glslSenderData: SendUniformDataGLSLSenderDataMap;
+    ambientLightData: IWebGL2SendUniformDataAmbientLightDataMap;
     directionLightData: IWebGL2SendUniformDataDirectionLightDataMap;
     pointLightData: IWebGL2SendUniformDataPointLightDataMap;
 }
 
 export interface IWebGL2DrawDataMap extends IDrawDataMap{
+}
+
+export interface IWebGL2AmbientLightValueDataMap{
+    colorArr3: Array<number>;
+
+    isColorDirty:boolean;
 }
 
 export interface IWebGL2DirectionLightValueDataMap{

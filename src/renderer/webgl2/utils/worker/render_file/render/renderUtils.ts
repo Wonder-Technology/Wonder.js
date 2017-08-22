@@ -13,12 +13,12 @@ import { bindVao, createAndInitVao } from "../shader/shaderUtils";
 import { IWebGL2DrawDataMap } from "../interface/IUtils";
 import { DeferDrawDataMap } from "../type/utilsType";
 
-export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+export var init = (gl:any, render_config:IRenderConfig, DataBufferConfig:any, GBufferDataFromSystem:any, DeferAmbientLightPassDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem:any) => {
     if(!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)){
         Log.warn("defer shading need support extensionColorBufferFloat extension");
     }
     else{
-        initDefer(gl, DataBufferConfig, GBufferDataFromSystem, DeferDirectionLightPassDataFromSystem, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        initDefer(gl, DataBufferConfig, GBufferDataFromSystem, DeferAmbientLightPassDataFromSystem, DeferDirectionLightPassDataFromSystem, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
     initUbo(gl, render_config, GLSLSenderDataFromSystem);

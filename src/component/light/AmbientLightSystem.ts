@@ -10,7 +10,6 @@ import { Light } from "./Light";
 import { AmbientLightData } from "./AmbientLightData";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { getAmbientLightBufferCount } from "../../renderer/utils/light/bufferUtils";
 import {
@@ -20,12 +19,14 @@ import {
 } from "../../renderer/utils/worker/render_file/light/ambientLightUtils";
 import { getColor as getColorUtils } from "../../renderer/utils/light/ambientLightUtils";
 import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
-import { deleteOneItemBySwapAndReset } from "../../utils/typeArrayUtils";
+import { DirectorData } from "../../core/DirectorData";
+import { isInit } from "../../core/DirectorSystem";
 
 export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
-    // it("count should <= max count", () => {
-    //     expect(AmbientLightData.count).lte(DataBufferConfig.ambientLightCount);
-    // })
+    //todo test
+    it("shouldn't create after Director->init", () => {
+        expect(isInit(DirectorData)).false;
+    });
 }, (AmbientLightData: any) => {
     var light = new AmbientLight();
 
@@ -57,6 +58,7 @@ export var disposeComponent = requireCheckFunc(() => {
 
     disposeSpecifyLightComponent(component.index, AmbientLightData);
 
+    //todo test
     AmbientLightData.isColorDirtys[0] = AmbientLightData.defaultDirty;
 })
 

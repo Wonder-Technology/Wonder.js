@@ -38,6 +38,7 @@ export type InitShaderDataMap = {
     BasicMaterialDataFromSystem: any;
     LightMaterialDataFromSystem: any;
     MapManagerDataFromSystem: any;
+    AmbientLightDataFromSystem: any;
     DirectionLightDataFromSystem: any;
     PointLightDataFromSystem: any;
     VaoDataFromSystem:any;

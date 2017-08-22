@@ -74,7 +74,7 @@
             sceneTool.addGameObject(box2);
 
 
-//            sceneTool.addGameObject(createAmbientLight());
+            sceneTool.addGameObject(createAmbientLight());
 //            sceneTool.addGameObject(createDirectionLight());
             sceneTool.addGameObject(createDirectionLight());
             sceneTool.addGameObject(createPointLight());
@@ -129,7 +129,7 @@
 
         function createAmbientLight() {
             var ambientLightComponent = ambientLightTool.create();
-            ambientLightTool.setColor(ambientLightComponent, wd.Color.create("rgb(30, 30, 30)"));
+            ambientLightTool.setColor(ambientLightComponent, wd.Color.create("#111222"));
 
 
             var obj = gameObjectTool.create();

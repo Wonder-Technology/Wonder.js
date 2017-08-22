@@ -1,5 +1,5 @@
 import {
-    SendAttributeConfigMap, SendUniformConfigMap, SendUniformFuncConfigMap,
+    SendUniformConfigMap, SendUniformFuncConfigMap,
     UniformCacheMap, VaoConfigMap
 } from "../../../../../../type/dataType";
 import {
@@ -19,7 +19,7 @@ export class WebGL2GLSLSenderDataCommon {
     public static uboBindingPointMap:UboBindingPointMap = null;
     public static oneUboDataList:UboSingleBufferDataList = null;
     public static frameUboDataList:UboSingleBufferDataList = null;
-    // public static gameObjectUboDataList:UboSingleBufferDataList = null;
+    public static ambientLightUboDataList:UboMultiBufferDataList = null;
     public static directionLightUboDataList:UboMultiBufferDataList = null;
     public static pointLightUboDataList:UboMultiBufferDataList = null;
 }

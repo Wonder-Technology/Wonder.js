@@ -31,6 +31,10 @@ import {
     webgl2_deferLightPass_noNormalMap_fragment,
 
 
+    deferLightPass_ambientLight_fragment,
+
+
+    deferLightPass_directionLight_pointLight_common,
 
     deferLightPass_directionLight_common,
     deferLightPass_directionLight_fragment,
@@ -43,6 +47,7 @@ import {
 
     ubo_camera,
     ubo_light,
+    ubo_ambientLight,
     ubo_directionLight,
     ubo_pointLight
 
@@ -53,6 +58,7 @@ import {
     IGLSLConfig, IGLSLDefineListItem, ISendUniformConfig,
     IShaderLibContentGenerator
 } from "../../../../data/shaderLib_generator_interface";
+import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 
 export const webgl2_shaderLib_generator = {
     "shaderLibs": {
@@ -191,6 +197,61 @@ export const webgl2_shaderLib_generator = {
                         },
                         "frequence": "one",
                         "usage": "static"
+                    }
+                ]
+            }
+        },
+        "AmbientLightUboShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": ubo_ambientLight
+                }
+            },
+            "send": {
+                "uniformUbo": [
+                    {
+                        "name": "AmbientLightUbo",
+                        "typeArray": {
+                            "type": "float32",
+                            "length": 4 * 1
+                        },
+                        "setBufferDataFunc": (gl, ambientLightIndex, {
+                                                  uniformBlockBinding,
+                                                  buffer,
+                                                  typeArray
+                                              }, {
+                                                  bindUniformBufferBase,
+                                                  bufferDynamicData,
+                                                  set
+                                              }, {
+                                                  cleanColorDirty,
+
+                                                  AmbientLightDataFromSystem
+                                              },
+                                              {
+                                                  colorArr3,
+
+                                                  isColorDirty
+                                              }
+                        ) => {
+                            var isDirtyFlag = false;
+
+                            if(isColorDirty){
+                                isDirtyFlag = true;
+
+                                set(typeArray, colorArr3, 0);
+
+                                cleanColorDirty(ambientLightIndex, AmbientLightDataFromSystem);
+                            }
+
+                            bindUniformBufferBase(gl, buffer, uniformBlockBinding);
+
+                            if(isDirtyFlag){
+                                bufferDynamicData(gl, typeArray);
+                            }
+                        },
+                        "frequence": "ambientLight",
+                        "usage": "dynamic"
                     }
                 ]
             }
@@ -718,6 +779,65 @@ export const webgl2_shaderLib_generator = {
         },
 
 
+
+        // "DeferAmbientLightShaderLib": {
+        //     "glsl": {
+        //         "fs": {
+        //             "varDeclare": "uniform vec3 u_ambient;"
+        //         }
+        //     },
+        //     "send": {
+        //         "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, {
+        //             glslSenderData: {
+        //                 sendFloat3
+        //             },
+        //             ambientLightData: {
+        //                 getColorArr3,
+        //
+        //                 isColorDirty,
+        //
+        //                 cleanColorDirty,
+        //
+        //                 AmbientLightDataFromSystem
+        //             }
+        //         }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+        //             for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
+        //
+        //                 if(isColorDirty(i, AmbientLightDataFromSystem)) {
+        //                     sendFloat3(gl, shaderIndex, program, "u_ambient", getColorArr3(i, AmbientLightDataFromSystem), uniformCacheMap, uniformLocationMap);
+        //
+        //                     cleanColorDirty(i, AmbientLightDataFromSystem);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // },
+
+        "DeferAmbientLightPassShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_ambientLight_fragment
+                }
+            },
+            "send": {
+            }
+        },
+
+
+
+
+
+
+
+
+
+        "DeferDirectionLightPointLightPassCommonShaderLib": {
+            "glsl": {
+                "fs": {
+                    "source": deferLightPass_directionLight_pointLight_common
+                }
+            }
+        },
 
 
 

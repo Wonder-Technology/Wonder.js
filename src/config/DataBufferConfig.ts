@@ -20,6 +20,7 @@ export const DataBufferConfig = {
     frontDirectionLightCount: 4,
     frontPointLightCount: 4,
 
+    deferAmbientLightCount: 1,
     deferDirectionLightCount: 10,
     deferPointLightCount: 1000,
 

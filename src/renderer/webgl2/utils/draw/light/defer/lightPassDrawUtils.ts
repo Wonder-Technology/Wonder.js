@@ -8,9 +8,9 @@ import {
     sendAttributeData, setScissorRegionArrayCache
 } from "../../../render/light/defer/light/deferLightPassUtils";
 import { getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
-import { bindDirectionLightUboData, bindPointLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
+import { bindDirectionLightUboData, bindPointLightUboData, bindAmbientLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import {
-    IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap,
+    IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap, IWebGL2SendUniformDataAmbientLightDataMap,
     IWebGL2SendUniformDataDirectionLightDataMap
 } from "../../../worker/render_file/interface/IUtils";
 import { Vector4 } from "../../../../../../math/Vector4";
@@ -21,6 +21,7 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     use,
     unbindGBuffer
 }, drawDataMap:IWebGL2DrawDataMap, {
+                                DeferAmbientLightPassDataFromSystem,
                                 DeferDirectionLightPassDataFromSystem,
                                 DeferPointLightPassDataFromSystem
                             }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
@@ -41,6 +42,8 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE, gl.ONE);
 
+    //todo judge count;
+    _drawAmbientLightPass(gl, use, drawDataMap,sendDataMap.ambientLightData, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     _drawDirectionLightPass(gl, use, drawDataMap,sendDataMap.directionLightData, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     _drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 
@@ -49,11 +52,49 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     _restoreState(gl);
 }
 
+var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, ambientLightData:IWebGL2SendUniformDataAmbientLightDataMap, DeferAmbientLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
+    var shaderIndex:number = null;
+
+    sendAttributeData(gl, ProgramDataFromSystem, DeferAmbientLightPassDataFromSystem);
+
+    shaderIndex = getNoMaterialShaderIndex("DeferAmbientLightPass", ShaderDataFromSystem);
+
+    use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+
+    let {
+        getColorArr3,
+
+        isColorDirty,
+
+        AmbientLightDataFromSystem
+    } = ambientLightData;
+
+    for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
+        let colorArr3:Array<number> = null,
+            isColorDirtyFlag = isColorDirty(i, AmbientLightDataFromSystem);
+
+        if(isColorDirtyFlag){
+            colorArr3 = getColorArr3(i, AmbientLightDataFromSystem);
+        }
+
+        bindAmbientLightUboData(gl, i, ambientLightData, _buildAmbientLightValueDataMap(colorArr3, isColorDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
+
+        drawFullScreenQuad(gl, DeferAmbientLightPassDataFromSystem);
+    }
+}
+
+var _buildAmbientLightValueDataMap = (colorArr3: Array<number>, isColorDirty:boolean) => {
+    return {
+        colorArr3:colorArr3,
+
+        isColorDirty: isColorDirty
+    }
+}
+
 var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, directionLightData:IWebGL2SendUniformDataDirectionLightDataMap, DeferDirectionLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var shaderIndex:number = null;
 
-    sendAttributeData(gl, DeferDirectionLightPassDataFromSystem);
-
+    sendAttributeData(gl, ProgramDataFromSystem, DeferDirectionLightPassDataFromSystem);
 
     shaderIndex = getNoMaterialShaderIndex("DeferDirectionLightPass", ShaderDataFromSystem);
 
@@ -110,7 +151,6 @@ var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array
     }
 }
 
-
 var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, vMatrix:Float32Array, pMatrix:Float32Array, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
     var {
             x,
@@ -149,10 +189,9 @@ var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMa
         sc:Array<number> = null,
         isScDirtyFlag:boolean = null;
 
-
     _setState(gl);
 
-    sendAttributeData(gl, DeferPointLightPassDataFromSystem);
+    sendAttributeData(gl, ProgramDataFromSystem, DeferPointLightPassDataFromSystem);
 
     shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
 

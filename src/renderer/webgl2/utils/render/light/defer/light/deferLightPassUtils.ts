@@ -1,11 +1,12 @@
-import { bindVao } from "../../../../worker/render_file/vao/vaoUtils";
 import { ensureFunc, it } from "../../../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { bindVao } from "../../../../worker/render_file/shader/shaderUtils";
 
-export var sendAttributeData = (gl:any, {
+export var sendAttributeData = (gl:any, ProgramDataFromSystem:any, {
     fullScreenQuadVertexArray
 }) => {
-    bindVao(gl, fullScreenQuadVertexArray);
+    //todo test fix: gbuffer, light pass's binded vao should be different
+    bindVao(gl, fullScreenQuadVertexArray, ProgramDataFromSystem);
 }
 
 export var drawFullScreenQuad = (gl:any, {

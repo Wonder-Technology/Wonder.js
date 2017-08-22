@@ -101,6 +101,7 @@ export var initData = (GLSLSenderDataFromSystem: any) => {
     GLSLSenderDataFromSystem.uboBindingPointMap = createMap();
     GLSLSenderDataFromSystem.oneUboDataList = [];
     GLSLSenderDataFromSystem.frameUboDataList = [];
+    GLSLSenderDataFromSystem.ambientLightUboDataList = [];
     GLSLSenderDataFromSystem.directionLightUboDataList = [];
     GLSLSenderDataFromSystem.pointLightUboDataList = [];
 }
