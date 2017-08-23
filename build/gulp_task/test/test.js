@@ -9,9 +9,10 @@ var webgl2NoWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webg
 var webgl1RenderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl1.renderWorker.js");
 var webgl2RenderWorkerKarmaConfPath = path.join(process.cwd(), "test/karma.conf.webgl2.renderWorker.js");
 
-//todo pass ci test
-var ciNoWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.js");
-var ciRenderWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.renderWorker.js");
+var ciWebGL1NoWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.webgl1.noWorker.js");
+var ciWebGL2NoWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.webgl2.noWorker.js");
+var ciWebGL1RenderWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.webgl1.renderWorker.js");
+var ciWebGL2RenderWorkerKarmaConfPath = path.join(process.cwd(), "karma.conf.webgl2.renderWorker.js");
 
 
 gulp.task("webgl1NoWorkerTestByKarma", function (done) {
@@ -87,17 +88,29 @@ gulp.task("testWebGL2RenderWorker", gulpSync.sync(["updateWDForTestFile", "watch
 
 
 
-gulp.task("noWorkerTestInCI", function (done) {
+gulp.task("webgl1NoWorkerTestInCI", function (done) {
     karma.start({
-        configFile: ciNoWorkerKarmaConfPath
+        configFile: ciWebGL1NoWorkerKarmaConfPath
     }, done);
 });
 
-gulp.task("renderWorkerTestInCI", function (done) {
+gulp.task("webgl2NoWorkerTestInCI", function (done) {
     karma.start({
-        configFile: ciRenderWorkerKarmaConfPath
+        configFile: ciWebGL2NoWorkerKarmaConfPath
     }, done);
 });
 
-gulp.task("testInCI", gulpSync.sync(["renderWorkerTestInCI", "noWorkerTestInCI"]));
+gulp.task("webgl1RenderWorkerTestInCI", function (done) {
+    karma.start({
+        configFile: ciWebGL1RenderWorkerKarmaConfPath
+    }, done);
+});
+
+gulp.task("webgl2RenderWorkerTestInCI", function (done) {
+    karma.start({
+        configFile: ciWebGL2RenderWorkerKarmaConfPath
+    }, done);
+});
+
+gulp.task("testInCI", gulpSync.sync(["webgl1RenderWorkerTestInCI", "webgl2RenderWorkerTestInCI", "webgl1NoWorkerTestInCI", "webgl2NoWorkerTestInCI"]));
 
