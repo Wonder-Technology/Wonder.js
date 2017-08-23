@@ -21,6 +21,7 @@ import { Vector2 } from "../../../../../../math/Vector2";
 import { IWebGL2SendUniformDataPointLightDataMap } from "../../../worker/render_file/interface/IUtils";
 import { EBlendEquation } from "../../../../../enum/EBlendEquation";
 import { EBlendFunc } from "../../../../../enum/EBlendFunc";
+import { drawPointLightPass } from "./pointLightPassDrawUtils";
 
 export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     use,
@@ -65,12 +66,10 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     }
 
     if(_hasLight(pointLightCount)){
-        _drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, pointLightCount, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+        drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, pointLightCount, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
     unbindVao(gl);
-
-    _restoreState(gl, DeviceManagerDataFromSystem);
 }
 
 var _hasLight = (count:number) => count > 0;
@@ -171,168 +170,5 @@ var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array
         isPositionDirty: isPositionDirty,
         isColorDirty: isColorDirty,
         isIntensityDirty: isIntensityDirty
-    }
-}
-
-var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMap:IWebGL2DrawDataMap, pointLightData:IWebGL2SendUniformDataPointLightDataMap, pointLightCount:number, vMatrix:Float32Array, pMatrix:Float32Array, DeferPointLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
-    var {
-            x,
-            y,
-            width,
-            height
-        } = getViewport(state),
-        {
-            DeviceManagerDataFromSystem,
-            PointLightDataFromSystem
-        } = drawDataMap,
-        shaderIndex:number = null,
-        {
-            getPosition,
-
-            getColorArr3,
-            getIntensity,
-            getConstant,
-            getLinear,
-            getQuadratic,
-            computeRadius,
-
-            isPositionDirty,
-            isColorDirty,
-            isIntensityDirty,
-            isAttenuationDirty,
-
-            PointLightDataFromSystem
-        } = pointLightData,
-        position:Float32Array = null,
-        colorArr3:Array<number> = null,
-        intensity:number = null,
-        constant:number = null,
-        linear:number = null,
-        quadratic:number = null,
-        radius:number = null,
-        sc:Array<number> = null,
-        isScDirtyFlag:boolean = null;
-
-    _setState(gl, DeviceManagerDataFromSystem);
-
-    sendAttributeData(gl, ProgramDataFromSystem, DeferPointLightPassDataFromSystem);
-
-    shaderIndex = getNoMaterialShaderIndex("DeferPointLightPass", ShaderDataFromSystem);
-
-    use(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
-
-    for (let i = 0; i < pointLightCount; i++) {
-        let isIntensityDirtyFlag = isIntensityDirty(i, PointLightDataFromSystem),
-            isPositionDirtyFlag = isPositionDirty(i, PointLightDataFromSystem),
-            isColorDirtyFlag = isColorDirty(i, PointLightDataFromSystem),
-            isAttenuationDirtyFlag = isAttenuationDirty(i, PointLightDataFromSystem);
-
-        if(!isPositionDirtyFlag && !isColorDirtyFlag && !isAttenuationDirtyFlag){
-            isScDirtyFlag = false;
-        }
-        else{
-            isScDirtyFlag = true;
-        }
-
-        if(!isScDirtyFlag){
-            sc = getScissorRegionArrayCache(i, DeferPointLightPassDataFromSystem);
-        }
-        else{
-            position = getPosition(i, PointLightDataFromSystem);
-            colorArr3 = getColorArr3(i, PointLightDataFromSystem);
-            constant = getConstant(i, PointLightDataFromSystem);
-            linear = getLinear(i, PointLightDataFromSystem);
-            quadratic = getQuadratic(i, PointLightDataFromSystem);
-            radius = computeRadius(colorArr3, constant, linear, quadratic);
-
-            sc = _getScissorForLight(vMatrix, pMatrix, position, radius, width, height);
-
-            setScissorRegionArrayCache(i, DeferPointLightPassDataFromSystem, sc);
-        }
-
-        if (sc !== null) {
-            gl.scissor(sc[0], sc[1], sc[2], sc[3]);
-        }
-        else{
-            gl.scissor(x, y, width, height);
-        }
-
-        if(isIntensityDirtyFlag){
-            intensity = getIntensity(i, PointLightDataFromSystem);
-        }
-
-        bindPointLightUboData(gl, i, pointLightData, _buildPointLightValueDataMap(position, colorArr3, intensity, constant, linear, quadratic, radius, isIntensityDirtyFlag, isScDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
-
-        drawFullScreenQuad(gl, DeferPointLightPassDataFromSystem);
-    }
-}
-
-var _setState = (gl:any, DeviceManagerDataFromSystem:any) => {
-    setScissorTest(gl, true, DeviceManagerDataFromSystem);
-
-}
-
-var _restoreState = (gl:any, DeviceManagerDataFromSystem:any) => {
-    setScissorTest(gl, false, DeviceManagerDataFromSystem);
-}
-
-var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) => {
-    var a = Vector4.create(position[0], position[1], position[2], 1),
-        b = Vector4.create(position[0], position[1], position[2], 1),
-        minpt:Vector2 = null,
-        maxpt:Vector2 = null,
-        ret:Array<number> = [];
-    //todo optimize: use tiled-defer shading
-
-    // front bottom-left corner of sphere's bounding cube
-    a.applyMatrix4(vMatrix, true);
-    a.x -= radius;
-    a.y -= radius;
-    a.z += radius;
-    a.applyMatrix4(pMatrix, true);
-    a.divideScalar(a.w);
-
-    // front bottom-left corner of sphere's bounding cube
-    b.applyMatrix4(vMatrix, true);
-    b.x += radius;
-    b.y += radius;
-    b.z += radius;
-    b.applyMatrix4(pMatrix, true);
-    b.divideScalar(b.w);
-
-    minpt = Vector2.create(Math.max(-1, a.x), Math.max(-1, a.y));
-    maxpt = Vector2.create(Math.min( 1, b.x), Math.min( 1, b.y));
-
-    if (maxpt.x < -1 || 1 < minpt.x ||
-        maxpt.y < -1 || 1 < minpt.y) {
-        return null;
-    }
-
-    minpt.addScalar(1.0);
-    minpt.multiplyScalar(0.5);
-
-    maxpt.addScalar(1.0);
-    maxpt.multiplyScalar(0.5);
-
-    ret[0] = Math.round(width * minpt.x);
-    ret[1] = Math.round(height * minpt.y);
-    ret[2] = Math.round(width * (maxpt.x - minpt.x));
-    ret[3] = Math.round(height * (maxpt.y - minpt.y));
-
-    return ret;
-};
-
-var _buildPointLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, constant: number, linear: number, quadratic: number, radius: number, isIntensityDirty:boolean, isOtherValueDirty:boolean) => {
-    return {
-        position: position,
-        colorArr3:colorArr3,
-        intensity:intensity,
-        constant:constant,
-        linear:linear,
-        quadratic:quadratic,
-        radius:radius,
-
-        isIntensityDirty: isIntensityDirty,
-        isOtherValueDirty: isOtherValueDirty
     }
 }

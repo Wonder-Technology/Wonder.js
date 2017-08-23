@@ -9,6 +9,8 @@ describe("defer shading", function () {
     var DeferAmbientLightPassData = wd.DeferAmbientLightPassData;
     var DeferDirectionLightPassData = wd.DeferDirectionLightPassData;
     var DeferPointLightPassData = wd.DeferPointLightPassData;
+    var Vector3 = wd.Vector3;
+    var Light = wd.Light;
 
     function buildGLSL(sandbox, state) {
         return glslTool.buildGLSL(sandbox, state);
@@ -793,6 +795,12 @@ describe("defer shading", function () {
                 });
 
                 describe("draw point light", function() {
+                    var lightObj, lightComponent;
+
+                    function getLightDrawCount() {
+                        return gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).callCount;
+                    }
+
                     function getDeferPointLightPassProgram() {
                         var shaderIndex = ShaderData.shaderIndexByShaderNameMap["DeferPointLightPass"];
 
@@ -800,7 +808,8 @@ describe("defer shading", function () {
                     }
                     
                     beforeEach(function(){
-                        sceneTool.addPointLight();
+                        lightObj = sceneTool.addPointLight();
+                        lightComponent = gameObjectTool.getComponent(lightObj, Light);
                     });
 
                     it("enable scissor test", function () {
@@ -826,6 +835,7 @@ describe("defer shading", function () {
 
                     describe("scissor optimize", function() {
                         var viewport;
+                        var transform;
 
                         beforeEach(function(){
                             viewport = {
@@ -836,20 +846,26 @@ describe("defer shading", function () {
                             }
 
                             state = stateTool.setViewport(state, viewport);
+
+                            transform = gameObjectTool.getTransform(lightObj);
                         });
 
-                        it("if computed scissor region isn't null, scissor it", function(){
-                            sceneTool.addPointLight(Vector3.create(200,300,-900));
+                        it("if the computed light range is out of screen, not draw it", function () {
+                            threeDTransformTool.setPosition(transform, Vector3.create(-100, 0, 0));
+
+                            pointLightTool.setRangeLevel(lightComponent, 1);
 
 
                             directorTool.init(state);
 
                             directorTool.loopBody(state);
 
-                            expect(gl.scissor).toCalledWith(65, 151, 11, 21);
+                            expect(getLightDrawCount()).toEqual(0);
                         });
-                        it("else, scissor full screen", function(){
-                            // sceneTool.addPointLight(Vector3.create(0, 0, 0));
+                        it("if it's full screen, scissor full screen", function () {
+                            threeDTransformTool.setPosition(transform, Vector3.create(0, 0, -100));
+
+                            pointLightTool.setRangeLevel(lightComponent, 11);
 
 
                             directorTool.init(state);
@@ -857,6 +873,16 @@ describe("defer shading", function () {
                             directorTool.loopBody(state);
 
                             expect(gl.scissor).toCalledWith(viewport.x, viewport.y, viewport.width, viewport.height);
+                        });
+                        it("else, scissor it", function () {
+                            threeDTransformTool.setPosition(transform, Vector3.create(200,300,-900));
+
+
+                            directorTool.init(state);
+
+                            directorTool.loopBody(state);
+
+                            expect(gl.scissor).toCalledWith(65, 151, 11, 21);
                         });
                     });
 
@@ -893,19 +919,6 @@ describe("defer shading", function () {
                         });
                     });
 
-                    it("unbind vao after commit to gpu", function () {
-                        sceneTool.addPointLight();
-
-
-                        directorTool.init(state);
-
-                        var callCount = gl.bindVertexArray.withArgs(null).callCount;
-
-                        directorTool.loopBody(state);
-
-                        expect(gl.bindVertexArray.withArgs(null).getCall(callCount + 1)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
-                    });
-
                     describe("restore state", function() {
                         it("disable scissor test", function () {
                             sceneTool.addPointLight();
@@ -918,9 +931,22 @@ describe("defer shading", function () {
 
                             directorTool.loopBody(state);
 
-                            expect(gl.disable.withArgs(gl.SCISSOR_TEST).getCall(0)).toCalledAfter(gl.bindVertexArray.withArgs(null).getCall(callCount + 1));
+                            expect(gl.disable.withArgs(gl.SCISSOR_TEST).getCall(0)).toCalledBefore(gl.bindVertexArray.withArgs(null).getCall(callCount + 1));
                         });
                     });
+                });
+
+                it("unbind vao after commit to gpu", function () {
+                    sceneTool.addPointLight();
+
+
+                    directorTool.init(state);
+
+                    var callCount = gl.bindVertexArray.withArgs(null).callCount;
+
+                    directorTool.loopBody(state);
+
+                    expect(gl.bindVertexArray.withArgs(null).getCall(callCount + 1)).toCalledAfter(gl.drawElements.withArgs(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0).getCall(0));
                 });
             });
         });

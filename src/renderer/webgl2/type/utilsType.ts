@@ -13,5 +13,5 @@
 // }
 
 export type ScissorRegionArrayCacheMap = {
-    [pointLightIndex:number]: Array<number>
+    [pointLightIndex:number]: Array<number>|number
 }

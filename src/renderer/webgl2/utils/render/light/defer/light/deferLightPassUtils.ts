@@ -20,7 +20,7 @@ export var getScissorRegionArrayCache = ensureFunc((scissorRegionArray:Array<num
     });
 }, (pointLightIndex:number, DeferPointLightPassDataFromSystem:any) => DeferPointLightPassDataFromSystem.scissorRegionArrayCacheMap[pointLightIndex]);
 
-export var setScissorRegionArrayCache = (pointLightIndex:number, DeferPointLightPassDataFromSystem:any, scissorRegionArrayCache:Array<number>) => DeferPointLightPassDataFromSystem.scissorRegionArrayCacheMap[pointLightIndex] = scissorRegionArrayCache;
+export var setScissorRegionArrayCache = (pointLightIndex:number, DeferPointLightPassDataFromSystem:any, scissorRegionArrayCache:Array<number>|number) => DeferPointLightPassDataFromSystem.scissorRegionArrayCacheMap[pointLightIndex] = scissorRegionArrayCache;
 
 //todo dispose buffers
 
