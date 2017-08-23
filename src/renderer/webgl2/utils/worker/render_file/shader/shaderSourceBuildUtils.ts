@@ -1,7 +1,7 @@
 import { isConfigDataExist } from "../../../../../utils/renderConfigUtils";
 import { webgl2_main_begin, webgl2_main_end } from "../../../../shader/snippet/ShaderSnippet";
 import { highp_fragment, lowp_fragment, mediump_fragment, version } from "../../../../../shader/chunk/ShaderChunk";
-import { ExtendUtils } from "Wonder-CommonLib/dist/es2015/utils/ExtendUtils";
+import { ExtendUtils } from "wonder-commonLib/dist/es2015/utils/ExtendUtils";
 import { it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { forEach } from "../../../../../../utils/arrayUtils";

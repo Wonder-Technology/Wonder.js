@@ -3,7 +3,7 @@ import {
     initCanvas, setX, setY, setStyleWidth, setStyleHeight,
     setWidth, setHeight, setCanvas, getCanvas, getWebgl1Context, getWebgl2Context
 } from "../../../../../structure/ViewSystem";
-import { IO } from "Wonder-Fantasy-Land/dist/es2015/types/IO";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { expect } from "wonder-expect.js";
 import { EScreenSize } from "../../../../device/EScreenSize";
