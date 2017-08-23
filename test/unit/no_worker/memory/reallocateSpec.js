@@ -267,11 +267,11 @@ describe("reallocate memory", function() {
 
                     var parentMap = {};
                     parentMap[parent.uid] = undefined;
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
+                    judgeMapData(GameObjectData.parentMap, parentMap);
 
                     var childrenMap = {};
                     childrenMap[parent.uid] = [];
-                    expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(GameObjectData.childrenMap, childrenMap);
 
                     expect(GameObjectData.componentMap[parent.uid]).toBeExist();
                     expect(GameObjectData.componentMap[gameObject.uid]).not.toBeExist();
