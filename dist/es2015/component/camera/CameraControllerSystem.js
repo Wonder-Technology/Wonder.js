@@ -48,12 +48,13 @@ var _forEachDirtyList = function (dirtyIndexArray, func) {
 var _clearDirtyList = function (CameraControllerData) {
     CameraControllerData.dirtyIndexArray = [];
 };
-export var update = function (PerspectiveCameraData, CameraData, CameraControllerData) {
+export var update = function (PerspectiveCameraData, CameraData, CameraControllerData, state) {
     _forEachDirtyList(CameraControllerData.dirtyIndexArray, function (dirtyIndex) {
         updateProjectionMatrix(dirtyIndex, PerspectiveCameraData, CameraData);
     });
     _clearDirtyList(CameraControllerData);
     _clearCache(CameraControllerData);
+    return state;
 };
 export var addComponent = function (component, gameObject) {
     addComponentToGameObjectMap(CameraControllerData.gameObjectMap, component.index, gameObject);

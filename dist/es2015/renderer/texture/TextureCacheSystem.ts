@@ -1,7 +1,7 @@
 import {
     addActiveTexture as addActiveTextureUtils, clearAllBindTextureUnitCache as clearAllBindTextureUnitCacheUtils, initData as initDataUtils,
     isCached as isCachedUtils
-} from "../utils/texture/textureCacheUtils";
+} from "../utils/worker/render_file/texture/textureCacheUtils";
 
 export var isCached = isCachedUtils;
 

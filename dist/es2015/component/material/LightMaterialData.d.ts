@@ -6,11 +6,12 @@ export declare class LightMaterialData extends SpecifyMaterialData {
     static shininess: Float32Array;
     static shadings: Uint8Array;
     static lightModels: Uint8Array;
+    static hasDiffuseMaps: Uint8Array;
+    static hasSpecularMaps: Uint8Array;
     static defaultShininess: number;
     static defaultShading: number;
     static defaultLightModel: number;
+    static defaultHasMap: number;
     static emptyColor: Color;
     static emptyColorArr: Array<number>;
-    static diffuseMapIndex: number;
-    static specularMapIndex: number;
 }

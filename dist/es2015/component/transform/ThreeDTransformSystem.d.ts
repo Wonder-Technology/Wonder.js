@@ -1,7 +1,7 @@
 import { BatchTransformData, ThreeDTransform } from "./ThreeDTransform";
 import { Map as MapImmutable } from "immutable";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 export declare var addAddComponentHandle: (_class: any) => void;
 export declare var addDisposeHandle: (_class: any) => void;
 export declare var create: Function;
@@ -11,7 +11,7 @@ export declare var addComponent: (transform: ThreeDTransform, gameObject: GameOb
 export declare var isAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => boolean;
 export declare var isNotAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => boolean;
 export declare var disposeComponent: (transform: ThreeDTransform) => void;
-export declare var getGameObject: (uid: number, ThreeDTransformData: any) => IUIDEntity;
+export declare var getGameObject: (uid: number, ThreeDTransformData: any) => IUIdEntity;
 export declare var getParent: (transform: ThreeDTransform, ThreeDTransformData: any) => any;
 export declare var setParent: (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => any;
 export declare var getLocalToWorldMatrix: Function;

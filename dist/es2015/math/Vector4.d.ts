@@ -15,7 +15,9 @@ export declare class Vector4 {
     toVector3(): Vector3;
     lengthManhattan(): any;
     multiplyScalar(scalar: number): this;
+    divideScalar(scalar: number): this;
     dot(v: Vector4): number;
     set(x: number, y: number, z: number, w: number): void;
+    applyMatrix4(mat4Values: Float32Array, isChangeSelf?: boolean): Vector4;
     protected copyHelper(vector4: Vector4): any;
 }

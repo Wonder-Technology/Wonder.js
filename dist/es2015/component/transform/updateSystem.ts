@@ -1,7 +1,7 @@
 import { compose } from "../../utils/functionalUtils";
 import curry from "wonder-lodash/curry";
 import { addFirstDirtyIndex, generateNotUsedIndexInNormalList } from "./dirtySystem";
-import { getUID } from "./utils";
+import { getUId } from "./utils";
 import { getParent as getThreeDTransformDataParent, isParentExist } from "./hierarchySystem";
 import {
     getMatrix4DataIndexInArrayBuffer, getQuaternionDataIndexInArrayBuffer, getVector3DataIndexInArrayBuffer,
@@ -75,7 +75,7 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
             setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex),
             setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)
         ),
-        parent = getThreeDTransformDataParent(getUID(index, ThreeDTransformData), ThreeDTransformData);
+        parent = getThreeDTransformDataParent(getUId(index, ThreeDTransformData), ThreeDTransformData);
 
     if (isParentExist(parent)) {
         let parentIndex = parent.index;
@@ -98,7 +98,7 @@ var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
     var count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        let parent = getThreeDTransformDataParent(getUID(i, ThreeDTransformData), ThreeDTransformData);
+        let parent = getThreeDTransformDataParent(getUId(i, ThreeDTransformData), ThreeDTransformData);
 
         if (isParentExist(parent)) {
             let parentIndex = parent.index;

@@ -6,32 +6,22 @@ var wonder_expect_js_1 = require("wonder-expect.js");
 var ComponentSystem_1 = require("../ComponentSystem");
 var MaterialData_1 = require("./MaterialData");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
-var materialUtils_1 = require("../../renderer/utils/material/materialUtils");
+var materialUtils_1 = require("../../renderer/utils/worker/render_file/material/materialUtils");
 var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
-var ShaderSystem_1 = require("../../renderer/shader/ShaderSystem");
-var material_config_1 = require("../../renderer/data/material_config");
-var shaderLib_generator_1 = require("../../renderer/data/shaderLib_generator");
 var DeviceManagerData_1 = require("../../renderer/device/DeviceManagerData");
-var ProgramData_1 = require("../../renderer/shader/program/ProgramData");
-var LocationData_1 = require("../../renderer/shader/location/LocationData");
-var GLSLSenderData_1 = require("../../renderer/shader/glslSender/GLSLSenderData");
 var arrayBufferUtils_1 = require("../../utils/arrayBufferUtils");
 var arrayUtils_1 = require("../../utils/arrayUtils");
 var BasicMaterialSystem_1 = require("./BasicMaterialSystem");
 var LightMaterialSystem_1 = require("./LightMaterialSystem");
-var BasicMaterialData_1 = require("./BasicMaterialData");
-var LightMaterialData_1 = require("./LightMaterialData");
-var bufferUtils_1 = require("../../renderer/utils/material/bufferUtils");
-var ShaderSystem_2 = require("../../renderer/shader/ShaderSystem");
+var bufferUtils_1 = require("../../renderer/utils/worker/render_file/material/bufferUtils");
+var ShaderSystem_1 = require("../../renderer/shader/ShaderSystem");
 var operateBufferDataUtils_1 = require("../utils/operateBufferDataUtils");
-var operateBufferDataUtils_2 = require("../../renderer/utils/common/operateBufferDataUtils");
-var DirectionLightData_1 = require("../light/DirectionLightData");
-var PointLightData_1 = require("../light/PointLightData");
 var MapManagerSystem_1 = require("../../renderer/texture/MapManagerSystem");
 var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
-var basicMaterialUtils_1 = require("../../renderer/utils/material/basicMaterialUtils");
-var lightMaterialUtils_1 = require("../../renderer/utils/material/lightMaterialUtils");
-var ShaderData_1 = require("../../renderer/shader/ShaderData");
+var basicMaterialUtils_1 = require("../../renderer/utils/worker/render_file/material/basicMaterialUtils");
+var lightMaterialUtils_1 = require("../../renderer/utils/worker/render_file/material/lightMaterialUtils");
+var MaterialWorkerSystem_1 = require("../../renderer/worker/render_file/material/MaterialWorkerSystem");
+var bufferUtils_2 = require("../../renderer/utils/material/bufferUtils");
 exports.addAddComponentHandle = function (BasicMaterial, LightMaterial) {
     ComponentSystem_1.addAddComponentHandle(BasicMaterial, BasicMaterialSystem_1.addComponent);
     ComponentSystem_1.addAddComponentHandle(LightMaterial, LightMaterialSystem_1.addComponent);
@@ -46,12 +36,14 @@ exports.addInitHandle = function (BasicMaterial, LightMaterial) {
 };
 exports.create = function (index, material, ShaderData, MaterialData) {
     MaterialData.materialMap[index] = material;
-    ShaderSystem_2.create(ShaderData);
+    ShaderSystem_1.create(ShaderData);
     return material;
 };
-exports.init = function (state, gl, TextureData, MaterialData, BasicMaterialData, LightMaterialData) {
-    _initMaterials(state, bufferUtils_1.getBasicMaterialBufferStartIndex(), basicMaterialUtils_1.getClassName(), BasicMaterialData, MaterialData);
-    _initMaterials(state, bufferUtils_1.getLightMaterialBufferStartIndex(), lightMaterialUtils_1.getClassName(), LightMaterialData, MaterialData);
+exports.useShader = materialUtils_1.useShader;
+exports.init = function (state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData) {
+    materialUtils_1.initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, materialUtils_1.buildInitShaderDataMap(DeviceManagerData_1.DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData_1.MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
+    _initMaterials(state, bufferUtils_2.getBasicMaterialBufferStartIndex(), basicMaterialUtils_1.getClassName(), BasicMaterialData, MaterialData);
+    _initMaterials(state, bufferUtils_2.getLightMaterialBufferStartIndex(), lightMaterialUtils_1.getClassName(), LightMaterialData, MaterialData);
     MapManagerSystem_1.initMapManagers(gl, TextureData);
 };
 var _initMaterials = function (state, startIndex, className, SpecifyMaterialData, MaterialData) {
@@ -62,9 +54,9 @@ var _initMaterials = function (state, startIndex, className, SpecifyMaterialData
 exports.initMaterial = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     exports.initMaterial = function (index, state, className, MaterialData) {
-        MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
+        MaterialData.workerInitList.push(_buildWorkerInitData_1(index, className));
     };
-    var _buildWorkerInitData = function (index, className) {
+    var _buildWorkerInitData_1 = function (index, className) {
         return {
             index: index,
             className: className
@@ -73,8 +65,6 @@ if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     exports.initMaterial = function (index, state, className, MaterialData) {
-        var shaderIndex = ShaderSystem_1.init(state, index, className, material_config_1.material_config, shaderLib_generator_1.shaderLib_generator, materialUtils_1.buildInitShaderDataMap(DeviceManagerData_1.DeviceManagerData, ProgramData_1.ProgramData, LocationData_1.LocationData, GLSLSenderData_1.GLSLSenderData, ShaderData_1.ShaderData, MapManagerData_1.MapManagerData, MaterialData, BasicMaterialData_1.BasicMaterialData, LightMaterialData_1.LightMaterialData, DirectionLightData_1.DirectionLightData, PointLightData_1.PointLightData));
-        materialUtils_1.setShaderIndex(index, shaderIndex, MaterialData);
     };
 }
 exports.clearWorkerInitList = null;
@@ -96,7 +86,7 @@ exports.getShaderIndex = function (materialIndex, MaterialData) {
 exports.getColor = function (materialIndex, MaterialData) {
     return operateBufferDataUtils_1.getColor3Data(materialIndex, MaterialData.colors);
 };
-exports.getColorArr3 = operateBufferDataUtils_2.getColorArr3;
+exports.getColorArr3 = MaterialWorkerSystem_1.getColorArr3;
 exports.setColor = function (materialIndex, color, MaterialData) {
     exports.setColorData(materialIndex, color, MaterialData.colors);
 };

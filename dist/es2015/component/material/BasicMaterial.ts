@@ -1,7 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
 import { addMap, create, initMaterial } from "./BasicMaterialSystem";
-import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BasicMaterialData } from "./BasicMaterialData";
@@ -12,13 +11,25 @@ import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { TextureData } from "../../renderer/texture/TextureData";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
+import { WebGL1ShaderData } from "../../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../../renderer/webgl2/shader/ShaderData";
 
 @registerClass("BasicMaterial")
 export class BasicMaterial extends Material {
 }
 
-export var createBasicMaterial = () => {
-    return create(ShaderData, MaterialData, BasicMaterialData);
+export var createBasicMaterial = null;
+
+if(isWebgl1()){
+    createBasicMaterial = () => {
+        return create(WebGL1ShaderData, MaterialData, BasicMaterialData);
+    }
+}
+else{
+    createBasicMaterial = () => {
+        return create(WebGL2ShaderData, MaterialData, BasicMaterialData);
+    }
 }
 
 export var initBasicMaterial = (material: BasicMaterial) => {

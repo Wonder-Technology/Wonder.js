@@ -9,7 +9,8 @@ var contract_1 = require("../../definition/typescript/decorator/contract");
 var contractUtils_1 = require("../utils/contractUtils");
 var operateBufferDataUtils_1 = require("../utils/operateBufferDataUtils");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
-var specifyLightUtils_1 = require("../../renderer/utils/light/specifyLightUtils");
+var specifyLightUtils_1 = require("../../renderer/utils/worker/render_file/light/specifyLightUtils");
+var EventManagerSystem_1 = require("../../event/EventManagerSystem");
 exports.create = contract_1.requireCheckFunc(function (light, SpecifyLightData) {
     contractUtils_1.checkIndexShouldEqualCount(SpecifyLightData);
 }, function (light, SpecifyLightData) {
@@ -25,7 +26,7 @@ exports.addComponent = function (component, gameObject, SpecifyLightData) {
 exports.setColor = function (index, color, colors) {
     operateBufferDataUtils_1.setColor3Data(index, color, colors);
 };
-exports.disposeComponent = contract_1.ensureFunc(function (returnVal, sourceIndex, SpecifyLightData) {
+exports.disposeComponent = contract_1.ensureFunc(function (lastComponentIndex, sourceIndex, SpecifyLightData) {
     contractUtils_1.checkIndexShouldEqualCount(SpecifyLightData);
 }, function (sourceIndex, SpecifyLightData) {
     var colorDataSize = specifyLightUtils_1.getColorDataSize(), lastComponentIndex = null;
@@ -43,6 +44,7 @@ exports.initData = function (buffer, SpecifyLightData) {
     SpecifyLightData.lightMap = [];
     SpecifyLightData.gameObjectMap = [];
     SpecifyLightData.defaultColorArr = exports.createDefaultColor().toArray3();
+    SpecifyLightData.defaultDirty = 0;
     SpecifyLightData.buffer = buffer;
 };
 exports.createDefaultColor = function () {
@@ -53,5 +55,22 @@ exports.getPosition = function (index, ThreeDTransformData, GameObjectData, Spec
 };
 exports.getGameObject = function (index, SpecifyLightData) {
     return ComponentSystem_1.getComponentGameObject(SpecifyLightData.gameObjectMap, index);
+};
+exports.markDirty = function (index, isDirtys) {
+    isDirtys[index] = 0;
+};
+exports.bindChangePositionEvent = function (SpecifyLightData, state) {
+    var eventName = "changePosition";
+    var _loop_1 = function (i, count) {
+        _markPositionDirty = function () {
+            exports.markDirty(i, SpecifyLightData.isPositionDirtys);
+        };
+        EventManagerSystem_1.registerEvent(eventName, _markPositionDirty);
+    };
+    var _markPositionDirty;
+    for (var i = 0, count = SpecifyLightData.count; i < count; i++) {
+        _loop_1(i, count);
+    }
+    return state;
 };
 //# sourceMappingURL=SpecifyLightSystem.js.map

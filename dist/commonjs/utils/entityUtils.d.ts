@@ -1,2 +1,2 @@
-import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
-export declare var removeChildEntity: (children: IUIDEntity[], targetUID: number) => void;
+import { IUIdEntity } from "../core/entityObject/gameObject/IUIdEntity";
+export declare var removeChildEntity: (children: IUIdEntity[], targetUId: number) => void;

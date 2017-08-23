@@ -1,3 +1,3 @@
 import { Component } from "./Component";
-export declare var getTypeIDFromClass: (_class: any) => any;
-export declare var getTypeIDFromComponent: (component: Component) => any;
+export declare var getTypeIdFromClass: (_class: any) => any;
+export declare var getTypeIdFromComponent: (component: Component) => any;

@@ -6,8 +6,8 @@ var LightMaterialWorkerData = (function () {
     LightMaterialWorkerData.shininess = null;
     LightMaterialWorkerData.shadings = null;
     LightMaterialWorkerData.lightModels = null;
-    LightMaterialWorkerData.diffuseMapIndex = null;
-    LightMaterialWorkerData.specularMapIndex = null;
+    LightMaterialWorkerData.hasDiffuseMaps = null;
+    LightMaterialWorkerData.hasSpecularMaps = null;
     return LightMaterialWorkerData;
 }());
 export { LightMaterialWorkerData };

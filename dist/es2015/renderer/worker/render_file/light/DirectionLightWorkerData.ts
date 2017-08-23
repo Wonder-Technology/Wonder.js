@@ -1,10 +1,8 @@
-import { Vector3 } from "../../../../math/Vector3";
 import { SpecifyLightWorkerData } from "./SpecifyLightWorkerData";
-import { DirectionLightGLSLDataStructure } from "../../../type/dataType";
 
 export class DirectionLightWorkerData extends SpecifyLightWorkerData {
-    public static positionArr: Array<Float32Array> = null;
-
-    public static lightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure> = null;
+    public static intensities: Float32Array = null;
+    public static isPositionDirtys: Uint8Array = null;
+    public static isIntensityDirtys: Uint8Array = null;
 }
 

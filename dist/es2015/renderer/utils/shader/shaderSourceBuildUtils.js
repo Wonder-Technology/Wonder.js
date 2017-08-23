@@ -1,78 +1,29 @@
-import { isConfigDataExist } from "../renderConfigUtils";
-import { main_begin, main_end } from "../../shader/snippet/ShaderSnippet";
-import { highp_fragment, lowp_fragment, mediump_fragment } from "../../shader/chunk/ShaderChunk";
-import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
-import { EGPUPrecision, GPUDetector } from "../../device/GPUDetector";
-import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
-import { expect } from "wonder-expect.js";
-import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
+import { EGPUPrecision } from "../../enum/EGPUPrecision";
+import { getPrecision } from "../device/gpuDetectUtils";
 import { forEach } from "../../../utils/arrayUtils";
 import { isString } from "../../../utils/JudgeUtils";
-export var buildGLSLSource = requireCheckFunc(function (materialIndex, materialShaderLibNameArr, shaderLibData, funcDataMap, initShaderDataMap) {
-    it("shaderLib should be defined", function () {
-        forEach(materialShaderLibNameArr, function (shaderLibName) {
-            expect(shaderLibData[shaderLibName]).exist;
-        });
-    });
-}, function (materialIndex, materialShaderLibNameArr, shaderLibData, funcDataMap, initShaderDataMap) {
-    var vsTop = "", vsDefine = "", vsVarDeclare = "", vsFuncDeclare = "", vsFuncDefine = "", vsBody = "", fsTop = "", fsDefine = "", fsVarDeclare = "", fsFuncDeclare = "", fsFuncDefine = "", fsBody = "";
-    var _setVs = function (getGLSLPartData, getGLSLDefineListData, vs) {
-        vsTop += getGLSLPartData(vs, "top");
-        vsDefine += _buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
-        vsVarDeclare += getGLSLPartData(vs, "varDeclare");
-        vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
-        vsFuncDefine += getGLSLPartData(vs, "funcDefine");
-        vsBody += getGLSLPartData(vs, "body");
-    }, _setFs = function (getGLSLPartData, getGLSLDefineListData, fs) {
-        fsTop += getGLSLPartData(fs, "top");
-        fsDefine += _buildSourceDefine(getGLSLDefineListData(fs), initShaderDataMap) + getGLSLPartData(fs, "define");
-        fsVarDeclare += getGLSLPartData(fs, "varDeclare");
-        fsFuncDeclare += getGLSLPartData(fs, "funcDeclare");
-        fsFuncDefine += getGLSLPartData(fs, "funcDefine");
-        fsBody += getGLSLPartData(fs, "body");
-    };
-    vsBody += main_begin;
-    fsBody += main_begin;
-    fsTop += _getPrecisionSource(lowp_fragment, mediump_fragment, highp_fragment);
-    forEach(materialShaderLibNameArr, function (shaderLibName) {
-        var glslData = shaderLibData[shaderLibName].glsl, vs = null, fs = null, func = null;
-        if (!isConfigDataExist(glslData)) {
-            return;
-        }
-        vs = glslData.vs;
-        fs = glslData.fs;
-        func = glslData.func;
-        if (isConfigDataExist(vs)) {
-            _setVs(_getGLSLPartData, _getGLSLDefineListData, vs);
-        }
-        if (isConfigDataExist(fs)) {
-            _setFs(_getGLSLPartData, _getGLSLDefineListData, fs);
-        }
-        if (isConfigDataExist(func)) {
-            var funcConfig = func(materialIndex, funcDataMap, initShaderDataMap);
-            if (isConfigDataExist(funcConfig)) {
-                var vs_1 = funcConfig.vs, fs_1 = funcConfig.fs;
-                if (isConfigDataExist(vs_1)) {
-                    vs_1 = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), vs_1);
-                    _setVs(_getFuncGLSLPartData, _getFuncGLSLDefineListData, vs_1);
-                }
-                if (isConfigDataExist(fs_1)) {
-                    fs_1 = ExtendUtils.extend(_getEmptyFuncGLSLConfig(), fs_1);
-                    _setFs(_getFuncGLSLPartData, _getFuncGLSLDefineListData, fs_1);
-                }
-            }
-        }
-    });
-    vsBody += main_end;
-    fsBody += main_end;
-    vsTop += _generateAttributeSource(materialShaderLibNameArr, shaderLibData);
-    vsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, vsVarDeclare, vsFuncDefine, vsBody);
-    fsTop += _generateUniformSource(materialShaderLibNameArr, shaderLibData, fsVarDeclare, fsFuncDefine, fsBody);
-    return {
-        vsSource: vsTop + vsDefine + vsVarDeclare + vsFuncDeclare + vsFuncDefine + vsBody,
-        fsSource: fsTop + fsDefine + fsVarDeclare + fsFuncDeclare + fsFuncDefine + fsBody
-    };
-});
+import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+import { isConfigDataExist } from "../renderConfigUtils";
+import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
+export var getPrecisionSource = function (lowp_fragment, mediump_fragment, highp_fragment, GPUDetectData) {
+    var precision = getPrecision(GPUDetectData), result = null;
+    switch (precision) {
+        case EGPUPrecision.HIGHP:
+            result = highp_fragment.top;
+            break;
+        case EGPUPrecision.MEDIUMP:
+            result = mediump_fragment.top;
+            break;
+        case EGPUPrecision.LOWP:
+            result = lowp_fragment.top;
+            break;
+        default:
+            result = "";
+            break;
+    }
+    return result;
+};
 export var getMaterialShaderLibNameArr = function (materialShaderLibConfig, materialShaderLibGroup, materialIndex, initShaderFuncDataMap, initShaderDataMap) {
     var nameArr = [];
     forEach(materialShaderLibConfig, function (item) {
@@ -103,7 +54,7 @@ var _execBranch = requireCheckFunc(function (i, materialIndex, initShaderFuncDat
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 });
 var _isShaderLibNameExist = function (name) { return !!name; };
-var _getEmptyFuncGLSLConfig = function () {
+export var getEmptyFuncGLSLConfig = function () {
     return {
         "top": "",
         "varDeclare": "",
@@ -113,7 +64,7 @@ var _getEmptyFuncGLSLConfig = function () {
         "defineList": []
     };
 };
-var _buildSourceDefine = function (defineList, initShaderDataMap) {
+export var buildSourceDefine = function (defineList, initShaderDataMap) {
     var result = "";
     for (var _i = 0, defineList_1 = defineList; _i < defineList_1.length; _i++) {
         var item = defineList_1[_i];
@@ -126,25 +77,7 @@ var _buildSourceDefine = function (defineList, initShaderDataMap) {
     }
     return result;
 };
-var _getPrecisionSource = function (lowp_fragment, mediump_fragment, highp_fragment) {
-    var precision = GPUDetector.getInstance().precision, result = null;
-    switch (precision) {
-        case EGPUPrecision.HIGHP:
-            result = highp_fragment.top;
-            break;
-        case EGPUPrecision.MEDIUMP:
-            result = mediump_fragment.top;
-            break;
-        case EGPUPrecision.LOWP:
-            result = lowp_fragment.top;
-            break;
-        default:
-            result = "";
-            break;
-    }
-    return result;
-};
-var _getGLSLPartData = function (glslConfig, partName) {
+export var getGLSLPartData = function (glslConfig, partName) {
     var partConfig = glslConfig[partName];
     if (isConfigDataExist(partConfig)) {
         return partConfig;
@@ -154,37 +87,23 @@ var _getGLSLPartData = function (glslConfig, partName) {
     }
     return "";
 };
-var _getGLSLDefineListData = function (glslConfig) {
+export var getGLSLDefineListData = function (glslConfig) {
     var partConfig = glslConfig.defineList;
     if (isConfigDataExist(partConfig)) {
         return partConfig;
     }
     return [];
 };
-var _getFuncGLSLPartData = function (glslConfig, partName) {
+export var getFuncGLSLPartData = function (glslConfig, partName) {
     return glslConfig[partName];
 };
-var _getFuncGLSLDefineListData = function (glslConfig) {
+export var getFuncGLSLDefineListData = function (glslConfig) {
     return glslConfig.defineList;
 };
 var _isInSource = function (key, source) {
     return source.indexOf(key) > -1;
 };
-var _generateAttributeSource = function (materialShaderLibNameArr, shaderLibData) {
-    var result = "";
-    forEach(materialShaderLibNameArr, function (shaderLibName) {
-        var sendData = shaderLibData[shaderLibName].send, attributeData = null;
-        if (!isConfigDataExist(sendData) || !isConfigDataExist(sendData.attribute)) {
-            return;
-        }
-        attributeData = sendData.attribute;
-        forEach(attributeData, function (data) {
-            result += "attribute " + data.type + " " + data.name + ";\n";
-        });
-    });
-    return result;
-};
-var _generateUniformSource = function (materialShaderLibNameArr, shaderLibData, sourceVarDeclare, sourceFuncDefine, sourceBody) {
+export var generateUniformSource = function (materialShaderLibNameArr, shaderLibData, sourceVarDeclare, sourceFuncDefine, sourceBody) {
     var result = "", generateFunc = compose(forEachArray(function (_a) {
         var name = _a.name, type = _a.type;
         result += "uniform " + _generateUniformSourceType(type) + " " + name + ";\n";

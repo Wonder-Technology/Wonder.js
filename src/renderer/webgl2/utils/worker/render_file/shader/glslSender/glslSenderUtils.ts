@@ -56,43 +56,43 @@ export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderL
     getTexCoords,
     getIndices
 }) => {
-    var vaoConfigData: VaoConfigData = <any>{};
+        var vaoConfigData: VaoConfigData = <any>{};
 
-    forEach(materialShaderLibNameArr, (shaderLibName: string) => {
-        var sendData = shaderLibData[shaderLibName].send;
+        forEach(materialShaderLibNameArr, (shaderLibName: string) => {
+            var sendData = shaderLibData[shaderLibName].send;
 
-        if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
-            forEach(sendData.attribute, ({
+            if (isConfigDataExist(sendData) && isConfigDataExist(sendData.attribute)) {
+                forEach(sendData.attribute, ({
                                              buffer,
-                                             location
+                    location
                                          }) => {
-                switch (buffer) {
-                    case "vertex":
-                        setVaoConfigData(vaoConfigData, "positionLocation", location);
-                        setVaoConfigData(vaoConfigData, "getVertices", getVertices);
-                        break;
-                    case "normal":
-                        setVaoConfigData(vaoConfigData, "normalLocation", location);
-                        setVaoConfigData(vaoConfigData, "getNormals", getNormals);
-                        break;
-                    case "texCoord":
-                        setVaoConfigData(vaoConfigData, "texCoordLocation", location);
-                        setVaoConfigData(vaoConfigData, "getTexCoords", getTexCoords);
-                        break;
-                    default:
-                        Log.error(true, Log.info.FUNC_INVALID(`bufferName:${buffer}`));
-                        break;
-                }
-            })
-        }
+                    switch (buffer) {
+                        case "vertex":
+                            setVaoConfigData(vaoConfigData, "positionLocation", location);
+                            setVaoConfigData(vaoConfigData, "getVertices", getVertices);
+                            break;
+                        case "normal":
+                            setVaoConfigData(vaoConfigData, "normalLocation", location);
+                            setVaoConfigData(vaoConfigData, "getNormals", getNormals);
+                            break;
+                        case "texCoord":
+                            setVaoConfigData(vaoConfigData, "texCoordLocation", location);
+                            setVaoConfigData(vaoConfigData, "getTexCoords", getTexCoords);
+                            break;
+                        default:
+                            Log.error(true, Log.info.FUNC_INVALID(`bufferName:${buffer}`));
+                            break;
+                    }
+                })
+            }
+        })
+
+        setVaoConfigData(vaoConfigData, "getIndices", getIndices);
+
+        vaoConfigMap[shaderIndex] = vaoConfigData;
     })
 
-    setVaoConfigData(vaoConfigData, "getIndices", getIndices);
-
-    vaoConfigMap[shaderIndex] = vaoConfigData;
-})
-
-export var getVaoConfig = (shaderIndex:number, GLSLSenderDataFromSystem:any) => GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex];
+export var getVaoConfig = (shaderIndex: number, GLSLSenderDataFromSystem: any) => GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex];
 
 export var initData = (GLSLSenderDataFromSystem: any) => {
     initDataUtils(GLSLSenderDataFromSystem);

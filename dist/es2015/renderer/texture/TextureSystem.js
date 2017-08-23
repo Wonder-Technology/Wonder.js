@@ -5,7 +5,7 @@ import { forEach, isNotValidVal } from "../../utils/arrayUtils";
 import { Texture } from "./Texture";
 import { deleteComponentBySwapArray, generateComponentIndex } from "../../component/ComponentSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
-import { createTypeArrays, getWidth as getWidthUtils, getHeight as getHeightUtils, getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount, bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils } from "../utils/texture/textureUtils";
+import { createTypeArrays, getWidth as getWidthUtils, getHeight as getHeightUtils, getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount, bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils } from "../utils/worker/render_file/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 export var create = ensureFunc(function (component) {
@@ -37,8 +37,8 @@ export var setIsNeedUpdate = function (textureIndex, value, TextureData) {
 export var setUniformSamplerName = function (index, name, TextureData) {
     TextureData.uniformSamplerNameMap[index] = name;
 };
-export var bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheData, TextureData) {
-    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, isCached, addActiveTexture);
+export var bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData) {
+    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 };
 export var initTextures = initTexturesUtils;
 export var needUpdate = needUpdateUtils;
@@ -48,7 +48,7 @@ export var update = function (gl, textureIndex, TextureData) {
 var _setFlipY = function (gl, flipY) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 };
-export var dispose = function (gl, texture, TextureCacheData, TextureData) {
+export var dispose = function (gl, texture, TextureCacheData, TextureData, GPUDetectData) {
     var bufferDataSize = getBufferDataSize(), sourceIndex = texture.index, lastComponentIndex = null;
     TextureData.index -= 1;
     lastComponentIndex = TextureData.index;
@@ -57,12 +57,16 @@ export var dispose = function (gl, texture, TextureCacheData, TextureData) {
     deleteOneItemBySwapAndReset(sourceIndex * bufferDataSize, lastComponentIndex * bufferDataSize, TextureData.isNeedUpdates, TextureData.defaultIsNeedUpdate);
     disposeSourceMap(sourceIndex, lastComponentIndex, TextureData);
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, TextureData.textureMap);
-    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 };
 var _disposeGLTexture = null, _addDisposeDataForWorker = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData) {
+    _disposeGLTexture = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
     };
     _addDisposeDataForWorker = function (sourceIndex, lastComponentIndex, TextureData) {
         TextureData.disposedTextureDataMap.push(_buildDisposedTextureData(sourceIndex, lastComponentIndex));
@@ -75,8 +79,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     };
 }
 else {
-    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData) {
-        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData) {
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     };
     _addDisposeDataForWorker = function (sourceIndex, lastComponentIndex, TextureData) {
     };

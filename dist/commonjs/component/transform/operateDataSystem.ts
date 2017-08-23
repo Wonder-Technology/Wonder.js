@@ -1,7 +1,7 @@
 import { Matrix4 } from "../../math/Matrix4";
 import { Quaternion } from "../../math/Quaternion";
 import { Vector3 } from "../../math/Vector3";
-import { getUID, isIndexUsed } from "./utils";
+import { getUId, isIndexUsed } from "./utils";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { TransformMap } from "./ThreeDTransformData";
@@ -210,7 +210,7 @@ export var setPositionData = (index: number, parent: ThreeDTransform, vec3IndexI
         let index = parent.index;
 
         setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
-            uid: getUID(index, ThreeDTransformData),
+            uid: getUId(index, ThreeDTransformData),
             index: index
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }

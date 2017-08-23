@@ -1,10 +1,9 @@
-import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
-import { DirectionLightGLSLDataStructure } from "../../../type/dataType";
-import { Vector3 } from "../../../../math/Vector3";
 import {
-    createTypeArrays, getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
-    getIntensity as getIntensityUtils
-} from "../../../utils/light/directionLightUtils";
+    cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils,
+    cleanPositionDirty as cleanPositionDirtyUtils,
+    getColor as getColorUtils, getColorArr3 as getColorArr3Utils,
+    getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils, isPositionDirty as isPositionDirtyUtils
+} from "../../../utils/worker/render_file/light/directionLightUtils";
 import { Color } from "../../../../structure/Color";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, DirectionLightWorkerData: any) => {
@@ -17,17 +16,14 @@ export var getColorArr3 = getColorArr3Utils;
 
 export var getIntensity = getIntensityUtils;
 
-export var initData = ({
-                           buffer,
-    bufferCount,
-    lightCount,
-    directionLightGLSLDataStructureMemberNameArr
-                       }, DirectionLightWorkerData: any) => {
-    _setCount(lightCount, DirectionLightWorkerData);
+export var isPositionDirty = isPositionDirtyUtils;
 
-    DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr = directionLightGLSLDataStructureMemberNameArr;
+export var isColorDirty = isColorDirtyUtils;
 
-    createTypeArrays(buffer, bufferCount, DirectionLightWorkerData);
-}
+export var isIntensityDirty = isIntensityDirtyUtils;
 
-var _setCount = setSpecifyLightCount;
+export var cleanPositionDirty = cleanPositionDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;
+
+export var cleanIntensityDirty = cleanIntensityDirtyUtils;

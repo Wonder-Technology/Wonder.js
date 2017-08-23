@@ -1,15 +1,16 @@
 import { BasicMaterial } from "./BasicMaterial";
 import { addComponent as addMaterialComponent, create as createMaterial, disposeComponent as disposeMaterialComponent, initMaterial as initMaterialMaterial } from "./MaterialSystem";
 import { initData as initSpecifyMaterialData } from "./SpecifyMaterialSystem";
-import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getBasicMaterialBufferCount } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { generateComponentIndex } from "../ComponentSystem";
 import { BasicMaterialData } from "./BasicMaterialData";
 import { MaterialData } from "./MaterialData";
-import { createTypeArrays as createTypeArraysUtils, getClassName } from "../../renderer/utils/material/basicMaterialUtils";
+import { createTypeArrays as createTypeArraysUtils, getClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
 import { addMap as addMapByMapManager, getMapCount } from "../../renderer/texture/MapManagerSystem";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 export var create = ensureFunc(function (component) {
     it("index should <= max count", function () {
         expect(component.index).lt(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());

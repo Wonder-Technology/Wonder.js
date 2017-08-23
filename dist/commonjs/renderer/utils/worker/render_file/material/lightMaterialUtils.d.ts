@@ -1,0 +1,17 @@
+export declare var getShadingDataSize: () => number;
+export declare var getLightModelDataSize: () => number;
+export declare var getShininessDataSize: () => number;
+export declare var getMapSize: () => number;
+export declare var getSpecularColorArr3: (index: number, LightMaterialDataFromSystem: any) => number[];
+export declare var getEmissionColorArr3: (index: number, LightMaterialDataFromSystem: any) => number[];
+export declare var getShininess: (index: number, LightMaterialDataFromSystem: any) => number;
+export declare var getShading: (index: number, LightMaterialDataFromSystem: any) => number;
+export declare var getLightModel: (index: number, LightMaterialDataFromSystem: any) => number;
+export declare var hasDiffuseMap: (index: number, LightMaterialDataFromSystem: any) => boolean;
+export declare var hasSpecularMap: (index: number, LightMaterialDataFromSystem: any) => boolean;
+export declare var markHasMap: (index: number, hasMapTypArray: Uint8Array) => void;
+export declare var markNotHasMap: (index: number, hasMapTypArray: Uint8Array) => void;
+export declare var getNotHasMapValue: () => number;
+export declare var computeLightBufferIndex: (index: number) => number;
+export declare var createTypeArrays: (buffer: any, offset: number, count: number, LightMaterialDataFromSystem: any) => number;
+export declare var getClassName: () => string;

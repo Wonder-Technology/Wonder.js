@@ -1,6 +1,6 @@
 import { Color } from "../../structure/Color";
 import { Light } from "./Light";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Map } from "immutable";
 export declare var create: Function;
 export declare var getPosition: (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => any;
 export declare var getAllPositionData: (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => Float32Array[];
@@ -9,6 +9,12 @@ export declare var getColorArr3: (index: number, DirectionLightDataFromSystem: a
 export declare var setColor: (index: number, color: Color, DirectionLightData: any) => void;
 export declare var getIntensity: (index: number, DirectionLightDataFromSystem: any) => number;
 export declare var setIntensity: (index: number, intensity: number, DirectionLightData: any) => void;
-export declare var addComponent: (component: Light, gameObject: GameObject) => void;
-export declare var disposeComponent: (component: Light) => void;
-export declare var initData: (DirectionLightData: any) => void;
+export declare var disposeComponent: (component: Light, DirectionLightData: any) => void;
+export declare var initDataHelper: (DirectionLightData: any) => void;
+export declare var init: (DirectionLightData: any, state: Map<any, any>) => Map<any, any>;
+export declare var isPositionDirty: (index: number, DirectionLightDataFromSystem: any) => boolean;
+export declare var isColorDirty: (index: number, DirectionLightDataFromSystem: any) => boolean;
+export declare var isIntensityDirty: (index: number, DirectionLightDataFromSystem: any) => boolean;
+export declare var cleanPositionDirty: (index: number, DirectionLightDataFromSystem: any) => void;
+export declare var cleanColorDirty: (index: number, DirectionLightDataFromSystem: any) => void;
+export declare var cleanIntensityDirty: (index: number, DirectionLightDataFromSystem: any) => void;

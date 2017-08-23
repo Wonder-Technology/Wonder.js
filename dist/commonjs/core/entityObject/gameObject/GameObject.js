@@ -15,7 +15,8 @@ var contract_1 = require("../../../definition/typescript/decorator/contract");
 var contractUtils_1 = require("../../../utils/contractUtils");
 var DirectorSystem_1 = require("../../DirectorSystem");
 var DirectorData_1 = require("../../DirectorData");
-var ComponentComponentIDManager_1 = require("../../../component/ComponentComponentIDManager");
+var ComponentComponentIdManager_1 = require("../../../component/ComponentComponentIdManager");
+var MeshRendererData_1 = require("../../../component/renderer/MeshRendererData");
 var GameObject = (function () {
     function GameObject() {
         this.uid = null;
@@ -37,9 +38,9 @@ exports.disposeGameObject = contract_1.requireCheckFunc(function (gameObject) {
 }, function (gameObject) {
     GameObjectSystem_1.dispose(gameObject, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData);
 });
-exports.initGameObject = contract_1.requireCheckFunc(function (gameObject, component) {
+exports.initGameObject = contract_1.requireCheckFunc(function (gameObject) {
     contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
-}, function (gameObject, component) {
+}, function (gameObject) {
     GameObjectSystem_1.initGameObject(gameObject, DirectorSystem_1.getState(DirectorData_1.DirectorData), GameObjectData_1.GameObjectData);
 });
 exports.disposeGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, component) {
@@ -50,14 +51,14 @@ exports.disposeGameObjectComponent = contract_1.requireCheckFunc(function (gameO
 exports.getGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, _class) {
     contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
 }, function (gameObject, _class) {
-    return GameObjectSystem_1.getComponent(gameObject, ComponentComponentIDManager_1.getComponentIDFromClass(_class), GameObjectData_1.GameObjectData);
+    return GameObjectSystem_1.getComponent(gameObject, ComponentComponentIdManager_1.getComponentIdFromClass(_class), GameObjectData_1.GameObjectData);
 });
 exports.getGameObjectTransform = function (gameObject) {
     return GameObjectSystem_1.getTransform(gameObject, GameObjectData_1.GameObjectData);
 };
 exports.hasGameObjectComponent = contract_1.requireCheckFunc(function (gameObject, _class) {
 }, function (gameObject, _class) {
-    return GameObjectSystem_1.hasComponent(gameObject, ComponentComponentIDManager_1.getComponentIDFromClass(_class), GameObjectData_1.GameObjectData);
+    return GameObjectSystem_1.hasComponent(gameObject, ComponentComponentIdManager_1.getComponentIdFromClass(_class), GameObjectData_1.GameObjectData);
 });
 exports.isGameObjectAlive = function (gameObject) {
     return GameObjectSystem_1.isAlive(gameObject, GameObjectData_1.GameObjectData);
@@ -66,6 +67,11 @@ exports.addGameObject = contract_1.requireCheckFunc(function (gameObject, child)
     contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
 }, function (gameObject, child) {
     GameObjectSystem_1.addChild(gameObject, child, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData);
+});
+exports.addRemovedGameObject = contract_1.requireCheckFunc(function (gameObject, child) {
+    contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);
+}, function (gameObject, child) {
+    GameObjectSystem_1.addRemovedChild(gameObject, child, MeshRendererData_1.MeshRendererData, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData);
 });
 exports.removeGameObject = contract_1.requireCheckFunc(function (gameObject, child) {
     contractUtils_1.checkGameObjectShouldAlive(gameObject, GameObjectData_1.GameObjectData);

@@ -1,7 +1,7 @@
 var ArrayBufferWorkerData = (function () {
     function ArrayBufferWorkerData() {
     }
-    ArrayBufferWorkerData.vertexBuffer = null;
+    ArrayBufferWorkerData.vertexBuffers = null;
     ArrayBufferWorkerData.normalBuffers = null;
     ArrayBufferWorkerData.texCoordBuffers = null;
     return ArrayBufferWorkerData;

@@ -71,21 +71,21 @@ export var removeHierarchyData = (uid: number, ThreeDTransformData: any) => {
     deleteVal(uid, ThreeDTransformData.childrenMap);
 }
 
-var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUID: number, ThreeDTransformData: any) => {
-    var parentUID = parent.uid,
-        children = getChildren(parentUID, ThreeDTransformData);
+var _removeHierarchyFromParent = (parent: ThreeDTransform, targetUId: number, ThreeDTransformData: any) => {
+    var parentUId = parent.uid,
+        children = getChildren(parentUId, ThreeDTransformData);
 
-    deleteVal(targetUID, ThreeDTransformData.parentMap);
+    deleteVal(targetUId, ThreeDTransformData.parentMap);
 
     if (isNotValidMapValue(children)) {
         return;
     }
 
-    _removeChild(parentUID, targetUID, children, ThreeDTransformData);
+    _removeChild(parentUId, targetUId, children, ThreeDTransformData);
 }
 
-var _removeChild = (parentUID: number, targetUID: number, children: Array<ThreeDTransform>, ThreeDTransformData: any) => {
-    removeChildEntity(children, targetUID);
+var _removeChild = (parentUId: number, targetUId: number, children: Array<ThreeDTransform>, ThreeDTransformData: any) => {
+    removeChildEntity(children, targetUId);
 };
 
 var _addChild = requireCheckFunc((uid: number, child: ThreeDTransform, ThreeDTransformData: any) => {
@@ -106,22 +106,22 @@ var _setParent = (uid: number, parent: ThreeDTransform, ThreeDTransformData: any
     ThreeDTransformData.parentMap[uid] = parent;
 }
 
-var _addToParent = requireCheckFunc((targetUID: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+var _addToParent = requireCheckFunc((targetUId: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
     it("the child one should not has parent", () => {
-        expect(isValidMapValue(getParent(targetUID, ThreeDTransformData))).false;
+        expect(isValidMapValue(getParent(targetUId, ThreeDTransformData))).false;
     });
     it("parent should not already has the child", () => {
-        var parentUID = parent.uid,
-            children = getChildren(parentUID, ThreeDTransformData);
+        var parentUId = parent.uid,
+            children = getChildren(parentUId, ThreeDTransformData);
 
         if (isValidMapValue(children)) {
             expect(children.indexOf(target)).equal(-1);
         }
     });
-}, (targetUID: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
-    var parentUID = parent.uid;
+}, (targetUId: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+    var parentUId = parent.uid;
 
-    _setParent(targetUID, parent, ThreeDTransformData);
+    _setParent(targetUId, parent, ThreeDTransformData);
 
-    _addChild(parentUID, target, ThreeDTransformData);
+    _addChild(parentUId, target, ThreeDTransformData);
 })

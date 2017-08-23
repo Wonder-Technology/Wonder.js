@@ -1,28 +1,19 @@
-import { GPUDetector } from "../../renderer/device/GPUDetector";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { EBufferType } from "../../renderer/enum/EBufferType";
 import { createMap, deleteVal, isNotValidMapValue, isValidMapValue } from "../../utils/objectUtils";
-import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponent, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
+import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addInitHandle as addInitHandleToMap, deleteComponent, generateComponentIndex, getComponentGameObject } from "../ComponentSystem";
 import { GeometryData } from "./GeometryData";
-import { getIndexDataSize, getUIntArrayClass, getVertexDataSize, getIndexTypeSize as getIndexTypeSizeUtils, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize } from "../../renderer/utils/geometry/geometryUtils";
+import { getIndexDataSize, getUIntArrayClass, getVertexDataSize, getIndexTypeSize as getIndexTypeSizeUtils, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, createBufferViews, getNormalDataSize, getTexCoordsDataSize } from "../../renderer/utils/worker/render_file/geometry/geometryUtils";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
 import { expect } from "wonder-expect.js";
-import { ArrayBufferData } from "../../renderer/buffer/ArrayBufferData";
-import { IndexBufferData } from "../../renderer/buffer/IndexBufferData";
-import { disposeGeometryBuffers } from "../../renderer/worker/both_file/buffer/BufferSystem";
-import { disposeBuffer as disposeArrayBuffer } from "../../renderer/buffer/ArrayBufferSystem";
-import { disposeBuffer as disposeIndexBuffer } from "../../renderer/buffer/IndexBufferSystem";
+import { hasExtensionUintIndices } from "../../renderer/utils/device/gpuDetectUtils";
 export var addAddComponentHandle = function (BoxGeometry, CustomGeometry) {
     addAddComponentHandleToMap(BoxGeometry, addComponent);
     addAddComponentHandleToMap(CustomGeometry, addComponent);
-};
-export var addDisposeHandle = function (BoxGeometry, CustomGeometry) {
-    addDisposeHandleToMap(BoxGeometry, disposeComponent);
-    addDisposeHandleToMap(CustomGeometry, disposeComponent);
 };
 export var addInitHandle = function (BoxGeometry, CustomGeometry) {
     addInitHandleToMap(BoxGeometry, initGeometry);
@@ -120,7 +111,7 @@ var _buildInfo = function (startIndex, endIndex) {
 export var addComponent = function (component, gameObject) {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 };
-export var disposeComponent = function (component) {
+export var disposeComponent = function (component, disposeBuffers) {
     var sourceIndex = component.index;
     deleteComponent(sourceIndex, GeometryData.geometryMap);
     GeometryData.count -= 1;
@@ -128,27 +119,12 @@ export var disposeComponent = function (component) {
     GeometryData.isReallocate = false;
     if (isDisposeTooManyComponents(GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData)) {
         var disposedIndexArray = reAllocateGeometry(GeometryData);
-        _disposeBuffers(disposedIndexArray);
+        disposeBuffers(disposedIndexArray);
         clearWorkerInfoList(GeometryData);
         GeometryData.isReallocate = true;
         GeometryData.disposeCount = 0;
     }
 };
-var _disposeBuffers = null;
-if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeBuffers = requireCheckFunc(function (disposedIndexArray) {
-        it("should not add data twice in one frame", function () {
-            expect(GeometryData.disposedGeometryIndexArray.length).equal(0);
-        });
-    }, function (disposedIndexArray) {
-        GeometryData.disposedGeometryIndexArray = disposedIndexArray;
-    });
-}
-else {
-    _disposeBuffers = function (disposedIndexArray) {
-        disposeGeometryBuffers(disposedIndexArray, ArrayBufferData, IndexBufferData, disposeArrayBuffer, disposeIndexBuffer);
-    };
-}
 export var isReallocate = function (GeometryData) {
     return GeometryData.isReallocate;
 };
@@ -165,11 +141,11 @@ export var getGameObject = function (index, Data) {
 export var getConfigData = function (index, GeometryData) {
     return GeometryData.configDataMap[index];
 };
-var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
+var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig, GPUDetectData) {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
-    return GPUDetector.getInstance().extensionUintIndices === true;
+    return hasExtensionUintIndices(GPUDetectData) === true;
 };
 export var isIndicesBufferNeed32BitsByData = function (GeometryData) {
     return GeometryData.indexType === EBufferType.UNSIGNED_INT;
@@ -212,8 +188,8 @@ var _buildWorkerInfo = function (index, startIndex, endIndex) {
         endIndex: endIndex
     };
 };
-export var initData = function (DataBufferConfig, GeometryData) {
-    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig), indicesArrayBytes = null;
+export var initData = function (DataBufferConfig, GeometryData, GPUDetectData) {
+    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig, GPUDetectData), indicesArrayBytes = null;
     if (isIndicesBufferNeed32Bits) {
         indicesArrayBytes = Uint32Array.BYTES_PER_ELEMENT;
         GeometryData.indexType = EBufferType.UNSIGNED_INT;

@@ -42,7 +42,7 @@ export var setColor = (index: number, color: Color, colors: Float32Array) => {
     setColor3Data(index, color, colors);
 }
 
-export var disposeComponent = ensureFunc((lastComponentIndex:number, sourceIndex: number, SpecifyLightData: any) => {
+export var disposeComponent = ensureFunc((lastComponentIndex: number, sourceIndex: number, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
 }, (sourceIndex: number, SpecifyLightData: any) => {
     var colorDataSize = getColorDataSize(),
@@ -87,14 +87,14 @@ export var getGameObject = (index: number, SpecifyLightData: any) => {
     return getComponentGameObject(SpecifyLightData.gameObjectMap, index);
 }
 
-export var markDirty = (index: number, isDirtys:Uint8Array) => {
+export var markDirty = (index: number, isDirtys: Uint8Array) => {
     isDirtys[index] = 0;
 }
 
-export var bindChangePositionEvent = (SpecifyLightData: any, state:Map<any, any>) => {
+export var bindChangePositionEvent = (SpecifyLightData: any, state: Map<any, any>) => {
     var eventName = "changePosition";
 
-    for(let i = 0, count = SpecifyLightData.count; i < count; i++){
+    for (let i = 0, count = SpecifyLightData.count; i < count; i++) {
         var _markPositionDirty = () => {
             markDirty(i, SpecifyLightData.isPositionDirtys);
         }

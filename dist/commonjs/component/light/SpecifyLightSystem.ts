@@ -5,14 +5,16 @@ import { getPosition as getThreeDTransformPosition } from "../transform/ThreeDTr
 import {
     addComponentToGameObjectMap, deleteComponentBySwapArray, generateComponentIndex, getComponentGameObject
 } from "../ComponentSystem";
-import { ensureFunc, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Light } from "./Light";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { setColor3Data } from "../utils/operateBufferDataUtils";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { deleteBySwapAndReset } from "../../utils/typeArrayUtils";
-import { getColorDataSize } from "../../renderer/utils/light/specifyLightUtils";
+import { getColorDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { registerEvent } from "../../event/EventManagerSystem";
+import { Map } from "immutable";
 
 export var create = requireCheckFunc((light: Light, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
@@ -40,7 +42,7 @@ export var setColor = (index: number, color: Color, colors: Float32Array) => {
     setColor3Data(index, color, colors);
 }
 
-export var disposeComponent = ensureFunc((returnVal, sourceIndex: number, SpecifyLightData: any) => {
+export var disposeComponent = ensureFunc((lastComponentIndex:number, sourceIndex: number, SpecifyLightData: any) => {
     checkIndexShouldEqualCount(SpecifyLightData);
 }, (sourceIndex: number, SpecifyLightData: any) => {
     var colorDataSize = getColorDataSize(),
@@ -68,6 +70,7 @@ export var initData = (buffer, SpecifyLightData: any) => {
     SpecifyLightData.gameObjectMap = [];
 
     SpecifyLightData.defaultColorArr = createDefaultColor().toArray3();
+    SpecifyLightData.defaultDirty = 0;
 
     SpecifyLightData.buffer = buffer;
 }
@@ -84,3 +87,20 @@ export var getGameObject = (index: number, SpecifyLightData: any) => {
     return getComponentGameObject(SpecifyLightData.gameObjectMap, index);
 }
 
+export var markDirty = (index: number, isDirtys:Uint8Array) => {
+    isDirtys[index] = 0;
+}
+
+export var bindChangePositionEvent = (SpecifyLightData: any, state:Map<any, any>) => {
+    var eventName = "changePosition";
+
+    for(let i = 0, count = SpecifyLightData.count; i < count; i++){
+        var _markPositionDirty = () => {
+            markDirty(i, SpecifyLightData.isPositionDirtys);
+        }
+
+        registerEvent(eventName, _markPositionDirty);
+    }
+
+    return state;
+}

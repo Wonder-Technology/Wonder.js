@@ -63,6 +63,16 @@ var Vector2 = (function () {
         this.values[1] = this.values[1] + v.values[1];
         return this;
     };
+    Vector2.prototype.addScalar = function (s) {
+        this.values[0] += s;
+        this.values[1] += s;
+        return this;
+    };
+    Vector2.prototype.multiplyScalar = function (s) {
+        this.values[0] *= s;
+        this.values[1] *= s;
+        return this;
+    };
     Vector2.prototype.mul = function (v) {
         this.values[0] = this.values[0] * v.values[0];
         this.values[1] = this.values[1] * v.values[1];

@@ -1,5 +1,9 @@
 import { setCount as setSpecifyLightCount } from "./SpecifyLightWorkerSystem";
-import { createTypeArrays, getColorArr3 as getColorArr3Utils } from "../../../utils/light/ambientLightUtils";
+import {
+    cleanColorDirty as cleanColorDirtyUtils,
+    createTypeArrays, getColorArr3 as getColorArr3Utils,
+    isColorDirty as isColorDirtyUtils
+} from "../../../utils/worker/render_file/light/ambientLightUtils";
 
 export var getColorArr3 = getColorArr3Utils;
 
@@ -14,3 +18,7 @@ export var initData = ({
 }
 
 var _setCount = setSpecifyLightCount;
+
+export var isColorDirty = isColorDirtyUtils;
+
+export var cleanColorDirty = cleanColorDirtyUtils;

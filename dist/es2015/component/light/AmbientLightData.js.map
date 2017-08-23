@@ -1,1 +1,1 @@
-{"version":3,"file":"AmbientLightData.js","sourceRoot":"","sources":["../../../../src/component/light/AmbientLightData.ts"],"names":[],"mappings":";;;;;;;;;;AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,oBAAoB,CAAC;AAEtD;IAAsC,oCAAgB;IAAtD;;IACA,CAAC;IAAD,uBAAC;AAAD,CAAC,AADD,CAAsC,gBAAgB,GACrD"}
+{"version":3,"file":"AmbientLightData.js","sourceRoot":"","sources":["../../../../src/component/light/AmbientLightData.ts"],"names":[],"mappings":";;;;;;;;;;AAAA,OAAO,EAAE,gBAAgB,EAAE,MAAM,oBAAoB,CAAC;AAEtD;IAAsC,oCAAgB;IAAtD;;IAEA,CAAC;IAAD,uBAAC;AAAD,CAAC,AAFD,CAAsC,gBAAgB,GAErD"}

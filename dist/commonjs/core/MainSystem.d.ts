@@ -1,7 +1,7 @@
 import { EScreenSize } from "../renderer/device/EScreenSize";
 import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
-export declare var setConfig: (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, {canvasID, isTest, screenSize, useDevicePixelRatio, contextConfig, workerConfig}: {
-    canvasID?: string;
+export declare var setConfig: (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {canvasId, isTest, screenSize, useDevicePixelRatio, contextConfig, workerConfig}: {
+    canvasId?: string;
     isTest?: boolean;
     screenSize?: EScreenSize;
     useDevicePixelRatio?: boolean;
@@ -19,5 +19,6 @@ export declare var setConfig: (closeContractTest: boolean, InitConfigData: any, 
         renderWorkerFileDir: string;
     };
 }) => IO;
-export declare var init: Function;
 export declare var initData: any;
+export declare var passDataToRenderWorker: any;
+export declare var init: any;

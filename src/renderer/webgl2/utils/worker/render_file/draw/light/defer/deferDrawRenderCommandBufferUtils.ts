@@ -1,4 +1,4 @@
-export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferAmbientLightPassDataFromSystem:any, DeferDirectionLightPassDataFromSystem:any, DeferPointLightPassDataFromSystem:any) => {
+export var buildDrawDataMap = (GBufferDataFromSystem: any, DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any) => {
     return {
         GBufferDataFromSystem: GBufferDataFromSystem,
         DeferAmbientLightPassDataFromSystem: DeferAmbientLightPassDataFromSystem,
@@ -7,7 +7,7 @@ export var buildDrawDataMap = (GBufferDataFromSystem:any, DeferAmbientLightPassD
     }
 }
 
-export var buildDrawFuncDataMap = (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader:Function, bindGBuffer:Function, unbindGBuffer:Function, getNewTextureUnitIndex:Function) => {
+export var buildDrawFuncDataMap = (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader: Function, bindGBuffer: Function, unbindGBuffer: Function, getNewTextureUnitIndex: Function) => {
     return {
         sendAttributeData: sendAttributeData,
         sendUniformData: sendUniformData,

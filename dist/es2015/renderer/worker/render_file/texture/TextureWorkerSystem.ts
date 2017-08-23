@@ -5,13 +5,13 @@ import {
     createTypeArrays, getBufferCount,
     initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils,
     bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY
-} from "../../../utils/texture/textureUtils";
+} from "../../../utils/worker/render_file/texture/textureUtils";
 import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messageDataType";
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any) => {
-    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, isCached, addActiveTexture);
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData:any) => {
+    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
 export var initTextures = initTexturesUtils;
@@ -37,13 +37,13 @@ else if (firefox) {
     }
 }
 
-export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any) => {
+export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData:any) => {
     for (let {
         sourceIndex,
         lastComponentIndex
     } of disposeData.disposedTextureDataMap) {
         disposeSourceMap(sourceIndex, lastComponentIndex, TextureWorkerData);
-        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData);
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
     }
 }
 

@@ -9,6 +9,7 @@ var DeviceManagerData_1 = require("../device/DeviceManagerData");
 var DirectorSystem_1 = require("../../core/DirectorSystem");
 var DirectorData_1 = require("../../core/DirectorData");
 var TextureCacheData_1 = require("./TextureCacheData");
+var GPUDetectData_1 = require("../device/GPUDetectData");
 var Texture = (function () {
     function Texture() {
         this.index = null;
@@ -22,7 +23,7 @@ exports.createTexture = function () {
 exports.disposeTexture = contract_1.requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);
 }, function (texture) {
-    TextureSystem_1.dispose(DeviceManagerSystem_1.getGL(DeviceManagerData_1.DeviceManagerData, DirectorSystem_1.getState(DirectorData_1.DirectorData)), texture, TextureCacheData_1.TextureCacheData, TextureData_1.TextureData);
+    TextureSystem_1.dispose(DeviceManagerSystem_1.getGL(DeviceManagerData_1.DeviceManagerData, DirectorSystem_1.getState(DirectorData_1.DirectorData)), texture, TextureCacheData_1.TextureCacheData, TextureData_1.TextureData, GPUDetectData_1.GPUDetectData);
 });
 exports.getTextureSource = contract_1.requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);

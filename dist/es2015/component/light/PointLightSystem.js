@@ -1,18 +1,20 @@
 import { PointLight } from "./PointLight";
-import { create as createSpecifyLight, disposeComponent as disposeSpecifyLightComponent, initData as initSpecifyLightData, setColor as setSpecifyLightColor, addComponent as addSpecifyLightComponent, createDefaultColor, getPosition as getSpecifyLightPosition } from "./SpecifyLightSystem";
-import { PointLightData } from "./PointLightData";
+import { create as createSpecifyLight, disposeComponent as disposeSpecifyLightComponent, initData as initSpecifyLightData, setColor as setSpecifyLightColor, createDefaultColor, getPosition as getSpecifyLightPosition, markDirty, bindChangePositionEvent } from "./SpecifyLightSystem";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { DataBufferConfig } from "../../config/DataBufferConfig";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteOneItemBySwapAndReset, setSingleValue } from "../../utils/typeArrayUtils";
-import { getConstant as getConstantUtils, getConstantDataSize, getLinearDataSize, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getQuadraticDataSize, getRange as getRangeUtils, getRangeDataSize, createTypeArrays, getColorArr3 as getColorArr3Utils, getColorDataSize, getIntensity as getIntensityUtils, getIntensityDataSize } from "../../renderer/utils/light/pointLightUtils";
+import { getConstant as getConstantUtils, getLinear as getLinearUtils, getQuadratic as getQuadraticUtils, getRange as getRangeUtils, createTypeArrays, getColorArr3 as getColorArr3Utils, getIntensity as getIntensityUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils, isAttenuationDirty as isAttenuationDirtyUtils, cleanColorDirty as cleanColorDirtyUtils, cleanIntensityDirty as cleanIntensityDirtyUtils, cleanAttenuationDirty as cleanAttenuationDirtyUtils, cleanPositionDirty as cleanPositionDirtyUtils, isPositionDirty as isPositionDirtyUtils, getColorDataSize, getIntensityDataSize, getConstantDataSize, getQuadraticDataSize, getRangeDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Log } from "../../utils/Log";
 import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils";
+import { isInit } from "../../core/DirectorSystem";
+import { DirectorData } from "../../core/DirectorData";
+import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 export var create = ensureFunc(function (light, PointLightData) {
-    it("count should <= max count", function () {
-        expect(PointLightData.count).lte(DataBufferConfig.pointLightDataBufferCount);
+    it("shouldn't create after Director->init", function () {
+        expect(isInit(DirectorData)).false;
     });
 }, function (PointLightData) {
     var light = new PointLight();
@@ -35,26 +37,32 @@ export var getColor = function (index, PointLightData) {
 export var getColorArr3 = getColorArr3Utils;
 export var setColor = function (index, color, PointLightData) {
     setSpecifyLightColor(index, color, PointLightData.colors);
+    markDirty(index, PointLightData.isColorDirtys);
 };
 export var getIntensity = getIntensityUtils;
 export var setIntensity = function (index, value, PointLightData) {
     setSingleValue(PointLightData.intensities, index, value);
+    markDirty(index, PointLightData.isIntensityDirtys);
 };
 export var getConstant = getConstantUtils;
 export var setConstant = function (index, value, PointLightData) {
     setSingleValue(PointLightData.constants, index, value);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 };
 export var getLinear = getLinearUtils;
 export var setLinear = function (index, value, PointLightData) {
     setSingleValue(PointLightData.linears, index, value);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 };
 export var getQuadratic = getQuadraticUtils;
 export var setQuadratic = function (index, value, PointLightData) {
     setSingleValue(PointLightData.quadratics, index, value);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 };
 export var getRange = getRangeUtils;
 export var setRange = function (index, value, PointLightData) {
     setSingleValue(PointLightData.ranges, index, value);
+    markDirty(index, PointLightData.isAttenuationDirtys);
 };
 export var setRangeLevel = function (index, value, PointLightData) {
     switch (value) {
@@ -122,65 +130,19 @@ export var setRangeLevel = function (index, value, PointLightData) {
             Log.error(true, "over point light range");
             break;
     }
+    markDirty(index, PointLightData.isAttenuationDirtys);
 };
-export var addComponent = function (component, gameObject) {
-    addSpecifyLightComponent(component, gameObject, PointLightData);
-};
-export var disposeComponent = function (component) {
-    var intensityDataSize = getIntensityDataSize(), constantDataSize = getConstantDataSize(), linearDataSize = getLinearDataSize(), quadraticDataSize = getQuadraticDataSize(), rangeDataSize = getRangeDataSize(), sourceIndex = component.index, lastComponentIndex = null;
-    lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, PointLightData);
-    deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, PointLightData.intensities, PointLightData.defaultIntensity);
-    deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, PointLightData.constants, PointLightData.defaultConstant);
-    deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData.linears, PointLightData.defaultLinear);
-    deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
-    deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
-};
-export var initData = function (PointLightData) {
-    var count = getPointLightBufferCount(), size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()), buffer = null;
+export var initDataHelper = function (PointLightData) {
+    var count = getPointLightBufferCount(), size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()) + Uint8Array.BYTES_PER_ELEMENT * (getDirtyDataSize() * 4), buffer = null;
     buffer = createSharedArrayBufferOrArrayBuffer(count * size);
     initSpecifyLightData(buffer, PointLightData);
     createTypeArrays(buffer, count, PointLightData);
     PointLightData.defaultIntensity = 1;
     PointLightData.defaultConstant = 1;
-    PointLightData.defaultLinear = 0;
-    PointLightData.defaultQuadratic = 0;
-    PointLightData.defaultRange = 60000;
+    PointLightData.defaultLinear = 0.07;
+    PointLightData.defaultQuadratic = 0.017;
+    PointLightData.defaultRange = 65;
     _setDefaultTypeArrData(count, PointLightData);
-    PointLightData.lightGLSLDataStructureMemberNameArr = [
-        {
-            position: "u_pointLights[0].position",
-            color: "u_pointLights[0].color",
-            intensity: "u_pointLights[0].intensity",
-            constant: "u_pointLights[0].constant",
-            linear: "u_pointLights[0].linear",
-            quadratic: "u_pointLights[0].quadratic",
-            range: "u_pointLights[0].range"
-        }, {
-            position: "u_pointLights[1].position",
-            color: "u_pointLights[1].color",
-            intensity: "u_pointLights[1].intensity",
-            constant: "u_pointLights[1].constant",
-            linear: "u_pointLights[1].linear",
-            quadratic: "u_pointLights[1].quadratic",
-            range: "u_pointLights[1].range"
-        }, {
-            position: "u_pointLights[2].position",
-            color: "u_pointLights[2].color",
-            intensity: "u_pointLights[2].intensity",
-            constant: "u_pointLights[2].constant",
-            linear: "u_pointLights[2].linear",
-            quadratic: "u_pointLights[2].quadratic",
-            range: "u_pointLights[2].range"
-        }, {
-            position: "u_pointLights[3].position",
-            color: "u_pointLights[3].color",
-            intensity: "u_pointLights[3].intensity",
-            constant: "u_pointLights[3].constant",
-            linear: "u_pointLights[3].linear",
-            quadratic: "u_pointLights[3].quadratic",
-            range: "u_pointLights[3].range"
-        }
-    ];
 };
 var _setDefaultTypeArrData = function (count, PointLightData) {
     var color = createDefaultColor(), intensity = PointLightData.defaultIntensity, constant = PointLightData.defaultConstant, linear = PointLightData.defaultLinear, quadratic = PointLightData.defaultQuadratic, range = PointLightData.defaultRange;
@@ -193,4 +155,29 @@ var _setDefaultTypeArrData = function (count, PointLightData) {
         setRange(i, range, PointLightData);
     }
 };
+export var disposeComponent = function (component, PointLightData) {
+    var intensityDataSize = getIntensityDataSize(), constantDataSize = getConstantDataSize(), linearDataSize = getLinearDataSize(), quadraticDataSize = getQuadraticDataSize(), rangeDataSize = getRangeDataSize(), dirtyDataSize = getDirtyDataSize(), sourceIndex = component.index, lastComponentIndex = null;
+    lastComponentIndex = disposeSpecifyLightComponent(sourceIndex, PointLightData);
+    deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, PointLightData.intensities, PointLightData.defaultIntensity);
+    deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, PointLightData.constants, PointLightData.defaultConstant);
+    deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData.linears, PointLightData.defaultLinear);
+    deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
+    deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isPositionDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isColorDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isIntensityDirtys, PointLightData.defaultDirty);
+    deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isAttenuationDirtys, PointLightData.defaultDirty);
+    return lastComponentIndex;
+};
+export var init = function (PointLightData, state) {
+    return bindChangePositionEvent(PointLightData, state);
+};
+export var isPositionDirty = isPositionDirtyUtils;
+export var isColorDirty = isColorDirtyUtils;
+export var isIntensityDirty = isIntensityDirtyUtils;
+export var isAttenuationDirty = isAttenuationDirtyUtils;
+export var cleanPositionDirty = cleanPositionDirtyUtils;
+export var cleanColorDirty = cleanColorDirtyUtils;
+export var cleanIntensityDirty = cleanIntensityDirtyUtils;
+export var cleanAttenuationDirty = cleanAttenuationDirtyUtils;
 //# sourceMappingURL=PointLightSystem.js.map

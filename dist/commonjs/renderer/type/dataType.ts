@@ -1,5 +1,13 @@
-import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
 import { EBufferType } from "../enum/EBufferType";
+import {
+    IWebGL1SendAttributeConfig,
+    IWebGL1SendUniformConfig
+} from "../worker/webgl1/both_file/data/shaderLib_generator";
+import {
+    IWebGL2SendAttributeConfig,
+    IWebGL2SendUniformConfig
+} from "../worker/webgl2/both_file/data/shaderLib_generator";
+import { WebGLVertexArrayObject } from "../extend/interface";
 
 export type ProgramMap = {
     [index: number]: WebGLProgram
@@ -22,11 +30,11 @@ export type UniformShaderLocationMap = {
 }
 
 export type SendAttributeConfigMap = {
-    [index: number]: Array<ISendAttributeConfig>
+    [index: number]: Array<IWebGL1SendAttributeConfig | IWebGL2SendAttributeConfig>
 }
 
 export type SendUniformConfigMap = {
-    [index: number]: Array<ISendUniformConfig>
+    [index: number]: Array<IWebGL1SendUniformConfig | IWebGL2SendUniformConfig>
 }
 
 export type SendUniformFuncConfigMap = {
@@ -46,18 +54,18 @@ export type ArrayBufferDataMap = {
     }
 }
 
-export type RenderCommandBufferForDrawData = {
-    buffer: SharedArrayBuffer;
-    count: number
+export type BasicRenderUniformData = {
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
 }
 
-export type RenderCommandUniformData = {
+export type LightRenderUniformData = {
     mMatrix: Float32Array;
     vMatrix: Float32Array;
     pMatrix: Float32Array;
     cameraPosition: Float32Array;
     normalMatrix: Float32Array;
-    materialIndex: number;
 }
 
 export type ContextConfigOptionsData = {
@@ -85,14 +93,22 @@ export type MaterialWorkerInitDataList = Array<{
     className: string;
 }>
 
-export type ShaderLibWholeNameMap = {
-    [shaderLibWholeName: string]: number
-}
-
 export type DirectionLightGLSLDataStructure = {
     position: string;
     color: string;
     intensity: string;
+}
+
+export type ShaderIndexMap = {
+    [shaderLibName:string]: number
+}
+
+export type ShaderIndexByShaderNameMap = {
+    [shaderName:string]: number
+}
+
+export type ShaderLibNameMap = {
+    [materialIndex:number]: string
 }
 
 export type PointLightGLSLDataStructure = {
@@ -106,10 +122,32 @@ export type PointLightGLSLDataStructure = {
 }
 
 export type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
-type TypeArr = Float32Array | Uint32Array | Uint16Array | Uint8Array | Uint8Array;
 
 
 export type DisposedTextureDataMap = Array<{
     sourceIndex: number;
     lastComponentIndex: number;
 }>
+
+export type VaoConfigMap = {
+    [index: number]: VaoConfigData
+}
+
+export type VaoConfigData = {
+    positionLocation?: number;
+    normalLocation?: number;
+    texCoordLocation?: number;
+
+    getVertices?: Function;
+    getNormals?: Function;
+    getTexCoords?: Function;
+    getIndices: Function;
+}
+
+export type VaoMap = {
+    [index: number]: WebGLVertexArrayObject
+}
+
+export type VboArrayMap = {
+    [index: number]: Array<WebGLBuffer>
+}

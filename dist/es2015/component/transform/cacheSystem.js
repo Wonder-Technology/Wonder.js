@@ -1,7 +1,7 @@
 import curry from "wonder-lodash/curry";
 import { deleteVal, isNotValidMapValue } from "../../utils/objectUtils";
 import { getIsTranslate, setIsTranslate } from "./isTransformSystem";
-import { getUID } from "./utils";
+import { getUId } from "./utils";
 export var clearCache = curry(function (ThreeDTransformData, state) {
     var count = null, cacheMap = null;
     if (ThreeDTransformData.isClearCacheMap) {
@@ -11,12 +11,13 @@ export var clearCache = curry(function (ThreeDTransformData, state) {
     count = ThreeDTransformData.maxCount;
     cacheMap = ThreeDTransformData.cacheMap;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        var uid = getUID(i, ThreeDTransformData), isTranslate = getIsTranslate(uid, ThreeDTransformData);
+        var uid = getUId(i, ThreeDTransformData), isTranslate = getIsTranslate(uid, ThreeDTransformData);
         if (isTranslate) {
             deleteVal(uid, cacheMap);
             setIsTranslate(uid, false, ThreeDTransformData);
         }
     }
+    return state;
 });
 export var clearCacheMap = function (ThreeDTransformData) {
     ThreeDTransformData.cacheMap = {};

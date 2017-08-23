@@ -1,4 +1,4 @@
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { Component } from "../Component";
 import { MaterialWorkerInitDataList } from "../../renderer/type/dataType";
 export declare class MaterialData {
@@ -11,7 +11,7 @@ export declare class MaterialData {
     static defaultColorArr: Array<number>;
     static defaultOpacity: number;
     static defaultAlphaTest: number;
-    static gameObjectMap: Array<IUIDEntity>;
+    static gameObjectMap: Array<IUIdEntity>;
     static materialMap: Array<Component>;
     static workerInitList: MaterialWorkerInitDataList;
 }

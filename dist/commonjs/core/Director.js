@@ -18,7 +18,7 @@ var GlobalTempData_1 = require("../definition/GlobalTempData");
 var GameObjectData_1 = require("./entityObject/gameObject/GameObjectData");
 var SceneSystem_1 = require("./entityObject/scene/SceneSystem");
 var GeometrySystem_1 = require("../component/geometry/GeometrySystem");
-var WebGLRenderSystem_1 = require("../renderer/render/WebGLRenderSystem");
+var WebGLRenderSystem_1 = require("../renderer/core/WebGLRenderSystem");
 var GeometryData_1 = require("../component/geometry/GeometryData");
 var MaterialSystem_1 = require("../component/material/MaterialSystem");
 var MeshRendererSystem_1 = require("../component/renderer/MeshRendererSystem");
@@ -33,13 +33,24 @@ var CameraControllerData_1 = require("../component/camera/CameraControllerData")
 var CameraController_1 = require("../component/camera/CameraController");
 var DeviceManager_1 = require("../renderer/device/DeviceManager");
 var Scheduler_1 = require("./Scheduler");
-var LightSystem_1 = require("../component/light/LightSystem");
 var AmbientLight_1 = require("../component/light/AmbientLight");
 var DirectionLight_1 = require("../component/light/DirectionLight");
 var BasicMaterial_1 = require("../component/material/BasicMaterial");
 var LightMaterial_1 = require("../component/material/LightMaterial");
 var BoxGeometry_1 = require("../component/geometry/BoxGeometry");
 var CustomGeometry_1 = require("../component/geometry/CustomGeometry");
+var PointLight_1 = require("../component/light/PointLight");
+var WebGLDetectSystem_1 = require("../renderer/device/WebGLDetectSystem");
+var LightSystem_1 = require("../component/webgl1/light/LightSystem");
+var LightSystem_2 = require("../component/webgl2/light/LightSystem");
+var PointLightSystem_1 = require("../component/light/PointLightSystem");
+var DirectionLightSystem_1 = require("../component/light/DirectionLightSystem");
+var PointLightData_1 = require("../renderer/webgl1/light/PointLightData");
+var PointLightData_2 = require("../renderer/webgl2/light/PointLightData");
+var GeometrySystem_2 = require("../component/webgl1/geometry/GeometrySystem");
+var GeometrySystem_3 = require("../component/webgl2/geometry/GeometrySystem");
+var DirectionLightData_1 = require("../renderer/webgl1/light/DirectionLightData");
+var DirectionLightData_2 = require("../renderer/webgl2/light/DirectionLightData");
 var Director = (function () {
     function Director() {
         this.scene = SceneSystem_1.create(GameObjectData_1.GameObjectData);
@@ -79,6 +90,7 @@ var Director = (function () {
     };
     Director.prototype._init = function (state) {
         var resultState = state;
+        DirectorSystem_1.markIsInit(DirectorData_1.DirectorData);
         resultState = this._initSystem(resultState);
         resultState = this._initRenderer(resultState);
         this._timeController.start();
@@ -89,6 +101,8 @@ var Director = (function () {
         var resultState = ThreeDTransformSystem_1.init(GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData, state);
         resultState = GeometrySystem_1.init(GeometryData_1.GeometryData, state);
         resultState = CameraControllerSystem_1.init(PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData, CameraControllerData_1.CameraControllerData, state);
+        resultState = _initPointLight(state);
+        resultState = _initDirectionLight(state);
         return resultState;
     };
     Director.prototype._initRenderer = function (state) {
@@ -110,9 +124,6 @@ var Director = (function () {
     return Director;
 }());
 exports.Director = Director;
-GeometrySystem_1.addAddComponentHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
-GeometrySystem_1.addDisposeHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
-GeometrySystem_1.addInitHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
 MaterialSystem_1.addAddComponentHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
 MaterialSystem_1.addDisposeHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
 MaterialSystem_1.addInitHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
@@ -124,6 +135,29 @@ ThreeDTransformSystem_1.addAddComponentHandle(ThreeDTransform_1.ThreeDTransform)
 ThreeDTransformSystem_1.addDisposeHandle(ThreeDTransform_1.ThreeDTransform);
 CameraControllerSystem_1.addAddComponentHandle(CameraController_1.CameraController);
 CameraControllerSystem_1.addDisposeHandle(CameraController_1.CameraController);
-LightSystem_1.addAddComponentHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight);
-LightSystem_1.addDisposeHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight);
+GeometrySystem_1.addAddComponentHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+GeometrySystem_1.addInitHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+var _initPointLight = null, _initDirectionLight = null;
+if (WebGLDetectSystem_1.isWebgl1()) {
+    LightSystem_1.addAddComponentHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight, PointLight_1.PointLight);
+    LightSystem_1.addDisposeHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight, PointLight_1.PointLight);
+    GeometrySystem_2.addDisposeHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+    _initPointLight = function (state) {
+        return PointLightSystem_1.init(PointLightData_1.WebGL1PointLightData, state);
+    };
+    _initDirectionLight = function (state) {
+        return DirectionLightSystem_1.init(DirectionLightData_1.WebGL1DirectionLightData, state);
+    };
+}
+else {
+    LightSystem_2.addAddComponentHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight, PointLight_1.PointLight);
+    LightSystem_2.addDisposeHandle(AmbientLight_1.AmbientLight, DirectionLight_1.DirectionLight, PointLight_1.PointLight);
+    GeometrySystem_3.addDisposeHandle(BoxGeometry_1.BoxGeometry, CustomGeometry_1.CustomGeometry);
+    _initPointLight = function (state) {
+        return PointLightSystem_1.init(PointLightData_2.WebGL2PointLightData, state);
+    };
+    _initDirectionLight = function (state) {
+        return DirectionLightSystem_1.init(DirectionLightData_2.WebGL2DirectionLightData, state);
+    };
+}
 //# sourceMappingURL=Director.js.map

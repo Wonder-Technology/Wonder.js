@@ -33,7 +33,7 @@ var ThreeDTransformData = (function () {
     ThreeDTransformData.disposeCount = null;
     ThreeDTransformData.isClearCacheMap = null;
     ThreeDTransformData.gameObjectMap = null;
-    ThreeDTransformData.aliveUIDArray = null;
+    ThreeDTransformData.aliveUIdArray = null;
     ThreeDTransformData.buffer = null;
     return ThreeDTransformData;
 }());

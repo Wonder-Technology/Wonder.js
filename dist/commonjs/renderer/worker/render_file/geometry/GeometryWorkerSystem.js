@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var objectUtils_1 = require("../../../../utils/objectUtils");
-var geometryUtils_1 = require("../../../utils/geometry/geometryUtils");
+var geometryUtils_1 = require("../../../utils/worker/render_file/geometry/geometryUtils");
 var contract_1 = require("../../../../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var arrayUtils_1 = require("../../../../utils/arrayUtils");

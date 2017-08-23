@@ -1,6 +1,6 @@
 import { EWorkerOperateType } from "../EWorkerOperateType";
 import curry from "wonder-lodash/curry";
-import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setSide as setSideUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/device/deviceManagerUtils";
+import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setSide as setSideUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { isValueExist } from "../../../../utils/stateUtils";
@@ -47,8 +47,8 @@ export var setViewportOfGL = curry(function (DeviceManagerWorkerData, _a, state)
         return state;
     });
 });
-export var setScreen = curry(function (canvas, DeviceManagerWorkerData, state) {
-    return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state);
+export var setScreen = curry(function (canvas, DeviceManagerWorkerData, DomQuery, state) {
+    return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 var _setScreenData = curry(function (DeviceManagerWorkerData, canvas, state, data) {
     var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;

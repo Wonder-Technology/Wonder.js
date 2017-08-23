@@ -143,7 +143,7 @@ exports.setPositionData = function (index, parent, vec3IndexInArrayBuffer, posit
     if (hierarchySystem_1.isParentExist(parent)) {
         var index_1 = parent.index;
         typeArrayUtils_1.setVectors(ThreeDTransformData.localPositions, ThreeDTransformSystem_1.getLocalToWorldMatrix({
-            uid: utils_1.getUID(index_1, ThreeDTransformData),
+            uid: utils_1.getUId(index_1, ThreeDTransformData),
             index: index_1
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }

@@ -4,7 +4,7 @@ import { Texture } from "./Texture";
 import {
     bindAndUpdate as bindAndUpdateUtils,
     createTypeArrays, getBufferCount, getMapCount as getMapCountUtils, getMaxTextureCount
-} from "../utils/texture/mapManagerUtils";
+} from "../utils/worker/render_file/texture/mapManagerUtils";
 import {
     bindToUnit, initData as initTextureData, initTextures, needUpdate, setUniformSamplerName,
     update
@@ -23,10 +23,6 @@ import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../util
 
 export var initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => {
     initTextures(gl, TextureData);
-}
-
-export var getMapIndex = (materialIndex: number, MapManagerData: any) => {
-    return MapManagerData.textureIndices[materialIndex];
 }
 
 export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
@@ -53,8 +49,8 @@ export var getMapCount = getMapCountUtils;
 //     }
 // }
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, TextureCacheData: any, TextureData: any, MapManagerData: any) => {
-    bindAndUpdateUtils(gl, mapCount, TextureCacheData, TextureData, MapManagerData, bindToUnit, needUpdate, update);
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData:any) => {
+    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
 }
 
 /*!
@@ -76,7 +72,7 @@ export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: 
 var _initBufferData = (MapManagerData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
-        size = Float32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
+        size = Uint32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
         offset: number = null;
 
     buffer = createSharedArrayBufferOrArrayBuffer(computeBufferLength(count, size));

@@ -50,16 +50,16 @@ exports.isNotChangeParent = function (currentParentIndexInArrayBuffer, newParent
 exports.removeHierarchyData = function (uid, ThreeDTransformData) {
     objectUtils_1.deleteVal(uid, ThreeDTransformData.childrenMap);
 };
-var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformData) {
-    var parentUID = parent.uid, children = exports.getChildren(parentUID, ThreeDTransformData);
-    objectUtils_1.deleteVal(targetUID, ThreeDTransformData.parentMap);
+var _removeHierarchyFromParent = function (parent, targetUId, ThreeDTransformData) {
+    var parentUId = parent.uid, children = exports.getChildren(parentUId, ThreeDTransformData);
+    objectUtils_1.deleteVal(targetUId, ThreeDTransformData.parentMap);
     if (objectUtils_1.isNotValidMapValue(children)) {
         return;
     }
-    _removeChild(parentUID, targetUID, children, ThreeDTransformData);
+    _removeChild(parentUId, targetUId, children, ThreeDTransformData);
 };
-var _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-    entityUtils_1.removeChildEntity(children, targetUID);
+var _removeChild = function (parentUId, targetUId, children, ThreeDTransformData) {
+    entityUtils_1.removeChildEntity(children, targetUId);
 };
 var _addChild = contract_1.requireCheckFunc(function (uid, child, ThreeDTransformData) {
     contract_1.it("children should be empty array if has no child", function () {
@@ -75,19 +75,19 @@ exports.setChildren = function (uid, children, ThreeDTransformData) {
 var _setParent = function (uid, parent, ThreeDTransformData) {
     ThreeDTransformData.parentMap[uid] = parent;
 };
-var _addToParent = contract_1.requireCheckFunc(function (targetUID, target, parent, ThreeDTransformData) {
+var _addToParent = contract_1.requireCheckFunc(function (targetUId, target, parent, ThreeDTransformData) {
     contract_1.it("the child one should not has parent", function () {
-        wonder_expect_js_1.expect(objectUtils_1.isValidMapValue(exports.getParent(targetUID, ThreeDTransformData))).false;
+        wonder_expect_js_1.expect(objectUtils_1.isValidMapValue(exports.getParent(targetUId, ThreeDTransformData))).false;
     });
     contract_1.it("parent should not already has the child", function () {
-        var parentUID = parent.uid, children = exports.getChildren(parentUID, ThreeDTransformData);
+        var parentUId = parent.uid, children = exports.getChildren(parentUId, ThreeDTransformData);
         if (objectUtils_1.isValidMapValue(children)) {
             wonder_expect_js_1.expect(children.indexOf(target)).equal(-1);
         }
     });
-}, function (targetUID, target, parent, ThreeDTransformData) {
-    var parentUID = parent.uid;
-    _setParent(targetUID, parent, ThreeDTransformData);
-    _addChild(parentUID, target, ThreeDTransformData);
+}, function (targetUId, target, parent, ThreeDTransformData) {
+    var parentUId = parent.uid;
+    _setParent(targetUId, parent, ThreeDTransformData);
+    _addChild(parentUId, target, ThreeDTransformData);
 });
 //# sourceMappingURL=hierarchySystem.js.map

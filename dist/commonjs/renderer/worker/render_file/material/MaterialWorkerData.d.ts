@@ -16,8 +16,6 @@ export declare type BasicMaterialInitWorkerData = {
 export declare type LightMaterialInitWorkerData = {
     startIndex: number;
     index: number;
-    diffuseMapIndex: number;
-    specularMapIndex: number;
 };
 export declare type MaterialUpdateWorkerData = {
     buffer: SharedArrayBuffer;

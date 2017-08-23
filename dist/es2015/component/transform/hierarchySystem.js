@@ -48,16 +48,16 @@ export var isNotChangeParent = function (currentParentIndexInArrayBuffer, newPar
 export var removeHierarchyData = function (uid, ThreeDTransformData) {
     deleteVal(uid, ThreeDTransformData.childrenMap);
 };
-var _removeHierarchyFromParent = function (parent, targetUID, ThreeDTransformData) {
-    var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
-    deleteVal(targetUID, ThreeDTransformData.parentMap);
+var _removeHierarchyFromParent = function (parent, targetUId, ThreeDTransformData) {
+    var parentUId = parent.uid, children = getChildren(parentUId, ThreeDTransformData);
+    deleteVal(targetUId, ThreeDTransformData.parentMap);
     if (isNotValidMapValue(children)) {
         return;
     }
-    _removeChild(parentUID, targetUID, children, ThreeDTransformData);
+    _removeChild(parentUId, targetUId, children, ThreeDTransformData);
 };
-var _removeChild = function (parentUID, targetUID, children, ThreeDTransformData) {
-    removeChildEntity(children, targetUID);
+var _removeChild = function (parentUId, targetUId, children, ThreeDTransformData) {
+    removeChildEntity(children, targetUId);
 };
 var _addChild = requireCheckFunc(function (uid, child, ThreeDTransformData) {
     it("children should be empty array if has no child", function () {
@@ -73,19 +73,19 @@ export var setChildren = function (uid, children, ThreeDTransformData) {
 var _setParent = function (uid, parent, ThreeDTransformData) {
     ThreeDTransformData.parentMap[uid] = parent;
 };
-var _addToParent = requireCheckFunc(function (targetUID, target, parent, ThreeDTransformData) {
+var _addToParent = requireCheckFunc(function (targetUId, target, parent, ThreeDTransformData) {
     it("the child one should not has parent", function () {
-        expect(isValidMapValue(getParent(targetUID, ThreeDTransformData))).false;
+        expect(isValidMapValue(getParent(targetUId, ThreeDTransformData))).false;
     });
     it("parent should not already has the child", function () {
-        var parentUID = parent.uid, children = getChildren(parentUID, ThreeDTransformData);
+        var parentUId = parent.uid, children = getChildren(parentUId, ThreeDTransformData);
         if (isValidMapValue(children)) {
             expect(children.indexOf(target)).equal(-1);
         }
     });
-}, function (targetUID, target, parent, ThreeDTransformData) {
-    var parentUID = parent.uid;
-    _setParent(targetUID, parent, ThreeDTransformData);
-    _addChild(parentUID, target, ThreeDTransformData);
+}, function (targetUId, target, parent, ThreeDTransformData) {
+    var parentUId = parent.uid;
+    _setParent(targetUId, parent, ThreeDTransformData);
+    _addChild(parentUId, target, ThreeDTransformData);
 });
 //# sourceMappingURL=hierarchySystem.js.map

@@ -1,9 +1,9 @@
 import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messageDataType";
-export declare var bindToUnit: (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any) => void;
+export declare var bindToUnit: (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => void;
 export declare var initTextures: (gl: WebGLRenderingContext, TextureDataFromSystem: any) => void;
 export declare var needUpdate: (textureIndex: number, TextureDataFromSystem: any) => boolean;
 export declare var update: (gl: WebGLRenderingContext, textureIndex: number, TextureWorkerData: any) => void;
-export declare var disposeSourceAndGLTexture: (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any) => void;
+export declare var disposeSourceAndGLTexture: (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => void;
 export declare var setIndex: (index: number, TextureWorkerData: any) => void;
 export declare var setUniformSamplerNameMap: (uniformSamplerNameMap: string[], TextureWorkerData: any) => void;
 export declare var setSourceMapByImageSrcArrStream: (imageSrcIndexArr: ImageSrcIndexData[], TextureWorkerData: any) => any;

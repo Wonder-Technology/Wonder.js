@@ -249,7 +249,7 @@ export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, posi
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 })
 
-var _triggerChangePositionEvent = (uid:number, ThreeTransformData:any) => {
+var _triggerChangePositionEvent = (uid: number, ThreeTransformData: any) => {
     triggerEvent("changePosition");
 }
 

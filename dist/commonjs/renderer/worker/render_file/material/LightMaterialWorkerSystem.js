@@ -1,25 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var lightMaterialUtils_1 = require("../../../utils/material/lightMaterialUtils");
-exports.getSpecularColorArr3 = function (index, LightMaterialData) {
-    return lightMaterialUtils_1.getSpecularColorArr3(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialData);
+var lightMaterialUtils_1 = require("../../../utils/worker/render_file/material/lightMaterialUtils");
+exports.getSpecularColorArr3 = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.getSpecularColorArr3(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.getEmissionColorArr3 = function (index, LightMaterialData) {
-    return lightMaterialUtils_1.getEmissionColorArr3(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialData);
+exports.getEmissionColorArr3 = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.getEmissionColorArr3(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.getShininess = function (index, LightMaterialDataFromSystem) {
-    return lightMaterialUtils_1.getShininess(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialDataFromSystem);
+exports.getShininess = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.getShininess(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.getShading = function (index, LightMaterialDataFromSystem) {
-    return lightMaterialUtils_1.getShading(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialDataFromSystem);
+exports.getShading = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.getShading(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.getLightModel = function (index, LightMaterialDataFromSystem) {
-    return lightMaterialUtils_1.getLightModel(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialDataFromSystem);
+exports.getLightModel = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.getLightModel(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.setDiffuseMapIndex = function (textureIndex, LightMaterialData) {
-    LightMaterialData.diffuseMapIndex = textureIndex;
+exports.hasDiffuseMap = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.hasDiffuseMap(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
 };
-exports.setSpecularMapIndex = function (textureIndex, LightMaterialData) {
-    LightMaterialData.specularMapIndex = textureIndex;
+exports.hasSpecularMap = function (index, LightMaterialWorkerData) {
+    return lightMaterialUtils_1.hasSpecularMap(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialWorkerData);
+};
+exports.initData = function (LightMaterialWorkerData) {
 };
 //# sourceMappingURL=LightMaterialWorkerSystem.js.map

@@ -7,6 +7,7 @@ import { DeviceManagerData } from "../device/DeviceManagerData";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { TextureCacheData } from "./TextureCacheData";
+import { GPUDetectData } from "../device/GPUDetectData";
 var Texture = (function () {
     function Texture() {
         this.index = null;
@@ -20,7 +21,7 @@ export var createTexture = function () {
 export var disposeTexture = requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);
 }, function (texture) {
-    dispose(getGL(DeviceManagerData, getState(DirectorData)), texture, TextureCacheData, TextureData);
+    dispose(getGL(DeviceManagerData, getState(DirectorData)), texture, TextureCacheData, TextureData, GPUDetectData);
 });
 export var getTextureSource = requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);

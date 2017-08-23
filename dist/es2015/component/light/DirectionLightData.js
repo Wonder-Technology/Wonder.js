@@ -15,8 +15,9 @@ var DirectionLightData = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DirectionLightData.intensities = null;
+    DirectionLightData.isPositionDirtys = null;
+    DirectionLightData.isIntensityDirtys = null;
     DirectionLightData.defaultIntensity = null;
-    DirectionLightData.lightGLSLDataStructureMemberNameArr = null;
     return DirectionLightData;
 }(SpecifyLightData));
 export { DirectionLightData };

@@ -6,6 +6,6 @@ import { init as initMaterial } from "../../material/MaterialSystem";
 import { WebGL2DirectionLightData } from "../../../renderer/webgl2/light/DirectionLightData";
 import { AmbientLightData } from "../../light/AmbientLightData";
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any, LocationData:any, ShaderData:any) => {
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, GPUDetectData: any, GLSLSenderData: any, ProgramData: any, VaoData: any, LocationData: any, ShaderData: any) => {
     initMaterial(state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData);
 }

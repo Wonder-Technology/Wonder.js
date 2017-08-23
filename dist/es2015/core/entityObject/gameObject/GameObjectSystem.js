@@ -11,15 +11,17 @@ import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
 import { removeChildEntity } from "../../../utils/entityUtils";
 import { isDisposeTooManyComponents, reAllocateGameObject } from "../../../utils/memoryUtils";
-import { getComponentIDFromClass, getComponentIDFromComponent } from "../../../component/ComponentComponentIDManager";
+import { getComponentIdFromClass, getComponentIdFromComponent } from "../../../component/ComponentComponentIdManager";
+import { MeshRenderer } from "../../../component/renderer/MeshRenderer";
+import { create as createMeshRenderer } from "../../../component/renderer/MeshRendererSystem";
 export var create = ensureFunc(function (gameObject, transform, GameObjectData) {
     it("componentMap should has data", function () {
         expect(_getComponentData(gameObject.uid, GameObjectData)).exist;
     });
 }, function (transform, GameObjectData) {
-    var gameObject = new GameObject(), uid = _buildUID(GameObjectData);
+    var gameObject = new GameObject(), uid = _buildUId(GameObjectData);
     gameObject.uid = uid;
-    GameObjectData.aliveUIDArray.push(uid);
+    GameObjectData.aliveUIdArray.push(uid);
     if (!transform) {
         _setComponentData(uid, {}, GameObjectData);
     }
@@ -28,7 +30,7 @@ export var create = ensureFunc(function (gameObject, transform, GameObjectData) 
     }
     return gameObject;
 });
-var _buildUID = function (GameObjectData) {
+var _buildUId = function (GameObjectData) {
     return GameObjectData.uid++;
 };
 export var isAlive = function (entity, GameObjectData) {
@@ -39,9 +41,9 @@ export var isNotAlive = function (entity, GameObjectData) {
 };
 export var initGameObject = function (gameObject, state, GameObjectData) {
     var uid = gameObject.uid, componentData = _getComponentData(uid, GameObjectData);
-    for (var typeID in componentData) {
-        if (componentData.hasOwnProperty(typeID)) {
-            execInitHandle(typeID, componentData[typeID].index, state);
+    for (var typeId in componentData) {
+        if (componentData.hasOwnProperty(typeId)) {
+            execInitHandle(typeId, componentData[typeId].index, state);
         }
     }
 };
@@ -53,8 +55,8 @@ export var dispose = function (entity, ThreeDTransformData, GameObjectData) {
         GameObjectData.disposeCount = 0;
     }
 };
-var _removeFromChildrenMap = function (parentUID, childUID, GameObjectData) {
-    removeChildEntity(getChildren(parentUID, GameObjectData), childUID);
+var _removeFromChildrenMap = function (parentUId, childUId, GameObjectData) {
+    removeChildEntity(getChildren(parentUId, GameObjectData), childUId);
 };
 var _diposeAllDatas = function (gameObject, GameObjectData) {
     var uid = gameObject.uid, children = getChildren(uid, GameObjectData);
@@ -75,9 +77,9 @@ var _disposeMapDatas = function (uid, GameObjectData) {
 };
 var _disposeAllComponents = function (gameObject, GameObjectData) {
     var components = _getComponentData(gameObject.uid, GameObjectData);
-    for (var typeID in components) {
-        if (components.hasOwnProperty(typeID)) {
-            var component = components[typeID];
+    for (var typeId in components) {
+        if (components.hasOwnProperty(typeId)) {
+            var component = components[typeId];
             execHandle(component, "disposeHandleMap");
         }
     }
@@ -87,51 +89,54 @@ export var addComponent = requireCheckFunc(function (gameObject, component, Game
         expect(component).exist;
     });
     it("should not has this type of component, please dispose it", function () {
-        expect(hasComponent(gameObject, getComponentIDFromComponent(component), GameObjectData)).false;
+        expect(hasComponent(gameObject, getComponentIdFromComponent(component), GameObjectData)).false;
     });
 }, function (gameObject, component, GameObjectData) {
-    var uid = gameObject.uid, componentID = getComponentIDFromComponent(component), data = _getComponentData(uid, GameObjectData);
+    var uid = gameObject.uid, componentId = getComponentIdFromComponent(component), data = _getComponentData(uid, GameObjectData);
     execHandle(component, "addComponentHandleMap", [component, gameObject]);
     if (!data) {
         var d = {};
-        d[componentID] = component;
+        d[componentId] = component;
         _setComponentData(uid, d, GameObjectData);
         return;
     }
-    data[componentID] = component;
+    data[componentId] = component;
 });
-var _removeComponent = function (componentID, gameObject, component, GameObjectData) {
+var _removeComponent = function (componentId, gameObject, GameObjectData) {
     var uid = gameObject.uid, data = _getComponentData(uid, GameObjectData);
     if (isValidMapValue(data)) {
-        deleteVal(componentID, data);
+        deleteVal(componentId, data);
     }
 };
 export var disposeComponent = function (gameObject, component, GameObjectData) {
-    var componentID = getComponentIDFromComponent(component);
-    _removeComponent(componentID, gameObject, component, GameObjectData);
+    var componentId = getComponentIdFromComponent(component);
+    _removeComponent(componentId, gameObject, GameObjectData);
     execHandle(component, "disposeHandleMap");
 };
-export var getComponent = function (gameObject, componentID, GameObjectData) {
+export var getComponent = function (gameObject, componentId, GameObjectData) {
     var uid = gameObject.uid, data = _getComponentData(uid, GameObjectData);
     if (isValidMapValue(data)) {
-        var component = data[componentID];
+        var component = data[componentId];
         return isValidMapValue(component) ? component : null;
     }
     return null;
 };
 var _getComponentData = function (uid, GameObjectData) { return GameObjectData.componentMap[uid]; };
 var _setComponentData = function (uid, data, GameObjectData) { return GameObjectData.componentMap[uid] = data; };
-export var hasComponent = function (gameObject, componentID, GameObjectData) {
-    return getComponent(gameObject, componentID, GameObjectData) !== null;
+export var hasComponent = function (gameObject, componentId, GameObjectData) {
+    return getComponent(gameObject, componentId, GameObjectData) !== null;
 };
 export var getTransform = function (gameObject, GameObjectData) {
-    return getComponent(gameObject, getComponentIDFromClass(ThreeDTransform), GameObjectData);
+    return getComponent(gameObject, getComponentIdFromClass(ThreeDTransform), GameObjectData);
 };
 export var getGeometry = function (gameObject, GameObjectData) {
-    return getComponent(gameObject, getComponentIDFromClass(Geometry), GameObjectData);
+    return getComponent(gameObject, getComponentIdFromClass(Geometry), GameObjectData);
 };
 export var getMaterial = function (gameObject, GameObjectData) {
-    return getComponent(gameObject, getComponentIDFromClass(Material), GameObjectData);
+    return getComponent(gameObject, getComponentIdFromClass(Material), GameObjectData);
+};
+export var getMeshRenderer = function (gameObject, GameObjectData) {
+    return getComponent(gameObject, getComponentIdFromClass(MeshRenderer), GameObjectData);
 };
 var _isParentExist = function (parent) { return isNotUndefined(parent); };
 var _isChildrenExist = function (children) { return isNotUndefined(children); };
@@ -163,25 +168,35 @@ var _addChild = function (uid, child, GameObjectData) {
 };
 export var addChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
 }, function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    var transform = getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUID = child.uid, parent = getParent(childUID, GameObjectData);
+    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+});
+export var addRemovedChild = function (gameObject, child, MeshRendererData, ThreeDTransformData, GameObjectData) {
+    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+    addComponent(child, createMeshRenderer(MeshRendererData), GameObjectData);
+};
+var _addChildHelper = function (gameObject, child, ThreeDTransformData, GameObjectData) {
+    var transform = getTransform(gameObject, GameObjectData), uid = gameObject.uid, childUId = child.uid, parent = getParent(childUId, GameObjectData);
     if (_isParentExist(parent)) {
         removeChild(parent, child, ThreeDTransformData, GameObjectData);
     }
-    _setParent(childUID, gameObject, GameObjectData);
+    _setParent(childUId, gameObject, GameObjectData);
     if (_isComponentExist(transform)) {
         setParent(getTransform(child, GameObjectData), transform, ThreeDTransformData);
     }
     _addChild(uid, child, GameObjectData);
-});
+};
 export var removeChild = requireCheckFunc(function (gameObject, child, ThreeDTransformData, GameObjectData) {
     it("child should has transform component", function () {
         expect(getTransform(child, GameObjectData)).exist;
     });
 }, function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    var uid = gameObject.uid, childUID = child.uid;
-    deleteVal(childUID, GameObjectData.parentMap);
+    var uid = gameObject.uid, childUId = child.uid, meshRenderer = getMeshRenderer(child, GameObjectData);
+    if (_isComponentExist(meshRenderer)) {
+        disposeComponent(child, getMeshRenderer(child, GameObjectData), GameObjectData);
+    }
+    deleteVal(childUId, GameObjectData.parentMap);
     setParent(getTransform(child, GameObjectData), null, ThreeDTransformData);
-    _removeFromChildrenMap(uid, childUID, GameObjectData);
+    _removeFromChildrenMap(uid, childUId, GameObjectData);
 });
 export var hasChild = function (gameObject, child, GameObjectData) {
     if (isNotAlive(gameObject, GameObjectData) || isNotAlive(child, GameObjectData)) {
@@ -199,6 +214,6 @@ export var initData = function (GameObjectData) {
     GameObjectData.parentMap = createMap();
     GameObjectData.childrenMap = createMap();
     GameObjectData.disposeCount = 0;
-    GameObjectData.aliveUIDArray = [];
+    GameObjectData.aliveUIdArray = [];
 };
 //# sourceMappingURL=GameObjectSystem.js.map

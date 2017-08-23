@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TextureCacheWorkerSystem_1 = require("./TextureCacheWorkerSystem");
-var textureUtils_1 = require("../../../utils/texture/textureUtils");
+var textureUtils_1 = require("../../../utils/worker/render_file/texture/textureUtils");
 var Operator_1 = require("wonder-frp/dist/commonjs/global/Operator");
 var bowser_1 = require("bowser");
-exports.bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData) {
-    textureUtils_1.bindToUnit(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, TextureCacheWorkerSystem_1.isCached, TextureCacheWorkerSystem_1.addActiveTexture);
+exports.bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData) {
+    textureUtils_1.bindToUnit(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, TextureCacheWorkerSystem_1.isCached, TextureCacheWorkerSystem_1.addActiveTexture);
 };
 exports.initTextures = textureUtils_1.initTextures;
 exports.needUpdate = textureUtils_1.needUpdate;
@@ -22,11 +22,11 @@ else if (bowser_1.firefox) {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
     };
 }
-exports.disposeSourceAndGLTexture = function (disposeData, gl, TextureCacheWorkerData, TextureWorkerData) {
+exports.disposeSourceAndGLTexture = function (disposeData, gl, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData) {
     for (var _i = 0, _a = disposeData.disposedTextureDataMap; _i < _a.length; _i++) {
         var _b = _a[_i], sourceIndex = _b.sourceIndex, lastComponentIndex = _b.lastComponentIndex;
         textureUtils_1.disposeSourceMap(sourceIndex, lastComponentIndex, TextureWorkerData);
-        textureUtils_1.disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData);
+        textureUtils_1.disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
     }
 };
 exports.setIndex = function (index, TextureWorkerData) {

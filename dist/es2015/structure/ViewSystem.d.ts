@@ -1,5 +1,6 @@
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { Map } from "immutable";
+import { ContextConfigOptionsData } from "../renderer/type/dataType";
 export declare var getCanvas: (state: Map<any, any>) => HTMLCanvasElement;
 export declare var setCanvas: any;
 export declare var getX: any;
@@ -15,4 +16,7 @@ export declare var setStyleWidth: any;
 export declare var getStyleHeight: any;
 export declare var setStyleHeight: any;
 export declare var initCanvas: (dom: HTMLCanvasElement) => IO;
-export declare var getContext: (contextConfig: Map<string, any>, dom: HTMLCanvasElement) => WebGLRenderingContext;
+export declare var getWebgl1Context: (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => CanvasRenderingContext2D | WebGLRenderingContext;
+export declare var getWebgl2Context: (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => CanvasRenderingContext2D | WebGLRenderingContext;
+export declare var getOnlyWebgl1Context: (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => CanvasRenderingContext2D | WebGLRenderingContext;
+export declare var getOnlyWebgl2Context: (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => CanvasRenderingContext2D | WebGLRenderingContext;

@@ -1,0 +1,1 @@
+{"version":3,"file":"PointLightWorkerData.js","sourceRoot":"","sources":["../../../../../../../src/renderer/worker/webgl2/render_file/light/PointLightWorkerData.ts"],"names":[],"mappings":";;;;;;;;;;AAAA,OAAO,EAAE,oBAAoB,EAAE,MAAM,iDAAiD,CAAC;AAEvF;IAAgD,8CAAoB;IAApE;;IAEA,CAAC;IADiB,sCAAW,GAAwB,IAAI,CAAC;IAC1D,iCAAC;CAAA,AAFD,CAAgD,oBAAoB,GAEnE;SAFY,0BAA0B"}

@@ -1,7 +1,6 @@
-import { EBufferType } from "../../enum/EBufferType";
 import { isBufferExist } from "./bufferUtils";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any) => {
     var buffer = buffers[geometryIndex];
 
     if (isBufferExist(buffer)) {
@@ -30,7 +29,7 @@ var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
 }
 
 export var initData = (ArrayBufferDataFromSystemFromSystem: any) => {
-    ArrayBufferDataFromSystemFromSystem.vertexBuffer = [];
+    ArrayBufferDataFromSystemFromSystem.vertexBuffers = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
     ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 }

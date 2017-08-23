@@ -1,0 +1,22 @@
+import { GetArrayBufferDataFuncMap } from "../../../../../../definition/type/geometryType";
+export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, GPUDetectDataFromSystem: any, VaoDataFromSystem: any) => void;
+export declare var buildDrawDataMap: (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
+    DeviceManagerDataFromSystem: any;
+    TextureDataFromSystem: any;
+    TextureCacheDataFromSystem: any;
+    MapManagerDataFromSystem: any;
+    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+    AmbientLightDataFromSystem: any;
+    DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
+    ProgramDataFromSystem: any;
+    LocationDataFromSystem: any;
+    GLSLSenderDataFromSystem: any;
+    GeometryDataFromSystem: any;
+    ArrayBufferDataFromSystem: any;
+    IndexBufferDataFromSystem: any;
+    BasicDrawRenderCommandBufferDataFromSystem: any;
+    LightDrawRenderCommandBufferDataFromSystem: any;
+};

@@ -19,11 +19,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../../definition/typescript/decorator/registerClass");
 var Light_1 = require("./Light");
 var PointLightSystem_1 = require("./PointLightSystem");
-var PointLightData_1 = require("./PointLightData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var ThreeDTransformData_1 = require("../transform/ThreeDTransformData");
 var GameObjectData_1 = require("../../core/entityObject/gameObject/GameObjectData");
 var SpecifyLightSystem_1 = require("./SpecifyLightSystem");
+var WebGLDetectSystem_1 = require("../../renderer/device/WebGLDetectSystem");
+var PointLightData_1 = require("../../renderer/webgl1/light/PointLightData");
+var PointLightData_2 = require("../../renderer/webgl2/light/PointLightData");
 var PointLight = (function (_super) {
     __extends(PointLight, _super);
     function PointLight() {
@@ -35,82 +37,180 @@ var PointLight = (function (_super) {
     return PointLight;
 }(Light_1.Light));
 exports.PointLight = PointLight;
-exports.createPointLight = function () {
-    return PointLightSystem_1.create(PointLightData_1.PointLightData);
-};
-exports.getPointLightGameObject = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (component) {
-    return SpecifyLightSystem_1.getGameObject(component.index, PointLightData_1.PointLightData);
-});
-exports.getPointLightPosition = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (component) {
-    return PointLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, PointLightData_1.PointLightData);
-});
-exports.getPointLightColor = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getColor(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightColor = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, color) {
-    PointLightSystem_1.setColor(light.index, color, PointLightData_1.PointLightData);
-});
-exports.getPointLightIntensity = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getIntensity(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightIntensity = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setIntensity(light.index, value, PointLightData_1.PointLightData);
-});
-exports.getPointLightConstant = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getConstant(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightConstant = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setConstant(light.index, value, PointLightData_1.PointLightData);
-});
-exports.getPointLightLinear = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getLinear(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightLinear = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setLinear(light.index, value, PointLightData_1.PointLightData);
-});
-exports.getPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getQuadratic(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setQuadratic(light.index, value, PointLightData_1.PointLightData);
-});
-exports.getPointLightRange = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return PointLightSystem_1.getRange(light.index, PointLightData_1.PointLightData);
-});
-exports.setPointLightRange = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setRange(light.index, value, PointLightData_1.PointLightData);
-});
-exports.setPointLightRangeLevel = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, value) {
-    PointLightSystem_1.setRangeLevel(light.index, value, PointLightData_1.PointLightData);
-});
+exports.createPointLight = null;
+exports.getPointLightGameObject = null;
+exports.getPointLightPosition = null;
+exports.getPointLightColor = null;
+exports.setPointLightColor = null;
+exports.getPointLightIntensity = null;
+exports.setPointLightIntensity = null;
+exports.getPointLightConstant = null;
+exports.setPointLightConstant = null;
+exports.getPointLightLinear = null;
+exports.setPointLightLinear = null;
+exports.getPointLightQuadratic = null;
+exports.setPointLightQuadratic = null;
+exports.getPointLightRange = null;
+exports.setPointLightRange = null;
+exports.setPointLightRangeLevel = null;
+if (WebGLDetectSystem_1.isWebgl1()) {
+    exports.createPointLight = function () {
+        return PointLightSystem_1.create(PointLightData_1.WebGL1PointLightData);
+    };
+    exports.getPointLightGameObject = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return SpecifyLightSystem_1.getGameObject(component.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightPosition = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return PointLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getColor(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, color) {
+        PointLightSystem_1.setColor(light.index, color, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getIntensity(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setIntensity(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightConstant = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getConstant(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightConstant = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setConstant(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightLinear = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getLinear(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightLinear = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setLinear(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getQuadratic(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setQuadratic(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.getPointLightRange = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getRange(light.index, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightRange = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setRange(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+    exports.setPointLightRangeLevel = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setRangeLevel(light.index, value, PointLightData_1.WebGL1PointLightData);
+    });
+}
+else {
+    exports.createPointLight = function () {
+        return PointLightSystem_1.create(PointLightData_2.WebGL2PointLightData);
+    };
+    exports.getPointLightGameObject = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return SpecifyLightSystem_1.getGameObject(component.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightPosition = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return PointLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getColor(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, color) {
+        PointLightSystem_1.setColor(light.index, color, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getIntensity(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setIntensity(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightConstant = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getConstant(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightConstant = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setConstant(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightLinear = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getLinear(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightLinear = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setLinear(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getQuadratic(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightQuadratic = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setQuadratic(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.getPointLightRange = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return PointLightSystem_1.getRange(light.index, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightRange = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setRange(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+    exports.setPointLightRangeLevel = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        PointLightSystem_1.setRangeLevel(light.index, value, PointLightData_2.WebGL2PointLightData);
+    });
+}
 //# sourceMappingURL=PointLight.js.map

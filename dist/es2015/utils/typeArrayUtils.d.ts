@@ -13,7 +13,7 @@ export declare var deleteBySwapAndNotReset: (sourceIndex: number, targetIndex: n
 export declare var deleteBySwapAndReset: (sourceIndex: number, targetIndex: number, typeArr: TypeArr, length: number, defaultValueArr: number[]) => void;
 export declare var deleteSingleValueBySwapAndReset: (sourceIndex: number, lastIndex: number, typeArr: TypeArr, resetValue: any) => void;
 export declare var deleteOneItemBySwapAndReset: (sourceIndex: number, targetIndex: number, typeArr: TypeArr, defaultValue: number) => void;
-export declare var set: (typeArr: TypeArr, valArr: number[], offset?: number) => void;
+export declare var set: (typeArr: TypeArr, valArr: number[] | Uint8Array | Float32Array | Uint16Array | Uint32Array, offset?: number) => void;
 export declare var setMatrices3: (typeArr: Float32Array, mat: Matrix3, index: number) => void;
 export declare var setMatrices: (typeArr: Float32Array, mat: Matrix4, index: number) => void;
 export declare var setMatrix4ByIndex: Function;

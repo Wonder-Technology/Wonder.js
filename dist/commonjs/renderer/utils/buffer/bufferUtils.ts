@@ -1,20 +1,13 @@
-import { isValidMapValue } from "../../../utils/objectUtils";
-import { deleteVal } from "../../../utils/arrayUtils";
-import { disposeBuffer as disposeArrayBuffer } from "../../worker/render_file/buffer/ArrayBufferWorkerSystem";
-import { disposeBuffer as disposeIndexBuffer } from "../../worker/render_file/buffer/IndexBufferWorkerSystem";
+import { isValidVal } from "../../../utils/arrayUtils";
+import { it, requireCheckFunc } from "../../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
-export var isBufferExist = (buffer: WebGLBuffer) => isValidMapValue(buffer);
+export var isBufferExist = (buffer: WebGLBuffer) => isValidVal(buffer);
 
-export var disposeBuffer = (geometryIndex: number, buffers: Array<WebGLBuffer>, getGL: Function, DeviceManagerDataFromSystem: any) => {
-    var gl = getGL(DeviceManagerDataFromSystem, null),
-        buffer = buffers[geometryIndex];
-
-    if (isBufferExist(buffer)) {
-        gl.deleteBuffer(buffers[geometryIndex]);
-
-        /*!
-         no need to consider the memory problem caused by not-used val in buffers, because geometry index will be repeat(geometry memory will be reallocated)
-         */
-        deleteVal(geometryIndex, buffers);
-    }
-}
+export var disposeGeometryWorkerBuffers = requireCheckFunc((disposedIndexArray: Array<number>, GeometryDataFromSystem:any) => {
+    it("should not add data twice in one frame", () => {
+        expect(GeometryDataFromSystem.disposedGeometryIndexArray.length).equal(0);
+    });
+}, (disposedIndexArray: Array<number>, GeometryDataFromSystem:any) => {
+    GeometryDataFromSystem.disposedGeometryIndexArray = disposedIndexArray;
+})

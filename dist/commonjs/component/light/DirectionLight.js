@@ -19,11 +19,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../../definition/typescript/decorator/registerClass");
 var Light_1 = require("./Light");
 var DirectionLightSystem_1 = require("./DirectionLightSystem");
-var DirectionLightData_1 = require("./DirectionLightData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var ThreeDTransformData_1 = require("../transform/ThreeDTransformData");
 var GameObjectData_1 = require("../../core/entityObject/gameObject/GameObjectData");
 var SpecifyLightSystem_1 = require("./SpecifyLightSystem");
+var DirectionLightData_1 = require("../../renderer/webgl2/light/DirectionLightData");
+var DirectionLightData_2 = require("../../renderer/webgl1/light/DirectionLightData");
+var WebGLDetectSystem_1 = require("../../renderer/device/WebGLDetectSystem");
 var DirectionLight = (function (_super) {
     __extends(DirectionLight, _super);
     function DirectionLight() {
@@ -35,37 +37,81 @@ var DirectionLight = (function (_super) {
     return DirectionLight;
 }(Light_1.Light));
 exports.DirectionLight = DirectionLight;
-exports.createDirectionLight = function () {
-    return DirectionLightSystem_1.create(DirectionLightData_1.DirectionLightData);
-};
-exports.getDirectionLightGameObject = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (component) {
-    return SpecifyLightSystem_1.getGameObject(component.index, DirectionLightData_1.DirectionLightData);
-});
-exports.getDirectionLightPosition = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (component) {
-    return DirectionLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, DirectionLightData_1.DirectionLightData);
-});
-exports.getDirectionLightColor = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return DirectionLightSystem_1.getColor(light.index, DirectionLightData_1.DirectionLightData);
-});
-exports.setDirectionLightColor = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, color) {
-    DirectionLightSystem_1.setColor(light.index, color, DirectionLightData_1.DirectionLightData);
-});
-exports.getDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light) {
-    return DirectionLightSystem_1.getIntensity(light.index, DirectionLightData_1.DirectionLightData);
-});
-exports.setDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
-    Light_1.checkLightShouldAlive(component);
-}, function (light, intensity) {
-    DirectionLightSystem_1.setIntensity(light.index, intensity, DirectionLightData_1.DirectionLightData);
-});
+exports.createDirectionLight = null;
+exports.getDirectionLightGameObject = null;
+exports.getDirectionLightPosition = null;
+exports.getDirectionLightColor = null;
+exports.setDirectionLightColor = null;
+exports.getDirectionLightIntensity = null;
+exports.setDirectionLightIntensity = null;
+if (WebGLDetectSystem_1.isWebgl1()) {
+    exports.createDirectionLight = function () {
+        return DirectionLightSystem_1.create(DirectionLightData_2.WebGL1DirectionLightData);
+    };
+    exports.getDirectionLightGameObject = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return SpecifyLightSystem_1.getGameObject(component.index, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+    exports.getDirectionLightPosition = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return DirectionLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+    exports.getDirectionLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return DirectionLightSystem_1.getColor(light.index, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+    exports.setDirectionLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, color) {
+        DirectionLightSystem_1.setColor(light.index, color, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+    exports.getDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return DirectionLightSystem_1.getIntensity(light.index, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+    exports.setDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        DirectionLightSystem_1.setIntensity(light.index, value, DirectionLightData_2.WebGL1DirectionLightData);
+    });
+}
+else {
+    exports.createDirectionLight = function () {
+        return DirectionLightSystem_1.create(DirectionLightData_1.WebGL2DirectionLightData);
+    };
+    exports.getDirectionLightGameObject = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return SpecifyLightSystem_1.getGameObject(component.index, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+    exports.getDirectionLightPosition = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (component) {
+        return DirectionLightSystem_1.getPosition(component.index, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+    exports.getDirectionLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return DirectionLightSystem_1.getColor(light.index, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+    exports.setDirectionLightColor = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, color) {
+        DirectionLightSystem_1.setColor(light.index, color, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+    exports.getDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light) {
+        return DirectionLightSystem_1.getIntensity(light.index, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+    exports.setDirectionLightIntensity = contract_1.requireCheckFunc(function (component) {
+        Light_1.checkLightShouldAlive(component);
+    }, function (light, value) {
+        DirectionLightSystem_1.setIntensity(light.index, value, DirectionLightData_1.WebGL2DirectionLightData);
+    });
+}
 //# sourceMappingURL=DirectionLight.js.map

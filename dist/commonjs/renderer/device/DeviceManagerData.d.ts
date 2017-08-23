@@ -1,11 +1,5 @@
-import { Color } from "../../structure/Color";
-import { ESide } from "../enum/ESide";
-export declare class DeviceManagerData {
-    static gl: WebGLRenderingContext;
-    static clearColor: Color;
-    static writeRed: boolean;
-    static writeGreen: boolean;
-    static writeBlue: boolean;
-    static writeAlpha: boolean;
-    static side: ESide;
+import { EWebGLVersion } from "../enum/EWebGLVersion";
+import { DeviceManagerDataCommon } from "../utils/worker/render_file/device/DeviceManagerDataCommon";
+export declare class DeviceManagerData extends DeviceManagerDataCommon {
+    static webglVersion: EWebGLVersion;
 }

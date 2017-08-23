@@ -1,5 +1,5 @@
 import { createMap } from "../../../../utils/objectUtils";
-import { getUIntArrayClass, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, getIndexTypeSize as getIndexTypeSizeUtils, createBufferViews } from "../../../utils/geometry/geometryUtils";
+import { getUIntArrayClass, getDrawMode as getDrawModeUtils, getIndexType as getIndexTypeUtils, getIndicesCount as getIndicesCountUtils, getVerticesCount as getVerticesCountUtils, hasIndices as hasIndicesUtils, getIndexTypeSize as getIndexTypeSizeUtils, createBufferViews } from "../../../utils/worker/render_file/geometry/geometryUtils";
 import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { isValidVal } from "../../../../utils/arrayUtils";

@@ -1,6 +1,6 @@
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
-import { render as renderByWebGLRender } from "../renderer/render/WebGLRenderSystem";
+import { render as renderByWebGLRender } from "../renderer/core/WebGLRenderSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 import { update as updateThreeDTransform } from "../component/transform/ThreeDTransformSystem";
@@ -18,6 +18,12 @@ export var setState = function (state, DirectorData) {
         DirectorData.state = state;
     });
 };
+export var markIsInit = function (DirectorData) {
+    DirectorData.isInit = true;
+};
+export var isInit = function (DirectorData) {
+    return DirectorData.isInit === true;
+};
 export var run = null;
 export var render = null;
 var _sync = function (elapsed, state, scheduler) {
@@ -27,7 +33,7 @@ var _sync = function (elapsed, state, scheduler) {
 };
 export var updateSystem = function (elapsed, state) {
     var resultState = updateThreeDTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
-    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData);
+    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData, state);
     return resultState;
 };
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
@@ -70,4 +76,6 @@ else {
         return resultState;
     };
 }
+export var initData = function (DirectorData) {
+};
 //# sourceMappingURL=DirectorSystem.js.map

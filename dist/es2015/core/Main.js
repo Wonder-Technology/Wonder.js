@@ -15,6 +15,7 @@ import { WorkerDetectData } from "../device/WorkerDetectData";
 import { WorkerInstanceData } from "../worker/WorkerInstanceData";
 import { InitConfigData } from "../renderer/config/InitConfigData";
 import { getIsTest, setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
+import { WebGLDetectData } from "../renderer/device/WebGLDetectData";
 var Main = (function () {
     function Main() {
     }
@@ -30,7 +31,7 @@ var Main = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
-        this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, configState).run();
+        this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, configState).run();
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
         return this;
     };

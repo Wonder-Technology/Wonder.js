@@ -1,8 +1,8 @@
 var BufferUtilsForUnitTest = (function () {
     function BufferUtilsForUnitTest() {
     }
-    BufferUtilsForUnitTest.isDrawRenderCommandBufferDataTypeArrayNotExist = function (DrawRenderCommandBufferDataFromSystem) {
-        return DrawRenderCommandBufferDataFromSystem.mMatrices === null;
+    BufferUtilsForUnitTest.isRenderCommandBufferDataTypeArrayNotExist = function (RenderCommandBufferDataFromSystem) {
+        return RenderCommandBufferDataFromSystem.mMatrices === null;
     };
     return BufferUtilsForUnitTest;
 }());

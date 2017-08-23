@@ -44,7 +44,7 @@ export var deleteOneItemBySwapAndReset = (sourceIndex: number, targetIndex: numb
     typeArr[targetIndex] = defaultValue;
 }
 
-export var set = (typeArr: TypeArr, valArr: Array<number>, offset = 0) => {
+export var set = (typeArr: TypeArr, valArr: Array<number> | TypeArr, offset = 0) => {
     typeArr.set(valArr, offset);
 }
 

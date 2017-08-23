@@ -19,12 +19,14 @@ var PointLightData = (function (_super) {
     PointLightData.linears = null;
     PointLightData.quadratics = null;
     PointLightData.ranges = null;
+    PointLightData.isPositionDirtys = null;
+    PointLightData.isIntensityDirtys = null;
+    PointLightData.isAttenuationDirtys = null;
     PointLightData.defaultIntensity = null;
     PointLightData.defaultConstant = null;
     PointLightData.defaultLinear = null;
     PointLightData.defaultQuadratic = null;
     PointLightData.defaultRange = null;
-    PointLightData.lightGLSLDataStructureMemberNameArr = null;
     return PointLightData;
 }(SpecifyLightData));
 export { PointLightData };

@@ -5,8 +5,14 @@ export var DataBufferConfig = {
     lightMaterialDataBufferCount: 20 * 1000,
     textureDataBufferCount: 20 * 1000,
     ambientLightDataBufferCount: 1,
-    directionLightDataBufferCount: 4,
-    pointLightDataBufferCount: 4,
+    directionLightDataBufferCount: 10,
+    pointLightDataBufferCount: 1000,
+    frontAmbientLightCount: 1,
+    frontDirectionLightCount: 4,
+    frontPointLightCount: 4,
+    deferAmbientLightCount: 1,
+    deferDirectionLightCount: 10,
+    deferPointLightCount: 1000,
     renderCommandBufferCount: 10 * 1024,
     geometryIndicesBufferBits: 16
 };

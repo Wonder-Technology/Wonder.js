@@ -1,18 +1,18 @@
 import { ComponentData, ComponentGameObjectMap } from "./ComponentData";
 import { Component } from "./Component";
-import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
+import { getTypeIdFromClass, getTypeIdFromComponent } from "./ComponentTypeIdManager";
 import { GameObject } from "../core/entityObject/gameObject/GameObject";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { deleteBySwap, deleteVal, isNotValidMapValue } from "../utils/objectUtils";
 import { Map as MapImmutable } from "immutable";
 import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
-import { IUIDEntity } from "../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../core/entityObject/gameObject/IUIdEntity";
 
 var _addHandle = (_class: any, handleMap: object, handle: Function) => {
-    var typeID = getTypeIDFromClass(_class);
+    var typeId = getTypeIdFromClass(_class);
 
-    handleMap[typeID] = handle;
+    handleMap[typeId] = handle;
 }
 
 export var addAddComponentHandle = (_class: any, handle: Function) => {
@@ -28,7 +28,7 @@ export var addInitHandle = (_class: any, handle: (index: number, state: MapImmut
 }
 
 export var execHandle = (component: Component, handleMapName: string, args?: Array<any>) => {
-    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
+    var handle = ComponentData[handleMapName][getTypeIdFromComponent(component)];
 
     if (_isHandleNotExist(handle)) {
         return;
@@ -42,8 +42,8 @@ export var execHandle = (component: Component, handleMapName: string, args?: Arr
     }
 }
 
-export var execInitHandle = (typeID: string, index: number, state: MapImmutable<any, any>) => {
-    var handle = ComponentData.initHandleMap[typeID];
+export var execInitHandle = (typeId: string, index: number, state: MapImmutable<any, any>) => {
+    var handle = ComponentData.initHandleMap[typeId];
 
     if (_isHandleNotExist(handle)) {
         return;
@@ -61,9 +61,9 @@ export var checkComponentShouldAlive = (component: Component, data: any, isAlive
 }
 
 export var addComponentToGameObjectMap = requireCheckFunc((gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
-    it("component should not exist in gameObject", () => {
-        expect(gameObjectMap[index]).not.exist;
-    });
+    // it("component should not exist in gameObject", () => {
+    //     expect(gameObjectMap[index]).not.exist;
+    // });
 }, (gameObjectMap: ComponentGameObjectMap | Array<GameObject>, index: number, gameObject: GameObject) => {
     gameObjectMap[index] = gameObject;
 })

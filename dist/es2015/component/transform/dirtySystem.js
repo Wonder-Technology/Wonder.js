@@ -77,9 +77,13 @@ var _getNotUsedIndexFromArr = function (ThreeDTransformData) {
 var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
     return notUsedIndexLinkList.shift();
 };
-export var addNotUsedIndex = function (index, notUsedIndexLinkList) {
+export var addNotUsedIndex = requireCheckFunc(function (index, notUsedIndexLinkList) {
+    it("index shouldn't already exist", function () {
+        expect(notUsedIndexLinkList.hasDuplicateNode(index)).false;
+    });
+}, function (index, notUsedIndexLinkList) {
     notUsedIndexLinkList.push(LinkNode.create(index));
-};
+});
 export var isNotDirty = function (index, firstDirtyIndex) {
     return index < firstDirtyIndex;
 };

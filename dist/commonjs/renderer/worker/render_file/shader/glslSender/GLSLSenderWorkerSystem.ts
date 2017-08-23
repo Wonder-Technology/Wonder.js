@@ -1,33 +1,11 @@
 import {
-    addSendAttributeConfig as addSendAttributeConfigUtils, addSendUniformConfig as addSendUniformConfigUtils,
-    getUniformData as getUniformDataUtils, initData as initDataUtils, sendBuffer as sendBufferUtils,
+    sendBuffer as sendBufferUtils,
     sendFloat1 as sendFloat1Utils, sendFloat3 as sendFloat3Utils, sendInt as sendIntUtils, sendMatrix3 as sendMatrix3Utils, sendMatrix4 as sendMatrix4Utils,
     sendVector3 as sendVector3Utils
-} from "../../../../utils/shader/glslSender/glslSenderUtils";
-import { RenderCommandUniformData, UniformCacheMap, UniformShaderLocationMap } from "../../../../type/dataType";
-import { getColorArr3, getOpacity } from "../../material/MaterialWorkerSystem";
-import {
-    getEmissionColorArr3,
-    getLightModel, getShininess, getSpecularColorArr3
-} from "../../material/LightMaterialWorkerSystem";
+} from "../../../../utils/worker/render_file/shader/glslSender/glslSenderUtils";
+import { UniformCacheMap, UniformShaderLocationMap } from "../../../../type/dataType";
 import { getUniformLocation, isUniformLocationNotExist } from "../location/LocationWorkerSystem";
 import { Vector3 } from "../../../../../math/Vector3";
-
-export var getUniformData = (field: string, from: string, renderCommandUniformData: RenderCommandUniformData, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
-    return getUniformDataUtils(field, from, renderCommandUniformData, {
-        getColorArr3: getColorArr3,
-        getOpacity: getOpacity,
-        MaterialDataFromSystem: MaterialWorkerData
-    }, {
-            BasicMaterialDataFromSystem: BasicMaterialWorkerData
-        }, {
-            getEmissionColorArr3: getEmissionColorArr3,
-            getSpecularColorArr3: getSpecularColorArr3,
-            getLightModel: getLightModel,
-            getShininess: getShininess,
-            LightMaterialDataFromSystem: LightMaterialWorkerData
-        });
-};
 
 export var sendBuffer = sendBufferUtils;
 
@@ -54,5 +32,3 @@ export var sendFloat1 = (gl: WebGLRenderingContext, shaderIndex: number, program
 export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number>, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap) => {
     sendFloat3Utils(gl, shaderIndex, program, name, data, uniformCacheMap, uniformLocationMap, getUniformLocation, isUniformLocationNotExist);
 };
-
-export var initData = initDataUtils;

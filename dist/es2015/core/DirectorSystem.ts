@@ -1,7 +1,7 @@
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { Map } from "immutable";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
-import { render as renderByWebGLRender } from "../renderer/render/WebGLRenderSystem";
+import { render as renderByWebGLRender } from "../renderer/core/WebGLRenderSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
 import { ERenderWorkerState } from "../renderer/worker/both_file/ERenderWorkerState";
 import { Scheduler } from "./Scheduler";
@@ -13,6 +13,7 @@ import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
+import { createState } from "../utils/stateUtils";
 
 export var getState = (DirectorData: any) => {
     return DirectorData.state;
@@ -22,6 +23,14 @@ export var setState = (state: Map<any, any>, DirectorData: any) => {
     return IO.of(() => {
         DirectorData.state = state;
     });
+}
+
+export var markIsInit = (DirectorData:any) => {
+    DirectorData.isInit = true;
+}
+
+export var isInit = (DirectorData:any) => {
+    return DirectorData.isInit === true;
 }
 
 export var run = null;
@@ -39,7 +48,7 @@ var _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
 export var updateSystem = (elapsed: number, state: Map<any, any>) => {
     var resultState = updateThreeDTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
 
-    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData);
+    resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData, state);
 
     return resultState;
 }
@@ -95,4 +104,9 @@ else {
 
         return resultState;
     }
+}
+
+export var initData = (DirectorData:any) => {
+    // DirectorData.state = createState();
+    // DirectorData.isInit = false;
 }

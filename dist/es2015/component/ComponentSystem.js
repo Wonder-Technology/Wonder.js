@@ -1,12 +1,12 @@
 import { ComponentData } from "./ComponentData";
-import { getTypeIDFromClass, getTypeIDFromComponent } from "./ComponentTypeIDManager";
+import { getTypeIdFromClass, getTypeIdFromComponent } from "./ComponentTypeIdManager";
 import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
 import { deleteVal, isNotValidMapValue } from "../utils/objectUtils";
 import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
 var _addHandle = function (_class, handleMap, handle) {
-    var typeID = getTypeIDFromClass(_class);
-    handleMap[typeID] = handle;
+    var typeId = getTypeIdFromClass(_class);
+    handleMap[typeId] = handle;
 };
 export var addAddComponentHandle = function (_class, handle) {
     _addHandle(_class, ComponentData.addComponentHandleMap, handle);
@@ -18,7 +18,7 @@ export var addInitHandle = function (_class, handle) {
     _addHandle(_class, ComponentData.initHandleMap, handle);
 };
 export var execHandle = function (component, handleMapName, args) {
-    var handle = ComponentData[handleMapName][getTypeIDFromComponent(component)];
+    var handle = ComponentData[handleMapName][getTypeIdFromComponent(component)];
     if (_isHandleNotExist(handle)) {
         return;
     }
@@ -29,8 +29,8 @@ export var execHandle = function (component, handleMapName, args) {
         handle(component);
     }
 };
-export var execInitHandle = function (typeID, index, state) {
-    var handle = ComponentData.initHandleMap[typeID];
+export var execInitHandle = function (typeId, index, state) {
+    var handle = ComponentData.initHandleMap[typeId];
     if (_isHandleNotExist(handle)) {
         return;
     }
@@ -43,9 +43,6 @@ export var checkComponentShouldAlive = function (component, data, isAlive) {
     });
 };
 export var addComponentToGameObjectMap = requireCheckFunc(function (gameObjectMap, index, gameObject) {
-    it("component should not exist in gameObject", function () {
-        expect(gameObjectMap[index]).not.exist;
-    });
 }, function (gameObjectMap, index, gameObject) {
     gameObjectMap[index] = gameObject;
 });

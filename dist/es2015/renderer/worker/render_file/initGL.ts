@@ -1,7 +1,6 @@
 import { chain, compose, map } from "../../../utils/functionalUtils";
-import { detect } from "../../device/GPUDetectorSystem";
 import {
-    getGL, setContextConfig, setGL,
+    getGL, setContextConfig, setGL, setViewport,
     setViewportOfGL
 } from "../both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";
@@ -13,18 +12,20 @@ import curry from "wonder-lodash/curry";
 import { MessageInitGLData } from "../../type/messageDataType";
 import { Map } from "immutable";
 import { setCanvas } from "../../../structure/ViewSystem";
+import { getOnlyGL } from "../../utils/worker/both_file/device/deviceManagerUtils";
 
-export var initGL = (data: MessageInitGLData) => {
+export var initGL = (data: MessageInitGLData, detect:Function, WebGLDetectWorkerData:any, GPUDetectWorkerData:any) => {
     return compose(
-        map(detect(getGL, DeviceManagerWorkerData)),
+        map(detect(getGL, DeviceManagerWorkerData, GPUDetectWorkerData)),
         chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)),
-        _createGL(data.canvas, data.options, DeviceManagerWorkerData)
+        map(setViewport(data.viewportData)),
+        _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData)
     )(createState());
 }
 
-var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, DeviceManagerWorkerData: any, state: Map<any, any>) => {
+var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData:any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
-        var gl = _getContext(canvas, options);
+        var gl = getOnlyGL(canvas, options, WebGLDetectWorkerData);
 
         if (!gl) {
             DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
@@ -33,7 +34,3 @@ var _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsD
         return compose(setCanvas(canvas), setContextConfig(options), setGL(gl, DeviceManagerWorkerData))(state);
     });
 })
-
-var _getContext = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData): WebGLRenderingContext => {
-    return (canvas.getContext("webgl", options) || canvas.getContext("experimental-webgl", options)) as WebGLRenderingContext;
-}

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bufferUtils_1 = require("./bufferUtils");
-exports.getOrCreateBuffer = function (gl, geometryIndex, buffers, getDatas, GeometryDataFromSystem, ArrayBufferDataFromSystem) {
+exports.getOrCreateBuffer = function (gl, geometryIndex, buffers, getDatas, GeometryDataFromSystem) {
     var buffer = buffers[geometryIndex];
     if (bufferUtils_1.isBufferExist(buffer)) {
         return buffer;
@@ -20,7 +20,7 @@ var _resetBindedBuffer = function (gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
 exports.initData = function (ArrayBufferDataFromSystemFromSystem) {
-    ArrayBufferDataFromSystemFromSystem.vertexBuffer = [];
+    ArrayBufferDataFromSystemFromSystem.vertexBuffers = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
     ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 };

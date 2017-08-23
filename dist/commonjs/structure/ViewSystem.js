@@ -68,8 +68,16 @@ exports.initCanvas = function (dom) {
         return dom;
     });
 };
-exports.getContext = function (contextConfig, dom) {
-    var options = contextConfig.get("options").toObject();
-    return (dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options));
+exports.getWebgl1Context = function (options, dom) {
+    return exports.getOnlyWebgl1Context(options, dom);
+};
+exports.getWebgl2Context = function (options, dom) {
+    return exports.getOnlyWebgl2Context(options, dom);
+};
+exports.getOnlyWebgl1Context = function (options, dom) {
+    return dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options);
+};
+exports.getOnlyWebgl2Context = function (options, dom) {
+    return dom.getContext("webgl2", options);
 };
 //# sourceMappingURL=ViewSystem.js.map

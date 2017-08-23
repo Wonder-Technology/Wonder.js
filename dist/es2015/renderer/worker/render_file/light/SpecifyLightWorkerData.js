@@ -3,6 +3,7 @@ var SpecifyLightWorkerData = (function () {
     }
     SpecifyLightWorkerData.count = null;
     SpecifyLightWorkerData.colors = null;
+    SpecifyLightWorkerData.isColorDirtys = null;
     return SpecifyLightWorkerData;
 }());
 export { SpecifyLightWorkerData };

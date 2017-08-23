@@ -7,6 +7,12 @@ export declare const DataBufferConfig: {
     ambientLightDataBufferCount: number;
     directionLightDataBufferCount: number;
     pointLightDataBufferCount: number;
+    frontAmbientLightCount: number;
+    frontDirectionLightCount: number;
+    frontPointLightCount: number;
+    deferAmbientLightCount: number;
+    deferDirectionLightCount: number;
+    deferPointLightCount: number;
     renderCommandBufferCount: number;
     geometryIndicesBufferBits: number;
 };

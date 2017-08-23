@@ -1,0 +1,1 @@
+export declare var disposeGeometryVboBuffers: (disposedIndexArray: number[], ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, disposeArrayBuffer: Function, disposeIndexBuffer: Function) => void;

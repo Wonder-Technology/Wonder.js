@@ -19,7 +19,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../../definition/typescript/decorator/registerClass");
 var Material_1 = require("./Material");
 var LightMaterialSystem_1 = require("./LightMaterialSystem");
-var ShaderData_1 = require("../../renderer/shader/ShaderData");
 var MaterialData_1 = require("./MaterialData");
 var MaterialSystem_1 = require("./MaterialSystem");
 var contract_1 = require("../../definition/typescript/decorator/contract");
@@ -29,6 +28,9 @@ var DirectorSystem_1 = require("../../core/DirectorSystem");
 var DirectorData_1 = require("../../core/DirectorData");
 var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
 var TextureData_1 = require("../../renderer/texture/TextureData");
+var ShaderData_1 = require("../../renderer/webgl1/shader/ShaderData");
+var ShaderData_2 = require("../../renderer/webgl2/shader/ShaderData");
+var WebGLDetectSystem_1 = require("../../renderer/device/WebGLDetectSystem");
 var LightMaterial = (function (_super) {
     __extends(LightMaterial, _super);
     function LightMaterial() {
@@ -40,9 +42,17 @@ var LightMaterial = (function (_super) {
     return LightMaterial;
 }(Material_1.Material));
 exports.LightMaterial = LightMaterial;
-exports.createLightMaterial = function () {
-    return LightMaterialSystem_1.create(ShaderData_1.ShaderData, MaterialData_1.MaterialData, LightMaterialData_1.LightMaterialData);
-};
+exports.createLightMaterial = null;
+if (WebGLDetectSystem_1.isWebgl1()) {
+    exports.createLightMaterial = function () {
+        return LightMaterialSystem_1.create(ShaderData_1.WebGL1ShaderData, MaterialData_1.MaterialData, LightMaterialData_1.LightMaterialData);
+    };
+}
+else {
+    exports.createLightMaterial = function () {
+        return LightMaterialSystem_1.create(ShaderData_2.WebGL2ShaderData, MaterialData_1.MaterialData, LightMaterialData_1.LightMaterialData);
+    };
+}
 exports.initLightMaterial = function (material) {
     LightMaterialSystem_1.initMaterial(material.index, DirectorSystem_1.getState(DirectorData_1.DirectorData));
 };

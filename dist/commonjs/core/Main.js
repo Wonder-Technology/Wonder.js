@@ -17,6 +17,7 @@ var WorkerDetectData_1 = require("../device/WorkerDetectData");
 var WorkerInstanceData_1 = require("../worker/WorkerInstanceData");
 var InitConfigData_1 = require("../renderer/config/InitConfigData");
 var InitConfigSystem_1 = require("../renderer/config/InitConfigSystem");
+var WebGLDetectData_1 = require("../renderer/device/WebGLDetectData");
 var Main = (function () {
     function Main() {
     }
@@ -32,7 +33,7 @@ var Main = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
-        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, InitConfigData_1.InitConfigData, WorkerDetectData_1.WorkerDetectData, WorkerInstanceData_1.WorkerInstanceData, configState).run();
+        this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, InitConfigData_1.InitConfigData, WorkerDetectData_1.WorkerDetectData, WorkerInstanceData_1.WorkerInstanceData, WebGLDetectData_1.WebGLDetectData, configState).run();
         DirectorSystem_1.setState(DirectorSystem_1.getState(DirectorData_1.DirectorData).set("Main", this._configState.get("Main")), DirectorData_1.DirectorData).run();
         return this;
     };

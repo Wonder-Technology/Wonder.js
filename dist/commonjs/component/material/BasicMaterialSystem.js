@@ -3,18 +3,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var BasicMaterial_1 = require("./BasicMaterial");
 var MaterialSystem_1 = require("./MaterialSystem");
 var SpecifyMaterialSystem_1 = require("./SpecifyMaterialSystem");
-var bufferUtils_1 = require("../../renderer/utils/material/bufferUtils");
+var bufferUtils_1 = require("../../renderer/utils/worker/render_file/material/bufferUtils");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var ComponentSystem_1 = require("../ComponentSystem");
 var BasicMaterialData_1 = require("./BasicMaterialData");
 var MaterialData_1 = require("./MaterialData");
-var basicMaterialUtils_1 = require("../../renderer/utils/material/basicMaterialUtils");
+var basicMaterialUtils_1 = require("../../renderer/utils/worker/render_file/material/basicMaterialUtils");
 var MapManagerSystem_1 = require("../../renderer/texture/MapManagerSystem");
 var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
+var bufferUtils_2 = require("../../renderer/utils/material/bufferUtils");
 exports.create = contract_1.ensureFunc(function (component) {
     contract_1.it("index should <= max count", function () {
-        wonder_expect_js_1.expect(component.index).lt(bufferUtils_1.getBasicMaterialBufferStartIndex() + bufferUtils_1.getBasicMaterialBufferCount());
+        wonder_expect_js_1.expect(component.index).lt(bufferUtils_2.getBasicMaterialBufferStartIndex() + bufferUtils_1.getBasicMaterialBufferCount());
     });
 }, function (ShaderData, MaterialData, BasicMaterialData) {
     var material = new BasicMaterial_1.BasicMaterial(), index = ComponentSystem_1.generateComponentIndex(BasicMaterialData);
@@ -42,7 +43,7 @@ exports.createTypeArrays = function (buffer, offset, count, BasicMaterialData) {
     return basicMaterialUtils_1.createTypeArrays(buffer, offset, count, BasicMaterialData);
 };
 exports.initData = function (BasicMaterialData) {
-    SpecifyMaterialSystem_1.initData(bufferUtils_1.getBasicMaterialBufferStartIndex(), BasicMaterialData);
+    SpecifyMaterialSystem_1.initData(bufferUtils_2.getBasicMaterialBufferStartIndex(), BasicMaterialData);
 };
 exports.setDefaultData = function (BasicMaterialData) {
 };

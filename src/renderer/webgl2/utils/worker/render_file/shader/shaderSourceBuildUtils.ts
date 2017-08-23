@@ -19,7 +19,7 @@ import {
 } from "../../../../../utils/shader/shaderSourceBuildUtils";
 import { IWebGL2InitShaderFuncDataMap } from "../interface/IUtils";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData:IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: IWebGL2InitShaderFuncDataMap) => {
+export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: IWebGL2InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
@@ -39,13 +39,13 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         fsFuncDefine: string = "",
         fsBody: string = "";
     var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL2GLSLConfig) => {
-            vsTop += getGLSLPartData(vs, "top");
-            vsDefine += buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
-            vsVarDeclare += getGLSLPartData(vs, "varDeclare");
-            vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
-            vsFuncDefine += getGLSLPartData(vs, "funcDefine");
-            vsBody += getGLSLPartData(vs, "body");
-        },
+        vsTop += getGLSLPartData(vs, "top");
+        vsDefine += buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
+        vsVarDeclare += getGLSLPartData(vs, "varDeclare");
+        vsFuncDeclare += getGLSLPartData(vs, "funcDeclare");
+        vsFuncDefine += getGLSLPartData(vs, "funcDefine");
+        vsBody += getGLSLPartData(vs, "body");
+    },
         _setFs = (getGLSLPartData: Function, getGLSLDefineListData: Function, fs: IWebGL2GLSLConfig) => {
             fsTop += getGLSLPartData(fs, "top");
             fsDefine += buildSourceDefine(getGLSLDefineListData(fs), initShaderDataMap) + getGLSLPartData(fs, "define");
@@ -135,8 +135,8 @@ var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderL
 
         forEach(attributeData, ({
                                     name,
-                                    type,
-                                    location
+            type,
+            location
                                 }) => {
             result += `layout(location=${location}) in ${type} ${name};\n`;
         });

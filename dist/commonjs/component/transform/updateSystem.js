@@ -46,7 +46,7 @@ var _moveFromDirtyListToNormalList = function (index, ThreeDTransformData) {
     operateDataSystem_1.moveToIndex(index, dirtySystem_1.generateNotUsedIndexInNormalList(ThreeDTransformData), ThreeDTransformData);
 };
 var _transform = function (index, GlobalTempData, ThreeDTransformData) {
-    var vec3Index = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index), quaIndex = operateDataSystem_1.getQuaternionDataIndexInArrayBuffer(index), mat4Index = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(index), mat = GlobalTempData.matrix4_2.setTRS(typeArrayUtils_1.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index), typeArrayUtils_1.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex), typeArrayUtils_1.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)), parent = hierarchySystem_1.getParent(utils_1.getUID(index, ThreeDTransformData), ThreeDTransformData);
+    var vec3Index = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index), quaIndex = operateDataSystem_1.getQuaternionDataIndexInArrayBuffer(index), mat4Index = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(index), mat = GlobalTempData.matrix4_2.setTRS(typeArrayUtils_1.setVector3ByIndex(GlobalTempData.vector3_1, ThreeDTransformData.localPositions, vec3Index), typeArrayUtils_1.setQuaternionByIndex(GlobalTempData.quaternion_1, ThreeDTransformData.localRotations, quaIndex), typeArrayUtils_1.setVector3ByIndex(GlobalTempData.vector3_2, ThreeDTransformData.localScales, vec3Index)), parent = hierarchySystem_1.getParent(utils_1.getUId(index, ThreeDTransformData), ThreeDTransformData);
     if (hierarchySystem_1.isParentExist(parent)) {
         var parentIndex = parent.index;
         return operateDataSystem_1.setLocalToWorldMatricesData(typeArrayUtils_1.setMatrix4ByIndex(GlobalTempData.matrix4_1, ThreeDTransformData.localToWorldMatrices, operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(parentIndex))
@@ -57,7 +57,7 @@ var _transform = function (index, GlobalTempData, ThreeDTransformData) {
 var _sortParentBeforeChildInDirtyList = function (ThreeDTransformData) {
     var count = ThreeDTransformData.maxCount;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        var parent_1 = hierarchySystem_1.getParent(utils_1.getUID(i, ThreeDTransformData), ThreeDTransformData);
+        var parent_1 = hierarchySystem_1.getParent(utils_1.getUId(i, ThreeDTransformData), ThreeDTransformData);
         if (hierarchySystem_1.isParentExist(parent_1)) {
             var parentIndex = parent_1.index;
             if (parentIndex > i) {

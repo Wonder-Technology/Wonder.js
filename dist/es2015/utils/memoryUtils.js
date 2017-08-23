@@ -22,24 +22,24 @@ var _setArrayVal = function (arr, index, val) {
     arr[index] = val;
 };
 export var reAllocateThreeDTransform = function (ThreeDTransformData) {
-    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newIsTranslateMap = createMap(), newGameObjectMap = createMap(), newTempMap = createMap(), newAliveUIDArray = [], aliveUIDArray = ThreeDTransformData.aliveUIDArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, gameObjectMap = ThreeDTransformData.gameObjectMap, tempMap = ThreeDTransformData.tempMap;
+    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newIsTranslateMap = createMap(), newGameObjectMap = createMap(), newTempMap = createMap(), newAliveUIdArray = [], aliveUIdArray = ThreeDTransformData.aliveUIdArray, parentMap = ThreeDTransformData.parentMap, childrenMap = ThreeDTransformData.childrenMap, isTranslateMap = ThreeDTransformData.isTranslateMap, gameObjectMap = ThreeDTransformData.gameObjectMap, tempMap = ThreeDTransformData.tempMap;
     clearCacheMap(ThreeDTransformData);
-    var disposedUIDArr = [], actualAliveUIDArr = [];
-    for (var _i = 0, aliveUIDArray_1 = aliveUIDArray; _i < aliveUIDArray_1.length; _i++) {
-        var uid = aliveUIDArray_1[_i];
+    var disposedUIdArr = [], actualAliveUIdArr = [];
+    for (var _i = 0, aliveUIdArray_1 = aliveUIdArray; _i < aliveUIdArray_1.length; _i++) {
+        var uid = aliveUIdArray_1[_i];
         val = childrenMap[uid];
         if (isNotValidMapValue(val)) {
-            disposedUIDArr.push(uid);
+            disposedUIdArr.push(uid);
         }
         else {
-            actualAliveUIDArr.push(uid);
+            actualAliveUIdArr.push(uid);
         }
     }
-    _cleanChildrenMap(disposedUIDArr, parentMap, isThreeDTransformAlive, getThreeDTransformChildren, setThreeDTransformChildren, ThreeDTransformData);
-    for (var _a = 0, actualAliveUIDArr_1 = actualAliveUIDArr; _a < actualAliveUIDArr_1.length; _a++) {
-        var uid = actualAliveUIDArr_1[_a];
+    _cleanChildrenMap(disposedUIdArr, parentMap, isThreeDTransformAlive, getThreeDTransformChildren, setThreeDTransformChildren, ThreeDTransformData);
+    for (var _a = 0, actualAliveUIdArr_1 = actualAliveUIdArr; _a < actualAliveUIdArr_1.length; _a++) {
+        var uid = actualAliveUIdArr_1[_a];
         val = childrenMap[uid];
-        newAliveUIDArray.push(uid);
+        newAliveUIdArray.push(uid);
         _setMapVal(newChildrenMap, uid, val);
         val = tempMap[uid];
         _setMapVal(newTempMap, uid, val);
@@ -55,25 +55,25 @@ export var reAllocateThreeDTransform = function (ThreeDTransformData) {
     ThreeDTransformData.isTranslateMap = newIsTranslateMap;
     ThreeDTransformData.tempMap = newTempMap;
     ThreeDTransformData.gameObjectMap = newGameObjectMap;
-    ThreeDTransformData.aliveUIDArray = newAliveUIDArray;
+    ThreeDTransformData.aliveUIdArray = newAliveUIdArray;
 };
 export var reAllocateGameObject = function (GameObjectData) {
-    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newComponentMap = createMap(), newAliveUIDArray = [], aliveUIDArray = GameObjectData.aliveUIDArray, parentMap = GameObjectData.parentMap, childrenMap = GameObjectData.childrenMap, componentMap = GameObjectData.componentMap, disposedUIDArr = [], actualAliveUIDArr = [];
-    for (var _i = 0, aliveUIDArray_2 = aliveUIDArray; _i < aliveUIDArray_2.length; _i++) {
-        var uid = aliveUIDArray_2[_i];
+    var val = null, newParentMap = createMap(), newChildrenMap = createMap(), newComponentMap = createMap(), newAliveUIdArray = [], aliveUIdArray = GameObjectData.aliveUIdArray, parentMap = GameObjectData.parentMap, childrenMap = GameObjectData.childrenMap, componentMap = GameObjectData.componentMap, disposedUIdArr = [], actualAliveUIdArr = [];
+    for (var _i = 0, aliveUIdArray_2 = aliveUIdArray; _i < aliveUIdArray_2.length; _i++) {
+        var uid = aliveUIdArray_2[_i];
         val = componentMap[uid];
         if (isNotValidMapValue(val)) {
-            disposedUIDArr.push(uid);
+            disposedUIdArr.push(uid);
         }
         else {
-            actualAliveUIDArr.push(uid);
+            actualAliveUIdArr.push(uid);
         }
     }
-    _cleanChildrenMap(disposedUIDArr, parentMap, isGameObjectAlive, getGameObjectChildren, setGameObjectChildren, GameObjectData);
-    for (var _a = 0, actualAliveUIDArr_2 = actualAliveUIDArr; _a < actualAliveUIDArr_2.length; _a++) {
-        var uid = actualAliveUIDArr_2[_a];
+    _cleanChildrenMap(disposedUIdArr, parentMap, isGameObjectAlive, getGameObjectChildren, setGameObjectChildren, GameObjectData);
+    for (var _a = 0, actualAliveUIdArr_2 = actualAliveUIdArr; _a < actualAliveUIdArr_2.length; _a++) {
+        var uid = actualAliveUIdArr_2[_a];
         val = componentMap[uid];
-        newAliveUIDArray.push(uid);
+        newAliveUIdArray.push(uid);
         _setMapVal(newComponentMap, uid, val);
         val = parentMap[uid];
         _setMapVal(newParentMap, uid, val);
@@ -83,25 +83,25 @@ export var reAllocateGameObject = function (GameObjectData) {
     GameObjectData.parentMap = newParentMap;
     GameObjectData.childrenMap = newChildrenMap;
     GameObjectData.componentMap = newComponentMap;
-    GameObjectData.aliveUIDArray = newAliveUIDArray;
+    GameObjectData.aliveUIdArray = newAliveUIdArray;
 };
-var _cleanChildrenMap = function (disposedUIDArr, parentMap, isAlive, getChildren, setChildren, Data) {
+var _cleanChildrenMap = function (disposedUIdArr, parentMap, isAlive, getChildren, setChildren, Data) {
     var isCleanedParentMap = createMap();
-    for (var _i = 0, disposedUIDArr_1 = disposedUIDArr; _i < disposedUIDArr_1.length; _i++) {
-        var uid = disposedUIDArr_1[_i];
+    for (var _i = 0, disposedUIdArr_1 = disposedUIdArr; _i < disposedUIdArr_1.length; _i++) {
+        var uid = disposedUIdArr_1[_i];
         var parent_1 = parentMap[uid];
         if (_isParentExist(parent_1)) {
-            var parentUID = parent_1.uid;
-            if (isValidMapValue(isCleanedParentMap[parentUID])) {
+            var parentUId = parent_1.uid;
+            if (isValidMapValue(isCleanedParentMap[parentUId])) {
                 continue;
             }
-            _cleanChildren(parentUID, isAlive, getChildren, setChildren, Data);
+            _cleanChildren(parentUId, isAlive, getChildren, setChildren, Data);
             deleteVal(uid, parentMap);
         }
     }
 };
-var _cleanChildren = function (parentUID, isAlive, getChildren, setChildren, Data) {
-    var children = getChildren(parentUID, Data);
+var _cleanChildren = function (parentUId, isAlive, getChildren, setChildren, Data) {
+    var children = getChildren(parentUId, Data);
     if (!_isChildrenExist(children)) {
         return;
     }
@@ -112,7 +112,7 @@ var _cleanChildren = function (parentUID, isAlive, getChildren, setChildren, Dat
             newChildren.push(child);
         }
     }
-    setChildren(parentUID, newChildren, Data);
+    setChildren(parentUId, newChildren, Data);
 };
 var _isParentExist = function (parent) { return isNotUndefined(parent); };
 var _isChildrenExist = function (children) { return isNotUndefined(children); };

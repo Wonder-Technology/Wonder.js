@@ -8,8 +8,6 @@ import { GlobalTempData } from "../definition/GlobalTempData";
 import { initData as initSceneData } from "./entityObject/scene/SceneSystem";
 import { initData as initThreeDTransformData } from "../component/transform/ThreeDTransformSystem";
 import { initData as initGeometryData } from "../component/geometry/GeometrySystem";
-import { initData as initShaderData } from "../renderer/shader/ShaderSystem";
-import { ShaderData } from "../renderer/shader/ShaderData";
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import { initData as initMaterialData } from "../component/material/MaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
@@ -21,13 +19,9 @@ import { SceneData } from "./entityObject/scene/SceneData";
 import { initData as initCameraControllerData } from "../component/camera/CameraControllerSystem";
 import { initData as initGameObjectData } from "./entityObject/gameObject/GameObjectSystem";
 import { initData as initRenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferSystem";
-import { RenderCommandBufferData } from "../renderer/command_buffer/RenderCommandBufferData";
 import { initData as initProgramData } from "../renderer/shader/program/ProgramSystem";
-import { initData as initLocationData } from "../renderer/shader/location/LocationSystem";
-import { initData as initGLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderSystem";
 import { initData as initArrayBufferData } from "../renderer/buffer/ArrayBufferSystem";
 import { initData as initIndexBufferData } from "../renderer/buffer/IndexBufferSystem";
-import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
 import { DebugConfig } from "../config/DebugConfig";
 import { EScreenSize } from "../renderer/device/EScreenSize";
 import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
@@ -39,27 +33,58 @@ import { expect } from "wonder-expect.js";
 import { fromJS } from "immutable";
 import { createCanvas, initDevice } from "../renderer/device/initDeviceSystem";
 import { isSupportRenderWorkerAndSharedArrayBuffer, setWorkerConfig } from "../device/WorkerDetectSystem";
-import { DrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferData";
 import { IndexBufferData } from "../renderer/buffer/IndexBufferData";
 import { ArrayBufferData } from "../renderer/buffer/ArrayBufferData";
-import { GLSLSenderData } from "../renderer/shader/glslSender/GLSLSenderData";
-import { LocationData } from "../renderer/shader/location/LocationData";
-import { ProgramData } from "../renderer/shader/program/ProgramData";
 import { BasicMaterialData } from "../component/material/BasicMaterialData";
 import { LightMaterialData } from "../component/material/LightMaterialData";
-import { initData as initLightData } from "../component/light/LightSystem";
 import { AmbientLightData } from "../component/light/AmbientLightData";
-import { DirectionLightData } from "../component/light/DirectionLightData";
-import { PointLightData } from "../component/light/PointLightData";
 import { setIsTest, setLibIsTest } from "../renderer/config/InitConfigSystem";
-import { initWorkInstances } from "../worker/WorkerInstanceSystem";
+import { getRenderWorker, initWorkInstances } from "../worker/WorkerInstanceSystem";
 import { TextureCacheData } from "../renderer/texture/TextureCacheData";
 import { TextureData } from "../renderer/texture/TextureData";
 import { MapManagerData } from "../renderer/texture/MapManagerData";
 import { initData as initSendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferDataSystem";
 import { SendDrawRenderCommandBufferData } from "../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData";
-export var setConfig = function (closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, _a) {
-    var _b = _a.canvasID, canvasID = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
+import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateType";
+import { getVersion, isWebgl1 } from "../renderer/device/WebGLDetectSystem";
+import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
+import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
+import { initData as initDirectorData } from "./DirectorSystem";
+import { DirectorData } from "./DirectorData";
+import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
+import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
+import { GPUDetectData } from "../renderer/device/GPUDetectData";
+import { detect as detectWebGL1 } from "../renderer/webgl1/device/GPUDetectSystem";
+import { detect as detectWebGL2 } from "../renderer/webgl2/device/GPUDetectSystem";
+import { BasicRenderCommandBufferData } from "../renderer/command_buffer/BasicRenderCommandBufferData";
+import { LightRenderCommandBufferData } from "../renderer/command_buffer/LightRenderCommandBufferData";
+import { BasicDrawRenderCommandBufferData } from "../renderer/draw/basic/BasicDrawRenderCommandBufferData";
+import { LightDrawRenderCommandBufferData } from "../renderer/draw/light/LightDrawRenderCommandBufferData";
+import { initData as initDrawRenderCommandBufferData } from "../renderer/draw/DrawRenderCommandBufferSystem";
+import { initData as initWebGL2GLSLSenderData } from "../renderer/webgl2/shader/glslSender/GLSLSenderSystem";
+import { WebGL2GLSLSenderData } from "../renderer/webgl2/shader/glslSender/GLSLSenderData";
+import { initData as initWebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderSystem";
+import { WebGL1GLSLSenderData } from "../renderer/webgl1/shader/glslSender/GLSLSenderData";
+import { WebGL1ProgramData } from "../renderer/webgl1/shader/program/ProgramData";
+import { WebGL2ProgramData } from "../renderer/webgl2/shader/program/ProgramData";
+import { initData as initVaoData } from "../renderer/webgl2/vao/VaoSystem";
+import { VaoData } from "../renderer/vao/VaoData";
+import { WebGL1LocationData } from "../renderer/webgl1/shader/location/LocationData";
+import { WebGL2LocationData } from "../renderer/webgl2/shader/location/LocationData";
+import { initData as initWebGL1LocationData } from "../renderer/webgl1/shader/location/LocationSystem";
+import { initData as initWebGL2LocationData } from "../renderer/webgl2/shader/location/LocationSystem";
+import { initData as initWebGL1ShaderData } from "../renderer/webgl1/shader/ShaderSystem";
+import { initData as initWebGL2ShaderData } from "../renderer/webgl2/shader/ShaderSystem";
+import { WebGL1ShaderData } from "../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../renderer/webgl2/shader/ShaderData";
+import { initData as initDeferLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
+import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
+import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
+import { DeferDirectionLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferDirectionLightPassData";
+import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferPointLightPassData";
+import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferAmbientLightPassData";
+export var setConfig = function (closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, _a) {
+    var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
         options: {
             alpha: true,
             depth: true,
@@ -84,12 +109,13 @@ export var setConfig = function (closeContractTest, InitConfigData, WorkerDetect
         setWorkerConfig(workerConfig, WorkerDetectData).run();
         initWorkInstances(WorkerInstanceData);
         setIsTest(_isTest, InitConfigData, WorkerInstanceData).run();
+        passDataToRenderWorker(WorkerInstanceData, WebGLDetectData).run();
         return fromJS({
             Main: {
                 screenSize: screenSize
             },
             config: {
-                canvasID: canvasID,
+                canvasId: canvasId,
                 contextConfig: {
                     options: ExtendUtils.extend({
                         alpha: true,
@@ -105,42 +131,99 @@ export var setConfig = function (closeContractTest, InitConfigData, WorkerDetect
         });
     });
 };
-export var init = requireCheckFunc(function (gameState, configState, DomQuery) {
-    it("should set config before", function () {
-        expect(configState.get("useDevicePixelRatio")).exist;
-    });
-}, function (gameState, configState, DomQuery) {
-    return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState)), createCanvas(DomQuery))(configState.get("canvasID"));
-});
 export var initData = null;
+export var passDataToRenderWorker = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initData = function () {
         _initData();
     };
-}
-else {
-    initData = function () {
-        _initData();
-        initProgramData(ProgramData);
-        initLocationData(LocationData);
-        initGLSLSenderData(GLSLSenderData);
-        initArrayBufferData(ArrayBufferData);
-        initIndexBufferData(IndexBufferData);
-        initDrawRenderCommandBufferData(DrawRenderCommandBufferData);
+    passDataToRenderWorker = function (WorkerInstanceData, WebGLDetectData) {
+        return IO.of(function () {
+            var renderWorker = getRenderWorker(WorkerInstanceData);
+            renderWorker.postMessage({
+                operateType: EWorkerOperateType.INIT_DATA,
+                webglVersion: getVersion(WebGLDetectData)
+            });
+        });
     };
 }
-var _initData = function () {
-    initShaderData(ShaderData);
-    initGeometryData(DataBufferConfig, GeometryData);
-    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
-    initMeshRendererData(MeshRendererData);
-    initTagData(TagData);
-    initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-    initSceneData(SceneData);
-    initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-    initGameObjectData(GameObjectData);
-    initRenderCommandBufferData(DataBufferConfig, RenderCommandBufferData);
-    initLightData(AmbientLightData, DirectionLightData, PointLightData);
-    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-};
+else {
+    if (isWebgl1()) {
+        initData = function () {
+            _initData();
+            initProgramData(WebGL1ProgramData);
+            initWebGL1LocationData(WebGL1LocationData);
+            initArrayBufferData(ArrayBufferData);
+            initIndexBufferData(IndexBufferData);
+            initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+        };
+    }
+    else {
+        initData = function () {
+            _initData();
+            initProgramData(WebGL2ProgramData);
+            initWebGL2LocationData(WebGL2LocationData);
+            initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+        };
+    }
+    passDataToRenderWorker = function (WorkerInstanceData, WebGLDetectData) {
+        return IO.of(function () {
+        });
+    };
+}
+export var init = null;
+var _initData = null;
+if (isWebgl1()) {
+    _initData = function () {
+        initDirectorData(DirectorData);
+        initWebGL1ShaderData(WebGL1ShaderData);
+        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
+        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+        initMeshRendererData(MeshRendererData);
+        initTagData(TagData);
+        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+        initSceneData(SceneData);
+        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+        initGameObjectData(GameObjectData);
+        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        initWebGL1LightData(AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData);
+        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+        initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
+        initVaoData(VaoData);
+    };
+    init = requireCheckFunc(function (gameState, configState, DomQuery) {
+        it("should set config before", function () {
+            expect(configState.get("useDevicePixelRatio")).exist;
+        });
+    }, function (gameState, configState, DomQuery) {
+        return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL1, DomQuery)), createCanvas(DomQuery))(configState.get("canvasId"));
+    });
+}
+else {
+    _initData = function () {
+        initDirectorData(DirectorData);
+        initWebGL2ShaderData(WebGL2ShaderData);
+        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
+        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+        initMeshRendererData(MeshRendererData);
+        initTagData(TagData);
+        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+        initSceneData(SceneData);
+        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+        initGameObjectData(GameObjectData);
+        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        initWebGL2LightData(AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData);
+        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+        initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
+        initVaoData(VaoData);
+        initDeferLightPassData(DeferAmbientLightPassData, DeferDirectionLightPassData, DeferPointLightPassData);
+    };
+    init = requireCheckFunc(function (gameState, configState, DomQuery) {
+        it("should set config before", function () {
+            expect(configState.get("useDevicePixelRatio")).exist;
+        });
+    }, function (gameState, configState, DomQuery) {
+        return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2, DomQuery)), createCanvas(DomQuery))(configState.get("canvasId"));
+    });
+}
 //# sourceMappingURL=MainSystem.js.map

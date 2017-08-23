@@ -1,6 +1,3 @@
-import { EBufferType } from "../../renderer/enum/EBufferType";
-import { EGeometryWorkerDataOperateType } from "../../renderer/enum/EGeometryWorkerDataOperateType";
-
 export type GeometryWorkerInfoList = Array<{
     index: number;
     startIndex: number;

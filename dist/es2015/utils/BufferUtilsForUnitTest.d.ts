@@ -1,3 +1,3 @@
 export declare class BufferUtilsForUnitTest {
-    static isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem: any): boolean;
+    static isRenderCommandBufferDataTypeArrayNotExist(RenderCommandBufferDataFromSystem: any): boolean;
 }

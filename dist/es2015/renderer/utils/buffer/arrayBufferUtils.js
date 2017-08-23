@@ -1,5 +1,5 @@
 import { isBufferExist } from "./bufferUtils";
-export var getOrCreateBuffer = function (gl, geometryIndex, buffers, getDatas, GeometryDataFromSystem, ArrayBufferDataFromSystem) {
+export var getOrCreateBuffer = function (gl, geometryIndex, buffers, getDatas, GeometryDataFromSystem) {
     var buffer = buffers[geometryIndex];
     if (isBufferExist(buffer)) {
         return buffer;
@@ -18,7 +18,7 @@ var _resetBindedBuffer = function (gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
 export var initData = function (ArrayBufferDataFromSystemFromSystem) {
-    ArrayBufferDataFromSystemFromSystem.vertexBuffer = [];
+    ArrayBufferDataFromSystemFromSystem.vertexBuffers = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
     ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];
 };

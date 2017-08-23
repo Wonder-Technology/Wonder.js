@@ -1,3 +1,3 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//# sourceMappingURL=IUIDEntity.js.map
+//# sourceMappingURL=IUIdEntity.js.map

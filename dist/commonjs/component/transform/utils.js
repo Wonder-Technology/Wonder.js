@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var objectUtils_1 = require("../../utils/objectUtils");
-exports.getUID = contract_1.requireCheckFunc(function (index, ThreeDTransformData) {
+exports.getUId = contract_1.requireCheckFunc(function (index, ThreeDTransformData) {
     contract_1.it("index should exist", function () {
         wonder_expect_js_1.expect(index).exist;
     });

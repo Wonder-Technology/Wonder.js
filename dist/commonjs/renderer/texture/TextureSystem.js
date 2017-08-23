@@ -7,7 +7,7 @@ var arrayUtils_1 = require("../../utils/arrayUtils");
 var Texture_1 = require("./Texture");
 var ComponentSystem_1 = require("../../component/ComponentSystem");
 var arrayBufferUtils_1 = require("../../utils/arrayBufferUtils");
-var textureUtils_1 = require("../utils/texture/textureUtils");
+var textureUtils_1 = require("../utils/worker/render_file/texture/textureUtils");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
 var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
 exports.create = contract_1.ensureFunc(function (component) {
@@ -39,8 +39,8 @@ exports.setIsNeedUpdate = function (textureIndex, value, TextureData) {
 exports.setUniformSamplerName = function (index, name, TextureData) {
     TextureData.uniformSamplerNameMap[index] = name;
 };
-exports.bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheData, TextureData) {
-    textureUtils_1.bindToUnit(gl, unitIndex, textureIndex, TextureCacheData, TextureData, TextureCacheSystem_1.isCached, TextureCacheSystem_1.addActiveTexture);
+exports.bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData) {
+    textureUtils_1.bindToUnit(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, TextureCacheSystem_1.isCached, TextureCacheSystem_1.addActiveTexture);
 };
 exports.initTextures = textureUtils_1.initTextures;
 exports.needUpdate = textureUtils_1.needUpdate;
@@ -50,7 +50,7 @@ exports.update = function (gl, textureIndex, TextureData) {
 var _setFlipY = function (gl, flipY) {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 };
-exports.dispose = function (gl, texture, TextureCacheData, TextureData) {
+exports.dispose = function (gl, texture, TextureCacheData, TextureData, GPUDetectData) {
     var bufferDataSize = textureUtils_1.getBufferDataSize(), sourceIndex = texture.index, lastComponentIndex = null;
     TextureData.index -= 1;
     lastComponentIndex = TextureData.index;
@@ -59,12 +59,16 @@ exports.dispose = function (gl, texture, TextureCacheData, TextureData) {
     typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * bufferDataSize, lastComponentIndex * bufferDataSize, TextureData.isNeedUpdates, TextureData.defaultIsNeedUpdate);
     textureUtils_1.disposeSourceMap(sourceIndex, lastComponentIndex, TextureData);
     ComponentSystem_1.deleteComponentBySwapArray(sourceIndex, lastComponentIndex, TextureData.textureMap);
-    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 };
 var _disposeGLTexture = null, _addDisposeDataForWorker = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData) {
+    _disposeGLTexture = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
     };
     _addDisposeDataForWorker = function (sourceIndex, lastComponentIndex, TextureData) {
         TextureData.disposedTextureDataMap.push(_buildDisposedTextureData(sourceIndex, lastComponentIndex));
@@ -77,8 +81,8 @@ if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     };
 }
 else {
-    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData) {
-        textureUtils_1.disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture = function (gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData) {
+        textureUtils_1.disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     };
     _addDisposeDataForWorker = function (sourceIndex, lastComponentIndex, TextureData) {
     };

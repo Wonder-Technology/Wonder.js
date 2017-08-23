@@ -1,1 +1,0 @@
-{"version":3,"file":"stateUtils.js","sourceRoot":"","sources":["../../../../../src/renderer/utils/state/stateUtils.ts"],"names":[],"mappings":";;AACA,0CAAyC;AAE9B,QAAA,SAAS,GAAG,UAAC,KAAoB,EAAE,KAAe,EAAE,OAAiB,EAAE,2BAAgC;IAC9G,IAAI,EAAE,GAAG,KAAK,CAAC,2BAA2B,EAAE,KAAK,CAAC,CAAC;IAEnD,OAAO,CAAC,EAAE,EAAE,aAAK,CAAC,KAAK,EAAE,2BAA2B,CAAC,CAAC;AAC1D,CAAC,CAAA"}

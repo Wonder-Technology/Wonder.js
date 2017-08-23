@@ -14,8 +14,14 @@ var PointLightWorkerData = (function (_super) {
     function PointLightWorkerData() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PointLightWorkerData.positionArr = null;
-    PointLightWorkerData.lightGLSLDataStructureMemberNameArr = null;
+    PointLightWorkerData.intensities = null;
+    PointLightWorkerData.constants = null;
+    PointLightWorkerData.linears = null;
+    PointLightWorkerData.quadratics = null;
+    PointLightWorkerData.ranges = null;
+    PointLightWorkerData.isPositionDirtys = null;
+    PointLightWorkerData.isIntensityDirtys = null;
+    PointLightWorkerData.isAttenuationDirtys = null;
     return PointLightWorkerData;
 }(SpecifyLightWorkerData));
 export { PointLightWorkerData };

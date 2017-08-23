@@ -3,7 +3,7 @@ import { registerClass } from "../../definition/typescript/decorator/registerCla
 import { create, getGameObject } from "./CameraControllerSystem";
 import { CameraControllerData } from "./CameraControllerData";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 
 @registerClass("CameraController")
 export class CameraController extends Component {

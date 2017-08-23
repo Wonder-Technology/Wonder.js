@@ -1,12 +1,12 @@
 import { Component } from "../../../component/Component";
-import { IUIDEntity } from "./IUIDEntity";
+import { IUIdEntity } from "./IUIdEntity";
 export declare class GameObjectData {
     static uid: number;
     static disposeCount: number;
     static componentMap: GameObjectComponentMap;
     static parentMap: GameObjectParentMap;
     static childrenMap: GameObjectChildrenMap;
-    static aliveUIDArray: Array<number>;
+    static aliveUIdArray: Array<number>;
 }
 export declare type GameObjectComponentMap = {
     [uid: number]: GameObjectComponentData;
@@ -15,11 +15,11 @@ export declare type GameObjectComponentData = {
     [typeId: number]: Component;
 };
 export declare type GameObjectParentMap = {
-    [uid: number]: IUIDEntity;
+    [uid: number]: IUIdEntity;
 };
 export declare type GameObjectChildrenMap = {
-    [uid: number]: Array<IUIDEntity>;
+    [uid: number]: Array<IUIdEntity>;
 };
-export declare type GameObjectUIDMap = {
+export declare type GameObjectUIdMap = {
     [uid: number]: boolean;
 };

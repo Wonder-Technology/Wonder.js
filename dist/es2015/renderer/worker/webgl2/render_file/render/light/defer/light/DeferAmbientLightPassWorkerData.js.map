@@ -1,0 +1,1 @@
+{"version":3,"file":"DeferAmbientLightPassWorkerData.js","sourceRoot":"","sources":["../../../../../../../../../../src/renderer/worker/webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData.ts"],"names":[],"mappings":";;;;;;;;;;AAAA,OAAO,EAAE,+BAA+B,EAAE,MAAM,4FAA4F,CAAC;AAE7I;IAAqD,mDAA+B;IAApF;;IACA,CAAC;IAAD,sCAAC;AAAD,CAAC,AADD,CAAqD,+BAA+B,GACnF"}

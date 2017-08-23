@@ -23,14 +23,14 @@ import { EBlendEquation } from "../../../../../enum/EBlendEquation";
 import { EBlendFunc } from "../../../../../enum/EBlendFunc";
 import { drawPointLightPass } from "./pointLightPassDrawUtils";
 
-export var drawLightPass = (gl:any, render_config:IRenderConfig, {
+export var drawLightPass = (gl: any, render_config: IRenderConfig, {
     use,
     unbindGBuffer
-}, drawDataMap:IWebGL2DrawDataMap, {
+}, drawDataMap: IWebGL2DrawDataMap, {
                                 DeferAmbientLightPassDataFromSystem,
-                                DeferDirectionLightPassDataFromSystem,
-                                DeferPointLightPassDataFromSystem
-                            }, initShaderDataMap:InitShaderDataMap, sendDataMap:IWebGL2LightSendUniformDataDataMap, vMatrix:Float32Array, pMatrix:Float32Array, state:Map<any, any>) => {
+        DeferDirectionLightPassDataFromSystem,
+        DeferPointLightPassDataFromSystem
+                            }, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2LightSendUniformDataDataMap, vMatrix: Float32Array, pMatrix: Float32Array, state: Map<any, any>) => {
     var {
             ShaderDataFromSystem
         } = initShaderDataMap,
@@ -57,25 +57,25 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     setBlendEquation(gl, EBlendEquation.ADD, DeviceManagerDataFromSystem);
     setBlendFunc(gl, EBlendFunc.ONE, EBlendFunc.ONE, DeviceManagerDataFromSystem);
 
-    if(_hasLight(ambientLightCount)){
-        _drawAmbientLightPass(gl, use, drawDataMap,sendDataMap.ambientLightData, ambientLightCount, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    if (_hasLight(ambientLightCount)) {
+        _drawAmbientLightPass(gl, use, drawDataMap, sendDataMap.ambientLightData, ambientLightCount, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
-    if(_hasLight(directionLightCount)){
-        _drawDirectionLightPass(gl, use, drawDataMap,sendDataMap.directionLightData, directionLightCount, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    if (_hasLight(directionLightCount)) {
+        _drawDirectionLightPass(gl, use, drawDataMap, sendDataMap.directionLightData, directionLightCount, DeferDirectionLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
-    if(_hasLight(pointLightCount)){
-        drawPointLightPass(gl, state, use, drawDataMap,sendDataMap.pointLightData, pointLightCount, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
+    if (_hasLight(pointLightCount)) {
+        drawPointLightPass(gl, state, use, drawDataMap, sendDataMap.pointLightData, pointLightCount, vMatrix, pMatrix, DeferPointLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
     }
 
     unbindVao(gl);
 }
 
-var _hasLight = (count:number) => count > 0;
+var _hasLight = (count: number) => count > 0;
 
-var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, ambientLightData:IWebGL2SendUniformDataAmbientLightDataMap, ambientLightCount:number, DeferAmbientLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
-    var shaderIndex:number = null;
+var _drawAmbientLightPass = (gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, ambientLightData: IWebGL2SendUniformDataAmbientLightDataMap, ambientLightCount: number, DeferAmbientLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+    var shaderIndex: number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferAmbientLightPassDataFromSystem);
 
@@ -92,10 +92,10 @@ var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMa
     } = ambientLightData;
 
     for (let i = 0; i < ambientLightCount; i++) {
-        let colorArr3:Array<number> = null,
+        let colorArr3: Array<number> = null,
             isColorDirtyFlag = isColorDirty(i, AmbientLightDataFromSystem);
 
-        if(isColorDirtyFlag){
+        if (isColorDirtyFlag) {
             colorArr3 = getColorArr3(i, AmbientLightDataFromSystem);
         }
 
@@ -105,16 +105,16 @@ var _drawAmbientLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMa
     }
 }
 
-var _buildAmbientLightValueDataMap = (colorArr3: Array<number>, isColorDirty:boolean) => {
+var _buildAmbientLightValueDataMap = (colorArr3: Array<number>, isColorDirty: boolean) => {
     return {
-        colorArr3:colorArr3,
+        colorArr3: colorArr3,
 
         isColorDirty: isColorDirty
     }
 }
 
-var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawDataMap, directionLightData:IWebGL2SendUniformDataDirectionLightDataMap, directionLightCount:number, DeferDirectionLightPassDataFromSystem:any, ShaderDataFromSystem, ProgramDataFromSystem:any, LocationDataFromSystem:any, GLSLSenderDataFromSystem:any) => {
-    var shaderIndex:number = null;
+var _drawDirectionLightPass = (gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, directionLightData: IWebGL2SendUniformDataDirectionLightDataMap, directionLightCount: number, DeferDirectionLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+    var shaderIndex: number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferDirectionLightPassDataFromSystem);
 
@@ -136,36 +136,36 @@ var _drawDirectionLightPass = (gl:any, use:Function, drawDataMap:IWebGL2DrawData
     } = directionLightData;
 
     for (let i = 0; i < directionLightCount; i++) {
-        let position:Float32Array = null,
-            colorArr3:Array<number> = null,
-            intensity:number = null,
+        let position: Float32Array = null,
+            colorArr3: Array<number> = null,
+            intensity: number = null,
             isIntensityDirtyFlag = isIntensityDirty(i, DirectionLightDataFromSystem),
             isPositionDirtyFlag = isPositionDirty(i, DirectionLightDataFromSystem),
             isColorDirtyFlag = isColorDirty(i, DirectionLightDataFromSystem);
 
-        if(isPositionDirtyFlag){
+        if (isPositionDirtyFlag) {
             position = getPosition(i, DirectionLightDataFromSystem);
         }
 
-        if(isColorDirtyFlag){
+        if (isColorDirtyFlag) {
             colorArr3 = getColorArr3(i, DirectionLightDataFromSystem);
         }
 
-        if(isIntensityDirtyFlag){
+        if (isIntensityDirtyFlag) {
             intensity = getIntensity(i, DirectionLightDataFromSystem);
         }
 
-        bindDirectionLightUboData(gl, i, directionLightData, _buildDirectionLightValueDataMap(position, colorArr3, intensity, isPositionDirtyFlag, isColorDirtyFlag,  isIntensityDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
+        bindDirectionLightUboData(gl, i, directionLightData, _buildDirectionLightValueDataMap(position, colorArr3, intensity, isPositionDirtyFlag, isColorDirtyFlag, isIntensityDirtyFlag), drawDataMap, GLSLSenderDataFromSystem);
 
         drawFullScreenQuad(gl, DeferDirectionLightPassDataFromSystem);
     }
 }
 
-var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty:boolean, isColorDirty:boolean, isIntensityDirty:boolean) => {
+var _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty: boolean, isColorDirty: boolean, isIntensityDirty: boolean) => {
     return {
         position: position,
-        colorArr3:colorArr3,
-        intensity:intensity,
+        colorArr3: colorArr3,
+        intensity: intensity,
 
         isPositionDirty: isPositionDirty,
         isColorDirty: isColorDirty,

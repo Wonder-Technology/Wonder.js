@@ -1,30 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var GPUDetector_1 = require("../../renderer/device/GPUDetector");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var EBufferType_1 = require("../../renderer/enum/EBufferType");
 var objectUtils_1 = require("../../utils/objectUtils");
 var ComponentSystem_1 = require("../ComponentSystem");
 var GeometryData_1 = require("./GeometryData");
-var geometryUtils_1 = require("../../renderer/utils/geometry/geometryUtils");
+var geometryUtils_1 = require("../../renderer/utils/worker/render_file/geometry/geometryUtils");
 var memoryUtils_1 = require("../../utils/memoryUtils");
 var WorkerDetectSystem_1 = require("../../device/WorkerDetectSystem");
 var arrayBufferUtils_1 = require("../../utils/arrayBufferUtils");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
 var arrayUtils_1 = require("../../utils/arrayUtils");
 var wonder_expect_js_1 = require("wonder-expect.js");
-var ArrayBufferData_1 = require("../../renderer/buffer/ArrayBufferData");
-var IndexBufferData_1 = require("../../renderer/buffer/IndexBufferData");
-var BufferSystem_1 = require("../../renderer/worker/both_file/buffer/BufferSystem");
-var ArrayBufferSystem_1 = require("../../renderer/buffer/ArrayBufferSystem");
-var IndexBufferSystem_1 = require("../../renderer/buffer/IndexBufferSystem");
+var gpuDetectUtils_1 = require("../../renderer/utils/device/gpuDetectUtils");
 exports.addAddComponentHandle = function (BoxGeometry, CustomGeometry) {
     ComponentSystem_1.addAddComponentHandle(BoxGeometry, exports.addComponent);
     ComponentSystem_1.addAddComponentHandle(CustomGeometry, exports.addComponent);
-};
-exports.addDisposeHandle = function (BoxGeometry, CustomGeometry) {
-    ComponentSystem_1.addDisposeHandle(BoxGeometry, exports.disposeComponent);
-    ComponentSystem_1.addDisposeHandle(CustomGeometry, exports.disposeComponent);
 };
 exports.addInitHandle = function (BoxGeometry, CustomGeometry) {
     ComponentSystem_1.addInitHandle(BoxGeometry, exports.initGeometry);
@@ -122,7 +113,7 @@ var _buildInfo = function (startIndex, endIndex) {
 exports.addComponent = function (component, gameObject) {
     ComponentSystem_1.addComponentToGameObjectMap(GeometryData_1.GeometryData.gameObjectMap, component.index, gameObject);
 };
-exports.disposeComponent = function (component) {
+exports.disposeComponent = function (component, disposeBuffers) {
     var sourceIndex = component.index;
     ComponentSystem_1.deleteComponent(sourceIndex, GeometryData_1.GeometryData.geometryMap);
     GeometryData_1.GeometryData.count -= 1;
@@ -130,27 +121,12 @@ exports.disposeComponent = function (component) {
     GeometryData_1.GeometryData.isReallocate = false;
     if (memoryUtils_1.isDisposeTooManyComponents(GeometryData_1.GeometryData.disposeCount) || _isBufferNearlyFull(GeometryData_1.GeometryData)) {
         var disposedIndexArray = memoryUtils_1.reAllocateGeometry(GeometryData_1.GeometryData);
-        _disposeBuffers(disposedIndexArray);
+        disposeBuffers(disposedIndexArray);
         exports.clearWorkerInfoList(GeometryData_1.GeometryData);
         GeometryData_1.GeometryData.isReallocate = true;
         GeometryData_1.GeometryData.disposeCount = 0;
     }
 };
-var _disposeBuffers = null;
-if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeBuffers = contract_1.requireCheckFunc(function (disposedIndexArray) {
-        contract_1.it("should not add data twice in one frame", function () {
-            wonder_expect_js_1.expect(GeometryData_1.GeometryData.disposedGeometryIndexArray.length).equal(0);
-        });
-    }, function (disposedIndexArray) {
-        GeometryData_1.GeometryData.disposedGeometryIndexArray = disposedIndexArray;
-    });
-}
-else {
-    _disposeBuffers = function (disposedIndexArray) {
-        BufferSystem_1.disposeGeometryBuffers(disposedIndexArray, ArrayBufferData_1.ArrayBufferData, IndexBufferData_1.IndexBufferData, ArrayBufferSystem_1.disposeBuffer, IndexBufferSystem_1.disposeBuffer);
-    };
-}
 exports.isReallocate = function (GeometryData) {
     return GeometryData.isReallocate;
 };
@@ -167,11 +143,11 @@ exports.getGameObject = function (index, Data) {
 exports.getConfigData = function (index, GeometryData) {
     return GeometryData.configDataMap[index];
 };
-var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig) {
+var _checkIsIndicesBufferNeed32BitsByConfig = function (DataBufferConfig, GPUDetectData) {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
-    return GPUDetector_1.GPUDetector.getInstance().extensionUintIndices === true;
+    return gpuDetectUtils_1.hasExtensionUintIndices(GPUDetectData) === true;
 };
 exports.isIndicesBufferNeed32BitsByData = function (GeometryData) {
     return GeometryData.indexType === EBufferType_1.EBufferType.UNSIGNED_INT;
@@ -214,8 +190,8 @@ var _buildWorkerInfo = function (index, startIndex, endIndex) {
         endIndex: endIndex
     };
 };
-exports.initData = function (DataBufferConfig, GeometryData) {
-    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig), indicesArrayBytes = null;
+exports.initData = function (DataBufferConfig, GeometryData, GPUDetectData) {
+    var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig, GPUDetectData), indicesArrayBytes = null;
     if (isIndicesBufferNeed32Bits) {
         indicesArrayBytes = Uint32Array.BYTES_PER_ELEMENT;
         GeometryData.indexType = EBufferType_1.EBufferType.UNSIGNED_INT;

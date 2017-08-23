@@ -1,7 +1,7 @@
 import { Material } from "./Material";
 export declare class LightMaterial extends Material {
 }
-export declare var createLightMaterial: () => any;
+export declare var createLightMaterial: any;
 export declare var initLightMaterial: (material: LightMaterial) => void;
 export declare var getLightMaterialColor: Function;
 export declare var setLightMaterialColor: Function;

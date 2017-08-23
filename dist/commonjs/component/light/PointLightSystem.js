@@ -2,19 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var PointLight_1 = require("./PointLight");
 var SpecifyLightSystem_1 = require("./SpecifyLightSystem");
-var PointLightData_1 = require("./PointLightData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
-var DataBufferConfig_1 = require("../../config/DataBufferConfig");
 var operateBufferDataUtils_1 = require("../utils/operateBufferDataUtils");
 var arrayBufferUtils_1 = require("../../utils/arrayBufferUtils");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
-var pointLightUtils_1 = require("../../renderer/utils/light/pointLightUtils");
+var pointLightUtils_1 = require("../../renderer/utils/worker/render_file/light/pointLightUtils");
 var Log_1 = require("../../utils/Log");
 var bufferUtils_1 = require("../../renderer/utils/light/bufferUtils");
+var DirectorSystem_1 = require("../../core/DirectorSystem");
+var DirectorData_1 = require("../../core/DirectorData");
+var specifyLightUtils_1 = require("../../renderer/utils/worker/render_file/light/specifyLightUtils");
+var pointLightUtils_2 = require("../../renderer/utils/worker/render_file/light/pointLightUtils");
 exports.create = contract_1.ensureFunc(function (light, PointLightData) {
-    contract_1.it("count should <= max count", function () {
-        wonder_expect_js_1.expect(PointLightData.count).lte(DataBufferConfig_1.DataBufferConfig.pointLightDataBufferCount);
+    contract_1.it("shouldn't create after Director->init", function () {
+        wonder_expect_js_1.expect(DirectorSystem_1.isInit(DirectorData_1.DirectorData)).false;
     });
 }, function (PointLightData) {
     var light = new PointLight_1.PointLight();
@@ -37,26 +39,32 @@ exports.getColor = function (index, PointLightData) {
 exports.getColorArr3 = pointLightUtils_1.getColorArr3;
 exports.setColor = function (index, color, PointLightData) {
     SpecifyLightSystem_1.setColor(index, color, PointLightData.colors);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isColorDirtys);
 };
 exports.getIntensity = pointLightUtils_1.getIntensity;
 exports.setIntensity = function (index, value, PointLightData) {
     typeArrayUtils_1.setSingleValue(PointLightData.intensities, index, value);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isIntensityDirtys);
 };
 exports.getConstant = pointLightUtils_1.getConstant;
 exports.setConstant = function (index, value, PointLightData) {
     typeArrayUtils_1.setSingleValue(PointLightData.constants, index, value);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isAttenuationDirtys);
 };
 exports.getLinear = pointLightUtils_1.getLinear;
 exports.setLinear = function (index, value, PointLightData) {
     typeArrayUtils_1.setSingleValue(PointLightData.linears, index, value);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isAttenuationDirtys);
 };
 exports.getQuadratic = pointLightUtils_1.getQuadratic;
 exports.setQuadratic = function (index, value, PointLightData) {
     typeArrayUtils_1.setSingleValue(PointLightData.quadratics, index, value);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isAttenuationDirtys);
 };
 exports.getRange = pointLightUtils_1.getRange;
 exports.setRange = function (index, value, PointLightData) {
     typeArrayUtils_1.setSingleValue(PointLightData.ranges, index, value);
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isAttenuationDirtys);
 };
 exports.setRangeLevel = function (index, value, PointLightData) {
     switch (value) {
@@ -124,65 +132,19 @@ exports.setRangeLevel = function (index, value, PointLightData) {
             Log_1.Log.error(true, "over point light range");
             break;
     }
+    SpecifyLightSystem_1.markDirty(index, PointLightData.isAttenuationDirtys);
 };
-exports.addComponent = function (component, gameObject) {
-    SpecifyLightSystem_1.addComponent(component, gameObject, PointLightData_1.PointLightData);
-};
-exports.disposeComponent = function (component) {
-    var intensityDataSize = pointLightUtils_1.getIntensityDataSize(), constantDataSize = pointLightUtils_1.getConstantDataSize(), linearDataSize = pointLightUtils_1.getLinearDataSize(), quadraticDataSize = pointLightUtils_1.getQuadraticDataSize(), rangeDataSize = pointLightUtils_1.getRangeDataSize(), sourceIndex = component.index, lastComponentIndex = null;
-    lastComponentIndex = SpecifyLightSystem_1.disposeComponent(sourceIndex, PointLightData_1.PointLightData);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, PointLightData_1.PointLightData.intensities, PointLightData_1.PointLightData.defaultIntensity);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, PointLightData_1.PointLightData.constants, PointLightData_1.PointLightData.defaultConstant);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData_1.PointLightData.linears, PointLightData_1.PointLightData.defaultLinear);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData_1.PointLightData.quadratics, PointLightData_1.PointLightData.defaultQuadratic);
-    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData_1.PointLightData.ranges, PointLightData_1.PointLightData.defaultRange);
-};
-exports.initData = function (PointLightData) {
-    var count = bufferUtils_1.getPointLightBufferCount(), size = Float32Array.BYTES_PER_ELEMENT * (pointLightUtils_1.getColorDataSize() + pointLightUtils_1.getIntensityDataSize() + pointLightUtils_1.getConstantDataSize() + pointLightUtils_1.getLinearDataSize() + pointLightUtils_1.getQuadraticDataSize() + pointLightUtils_1.getRangeDataSize()), buffer = null;
+exports.initDataHelper = function (PointLightData) {
+    var count = bufferUtils_1.getPointLightBufferCount(), size = Float32Array.BYTES_PER_ELEMENT * (pointLightUtils_1.getColorDataSize() + pointLightUtils_1.getIntensityDataSize() + pointLightUtils_1.getConstantDataSize() + pointLightUtils_2.getLinearDataSize() + pointLightUtils_1.getQuadraticDataSize() + pointLightUtils_1.getRangeDataSize()) + Uint8Array.BYTES_PER_ELEMENT * (specifyLightUtils_1.getDirtyDataSize() * 4), buffer = null;
     buffer = arrayBufferUtils_1.createSharedArrayBufferOrArrayBuffer(count * size);
     SpecifyLightSystem_1.initData(buffer, PointLightData);
     pointLightUtils_1.createTypeArrays(buffer, count, PointLightData);
     PointLightData.defaultIntensity = 1;
     PointLightData.defaultConstant = 1;
-    PointLightData.defaultLinear = 0;
-    PointLightData.defaultQuadratic = 0;
-    PointLightData.defaultRange = 60000;
+    PointLightData.defaultLinear = 0.07;
+    PointLightData.defaultQuadratic = 0.017;
+    PointLightData.defaultRange = 65;
     _setDefaultTypeArrData(count, PointLightData);
-    PointLightData.lightGLSLDataStructureMemberNameArr = [
-        {
-            position: "u_pointLights[0].position",
-            color: "u_pointLights[0].color",
-            intensity: "u_pointLights[0].intensity",
-            constant: "u_pointLights[0].constant",
-            linear: "u_pointLights[0].linear",
-            quadratic: "u_pointLights[0].quadratic",
-            range: "u_pointLights[0].range"
-        }, {
-            position: "u_pointLights[1].position",
-            color: "u_pointLights[1].color",
-            intensity: "u_pointLights[1].intensity",
-            constant: "u_pointLights[1].constant",
-            linear: "u_pointLights[1].linear",
-            quadratic: "u_pointLights[1].quadratic",
-            range: "u_pointLights[1].range"
-        }, {
-            position: "u_pointLights[2].position",
-            color: "u_pointLights[2].color",
-            intensity: "u_pointLights[2].intensity",
-            constant: "u_pointLights[2].constant",
-            linear: "u_pointLights[2].linear",
-            quadratic: "u_pointLights[2].quadratic",
-            range: "u_pointLights[2].range"
-        }, {
-            position: "u_pointLights[3].position",
-            color: "u_pointLights[3].color",
-            intensity: "u_pointLights[3].intensity",
-            constant: "u_pointLights[3].constant",
-            linear: "u_pointLights[3].linear",
-            quadratic: "u_pointLights[3].quadratic",
-            range: "u_pointLights[3].range"
-        }
-    ];
 };
 var _setDefaultTypeArrData = function (count, PointLightData) {
     var color = SpecifyLightSystem_1.createDefaultColor(), intensity = PointLightData.defaultIntensity, constant = PointLightData.defaultConstant, linear = PointLightData.defaultLinear, quadratic = PointLightData.defaultQuadratic, range = PointLightData.defaultRange;
@@ -195,4 +157,29 @@ var _setDefaultTypeArrData = function (count, PointLightData) {
         exports.setRange(i, range, PointLightData);
     }
 };
+exports.disposeComponent = function (component, PointLightData) {
+    var intensityDataSize = pointLightUtils_1.getIntensityDataSize(), constantDataSize = pointLightUtils_1.getConstantDataSize(), linearDataSize = pointLightUtils_2.getLinearDataSize(), quadraticDataSize = pointLightUtils_1.getQuadraticDataSize(), rangeDataSize = pointLightUtils_1.getRangeDataSize(), dirtyDataSize = specifyLightUtils_1.getDirtyDataSize(), sourceIndex = component.index, lastComponentIndex = null;
+    lastComponentIndex = SpecifyLightSystem_1.disposeComponent(sourceIndex, PointLightData);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * intensityDataSize, lastComponentIndex * intensityDataSize, PointLightData.intensities, PointLightData.defaultIntensity);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * constantDataSize, lastComponentIndex * constantDataSize, PointLightData.constants, PointLightData.defaultConstant);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * linearDataSize, lastComponentIndex * linearDataSize, PointLightData.linears, PointLightData.defaultLinear);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * quadraticDataSize, lastComponentIndex * quadraticDataSize, PointLightData.quadratics, PointLightData.defaultQuadratic);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * rangeDataSize, lastComponentIndex * rangeDataSize, PointLightData.ranges, PointLightData.defaultRange);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isPositionDirtys, PointLightData.defaultDirty);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isColorDirtys, PointLightData.defaultDirty);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isIntensityDirtys, PointLightData.defaultDirty);
+    typeArrayUtils_1.deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, PointLightData.isAttenuationDirtys, PointLightData.defaultDirty);
+    return lastComponentIndex;
+};
+exports.init = function (PointLightData, state) {
+    return SpecifyLightSystem_1.bindChangePositionEvent(PointLightData, state);
+};
+exports.isPositionDirty = pointLightUtils_1.isPositionDirty;
+exports.isColorDirty = pointLightUtils_1.isColorDirty;
+exports.isIntensityDirty = pointLightUtils_1.isIntensityDirty;
+exports.isAttenuationDirty = pointLightUtils_1.isAttenuationDirty;
+exports.cleanPositionDirty = pointLightUtils_1.cleanPositionDirty;
+exports.cleanColorDirty = pointLightUtils_1.cleanColorDirty;
+exports.cleanIntensityDirty = pointLightUtils_1.cleanIntensityDirty;
+exports.cleanAttenuationDirty = pointLightUtils_1.cleanAttenuationDirty;
 //# sourceMappingURL=PointLightSystem.js.map

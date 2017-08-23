@@ -17,7 +17,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
 import { addMap, create, initMaterial } from "./BasicMaterialSystem";
-import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BasicMaterialData } from "./BasicMaterialData";
@@ -26,6 +25,9 @@ import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { TextureData } from "../../renderer/texture/TextureData";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
+import { WebGL1ShaderData } from "../../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../../renderer/webgl2/shader/ShaderData";
 var BasicMaterial = (function (_super) {
     __extends(BasicMaterial, _super);
     function BasicMaterial() {
@@ -37,9 +39,17 @@ var BasicMaterial = (function (_super) {
     return BasicMaterial;
 }(Material));
 export { BasicMaterial };
-export var createBasicMaterial = function () {
-    return create(ShaderData, MaterialData, BasicMaterialData);
-};
+export var createBasicMaterial = null;
+if (isWebgl1()) {
+    createBasicMaterial = function () {
+        return create(WebGL1ShaderData, MaterialData, BasicMaterialData);
+    };
+}
+else {
+    createBasicMaterial = function () {
+        return create(WebGL2ShaderData, MaterialData, BasicMaterialData);
+    };
+}
 export var initBasicMaterial = function (material) {
     initMaterial(material.index, getState(DirectorData));
 };

@@ -1,0 +1,1 @@
+{"version":3,"file":"DeferPointLightPassWorkerData.js","sourceRoot":"","sources":["../../../../../../../../../../src/renderer/worker/webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,0IAAyI;AAEzI;IAAmD,iDAA6B;IAAhF;;IACA,CAAC;IAAD,oCAAC;AAAD,CAAC,AADD,CAAmD,6DAA6B,GAC/E;AADY,sEAA6B"}

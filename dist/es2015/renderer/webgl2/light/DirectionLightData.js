@@ -1,0 +1,20 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+import { DirectionLightData } from "../../../component/light/DirectionLightData";
+var WebGL2DirectionLightData = (function (_super) {
+    __extends(WebGL2DirectionLightData, _super);
+    function WebGL2DirectionLightData() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return WebGL2DirectionLightData;
+}(DirectionLightData));
+export { WebGL2DirectionLightData };
+//# sourceMappingURL=DirectionLightData.js.map

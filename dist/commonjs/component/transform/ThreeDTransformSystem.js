@@ -23,6 +23,7 @@ var GlobalTempData_1 = require("../../definition/GlobalTempData");
 var Quaternion_1 = require("../../math/Quaternion");
 var typeArrayUtils_1 = require("../../utils/typeArrayUtils");
 var wonder_expect_js_1 = require("wonder-expect.js");
+var EventManagerSystem_1 = require("../../event/EventManagerSystem");
 exports.addAddComponentHandle = function (_class) {
     ComponentSystem_1.addAddComponentHandle(_class, exports.addComponent);
 };
@@ -37,7 +38,7 @@ exports.create = contract_1.ensureFunc(function (transform, ThreeDTransformData)
         wonder_expect_js_1.expect(ThreeDTransformData.count).lte(ThreeDTransformData.maxCount);
     });
 }, function (ThreeDTransformData) {
-    var transform = new ThreeDTransform_1.ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData), uid = _buildUID(ThreeDTransformData);
+    var transform = new ThreeDTransform_1.ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData), uid = _buildUId(ThreeDTransformData);
     transform.index = index;
     transform.uid = uid;
     ThreeDTransformData.count += 1;
@@ -45,10 +46,10 @@ exports.create = contract_1.ensureFunc(function (transform, ThreeDTransformData)
     _setTransformMap(index, transform, ThreeDTransformData);
     hierarchySystem_1.setChildren(uid, [], ThreeDTransformData);
     _setDefaultTypeArrData(index, ThreeDTransformData);
-    ThreeDTransformData.aliveUIDArray.push(uid);
+    ThreeDTransformData.aliveUIdArray.push(uid);
     return transform;
 });
-var _buildUID = function (ThreeDTransformData) {
+var _buildUId = function (ThreeDTransformData) {
     return ThreeDTransformData.uid++;
 };
 var _generateIndexInArrayBuffer = function (ThreeDTransformData) {
@@ -136,8 +137,8 @@ exports.getNormalMatrix = contract_1.requireCheckFunc(function (transform, Globa
     return cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeTransformData);
 }, function (transform, GlobalTempData, ThreeTransformData, mat) {
     cacheSystem_1.setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
-}, function (transform, GlobalTempData, ThreeTransformData) {
-    return exports.getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData_1.ThreeDTransformData).invertTo3x3().transpose();
+}, function (transform, GlobalTempData, ThreeDTransformData) {
+    return exports.getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }));
 var _setTransformMap = function (index, transform, ThreeDTransformData) { return ThreeDTransformData.transformMap[index] = transform; };
 exports.setPosition = contract_1.requireCheckFunc(function (transform, position, GlobalTempData, ThreeTransformData) {
@@ -146,6 +147,7 @@ exports.setPosition = contract_1.requireCheckFunc(function (transform, position,
     var index = transform.index, uid = transform.uid, parent = hierarchySystem_1.getParent(uid, ThreeDTransformData_1.ThreeDTransformData), vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
     operateDataSystem_1.setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
     isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
     return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
 exports.setBatchDatas = function (batchData, GlobalTempData, ThreeTransformData) { return batchSystem_1.setBatchDatas(batchData, GlobalTempData, ThreeDTransformData_1.ThreeDTransformData); };
@@ -166,8 +168,12 @@ exports.setLocalPosition = contract_1.requireCheckFunc(function (transform, posi
     var index = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
     operateDataSystem_1.setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
     isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
     return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
+var _triggerChangePositionEvent = function (uid, ThreeTransformData) {
+    EventManagerSystem_1.triggerEvent("changePosition");
+};
 exports.update = function (elapsed, GlobalTempData, ThreeDTransformData, state) {
     return updateSystem_1.update(elapsed, GlobalTempData, ThreeDTransformData, state);
 };
@@ -221,7 +227,7 @@ exports.initData = function (GlobalTempData, ThreeDTransformData) {
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;
     ThreeDTransformData.count = 0;
-    ThreeDTransformData.aliveUIDArray = [];
+    ThreeDTransformData.aliveUIdArray = [];
 };
 var _initBufferData = function (ThreeDTransformData) {
     var buffer = null, count = ThreeDTransformData.maxCount, size = Float32Array.BYTES_PER_ELEMENT * (typeArrayUtils_1.getMatrix4DataSize() + typeArrayUtils_1.getVector3DataSize() + typeArrayUtils_1.getQuaternionDataSize() + typeArrayUtils_1.getVector3DataSize());

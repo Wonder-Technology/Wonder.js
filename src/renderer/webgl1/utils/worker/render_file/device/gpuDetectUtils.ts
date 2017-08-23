@@ -1,7 +1,7 @@
 import { Map } from "immutable";
 import { detectCapabilty, detectExtension as detectExtensionSystem } from "../../../../../utils/device/gpuDetectUtils";
 
-export var detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDetectDataFromSystem:any, state: Map<any, any>,) => {
+export var detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDetectDataFromSystem: any, state: Map<any, any>, ) => {
     var gl = getGL(DeviceManagerDataFromSystem, state);
 
     _detectExtension(state, gl, GPUDetectDataFromSystem);
@@ -10,8 +10,8 @@ export var detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDetec
     return state;
 }
 
-var _detectExtension = (state: Map<any, any>, gl:any, GPUDetectDataFromSystem:any) => {
+var _detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     detectExtensionSystem(state, gl, GPUDetectDataFromSystem);
 }
 
-export var getExtensionVao = (GPUDetectDataFromSystem:any) => GPUDetectDataFromSystem.extensionVao;
+export var getExtensionVao = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.extensionVao;

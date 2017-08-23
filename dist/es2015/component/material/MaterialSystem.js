@@ -4,32 +4,22 @@ import { expect } from "wonder-expect.js";
 import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwapArray, getComponentGameObject } from "../ComponentSystem";
 import { MaterialData } from "./MaterialData";
 import { deleteBySwapAndNotReset, deleteBySwapAndReset, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
-import { createTypeArrays, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize, getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex } from "../../renderer/utils/material/materialUtils";
+import { createTypeArrays, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize, getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex, initNoMaterialShaders, useShader as useShaderUtils } from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { init as initShader } from "../../renderer/shader/ShaderSystem";
-import { material_config } from "../../renderer/data/material_config";
-import { shaderLib_generator } from "../../renderer/data/shaderLib_generator";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
-import { ProgramData } from "../../renderer/shader/program/ProgramData";
-import { LocationData } from "../../renderer/shader/location/LocationData";
-import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import { addComponent as addBasicMaterialComponent, createTypeArrays as createBasicMaterialTypeArrays, disposeComponent as disposeBasicMaterialComponent, initData as initBasicMaterialData, initMaterial as initBasicMaterial, setDefaultData as setBasicMaterialDefaultData } from "./BasicMaterialSystem";
 import { addComponent as addLightMaterialComponent, createTypeArrays as createLightMaterialTypeArrays, disposeComponent as disposeLightMaterialComponent, initData as initLightMaterialData, initMaterial as initLightMaterial, setDefaultData as setLightMaterialDefaultData } from "./LightMaterialSystem";
-import { BasicMaterialData } from "./BasicMaterialData";
-import { LightMaterialData } from "./LightMaterialData";
-import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex, getBufferLength, getBufferTotalCount, getLightMaterialBufferCount, getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getBasicMaterialBufferCount, getBufferLength, getBufferTotalCount, getLightMaterialBufferCount } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
-import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
-import { DirectionLightData } from "../light/DirectionLightData";
-import { PointLightData } from "../light/PointLightData";
 import { dispose as disposeMapManager, initData as initMapManagerData, initMapManagers } from "../../renderer/texture/MapManagerSystem";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/material/basicMaterialUtils";
-import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
-import { ShaderData } from "../../renderer/shader/ShaderData";
+import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
+import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
+import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
+import { getBasicMaterialBufferStartIndex, getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 export var addAddComponentHandle = function (BasicMaterial, LightMaterial) {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
     addAddComponentHandleToMap(LightMaterial, addLightMaterialComponent);
@@ -47,7 +37,9 @@ export var create = function (index, material, ShaderData, MaterialData) {
     createShader(ShaderData);
     return material;
 };
-export var init = function (state, gl, TextureData, MaterialData, BasicMaterialData, LightMaterialData) {
+export var useShader = useShaderUtils;
+export var init = function (state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData) {
+    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
     initMapManagers(gl, TextureData);
@@ -60,9 +52,9 @@ var _initMaterials = function (state, startIndex, className, SpecifyMaterialData
 export var initMaterial = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initMaterial = function (index, state, className, MaterialData) {
-        MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
+        MaterialData.workerInitList.push(_buildWorkerInitData_1(index, className));
     };
-    var _buildWorkerInitData = function (index, className) {
+    var _buildWorkerInitData_1 = function (index, className) {
         return {
             index: index,
             className: className
@@ -71,8 +63,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     initMaterial = function (index, state, className, MaterialData) {
-        var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
-        setShaderIndex(index, shaderIndex, MaterialData);
     };
 }
 export var clearWorkerInitList = null;

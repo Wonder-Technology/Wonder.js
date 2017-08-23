@@ -3,43 +3,41 @@ import {
     BasicMaterialInitWorkerData, LightMaterialInitWorkerData, MaterialInitWorkerData,
     MaterialWorkerData
 } from "./MaterialWorkerData";
-import { material_config } from "../../../data/material_config";
-import { shaderLib_generator } from "../../../data/shaderLib_generator";
-import { init as initShader } from "../shader/ShaderWorkerSystem";
+// import { material_config } from "../../../webgl1/data/material_config";
+// import { shaderLib_generator } from "../../../data/shaderLib_generator";
+// import { init as initShader } from "../shader/ShaderWorkerSystem";
 import {
     createTypeArrays as createTypeArraysUtils,
     getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils,
-    isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
-} from "../../../utils/material/materialUtils";
-import { ProgramWorkerData } from "../shader/program/ProgramWorkerData";
-import { LocationWorkerData } from "../shader/location/LocationWorkerData";
-import { GLSLSenderWorkerData } from "../shader/glslSender/GLSLSenderWorkerData";
+    isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, initNoMaterialShaders, useShader as useShaderUtils
+} from "../../../utils/worker/render_file/material/materialUtils";
 import { DeviceManagerWorkerData } from "../../both_file/device/DeviceManagerWorkerData";
 import {
     getBasicMaterialBufferCount, getBufferTotalCount,
     getLightMaterialBufferCount
-} from "../../../utils/material/bufferUtils";
+} from "../../../utils/worker/render_file/material/bufferUtils";
 import {
     createTypeArrays as createBasicMaterialTypeArraysUtils,
     getClassName as getBasicMaterialClassName
-} from "../../../utils/material/basicMaterialUtils";
+} from "../../../utils/worker/render_file/material/basicMaterialUtils";
 import {
     createTypeArrays as createLightMaterialTypeArraysUtils,
     getClassName as getLightMaterialClassName
-} from "../../../utils/material/lightMaterialUtils";
+} from "../../../utils/worker/render_file/material/lightMaterialUtils";
 import { BasicMaterialWorkerData } from "./BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./LightMaterialWorkerData";
 import { getColorArr3 as getColorArr3Utils } from "../../../utils/common/operateBufferDataUtils";
-import { DirectionLightWorkerData } from "../light/DirectionLightWorkerData";
-import { PointLightWorkerData } from "../light/PointLightWorkerData";
 import { initData as initMapManagerData, initMapManagers } from "../texture/MapManagerWorkerSystem";
 import { TextureInitWorkerData } from "../../../type/messageDataType";
 import { MaterialWorkerInitDataList } from "../../../type/dataType";
 import { MapManagerWorkerData } from "../texture/MapManagerWorkerData";
-import { ShaderWorkerData } from "../shader/ShaderWorkerData";
-import { setDiffuseMapIndex, setSpecularMapIndex } from "./LightMaterialWorkerSystem";
+import { initData as initLightMaterialData } from "./LightMaterialWorkerSystem";
+import { IMaterialConfig } from "../../../data/material_config_interface";
+import { IShaderLibGenerator } from "../../../data/shaderLib_generator_interface";
 
-export var initMaterials = (basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData, gl: WebGLRenderingContext, TextureWorkerData: any) => {
+export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData,  TextureWorkerData: any, AmbientLightWorkerData:any, DirectionLightWorkerData:any, PointLightWorkerData:any, GPUDetectWorkerData:any, GLSLSenderWorkerData:any, ProgramWorkerData:any, VaoWorkerData:any, LocationWorkerData:any, ShaderWorkerData:any) => {
+    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData));
+
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index, getBasicMaterialClassName());
     _initSpecifyMaterials(lightMaterialData.startIndex, lightMaterialData.index, getLightMaterialClassName());
 
@@ -53,9 +51,6 @@ var _initSpecifyMaterials = (startIndex: number, index: number, className: strin
 }
 
 export var initMaterial = (index: number, state: Map<any, any>, className: string) => {
-    var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, DirectionLightWorkerData, PointLightWorkerData));
-
-    setShaderIndex(index, shaderIndex, MaterialWorkerData);
 }
 
 // export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
@@ -70,6 +65,8 @@ export var initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList)
     }
 }
 
+export var useShader = useShaderUtils;
+
 export var getColorArr3 = getColorArr3Utils;
 
 export var getOpacity = getOpacityUtils;
@@ -81,10 +78,9 @@ export var isTestAlpha = isTestAlphaUtils;
 export var initData = (materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData | null, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     _initBufferData(materialData.buffer, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
-    let lightMaterialData = materialData.lightMaterialData;
+    initLightMaterialData(LightMaterialWorkerData);
 
-    setDiffuseMapIndex(lightMaterialData.diffuseMapIndex, LightMaterialWorkerData);
-    setSpecularMapIndex(lightMaterialData.specularMapIndex, LightMaterialWorkerData);
+    let lightMaterialData = materialData.lightMaterialData;
 
     if (textureData !== null) {
         initMapManagerData(textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData);

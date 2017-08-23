@@ -15,7 +15,7 @@ import {
 import { isConfigDataExist } from "../renderConfigUtils";
 import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
 
-export var getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk, GPUDetectData:any) => {
+export var getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk, GPUDetectData: any) => {
     var precision = getPrecision(GPUDetectData),
         result = null;
 

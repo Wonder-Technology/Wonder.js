@@ -19,8 +19,8 @@ import {
     // getFlipY as getFlipYUtils,
     getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
     bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
-    update as updateUtils, disposeGLTexture, disposeSourceMap, drawPartOfTextureByCanvas, getSource as getSourceUtils
-} from "../utils/texture/textureUtils";
+    update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils
+} from "../utils/worker/render_file/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { ImageSrcIndexData } from "../type/messageDataType";
@@ -84,8 +84,8 @@ export var setUniformSamplerName = (index: number, name: string, TextureData: an
     TextureData.uniformSamplerNameMap[index] = name;
 }
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any) => {
-    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, isCached, addActiveTexture);
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData:any) => {
+    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 }
 //
 // var _getWebglTexture = (textureIndex:number, TextureData:any) => {
@@ -118,7 +118,7 @@ var _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 }
 
-export var dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any) => {
+export var dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any, GPUDetectData:any) => {
     var bufferDataSize = getBufferDataSize(),
         sourceIndex = texture.index,
         lastComponentIndex: number = null;
@@ -135,7 +135,7 @@ export var dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheD
 
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, TextureData.textureMap);
 
-    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
 
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 }
@@ -144,7 +144,7 @@ var _disposeGLTexture = null,
     _addDisposeDataForWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    _disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheData: any, TextureData: any) => {
+    _disposeGLTexture = (...args) => {
     }
 
     _addDisposeDataForWorker = (sourceIndex: number, lastComponentIndex: number, TextureData: any) => {
@@ -159,8 +159,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    _disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheData: any, TextureData: any) => {
-        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData);
+    _disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData:any) => {
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     }
 
     _addDisposeDataForWorker = (sourceIndex: number, lastComponentIndex: number, TextureData: any) => {

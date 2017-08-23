@@ -17,7 +17,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
 import { create, initMaterial, setSpecularMap, setDiffuseMap } from "./LightMaterialSystem";
-import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
@@ -27,6 +26,9 @@ import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { TextureData } from "../../renderer/texture/TextureData";
+import { WebGL1ShaderData } from "../../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../../renderer/webgl2/shader/ShaderData";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
 var LightMaterial = (function (_super) {
     __extends(LightMaterial, _super);
     function LightMaterial() {
@@ -38,9 +40,17 @@ var LightMaterial = (function (_super) {
     return LightMaterial;
 }(Material));
 export { LightMaterial };
-export var createLightMaterial = function () {
-    return create(ShaderData, MaterialData, LightMaterialData);
-};
+export var createLightMaterial = null;
+if (isWebgl1()) {
+    createLightMaterial = function () {
+        return create(WebGL1ShaderData, MaterialData, LightMaterialData);
+    };
+}
+else {
+    createLightMaterial = function () {
+        return create(WebGL2ShaderData, MaterialData, LightMaterialData);
+    };
+}
 export var initLightMaterial = function (material) {
     initMaterial(material.index, getState(DirectorData));
 };

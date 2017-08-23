@@ -9,9 +9,7 @@ export declare var create: Function;
 export declare var getSpecularColor: (index: number, LightMaterialData: any) => Color;
 export declare var getSpecularColorArr3: (index: number, LightMaterialData: any) => number[];
 export declare var setSpecularColor: (index: number, color: Color, LightMaterialData: any) => void;
-export declare var getDiffuseMapIndex: (LightMaterialData: any) => any;
 export declare var setDiffuseMap: (index: number, map: Texture, MapManagerData: any, TextureData: any) => void;
-export declare var getSpecularMapIndex: (LightMaterialData: any) => any;
 export declare var setSpecularMap: (index: number, map: Texture, MapManagerData: any, TextureData: any) => void;
 export declare var getEmissionColor: (index: number, LightMaterialData: any) => Color;
 export declare var getEmissionColorArr3: (index: number, LightMaterialData: any) => number[];
@@ -22,6 +20,8 @@ export declare var getShading: (index: number, LightMaterialDataFromSystem: any)
 export declare var setShading: (index: number, shading: EShading, LightMaterialData: any) => void;
 export declare var getLightModel: (index: number, LightMaterialDataFromSystem: any) => number;
 export declare var setLightModel: (index: number, lightModel: ELightModel, LightMaterialData: any) => void;
+export declare var hasDiffuseMap: (index: number, LightMaterialData: any) => boolean;
+export declare var hasSpecularMap: (index: number, LightMaterialData: any) => boolean;
 export declare var initMaterial: (index: number, state: Map<any, any>) => void;
 export declare var addComponent: (component: Material, gameObject: GameObject) => void;
 export declare var disposeComponent: (component: Material) => void;

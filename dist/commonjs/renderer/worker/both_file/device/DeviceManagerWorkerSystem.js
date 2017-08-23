@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var EWorkerOperateType_1 = require("../EWorkerOperateType");
 var curry_1 = require("wonder-lodash/curry");
-var deviceManagerUtils_1 = require("../../../utils/device/deviceManagerUtils");
+var deviceManagerUtils_1 = require("../../../utils/worker/both_file/device/deviceManagerUtils");
 var functionalUtils_1 = require("../../../../utils/functionalUtils");
 var ViewSystem_1 = require("../../../../structure/ViewSystem");
 var stateUtils_1 = require("../../../../utils/stateUtils");
@@ -49,8 +49,8 @@ exports.setViewportOfGL = curry_1.default(function (DeviceManagerWorkerData, _a,
         return state;
     });
 });
-exports.setScreen = curry_1.default(function (canvas, DeviceManagerWorkerData, state) {
-    return deviceManagerUtils_1.setScreen(canvas, _setScreenData, DeviceManagerWorkerData, state);
+exports.setScreen = curry_1.default(function (canvas, DeviceManagerWorkerData, DomQuery, state) {
+    return deviceManagerUtils_1.setScreen(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 var _setScreenData = curry_1.default(function (DeviceManagerWorkerData, canvas, state, data) {
     var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;

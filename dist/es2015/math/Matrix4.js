@@ -206,8 +206,8 @@ var Matrix4 = (function () {
         e[15] = 1;
         return this;
     };
-    Matrix4.prototype.translate = function (x, y, z) {
-        this.applyMatrix(Matrix4_1.create().setTranslate(x, y, z));
+    Matrix4.prototype.translate = function (x, y, z, GlobalTempData) {
+        this.applyMatrix(GlobalTempData.matrix4_1.setTranslate(x, y, z), GlobalTempData);
         return this;
     };
     Matrix4.prototype.setRotate = function (angle, x, y, z) {
@@ -319,13 +319,13 @@ var Matrix4 = (function () {
             args[_i] = arguments[_i];
         }
         var angle = args[0];
-        if (args.length === 2) {
-            var vector3 = args[1];
-            this.applyMatrix(Matrix4_1.create().setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]));
+        if (args.length === 3) {
+            var vector3 = args[1], GlobalTempData = args[2];
+            this.applyMatrix(GlobalTempData.matrix4_1.setRotate(angle, vector3.values[0], vector3.values[1], vector3.values[2]), GlobalTempData);
         }
-        else if (args.length === 4) {
-            var x = args[1], y = args[2], z = args[3];
-            this.applyMatrix(Matrix4_1.create().setRotate(angle, x, y, z));
+        else if (args.length === 5) {
+            var x = args[1], y = args[2], z = args[3], GlobalTempData = args[4];
+            this.applyMatrix(GlobalTempData.matrix4_1.setRotate(angle, x, y, z), GlobalTempData);
         }
         return this;
     };
@@ -349,57 +349,8 @@ var Matrix4 = (function () {
         e[15] = 1;
         return this;
     };
-    Matrix4.prototype.scale = function (x, y, z) {
-        this.applyMatrix(Matrix4_1.create().setScale(x, y, z));
-        return this;
-    };
-    Matrix4.prototype.setLookAt = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var x, y, z, eye, center, up;
-        if (args.length === 3) {
-            eye = args[0];
-            center = args[1];
-            up = args[2];
-        }
-        else if (args.length === 9) {
-            eye = Vector3.create(args[0], args[1], args[2]);
-            center = Vector3.create(args[3], args[4], args[5]);
-            up = Vector3.create(args[6], args[7], args[8]);
-        }
-        x = Vector3.create();
-        z = eye.clone().sub(center).normalize();
-        y = up.clone().normalize();
-        x.cross(y, z).normalize();
-        y.cross(z, x);
-        var r = this.values;
-        r[0] = x.x;
-        r[1] = x.y;
-        r[2] = x.z;
-        r[3] = 0;
-        r[4] = y.x;
-        r[5] = y.y;
-        r[6] = y.z;
-        r[7] = 0;
-        r[8] = z.x;
-        r[9] = z.y;
-        r[10] = z.z;
-        r[11] = 0;
-        r[12] = eye.x;
-        r[13] = eye.y;
-        r[14] = eye.z;
-        r[15] = 1;
-        return this;
-    };
-    Matrix4.prototype.lookAt = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var matrix = Matrix4_1.create();
-        this.applyMatrix(matrix.setLookAt.apply(matrix, args));
+    Matrix4.prototype.scale = function (x, y, z, GlobalTempData) {
+        this.applyMatrix(GlobalTempData.matrix4_1.setScale(x, y, z), GlobalTempData);
         return this;
     };
     Matrix4.prototype.setOrtho = function (left, right, bottom, top, near, far) {
@@ -425,8 +376,8 @@ var Matrix4 = (function () {
         e[15] = 1;
         return this;
     };
-    Matrix4.prototype.ortho = function (left, right, bottom, top, near, far) {
-        this.applyMatrix(Matrix4_1.create().setOrtho(left, right, bottom, top, near, far));
+    Matrix4.prototype.ortho = function (left, right, bottom, top, near, far, GlobalTempData) {
+        this.applyMatrix(Matrix4_1.create().setOrtho(left, right, bottom, top, near, far), GlobalTempData);
         return this;
     };
     Matrix4.prototype.setPerspective = function (fovy, aspect, near, far) {
@@ -454,17 +405,17 @@ var Matrix4 = (function () {
         e[15] = 0;
         return this;
     };
-    Matrix4.prototype.perspective = function (fovy, aspect, near, far) {
-        this.applyMatrix(Matrix4_1.create().setPerspective(fovy, aspect, near, far));
+    Matrix4.prototype.perspective = function (fovy, aspect, near, far, GlobalTempData) {
+        this.applyMatrix(Matrix4_1.create().setPerspective(fovy, aspect, near, far), GlobalTempData);
         return this;
     };
-    Matrix4.prototype.applyMatrix = function (other, notChangeSelf) {
+    Matrix4.prototype.applyMatrix = function (other, GlobalTempData, notChangeSelf) {
         if (notChangeSelf === void 0) { notChangeSelf = false; }
-        var a = this, b = other.clone();
+        var a = this, tempMat4 = GlobalTempData.matrix4_3;
         if (notChangeSelf) {
-            return b.multiply(a);
+            return tempMat4.multiply(other, a);
         }
-        this.values = b.multiply(a).values;
+        this.values = tempMat4.multiply(other, a).values;
         return this;
     };
     Matrix4.prototype.multiply = function () {
@@ -501,14 +452,18 @@ var Matrix4 = (function () {
         result[15] = M * d + N * h + O * l + P * p;
         return this;
     };
-    Matrix4.prototype.multiplyVector4 = function (vector) {
-        var mat1 = this.values, vec4 = vector.values;
-        var result = [];
-        result[0] = vec4[0] * mat1[0] + vec4[1] * mat1[4] + vec4[2] * mat1[8] + vec4[3] * mat1[12];
-        result[1] = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[9] + vec4[3] * mat1[13];
-        result[2] = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
-        result[3] = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
-        return Vector4.create(result[0], result[1], result[2], result[3]);
+    Matrix4.prototype.multiplyVector4 = function (vector, isChangeVector) {
+        if (isChangeVector === void 0) { isChangeVector = false; }
+        var mat1 = this.values, vec4 = vector.values, x = null, y = null, z = null, w = null;
+        x = vec4[0] * mat1[0] + vec4[1] * mat1[4] + vec4[2] * mat1[8] + vec4[3] * mat1[12];
+        y = vec4[0] * mat1[1] + vec4[1] * mat1[5] + vec4[2] * mat1[9] + vec4[3] * mat1[13];
+        z = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
+        w = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
+        if (isChangeVector) {
+            vector.set(x, y, z, w);
+            return vector;
+        }
+        return Vector4.create(x, y, z, w);
     };
     Matrix4.prototype.multiplyVector3 = function (vector) {
         var mat1 = this.values, vec3 = vector.values;

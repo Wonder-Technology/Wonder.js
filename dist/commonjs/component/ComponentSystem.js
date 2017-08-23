@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ComponentData_1 = require("./ComponentData");
-var ComponentTypeIDManager_1 = require("./ComponentTypeIDManager");
+var ComponentTypeIdManager_1 = require("./ComponentTypeIdManager");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var contract_1 = require("../definition/typescript/decorator/contract");
 var objectUtils_1 = require("../utils/objectUtils");
 var arrayUtils_1 = require("../utils/arrayUtils");
 var _addHandle = function (_class, handleMap, handle) {
-    var typeID = ComponentTypeIDManager_1.getTypeIDFromClass(_class);
-    handleMap[typeID] = handle;
+    var typeId = ComponentTypeIdManager_1.getTypeIdFromClass(_class);
+    handleMap[typeId] = handle;
 };
 exports.addAddComponentHandle = function (_class, handle) {
     _addHandle(_class, ComponentData_1.ComponentData.addComponentHandleMap, handle);
@@ -20,7 +20,7 @@ exports.addInitHandle = function (_class, handle) {
     _addHandle(_class, ComponentData_1.ComponentData.initHandleMap, handle);
 };
 exports.execHandle = function (component, handleMapName, args) {
-    var handle = ComponentData_1.ComponentData[handleMapName][ComponentTypeIDManager_1.getTypeIDFromComponent(component)];
+    var handle = ComponentData_1.ComponentData[handleMapName][ComponentTypeIdManager_1.getTypeIdFromComponent(component)];
     if (_isHandleNotExist(handle)) {
         return;
     }
@@ -31,8 +31,8 @@ exports.execHandle = function (component, handleMapName, args) {
         handle(component);
     }
 };
-exports.execInitHandle = function (typeID, index, state) {
-    var handle = ComponentData_1.ComponentData.initHandleMap[typeID];
+exports.execInitHandle = function (typeId, index, state) {
+    var handle = ComponentData_1.ComponentData.initHandleMap[typeId];
     if (_isHandleNotExist(handle)) {
         return;
     }
@@ -45,9 +45,6 @@ exports.checkComponentShouldAlive = function (component, data, isAlive) {
     });
 };
 exports.addComponentToGameObjectMap = contract_1.requireCheckFunc(function (gameObjectMap, index, gameObject) {
-    contract_1.it("component should not exist in gameObject", function () {
-        wonder_expect_js_1.expect(gameObjectMap[index]).not.exist;
-    });
 }, function (gameObjectMap, index, gameObject) {
     gameObjectMap[index] = gameObject;
 });

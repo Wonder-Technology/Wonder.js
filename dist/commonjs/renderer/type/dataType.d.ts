@@ -1,5 +1,7 @@
-import { ISendAttributeConfig, ISendUniformConfig } from "../data/shaderLib_generator";
 import { EBufferType } from "../enum/EBufferType";
+import { IWebGL1SendAttributeConfig, IWebGL1SendUniformConfig } from "../worker/webgl1/both_file/data/shaderLib_generator";
+import { IWebGL2SendAttributeConfig, IWebGL2SendUniformConfig } from "../worker/webgl2/both_file/data/shaderLib_generator";
+import { WebGLVertexArrayObject } from "../extend/interface";
 export declare type ProgramMap = {
     [index: number]: WebGLProgram;
 };
@@ -16,10 +18,10 @@ export declare type UniformShaderLocationMap = {
     [name: string]: WebGLUniformLocation;
 };
 export declare type SendAttributeConfigMap = {
-    [index: number]: Array<ISendAttributeConfig>;
+    [index: number]: Array<IWebGL1SendAttributeConfig | IWebGL2SendAttributeConfig>;
 };
 export declare type SendUniformConfigMap = {
-    [index: number]: Array<ISendUniformConfig>;
+    [index: number]: Array<IWebGL1SendUniformConfig | IWebGL2SendUniformConfig>;
 };
 export declare type SendUniformFuncConfigMap = {
     [index: number]: Function;
@@ -35,17 +37,17 @@ export declare type ArrayBufferDataMap = {
         type: EBufferType;
     };
 };
-export declare type RenderCommandBufferForDrawData = {
-    buffer: SharedArrayBuffer;
-    count: number;
+export declare type BasicRenderUniformData = {
+    mMatrix: Float32Array;
+    vMatrix: Float32Array;
+    pMatrix: Float32Array;
 };
-export declare type RenderCommandUniformData = {
+export declare type LightRenderUniformData = {
     mMatrix: Float32Array;
     vMatrix: Float32Array;
     pMatrix: Float32Array;
     cameraPosition: Float32Array;
     normalMatrix: Float32Array;
-    materialIndex: number;
 };
 export declare type ContextConfigOptionsData = {
     alpha: boolean;
@@ -68,13 +70,19 @@ export declare type MaterialWorkerInitDataList = Array<{
     index: number;
     className: string;
 }>;
-export declare type ShaderLibWholeNameMap = {
-    [shaderLibWholeName: string]: number;
-};
 export declare type DirectionLightGLSLDataStructure = {
     position: string;
     color: string;
     intensity: string;
+};
+export declare type ShaderIndexMap = {
+    [shaderLibName: string]: number;
+};
+export declare type ShaderIndexByShaderNameMap = {
+    [shaderName: string]: number;
+};
+export declare type ShaderLibNameMap = {
+    [materialIndex: number]: string;
 };
 export declare type PointLightGLSLDataStructure = {
     position: string;
@@ -90,3 +98,21 @@ export declare type DisposedTextureDataMap = Array<{
     sourceIndex: number;
     lastComponentIndex: number;
 }>;
+export declare type VaoConfigMap = {
+    [index: number]: VaoConfigData;
+};
+export declare type VaoConfigData = {
+    positionLocation?: number;
+    normalLocation?: number;
+    texCoordLocation?: number;
+    getVertices?: Function;
+    getNormals?: Function;
+    getTexCoords?: Function;
+    getIndices: Function;
+};
+export declare type VaoMap = {
+    [index: number]: WebGLVertexArrayObject;
+};
+export declare type VboArrayMap = {
+    [index: number]: Array<WebGLBuffer>;
+};

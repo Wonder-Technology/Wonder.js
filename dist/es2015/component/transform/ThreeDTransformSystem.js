@@ -21,6 +21,7 @@ import { GlobalTempData } from "../../definition/GlobalTempData";
 import { Quaternion } from "../../math/Quaternion";
 import { createMatrix4ByIndex, createVector3ByIndex, getMatrix4DataSize, getQuaternionDataSize, getVector3DataSize } from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
+import { triggerEvent } from "../../event/EventManagerSystem";
 export var addAddComponentHandle = function (_class) {
     addAddComponentHandleToMap(_class, addComponent);
 };
@@ -35,7 +36,7 @@ export var create = ensureFunc(function (transform, ThreeDTransformData) {
         expect(ThreeDTransformData.count).lte(ThreeDTransformData.maxCount);
     });
 }, function (ThreeDTransformData) {
-    var transform = new ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData), uid = _buildUID(ThreeDTransformData);
+    var transform = new ThreeDTransform(), index = _generateIndexInArrayBuffer(ThreeDTransformData), uid = _buildUId(ThreeDTransformData);
     transform.index = index;
     transform.uid = uid;
     ThreeDTransformData.count += 1;
@@ -43,10 +44,10 @@ export var create = ensureFunc(function (transform, ThreeDTransformData) {
     _setTransformMap(index, transform, ThreeDTransformData);
     setChildren(uid, [], ThreeDTransformData);
     _setDefaultTypeArrData(index, ThreeDTransformData);
-    ThreeDTransformData.aliveUIDArray.push(uid);
+    ThreeDTransformData.aliveUIdArray.push(uid);
     return transform;
 });
-var _buildUID = function (ThreeDTransformData) {
+var _buildUId = function (ThreeDTransformData) {
     return ThreeDTransformData.uid++;
 };
 var _generateIndexInArrayBuffer = function (ThreeDTransformData) {
@@ -134,7 +135,7 @@ export var getNormalMatrix = requireCheckFunc(function (transform, GlobalTempDat
     return getNormalMatrixCache(transform.uid, ThreeTransformData);
 }, function (transform, GlobalTempData, ThreeTransformData, mat) {
     setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
-}, function (transform, GlobalTempData, ThreeTransformData) {
+}, function (transform, GlobalTempData, ThreeDTransformData) {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }));
 var _setTransformMap = function (index, transform, ThreeDTransformData) { return ThreeDTransformData.transformMap[index] = transform; };
@@ -144,6 +145,7 @@ export var setPosition = requireCheckFunc(function (transform, position, GlobalT
     var index = transform.index, uid = transform.uid, parent = getThreeDTransformDataParent(uid, ThreeDTransformData), vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(index);
     setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
 export var setBatchDatas = function (batchData, GlobalTempData, ThreeTransformData) { return setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData); };
@@ -164,8 +166,12 @@ export var setLocalPosition = requireCheckFunc(function (transform, position, Th
     var index = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(index);
     setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 });
+var _triggerChangePositionEvent = function (uid, ThreeTransformData) {
+    triggerEvent("changePosition");
+};
 export var update = function (elapsed, GlobalTempData, ThreeDTransformData, state) {
     return updateSystem(elapsed, GlobalTempData, ThreeDTransformData, state);
 };
@@ -219,7 +225,7 @@ export var initData = function (GlobalTempData, ThreeDTransformData) {
     ThreeDTransformData.disposeCount = 0;
     ThreeDTransformData.isClearCacheMap = false;
     ThreeDTransformData.count = 0;
-    ThreeDTransformData.aliveUIDArray = [];
+    ThreeDTransformData.aliveUIdArray = [];
 };
 var _initBufferData = function (ThreeDTransformData) {
     var buffer = null, count = ThreeDTransformData.maxCount, size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());

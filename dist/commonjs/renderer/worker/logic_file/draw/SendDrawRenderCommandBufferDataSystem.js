@@ -7,11 +7,10 @@ var EGeometryWorkerDataOperateType_1 = require("../../../enum/EGeometryWorkerDat
 var MaterialSystem_1 = require("../../../../component/material/MaterialSystem");
 var WorkerInstanceSystem_1 = require("../../../../worker/WorkerInstanceSystem");
 var DirectionLightSystem_1 = require("../../../../component/light/DirectionLightSystem");
-var PointLightData_1 = require("../../../../component/light/PointLightData");
 var PointLightSystem_1 = require("../../../../component/light/PointLightSystem");
 var TextureSystem_1 = require("../../../texture/TextureSystem");
 var ERenderWorkerState_1 = require("../../both_file/ERenderWorkerState");
-exports.sendDrawData = curry_1.default(function (WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, data) {
+exports.sendDrawData = curry_1.default(function (WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData, data) {
     var geometryData = null, geometryDisposeData = null, textureDisposeData = null, materialData = null, lightData = null;
     if (GeometrySystem_1.hasNewPointData(GeometryData)) {
         geometryData = {
@@ -54,7 +53,7 @@ exports.sendDrawData = curry_1.default(function (WorkerInstanceData, TextureData
             positionArr: DirectionLightSystem_1.getAllPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
         },
         pointLightData: {
-            positionArr: PointLightSystem_1.getAllPositionData(ThreeDTransformData, GameObjectData, PointLightData_1.PointLightData)
+            positionArr: PointLightSystem_1.getAllPositionData(ThreeDTransformData, GameObjectData, PointLightData)
         }
     };
     WorkerInstanceSystem_1.getRenderWorker(WorkerInstanceData).postMessage({

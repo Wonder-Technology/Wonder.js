@@ -1,19 +1,19 @@
 import { Light } from "./Light";
 export declare class PointLight extends Light {
 }
-export declare var createPointLight: () => any;
-export declare var getPointLightGameObject: Function;
-export declare var getPointLightPosition: Function;
-export declare var getPointLightColor: Function;
-export declare var setPointLightColor: Function;
-export declare var getPointLightIntensity: Function;
-export declare var setPointLightIntensity: Function;
-export declare var getPointLightConstant: Function;
-export declare var setPointLightConstant: Function;
-export declare var getPointLightLinear: Function;
-export declare var setPointLightLinear: Function;
-export declare var getPointLightQuadratic: Function;
-export declare var setPointLightQuadratic: Function;
-export declare var getPointLightRange: Function;
-export declare var setPointLightRange: Function;
-export declare var setPointLightRangeLevel: Function;
+export declare var createPointLight: any;
+export declare var getPointLightGameObject: any;
+export declare var getPointLightPosition: any;
+export declare var getPointLightColor: any;
+export declare var setPointLightColor: any;
+export declare var getPointLightIntensity: any;
+export declare var setPointLightIntensity: any;
+export declare var getPointLightConstant: any;
+export declare var setPointLightConstant: any;
+export declare var getPointLightLinear: any;
+export declare var setPointLightLinear: any;
+export declare var getPointLightQuadratic: any;
+export declare var setPointLightQuadratic: any;
+export declare var getPointLightRange: any;
+export declare var setPointLightRange: any;
+export declare var setPointLightRangeLevel: any;

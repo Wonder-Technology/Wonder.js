@@ -5,6 +5,7 @@ var DirectorData = (function () {
     function DirectorData() {
     }
     DirectorData.state = stateUtils_1.createState();
+    DirectorData.isInit = false;
     return DirectorData;
 }());
 exports.DirectorData = DirectorData;

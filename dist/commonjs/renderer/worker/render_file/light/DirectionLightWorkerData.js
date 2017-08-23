@@ -16,8 +16,9 @@ var DirectionLightWorkerData = (function (_super) {
     function DirectionLightWorkerData() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    DirectionLightWorkerData.positionArr = null;
-    DirectionLightWorkerData.lightGLSLDataStructureMemberNameArr = null;
+    DirectionLightWorkerData.intensities = null;
+    DirectionLightWorkerData.isPositionDirtys = null;
+    DirectionLightWorkerData.isIntensityDirtys = null;
     return DirectionLightWorkerData;
 }(SpecifyLightWorkerData_1.SpecifyLightWorkerData));
 exports.DirectionLightWorkerData = DirectionLightWorkerData;

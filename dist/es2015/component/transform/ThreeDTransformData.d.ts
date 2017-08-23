@@ -4,7 +4,7 @@ import { LinkList } from "./LinkList";
 import { Quaternion } from "../../math/Quaternion";
 import { Matrix3 } from "../../math/Matrix3";
 import { Component } from "../Component";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 export declare class ThreeDTransformData {
     static readonly maxCount: number;
     static localToWorldMatrices: Float32Array;
@@ -29,7 +29,7 @@ export declare class ThreeDTransformData {
     static disposeCount: number;
     static isClearCacheMap: boolean;
     static gameObjectMap: ThreeDTransformGameObjectMap;
-    static aliveUIDArray: Array<number>;
+    static aliveUIdArray: Array<number>;
     static buffer: ArrayBuffer;
 }
 export declare class ThreeDTransformRelationData {
@@ -44,7 +44,7 @@ export declare type ThreeDTransformParentMap = {
 export declare type ThreeDTransformChildrenMap = {
     [uid: number]: Array<Component>;
 };
-export declare type ThreeDTransformGameObjectMap = Map<number, IUIDEntity>;
+export declare type ThreeDTransformGameObjectMap = Map<number, IUIdEntity>;
 export declare type TransformMap = {
     [index: number]: Component;
 };

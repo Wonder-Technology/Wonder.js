@@ -1,7 +1,7 @@
 import { SpecifyLightData } from "./SpecifyLightData";
-import { DirectionLightGLSLDataStructure } from "../../renderer/type/dataType";
-export declare class DirectionLightData extends SpecifyLightData {
+export declare abstract class DirectionLightData extends SpecifyLightData {
     static intensities: Float32Array;
+    static isPositionDirtys: Uint8Array;
+    static isIntensityDirtys: Uint8Array;
     static defaultIntensity: number;
-    static lightGLSLDataStructureMemberNameArr: Array<DirectionLightGLSLDataStructure>;
 }

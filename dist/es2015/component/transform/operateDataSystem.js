@@ -1,4 +1,4 @@
-import { getUID, isIndexUsed } from "./utils";
+import { getUId, isIndexUsed } from "./utils";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { deleteVal } from "../../utils/objectUtils";
@@ -141,7 +141,7 @@ export var setPositionData = function (index, parent, vec3IndexInArrayBuffer, po
     if (isParentExist(parent)) {
         var index_1 = parent.index;
         setVectors(ThreeDTransformData.localPositions, getLocalToWorldMatrix({
-            uid: getUID(index_1, ThreeDTransformData),
+            uid: getUId(index_1, ThreeDTransformData),
             index: index_1
         }, GlobalTempData.matrix4_3, ThreeDTransformData).invert().multiplyPoint(position), vec3IndexInArrayBuffer);
     }

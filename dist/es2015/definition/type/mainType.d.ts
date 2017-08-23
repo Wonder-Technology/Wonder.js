@@ -3,7 +3,7 @@ export declare type ContextConfigData = {
     options: ContextConfigOptionsData;
 };
 export declare type MainConfigData = {
-    canvasID?: string;
+    canvasId?: string;
     isTest?: boolean;
     screenSize?: any;
     useDevicePixelRatio?: boolean;

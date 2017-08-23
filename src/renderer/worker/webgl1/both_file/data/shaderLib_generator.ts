@@ -430,7 +430,7 @@ export const webgl1_shaderLib_generator = {
                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = AmbientLightDataFromSystem.count; i < count; i++) {
 
-                        if(isColorDirty(i, AmbientLightDataFromSystem)) {
+                        if (isColorDirty(i, AmbientLightDataFromSystem)) {
                             sendFloat3(gl, shaderIndex, program, "u_ambient", getColorArr3(i, AmbientLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanColorDirty(i, AmbientLightDataFromSystem);
@@ -442,53 +442,53 @@ export const webgl1_shaderLib_generator = {
         "PointLightShaderLib": {
             "send": {
                 "uniformFunc": (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram,
-                                {
+                    {
                                     glslSenderData: {
                                         sendFloat1,
-                                        sendFloat3
+                        sendFloat3
                                     },
-                                    pointLightData: {
+                        pointLightData: {
                                         getColorArr3,
-                                        getIntensity,
-                                        getConstant,
-                                        getLinear,
-                                        getQuadratic,
-                                        getRange,
-                                        getPosition,
+                            getIntensity,
+                            getConstant,
+                            getLinear,
+                            getQuadratic,
+                            getRange,
+                            getPosition,
 
-                                        isPositionDirty,
-                                        isColorDirty,
-                                        isIntensityDirty,
-                                        isAttenuationDirty,
+                            isPositionDirty,
+                            isColorDirty,
+                            isIntensityDirty,
+                            isAttenuationDirty,
 
-                                        cleanPositionDirty,
-                                        cleanColorDirty,
-                                        cleanIntensityDirty,
-                                        cleanAttenuationDirty,
+                            cleanPositionDirty,
+                            cleanColorDirty,
+                            cleanIntensityDirty,
+                            cleanAttenuationDirty,
 
-                                        PointLightDataFromSystem
+                            PointLightDataFromSystem
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = PointLightDataFromSystem.count; i < count; i++) {
-                        if(isPositionDirty(i, PointLightDataFromSystem)){
+                        if (isPositionDirty(i, PointLightDataFromSystem)) {
                             sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanPositionDirty(i, PointLightDataFromSystem);
                         }
 
-                        if(isColorDirty(i, PointLightDataFromSystem)){
+                        if (isColorDirty(i, PointLightDataFromSystem)) {
                             sendFloat3(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanColorDirty(i, PointLightDataFromSystem);
                         }
 
-                        if(isIntensityDirty(i, PointLightDataFromSystem)){
+                        if (isIntensityDirty(i, PointLightDataFromSystem)) {
                             sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanIntensityDirty(i, PointLightDataFromSystem);
                         }
 
-                        if(isAttenuationDirty(i, PointLightDataFromSystem)){
+                        if (isAttenuationDirty(i, PointLightDataFromSystem)) {
                             sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].constant, getConstant(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
                             sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].linear, getLinear(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
                             sendFloat1(gl, shaderIndex, program, PointLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].quadratic, getQuadratic(i, PointLightDataFromSystem), uniformCacheMap, uniformLocationMap);
@@ -526,19 +526,19 @@ export const webgl1_shaderLib_generator = {
                                     }
                                 }, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
                     for (let i = 0, count = DirectionLightDataFromSystem.count; i < count; i++) {
-                        if(isPositionDirty(i, DirectionLightDataFromSystem)) {
+                        if (isPositionDirty(i, DirectionLightDataFromSystem)) {
                             sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].position, getPosition(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanPositionDirty(i, DirectionLightDataFromSystem);
                         }
 
-                        if(isColorDirty(i, DirectionLightDataFromSystem)) {
+                        if (isColorDirty(i, DirectionLightDataFromSystem)) {
                             sendFloat3(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].color, getColorArr3(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanColorDirty(i, DirectionLightDataFromSystem);
                         }
 
-                        if(isIntensityDirty(i, DirectionLightDataFromSystem)) {
+                        if (isIntensityDirty(i, DirectionLightDataFromSystem)) {
                             sendFloat1(gl, shaderIndex, program, DirectionLightDataFromSystem.lightGLSLDataStructureMemberNameArr[i].intensity, getIntensity(i, DirectionLightDataFromSystem), uniformCacheMap, uniformLocationMap);
 
                             cleanIntensityDirty(i, DirectionLightDataFromSystem);
@@ -586,11 +586,11 @@ export const webgl1_shaderLib_generator = {
     }
 }
 
-export interface IWebGL1ShaderLibContentGenerator extends IShaderLibContentGenerator{
+export interface IWebGL1ShaderLibContentGenerator extends IShaderLibContentGenerator {
     [shaderLibName: string]: IWebGL1ShaderLibConfig
 }
 
-export interface IWebGL1ShaderLibConfig{
+export interface IWebGL1ShaderLibConfig {
     glsl?: {
         vs?: IWebGL1GLSLConfig,
         fs?: IWebGL1GLSLConfig,
@@ -599,7 +599,7 @@ export interface IWebGL1ShaderLibConfig{
     send?: IWebGL1ShaderLibSendConfig
 }
 
-export interface IWebGL1GLSLConfig extends IGLSLConfig{
+export interface IWebGL1GLSLConfig extends IGLSLConfig {
 }
 
 export interface IWebGL1GLSLFuncConfig {
@@ -616,7 +616,7 @@ export interface IWebGL1GLSLFuncGLSLConfig {
     define?: string;
 }
 
-export interface IWebGL1GLSLDefineListItem extends IGLSLDefineListItem{
+export interface IWebGL1GLSLDefineListItem extends IGLSLDefineListItem {
 }
 
 export interface IWebGL1ShaderLibSendConfig {
@@ -634,12 +634,12 @@ export interface IWebGL1SendAttributeConfig {
 
 export type WebGL1UniformType = "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
 
-export interface IWebGL1DefineUniformConfig extends IDefineUniformConfig{
+export interface IWebGL1DefineUniformConfig extends IDefineUniformConfig {
     name: string;
     type: WebGL1UniformType;
 }
 
-export interface IWebGL1SendUniformConfig extends ISendUniformConfig{
+export interface IWebGL1SendUniformConfig extends ISendUniformConfig {
     name: string;
     field: string;
     type: WebGL1UniformType;

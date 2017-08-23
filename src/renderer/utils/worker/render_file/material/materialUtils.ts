@@ -5,11 +5,11 @@ import { IMaterialConfig } from "../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interface";
 import { Map } from "immutable";
 
-export var initNoMaterialShaders = (state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initNoMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
+export var initNoMaterialShaders = (state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, initShaderDataMap: InitShaderDataMap) => {
     var shaders = material_config.shaders.noMaterialShaders;
 
-    for(let shaderName in shaders){
-        if(shaders.hasOwnProperty(shaderName)){
+    for (let shaderName in shaders) {
+        if (shaders.hasOwnProperty(shaderName)) {
             initNoMaterialShader(state, shaderName, shaders[shaderName], material_config, shaderLib_generator, initShaderDataMap);
         }
     }
@@ -19,7 +19,7 @@ export var setShaderIndex = (materialIndex: number, shaderIndex: number, Materia
     setTypeArrayValue(MaterialDataFromSystem.shaderIndices, materialIndex, shaderIndex);
 }
 
-export var useShader = ( index: number, shaderName:string, state: Map<any, any>, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, initMaterialShader:Function, initShaderDataMap:InitShaderDataMap) => {
+export var useShader = (index: number, shaderName: string, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initMaterialShader: Function, initShaderDataMap: InitShaderDataMap) => {
     var shaderIndex = initMaterialShader(state, index, shaderName, material_config, shaderLib_generator, initShaderDataMap);
 
     setShaderIndex(index, shaderIndex, initShaderDataMap.MaterialDataFromSystem);
@@ -67,7 +67,7 @@ export var createTypeArrays = (buffer: any, count: number, MaterialDataFromSyste
     return offset;
 }
 
-export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, GPUDetectDataFromSystem: any, VaoDataFromSystem:any) => {
+export var buildInitShaderDataMap = (DeviceManagerDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem, ShaderDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, GPUDetectDataFromSystem: any, VaoDataFromSystem: any) => {
     return {
         GPUDetectDataFromSystem: GPUDetectDataFromSystem,
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,

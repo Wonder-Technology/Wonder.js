@@ -10,11 +10,11 @@ export declare var setHeight: (textureIndex: number, value: any, TextureData: an
 export declare var getIsNeedUpdate: (textureIndex: number, TextureDataFromSystem: any) => number;
 export declare var setIsNeedUpdate: (textureIndex: number, value: number, TextureData: any) => void;
 export declare var setUniformSamplerName: (index: number, name: string, TextureData: any) => void;
-export declare var bindToUnit: (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any) => void;
+export declare var bindToUnit: (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => void;
 export declare var initTextures: (gl: WebGLRenderingContext, TextureDataFromSystem: any) => void;
 export declare var needUpdate: (textureIndex: number, TextureDataFromSystem: any) => boolean;
 export declare var update: (gl: WebGLRenderingContext, textureIndex: number, TextureData: any) => void;
-export declare var dispose: (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any) => void;
+export declare var dispose: (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any, GPUDetectData: any) => void;
 export declare var hasDisposedTextureDataMap: (TextureData: any) => boolean;
 export declare var clearDisposedTextureDataMap: (TextureData: any) => void;
 export declare var convertSourceMapToSrcIndexArr: (TextureData: any) => ImageSrcIndexData[];

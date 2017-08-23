@@ -1,0 +1,10 @@
+import { SendUniformDataGLSLSenderDataMap } from "../../../../type/utilsType";
+import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
+export declare var getTextureIndexDataSize: () => number;
+export declare var getTextureCountDataSize: () => number;
+export declare var bindAndUpdate: (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => void;
+export declare var sendData: (gl: WebGLRenderingContext, mapCount: number, startIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => void;
+export declare var getMapCount: (materialIndex: number, MapManagerDataFromSystem: any) => any;
+export declare var getBufferCount: () => number;
+export declare var getMaxTextureCount: () => number;
+export declare var createTypeArrays: (buffer: any, count: number, MapManagerDataFromSystem: any) => number;

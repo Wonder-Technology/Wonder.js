@@ -20,7 +20,7 @@ import { Matrix4 } from "../../math/Matrix4";
 import { CameraControllerData } from "./CameraControllerData";
 import { PerspectiveCameraData } from "./PerspectiveCameraData";
 import { CameraData } from "./CameraData";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -79,13 +79,15 @@ var _clearDirtyList = (CameraControllerData: any) => {
     CameraControllerData.dirtyIndexArray = [];
 }
 
-export var update = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any) => {
+export var update = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any, state:Map<any, any>) => {
     _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex: number) => {
         updateProjectionMatrix(dirtyIndex, PerspectiveCameraData, CameraData);
     });
 
     _clearDirtyList(CameraControllerData);
     _clearCache(CameraControllerData);
+
+    return state;
 }
 
 export var addComponent = (component: CameraController, gameObject: GameObject) => {

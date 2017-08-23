@@ -1,6 +1,6 @@
 import curry from "wonder-lodash/curry";
 import { InitShaderDataMap } from "../../../../../../type/utilsType";
-import { LightRenderCommandBufferForDrawData} from "../../../../../../utils/worker/render_file/type/dataType";
+import { LightRenderCommandBufferForDrawData } from "../../../../../../utils/worker/render_file/type/dataType";
 import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator_interface";
 import { IMaterialConfig } from "../../../../../../data/material_config_interface";
@@ -16,7 +16,7 @@ import {
 } from "../../../../../render_file/light/AmbientLightWorkerSystem";
 import {
     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
-    isPositionDirty as isDirectionLightPositionDirty,isColorDirty as isDirectionLightColorDirty,isIntensityDirty as isDirectionLightIntensityDirty, cleanPositionDirty as cleanDirectionLightPositionDirty,cleanColorDirty as cleanDirectionLightColorDirty,cleanIntensityDirty as cleanDirectionLightIntensityDirty,
+    isPositionDirty as isDirectionLightPositionDirty, isColorDirty as isDirectionLightColorDirty, isIntensityDirty as isDirectionLightIntensityDirty, cleanPositionDirty as cleanDirectionLightPositionDirty, cleanColorDirty as cleanDirectionLightColorDirty, cleanIntensityDirty as cleanDirectionLightIntensityDirty,
 } from "../../../../../render_file/light/DirectionLightWorkerSystem";
 import { bindGBuffer, getNewTextureUnitIndex, unbindGBuffer } from "../../../../../../webgl2/utils/worker/render_file/render/light/defer/gbuffer/gBufferUtils";
 import {
@@ -49,7 +49,7 @@ import { DeferDrawDataMap } from "../../../../../../webgl2/utils/worker/render_f
 
 export var init = initUtils;
 
-export var render = curry((gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap:DeferDrawDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+export var render = curry((gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
     renderDefer(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,

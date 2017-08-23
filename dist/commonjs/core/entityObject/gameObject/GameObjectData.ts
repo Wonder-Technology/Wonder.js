@@ -1,5 +1,5 @@
 import { Component } from "../../../component/Component";
-import { IUIDEntity } from "./IUIDEntity";
+import { IUIdEntity } from "./IUIdEntity";
 
 export class GameObjectData {
     public static uid: number = null;
@@ -11,7 +11,7 @@ export class GameObjectData {
     public static parentMap: GameObjectParentMap = null;
     public static childrenMap: GameObjectChildrenMap = null;
 
-    public static aliveUIDArray: Array<number> = null;
+    public static aliveUIdArray: Array<number> = null;
 
     //todo add name map
 }
@@ -27,13 +27,13 @@ export type GameObjectComponentData = {
 }
 
 export type GameObjectParentMap = {
-    [uid: number]: IUIDEntity
+    [uid: number]: IUIdEntity
 }
 
 export type GameObjectChildrenMap = {
-    [uid: number]: Array<IUIDEntity>
+    [uid: number]: Array<IUIdEntity>
 }
 
-export type GameObjectUIDMap = {
+export type GameObjectUIdMap = {
     [uid: number]: boolean;
 }

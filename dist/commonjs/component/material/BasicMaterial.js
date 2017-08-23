@@ -19,7 +19,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerClass_1 = require("../../definition/typescript/decorator/registerClass");
 var Material_1 = require("./Material");
 var BasicMaterialSystem_1 = require("./BasicMaterialSystem");
-var ShaderData_1 = require("../../renderer/shader/ShaderData");
 var MaterialData_1 = require("./MaterialData");
 var contract_1 = require("../../definition/typescript/decorator/contract");
 var BasicMaterialData_1 = require("./BasicMaterialData");
@@ -28,6 +27,9 @@ var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
 var DirectorSystem_1 = require("../../core/DirectorSystem");
 var DirectorData_1 = require("../../core/DirectorData");
 var TextureData_1 = require("../../renderer/texture/TextureData");
+var WebGLDetectSystem_1 = require("../../renderer/device/WebGLDetectSystem");
+var ShaderData_1 = require("../../renderer/webgl1/shader/ShaderData");
+var ShaderData_2 = require("../../renderer/webgl2/shader/ShaderData");
 var BasicMaterial = (function (_super) {
     __extends(BasicMaterial, _super);
     function BasicMaterial() {
@@ -39,9 +41,17 @@ var BasicMaterial = (function (_super) {
     return BasicMaterial;
 }(Material_1.Material));
 exports.BasicMaterial = BasicMaterial;
-exports.createBasicMaterial = function () {
-    return BasicMaterialSystem_1.create(ShaderData_1.ShaderData, MaterialData_1.MaterialData, BasicMaterialData_1.BasicMaterialData);
-};
+exports.createBasicMaterial = null;
+if (WebGLDetectSystem_1.isWebgl1()) {
+    exports.createBasicMaterial = function () {
+        return BasicMaterialSystem_1.create(ShaderData_1.WebGL1ShaderData, MaterialData_1.MaterialData, BasicMaterialData_1.BasicMaterialData);
+    };
+}
+else {
+    exports.createBasicMaterial = function () {
+        return BasicMaterialSystem_1.create(ShaderData_2.WebGL2ShaderData, MaterialData_1.MaterialData, BasicMaterialData_1.BasicMaterialData);
+    };
+}
 exports.initBasicMaterial = function (material) {
     BasicMaterialSystem_1.initMaterial(material.index, DirectorSystem_1.getState(DirectorData_1.DirectorData));
 };

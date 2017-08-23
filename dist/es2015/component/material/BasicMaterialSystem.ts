@@ -7,7 +7,7 @@ import {
 import {
     initData as initSpecifyMaterialData
 } from "./SpecifyMaterialSystem";
-import { getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getBasicMaterialBufferCount } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Material } from "./Material";
@@ -19,10 +19,11 @@ import { Map } from "immutable";
 import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
-} from "../../renderer/utils/material/basicMaterialUtils";
+} from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
 import { addMap as addMapByMapManager, getMapCount } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
+import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {

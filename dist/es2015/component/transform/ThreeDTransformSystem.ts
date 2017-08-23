@@ -44,7 +44,8 @@ import {
 } from "../../utils/typeArrayUtils";
 import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../../math/Matrix3";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
+import { triggerEvent } from "../../event/EventManagerSystem";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -64,7 +65,7 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
 }, (ThreeDTransformData: any) => {
     var transform = new ThreeDTransform(),
         index = _generateIndexInArrayBuffer(ThreeDTransformData),
-        uid = _buildUID(ThreeDTransformData);
+        uid = _buildUId(ThreeDTransformData);
 
     transform.index = index;
     transform.uid = uid;
@@ -77,12 +78,12 @@ export var create = ensureFunc((transform: ThreeDTransform, ThreeDTransformData:
 
     _setDefaultTypeArrData(index, ThreeDTransformData);
 
-    ThreeDTransformData.aliveUIDArray.push(uid);
+    ThreeDTransformData.aliveUIdArray.push(uid);
 
     return transform;
 })
 
-var _buildUID = (ThreeDTransformData: any) => {
+var _buildUId = (ThreeDTransformData: any) => {
     return ThreeDTransformData.uid++;
 }
 
@@ -197,7 +198,7 @@ export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, Globa
     return getNormalMatrixCache(transform.uid, ThreeTransformData);
 }, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any, mat: Matrix3) => {
     setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
@@ -214,6 +215,7 @@ export var setPosition = requireCheckFunc((transform: ThreeDTransform, position:
     setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
 
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
 
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 })
@@ -242,9 +244,14 @@ export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, posi
     setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
 
     setIsTranslate(uid, true, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeTransformData);
 
     return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
 })
+
+var _triggerChangePositionEvent = (uid:number, ThreeTransformData:any) => {
+    triggerEvent("changePosition");
+}
 
 export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: MapImmutable<any, any>) => {
     return updateSystem(elapsed, GlobalTempData, ThreeDTransformData, state);
@@ -329,7 +336,7 @@ export var initData = (GlobalTempData: any, ThreeDTransformData: any) => {
 
     ThreeDTransformData.count = 0;
 
-    ThreeDTransformData.aliveUIDArray = [];
+    ThreeDTransformData.aliveUIdArray = [];
 }
 
 var _initBufferData = (ThreeDTransformData: any) => {

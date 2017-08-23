@@ -79,9 +79,13 @@ var _getNotUsedIndexFromArr = function (ThreeDTransformData) {
 var _getNotUsedIndexNode = function (notUsedIndexLinkList) {
     return notUsedIndexLinkList.shift();
 };
-exports.addNotUsedIndex = function (index, notUsedIndexLinkList) {
+exports.addNotUsedIndex = contract_1.requireCheckFunc(function (index, notUsedIndexLinkList) {
+    contract_1.it("index shouldn't already exist", function () {
+        wonder_expect_js_1.expect(notUsedIndexLinkList.hasDuplicateNode(index)).false;
+    });
+}, function (index, notUsedIndexLinkList) {
     notUsedIndexLinkList.push(LinkList_1.LinkNode.create(index));
-};
+});
 exports.isNotDirty = function (index, firstDirtyIndex) {
     return index < firstDirtyIndex;
 };

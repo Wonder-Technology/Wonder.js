@@ -12,7 +12,6 @@ var DeviceManagerSystem_1 = require("./DeviceManagerSystem");
 var View_1 = require("../../structure/View");
 var DirectorSystem_1 = require("../../core/DirectorSystem");
 var DirectorData_1 = require("../../core/DirectorData");
-var immutable_1 = require("immutable");
 var DeviceManagerData_1 = require("./DeviceManagerData");
 var DeviceManager = (function () {
     function DeviceManager() {
@@ -33,9 +32,6 @@ var DeviceManager = (function () {
         enumerable: true,
         configurable: true
     });
-    DeviceManager.prototype.createGL = function (canvasID, contextConfig) {
-        return DeviceManagerSystem_1.createGL(canvasID, immutable_1.fromJS(contextConfig), DirectorSystem_1.getState(DirectorData_1.DirectorData));
-    };
     DeviceManager = __decorate([
         singleton_1.singleton(),
         registerClass_1.registerClass("DeviceManager")

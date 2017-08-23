@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
 var WorkerDetectSystem_1 = require("../device/WorkerDetectSystem");
-var WebGLRenderSystem_1 = require("../renderer/render/WebGLRenderSystem");
+var WebGLRenderSystem_1 = require("../renderer/core/WebGLRenderSystem");
 var SendDrawRenderCommandBufferData_1 = require("../renderer/worker/logic_file/draw/SendDrawRenderCommandBufferData");
 var ERenderWorkerState_1 = require("../renderer/worker/both_file/ERenderWorkerState");
 var ThreeDTransformSystem_1 = require("../component/transform/ThreeDTransformSystem");
@@ -20,6 +20,12 @@ exports.setState = function (state, DirectorData) {
         DirectorData.state = state;
     });
 };
+exports.markIsInit = function (DirectorData) {
+    DirectorData.isInit = true;
+};
+exports.isInit = function (DirectorData) {
+    return DirectorData.isInit === true;
+};
 exports.run = null;
 exports.render = null;
 var _sync = function (elapsed, state, scheduler) {
@@ -29,7 +35,7 @@ var _sync = function (elapsed, state, scheduler) {
 };
 exports.updateSystem = function (elapsed, state) {
     var resultState = ThreeDTransformSystem_1.update(elapsed, GlobalTempData_1.GlobalTempData, ThreeDTransformData_1.ThreeDTransformData, state);
-    resultState = CameraControllerSystem_1.update(PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData, CameraControllerData_1.CameraControllerData);
+    resultState = CameraControllerSystem_1.update(PerspectiveCameraData_1.PerspectiveCameraData, CameraData_1.CameraData, CameraControllerData_1.CameraControllerData, state);
     return resultState;
 };
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
@@ -72,4 +78,6 @@ else {
         return resultState;
     };
 }
+exports.initData = function (DirectorData) {
+};
 //# sourceMappingURL=DirectorSystem.js.map

@@ -6,5 +6,7 @@ export declare var getColor: (index: number, AmbientLightDataFromSystem: any) =>
 export declare var getColorArr3: (index: number, AmbientLightDataFromSystem: any) => number[];
 export declare var setColor: (index: number, color: Color, AmbientLightData: any) => void;
 export declare var addComponent: (component: Light, gameObject: GameObject) => void;
-export declare var disposeComponent: (component: Light) => void;
+export declare var disposeComponent: Function;
 export declare var initData: (AmbientLightData: any) => void;
+export declare var isColorDirty: (index: number, AmbientLightDataFromSystem: any) => boolean;
+export declare var cleanColorDirty: (index: number, AmbientLightDataFromSystem: any) => void;

@@ -1,9 +1,9 @@
 import { addActiveTexture, initData as initTextureCacheData, isCached } from "./TextureCacheWorkerSystem";
-import { createTypeArrays, getBufferCount, initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils, bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY } from "../../../utils/texture/textureUtils";
+import { createTypeArrays, getBufferCount, initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils, bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY } from "../../../utils/worker/render_file/texture/textureUtils";
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";
-export var bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData) {
-    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, isCached, addActiveTexture);
+export var bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData) {
+    bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 };
 export var initTextures = initTexturesUtils;
 export var needUpdate = needUpdateUtils;
@@ -20,11 +20,11 @@ else if (firefox) {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
     };
 }
-export var disposeSourceAndGLTexture = function (disposeData, gl, TextureCacheWorkerData, TextureWorkerData) {
+export var disposeSourceAndGLTexture = function (disposeData, gl, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData) {
     for (var _i = 0, _a = disposeData.disposedTextureDataMap; _i < _a.length; _i++) {
         var _b = _a[_i], sourceIndex = _b.sourceIndex, lastComponentIndex = _b.lastComponentIndex;
         disposeSourceMap(sourceIndex, lastComponentIndex, TextureWorkerData);
-        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData);
+        disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData);
     }
 };
 export var setIndex = function (index, TextureWorkerData) {

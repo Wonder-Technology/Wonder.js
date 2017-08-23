@@ -21,13 +21,14 @@ var LightMaterialData = (function (_super) {
     LightMaterialData.shininess = null;
     LightMaterialData.shadings = null;
     LightMaterialData.lightModels = null;
+    LightMaterialData.hasDiffuseMaps = null;
+    LightMaterialData.hasSpecularMaps = null;
     LightMaterialData.defaultShininess = null;
     LightMaterialData.defaultShading = null;
     LightMaterialData.defaultLightModel = null;
+    LightMaterialData.defaultHasMap = null;
     LightMaterialData.emptyColor = null;
     LightMaterialData.emptyColorArr = null;
-    LightMaterialData.diffuseMapIndex = null;
-    LightMaterialData.specularMapIndex = null;
     return LightMaterialData;
 }(SpecifyMaterialData_1.SpecifyMaterialData));
 exports.LightMaterialData = LightMaterialData;

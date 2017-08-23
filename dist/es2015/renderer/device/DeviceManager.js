@@ -6,11 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
-import { createGL, getGL, getViewport, setGL } from "./DeviceManagerSystem";
+import { getGL, getViewport, setGL } from "./DeviceManagerSystem";
 import { View } from "../../structure/View";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
-import { fromJS } from "immutable";
 import { DeviceManagerData } from "./DeviceManagerData";
 var DeviceManager = (function () {
     function DeviceManager() {
@@ -31,9 +30,6 @@ var DeviceManager = (function () {
         enumerable: true,
         configurable: true
     });
-    DeviceManager.prototype.createGL = function (canvasID, contextConfig) {
-        return createGL(canvasID, fromJS(contextConfig), getState(DirectorData));
-    };
     DeviceManager = __decorate([
         singleton(),
         registerClass("DeviceManager")

@@ -13,7 +13,7 @@ import {
 import { createMap, deleteBySwap as deleteObjectBySwap, deleteVal } from "../../utils/objectUtils";
 import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { MeshRendererData } from "./MeshRendererData";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 
 export var addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);

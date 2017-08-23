@@ -1,37 +1,37 @@
 import { ClassUtils } from "../utils/ClassUtils";
 import { Component } from "./Component";
 
-var _generateComponentID = () => {
-    var result = _componentID;
+var _generateComponentId = () => {
+    var result = _componentId;
 
-    _componentID += 1;
+    _componentId += 1;
 
     return String(result);
 }
 
-export var getComponentIDFromClass = (_class: any) => {
+export var getComponentIdFromClass = (_class: any) => {
     return _table[ClassUtils.getClassNameByClass(_class)];
 }
 
-export var getComponentIDFromComponent = (component: Component) => {
+export var getComponentIdFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 
-var _addComponentID = (componentClassNameArr: Array<string>, table: object) => {
-    var id = _generateComponentID();
+var _addComponentId = (componentClassNameArr: Array<string>, table: object) => {
+    var id = _generateComponentId();
 
     for (let className of componentClassNameArr) {
         table[className] = id;
     }
 }
 
-var _componentID = 1;
+var _componentId = 1;
 const _table = {};
 
-_addComponentID(["ThreeDTransform"], _table);
-_addComponentID(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
-_addComponentID(["Material", "BasicMaterial", "LightMaterial"], _table);
-_addComponentID(["MeshRenderer"], _table);
-_addComponentID(["Tag"], _table);
-_addComponentID(["CameraController"], _table);
-_addComponentID(["Light", "AmbientLight", "DirectionLight", "PointLight"], _table);
+_addComponentId(["ThreeDTransform"], _table);
+_addComponentId(["Geometry", "BoxGeometry", "CustomGeometry"], _table);
+_addComponentId(["Material", "BasicMaterial", "LightMaterial"], _table);
+_addComponentId(["MeshRenderer"], _table);
+_addComponentId(["Tag"], _table);
+_addComponentId(["CameraController"], _table);
+_addComponentId(["Light", "AmbientLight", "DirectionLight", "PointLight"], _table);

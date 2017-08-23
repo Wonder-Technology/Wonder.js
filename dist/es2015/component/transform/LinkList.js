@@ -24,6 +24,16 @@ var LinkList = (function () {
         this._last.next = node;
         this._last = node;
     };
+    LinkList.prototype.hasDuplicateNode = function (val) {
+        var node = this._first;
+        while (node !== null && node.val !== val) {
+            node = node.next;
+        }
+        if (node === null) {
+            return false;
+        }
+        return false;
+    };
     return LinkList;
 }());
 export { LinkList };

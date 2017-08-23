@@ -262,7 +262,7 @@ var _isPowerOfTwo = (value: number) => {
 //     return isValidVal(TextureDataFromSystem.glTextures[textureIndex]);
 // }
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem:any, isCached: Function, addActiveTexture: Function) => {
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem: any, isCached: Function, addActiveTexture: Function) => {
     var target = ETextureTarget.TEXTURE_2D;
 
     if (isCached(unitIndex, textureIndex, TextureCacheDataFromSystem, GPUDetectDataFromSystem)) {
@@ -308,7 +308,7 @@ export var disposeSourceMap = (sourceIndex: number, lastComponentIndex: number, 
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.sourceMap);
 }
 
-export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     var glTexture = _getWebglTexture(sourceIndex, TextureDataFromSystem);
 
     gl.deleteTexture(glTexture);
@@ -319,7 +319,7 @@ export var disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, l
     deleteBySwap(sourceIndex, lastComponentIndex, TextureDataFromSystem.glTextures);
 }
 
-var _unBindAllUnit = (gl: WebGLRenderingContext, TextureCacheDataFromSystem: any, GPUDetectData:any) => {
+var _unBindAllUnit = (gl: WebGLRenderingContext, TextureCacheDataFromSystem: any, GPUDetectData: any) => {
     var maxTextureUnit = getMaxTextureUnit(GPUDetectData);
 
     for (let channel = 0; channel < maxTextureUnit; channel++) {

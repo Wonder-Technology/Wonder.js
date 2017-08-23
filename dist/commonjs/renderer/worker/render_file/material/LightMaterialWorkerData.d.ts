@@ -4,6 +4,6 @@ export declare class LightMaterialWorkerData {
     static shininess: Float32Array;
     static shadings: Uint8Array;
     static lightModels: Uint8Array;
-    static diffuseMapIndex: number;
-    static specularMapIndex: number;
+    static hasDiffuseMaps: Uint8Array;
+    static hasSpecularMaps: Uint8Array;
 }

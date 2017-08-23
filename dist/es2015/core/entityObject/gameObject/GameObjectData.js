@@ -6,7 +6,7 @@ var GameObjectData = (function () {
     GameObjectData.componentMap = null;
     GameObjectData.parentMap = null;
     GameObjectData.childrenMap = null;
-    GameObjectData.aliveUIDArray = null;
+    GameObjectData.aliveUIdArray = null;
     return GameObjectData;
 }());
 export { GameObjectData };

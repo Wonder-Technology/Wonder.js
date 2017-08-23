@@ -13,12 +13,13 @@ exports.clearCache = curry_1.default(function (ThreeDTransformData, state) {
     count = ThreeDTransformData.maxCount;
     cacheMap = ThreeDTransformData.cacheMap;
     for (var i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {
-        var uid = utils_1.getUID(i, ThreeDTransformData), isTranslate = isTransformSystem_1.getIsTranslate(uid, ThreeDTransformData);
+        var uid = utils_1.getUId(i, ThreeDTransformData), isTranslate = isTransformSystem_1.getIsTranslate(uid, ThreeDTransformData);
         if (isTranslate) {
             objectUtils_1.deleteVal(uid, cacheMap);
             isTransformSystem_1.setIsTranslate(uid, false, ThreeDTransformData);
         }
     }
+    return state;
 });
 exports.clearCacheMap = function (ThreeDTransformData) {
     ThreeDTransformData.cacheMap = {};

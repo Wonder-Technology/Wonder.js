@@ -1,5 +1,5 @@
 export class BufferUtilsForUnitTest {
-    public static isDrawRenderCommandBufferDataTypeArrayNotExist(DrawRenderCommandBufferDataFromSystem: any) {
-        return DrawRenderCommandBufferDataFromSystem.mMatrices === null;
+    public static isRenderCommandBufferDataTypeArrayNotExist(RenderCommandBufferDataFromSystem: any) {
+        return RenderCommandBufferDataFromSystem.mMatrices === null;
     }
 }

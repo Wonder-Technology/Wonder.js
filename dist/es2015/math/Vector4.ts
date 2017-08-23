@@ -108,6 +108,12 @@ export class Vector4 {
         return this;
     }
 
+    public divideScalar(scalar: number) {
+        this.multiplyScalar(1 / scalar);
+
+        return this;
+    }
+
     public dot(v: Vector4) {
         return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
     }
@@ -119,6 +125,26 @@ export class Vector4 {
         this.w = w;
     }
 
+    public applyMatrix4(mat4Values:Float32Array, isChangeSelf:boolean = false): Vector4 {
+        var vec4 = this.values,
+            x:number = null,
+            y:number = null,
+            z:number = null,
+            w:number = null;
+
+        x = vec4[0] * mat4Values[0] + vec4[1] * mat4Values[4] + vec4[2] * mat4Values[8] + vec4[3] * mat4Values[12];
+        y = vec4[0] * mat4Values[1] + vec4[1] * mat4Values[5] + vec4[2] * mat4Values[9] + vec4[3] * mat4Values[13];
+        z = vec4[0] * mat4Values[2] + vec4[1] * mat4Values[6] + vec4[2] * mat4Values[10] + vec4[3] * mat4Values[14];
+        w = vec4[0] * mat4Values[3] + vec4[1] * mat4Values[7] + vec4[2] * mat4Values[11] + vec4[3] * mat4Values[15];
+
+        if(isChangeSelf){
+            this.set(x, y, z, w);
+
+            return this;
+        }
+
+        return Vector4.create(x, y, z, w);
+    }
 
 
     protected copyHelper(vector4: Vector4): any {

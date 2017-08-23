@@ -17,11 +17,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkLightShouldAlive, Light } from "./Light";
 import { create, getColor, getIntensity, getPosition, setColor, setIntensity } from "./DirectionLightSystem";
-import { DirectionLightData } from "./DirectionLightData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { ThreeDTransformData } from "../transform/ThreeDTransformData";
 import { GameObjectData } from "../../core/entityObject/gameObject/GameObjectData";
 import { getGameObject } from "./SpecifyLightSystem";
+import { WebGL2DirectionLightData } from "../../renderer/webgl2/light/DirectionLightData";
+import { WebGL1DirectionLightData } from "../../renderer/webgl1/light/DirectionLightData";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
 var DirectionLight = (function (_super) {
     __extends(DirectionLight, _super);
     function DirectionLight() {
@@ -33,37 +35,81 @@ var DirectionLight = (function (_super) {
     return DirectionLight;
 }(Light));
 export { DirectionLight };
-export var createDirectionLight = function () {
-    return create(DirectionLightData);
-};
-export var getDirectionLightGameObject = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (component) {
-    return getGameObject(component.index, DirectionLightData);
-});
-export var getDirectionLightPosition = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (component) {
-    return getPosition(component.index, ThreeDTransformData, GameObjectData, DirectionLightData);
-});
-export var getDirectionLightColor = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (light) {
-    return getColor(light.index, DirectionLightData);
-});
-export var setDirectionLightColor = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (light, color) {
-    setColor(light.index, color, DirectionLightData);
-});
-export var getDirectionLightIntensity = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (light) {
-    return getIntensity(light.index, DirectionLightData);
-});
-export var setDirectionLightIntensity = requireCheckFunc(function (component) {
-    checkLightShouldAlive(component);
-}, function (light, intensity) {
-    setIntensity(light.index, intensity, DirectionLightData);
-});
+export var createDirectionLight = null;
+export var getDirectionLightGameObject = null;
+export var getDirectionLightPosition = null;
+export var getDirectionLightColor = null;
+export var setDirectionLightColor = null;
+export var getDirectionLightIntensity = null;
+export var setDirectionLightIntensity = null;
+if (isWebgl1()) {
+    createDirectionLight = function () {
+        return create(WebGL1DirectionLightData);
+    };
+    getDirectionLightGameObject = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (component) {
+        return getGameObject(component.index, WebGL1DirectionLightData);
+    });
+    getDirectionLightPosition = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (component) {
+        return getPosition(component.index, ThreeDTransformData, GameObjectData, WebGL1DirectionLightData);
+    });
+    getDirectionLightColor = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light) {
+        return getColor(light.index, WebGL1DirectionLightData);
+    });
+    setDirectionLightColor = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light, color) {
+        setColor(light.index, color, WebGL1DirectionLightData);
+    });
+    getDirectionLightIntensity = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light) {
+        return getIntensity(light.index, WebGL1DirectionLightData);
+    });
+    setDirectionLightIntensity = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light, value) {
+        setIntensity(light.index, value, WebGL1DirectionLightData);
+    });
+}
+else {
+    createDirectionLight = function () {
+        return create(WebGL2DirectionLightData);
+    };
+    getDirectionLightGameObject = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (component) {
+        return getGameObject(component.index, WebGL2DirectionLightData);
+    });
+    getDirectionLightPosition = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (component) {
+        return getPosition(component.index, ThreeDTransformData, GameObjectData, WebGL2DirectionLightData);
+    });
+    getDirectionLightColor = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light) {
+        return getColor(light.index, WebGL2DirectionLightData);
+    });
+    setDirectionLightColor = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light, color) {
+        setColor(light.index, color, WebGL2DirectionLightData);
+    });
+    getDirectionLightIntensity = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light) {
+        return getIntensity(light.index, WebGL2DirectionLightData);
+    });
+    setDirectionLightIntensity = requireCheckFunc(function (component) {
+        checkLightShouldAlive(component);
+    }, function (light, value) {
+        setIntensity(light.index, value, WebGL2DirectionLightData);
+    });
+}
 //# sourceMappingURL=DirectionLight.js.map

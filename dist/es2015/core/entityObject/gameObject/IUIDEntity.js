@@ -1,1 +1,1 @@
-//# sourceMappingURL=IUIDEntity.js.map
+//# sourceMappingURL=IUIdEntity.js.map

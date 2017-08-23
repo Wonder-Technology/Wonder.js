@@ -1,0 +1,32 @@
+import { IMaterialConfig } from "../../../../../data/material_config_interface";
+import { IRenderConfig } from "../../../../../worker/both_file/data/render_config";
+import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
+import { InitShaderDataMap } from "../../../../../type/utilsType";
+import { Map } from "immutable";
+import { IWebGL2DrawDataMap } from "../interface/IUtils";
+import { DeferDrawDataMap } from "../type/utilsType";
+export declare var init: (gl: any, render_config: IRenderConfig, DataBufferConfig: any, GBufferDataFromSystem: any, DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem: any) => void;
+export declare var render: (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender: Function, deferRender: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {cameraData, basicData, lightData}: {
+    cameraData: any;
+    basicData: any;
+    lightData: any;
+}) => void;
+export declare var sendAttributeData: (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => void;
+export declare var buildDrawDataMap: (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem: any, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
+    DeviceManagerDataFromSystem: any;
+    TextureDataFromSystem: any;
+    TextureCacheDataFromSystem: any;
+    MapManagerDataFromSystem: any;
+    MaterialDataFromSystem: any;
+    BasicMaterialDataFromSystem: any;
+    LightMaterialDataFromSystem: any;
+    AmbientLightDataFromSystem: any;
+    DirectionLightDataFromSystem: any;
+    PointLightDataFromSystem: any;
+    ProgramDataFromSystem: any;
+    LocationDataFromSystem: any;
+    GLSLSenderDataFromSystem: any;
+    GeometryDataFromSystem: any;
+    BasicDrawRenderCommandBufferDataFromSystem: any;
+    LightDrawRenderCommandBufferDataFromSystem: any;
+};

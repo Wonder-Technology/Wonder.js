@@ -1,6 +1,6 @@
 import { Color } from "../../structure/Color";
 import { Light } from "./Light";
-import { GameObject } from "../../core/entityObject/gameObject/GameObject";
+import { Map } from "immutable";
 export declare var create: Function;
 export declare var getPosition: (index: number, ThreeDTransformData: any, GameObjectData: any, PointLightData: any) => any;
 export declare var getAllPositionData: (ThreeDTransformData: any, GameObjectData: any, PointLightData: any) => Float32Array[];
@@ -18,6 +18,14 @@ export declare var setQuadratic: (index: number, value: number, PointLightData: 
 export declare var getRange: (index: number, PointLightDataFromSystem: any) => number;
 export declare var setRange: (index: number, value: number, PointLightData: any) => void;
 export declare var setRangeLevel: (index: number, value: number, PointLightData: any) => void;
-export declare var addComponent: (component: Light, gameObject: GameObject) => void;
-export declare var disposeComponent: (component: Light) => void;
-export declare var initData: (PointLightData: any) => void;
+export declare var initDataHelper: (PointLightData: any) => void;
+export declare var disposeComponent: (component: Light, PointLightData: any) => number;
+export declare var init: (PointLightData: any, state: Map<any, any>) => Map<any, any>;
+export declare var isPositionDirty: (index: number, PointLightDataFromSystem: any) => boolean;
+export declare var isColorDirty: (index: number, PointLightDataFromSystem: any) => boolean;
+export declare var isIntensityDirty: (index: number, PointLightDataFromSystem: any) => boolean;
+export declare var isAttenuationDirty: (index: number, PointLightDataFromSystem: any) => boolean;
+export declare var cleanPositionDirty: (index: number, PointLightDataFromSystem: any) => void;
+export declare var cleanColorDirty: (index: number, PointLightDataFromSystem: any) => void;
+export declare var cleanIntensityDirty: (index: number, PointLightDataFromSystem: any) => void;
+export declare var cleanAttenuationDirty: (index: number, PointLightDataFromSystem: any) => void;

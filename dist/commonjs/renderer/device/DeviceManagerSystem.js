@@ -1,25 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var DomQuery_1 = require("wonder-commonlib/dist/commonjs/utils/DomQuery");
 var ViewSystem_1 = require("../../structure/ViewSystem");
 var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
 var curry_1 = require("wonder-lodash/curry");
 var functionalUtils_1 = require("../../utils/functionalUtils");
-var deviceManagerUtils_1 = require("../utils/device/deviceManagerUtils");
-exports.createGL = curry_1.default(function (canvas, contextConfig, DeviceManagerData, state) {
+var deviceManagerUtils_1 = require("../utils/worker/both_file/device/deviceManagerUtils");
+var DomQuery_1 = require("wonder-commonlib/dist/commonjs/utils/DomQuery");
+exports.createGL = curry_1.default(function (canvas, contextConfig, WebGLDetectData, DeviceManagerData, state) {
     return IO_1.IO.of(function () {
-        var gl = _getOnlyGL(canvas, contextConfig);
+        var gl = deviceManagerUtils_1.getOnlyGL(canvas, contextConfig.get("options").toObject(), WebGLDetectData);
+        if (!gl) {
+            DomQuery_1.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
+        }
         return functionalUtils_1.compose(ViewSystem_1.setCanvas(canvas), exports.setContextConfig(contextConfig), exports.setGL(gl, DeviceManagerData))(state);
     });
 });
-var _getOnlyGL = function (canvas, contextConfig) {
-    var gl = ViewSystem_1.getContext(contextConfig, canvas);
-    if (!gl) {
-        DomQuery_1.DomQuery.create("<p class='not-support-webgl'></p>").prependTo("body").text("Your device doesn't support WebGL");
-        return null;
-    }
-    return gl;
-};
 exports.getGL = deviceManagerUtils_1.getGL;
 exports.setGL = deviceManagerUtils_1.setGL;
 exports.setContextConfig = deviceManagerUtils_1.setContextConfig;
@@ -37,8 +32,8 @@ exports.setCanvasPixelRatio = curry_1.default(function (useDevicePixelRatio, can
 });
 exports.setViewportOfGL = deviceManagerUtils_1.setViewportOfGL;
 exports.getScreenSize = deviceManagerUtils_1.getScreenSize;
-exports.setScreen = curry_1.default(function (canvas, DeviceManagerData, state) {
-    return deviceManagerUtils_1.setScreen(canvas, _setScreenData, DeviceManagerData, state);
+exports.setScreen = curry_1.default(function (canvas, DeviceManagerData, DomQuery, state) {
+    return deviceManagerUtils_1.setScreen(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
 });
 var _setScreenData = curry_1.default(function (DeviceManagerData, canvas, state, data) {
     var x = data.x, y = data.y, width = data.width, height = data.height, styleWidth = data.styleWidth, styleHeight = data.styleHeight;
@@ -48,6 +43,7 @@ var _setScreenData = curry_1.default(function (DeviceManagerData, canvas, state,
     });
 });
 exports.clear = deviceManagerUtils_1.clear;
+exports.setClearColor = deviceManagerUtils_1.setClearColor;
 exports.setColorWrite = deviceManagerUtils_1.setColorWrite;
 exports.setSide = deviceManagerUtils_1.setSide;
 exports.initData = deviceManagerUtils_1.initData;

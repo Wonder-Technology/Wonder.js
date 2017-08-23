@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var mapManagerUtils_1 = require("../../../utils/texture/mapManagerUtils");
+var mapManagerUtils_1 = require("../../../utils/worker/render_file/texture/mapManagerUtils");
 var TextureWorkerSystem_1 = require("./TextureWorkerSystem");
 exports.initMapManagers = function (gl, TextureWorkerData) {
     TextureWorkerSystem_1.initTextures(gl, TextureWorkerData);
@@ -12,8 +12,8 @@ exports.getMapCount = function (materialIndex, MapManagerWorkerData) {
     }
     return textureCounts[materialIndex];
 };
-exports.bindAndUpdate = function (gl, mapCount, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData) {
-    mapManagerUtils_1.bindAndUpdate(gl, mapCount, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, TextureWorkerSystem_1.bindToUnit, TextureWorkerSystem_1.needUpdate, TextureWorkerSystem_1.update);
+exports.bindAndUpdate = function (gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData) {
+    mapManagerUtils_1.bindAndUpdate(gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, TextureWorkerSystem_1.bindToUnit, TextureWorkerSystem_1.needUpdate, TextureWorkerSystem_1.update);
 };
 exports.initData = function (textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData) {
     TextureWorkerSystem_1.initData(textureData.textureBuffer, TextureCacheWorkerData, TextureWorkerData);

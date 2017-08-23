@@ -84,7 +84,7 @@ export var setViewportOfGL = curry((DeviceManagerDataFromSystem: any, state: Map
     });
 })
 
-var _setBodyByScreenSize = (screenSize: EScreenSize, DomQuery:any) => {
+var _setBodyByScreenSize = (screenSize: EScreenSize, DomQuery: any) => {
     return IO.of(() => {
         if (screenSize === EScreenSize.FULL) {
             DomQuery.create("body").css("margin", "0");
@@ -135,7 +135,7 @@ export var getScreenSize = (state: Map<any, any>) => {
     return state.getIn(["Main", "screenSize"]);
 }
 
-export var setScreen = (canvas: HTMLCanvasElement, setScreenData: Function, DeviceManagerDataFromSystem: any, state: Map<any, any>, DomQuery:any) => {
+export var setScreen = (canvas: HTMLCanvasElement, setScreenData: Function, DeviceManagerDataFromSystem: any, state: Map<any, any>, DomQuery: any) => {
     return IO.of(requireCheckFunc(() => {
         it("should exist MainData.screenSize", () => {
             expect(getScreenSize(state)).exist;
@@ -226,7 +226,7 @@ export var setSide = (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataF
     }
 }
 
-export var setDepthWrite = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+export var setDepthWrite = (gl: any, value: boolean, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.depthWrite !== value) {
         gl.depthMask(value);
 
@@ -234,12 +234,12 @@ export var setDepthWrite = (gl:any, value:boolean, DeviceManagerDataFromSystem: 
     }
 }
 
-export var setBlend = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+export var setBlend = (gl: any, value: boolean, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.blend !== value) {
-        if(value){
+        if (value) {
             gl.enable(gl.BLEND);
         }
-        else{
+        else {
             gl.disable(gl.BLEND);
         }
 
@@ -247,9 +247,9 @@ export var setBlend = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) 
     }
 }
 
-export var setBlendFunc = (gl:any, blendSrc:EBlendFunc, blendDst:EBlendFunc, DeviceManagerDataFromSystem: any) => {
+export var setBlendFunc = (gl: any, blendSrc: EBlendFunc, blendDst: EBlendFunc, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.blendSrc !== blendSrc || DeviceManagerDataFromSystem.blendDst !== blendDst) {
-        if(DeviceManagerDataFromSystem.blend){
+        if (DeviceManagerDataFromSystem.blend) {
             gl.blendFunc(gl[blendSrc], gl[blendDst]);
         }
 
@@ -258,9 +258,9 @@ export var setBlendFunc = (gl:any, blendSrc:EBlendFunc, blendDst:EBlendFunc, Dev
     }
 }
 
-export var setBlendEquation = (gl:any, blendEquation:EBlendEquation, DeviceManagerDataFromSystem: any) => {
+export var setBlendEquation = (gl: any, blendEquation: EBlendEquation, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.blendEquation !== blendEquation) {
-        if(DeviceManagerDataFromSystem.blend){
+        if (DeviceManagerDataFromSystem.blend) {
             gl.blendEquation(gl[blendEquation]);
         }
 
@@ -268,11 +268,11 @@ export var setBlendEquation = (gl:any, blendEquation:EBlendEquation, DeviceManag
     }
 }
 
-export var setBlendSeparate = (gl:any, blendFuncSeparate:Array<EBlendFunc>, DeviceManagerDataFromSystem: any) => {
+export var setBlendSeparate = (gl: any, blendFuncSeparate: Array<EBlendFunc>, DeviceManagerDataFromSystem: any) => {
     var blendFuncSeparateData = DeviceManagerDataFromSystem.blendFuncSeparate;
 
-    if (!blendFuncSeparateData || blendFuncSeparateData[0] !== blendFuncSeparate[0] || blendFuncSeparateData[1] !== blendFuncSeparate[1] || blendFuncSeparateData[2] !== blendFuncSeparate[2]|| blendFuncSeparateData[3] !== blendFuncSeparate[3]) {
-        if(DeviceManagerDataFromSystem.blend){
+    if (!blendFuncSeparateData || blendFuncSeparateData[0] !== blendFuncSeparate[0] || blendFuncSeparateData[1] !== blendFuncSeparate[1] || blendFuncSeparateData[2] !== blendFuncSeparate[2] || blendFuncSeparateData[3] !== blendFuncSeparate[3]) {
+        if (DeviceManagerDataFromSystem.blend) {
             gl.blendFuncSeparate(gl[blendFuncSeparate[0]], gl[blendFuncSeparate[1]], gl[blendFuncSeparate[2]], gl[blendFuncSeparate[3]]);
         }
 
@@ -280,12 +280,12 @@ export var setBlendSeparate = (gl:any, blendFuncSeparate:Array<EBlendFunc>, Devi
     }
 }
 
-export var setDepthTest = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+export var setDepthTest = (gl: any, value: boolean, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.depthTest !== value) {
-        if(value){
+        if (value) {
             gl.enable(gl.DEPTH_TEST);
         }
-        else{
+        else {
             gl.disable(gl.DEPTH_TEST);
         }
 
@@ -293,12 +293,12 @@ export var setDepthTest = (gl:any, value:boolean, DeviceManagerDataFromSystem: a
     }
 }
 
-export var setScissorTest = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+export var setScissorTest = (gl: any, value: boolean, DeviceManagerDataFromSystem: any) => {
     if (DeviceManagerDataFromSystem.scissorTest !== value) {
-        if(value){
+        if (value) {
             gl.enable(gl.SCISSOR_TEST);
         }
-        else{
+        else {
             gl.disable(gl.SCISSOR_TEST);
         }
 
@@ -306,13 +306,13 @@ export var setScissorTest = (gl:any, value:boolean, DeviceManagerDataFromSystem:
     }
 }
 
-export var getOnlyGL = (canvas: HTMLCanvasElement, options:ContextConfigOptionsData, WebGLDetectDataFromSystem:any) => {
-    if(isWebgl1(WebGLDetectDataFromSystem)) {
+export var getOnlyGL = (canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectDataFromSystem: any) => {
+    if (isWebgl1(WebGLDetectDataFromSystem)) {
         Log.log("use webgl1");
 
         return getWebgl1Context(options, canvas);
     }
-    else if(isWebgl2(WebGLDetectDataFromSystem)) {
+    else if (isWebgl2(WebGLDetectDataFromSystem)) {
         Log.log("use webgl2");
 
         return getWebgl2Context(options, canvas);

@@ -1,7 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
 import { create, initMaterial, setSpecularMap, setDiffuseMap } from "./LightMaterialSystem";
-import { ShaderData } from "../../renderer/shader/ShaderData";
 import { MaterialData } from "./MaterialData";
 import { getAlphaTest, getColor, getOpacity, setAlphaTest, setColor, setOpacity } from "./MaterialSystem";
 import { Color } from "../../structure/Color";
@@ -19,13 +18,25 @@ import { DirectorData } from "../../core/DirectorData";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { TextureData } from "../../renderer/texture/TextureData";
+import { WebGL1ShaderData } from "../../renderer/webgl1/shader/ShaderData";
+import { WebGL2ShaderData } from "../../renderer/webgl2/shader/ShaderData";
+import { isWebgl1 } from "../../renderer/device/WebGLDetectSystem";
 
 @registerClass("LightMaterial")
 export class LightMaterial extends Material {
 }
 
-export var createLightMaterial = () => {
-    return create(ShaderData, MaterialData, LightMaterialData);
+export var createLightMaterial = null;
+
+if(isWebgl1()){
+    createLightMaterial = () => {
+        return create(WebGL1ShaderData, MaterialData, LightMaterialData);
+    }
+}
+else{
+    createLightMaterial = () => {
+        return create(WebGL2ShaderData, MaterialData, LightMaterialData);
+    }
 }
 
 export var initLightMaterial = (material: LightMaterial) => {

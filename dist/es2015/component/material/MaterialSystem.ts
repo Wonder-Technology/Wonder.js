@@ -18,16 +18,12 @@ import {
     createTypeArrays,
     getOpacity as getOpacityUtils,
     getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize,
-    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex
-} from "../../renderer/utils/material/materialUtils";
+    getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex,
+    initNoMaterialShaders, useShader as useShaderUtils
+} from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { init as initShader } from "../../renderer/shader/ShaderSystem";
-import { material_config } from "../../renderer/data/material_config";
-import { shaderLib_generator } from "../../renderer/data/shaderLib_generator";
+import { IShaderLibGenerator } from "../../renderer/data/shaderLib_generator_interface";
 import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
-import { ProgramData } from "../../renderer/shader/program/ProgramData";
-import { LocationData } from "../../renderer/shader/location/LocationData";
-import { GLSLSenderData } from "../../renderer/shader/glslSender/GLSLSenderData";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
 import {
@@ -41,28 +37,27 @@ import {
     disposeComponent as disposeLightMaterialComponent,
     initData as initLightMaterialData, initMaterial as initLightMaterial, setDefaultData as setLightMaterialDefaultData
 } from "./LightMaterialSystem";
-import { BasicMaterialData } from "./BasicMaterialData";
-import { LightMaterialData } from "./LightMaterialData";
 import {
-    getBasicMaterialBufferCount, getBasicMaterialBufferStartIndex, getBufferLength, getBufferTotalCount,
-    getLightMaterialBufferCount, getLightMaterialBufferStartIndex
-} from "../../renderer/utils/material/bufferUtils";
+    getBasicMaterialBufferCount, getBufferLength, getBufferTotalCount,
+    getLightMaterialBufferCount
+} from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
-import { getColorArr3 as getColorArr3Utils } from "../../renderer/utils/common/operateBufferDataUtils";
-import { DirectionLightData } from "../light/DirectionLightData";
-import { PointLightData } from "../light/PointLightData";
 import {
     dispose as disposeMapManager,
     initData as initMapManagerData,
     initMapManagers
 } from "../../renderer/texture/MapManagerSystem";
-import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/material/basicMaterialUtils";
-import { getClassName as getLightMaterialClassName } from "../../renderer/utils/material/lightMaterialUtils";
-import { ShaderData } from "../../renderer/shader/ShaderData";
+import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
+import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
+import { IMaterialConfig } from "../../renderer/data/material_config_interface";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
+import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
+import {
+    getBasicMaterialBufferStartIndex,
+    getLightMaterialBufferStartIndex
+} from "../../renderer/utils/material/bufferUtils";
 
 export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
@@ -79,18 +74,19 @@ export var addInitHandle = (BasicMaterial: any, LightMaterial: any) => {
     addInitHandleToMap(LightMaterial, initLightMaterial);
 }
 
-// export var create = (index: number, materialClassName: string, material: Material, ShaderData: any, MaterialData: any) => {
 export var create = (index: number, material: Material, ShaderData: any, MaterialData: any) => {
     MaterialData.materialMap[index] = material;
 
-    // setShaderIndex(material.index, createShader(materialClassName, MaterialData, ShaderData), MaterialData);
-    // MaterialData.shaderMap[index] = createShader(materialClassName, MaterialData, ShaderData);
     createShader(ShaderData);
 
     return material;
 }
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+export var useShader = useShaderUtils;
+
+export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, AmbientLightData, DirectionLightData:any, PointLightData:any, GPUDetectData:any, GLSLSenderData:any, ProgramData:any, VaoData:any, LocationData:any, ShaderData:any) => {
+    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
+
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
 
@@ -110,7 +106,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         MaterialData.workerInitList.push(_buildWorkerInitData(index, className));
     }
 
-    var _buildWorkerInitData = (index: number, className: string) => {
+    let _buildWorkerInitData = (index: number, className: string) => {
         return {
             index: index,
             className: className
@@ -119,9 +115,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 }
 else {
     initMaterial = (index: number, state: MapImmutable<any, any>, className: string, MaterialData: any) => {
-        var shaderIndex = initShader(state, index, className, material_config, shaderLib_generator as any, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, DirectionLightData, PointLightData));
-
-        setShaderIndex(index, shaderIndex, MaterialData);
     }
 }
 

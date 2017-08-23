@@ -7,7 +7,6 @@ import { ThreeDTransform } from "./ThreeDTransform";
 import { moveToIndex, swap } from "./operateDataSystem";
 import { forEach } from "../../utils/arrayUtils";
 import { LinkList, LinkNode } from "./LinkList";
-import { isValidMapValue } from "../../utils/objectUtils";
 import { isNotAlive } from "./ThreeDTransformSystem";
 
 export var addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number, ThreeDTransformData: any) => {
@@ -108,16 +107,21 @@ var _getNotUsedIndexFromArr = (ThreeDTransformData: any) => {
 
 var _getNotUsedIndexNode = (notUsedIndexLinkList: LinkList<number>) => {
     /*!
-    not shift! because it's too slow in firefox!
-     //optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list)
+    optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list).
+
+    not shift array! because it's too slow in firefox!
+    so here use link list->shift.
      */
-    // return notUsedIndexLinkList.shift();
     return notUsedIndexLinkList.shift();
 };
 
-export var addNotUsedIndex = (index: number, notUsedIndexLinkList: LinkList<number>) => {
+export var addNotUsedIndex = requireCheckFunc ((index: number, notUsedIndexLinkList: LinkList<number>) => {
+    it("index shouldn't already exist", () => {
+        expect(notUsedIndexLinkList.hasDuplicateNode(index)).false;
+    });
+}, (index: number, notUsedIndexLinkList: LinkList<number>) => {
     notUsedIndexLinkList.push(LinkNode.create(index));
-};
+})
 
 export var isNotDirty = (index: number, firstDirtyIndex: number) => {
     return index < firstDirtyIndex;

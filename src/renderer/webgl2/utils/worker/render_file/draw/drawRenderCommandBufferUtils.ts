@@ -15,22 +15,22 @@ import {
     IWebGL2LightSendUniformDataDataMap
 } from "../interface/IUtils";
 
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex:number, useShaderName:string, initMaterialShader: Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap:IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData:BasicRenderUniformData | LightRenderUniformData, {
-    renderCommandBufferData:{
+export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex: number, useShaderName: string, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData: BasicRenderUniformData | LightRenderUniformData, {
+    renderCommandBufferData: {
         mMatrices,
-        materialIndices,
-        geometryIndices
+    materialIndices,
+    geometryIndices
     },
     count
 }) => {
     var {
             TextureDataFromSystem,
-            TextureCacheDataFromSystem,
-            MapManagerDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            GeometryDataFromSystem
+        TextureCacheDataFromSystem,
+        MapManagerDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem,
+        GeometryDataFromSystem
         } = drawDataMap,
         {
             sendAttributeData,

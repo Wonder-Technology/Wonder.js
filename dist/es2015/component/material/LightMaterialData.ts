@@ -7,14 +7,14 @@ export class LightMaterialData extends SpecifyMaterialData {
     public static shininess: Float32Array = null;
     public static shadings: Uint8Array = null;
     public static lightModels: Uint8Array = null;
+    public static hasDiffuseMaps: Uint8Array = null;
+    public static hasSpecularMaps: Uint8Array = null;
 
     public static defaultShininess: number = null;
     public static defaultShading: number = null;
     public static defaultLightModel: number = null;
+    public static defaultHasMap: number = null;
 
     public static emptyColor: Color = null;
     public static emptyColorArr: Array<number> = null;
-
-    public static diffuseMapIndex: number = null;
-    public static specularMapIndex: number = null;
 }

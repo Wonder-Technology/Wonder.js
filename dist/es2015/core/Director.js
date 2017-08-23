@@ -9,14 +9,14 @@ import { singleton } from "../definition/typescript/decorator/singleton";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import { init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle } from "../component/transform/ThreeDTransformSystem";
-import { getState, run, setState } from "./DirectorSystem";
+import { getState, markIsInit, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { GlobalTempData } from "../definition/GlobalTempData";
 import { GameObjectData } from "./entityObject/gameObject/GameObjectData";
 import { create } from "./entityObject/scene/SceneSystem";
-import { addAddComponentHandle as addGeometryAddComponentHandle, addDisposeHandle as addGeometryDisposeHandle, addInitHandle as addGeometryInitHandle, init as initGeometry } from "../component/geometry/GeometrySystem";
-import { init as initRenderer } from "../renderer/render/WebGLRenderSystem";
+import { addAddComponentHandle as addGeometryAddComponentHandle, addInitHandle as addGeometryInitHandle, init as initGeometry } from "../component/geometry/GeometrySystem";
+import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import { addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle } from "../component/material/MaterialSystem";
 import { addAddComponentHandle as addMeshRendererAddComponentHandle, addDisposeHandle as addMeshRendererDisposeHandle } from "../component/renderer/MeshRendererSystem";
@@ -31,13 +31,24 @@ import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
 import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
-import { addAddComponentHandle as addLightAddComponentHandle, addDisposeHandle as addLightDisposeHandle } from "../component/light/LightSystem";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
 import { BasicMaterial } from "../component/material/BasicMaterial";
 import { LightMaterial } from "../component/material/LightMaterial";
 import { BoxGeometry } from "../component/geometry/BoxGeometry";
 import { CustomGeometry } from "../component/geometry/CustomGeometry";
+import { PointLight } from "../component/light/PointLight";
+import { isWebgl1 } from "../renderer/device/WebGLDetectSystem";
+import { addAddComponentHandle as addWebGL1LightAddComponentHandle, addDisposeHandle as addWebGL1LightDisposeHandle } from "../component/webgl1/light/LightSystem";
+import { addAddComponentHandle as addWebGL2LightAddComponentHandle, addDisposeHandle as addWebGL2LightDisposeHandle } from "../component/webgl2/light/LightSystem";
+import { init as initPointLight } from "../component/light/PointLightSystem";
+import { init as initDirectionLight } from "../component/light/DirectionLightSystem";
+import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
+import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
+import { addDisposeHandle as addWebGL1GeometryDisposeHandle } from "../component/webgl1/geometry/GeometrySystem";
+import { addDisposeHandle as addWebGL2GeometryDisposeHandle } from "../component/webgl2/geometry/GeometrySystem";
+import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
+import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
 var Director = (function () {
     function Director() {
         this.scene = create(GameObjectData);
@@ -77,6 +88,7 @@ var Director = (function () {
     };
     Director.prototype._init = function (state) {
         var resultState = state;
+        markIsInit(DirectorData);
         resultState = this._initSystem(resultState);
         resultState = this._initRenderer(resultState);
         this._timeController.start();
@@ -87,6 +99,8 @@ var Director = (function () {
         var resultState = initTransform(GlobalTempData, ThreeDTransformData, state);
         resultState = initGeometry(GeometryData, state);
         resultState = initCameraController(PerspectiveCameraData, CameraData, CameraControllerData, state);
+        resultState = _initPointLight(state);
+        resultState = _initDirectionLight(state);
         return resultState;
     };
     Director.prototype._initRenderer = function (state) {
@@ -108,9 +122,6 @@ var Director = (function () {
     return Director;
 }());
 export { Director };
-addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
-addGeometryDisposeHandle(BoxGeometry, CustomGeometry);
-addGeometryInitHandle(BoxGeometry, CustomGeometry);
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);
 addMaterialInitHandle(BasicMaterial, LightMaterial);
@@ -122,6 +133,29 @@ addThreeDTransformAddComponentHandle(ThreeDTransform);
 addThreeDTransformDisposeHandle(ThreeDTransform);
 addCameraControllerAddComponentHandle(CameraController);
 addCameraControllerDisposeHandle(CameraController);
-addLightAddComponentHandle(AmbientLight, DirectionLight);
-addLightDisposeHandle(AmbientLight, DirectionLight);
+addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
+addGeometryInitHandle(BoxGeometry, CustomGeometry);
+var _initPointLight = null, _initDirectionLight = null;
+if (isWebgl1()) {
+    addWebGL1LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
+    addWebGL1LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+    addWebGL1GeometryDisposeHandle(BoxGeometry, CustomGeometry);
+    _initPointLight = function (state) {
+        return initPointLight(WebGL1PointLightData, state);
+    };
+    _initDirectionLight = function (state) {
+        return initDirectionLight(WebGL1DirectionLightData, state);
+    };
+}
+else {
+    addWebGL2LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
+    addWebGL2LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
+    addWebGL2GeometryDisposeHandle(BoxGeometry, CustomGeometry);
+    _initPointLight = function (state) {
+        return initPointLight(WebGL2PointLightData, state);
+    };
+    _initDirectionLight = function (state) {
+        return initDirectionLight(WebGL2DirectionLightData, state);
+    };
+}
 //# sourceMappingURL=Director.js.map

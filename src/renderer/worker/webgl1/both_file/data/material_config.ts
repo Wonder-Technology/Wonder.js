@@ -1,7 +1,7 @@
 export const webgl1_material_config = {
-    "shaders":{
-        "materialShaders":{
-            "BasicRender":[
+    "shaders": {
+        "materialShaders": {
+            "BasicRender": [
                 { "type": "group", "value": "engineMaterialTop" },
 
                 "BasicMaterialColorShaderLib",

@@ -1,3 +1,3 @@
-export interface IUIDEntity {
+export interface IUIdEntity {
     uid: number;
 }

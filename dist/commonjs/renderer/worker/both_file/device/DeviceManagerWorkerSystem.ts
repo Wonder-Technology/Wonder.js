@@ -8,7 +8,7 @@ import {
     setSide as setSideUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
     setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils
-} from "../../../utils/device/deviceManagerUtils";
+} from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
 import { ScreenData, ViewportData } from "../../../type/messageDataType";
@@ -84,8 +84,8 @@ export var setViewportOfGL = curry((DeviceManagerWorkerData: any, {
     });
 })
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, state: Map<any, any>) => {
-    return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state);
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery:any, state: Map<any, any>) => {
+    return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 
 var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {

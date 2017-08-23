@@ -6,7 +6,7 @@ import { LinkList } from "./LinkList";
 import { Quaternion } from "../../math/Quaternion";
 import { Matrix3 } from "../../math/Matrix3";
 import { Component } from "../Component";
-import { IUIDEntity } from "../../core/entityObject/gameObject/IUIDEntity";
+import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 
 export class ThreeDTransformData {
     static get maxCount() {
@@ -46,7 +46,7 @@ export class ThreeDTransformData {
 
     public static gameObjectMap: ThreeDTransformGameObjectMap = null;
 
-    public static aliveUIDArray: Array<number> = null;
+    public static aliveUIdArray: Array<number> = null;
 
     public static buffer: ArrayBuffer = null;
 }
@@ -71,7 +71,7 @@ export type ThreeDTransformChildrenMap = {
     [uid: number]: Array<Component>
 }
 
-export type ThreeDTransformGameObjectMap = Map<number, IUIDEntity>
+export type ThreeDTransformGameObjectMap = Map<number, IUIdEntity>
 
 export type TransformMap = {
     [index: number]: Component
