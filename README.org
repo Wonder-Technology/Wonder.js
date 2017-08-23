@@ -1,13 +1,13 @@
 * Wonder.js
 Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contributions are very welcome.
 
-[[https://travis-ci.org/yyc-git/Wonder.js?branch%3Dmaster][https://travis-ci.org/yyc-git/Wonder.js.png]] [[https://codecov.io/github/yyc-git/Wonder.js?branch=master][https://codecov.io/github/yyc-git/Wonder.js/coverage.svg?branch=master]]
+[[https://travis-ci.org/DreamForeast/Wonder.js?branch%3Dmaster][https://travis-ci.org/DreamForeast/Wonder.js.png]] [[https://codecov.io/github/DreamForeast/Wonder.js?branch=master][https://codecov.io/github/DreamForeast/Wonder.js/coverage.svg?branch=master]]
 
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
-- [[https://github.com/yyc-git/Wonder.js/wiki][wiki]]
-- [[https://github.com/yyc-git/Wonder.js/wiki/Roadmap][Roadmap]]
+- [[https://github.com/DreamForeast/Wonder.js/wiki][wiki]]
+- [[https://github.com/DreamForeast/Wonder.js/wiki/Roadmap][Roadmap]]
 
 Please learn samples in examples/samples/ to get more info.
 * Design
@@ -17,6 +17,7 @@ Please learn samples in examples/samples/ to get more info.
   use components to assemble game object.
 - Multi Thread Render
 - Functional Reactive Programming
+- Defer Shading
 
   use Wonder-FRP library to handle async operation in frp way.
 - Functional Programming
