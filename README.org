@@ -16,10 +16,11 @@ Please learn samples in examples/samples/ to get more info.
 
   use components to assemble game object.
 - Multi Thread Render
-- Functional Reactive Programming
 - Defer Shading
+- Functional Reactive Programming
 
   use Wonder-FRP library to handle async operation in frp way.
+
 - Functional Programming
 - Code Contract
 
