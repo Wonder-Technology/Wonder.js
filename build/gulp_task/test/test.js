@@ -113,5 +113,6 @@ gulp.task("webgl2RenderWorkerTestInCI", function (done) {
 });
 
 // gulp.task("testInCI", gulpSync.sync(["webgl1RenderWorkerTestInCI", "webgl2RenderWorkerTestInCI", "webgl1NoWorkerTestInCI", "webgl2NoWorkerTestInCI"]));
-gulp.task("testInCI", gulpSync.sync(["webgl1NoWorkerTestInCI", "webgl2NoWorkerTestInCI"]));
+// gulp.task("testInCI", gulpSync.sync(["webgl1NoWorkerTestInCI", "webgl2NoWorkerTestInCI"]));
+gulp.task("testInCI", gulpSync.sync(["webgl1NoWorkerTestInCI"));
 
