@@ -101,7 +101,7 @@ declare module 'wonder.js/dist/es2015' {
     export { ETextureWrapMode } from "wonder.js/dist/es2015/renderer/enum/ETextureWrapMode";
     export { EVariableType } from "wonder.js/dist/es2015/renderer/enum/EVariableType";
     export { EWebGLVersion } from "wonder.js/dist/es2015/renderer/enum/EWebGLVersion";
-    export { empty, NULL, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, modelMatrix_noInstance_vertex, webgl1_noShadowMap_fragment, webgl1_basic_end_fragment, webgl1_basic_materialColor_fragment, frontLight_common, frontLight_common_fragment, frontLight_common_vertex, frontLight_end_fragment, frontLight_fragment, frontLight_setWorldPosition_vertex, frontLight_vertex, webgl1_normalMatrix_noInstance_vertex, webgl1_basic_map_fragment, webgl1_basic_map_vertex, webgl1_diffuseMap_fragment, webgl1_diffuseMap_vertex, webgl1_noDiffuseMap_fragment, webgl1_noEmissionMap_fragment, webgl1_noLightMap_fragment, webgl1_noNormalMap_fragment, webgl1_noNormalMap_vertex, webgl1_noSpecularMap_fragment, webgl1_specularMap_fragment, webgl1_specularMap_vertex, webgl2_deferLightPass_directionLight_noNormalMap_fragment, webgl2_deferLightPass_pointLight_noNormalMap_fragment, webgl2_noShadowMap_fragment, webgl2_basic_end_fragment, webgl2_basic_materialColor_fragment, webgl2_basic_vertex, ubo_camera, version, webgl2_common_define, webgl2_common_fragment, webgl2_common_function, webgl2_common_vertex, ubo_light, webgl2_basic_map_fragment, webgl2_basic_map_vertex, webgl2_normalMatrix_noInstance_vertex, gbuffer_common_fragment, gbuffer_common_vertex, gbuffer_end_fragment, gbuffer_fragment, gbuffer_setWorldPosition_vertex, gbuffer_vertex, deferLightPass_common, deferLightPass_directionLight_pointLight_common, deferLightPass_end_fragment, deferLightPass_vertex, webgl2_diffuseMap_fragment, webgl2_diffuseMap_vertex, webgl2_gbuffer_noNormalMap_fragment, webgl2_gbuffer_noNormalMap_vertex, webgl2_noDiffuseMap_fragment, webgl2_noSpecularMap_fragment, webgl2_specularMap_fragment, webgl2_specularMap_vertex, deferLightPass_ambientLight_fragment, ubo_ambientLight, deferLightPass_directionLight_common, deferLightPass_directionLight_fragment, ubo_directionLight, deferLightPass_pointLight_common, deferLightPass_pointLight_fragment, ubo_pointLight, webgl2_deferLightPass_noNormalMap_fragment, webgl2_noEmissionMap_fragment, webgl2_noLightMap_fragment } from "wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk";
+    export { empty, NULL, common_define, common_fragment, common_function, common_vertex, highp_fragment, lowp_fragment, mediump_fragment, modelMatrix_noInstance_vertex, webgl1_noShadowMap_fragment, webgl1_basic_end_fragment, webgl1_basic_materialColor_fragment, webgl1_normalMatrix_noInstance_vertex, frontLight_common, frontLight_common_fragment, frontLight_common_vertex, frontLight_end_fragment, frontLight_fragment, frontLight_setWorldPosition_vertex, frontLight_vertex, webgl1_basic_map_fragment, webgl1_basic_map_vertex, webgl1_diffuseMap_fragment, webgl1_diffuseMap_vertex, webgl1_noDiffuseMap_fragment, webgl1_noEmissionMap_fragment, webgl1_noLightMap_fragment, webgl1_noNormalMap_fragment, webgl1_noNormalMap_vertex, webgl1_noSpecularMap_fragment, webgl1_specularMap_fragment, webgl1_specularMap_vertex, webgl2_deferLightPass_directionLight_noNormalMap_fragment, webgl2_noShadowMap_fragment, webgl2_deferLightPass_pointLight_noNormalMap_fragment, webgl2_basic_end_fragment, webgl2_basic_materialColor_fragment, webgl2_basic_vertex, ubo_camera, version, webgl2_common_define, webgl2_common_fragment, webgl2_common_function, webgl2_common_vertex, ubo_light, webgl2_basic_map_fragment, webgl2_basic_map_vertex, gbuffer_common_fragment, gbuffer_common_vertex, gbuffer_end_fragment, gbuffer_fragment, gbuffer_setWorldPosition_vertex, gbuffer_vertex, deferLightPass_common, deferLightPass_directionLight_pointLight_common, deferLightPass_end_fragment, deferLightPass_vertex, webgl2_normalMatrix_noInstance_vertex, webgl2_diffuseMap_fragment, webgl2_diffuseMap_vertex, webgl2_gbuffer_noNormalMap_fragment, webgl2_gbuffer_noNormalMap_vertex, webgl2_noDiffuseMap_fragment, webgl2_noSpecularMap_fragment, webgl2_specularMap_fragment, webgl2_specularMap_vertex, deferLightPass_ambientLight_fragment, ubo_ambientLight, deferLightPass_directionLight_common, deferLightPass_directionLight_fragment, ubo_directionLight, webgl2_deferLightPass_noNormalMap_fragment, webgl2_noEmissionMap_fragment, webgl2_noLightMap_fragment, deferLightPass_pointLight_common, deferLightPass_pointLight_fragment, ubo_pointLight } from "wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk";
     export { MapManagerData } from "wonder.js/dist/es2015/renderer/texture/MapManagerData";
     export { Texture, createTexture, disposeTexture, getTextureSource, setTextureSource, getTextureWidth, setTextureWidth, getTextureHeight, setTextureHeight, getTextureIsNeedUpdate, setTextureIsNeedUpdate } from "wonder.js/dist/es2015/renderer/texture/Texture";
     export { TextureCacheData } from "wonder.js/dist/es2015/renderer/texture/TextureCacheData";
@@ -1499,6 +1499,7 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const webgl1_noShadowMap_fragment: GLSLChunk;
     export const webgl1_basic_end_fragment: GLSLChunk;
     export const webgl1_basic_materialColor_fragment: GLSLChunk;
+    export const webgl1_normalMatrix_noInstance_vertex: GLSLChunk;
     export const frontLight_common: GLSLChunk;
     export const frontLight_common_fragment: GLSLChunk;
     export const frontLight_common_vertex: GLSLChunk;
@@ -1506,7 +1507,6 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const frontLight_fragment: GLSLChunk;
     export const frontLight_setWorldPosition_vertex: GLSLChunk;
     export const frontLight_vertex: GLSLChunk;
-    export const webgl1_normalMatrix_noInstance_vertex: GLSLChunk;
     export const webgl1_basic_map_fragment: GLSLChunk;
     export const webgl1_basic_map_vertex: GLSLChunk;
     export const webgl1_diffuseMap_fragment: GLSLChunk;
@@ -1520,8 +1520,8 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const webgl1_specularMap_fragment: GLSLChunk;
     export const webgl1_specularMap_vertex: GLSLChunk;
     export const webgl2_deferLightPass_directionLight_noNormalMap_fragment: GLSLChunk;
-    export const webgl2_deferLightPass_pointLight_noNormalMap_fragment: GLSLChunk;
     export const webgl2_noShadowMap_fragment: GLSLChunk;
+    export const webgl2_deferLightPass_pointLight_noNormalMap_fragment: GLSLChunk;
     export const webgl2_basic_end_fragment: GLSLChunk;
     export const webgl2_basic_materialColor_fragment: GLSLChunk;
     export const webgl2_basic_vertex: GLSLChunk;
@@ -1534,7 +1534,6 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const ubo_light: GLSLChunk;
     export const webgl2_basic_map_fragment: GLSLChunk;
     export const webgl2_basic_map_vertex: GLSLChunk;
-    export const webgl2_normalMatrix_noInstance_vertex: GLSLChunk;
     export const gbuffer_common_fragment: GLSLChunk;
     export const gbuffer_common_vertex: GLSLChunk;
     export const gbuffer_end_fragment: GLSLChunk;
@@ -1545,6 +1544,7 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const deferLightPass_directionLight_pointLight_common: GLSLChunk;
     export const deferLightPass_end_fragment: GLSLChunk;
     export const deferLightPass_vertex: GLSLChunk;
+    export const webgl2_normalMatrix_noInstance_vertex: GLSLChunk;
     export const webgl2_diffuseMap_fragment: GLSLChunk;
     export const webgl2_diffuseMap_vertex: GLSLChunk;
     export const webgl2_gbuffer_noNormalMap_fragment: GLSLChunk;
@@ -1558,12 +1558,12 @@ declare module 'wonder.js/dist/es2015/renderer/shader/chunk/ShaderChunk' {
     export const deferLightPass_directionLight_common: GLSLChunk;
     export const deferLightPass_directionLight_fragment: GLSLChunk;
     export const ubo_directionLight: GLSLChunk;
-    export const deferLightPass_pointLight_common: GLSLChunk;
-    export const deferLightPass_pointLight_fragment: GLSLChunk;
-    export const ubo_pointLight: GLSLChunk;
     export const webgl2_deferLightPass_noNormalMap_fragment: GLSLChunk;
     export const webgl2_noEmissionMap_fragment: GLSLChunk;
     export const webgl2_noLightMap_fragment: GLSLChunk;
+    export const deferLightPass_pointLight_common: GLSLChunk;
+    export const deferLightPass_pointLight_fragment: GLSLChunk;
+    export const ubo_pointLight: GLSLChunk;
     export type GLSLChunk = {
         top: string;
         define: string;

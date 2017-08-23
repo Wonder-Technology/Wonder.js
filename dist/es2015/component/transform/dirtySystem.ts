@@ -115,7 +115,7 @@ var _getNotUsedIndexNode = (notUsedIndexLinkList: LinkList<number>) => {
     return notUsedIndexLinkList.shift();
 };
 
-export var addNotUsedIndex = requireCheckFunc ((index: number, notUsedIndexLinkList: LinkList<number>) => {
+export var addNotUsedIndex = requireCheckFunc((index: number, notUsedIndexLinkList: LinkList<number>) => {
     it("index shouldn't already exist", () => {
         expect(notUsedIndexLinkList.hasDuplicateNode(index)).false;
     });

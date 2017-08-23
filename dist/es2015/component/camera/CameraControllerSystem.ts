@@ -79,7 +79,7 @@ var _clearDirtyList = (CameraControllerData: any) => {
     CameraControllerData.dirtyIndexArray = [];
 }
 
-export var update = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any, state:Map<any, any>) => {
+export var update = (PerspectiveCameraData: any, CameraData: any, CameraControllerData: any, state: Map<any, any>) => {
     _forEachDirtyList(CameraControllerData.dirtyIndexArray, (dirtyIndex: number) => {
         updateProjectionMatrix(dirtyIndex, PerspectiveCameraData, CameraData);
     });

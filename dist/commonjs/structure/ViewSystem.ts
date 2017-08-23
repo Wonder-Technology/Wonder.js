@@ -91,19 +91,19 @@ export var initCanvas = (dom: HTMLCanvasElement) => {
     });
 }
 
-export var getWebgl1Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+export var getWebgl1Context = (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => {
     return getOnlyWebgl1Context(options, dom);
 }
 
-export var getWebgl2Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+export var getWebgl2Context = (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => {
     return getOnlyWebgl2Context(options, dom);
 }
 
-export var getOnlyWebgl1Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+export var getOnlyWebgl1Context = (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => {
     return dom.getContext("webgl", options) || dom.getContext("experimental-webgl", options);
 }
 
-export var getOnlyWebgl2Context = (options:ContextConfigOptionsData, dom: HTMLCanvasElement) => {
+export var getOnlyWebgl2Context = (options: ContextConfigOptionsData, dom: HTMLCanvasElement) => {
     return dom.getContext("webgl2", options);
 }
 

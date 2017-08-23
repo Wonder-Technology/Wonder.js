@@ -52,17 +52,17 @@ var _getUniformData = (materialIndex: number, field: string, from: string, rende
     return data;
 }
 var _getUnifromDataFromLightMaterial = (field: string, index: number,
-                                        {
+    {
                                             getColorArr3,
-                                            getOpacity,
-                                            MaterialDataFromSystem
+        getOpacity,
+        MaterialDataFromSystem
                                         },
-                                        {
+    {
                                             getEmissionColorArr3,
-                                            getSpecularColorArr3,
-                                            getShininess,
-                                            getLightModel,
-                                            LightMaterialDataFromSystem
+        getSpecularColorArr3,
+        getShininess,
+        getLightModel,
+        LightMaterialDataFromSystem
                                         }) => {
     var data: any = null;
 
@@ -100,7 +100,7 @@ export var buildMaterialDataForGetUniformData = (getColorArr3: Function, getOpac
     }
 }
 
-export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3:Function, getSpecularColorArr3:Function, getLightModel:Function, getShininess:Function, LightMaterialDataFromSystem:any) => {
+export var buildLightMaterialDataForGetUniformData = (getEmissionColorArr3: Function, getSpecularColorArr3: Function, getLightModel: Function, getShininess: Function, LightMaterialDataFromSystem: any) => {
     return {
         getEmissionColorArr3: getEmissionColorArr3,
         getSpecularColorArr3: getSpecularColorArr3,

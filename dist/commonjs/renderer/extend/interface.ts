@@ -1,2 +1,2 @@
-export interface WebGLVertexArrayObject{
+export interface WebGLVertexArrayObject {
 }

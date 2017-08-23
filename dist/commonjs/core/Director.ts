@@ -213,7 +213,7 @@ addGeometryInitHandle(BoxGeometry, CustomGeometry);
 var _initPointLight = null,
     _initDirectionLight = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     addWebGL1LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL1LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
 
@@ -227,7 +227,7 @@ if(isWebgl1()){
         return initDirectionLight(WebGL1DirectionLightData, state);
     }
 }
-else{
+else {
     addWebGL2LightAddComponentHandle(AmbientLight, DirectionLight, PointLight);
     addWebGL2LightDisposeHandle(AmbientLight, DirectionLight, PointLight);
 

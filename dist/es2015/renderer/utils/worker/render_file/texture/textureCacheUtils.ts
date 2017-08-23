@@ -2,23 +2,23 @@ import { expect } from "wonder-expect.js";
 import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { getMaxTextureUnit } from "../../../device/gpuDetectUtils";
 
-export var isCached = (unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+export var isCached = (unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     return _getActiveTexture(unitIndex, TextureCacheDataFromSystem, GPUDetectDataFromSystem) === textureIndex;
 }
 
-var _getActiveTexture = requireCheckFunc((unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+var _getActiveTexture = requireCheckFunc((unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     _checkUnit(unitIndex, GPUDetectDataFromSystem);
-}, (unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+}, (unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     return TextureCacheDataFromSystem.bindTextureUnitCache[unitIndex];
 })
 
-export var addActiveTexture = requireCheckFunc((unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+export var addActiveTexture = requireCheckFunc((unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     _checkUnit(unitIndex, GPUDetectDataFromSystem);
-}, (unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem:any) => {
+}, (unitIndex: number, textureIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     TextureCacheDataFromSystem.bindTextureUnitCache[unitIndex] = textureIndex;
 })
 
-var _checkUnit = (unitIndex: number, GPUDetectDataFromSystem:any) => {
+var _checkUnit = (unitIndex: number, GPUDetectDataFromSystem: any) => {
     var maxTextureUnit = getMaxTextureUnit(GPUDetectDataFromSystem);
 
     it(`texture unitIndex should >= 0, but actual is ${unitIndex}`, () => {

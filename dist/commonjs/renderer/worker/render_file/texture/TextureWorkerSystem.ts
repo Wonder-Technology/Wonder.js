@@ -10,7 +10,7 @@ import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messa
 import { fromArray, fromPromise } from "wonder-frp/dist/commonjs/global/Operator";
 import { firefox, chrome } from "bowser";
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData:any) => {
+export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
@@ -37,7 +37,7 @@ else if (firefox) {
     }
 }
 
-export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData:any) => {
+export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     for (let {
         sourceIndex,
         lastComponentIndex

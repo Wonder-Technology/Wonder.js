@@ -1,4 +1,4 @@
-export interface IWebGL1DrawFuncDataMap{
+export interface IWebGL1DrawFuncDataMap {
     bindIndexBuffer: Function;
     sendAttributeData: Function;
     sendUniformData: Function;

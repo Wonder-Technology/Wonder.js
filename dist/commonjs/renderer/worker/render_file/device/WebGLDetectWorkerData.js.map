@@ -1,1 +1,1 @@
-{"version":3,"file":"WebGLDetectWorkerData.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/device/WebGLDetectWorkerData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAEA,CAAC;IADiB,6BAAO,GAAiB,IAAI,CAAC;IAC/C,4BAAC;CAAA,AAFD,IAEC;AAFY,sDAAqB"}
+{"version":3,"file":"WebGLDetectWorkerData.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/device/WebGLDetectWorkerData.ts"],"names":[],"mappings":";;AAEA;IAAA;IAEA,CAAC;IADiB,6BAAO,GAAkB,IAAI,CAAC;IAChD,4BAAC;CAAA,AAFD,IAEC;AAFY,sDAAqB"}

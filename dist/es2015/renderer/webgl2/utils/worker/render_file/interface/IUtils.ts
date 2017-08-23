@@ -5,7 +5,7 @@ import {
 } from "../../../../../utils/worker/render_file/interface/IUtils";
 import { SendUniformDataGLSLSenderDataMap } from "../../../../../type/utilsType";
 
-export interface IWebGL2BasicSendUniformDataDataMap extends IBasicSendUniformDataDataMap{
+export interface IWebGL2BasicSendUniformDataDataMap extends IBasicSendUniformDataDataMap {
 }
 
 export interface IWebGL2SendUniformDataAmbientLightDataMap {
@@ -61,33 +61,33 @@ export interface IWebGL2InitShaderFuncDataMap {
     getIndices: Function;
 }
 
-export interface IWebGL2LightSendUniformDataDataMap extends ILightSendUniformDataDataMap{
+export interface IWebGL2LightSendUniformDataDataMap extends ILightSendUniformDataDataMap {
     glslSenderData: SendUniformDataGLSLSenderDataMap;
     ambientLightData: IWebGL2SendUniformDataAmbientLightDataMap;
     directionLightData: IWebGL2SendUniformDataDirectionLightDataMap;
     pointLightData: IWebGL2SendUniformDataPointLightDataMap;
 }
 
-export interface IWebGL2DrawDataMap extends IDrawDataMap{
+export interface IWebGL2DrawDataMap extends IDrawDataMap {
 }
 
-export interface IWebGL2AmbientLightValueDataMap{
+export interface IWebGL2AmbientLightValueDataMap {
     colorArr3: Array<number>;
 
-    isColorDirty:boolean;
+    isColorDirty: boolean;
 }
 
-export interface IWebGL2DirectionLightValueDataMap{
+export interface IWebGL2DirectionLightValueDataMap {
     position: Float32Array;
     colorArr3: Array<number>;
     intensity: number;
 
-    isPositionDirty:boolean;
-    isColorDirty:boolean;
-    isIntensityDirty:boolean;
+    isPositionDirty: boolean;
+    isColorDirty: boolean;
+    isIntensityDirty: boolean;
 }
 
-export interface IWebGL2PointLightValueDataMap{
+export interface IWebGL2PointLightValueDataMap {
     position: Float32Array;
     colorArr3: Array<number>;
     intensity: number;
@@ -96,6 +96,6 @@ export interface IWebGL2PointLightValueDataMap{
     quadratic: number;
     radius: number;
 
-    isIntensityDirty:boolean;
-    isOtherValueDirty:boolean;
+    isIntensityDirty: boolean;
+    isOtherValueDirty: boolean;
 }

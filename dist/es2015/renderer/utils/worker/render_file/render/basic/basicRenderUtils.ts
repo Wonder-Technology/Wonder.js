@@ -4,12 +4,12 @@ import { BasicMaterialForGetUniformDataDataMap, MaterialForGetUniformDataDataMap
 import { directlySendUniformData } from "../renderUtils";
 import { Log } from "../../../../../../utils/Log";
 
-export var sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, drawDataMap: IDrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap:IBasicSendUniformDataDataMap, uniformLocationMap:UniformLocationMap, uniformCacheMap:UniformCacheMap, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+export var sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IDrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IBasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
     _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, basicMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
 
-var _sendUniformData = (gl: WebGLRenderingContext, materialIndex:number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: BasicRenderUniformData, materialData:MaterialForGetUniformDataDataMap, basicMaterialData:BasicMaterialForGetUniformDataDataMap) => {
+var _sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: BasicRenderUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
     var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
@@ -34,7 +34,7 @@ var _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, prog
     }
 }
 
-var _getUniformData = (materialIndex:number, field: string, from: string, renderCommandUniformData: BasicRenderUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
+var _getUniformData = (materialIndex: number, field: string, from: string, renderCommandUniformData: BasicRenderUniformData, materialData: MaterialForGetUniformDataDataMap, basicMaterialData: BasicMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -54,10 +54,10 @@ var _getUniformData = (materialIndex:number, field: string, from: string, render
 
 var _getUnifromDataFromBasicMaterial = (field: string, index: number, {
                                             getColorArr3,
-                                            getOpacity,
-                                            MaterialDataFromSystem
+    getOpacity,
+    MaterialDataFromSystem
                                         },
-                                        {
+    {
                                             BasicMaterialDataFromSystem
                                         }) => {
     var data: any = null;
@@ -94,7 +94,7 @@ export var buildSendUniformDataDataMap = (
     }
 }
 
-export var buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpacity:Function, MaterialDataFromSystem:any) => {
+export var buildMaterialDataForGetUniformData = (getColorArr3: Function, getOpacity: Function, MaterialDataFromSystem: any) => {
     return {
         getColorArr3: getColorArr3,
         getOpacity: getOpacity,
@@ -102,7 +102,7 @@ export var buildMaterialDataForGetUniformData = (getColorArr3:Function, getOpaci
     }
 }
 
-export var buildBasicMaterialDataForGetUniformData = (BasicMaterialDataFromSystem:any) => {
+export var buildBasicMaterialDataForGetUniformData = (BasicMaterialDataFromSystem: any) => {
     return {
         BasicMaterialDataFromSystem: BasicMaterialDataFromSystem
     }

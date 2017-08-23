@@ -1,8 +1,8 @@
-export var getDirectionLightPosition = (index: number, DirectionLightDataFromSystem:any) => {
+export var getDirectionLightPosition = (index: number, DirectionLightDataFromSystem: any) => {
     return _getLightPosition(index, DirectionLightDataFromSystem);
 }
 
-export var getPointLightPosition = (index: number, PointLightDataFromSystem:any) => {
+export var getPointLightPosition = (index: number, PointLightDataFromSystem: any) => {
     return _getLightPosition(index, PointLightDataFromSystem);
 }
 

@@ -14,7 +14,7 @@ import { getAllPositionData as getPointLightAllPositionData } from "../../../../
 import { clearDisposedTextureDataMap, hasDisposedTextureDataMap } from "../../../texture/TextureSystem";
 import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
 
-export var sendDrawData = curry((WorkerInstanceData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData:any, data: RenderCommandBufferForDrawData) => {
+export var sendDrawData = curry((WorkerInstanceData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         geometryDisposeData = null,
         textureDisposeData = null,

@@ -3,8 +3,8 @@ import { setCount } from "../../../render_file/light/SpecifyLightWorkerSystem";
 
 export var initData = ({
                            buffer,
-                           bufferCount,
-                           lightCount
+    bufferCount,
+    lightCount
                        }, DirectionLightWorkerData: any) => {
     setCount(lightCount, DirectionLightWorkerData);
 

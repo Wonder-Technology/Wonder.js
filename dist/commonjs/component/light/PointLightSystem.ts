@@ -29,7 +29,8 @@ import { getPointLightBufferCount } from "../../renderer/utils/light/bufferUtils
 import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import {
-    getDirtyDataSize} from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
+    getDirtyDataSize
+} from "../../renderer/utils/worker/render_file/light/specifyLightUtils";
 import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Map } from "immutable";
 
@@ -224,7 +225,7 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
     }
 }
 
-export var disposeComponent = (component: Light, PointLightData:any) => {
+export var disposeComponent = (component: Light, PointLightData: any) => {
     var intensityDataSize = getIntensityDataSize(),
         constantDataSize = getConstantDataSize(),
         linearDataSize = getLinearDataSize(),
@@ -250,7 +251,7 @@ export var disposeComponent = (component: Light, PointLightData:any) => {
     return lastComponentIndex;
 }
 
-export var init = (PointLightData: any, state:Map<any, any>) => {
+export var init = (PointLightData: any, state: Map<any, any>) => {
     return bindChangePositionEvent(PointLightData, state);
 }
 

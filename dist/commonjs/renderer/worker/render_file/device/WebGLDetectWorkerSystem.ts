@@ -1,7 +1,7 @@
 import { EWebGLVersion } from "../../../enum/EWebGLVersion";
 import { isWebgl1 as isWebgl1Utils, isWebgl2 as isWebgl2Utils } from "../../../utils/worker/render_file/device/webglDetectUtils";
 
-export var setVersion = (version:EWebGLVersion, WebGLDetectWorkerData: any) => {
+export var setVersion = (version: EWebGLVersion, WebGLDetectWorkerData: any) => {
     WebGLDetectWorkerData.version = version;
 }
 

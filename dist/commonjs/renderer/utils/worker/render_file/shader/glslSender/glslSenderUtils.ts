@@ -5,7 +5,7 @@ import { UniformCacheMap, UniformShaderLocationMap, VaoConfigMap } from "../../.
 import { Log } from "../../../../../../utils/Log";
 import { Vector3 } from "../../../../../../math/Vector3";
 import { EBufferType } from "../../../../../enum/EBufferType";
-import { VaoConfigData} from "../../../../../type/dataType";
+import { VaoConfigData } from "../../../../../type/dataType";
 import { IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/both_file/data/shaderLib_generator";
 import { forEach } from "../../../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../../../renderConfigUtils";

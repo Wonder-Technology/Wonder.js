@@ -1,4 +1,4 @@
-export enum EBlendFunc{
+export enum EBlendFunc {
     ZERO = "ZEOR",
     ONE = "ONE",
     SRC_COLOR = "SRC_COLOR",

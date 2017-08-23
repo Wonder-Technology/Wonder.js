@@ -4,8 +4,8 @@ import { computeRadius as computeRadiusUtils } from "../../../../webgl2/utils/wo
 
 export var initData = ({
                            buffer,
-                           bufferCount,
-                           lightCount
+    bufferCount,
+    lightCount
                        }, PointLightWorkerData: any) => {
     setCount(lightCount, PointLightWorkerData);
 

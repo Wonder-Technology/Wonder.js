@@ -33,14 +33,14 @@ export class LinkList<T>{
         this._last = node;
     }
 
-    public hasDuplicateNode(val:any){
+    public hasDuplicateNode(val: any) {
         var node = this._first;
 
-        while(node !== null && node.val !== val){
+        while (node !== null && node.val !== val) {
             node = node.next;
         }
 
-        if(node === null){
+        if (node === null) {
             return false;
         }
 

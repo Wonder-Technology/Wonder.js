@@ -23,7 +23,7 @@ import { GPUDetectData } from "./GPUDetectData";
 export var initDevice = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect:Function, DomQuery:any, canvas: HTMLCanvasElement) => {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect: Function, DomQuery: any, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
             var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(),
                 viewportData: ViewportData = getViewportData(screenData, state);
@@ -40,7 +40,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     });
 }
 else {
-    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect:Function, DomQuery:any, canvas: HTMLCanvasElement) => {
+    initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect: Function, DomQuery: any, canvas: HTMLCanvasElement) => {
         return compose(
             map(detect(getGL, DeviceManagerData, GPUDetectData)),
             chain(setCanvasPixelRatioFromDeviceManagerSystem(configState.get("useDevicePixelRatio"), canvas)),

@@ -5,8 +5,8 @@ import { update } from "../renderer/worker/render_file/texture/TextureWorkerSyst
 import { initData as initWebGL1LightWorkerDataSystem } from "../renderer/worker/webgl1/render_file/light/LightWorkerSystem";
 import { initData as initWebGL2LightWorkerDataSystem } from "../renderer/worker/webgl2/render_file/light/LightWorkerSystem";
 import {
-   getDirectionLightPosition,
-   getPointLightPosition
+    getDirectionLightPosition,
+    getPointLightPosition
 } from "../renderer/worker/render_file/render/RenderWorkerSystem";
 import { initData as initWebGL1GLSLSenderWorkerDataSystem } from "../renderer/worker/webgl1/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { initData as initWebGL2GLSLSenderWorkerDataSystem } from "../renderer/worker/webgl2/render_file/shader/glslSender/GLSLSenderWorkerSystem";

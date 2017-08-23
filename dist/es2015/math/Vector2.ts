@@ -56,14 +56,14 @@ export class Vector2 {
         return this;
     }
 
-    public addScalar(s:number) {
+    public addScalar(s: number) {
         this.values[0] += s;
         this.values[1] += s;
 
         return this;
     }
 
-    public multiplyScalar(s:number) {
+    public multiplyScalar(s: number) {
         this.values[0] *= s;
         this.values[1] *= s;
 

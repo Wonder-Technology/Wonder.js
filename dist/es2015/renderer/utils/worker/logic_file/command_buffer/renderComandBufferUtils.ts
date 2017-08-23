@@ -13,17 +13,17 @@ import { CameraController } from "../../../../../component/camera/CameraControll
 import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import { getNormalMatrix, getPosition } from "../../../../../component/transform/ThreeDTransformSystem";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData:Function, createLightRenderCommandBufferData:Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData:any, LightRenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
+export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })
-}, (state: Map<any, any>, createBasicRenderCommandBufferData:Function, createLightRenderCommandBufferData:Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData:any, LightRenderCommandBufferData:any, renderGameObjectArray: Array<GameObject>) => {
-    var basicMaterialGameObjectArr:Array<GameObject> = [],
-        lightMaterialGameObjectArr:Array<GameObject> = [],
-        vMatrix:Float32Array = null,
-        pMatrix:Float32Array = null,
-        cameraPosition:Float32Array = null,
-        normalMatrix:Float32Array = null,
+}, (state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+    var basicMaterialGameObjectArr: Array<GameObject> = [],
+        lightMaterialGameObjectArr: Array<GameObject> = [],
+        vMatrix: Float32Array = null,
+        pMatrix: Float32Array = null,
+        cameraPosition: Float32Array = null,
+        normalMatrix: Float32Array = null,
         currentCamera = getCurrentCamera(SceneData),
         currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
@@ -34,26 +34,26 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     cameraPosition = getPosition(currentCameraTransform, ThreeDTransformData).values;
     normalMatrix = getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData).values;
 
-    for(let gameObject of renderGameObjectArray){
+    for (let gameObject of renderGameObjectArray) {
         let material = getMaterial(gameObject, GameObjectData);
 
-        if(ClassUtils.getClassNameByInstance(material) === "BasicMaterial"){
+        if (ClassUtils.getClassNameByInstance(material) === "BasicMaterial") {
             basicMaterialGameObjectArr.push(gameObject);
         }
-        else{
+        else {
             lightMaterialGameObjectArr.push(gameObject);
         }
     }
 
     return {
-        cameraData:{
-            vMatrix:vMatrix,
-            pMatrix:pMatrix,
-            cameraPosition:cameraPosition,
-            normalMatrix:normalMatrix
+        cameraData: {
+            vMatrix: vMatrix,
+            pMatrix: pMatrix,
+            cameraPosition: cameraPosition,
+            normalMatrix: normalMatrix
         },
         basicData: createBasicRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, basicMaterialGameObjectArr),
-        lightData:createLightRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, LightRenderCommandBufferData, lightMaterialGameObjectArr)
+        lightData: createLightRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, LightRenderCommandBufferData, lightMaterialGameObjectArr)
     }
 });
 

@@ -246,7 +246,7 @@ export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObjec
     _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
 })
 
-export var addRemovedChild = (gameObject: GameObject, child: GameObject, MeshRendererData:any, ThreeDTransformData: any, GameObjectData: any) => {
+export var addRemovedChild = (gameObject: GameObject, child: GameObject, MeshRendererData: any, ThreeDTransformData: any, GameObjectData: any) => {
     _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
 
     addComponent(child, createMeshRenderer(MeshRendererData), GameObjectData);
@@ -280,7 +280,7 @@ export var removeChild = requireCheckFunc((gameObject: GameObject, child: GameOb
         childUId = child.uid,
         meshRenderer = getMeshRenderer(child, GameObjectData);
 
-    if(_isComponentExist(meshRenderer)){
+    if (_isComponentExist(meshRenderer)) {
         disposeComponent(child, getMeshRenderer(child, GameObjectData), GameObjectData);
     }
 

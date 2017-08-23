@@ -25,11 +25,11 @@ export var setState = (state: Map<any, any>, DirectorData: any) => {
     });
 }
 
-export var markIsInit = (DirectorData:any) => {
+export var markIsInit = (DirectorData: any) => {
     DirectorData.isInit = true;
 }
 
-export var isInit = (DirectorData:any) => {
+export var isInit = (DirectorData: any) => {
     return DirectorData.isInit === true;
 }
 
@@ -106,7 +106,7 @@ else {
     }
 }
 
-export var initData = (DirectorData:any) => {
+export var initData = (DirectorData: any) => {
     // DirectorData.state = createState();
     // DirectorData.isInit = false;
 }

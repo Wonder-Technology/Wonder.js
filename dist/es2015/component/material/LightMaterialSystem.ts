@@ -120,11 +120,11 @@ export var setLightModel = (index: number, lightModel: ELightModel, LightMateria
     setTypeArrayValue(LightMaterialData.lightModels, computeLightBufferIndex(index), lightModel);
 }
 
-export var hasDiffuseMap = (index:number, LightMaterialData: any) => {
+export var hasDiffuseMap = (index: number, LightMaterialData: any) => {
     return hasDiffuseMapUtils(computeLightBufferIndex(index), LightMaterialData);
 }
 
-export var hasSpecularMap = (index:number, LightMaterialData: any) => {
+export var hasSpecularMap = (index: number, LightMaterialData: any) => {
     return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialData);
 }
 

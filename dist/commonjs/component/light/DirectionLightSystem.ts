@@ -77,7 +77,7 @@ export var setIntensity = (index: number, intensity: number, DirectionLightData:
     markDirty(index, DirectionLightData.isIntensityDirtys);
 }
 
-export var disposeComponent = (component: Light, DirectionLightData:any) => {
+export var disposeComponent = (component: Light, DirectionLightData: any) => {
     var intensityDataSize = getIntensityDataSize(),
         dirtyDataSize = getDirtyDataSize(),
         sourceIndex = component.index,
@@ -118,7 +118,7 @@ var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
     }
 }
 
-export var init = (DirectionLightData: any, state:Map<any, any>) => {
+export var init = (DirectionLightData: any, state: Map<any, any>) => {
     return bindChangePositionEvent(DirectionLightData, state);
 }
 

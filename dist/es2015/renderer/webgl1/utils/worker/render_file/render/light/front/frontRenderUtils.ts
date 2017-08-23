@@ -11,14 +11,14 @@ import {
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IWebGL1DrawDataMap, IWebGL1LightSendUniformDataDataMap } from "../../../interface/IUtils";
 
-export var render = (gl:any, state: Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap:IWebGL1LightSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData:CameraRenderCommandBufferForDrawData) => {
+export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap: IWebGL1LightSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
     drawFront(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 
 export var buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    getAmbientLightColorArr3, isAmbientLightColorDirty,   cleanAmbientLightColorDirty,
-    getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty,  cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
+    getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
+    getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, isPointLightPositionDirty, isPointLightColorDirty, isPointLightIntensityDirty, isPointLightAttenuationDirty, cleanPointLightPositionDirty, cleanPointLightColorDirty, cleanPointLightIntensityDirty, cleanPointLightAttenuationDirty,
 
     drawDataMap: IWebGL1DrawDataMap
@@ -37,7 +37,7 @@ export var buildSendUniformDataDataMap = (
         ambientLightData: {
             getColorArr3: getAmbientLightColorArr3,
 
-            isColorDirty : isAmbientLightColorDirty,
+            isColorDirty: isAmbientLightColorDirty,
             cleanColorDirty: cleanAmbientLightColorDirty,
 
             AmbientLightDataFromSystem: drawDataMap.AmbientLightDataFromSystem
@@ -48,8 +48,8 @@ export var buildSendUniformDataDataMap = (
             getIntensity: getDirectionLightIntensity,
 
             isPositionDirty: isDirectionLightPositionDirty,
-            isColorDirty : isDirectionLightColorDirty,
-            isIntensityDirty : isDirectionLightIntensityDirty,
+            isColorDirty: isDirectionLightColorDirty,
+            isIntensityDirty: isDirectionLightIntensityDirty,
             cleanPositionDirty: cleanDirectionLightPositionDirty,
             cleanColorDirty: cleanDirectionLightColorDirty,
             cleanIntensityDirty: cleanDirectionLightIntensityDirty,
@@ -66,9 +66,9 @@ export var buildSendUniformDataDataMap = (
             getRange: getRange,
 
             isPositionDirty: isPointLightPositionDirty,
-            isColorDirty : isPointLightColorDirty,
-            isIntensityDirty : isPointLightIntensityDirty,
-            isAttenuationDirty : isPointLightAttenuationDirty,
+            isColorDirty: isPointLightColorDirty,
+            isIntensityDirty: isPointLightIntensityDirty,
+            isAttenuationDirty: isPointLightAttenuationDirty,
             cleanPositionDirty: cleanPointLightPositionDirty,
             cleanColorDirty: cleanPointLightColorDirty,
             cleanIntensityDirty: cleanPointLightIntensityDirty,

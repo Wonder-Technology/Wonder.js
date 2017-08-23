@@ -31,25 +31,25 @@ export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => 
     return getSingleSizeData(index, LightMaterialDataFromSystem.lightModels);
 }
 
-export var hasDiffuseMap = (index:number, LightMaterialDataFromSystem: any) => {
+export var hasDiffuseMap = (index: number, LightMaterialDataFromSystem: any) => {
     return _hasMap(index, LightMaterialDataFromSystem.hasDiffuseMaps);
 }
 
-export var hasSpecularMap = (index:number, LightMaterialDataFromSystem: any) => {
+export var hasSpecularMap = (index: number, LightMaterialDataFromSystem: any) => {
     return _hasMap(index, LightMaterialDataFromSystem.hasSpecularMaps);
 }
 
-export var markHasMap = (index:number, hasMapTypArray:Uint8Array) => {
+export var markHasMap = (index: number, hasMapTypArray: Uint8Array) => {
     setTypeArrayValue(hasMapTypArray, computeLightBufferIndex(index), 1);
 }
 
-export var markNotHasMap = (index:number, hasMapTypArray:Uint8Array) => {
+export var markNotHasMap = (index: number, hasMapTypArray: Uint8Array) => {
     setTypeArrayValue(hasMapTypArray, computeLightBufferIndex(index), getNotHasMapValue());
 }
 
 export var getNotHasMapValue = () => 0;
 
-var _hasMap = (index:number, hasMapTypArray:Uint8Array) => {
+var _hasMap = (index: number, hasMapTypArray: Uint8Array) => {
     return getSingleSizeData(index, hasMapTypArray) !== getNotHasMapValue();
 }
 

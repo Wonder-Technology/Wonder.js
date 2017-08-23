@@ -13,12 +13,12 @@ export interface IWebGL2DrawFuncDataMap {
     useShader: Function;
 }
 
-export interface IWebGL2DeferDrawFuncDataMap extends IWebGL2DrawFuncDataMap{
+export interface IWebGL2DeferDrawFuncDataMap extends IWebGL2DrawFuncDataMap {
     bindGBuffer: Function;
     unbindGBuffer: Function;
     getNewTextureUnitIndex: Function;
 }
 
-export interface IWebGL2BasicDrawFuncDataMap extends IWebGL2DrawFuncDataMap{
+export interface IWebGL2BasicDrawFuncDataMap extends IWebGL2DrawFuncDataMap {
 }
 

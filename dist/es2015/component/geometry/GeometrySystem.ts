@@ -199,7 +199,7 @@ export var addComponent = (component: Geometry, gameObject: GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = (component: Geometry, disposeBuffers:Function) => {
+export var disposeComponent = (component: Geometry, disposeBuffers: Function) => {
     var sourceIndex = component.index;
 
     deleteComponent(sourceIndex, GeometryData.geometryMap);
@@ -250,7 +250,7 @@ export var getConfigData = (index: number, GeometryData: any) => {
 //     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
 // }
 
-var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectData:any) => {
+var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectData: any) => {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
@@ -310,7 +310,7 @@ var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => 
     }
 }
 
-export var initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData:any) => {
+export var initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData: any) => {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig, GPUDetectData),
         indicesArrayBytes: number = null;
 

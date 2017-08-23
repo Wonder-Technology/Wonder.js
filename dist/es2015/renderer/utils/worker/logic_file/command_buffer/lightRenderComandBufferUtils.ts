@@ -22,13 +22,13 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../../../../utils/array
 import { createTypeArrays } from "../../../command_buffer/lightRenderComandBufferUtils";
 import { GameObject } from "../../../../../core/entityObject/gameObject/GameObject";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData:Function) => {
+export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     it("renderGameObject should be light material gameObject", () => {
-        for(let gameObject of renderGameObjectArray) {
+        for (let gameObject of renderGameObjectArray) {
             expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("LightMaterial")
         }
     })
-}, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData:Function) => {
+}, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     var count = renderGameObjectArray.length,
         buffer: any = RenderCommandBufferData.buffer,
         mMatrices = RenderCommandBufferData.mMatrices,

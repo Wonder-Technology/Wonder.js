@@ -27,11 +27,11 @@ export var getPointLightColor = null;
 
 export var setPointLightColor = null;
 
-export var getPointLightIntensity =  null;
+export var getPointLightIntensity = null;
 
-export var setPointLightIntensity =  null;
+export var setPointLightIntensity = null;
 
-export var getPointLightConstant =  null;
+export var getPointLightConstant = null;
 
 export var setPointLightConstant = null;
 
@@ -49,7 +49,7 @@ export var setPointLightRange = null;
 
 export var setPointLightRangeLevel = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     createPointLight = () => {
         return create(WebGL1PointLightData);
     }
@@ -144,7 +144,7 @@ if(isWebgl1()){
         setRangeLevel(light.index, value, WebGL1PointLightData);
     })
 }
-else{
+else {
     createPointLight = () => {
         return create(WebGL2PointLightData);
     }

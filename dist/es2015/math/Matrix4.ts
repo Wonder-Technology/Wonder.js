@@ -231,7 +231,7 @@ export class Matrix4 {
      * @param z The Z value of a translation.
      * @return this
      */
-    public translate(x, y, z, GlobalTempData:any): Matrix4 {
+    public translate(x, y, z, GlobalTempData: any): Matrix4 {
         this.applyMatrix(GlobalTempData.matrix4_1.setTranslate(x, y, z), GlobalTempData);
 
         return this;
@@ -339,8 +339,8 @@ export class Matrix4 {
      * @param z The Z coordinate of vector of rotation axis.
      * @return this
      */
-    public rotate(angle, vector3: Vector3, GlobalTempData:any): Matrix4;
-    public rotate(angle, x, y, z, GlobalTempData:any): Matrix4;
+    public rotate(angle, vector3: Vector3, GlobalTempData: any): Matrix4;
+    public rotate(angle, x, y, z, GlobalTempData: any): Matrix4;
 
     public rotate(...args): Matrix4 {
         var angle = args[0];
@@ -386,7 +386,7 @@ export class Matrix4 {
      * @param z The scale factor along the Z axis
      * @return this
      */
-    public scale(x, y, z, GlobalTempData:any): Matrix4 {
+    public scale(x, y, z, GlobalTempData: any): Matrix4 {
         this.applyMatrix(GlobalTempData.matrix4_1.setScale(x, y, z), GlobalTempData);
 
         return this;
@@ -509,7 +509,7 @@ export class Matrix4 {
         return this;
     }
 
-    public ortho(left: number, right: number, bottom: number, top: number, near: number, far: number, GlobalTempData:any): Matrix4 {
+    public ortho(left: number, right: number, bottom: number, top: number, near: number, far: number, GlobalTempData: any): Matrix4 {
         this.applyMatrix(Matrix4.create().setOrtho(left, right, bottom, top, near, far), GlobalTempData);
 
         return this;
@@ -567,13 +567,13 @@ export class Matrix4 {
         return this;
     }
 
-    public perspective(fovy: number, aspect: number, near: number, far: number, GlobalTempData:any): Matrix4 {
+    public perspective(fovy: number, aspect: number, near: number, far: number, GlobalTempData: any): Matrix4 {
         this.applyMatrix(Matrix4.create().setPerspective(fovy, aspect, near, far), GlobalTempData);
 
         return this;
     }
 
-    public applyMatrix(other: Matrix4, GlobalTempData:any, notChangeSelf: boolean = false): Matrix4 {
+    public applyMatrix(other: Matrix4, GlobalTempData: any, notChangeSelf: boolean = false): Matrix4 {
         var a = this,
             tempMat4 = GlobalTempData.matrix4_3;
 
@@ -641,13 +641,13 @@ export class Matrix4 {
         return this;
     }
 
-    public multiplyVector4(vector: Vector4, isChangeVector:boolean = false): Vector4 {
+    public multiplyVector4(vector: Vector4, isChangeVector: boolean = false): Vector4 {
         var mat1 = this.values,
             vec4 = vector.values,
-            x:number = null,
-            y:number = null,
-            z:number = null,
-            w:number = null;
+            x: number = null,
+            y: number = null,
+            z: number = null,
+            w: number = null;
 
         // var result = [];
 
@@ -656,7 +656,7 @@ export class Matrix4 {
         z = vec4[0] * mat1[2] + vec4[1] * mat1[6] + vec4[2] * mat1[10] + vec4[3] * mat1[14];
         w = vec4[0] * mat1[3] + vec4[1] * mat1[7] + vec4[2] * mat1[11] + vec4[3] * mat1[15];
 
-        if(isChangeVector){
+        if (isChangeVector) {
             vector.set(x, y, z, w);
 
             return vector;

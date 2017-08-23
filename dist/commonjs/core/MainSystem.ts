@@ -95,7 +95,7 @@ import { DeferDirectionLightPassData } from "../renderer/webgl2/render/light/def
 import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferPointLightPassData";
 import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferAmbientLightPassData";
 
-export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData:any, {
+export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -165,7 +165,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         _initData();
     }
 
-    passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
+    passDataToRenderWorker = (WorkerInstanceData: any, WebGLDetectData: any) => {
         return IO.of(() => {
             var renderWorker = getRenderWorker(WorkerInstanceData);
 
@@ -177,7 +177,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
-    if(isWebgl1()){
+    if (isWebgl1()) {
         initData = () => {
             _initData();
 
@@ -193,7 +193,7 @@ else {
         }
 
     }
-    else{
+    else {
         initData = () => {
             _initData();
 
@@ -205,7 +205,7 @@ else {
         }
     }
 
-    passDataToRenderWorker = (WorkerInstanceData:any, WebGLDetectData:any) => {
+    passDataToRenderWorker = (WorkerInstanceData: any, WebGLDetectData: any) => {
         return IO.of(() => {
         });
     }
@@ -215,7 +215,7 @@ export var init = null;
 
 var _initData = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     _initData = () => {
         initDirectorData(DirectorData);
 
@@ -261,7 +261,7 @@ if(isWebgl1()){
         )(configState.get("canvasId"));
     });
 }
-else{
+else {
     _initData = () => {
         initDirectorData(DirectorData);
 

@@ -84,7 +84,7 @@ export var setViewportOfGL = curry((DeviceManagerWorkerData: any, {
     });
 })
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery:any, state: Map<any, any>) => {
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 

@@ -27,11 +27,11 @@ export var getDirectionLightColor = null;
 
 export var setDirectionLightColor = null;
 
-export var getDirectionLightIntensity =  null;
+export var getDirectionLightIntensity = null;
 
-export var setDirectionLightIntensity =  null;
+export var setDirectionLightIntensity = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     createDirectionLight = () => {
         return create(WebGL1DirectionLightData);
     }
@@ -72,7 +72,7 @@ if(isWebgl1()){
         setIntensity(light.index, value, WebGL1DirectionLightData);
     })
 }
-else{
+else {
     createDirectionLight = () => {
         return create(WebGL2DirectionLightData);
     }

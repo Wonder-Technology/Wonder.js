@@ -21,12 +21,12 @@ export class BasicMaterial extends Material {
 
 export var createBasicMaterial = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     createBasicMaterial = () => {
         return create(WebGL1ShaderData, MaterialData, BasicMaterialData);
     }
 }
-else{
+else {
     createBasicMaterial = () => {
         return create(WebGL2ShaderData, MaterialData, BasicMaterialData);
     }

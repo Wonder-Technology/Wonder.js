@@ -19,7 +19,7 @@ import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
 import { DomQuery } from "wonder-commonlib/dist/commonjs/utils/DomQuery";
 
-export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, WebGLDetectData:any, DeviceManagerData: any, state: Map<any, any>) => {
+export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, WebGLDetectData: any, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getOnlyGL(canvas, contextConfig.get("options").toObject(), WebGLDetectData);
 
@@ -59,7 +59,7 @@ export var setViewportOfGL = setViewportOfGLUtils;
 
 export var getScreenSize = getScreenSizeUtils;
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, DomQuery:any, state: Map<any, any>) => {
+export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, DomQuery: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
 });
 

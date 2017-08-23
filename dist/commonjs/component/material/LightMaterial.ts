@@ -28,12 +28,12 @@ export class LightMaterial extends Material {
 
 export var createLightMaterial = null;
 
-if(isWebgl1()){
+if (isWebgl1()) {
     createLightMaterial = () => {
         return create(WebGL1ShaderData, MaterialData, LightMaterialData);
     }
 }
-else{
+else {
     createLightMaterial = () => {
         return create(WebGL2ShaderData, MaterialData, LightMaterialData);
     }

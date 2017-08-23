@@ -21,20 +21,20 @@ export var detect = (WebGLDetectData: any) => {
     }
 
     let canvas = DomQuery.create("<canvas></canvas>").get(0),
-        options:any = {},
+        options: any = {},
         gl = getOnlyWebgl2Context(options, canvas);
 
     if (!gl) {
         gl = getOnlyWebgl1Context(options, canvas);
 
-        if(!gl){
+        if (!gl) {
             return null;
         }
-        else{
+        else {
             WebGLDetectData.version = EWebGLVersion.WEBGL1;
         }
     }
-    else{
+    else {
         WebGLDetectData.version = EWebGLVersion.WEBGL2;
     }
 }
@@ -43,6 +43,6 @@ export var isWebgl1 = () => isWebgl1Utils(WebGLDetectData);
 
 export var isWebgl2 = () => isWebgl2Utils(WebGLDetectData);
 
-export var getVersion = (WebGLDetectData:any) => WebGLDetectData.version;
+export var getVersion = (WebGLDetectData: any) => WebGLDetectData.version;
 
 detect(WebGLDetectData);

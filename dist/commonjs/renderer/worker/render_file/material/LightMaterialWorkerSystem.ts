@@ -25,11 +25,11 @@ export var getLightModel = (index: number, LightMaterialWorkerData: any) => {
     return getLightModelUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var hasDiffuseMap = (index:number, LightMaterialWorkerData: any) => {
+export var hasDiffuseMap = (index: number, LightMaterialWorkerData: any) => {
     return hasDiffuseMapUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 
-export var hasSpecularMap = (index:number, LightMaterialWorkerData: any) => {
+export var hasSpecularMap = (index: number, LightMaterialWorkerData: any) => {
     return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialWorkerData);
 }
 

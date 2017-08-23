@@ -100,15 +100,15 @@ export type DirectionLightGLSLDataStructure = {
 }
 
 export type ShaderIndexMap = {
-    [shaderLibName:string]: number
+    [shaderLibName: string]: number
 }
 
 export type ShaderIndexByShaderNameMap = {
-    [shaderName:string]: number
+    [shaderName: string]: number
 }
 
 export type ShaderLibNameMap = {
-    [materialIndex:number]: string
+    [materialIndex: number]: string
 }
 
 export type PointLightGLSLDataStructure = {

@@ -27,7 +27,7 @@ export var getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
 //     }
 // }
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex:number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData:any) => {
+export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
     bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
 }
 

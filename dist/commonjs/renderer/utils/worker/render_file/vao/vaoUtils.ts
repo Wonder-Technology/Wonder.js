@@ -2,7 +2,7 @@ import { createMap, deleteVal } from "../../../../../utils/objectUtils";
 import { isNotValidVal } from "../../../../../utils/arrayUtils";
 import { VaoMap, VboArrayMap } from "../../../../type/dataType";
 
-export var removeVao = (gl:any, index:number, vaoMap:VaoMap, vboArrayMap:VboArrayMap) => {
+export var removeVao = (gl: any, index: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap) => {
     var vboArray = vboArrayMap[index];
 
     /*!
@@ -11,16 +11,16 @@ export var removeVao = (gl:any, index:number, vaoMap:VaoMap, vboArrayMap:VboArra
     deleteVal(index, vaoMap);
     deleteVal(index, vboArrayMap);
 
-    if(isNotValidVal(vboArray)){
+    if (isNotValidVal(vboArray)) {
         return;
 
     }
-    for(let vbo of vboArray){
+    for (let vbo of vboArray) {
         gl.deleteBuffer(vbo);
     }
 }
 
-export var initData = (VaoDataFromSystem:any) => {
+export var initData = (VaoDataFromSystem: any) => {
     VaoDataFromSystem.vaoMap = createMap();
     VaoDataFromSystem.vboArrayMap = createMap();
 }

@@ -52,7 +52,7 @@ export var disposeComponent = requireCheckFunc(() => {
     it("should only has 1 ambient light", () => {
         expect(AmbientLightData.count).equal(1);
     });
-},(component: Light) => {
+}, (component: Light) => {
     var sourceIndex = component.index;
 
     disposeSpecifyLightComponent(component.index, AmbientLightData);

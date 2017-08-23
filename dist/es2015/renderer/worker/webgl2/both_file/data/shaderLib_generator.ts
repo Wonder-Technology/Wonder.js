@@ -137,13 +137,13 @@ export const webgl2_shaderLib_generator = {
                             typeArray
                         }, {
                                                   bindUniformBufferBase,
-                                                  bufferDynamicData,
-                                                  set
+                                bufferDynamicData,
+                                set
                                               }, {
                                                   vMatrix,
-                                                  pMatrix,
-                                                  cameraPosition,
-                                                  normalMatrix
+                                pMatrix,
+                                cameraPosition,
+                                normalMatrix
                                               }) => {
                             bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
@@ -184,8 +184,8 @@ export const webgl2_shaderLib_generator = {
                             typeArray
                         }, {
                                                   bindUniformBufferBase,
-                                                  bufferStaticData,
-                                                  set
+                                bufferStaticData,
+                                set
                                               }, drawRenderCommandBufferDataMap, {
                                                   render_config
                                               }) => {
@@ -217,26 +217,26 @@ export const webgl2_shaderLib_generator = {
                         },
                         "setBufferDataFunc": (gl, ambientLightIndex, {
                                                   uniformBlockBinding,
-                                                  buffer,
-                                                  typeArray
+                            buffer,
+                            typeArray
                                               }, {
                                                   bindUniformBufferBase,
-                                                  bufferDynamicData,
-                                                  set
+                                bufferDynamicData,
+                                set
                                               }, {
                                                   cleanColorDirty,
 
-                                                  AmbientLightDataFromSystem
+                                AmbientLightDataFromSystem
                                               },
-                                              {
+                            {
                                                   colorArr3,
 
-                                                  isColorDirty
+                                isColorDirty
                                               }
                         ) => {
                             var isDirtyFlag = false;
 
-                            if(isColorDirty){
+                            if (isColorDirty) {
                                 isDirtyFlag = true;
 
                                 set(typeArray, colorArr3, 0);
@@ -246,7 +246,7 @@ export const webgl2_shaderLib_generator = {
 
                             bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
-                            if(isDirtyFlag){
+                            if (isDirtyFlag) {
                                 bufferDynamicData(gl, typeArray);
                             }
                         },
@@ -272,32 +272,32 @@ export const webgl2_shaderLib_generator = {
                         },
                         "setBufferDataFunc": (gl, directionLightIndex, {
                                                   uniformBlockBinding,
-                                                  buffer,
-                                                  typeArray
+                            buffer,
+                            typeArray
                                               }, {
                                                   bindUniformBufferBase,
-                                                  bufferDynamicData,
-                                                  set
+                                bufferDynamicData,
+                                set
                                               }, {
                                                   cleanPositionDirty,
-                                                  cleanColorDirty,
-                                                  cleanIntensityDirty,
+                                cleanColorDirty,
+                                cleanIntensityDirty,
 
-                                                  DirectionLightDataFromSystem
+                                DirectionLightDataFromSystem
                                               },
-                                              {
+                            {
                                                   position,
-                                                  colorArr3,
-                                                  intensity,
+                                colorArr3,
+                                intensity,
 
-                                                  isPositionDirty,
-                                                  isColorDirty,
-                                                  isIntensityDirty
+                                isPositionDirty,
+                                isColorDirty,
+                                isIntensityDirty
                                               }
                         ) => {
                             var isDirtyFlag = false;
 
-                            if(isPositionDirty){
+                            if (isPositionDirty) {
                                 isDirtyFlag = true;
 
                                 set(typeArray, position);
@@ -305,7 +305,7 @@ export const webgl2_shaderLib_generator = {
                                 cleanPositionDirty(directionLightIndex, DirectionLightDataFromSystem);
                             }
 
-                            if(isColorDirty){
+                            if (isColorDirty) {
                                 isDirtyFlag = true;
 
                                 set(typeArray, colorArr3, 4);
@@ -313,7 +313,7 @@ export const webgl2_shaderLib_generator = {
                                 cleanColorDirty(directionLightIndex, DirectionLightDataFromSystem);
                             }
 
-                            if(isIntensityDirty){
+                            if (isIntensityDirty) {
                                 set(typeArray, [intensity], 7);
 
                                 isDirtyFlag = true;
@@ -323,7 +323,7 @@ export const webgl2_shaderLib_generator = {
 
                             bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
-                            if(isDirtyFlag){
+                            if (isDirtyFlag) {
                                 bufferDynamicData(gl, typeArray);
                             }
                         },
@@ -349,36 +349,36 @@ export const webgl2_shaderLib_generator = {
                         },
                         "setBufferDataFunc": (gl, pointLightIndex, {
                                                   uniformBlockBinding,
-                                                  buffer,
-                                                  typeArray
+                            buffer,
+                            typeArray
                                               }, {
                                                   bindUniformBufferBase,
-                                                  bufferDynamicData,
-                                                  set
+                                bufferDynamicData,
+                                set
                                               }, {
                                                   cleanPositionDirty,
-                                                  cleanColorDirty,
-                                                  cleanIntensityDirty,
-                                                  cleanAttenuationDirty,
+                                cleanColorDirty,
+                                cleanIntensityDirty,
+                                cleanAttenuationDirty,
 
-                                                  PointLightDataFromSystem
+                                PointLightDataFromSystem
                                               },
-                                              {
+                            {
                                                   position,
-                                                  colorArr3,
-                                                  intensity,
-                                                  constant,
-                                                  linear,
-                                                  quadratic,
-                                                  radius,
+                                colorArr3,
+                                intensity,
+                                constant,
+                                linear,
+                                quadratic,
+                                radius,
 
-                                                  isIntensityDirty,
-                                                  isOtherValueDirty
+                                isIntensityDirty,
+                                isOtherValueDirty
                                               }
                         ) => {
                             var isDirtyFlag = false;
 
-                            if(isIntensityDirty){
+                            if (isIntensityDirty) {
                                 set(typeArray, [intensity], 7);
 
                                 isDirtyFlag = true;
@@ -386,7 +386,7 @@ export const webgl2_shaderLib_generator = {
                                 cleanIntensityDirty(pointLightIndex, PointLightDataFromSystem);
                             }
 
-                            if(isOtherValueDirty){
+                            if (isOtherValueDirty) {
                                 isDirtyFlag = true;
 
                                 set(typeArray, position);
@@ -401,7 +401,7 @@ export const webgl2_shaderLib_generator = {
 
                             bindUniformBufferBase(gl, buffer, uniformBlockBinding);
 
-                            if(isDirtyFlag){
+                            if (isDirtyFlag) {
                                 bufferDynamicData(gl, typeArray);
                             }
                         },
@@ -903,11 +903,11 @@ export const webgl2_shaderLib_generator = {
     }
 }
 
-export interface IWebGL2ShaderLibContentGenerator extends IShaderLibContentGenerator{
+export interface IWebGL2ShaderLibContentGenerator extends IShaderLibContentGenerator {
     [shaderLibName: string]: IWebGL2ShaderLibConfig
 }
 
-export interface IWebGL2ShaderLibConfig{
+export interface IWebGL2ShaderLibConfig {
     glsl?: {
         vs?: IWebGL2GLSLConfig,
         fs?: IWebGL2GLSLConfig,
@@ -916,7 +916,7 @@ export interface IWebGL2ShaderLibConfig{
     send?: IWebGL2ShaderLibSendConfig
 }
 
-export interface IWebGL2GLSLConfig extends IGLSLConfig{
+export interface IWebGL2GLSLConfig extends IGLSLConfig {
 }
 
 export interface IWebGL2GLSLFuncConfig {
@@ -933,7 +933,7 @@ export interface IWebGL2GLSLFuncGLSLConfig {
     define?: string;
 }
 
-export interface IWebGL2GLSLDefineListItem extends IGLSLDefineListItem{
+export interface IWebGL2GLSLDefineListItem extends IGLSLDefineListItem {
     name: string;
     valueFunc?: Function;
 }
@@ -955,12 +955,12 @@ export interface IWebGL2SendAttributeConfig {
 
 export type WebGL2UniformType = "int" | "float" | "float3" | "vec3" | "mat3" | "mat4" | "sampler2D";
 
-export interface IWebGL2DefineUniformConfig extends IDefineUniformConfig{
+export interface IWebGL2DefineUniformConfig extends IDefineUniformConfig {
     name: string;
     type: WebGL2UniformType;
 }
 
-export interface IWebGL2SendUniformConfig extends ISendUniformConfig{
+export interface IWebGL2SendUniformConfig extends ISendUniformConfig {
     name: string;
     field: string;
     type: WebGL2UniformType;
@@ -973,10 +973,10 @@ export interface IWebGL2UboConfig {
     typeArray: IWebGL2UboTypeArrayConfig;
     frequence: "one" | "frame" | "pointLight" | "directionLight";
     usage: "static" | "dynamic";
-    setBufferDataFunc:Function;
+    setBufferDataFunc: Function;
 }
 
 export interface IWebGL2UboTypeArrayConfig {
-    type:string;
-    length:number;
+    type: string;
+    length: number;
 }

@@ -9,9 +9,9 @@ import { buildRenderCommandUniformData } from "../../../../utils/draw/basic/basi
 import { drawGameObjects } from "../../../../webgl2/utils/worker/render_file/draw/drawRenderCommandBufferUtils";
 import { IWebGL2BasicSendUniformDataDataMap, IWebGL2DrawDataMap } from "../../worker/render_file/interface/IUtils";
 
-export var draw = (gl:any, state:Map<any, any>, render_config:IRenderConfig, material_config:IMaterialConfig, shaderLib_generator:IShaderLibGenerator, DataBufferConfig: any, initMaterialShader:Function, drawFuncDataMap:IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, sendDataMap:IWebGL2BasicSendUniformDataDataMap, initShaderDataMap:InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, {
+export var draw = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, {
             vMatrix,
-            pMatrix
+    pMatrix
         }) => {
     var {
             BasicDrawRenderCommandBufferDataFromSystem
