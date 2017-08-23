@@ -61,24 +61,31 @@
             sceneTool.addGameObject(createCamera());
 
 
-//            sceneTool.addGameObject(createAmbientLight());
-//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
+            sceneTool.addGameObject(createAmbientLight());
+            sceneTool.addGameObject(createDirectionLight(wd.Color.create("#ffffff"), wd.Vector3.create(100, 1000, 0)));
+            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
 //            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
-//            sceneTool.addGameObject(createPointLight(wd.Color.create("rgb(0.0, 1.0, 1.0)"), wd.Vector3.create(10, 0, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
+//            sceneTool.addGameObject(createDirectionLight(wd.Color.create("rgb(1.0,0.0,1.0)"), wd.Vector3.create(100, -1000, 0)));
 
-            var pointLights = createPointLights(300);
+            var pointLights = createPointLights(4);
 
             pointLights.forEach(function(pointLight){
                 sceneTool.addGameObject(pointLight);
             })
-
-
-            makePointLightMove(pointLights.slice(0, 150));
+//
+//
+            makePointLightMove(pointLights.slice(0, 2));
 
 
 //        setData();
 //        setParent();
-//        batchSet();
+        batchSet();
 
 
 //        createAndDisposeGameObjects();
@@ -121,7 +128,6 @@
 
             var transform = gameObjectTool.getTransform(obj);
 
-//            threeDTransformTool.setPosition(transform, wd.Vector3.create(100, 100, 100));
             threeDTransformTool.setPosition(transform, pos);
 
             return obj;
@@ -133,7 +139,6 @@
 
             for(var i = 0; i < count; i++){
                 pointLights.push(createPointLight(wd.Color.create("rgb(" + Math.random() + ", 0.0, 0.5)"), generateRandomPosition(playgroundSize)));
-//                pointLights.push(createPointLight(wd.Color.create("rgb(" + 0.5 + ", 0.5, 0.5)"), generateRandomPosition(playgroundSize)));
             }
 
             return pointLights;
@@ -143,7 +148,7 @@
             var pointLightComponent = pointLightTool.create();
             pointLightTool.setColor(pointLightComponent, color);
             pointLightTool.setIntensity(pointLightComponent, 5);
-            pointLightTool.setRangeLevel(pointLightComponent, 10);
+            pointLightTool.setRangeLevel(pointLightComponent, 8);
 
 
             var obj = gameObjectTool.create();
@@ -310,8 +315,8 @@
                 })
 
 
-                boxes = createCustomGeometryBoxes(vertices, texCoords, indices);
-//                boxes = createBoxes()
+//                boxes = createCustomGeometryBoxes(vertices, texCoords, indices);
+                boxes = createBoxes()
 
 
 //                for (var i = 11, len = boxes.length - 1; i < len; i++) {

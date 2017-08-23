@@ -34,11 +34,12 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
         // 'test/unit/no_worker/**/deferShadingBug*',
+        'test/unit/no_worker/**/drawDefer*',
         // 'test/unit/no_worker/**/*Defer*',
         // 'test/unit/no_worker/**/initDeferShading*',
         // 'test/unit/no_worker/**/basicRender*',

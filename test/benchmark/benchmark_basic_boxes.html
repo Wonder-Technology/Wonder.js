@@ -49,7 +49,7 @@
 //        setParent();
 //        batchSet();
 
-        createAndDisposeGameObjects();
+//        createAndDisposeGameObjects();
 
 
             director.start();
@@ -196,7 +196,7 @@
                 })
 
 
-                boxes = createCustomGeometryBoxes(vertices, indices);
+//                boxes = createCustomGeometryBoxes(vertices, indices);
 
 
 //                for (var i = 11, len = boxes.length - 1; i < len; i++) {
@@ -206,7 +206,7 @@
 //                }
 
 
-//                boxes = createBoxes();
+                boxes = createBoxes();
 
                 boxes.forEach(function(box){
                     sceneTool.addGameObject(box);
@@ -257,7 +257,7 @@
             var resultArr = [],
                 playgroundSize = 500;
 
-            for (var index = 0; index < 300; index++) {
+            for (var index = 0; index < 500; index++) {
                 var customGeo = customGeometryTool.create();
                 customGeometryTool.setVertices(customGeo, vertices);
                 customGeometryTool.setIndices(customGeo, indices);
