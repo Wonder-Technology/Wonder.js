@@ -8,6 +8,14 @@ describe("reallocate memory", function() {
         }
     }
 
+    function judgeMapData(sourceMap, targetMap) {
+        for(var i in targetMap){
+            if(targetMap.hasOwnProperty(i)){
+                expect(sourceMap[i]).toEqual(targetMap[i]);
+            }
+        }
+    }
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -60,12 +68,12 @@ describe("reallocate memory", function() {
             it("new gameObjectMap,slotCountMap,usedSlotCountMap,indexMap,indexInTagArrayMap,tagMap should only has not-removed data", function(){
                 gameObjectTool.disposeComponent(gameObject1, tag1);
 
-                expect(TagData.gameObjectMap).toEqual({
+                judgeMapData(TagData.gameObjectMap, {
                     0:gameObject2
                 });
                 expect(TagData.slotCountMap).toEqual([2]);
                 expect(TagData.usedSlotCountMap).toEqual([1]);
-                expect(TagData.tagMap).toEqual({
+                judgeMapData(TagData.tagMap, {
                     0:tag2
                 });
                 expect(TagData.indexMap).toEqual([0]);
@@ -187,7 +195,7 @@ describe("reallocate memory", function() {
                     childrenMap[parent.uid] = [gameObject]
                     childrenMap[gameObject.uid] = [];
 
-                    expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(GameObjectData.childrenMap, childrenMap);
                 });
                 it("remove from parent map", function () {
                     gameObjectTool.dispose(child1);
@@ -198,7 +206,7 @@ describe("reallocate memory", function() {
                     parentMap[parent.uid] = undefined;
                     parentMap[gameObject.uid] = parent;
 
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
+                    judgeMapData(GameObjectData.parentMap, parentMap);
                 });
             });
 
@@ -227,12 +235,12 @@ describe("reallocate memory", function() {
                     var parentMap = {};
                     parentMap[gameObject.uid] = parent;
                     parentMap[parent.uid] = undefined;
-                    expect(GameObjectData.parentMap).toEqual(parentMap);
+                    judgeMapData(GameObjectData.parentMap, parentMap);
 
                     var childrenMap = {};
                     childrenMap[parent.uid] = [gameObject];
                     childrenMap[gameObject.uid] = [];
-                    expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(GameObjectData.childrenMap, childrenMap);
 
                     expect(GameObjectData.componentMap[parent.uid]).toBeExist();
                     expect(GameObjectData.componentMap[gameObject.uid]).toBeExist();
@@ -282,7 +290,7 @@ describe("reallocate memory", function() {
                         parentMap[parent.uid] = undefined;
                         parentMap[gameObject.uid] = parent;
                         parentMap[child.uid] = gameObject;
-                        expect(GameObjectData.parentMap).toEqual(parentMap);
+                        judgeMapData(GameObjectData.parentMap, parentMap);
 
 
 
@@ -296,14 +304,14 @@ describe("reallocate memory", function() {
                         parentMap[gameObject.uid] = parent;
                         parentMap[child.uid] = gameObject;
                         parentMap[child2.uid] = child;
-                        expect(GameObjectData.parentMap).toEqual(parentMap);
+                        judgeMapData(GameObjectData.parentMap, parentMap);
 
 
                         var childrenMap = {};
                         childrenMap[parent.uid] = [gameObject];
                         childrenMap[gameObject.uid] = [child];
                         childrenMap[child.uid] = [child2];
-                        expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                        judgeMapData(GameObjectData.childrenMap, childrenMap);
                     });
                     it("test maxComponentDisposeCount > 1", function () {
                         sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
@@ -317,7 +325,7 @@ describe("reallocate memory", function() {
 
                         var parentMap = {};
                         parentMap[parent.uid] = undefined;
-                        expect(GameObjectData.parentMap).toEqual(parentMap);
+                        judgeMapData(GameObjectData.parentMap, parentMap);
 
 
 
@@ -329,12 +337,12 @@ describe("reallocate memory", function() {
                         var parentMap = {};
                         parentMap[parent.uid] = undefined;
                         parentMap[child2.uid] = parent;
-                        expect(GameObjectData.parentMap).toEqual(parentMap);
+                        judgeMapData(GameObjectData.parentMap, parentMap);
 
 
                         var childrenMap = {};
                         childrenMap[parent.uid] = [child2];
-                        expect(GameObjectData.childrenMap).toEqual(childrenMap);
+                        judgeMapData(GameObjectData.childrenMap, childrenMap);
                     });
                 });
             });
@@ -384,7 +392,7 @@ describe("reallocate memory", function() {
                     childrenMap[parentTra.uid] = [gameObjectTra]
                     childrenMap[gameObjectTra.uid] = [];
 
-                    expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
                 });
                 it("remove from parent map", function () {
                     gameObjectTool.dispose(child1);
@@ -395,7 +403,7 @@ describe("reallocate memory", function() {
                     parentMap[parentTra.uid] = undefined;
                     parentMap[gameObjectTra.uid] = parentTra;
 
-                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                    judgeMapData(ThreeDTransformData.parentMap, parentMap);
                 });
             });
 
@@ -430,23 +438,23 @@ describe("reallocate memory", function() {
                     var parentMap = {};
                     parentMap[gameObjectTra.uid] = parentTra;
                     parentMap[parentTra.uid] = undefined;
-                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                    judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
                     var childrenMap = {};
                     childrenMap[parentTra.uid] = [gameObjectTra];
                     childrenMap[gameObjectTra.uid] = [];
-                    expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
 
 
                     var isTranslateMap = {};
                     isTranslateMap[gameObjectTra.uid] = undefined;
                     isTranslateMap[parentTra.uid] = undefined;
-                    expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
+                    judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
                     var gameObjectMap = {};
                     gameObjectMap[parentTra.uid] = parent;
                     gameObjectMap[gameObjectTra.uid] = gameObject;
-                    expect(ThreeDTransformData.gameObjectMap).toEqual(gameObjectMap);
+                    judgeMapData(ThreeDTransformData.gameObjectMap, gameObjectMap);
 
 
                     expect(ThreeDTransformData.tempMap[parentTra.uid]).toBeExist();
@@ -477,16 +485,16 @@ describe("reallocate memory", function() {
 
                     var parentMap = {};
                     parentMap[parentTra.uid] = undefined;
-                    expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                    judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
                     var childrenMap = {};
                     childrenMap[parentTra.uid] = [];
-                    expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                    judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
 
 
                     var isTranslateMap = {};
                     isTranslateMap[parentTra.uid] = undefined;
-                    expect(ThreeDTransformData.isTranslateMap).toEqual(isTranslateMap);
+                    judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
 
 
@@ -505,7 +513,7 @@ describe("reallocate memory", function() {
                         parentMap[parentTra.uid] = undefined;
                         parentMap[gameObjectTra.uid] = parentTra;
                         parentMap[childTra.uid] = gameObjectTra;
-                        expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                        judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
 
 
@@ -520,7 +528,7 @@ describe("reallocate memory", function() {
                         parentMap[gameObjectTra.uid] = parentTra;
                         parentMap[childTra.uid] = gameObjectTra;
                         parentMap[child2Tra.uid] = childTra;
-                        expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                        judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
 
                         var childrenMap = {};
@@ -528,7 +536,7 @@ describe("reallocate memory", function() {
                         childrenMap[gameObjectTra.uid] = [childTra];
                         childrenMap[childTra.uid] = [child2Tra];
                         childrenMap[child2Tra.uid] = [];
-                        expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                        judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
                     });
                     it("test maxComponentDisposeCount > 1", function () {
                         sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 4);
@@ -542,7 +550,7 @@ describe("reallocate memory", function() {
 
                         var parentMap = {};
                         parentMap[parentTra.uid] = undefined;
-                        expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                        judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
 
 
@@ -555,13 +563,13 @@ describe("reallocate memory", function() {
                         var parentMap = {};
                         parentMap[parentTra.uid] = undefined;
                         parentMap[child2Tra.uid] = parentTra;
-                        expect(ThreeDTransformData.parentMap).toEqual(parentMap);
+                        judgeMapData(ThreeDTransformData.parentMap, parentMap);
 
 
                         var childrenMap = {};
                         childrenMap[parentTra.uid] = [child2Tra];
                         childrenMap[child2Tra.uid] = [];
-                        expect(ThreeDTransformData.childrenMap).toEqual(childrenMap);
+                        judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
                     });
                 });
             });
@@ -820,7 +828,7 @@ describe("reallocate memory", function() {
                 geometryMap[1] = undefined;
                 geometryMap[2] = oldGeometryMap[2];
 
-                expect(GeometryData.geometryMap).toEqual(geometryMap);
+                judgeMapData(GeometryData.geometryMap, geometryMap);
 
 
 
@@ -829,7 +837,7 @@ describe("reallocate memory", function() {
                 geometryMap = {};
                 geometryMap[0] = oldGeometryMap[2];
 
-                expect(GeometryData.geometryMap).toEqual(geometryMap);
+                judgeMapData(GeometryData.geometryMap, geometryMap);
             });
 
             describe("test add new one after dispose old one and then dispose new one", function () {
