@@ -18,6 +18,8 @@ import { ESide } from "../../../../enum/ESide";
 import { Log } from "../../../../../utils/Log";
 import { ContextConfigOptionsData } from "../../../../type/dataType";
 import { isWebgl1, isWebgl2 } from "../../render_file/device/webglDetectUtils";
+import { EBlendFunc } from "../../../../enum/EBlendFunc";
+import { EBlendEquation } from "../../../../enum/EBlendEquation";
 
 export var getGL = (DeviceManagerDataFromSystem: any, state: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
@@ -224,6 +226,86 @@ export var setSide = (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataF
     }
 }
 
+export var setDepthWrite = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.depthWrite !== value) {
+        gl.depthMask(value);
+
+        DeviceManagerDataFromSystem.depthWrite = value;
+    }
+}
+
+export var setBlend = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.blend !== value) {
+        if(value){
+            gl.enable(gl.BLEND);
+        }
+        else{
+            gl.disable(gl.BLEND);
+        }
+
+        DeviceManagerDataFromSystem.blend = value;
+    }
+}
+
+export var setBlendFunc = (gl:any, blendSrc:EBlendFunc, blendDst:EBlendFunc, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.blendSrc !== blendSrc || DeviceManagerDataFromSystem.blendDst !== blendDst) {
+        if(DeviceManagerDataFromSystem.blend){
+            gl.blendFunc(gl[blendSrc], gl[blendDst]);
+        }
+
+        DeviceManagerDataFromSystem.blendSrc = blendSrc;
+        DeviceManagerDataFromSystem.blendDst = blendDst;
+    }
+}
+
+export var setBlendEquation = (gl:any, blendEquation:EBlendEquation, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.blendEquation !== blendEquation) {
+        if(DeviceManagerDataFromSystem.blend){
+            gl.blendEquation(gl[blendEquation]);
+        }
+
+        DeviceManagerDataFromSystem.blendEquation = blendEquation;
+    }
+}
+
+export var setBlendSeparate = (gl:any, blendFuncSeparate:Array<EBlendFunc>, DeviceManagerDataFromSystem: any) => {
+    var blendFuncSeparateData = DeviceManagerDataFromSystem.blendFuncSeparate;
+
+    if (!blendFuncSeparateData || blendFuncSeparateData[0] !== blendFuncSeparate[0] || blendFuncSeparateData[1] !== blendFuncSeparate[1] || blendFuncSeparateData[2] !== blendFuncSeparate[2]|| blendFuncSeparateData[3] !== blendFuncSeparate[3]) {
+        if(DeviceManagerDataFromSystem.blend){
+            gl.blendFuncSeparate(gl[blendFuncSeparate[0]], gl[blendFuncSeparate[1]], gl[blendFuncSeparate[2]], gl[blendFuncSeparate[3]]);
+        }
+
+        DeviceManagerDataFromSystem.blendFuncSeparate = blendFuncSeparate;
+    }
+}
+
+export var setDepthTest = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.depthTest !== value) {
+        if(value){
+            gl.enable(gl.DEPTH_TEST);
+        }
+        else{
+            gl.disable(gl.DEPTH_TEST);
+        }
+
+        DeviceManagerDataFromSystem.depthTest = value;
+    }
+}
+
+export var setScissorTest = (gl:any, value:boolean, DeviceManagerDataFromSystem: any) => {
+    if (DeviceManagerDataFromSystem.scissorTest !== value) {
+        if(value){
+            gl.enable(gl.SCISSOR_TEST);
+        }
+        else{
+            gl.disable(gl.SCISSOR_TEST);
+        }
+
+        DeviceManagerDataFromSystem.scissorTest = value;
+    }
+}
+
 export var getOnlyGL = (canvas: HTMLCanvasElement, options:ContextConfigOptionsData, WebGLDetectDataFromSystem:any) => {
     if(isWebgl1(WebGLDetectDataFromSystem)) {
         Log.log("use webgl1");
@@ -250,4 +332,12 @@ export var initData = (DeviceManagerDataFromSystem: any) => {
     DeviceManagerDataFromSystem.writeAlpha = null;
 
     DeviceManagerDataFromSystem.side = null;
+    DeviceManagerDataFromSystem.depthWrite = null;
+    DeviceManagerDataFromSystem.blend = null;
+    DeviceManagerDataFromSystem.blendSrc = null;
+    DeviceManagerDataFromSystem.blendDst = null;
+    DeviceManagerDataFromSystem.depthTest = null;
+    DeviceManagerDataFromSystem.scissorTest = null;
+    DeviceManagerDataFromSystem.blendEquation = null;
+    DeviceManagerDataFromSystem.blendFuncSeparate = null;
 }

@@ -7,7 +7,10 @@ import {
     drawFullScreenQuad, getScissorRegionArrayCache,
     sendAttributeData, setScissorRegionArrayCache
 } from "../../../render/light/defer/light/deferLightPassUtils";
-import { getViewport } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
+import {
+    getViewport, setBlend, setBlendEquation, setBlendFunc, setDepthTest,
+    setDepthWrite, setScissorTest
+} from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 import { bindDirectionLightUboData, bindPointLightUboData, bindAmbientLightUboData } from "../../../worker/render_file/ubo/uboManagerUtils";
 import {
     IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap, IWebGL2SendUniformDataAmbientLightDataMap,
@@ -16,6 +19,8 @@ import {
 import { Vector4 } from "../../../../../../math/Vector4";
 import { Vector2 } from "../../../../../../math/Vector2";
 import { IWebGL2SendUniformDataPointLightDataMap } from "../../../worker/render_file/interface/IUtils";
+import { EBlendEquation } from "../../../../../enum/EBlendEquation";
+import { EBlendFunc } from "../../../../../enum/EBlendFunc";
 
 export var drawLightPass = (gl:any, render_config:IRenderConfig, {
     use,
@@ -29,6 +34,7 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
             ShaderDataFromSystem
         } = initShaderDataMap,
         {
+            DeviceManagerDataFromSystem,
 
             AmbientLightDataFromSystem,
             DirectionLightDataFromSystem,
@@ -44,11 +50,11 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     unbindGBuffer(gl);
 
-    gl.depthMask(false);
-    gl.disable(gl.DEPTH_TEST);
-    gl.enable(gl.BLEND);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.blendFunc(gl.ONE, gl.ONE);
+    setDepthWrite(gl, false, DeviceManagerDataFromSystem);
+    setDepthTest(gl, false, DeviceManagerDataFromSystem);
+    setBlend(gl, true, DeviceManagerDataFromSystem);
+    setBlendEquation(gl, EBlendEquation.ADD, DeviceManagerDataFromSystem);
+    setBlendFunc(gl, EBlendFunc.ONE, EBlendFunc.ONE, DeviceManagerDataFromSystem);
 
     if(_hasLight(ambientLightCount)){
         _drawAmbientLightPass(gl, use, drawDataMap,sendDataMap.ambientLightData, ambientLightCount, DeferAmbientLightPassDataFromSystem, ShaderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
@@ -64,7 +70,7 @@ export var drawLightPass = (gl:any, render_config:IRenderConfig, {
 
     unbindVao(gl);
 
-    _restoreState(gl);
+    _restoreState(gl, DeviceManagerDataFromSystem);
 }
 
 var _hasLight = (count:number) => count > 0;
@@ -176,6 +182,7 @@ var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMa
             height
         } = getViewport(state),
         {
+            DeviceManagerDataFromSystem,
             PointLightDataFromSystem
         } = drawDataMap,
         shaderIndex:number = null,
@@ -206,7 +213,7 @@ var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMa
         sc:Array<number> = null,
         isScDirtyFlag:boolean = null;
 
-    _setState(gl);
+    _setState(gl, DeviceManagerDataFromSystem);
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferPointLightPassDataFromSystem);
 
@@ -260,13 +267,13 @@ var _drawPointLightPass = (gl:any, state:Map<any, any>, use:Function, drawDataMa
     }
 }
 
-var _setState = (gl:any) => {
-    gl.enable(gl.SCISSOR_TEST);
+var _setState = (gl:any, DeviceManagerDataFromSystem:any) => {
+    setScissorTest(gl, true, DeviceManagerDataFromSystem);
 
 }
 
-var _restoreState = (gl:any) => {
-    gl.disable(gl.SCISSOR_TEST);
+var _restoreState = (gl:any, DeviceManagerDataFromSystem:any) => {
+    setScissorTest(gl, false, DeviceManagerDataFromSystem);
 }
 
 var _getScissorForLight = (vMatrix:Float32Array, pMatrix:Float32Array, position:Float32Array, radius:number, width:number, height:number) => {
