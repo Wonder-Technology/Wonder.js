@@ -51,7 +51,7 @@
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'dist/wd.js': 'coverage'
+            'dist/': 'coverage'
         },
 
         // test results reporter to use
@@ -86,7 +86,7 @@
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ['Firefox'],
 
 
         // Continuous Integration mode

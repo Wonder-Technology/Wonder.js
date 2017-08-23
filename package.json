@@ -25,7 +25,7 @@
     "gulp-typescript": "^3.2.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
-    "jasmine": "^2.5.2",
+    "jasmine": "2.5.2",
     "jquery": "^3.2.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^0.2.0",
