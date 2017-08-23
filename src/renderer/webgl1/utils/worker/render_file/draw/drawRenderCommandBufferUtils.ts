@@ -4,7 +4,7 @@ import {
 } from "../../../../../utils/draw/drawRenderCommandBufferUtils";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
-import { IWebGL1DrawFuncDataMap } from "../../../../interface/Idraw";
+import { IWebGL1DrawFuncDataMap } from "../../../../interface/IDraw";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
 import { EDrawMode } from "../../../../../enum/EDrawMode";

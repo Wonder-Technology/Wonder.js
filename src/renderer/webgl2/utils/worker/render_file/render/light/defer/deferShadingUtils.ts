@@ -10,7 +10,7 @@ import {
 } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { getNoMaterialShaderIndex } from "../../../shader/shaderUtils";
-import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/Idraw";
+import { IWebGL2DeferDrawFuncDataMap } from "../../../../../../interface/IDraw";
 import { draw as deferDraw } from "../../../../../draw/light/defer/deferDrawRenderCommandBufferUtils";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../interface/IUtils";

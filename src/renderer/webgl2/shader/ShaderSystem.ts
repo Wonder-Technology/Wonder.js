@@ -7,7 +7,7 @@ import { getMapCount } from "../../texture/MapManagerSystem";
 import {
     initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils, initData as initDataUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
-import { buildGLSLSource } from "./shaderSourceBuildSystem";
+import { buildGLSLSource } from "./ShaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../../component/geometry/GeometrySystem";

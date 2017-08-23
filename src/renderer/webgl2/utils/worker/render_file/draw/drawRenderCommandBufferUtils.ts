@@ -9,7 +9,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
-import { IWebGL2DrawFuncDataMap } from "../../../../interface/Idraw";
+import { IWebGL2DrawFuncDataMap } from "../../../../interface/IDraw";
 import {
     IWebGL2BasicSendUniformDataDataMap, IWebGL2DrawDataMap,
     IWebGL2LightSendUniformDataDataMap

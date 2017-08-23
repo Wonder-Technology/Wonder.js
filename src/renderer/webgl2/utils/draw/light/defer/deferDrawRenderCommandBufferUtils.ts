@@ -3,7 +3,7 @@ import { IRenderConfig } from "../../../../../worker/both_file/data/render_confi
 import { IMaterialConfig } from "../../../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
-import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/Idraw";
+import { IWebGL2DeferDrawFuncDataMap } from "../../../../interface/IDraw";
 import { buildRenderCommandUniformData } from "../../../../../utils/draw/light/lightDrawRenderCommandBufferUtils";
 import { LightRenderCommandBufferForDrawData } from "../../../../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap, IWebGL2LightSendUniformDataDataMap } from "../../../worker/render_file/interface/IUtils";

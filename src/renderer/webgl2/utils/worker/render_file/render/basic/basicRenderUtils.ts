@@ -5,7 +5,7 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../../data/shaderLib_generator_interface";
 import { IMaterialConfig } from "../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../../worker/both_file/data/render_config";
-import { IWebGL2BasicDrawFuncDataMap } from "../../../../../interface/Idraw";
+import { IWebGL2BasicDrawFuncDataMap } from "../../../../../interface/IDraw";
 import { draw as drawBasic } from "../../../../draw/basic/basicDrawRenderCommandBufferUtils";
 import {
     BasicRenderCommandBufferForDrawData,

@@ -9,7 +9,7 @@ import {
     initMaterialShader as initMaterialShaderUtils,
     initNoMaterialShader as initNoMaterialShaderUtils
 } from "../../../../webgl1/utils/worker/render_file/shader/shaderUtils";
-import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
+import { buildGLSLSource } from "./ShaderSourceBuildWorkerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
 import {
     getIndices, getNormals, getTexCoords,
