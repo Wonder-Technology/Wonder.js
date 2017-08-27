@@ -99,6 +99,14 @@ export class Director {
         this._startLoop();
     }
 
+    public init() {
+        setState(this._init(getState(DirectorData)), DirectorData);
+    }
+
+    public loopBody(time: number) {
+        setState(this._loopBody(time, getState(DirectorData)), DirectorData).run();
+    }
+
     private _startLoop() {
         var self = this;
 
@@ -113,7 +121,7 @@ export class Director {
                  I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
                  so it need polyfill
                  */
-                setState(self._loopBody(time, getState(DirectorData)), DirectorData).run();
+                self.loopBody(time);
                 // }, (e) => {
                 //     console.error(e);
                 //     throw e;
@@ -123,7 +131,7 @@ export class Director {
 
     private _buildInitStream() {
         return callFunc(() => {
-            setState(this._init(getState(DirectorData)), DirectorData);
+            this.init();
         }, this);
     }
 

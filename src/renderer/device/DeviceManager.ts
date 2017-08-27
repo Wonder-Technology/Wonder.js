@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
 // import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
-import { getGL, getViewport, setGL } from "./DeviceManagerSystem";
+import { getGL, getViewport, setClearColor, setGL } from "./DeviceManagerSystem";
 import { View } from "../../structure/View";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
@@ -12,6 +12,7 @@ import { fromJS } from "immutable";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { DeviceManagerData } from "./DeviceManagerData";
 import { ContextConfigData } from "../../definition/type/mainType";
+import { Color } from "../../structure/Color";
 
 //todo change to function
 
@@ -51,4 +52,8 @@ export class DeviceManager {
 
 export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {
     return setGL(gl, DeviceManagerData, getState(DirectorData));
+}
+
+export var setDeviceManagerClearColor = (color: Color) => {
+    setClearColor(getGL(DeviceManagerData, getState(DirectorData)), color, DeviceManagerData);
 }
