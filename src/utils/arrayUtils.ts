@@ -81,6 +81,10 @@ export var removeItem = (arr: Array<any>, item: any) => {
 export var filter = (arr: Array<any>, func: (item: any) => boolean) => {
     let result = [];
 
+    if (isUndefined(arr)) {
+        return result;
+    }
+
     for (let ele of arr) {
         if (func(ele)) {
             result.push(ele);
@@ -91,6 +95,10 @@ export var filter = (arr: Array<any>, func: (item: any) => boolean) => {
 }
 
 export var forEach = (arr: Array<any>, func: (item: any, index: number) => void) => {
+    if (isUndefined(arr)) {
+        return;
+    }
+
     for (let i = 0, len = arr.length; i < len; i++) {
         func(arr[i], i);
     }
