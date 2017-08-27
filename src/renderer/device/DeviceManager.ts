@@ -57,3 +57,7 @@ export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {
 export var setDeviceManagerClearColor = (color: Color) => {
     setClearColor(getGL(DeviceManagerData, getState(DirectorData)), color, DeviceManagerData);
 }
+
+export var getDeviceManagerGL = () => {
+    return getGL(DeviceManagerData, getState(DirectorData));
+}
