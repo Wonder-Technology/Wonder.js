@@ -11,8 +11,8 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'test/unit/environment/webgl2.js',
-        'test/unit/environment/noWorker.js',
+        'test/helper/environment/webgl2.js',
+        'test/helper/environment/noWorker.js',
 
         'dist/wd.forTest.js',
 
@@ -34,12 +34,12 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
         // 'test/unit/no_worker/**/deferShadingBug*',
-        'test/unit/no_worker/**/drawDefer*',
+        // 'test/unit/no_worker/**/drawDefer*',
         // 'test/unit/no_worker/**/*Defer*',
         // 'test/unit/no_worker/**/initDeferShading*',
         // 'test/unit/no_worker/**/basicRender*',

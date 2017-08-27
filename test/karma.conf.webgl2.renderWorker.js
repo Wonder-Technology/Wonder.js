@@ -11,8 +11,8 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'test/unit/environment/webgl2.js',
-        'test/unit/environment/renderWorker.js',
+        'test/helper/environment/webgl2.js',
+        'test/helper/environment/renderWorker.js',
 
         'dist/wd.forTest.js',
         'dist/worker/wd.renderWorker.js',
