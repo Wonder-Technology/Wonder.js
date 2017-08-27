@@ -100,15 +100,6 @@ gulp.task("rollup", gulpSync.sync(["rollupNoWorker", "rollupRenderWorker"]));
 gulp.task("build", gulpSync.sync(["clean", "createShaderChunk", "generateIndex", "compileTsES2015", "compileTsCommonjs", "generateDTS", "rollup", "formatTs"]));
 
 
-
-gulp.task("watch", function(){
-    var totalPaths = tsFilePaths.concat(glslFilePaths);
-
-    // gulp.watch(totalPaths, gulpSync.sync(["createShaderChunk", "compileTsES2015", "rollup"]));
-    // gulp.watch(totalPaths, gulpSync.sync(["compileTsES2015", "rollup"]));
-    gulp.watch(totalPaths, gulpSync.sync(["generateIndex", "compileTsES2015"]));
-});
-
 gulp.task("watchForTest", function(){
     var totalPaths = tsFilePaths.concat(glslFilePaths);
 
