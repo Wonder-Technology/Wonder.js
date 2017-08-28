@@ -94,6 +94,8 @@ import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLigh
 import { DeferDirectionLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferDirectionLightPassData";
 import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferPointLightPassData";
 import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferAmbientLightPassData";
+import { initData as initDeviceManagerData } from "../renderer/device/DeviceManagerSystem";
+import { DeviceManagerData } from "../renderer/device/DeviceManagerData";
 
 export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {
     canvasId = "",
@@ -225,31 +227,9 @@ var _initData = null;
 
 if (isWebgl1()) {
     _initData = () => {
-        initDirectorData(DirectorData);
-
-        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
-
-        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
-
-        initMeshRendererData(MeshRendererData);
-
-        initTagData(TagData);
-
-        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-
-        initSceneData(SceneData);
-
-        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-
-        initGameObjectData(GameObjectData);
-
-        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        _initBothData();
 
         initWebGL1LightData(AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData);
-
-        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-
-        initVaoData(VaoData);
     }
 
     init = requireCheckFunc((gameState: Map<string, any>, configState: Map<any, any>, DomQuery: any) => {
@@ -265,31 +245,9 @@ if (isWebgl1()) {
 }
 else {
     _initData = () => {
-        initDirectorData(DirectorData);
-
-        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
-
-        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
-
-        initMeshRendererData(MeshRendererData);
-
-        initTagData(TagData);
-
-        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-
-        initSceneData(SceneData);
-
-        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-
-        initGameObjectData(GameObjectData);
-
-        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        _initBothData();
 
         initWebGL2LightData(AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData);
-
-        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-
-        initVaoData(VaoData);
 
         initDeferLightPassData(DeferAmbientLightPassData, DeferDirectionLightPassData, DeferPointLightPassData);
     }
@@ -304,4 +262,32 @@ else {
             createCanvas(DomQuery)
         )(configState.get("canvasId"));
     });
+}
+
+var _initBothData = () => {
+    initDirectorData(DirectorData);
+
+    initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
+
+    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+
+    initMeshRendererData(MeshRendererData);
+
+    initTagData(TagData);
+
+    initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+
+    initSceneData(SceneData);
+
+    initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+
+    initGameObjectData(GameObjectData);
+
+    initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+
+    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+
+    initVaoData(VaoData);
+
+    initDeviceManagerData(DeviceManagerData);
 }

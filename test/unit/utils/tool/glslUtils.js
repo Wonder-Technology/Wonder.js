@@ -57,7 +57,7 @@ var glslUtils = (function () {
 
                 DEPTH_COMPONENT: "DEPTH_COMPONENT",
 
-                LINK_STATUS: LINK_STATUS,
+                LINK_STATUS: "LINK_STATUS",
 
                 VERTEX_SHADER: "VERTEX_SHADER",
                 FRAGMENT_SHADER: "FRAGMENT_SHADER",
