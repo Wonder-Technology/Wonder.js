@@ -43,6 +43,9 @@ import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/sha
 import { initData as initWebGL1ShaderDataSystem } from "../renderer/webgl1/shader/ShaderSystem";
 import { initData as initWebGL2ShaderDataSystem } from "../renderer/webgl2/shader/ShaderSystem";
 import { initData as initDeferLightPassDataSystem } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
+import { initData as initWebGL1GPUDetectDataSystem } from "../renderer/webgl1/device/GPUDetectSystem";
+import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/device/GPUDetectSystem";
+import { initData as initDataSystem } from "../core/MainSystem";
 
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -97,6 +100,12 @@ export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBuffer
 export var initVaoData = initVaoDataSystem;
 
 export var initDeferLightPassData = initDeferLightPassDataSystem;
+
+export var initWebGL1GPUDetectData = initWebGL1GPUDetectDataSystem;
+
+export var initWebGL2GPUDetectData = initWebGL2GPUDetectDataSystem;
+
+export var initData = initDataSystem;
 
 export var createState = createStateUtils;
 

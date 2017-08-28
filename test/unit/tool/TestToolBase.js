@@ -36,8 +36,6 @@ var TestToolBase = YYC.AClass({
             this.clearComponentData();
         },
         clearInstance: function (sandbox) {
-            // wd.EventManager.off();
-            //
             for (var i in wd) {
                 if (wd.hasOwnProperty(i)) {
                     if (wd[i]) {
@@ -45,16 +43,7 @@ var TestToolBase = YYC.AClass({
                     }
                 }
             }
-            //
-            // wd.Entity.uid = 0;
-            //
-            // wd.ProgramTable.clearAll();
-            // wd.BufferTable.clearAll();
-            // wd.TextureCache.clearAll();
-            //
-            // wd.DebugConfig.showDebugPanel = false;
-            //
-            //
+
             this.closeContractCheck();
         },
         clearAndOpenContractCheck: function (sandbox, data) {

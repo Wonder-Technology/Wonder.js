@@ -181,6 +181,8 @@ else {
         initData = () => {
             _initData();
 
+            initWebGL1ShaderData(WebGL1ShaderData);
+
             initProgramData(WebGL1ProgramData);
 
             initWebGL1LocationData(WebGL1LocationData);
@@ -190,6 +192,8 @@ else {
             initIndexBufferData(IndexBufferData);
 
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+
+            initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
         }
 
     }
@@ -197,11 +201,15 @@ else {
         initData = () => {
             _initData();
 
+            initWebGL2ShaderData(WebGL2ShaderData);
+
             initProgramData(WebGL2ProgramData);
 
             initWebGL2LocationData(WebGL2LocationData);
 
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+
+            initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
         }
     }
 
@@ -219,8 +227,6 @@ if (isWebgl1()) {
     _initData = () => {
         initDirectorData(DirectorData);
 
-        initWebGL1ShaderData(WebGL1ShaderData);
-
         initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
         initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
@@ -237,15 +243,11 @@ if (isWebgl1()) {
 
         initGameObjectData(GameObjectData);
 
-        // initWorkerTimeData(WorkerTimeData);
-
         initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
         initWebGL1LightData(AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-
-        initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
 
         initVaoData(VaoData);
     }
@@ -265,8 +267,6 @@ else {
     _initData = () => {
         initDirectorData(DirectorData);
 
-        initWebGL2ShaderData(WebGL2ShaderData);
-
         initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
         initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
@@ -283,15 +283,11 @@ else {
 
         initGameObjectData(GameObjectData);
 
-        // initWorkerTimeData(WorkerTimeData);
-
         initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
 
         initWebGL2LightData(AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData);
 
         initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-
-        initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
 
         initVaoData(VaoData);
 

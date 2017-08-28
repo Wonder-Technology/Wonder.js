@@ -10,9 +10,9 @@ import { IShaderLibGenerator } from "../../../../data/shaderLib_generator_interf
 import { InitShaderDataMap } from "../../../../type/utilsType";
 import { render as basicRender } from "./basic/BasicRenderWorkerSystem";
 import { clear } from "../../../both_file/device/DeviceManagerWorkerSystem";
-import { WebGL1DrawDataMap } from "../../../../webgl1/utils/worker/render_file/type/utilsType";
+import { IWebGL1DrawDataMap } from "../../../../webgl1/utils/worker/render_file/interface/IUtils";
 
-export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, {
+export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, {
     cameraData,
     basicData,
     lightData

@@ -17,6 +17,7 @@ import { initData as initWebGL1LocationWorkerDataSystem } from "../renderer/work
 import { initData as initWebGL2LocationWorkerDataSystem } from "../renderer/worker/webgl2/render_file/shader/location/LocationWorkerSystem";
 import { initData as initWebGL1ShaderWorkerDataSystem } from "../renderer/worker/webgl1/render_file/shader/ShaderWorkerSystem";
 import { initData as initWebGL2ShaderWorkerDataSystem } from "../renderer/worker/webgl2/render_file/shader/ShaderWorkerSystem";
+import { initDataWhenInitGL as initWorkerDataWhenInitGLSystem } from "../renderer/worker/render_file/RenderWorkerSystem";
 
 export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 
@@ -45,6 +46,8 @@ export var initArrayBufferWorkerData = initArrayBufferWorkerDataSystem;
 export var initIndexBufferWorkerData = initIndexBufferWorkerDataSystem;
 
 export var initVaoWorkerData = initVaoWorkerDataSystem;
+
+export var initWorkerDataWhenInitGL = initWorkerDataWhenInitGLSystem;
 
 export var getDirectionLightPositionInShaderWorker = getDirectionLightPosition;
 

@@ -107,6 +107,5 @@ else {
 }
 
 export var initData = (DirectorData: any) => {
-    // DirectorData.state = createState();
-    // DirectorData.isInit = false;
+    DirectorData.isInit = false;
 }

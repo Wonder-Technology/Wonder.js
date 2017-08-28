@@ -37,9 +37,9 @@ import { directlySendUniformData } from "../../../../../../utils/worker/render_f
 import { LightRenderCommandBufferForDrawData } from "../../../../../../utils/worker/render_file/type/dataType";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../utils/worker/render_file/type/dataType";
 import { bindIndexBuffer } from "../../../shader/ShaderWorkerSystem";
-import { WebGL1DrawDataMap } from "../../../../../../webgl1/utils/worker/render_file/type/utilsType";
+import { IWebGL1DrawDataMap } from "../../../../../../webgl1/utils/worker/render_file/interface/IUtils";
 
-export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: WebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
+export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
     frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,

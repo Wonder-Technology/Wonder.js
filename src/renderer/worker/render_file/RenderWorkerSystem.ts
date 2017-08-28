@@ -21,7 +21,7 @@ import { getState, setState } from "./state/StateWorkerSytem";
 import { StateWorkerData } from "./state/StateWorkerData";
 import { disposeBuffer as disposeArrayBuffer } from "./buffer/ArrayBufferWorkerSystem";
 import { disposeBuffer as disposeIndexBuffer } from "./buffer/IndexBufferWorkerSystem";
-import { initData as initProgramWorkerData } from "./shader/program/ProgramWorkerSystem";
+import { initData as initProgramData } from "./shader/program/ProgramWorkerSystem";
 import { initData as initArrayBufferData } from "./buffer/ArrayBufferWorkerSystem";
 import { initData as initIndexBufferData } from "./buffer/IndexBufferWorkerSystem";
 import {
@@ -32,7 +32,7 @@ import {
 import { BasicMaterialWorkerData } from "./material/BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
 import { initState } from "../../utils/worker/render_file/state/stateUtils";
-import { getGL, setSide } from "../both_file/device/DeviceManagerWorkerSystem";
+import { getGL, initData as initDeviceManagerData, setSide } from "../both_file/device/DeviceManagerWorkerSystem";
 import { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 import {
     setPositionArr as setDirectionLightPositionArr
@@ -82,9 +82,9 @@ import { WebGL1LightInitWorkerData } from "../../webgl1/type/messageDataType";
 import { WebGL1PointLightWorkerData } from "../webgl1/render_file/light/PointLightWorkerData";
 import { WebGL2PointLightWorkerData } from "../webgl2/render_file/light/PointLightWorkerData";
 import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/type/dataType";
-import { detect as detectWebGL1 } from "../webgl1/render_file/device/GPUDetectWorkerSystem";
+import { detect as detectWebGL1, initData as initWebGL1GPUDetectWorkerData } from "../webgl1/render_file/device/GPUDetectWorkerSystem";
 import {
-    detect as detectWebGL2
+    detect as detectWebGL2, initData as initWebGL2GPUDetectWorkerData
 } from "../webgl2/render_file/device/GPUDetectWorkerSystem";
 import { GPUDetectWorkerData } from "./device/GPUDetectWorkerData";
 import { render as renderWebGL1 } from "../webgl1/render_file/render/RenderWorkerSystem";
@@ -97,9 +97,9 @@ import {
     init as initWebGL2Render,
     render as renderWebGL2
 } from "../webgl2/render_file/render/RenderWorkerSystem";
-import { initData as initWebGL2GLSLSenderWorkerData } from "../webgl2/render_file/shader/glslSender/GLSLSenderWorkerSystem";
+import { initData as initWebGL2GLSLSenderData } from "../webgl2/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { WebGL2GLSLSenderWorkerData } from "../webgl2/render_file/shader/glslSender/GLSLSenderWorkerData";
-import { initData as initWebGL1GLSLSenderWorkerData } from "../webgl1/render_file/shader/glslSender/GLSLSenderWorkerSystem";
+import { initData as initWebGL1GLSLSenderData } from "../webgl1/render_file/shader/glslSender/GLSLSenderWorkerSystem";
 import { WebGL1GLSLSenderWorkerData } from "../webgl1/render_file/shader/glslSender/GLSLSenderWorkerData";
 import { VaoWorkerData } from "./vao/VaoWorkerData";
 import { WebGL1ProgramWorkerData } from "../webgl1/render_file/shader/program/ProgramWorkerData";
@@ -111,8 +111,8 @@ import { disposeBuffers as disposeWebGL1GeometryBuffers } from "../../webgl1/uti
 import { disposeBuffers as disposeWebGL2GeometryBuffers } from "../../webgl2/utils/worker/both_file/buffer/bufferUtils";
 import { WebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/LocationWorkerData";
 import { WebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerData";
-import { initData as initWebGL1LocationWorkerData } from "../webgl1/render_file/shader/location/LocationWorkerSystem";
-import { initData as initWebGL2LocationWorkerData } from "../webgl2/render_file/shader/location/LocationWorkerSystem";
+import { initData as initWebGL1LocationData } from "../webgl1/render_file/shader/location/LocationWorkerSystem";
+import { initData as initWebGL2LocationData } from "../webgl2/render_file/shader/location/LocationWorkerSystem";
 import { WebGL1ShaderWorkerData } from "../webgl1/render_file/shader/ShaderWorkerData";
 import { WebGL2ShaderWorkerData } from "../webgl2/render_file/shader/ShaderWorkerData";
 import { initData as initDeferLightPassData } from "../webgl2/render_file/render/light/defer/light/DeferLightPassWorkerSystem";
@@ -121,6 +121,8 @@ import { WebGL2DirectionLightWorkerData } from "../webgl2/render_file/light/Dire
 import { DeferDirectionLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferDirectionLightPassWorkerData";
 import { DeferPointLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData";
 import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData";
+
+declare var self:any;
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -139,15 +141,12 @@ export var onmessageHandler = (e) => {
             setVersion(data.webglVersion, WebGLDetectWorkerData);
             break;
         case EWorkerOperateType.INIT_GL:
+            initDataWhenInitGL();
 
             if (isWebgl1(WebGLDetectWorkerData)) {
-                _initWebGL1Data();
-
                 state = _initWebGL1GL(data, WebGLDetectWorkerData, GPUDetectWorkerData);
             }
             else {
-                _initWebGL2Data();
-
                 state = _initWebGL2GL(data, WebGLDetectWorkerData, GPUDetectWorkerData);
             }
 
@@ -353,38 +352,55 @@ var _initWebGL2Render = (gl: any, render_config: IRenderConfig, renderData: WebG
 
 var _isDataNotExist = (data: any) => data === null || data === void 0;
 
+export var initDataWhenInitGL = () => {
+    _initData();
+
+    if (isWebgl1(WebGLDetectWorkerData)) {
+        _initWebGL1Data();
+    }
+    else{
+        _initWebGL2Data();
+    }
+}
+
+
+
+var _initData = () => {
+    initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
+
+    initVaoData(VaoWorkerData);
+
+    initDeviceManagerData(DeviceManagerWorkerData);
+}
+
 var _initWebGL1Data = () => {
-    initProgramWorkerData(WebGL1ProgramWorkerData);
+    initProgramData(WebGL1ProgramWorkerData);
 
-    initWebGL1LocationWorkerData(WebGL1LocationWorkerData);
+    initWebGL1LocationData(WebGL1LocationWorkerData);
 
-    initWebGL1GLSLSenderWorkerData(WebGL1GLSLSenderWorkerData);
+    initWebGL1GLSLSenderData(WebGL1GLSLSenderWorkerData);
 
     initArrayBufferData(ArrayBufferWorkerData);
 
     initIndexBufferData(IndexBufferWorkerData);
 
-    initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
-
     initWebGL1ShaderData(WebGL1ShaderWorkerData);
 
-    initVaoData(VaoWorkerData);
+    initWebGL1GPUDetectWorkerData(GPUDetectWorkerData);
 }
 
 var _initWebGL2Data = () => {
-    initProgramWorkerData(WebGL2ProgramWorkerData);
+    initProgramData(WebGL2ProgramWorkerData);
 
-    initWebGL2LocationWorkerData(WebGL2LocationWorkerData);
+    initWebGL2LocationData(WebGL2LocationWorkerData);
 
-    initWebGL2GLSLSenderWorkerData(WebGL2GLSLSenderWorkerData);
-
-    initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
+    initWebGL2GLSLSenderData(WebGL2GLSLSenderWorkerData);
 
     initWebGL2ShaderData(WebGL2ShaderWorkerData);
 
-    initVaoData(VaoWorkerData);
-
     initDeferLightPassData(DeferAmbientLightPassWorkerData, DeferDirectionLightPassWorkerData, DeferPointLightPassWorkerData);
+
+    initWebGL2GPUDetectWorkerData(GPUDetectWorkerData);
 }
 
 var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {

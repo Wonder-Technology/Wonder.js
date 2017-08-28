@@ -500,6 +500,8 @@ describe("Main", function() {
                 });
 
                 it("set gl to DeviceManagerWorkerData", function(){
+                    testTool.clear(sandbox);
+
                     expect(DeviceManagerWorkerData.gl).toBeNull();
 
                     workerTool.execRenderWorkerMessageHandler(e);

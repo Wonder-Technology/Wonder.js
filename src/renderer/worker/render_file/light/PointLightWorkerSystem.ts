@@ -11,6 +11,7 @@ import {
     getRange as getRangeUtils, isAttenuationDirty as isAttenuationDirtyUtils, isColorDirty as isColorDirtyUtils, isIntensityDirty as isIntensityDirtyUtils,
     isPositionDirty as isPositionDirtyUtils
 } from "../../../utils/worker/render_file/light/pointLightUtils";
+import { Color } from "../../../../structure/Color";
 
 export var setPositionArr = (positionArr: Array<Float32Array>, PointLightWorkerData: any) => {
     PointLightWorkerData.positionArr = positionArr;
