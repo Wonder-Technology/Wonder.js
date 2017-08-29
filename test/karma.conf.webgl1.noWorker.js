@@ -33,7 +33,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/vao*',
         // 'test/unit/no_worker/**/reallocate*',
@@ -55,7 +55,7 @@
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/frontRender*',
         // 'test/unit/no_worker/**/basicRender*',
-        // 'test/unit/no_worker/**/*draw*',
+        'test/unit/no_worker/**/*drawRender*',
         // 'test/unit/no_worker/**/*GameObject*',
         // 'test/unit/no_worker/**/*Camera*',
         // 'test/unit/no_worker/**/Main*',

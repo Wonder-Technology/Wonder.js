@@ -1,7 +1,19 @@
 import typescript from "wonder-rollup-plugin-typescript";
 import nodeResolve from "rollup-plugin-node-resolve";
 import commonjs from "rollup-plugin-commonjs";
+import * as packageData from "wonder-package";
 
+var {namedExportsData, addNamedExports } = packageData.package;
+
+function getNamedExports(namedExportsData) {
+    var namedExports = {};
+
+    addNamedExports(namedExports, namedExportsData.immutable);
+    addNamedExports(namedExports, namedExportsData.bowser);
+    addNamedExports(namedExports, namedExportsData["wonder-expect.js"]);
+
+    return namedExports;
+}
 
 var packageConfig = require("./package.json");
 
@@ -30,11 +42,7 @@ export default {
             extensions: [".js", ".ts"]
         }),
         commonjs({
-            namedExports: {
-                "./node_modules/bowser/src/bowser.js": ["version", "chrome","msie", "firefox", "mobile"],
-                "./node_modules/wonder-expect.js/dist/wdet.js": ["expect"],
-                "./node_modules/immutable/dist/immutable.js": ["fromJS", "Map"]
-            },
+            namedExports: getNamedExports(namedExportsData),
             extensions: [".js", ".ts"]
         })
     ],

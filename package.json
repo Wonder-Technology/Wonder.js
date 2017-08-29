@@ -1,10 +1,11 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.5",
-  "authors": "Yuanchao Yang <395976266@qq.com>",
+  "version": "1.0.0-alpha.5.7",
+  "authors": "DreamForest",
   "description": "3d webgl engine",
-  "homepage": "https://github.com/yyc-git/Wonder.js",
+  "homepage": "https://github.com/DreamForeast/Wonder.js",
   "license": "MIT",
+  "main": "./dist/wd.js",
   "scripts": {
     "start": "node ./server/app.js",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
@@ -48,7 +49,7 @@
     "util": "^0.10.3",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.29",
+    "wonder-package": "^0.1.30",
     "wonder-rollup-plugin-typescript": "^0.1.1",
     "wonder-tool-generate_es2015_index": "^0.1.4"
   },
