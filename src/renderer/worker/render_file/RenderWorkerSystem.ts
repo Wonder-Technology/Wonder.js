@@ -122,7 +122,7 @@ import { DeferDirectionLightPassWorkerData } from "../webgl2/render_file/render/
 import { DeferPointLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData";
 import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData";
 
-declare var self:any;
+declare var self: any;
 
 export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
@@ -358,7 +358,7 @@ export var initDataWhenInitGL = () => {
     if (isWebgl1(WebGLDetectWorkerData)) {
         _initWebGL1Data();
     }
-    else{
+    else {
         _initWebGL2Data();
     }
 }
