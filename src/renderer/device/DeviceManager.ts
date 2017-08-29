@@ -1,7 +1,7 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
 // import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
-import { getGL, getViewport, setClearColor, setGL } from "./DeviceManagerSystem";
+import { getGL, getViewport, setClearColor, setGL, setViewport } from "./DeviceManagerSystem";
 import { View } from "../../structure/View";
 import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
@@ -48,6 +48,10 @@ export class DeviceManager {
     // public setScreen() {
     //     return setScreen(DeviceManagerData, getState(DirectorData));
     // }
+}
+
+export var setDeviceManagerViewport = (x: number, y: number, width: number, height: number) => {
+    setViewport(x, y, width, height, getState(DirectorData));
 }
 
 export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {

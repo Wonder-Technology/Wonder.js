@@ -28,7 +28,7 @@ export var getMaxUniformBufferBindings = (GPUDetectDataFromSystem: any) => GPUDe
 
 export var hasExtensionColorBufferFloat = (GPUDetectDataFromSystem: any) => !!GPUDetectDataFromSystem.extensionColorBufferFloat;
 
-export var initData =  (GPUDetectDataFromSystem: any) => {
+export var initData = (GPUDetectDataFromSystem: any) => {
     GPUDetectDataFromSystem.maxTextureUnit = null;
     GPUDetectDataFromSystem.maxTextureSize = null;
     GPUDetectDataFromSystem.maxCubemapTextureSize = null;

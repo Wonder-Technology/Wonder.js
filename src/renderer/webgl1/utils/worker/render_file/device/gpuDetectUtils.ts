@@ -16,7 +16,7 @@ var _detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: 
 
 export var getExtensionVao = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.extensionVao;
 
-export var initData =  (GPUDetectDataFromSystem: any) => {
+export var initData = (GPUDetectDataFromSystem: any) => {
     GPUDetectDataFromSystem.maxTextureUnit = null;
     GPUDetectDataFromSystem.maxTextureSize = null;
     GPUDetectDataFromSystem.maxCubemapTextureSize = null;
