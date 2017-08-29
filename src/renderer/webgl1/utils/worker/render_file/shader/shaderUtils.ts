@@ -73,8 +73,8 @@ var _init = (state: Map<any, any>, materialIndex: number | null, materialShaderL
     return shaderIndex;
 }
 
-export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {
-    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem);
+export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryDataFromSystem: any, IndexBufferDataFromSystem: any) => {
+    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryDataFromSystem, IndexBufferDataFromSystem);
 
     if (ProgramDataFromSystem.lastBindedIndexBuffer === buffer) {
         return;
