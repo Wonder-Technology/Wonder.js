@@ -58,12 +58,12 @@
     "@types/node": "^7.0.5",
     "@types/wonder-commonlib": "^0.2.0",
     "@types/wonder-frp": "^0.2.0",
-    "bowser": "^1.6.0",
-    "immutable": "^3.8.1",
+    "bowser": "1.7.2",
+    "immutable": "3.8.1",
     "wonder-commonlib": "^0.1.9",
-    "wonder-expect.js": "^0.1.9",
+    "wonder-expect.js": "0.1.9",
     "wonder-fantasy-land": "^0.1.1",
-    "wonder-frp": "^0.1.20",
+    "wonder-frp": "^0.1.22",
     "wonder-lodash": "^0.1.3"
   }
 }
