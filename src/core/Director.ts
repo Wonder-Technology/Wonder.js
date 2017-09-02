@@ -12,7 +12,7 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 import {
     init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle
 } from "../component/transform/ThreeDTransformSystem";
-import { getState, markIsInit, run, setState } from "./DirectorSystem";
+import { getState, isInit, markIsInit, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
@@ -197,6 +197,11 @@ export class Director {
         return run(elapsed, state, this._timeController, this.scheduler);
     }
 }
+
+export var isDirectorInit = () => {
+    return isInit(DirectorData);
+}
+
 
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);

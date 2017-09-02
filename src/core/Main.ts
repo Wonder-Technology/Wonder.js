@@ -1,5 +1,5 @@
 import {
-    init as initMain, initData as initDataMainSystem, setConfig
+    init as initMain, initData, initData as initDataMainSystem, setConfig
 } from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
 import { Map } from "immutable";
@@ -47,4 +47,8 @@ export class Main {
 
         return this;
     }
+}
+
+export var initAllData = () => {
+    initData();
 }
