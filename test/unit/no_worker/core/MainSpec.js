@@ -274,46 +274,40 @@ describe("Main", function() {
             });
 
             it("support full screen", function(){
-                var view = device.view;
-
-                DomQuery.aaa = 1;
-
                 Main.setConfig({
                     screenSize:EScreenSize.FULL,
                     canvasId: "#event-test"
                 }).init();
 
-
-                var dom = canvasDom;
-
-                expect(dom.style.cssText).toEqual("position:absolute;left:0;top:0;");
+                expect(canvasDom.style.cssText).toEqual("position:absolute;left:0;top:0;");
                 expect(fakeDomQuery.css).toCalledWith("margin", "0");
-                expect(view.x).toEqual(0);
-                expect(view.y).toEqual(0);
-                expect(view.width > 0).toBeTruthy();
-                expect(view.height > 0).toBeTruthy();
-                expect(dom.style.width).toEqual("100%");
-                expect(dom.style.height).toEqual("100%");
+                expect(viewTool.getCanvasLeft(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasTop(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasWidth(canvasDom) > 0).toBeTruthy();
+                expect(viewTool.getCanvasHeight(canvasDom) > 0).toBeTruthy();
+                expect(viewTool.getCanvasStyleWidth(canvasDom)).toEqual("100%");
+                expect(viewTool.getCanvasStyleHeight(canvasDom)).toEqual("100%");
 
-                expect(device.gl.viewport).toCalledWith(0, 0, view.width, view.height);
-                expect(device.gl.viewport).toCalledWith(0, 0, sinon.match.number, sinon.match.number);
+                expect(testTool.getValues(
+                    deviceManagerTool.getViewport().values
+                )).toEqual([0, 0, viewTool.getCanvasWidth(canvasDom), viewTool.getCanvasHeight(canvasDom)]);
             });
             it("support custom screen size and position", function(){
-                var view = device.view;
-
                 Main.setConfig({
                     screenSize:RectRegion.create(10, 0, 50, 100),
                     canvasId: "#event-test"
                 }).init();
 
-                expect(view.x).toEqual(10);
-                expect(view.y).toEqual(0);
-                expect(view.width).toEqual(50);
-                expect(view.height).toEqual(100);
-                expect(device.gl.viewport).toCalledWith(10, 0, view.width, view.height);
-                expect(device.viewport).toEqual(RectRegion.create(10, 0, view.width, view.height));
-                expect(canvasDom.style.left).toEqual("10px");
-                expect(canvasDom.style.top).toEqual("0px");
+                expect(viewTool.getCanvasLeft(canvasDom)).toEqual(10);
+                expect(viewTool.getCanvasTop(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasWidth(canvasDom)).toEqual(50);
+                expect(viewTool.getCanvasHeight(canvasDom)).toEqual(100);
+                expect(viewTool.getCanvasStyleWidth(canvasDom)).toEqual("50px");
+                expect(viewTool.getCanvasStyleHeight(canvasDom)).toEqual("100px");
+
+                expect(testTool.getValues(
+                    deviceManagerTool.getViewport().values
+                )).toEqual([10, 0, viewTool.getCanvasWidth(canvasDom), viewTool.getCanvasHeight(canvasDom)]);
             });
         });
     });

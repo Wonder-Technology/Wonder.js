@@ -191,18 +191,19 @@ describe("Main", function() {
 
                 expect(dom.style.cssText).toEqual("position:absolute;left:0;top:0;");
                 expect(fakeDomQuery.css).toCalledWith("margin", "0");
-                expect(view.x).toEqual(0);
-                expect(view.y).toEqual(0);
-                expect(dom.style.width).toEqual("100%");
-                expect(dom.style.height).toEqual("100%");
+
+                expect(viewTool.getCanvasLeft(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasTop(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasStyleWidth(canvasDom)).toEqual("100%");
+                expect(viewTool.getCanvasStyleHeight(canvasDom)).toEqual("100%");
 
 
                 if(bowser.firefox){
                     return;
                 }
 
-                expect(view.width).toEqual(100);
-                expect(view.height).toEqual(200);
+                expect(viewTool.getCanvasWidth(canvasDom)).toEqual(100);
+                expect(viewTool.getCanvasHeight(canvasDom)).toEqual(200);
             });
             it("support custom screen size and position", function(){
                 var view = device.view;
@@ -212,12 +213,12 @@ describe("Main", function() {
                     canvasId: "#event-test"
                 }).init();
 
-                expect(view.x).toEqual(10);
-                expect(view.y).toEqual(0);
-                expect(view.width).toEqual(50);
-                expect(view.height).toEqual(100);
-                expect(canvasDom.style.left).toEqual("10px");
-                expect(canvasDom.style.top).toEqual("0px");
+                expect(viewTool.getCanvasLeft(canvasDom)).toEqual(10);
+                expect(viewTool.getCanvasTop(canvasDom)).toEqual(0);
+                expect(viewTool.getCanvasWidth(canvasDom)).toEqual(50);
+                expect(viewTool.getCanvasHeight(canvasDom)).toEqual(100);
+                expect(viewTool.getCanvasStyleWidth(canvasDom)).toEqual("50px");
+                expect(viewTool.getCanvasStyleHeight(canvasDom)).toEqual("100px");
             });
 
             describe("set viewport", function() {
