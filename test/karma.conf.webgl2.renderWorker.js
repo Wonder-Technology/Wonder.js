@@ -35,6 +35,7 @@
         'test/unit/worker/utils/*.js',
 
         'test/unit/worker/**',
+        // 'test/unit/worker/**/device*',
         // 'test/unit/worker/**/MainSpec*',
         // 'test/unit/worker/**/texture*',
         // 'test/unit/worker/**/material*',

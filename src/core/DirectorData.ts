@@ -1,7 +1,6 @@
 import { Map } from "immutable";
-import { createState } from "../utils/stateUtils";
 
 export class DirectorData {
-    public static state: Map<any, any> = createState();
-    public static isInit: boolean = false;
+    public static state: Map<any, any> = null;
+    public static isInit: boolean = null;
 }

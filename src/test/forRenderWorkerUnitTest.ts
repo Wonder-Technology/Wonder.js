@@ -1,4 +1,6 @@
-import { initData as initDeviceManagerWorkerDataSystem } from "../renderer/worker/both_file/device/DeviceManagerWorkerSystem";
+import {
+    initData as initDeviceManagerWorkerDataSystem
+} from "../renderer/worker/both_file/device/DeviceManagerWorkerSystem";
 import { initData as initProgramWorkerDataSystem } from "../renderer/worker/render_file/shader/program/ProgramWorkerSystem";
 import { initData as initDrawRenderCommandBufferWorkerDataSystem } from "../renderer/worker/render_file/draw/DrawRenderCommandBufferWorkerSystem";
 import { update } from "../renderer/worker/render_file/texture/TextureWorkerSystem";
@@ -18,6 +20,8 @@ import { initData as initWebGL2LocationWorkerDataSystem } from "../renderer/work
 import { initData as initWebGL1ShaderWorkerDataSystem } from "../renderer/worker/webgl1/render_file/shader/ShaderWorkerSystem";
 import { initData as initWebGL2ShaderWorkerDataSystem } from "../renderer/worker/webgl2/render_file/shader/ShaderWorkerSystem";
 import { initDataWhenInitGL as initWorkerDataWhenInitGLSystem } from "../renderer/worker/render_file/RenderWorkerSystem";
+import { Map } from "immutable";
+import { initData } from "../core/DirectorSystem";
 
 export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 

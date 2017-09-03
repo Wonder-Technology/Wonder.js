@@ -3,14 +3,13 @@ var Main = wd.Main;
 var TestTool = YYC.Class(TestToolBase, {
     Public: {
         clearComponentData: function(){
-            wd.initData();
+            wd.initAllData();
             wd.initWorkerDataWhenInitGL();
 
             deviceManagerTool.resetData();
             materialWorkerTool.resetData();
             webglDetectWorkerTool.resetData();
             lightTool.resetData();
-            directorSystemTool.resetData();
         },
         clearAndOpenContractCheck: function (sandbox, data) {
             testUtils.prepareBufferForTest(sandbox, data, bufferTool);

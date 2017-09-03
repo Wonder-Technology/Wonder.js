@@ -3,7 +3,7 @@ var Main = wd.Main;
 var TestTool = YYC.Class(TestToolBase, {
     Public: {
         clearComponentData: function(){
-            wd.initData();
+            wd.initAllData();
         },
         clearAndOpenContractCheck: function (sandbox, data) {
             Main.isTest = true;

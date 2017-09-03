@@ -1,12 +1,11 @@
-var deviceManagerTool = (function () {
-    return {
+var DeviceManagerTool = YYC.Class(DeviceManagerToolBase, {
+    Public:{
         setGL: wd.setDeviceManagerGL,
-        getViewport: wd.getDeviceManagerViewport,
-        setViewport: wd.setDeviceManagerViewport,
 
         resetData: function(){
             wd.initDeviceManagerData(wd.DeviceManagerData);
         }
     }
-})()
+})
 
+var deviceManagerTool = new DeviceManagerTool();

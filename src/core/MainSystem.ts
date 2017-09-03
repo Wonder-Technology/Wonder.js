@@ -60,8 +60,6 @@ import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateT
 import { getVersion, isWebgl1 } from "../renderer/device/WebGLDetectSystem";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
-import { initData as initDirectorData } from "./DirectorSystem";
-import { DirectorData } from "./DirectorData";
 import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
 import { GPUDetectData } from "../renderer/device/GPUDetectData";
@@ -265,8 +263,6 @@ else {
 }
 
 var _initBothData = () => {
-    initDirectorData(DirectorData);
-
     initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
     initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);

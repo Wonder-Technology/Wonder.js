@@ -32,7 +32,10 @@ import {
 import { BasicMaterialWorkerData } from "./material/BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
 import { initState } from "../../utils/worker/render_file/state/stateUtils";
-import { getGL, initData as initDeviceManagerData, setSide } from "../both_file/device/DeviceManagerWorkerSystem";
+import {
+    getGL, initData as initDeviceManagerData, setSide,
+    setViewportOfGL
+} from "../both_file/device/DeviceManagerWorkerSystem";
 import { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
 import {
     setPositionArr as setDirectionLightPositionArr
@@ -153,6 +156,9 @@ export var onmessageHandler = (e) => {
             setState(state, StateWorkerData);
 
             initState(state, getGL, setSide, DeviceManagerWorkerData);
+            break;
+        case EWorkerOperateType.INIT_VIEWPORT:
+            setState(setViewportOfGL(DeviceManagerWorkerData, data.viewportData, getState(StateWorkerData)).run(), StateWorkerData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             if (isWebgl1(WebGLDetectWorkerData)) {

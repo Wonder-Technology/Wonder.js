@@ -5,10 +5,10 @@ import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
 import {
-    createGL as createGLWorker, getViewportData,
+    createGL as createGLWorker,
     setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem,
     setContextConfig, setPixelRatio,
-    setScreen as setScreenFromDeviceManagerWorkerSystem, setViewport
+    setScreen as setScreenFromDeviceManagerWorkerSystem, setViewportToState, getViewportData
 } from "../worker/both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerData } from "./DeviceManagerData";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
@@ -25,15 +25,15 @@ export var initDevice = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect: Function, DomQuery: any, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
-            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(),
-                viewportData: ViewportData = getViewportData(screenData, state);
+            var screenData:ViewportData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(),
+                viewportData: ViewportData = getViewportData(screenData);
 
             createGLWorker(canvas, getRenderWorker(WorkerInstanceData), contextConfig, viewportData).run();
 
             return compose(
                 setCanvas(canvas),
                 setContextConfig(contextConfig),
-                setViewport(viewportData),
+                setViewportToState(viewportData),
                 setPixelRatio(setCanvasPixelRatioFromDeviceManagerWorkerSystem(configState.get("useDevicePixelRatio"), canvas).run())
             )(state);
         });

@@ -29,6 +29,10 @@ var directorTool = (function(){
         },
         getDirector: function(){
             return wd.Director.getInstance();
+        },
+
+        resetData: function () {
+
         }
     }
 })();

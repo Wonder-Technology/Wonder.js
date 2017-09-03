@@ -179,17 +179,13 @@ describe("Main", function() {
             });
 
             it("support full screen", function(){
-                var view = device.view;
-
                 Main.setConfig({
                     screenSize:EScreenSize.FULL,
                     canvasId: "#event-test"
                 }).init();
 
 
-                var dom = canvasDom;
-
-                expect(dom.style.cssText).toEqual("position:absolute;left:0;top:0;");
+                expect(canvasDom.style.cssText).toEqual("position:absolute;left:0;top:0;");
                 expect(fakeDomQuery.css).toCalledWith("margin", "0");
 
                 expect(viewTool.getCanvasLeft(canvasDom)).toEqual(0);
@@ -206,8 +202,6 @@ describe("Main", function() {
                 expect(viewTool.getCanvasHeight(canvasDom)).toEqual(200);
             });
             it("support custom screen size and position", function(){
-                var view = device.view;
-
                 Main.setConfig({
                     screenSize:RectRegion.create(10, 0, 50, 100),
                     canvasId: "#event-test"
@@ -226,34 +220,53 @@ describe("Main", function() {
 
                 });
 
-                it("set viewport", function () {
+                it("set viewport to state", function () {
                     Main.setConfig({
                         screenSize:RectRegion.create(10, 0, 50, 100),
                         canvasId: "#event-test"
                     }).init();
 
-                    expect(device.viewport).toEqual(RectRegion.create(10, 0, 50, 100));
+                    expect(deviceManagerTool.getViewport()).toEqual(RectRegion.create(10, 0, 50, 100));
                 });
-                it("if new viewport data equal old data, send viewportData: null to worker", function () {
-                    var screenSize = RectRegion.create(10, 0, 50, 100);
+                it("send viewportData", function () {
                     Main.setConfig({
-                        screenSize:screenSize,
-                        canvasId: "#event-test"
-                    }).init();
-
-                    Main.setConfig({
-                        screenSize:screenSize,
+                        screenSize:RectRegion.create(10, 0, 50, 100),
                         canvasId: "#event-test"
                     }).init();
 
                     worker = workerTool.getRenderWorker();
                     expect(worker.postMessage.getCall(2)).toCalledWith({
                         operateType: EWorkerOperateType.INIT_GL,
-                        canvas: offscreen,
+                        canvas: sinon.match.any,
                         options: sinon.match.any,
-                        viewportData:null
+                        viewportData:{
+                            x:10,
+                            y:0,
+                            width:50,
+                            height:100
+                        }
                     })
                 });
+                // it("if new viewport data equal old data, send viewportData: null to worker", function () {
+                //     var screenSize = RectRegion.create(10, 0, 50, 100);
+                //     Main.setConfig({
+                //         screenSize:screenSize,
+                //         canvasId: "#event-test"
+                //     }).init();
+                //
+                //     Main.setConfig({
+                //         screenSize:screenSize,
+                //         canvasId: "#event-test"
+                //     }).init();
+                //
+                //     worker = workerTool.getRenderWorker();
+                //     expect(worker.postMessage.getCall(2)).toCalledWith({
+                //         operateType: EWorkerOperateType.INIT_GL,
+                //         canvas: offscreen,
+                //         options: sinon.match.any,
+                //         viewportData:null
+                //     })
+                // });
 
                 describe("test in render worker", function() {
                     var gl;
@@ -279,7 +292,7 @@ describe("Main", function() {
 
                         expect(gl.viewport).toCalledWith(viewportData.x, viewportData.y, viewportData.width, viewportData.height);
                     });
-                    it("save viewport data to state", function () {
+                    it("save viewport data to state in render worker", function () {
                         workerTool.execRenderWorkerMessageHandler(e);
 
                         var state = stateTool.getState();

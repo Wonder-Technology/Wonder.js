@@ -82,7 +82,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     render = (state: Map<any, any>) => {
         var resultState = null;
 
-        resultState = renderByWebGLRender(state)
+        resultState = renderByWebGLRender(state);
 
         return resultState;
     }
@@ -108,4 +108,5 @@ else {
 
 export var initData = (DirectorData: any) => {
     DirectorData.isInit = false;
+    DirectorData.state = createState();
 }
