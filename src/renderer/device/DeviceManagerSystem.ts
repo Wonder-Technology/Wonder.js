@@ -12,7 +12,7 @@ import {
     setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
     setScreen as setScreenUtils, setSide as setSideUtils,
-    setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
+    setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/worker/both_file/device/deviceManagerUtils";
 import { Log } from "../../utils/Log";
 import { Color } from "../../structure/Color";
@@ -41,7 +41,9 @@ export var setPixelRatio = setPixelRatioUtils;
 
 export var getViewport = getViewportUtils;
 
-export var setViewport = setViewportUtils;
+export var setViewportToState = setViewportToStateUtils;
+
+export var setViewportOfGL = setViewportOfGLUtils;
 
 export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement, state: Map<any, any>) => {
     return IO.of(() => {
@@ -54,8 +56,6 @@ export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HT
         return setPixelRatio(pixelRatio, state);
     });
 });
-
-export var setViewportOfGL = setViewportOfGLUtils;
 
 export var getScreenSize = getScreenSizeUtils;
 

@@ -1,9 +1,9 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { singleton } from "../../definition/typescript/decorator/singleton";
 // import { createGL, getGL, getViewport, setGL, setScreen } from "./DeviceManagerSystem";
-import { getGL, getViewport, setClearColor, setGL, setViewport } from "./DeviceManagerSystem";
+import { getGL, getViewport, setClearColor, setGL, setViewportOfGL } from "./DeviceManagerSystem";
 // import { View } from "../../structure/View";
-import { getState } from "../../core/DirectorSystem";
+import { getState, setState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { DeviceManagerData } from "./DeviceManagerData";
 import { Color } from "../../structure/Color";
@@ -44,7 +44,15 @@ export var getDeviceManagerViewport = () => {
 }
 
 export var setDeviceManagerViewport = (x: number, y: number, width: number, height: number) => {
-    setViewport(x, y, width, height, getState(DirectorData));
+    setState(
+        setViewportOfGL(DeviceManagerData, getState(DirectorData), {
+                x: x,
+                y: y,
+                width: width,
+                height: height
+            }
+        ).run(), DirectorData
+    ).run();
 }
 
 export var setDeviceManagerClearColor = (color: Color) => {

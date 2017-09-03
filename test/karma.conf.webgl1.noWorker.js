@@ -34,6 +34,7 @@
         // 'test/unit/**/BufferWriter.js',
 
         'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/device*',
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/vao*',
         // 'test/unit/no_worker/**/reallocate*',

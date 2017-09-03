@@ -225,8 +225,8 @@ else {
 
         render = (state: Map<any, any>) => {
             return compose(
-                renderWebGL1(null, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildWebGL1DrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData, WebGL1ProgramData, WebGL1LocationData, WebGL1GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, WebGL1ProgramData, WebGL1LocationData, WebGL1GLSLSenderData, WebGL1ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData, GPUDetectData, VaoData), ThreeDTransformData, GameObjectData),
-                clearColor(null, render_config, DeviceManagerData),
+                renderWebGL1(state, render_config, webgl1_material_config, webgl1_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL1, buildWebGL1DrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData, WebGL1ProgramData, WebGL1LocationData, WebGL1GLSLSenderData, GeometryData, ArrayBufferData, IndexBufferData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildInitShaderDataMap(DeviceManagerData, WebGL1ProgramData, WebGL1LocationData, WebGL1GLSLSenderData, WebGL1ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData, GPUDetectData, VaoData), ThreeDTransformData, GameObjectData),
+                clearColor(state, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
                 getRenderList(state)
@@ -249,7 +249,7 @@ else {
         render = (state: Map<any, any>) => {
             return compose(
                 renderWebGL2(state, render_config, webgl2_material_config, webgl2_shaderLib_generator, DataBufferConfig, initMaterialShaderWebGL2, buildWebGL2DrawDataMap(DeviceManagerData, TextureData, TextureCacheData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, GeometryData, BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData), buildDeferDrawDataMap(GBufferData, DeferAmbientLightPassData, DeferDirectionLightPassData, DeferPointLightPassData), buildInitShaderDataMap(DeviceManagerData, WebGL2ProgramData, WebGL2LocationData, WebGL2GLSLSenderData, WebGL2ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData, GPUDetectData, VaoData), ThreeDTransformData, GameObjectData),
-                clearColor(null, render_config, DeviceManagerData),
+                clearColor(state, render_config, DeviceManagerData),
                 // sortRenderCommands(state),
                 createRenderCommandBufferData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
                 getRenderList(state)

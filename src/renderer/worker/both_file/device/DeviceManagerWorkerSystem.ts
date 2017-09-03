@@ -7,7 +7,7 @@ import {
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils,
     setSide as setSideUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
-    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils
+    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewportToState as setViewportUtils
 } from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";

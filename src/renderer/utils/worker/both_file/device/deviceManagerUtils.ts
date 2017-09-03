@@ -49,7 +49,7 @@ export var getViewport = (state: Map<any, any>) => {
     return state.getIn(["DeviceManager", "viewport"]);
 }
 
-export var setViewport = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
+export var setViewportToState = (x: number, y: number, width: number, height: number, state: Map<any, any>) => {
     return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 }
 
@@ -80,7 +80,7 @@ export var setViewportOfGL = curry((DeviceManagerDataFromSystem: any, state: Map
 
         gl.viewport(x, y, width, height);
 
-        return setViewport(x, y, width, height, state);
+        return setViewportToState(x, y, width, height, state);
     });
 })
 
