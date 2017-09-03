@@ -45,7 +45,6 @@ import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
-import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
@@ -72,10 +71,6 @@ export class Director {
     public static getInstance(): any { };
 
     private constructor() { }
-
-    get view() {
-        return DeviceManager.getInstance().view;
-    }
 
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);

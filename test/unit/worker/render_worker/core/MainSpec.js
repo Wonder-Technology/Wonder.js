@@ -125,8 +125,6 @@ describe("Main", function() {
     });
 
     describe("test set config data", function() {
-        var gl;
-        var device;
         var canvasDom;
         var offscreen;
 
@@ -143,8 +141,6 @@ describe("Main", function() {
         }
 
         beforeEach(function () {
-            device = DeviceManager.getInstance();
-
             offscreen = {
             };
 

@@ -55,7 +55,6 @@ describe("Main", function() {
 
     describe("test set config data", function(){
         var gl;
-        var device;
         var canvasDom;
 
         function buildFakeDomQuery(canvasDom){
@@ -66,8 +65,6 @@ describe("Main", function() {
         }
 
         beforeEach(function(){
-            device = DeviceManager.getInstance();
-
             canvasDom = {
                 style:{},
                 width:1,
@@ -91,7 +88,7 @@ describe("Main", function() {
                     });
                     Main.init();
 
-                    expect(device.gl).toBeDefined();
+                    expect(deviceManagerTool.getGL()).toBeDefined();
                 });
                 it("support pass #canvasId", function(){
                     Main.setConfig({
@@ -99,7 +96,7 @@ describe("Main", function() {
                     });
                     Main.init();
 
-                    expect(device.gl).toBeDefined();
+                    expect(deviceManagerTool.getGL()).toBeDefined();
                 });
             });
 
