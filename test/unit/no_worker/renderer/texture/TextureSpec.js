@@ -21,7 +21,7 @@ describe("Texture", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -31,7 +31,7 @@ describe("Texture", function () {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        texture = textureTool.create();
+        texture = textureSystemTool.create();
 
         basicMaterialTool.addMap(material, texture);
     });
@@ -48,10 +48,10 @@ describe("Texture", function () {
         it("should not exceed buffer count", function () {
             sandbox.stub(DataBufferConfig, "textureDataBufferCount", 2);
 
-            textureTool.create();
+            textureSystemTool.create();
 
             expect(function () {
-                textureTool.create();
+                textureSystemTool.create();
             }).toThrow("index should <= max count");
         });
     });
@@ -66,7 +66,7 @@ describe("Texture", function () {
         //     });
         //
         //     it("default value is 0", function () {
-        //         expect(textureTool.getWidth(texture)).toEqual(0);
+        //         expect(textureSystemTool.getWidth(texture)).toEqual(0);
         //     });
         // });
         //
@@ -75,7 +75,7 @@ describe("Texture", function () {
         //     });
         //
         //     it("default value is 0", function () {
-        //         expect(textureTool.getHeight(texture)).toEqual(0);
+        //         expect(textureSystemTool.getHeight(texture)).toEqual(0);
         //     });
         // });
 
@@ -84,7 +84,7 @@ describe("Texture", function () {
             });
 
             it("default value is 0", function () {
-                expect(textureTool.getIsNeedUpdate(texture)).toEqual(0);
+                expect(textureSystemTool.getIsNeedUpdate(texture)).toEqual(0);
             });
         });
     });
@@ -102,23 +102,23 @@ describe("Texture", function () {
                     width:100
                 };
 
-                textureTool.setSource(texture, source);
+                textureSystemTool.setSource(texture, source);
             });
 
             it("if width is 0, return source.width", function () {
-                textureTool.setWidth(texture, 0);
+                textureSystemTool.setWidth(texture, 0);
 
-                expect(textureTool.getWidth(texture)).toEqual(source.width);
+                expect(textureSystemTool.getWidth(texture)).toEqual(source.width);
             });
             it("else, return width", function () {
-                textureTool.setWidth(texture, 50);
+                textureSystemTool.setWidth(texture, 50);
 
-                expect(textureTool.getWidth(texture)).toEqual(50);
+                expect(textureSystemTool.getWidth(texture)).toEqual(50);
             });
         });
 
         it("default value is 0", function () {
-            expect(textureTool.getWidth(texture)).toEqual(0);
+            expect(textureSystemTool.getWidth(texture)).toEqual(0);
         });
     });
 
@@ -135,23 +135,23 @@ describe("Texture", function () {
                     height:100
                 };
 
-                textureTool.setSource(texture, source);
+                textureSystemTool.setSource(texture, source);
             });
 
             it("if height is 0, return source.height", function () {
-                textureTool.setHeight(texture, 0);
+                textureSystemTool.setHeight(texture, 0);
 
-                expect(textureTool.getHeight(texture)).toEqual(source.height);
+                expect(textureSystemTool.getHeight(texture)).toEqual(source.height);
             });
             it("else, return height", function () {
-                textureTool.setHeight(texture, 50);
+                textureSystemTool.setHeight(texture, 50);
 
-                expect(textureTool.getHeight(texture)).toEqual(50);
+                expect(textureSystemTool.getHeight(texture)).toEqual(50);
             });
         });
 
         it("default value is 0", function () {
-            expect(textureTool.getHeight(texture)).toEqual(0);
+            expect(textureSystemTool.getHeight(texture)).toEqual(0);
         });
     });
 
@@ -159,7 +159,7 @@ describe("Texture", function () {
         beforeEach(function () {
             directorTool.init(state);
 
-            textureTool.setSource(texture, {});
+            textureSystemTool.setSource(texture, {});
         });
 
         // it("if repeat texture and draw part of texture by changing texcoords in glsl, warn", function () {
@@ -208,8 +208,8 @@ describe("Texture", function () {
 
             describe("if source is power of two", function () {
                 beforeEach(function () {
-                    textureTool.setWidth(texture, 2);
-                    textureTool.setHeight(texture, 4);
+                    textureSystemTool.setWidth(texture, 2);
+                    textureSystemTool.setHeight(texture, 4);
                 });
 
                 it("set wrap by data", function () {
@@ -233,8 +233,8 @@ describe("Texture", function () {
 
             describe("else", function () {
                 beforeEach(function () {
-                    textureTool.setWidth(texture, 3);
-                    textureTool.setHeight(texture, 5);
+                    textureSystemTool.setWidth(texture, 3);
+                    textureSystemTool.setHeight(texture, 5);
                 });
 
                 it("set wrap to CLAMP_TO_EDGE", function () {
@@ -282,7 +282,7 @@ describe("Texture", function () {
 
                     var source = {};
 
-                    textureTool.setSource(texture, source);
+                    textureSystemTool.setSource(texture, source);
 
                     var glTarget = "TEXTURE_2D";
                     gl.TEXTURE_2D = glTarget;
@@ -314,7 +314,7 @@ describe("Texture", function () {
         });
 
         it("dispose material shouldn't dispose its texture", function () {
-            gameObjectTool.disposeComponent(obj, material);
+            gameObjectSystemTool.disposeComponent(obj, material);
 
             expect(TextureData.index).toEqual(1);
         });
@@ -331,7 +331,7 @@ describe("Texture", function () {
                 }
 
                 beforeEach(function(){
-                    texture2 = textureTool.create();
+                    texture2 = textureSystemTool.create();
                     basicMaterialTool.addMap(material, texture2);
                 });
 
@@ -344,13 +344,13 @@ describe("Texture", function () {
                             var source1 = {};
                             var source2 = {a:1};
 
-                            textureTool.setSource(texture, source1);
-                            textureTool.setSource(texture2, source2);
+                            textureSystemTool.setSource(texture, source1);
+                            textureSystemTool.setSource(texture2, source2);
 
-                            textureTool.dispose(texture);
+                            textureSystemTool.dispose(texture);
 
-                            judgeNotAlive(texture, "setSource", expect, textureTool);
-                            expect(textureTool.getSource(texture2)).toEqual(source2);
+                            judgeNotAlive(texture, "setSource", expect, textureSystemTool);
+                            expect(textureSystemTool.getSource(texture2)).toEqual(source2);
                             expect(TextureData.sourceMap.length).toEqual(1);
                         });
                     });
@@ -362,12 +362,12 @@ describe("Texture", function () {
                     });
 
                     it("mark texture removed", function () {
-                        textureTool.dispose(texture);
+                        textureSystemTool.dispose(texture);
 
                         componentTool.judgeIsComponentIndexNotRemoved(texture, expect);
                     });
                     it("swap with last one and remove the last one", function () {
-                        textureTool.dispose(texture);
+                        textureSystemTool.dispose(texture);
 
                         expect(TextureData.textureMap[0]).toEqual(texture2);
                         expect(TextureData.textureMap.length).toEqual(1);
@@ -380,8 +380,8 @@ describe("Texture", function () {
 
                     describe("reset removed one's value", function(){
                         function judge(getMethodName, setMethodName) {
-                            disposeTool.judgeSingleValue(textureTool, getMethodName, setMethodName, TextureData.defaultWidth, texture, texture2, function(texture){
-                                textureTool.dispose(texture);
+                            disposeTool.judgeSingleValue(textureSystemTool, getMethodName, setMethodName, TextureData.defaultWidth, texture, texture2, function(texture){
+                                textureSystemTool.dispose(texture);
                             })
                         }
 
@@ -407,7 +407,7 @@ describe("Texture", function () {
             beforeEach(function () {
                 testTool.closeContractCheck();
 
-                texture2 = textureTool.create();
+                texture2 = textureSystemTool.create();
                 basicMaterialTool.addMap(material, texture2);
 
                 glTexture1 = {t:1};
@@ -420,7 +420,7 @@ describe("Texture", function () {
             });
 
             it("delete texture", function () {
-                textureTool.dispose(texture);
+                textureSystemTool.dispose(texture);
 
                 expect(gl.deleteTexture).toCalledWith(glTexture1);
             });
@@ -432,7 +432,7 @@ describe("Texture", function () {
 
                 gpuDetectTool.setGPUDetectData("maxTextureUnit", 2)
 
-                textureTool.dispose(texture);
+                textureSystemTool.dispose(texture);
 
                 expect(gl.activeTexture.withArgs(glUnit0)).toCalledBefore(gl.bindTexture.withArgs(gl.TEXTURE_2D).getCall(0));
                 expect(gl.activeTexture.withArgs(glUnit1)).toCalledBefore(gl.bindTexture.withArgs(gl.TEXTURE_2D).getCall(1));
@@ -447,7 +447,7 @@ describe("Texture", function () {
 
                 expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(1)
 
-                textureTool.dispose(texture);
+                textureSystemTool.dispose(texture);
 
                 expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(2)
 
@@ -458,7 +458,7 @@ describe("Texture", function () {
                 expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(3)
             });
             it("swap remove from glTextures", function () {
-                textureTool.dispose(texture);
+                textureSystemTool.dispose(texture);
 
                 expect(TextureData.glTextures[0]).toEqual(glTexture2);
                 expect(TextureData.glTextures.length).toEqual(1);

@@ -18,7 +18,7 @@ describe("draw render command", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -199,16 +199,16 @@ describe("draw render command", function () {
             beforeEach(function(){
                 mat = lightMaterialTool.create();
 
-                var texture = textureTool.create();
-                textureTool.setSource(texture, {});
+                var texture = textureSystemTool.create();
+                textureSystemTool.setSource(texture, {});
 
                 lightMaterialTool.setDiffuseMap(mat, texture);
 
 
-                var data = sceneTool.createGameObject(null, mat);
+                var data = sceneSystemTool.createGameObject(null, mat);
 
 
-                sceneTool.addGameObject(data.gameObject);
+                sceneSystemTool.addGameObject(data.gameObject);
 
                 pos = 1;
 
@@ -292,7 +292,7 @@ describe("draw render command", function () {
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_lightModel").returns(pos);
 
 
-                // var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                // var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
                 // mat = data.material;
             })
 
@@ -384,10 +384,10 @@ describe("draw render command", function () {
         });
 
         it("test send MAT4", function () {
-            var transform = gameObjectTool.getComponent(obj, wd.ThreeDTransform),
+            var transform = gameObjectSystemTool.getComponent(obj, wd.ThreeDTransform),
                 mat = Matrix4.create().setTranslate(1, 2, 3),
                 position = mat.getTranslation();
-            threeDTransformTool.setPosition(transform, position);
+            threeDTransformSystemTool.setPosition(transform, position);
             gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(pos);
 
             directorTool.init(state);
@@ -397,13 +397,13 @@ describe("draw render command", function () {
             expect(gl.uniformMatrix4fv).toCalledWith(pos, false, mat.values);
         });
         it("test send MAT3", function () {
-            sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
 
-            var transform = gameObjectTool.getComponent(cameraObj, wd.ThreeDTransform),
+            var transform = gameObjectSystemTool.getComponent(cameraObj, wd.ThreeDTransform),
                 mat = Matrix4.create().setTranslate(1, 2, 3),
                 position = mat.getTranslation();
-            threeDTransformTool.setPosition(transform, position);
+            threeDTransformSystemTool.setPosition(transform, position);
             gl.getUniformLocation.withArgs(sinon.match.any, "u_normalMatrix").returns(pos);
 
             directorTool.init(state);
@@ -426,9 +426,9 @@ describe("draw render command", function () {
             indexBufferTool.setBuffers([indexBuffer]);
 
             var indices = [1,2,3];
-            geometryTool.setIndices(0, indices);
-            geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
-            geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
+            geometrySystemTool.setIndices(0, indices);
+            geometrySystemTool.setIndexType(EBufferType.UNSIGNED_SHORT);
+            geometrySystemTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
 
             directorTool.loopBody(state);
 

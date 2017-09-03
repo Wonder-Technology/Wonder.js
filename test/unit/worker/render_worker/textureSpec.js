@@ -25,9 +25,9 @@ describe("texture", function () {
         var texture1, texture2, texture3;
 
         beforeEach(function () {
-            texture1 = textureTool.create();
-            texture2 = textureTool.create();
-            texture3 = textureTool.create();
+            texture1 = textureSystemTool.create();
+            texture2 = textureSystemTool.create();
+            texture3 = textureSystemTool.create();
         });
 
         it("send source's src and index to render worker", function () {
@@ -38,12 +38,12 @@ describe("texture", function () {
                 src:"b.jpg"
             }
 
-            textureTool.setSource(texture2, source1);
-            textureTool.setSource(texture3, source2);
+            textureSystemTool.setSource(texture2, source1);
+            textureSystemTool.setSource(texture3, source2);
 
 
 
-            sceneTool.prepareGameObjectAndAddToScene();
+            sceneSystemTool.prepareGameObjectAndAddToScene();
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -79,7 +79,7 @@ describe("texture", function () {
             });
         });
         it("send texture count to render worker", function () {
-            sceneTool.prepareGameObjectAndAddToScene();
+            sceneSystemTool.prepareGameObjectAndAddToScene();
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -102,7 +102,7 @@ describe("texture", function () {
             });
         });
         it("send uniformSamplerNameMap to render worker", function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             var mat = data.material;
 
             basicMaterialTool.addMap(mat, texture2);

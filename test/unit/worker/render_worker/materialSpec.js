@@ -25,7 +25,7 @@ describe("material", function () {
         });
 
         it("send new-inited-material data to render worker", function () {
-            sceneTool.prepareGameObjectAndAddToScene(false);
+            sceneSystemTool.prepareGameObjectAndAddToScene(false);
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -141,14 +141,14 @@ describe("material", function () {
     });
 
     it("should not dispose the material which is inited in the same frame", function() {
-        var data = sceneTool.prepareGameObjectAndAddToScene(false);
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false);
         var mat = data.material,
             obj = data.gameObject;
 
         basicMaterialTool.initMaterial(mat);
 
         expect(function(){
-            gameObjectTool.disposeComponent(obj, mat);
+            gameObjectSystemTool.disposeComponent(obj, mat);
         }).toThrow("should not dispose the material which is inited in the same frame");
     });
 });

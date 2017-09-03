@@ -6,7 +6,7 @@ describe("GameObject", function() {
     var MaterialData = wd.MaterialData;
 
     function shouldAlive(gameObject, testFunc) {
-        gameObjectTool.dispose(gameObject);
+        gameObjectSystemTool.dispose(gameObject);
 
         expect(function () {
             testFunc(gameObject)
@@ -18,7 +18,7 @@ describe("GameObject", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        gameObject = gameObjectTool.create();
+        gameObject = gameObjectSystemTool.create();
     });
     afterEach(function() {
         sandbox.restore();
@@ -28,7 +28,7 @@ describe("GameObject", function() {
 
     describe("add ThreeDTransform component after be created", function(){
         it("should has ThreeDTransform component", function () {
-            expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeTruthy();
+            expect(gameObjectSystemTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeTruthy();
         });
     });
 
@@ -36,14 +36,14 @@ describe("GameObject", function() {
         var parent,child,child11;
 
         beforeEach(function(){
-            parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            child = gameObjectTool.create();
-            gameObjectTool.add(gameObject, child);
+            child = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(gameObject, child);
 
-            child11 = gameObjectTool.create();
-            gameObjectTool.add(child, child11);
+            child11 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(child, child11);
 
             testTool.closeContractCheck();
         });
@@ -54,49 +54,49 @@ describe("GameObject", function() {
             });
 
             it("disposed one should not alive", function(){
-                expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
+                expect(gameObjectSystemTool.isAlive(gameObject)).toBeTruthy();
 
-                gameObjectTool.dispose(gameObject);
+                gameObjectSystemTool.dispose(gameObject);
 
-                expect(gameObjectTool.isAlive(gameObject)).toBeFalsy();
+                expect(gameObjectSystemTool.isAlive(gameObject)).toBeFalsy();
             });
             it("the children of disposed one should not alive", function () {
-                expect(gameObjectTool.isAlive(gameObject)).toBeTruthy();
+                expect(gameObjectSystemTool.isAlive(gameObject)).toBeTruthy();
 
-                gameObjectTool.dispose(gameObject);
+                gameObjectSystemTool.dispose(gameObject);
 
-                expect(gameObjectTool.isAlive(child)).toBeFalsy();
-                expect(gameObjectTool.isAlive(child11)).toBeFalsy();
+                expect(gameObjectSystemTool.isAlive(child)).toBeFalsy();
+                expect(gameObjectSystemTool.isAlive(child11)).toBeFalsy();
             });
         });
 
         // it("its parent should remove it", function () {
-        //     var child2 = gameObjectTool.create();
-        //     gameObjectTool.add(parent, child2);
+        //     var child2 = gameObjectSystemTool.create();
+        //     gameObjectSystemTool.add(parent, child2);
         //
-        //     gameObjectTool.dispose(gameObject);
+        //     gameObjectSystemTool.dispose(gameObject);
         //
-        //     expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
-        //     expect(gameObjectTool.has(parent, child2)).toBeTruthy();
+        //     expect(gameObjectSystemTool.has(parent, gameObject)).toBeFalsy();
+        //     expect(gameObjectSystemTool.has(parent, child2)).toBeTruthy();
         // });
         it("should remove children", function () {
-            gameObjectTool.dispose(gameObject);
+            gameObjectSystemTool.dispose(gameObject);
 
-            expect(gameObjectTool.has(gameObject, child)).toBeFalsy();
-            expect(gameObjectTool.has(child, child11)).toBeFalsy();
+            expect(gameObjectSystemTool.has(gameObject, child)).toBeFalsy();
+            expect(gameObjectSystemTool.has(child, child11)).toBeFalsy();
         });
         it("its all components should be disposed", function () {
             testTool.openContractCheck();
 
-            var tra = gameObjectTool.getTransform(gameObject),
-                tra1 = gameObjectTool.getTransform(child),
-                tra11 = gameObjectTool.getTransform(child11);
+            var tra = gameObjectSystemTool.getTransform(gameObject),
+                tra1 = gameObjectSystemTool.getTransform(child),
+                tra11 = gameObjectSystemTool.getTransform(child11);
 
-            gameObjectTool.dispose(gameObject);
+            gameObjectSystemTool.dispose(gameObject);
 
-            threeDTransformTool.isNotAlive(tra);
-            threeDTransformTool.isNotAlive(tra1);
-            threeDTransformTool.isNotAlive(tra11);
+            threeDTransformSystemTool.isNotAlive(tra);
+            threeDTransformSystemTool.isNotAlive(tra1);
+            threeDTransformSystemTool.isNotAlive(tra11);
         });
 
 
@@ -107,16 +107,16 @@ describe("GameObject", function() {
             it("should not affect dispose parent's datas", function () {
                 testTool.openContractCheck();
 
-                gameObjectTool.dispose(child11);
-                gameObjectTool.dispose(child);
+                gameObjectSystemTool.dispose(child11);
+                gameObjectSystemTool.dispose(child);
 
-                var tra = gameObjectTool.getTransform(gameObject),
-                    tra1 = gameObjectTool.getTransform(child),
-                    tra11 = gameObjectTool.getTransform(child11);
+                var tra = gameObjectSystemTool.getTransform(gameObject),
+                    tra1 = gameObjectSystemTool.getTransform(child),
+                    tra11 = gameObjectSystemTool.getTransform(child11);
 
-                threeDTransformTool.isAlive(tra);
-                threeDTransformTool.isNotAlive(tra1);
-                threeDTransformTool.isNotAlive(tra11);
+                threeDTransformSystemTool.isAlive(tra);
+                threeDTransformSystemTool.isNotAlive(tra1);
+                threeDTransformSystemTool.isNotAlive(tra11);
             });
         });
     });
@@ -126,19 +126,19 @@ describe("GameObject", function() {
     //     var disposedChildren;
     //
     //     beforeEach(function(){
-    //         parent = gameObjectTool.create();
+    //         parent = gameObjectSystemTool.create();
     //
-    //         child1 = gameObjectTool.create();
-    //         gameObjectTool.add(parent, child1);
+    //         child1 = gameObjectSystemTool.create();
+    //         gameObjectSystemTool.add(parent, child1);
     //
-    //         child11 = gameObjectTool.create();
-    //         gameObjectTool.add(child1, child11);
+    //         child11 = gameObjectSystemTool.create();
+    //         gameObjectSystemTool.add(child1, child11);
     //
-    //         child2 = gameObjectTool.create();
-    //         gameObjectTool.add(parent, child2);
+    //         child2 = gameObjectSystemTool.create();
+    //         gameObjectSystemTool.add(parent, child2);
     //
-    //         child3 = gameObjectTool.create();
-    //         gameObjectTool.add(parent, child3);
+    //         child3 = gameObjectSystemTool.create();
+    //         gameObjectSystemTool.add(parent, child3);
     //
     //         disposedChildren = [
     //             child1,
@@ -148,35 +148,35 @@ describe("GameObject", function() {
     //
     //     it("if disposed children not alive, error", function() {
     //         shouldAlive(child1, function (gameObject) {
-    //             return gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //             return gameObjectSystemTool.disposeBatchChildren(disposedChildren, parent);
     //         })
     //
     //         shouldAlive(child2, function (gameObject) {
-    //             return gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //             return gameObjectSystemTool.disposeBatchChildren(disposedChildren, parent);
     //         })
     //     });
     //
     //     it("remove from childrenMap", function () {
-    //         gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //         gameObjectSystemTool.disposeBatchChildren(disposedChildren, parent);
     //
-    //         expect(gameObjectTool.has(parent, child1)).toBeFalsy();
-    //         expect(gameObjectTool.has(parent, child2)).toBeFalsy();
-    //         expect(gameObjectTool.has(parent, child3)).toBeTruthy();
+    //         expect(gameObjectSystemTool.has(parent, child1)).toBeFalsy();
+    //         expect(gameObjectSystemTool.has(parent, child2)).toBeFalsy();
+    //         expect(gameObjectSystemTool.has(parent, child3)).toBeTruthy();
     //     });
     //     it("disposed children all components should be disposed", function () {
-    //         var tra = gameObjectTool.getTransform(parent),
-    //             tra1 = gameObjectTool.getTransform(child1),
-    //             tra2 = gameObjectTool.getTransform(child2),
-    //             tra3 = gameObjectTool.getTransform(child3),
-    //             tra11 = gameObjectTool.getTransform(child11);
+    //         var tra = gameObjectSystemTool.getTransform(parent),
+    //             tra1 = gameObjectSystemTool.getTransform(child1),
+    //             tra2 = gameObjectSystemTool.getTransform(child2),
+    //             tra3 = gameObjectSystemTool.getTransform(child3),
+    //             tra11 = gameObjectSystemTool.getTransform(child11);
     //
-    //         gameObjectTool.disposeBatchChildren(disposedChildren, parent);
+    //         gameObjectSystemTool.disposeBatchChildren(disposedChildren, parent);
     //
-    //         threeDTransformTool.isAlive(tra);
-    //         threeDTransformTool.isNotAlive(tra1);
-    //         threeDTransformTool.isNotAlive(tra2);
-    //         threeDTransformTool.isNotAlive(tra3);
-    //         threeDTransformTool.isNotAlive(tra11);
+    //         threeDTransformSystemTool.isAlive(tra);
+    //         threeDTransformSystemTool.isNotAlive(tra1);
+    //         threeDTransformSystemTool.isNotAlive(tra2);
+    //         threeDTransformSystemTool.isNotAlive(tra3);
+    //         threeDTransformSystemTool.isNotAlive(tra11);
     //     });
     // });
 
@@ -185,19 +185,19 @@ describe("GameObject", function() {
         });
 
         it("get alive children", function(){
-            var parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            var child = gameObjectTool.create();
-            gameObjectTool.add(gameObject, child);
+            var child = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(gameObject, child);
 
-            var child11 = gameObjectTool.create();
-            gameObjectTool.add(child, child11);
+            var child11 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(child, child11);
 
-            gameObjectTool.dispose(child);
+            gameObjectSystemTool.dispose(child);
 
-            var parentChildren = gameObjectTool.getChildren(parent);
-            var gameObjectChildren = gameObjectTool.getChildren(gameObject);
+            var parentChildren = gameObjectSystemTool.getChildren(parent);
+            var gameObjectChildren = gameObjectSystemTool.getChildren(gameObject);
             expect(parentChildren).toEqual([gameObject]);
             expect(gameObjectChildren).toEqual([]);
         });
@@ -210,7 +210,7 @@ describe("GameObject", function() {
             var state;
 
             beforeEach(function(){
-                var data = sceneTool.prepareGameObjectAndAddToScene(true);
+                var data = sceneSystemTool.prepareGameObjectAndAddToScene(true);
                 gameObject = data.gameObject;
                 material = data.material;
                 geo = data.geometry;
@@ -222,7 +222,7 @@ describe("GameObject", function() {
             });
 
             it("init material", function () {
-                sceneTool.addCameraObject();
+                sceneSystemTool.addCameraObject();
 
                 directorTool.init(state);
                 directorTool.loopBody(state);
@@ -230,10 +230,10 @@ describe("GameObject", function() {
                 expect(gl.attachShader).toCalled();
             });
             it("init geometry", function () {
-                gameObjectTool.init(gameObject);
+                gameObjectSystemTool.init(gameObject);
 
                 expect(testTool.getValues(
-                    geometryTool.getVertices(geo)
+                    geometrySystemTool.getVertices(geo)
                 )).toEqual([
                         -10, -10, 10, -10, 10, 10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, 10, 10, -10, 10, -10, 10, 10, 10, 10, 10, -10, 10, -10, 10, 10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10, 10, 10, 10, -10, -10, 10, 10, -10, -10, -10, -10, -10, 10, -10, -10, -10, 10, -10, 10, 10
                 ])
@@ -248,12 +248,12 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, error", function() {
             shouldAlive(gameObject, function (gameObject) {
-                return gameObjectTool.addComponent(gameObject, threeDTransformTool.create());
+                return gameObjectSystemTool.addComponent(gameObject, threeDTransformSystemTool.create());
             })
         });
         it("if alreay has this type of component, error", function () {
             expect(function(){
-               gameObjectTool.addComponent(gameObject, threeDTransformTool.create());
+               gameObjectSystemTool.addComponent(gameObject, threeDTransformSystemTool.create());
             }).toThrow("should not has this type of component, please dispose it");
         });
     });
@@ -265,16 +265,16 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, return null", function() {
             shouldAlive(gameObject, function (gameObject) {
-                return gameObjectTool.getComponent(gameObject, wd.ThreeDTransform);
+                return gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform);
             })
         });
         it("if component exist, return it", function(){
-            expect(gameObjectTool.getComponent(gameObject, wd.ThreeDTransform)).toBeInstanceOf(wd.ThreeDTransform);
+            expect(gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform)).toBeInstanceOf(wd.ThreeDTransform);
         });
         it("else, return null", function () {
-            gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
+            gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            expect(gameObjectTool.getComponent(gameObject, wd.ThreeDTransform)).toBeNull();
+            expect(gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform)).toBeNull();
         });
     });
 
@@ -284,7 +284,7 @@ describe("GameObject", function() {
         });
 
         it("return transform component", function(){
-            expect(gameObjectTool.getTransform(gameObject)).toBeInstanceOf(wd.ThreeDTransform);
+            expect(gameObjectSystemTool.getTransform(gameObject)).toBeInstanceOf(wd.ThreeDTransform);
         });
     });
 
@@ -295,16 +295,16 @@ describe("GameObject", function() {
 
         // it("if gameObject not alive, return null", function() {
         //     shouldAlive(gameObject, function (gameObject) {
-        //         return gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform);
+        //         return gameObjectSystemTool.hasComponent(gameObject, wd.ThreeDTransform);
         //     })
         // });
         it("if has component, return true", function(){
-            expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeTruthy();
+            expect(gameObjectSystemTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeTruthy();
         });
         it("else, return false", function () {
-            gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
+            gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeFalsy();
+            expect(gameObjectSystemTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeFalsy();
         });
     });
 
@@ -314,24 +314,24 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, return null", function() {
             shouldAlive(gameObject, function (gameObject) {
-                return gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
+                return gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
             })
         });
         it("remove component", function(){
-            gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
+            gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            expect(gameObjectTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeFalsy();
+            expect(gameObjectSystemTool.hasComponent(gameObject, wd.ThreeDTransform)).toBeFalsy();
         });
         it("dispose component", function () {
             testTool.openContractCheck();
 
-            var transform = gameObjectTool.getTransform(gameObject);
+            var transform = gameObjectSystemTool.getTransform(gameObject);
             var pos = wd.Vector3.create(1,2,3);
-            threeDTransformTool.setPosition(transform, pos);
+            threeDTransformSystemTool.setPosition(transform, pos);
 
-            gameObjectTool.disposeComponent(gameObject, gameObjectTool.getComponent(gameObject, wd.ThreeDTransform));
+            gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
 
-            threeDTransformTool.isNotAlive(transform);
+            threeDTransformSystemTool.isNotAlive(transform);
         });
     });
 
@@ -341,13 +341,13 @@ describe("GameObject", function() {
         });
 
         it("uid start from 0", function () {
-            gameObject = gameObjectTool.create();
+            gameObject = gameObjectSystemTool.create();
 
             expect(gameObject.uid).toEqual(0);
         });
         it("build unique uid when create", function () {
-            gameObject = gameObjectTool.create();
-            var gameObject2 = gameObjectTool.create();
+            gameObject = gameObjectSystemTool.create();
+            var gameObject2 = gameObjectSystemTool.create();
 
             expect(gameObject.uid).toEqual(0);
             expect(gameObject2.uid).toEqual(1);
@@ -357,19 +357,19 @@ describe("GameObject", function() {
         //     var gameObjectArr = [];
         //
         //     for(var i = 0; i < 50; i++){
-        //         gameObject = gameObjectTool.create();
+        //         gameObject = gameObjectSystemTool.create();
         //         uidArr.push(gameObject.uid);
         //         gameObjectArr.push(gameObject);
         //     }
         //
         //
         //     for(var i = 0; i < 5; i++){
-        //         gameObjectTool.dispose(gameObjectArr[i]);
+        //         gameObjectSystemTool.dispose(gameObjectArr[i]);
         //     }
         //
         //
         //     for(var i = 0; i < 5; i++){
-        //         gameObject = gameObjectTool.create();
+        //         gameObject = gameObjectSystemTool.create();
         //         uidArr.push(gameObject.uid);
         //     }
         //
@@ -384,48 +384,48 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, return null", function() {
             shouldAlive(gameObject, function (gameObject) {
-                var child = gameObjectTool.create();
-                return gameObjectTool.add(gameObject, child);
+                var child = gameObjectSystemTool.create();
+                return gameObjectSystemTool.add(gameObject, child);
             })
         });
         it("if child already has parent, remove it from old parent", function(){
-            var parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            var parent2 = gameObjectTool.create();
-            gameObjectTool.add(parent2, gameObject);
+            var parent2 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent2, gameObject);
 
-            expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
-            expect(gameObjectTool.has(parent2, gameObject)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, gameObject)).toBeFalsy();
+            expect(gameObjectSystemTool.has(parent2, gameObject)).toBeTruthy();
         });
         it("set transform's parent", function () {
-            var parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            var childTran = gameObjectTool.getTransform(gameObject);
-            var parentTran = gameObjectTool.getTransform(parent);
+            var childTran = gameObjectSystemTool.getTransform(gameObject);
+            var parentTran = gameObjectSystemTool.getTransform(parent);
 
-            expect(threeDTransformTool.getParent(childTran)).toEqual(parentTran);
+            expect(threeDTransformSystemTool.getParent(childTran)).toEqual(parentTran);
         });
         it("add child", function () {
-            var parent = gameObjectTool.create();
+            var parent = gameObjectSystemTool.create();
 
-            var child1 = gameObjectTool.create();
-            var child2 = gameObjectTool.create();
-            var child3 = gameObjectTool.create();
-            var child31 = gameObjectTool.create();
-            var child311 = gameObjectTool.create();
-            gameObjectTool.add(parent, child1);
-            gameObjectTool.add(parent, child2);
-            gameObjectTool.add(parent, child3);
-            gameObjectTool.add(child3, child31);
-            gameObjectTool.add(child31, child311);
+            var child1 = gameObjectSystemTool.create();
+            var child2 = gameObjectSystemTool.create();
+            var child3 = gameObjectSystemTool.create();
+            var child31 = gameObjectSystemTool.create();
+            var child311 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, child1);
+            gameObjectSystemTool.add(parent, child2);
+            gameObjectSystemTool.add(parent, child3);
+            gameObjectSystemTool.add(child3, child31);
+            gameObjectSystemTool.add(child31, child311);
 
-            expect(gameObjectTool.has(parent, child1)).toBeTruthy();
-            expect(gameObjectTool.has(parent, child2)).toBeTruthy();
-            expect(gameObjectTool.has(parent, child3)).toBeTruthy();
-            expect(gameObjectTool.has(child3, child31)).toBeTruthy();
-            expect(gameObjectTool.has(child31, child311)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, child1)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, child2)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, child3)).toBeTruthy();
+            expect(gameObjectSystemTool.has(child3, child31)).toBeTruthy();
+            expect(gameObjectSystemTool.has(child31, child311)).toBeTruthy();
         });
     });
 
@@ -435,52 +435,52 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, return null", function() {
             shouldAlive(gameObject, function (gameObject) {
-                var child = gameObjectTool.create();
-                gameObjectTool.add(gameObject, child);
+                var child = gameObjectSystemTool.create();
+                gameObjectSystemTool.add(gameObject, child);
 
-                return gameObjectTool.remove(gameObject, child);
+                return gameObjectSystemTool.remove(gameObject, child);
             })
         });
         it("remove from parent", function() {
-            var parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            gameObjectTool.remove(parent, gameObject);
+            gameObjectSystemTool.remove(parent, gameObject);
 
-            expect(gameObjectTool.has(parent, gameObject)).toBeFalsy();
+            expect(gameObjectSystemTool.has(parent, gameObject)).toBeFalsy();
         });
         it("remove child->transform from its parent", function () {
-            var parent = gameObjectTool.create();
-            gameObjectTool.add(parent, gameObject);
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, gameObject);
 
-            var childTran = gameObjectTool.getTransform(gameObject);
-            var parentTran = gameObjectTool.getTransform(parent);
+            var childTran = gameObjectSystemTool.getTransform(gameObject);
+            var parentTran = gameObjectSystemTool.getTransform(parent);
 
-            gameObjectTool.remove(parent, gameObject);
+            gameObjectSystemTool.remove(parent, gameObject);
 
-            expect(threeDTransformTool.getParent(childTran)).toBeNull();
+            expect(threeDTransformSystemTool.getParent(childTran)).toBeNull();
         });
         it("remove child", function () {
-            var parent = gameObjectTool.create();
-            var child1 = gameObjectTool.create();
-            var child2 = gameObjectTool.create();
-            var child3 = gameObjectTool.create();
-            var child31 = gameObjectTool.create();
-            var child311 = gameObjectTool.create();
-            gameObjectTool.add(parent, child1);
-            gameObjectTool.add(parent, child2);
-            gameObjectTool.add(parent, child3);
-            gameObjectTool.add(child3, child31);
-            gameObjectTool.add(child31, child311);
+            var parent = gameObjectSystemTool.create();
+            var child1 = gameObjectSystemTool.create();
+            var child2 = gameObjectSystemTool.create();
+            var child3 = gameObjectSystemTool.create();
+            var child31 = gameObjectSystemTool.create();
+            var child311 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(parent, child1);
+            gameObjectSystemTool.add(parent, child2);
+            gameObjectSystemTool.add(parent, child3);
+            gameObjectSystemTool.add(child3, child31);
+            gameObjectSystemTool.add(child31, child311);
 
-            gameObjectTool.remove(parent, child1);
-            gameObjectTool.remove(child3, child31);
+            gameObjectSystemTool.remove(parent, child1);
+            gameObjectSystemTool.remove(child3, child31);
 
-            expect(gameObjectTool.has(parent, child1)).toBeFalsy();
-            expect(gameObjectTool.has(parent, child2)).toBeTruthy();
-            expect(gameObjectTool.has(parent, child3)).toBeTruthy();
-            expect(gameObjectTool.has(child3, child31)).toBeFalsy();
-            expect(gameObjectTool.has(child31, child311)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, child1)).toBeFalsy();
+            expect(gameObjectSystemTool.has(parent, child2)).toBeTruthy();
+            expect(gameObjectSystemTool.has(parent, child3)).toBeTruthy();
+            expect(gameObjectSystemTool.has(child3, child31)).toBeFalsy();
+            expect(gameObjectSystemTool.has(child31, child311)).toBeTruthy();
         });
 
         describe("fix bug", function() {
@@ -489,7 +489,7 @@ describe("GameObject", function() {
             var gl;
 
             beforeEach(function(){
-                var data = sceneTool.prepareGameObjectAndAddToScene();
+                var data = sceneSystemTool.prepareGameObjectAndAddToScene();
                 gameObject = data.gameObject;
 
                 state = stateTool.createFakeGLState(sandbox);
@@ -505,7 +505,7 @@ describe("GameObject", function() {
 
                 var callCount = gl.drawElements.callCount;
 
-                sceneTool.removeGameObject(gameObject);
+                sceneSystemTool.removeGameObject(gameObject);
 
                 directorTool.loopBody(state);
 
@@ -520,7 +520,7 @@ describe("GameObject", function() {
             var gl;
 
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             gameObject = data.gameObject;
 
             state = stateTool.createFakeGLState(sandbox);
@@ -534,14 +534,14 @@ describe("GameObject", function() {
             directorTool.loopBody(state);
 
 
-            sceneTool.removeGameObject(gameObject);
+            sceneSystemTool.removeGameObject(gameObject);
 
 
             directorTool.loopBody(state);
 
             var callCount = gl.drawElements.callCount;
 
-            gameObjectTool.addRemoved(sceneTool.getScene(), gameObject);
+            gameObjectSystemTool.addRemoved(sceneSystemTool.getScene(), gameObject);
 
             directorTool.loopBody(state);
 
@@ -556,31 +556,31 @@ describe("GameObject", function() {
 
         it("if gameObject not alive, return null", function() {
             shouldAlive(gameObject, function (gameObject) {
-                var child = gameObjectTool.create();
-                gameObjectTool.add(gameObject, child);
+                var child = gameObjectSystemTool.create();
+                gameObjectSystemTool.add(gameObject, child);
 
-                return gameObjectTool.has(gameObject, child);
+                return gameObjectSystemTool.has(gameObject, child);
             })
         });
         it("if has no children, return false", function(){
-            var child = gameObjectTool.create();
-            // gameObjectTool.add(gameObject, child);
+            var child = gameObjectSystemTool.create();
+            // gameObjectSystemTool.add(gameObject, child);
 
-            expect(gameObjectTool.has(gameObject, child)).toBeFalsy();
+            expect(gameObjectSystemTool.has(gameObject, child)).toBeFalsy();
         });
         it("if not has it, return false", function(){
-            var child = gameObjectTool.create();
-            var child2 = gameObjectTool.create();
-            gameObjectTool.add(gameObject, child);
+            var child = gameObjectSystemTool.create();
+            var child2 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(gameObject, child);
 
-            expect(gameObjectTool.has(gameObject, child2)).toBeFalsy();
+            expect(gameObjectSystemTool.has(gameObject, child2)).toBeFalsy();
         });
         it("else, return true", function(){
-            var child = gameObjectTool.create();
-            var child2 = gameObjectTool.create();
-            gameObjectTool.add(gameObject, child);
+            var child = gameObjectSystemTool.create();
+            var child2 = gameObjectSystemTool.create();
+            gameObjectSystemTool.add(gameObject, child);
 
-            expect(gameObjectTool.has(gameObject, child)).toBeTruthy();
+            expect(gameObjectSystemTool.has(gameObject, child)).toBeTruthy();
         });
     });
 });

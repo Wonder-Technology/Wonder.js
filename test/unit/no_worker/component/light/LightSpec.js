@@ -44,28 +44,28 @@ describe("Light", function () {
             var obj3,light3;
 
             beforeEach(function(){
-                obj1 = sceneTool.addAmbientLight();
-                light1 = gameObjectTool.getComponent(obj1, Light);
+                obj1 = sceneSystemTool.addAmbientLight();
+                light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
-                obj2 = sceneTool.addDirectionLight();
-                light2 = gameObjectTool.getComponent(obj2, Light);
+                obj2 = sceneSystemTool.addDirectionLight();
+                light2 = gameObjectSystemTool.getComponent(obj2, Light);
 
-                obj3 = sceneTool.addDirectionLight();
-                light3 = gameObjectTool.getComponent(obj3, Light);
+                obj3 = sceneSystemTool.addDirectionLight();
+                light3 = gameObjectSystemTool.getComponent(obj3, Light);
             });
 
 
             it("index -= 1", function () {
                 var index = AmbientLightData.index;
 
-                gameObjectTool.disposeComponent(obj1, light1);
+                gameObjectSystemTool.disposeComponent(obj1, light1);
 
                 expect(AmbientLightData.index).toEqual(index - 1);
             });
             it("count -= 1", function () {
                 var count = AmbientLightData.count;
 
-                gameObjectTool.disposeComponent(obj1, light1);
+                gameObjectSystemTool.disposeComponent(obj1, light1);
 
                 expect(AmbientLightData.count).toEqual(count - 1);
             });
@@ -76,10 +76,10 @@ describe("Light", function () {
 
                 describe("swap with last one and remove the last one", function(){
                     it("remove from gameObject", function () {
-                        gameObjectTool.disposeComponent(obj1, light1);
+                        gameObjectSystemTool.disposeComponent(obj1, light1);
 
-                        expect(gameObjectTool.hasComponent(obj1, Light)).toBeFalsy();
-                        expect(gameObjectTool.hasComponent(obj2, Light)).toBeTruthy();
+                        expect(gameObjectSystemTool.hasComponent(obj1, Light)).toBeFalsy();
+                        expect(gameObjectSystemTool.hasComponent(obj2, Light)).toBeTruthy();
                         judgeNotAlive(light1, "getGameObject", expect, ambientLightTool);
                         expect(directionLightTool.getGameObject(light2)).toEqual(obj2);
                         expect(AmbientLightData.gameObjectMap.length).toEqual(0);
@@ -90,12 +90,12 @@ describe("Light", function () {
 
             describe("test remove from lightMap", function() {
                 it("mark light removed", function () {
-                    gameObjectTool.disposeComponent(obj2, light2);
+                    gameObjectSystemTool.disposeComponent(obj2, light2);
 
                     componentTool.judgeIsComponentIndexNotRemoved(light2, expect);
                 });
                 it("swap with last one and remove the last one", function () {
-                    gameObjectTool.disposeComponent(obj2, light2);
+                    gameObjectSystemTool.disposeComponent(obj2, light2);
 
                     expect(directionLightSystemTool.getData().lightMap[0]).toEqual(light3);
                     expect(AmbientLightData.lightMap.length).toEqual(1);
@@ -110,11 +110,11 @@ describe("Light", function () {
         });
         
         it("different type of light has independent index", function(){
-            var obj1 = sceneTool.addAmbientLight();
-            var light1 = gameObjectTool.getComponent(obj1, Light);
+            var obj1 = sceneSystemTool.addAmbientLight();
+            var light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
-            var obj2 = sceneTool.addDirectionLight();
-            var light2 = gameObjectTool.getComponent(obj2, Light);
+            var obj2 = sceneSystemTool.addDirectionLight();
+            var light2 = gameObjectSystemTool.getComponent(obj2, Light);
 
             expect(light1.index).toEqual(light2.index);
             expect(ambientLightTool.getGameObject(light1)).not.toEqual(directionLightTool.getGameObject(light2));

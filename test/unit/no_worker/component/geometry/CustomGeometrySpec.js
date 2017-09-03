@@ -23,11 +23,11 @@ describe("CustomGeometry", function () {
 
         geo = createCustomGeometry();
 
-        gameObject = gameObjectTool.create();
+        gameObject = gameObjectSystemTool.create();
 
-        gameObjectTool.addComponent(gameObject, geo);
+        gameObjectSystemTool.addComponent(gameObject, geo);
 
-        sceneTool.addGameObject(gameObject);
+        sceneSystemTool.addGameObject(gameObject);
     });
     afterEach(function () {
         testTool.clearInstance(sandbox);
@@ -45,7 +45,7 @@ describe("CustomGeometry", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getVertices(geo)
+                geometrySystemTool.getVertices(geo)
             )).toEqual(
                 vertices
             )
@@ -57,7 +57,7 @@ describe("CustomGeometry", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getIndices(geo)
+                geometrySystemTool.getIndices(geo)
             )).toEqual(
                 indices
             )
@@ -70,29 +70,29 @@ describe("CustomGeometry", function () {
         });
 
         it("gameObject should has it after added it", function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene(true, customGeometryTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(true, customGeometryTool.create());
             var gameObject = data.gameObject;
 
-            expect(gameObjectTool.hasComponent(gameObject, CustomGeometry)).toBeTruthy();
+            expect(gameObjectSystemTool.hasComponent(gameObject, CustomGeometry)).toBeTruthy();
         });
         describe("test \"add two BoxGeometrys->dispose first BoxGeometrys->add one CustomGeometry\"", function () {
             function judge() {
-                var data = sceneTool.prepareGameObjectAndAddToScene(true);
+                var data = sceneSystemTool.prepareGameObjectAndAddToScene(true);
                 var gameObject = data.gameObject;
                 var geo = data.geometry;
 
-                var data2 = sceneTool.prepareGameObjectAndAddToScene(true);
+                var data2 = sceneSystemTool.prepareGameObjectAndAddToScene(true);
                 var gameObject2 = data2.gameObject;
 
                 directorTool.init(sandbox);
 
-                gameObjectTool.dispose(gameObject);
+                gameObjectSystemTool.dispose(gameObject);
 
 
-                var data3 = sceneTool.prepareGameObjectAndAddToScene(true, createCustomGeometry());
+                var data3 = sceneSystemTool.prepareGameObjectAndAddToScene(true, createCustomGeometry());
                 var gameObject3 = data3.gameObject;
 
-                expect(gameObjectTool.hasComponent(gameObject3, CustomGeometry)).toBeTruthy();
+                expect(gameObjectSystemTool.hasComponent(gameObject3, CustomGeometry)).toBeTruthy();
             }
 
             it("test with no reallocate", function () {

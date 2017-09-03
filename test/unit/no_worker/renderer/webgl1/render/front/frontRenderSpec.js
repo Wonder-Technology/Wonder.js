@@ -37,7 +37,7 @@ describe("front render", function () {
 
     describe("test front render light", function() {
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -57,9 +57,9 @@ describe("front render", function () {
             });
 
             it("clear once in one frame", function () {
-                var data = sceneTool.createGameObject(null, lightMaterialTool.create());
+                var data = sceneSystemTool.createGameObject(null, lightMaterialTool.create());
 
-                sceneTool.addGameObject(data.gameObject);
+                sceneSystemTool.addGameObject(data.gameObject);
 
                 directorTool.init(state);
                 directorTool.loopBody(state);
@@ -67,9 +67,9 @@ describe("front render", function () {
                 expect(gl.clear).toCalledOnce();
             });
             it("clear before first draw", function () {
-                var data = sceneTool.createGameObject(null, lightMaterialTool.create());
+                var data = sceneSystemTool.createGameObject(null, lightMaterialTool.create());
 
-                sceneTool.addGameObject(data.gameObject);
+                sceneSystemTool.addGameObject(data.gameObject);
 
                 directorTool.init(state);
                 directorTool.loopBody(state);
@@ -96,12 +96,12 @@ describe("front render", function () {
                 });
 
                 it("send u_normalMatrix", function () {
-                    var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform),
+                    var transform = gameObjectSystemTool.getComponent(cameraGameObject, wd.ThreeDTransform),
                         mat = Matrix4.create().setTranslate(1, 2, 3),
                         position = mat.getTranslation(),
                         pos = 0;
 
-                    threeDTransformTool.setPosition(transform, position);
+                    threeDTransformSystemTool.setPosition(transform, position);
                     gl.getUniformLocation.withArgs(sinon.match.any, "u_normalMatrix").returns(pos);
 
 
@@ -141,7 +141,7 @@ describe("front render", function () {
                     it("create buffer and init it when first get", function () {
                         directorTool.init(state);
 
-                        var data = geometryTool.getNormals(geo);
+                        var data = geometrySystemTool.getNormals(geo);
 
 
                         directorTool.loopBody(state);
@@ -239,8 +239,8 @@ describe("front render", function () {
 
                 describe("if has map, add CommonLightMapShaderLib", function(){
                     beforeEach(function () {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool.setSpecularMap(material, texture);
                     });
@@ -261,7 +261,7 @@ describe("front render", function () {
                         it("create buffer and init it when first get", function () {
                             directorTool.init(state);
 
-                            var data = geometryTool.getTexCoords(geo);
+                            var data = geometrySystemTool.getTexCoords(geo);
 
 
                             directorTool.loopBody(state);
@@ -318,8 +318,8 @@ describe("front render", function () {
 
                 describe("if has diffuse map, add DiffuseMapShaderLib", function(){
                     beforeEach(function () {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool.setDiffuseMap(material, texture);
                     });
@@ -385,8 +385,8 @@ describe("front render", function () {
 
                 describe("if has specular map, add SpecularMapShaderLib", function(){
                     beforeEach(function () {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool.setSpecularMap(material, texture);
                     });
@@ -577,9 +577,9 @@ describe("front render", function () {
                     gl.getUniformLocation.withArgs(sinon.match.any, "u_cameraPos").returns(pos);
 
 
-                    var transform = gameObjectTool.getComponent(cameraGameObject, wd.ThreeDTransform);
+                    var transform = gameObjectSystemTool.getComponent(cameraGameObject, wd.ThreeDTransform);
 
-                    threeDTransformTool.setPosition(transform, cameraPos);
+                    threeDTransformSystemTool.setPosition(transform, cameraPos);
 
 
                     directorTool.init(state);
@@ -601,8 +601,8 @@ describe("front render", function () {
                             expect(glslTool.contain(vs, "gl_Position = u_pMatrix * u_vMatrix * vec4(v_worldPosition, 1.0);\n")).toBeTruthy();
                         });
                         it("test define DIRECTION_LIGHTS_COUNT", function () {
-                            sceneTool.addDirectionLight(null, null, null);
-                            sceneTool.addDirectionLight(null, null, null);
+                            sceneSystemTool.addDirectionLight(null, null, null);
+                            sceneSystemTool.addDirectionLight(null, null, null);
 
                             gl = buildGLSL(sandbox, state);
 
@@ -611,8 +611,8 @@ describe("front render", function () {
                             expect(glslTool.contain(vs, "#define DIRECTION_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                         it("test define POINT_LIGHTS_COUNT", function () {
-                            sceneTool.addPointLight(null, null, null);
-                            sceneTool.addPointLight(null, null, null);
+                            sceneSystemTool.addPointLight(null, null, null);
+                            sceneSystemTool.addPointLight(null, null, null);
 
                             gl = buildGLSL(sandbox, state);
 
@@ -631,8 +631,8 @@ describe("front render", function () {
                             expect(glslTool.contain(fs, "float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 halfAngle = normalize(lightDir + viewDir);\n        float blinnTerm = dot(normal, halfAngle);\n\n        blinnTerm = clamp(blinnTerm, 0.0, 1.0);\n        blinnTerm = dotResultBetweenNormAndLight != 0.0 ? blinnTerm : 0.0;\n        blinnTerm = pow(blinnTerm, shininess);\n\n        return blinnTerm;\n}\n\nfloat getPhongShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDir, float dotResultBetweenNormAndLight){\n        vec3 reflectDir = reflect(-lightDir, normal);\n        float phongTerm = dot(viewDir, reflectDir);\n\n        phongTerm = clamp(phongTerm, 0.0, 1.0);\n        phongTerm = dotResultBetweenNormAndLight != 0.0 ? phongTerm : 0.0;\n        phongTerm = pow(phongTerm, shininess);\n\n        return phongTerm;\n}\n\nvec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)\n{\n        vec3 materialLight = getMaterialLight();\n        vec3 materialDiffuse = getMaterialDiffuse();\n        vec3 materialSpecular = u_specular;\n        vec3 materialEmission = getMaterialEmission();\n\n        float specularStrength = getSpecularStrength();\n\n        float dotResultBetweenNormAndLight = dot(normal, lightDir);\n        float diff = max(dotResultBetweenNormAndLight, 0.0);\n\n        vec3 emissionColor = materialEmission;\n\n        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;\n\n\n        if(u_lightModel == 3){\n            return emissionColor + ambientColor;\n        }\n\n//        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);\n        vec3 diffuseColor = color * materialDiffuse.rgb * diff * intensity;\n\n        float spec = 0.0;\n\n        if(u_lightModel == 2){\n                spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n        else if(u_lightModel == 1){\n                spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);\n        }\n\n        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;\n\n//        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);\n        return emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor);\n}\n\n\n\n\n#if POINT_LIGHTS_COUNT > 0\n        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)\n{\n        //lightDir is not normalize computing distance\n        float distance = length(lightDir);\n\n        float attenuation = 0.0;\n\n        if(distance < light.range)\n        {\n            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));\n        }\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\n#if DIRECTION_LIGHTS_COUNT > 0\n        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)\n{\n        float attenuation = 1.0;\n\n        lightDir = normalize(lightDir);\n\n        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);\n}\n#endif\n\n\n\nvec4 calcTotalLight(vec3 norm, vec3 viewDir){\n    vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);\n\n    #if POINT_LIGHTS_COUNT > 0\n                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){\n                totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);\n        }\n    #endif\n\n    #if DIRECTION_LIGHTS_COUNT > 0\n                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){\n                totalLight += vec4(calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir), 0.0);\n        }\n    #endif\n\n        return totalLight;\n}\n")).toBeTruthy();
                         });
                         it("test define DIRECTION_LIGHTS_COUNT", function () {
-                            sceneTool.addDirectionLight(null, null, null);
-                            sceneTool.addDirectionLight(null, null, null);
+                            sceneSystemTool.addDirectionLight(null, null, null);
+                            sceneSystemTool.addDirectionLight(null, null, null);
 
                             gl = buildGLSL(sandbox, state);
 
@@ -641,8 +641,8 @@ describe("front render", function () {
                             expect(glslTool.contain(fs, "#define DIRECTION_LIGHTS_COUNT 2")).toBeTruthy();
                         });
                         it("test define POINT_LIGHTS_COUNT", function () {
-                            sceneTool.addPointLight(null, null, null);
-                            sceneTool.addPointLight(null, null, null);
+                            sceneSystemTool.addPointLight(null, null, null);
+                            sceneSystemTool.addPointLight(null, null, null);
 
                             gl = buildGLSL(sandbox, state);
 
@@ -674,8 +674,8 @@ describe("front render", function () {
                     }
 
                     beforeEach(function () {
-                        var obj1 = sceneTool.addAmbientLight(position1, color1);
-                        light1 = gameObjectTool.getComponent(obj1, PointLight);
+                        var obj1 = sceneSystemTool.addAmbientLight(position1, color1);
+                        light1 = gameObjectSystemTool.getComponent(obj1, PointLight);
 
 
                     });
@@ -761,12 +761,12 @@ describe("front render", function () {
 
                     describe("add DirectionLightShaderLib", function () {
                         beforeEach(function () {
-                            var obj1 = sceneTool.addDirectionLight(position1, color1);
-                            light1 = gameObjectTool.getComponent(obj1, PointLight);
+                            var obj1 = sceneSystemTool.addDirectionLight(position1, color1);
+                            light1 = gameObjectSystemTool.getComponent(obj1, PointLight);
 
 
-                            var obj2 = sceneTool.addDirectionLight(position2, color2);
-                            light2 = gameObjectTool.getComponent(obj2, PointLight);
+                            var obj2 = sceneSystemTool.addDirectionLight(position2, color2);
+                            light2 = gameObjectSystemTool.getComponent(obj2, PointLight);
                         });
 
                         describe("send structure data", function () {
@@ -855,8 +855,8 @@ describe("front render", function () {
                                     intensity3 = 3,
                                     intensity4 = 4;
 
-                                sceneTool.addDirectionLight(position3, color3, intensity3);
-                                sceneTool.addDirectionLight(position4, color4, intensity4);
+                                sceneSystemTool.addDirectionLight(position3, color3, intensity3);
+                                sceneSystemTool.addDirectionLight(position4, color4, intensity4);
 
 
                                 var pos3 = 0;
@@ -877,12 +877,12 @@ describe("front render", function () {
 
                     describe("add PointLightShaderLib", function () {
                         beforeEach(function () {
-                            var obj1 = sceneTool.addPointLight(position1, color1);
-                            light1 = gameObjectTool.getComponent(obj1, PointLight);
+                            var obj1 = sceneSystemTool.addPointLight(position1, color1);
+                            light1 = gameObjectSystemTool.getComponent(obj1, PointLight);
 
 
-                            var obj2 = sceneTool.addPointLight(position2, color2);
-                            light2 = gameObjectTool.getComponent(obj2, PointLight);
+                            var obj2 = sceneSystemTool.addPointLight(position2, color2);
+                            light2 = gameObjectSystemTool.getComponent(obj2, PointLight);
                         });
 
                         describe("send structure data", function () {
@@ -1047,8 +1047,8 @@ describe("front render", function () {
                                     intensity3 = 3,
                                     intensity4 = 4;
 
-                                sceneTool.addPointLight(position3, color3, intensity3);
-                                sceneTool.addPointLight(position4, color4, intensity4);
+                                sceneSystemTool.addPointLight(position3, color3, intensity3);
+                                sceneSystemTool.addPointLight(position4, color4, intensity4);
 
 
                                 var pos3 = 0;
@@ -1115,7 +1115,7 @@ describe("front render", function () {
                 return gl.shaderSource.getCall(3).args[1];
             }
 
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -1123,16 +1123,16 @@ describe("front render", function () {
 
             var mat = lightMaterialTool.create();
 
-            var texture = textureTool.create();
-            textureTool.setSource(texture, {});
+            var texture = textureSystemTool.create();
+            textureSystemTool.setSource(texture, {});
 
             lightMaterialTool.setDiffuseMap(mat, texture);
 
 
-            var data = sceneTool.createGameObject(null, mat);
+            var data = sceneSystemTool.createGameObject(null, mat);
 
 
-            sceneTool.addGameObject(data.gameObject);
+            sceneSystemTool.addGameObject(data.gameObject);
 
 
 

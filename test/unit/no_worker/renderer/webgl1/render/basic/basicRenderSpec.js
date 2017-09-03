@@ -43,7 +43,7 @@ describe("basic render", function () {
         }
 
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -71,7 +71,7 @@ describe("basic render", function () {
             it("create buffer and init it when first get", function () {
                 directorTool.init(state);
 
-                var data = geometryTool.getIndices(geo);
+                var data = geometrySystemTool.getIndices(geo);
 
 
                 directorTool.loopBody(state);
@@ -175,8 +175,8 @@ describe("basic render", function () {
 
                 describe("if has one map, add BasicMapShaderLib", function(){
                     beforeEach(function () {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         basicMaterialTool.addMap(material, texture);
                     });
@@ -197,7 +197,7 @@ describe("basic render", function () {
                         it("create buffer and init it when first get", function () {
                             directorTool.init(state);
 
-                            var data = geometryTool.getTexCoords(geo);
+                            var data = geometrySystemTool.getTexCoords(geo);
 
 
                             directorTool.loopBody(state);
@@ -299,11 +299,11 @@ describe("basic render", function () {
 
     describe("test basic render and front render together", function() {
         beforeEach(function(){
-            sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
 
-            sceneTool.addGameObject(sceneTool.createGameObject(null, lightMaterialTool.create()));
-            sceneTool.addPointLight();
-            sceneTool.addDirectionLight();
+            sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, lightMaterialTool.create()));
+            sceneSystemTool.addPointLight();
+            sceneSystemTool.addDirectionLight();
         });
 
         it("clear main framebuffer only once in one frame", function(){

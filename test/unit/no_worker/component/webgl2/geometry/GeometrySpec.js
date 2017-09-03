@@ -34,8 +34,8 @@ describe("Geometry", function () {
                 //     var geo1 = boxGeometryTool.create();
                 //     var geo2 = boxGeometryTool.create();
                 //
-                //     var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1);
-                //     var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);
+                //     var data1 = sceneSystemTool.prepareGameObjectAndAddToScene(false, geo1);
+                //     var data2 = sceneSystemTool.prepareGameObjectAndAddToScene(true, geo2);
                 //
                 //     var obj1 = data1.gameObject,
                 //         obj2 = data2.gameObject;
@@ -53,13 +53,13 @@ describe("Geometry", function () {
                 //     directorTool.loopBody(state);
                 //
                 //
-                //     gameObjectTool.disposeComponent(obj1, geo1);
+                //     gameObjectSystemTool.disposeComponent(obj1, geo1);
                 //
                 //
                 //     expect(gl.deleteVertexArray.callCount).toEqual(0);
                 //
                 //
-                //     gameObjectTool.disposeComponent(obj2, geo2);
+                //     gameObjectSystemTool.disposeComponent(obj2, geo2);
                 //
                 //     expect(gl.deleteVertexArray.callCount).toEqual(2);
                 //     expect(gl.deleteVertexArray.firstCall).toCalledWith(buffer1)
@@ -98,13 +98,13 @@ describe("Geometry", function () {
                         directorTool.loopBody(state);
 
 
-                        gameObjectTool.dispose(obj1);
+                        gameObjectSystemTool.dispose(obj1);
 
 
                         expect(getDeleteVertexArray().callCount).toEqual(0);
 
 
-                        gameObjectTool.dispose(obj2);
+                        gameObjectSystemTool.dispose(obj2);
 
                         expect(getDeleteVertexArray().callCount).toEqual(2);
                         expect(getDeleteVertexArray().firstCall).toCalledWith(buffer1)
@@ -125,8 +125,8 @@ describe("Geometry", function () {
                         directorTool.loopBody(state);
 
 
-                        gameObjectTool.dispose(obj1);
-                        gameObjectTool.dispose(obj2);
+                        gameObjectSystemTool.dispose(obj1);
+                        gameObjectSystemTool.dispose(obj2);
 
 
                         expect(gl.deleteBuffer.callCount).toEqual(4);
@@ -139,14 +139,14 @@ describe("Geometry", function () {
                         directorTool.loopBody(state);
 
 
-                        gameObjectTool.dispose(obj1);
-                        gameObjectTool.dispose(obj2);
+                        gameObjectSystemTool.dispose(obj1);
+                        gameObjectSystemTool.dispose(obj2);
 
 
                         var geo3 = boxGeometryTool.create();
-                        var data3 = sceneTool.prepareGameObjectAndAddToScene(true, geo3);
+                        var data3 = sceneSystemTool.prepareGameObjectAndAddToScene(true, geo3);
 
-                        gameObjectTool.init(data3.gameObject);
+                        gameObjectSystemTool.init(data3.gameObject);
 
 
                         directorTool.loopBody(null, null);

@@ -31,7 +31,7 @@ describe("LightMaterial", function () {
 
     describe("only test light material", function () {
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -157,15 +157,15 @@ describe("LightMaterial", function () {
 
                 beforeEach(function () {
                     mat2 = lightMaterialTool.create();
-                    obj2 = gameObjectTool.create();
-                    gameObjectTool.addComponent(obj2, mat2);
-                    sceneTool.addGameObject(obj2);
+                    obj2 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.addComponent(obj2, mat2);
+                    sceneSystemTool.addGameObject(obj2);
                 });
 
                 it("index -= 1", function () {
                     var index = LightMaterialData.index;
 
-                    gameObjectTool.disposeComponent(obj, material);
+                    gameObjectSystemTool.disposeComponent(obj, material);
 
                     expect(LightMaterialData.index).toEqual(index - 1);
                 });
@@ -179,7 +179,7 @@ describe("LightMaterial", function () {
 
                         var materialIndex = material.index;
                         var mat2Index = mat2.index;
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
                         colorTool.judgeIsEqual(lightMaterialTool[getMethodName](componentTool.createComponent(materialIndex)), color2, expect);
                         colorTool.judgeIsEqual(lightMaterialTool[getMethodName](componentTool.createComponent(mat2Index)), defaultColor, expect);
@@ -187,25 +187,25 @@ describe("LightMaterial", function () {
 
                     function judgeSingleValue(getMethodName, setMethodName, defaultValue) {
                         disposeTool.judgeSingleValue(lightMaterialTool, getMethodName, setMethodName, defaultValue, material, mat2, function(material){
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
                         })
                     }
 
                     function judgeMap(setMapMethodName, hasMapMethodName) {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool[setMapMethodName](material, texture);
 
-                        var texture2 = textureTool.create();
-                        textureTool.setSource(texture2, {});
+                        var texture2 = textureSystemTool.create();
+                        textureSystemTool.setSource(texture2, {});
 
                         lightMaterialTool[setMapMethodName](mat2, texture2);
 
                         var matIndex1 = material.index;
                         var matIndex2 = mat2.index;
 
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
 
                         expect(LightMaterialData[hasMapMethodName][lightMaterialTool.computeLightBufferIndex(matIndex1)]).toEqual(1);
@@ -237,20 +237,20 @@ describe("LightMaterial", function () {
 
                 // describe("remove by swap the target one and the last one", function () {
                 //     function judge(methodName, mapDataName) {
-                //         var texture = textureTool.create();
-                //         textureTool.setSource(texture, {});
+                //         var texture = textureSystemTool.create();
+                //         textureSystemTool.setSource(texture, {});
                 //
                 //         lightMaterialTool[methodName](material, texture);
                 //
-                //         var texture2 = textureTool.create();
-                //         textureTool.setSource(texture2, {});
+                //         var texture2 = textureSystemTool.create();
+                //         textureSystemTool.setSource(texture2, {});
                 //
                 //         lightMaterialTool[methodName](mat2, texture2);
                 //
                 //         var matIndex1 = material.index;
                 //         var matIndex2 = mat2.index;
                 //
-                //         gameObjectTool.disposeComponent(obj, material);
+                //         gameObjectSystemTool.disposeComponent(obj, material);
                 //
                 //
                 //         expect(LightMaterialData[mapDataName][matIndex1]).toEqual(texture2.index);

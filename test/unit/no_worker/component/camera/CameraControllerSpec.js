@@ -14,9 +14,9 @@ describe("CameraController", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         cameraGameObject = data.cameraGameObject;
-        cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+        cameraController = gameObjectSystemTool.getComponent(cameraGameObject, wd.CameraController);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -33,23 +33,23 @@ describe("CameraController", function () {
         });
 
         it("remove from gameObject", function () {
-            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(cameraGameObject, cameraController);
 
-            expect(gameObjectTool.hasComponent(cameraGameObject, wd.CameraController)).toBeFalsy();
-            expect(cameraControllerTool.getGameObject(cameraController)).toBeUndefined();
+            expect(gameObjectSystemTool.hasComponent(cameraGameObject, wd.CameraController)).toBeFalsy();
+            expect(cameraControllerSystemTool.getGameObject(cameraController)).toBeUndefined();
         });
         it("remove worldToCameraMatrix", function () {
             directorTool.loopBody(state);
 
-            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(cameraGameObject, cameraController);
 
             expect(CameraControllerData.worldToCameraMatrixCacheMap[cameraController.index]).toBeUndefined();
         });
         it("remove from dirtyIndexArray", function () {
-            cameraControllerTool.setCameraFar(cameraController, 200);
-            cameraControllerTool.setCameraNear(cameraController, 0.1);
+            cameraControllerSystemTool.setCameraFar(cameraController, 200);
+            cameraControllerSystemTool.setCameraNear(cameraController, 0.1);
 
-            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(cameraGameObject, cameraController);
 
             expect(CameraControllerData.dirtyIndexArray).toEqual([])
         });

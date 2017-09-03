@@ -20,7 +20,7 @@ describe("draw render command", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -48,9 +48,9 @@ describe("draw render command", function () {
             indexBufferTool.setBuffers([indexBuffer]);
 
             var indices = [1,2,3];
-            geometryTool.setIndices(0, indices);
-            geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
-            geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
+            geometrySystemTool.setIndices(0, indices);
+            geometrySystemTool.setIndexType(EBufferType.UNSIGNED_SHORT);
+            geometrySystemTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
 
             directorTool.loopBody(state);
 

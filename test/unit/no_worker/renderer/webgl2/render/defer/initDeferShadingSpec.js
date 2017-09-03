@@ -404,7 +404,7 @@ describe("defer shading", function () {
             }
 
             beforeEach(function(){
-                sceneTool.addCameraObject();
+                sceneSystemTool.addCameraObject();
             });
 
             describe("add CameraUboShaderLib", function () {
@@ -566,7 +566,7 @@ describe("defer shading", function () {
                 //         gl.createVertexArray.onCall(1).returns(vao2);
                 //
                 //
-                //         var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                //         var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
                 //
                 //         material = data.material;
                 //         cameraGameObject = data.cameraGameObject;
@@ -644,7 +644,7 @@ describe("defer shading", function () {
                     var geo;
 
                     beforeEach(function(){
-                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
                         material = data.material;
                         cameraGameObject = data.cameraGameObject;
@@ -701,7 +701,7 @@ describe("defer shading", function () {
                     var geo;
 
                     beforeEach(function(){
-                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
                         material = data.material;
                         cameraGameObject = data.cameraGameObject;
@@ -757,7 +757,7 @@ describe("defer shading", function () {
                     var geo;
 
                     beforeEach(function(){
-                        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
                         material = data.material;
                         cameraGameObject = data.cameraGameObject;

@@ -20,7 +20,7 @@ describe("draw render command", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false,  null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -38,8 +38,8 @@ describe("draw render command", function () {
 
     describe("use", function () {
         it("if the program is already used, not use again", function () {
-            var data = sceneTool.createGameObject(null, lightMaterialTool.create());
-            sceneTool.addGameObject(data.gameObject);
+            var data = sceneSystemTool.createGameObject(null, lightMaterialTool.create());
+            sceneSystemTool.addGameObject(data.gameObject);
 
             directorTool.init(state);
             directorTool.loopBody(state);
@@ -56,7 +56,7 @@ describe("draw render command", function () {
         it("if geometry has no index buffer, then drawArray", function(){
             directorTool.init(state);
 
-            geometryTool.setIndices(0, []);
+            geometrySystemTool.setIndices(0, []);
 
             directorTool.loopBody(state);
 
@@ -73,7 +73,7 @@ describe("draw render command", function () {
             function prepareNotExceed() {
                 sandbox.stub(DataBufferConfig, "renderCommandBufferCount", 1);
 
-                meshRendererTool.resetData();
+                meshRendererSystemTool.resetData();
 
                 return "renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count";
             }
@@ -85,9 +85,9 @@ describe("draw render command", function () {
             it("RenderCommandBufferData->buffer", function(){
                 var errMsg = prepareNotExceed();
 
-                sceneTool.addGameObject(sceneTool.createGameObject().gameObject);
+                sceneSystemTool.addGameObject(sceneSystemTool.createGameObject().gameObject);
 
-                sceneTool.addGameObject(sceneTool.createGameObject().gameObject);
+                sceneSystemTool.addGameObject(sceneSystemTool.createGameObject().gameObject);
 
                 directorTool.init(state);
 

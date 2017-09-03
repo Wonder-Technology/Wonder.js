@@ -21,7 +21,7 @@ describe("test vao", function () {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
 
         material = data.material;
         cameraGameObject = data.cameraGameObject;
@@ -117,7 +117,7 @@ describe("test vao", function () {
 
                     directorTool.loopBody(state);
 
-                    var data = geometryTool[getGeometryDataMethodName](geo);
+                    var data = geometrySystemTool[getGeometryDataMethodName](geo);
 
 
 
@@ -133,7 +133,7 @@ describe("test vao", function () {
 
                     directorTool.loopBody(state);
 
-                    var data = geometryTool.getIndices(geo);
+                    var data = geometrySystemTool.getIndices(geo);
 
 
 
@@ -161,21 +161,21 @@ describe("test vao", function () {
 
                         directorTool.init(state);
 
-                        sceneTool.removeGameObject(gameObject);
+                        sceneSystemTool.removeGameObject(gameObject);
 
-                        var data = sceneTool.prepareGameObjectAndAddToScene(true, null, lightMaterialTool.create());
+                        var data = sceneSystemTool.prepareGameObjectAndAddToScene(true, null, lightMaterialTool.create());
 
                         material = data.material;
                         geo = data.geometry;
                         gameObject = data.gameObject;
 
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool.setDiffuseMap(material, texture);
 
 
-                        gameObjectTool.init(gameObject);
+                        gameObjectSystemTool.init(gameObject);
                     });
 
                     it("create and init position array buffer", function () {

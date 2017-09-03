@@ -48,7 +48,7 @@ describe("defer shading", function () {
         var geo;
 
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
             material = data.material;
             cameraGameObject = data.cameraGameObject;
@@ -214,7 +214,7 @@ describe("defer shading", function () {
                             it("create buffer and init it when first get", function () {
                                 directorTool.init(state);
 
-                                var data = geometryTool.getNormals(geo);
+                                var data = geometrySystemTool.getNormals(geo);
 
 
                                 directorTool.loopBody(state);
@@ -294,8 +294,8 @@ describe("defer shading", function () {
 
                         describe("if has map, add CommonLightMapShaderLib", function(){
                             beforeEach(function () {
-                                var texture = textureTool.create();
-                                textureTool.setSource(texture, {});
+                                var texture = textureSystemTool.create();
+                                textureSystemTool.setSource(texture, {});
 
                                 lightMaterialTool.setSpecularMap(material, texture);
                             });
@@ -314,7 +314,7 @@ describe("defer shading", function () {
                                 it("create buffer and init it when set vao", function () {
                                     directorTool.init(state);
 
-                                    var data = geometryTool.getTexCoords(geo);
+                                    var data = geometrySystemTool.getTexCoords(geo);
 
 
                                     directorTool.loopBody(state);
@@ -342,8 +342,8 @@ describe("defer shading", function () {
 
                         describe("if has diffuse map, add DiffuseMapShaderLib", function(){
                             beforeEach(function () {
-                                var texture = textureTool.create();
-                                textureTool.setSource(texture, {});
+                                var texture = textureSystemTool.create();
+                                textureSystemTool.setSource(texture, {});
 
                                 lightMaterialTool.setDiffuseMap(material, texture);
                             });
@@ -410,8 +410,8 @@ describe("defer shading", function () {
 
                         describe("if has specular map, add SpecularMapShaderLib", function(){
                             beforeEach(function () {
-                                var texture = textureTool.create();
-                                textureTool.setSource(texture, {});
+                                var texture = textureSystemTool.create();
+                                textureSystemTool.setSource(texture, {});
 
                                 lightMaterialTool.setSpecularMap(material, texture);
                             });
@@ -587,7 +587,7 @@ describe("defer shading", function () {
                 //     it("if geometry has no index buffer, then drawArray", function(){
                 //         // directorTool.init(state);
                 //         //
-                //         // geometryTool.setIndices(0, []);
+                //         // geometrySystemTool.setIndices(0, []);
                 //         //
                 //         // directorTool.loopBody(state);
                 //         //
@@ -599,12 +599,12 @@ describe("defer shading", function () {
                 //         // var indexBuffer = {a:1};
                 //         // indexBufferTool.setBuffers([indexBuffer]);
                 //         //
-                //         // // geometryTool.setDrawMode({index:0}, "TRIANGLES");
+                //         // // geometrySystemTool.setDrawMode({index:0}, "TRIANGLES");
                 //         //
                 //         // var indices = [1,2,3];
-                //         // geometryTool.setIndices(0, indices);
-                //         // geometryTool.setIndexType(EBufferType.UNSIGNED_SHORT);
-                //         // geometryTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
+                //         // geometrySystemTool.setIndices(0, indices);
+                //         // geometrySystemTool.setIndexType(EBufferType.UNSIGNED_SHORT);
+                //         // geometrySystemTool.setIndexTypeSize(Uint16Array.BYTES_PER_ELEMENT);
                 //         //
                 //         // directorTool.loopBody(state);
                 //         //
@@ -690,7 +690,7 @@ describe("defer shading", function () {
                     }
 
                     beforeEach(function(){
-                        sceneTool.addAmbientLight();
+                        sceneSystemTool.addAmbientLight();
                     });
 
                     it("bind full screen quad vao", function () {
@@ -746,7 +746,7 @@ describe("defer shading", function () {
                     }
 
                     beforeEach(function(){
-                        sceneTool.addDirectionLight();
+                        sceneSystemTool.addDirectionLight();
                     });
 
                     it("bind full screen quad vao", function () {
@@ -808,8 +808,8 @@ describe("defer shading", function () {
                     }
                     
                     beforeEach(function(){
-                        lightObj = sceneTool.addPointLight();
-                        lightComponent = gameObjectTool.getComponent(lightObj, Light);
+                        lightObj = sceneSystemTool.addPointLight();
+                        lightComponent = gameObjectSystemTool.getComponent(lightObj, Light);
                     });
 
                     it("enable scissor test", function () {
@@ -847,11 +847,11 @@ describe("defer shading", function () {
 
                             state = stateTool.setViewport(state, viewport);
 
-                            transform = gameObjectTool.getTransform(lightObj);
+                            transform = gameObjectSystemTool.getTransform(lightObj);
                         });
 
                         it("if the computed light range is out of screen, not draw it", function () {
-                            threeDTransformTool.setPosition(transform, Vector3.create(-100, 0, 0));
+                            threeDTransformSystemTool.setPosition(transform, Vector3.create(-100, 0, 0));
 
                             pointLightTool.setRangeLevel(lightComponent, 1);
 
@@ -863,7 +863,7 @@ describe("defer shading", function () {
                             expect(getLightDrawCount()).toEqual(0);
                         });
                         it("if it's full screen, scissor full screen", function () {
-                            threeDTransformTool.setPosition(transform, Vector3.create(0, 0, -100));
+                            threeDTransformSystemTool.setPosition(transform, Vector3.create(0, 0, -100));
 
                             pointLightTool.setRangeLevel(lightComponent, 11);
 
@@ -875,7 +875,7 @@ describe("defer shading", function () {
                             expect(gl.scissor).toCalledWith(viewport.x, viewport.y, viewport.width, viewport.height);
                         });
                         it("else, scissor it", function () {
-                            threeDTransformTool.setPosition(transform, Vector3.create(200,300,-900));
+                            threeDTransformSystemTool.setPosition(transform, Vector3.create(200,300,-900));
 
 
                             directorTool.init(state);
@@ -898,7 +898,7 @@ describe("defer shading", function () {
 
                         describe("add PointLightUboShaderLib", function () {
                             it("bind ubo", function () {
-                                // sceneTool.addPointLight();
+                                // sceneSystemTool.addPointLight();
 
                                 directorTool.init(state);
                                 directorTool.loopBody(state);
@@ -909,7 +909,7 @@ describe("defer shading", function () {
 
                         describe("commit to gpu", function () {
                             it("draw full screen quad", function () {
-                                // sceneTool.addPointLight();
+                                // sceneSystemTool.addPointLight();
 
                                 directorTool.init(state);
                                 directorTool.loopBody(state);
@@ -921,7 +921,7 @@ describe("defer shading", function () {
 
                     describe("restore state", function() {
                         it("disable scissor test", function () {
-                            sceneTool.addPointLight();
+                            sceneSystemTool.addPointLight();
 
 
                             directorTool.init(state);
@@ -937,7 +937,7 @@ describe("defer shading", function () {
                 });
 
                 it("unbind vao after commit to gpu", function () {
-                    sceneTool.addPointLight();
+                    sceneSystemTool.addPointLight();
 
 
                     directorTool.init(state);

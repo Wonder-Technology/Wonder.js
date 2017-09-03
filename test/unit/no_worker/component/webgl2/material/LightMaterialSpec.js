@@ -30,7 +30,7 @@ describe("LightMaterial", function () {
         beforeEach(function () {
             deferShadingTool.useDeferShading(sandbox);
 
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -39,8 +39,8 @@ describe("LightMaterial", function () {
             basicMaterial = basicMaterialTool.create();
             basicGeo = boxGeometryTool.create();
 
-            basicObj = sceneTool.createGameObject(basicGeo, basicMaterial);
-            sceneTool.addGameObject(basicObj);
+            basicObj = sceneSystemTool.createGameObject(basicGeo, basicMaterial);
+            sceneSystemTool.addGameObject(basicObj);
         });
 
         it("switch program between different shader", function () {

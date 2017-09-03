@@ -28,20 +28,20 @@ describe("dispose texture", function () {
         var texture1, texture2, texture3;
 
         beforeEach(function(){
-            texture1 = textureTool.create();
-            texture2 = textureTool.create();
-            texture3 = textureTool.create();
+            texture1 = textureSystemTool.create();
+            texture2 = textureSystemTool.create();
+            texture3 = textureSystemTool.create();
         });
 
         it("send disposed texture data array to render worker", function () {
-            sceneTool.prepareGameObjectAndAddToScene();
+            sceneSystemTool.prepareGameObjectAndAddToScene();
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
 
 
-            textureTool.dispose(texture1);
-            textureTool.dispose(texture3);
+            textureSystemTool.dispose(texture1);
+            textureSystemTool.dispose(texture3);
 
 
 

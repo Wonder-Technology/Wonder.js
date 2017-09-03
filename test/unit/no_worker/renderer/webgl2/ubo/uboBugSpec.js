@@ -19,11 +19,11 @@ describe("fix ubo bug", function () {
 
     describe("test bind ubo frequence", function() {
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
-            sceneTool.addDirectionLight();
-            sceneTool.addPointLight();
-            sceneTool.addAmbientLight();
+            sceneSystemTool.addDirectionLight();
+            sceneSystemTool.addPointLight();
+            sceneSystemTool.addAmbientLight();
 
             directorTool.init(state);
             directorTool.loopBody(state);
@@ -42,8 +42,8 @@ describe("fix ubo bug", function () {
 
     describe("ubo binding point 0 should be binded", function () {
         it("test ambient light pass should bind CameraUbo in the 0 binding point even though it don't use it", function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-            sceneTool.addAmbientLight();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            sceneSystemTool.addAmbientLight();
 
             directorTool.init(state);
             directorTool.loopBody(state);

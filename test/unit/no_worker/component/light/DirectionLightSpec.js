@@ -16,7 +16,7 @@ describe("DirectionLight", function () {
 
         DirectionLightData = directionLightSystemTool.getData();
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
         state = stateTool.createAndSetFakeGLState(sandbox);
     });
@@ -63,8 +63,8 @@ describe("DirectionLight", function () {
 
         it("get light gameObject's transform's position", function(){
             var pos = Vector3.create(1,2,3);
-            var obj1 = sceneTool.addDirectionLight(pos);
-            var light1 = gameObjectTool.getComponent(obj1, Light);
+            var obj1 = sceneSystemTool.addDirectionLight(pos);
+            var light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
             directorTool.init(state);
 
@@ -96,11 +96,11 @@ describe("DirectionLight", function () {
             var obj2,light2;
 
             beforeEach(function(){
-                obj1 = sceneTool.addDirectionLight();
-                light1 = gameObjectTool.getComponent(obj1, Light);
+                obj1 = sceneSystemTool.addDirectionLight();
+                light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
-                obj2 = sceneTool.addDirectionLight();
-                light2 = gameObjectTool.getComponent(obj2, Light);
+                obj2 = sceneSystemTool.addDirectionLight();
+                light2 = gameObjectSystemTool.getComponent(obj2, Light);
             });
 
             describe("test remove from map", function() {
@@ -114,7 +114,7 @@ describe("DirectionLight", function () {
 
                         var index1 = light1.index;
                         var index2 = light2.index;
-                        gameObjectTool.disposeComponent(obj1, light1);
+                        gameObjectSystemTool.disposeComponent(obj1, light1);
 
                         expect(directionLightTool[getMethodName](componentTool.createComponent(index1))).toEqual(2);
                         expect(directionLightTool[getMethodName](componentTool.createComponent(index2))).toEqual(defaultValue);
@@ -136,11 +136,11 @@ describe("DirectionLight", function () {
 
                         it("remove from isPositionDirtys", function () {
                             judgeIsDirty("isPositionDirtys", function(light1, obj1){
-                                var transform = gameObjectTool.getComponent(obj1, ThreeDTransform),
+                                var transform = gameObjectSystemTool.getComponent(obj1, ThreeDTransform),
                                     mat = Matrix4.create().setTranslate(1, 2, 3),
                                     position = mat.getTranslation();
 
-                                threeDTransformTool.setPosition(transform, position);
+                                threeDTransformSystemTool.setPosition(transform, position);
                             });
                         });
                         it("remove from isColorDirtys", function () {

@@ -24,11 +24,11 @@ describe("light material", function () {
     //     });
     //
     //     it("test send mapMap", function () {
-    //         var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+    //         var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
     //         var mat = data.material;
     //
-    //         var texture1 = textureTool.create();
-    //         var texture2 = textureTool.create();
+    //         var texture1 = textureSystemTool.create();
+    //         var texture2 = textureSystemTool.create();
     //
     //         lightMaterialTool.setDiffuseMap(mat, texture1);
     //         lightMaterialTool.setSpecularMap(mat, texture2);

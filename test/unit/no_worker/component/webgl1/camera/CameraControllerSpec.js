@@ -14,9 +14,9 @@ describe("CameraController", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         cameraGameObject = data.cameraGameObject;
-        cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+        cameraController = gameObjectSystemTool.getComponent(cameraGameObject, wd.CameraController);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -37,12 +37,12 @@ describe("CameraController", function () {
             var transform, position,pos;
 
             beforeEach(function(){
-                transform = gameObjectTool.getTransform(cameraGameObject);
+                transform = gameObjectSystemTool.getTransform(cameraGameObject);
                 pos = 0;
 
                 mat = Matrix4.create().setTranslate(1,2,3);
                 position = mat.getTranslation();
-                threeDTransformTool.setPosition(transform, position);
+                threeDTransformSystemTool.setPosition(transform, position);
 
                 gl.getUniformLocation.withArgs(sinon.match.any, "u_vMatrix").returns(pos);
             });
@@ -63,7 +63,7 @@ describe("CameraController", function () {
 
                 var mat2 = Matrix4.create().setTranslate(10,2,3),
                     position2 = mat2.getTranslation();
-                threeDTransformTool.setPosition(transform, position2);
+                threeDTransformSystemTool.setPosition(transform, position2);
 
                 directorTool.loopBody(state);
 

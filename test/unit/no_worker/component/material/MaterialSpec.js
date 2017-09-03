@@ -30,7 +30,7 @@ describe("Material", function() {
 
     describe("test default value", function() {
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             obj = data.gameObject;
             material = data.material;
         });
@@ -103,15 +103,15 @@ describe("Material", function() {
 
     describe("all types of material share one buffer", function() {
         beforeEach(function(){
-            sceneTool.addCameraObject();
+            sceneSystemTool.addCameraObject();
         });
         
         it("so can use MaterialSystem->getShaderIndex to get all types of material' shader index", function(){
             var mat1 = basicMaterialTool.create();
             var mat2 = lightMaterialTool.create();
 
-            sceneTool.addGameObject(sceneTool.createGameObject(null, mat1).gameObject);
-            sceneTool.addGameObject(sceneTool.createGameObject(null, mat2).gameObject);
+            sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, mat1).gameObject);
+            sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, mat2).gameObject);
 
             directorTool.init(state);
             directorTool.loopBody(state);
@@ -132,10 +132,10 @@ describe("Material", function() {
         it("can dispose any material before init", function(){
             var mat2 = basicMaterialTool.create();
 
-            var obj2 = gameObjectTool.create();
-            gameObjectTool.addComponent(obj2, mat2);
+            var obj2 = gameObjectSystemTool.create();
+            gameObjectSystemTool.addComponent(obj2, mat2);
 
-            gameObjectTool.disposeComponent(obj, material);
+            gameObjectSystemTool.disposeComponent(obj, material);
 
             expect(function(){
                 directorTool.init(sandbox);
@@ -151,8 +151,8 @@ describe("Material", function() {
         it("get gameObject who has the material", function(){
             var mat2 = basicMaterialTool.create();
 
-            var obj2 = gameObjectTool.create();
-            gameObjectTool.addComponent(obj2, mat2);
+            var obj2 = gameObjectSystemTool.create();
+            gameObjectSystemTool.addComponent(obj2, mat2);
 
             expect(materialTool.getGameObject(mat2)).toEqual(obj2);
         });
@@ -168,7 +168,7 @@ describe("Material", function() {
         beforeEach(function(){
             count = MaterialData.count;
 
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             obj = data.gameObject;
             material = data.material;
         });
@@ -182,9 +182,9 @@ describe("Material", function() {
 
                 beforeEach(function(){
                     mat2 = basicMaterialTool.create();
-                    obj2 = gameObjectTool.create();
-                    gameObjectTool.addComponent(obj2, mat2);
-                    sceneTool.addGameObject(obj2);
+                    obj2 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.addComponent(obj2, mat2);
+                    sceneSystemTool.addGameObject(obj2);
                 });
 
                 describe("test remove from map", function() {
@@ -193,10 +193,10 @@ describe("Material", function() {
 
                     describe("swap with last one and remove the last one", function(){
                         it("remove from gameObject", function () {
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
 
-                            expect(gameObjectTool.hasComponent(obj, wd.Material)).toBeFalsy();
-                            expect(gameObjectTool.hasComponent(obj2, wd.Material)).toBeTruthy();
+                            expect(gameObjectSystemTool.hasComponent(obj, wd.Material)).toBeFalsy();
+                            expect(gameObjectSystemTool.hasComponent(obj2, wd.Material)).toBeTruthy();
                             judgeNotAlive(material, "getGameObject", expect, materialTool);
                             expect(materialTool.getGameObject(mat2)).toEqual(obj2);
                             expect(MaterialData.gameObjectMap.length).toEqual(1);
@@ -212,7 +212,7 @@ describe("Material", function() {
                         it("remove from shaderIndices", function () {
                             MaterialData.shaderIndices = new Uint32Array([10,2]);
 
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
 
                             expect(MaterialData.shaderIndices[0]).toEqual(2);
                             expect(MaterialData.shaderIndices[1]).toEqual(2);
@@ -226,7 +226,7 @@ describe("Material", function() {
                             basicMaterialTool.setColor(material, color1);
                             basicMaterialTool.setColor(mat2, color2);
 
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
 
                             colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(0)), color2, expect);
                             colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(MaterialData), expect);
@@ -235,7 +235,7 @@ describe("Material", function() {
                             basicMaterialTool.setOpacity(material, 0.3);
                             basicMaterialTool.setOpacity(mat2, 0.5);
 
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
 
                             expect(MaterialData.opacities[0]).toEqual(0.5);
                             expect(MaterialData.opacities[1]).toEqual(MaterialData.defaultOpacity);
@@ -244,7 +244,7 @@ describe("Material", function() {
                             basicMaterialTool.setAlphaTest(material, 0.3);
                             basicMaterialTool.setAlphaTest(mat2, 0.5);
 
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
 
                             expect(MaterialData.alphaTests[0]).toEqual(0.5);
                             expect(MaterialData.alphaTests[1]).toEqual(MaterialData.defaultAlphaTest);
@@ -258,12 +258,12 @@ describe("Material", function() {
                     });
 
                     it("mark material removed", function () {
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
                         componentTool.judgeIsComponentIndexNotRemoved(material, expect);
                     });
                     it("swap with last one and remove the last one", function () {
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
                         expect(MaterialData.materialMap[0]).toEqual(mat2);
                         expect(MaterialData.materialMap.length).toEqual(1);
@@ -277,8 +277,8 @@ describe("Material", function() {
                         basicMaterialTool.setColor(material, color1);
                         basicMaterialTool.setColor(mat2, color2);
 
-                        gameObjectTool.disposeComponent(obj, material);
-                        gameObjectTool.disposeComponent(obj2, mat2);
+                        gameObjectSystemTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj2, mat2);
 
                         colorTool.judgeIsEqual(basicMaterialTool.getColor(componentTool.createComponent(0)), getDefaultColor(), expect);
                     });
@@ -289,15 +289,15 @@ describe("Material", function() {
                         });
 
                         it("mark material removed", function () {
-                            gameObjectTool.disposeComponent(obj, material);
-                            gameObjectTool.disposeComponent(obj2, mat2);
+                            gameObjectSystemTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj2, mat2);
 
                             componentTool.judgeIsComponentIndexNotRemoved(material, expect);
                             componentTool.judgeIsComponentIndexNotRemoved(mat2, expect);
                         });
                         it("swap with last one and remove the last one", function () {
-                            gameObjectTool.disposeComponent(obj, material);
-                            gameObjectTool.disposeComponent(obj2, mat2);
+                            gameObjectSystemTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj2, mat2);
 
                             expect(MaterialData.materialMap.length).toEqual(0);
                         });
@@ -307,19 +307,19 @@ describe("Material", function() {
         });
 
         it("test gameObject add new material after dispose old one", function () {
-            gameObjectTool.disposeComponent(obj, material);
+            gameObjectSystemTool.disposeComponent(obj, material);
 
             var mat2 = basicMaterialTool.create();
 
 
-            gameObjectTool.addComponent(obj, mat2);
+            gameObjectSystemTool.addComponent(obj, mat2);
 
             basicMaterialTool.initMaterial(mat2);
 
             expect(basicMaterialTool.getColor(mat2)).toBeExist();
         });
         it("if material is disposed, operate it should error", function () {
-            gameObjectTool.disposeComponent(obj, material);
+            gameObjectSystemTool.disposeComponent(obj, material);
 
             judgeNotAlive(material, "getGameObject", expect, materialTool);
             judgeNotAlive(material, "getColor", expect, basicMaterialTool);
@@ -354,12 +354,12 @@ describe("Material", function() {
 
             beforeEach(function(){
                 mat1 = basicMaterialTool.create();
-                obj1 = gameObjectTool.create();
-                gameObjectTool.addComponent(obj1, mat1);
+                obj1 = gameObjectSystemTool.create();
+                gameObjectSystemTool.addComponent(obj1, mat1);
 
                 mat2 = basicMaterialTool.create();
-                obj2 = gameObjectTool.create();
-                gameObjectTool.addComponent(obj2, mat2);
+                obj2 = gameObjectSystemTool.create();
+                gameObjectSystemTool.addComponent(obj2, mat2);
             });
 
             it("setColor", function(){

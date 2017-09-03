@@ -11,11 +11,11 @@ var PointLightSystemToolBase = YYC.AClass({
                 var obj2, light2;
 
                 beforeEach(function () {
-                    obj1 = sceneTool.addPointLight();
-                    light1 = gameObjectTool.getComponent(obj1, Light);
+                    obj1 = sceneSystemTool.addPointLight();
+                    light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
-                    obj2 = sceneTool.addPointLight();
-                    light2 = gameObjectTool.getComponent(obj2, Light);
+                    obj2 = sceneSystemTool.addPointLight();
+                    light2 = gameObjectSystemTool.getComponent(obj2, Light);
                 });
 
                 describe("test remove from map", function () {
@@ -29,7 +29,7 @@ var PointLightSystemToolBase = YYC.AClass({
 
                             var index1 = light1.index;
                             var index2 = light2.index;
-                            gameObjectTool.disposeComponent(obj1, light1);
+                            gameObjectSystemTool.disposeComponent(obj1, light1);
 
                             expect(pointLightTool[getMethodName](componentTool.createComponent(index1))).toEqual(2);
                             expect(testTool.getValues(pointLightTool[getMethodName](componentTool.createComponent(index2)))).toEqual(defaultValue);
@@ -62,11 +62,11 @@ var PointLightSystemToolBase = YYC.AClass({
 
                             it("remove from isPositionDirtys", function () {
                                 judgeIsDirty("isPositionDirtys", function(light1, obj1){
-                                    var transform = gameObjectTool.getComponent(obj1, ThreeDTransform),
+                                    var transform = gameObjectSystemTool.getComponent(obj1, ThreeDTransform),
                                         mat = Matrix4.create().setTranslate(1, 2, 3),
                                         position = mat.getTranslation();
 
-                                    threeDTransformTool.setPosition(transform, position);
+                                    threeDTransformSystemTool.setPosition(transform, position);
                                 });
                             });
                             it("remove from isColorDirtys", function () {

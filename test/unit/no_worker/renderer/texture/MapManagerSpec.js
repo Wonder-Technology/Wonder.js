@@ -16,7 +16,7 @@ describe("MapManager", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -26,7 +26,7 @@ describe("MapManager", function() {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        texture = textureTool.create();
+        texture = textureSystemTool.create();
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -44,7 +44,7 @@ describe("MapManager", function() {
             expect(MapManagerData.textureIndices[material.index]).toEqual(texture.index);
         });
         it("test add second map", function () {
-            var texture2 = textureTool.create();
+            var texture2 = textureSystemTool.create();
 
             basicMaterialTool.addMap(material, texture);
             basicMaterialTool.addMap(material, texture2);
@@ -56,12 +56,12 @@ describe("MapManager", function() {
             sandbox.stub(DataBufferConfig, "textureDataBufferCount", 100);
             var texture = null;
             for(var i = 0; i < 16; i++){
-                texture = textureTool.create();
+                texture = textureSystemTool.create();
 
                 basicMaterialTool.addMap(material, texture);
             }
 
-            var texture2 = textureTool.create();
+            var texture2 = textureSystemTool.create();
 
             expect(function () {
                 basicMaterialTool.addMap(material, texture2);
@@ -116,9 +116,9 @@ describe("MapManager", function() {
 
             beforeEach(function () {
                 mat2 = basicMaterialTool.create();
-                obj2 = gameObjectTool.create();
-                gameObjectTool.addComponent(obj2, mat2);
-                sceneTool.addGameObject(obj2);
+                obj2 = gameObjectSystemTool.create();
+                gameObjectSystemTool.addComponent(obj2, mat2);
+                sceneSystemTool.addGameObject(obj2);
             });
 
             describe("test remove from type array", function() {
@@ -127,7 +127,7 @@ describe("MapManager", function() {
 
                 describe("reset removed one's value", function() {
                     it("remove from textureCounts", function () {
-                        var texture2 = textureTool.create();
+                        var texture2 = textureSystemTool.create();
 
                         basicMaterialTool.addMap(material, texture);
                         basicMaterialTool.addMap(material, texture2);
@@ -137,7 +137,7 @@ describe("MapManager", function() {
                         var index1 = material.index;
                         var index2 = mat2.index;
 
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
                         expect(MapManagerData.textureCounts[index1]).toEqual(1);
                         expect(MapManagerData.textureCounts[index2]).toEqual(0);

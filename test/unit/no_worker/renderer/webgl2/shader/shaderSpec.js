@@ -17,7 +17,7 @@ describe("shader", function() {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
         material = data.material;
     });
@@ -54,7 +54,7 @@ describe("shader", function() {
         });
 
         it("only init the shader of the same shader name once", function () {
-            sceneTool.addGameObject(sceneTool.createGameObject(null, lightMaterialTool.create()));
+            sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, lightMaterialTool.create()));
 
             directorTool.init(state);
             directorTool.loopBody(state);

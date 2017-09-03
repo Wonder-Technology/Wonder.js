@@ -4,10 +4,6 @@ var tagTool = (function () {
         addTag : wd.addTag,
         removeTag : wd.removeTag,
         findGameObjectsByTag: wd.findGameObjectsByTag,
-        getGameObject:wd.getTagGameObject,
-
-        resetData: function(){
-            wd.initTagData(wd.TagData);
-        }
+        getGameObject:wd.getTagGameObject
     }
 })()

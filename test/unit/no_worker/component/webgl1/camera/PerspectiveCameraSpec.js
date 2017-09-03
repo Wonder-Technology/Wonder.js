@@ -13,9 +13,9 @@ describe("PerspectiveCamera", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         cameraGameObject = data.cameraGameObject;
-        cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+        cameraController = gameObjectSystemTool.getComponent(cameraGameObject, wd.CameraController);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -35,10 +35,10 @@ describe("PerspectiveCamera", function () {
                 far = 2000,
                 fovy = 65,
                 aspect = 0.8;
-            cameraControllerTool.setCameraNear(cameraController, near);
-            cameraControllerTool.setCameraFar(cameraController, far);
-            cameraControllerTool.setPerspectiveCameraFovy(cameraController, fovy);
-            cameraControllerTool.setPerspectiveCameraAspect(cameraController, aspect);
+            cameraControllerSystemTool.setCameraNear(cameraController, near);
+            cameraControllerSystemTool.setCameraFar(cameraController, far);
+            cameraControllerSystemTool.setPerspectiveCameraFovy(cameraController, fovy);
+            cameraControllerSystemTool.setPerspectiveCameraAspect(cameraController, aspect);
             var pos = 0;
             gl.getUniformLocation.withArgs(sinon.match.any, "u_pMatrix").returns(pos);
 

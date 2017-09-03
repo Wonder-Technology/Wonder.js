@@ -21,11 +21,11 @@ describe("Geometry", function () {
 
         geo = boxGeometryTool.create();
 
-        gameObject = gameObjectTool.create();
+        gameObject = gameObjectSystemTool.create();
 
-        gameObjectTool.addComponent(gameObject, geo);
+        gameObjectSystemTool.addComponent(gameObject, geo);
 
-        sceneTool.addGameObject(gameObject);
+        sceneSystemTool.addGameObject(gameObject);
 
 
         defaultVerticesData = [
@@ -62,28 +62,28 @@ describe("Geometry", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getVertices(geo)
+                geometrySystemTool.getVertices(geo)
             )).toEqual([-10, -20, 30, -10, 20, 30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, 20, 30, -10, 20, -30, 10, 20, 30, 10, 20, -30, 10, -20, 30, 10, -20, -30, -10, -20, 30, -10, -20, -30, 10, -20, 30, 10, 20, 30, 10, -20, -30, 10, 20, -30, -10, -20, -30, -10, 20, -30, -10, -20, 30, -10, 20, 30]);
         });
         it("save normals to map", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getNormals(geo)
+                geometrySystemTool.getNormals(geo)
             )).toEqual(defaultNormalsData);
         });
         it("save texCoords to map", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getTexCoords(geo)
+                geometrySystemTool.getTexCoords(geo)
             )).toEqual(defaultTexCoordsData);
         });
         it("save indices to map", function () {
             directorTool.init(sandbox);
 
             expect(testTool.getValues(
-                geometryTool.getIndices(geo)
+                geometrySystemTool.getIndices(geo)
             )).toEqual([
                 0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5, 8, 10, 9, 10, 11, 9, 12, 14, 13, 14, 15, 13, 16, 18, 17, 18, 19, 17, 20, 22, 21, 22, 23, 21
             ]);
@@ -103,7 +103,7 @@ describe("Geometry", function () {
         });
 
         it("return TRIANGLES", function () {
-            expect(geometryTool.getDrawMode(geo)).toEqual(EDrawMode.TRIANGLES);
+            expect(geometrySystemTool.getDrawMode(geo)).toEqual(EDrawMode.TRIANGLES);
         });
     });
 
@@ -114,9 +114,9 @@ describe("Geometry", function () {
     //     it("default is TRIANGLES", function () {
     //         var drawMode = EDrawMode.LINE_LOOP;
     //
-    //         geometryTool.setDrawMode(geo, drawMode);
+    //         geometrySystemTool.setDrawMode(geo, drawMode);
     //
-    //         expect(geometryTool.getDrawMode(geo)).toEqual(drawMode);
+    //         expect(geometrySystemTool.getDrawMode(geo)).toEqual(drawMode);
     //     });
     // });
 
@@ -126,30 +126,30 @@ describe("Geometry", function () {
         //
         //     beforeEach(function(){
         //         geo2 = boxGeometryTool.create();
-        //         var gameObject2 = gameObjectTool.create();
-        //         gameObjectTool.addComponent(gameObject2, geo2);
-        //         sceneTool.addGameObject(gameObject2);
+        //         var gameObject2 = gameObjectSystemTool.create();
+        //         gameObjectSystemTool.addComponent(gameObject2, geo2);
+        //         sceneSystemTool.addGameObject(gameObject2);
         //         directorTool.init(sandbox);
         //     });
         //
         //     it("remove vertices", function () {
-        //         gameObjectTool.disposeComponent(gameObject, geo);
+        //         gameObjectSystemTool.disposeComponent(gameObject, geo);
         //
-        //         // expect(geometryTool.getVertices(geo)).toBeUndefined();
-        //         expect(geometryTool.getVertices(geo2)).toBeExist();
+        //         // expect(geometrySystemTool.getVertices(geo)).toBeUndefined();
+        //         expect(geometrySystemTool.getVertices(geo2)).toBeExist();
         //     });
         //     it("remove indices", function () {
-        //         gameObjectTool.disposeComponent(gameObject, geo);
+        //         gameObjectSystemTool.disposeComponent(gameObject, geo);
         //
-        //         // expect(geometryTool.getIndices(geo)).toBeUndefined();
-        //         expect(geometryTool.getIndices(geo2)).toBeExist();
+        //         // expect(geometrySystemTool.getIndices(geo)).toBeUndefined();
+        //         expect(geometrySystemTool.getIndices(geo2)).toBeExist();
         //     });
         // });
 
         it("mark geometry removed", function () {
             directorTool.init(sandbox);
 
-            gameObjectTool.disposeComponent(gameObject, geo);
+            gameObjectSystemTool.disposeComponent(gameObject, geo);
 
             componentTool.judgeIsComponentIndexNotRemoved(geo, expect);
         });
@@ -158,31 +158,31 @@ describe("Geometry", function () {
             beforeEach(function () {
                 directorTool.init(sandbox);
 
-                gameObjectTool.disposeComponent(gameObject, geo);
+                gameObjectSystemTool.disposeComponent(gameObject, geo);
             });
 
             // it("remove config data", function () {
-            //     expect(geometryTool.getConfigData(geo)).toBeUndefined();
+            //     expect(geometrySystemTool.getConfigData(geo)).toBeUndefined();
             // });
             it("remove from gameObject", function () {
-                expect(gameObjectTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
-                // expect(geometryTool.getGameObject(geo)).toBeUndefined();
+                expect(gameObjectSystemTool.hasComponent(gameObject, wd.Geometry)).toBeFalsy();
+                // expect(geometrySystemTool.getGameObject(geo)).toBeUndefined();
             });
         });
 
         it("test gameObject add new geometry after dispose old one", function () {
             directorTool.init(sandbox);
 
-            gameObjectTool.disposeComponent(gameObject, geo);
+            gameObjectSystemTool.disposeComponent(gameObject, geo);
 
             var geo2 = boxGeometryTool.create();
 
-            gameObjectTool.addComponent(gameObject, geo2);
+            gameObjectSystemTool.addComponent(gameObject, geo2);
 
-            geometryTool.initGeometry(geo2);
+            geometrySystemTool.initGeometry(geo2);
 
-            // expect(testTool.getValues(geometryTool.getVertices(geo))).toBeUndefined();
-            expect(testTool.getValues(geometryTool.getVertices(geo2))).toEqual(defaultVerticesData);
+            // expect(testTool.getValues(geometrySystemTool.getVertices(geo))).toBeUndefined();
+            expect(testTool.getValues(geometrySystemTool.getVertices(geo2))).toEqual(defaultVerticesData);
         });
 
         it("if geometry is disposed, operate it should error", function () {
@@ -190,34 +190,34 @@ describe("Geometry", function () {
 
             var errMsg = "component should alive";
 
-            gameObjectTool.disposeComponent(gameObject, geo);
+            gameObjectSystemTool.disposeComponent(gameObject, geo);
 
             expect(function () {
-                geometryTool.getVertices(geo);
+                geometrySystemTool.getVertices(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getNormals(geo);
+                geometrySystemTool.getNormals(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getTexCoords(geo);
+                geometrySystemTool.getTexCoords(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getDrawMode(geo);
+                geometrySystemTool.getDrawMode(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getIndices(geo);
+                geometrySystemTool.getIndices(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getConfigData(geo);
+                geometrySystemTool.getConfigData(geo);
             }).toThrow(errMsg);
 
             expect(function () {
-                geometryTool.getGameObject(geo);
+                geometrySystemTool.getGameObject(geo);
             }).toThrow(errMsg);
         });
     });
@@ -227,12 +227,12 @@ describe("Geometry", function () {
         });
 
         it("compute data", function () {
-            geometryTool.initGeometry(geo);
+            geometrySystemTool.initGeometry(geo);
 
-            expect(testTool.getValues(geometryTool.getVertices(geo))).toEqual(defaultVerticesData);
-            expect(testTool.getValues(geometryTool.getNormals(geo))).toEqual(defaultNormalsData);
-            expect(testTool.getValues(geometryTool.getTexCoords(geo))).toEqual(defaultTexCoordsData);
-            expect(testTool.getValues(geometryTool.getIndices(geo))).toEqual(defaultIndicesData);
+            expect(testTool.getValues(geometrySystemTool.getVertices(geo))).toEqual(defaultVerticesData);
+            expect(testTool.getValues(geometrySystemTool.getNormals(geo))).toEqual(defaultNormalsData);
+            expect(testTool.getValues(geometrySystemTool.getTexCoords(geo))).toEqual(defaultTexCoordsData);
+            expect(testTool.getValues(geometrySystemTool.getIndices(geo))).toEqual(defaultIndicesData);
         });
     });
 
@@ -251,7 +251,7 @@ describe("Geometry", function () {
             };
             boxGeometryTool.setConfigData(geo, configData);
 
-            expect(geometryTool.getConfigData(geo)).toEqual(configData);
+            expect(geometrySystemTool.getConfigData(geo)).toEqual(configData);
         });
     });
 
@@ -259,16 +259,16 @@ describe("Geometry", function () {
         beforeEach(function(){
             testTool.openContractCheck();
 
-            gameObject = gameObjectTool.create();
+            gameObject = gameObjectSystemTool.create();
             geo = customGeometryTool.create();
-            gameObjectTool.addComponent(gameObject, geo);
+            gameObjectSystemTool.addComponent(gameObject, geo);
         });
 
         describe("data.length should not exceed DataBufferConfig->dataBufferCount", function() {
             function prepareNotExceed() {
                 sandbox.stub(DataBufferConfig, "geometryDataBufferCount", 3);
 
-                geometryTool.resetData();
+                geometrySystemTool.resetData();
 
                 return "should not exceed type arr's length";
             }
@@ -331,10 +331,10 @@ describe("Geometry", function () {
         it("when geometryDataBufferCount is just enough, set indices should not affect set vertices", function(){
             sandbox.stub(DataBufferConfig, "geometryDataBufferCount", 6);
 
-            geometryTool.resetData();
+            geometrySystemTool.resetData();
 
 
-            gameObject = gameObjectTool.create();
+            gameObject = gameObjectSystemTool.create();
             var geoVerticesData = [
                 -6, -6, 6, -6, 6, 6, 6, -6, 6,
                 5, -6, 6,
@@ -344,16 +344,16 @@ describe("Geometry", function () {
                 2,0,1, 3,2,1
             ]
             geo = customGeometryTool.create();
-            gameObjectTool.addComponent(gameObject, geo);
+            gameObjectSystemTool.addComponent(gameObject, geo);
 
             customGeometryTool.setVertices(geo, geoVerticesData)
             customGeometryTool.setIndices(geo, geoIndicesData)
 
             expect(testTool.getValues(
-                geometryTool.getVertices(geo)
+                geometrySystemTool.getVertices(geo)
             )).toEqual(geoVerticesData);
             expect(testTool.getValues(
-                geometryTool.getIndices(geo)
+                geometrySystemTool.getIndices(geo)
             )).toEqual(geoIndicesData);
         });
     });

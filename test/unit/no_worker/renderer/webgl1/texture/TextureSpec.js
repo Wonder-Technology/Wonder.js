@@ -21,7 +21,7 @@ describe("Texture", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -31,7 +31,7 @@ describe("Texture", function () {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        texture = textureTool.create();
+        texture = textureSystemTool.create();
 
         basicMaterialTool.addMap(material, texture);
     });
@@ -89,7 +89,7 @@ describe("Texture", function () {
             beforeEach(function () {
                 testTool.closeContractCheck();
 
-                texture2 = textureTool.create();
+                texture2 = textureSystemTool.create();
                 basicMaterialTool.addMap(material, texture2);
 
                 glUnit0 = "TEXTURE0";
@@ -147,7 +147,7 @@ describe("Texture", function () {
             gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D1").returns(pos2);
 
 
-            var texture2 = textureTool.create();
+            var texture2 = textureSystemTool.create();
 
             basicMaterialTool.addMap(material, texture2);
 

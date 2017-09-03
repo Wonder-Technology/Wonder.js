@@ -8,8 +8,6 @@ var textureTool = (function () {
         setWidth:wd.setTextureWidth,
         getHeight:wd.getTextureHeight,
         setHeight:wd.setTextureHeight,
-        getIsNeedUpdate:wd.getTextureIsNeedUpdate,
-        setIsNeedUpdate:wd.setTextureIsNeedUpdate
     }
 })()
 
