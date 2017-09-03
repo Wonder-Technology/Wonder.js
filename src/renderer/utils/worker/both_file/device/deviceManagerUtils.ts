@@ -182,6 +182,10 @@ export var setClearColor = (gl: WebGLRenderingContext, color: Color, DeviceManag
 
     gl.clearColor(color.r, color.g, color.b, color.a);
 
+    setClearColorData(color, DeviceManagerDataFromSystem);
+}
+
+export var setClearColorData = (color: Color, DeviceManagerDataFromSystem: any) => {
     DeviceManagerDataFromSystem.clearColor = color;
 }
 

@@ -7,7 +7,8 @@ import {
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils,
     setSide as setSideUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
-    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils
+    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils,
+    setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils, setClearColor as setClearColorUtils
 } from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
@@ -108,6 +109,17 @@ export var buildViewportData = (x: number, y: number, width: number, height: num
         height:height
     }
 }
+
+export var setClearColor = (gl: WebGLRenderingContext, colorArr4: Array<number>, DeviceManagerWorkerData: any) => {
+    var color = Color.create();
+
+    color.r = colorArr4[0];
+    color.g = colorArr4[1];
+    color.b = colorArr4[2];
+    color.a = colorArr4[3];
+
+    setClearColorUtils(gl, color, DeviceManagerWorkerData);
+};
 
 export var clear = clearUtils;
 

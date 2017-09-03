@@ -3,8 +3,11 @@ describe("deviceManager", function () {
     var worker;
 
     var RectRegion = wd.RectRegion;
+    var Color = wd.Color;
 
     var EWorkerOperateType = wd.EWorkerOperateType;
+
+    var DeviceManagerWorkerData = wdrd.DeviceManagerWorkerData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -84,6 +87,54 @@ describe("deviceManager", function () {
                     expect(data.width).toEqual(viewportData.width);
                     expect(data.height).toEqual(viewportData.height);
                 });
+            });
+        });
+    });
+
+    describe("set clear color", function () {
+        var color;
+
+        beforeEach(function(){
+            color = Color.create("#123456");
+
+            deviceManagerTool.setClearColor(color);
+        });
+
+        it("save clear color", function () {
+            expect(deviceManagerTool.getClearColor()).toEqual(color);
+        });
+        it("send clear color", function () {
+            worker = workerTool.getRenderWorker();
+            expect(worker.postMessage.getCall(2)).toCalledWith({
+                operateType: EWorkerOperateType.INIT_CLEARCOLOR,
+                clearColorArr4: color.toArray4()
+            })
+        });
+
+        describe("test in render worker", function () {
+            var gl;
+            var e;
+
+            beforeEach(function () {
+                gl = workerTool.createGL(sandbox);
+
+                e = {
+                    data: {
+                        operateType: wd.EWorkerOperateType.INIT_CLEARCOLOR,
+                        clearColorArr4: color.toArray4()
+                    }
+                }
+            });
+
+            it("set clear color of gl", function () {
+                workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(gl.clearColor).toCalledWith(color.r, color.g, color.b, 1);
+            });
+            it("save clear color to state in render worker", function () {
+                workerTool.execRenderWorkerMessageHandler(e);
+
+                expect(DeviceManagerWorkerData.clearColor.toArray4()).toEqual(color.toArray4());
             });
         });
     });

@@ -82,6 +82,10 @@ var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, s
 
 export var clear = clearUtils;
 
+export var getClearColor = (DeviceManagerData:any) => {
+    return DeviceManagerData.clearColor;
+}
+
 export var setClearColor = setClearColorUtils;
 
 export var setColorWrite = setColorWriteUtils;

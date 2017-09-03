@@ -33,7 +33,7 @@ import { BasicMaterialWorkerData } from "./material/BasicMaterialWorkerData";
 import { LightMaterialWorkerData } from "./material/LightMaterialWorkerData";
 import { initState } from "../../utils/worker/render_file/state/stateUtils";
 import {
-    getGL, initData as initDeviceManagerData, setSide,
+    getGL, initData as initDeviceManagerData, setClearColor, setSide,
     setViewportOfGL
 } from "../both_file/device/DeviceManagerWorkerSystem";
 import { AmbientLightWorkerData } from "./light/AmbientLightWorkerData";
@@ -159,6 +159,9 @@ export var onmessageHandler = (e) => {
             break;
         case EWorkerOperateType.INIT_VIEWPORT:
             setState(setViewportOfGL(DeviceManagerWorkerData, data.viewportData, getState(StateWorkerData)).run(), StateWorkerData);
+            break;
+        case EWorkerOperateType.INIT_CLEARCOLOR:
+            setClearColor(getGL(DeviceManagerWorkerData, getState(StateWorkerData)), data.clearColorArr4, DeviceManagerWorkerData);
             break;
         case EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE:
             if (isWebgl1(WebGLDetectWorkerData)) {

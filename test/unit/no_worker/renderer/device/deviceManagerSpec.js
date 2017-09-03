@@ -8,6 +8,8 @@ describe("deviceManager", function () {
     var gl;
     var state;
 
+    var Color = wd.Color;
+
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
@@ -53,6 +55,23 @@ describe("deviceManager", function () {
                     deviceManagerTool.getViewport()
                 )).toEqual([x, y, width, height]);
             });
+        });
+    });
+
+    describe("set clear color", function () {
+        var color;
+
+        beforeEach(function(){
+            color = Color.create("#123456");
+
+            deviceManagerTool.setClearColor(color);
+        });
+
+        it("save clear color", function () {
+            expect(deviceManagerTool.getClearColor()).toEqual(color);
+        });
+        it("set clear color of gl", function () {
+            expect(gl.clearColor).toCalledWith(color.r, color.g, color.b, 1);
         });
     });
 });
