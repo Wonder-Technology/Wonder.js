@@ -619,6 +619,24 @@ describe("GameObject", function() {
 
                 expect(gameObjectSystemTool.getParent(gameObject)).toEqual(parent2);
             });
+            it("gameObject should as parent's child after set", function () {
+                var parent = gameObjectSystemTool.create();
+                gameObjectSystemTool.setParent(parent, gameObject);
+
+                expect(gameObjectSystemTool.getChildren(parent)).toEqual([gameObject]);
+            });
+            it("if child already has parent, remove it from old parent", function(){
+                var parent = gameObjectSystemTool.create();
+                gameObjectSystemTool.setParent(parent, gameObject);
+
+                var parent2 = gameObjectSystemTool.create();
+                gameObjectSystemTool.setParent(parent2, gameObject);
+
+                expect(gameObjectSystemTool.has(parent, gameObject)).toBeFalsy();
+                expect(gameObjectSystemTool.getChildren(parent)).toEqual([]);
+                expect(gameObjectSystemTool.has(parent2, gameObject)).toBeTruthy();
+                expect(gameObjectSystemTool.getChildren(parent2)).toEqual([gameObject]);
+            });
         });
     });
 });

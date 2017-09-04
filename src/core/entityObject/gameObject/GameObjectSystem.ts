@@ -209,14 +209,23 @@ var _isGameObjectEqual = (gameObject1: GameObject, gameObject2: GameObject) => g
 
 export var getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
 
-export var setParent = (childUId: number, parent: GameObject, ThreeDTransformData:any, GameObjectData: any) => {
-    var transform = getTransform(parent.uid, GameObjectData);
+export var setParent = (child:GameObject, parent: GameObject, ThreeDTransformData:any, GameObjectData: any) => {
+    var parentUId:number = parent.uid,
+        childUId:number = child.uid,
+        transform = getTransform(parentUId, GameObjectData),
+        childOriginParent:GameObject = getParent(childUId, GameObjectData);
+
+    if (_isParentExist(childOriginParent)) {
+        removeChild(childOriginParent.uid, childUId, ThreeDTransformData, GameObjectData);
+    }
 
     _setParent(childUId, parent, GameObjectData);
 
     if (_isComponentExist(transform)) {
         setThreeDTransformParent(getTransform(childUId, GameObjectData), transform, ThreeDTransformData);
     }
+
+    _addChild(parentUId, child, GameObjectData);
 }
 
 var _setParent = (uid: number, parent: GameObject, GameObjectData: any) => {
@@ -251,27 +260,13 @@ var _addChild = (uid: number, child: GameObject, GameObjectData: any) => {
 
 export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
 }, (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
-    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+    setParent(child, gameObject, ThreeDTransformData, GameObjectData);
 })
 
 export var addRemovedChild = (gameObject: GameObject, child: GameObject, MeshRendererData: any, ThreeDTransformData: any, GameObjectData: any) => {
-    _addChildHelper(gameObject, child, ThreeDTransformData, GameObjectData);
+    setParent(child, gameObject, ThreeDTransformData, GameObjectData);
 
     addComponent(child, createMeshRenderer(MeshRendererData), GameObjectData);
-}
-
-var _addChildHelper = (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
-    var uid = gameObject.uid,
-        childUId = child.uid,
-        childOriginParent:GameObject = getParent(childUId, GameObjectData);
-
-    if (_isParentExist(childOriginParent)) {
-        removeChild(childOriginParent.uid, childUId, ThreeDTransformData, GameObjectData);
-    }
-
-    setParent(childUId, gameObject, ThreeDTransformData, GameObjectData);
-
-    _addChild(uid, child, GameObjectData);
 }
 
 export var removeChild = requireCheckFunc((parentUId:number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {

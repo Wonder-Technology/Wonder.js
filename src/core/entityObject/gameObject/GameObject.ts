@@ -117,5 +117,5 @@ export var getGameObjectParent = requireCheckFunc((gameObject: GameObject) => {
 export var setGameObjectParent = requireCheckFunc((parent: GameObject, child:GameObject) => {
     checkGameObjectShouldAlive(parent, GameObjectData);
 }, (parent: GameObject, child:GameObject) => {
-    return setParent(child.uid, parent, ThreeDTransformData, GameObjectData);
+    return setParent(child, parent, ThreeDTransformData, GameObjectData);
 })
