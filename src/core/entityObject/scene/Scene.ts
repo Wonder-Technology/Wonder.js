@@ -23,5 +23,5 @@ export var removeSceneChild = requireCheckFunc((scene: Scene, gameObject: GameOb
         expect(isAlive(scene, GameObjectData)).true;
     });
 }, (scene: Scene, gameObject: GameObject) => {
-    removeChild(scene, gameObject, ThreeDTransformData, GameObjectData);
+    removeChild(scene.uid, gameObject.uid, ThreeDTransformData, GameObjectData);
 })

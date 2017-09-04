@@ -80,7 +80,7 @@ export var createDefaultColor = () => {
 }
 
 export var getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, SpecifyLightData: any) => {
-    return getThreeDTransformPosition(getTransform(getGameObject(index, SpecifyLightData), GameObjectData), ThreeDTransformData);
+    return getThreeDTransformPosition(getTransform(getGameObject(index, SpecifyLightData).uid, GameObjectData), ThreeDTransformData);
 }
 
 export var getGameObject = (index: number, SpecifyLightData: any) => {

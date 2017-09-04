@@ -2,9 +2,6 @@ describe("GameObject", function() {
     var sandbox = null;
     var gameObject;
 
-    var GameObjectData = wd.GameObjectData;
-    var MaterialData = wd.MaterialData;
-
     function shouldAlive(gameObject, testFunc) {
         gameObjectSystemTool.dispose(gameObject);
 
@@ -581,6 +578,47 @@ describe("GameObject", function() {
             gameObjectSystemTool.add(gameObject, child);
 
             expect(gameObjectSystemTool.has(gameObject, child)).toBeTruthy();
+        });
+    });
+
+    describe("setParent", function() {
+        beforeEach(function(){
+        });
+
+        it("if gameObject not alive, return null", function() {
+            shouldAlive(gameObject, function (gameObject) {
+                var child = gameObjectSystemTool.create();
+
+                return gameObjectSystemTool.setParent(gameObject, child);
+            })
+        });
+        it("set transform's parent", function () {
+            var parent = gameObjectSystemTool.create();
+            gameObjectSystemTool.setParent(parent, gameObject);
+
+            var childTran = gameObjectSystemTool.getTransform(gameObject);
+            var parentTran = gameObjectSystemTool.getTransform(parent);
+
+            expect(threeDTransformSystemTool.getParent(childTran)).toEqual(parentTran);
+        });
+
+        describe("set gameObject's parent", function() {
+            it("test", function () {
+                var parent = gameObjectSystemTool.create();
+
+                gameObjectSystemTool.setParent(parent, gameObject);
+
+                expect(gameObjectSystemTool.getParent(gameObject)).toEqual(parent);
+            });
+            it("if child already has parent, be it's new parent", function(){
+                var parent = gameObjectSystemTool.create();
+                gameObjectSystemTool.setParent(parent, gameObject);
+
+                var parent2 = gameObjectSystemTool.create();
+                gameObjectSystemTool.setParent(parent2, gameObject);
+
+                expect(gameObjectSystemTool.getParent(gameObject)).toEqual(parent2);
+            });
         });
     });
 });

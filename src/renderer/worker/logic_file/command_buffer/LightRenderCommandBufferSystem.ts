@@ -15,7 +15,7 @@ import {
 export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObject should be light material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
-            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("LightMaterial")
+            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("LightMaterial")
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {

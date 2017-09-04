@@ -22,7 +22,7 @@ export var getWorldToCameraMatrix = (index: number, ThreeDTransformData: any, Ga
 }
 
 var _getCameraToWorldMatrix = (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
-    var transform = getTransform(getGameObject(index, CameraControllerData), GameObjectData);
+    var transform = getTransform(getGameObject(index, CameraControllerData).uid, GameObjectData);
 
     return getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
 }
@@ -34,12 +34,6 @@ export var getPMatrix = (index: number, CameraData: any) => {
 export var setPMatrix = (index: number, pMatrix: Matrix4, CameraData: any) => {
     CameraData.pMatrixMap[index] = pMatrix;
 }
-
-// export var setPMatrix = (index:number, pMatrix:Matrix4, CameraControllerData:any, CameraData:any) => {
-//     CameraData.pMatrixMap[index] = pMatrix;
-//
-//     addToDirtyList(index, CameraControllerData);
-// }
 
 export var getNear = (index: number, CameraData: any) => {
     return CameraData.nearMap[index];

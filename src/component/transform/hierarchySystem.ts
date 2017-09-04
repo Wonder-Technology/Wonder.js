@@ -11,7 +11,6 @@ export var getParent = requireCheckFunc((uid: string, ThreeDTransformData: any) 
         expect(uid).exist;
     });
 }, (uid: string, ThreeDTransformData: any) => {
-    // return ThreeDTransformData.parentMap.get(uid);
     return ThreeDTransformData.parentMap[uid];
 })
 

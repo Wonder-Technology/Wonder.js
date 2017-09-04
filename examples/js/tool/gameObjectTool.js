@@ -6,6 +6,7 @@ var gameObjectTool = (function () {
         getTransform : wd.getGameObjectTransform,
         getChildren : wd.getGameObjectChildren,
         getParent: wd.getGameObjectParent,
+        setParent: wd.setGameObjectParent,
         isAlive : wd.isGameObjectAlive,
         dispose: wd.disposeGameObject,
         // disposeBatchChildren: wd.disposeBatchGameObjectChildren,

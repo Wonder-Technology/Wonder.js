@@ -25,7 +25,7 @@ import { GameObject } from "../../../../../core/entityObject/gameObject/GameObje
 export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     it("renderGameObject should be light material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
-            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("LightMaterial")
+            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("LightMaterial")
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
@@ -38,10 +38,10 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         normalMatrices = RenderCommandBufferData.normalMatrices,
         materialIndices = RenderCommandBufferData.materialIndices,
         geometryIndices = RenderCommandBufferData.geometryIndices,
-        currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData),
+        currentCameraUId = getCurrentCamera(SceneData).uid,
+        currentCameraComponent = getComponent(currentCameraUId, getComponentIdFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
-        currentCameraTransform = getTransform(currentCamera, GameObjectData),
+        currentCameraTransform = getTransform(currentCameraUId, GameObjectData),
         mat4Length = getMatrix4DataSize();
 
     setMatrices(vMatrices, getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData), 0);
@@ -52,9 +52,10 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     for (let i = 0; i < count; i++) {
         let matIndex = mat4Length * i,
             gameObject = renderGameObjectArray[i],
-            geometry = getGeometry(gameObject, GameObjectData),
-            material = getMaterial(gameObject, GameObjectData),
-            transform = getTransform(gameObject, GameObjectData),
+            uid = gameObject.uid,
+            geometry = getGeometry(uid, GameObjectData),
+            material = getMaterial(uid, GameObjectData),
+            transform = getTransform(uid, GameObjectData),
             materialIndex = material.index;
 
         setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);

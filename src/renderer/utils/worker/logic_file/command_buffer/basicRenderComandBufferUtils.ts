@@ -15,7 +15,7 @@ import { GameObject } from "../../../../../core/entityObject/gameObject/GameObje
 export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     it("renderGameObject should be basic material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
-            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("BasicMaterial")
+            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("BasicMaterial")
         }
     })
 }, (state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
@@ -29,9 +29,10 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     for (let i = 0; i < count; i++) {
         let matIndex = mat4Length * i,
             gameObject = renderGameObjectArray[i],
-            geometry = getGeometry(gameObject, GameObjectData),
-            material = getMaterial(gameObject, GameObjectData),
-            transform = getTransform(gameObject, GameObjectData),
+            uid =  gameObject.uid,
+            geometry = getGeometry(uid, GameObjectData),
+            material = getMaterial(uid, GameObjectData),
+            transform = getTransform(uid, GameObjectData),
             materialIndex = material.index;
 
         setMatrices(mMatrices, getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);

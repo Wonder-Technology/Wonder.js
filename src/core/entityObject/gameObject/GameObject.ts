@@ -5,7 +5,7 @@ import {
     getTransform,
     hasChild,
     hasComponent, initGameObject as initGameObjectSystem,
-    isAlive, removeChild
+    isAlive, removeChild, setParent
 } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
 import { Component } from "../../../component/Component";
@@ -55,17 +55,17 @@ export var initGameObject = requireCheckFunc((gameObject: GameObject) => {
 export var disposeGameObjectComponent = requireCheckFunc((gameObject: GameObject, component: Component) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, component: Component) => {
-    disposeComponent(gameObject, component, GameObjectData);
+    disposeComponent(gameObject.uid, component, GameObjectData);
 })
 
 export var getGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, _class: any) => {
-    return getComponent(gameObject, getComponentIdFromClass(_class), GameObjectData);
+    return getComponent(gameObject.uid, getComponentIdFromClass(_class), GameObjectData);
 })
 
 export var getGameObjectTransform = (gameObject: GameObject) => {
-    return getTransform(gameObject, GameObjectData);
+    return getTransform(gameObject.uid, GameObjectData);
 }
 
 export var hasGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {
@@ -93,7 +93,7 @@ export var addRemovedGameObject = requireCheckFunc((gameObject: GameObject, chil
 export var removeGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject, child: GameObject) => {
-    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+    removeChild(gameObject.uid, child.uid, ThreeDTransformData, GameObjectData);
 })
 
 export var hasGameObject = requireCheckFunc((gameObject: GameObject, child: GameObject) => {
@@ -108,9 +108,14 @@ export var getGameObjectChildren = requireCheckFunc((gameObject: GameObject) => 
     return getAliveChildren(gameObject.uid, GameObjectData);
 })
 
-
 export var getGameObjectParent = requireCheckFunc((gameObject: GameObject) => {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject) => {
     return getParent(gameObject.uid, GameObjectData);
+})
+
+export var setGameObjectParent = requireCheckFunc((parent: GameObject, child:GameObject) => {
+    checkGameObjectShouldAlive(parent, GameObjectData);
+}, (parent: GameObject, child:GameObject) => {
+    return setParent(child.uid, parent, ThreeDTransformData, GameObjectData);
 })
