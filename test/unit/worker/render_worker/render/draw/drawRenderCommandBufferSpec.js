@@ -42,7 +42,6 @@ describe("draw render command buffer", function () {
         it("commit gl", function () {
             workerTool.execRenderWorkerMessageHandler(e);
 
-
             expect(gl.commit).toCalledOnce();
         });
         it("send DRAW_COMPLEMENT message", function () {
