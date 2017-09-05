@@ -456,6 +456,30 @@ describe("ThreeDTransform", function () {
                     expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
                     expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
                 });
+                it("test set parent,child local position before setParent", function(){
+                    var pos1 = Vector3.create(0,0,0);
+                    var pos2 = Vector3.create(2,0,0);
+
+
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos1)
+
+                    threeDTransformSystemTool.setLocalPosition(tra2, pos2)
+
+
+                    updateSystem(null, null);
+
+
+                    threeDTransformSystemTool.setParent(tra2, tra1);
+
+
+
+                    updateSystem(null, null);
+
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(Vector3.create(0,0,0));
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(Vector3.create(2,0,0));
+
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(Vector3.create(2,0,0));
+                });
             });
         });
 

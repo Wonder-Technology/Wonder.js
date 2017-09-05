@@ -133,10 +133,10 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
         children = getChildren(uid, ThreeDTransformData);
 
     if (isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
+        setIsTranslate(uid, true, ThreeDTransformData);
+
         addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
-
-    setIsTranslate(uid, true, ThreeDTransformData);
 
     if (isChildrenExist(children)) {
         forEach(children, (child: ThreeDTransform) => {
