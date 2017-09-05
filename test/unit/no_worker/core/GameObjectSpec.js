@@ -653,57 +653,6 @@ describe("GameObject", function() {
                 updateSystem = directorTool.updateSystem;
             });
 
-            // it("test set child's position", function(){
-            //     // gameObjectSystemTool.setParent(parent, child2);
-            //
-            //
-            //
-            //     parent = gameObjectSystemTool.create();
-            //
-            //
-            //     sceneSystemTool.addGameObject(parent);
-            //
-            //
-            //
-            //
-            //     var child2 = gameObjectSystemTool.create();
-            //
-            //     var childTran = gameObjectSystemTool.getTransform(gameObject);
-            //     var child2Tran = gameObjectSystemTool.getTransform(child2);
-            //     var pos = Vector3.create(1,2,3);
-            //     var pos2 = Vector3.create(3,2,3);
-            //
-            //
-            //
-            //     // var parentTran = gameObjectSystemTool.getTransform(parent);
-            //     // threeDTransformSystemTool.setPosition(parentTran, pos);
-            //
-            //
-            //     threeDTransformSystemTool.setPosition(childTran, pos);
-            //     threeDTransformSystemTool.setPosition(child2Tran, pos2);
-            //
-            //
-            //
-            //     // gameObjectSystemTool.setParent(parent, gameObject);
-            //     // gameObjectSystemTool.add(parent, gameObject);
-            //     sceneSystemTool.addGameObject(gameObject);
-            //     sceneSystemTool.addGameObject(child2);
-            //
-            //
-            //
-            //
-            //     // var parent2 = gameObjectSystemTool.create();
-            //     gameObjectSystemTool.setParent(parent, gameObject);
-            //     gameObjectSystemTool.setParent(parent, child2);
-            //
-            //
-            //
-            //
-            //     updateSystem(null, null);
-            //
-            //     expect(threeDTransformSystemTool.getPosition(childTran)).toEqual(pos);
-            //     expect(threeDTransformSystemTool.getPosition(child2Tran)).toEqual(pos2);
-            // });
             it("if child already has parent, not dispose child's MeshRenderer component", function () {
                 var meshRenderer = meshRendererSystemTool.create();
 

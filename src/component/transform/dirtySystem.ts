@@ -8,6 +8,7 @@ import { moveToIndex, swap } from "./operateDataSystem";
 import { forEach } from "../../utils/arrayUtils";
 import { LinkList, LinkNode } from "./LinkList";
 import { isNotAlive } from "./ThreeDTransformSystem";
+import { setIsTranslate } from "./isTransformSystem";
 
 export var addFirstDirtyIndex = ensureFunc((firstDirtyIndex: number, ThreeDTransformData: any) => {
     it("firstDirtyIndex should <= maxCount", () => {
@@ -134,6 +135,8 @@ export var addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, uid
     if (isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
         addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
+
+    setIsTranslate(uid, true, ThreeDTransformData);
 
     if (isChildrenExist(children)) {
         forEach(children, (child: ThreeDTransform) => {

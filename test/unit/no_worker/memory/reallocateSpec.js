@@ -447,8 +447,8 @@ describe("reallocate memory", function() {
 
 
                     var isTranslateMap = {};
-                    isTranslateMap[gameObjectTra.uid] = undefined;
-                    isTranslateMap[parentTra.uid] = undefined;
+                    isTranslateMap[gameObjectTra.uid] = true;
+                    isTranslateMap[parentTra.uid] = true;
                     judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
                     var gameObjectMap = {};
@@ -493,7 +493,7 @@ describe("reallocate memory", function() {
 
 
                     var isTranslateMap = {};
-                    isTranslateMap[parentTra.uid] = undefined;
+                    isTranslateMap[parentTra.uid] = true;
                     judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
 

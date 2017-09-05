@@ -26,7 +26,6 @@ import {
     setLocalPositionData, setPositionData, setTransformDataInTypeArr,
     swap
 } from "./operateDataSystem";
-import { setIsTranslate } from "./isTransformSystem";
 import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
 import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
@@ -163,93 +162,91 @@ export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) =>
 
 export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(transform, parent, ThreeDTransformData);
 
-export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
-    return isValidMapValue(getLocalToWorldMatrixCache(transform.uid, ThreeTransformData));
-}, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
-    return getLocalToWorldMatrixCache(transform.uid, ThreeTransformData);
-}, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any, returnedMat: Matrix4) => {
-    setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
-}, (transform: IThreeDTransform, mat: Matrix4, ThreeTransformData: any) => {
+export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheFunc((transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
+    return isValidMapValue(getLocalToWorldMatrixCache(transform.uid, ThreeDTransformData));
+}, (transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
+    return getLocalToWorldMatrixCache(transform.uid, ThreeDTransformData);
+}, (transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any, returnedMat: Matrix4) => {
+    setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeDTransformData);
+}, (transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
     return createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, getMatrix4DataIndexInArrayBuffer(transform.index));
 }))
 
-export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-    return isValidMapValue(getPositionCache(transform.uid, ThreeTransformData));
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    return getPositionCache(transform.uid, ThreeTransformData);
-}, (transform: ThreeDTransform, ThreeTransformData: any, position: Vector3) => {
-    setPositionCache(transform.uid, position, ThreeTransformData);
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
+export var getPosition = requireCheckFunc((transform: ThreeDTransform, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheFunc((transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return isValidMapValue(getPositionCache(transform.uid, ThreeDTransformData));
+}, (transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return getPositionCache(transform.uid, ThreeDTransformData);
+}, (transform: ThreeDTransform, ThreeDTransformData: any, position: Vector3) => {
+    setPositionCache(transform.uid, position, ThreeDTransformData);
+}, (transform: ThreeDTransform, ThreeDTransformData: any) => {
     var index = getMatrix4DataIndexInArrayBuffer(transform.index),
-        localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
+        localToWorldMatrices = ThreeDTransformData.localToWorldMatrices;
 
     return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
 }))
 
-export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
-    return isValidMapValue(getNormalMatrixCache(transform.uid, ThreeTransformData));
-}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any) => {
-    return getNormalMatrixCache(transform.uid, ThreeTransformData);
-}, (transform: ThreeDTransform, GlobalTempData: any, ThreeTransformData: any, mat: Matrix3) => {
-    setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
+export var getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheFunc((transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
+    return isValidMapValue(getNormalMatrixCache(transform.uid, ThreeDTransformData));
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
+    return getNormalMatrixCache(transform.uid, ThreeDTransformData);
+}, (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any, mat: Matrix3) => {
+    setNormalMatrixCache(transform.uid, mat, ThreeDTransformData);
 }, (transform: ThreeDTransform, GlobalTempData: any, ThreeDTransformData: any) => {
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
 var _setTransformMap = (index: number, transform: ThreeDTransform, ThreeDTransformData: any) => ThreeDTransformData.transformMap[index] = transform;
 
-export var setPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeTransformData: any) => {
+export var setPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     var index = transform.index,
         uid = transform.uid,
         parent = getThreeDTransformDataParent(uid, ThreeDTransformData),
         vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(index);
 
-    setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
+    setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
 
-    setIsTranslate(uid, true, ThreeTransformData);
-    _triggerChangePositionEvent(uid, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeDTransformData);
 
-    return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
+    return addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })
 
-export var setBatchDatas = (batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeTransformData: any) => setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData);
+export var setBatchDatas = (batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData);
 
-export var getLocalPosition = requireCheckFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheFunc((transform: ThreeDTransform, ThreeTransformData: any) => {
-    return isValidMapValue(getLocalPositionCache(transform.uid, ThreeTransformData));
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
-    return getLocalPositionCache(transform.uid, ThreeTransformData);
-}, (transform: ThreeDTransform, ThreeTransformData: any, position: Vector3) => {
-    setLocalPositionCache(transform.uid, position, ThreeTransformData);
-}, (transform: ThreeDTransform, ThreeTransformData: any) => {
+export var getLocalPosition = requireCheckFunc((transform: ThreeDTransform, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheFunc((transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return isValidMapValue(getLocalPositionCache(transform.uid, ThreeDTransformData));
+}, (transform: ThreeDTransform, ThreeDTransformData: any) => {
+    return getLocalPositionCache(transform.uid, ThreeDTransformData);
+}, (transform: ThreeDTransform, ThreeDTransformData: any, position: Vector3) => {
+    setLocalPositionCache(transform.uid, position, ThreeDTransformData);
+}, (transform: ThreeDTransform, ThreeDTransformData: any) => {
     return createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, getVector3DataIndexInArrayBuffer(transform.index));
 }))
 
-export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
-    checkTransformShouldAlive(transform, ThreeTransformData);
-}, (transform: ThreeDTransform, position: Vector3, ThreeTransformData: any) => {
+export var setLocalPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, ThreeDTransformData: any) => {
+    checkTransformShouldAlive(transform, ThreeDTransformData);
+}, (transform: ThreeDTransform, position: Vector3, ThreeDTransformData: any) => {
     var index = transform.index,
         uid = transform.uid,
         vec3IndexInArrayBuffer = getVector3DataIndexInArrayBuffer(index);
 
-    setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
+    setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeDTransformData);
 
-    setIsTranslate(uid, true, ThreeTransformData);
-    _triggerChangePositionEvent(uid, ThreeTransformData);
+    _triggerChangePositionEvent(uid, ThreeDTransformData);
 
-    return addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
+    return addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })
 
-var _triggerChangePositionEvent = (uid: number, ThreeTransformData: any) => {
+var _triggerChangePositionEvent = (uid: number, ThreeDTransformData: any) => {
     triggerEvent("changePosition");
 }
 
