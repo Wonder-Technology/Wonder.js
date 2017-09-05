@@ -14,15 +14,15 @@ export var getParent = requireCheckFunc((uid: string, ThreeDTransformData: any) 
     return ThreeDTransformData.parentMap[uid];
 })
 
-export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+export var setParent = requireCheckFunc((parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => {
     it("parent should not be self", () => {
         if (parent !== null) {
-            expect(_isTransformEqual(transform, parent)).false;
+            expect(_isTransformEqual(child, parent)).false;
         }
     });
-}, (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
-    var index = transform.index,
-        uid = transform.uid,
+}, (parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => {
+    var index = child.index,
+        uid = child.uid,
         parentIndexInArrayBuffer: number = null,
         currentParent: ThreeDTransform = getParent(uid, ThreeDTransformData),
         isCurrentParentExisit = isParentExist(currentParent);
@@ -47,7 +47,7 @@ export var setParent = requireCheckFunc((transform: ThreeDTransform, parent: Thr
         _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
     }
 
-    _addToParent(uid, transform, parent, ThreeDTransformData);
+    _addToParent(uid, child, parent, ThreeDTransformData);
 
     addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })

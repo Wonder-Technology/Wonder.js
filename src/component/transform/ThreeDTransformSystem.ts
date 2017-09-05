@@ -160,7 +160,7 @@ export var getParent = (transform: ThreeDTransform, ThreeDTransformData: any) =>
     return null;
 }
 
-export var setParent = (transform: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(transform, parent, ThreeDTransformData);
+export var setParent = (parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(parent, child, ThreeDTransformData);
 
 export var getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeDTransformData);

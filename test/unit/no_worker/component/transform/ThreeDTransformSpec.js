@@ -189,7 +189,7 @@ describe("ThreeDTransform", function () {
             });
             it("test parent and children cache", function () {
                 // sandbox.spy(wd, "createVector3ByIndex");
-                threeDTransformSystemTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(0,0,1));
                 threeDTransformSystemTool.setLocalPosition(tra2, Vector3.create(4,0,1));
@@ -303,7 +303,7 @@ describe("ThreeDTransform", function () {
                 });
                 it("test clear parent and children cache", function () {
                     // sandbox.spy(wd, "createVector3ByIndex");
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(0, 0, 1));
                     threeDTransformSystemTool.setLocalPosition(tra2, Vector3.create(4, 0, 1));
@@ -349,7 +349,7 @@ describe("ThreeDTransform", function () {
                 it("test one(parent)-one(child)", function () {
                     var pos = Vector3.create(1,1,1);
                     threeDTransformSystemTool.setPosition(tra2, pos)
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
@@ -361,12 +361,12 @@ describe("ThreeDTransform", function () {
                 it("test one(parent)-two(child)", function () {
                     var pos = Vector3.create(10,10,10);
                     threeDTransformSystemTool.setPosition(tra2, pos)
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     var pos2 = Vector3.create(2,2,2);
                     threeDTransformSystemTool.setPosition(tra3, pos2)
 
-                    threeDTransformSystemTool.setParent(tra3, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra3)
 
 
                     updateSystem(null, null);
@@ -385,11 +385,11 @@ describe("ThreeDTransform", function () {
                 it("test one(parent)-one(child)", function () {
                     var pos = Vector3.create(1,1,1);
                     threeDTransformSystemTool.setPosition(tra2, pos)
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
-                    threeDTransformSystemTool.setParent(tra1, null)
+                    threeDTransformSystemTool.setParent(null, tra1)
 
                     updateSystem(null, null);
 
@@ -401,16 +401,16 @@ describe("ThreeDTransform", function () {
                 it("test one(parent)-two(child)", function () {
                     var pos = Vector3.create(1,1,1);
                     threeDTransformSystemTool.setPosition(tra2, pos)
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     var pos2 = Vector3.create(2,2,2);
                     threeDTransformSystemTool.setPosition(tra3, pos2)
 
-                    threeDTransformSystemTool.setParent(tra3, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra3)
 
                     updateSystem(null, null);
 
-                    threeDTransformSystemTool.setParent(tra1, null)
+                    threeDTransformSystemTool.setParent(null, tra1)
 
                     updateSystem(null, null);
 
@@ -427,11 +427,11 @@ describe("ThreeDTransform", function () {
             it("if set the same parent, do nothing", function () {
                 var pos = Vector3.create(1,1,1);
                 threeDTransformSystemTool.setPosition(tra2, pos)
-                threeDTransformSystemTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 updateSystem(null, null);
 
-                threeDTransformSystemTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 updateSystem(null, null);
 
@@ -449,7 +449,7 @@ describe("ThreeDTransform", function () {
                     var pos = Vector3.create(1,1,1);
 
                     threeDTransformSystemTool.setPosition(tra2, pos)
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
@@ -699,7 +699,7 @@ describe("ThreeDTransform", function () {
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformSystemTool.setParent(tra1, null);
+                    threeDTransformSystemTool.setParent(null, tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
@@ -714,7 +714,7 @@ describe("ThreeDTransform", function () {
 
                 it("dirtySystem->addItAndItsChildrenToDirtyList should not add disposed child to dirty list", function () {
                     var pos2 = Vector3.create(1,1,2);
-                    threeDTransformSystemTool.setParent(tra1, tra2);
+                    threeDTransformSystemTool.setParent(tra2, tra1);
 
                     threeDTransformSystemTool.setPosition(tra1, Vector3.create(0,2,3));
 
@@ -735,7 +735,7 @@ describe("ThreeDTransform", function () {
                     var pos2 = Vector3.create(10,2,3);
                     var pos3 = Vector3.create(5,5,1);
 
-                    threeDTransformSystemTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
 
 
@@ -743,7 +743,7 @@ describe("ThreeDTransform", function () {
                     var tra4 = gameObjectSystemTool.getTransform(obj4);
                     tra4.name = "tra4";
 
-                    threeDTransformSystemTool.setParent(tra4, tra1)
+                    threeDTransformSystemTool.setParent(tra1, tra4)
 
 
 
@@ -783,7 +783,7 @@ describe("ThreeDTransform", function () {
                 var pos = Vector3.create(1,2,3);
                 var pos2 = Vector3.create(10,2,3);
 
-                threeDTransformSystemTool.setParent(tra2, tra1)
+                threeDTransformSystemTool.setParent(tra1, tra2)
 
                 threeDTransformSystemTool.setPosition(tra1, pos.clone())
                 threeDTransformSystemTool.setPosition(tra2, pos2.clone())
@@ -837,7 +837,7 @@ describe("ThreeDTransform", function () {
                 var pos2 = Vector3.create(10,2,3);
                 var pos3 = Vector3.create(5,5,1);
 
-                threeDTransformSystemTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 batchTransformDatas.push({
         transform:tra1,
@@ -924,19 +924,18 @@ describe("ThreeDTransform", function () {
             });
         });
 
-        //todo
-        function getPositionFromMatrix(mat) {
-            return mat.getTranslation();
-        }
-
         describe("should clean children's cache", function() {
+            function getPositionFromMatrix(mat) {
+                return mat.getTranslation();
+            }
+
             function judge(setParentPositionFunc) {
                 var tra1 = threeDTransformSystemTool.create();
                 var tra2 = threeDTransformSystemTool.create();
                 var tra3 = threeDTransformSystemTool.create();
 
-                threeDTransformSystemTool.setParent(tra1, tra3);
-                threeDTransformSystemTool.setParent(tra2, tra3);
+                threeDTransformSystemTool.setParent(tra3, tra1);
+                threeDTransformSystemTool.setParent(tra3, tra2);
 
 
                 var pos1 = Vector3.create(1,2,3);

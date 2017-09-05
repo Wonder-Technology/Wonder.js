@@ -79,10 +79,10 @@ export var getThreeDTransformParent = requireCheckFunc((component: ThreeDTransfo
     return getParent(component, ThreeDTransformData);
 })
 
-export var setThreeDTransformParent = requireCheckFunc((component: ThreeDTransform, parent: ThreeDTransform) => {
-    checkShouldAlive(component, ThreeDTransformData);
-}, (component: ThreeDTransform, parent: ThreeDTransform) => {
-    setParent(component, parent, ThreeDTransformData);
+export var setThreeDTransformParent = requireCheckFunc((parent: ThreeDTransform, child:ThreeDTransform) => {
+    checkShouldAlive(child, ThreeDTransformData);
+}, (parent: ThreeDTransform, child:ThreeDTransform) => {
+    setParent(parent, child, ThreeDTransformData);
 })
 
 export var getThreeDTransformGameObject = requireCheckFunc((component: ThreeDTransform) => {

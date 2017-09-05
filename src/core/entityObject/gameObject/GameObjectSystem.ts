@@ -209,7 +209,7 @@ var _isGameObjectEqual = (gameObject1: GameObject, gameObject2: GameObject) => g
 
 export var getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
 
-export var setParent = (child: GameObject, parent: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
+export var setParent = (parent: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
     var parentUId: number = parent.uid,
         childUId: number = child.uid,
         transform = getTransform(parentUId, GameObjectData),
@@ -222,7 +222,7 @@ export var setParent = (child: GameObject, parent: GameObject, ThreeDTransformDa
     _setParent(childUId, parent, GameObjectData);
 
     if (_isComponentExist(transform)) {
-        setThreeDTransformParent(getTransform(childUId, GameObjectData), transform, ThreeDTransformData);
+        setThreeDTransformParent(transform, getTransform(childUId, GameObjectData), ThreeDTransformData);
     }
 
     _addChild(parentUId, child, GameObjectData);
@@ -260,11 +260,11 @@ var _addChild = (uid: number, child: GameObject, GameObjectData: any) => {
 
 export var addChild = requireCheckFunc((gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
 }, (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
-    setParent(child, gameObject, ThreeDTransformData, GameObjectData);
+    setParent(gameObject, child, ThreeDTransformData, GameObjectData);
 })
 
 export var addRemovedChild = (gameObject: GameObject, child: GameObject, MeshRendererData: any, ThreeDTransformData: any, GameObjectData: any) => {
-    setParent(child, gameObject, ThreeDTransformData, GameObjectData);
+    setParent(gameObject, child, ThreeDTransformData, GameObjectData);
 
     addComponent(child, createMeshRenderer(MeshRendererData), GameObjectData);
 }
@@ -290,7 +290,7 @@ var _removeChildWithoutDisposeMeshRenderer = requireCheckFunc((parentUId: number
 }, (parentUId: number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
     deleteVal(childUId, GameObjectData.parentMap);
 
-    setThreeDTransformParent(getTransform(childUId, GameObjectData), null, ThreeDTransformData);
+    setThreeDTransformParent(null, getTransform(childUId, GameObjectData), ThreeDTransformData);
 
     _removeFromChildrenMap(parentUId, childUId, GameObjectData);
 })
