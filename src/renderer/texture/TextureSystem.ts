@@ -27,7 +27,7 @@ import { ImageSrcIndexData } from "../type/messageDataType";
 
 export var create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
-        expect(component.index).lt(getBufferCount());
+        expect(component.index).lte(getBufferCount());
     });
 }, (TextureData: any) => {
     var texture = new Texture(),
