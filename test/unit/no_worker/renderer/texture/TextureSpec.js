@@ -46,7 +46,7 @@ describe("Texture", function () {
         });
 
         it("should not exceed buffer count", function () {
-            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 2);
+            sandbox.stub(DataBufferConfig, "textureDataBufferCount", 1);
 
             textureSystemTool.create();
 

@@ -27,7 +27,7 @@ import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
-        expect(component.index).lt(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
+        expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
     });
 }, (ShaderData: any, MaterialData: any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),

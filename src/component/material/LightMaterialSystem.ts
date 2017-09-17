@@ -41,7 +41,7 @@ import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/
 
 export var create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
-        expect(component.index).lt(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
+        expect(component.index).lte(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
     });
 }, (ShaderData: any, MaterialData: any, LightMaterialData: any) => {
     var material = new LightMaterial(),
