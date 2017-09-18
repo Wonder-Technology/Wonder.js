@@ -17,58 +17,58 @@ import {
 import { getState } from "../core/DirectorSystem";
 import { DirectorData } from "../core/DirectorData";
 
-export var getCanvas = () => {
+export const getCanvas = () => {
     return getCanvasSystem(getState(DirectorData));
 }
 
-export var setCanvas = (canvas: HTMLCanvasElement) => {
+export const setCanvas = (canvas: HTMLCanvasElement) => {
     setCanvasSystem(canvas, getState(DirectorData));
 }
 
-export var getCanvasLeft = (canvas: HTMLCanvasElement) => {
+export const getCanvasLeft = (canvas: HTMLCanvasElement) => {
     return getX(canvas);
 }
 
-export var setCanvasLeft = (canvas: HTMLCanvasElement, x: number) => {
+export const setCanvasLeft = (canvas: HTMLCanvasElement, x: number) => {
     setX(x, canvas).run();
 }
 
-export var getCanvasTop = (canvas: HTMLCanvasElement) => {
+export const getCanvasTop = (canvas: HTMLCanvasElement) => {
     return getY(canvas);
 }
 
-export var setCanvasTop = (canvas: HTMLCanvasElement, y: number) => {
+export const setCanvasTop = (canvas: HTMLCanvasElement, y: number) => {
     setY(y, canvas).run();
 }
 
-export var getCanvasWidth = (canvas: HTMLCanvasElement) => {
+export const getCanvasWidth = (canvas: HTMLCanvasElement) => {
     return getWidth(canvas);
 }
 
-export var setCanvasWidth = (canvas: HTMLCanvasElement, width: number) => {
+export const setCanvasWidth = (canvas: HTMLCanvasElement, width: number) => {
     setWidth(width, canvas).run();
 }
 
-export var getCanvasHeight = (canvas: HTMLCanvasElement) => {
+export const getCanvasHeight = (canvas: HTMLCanvasElement) => {
     return getHeight(canvas);
 }
 
-export var setCanvasHeight = (canvas: HTMLCanvasElement, height: number) => {
+export const setCanvasHeight = (canvas: HTMLCanvasElement, height: number) => {
     setHeight(height, canvas).run();
 }
 
-export var getCanvasStyleWidth = (canvas: HTMLCanvasElement) => {
+export const getCanvasStyleWidth = (canvas: HTMLCanvasElement) => {
     return getStyleWidth(canvas);
 }
 
-export var setCanvasStyleWidth = (canvas: HTMLCanvasElement, width: number) => {
+export const setCanvasStyleWidth = (canvas: HTMLCanvasElement, width: number) => {
     setStyleWidth(width, canvas).run();
 }
 
-export var getCanvasStyleHeight = (canvas: HTMLCanvasElement) => {
+export const getCanvasStyleHeight = (canvas: HTMLCanvasElement) => {
     return getStyleHeight(canvas);
 }
 
-export var setCanvasStyleHeight = (canvas: HTMLCanvasElement, height: number) => {
+export const setCanvasStyleHeight = (canvas: HTMLCanvasElement, height: number) => {
     setStyleHeight(height, canvas).run();
 }

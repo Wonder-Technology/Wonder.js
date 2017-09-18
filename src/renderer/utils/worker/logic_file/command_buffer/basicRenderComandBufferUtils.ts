@@ -12,7 +12,7 @@ import { createTypeArrays } from "../../../command_buffer/basicRenderComandBuffe
 import { createSharedArrayBufferOrArrayBuffer } from "../../../../../utils/arrayBufferUtils";
 import { GameObject } from "../../../../../core/entityObject/gameObject/GameObject";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
+export const createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     it("renderGameObject should be basic material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
             expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("BasicMaterial")
@@ -29,7 +29,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     for (let i = 0; i < count; i++) {
         let matIndex = mat4Length * i,
             gameObject = renderGameObjectArray[i],
-            uid =  gameObject.uid,
+            uid = gameObject.uid,
             geometry = getGeometry(uid, GameObjectData),
             material = getMaterial(uid, GameObjectData),
             transform = getTransform(uid, GameObjectData),
@@ -44,7 +44,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     return buildRenderCommandBufferForDrawData(count, buffer, materialIndices, geometryIndices, mMatrices);
 })
 
-export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
+export const initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
     var mat4Length = getMatrix4DataSize(),
         size = Float32Array.BYTES_PER_ELEMENT * mat4Length + Uint32Array.BYTES_PER_ELEMENT * 2,
         buffer: any = null,

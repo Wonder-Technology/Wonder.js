@@ -25,7 +25,7 @@ import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 
-export var create = ensureFunc((component: Material) => {
+export const create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
         expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
     });
@@ -41,25 +41,25 @@ export var create = ensureFunc((component: Material) => {
     return material;
 })
 
-export var initMaterial = (index: number, state: Map<any, any>) => {
+export const initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, getClassName(), MaterialData);
 }
 
-// export var getMap = (materialIndex: number, MapManagerData:any) => {
+// export const getMap = (materialIndex: number, MapManagerData:any) => {
 //     return getMapByMapManager(materialIndex, MapManagerData);
 // }
 
-export var addMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+export const addMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(materialIndex, MapManagerData);
 
     addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
 }
 
-export var addComponent = (component: Material, gameObject: GameObject) => {
+export const addComponent = (component: Material, gameObject: GameObject) => {
     addMaterialComponent(component, gameObject, MaterialData);
 }
 
-export var disposeComponent = (component: Material) => {
+export const disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
         lastComponentIndex: number = null;
 
@@ -72,13 +72,13 @@ export var disposeComponent = (component: Material) => {
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }
 
-export var createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialData: any) => {
+export const createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialData: any) => {
     return createTypeArraysUtils(buffer, offset, count, BasicMaterialData);
 }
 
-export var initData = (BasicMaterialData: any) => {
+export const initData = (BasicMaterialData: any) => {
     initSpecifyMaterialData(getBasicMaterialBufferStartIndex(), BasicMaterialData);
 }
 
-export var setDefaultData = (BasicMaterialData: any) => {
+export const setDefaultData = (BasicMaterialData: any) => {
 }

@@ -23,38 +23,38 @@ import { initDataWhenInitGL as initWorkerDataWhenInitGLSystem } from "../rendere
 import { Map } from "immutable";
 import { initData } from "../core/DirectorSystem";
 
-export var initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
+export const initDeviceManagerWorkerData = initDeviceManagerWorkerDataSystem;
 
-export var initProgramWorkerData = initProgramWorkerDataSystem;
+export const initProgramWorkerData = initProgramWorkerDataSystem;
 
-export var initWebGL1GLSLSenderWorkerData = initWebGL1GLSLSenderWorkerDataSystem;
+export const initWebGL1GLSLSenderWorkerData = initWebGL1GLSLSenderWorkerDataSystem;
 
-export var initWebGL2GLSLSenderWorkerData = initWebGL2GLSLSenderWorkerDataSystem;
+export const initWebGL2GLSLSenderWorkerData = initWebGL2GLSLSenderWorkerDataSystem;
 
-export var initWebGL1LocationWorkerData = initWebGL1LocationWorkerDataSystem;
+export const initWebGL1LocationWorkerData = initWebGL1LocationWorkerDataSystem;
 
-export var initWebGL2LocationWorkerData = initWebGL2LocationWorkerDataSystem;
+export const initWebGL2LocationWorkerData = initWebGL2LocationWorkerDataSystem;
 
-export var initWebGL1ShaderWorkerData = initWebGL1ShaderWorkerDataSystem;
+export const initWebGL1ShaderWorkerData = initWebGL1ShaderWorkerDataSystem;
 
-export var initWebGL2ShaderWorkerData = initWebGL2ShaderWorkerDataSystem;
+export const initWebGL2ShaderWorkerData = initWebGL2ShaderWorkerDataSystem;
 
-export var initWebGL1LightWorkerData = initWebGL1LightWorkerDataSystem;
+export const initWebGL1LightWorkerData = initWebGL1LightWorkerDataSystem;
 
-export var initWebGL2LightWorkerData = initWebGL2LightWorkerDataSystem;
+export const initWebGL2LightWorkerData = initWebGL2LightWorkerDataSystem;
 
-export var initDrawRenderCommandBufferWorkerData = initDrawRenderCommandBufferWorkerDataSystem;
+export const initDrawRenderCommandBufferWorkerData = initDrawRenderCommandBufferWorkerDataSystem;
 
-export var initArrayBufferWorkerData = initArrayBufferWorkerDataSystem;
+export const initArrayBufferWorkerData = initArrayBufferWorkerDataSystem;
 
-export var initIndexBufferWorkerData = initIndexBufferWorkerDataSystem;
+export const initIndexBufferWorkerData = initIndexBufferWorkerDataSystem;
 
-export var initVaoWorkerData = initVaoWorkerDataSystem;
+export const initVaoWorkerData = initVaoWorkerDataSystem;
 
-export var initWorkerDataWhenInitGL = initWorkerDataWhenInitGLSystem;
+export const initWorkerDataWhenInitGL = initWorkerDataWhenInitGLSystem;
 
-export var getDirectionLightPositionInShaderWorker = getDirectionLightPosition;
+export const getDirectionLightPositionInShaderWorker = getDirectionLightPosition;
 
-export var getPointLightPositionInShaderWorker = getPointLightPosition;
+export const getPointLightPositionInShaderWorker = getPointLightPosition;
 
-export var updateTextureWorker = update;
+export const updateTextureWorker = update;

@@ -1,4 +1,4 @@
-// export var drawPartOfTextureByCanvas = (source: HTMLImageElement, canvasWidth: number, canvasHeight: number, sx: number, sy: number, DomQuery:any) => {
+// export const drawPartOfTextureByCanvas = (source: HTMLImageElement, canvasWidth: number, canvasHeight: number, sx: number, sy: number, DomQuery:any) => {
 //     var canvas = DomQuery.create("<canvas></canvas>").get(0),
 //         ctx = null;
 //

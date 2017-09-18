@@ -39,113 +39,113 @@ else {
     }
 }
 
-export var initLightMaterial = (material: LightMaterial) => {
+export const initLightMaterial = (material: LightMaterial) => {
     initMaterial(material.index, getState(DirectorData));
 }
 
-export var getLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getColor(material.index, MaterialData);
 })
 
-export var setLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, color: Color) => {
     setColor(material.index, color, MaterialData);
 })
 
-export var getLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getOpacity(material.index, MaterialData);
 })
 
-export var setLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialOpacity = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, opacity: number) => {
     setOpacity(material.index, opacity, MaterialData);
 })
 
-export var getLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getAlphaTest(material.index, MaterialData);
 })
 
-export var setLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialAlphaTest = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, alphaTest: number) => {
     setAlphaTest(material.index, alphaTest, MaterialData);
 })
 
-export var getLightMaterialSpecularColor = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialSpecularColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getSpecularColor(material.index, LightMaterialData);
 })
 
-export var setLightMaterialSpecularColor = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialSpecularColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, color: Color) => {
     setSpecularColor(material.index, color, LightMaterialData);
 })
 
-export var getLightMaterialEmissionColor = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialEmissionColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getEmissionColor(material.index, LightMaterialData);
 })
 
-export var setLightMaterialEmissionColor = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialEmissionColor = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, color: Color) => {
     setEmissionColor(material.index, color, LightMaterialData);
 })
 
-export var getLightMaterialShininess = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialShininess = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getShininess(material.index, LightMaterialData);
 })
 
-export var setLightMaterialShininess = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialShininess = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, shininess: number) => {
     setShininess(material.index, shininess, LightMaterialData);
 })
 
-export var getLightMaterialShading = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialShading = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getShading(material.index, LightMaterialData);
 })
 
-export var setLightMaterialShading = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialShading = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, shading: EShading) => {
     setShading(material.index, shading, LightMaterialData);
 })
 
-export var getLightMaterialLightModel = requireCheckFunc((material: LightMaterial) => {
+export const getLightMaterialLightModel = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial) => {
     return getLightModel(material.index, LightMaterialData);
 })
 
-export var setLightMaterialLightModel = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialLightModel = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, lightModel: number) => {
     setLightModel(material.index, lightModel, LightMaterialData);
 })
 
-export var setLightMaterialDiffuseMap = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialDiffuseMap = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, map: Texture) => {
     setDiffuseMap(material.index, map, MapManagerData, TextureData);
 })
 
-export var setLightMaterialSpecularMap = requireCheckFunc((material: LightMaterial) => {
+export const setLightMaterialSpecularMap = requireCheckFunc((material: LightMaterial) => {
     checkShouldAlive(material);
 }, (material: LightMaterial, map: Texture) => {
     setSpecularMap(material.index, map, MapManagerData, TextureData);

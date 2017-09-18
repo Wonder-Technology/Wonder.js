@@ -1,10 +1,10 @@
-export var getColorDataSize = () => 3;
+export const getColorDataSize = () => 3;
 
-export var getDirtyDataSize = () => 1;
+export const getDirtyDataSize = () => 1;
 
-export var isDirty = (value) => value === 0;
+export const isDirty = (value) => value === 0;
 
-export var cleanDirty = (index: number, isDirtys: Uint8Array) => {
+export const cleanDirty = (index: number, isDirtys: Uint8Array) => {
     isDirtys[index] = 1;
 }
 

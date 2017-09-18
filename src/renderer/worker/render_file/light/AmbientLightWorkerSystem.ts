@@ -5,9 +5,9 @@ import {
     isColorDirty as isColorDirtyUtils
 } from "../../../utils/worker/render_file/light/ambientLightUtils";
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var initData = ({
+export const initData = ({
                            buffer,
     bufferCount,
     lightCount
@@ -17,8 +17,8 @@ export var initData = ({
     createTypeArrays(buffer, bufferCount, AmbientLightWorkerData);
 }
 
-var _setCount = setSpecifyLightCount;
+const _setCount =setSpecifyLightCount;
 
-export var isColorDirty = isColorDirtyUtils;
+export const isColorDirty = isColorDirtyUtils;
 
-export var cleanColorDirty = cleanColorDirtyUtils;
+export const cleanColorDirty = cleanColorDirtyUtils;

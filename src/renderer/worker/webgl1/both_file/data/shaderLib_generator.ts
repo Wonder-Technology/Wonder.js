@@ -22,7 +22,7 @@ import {
     IShaderLibContentGenerator
 } from "../../../../data/shaderLib_generator_interface";
 
-var _lightDefineList = [
+const _lightDefineList =[
     {
         "name": "DIRECTION_LIGHTS_COUNT",
         "valueFunc": ({

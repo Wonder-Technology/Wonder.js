@@ -12,7 +12,7 @@ import {
     initData as initDataUtils
 } from "../../../utils/worker/logic_file/command_buffer/lightRenderComandBufferUtils";
 
-export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export const createRenderCommandBufferData = curry(requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObject should be light material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
             expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("LightMaterial")
@@ -27,4 +27,4 @@ export var createRenderCommandBufferData = curry(requireCheckFunc((state: Map<an
     })
 }), 11)
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;

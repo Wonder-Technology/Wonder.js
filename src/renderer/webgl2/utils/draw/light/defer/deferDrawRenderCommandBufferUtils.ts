@@ -11,7 +11,7 @@ import { drawLightPass } from "./lightPassDrawUtils";
 import { drawGBufferPass } from "./gBufferPassDrawUtils";
 import { DeferDrawDataMap } from "../../../worker/render_file/type/utilsType";
 
-export var draw = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL2DeferDrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, sendDataMap: IWebGL2LightSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
+export const draw = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL2DeferDrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, sendDataMap: IWebGL2LightSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, {
     vMatrix,
     pMatrix,
     cameraPosition,

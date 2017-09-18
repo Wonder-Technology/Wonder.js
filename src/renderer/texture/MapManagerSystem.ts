@@ -12,7 +12,7 @@ import {
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../utils/typeArrayUtils";
 
-// export var create = (MapManagerData:any) => {
+// export const create = (MapManagerData:any) => {
 //     var mapManager = new MapManager(),
 //         index = generateComponentIndex(MapManagerData);
 //
@@ -21,11 +21,11 @@ import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../util
 //     return mapManager;
 // }
 
-export var initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => {
+export const initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => {
     initTextures(gl, TextureData);
 }
 
-export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
+export const addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
         expect(count + 1).lte(getMaxTextureCount());
     });
@@ -39,17 +39,17 @@ export var addMap = requireCheckFunc((materialIndex: number, map: Texture, count
     setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
 })
 
-export var getMapCount = getMapCountUtils;
+export const getMapCount = getMapCountUtils;
 
 //todo support multi textures
 
-// export var addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerData:any) => {
+// export const addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerData:any) => {
 //     for(let map of mapList){
 //         addMap(materialIndex, map, MapManagerData);
 //     }
 // }
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
     bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
 }
 
@@ -59,17 +59,17 @@ export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIn
 
  so need user mannually dispose texture one by one!
  */
-export var dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
+export const dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
     deleteSingleValueBySwapAndReset(materialSourceIndex, materialLastComponentIndex, MapManagerData.textureCounts, 0);
 }
 
-export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {
+export const initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {
     initTextureData(TextureCacheData, TextureData);
 
     _initBufferData(MapManagerData);
 }
 
-var _initBufferData = (MapManagerData: any) => {
+const _initBufferData =(MapManagerData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
         size = Uint32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
@@ -84,5 +84,5 @@ var _initBufferData = (MapManagerData: any) => {
     MapManagerData.buffer = buffer;
 }
 
-var _setDefaultTypeArrData = (count: number, MapManagerData: any) => {
+const _setDefaultTypeArrData =(count: number, MapManagerData: any) => {
 }

@@ -39,7 +39,7 @@ import { Texture } from "../../renderer/texture/Texture";
 import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
 import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 
-export var create = ensureFunc((component: Material) => {
+export const create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
         expect(component.index).lte(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
     });
@@ -54,19 +54,19 @@ export var create = ensureFunc((component: Material) => {
     return material;
 })
 
-export var getSpecularColor = (index: number, LightMaterialData: any) => {
+export const getSpecularColor = (index: number, LightMaterialData: any) => {
     return getColor3Data(computeLightBufferIndex(index), LightMaterialData.specularColors);
 }
 
-export var getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
+export const getSpecularColorArr3 = (index: number, LightMaterialData: any) => {
     return getSpecularColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
 }
 
-export var setSpecularColor = (index: number, color: Color, LightMaterialData: any) => {
+export const setSpecularColor = (index: number, color: Color, LightMaterialData: any) => {
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 }
 
-export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
+export const setDiffuseMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(index, MapManagerData);
 
     addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
@@ -74,7 +74,7 @@ export var setDiffuseMap = (index: number, map: Texture, MapManagerData: any, Te
     markHasMap(index, LightMaterialData.hasDiffuseMaps);
 }
 
-export var setSpecularMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
+export const setSpecularMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
     var count = getMapCount(index, MapManagerData);
 
     addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
@@ -84,59 +84,59 @@ export var setSpecularMap = (index: number, map: Texture, MapManagerData: any, T
 
 //todo add normal map, light map...
 
-export var getEmissionColor = (index: number, LightMaterialData: any) => {
+export const getEmissionColor = (index: number, LightMaterialData: any) => {
     return getColor3Data(computeLightBufferIndex(index), LightMaterialData.emissionColors);
 }
 
-export var getEmissionColorArr3 = (index: number, LightMaterialData: any) => {
+export const getEmissionColorArr3 = (index: number, LightMaterialData: any) => {
     return getEmissionColorArr3Utils(computeLightBufferIndex(index), LightMaterialData);
 }
 
-export var setEmissionColor = (index: number, color: Color, LightMaterialData: any) => {
+export const setEmissionColor = (index: number, color: Color, LightMaterialData: any) => {
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.emissionColors);
 }
 
-export var getShininess = (index: number, LightMaterialDataFromSystem: any) => {
+export const getShininess = (index: number, LightMaterialDataFromSystem: any) => {
     return getShininessUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setShininess = (index: number, shininess: number, LightMaterialData: any) => {
+export const setShininess = (index: number, shininess: number, LightMaterialData: any) => {
     setTypeArrayValue(LightMaterialData.shininess, computeLightBufferIndex(index), shininess);
 }
 
-export var getShading = (index: number, LightMaterialDataFromSystem: any) => {
+export const getShading = (index: number, LightMaterialDataFromSystem: any) => {
     return getShadingUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setShading = (index: number, shading: EShading, LightMaterialData: any) => {
+export const setShading = (index: number, shading: EShading, LightMaterialData: any) => {
     setTypeArrayValue(LightMaterialData.shadings, computeLightBufferIndex(index), shading);
 }
 
-export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
+export const getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
     return getLightModelUtils(computeLightBufferIndex(index), LightMaterialDataFromSystem);
 }
 
-export var setLightModel = (index: number, lightModel: ELightModel, LightMaterialData: any) => {
+export const setLightModel = (index: number, lightModel: ELightModel, LightMaterialData: any) => {
     setTypeArrayValue(LightMaterialData.lightModels, computeLightBufferIndex(index), lightModel);
 }
 
-export var hasDiffuseMap = (index: number, LightMaterialData: any) => {
+export const hasDiffuseMap = (index: number, LightMaterialData: any) => {
     return hasDiffuseMapUtils(computeLightBufferIndex(index), LightMaterialData);
 }
 
-export var hasSpecularMap = (index: number, LightMaterialData: any) => {
+export const hasSpecularMap = (index: number, LightMaterialData: any) => {
     return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialData);
 }
 
-export var initMaterial = (index: number, state: Map<any, any>) => {
+export const initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, getClassName(), MaterialData);
 }
 
-export var addComponent = (component: Material, gameObject: GameObject) => {
+export const addComponent = (component: Material, gameObject: GameObject) => {
     addMaterialComponent(component, gameObject, MaterialData);
 }
 
-export var disposeComponent = (component: Material) => {
+export const disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
         lightMaterialSourceIndex = computeLightBufferIndex(sourceIndex),
         lastComponentIndex: number = null,
@@ -165,14 +165,14 @@ export var disposeComponent = (component: Material) => {
     deleteOneItemBySwapAndReset(lightMaterialSourceIndex * mapSize, lightMaterialLastComponentIndex * mapSize, LightMaterialData.hasSpecularMaps, LightMaterialData.defaultHasMap);
 }
 
-export var initData = (LightMaterialData: any) => {
+export const initData = (LightMaterialData: any) => {
     initSpecifyMaterialData(getLightMaterialBufferStartIndex(), LightMaterialData);
 
     LightMaterialData.emptyColor = _createEmptyColor();
     LightMaterialData.emptyColorArr = LightMaterialData.emptyColor.toVector3().toArray();
 }
 
-export var createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialData: any) => {
+export const createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialData: any) => {
     var returnedOffset = createTypeArraysUtils(buffer, offset, count, LightMaterialData);
 
     _setLightMaterialDefaultTypeArrData(count, LightMaterialData);
@@ -180,14 +180,14 @@ export var createTypeArrays = (buffer: any, offset: number, count: number, Light
     return returnedOffset;
 }
 
-export var setDefaultData = (LightMaterialData: any) => {
+export const setDefaultData = (LightMaterialData: any) => {
     LightMaterialData.defaultShininess = 32;
     LightMaterialData.defaultShading = 0;
     LightMaterialData.defaultLightModel = ELightModel.PHONG;
     LightMaterialData.defaultHasMap = getNotHasMapValue();
 }
 
-var _setLightMaterialDefaultTypeArrData = (count: number, LightMaterialData: any) => {
+const _setLightMaterialDefaultTypeArrData =(count: number, LightMaterialData: any) => {
     var startIndex = getLightMaterialBufferStartIndex(),
         color = createDefaultColor(),
         emptyColor = LightMaterialData.emptyColor,
@@ -209,7 +209,7 @@ var _setLightMaterialDefaultTypeArrData = (count: number, LightMaterialData: any
     }
 }
 
-var _createEmptyColor = () => {
+const _createEmptyColor =() => {
     var color = Color.create("rgb(0,0,0)");
 
     return color;

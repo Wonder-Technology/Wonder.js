@@ -51,7 +51,7 @@ export class Main {
     }
 }
 
-export var initAllData = () => {
+export const initAllData = () => {
     initDirectorData(DirectorData);
     initData();
 }

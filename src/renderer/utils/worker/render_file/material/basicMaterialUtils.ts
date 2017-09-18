@@ -1,5 +1,5 @@
-export var createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialDataFromSystem: any) => {
     return offset;
 }
 
-export var getClassName = () => "BasicMaterial";
+export const getClassName = () => "BasicMaterial";

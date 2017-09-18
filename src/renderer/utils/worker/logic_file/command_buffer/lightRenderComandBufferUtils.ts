@@ -22,7 +22,7 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../../../../utils/array
 import { createTypeArrays } from "../../../command_buffer/lightRenderComandBufferUtils";
 import { GameObject } from "../../../../../core/entityObject/gameObject/GameObject";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
+export const createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, RenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>, buildRenderCommandBufferForDrawData: Function) => {
     it("renderGameObject should be light material gameObject", () => {
         for (let gameObject of renderGameObjectArray) {
             expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("LightMaterial")
@@ -67,7 +67,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     return buildRenderCommandBufferForDrawData(count, buffer, materialIndices, geometryIndices, mMatrices, vMatrices, pMatrices, cameraPositions, normalMatrices);
 })
 
-export var initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
+export const initData = (DataBufferConfig: any, RenderCommandBufferData: any) => {
     var mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),

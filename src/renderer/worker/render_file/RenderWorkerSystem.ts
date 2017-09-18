@@ -127,11 +127,11 @@ import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/li
 
 declare var self: any;
 
-export var onerrorHandler = (msg: string, fileName: string, lineno: number) => {
+export const onerrorHandler = (msg: string, fileName: string, lineno: number) => {
     Log.error(true, `message:${msg}\nfileName:${fileName}\nlineno:${lineno}`)
 }
 
-export var onmessageHandler = (e) => {
+export const onmessageHandler = (e) => {
     var data = e.data,
         operateType = data.operateType,
         state: Map<any, any> = null;
@@ -185,15 +185,15 @@ export var onmessageHandler = (e) => {
     }
 };
 
-var _initWebGL1GL = (data: any, WebGLDetectWorkerData: any, GPUDetectWorkerData: any) => {
+const _initWebGL1GL =(data: any, WebGLDetectWorkerData: any, GPUDetectWorkerData: any) => {
     return initGL(data, detectWebGL1, WebGLDetectWorkerData, GPUDetectWorkerData).run();
 }
 
-var _initWebGL2GL = (data: any, WebGLDetectWorkerData: any, GPUDetectWorkerData: any) => {
+const _initWebGL2GL =(data: any, WebGLDetectWorkerData: any, GPUDetectWorkerData: any) => {
     return initGL(data, detectWebGL2, WebGLDetectWorkerData, GPUDetectWorkerData).run();
 }
 
-var _handleWebGL1Draw = (data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
+const _handleWebGL1Draw =(data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
     var state = getState(StateWorkerData);
 
     _initWebGL1DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
@@ -217,7 +217,7 @@ var _handleWebGL1Draw = (data: any, AmbientLightWorkerData: any, DirectionLightW
     });
 }
 
-var _handleWebGL2Draw = (data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
+const _handleWebGL2Draw =(data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
     var state = getState(StateWorkerData);
 
     _initWebGL2DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
@@ -241,17 +241,17 @@ var _handleWebGL2Draw = (data: any, AmbientLightWorkerData: any, DirectionLightW
     });
 }
 
-var _initWebGL1DrawData = (data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+const _initWebGL1DrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
     _initOtherDrawData(data, DirectionLightWorkerData, PointLightWorkerData);
     _initWebGL1DisposeDrawData(data);
 }
 
-var _initWebGL2DrawData = (data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+const _initWebGL2DrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
     _initOtherDrawData(data, DirectionLightWorkerData, PointLightWorkerData);
     _initWebGL2DisposeDrawData(data);
 }
 
-var _initOtherDrawData = (data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+const _initOtherDrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
     var state = null,
         geometryData = data.geometryData,
         materialData = data.materialData,
@@ -275,7 +275,7 @@ var _initOtherDrawData = (data: any, DirectionLightWorkerData: any, PointLightWo
     }
 }
 
-var _initWebGL1DisposeDrawData = (data: any) => {
+const _initWebGL1DisposeDrawData =(data: any) => {
     var state = null,
         disposeData = data.disposeData;
 
@@ -290,7 +290,7 @@ var _initWebGL1DisposeDrawData = (data: any) => {
     }
 }
 
-var _initWebGL2DisposeDrawData = (data: any) => {
+const _initWebGL2DisposeDrawData =(data: any) => {
     var state = null,
         disposeData = data.disposeData;
 
@@ -305,9 +305,9 @@ var _initWebGL2DisposeDrawData = (data: any) => {
     }
 }
 
-var _isBufferDataExist = (bufferData: RenderCommandBufferForDrawData) => !!bufferData;
+const _isBufferDataExist =(bufferData: RenderCommandBufferForDrawData) => !!bufferData;
 
-var _handleWebGL1InitRenderData = (data: any, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GLSLSenderWorkerData: any) => {
+const _handleWebGL1InitRenderData =(data: any, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GLSLSenderWorkerData: any) => {
     var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state);
 
@@ -327,7 +327,7 @@ var _handleWebGL1InitRenderData = (data: any, AmbientLightWorkerData: any, Direc
         })
 }
 
-var _handleWebGL2InitRenderData = (data: any, render_config: IRenderConfig, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any) => {
+const _handleWebGL2InitRenderData =(data: any, render_config: IRenderConfig, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any) => {
     var state = getState(StateWorkerData),
         gl = getGL(DeviceManagerWorkerData, state),
         renderData = data.renderData;
@@ -349,7 +349,7 @@ var _handleWebGL2InitRenderData = (data: any, render_config: IRenderConfig, Ambi
         })
 }
 
-var _initWebGL2Render = (gl: any, render_config: IRenderConfig, renderData: WebGL2RenderInitWorkerData, DataBufferConfig: any, GBufferWorkerData: any, DeferAmbientLightPassWorkerData: any, DeferDirectionLightPassWorkerData: any, DeferPointLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GPUDetectWorkerData: any) => {
+const _initWebGL2Render =(gl: any, render_config: IRenderConfig, renderData: WebGL2RenderInitWorkerData, DataBufferConfig: any, GBufferWorkerData: any, DeferAmbientLightPassWorkerData: any, DeferDirectionLightPassWorkerData: any, DeferPointLightPassWorkerData: any, ShaderWorkerData: any, ProgramWorkerData: any, LocationWorkerData: any, GLSLSenderWorkerData: any, GPUDetectWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(renderData) || _isDataNotExist(renderData.deferShading) || renderData.deferShading.isInit === false) {
             return;
@@ -359,9 +359,9 @@ var _initWebGL2Render = (gl: any, render_config: IRenderConfig, renderData: WebG
     })
 }
 
-var _isDataNotExist = (data: any) => data === null || data === void 0;
+const _isDataNotExist =(data: any) => data === null || data === void 0;
 
-export var initDataWhenInitGL = () => {
+export const initDataWhenInitGL = () => {
     _initData();
 
     if (isWebgl1(WebGLDetectWorkerData)) {
@@ -374,7 +374,7 @@ export var initDataWhenInitGL = () => {
 
 
 
-var _initData = () => {
+const _initData =() => {
     initDrawRenderCommandBufferForDrawData(BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData);
 
     initVaoData(VaoWorkerData);
@@ -382,7 +382,7 @@ var _initData = () => {
     initDeviceManagerData(DeviceManagerWorkerData);
 }
 
-var _initWebGL1Data = () => {
+const _initWebGL1Data =() => {
     initProgramData(WebGL1ProgramWorkerData);
 
     initWebGL1LocationData(WebGL1LocationWorkerData);
@@ -398,7 +398,7 @@ var _initWebGL1Data = () => {
     initWebGL1GPUDetectWorkerData(GPUDetectWorkerData);
 }
 
-var _initWebGL2Data = () => {
+const _initWebGL2Data =() => {
     initProgramData(WebGL2ProgramWorkerData);
 
     initWebGL2LocationData(WebGL2LocationWorkerData);
@@ -412,15 +412,15 @@ var _initWebGL2Data = () => {
     initWebGL2GPUDetectWorkerData(GPUDetectWorkerData);
 }
 
-var _needUpdateGeometryWorkerData = (geometryData: GeometryUpdateWorkerData) => {
+const _needUpdateGeometryWorkerData =(geometryData: GeometryUpdateWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.ADD;
 }
 
-var _needResetGeometryWorkerData = (geometryData: GeometryResetWorkerData) => {
+const _needResetGeometryWorkerData =(geometryData: GeometryResetWorkerData) => {
     return geometryData.type === EGeometryWorkerDataOperateType.RESET;
 }
 
-var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any, ProgramWorkerData: any, VaoWorkerData: any, LocationWorkerData: any, ShaderWorkerData: any) => {
+const _initMaterials =(state: Map<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, TextureWorkerData: any, AmbientLightWorkerData: any, DirectionLightWorkerData, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any, ProgramWorkerData: any, VaoWorkerData: any, LocationWorkerData: any, ShaderWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(materialData)) {
             return;
@@ -434,7 +434,7 @@ var _initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_
     })
 }
 
-var _initMaterialData = (gl: WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData: any, TextureCacheWorkerData: any, TextureWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+const _initMaterialData =(gl: WebGLRenderingContext, materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData, MapManagerWorkerData: any, TextureCacheWorkerData: any, TextureWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(materialData)) {
             return;
@@ -444,7 +444,7 @@ var _initMaterialData = (gl: WebGLRenderingContext, materialData: MaterialInitWo
     })
 }
 
-var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
+const _initGeometrys =(geometryData: GeometryInitWorkerData, DataBufferConfig: any, GeometryWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(geometryData)) {
             return;
@@ -456,7 +456,7 @@ var _initGeometrys = (geometryData: GeometryInitWorkerData, DataBufferConfig: an
     })
 }
 
-var _initWebGL1Lights = (lightData: WebGL1LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
+const _initWebGL1Lights =(lightData: WebGL1LightInitWorkerData, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(lightData)) {
             return;
@@ -466,7 +466,7 @@ var _initWebGL1Lights = (lightData: WebGL1LightInitWorkerData, AmbientLightWorke
     })
 }
 
-var _initWebGL2Lights = (lightData: WebGL2LightInitWorkerData, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
+const _initWebGL2Lights =(lightData: WebGL2LightInitWorkerData, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     return callFunc(() => {
         if (_isDataNotExist(lightData)) {
             return;
@@ -476,7 +476,7 @@ var _initWebGL2Lights = (lightData: WebGL2LightInitWorkerData, DirectionLightWor
     })
 }
 
-var _setLightDrawData = (lightData: LightDrawWorkerData, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
+const _setLightDrawData =(lightData: LightDrawWorkerData, DirectionLightWorkerData: any, PointLightWorkerData: any) => {
     var directionLightData = lightData.directionLightData,
         pointLightData = lightData.pointLightData;
 
@@ -484,7 +484,7 @@ var _setLightDrawData = (lightData: LightDrawWorkerData, DirectionLightWorkerDat
     setPointLightPositionArr(pointLightData.positionArr, PointLightWorkerData);
 }
 
-var _initTextures = (textureData: TextureInitWorkerData, TextureWorkerData: any) => {
+const _initTextures =(textureData: TextureInitWorkerData, TextureWorkerData: any) => {
     if (_isDataNotExist(textureData)) {
         return empty();
     }

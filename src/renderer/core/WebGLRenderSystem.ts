@@ -80,7 +80,7 @@ import { DeferDirectionLightPassData } from "../webgl2/render/light/defer/light/
 import { DeferPointLightPassData } from "../webgl2/render/light/defer/light/DeferPointLightPassData";
 import { DeferAmbientLightPassData } from "../webgl2/render/light/defer/light/DeferAmbientLightPassData";
 
-var _checkLightCount = requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
+const _checkLightCount =requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     it("count should <= max count", () => {
         expect(AmbientLightData.count).lte(ambientLightCount);
         expect(DirectionLightData.count).lte(directionLightCount);

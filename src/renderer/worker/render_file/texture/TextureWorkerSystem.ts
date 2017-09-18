@@ -10,18 +10,19 @@ import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messa
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
+export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
-export var initTextures = initTexturesUtils;
+export const initTextures = initTexturesUtils;
 
-export var needUpdate = needUpdateUtils;
+export const needUpdate = needUpdateUtils;
 
-export var update = (gl: WebGLRenderingContext, textureIndex: number, TextureWorkerData: any) => {
+export const update = (gl: WebGLRenderingContext, textureIndex: number, TextureWorkerData: any) => {
     updateUtils(gl, textureIndex, _setFlipY, TextureWorkerData);
 }
-var _setFlipY = null;
+
+var _setFlipY =null;
 
 if (chrome) {
     _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
@@ -37,7 +38,7 @@ else if (firefox) {
     }
 }
 
-export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
+export const disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     for (let {
         sourceIndex,
         lastComponentIndex
@@ -47,22 +48,22 @@ export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, g
     }
 }
 
-export var setIndex = (index: number, TextureWorkerData: any) => {
+export const setIndex = (index: number, TextureWorkerData: any) => {
     TextureWorkerData.index = index;
 }
 
-export var setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, TextureWorkerData: any) => {
+export const setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, TextureWorkerData: any) => {
     TextureWorkerData.uniformSamplerNameMap = uniformSamplerNameMap;
 }
 
-export var setSourceMapByImageSrcArrStream = (imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
+export const setSourceMapByImageSrcArrStream = (imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
     return _convertImageSrcToImageBitmapStream(imageSrcIndexArr, TextureWorkerData)
         .do((imageBitmap: ImageBitmap) => {
             TextureWorkerData.sourceMap.push(imageBitmap)
         });
 }
 
-var _convertImageSrcToImageBitmapStream = (imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
+const _convertImageSrcToImageBitmapStream =(imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
     return fromArray(imageSrcIndexArr).flatMap(({ src, index }) => {
         return fromPromise(fetch(src))
             .flatMap((response: any) => {
@@ -94,7 +95,7 @@ else if (firefox) {
     }
 }
 
-export var initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerData: any) => {
+export const initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerData: any) => {
     initTextureCacheData(TextureCacheWorkerData);
 
     TextureWorkerData.index = 0;
@@ -106,7 +107,7 @@ export var initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerDa
     _initBufferWorkerData(buffer, TextureWorkerData);
 }
 
-var _initBufferWorkerData = (buffer: any, TextureWorkerData: any) => {
+const _initBufferWorkerData =(buffer: any, TextureWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), TextureWorkerData);
 }
 

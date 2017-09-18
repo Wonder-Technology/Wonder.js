@@ -95,7 +95,7 @@ import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer
 import { initData as initDeviceManagerData } from "../renderer/device/DeviceManagerSystem";
 import { DeviceManagerData } from "../renderer/device/DeviceManagerData";
 
-export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {
+export const setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {
     canvasId = "",
     isTest = DebugConfig.isTest,
     screenSize = EScreenSize.FULL,
@@ -115,7 +115,7 @@ export var setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerD
     }
 }) => {
     return IO.of(() => {
-        var _isTest = false;
+        var _isTest =false;
 
         if (CompileConfig.closeContractTest) {
             _isTest = false;
@@ -221,7 +221,7 @@ else {
 
 export var init = null;
 
-var _initData = null;
+var _initData =null;
 
 if (isWebgl1()) {
     _initData = () => {
@@ -262,7 +262,7 @@ else {
     });
 }
 
-var _initBothData = () => {
+const _initBothData =() => {
     initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
     initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);

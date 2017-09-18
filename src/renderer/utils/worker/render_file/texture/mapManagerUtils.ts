@@ -5,17 +5,17 @@ import { getBufferTotalCount } from "../material/bufferUtils";
 
 //todo support multi textures
 
-// export var addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerDataFromSystem:any) => {
+// export const addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerDataFromSystem:any) => {
 //     for(let map of mapList){
 //         addMap(materialIndex, map, MapManagerDataFromSystem);
 //     }
 // }
 
-export var getTextureIndexDataSize = () => 1;
+export const getTextureIndexDataSize = () => 1;
 
-export var getTextureCountDataSize = () => 1;
+export const getTextureCountDataSize = () => 1;
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     // var count = getMapCount(materialIndex, MapManagerDataFromSystem),
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
@@ -30,7 +30,7 @@ export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIn
     }
 }
 
-export var sendData = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
+export const sendData = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
     var textureIndices = MapManagerData.textureIndices;
 
     for (let i = 0; i < mapCount; i++) {
@@ -40,26 +40,26 @@ export var sendData = (gl: WebGLRenderingContext, mapCount: number, startIndex: 
     }
 }
 
-export var getMapCount = (materialIndex: number, MapManagerDataFromSystem: any) => {
+export const getMapCount = (materialIndex: number, MapManagerDataFromSystem: any) => {
     return MapManagerDataFromSystem.textureCounts[materialIndex];
 }
 
-// export var initData = (TextureCacheDataFromSystem:any, TextureDataFromSystem:any, MapManagerDataFromSystem:any) => {
+// export const initData = (TextureCacheDataFromSystem:any, TextureDataFromSystem:any, MapManagerDataFromSystem:any) => {
 //     initTextureDataFromSystem(TextureCacheDataFromSystem, TextureDataFromSystem);
 //
 //     // MapManagerDataFromSystem.textureMap = [];
 // }
 
-export var getBufferCount = () => getBufferTotalCount() * getMaxTextureCount();
+export const getBufferCount = () => getBufferTotalCount() * getMaxTextureCount();
 
 /*!
  //todo should be GPUDetector.getInstance().maxTextureUnit!
  but in render worker version:
  because MapManagerSystem->initData use it, so render worker should send maxTextureUnit to main worker and then Main should MapManagerSystem->initData!
  */
-export var getMaxTextureCount = () => 16;
+export const getMaxTextureCount = () => 16;
 
-export var createTypeArrays = (buffer: any, count: number, MapManagerDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, count: number, MapManagerDataFromSystem: any) => {
     var offset = 0;
 
     MapManagerDataFromSystem.textureIndices = new Uint32Array(buffer, offset, count * getTextureIndexDataSize());

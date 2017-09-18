@@ -5,15 +5,15 @@ import { EDrawMode } from "../../../../enum/EDrawMode";
 import { EBufferType } from "../../../../enum/EBufferType";
 import { Log } from "../../../../../utils/Log";
 
-export var getVertexDataSize = () => 3;
+export const getVertexDataSize = () => 3;
 
-export var getNormalDataSize = () => 3;
+export const getNormalDataSize = () => 3;
 
-export var getTexCoordsDataSize = () => 2;
+export const getTexCoordsDataSize = () => 2;
 
-export var getIndexDataSize = () => 1;
+export const getIndexDataSize = () => 1;
 
-export var getUIntArrayClass = (indexType: EBufferType) => {
+export const getUIntArrayClass = (indexType: EBufferType) => {
     switch (indexType) {
         case EBufferType.UNSIGNED_SHORT:
             return Uint16Array;
@@ -25,15 +25,15 @@ export var getUIntArrayClass = (indexType: EBufferType) => {
     }
 }
 
-export var getIndexType = (GeometryDataFromSystem: any) => {
+export const getIndexType = (GeometryDataFromSystem: any) => {
     return GeometryDataFromSystem.indexType;
 }
 
-export var getIndexTypeSize = (GeometryDataFromSystem: any) => {
+export const getIndexTypeSize = (GeometryDataFromSystem: any) => {
     return GeometryDataFromSystem.indexTypeSize;
 }
 
-export var hasIndices = (index: number, getIndices: Function, GeometryDataFromSystem: any) => {
+export const hasIndices = (index: number, getIndices: Function, GeometryDataFromSystem: any) => {
     var indices = getIndices(index, GeometryDataFromSystem);
 
     if (isNotValidMapValue(indices)) {
@@ -43,19 +43,19 @@ export var hasIndices = (index: number, getIndices: Function, GeometryDataFromSy
     return indices.length > 0;
 }
 
-export var getDrawMode = (index: number, GeometryDataFromSystem: any) => {
+export const getDrawMode = (index: number, GeometryDataFromSystem: any) => {
     return EDrawMode.TRIANGLES;
 }
 
-export var getVerticesCount = (index: number, getVertices: Function, GeometryDataFromSystem: any) => {
+export const getVerticesCount = (index: number, getVertices: Function, GeometryDataFromSystem: any) => {
     return getVertices(index, GeometryDataFromSystem).length;
 }
 
-export var getIndicesCount = (index: number, getIndices: Function, GeometryDataFromSystem: any) => {
+export const getIndicesCount = (index: number, getIndices: Function, GeometryDataFromSystem: any) => {
     return getIndices(index, GeometryDataFromSystem).length;
 }
 
-export var createBufferViews = (buffer: any, count: number, UintArray: any, GeometryDataFromSystem: any) => {
+export const createBufferViews = (buffer: any, count: number, UintArray: any, GeometryDataFromSystem: any) => {
     GeometryDataFromSystem.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
     GeometryDataFromSystem.normals = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * getVertexDataSize(), count * getVertexDataSize());
     GeometryDataFromSystem.texCoords = new Float32Array(buffer, count * Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize()), count * getTexCoordsDataSize());

@@ -2,7 +2,7 @@ import { Map } from "immutable";
 import { Log } from "../../../utils/Log";
 import { EGPUPrecision } from "../../enum/EGPUPrecision";
 
-export var detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+export const detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     GPUDetectDataFromSystem.extensionCompressedTextureS3TC = getExtension("WEBGL_compressed_texture_s3tc", state, gl);
     GPUDetectDataFromSystem.extensionTextureFilterAnisotropic = getExtension("EXT_texture_filter_anisotropic", state, gl);
     GPUDetectDataFromSystem.extensionInstancedArrays = getExtension("ANGLE_instanced_arrays", state, gl);
@@ -12,7 +12,7 @@ export var detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSy
     GPUDetectDataFromSystem.extensionStandardDerivatives = getExtension("standard_derivatives", state, gl);
 }
 
-export var detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+export const detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     GPUDetectDataFromSystem.maxTextureUnit = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
     GPUDetectDataFromSystem.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
     GPUDetectDataFromSystem.maxCubemapTextureSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
@@ -26,7 +26,7 @@ export var detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSy
     _detectPrecision(state, gl, GPUDetectDataFromSystem);
 }
 
-var _getMaxBoneCount = (state: Map<any, any>, gl: any) => {
+const _getMaxBoneCount =(state: Map<any, any>, gl: any) => {
     var numUniforms: number = null,
         maxBoneCount: number = null;
 
@@ -48,13 +48,13 @@ var _getMaxBoneCount = (state: Map<any, any>, gl: any) => {
     return Math.min(maxBoneCount, 128);
 }
 
-var _getMaxAnisotropy = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _getMaxAnisotropy =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     var extension = GPUDetectDataFromSystem.extensionTextureFilterAnisotropic;
 
     return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
 }
 
-var _detectPrecision = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _detectPrecision =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     if (!gl.getShaderPrecisionFormat) {
         GPUDetectDataFromSystem.precision = EGPUPrecision.HIGHP;
 
@@ -85,7 +85,7 @@ var _detectPrecision = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: 
     }
 }
 
-export var getExtension = (name: string, state: Map<any, any>, gl: any) => {
+export const getExtension = (name: string, state: Map<any, any>, gl: any) => {
     var extension: any = null;
 
     switch (name) {
@@ -121,10 +121,10 @@ export var getExtension = (name: string, state: Map<any, any>, gl: any) => {
     return extension;
 }
 
-export var hasExtensionUintIndices = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.extensionUintIndices === true;
+export const hasExtensionUintIndices = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.extensionUintIndices === true;
 
-export var getMaxTextureUnit = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.maxTextureUnit;
+export const getMaxTextureUnit = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.maxTextureUnit;
 
-export var getPrecision = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.precision;
+export const getPrecision = (GPUDetectDataFromSystem: any) => GPUDetectDataFromSystem.precision;
 
-export var hasExtension = (extension: any) => !!extension;
+export const hasExtension = (extension: any) => !!extension;

@@ -35,7 +35,7 @@ import { initData as initLightMaterialData } from "./LightMaterialWorkerSystem";
 import { IMaterialConfig } from "../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator_interface";
 
-export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData, TextureWorkerData: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any, ProgramWorkerData: any, VaoWorkerData: any, LocationWorkerData: any, ShaderWorkerData: any) => {
+export const initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, basicMaterialData: BasicMaterialInitWorkerData, lightMaterialData: LightMaterialInitWorkerData, TextureWorkerData: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GPUDetectWorkerData: any, GLSLSenderWorkerData: any, ProgramWorkerData: any, VaoWorkerData: any, LocationWorkerData: any, ShaderWorkerData: any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerWorkerData, ProgramWorkerData, LocationWorkerData, GLSLSenderWorkerData, ShaderWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, VaoWorkerData));
 
     _initSpecifyMaterials(basicMaterialData.startIndex, basicMaterialData.index, getBasicMaterialClassName());
@@ -44,38 +44,38 @@ export var initMaterials = (state: Map<any, any>, gl: WebGLRenderingContext, mat
     initMapManagers(gl, TextureWorkerData);
 }
 
-var _initSpecifyMaterials = (startIndex: number, index: number, className: string) => {
+const _initSpecifyMaterials =(startIndex: number, index: number, className: string) => {
     for (let i = startIndex; i < index; i++) {
         initMaterial(i, null, className);
     }
 }
 
-export var initMaterial = (index: number, state: Map<any, any>, className: string) => {
+export const initMaterial = (index: number, state: Map<any, any>, className: string) => {
 }
 
-// export var getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
+// export const getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
 //     return MaterialWorkerData.shaderIndices[materialIndex];
 // }
 
-// export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
+// export const getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export var initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList) => {
+export const initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList) => {
     for (let { index, className } of workerInitList) {
         initMaterial(index, null, className);
     }
 }
 
-export var useShader = useShaderUtils;
+export const useShader = useShaderUtils;
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var getOpacity = getOpacityUtils;
+export const getOpacity = getOpacityUtils;
 
-export var getAlphaTest = getAlphaTestUtils;
+export const getAlphaTest = getAlphaTestUtils;
 
-export var isTestAlpha = isTestAlphaUtils;
+export const isTestAlpha = isTestAlphaUtils;
 
-export var initData = (materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData | null, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+export const initData = (materialData: MaterialInitWorkerData, textureData: TextureInitWorkerData | null, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     _initBufferData(materialData.buffer, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
 
     initLightMaterialData(LightMaterialWorkerData);
@@ -87,7 +87,7 @@ export var initData = (materialData: MaterialInitWorkerData, textureData: Textur
     }
 }
 
-var _initBufferData = (buffer: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
+const _initBufferData =(buffer: any, MaterialWorkerData: any, BasicMaterialWorkerData: any, LightMaterialWorkerData: any) => {
     var offset = createTypeArraysUtils(buffer, getBufferTotalCount(), MaterialWorkerData);
 
     offset = createBasicMaterialTypeArraysUtils(buffer, offset, getBasicMaterialBufferCount(), BasicMaterialWorkerData);

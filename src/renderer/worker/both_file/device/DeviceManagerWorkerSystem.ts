@@ -19,7 +19,7 @@ import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { ESide } from "../../../enum/ESide";
 import { RectRegion } from "../../../../structure/RectRegion";
 
-export var createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, contextConfig: Map<string, any>, viewportData: ViewportData) => {
+export const createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, contextConfig: Map<string, any>, viewportData: ViewportData) => {
     return IO.of(() => {
         var offscreen = (<any>canvas).transferControlToOffscreen();
 
@@ -32,17 +32,17 @@ export var createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, co
     })
 })
 
-export var setContextConfig = setContextConfigUtils;
+export const setContextConfig = setContextConfigUtils;
 
-export var getGL = getGLUtils;
+export const getGL = getGLUtils;
 
-export var setGL = setGLUtils;
+export const setGL = setGLUtils;
 
-export var setPixelRatio = setPixelRatioUtils;
+export const setPixelRatio = setPixelRatioUtils;
 
-export var getViewport = getViewportUtils;
+export const getViewport = getViewportUtils;
 
-export var setViewportToState = curry((viewportData: ViewportData | null, state: Map<any, any>) => {
+export const setViewportToState = curry((viewportData: ViewportData | null, state: Map<any, any>) => {
     if (viewportData === null) {
         return state;
     }
@@ -50,7 +50,7 @@ export var setViewportToState = curry((viewportData: ViewportData | null, state:
     return setViewportToStateUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
 });
 
-export var getViewportData = (screenData: ScreenData) => {
+export const getViewportData = (screenData: ScreenData) => {
     var {
         x,
         y,
@@ -66,15 +66,15 @@ export var getViewportData = (screenData: ScreenData) => {
     }
 }
 
-export var setViewportOfGL = curry((DeviceManagerWorkerData: any, data:RectRegion, state: Map<any, any>) => {
+export const setViewportOfGL = curry((DeviceManagerWorkerData: any, data:RectRegion, state: Map<any, any>) => {
     return setViewportOfGLUtils(DeviceManagerWorkerData, state, data);
 })
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery: any, state: Map<any, any>) => {
+export const setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 
-var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
+const _setScreenData =curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -91,7 +91,7 @@ var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElem
     });
 })
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
+export const setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
     return IO.of(() => {
         if (!useDevicePixelRatio) {
             return null;
@@ -101,7 +101,7 @@ export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HT
     });
 });
 
-export var buildViewportData = (x: number, y: number, width: number, height: number) => {
+export const buildViewportData = (x: number, y: number, width: number, height: number) => {
     return {
         x:x,
         y:y,
@@ -110,7 +110,7 @@ export var buildViewportData = (x: number, y: number, width: number, height: num
     }
 }
 
-export var setClearColor = (gl: WebGLRenderingContext, colorArr4: Array<number>, DeviceManagerWorkerData: any) => {
+export const setClearColor = (gl: WebGLRenderingContext, colorArr4: Array<number>, DeviceManagerWorkerData: any) => {
     var color = Color.create();
 
     color.r = colorArr4[0];
@@ -121,10 +121,10 @@ export var setClearColor = (gl: WebGLRenderingContext, colorArr4: Array<number>,
     setClearColorUtils(gl, color, DeviceManagerWorkerData);
 };
 
-export var clear = clearUtils;
+export const clear = clearUtils;
 
-export var setColorWrite = setColorWriteUtils;
+export const setColorWrite = setColorWriteUtils;
 
-export var setSide = setSideUtils;
+export const setSide = setSideUtils;
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;

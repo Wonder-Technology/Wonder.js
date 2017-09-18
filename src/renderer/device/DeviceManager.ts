@@ -13,27 +13,27 @@ import { WorkerInstanceData } from "../../worker/WorkerInstanceData";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { setClearColorData } from "../utils/worker/both_file/device/deviceManagerUtils";
 
-export var getDeviceManagerGL = () => {
+export const getDeviceManagerGL = () => {
     return getGL(DeviceManagerData, getState(DirectorData));
 }
 
-export var setDeviceManagerGL = (gl: WebGLRenderingContext) => {
+export const setDeviceManagerGL = (gl: WebGLRenderingContext) => {
     return setGL(gl, DeviceManagerData, getState(DirectorData));
 }
 
-export var getDeviceManagerViewport = () => {
+export const getDeviceManagerViewport = () => {
     return getViewport(getState(DirectorData));
 }
 
 
-export var getDeviceManagerClearColor = () => {
+export const getDeviceManagerClearColor = () => {
     return getClearColor(DeviceManagerData);
 }
 
 export var setDeviceManagerViewport = null,
     setDeviceManagerClearColor = null;
 
-if(isSupportRenderWorkerAndSharedArrayBuffer()){
+if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     setDeviceManagerViewport = (x: number, y: number, width: number, height: number) => {
         setState(setViewportToState(x, y, width, height, getState(DirectorData)), DirectorData).run();
 
@@ -52,15 +52,15 @@ if(isSupportRenderWorkerAndSharedArrayBuffer()){
         });
     }
 }
-else{
+else {
     setDeviceManagerViewport = (x: number, y: number, width: number, height: number) => {
         setState(
             setViewportOfGL(DeviceManagerData, getState(DirectorData), {
-                    x: x,
-                    y: y,
-                    width: width,
-                    height: height
-                }
+                x: x,
+                y: y,
+                width: width,
+                height: height
+            }
             ).run(), DirectorData
         ).run();
     }

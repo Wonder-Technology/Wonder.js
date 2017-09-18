@@ -59,22 +59,22 @@ import {
     getLightMaterialBufferStartIndex
 } from "../../renderer/utils/material/bufferUtils";
 
-export var addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
+export const addAddComponentHandle = (BasicMaterial: any, LightMaterial: any) => {
     addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
     addAddComponentHandleToMap(LightMaterial, addLightMaterialComponent);
 }
 
-export var addDisposeHandle = (BasicMaterial: any, LightMaterial: any) => {
+export const addDisposeHandle = (BasicMaterial: any, LightMaterial: any) => {
     addDisposeHandleToMap(BasicMaterial, disposeBasicMaterialComponent);
     addDisposeHandleToMap(LightMaterial, disposeLightMaterialComponent);
 }
 
-export var addInitHandle = (BasicMaterial: any, LightMaterial: any) => {
+export const addInitHandle = (BasicMaterial: any, LightMaterial: any) => {
     addInitHandleToMap(BasicMaterial, initBasicMaterial);
     addInitHandleToMap(LightMaterial, initLightMaterial);
 }
 
-export var create = (index: number, material: Material, ShaderData: any, MaterialData: any) => {
+export const create = (index: number, material: Material, ShaderData: any, MaterialData: any) => {
     MaterialData.materialMap[index] = material;
 
     createShader(ShaderData);
@@ -82,9 +82,9 @@ export var create = (index: number, material: Material, ShaderData: any, Materia
     return material;
 }
 
-export var useShader = useShaderUtils;
+export const useShader = useShaderUtils;
 
-export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, AmbientLightData, DirectionLightData: any, PointLightData: any, GPUDetectData: any, GLSLSenderData: any, ProgramData: any, VaoData: any, LocationData: any, ShaderData: any) => {
+export const init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, AmbientLightData, DirectionLightData: any, PointLightData: any, GPUDetectData: any, GLSLSenderData: any, ProgramData: any, VaoData: any, LocationData: any, ShaderData: any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
 
     _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
@@ -93,7 +93,7 @@ export var init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, mat
     initMapManagers(gl, TextureData);
 }
 
-var _initMaterials = (state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {
+const _initMaterials =(state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
         initMaterial(i, state, className, MaterialData);
     }
@@ -118,7 +118,7 @@ else {
     }
 }
 
-// var _updateShaderIndex = requireCheckFunc ((materialIndex: number, shaderIndex:number, MaterialData: any) => {
+// const _updateShaderIndex =requireCheckFunc ((materialIndex: number, shaderIndex:number, MaterialData: any) => {
 //     it("shader should exist in map", () => {
 //         expect(MaterialData.shaderMap[materialIndex]).exist;
 //     });
@@ -138,33 +138,33 @@ else {
     };
 }
 
-export var hasNewInitedMaterial = (MaterialData: any) => {
+export const hasNewInitedMaterial = (MaterialData: any) => {
     return MaterialData.workerInitList.length > 0;
 }
 
-export var getShaderIndex = (materialIndex: number, MaterialData: any) => {
+export const getShaderIndex = (materialIndex: number, MaterialData: any) => {
     return MaterialData.shaderIndices[materialIndex];
 }
 
-// export var getShaderIndexFromTable = getShaderIndexFromTableUtils;
+// export const getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export var getColor = (materialIndex: number, MaterialData: any) => {
+export const getColor = (materialIndex: number, MaterialData: any) => {
     return getColor3Data(materialIndex, MaterialData.colors);
 }
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var setColor = (materialIndex: number, color: Color, MaterialData: any) => {
+export const setColor = (materialIndex: number, color: Color, MaterialData: any) => {
     setColorData(materialIndex, color, MaterialData.colors);
 }
 
-export var setColorData = (materialIndex: number, color: Color, colors: Float32Array) => {
+export const setColorData = (materialIndex: number, color: Color, colors: Float32Array) => {
     setColor3Data(materialIndex, color, colors);
 }
 
-export var getOpacity = getOpacityUtils;
+export const getOpacity = getOpacityUtils;
 
-export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number, MaterialData: any) => {
+export const setOpacity = requireCheckFunc((materialIndex: number, opacity: number, MaterialData: any) => {
     it("opacity should be number", () => {
         expect(opacity).be.a("number");
     });
@@ -179,9 +179,9 @@ export var setOpacity = requireCheckFunc((materialIndex: number, opacity: number
     setTypeArrayValue(MaterialData.opacities, index, opacity);
 })
 
-export var getAlphaTest = getAlphaTestUtils;
+export const getAlphaTest = getAlphaTestUtils;
 
-export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: number, MaterialData: any) => {
+export const setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: number, MaterialData: any) => {
     it("alphaTest should be number", () => {
         expect(alphaTest).be.a("number");
     });
@@ -196,11 +196,11 @@ export var setAlphaTest = requireCheckFunc((materialIndex: number, alphaTest: nu
     setTypeArrayValue(MaterialData.alphaTests, index, alphaTest);
 })
 
-export var addComponent = (component: Material, gameObject: GameObject, MaterialData: any) => {
+export const addComponent = (component: Material, gameObject: GameObject, MaterialData: any) => {
     addComponentToGameObjectMap(MaterialData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
+export const disposeComponent = requireCheckFunc((sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     _checkDisposeComponentWorker(sourceIndex);
 }, (sourceIndex: number, lastComponentIndex: number, MapManagerData: any, MaterialData: any) => {
     var colorDataSize = getColorDataSize(),
@@ -223,7 +223,7 @@ export var disposeComponent = requireCheckFunc((sourceIndex: number, lastCompone
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
 
-var _checkDisposeComponentWorker = null;
+var _checkDisposeComponentWorker =null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _checkDisposeComponentWorker = (materialIndex: number) => {
@@ -238,19 +238,19 @@ else {
     _checkDisposeComponentWorker = (index: number) => { };
 }
 
-export var getGameObject = (index: number, MaterialData: any) => {
+export const getGameObject = (index: number, MaterialData: any) => {
     return getComponentGameObject(MaterialData.gameObjectMap, index);
 }
 
-export var isTestAlpha = isTestAlphaUtils;
+export const isTestAlpha = isTestAlphaUtils;
 
-export var createDefaultColor = () => {
+export const createDefaultColor = () => {
     var color = Color.create();
 
     return color.setColorByNum("#ffffff");
 }
 
-// export var getOrCreateMapManager = (materialIndex:number, MapManagerData:any) => {
+// export const getOrCreateMapManager = (materialIndex:number, MapManagerData:any) => {
 //     var mapManager = MaterialData.mapManagers[materialIndex];
 //
 //     if(isNotValidMapValue(mapManager)){
@@ -262,7 +262,7 @@ export var createDefaultColor = () => {
 //     return mapManager;
 // }
 
-export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+export const initData = (TextureCacheData: any, TextureData: any, MapManagerData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     MaterialData.materialMap = [];
 
     MaterialData.gameObjectMap = [];
@@ -284,7 +284,7 @@ export var initData = (TextureCacheData: any, TextureData: any, MapManagerData: 
     initMapManagerData(TextureCacheData, TextureData, MapManagerData);
 }
 
-var _setMaterialDefaultData = (MaterialData: any) => {
+const _setMaterialDefaultData =(MaterialData: any) => {
     MaterialData.defaultShaderIndex = 0;
     MaterialData.defaultColorArr = createDefaultColor().toVector3().toArray();
     MaterialData.defaultOpacity = 1;
@@ -292,7 +292,7 @@ var _setMaterialDefaultData = (MaterialData: any) => {
 }
 
 
-var _initBufferData = (MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
+const _initBufferData =(MaterialData: any, BasicMaterialData: any, LightMaterialData: any) => {
     var buffer: any = null,
         count = getBufferTotalCount(),
         offset: number = null;
@@ -309,7 +309,7 @@ var _initBufferData = (MaterialData: any, BasicMaterialData: any, LightMaterialD
     MaterialData.buffer = buffer;
 }
 
-var _setMaterialDefaultTypeArrData = (count: number, MaterialData: any) => {
+const _setMaterialDefaultTypeArrData =(count: number, MaterialData: any) => {
     var shaderIndex = MaterialData.defaultShaderIndex,
         color = createDefaultColor(),
         opacity = MaterialData.defaultOpacity,

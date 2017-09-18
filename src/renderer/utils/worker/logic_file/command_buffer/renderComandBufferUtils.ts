@@ -13,7 +13,7 @@ import { CameraController } from "../../../../../component/camera/CameraControll
 import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import { getNormalMatrix, getPosition } from "../../../../../component/transform/ThreeDTransformSystem";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export const createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })
@@ -57,7 +57,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     }
 });
 
-export var initData = (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => {
+export const initData = (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => {
     initBasicRenderComandBufferData(DataBufferConfig, BasicRenderCommandBufferData);
     initLightRenderComandBufferData(DataBufferConfig, LightRenderCommandBufferData);
 }

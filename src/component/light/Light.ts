@@ -6,7 +6,7 @@ import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../Compon
 export abstract class Light extends Component {
 }
 
-export var checkLightShouldAlive = (component: Light) => {
+export const checkLightShouldAlive = (component: Light) => {
     checkComponentShouldAlive(component, null, (component: Light) => {
         return isComponentIndexNotRemoved(component);
     })

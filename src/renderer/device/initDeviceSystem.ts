@@ -50,7 +50,7 @@ else {
     });
 }
 
-export var createCanvas = curry((DomQuery: any, domId: string) => {
+export const createCanvas = curry((DomQuery: any, domId: string) => {
     return IO.of(() => {
         if (domId !== "") {
             return DomQuery.create(_getCanvasId(domId)).get(0);
@@ -60,7 +60,7 @@ export var createCanvas = curry((DomQuery: any, domId: string) => {
     })
 })
 
-var _getCanvasId = ensureFunc((id: string) => {
+const _getCanvasId =ensureFunc((id: string) => {
     it("dom id should be #string", () => {
         expect(/#[^#]+/.test(id)).true;
     });

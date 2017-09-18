@@ -8,9 +8,9 @@ import {
     requireFunc as requireFuncCommonLib
 } from "wonder-commonlib/dist/es2015/typescript/decorator/contract";
 
-var _getCompileIsTest = () => CompileConfig.isCompileTest;
+const _getCompileIsTest =() => CompileConfig.isCompileTest;
 
-var _getRunTimeIsTest = () => {
+const _getRunTimeIsTest =() => {
     if (InitConfigData.isTest === true || InitConfigWorkerData.isTest === true) {
         return true;
     }
@@ -18,9 +18,9 @@ var _getRunTimeIsTest = () => {
     return false;
 }
 
-export var describe = describeCommonLib;
+export const describe = describeCommonLib;
 
-export var it = itCommonLib;
+export const it = itCommonLib;
 
 export function requireCheck(inFunc) {
     return function(target, name, descriptor) {

@@ -5,7 +5,7 @@ import { WebGLDetectData } from "./WebGLDetectData";
 import { root } from "../../definition/Variable";
 import { isWebgl1 as isWebgl1Utils, isWebgl2 as isWebgl2Utils } from "../utils/worker/render_file/device/webglDetectUtils";
 
-export var detect = (WebGLDetectData: any) => {
+export const detect = (WebGLDetectData: any) => {
     /*!
      for unit test
      */
@@ -39,10 +39,10 @@ export var detect = (WebGLDetectData: any) => {
     }
 }
 
-export var isWebgl1 = () => isWebgl1Utils(WebGLDetectData);
+export const isWebgl1 = () => isWebgl1Utils(WebGLDetectData);
 
-export var isWebgl2 = () => isWebgl2Utils(WebGLDetectData);
+export const isWebgl2 = () => isWebgl2Utils(WebGLDetectData);
 
-export var getVersion = (WebGLDetectData: any) => WebGLDetectData.version;
+export const getVersion = (WebGLDetectData: any) => WebGLDetectData.version;
 
 detect(WebGLDetectData);

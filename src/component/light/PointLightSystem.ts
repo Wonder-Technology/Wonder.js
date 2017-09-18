@@ -34,7 +34,7 @@ import {
 import { getLinearDataSize } from "../../renderer/utils/worker/render_file/light/pointLightUtils";
 import { Map } from "immutable";
 
-export var create = ensureFunc((light: PointLight, PointLightData: any) => {
+export const create = ensureFunc((light: PointLight, PointLightData: any) => {
     //todo check: shouldn't create after init(direction, ambient)
     it("shouldn't create after Director->init", () => {
         expect(isInit(DirectorData)).false;
@@ -47,11 +47,11 @@ export var create = ensureFunc((light: PointLight, PointLightData: any) => {
     return light;
 })
 
-export var getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, PointLightData: any) => {
+export const getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, PointLightData: any) => {
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, PointLightData);
 }
 
-export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any): Array<Float32Array> => {
+export const getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, PointLightData: any): Array<Float32Array> => {
     var positionArr: Array<Float32Array> = [];
 
     for (let i = 0, count = PointLightData.count; i < count; i++) {
@@ -61,59 +61,59 @@ export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, 
     return positionArr;
 }
 
-export var getColor = (index: number, PointLightData: any) => {
+export const getColor = (index: number, PointLightData: any) => {
     return getColor3Data(index, PointLightData.colors);
 }
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var setColor = (index: number, color: Color, PointLightData: any) => {
+export const setColor = (index: number, color: Color, PointLightData: any) => {
     setSpecifyLightColor(index, color, PointLightData.colors);
 
     markDirty(index, PointLightData.isColorDirtys);
 }
 
-export var getIntensity = getIntensityUtils;
+export const getIntensity = getIntensityUtils;
 
-export var setIntensity = (index: number, value: number, PointLightData: any) => {
+export const setIntensity = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.intensities, index, value);
 
     markDirty(index, PointLightData.isIntensityDirtys);
 }
 
-export var getConstant = getConstantUtils;
+export const getConstant = getConstantUtils;
 
-export var setConstant = (index: number, value: number, PointLightData: any) => {
+export const setConstant = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.constants, index, value);
 
     markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
-export var getLinear = getLinearUtils;
+export const getLinear = getLinearUtils;
 
-export var setLinear = (index: number, value: number, PointLightData: any) => {
+export const setLinear = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.linears, index, value);
 
     markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
-export var getQuadratic = getQuadraticUtils;
+export const getQuadratic = getQuadraticUtils;
 
-export var setQuadratic = (index: number, value: number, PointLightData: any) => {
+export const setQuadratic = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.quadratics, index, value);
 
     markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
-export var getRange = getRangeUtils;
+export const getRange = getRangeUtils;
 
-export var setRange = (index: number, value: number, PointLightData: any) => {
+export const setRange = (index: number, value: number, PointLightData: any) => {
     setSingleValue(PointLightData.ranges, index, value);
 
     markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
-export var setRangeLevel = (index: number, value: number, PointLightData: any) => {
+export const setRangeLevel = (index: number, value: number, PointLightData: any) => {
     switch (value) {
         case 0:
             setRange(index, 7, PointLightData);
@@ -183,7 +183,7 @@ export var setRangeLevel = (index: number, value: number, PointLightData: any) =
     markDirty(index, PointLightData.isAttenuationDirtys);
 }
 
-export var initDataHelper = (PointLightData: any) => {
+export const initDataHelper = (PointLightData: any) => {
     var count = getPointLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize() + getConstantDataSize() + getLinearDataSize() + getQuadraticDataSize() + getRangeDataSize()) + Uint8Array.BYTES_PER_ELEMENT * (getDirtyDataSize() * 4),
         buffer: any = null;
@@ -203,7 +203,7 @@ export var initDataHelper = (PointLightData: any) => {
     _setDefaultTypeArrData(count, PointLightData);
 }
 
-var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
+const _setDefaultTypeArrData =(count: number, PointLightData: any) => {
     var color = createDefaultColor(),
         intensity = PointLightData.defaultIntensity,
         constant = PointLightData.defaultConstant,
@@ -225,7 +225,7 @@ var _setDefaultTypeArrData = (count: number, PointLightData: any) => {
     }
 }
 
-export var disposeComponent = (component: Light, PointLightData: any) => {
+export const disposeComponent = (component: Light, PointLightData: any) => {
     var intensityDataSize = getIntensityDataSize(),
         constantDataSize = getConstantDataSize(),
         linearDataSize = getLinearDataSize(),
@@ -251,23 +251,23 @@ export var disposeComponent = (component: Light, PointLightData: any) => {
     return lastComponentIndex;
 }
 
-export var init = (PointLightData: any, state: Map<any, any>) => {
+export const init = (PointLightData: any, state: Map<any, any>) => {
     return bindChangePositionEvent(PointLightData, state);
 }
 
-export var isPositionDirty = isPositionDirtyUtils;
+export const isPositionDirty = isPositionDirtyUtils;
 
-export var isColorDirty = isColorDirtyUtils;
+export const isColorDirty = isColorDirtyUtils;
 
-export var isIntensityDirty = isIntensityDirtyUtils;
+export const isIntensityDirty = isIntensityDirtyUtils;
 
-export var isAttenuationDirty = isAttenuationDirtyUtils;
+export const isAttenuationDirty = isAttenuationDirtyUtils;
 
-export var cleanPositionDirty = cleanPositionDirtyUtils;
+export const cleanPositionDirty = cleanPositionDirtyUtils;
 
-export var cleanColorDirty = cleanColorDirtyUtils;
+export const cleanColorDirty = cleanColorDirtyUtils;
 
-export var cleanIntensityDirty = cleanIntensityDirtyUtils;
+export const cleanIntensityDirty = cleanIntensityDirtyUtils;
 
-export var cleanAttenuationDirty = cleanAttenuationDirtyUtils;
+export const cleanAttenuationDirty = cleanAttenuationDirtyUtils;
 

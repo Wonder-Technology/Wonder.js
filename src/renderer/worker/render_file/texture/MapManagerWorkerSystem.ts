@@ -5,11 +5,11 @@ import {
 } from "../../../utils/worker/render_file/texture/mapManagerUtils";
 import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
 
-export var initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
+export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
     initTextures(gl, TextureWorkerData);
 }
 
-export var getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
+export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
     var textureCounts = MapManagerWorkerData.textureCounts;
 
     if (textureCounts === null) {
@@ -21,25 +21,25 @@ export var getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
 
 //todo support multi textures
 
-// export var addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerData:any) => {
+// export const addMapList = (materialIndex: number, mapList: Array<Texture>, MapManagerData:any) => {
 //     for(let map of mapList){
 //         addMap(materialIndex, map, MapManagerData);
 //     }
 // }
 
-export var bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
     bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
 }
 
-// export var dispose = disposeUtils;
+// export const dispose = disposeUtils;
 
-export var initData = (textureData: TextureInitWorkerData, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any) => {
+export const initData = (textureData: TextureInitWorkerData, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any) => {
     initTextureData(textureData.textureBuffer, TextureCacheWorkerData, TextureWorkerData);
 
     _initBufferData(textureData.mapManagerBuffer, MapManagerWorkerData);
 }
 
-var _initBufferData = (buffer: any, MapManagerWorkerData: any) => {
+const _initBufferData =(buffer: any, MapManagerWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), MapManagerWorkerData);
 }
 

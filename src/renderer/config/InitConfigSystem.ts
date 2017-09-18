@@ -5,13 +5,13 @@ import { getRenderWorker } from "../../worker/WorkerInstanceSystem";
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import { getIsTest as getIsTestUtils, setIsTest as setIsTestUtils } from "../utils/config/initConfigUtils";
 
-export var setLibIsTest = (isTest: boolean) => {
+export const setLibIsTest = (isTest: boolean) => {
     return IO.of(() => {
         Main.isTest = isTest;
     });
 }
 
-export var getIsTest = getIsTestUtils;
+export const getIsTest = getIsTestUtils;
 
 export var setIsTest = null;
 

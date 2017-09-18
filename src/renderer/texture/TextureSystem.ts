@@ -25,7 +25,7 @@ import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } f
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { ImageSrcIndexData } from "../type/messageDataType";
 
-export var create = ensureFunc((component: Texture) => {
+export const create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
         expect(component.index).lte(getBufferCount());
     });
@@ -40,63 +40,63 @@ export var create = ensureFunc((component: Texture) => {
     return texture;
 })
 
-export var getSource = getSourceUtils;
+export const getSource = getSourceUtils;
 
-export var setSource = (textureIndex: number, source: any, TextureData: any) => {
+export const setSource = (textureIndex: number, source: any, TextureData: any) => {
     TextureData.sourceMap[textureIndex] = source;
 }
 
-export var getWidth = getWidthUtils;
+export const getWidth = getWidthUtils;
 
-export var setWidth = (textureIndex: number, value: any, TextureData: any) => {
+export const setWidth = (textureIndex: number, value: any, TextureData: any) => {
     setTypeArrayValue(TextureData.widths, textureIndex, value);
 }
 
-export var getHeight = getHeightUtils;
+export const getHeight = getHeightUtils;
 
-export var setHeight = (textureIndex: number, value: any, TextureData: any) => {
+export const setHeight = (textureIndex: number, value: any, TextureData: any) => {
     setTypeArrayValue(TextureData.heights, textureIndex, value);
 }
 
-export var getIsNeedUpdate = getIsNeedUpdateUtils;
+export const getIsNeedUpdate = getIsNeedUpdateUtils;
 
-export var setIsNeedUpdate = (textureIndex: number, value: number, TextureData: any) => {
+export const setIsNeedUpdate = (textureIndex: number, value: number, TextureData: any) => {
     setTypeArrayValue(TextureData.isNeedUpdates, textureIndex, value);
 }
 //
 // //todo add set methods
 //
-// export var getWrapS = getWrapSUtils;
+// export const getWrapS = getWrapSUtils;
 //
-// export var getWrapT = getWrapTUtils;
+// export const getWrapT = getWrapTUtils;
 //
-// export var getMagFilter = getMagFilterUtils;
+// export const getMagFilter = getMagFilterUtils;
 //
-// export var getMinFilter = getMinFilterUtils;
+// export const getMinFilter = getMinFilterUtils;
 //
-// export var getFormat = getFormatUtils;
+// export const getFormat = getFormatUtils;
 //
-// export var getType = getTypeUtils;
+// export const getType = getTypeUtils;
 //
-// export var getFlipY = getFlipYUtils;
+// export const getFlipY = getFlipYUtils;
 
-export var setUniformSamplerName = (index: number, name: string, TextureData: any) => {
+export const setUniformSamplerName = (index: number, name: string, TextureData: any) => {
     TextureData.uniformSamplerNameMap[index] = name;
 }
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
+export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 }
 //
-// var _getWebglTexture = (textureIndex:number, TextureData:any) => {
+// const _getWebglTexture =(textureIndex:number, TextureData:any) => {
 //     return TextureData.glTextures[textureIndex];
 // }
 
-export var initTextures = initTexturesUtils;
+export const initTextures = initTexturesUtils;
 
-// export var initTexture = initTexture
+// export const initTexture = initTexture
 //
-// var _createWebglTexture = (gl:WebGLRenderingContext, textureIndex:number, TextureData:any) => {
+// const _createWebglTexture =(gl:WebGLRenderingContext, textureIndex:number, TextureData:any) => {
 //     var glTexture = _getWebglTexture(textureIndex, TextureData);
 //
 //     if(_isGLTextureExist(glTexture)){
@@ -106,19 +106,19 @@ export var initTextures = initTexturesUtils;
 //     TextureData.glTextures[textureIndex] = gl.createTexture();
 // }
 //
-// var _isGLTextureExist = (glTexture:WebGLTexture) => isValidVal(glTexture);
+// const _isGLTextureExist =(glTexture:WebGLTexture) => isValidVal(glTexture);
 
-export var needUpdate = needUpdateUtils;
+export const needUpdate = needUpdateUtils;
 
-export var update = (gl: WebGLRenderingContext, textureIndex: number, TextureData: any) => {
+export const update = (gl: WebGLRenderingContext, textureIndex: number, TextureData: any) => {
     updateUtils(gl, textureIndex, _setFlipY, TextureData);
 }
 
-var _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
+const _setFlipY =(gl: WebGLRenderingContext, flipY: boolean) => {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 }
 
-export var dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
+export const dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
     var bufferDataSize = getBufferDataSize(),
         sourceIndex = texture.index,
         lastComponentIndex: number = null;
@@ -140,7 +140,7 @@ export var dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCacheD
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 }
 
-var _disposeGLTexture = null,
+var _disposeGLTexture =null,
     _addDisposeDataForWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
@@ -151,7 +151,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         TextureData.disposedTextureDataMap.push(_buildDisposedTextureData(sourceIndex, lastComponentIndex));
     }
 
-    var _buildDisposedTextureData = (sourceIndex: number, lastComponentIndex: number) => {
+    const _buildDisposedTextureData =(sourceIndex: number, lastComponentIndex: number) => {
         return {
             sourceIndex: sourceIndex,
             lastComponentIndex: lastComponentIndex
@@ -167,15 +167,15 @@ else {
     }
 }
 
-export var hasDisposedTextureDataMap = (TextureData: any) => {
+export const hasDisposedTextureDataMap = (TextureData: any) => {
     return TextureData.disposedTextureDataMap.length > 0;
 }
 
-export var clearDisposedTextureDataMap = (TextureData: any) => {
+export const clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-export var convertSourceMapToSrcIndexArr = (TextureData: any) => {
+export const convertSourceMapToSrcIndexArr = (TextureData: any) => {
     var arr: Array<ImageSrcIndexData> = [];
 
     forEach(TextureData.sourceMap, (source: HTMLImageElement, index: number) => {
@@ -192,13 +192,13 @@ export var convertSourceMapToSrcIndexArr = (TextureData: any) => {
     return arr;
 }
 
-export var getUniformSamplerNameMap = (TextureData: any) => {
+export const getUniformSamplerNameMap = (TextureData: any) => {
     return TextureData.uniformSamplerNameMap;
 }
 
-var _isSourceNotExist = (source: HTMLImageElement) => isNotValidVal(source);
+const _isSourceNotExist =(source: HTMLImageElement) => isNotValidVal(source);
 
-// export var convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
+// export const convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
 //     var imageDataArr = [],
 //         canvas = getCanvas(getState(DirectorData)),
 //         canvasWidth = getCanvasWidth(canvas),
@@ -215,7 +215,7 @@ var _isSourceNotExist = (source: HTMLImageElement) => isNotValidVal(source);
 //     return imageDataArr;
 // }
 
-export var initData = (TextureCacheData: any, TextureData: any) => {
+export const initData = (TextureCacheData: any, TextureData: any) => {
     initTextureCacheData(TextureCacheData);
 
     TextureData.index = 0;
@@ -234,13 +234,13 @@ export var initData = (TextureCacheData: any, TextureData: any) => {
     _initBufferData(TextureData);
 }
 
-var _setDefaultData = (TextureData: any) => {
+const _setDefaultData =(TextureData: any) => {
     TextureData.defaultWidth = 0;
     TextureData.defaultHeight = 0;
     TextureData.defaultIsNeedUpdate = 0;
 }
 
-var _initBufferData = (TextureData: any) => {
+const _initBufferData =(TextureData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getBufferDataSize() * 2) + Uint8Array.BYTES_PER_ELEMENT * (getBufferDataSize()),
@@ -255,7 +255,7 @@ var _initBufferData = (TextureData: any) => {
     TextureData.buffer = buffer;
 }
 
-var _setDefaultTypeArrData = (count: number, TextureData: any) => {
+const _setDefaultTypeArrData =(count: number, TextureData: any) => {
     var width = TextureData.defaultWidth,
         height = TextureData.defaultHeight,
         isNeedUpdate = TextureData.defaultIsNeedUpdate;

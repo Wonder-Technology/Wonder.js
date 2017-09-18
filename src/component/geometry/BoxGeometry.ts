@@ -7,11 +7,11 @@ import { GeometryData } from "./GeometryData";
 export class BoxGeometry extends Geometry {
 }
 
-export var createBoxGeometry = () => {
+export const createBoxGeometry = () => {
     return create(GeometryData);
 }
 
-export var setBoxGeometryConfigData = (geometry: BoxGeometry, data: BoxGeometryConfigData) => {
+export const setBoxGeometryConfigData = (geometry: BoxGeometry, data: BoxGeometryConfigData) => {
     setConfigData(geometry.index, data, GeometryData);
 }
 
