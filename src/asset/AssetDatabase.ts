@@ -1,4 +1,4 @@
-import { get, preload } from "./AssetDatabaseSystem";
+import { get, load, preload } from "./AssetDatabaseSystem";
 import { AssetData } from "./dataType";
 import { AssetDatabaseData } from "./AssetDatabaseData";
 
@@ -11,4 +11,8 @@ export function preloadAsset(...args){
 
 export const getAsset = (id: string) => {
     return get(id, AssetDatabaseData);
+}
+
+export const loadAsset = (assetData:AssetData) => {
+    return load(assetData, AssetDatabaseData);
 }

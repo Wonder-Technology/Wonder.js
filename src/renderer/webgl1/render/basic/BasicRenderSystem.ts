@@ -9,7 +9,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount, getStartTextureIndex } from "../../../texture/MapManagerSystem";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../component/light/AmbientLightSystem";
 // import {
 //     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
@@ -48,7 +48,7 @@ import {
 } from "../../../utils/worker/render_file/render/basic/basicRenderUtils";
 
 export const render = curry((gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
-    renderBasic(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
+    renderBasic(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader), drawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         // getAmbientLightColorArr3,
         // getDirectionLightColorArr3, getDirectionLightIntensity, getDirectionLightPosition,

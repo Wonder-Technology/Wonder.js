@@ -36,8 +36,11 @@ import { LightMaterialData } from "./LightMaterialData";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { Texture } from "../../renderer/texture/Texture";
-import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { addMap, getMapCount, initMapManager } from "../../renderer/texture/MapManagerSystem";
 import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getGL } from "../../renderer/device/DeviceManagerSystem";
+import { TextureData } from "../../renderer/texture/TextureData";
+import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
 
 export const create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -128,8 +131,14 @@ export const hasSpecularMap = (index: number, LightMaterialData: any) => {
     return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialData);
 }
 
+export const initMaterialWithoutInitMap = (index: number, state: Map<any, any>) => {
+    initMaterialMaterial(index, state, getClassName(), MaterialData);
+}
+
 export const initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, getClassName(), MaterialData);
+
+    initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
 }
 
 export const addComponent = (component: Material, gameObject: GameObject) => {

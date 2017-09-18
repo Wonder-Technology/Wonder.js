@@ -43,6 +43,7 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
             getIndexTypeSize,
             getVerticesCount,
             getMapCount,
+            getStartTextureIndex,
             bindAndUpdate,
             useShader
         } = drawFuncDataMap,
@@ -59,6 +60,7 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
             geometryIndex = geometryIndices[i],
             materialIndex = materialIndices[i],
             mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
+            startTextureUnitIndex = getStartTextureIndex(materialIndex, MapManagerDataFromSystem),
             drawMode = EDrawMode.TRIANGLES;
 
         let shaderIndex = useShader(materialIndex, useShaderName, state, material_config, shaderLib_generator, initMaterialShader, initShaderDataMap);
@@ -74,9 +76,9 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
 
         sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 
-        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem, GPUDetectDataFromSystem);
+        bindAndUpdate(gl, mapCount, startTextureUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem, GPUDetectDataFromSystem);
 
-        sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
+        sendData(gl, mapCount, startTextureUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);

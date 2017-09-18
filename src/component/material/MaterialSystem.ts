@@ -30,12 +30,18 @@ import {
     addComponent as addBasicMaterialComponent,
     createTypeArrays as createBasicMaterialTypeArrays,
     disposeComponent as disposeBasicMaterialComponent,
-    initData as initBasicMaterialData, initMaterial as initBasicMaterial, setDefaultData as setBasicMaterialDefaultData
+    initData as initBasicMaterialData,
+    initMaterial as initBasicMaterial,
+    initMaterialWithoutInitMap as initBasicMaterialWithoutInitMap,
+    setDefaultData as setBasicMaterialDefaultData
 } from "./BasicMaterialSystem";
 import {
     addComponent as addLightMaterialComponent, createTypeArrays as createLightMaterialTypeArrays,
     disposeComponent as disposeLightMaterialComponent,
-    initData as initLightMaterialData, initMaterial as initLightMaterial, setDefaultData as setLightMaterialDefaultData
+    initData as initLightMaterialData,
+    initMaterial as initLightMaterial,
+    initMaterialWithoutInitMap as initLightMaterialWithoutInitMap,
+    setDefaultData as setLightMaterialDefaultData
 } from "./LightMaterialSystem";
 import {
     getBasicMaterialBufferCount, getBufferLength, getBufferTotalCount,
@@ -49,8 +55,6 @@ import {
     initMapManagers
 } from "../../renderer/texture/MapManagerSystem";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
-import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
 import { IMaterialConfig } from "../../renderer/data/material_config_interface";
 import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
@@ -87,15 +91,16 @@ export const useShader = useShaderUtils;
 export const init = (state: MapImmutable<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, AmbientLightData, DirectionLightData: any, PointLightData: any, GPUDetectData: any, GLSLSenderData: any, ProgramData: any, VaoData: any, LocationData: any, ShaderData: any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
 
-    _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
-    _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
+    //todo pass test!
+    _initMaterials(state, getBasicMaterialBufferStartIndex(), initBasicMaterialWithoutInitMap, BasicMaterialData);
+    _initMaterials(state, getLightMaterialBufferStartIndex(), initLightMaterialWithoutInitMap, LightMaterialData);
 
     initMapManagers(gl, TextureData);
 }
 
-const _initMaterials =(state: MapImmutable<any, any>, startIndex: number, className: string, SpecifyMaterialData: any, MaterialData: any) => {
+const _initMaterials =(state: MapImmutable<any, any>, startIndex: number, initSpecifyMaterialWithoutInitMap:Function, SpecifyMaterialData: any) => {
     for (let i = startIndex; i < SpecifyMaterialData.index; i++) {
-        initMaterial(i, state, className, MaterialData);
+        initSpecifyMaterialWithoutInitMap(i, state);
     }
 }
 

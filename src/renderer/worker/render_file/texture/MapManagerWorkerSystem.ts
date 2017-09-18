@@ -5,6 +5,8 @@ import {
 } from "../../../utils/worker/render_file/texture/mapManagerUtils";
 import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
 
+//todo fix
+
 export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
     initTextures(gl, TextureWorkerData);
 }

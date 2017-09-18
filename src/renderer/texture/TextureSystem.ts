@@ -18,7 +18,7 @@ import {
     // getType as getTypeUtils,
     // getFlipY as getFlipYUtils,
     getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
-    bindToUnit as bindToUnitUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
+    bindToUnit as bindToUnitUtils, initTexture as initTextureUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
     update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils
 } from "../utils/worker/render_file/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
@@ -93,6 +93,9 @@ export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, texture
 // }
 
 export const initTextures = initTexturesUtils;
+
+//todo fix worker
+export const initTexture = initTextureUtils;
 
 // export const initTexture = initTexture
 //

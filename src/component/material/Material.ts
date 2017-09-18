@@ -21,7 +21,7 @@ export const getMaterialGameObject = requireCheckFunc((material: Material) => {
 //     return getShader(material.index, MaterialData.shaderMap);
 // }
 //
-// export const initMaterial = (material: Material) => {
+// export const initMaterialWithoutInitMap = (material: Material) => {
 //     initMaterialSystem(material.index, getState(DirectorData));
 // }
 

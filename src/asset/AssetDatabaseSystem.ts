@@ -63,8 +63,21 @@ export const streamLoad = () => {
 
 }
 
-export const load = () => {
+//todo support load array assets
+export const load = ({url, id}, AssetDatabaseData:any) => {
+    return _createLoadSingleAssetStream(url, id, AssetDatabaseData)
+        .map(() => {
+            if(has(id, AssetDatabaseData)){
+                AssetDatabaseData.totalAssertCount += 1;
+            }
 
+            AssetDatabaseData.currentLoadedCount += 1;
+
+            return {
+                currentLoadedCount: AssetDatabaseData.currentLoadedCount,
+                totalAssetCount:AssetDatabaseData.totalAssertCount
+            }
+        });
 }
 
 export const set = () => {

@@ -7,7 +7,7 @@ export const buildDrawDataMap = (GBufferDataFromSystem: any, DeferAmbientLightPa
     }
 }
 
-export const buildDrawFuncDataMap = (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader: Function, bindGBuffer: Function, unbindGBuffer: Function, getNewTextureUnitIndex: Function) => {
+export const buildDrawFuncDataMap = (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, getStartTextureIndex:Function, useShader: Function, bindGBuffer: Function, unbindGBuffer: Function, getNewTextureUnitIndex: Function) => {
     return {
         sendAttributeData: sendAttributeData,
         sendUniformData: sendUniformData,
@@ -20,6 +20,7 @@ export const buildDrawFuncDataMap = (sendAttributeData: Function, sendUniformDat
         getVerticesCount: getVerticesCount,
         bindAndUpdate: bindAndUpdate,
         getMapCount: getMapCount,
+        getStartTextureIndex: getStartTextureIndex,
         useShader: useShader,
         bindGBuffer: bindGBuffer,
         unbindGBuffer: unbindGBuffer,

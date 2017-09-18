@@ -22,7 +22,7 @@ export const draw = (gl: any, state: Map<any, any>, render_config: IRenderConfig
             mMatrixFloatArrayForSend
         } = LightDrawRenderCommandBufferDataFromSystem;
 
-    drawGameObjects(gl, state, material_config, shaderLib_generator, DataBufferConfig, 0, "FrontRenderLight", initMaterialShader, drawFuncDataMap, drawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix, cameraPosition, normalMatrix), bufferData);
+    drawGameObjects(gl, state, material_config, shaderLib_generator, DataBufferConfig, "FrontRenderLight", initMaterialShader, drawFuncDataMap, drawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix, cameraPosition, normalMatrix), bufferData);
 
     return state;
 };

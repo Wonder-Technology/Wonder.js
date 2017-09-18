@@ -115,14 +115,13 @@ export const setIsNeedUpdate = (textureIndex: number, value: number, TextureData
     setTypeArrayValue(TextureDataFromSystem.isNeedUpdates, textureIndex, value);
 }
 
-
 export const initTextures = (gl: WebGLRenderingContext, TextureDataFromSystem: any) => {
     for (let i = 0; i < TextureDataFromSystem.index; i++) {
-        _initTexture(gl, i, TextureDataFromSystem);
+        initTexture(gl, i, TextureDataFromSystem);
     }
 }
 
-const _initTexture =(gl: WebGLRenderingContext, textureIndex: number, TextureDataFromSystem: any) => {
+export const initTexture =(gl: WebGLRenderingContext, textureIndex: number, TextureDataFromSystem: any) => {
     _createWebglTexture(gl, textureIndex, TextureDataFromSystem);
 }
 

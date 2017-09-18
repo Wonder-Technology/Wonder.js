@@ -20,10 +20,13 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
 } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
-import { addMap as addMapByMapManager, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { addMap as addMapByMapManager, getMapCount, initMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getGL } from "../../renderer/device/DeviceManagerSystem";
+import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
+import { TextureData } from "../../renderer/texture/TextureData";
 
 export const create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
@@ -41,8 +44,14 @@ export const create = ensureFunc((component: Material) => {
     return material;
 })
 
+export const initMaterialWithoutInitMap = (index: number, state: Map<any, any>) => {
+    initMaterialMaterial(index, state, getClassName(), MaterialData);
+}
+
 export const initMaterial = (index: number, state: Map<any, any>) => {
     initMaterialMaterial(index, state, getClassName(), MaterialData);
+
+    initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
 }
 
 // export const getMap = (materialIndex: number, MapManagerData:any) => {

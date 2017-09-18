@@ -13,7 +13,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount } from "../../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount, getStartTextureIndex } from "../../../../texture/MapManagerSystem";
 import {
     getColorArr3 as getAmbientLightColorArr3,
     isColorDirty as isAmbientLightColorDirty,
@@ -46,7 +46,7 @@ import { DeferDrawDataMap } from "../../../utils/worker/render_file/type/utilsTy
 export const init = initUtils;
 
 export const render = curry((ThreeDTransformData: any, GameObjectData: any, gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
-    renderDefer(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
+    renderDefer(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex), drawDataMap, deferDrawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
         (index: number, DirectionDataFromSystem: any) => {

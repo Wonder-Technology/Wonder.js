@@ -2,6 +2,8 @@ import { SendUniformDataGLSLSenderDataMap } from "../../../../type/utilsType";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { sendData as sendTextureData } from "./textureUtils";
 import { getBufferTotalCount } from "../material/bufferUtils";
+import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
 //todo support multi textures
 
@@ -15,20 +17,26 @@ export const getTextureIndexDataSize = () => 1;
 
 export const getTextureCountDataSize = () => 1;
 
-export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
-    // var count = getMapCount(materialIndex, MapManagerDataFromSystem),
+export const bindAndUpdate = requireCheckFunc((gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+    it("mapCount should >= 0", () => {
+        expect(mapCount).gte(0);
+    });
+    it("startIndex should >= 0", () => {
+        expect(startIndex).gte(0);
+    });
+}, (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
-    for (let i = 0; i < mapCount; i++) {
+    for (let i = startIndex, count = mapCount + startIndex; i < count; i++) {
         let textureIndex = textureIndices[i];
 
-        bindToUnit(gl, i + startIndex, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem, GPUDetectDataFromSystem);
+        bindToUnit(gl, i, textureIndex, TextureCacheDataFromSystem, TextureDataFromSystem, GPUDetectDataFromSystem);
 
         if (needUpdate(textureIndex, TextureDataFromSystem)) {
             update(gl, textureIndex, TextureDataFromSystem);
         }
     }
-}
+})
 
 export const sendData = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
     var textureIndices = MapManagerData.textureIndices;
