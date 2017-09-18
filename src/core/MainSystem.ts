@@ -94,6 +94,8 @@ import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/l
 import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferAmbientLightPassData";
 import { initData as initDeviceManagerData } from "../renderer/device/DeviceManagerSystem";
 import { DeviceManagerData } from "../renderer/device/DeviceManagerData";
+import { initData as initAssetDatabaseData } from "../asset/AssetDatabaseSystem";
+import { AssetDatabaseData } from "../asset/AssetDatabaseData";
 
 export const setConfig = (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {
     canvasId = "",
@@ -286,4 +288,6 @@ const _initBothData =() => {
     initVaoData(VaoData);
 
     initDeviceManagerData(DeviceManagerData);
+
+    initAssetDatabaseData(AssetDatabaseData);
 }

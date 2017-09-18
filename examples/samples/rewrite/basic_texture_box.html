@@ -18,19 +18,20 @@
 
 <script>
     window.onload = function () {
-        var image = new Image();
+        wd.Main.setConfig({
+            isTest:true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
 
-        image.src = "../../asset/texture/1.jpg";
-
-        image.onload = function(){
-            wd.Main.setConfig({
-                isTest:true,
-                screenSize: wd.EScreenSize.FULL
-            }).init();
-
-            initSample();
-        }
-
+        wd.preloadAsset("../../asset/texture/1.jpg")
+            .subscribe(function ({
+                    currentLoadedCount,
+                    totalAssetCount
+                }) {
+                console.log(currentLoadedCount, totalAssetCount)
+            }, null, function () {
+                initSample();
+            });
 
 
 
@@ -57,6 +58,7 @@
 
             var texture = textureTool.create();
 
+            var image = wd.getAsset("../../asset/texture/1.jpg").source;
             textureTool.setSource(texture, image);
 
             basicMaterialTool.addMap(material, texture);
