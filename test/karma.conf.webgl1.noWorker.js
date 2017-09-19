@@ -33,8 +33,8 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
-        'test/unit/no_worker/**/hotLoad*',
+        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/hotLoad*',
         // 'test/unit/no_worker/**/device*',
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/vao*',
@@ -43,7 +43,7 @@
         // 'test/unit/no_worker/**/Scene*',
         // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
-        // 'test/unit/no_worker/**/*Texture*',
+        // 'test/unit/no_worker/**/TextureSpec*',
         // 'test/unit/no_worker/**/ColorSpec*',
         // 'test/unit/no_worker/**/shader*Spec*',
         // 'test/unit/no_worker/**/Shader*Spec*',

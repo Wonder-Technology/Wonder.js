@@ -88,12 +88,12 @@ describe("Texture", function () {
             });
         });
     });
-    
+
     describe("getWidth", function() {
         beforeEach(function(){
-            
+
         });
-        
+
         describe("if set source", function(){
             var source;
 
@@ -443,19 +443,21 @@ describe("Texture", function () {
                 var glUnit0 = "TEXTURE0";
                 gl["TEXTURE0"] = glUnit0;
 
+                var callCount = gl.activeTexture.withArgs(glUnit0).callCount;
+
                 directorTool.loopBody(state);
 
-                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(1)
+                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(callCount + 1)
 
                 textureSystemTool.dispose(texture);
 
-                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(2)
+                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(callCount + 2)
 
 
 
                 directorTool.loopBody(state);
 
-                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(3)
+                expect(gl.activeTexture.withArgs(glUnit0).callCount).toEqual(callCount + 3)
             });
             it("swap remove from glTextures", function () {
                 textureSystemTool.dispose(texture);
