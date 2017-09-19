@@ -15,7 +15,7 @@ import {
     IWebGL2LightSendUniformDataDataMap
 } from "../interface/IUtils";
 
-export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex: number, useShaderName: string, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData: BasicRenderUniformData | LightRenderUniformData, {
+export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, definedStartTextureUnitIndex: number, useShaderName: string, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData: BasicRenderUniformData | LightRenderUniformData, {
     renderCommandBufferData: {
         mMatrices,
     materialIndices,
@@ -25,12 +25,12 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
 }) => {
     var {
             TextureDataFromSystem,
-        TextureCacheDataFromSystem,
-        MapManagerDataFromSystem,
-        ProgramDataFromSystem,
-        LocationDataFromSystem,
-        GLSLSenderDataFromSystem,
-        GeometryDataFromSystem
+            TextureCacheDataFromSystem,
+            MapManagerDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem,
+            GeometryDataFromSystem
         } = drawDataMap,
         {
             sendAttributeData,
@@ -60,7 +60,7 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
             geometryIndex = geometryIndices[i],
             materialIndex = materialIndices[i],
             mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
-            startTextureUnitIndex = getStartTextureIndex(materialIndex, MapManagerDataFromSystem),
+            startTextureUnitIndex = getStartTextureIndex(materialIndex, MapManagerDataFromSystem) + definedStartTextureUnitIndex,
             drawMode = EDrawMode.TRIANGLES;
 
         let shaderIndex = useShader(materialIndex, useShaderName, state, material_config, shaderLib_generator, initMaterialShader, initShaderDataMap);

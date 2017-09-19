@@ -109,13 +109,16 @@ describe("GameObject", function() {
                 gameObjectSystemTool.dispose(child11);
                 gameObjectSystemTool.dispose(child);
 
-                var tra = gameObjectSystemTool.getTransform(gameObject),
-                    tra1 = gameObjectSystemTool.getTransform(child),
-                    tra11 = gameObjectSystemTool.getTransform(child11);
+                var tra = gameObjectSystemTool.getTransform(gameObject);
+                var errorMeg = "gameObject is diposed, should release it";
 
                 threeDTransformSystemTool.isAlive(tra);
-                threeDTransformSystemTool.isNotAlive(tra1);
-                threeDTransformSystemTool.isNotAlive(tra11);
+                expect(function () {
+                    gameObjectSystemTool.getTransform(child)
+                }).toThrow(errorMeg);
+                expect(function () {
+                    gameObjectSystemTool.getTransform(child11)
+                }).toThrow(errorMeg);
             });
         });
     });

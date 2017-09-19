@@ -1,4 +1,4 @@
-describe("defer shading", function () {
+describe("draw defer shading", function () {
     var sandbox = null;
     var gl;
     var state;
@@ -337,7 +337,6 @@ describe("defer shading", function () {
                                     });
                                 });
                             });
-;
                         });
 
                         describe("if has diffuse map, add DiffuseMapShaderLib", function(){

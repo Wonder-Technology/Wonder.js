@@ -18,6 +18,7 @@ import { getComponentIdFromClass, getComponentIdFromComponent } from "../../../c
 import { IUIdEntity } from "./IUIdEntity";
 import { MeshRenderer } from "../../../component/renderer/MeshRenderer";
 import { create as createMeshRenderer } from "../../../component/renderer/MeshRendererSystem";
+import { getTypeIdFromComponent } from "../../../component/ComponentTypeIdManager";
 
 export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
     it("componentMap should has data", () => {
@@ -57,9 +58,11 @@ export const initGameObject = (gameObject: GameObject, state: MapImmutable<any, 
     var uid = gameObject.uid,
         componentData: GameObjectComponentData = _getComponentData(uid, GameObjectData);
 
-    for (let typeId in componentData) {
-        if (componentData.hasOwnProperty(typeId)) {
-            execInitHandle(typeId, componentData[typeId].index, state);
+    for (let componentId in componentData) {
+        if (componentData.hasOwnProperty(componentId)) {
+            let component = componentData[componentId];
+
+            execInitHandle(getTypeIdFromComponent(component), component.index, state);
         }
     }
 }

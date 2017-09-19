@@ -54,17 +54,17 @@ export const addMap = requireCheckFunc((materialIndex: number, map: Texture, cou
     setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
 })
 
-export const getStartTextureIndex = (materialIndex:number, MapManagerData:any) => {
-    return MapManagerData.materialStartTextureIndexMap[materialIndex];
-}
-
-const _getMaterialTextures = ensureFunc((textures:Array<number>) => {
-    it("textures should be array", () => {
-        expect(textures).be.a("array");
+export const getStartTextureIndex = ensureFunc((textureIndex) => {
+    it("startTextureIndex should >= 0", () => {
+        expect(textureIndex).gte(0);
     });
 }, (materialIndex:number, MapManagerData:any) => {
-    return MapManagerData.materialTextureMap[materialIndex];
+    return MapManagerData.materialStartTextureIndexMap[materialIndex] || 0;
 })
+
+const _getMaterialTextures = (materialIndex:number, MapManagerData:any) => {
+    return MapManagerData.materialTextureMap[materialIndex];
+}
 
 const _addTextureToMaterialTextureMap = (materialIndex:number, textureIndex:number, MapManagerData:any) => {
     var map = MapManagerData.materialTextureMap[materialIndex];
