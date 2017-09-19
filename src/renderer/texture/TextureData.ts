@@ -1,5 +1,5 @@
-import { Texture } from "./Texture";
 import { DisposedTextureDataMap } from "../type/dataType";
+import { ITexture } from "../interface/ITexture";
 
 export class TextureData {
     public static index: number = null;
@@ -7,7 +7,7 @@ export class TextureData {
     public static glTextures: Array<WebGLTexture> = null;
 
     public static sourceMap: Array<HTMLImageElement> = null;
-    public static textureMap: Array<Texture> = null;
+    public static textureMap: Array<ITexture> = null;
 
     public static uniformSamplerNameMap: Array<string> = null;
 

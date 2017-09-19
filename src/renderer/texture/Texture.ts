@@ -11,8 +11,9 @@ import { getState } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { TextureCacheData } from "./TextureCacheData";
 import { GPUDetectData } from "../device/GPUDetectData";
+import { ITexture } from "../interface/ITexture";
 
-export class Texture {
+export class Texture implements ITexture {
     public index: number = null;
 }
 
