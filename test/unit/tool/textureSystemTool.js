@@ -1,7 +1,11 @@
 var TextureSystemTool = YYC.Class({
     Public: {
         getIsNeedUpdate:wd.getTextureIsNeedUpdate,
-        setIsNeedUpdate:wd.setTextureIsNeedUpdate
+        setIsNeedUpdate:wd.setTextureIsNeedUpdate,
+
+        isNeedUpdate: function (texture) {
+            return wd.TextureData.isNeedUpdates[texture.index] === 0;
+        }
     }
 });
 

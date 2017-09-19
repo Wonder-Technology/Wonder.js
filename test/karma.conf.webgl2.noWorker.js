@@ -36,6 +36,8 @@
 
         // 'test/unit/no_worker/**',
         'test/unit/no_worker/**/AssetData*',
+        'test/unit/no_worker/**/TextureAsset*',
+        'test/unit/no_worker/**/ImageTextureAsset*',
         'test/unit/no_worker/**/hotLoad*',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
