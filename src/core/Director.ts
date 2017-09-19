@@ -27,9 +27,10 @@ import {
 import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import {
-    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
-    addInitHandle as addMaterialInitHandle
-} from "../component/material/MaterialSystem";
+    addInitHandle as addMaterialInitHandle,
+    addAddComponentHandle as addMaterialAddComponentHandle,
+    addDisposeHandle as addMaterialDisposeHandle
+} from "../component/material/AllMaterialSystem";
 import {
     addAddComponentHandle as addMeshRendererAddComponentHandle,
     addDisposeHandle as addMeshRendererDisposeHandle
@@ -64,6 +65,7 @@ import { addDisposeHandle as addWebGL1GeometryDisposeHandle } from "../component
 import { addDisposeHandle as addWebGL2GeometryDisposeHandle } from "../component/webgl2/geometry/GeometrySystem";
 import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
 import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
+import { addAddComponentHandle, addDisposeHandle } from "../component/material/AllMaterialSystem";
 
 @singleton(true)
 @registerClass("Director")

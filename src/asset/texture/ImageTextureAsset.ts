@@ -1,4 +1,7 @@
 import { TextureAsset } from "./TextureAsset";
+import { Texture } from "../../renderer/texture/Texture";
+import { create } from "../../renderer/texture/TextureSystem";
+import { TextureData } from "../../renderer/texture/TextureData";
 
 export class ImageTextureAsset extends TextureAsset {
     public static create(source: HTMLImageElement | HTMLCanvasElement) {
@@ -15,7 +18,11 @@ export class ImageTextureAsset extends TextureAsset {
 
     // public mipmaps: wdCb.Collection<HTMLCanvasElement | HTMLImageElement | HTMLVideoElement>;
 
-    // public toTexture(): ImageTexture {
-    //     return ImageTexture.create(this);
-    // }
+    public toTexture(): Texture {
+        var texture = create(TextureData);
+
+        this.cloneTo(texture.index);
+
+        return texture;
+    }
 }

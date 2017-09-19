@@ -2,7 +2,7 @@ import { Map as MapImmutable } from "immutable";
 import { IShaderLibGenerator } from "../../../renderer/data/shaderLib_generator_interface";
 import { IMaterialConfig } from "../../../renderer/data/material_config_interface";
 import { WebGL2PointLightData } from "../../../renderer/webgl2/light/PointLightData";
-import { init as initMaterial } from "../../material/MaterialSystem";
+import { init as initMaterial } from "../../material/AllMaterialSystem";
 import { WebGL2DirectionLightData } from "../../../renderer/webgl2/light/DirectionLightData";
 import { AmbientLightData } from "../../light/AmbientLightData";
 

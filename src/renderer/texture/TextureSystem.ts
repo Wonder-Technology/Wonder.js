@@ -17,7 +17,9 @@ import {
     // getFormat as getFormatUtils,
     // getType as getTypeUtils,
     // getFlipY as getFlipYUtils,
-    getBufferDataSize, getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
+    getBufferDataSize,
+    markNeedUpdate as markNeedUpdateUtils,
+    getIsNeedUpdate as getIsNeedUpdateUtils, getBufferCount,
     bindToUnit as bindToUnitUtils, initTexture as initTextureUtils, initTextures as initTexturesUtils, needUpdate as needUpdateUtils,
     update as updateUtils, disposeGLTexture, disposeSourceMap, getSource as getSourceUtils
 } from "../utils/worker/render_file/texture/textureUtils";
@@ -63,6 +65,9 @@ export const getIsNeedUpdate = getIsNeedUpdateUtils;
 export const setIsNeedUpdate = (textureIndex: number, value: number, TextureData: any) => {
     setTypeArrayValue(TextureData.isNeedUpdates, textureIndex, value);
 }
+
+export const markNeedUpdate = markNeedUpdateUtils;
+
 //
 // //todo add set methods
 //

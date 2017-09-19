@@ -9,7 +9,7 @@ import {
     hasIndices,
     initData as initGeometryDataSystem, setIndices, setVertices
 } from "../component/geometry/GeometrySystem";
-import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
+import { getShaderIndex as getShaderIndexSystem} from "../component/material/MaterialSystem";
 import {
     use
 } from "../renderer/shader/ShaderSystem";
@@ -46,6 +46,7 @@ import { initData as initDeferLightPassDataSystem } from "../renderer/webgl2/ren
 import { initData as initWebGL1GPUDetectDataSystem } from "../renderer/webgl1/device/GPUDetectSystem";
 import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/device/GPUDetectSystem";
 import { initData as initDataSystem } from "../core/MainSystem";
+import { initData as initMaterialDataSystem } from "../component/material/AllMaterialSystem";
 
 export const initThreeDTransformData = initThreeDTransformDataSystem;
 

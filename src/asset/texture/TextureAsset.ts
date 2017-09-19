@@ -1,5 +1,9 @@
 import { ETextureFormat } from "../../renderer/enum/ETextureFormat";
 import { ETextureType } from "../../renderer/enum/ETextureType";
+import { it, requireCheck } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
+import { markNeedUpdate, setHeight, setSource, setWidth } from "../../renderer/texture/TextureSystem";
+import { TextureData } from "../../renderer/texture/TextureData";
 
 export abstract class TextureAsset {
     // public static defaultTexture = null;
@@ -50,6 +54,17 @@ export abstract class TextureAsset {
     // public anisotropy: number = 0;
     public needUpdate: boolean = true;
 
+    public abstract toTexture();
 
-    // public abstract toTexture(): Texture;
+    @requireCheck((textureIndex:number) => {
+        it("textureIndex should exist", () => {
+            expect(textureIndex).exist;
+        });
+    })
+    protected cloneTo(textureIndex:number){
+        setSource(textureIndex, this.source, TextureData);
+        setWidth(textureIndex, this.width, TextureData);
+        setHeight(textureIndex, this.height, TextureData);
+        markNeedUpdate(textureIndex, this.needUpdate, TextureData);
+    }
 }

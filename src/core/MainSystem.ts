@@ -15,7 +15,7 @@ import {
 import { DataBufferConfig } from "../config/DataBufferConfig";
 import {
     initData as initMaterialData
-} from "../component/material/MaterialSystem";
+} from "../component/material/AllMaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
 import {
     initData as initMeshRendererData

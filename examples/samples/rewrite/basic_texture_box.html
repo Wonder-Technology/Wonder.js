@@ -54,12 +54,12 @@
 
             setTimeout(function () {
                 wd.loadAsset({url: "../../asset/texture/2.jpg", id:"2"})
-//                    .subscribe(null, null, () => {
+                    .subscribe(null, null, () => {
 
-                        let image = wd.getAsset("2").source;
+//                        let image = wd.getAsset("2").toTexture();
 
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, image);
+                        var texture = wd.getAsset("2").toTexture();
+//                        textureTool.setSource(texture, image);
 
                         let box = createBox(texture);
 
@@ -67,7 +67,7 @@
 
                         sceneTool.addGameObject(box);
 //                        basicMaterialTool.addMap(material, texture);
-//                    })
+                    })
 
             }, 1000)
         }
