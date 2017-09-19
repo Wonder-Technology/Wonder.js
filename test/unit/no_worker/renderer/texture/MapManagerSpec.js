@@ -144,6 +144,30 @@ describe("MapManager", function() {
                     });
                 });
             });
+
+            describe("test remove from map", function() {
+                beforeEach(function(){
+                });
+
+                describe("swap with last one and remove the last one", function(){
+                    it("remove from materialTextureMap", function () {
+                        var texture2 = textureSystemTool.create();
+
+                        basicMaterialTool.addMap(material, texture);
+                        basicMaterialTool.addMap(material, texture2);
+
+                        basicMaterialTool.addMap(mat2, texture);
+
+                        var index1 = material.index;
+                        var index2 = mat2.index;
+
+                        gameObjectSystemTool.disposeComponent(obj, material);
+
+                        expect(MapManagerData.materialTextureMap[index1]).toEqual([texture.index]);
+                        expect(MapManagerData.materialTextureMap[index2]).toBeUndefined();
+                    });
+                });
+            });
         });
     });
 });

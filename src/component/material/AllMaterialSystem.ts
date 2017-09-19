@@ -45,7 +45,6 @@ import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUti
 export const init = (state: Map<any, any>, gl: WebGLRenderingContext, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, initNoMaterialShader: Function, TextureData: any, MaterialData: any, BasicMaterialData: any, LightMaterialData: any, AmbientLightData, DirectionLightData: any, PointLightData: any, GPUDetectData: any, GLSLSenderData: any, ProgramData: any, VaoData: any, LocationData: any, ShaderData: any) => {
     initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
 
-    //todo pass test!
     _initMaterials(state, getBasicMaterialBufferStartIndex(), initBasicMaterialWithoutInitMap, BasicMaterialData);
     _initMaterials(state, getLightMaterialBufferStartIndex(), initLightMaterialWithoutInitMap, LightMaterialData);
 

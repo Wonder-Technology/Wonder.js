@@ -12,7 +12,7 @@ import {
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../utils/typeArrayUtils";
 import { forEach } from "../../utils/arrayUtils";
-import { createMap } from "../../utils/objectUtils";
+import { createMap, deleteBySwap } from "../../utils/objectUtils";
 
 // export const create = (MapManagerData:any) => {
 //     var mapManager = new MapManager(),
@@ -27,7 +27,6 @@ export const initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => 
     initTextures(gl, TextureData);
 }
 
-//todo test
 export const initMapManager = (gl: WebGLRenderingContext, materialIndex:number, MapManagerData: any, TextureData: any) => {
     forEach(_getMaterialTextures(materialIndex, MapManagerData), (textureIndex:number) => {
         initTexture(gl, textureIndex, TextureData);
@@ -99,7 +98,7 @@ export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, start
 export const dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
     deleteSingleValueBySwapAndReset(materialSourceIndex, materialLastComponentIndex, MapManagerData.textureCounts, 0);
 
-    //todo dispose materialTextureMap
+    deleteBySwap(materialSourceIndex, materialLastComponentIndex, MapManagerData.materialTextureMap);
 }
 
 export const initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {

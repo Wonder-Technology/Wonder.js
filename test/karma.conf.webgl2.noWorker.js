@@ -34,7 +34,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/AssetData*',
         // 'test/unit/no_worker/**/TextureAsset*',
         // 'test/unit/no_worker/**/ImageTextureAsset*',
@@ -50,7 +50,7 @@
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
-        // 'test/unit/no_worker/**/*MapManager*',
+        'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/TextureSpec*',
         // 'test/unit/no_worker/**/ColorSpec*',
