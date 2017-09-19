@@ -34,7 +34,9 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/AssetData*',
+        'test/unit/no_worker/**/hotLoad*',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
@@ -84,9 +86,9 @@
         // 'test/unit/**/Scene*',
         // 'test/unit/**/shaderSource*',
 
-        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
+        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
 
-        // {pattern: 'test/res/**', watched: false, included: false, served: true}
+        {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],
 
 

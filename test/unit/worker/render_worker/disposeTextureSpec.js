@@ -128,13 +128,13 @@ describe("dispose texture", function () {
                             index: 3,
                             imageSrcIndexArr: [
                                 {
-                                    src:resUtls.getRes("1.jpg"), index: 1
+                                    src:resUtils.getRes("1.jpg"), index: 1
                                 },
                                 {
-                                    src:resUtls.getRes("2.png"), index: 2
+                                    src:resUtils.getRes("2.png"), index: 2
                                 },
                                 {
-                                    src:resUtls.getRes("2.png"), index: 3
+                                    src:resUtils.getRes("2.png"), index: 3
                                 }
                             ]
                         }

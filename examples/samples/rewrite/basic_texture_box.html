@@ -13,6 +13,7 @@
     <script src="../../js/tool/cameraControllerTool.js"></script>
     <script src="../../js/tool/meshRendererTool.js"></script>
     <script src="../../js/tool/sceneTool.js"></script>
+    <script src="../../js/tool/assetTool.js"></script>
 </head>
 <body>
 
@@ -23,7 +24,7 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        wd.preloadAsset("../../asset/texture/1.jpg")
+        assetTool.preload("../../asset/texture/1.jpg")
             .subscribe(function ({
                     currentLoadedCount,
                     totalAssetCount
@@ -53,7 +54,7 @@
 
 
             setTimeout(function () {
-                wd.loadAsset({url: "../../asset/texture/2.jpg", id:"2"})
+                assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
                     .subscribe(null, null, () => {
 
 //                        let image = wd.getAsset("2").toTexture();
@@ -63,7 +64,7 @@
 
                         let box = createBox(texture);
 
-                        wd.initGameObject(box);
+                        gameObjectTool.init(box);
 
                         sceneTool.addGameObject(box);
 //                        basicMaterialTool.addMap(material, texture);

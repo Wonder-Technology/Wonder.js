@@ -34,20 +34,16 @@ export const initMapManager = (gl: WebGLRenderingContext, materialIndex:number, 
     });
 }
 
-export const addMap = requireCheckFunc((materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
+export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
-        expect(count + 1).lte(getMaxTextureCount());
+        expect(getMapCount(materialIndex, MapManagerData)).lte(getMaxTextureCount());
     });
 }, (materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     var textureIndex = map.index;
 
-    MapManagerData.textureIndices[materialIndex + count] = textureIndex;
+    MapManagerData.textureIndices[getStartTextureIndex(materialIndex) + count] = textureIndex;
 
     MapManagerData.textureCounts[materialIndex] = count + 1;
-
-    if(count === 0){
-        MapManagerData.materialStartTextureIndexMap[materialIndex] = textureIndex;
-    }
 
     _addTextureToMaterialTextureMap(materialIndex, textureIndex, MapManagerData);
 
@@ -58,8 +54,8 @@ export const getStartTextureIndex = ensureFunc((textureIndex) => {
     it("startTextureIndex should >= 0", () => {
         expect(textureIndex).gte(0);
     });
-}, (materialIndex:number, MapManagerData:any) => {
-    return MapManagerData.materialStartTextureIndexMap[materialIndex] || 0;
+}, (materialIndex:number) => {
+    return getMaxTextureCount() * materialIndex;
 })
 
 const _getMaterialTextures = (materialIndex:number, MapManagerData:any) => {
@@ -90,8 +86,8 @@ export const getMapCount = getMapCountUtils;
 //     }
 // }
 
-export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
-    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex:number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
+    bindAndUpdateUtils(gl, mapCount, startTextureIndex, definedStartTextureUnitIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
 }
 
 /*!
@@ -103,7 +99,7 @@ export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, start
 export const dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
     deleteSingleValueBySwapAndReset(materialSourceIndex, materialLastComponentIndex, MapManagerData.textureCounts, 0);
 
-    //todo dispose materialTextureMap,materialStartTextureIndexMap
+    //todo dispose materialTextureMap
 }
 
 export const initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {
@@ -112,7 +108,6 @@ export const initData = (TextureCacheData: any, TextureData: any, MapManagerData
     _initBufferData(MapManagerData);
 
     MapManagerData.materialTextureMap = createMap();
-    MapManagerData.materialStartTextureIndexMap = createMap();
 }
 
 const _initBufferData =(MapManagerData: any) => {

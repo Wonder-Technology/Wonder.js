@@ -20,7 +20,7 @@ export const draw = (gl: any, state: Map<any, any>, render_config: IRenderConfig
             mMatrixFloatArrayForSend
         } = BasicDrawRenderCommandBufferDataFromSystem;
 
-    drawGameObjects(gl, state, material_config, shaderLib_generator, DataBufferConfig, "BasicRender", initMaterialShader, drawFuncDataMap, drawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix), bufferData);
+    drawGameObjects(gl, state, material_config, shaderLib_generator, DataBufferConfig, 0, "BasicRender", initMaterialShader, drawFuncDataMap, drawDataMap, initShaderDataMap, sendDataMap, buildRenderCommandUniformData(mMatrixFloatArrayForSend, vMatrix, pMatrix), bufferData);
 
     return state;
 };
