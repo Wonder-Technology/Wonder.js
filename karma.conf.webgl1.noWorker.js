@@ -33,9 +33,9 @@
 
             'test/unit/no_worker/**',
 
-            {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
+            {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
 
-            // {pattern: 'test/res/**', watched: false, included: false, served: true}
+            {pattern: 'test/res/**', watched: false, included: false, served: true}
         ],
 
 

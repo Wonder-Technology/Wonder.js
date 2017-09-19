@@ -24,7 +24,7 @@
             screenSize: wd.EScreenSize.FULL
         }).init();
 
-        assetTool.preload("../../asset/texture/1.jpg")
+        assetTool.load({url: "../../asset/texture/1.jpg", id:"1"})
             .subscribe(function ({
                     currentLoadedCount,
                     totalAssetCount
@@ -84,7 +84,7 @@
             else{
                 var map = textureTool.create();
 
-                var image = wd.getAsset("../../asset/texture/1.jpg").source;
+                var image = wd.getAsset("1").source;
                 textureTool.setSource(map, image);
 
 

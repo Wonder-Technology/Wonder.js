@@ -10,6 +10,8 @@ export class JudgeUtils extends JudgeUtils$ {
 
 export const isString = JudgeUtils.isString;
 
+export const isArray = JudgeUtils.isArray;
+
 export const isUndefined = (v: any) => v === void 0;
 
 export const isNotUndefined = (v: any) => v !== void 0;

@@ -1,40 +1,45 @@
 import { AssetData } from "./dataType";
-import { isString } from "../utils/JudgeUtils";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
 import { load as loadTexture } from "./TextureLoaderSystem";
 import { Log } from "../utils/Log";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
+import { isArray } from "../utils/JudgeUtils";
+import { fromArray } from "wonder-frp/dist/es2015/global/Operator";
 
-export function preload(url: string, AssetDatabaseData:any);
-export function preload(assetArr: Array<AssetData>, AssetDatabaseData:any);
+export function load(assertData:AssetData, AssetDatabaseData:any);
+export function load(assetArr: Array<AssetData>, AssetDatabaseData:any);
 
-export function preload(...args) {
-    if (isString(args[0])) {
-        let url: string = args[0],
-            id: string = url,
+export function load(...args) {
+    if (!isArray(args[0])) {
+        let {url, id} = args[0],
             AssetDatabaseData:any = args[1];
 
-        return _createLoadSingleAssetStream(url, id, AssetDatabaseData)
-            .map(() => {
-                if(has(id, AssetDatabaseData)){
-                    AssetDatabaseData.totalAssertCount += 1;
-                }
-
-                AssetDatabaseData.currentLoadedCount += 1;
-
-                return {
-                    currentLoadedCount: AssetDatabaseData.currentLoadedCount,
-                    totalAssetCount:AssetDatabaseData.totalAssertCount
-                }
-            });
+        return _createLoadSingleAssetStream(url, id, AssetDatabaseData);
     }
     else {
-        //todo finish
+        var assetArr = args[0],
+            AssetDatabaseData:any = args[1];
+
+        return fromArray(assetArr).concatMap(({url, id}) => {
+            return _createLoadSingleAssetStream(url, id, AssetDatabaseData);
+        });
     }
 }
 
 const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData:any) => {
-    return _getLoad(url)(url, id, AssetDatabaseData);
+    if(!has(id, AssetDatabaseData)){
+        AssetDatabaseData.totalAssertCount += 1;
+    }
+
+    return _getLoad(url)(url, id, AssetDatabaseData)
+        .map(() => {
+            AssetDatabaseData.currentLoadedCount += 1;
+
+            return {
+                currentLoadedCount: AssetDatabaseData.currentLoadedCount,
+                totalAssetCount:AssetDatabaseData.totalAssertCount
+            }
+        });
 }
 
 const _getLoad = (url: string) => {
@@ -59,27 +64,12 @@ const _getLoad = (url: string) => {
     return load;
 }
 
+//todo implement
 export const streamLoad = () => {
 
 }
 
-//todo support load array assets
-export const load = ({url, id}, AssetDatabaseData:any) => {
-    return _createLoadSingleAssetStream(url, id, AssetDatabaseData)
-        .map(() => {
-            if(has(id, AssetDatabaseData)){
-                AssetDatabaseData.totalAssertCount += 1;
-            }
-
-            AssetDatabaseData.currentLoadedCount += 1;
-
-            return {
-                currentLoadedCount: AssetDatabaseData.currentLoadedCount,
-                totalAssetCount:AssetDatabaseData.totalAssertCount
-            }
-        });
-}
-
+//todo implement
 export const set = () => {
 
 }

@@ -35,7 +35,7 @@
         // 'test/unit/**/BufferWriter.js',
 
         // 'test/unit/no_worker/**',
-        // 'test/unit/no_worker/**/AssetData*',
+        'test/unit/no_worker/**/AssetData*',
         'test/unit/no_worker/**/hotLoad*',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
