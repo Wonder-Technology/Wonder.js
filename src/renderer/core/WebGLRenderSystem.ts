@@ -161,7 +161,6 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData) => {
-        //todo refactor with send
         let renderWorker = getRenderWorker(WorkerInstanceData),
             needAddedImageDataArr = convertAllSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
             transferList:Array<ArrayBuffer> = [];

@@ -9,8 +9,6 @@ import {
 } from "./TextureWorkerSystem";
 import { MaterialTextureList } from "../../../type/dataType";
 
-//todo fix
-
 export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
     initTextures(gl, TextureWorkerData);
 }
