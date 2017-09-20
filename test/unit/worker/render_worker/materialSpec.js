@@ -47,6 +47,7 @@ describe("material", function () {
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
+                textureData:sinon.match.any,
                 renderCommandBufferData:sinon.match.any,
                 materialData:{
                     buffer: MaterialData.buffer,

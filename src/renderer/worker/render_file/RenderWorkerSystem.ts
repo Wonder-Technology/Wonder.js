@@ -503,11 +503,11 @@ const _initNewTextures = (gl:any, {needInitedTextureIndexArr}, TextureWorkerData
 }
 
 const _initTextures = (textureData:TextureInitWorkerData, TextureWorkerData:any) => {
-    return callFunc(() => {
-        if (_isDataNotExist(textureData)) {
-            return;
-        }
+    if (_isDataNotExist(textureData)) {
+        return empty();
+    }
 
+    return callFunc(() => {
         setIndex(textureData.index, TextureWorkerData);
         setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
     }).concat(addSourceMapByImageDataStream(textureData.needAddedImageDataArr, TextureWorkerData));

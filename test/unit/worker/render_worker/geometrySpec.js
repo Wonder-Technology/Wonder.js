@@ -76,6 +76,7 @@ describe("geometry", function () {
             expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
                 renderCommandBufferData:sinon.match.any,
+                textureData:sinon.match.any,
                 materialData:sinon.match.any,
                 disposeData: sinon.match.any,
                 lightData: sinon.match.any,
@@ -181,6 +182,7 @@ describe("geometry", function () {
                     e = {
                         data:{
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData:null,
                             materialData:null,
                             geometryData:null,
@@ -232,6 +234,7 @@ describe("geometry", function () {
                     e = {
                         data:{
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData:null,
                             materialData:null,
                             lightData:null,

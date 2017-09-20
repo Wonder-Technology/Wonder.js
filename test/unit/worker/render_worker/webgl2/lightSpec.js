@@ -248,6 +248,7 @@ describe("light", function () {
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
+                textureData:sinon.match.any,
                 renderCommandBufferData: sinon.match.any,
                 disposeData: sinon.match.any,
                 materialData: sinon.match.any,
@@ -287,6 +288,7 @@ describe("light", function () {
                 e = {
                     data: {
                         operateType: EWorkerOperateType.DRAW,
+                        textureData:null,
                         renderCommandBufferData: null,
                         disposeData: null,
                         materialData: null,
@@ -347,6 +349,7 @@ describe("light", function () {
                     e = {
                         data: {
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData: null,
                             disposeData: null,
                             materialData: null,

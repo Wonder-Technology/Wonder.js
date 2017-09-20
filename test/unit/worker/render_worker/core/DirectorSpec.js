@@ -17,6 +17,7 @@ describe("Director", function () {
             materialData:sinon.match.any,
             geometryData:sinon.match.any,
             lightData:sinon.match.any,
+            textureData:sinon.match.any,
             disposeData:sinon.match.any
         }).callCount).toEqual(callCount);
     }

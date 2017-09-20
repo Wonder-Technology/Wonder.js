@@ -40,6 +40,7 @@ describe("dispose geometry", function () {
                         e = {
                             data:{
                                 operateType: EWorkerOperateType.DRAW,
+                                textureData:null,
                                 renderCommandBufferData:null,
                                 materialData:null,
                                 geometryData:null,

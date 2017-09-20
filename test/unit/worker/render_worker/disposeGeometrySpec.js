@@ -68,6 +68,7 @@ describe("dispose geometry", function () {
                         materialData:sinon.match.any,
                         geometryData:sinon.match.any,
                         lightData:sinon.match.any,
+                        textureData:sinon.match.any,
                         disposeData: {
                             geometryDisposeData:{
                                 disposedGeometryIndexArray: [geo1Index, geo2Index],
