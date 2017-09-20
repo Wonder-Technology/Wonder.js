@@ -1,5 +1,7 @@
 var GameObjectSystemTool = YYC.Class({
     Public: {
+        getAllComponents : wd.getGameObjectAllComponents,
+
         resetData: function(){
             wd.initGameObjectData(wd.GameObjectData);
         }

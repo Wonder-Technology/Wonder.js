@@ -3,6 +3,8 @@ describe("GameObject", function() {
     var gameObject;
 
     var Vector3 = wd.Vector3;
+    var ThreeDTransform = wd.ThreeDTransform;
+    var Material = wd.Material;
 
     function shouldAlive(gameObject, testFunc) {
         gameObjectSystemTool.dispose(gameObject);
@@ -277,6 +279,28 @@ describe("GameObject", function() {
             gameObjectSystemTool.disposeComponent(gameObject, gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform));
 
             expect(gameObjectSystemTool.getComponent(gameObject, wd.ThreeDTransform)).toBeNull();
+        });
+    });
+
+    describe("getAllComponent", function() {
+        beforeEach(function(){
+        });
+
+        it("if gameObject not alive, return null", function() {
+            shouldAlive(gameObject, function (gameObject) {
+                return gameObjectSystemTool.getAllComponents(gameObject);
+            })
+        });
+        it("return all components", function(){
+            var material = lightMaterialTool.create();
+            gameObjectSystemTool.addComponent(gameObject, material);
+
+            var transformComponentId = componentTool.getComponentIdFromClass(ThreeDTransform);
+            var materialComponentId = componentTool.getComponentIdFromClass(Material);
+
+            var components = gameObjectSystemTool.getAllComponents(gameObject);
+            expect(components[transformComponentId]).toEqual(gameObjectSystemTool.getTransform(gameObject));
+            expect(components[materialComponentId]).toEqual(material);
         });
     });
 

@@ -1,7 +1,8 @@
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
 import {
     addChild,
-    addComponent, addRemovedChild, create, dispose, disposeComponent, getAliveChildren, getComponent, getMaterial,
+    addComponent, addRemovedChild, create, dispose, disposeComponent, getAliveChildren, getAllComponents, getComponent,
+    getMaterial,
     getParent,
     getTransform,
     hasChild,
@@ -75,6 +76,12 @@ export const getGameObjectMaterial = requireCheckFunc((gameObject: GameObject) =
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, (gameObject: GameObject) => {
     return getMaterial(gameObject.uid, GameObjectData);
+})
+
+export const getGameObjectAllComponents = requireCheckFunc((gameObject: GameObject) => {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, (gameObject: GameObject) => {
+    return getAllComponents(gameObject.uid, GameObjectData);
 })
 
 export const hasGameObjectComponent = requireCheckFunc((gameObject: GameObject, _class: any) => {

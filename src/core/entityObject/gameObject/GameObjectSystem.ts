@@ -42,7 +42,7 @@ export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTrans
     return gameObject;
 })
 
-const _buildUId =(GameObjectData: any) => {
+const _buildUId = (GameObjectData: any) => {
     return GameObjectData.uid++;
 }
 
@@ -79,11 +79,11 @@ export const dispose = (entity: IUIdEntity, ThreeDTransformData: any, GameObject
     }
 }
 
-const _removeFromChildrenMap =(parentUId: number, childUId: number, GameObjectData: any) => {
+const _removeFromChildrenMap = (parentUId: number, childUId: number, GameObjectData: any) => {
     removeChildEntity(getChildren(parentUId, GameObjectData), childUId);
 };
 
-const _diposeAllDatas =(gameObject: GameObject, GameObjectData: any) => {
+const _diposeAllDatas = (gameObject: GameObject, GameObjectData: any) => {
     let uid = gameObject.uid,
         children = getChildren(uid, GameObjectData);
 
@@ -101,13 +101,13 @@ const _diposeAllDatas =(gameObject: GameObject, GameObjectData: any) => {
     }
 }
 
-const _disposeMapDatas =(uid: number, GameObjectData: any) => {
+const _disposeMapDatas = (uid: number, GameObjectData: any) => {
     deleteVal(uid, GameObjectData.childrenMap);
     // deleteVal(uid, GameObjectData.parentMap);
     deleteVal(uid, GameObjectData.componentMap);
 }
 
-const _disposeAllComponents =(gameObject: GameObject, GameObjectData: any) => {
+const _disposeAllComponents = (gameObject: GameObject, GameObjectData: any) => {
     var components = _getComponentData(gameObject.uid, GameObjectData);
 
     //todo optimize?
@@ -146,7 +146,7 @@ export const addComponent = requireCheckFunc((gameObject: GameObject, component:
     data[componentId] = component;
 })
 
-const _removeComponent =(componentId: string, uid: number, GameObjectData: any) => {
+const _removeComponent = (componentId: string, uid: number, GameObjectData: any) => {
     var data = _getComponentData(uid, GameObjectData);
 
     if (isValidMapValue(data)) {
@@ -178,9 +178,13 @@ export const getComponent = (uid: number, componentId: string, GameObjectData: a
     return null;
 }
 
-const _getComponentData =(uid: number, GameObjectData: any) => GameObjectData.componentMap[uid];
+export const getAllComponents = (uid: number, GameObjectData: any) => {
+    return _getComponentData(uid, GameObjectData);
+}
 
-const _setComponentData = (uid: number, data: GameObjectComponentData, GameObjectData: any) => GameObjectData.componentMap[uid] =data;
+const _getComponentData = (uid: number, GameObjectData: any) => GameObjectData.componentMap[uid];
+
+const _setComponentData = (uid: number, data: GameObjectComponentData, GameObjectData: any) => GameObjectData.componentMap[uid] = data;
 
 export const hasComponent = (gameObject: GameObject, componentId: string, GameObjectData: any) => {
     return getComponent(gameObject.uid, componentId, GameObjectData) !== null;
@@ -202,13 +206,13 @@ export const getMeshRenderer = (uid: number, GameObjectData: any) => {
     return getComponent(uid, getComponentIdFromClass(MeshRenderer), GameObjectData);
 }
 
-const _isParentExist =(parent: GameObject) => isNotUndefined(parent);
+const _isParentExist = (parent: GameObject) => isNotUndefined(parent);
 
-const _isChildrenExist =(children: Array<GameObject>) => isNotUndefined(children);
+const _isChildrenExist = (children: Array<GameObject>) => isNotUndefined(children);
 
-const _isComponentExist =(component: Component) => component !== null;
+const _isComponentExist = (component: Component) => component !== null;
 
-const _isGameObjectEqual =(gameObject1: GameObject, gameObject2: GameObject) => gameObject1.uid === gameObject2.uid;
+const _isGameObjectEqual = (gameObject1: GameObject, gameObject2: GameObject) => gameObject1.uid === gameObject2.uid;
 
 export const getParent = (uid: number, GameObjectData: any) => GameObjectData.parentMap[uid];
 
@@ -231,7 +235,7 @@ export const setParent = (parent: GameObject, child: GameObject, ThreeDTransform
     _addChild(parentUId, child, GameObjectData);
 }
 
-const _setParent =(uid: number, parent: GameObject, GameObjectData: any) => {
+const _setParent = (uid: number, parent: GameObject, GameObjectData: any) => {
     GameObjectData.parentMap[uid] = parent;
 }
 
@@ -250,7 +254,7 @@ export const getAliveChildren = (uid: number, GameObjectData: any) => {
     })
 }
 
-const _addChild =(uid: number, child: GameObject, GameObjectData: any) => {
+const _addChild = (uid: number, child: GameObject, GameObjectData: any) => {
     var children = getChildren(uid, GameObjectData);
 
     if (isValidMapValue(children)) {
@@ -286,7 +290,7 @@ export const removeChildWithoutDisposeMeshRenderer = (parentUId: number, childUI
     _removeChildWithoutDisposeMeshRenderer(parentUId, childUId, ThreeDTransformData, GameObjectData);
 }
 
-const _removeChildWithoutDisposeMeshRenderer =requireCheckFunc((parentUId: number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
+const _removeChildWithoutDisposeMeshRenderer = requireCheckFunc((parentUId: number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
     it("child should has transform component", () => {
         expect(getTransform(childUId, GameObjectData)).exist;
     });
