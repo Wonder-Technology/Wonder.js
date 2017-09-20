@@ -159,7 +159,13 @@ export class Color {
     }
 
     public toString() {
-        return this._colorString;
+        if(this._colorString !== null){
+            return this._colorString;
+        }
+
+        let s = "#" + ((1 << 24) + (this.r*255 << 16) + (this.g*255 << 8) + this.b*255).toString(16).slice(1);
+
+        return s;
     }
 
     public clone() {

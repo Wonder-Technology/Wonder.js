@@ -119,8 +119,20 @@ describe("Color", function() {
     });
 
     describe("toString", function(){
-        it("get color string", function(){
+        it("if color string exist, get color string", function(){
             expect(Color.create("#ffffff").toString()).toEqual("#ffffff");
+        });
+        it("else, convert rgb to string", function () {
+            var color = Color.create();
+
+            expect(color.toString()).toEqual("#000000");
+
+
+
+            color.r = 1;
+            color.g = 1;
+            color.b = 1;
+            expect(color.toString()).toEqual("#ffffff");
         });
     });
 
