@@ -1,15 +1,23 @@
 import { TextureInitWorkerData } from "../../../type/messageDataType";
 import {
-    bindAndUpdate as bindAndUpdateUtils, createTypeArrays, getBufferCount,
-    getMapCount as getMapCountUtils
+    bindAndUpdate as bindAndUpdateUtils, createTypeArrays, getBufferCount
 } from "../../../utils/worker/render_file/texture/mapManagerUtils";
-import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
+import {
+    bindToUnit, initData as initTextureData, initNeedInitTextures as initNeedInitTexturesTexture, initTextures,
+    needUpdate,
+    update
+} from "./TextureWorkerSystem";
+import { MaterialTextureMap } from "../../../type/dataType";
 
 //todo fix
 
 export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: any) => {
     initTextures(gl, TextureWorkerData);
 }
+
+export const initNeedInitTextures = initNeedInitTexturesTexture;
+
+export const setMaterialTextureMap = (materialTextureMap:MaterialTextureMap, MapManagerWorkerData:any) => MapManagerWorkerData.materialTextureMap = materialTextureMap;
 
 export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
     var textureCounts = MapManagerWorkerData.textureCounts;
@@ -29,8 +37,8 @@ export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) =>
 //     }
 // }
 
-export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
-    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, definedStartTextureUnitIndex:number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
+    bindAndUpdateUtils(gl, mapCount, startIndex, definedStartTextureUnitIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
 }
 
 // export const dispose = disposeUtils;

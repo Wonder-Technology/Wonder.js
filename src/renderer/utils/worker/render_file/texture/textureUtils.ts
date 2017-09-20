@@ -157,11 +157,16 @@ export const markNeedUpdate = (textureIndex, value: boolean, TextureDataFromSyst
 }
 
 export const update = requireCheckFunc((gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
-    it("texture source should exist", () => {
-        expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
-    });
+    // it("texture source should exist", () => {
+    //     expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
+    // });
 }, (gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
-    var width = getWidth(textureIndex, TextureDataFromSystem),
+    //todo test
+    if(!_isSourceExist(textureIndex, TextureDataFromSystem)){
+        return;
+    }
+
+    let width = getWidth(textureIndex, TextureDataFromSystem),
         height = getHeight(textureIndex, TextureDataFromSystem),
         wrapS = getWrapS(textureIndex, TextureDataFromSystem),
         wrapT = getWrapT(textureIndex, TextureDataFromSystem),

@@ -36,13 +36,13 @@ import {
     buildSendUniformDataDataMap,
     sendUniformData
 } from "../../../../../utils/worker/render_file/render/basic/basicRenderUtils";
+import { getStartTextureIndex } from "../../../../../utils/worker/render_file/texture/mapManagerUtils";
 
 export const render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: BasicRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
-    //todo
-    // renderBasic(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
-    //     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    //     drawDataMap
-    // ), initShaderDataMap, bufferData, cameraData);
+    renderBasic(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, _sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader), drawDataMap, buildSendUniformDataDataMap(
+        sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
+        drawDataMap
+    ), initShaderDataMap, bufferData, cameraData);
 }
 
 const _sendUniformData =(gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL1DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IWebGL1BasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {

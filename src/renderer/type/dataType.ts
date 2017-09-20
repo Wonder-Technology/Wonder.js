@@ -151,3 +151,7 @@ export type VaoMap = {
 export type VboArrayMap = {
     [index: number]: Array<WebGLBuffer>
 }
+
+export type MaterialTextureMap = {
+    [materialIndex: number]: Array<number>
+}

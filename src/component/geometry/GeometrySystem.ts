@@ -279,6 +279,10 @@ export const hasNewPointData = (GeometryData: any) => {
     return GeometryData.verticesWorkerInfoList.length > 0;
 }
 
+export const getDisposedGeometryIndexArrayData = (GeometryData: any) => {
+    return GeometryData.disposedGeometryIndexArray;
+}
+
 export const hasDisposedGeometryIndexArrayData = (GeometryData: any) => {
     return GeometryData.disposedGeometryIndexArray.length > 0;
 }

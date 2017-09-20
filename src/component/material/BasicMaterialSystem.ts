@@ -2,7 +2,7 @@ import { BasicMaterial } from "./BasicMaterial";
 import {
     addComponent as addMaterialComponent,
     create as createMaterial, disposeComponent as disposeMaterialComponent,
-    initMaterial as initMaterialMaterial
+    initMaterial as initMaterialBase
 } from "./MaterialSystem";
 import {
     initData as initSpecifyMaterialData
@@ -45,11 +45,11 @@ export const create = ensureFunc((component: Material) => {
 })
 
 export const initMaterialWithoutInitMap = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+    initMaterialBase(index, state, getClassName(), MaterialData);
 }
 
 export const initMaterial = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+    initMaterialBase(index, state, getClassName(), MaterialData);
 
     initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
 }

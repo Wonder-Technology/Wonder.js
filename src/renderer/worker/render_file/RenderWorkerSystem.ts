@@ -9,7 +9,6 @@ import { GeometryWorkerData } from "./geometry/GeometryWorkerData";
 import { DataBufferConfig } from "../../../config/DataBufferConfig";
 import { EGeometryWorkerDataOperateType } from "../../enum/EGeometryWorkerDataOperateType";
 import {
-    initData as initMaterialData, initMaterials,
     initNewInitedMaterials
 } from "./material/MaterialWorkerSystem";
 import { MaterialInitWorkerData, MaterialWorkerData } from "./material/MaterialWorkerData";
@@ -42,7 +41,7 @@ import {
 } from "./light/DirectionLightWorkerSystem";
 import {
     GeometryInitWorkerData, GeometryResetWorkerData,
-    GeometryUpdateWorkerData, LightDrawWorkerData, TextureInitWorkerData
+    GeometryUpdateWorkerData, LightDrawWorkerData, TextureDrawWorkerData, TextureInitWorkerData
 } from "../../type/messageDataType";
 import { setIsTest } from "./config/InitConfigWorkerSystem";
 import { InitConfigWorkerData } from "./config/InitConfigWorkerData";
@@ -52,7 +51,7 @@ import { TextureCacheWorkerData } from "./texture/TextureCacheWorkerData";
 import { MapManagerWorkerData } from "./texture/MapManagerWorkerData";
 import {
     disposeSourceAndGLTexture, setIndex,
-    setSourceMapByImageSrcArrStream, setUniformSamplerNameMap
+    addSourceMapByImageDataStream, setUniformSamplerNameMap
 } from "./texture/TextureWorkerSystem";
 import { callFunc, empty, fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { IRenderConfig, render_config } from "../both_file/data/render_config";
@@ -124,6 +123,8 @@ import { WebGL2DirectionLightWorkerData } from "../webgl2/render_file/light/Dire
 import { DeferDirectionLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferDirectionLightPassWorkerData";
 import { DeferPointLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData";
 import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData";
+import { initNeedInitTextures, setMaterialTextureMap } from "./texture/MapManagerWorkerSystem";
+import { initData as initMateiralData, initMaterials } from "./material/AllMaterialWorkerSystem";
 
 declare var self: any;
 
@@ -194,13 +195,13 @@ const _initWebGL2GL =(data: any, WebGLDetectWorkerData: any, GPUDetectWorkerData
 }
 
 const _handleWebGL1Draw =(data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
-    var state = getState(StateWorkerData);
-
-    _initWebGL1DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
-
-    let drawDataMap = buildWebGL1DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL1ProgramWorkerData, WebGL1LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
+    var state = getState(StateWorkerData),
+        drawDataMap = buildWebGL1DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL1ProgramWorkerData, WebGL1LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, ArrayBufferWorkerData, IndexBufferWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
         gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state),
         bufferData = data.renderCommandBufferData;
+
+    _initWebGL1DrawData(gl, data, MapManagerWorkerData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+
 
     clearColor(state, render_config, drawDataMap.DeviceManagerDataFromSystem);
 
@@ -218,13 +219,13 @@ const _handleWebGL1Draw =(data: any, AmbientLightWorkerData: any, DirectionLight
 }
 
 const _handleWebGL2Draw =(data: any, AmbientLightWorkerData: any, DirectionLightWorkerData: any, PointLightWorkerData: any, GLSLSenderWorkerData, GPUDetectWorkerData: any, StateWorkerData: any) => {
-    var state = getState(StateWorkerData);
-
-    _initWebGL2DrawData(data, DirectionLightWorkerData, PointLightWorkerData);
-
-    let drawDataMap = buildWebGL2DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
+    var state = getState(StateWorkerData),
+        drawDataMap = buildWebGL2DrawDataMap(DeviceManagerWorkerData, TextureWorkerData, TextureCacheWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, WebGL2ProgramWorkerData, WebGL2LocationWorkerData, GLSLSenderWorkerData, GeometryWorkerData, BasicDrawRenderCommandBufferWorkerData, LightDrawRenderCommandBufferWorkerData),
         gl = getGL(drawDataMap.DeviceManagerDataFromSystem, state),
         bufferData = data.renderCommandBufferData;
+
+    _initWebGL2DrawData(gl, data, MapManagerWorkerData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData);
+
 
     clearColor(state, render_config, drawDataMap.DeviceManagerDataFromSystem);
 
@@ -241,21 +242,22 @@ const _handleWebGL2Draw =(data: any, AmbientLightWorkerData: any, DirectionLight
     });
 }
 
-const _initWebGL1DrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
-    _initOtherDrawData(data, DirectionLightWorkerData, PointLightWorkerData);
+const _initWebGL1DrawData =(gl:any, data: any, MapManagerWorkerData:any, TextureWorkerData:any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+    _initOtherDrawData(gl, data, MapManagerWorkerData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData);
     _initWebGL1DisposeDrawData(data);
 }
 
-const _initWebGL2DrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
-    _initOtherDrawData(data, DirectionLightWorkerData, PointLightWorkerData);
+const _initWebGL2DrawData =(gl:any, data: any, MapManagerWorkerData:any, TextureWorkerData:any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+    _initOtherDrawData(gl, data, MapManagerWorkerData, TextureWorkerData, DirectionLightWorkerData, PointLightWorkerData);
     _initWebGL2DisposeDrawData(data);
 }
 
-const _initOtherDrawData =(data: any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
+const _initOtherDrawData =(gl:any, data: any, MapManagerWorkerData:any, TextureWorkerData:any, DirectionLightWorkerData: any, PointLightWorkerData: any, ) => {
     var state = null,
         geometryData = data.geometryData,
         materialData = data.materialData,
-        lightData = data.lightData;
+        lightData = data.lightData,
+        textureData = data.textureData;
 
     if (geometryData !== null) {
         if (_needUpdateGeometryWorkerData(geometryData)) {
@@ -267,11 +269,17 @@ const _initOtherDrawData =(data: any, DirectionLightWorkerData: any, PointLightW
     }
 
     if (materialData !== null) {
-        initNewInitedMaterials(materialData.workerInitList);
+        initNewInitedMaterials(materialData.workerInitList, MaterialWorkerData);
     }
 
     if (lightData !== null) {
         _setLightDrawData(lightData, DirectionLightWorkerData, PointLightWorkerData);
+    }
+
+    if (textureData !== null) {
+        _setTextureDrawData(textureData, MapManagerWorkerData, TextureWorkerData);
+
+        _initNewTextures(gl, textureData, TextureWorkerData);
     }
 }
 
@@ -426,10 +434,6 @@ const _initMaterials =(state: Map<any, any>, gl: WebGLRenderingContext, material
             return;
         }
 
-        if (textureData !== null) {
-            setIndex(textureData.index, TextureWorkerData);
-        }
-
         initMaterials(state, gl, material_config, shaderLib_generator, initNoMaterialShader, materialData.basicMaterialData, materialData.lightMaterialData, TextureWorkerData, AmbientLightWorkerData, DirectionLightWorkerData, PointLightWorkerData, GPUDetectWorkerData, GLSLSenderWorkerData, ProgramWorkerData, VaoWorkerData, LocationWorkerData, ShaderWorkerData);
     })
 }
@@ -440,7 +444,7 @@ const _initMaterialData =(gl: WebGLRenderingContext, materialData: MaterialInitW
             return;
         }
 
-        initMaterialData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
+        initMateiralData(materialData, textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, MaterialWorkerData, BasicMaterialWorkerData, LightMaterialWorkerData);
     })
 }
 
@@ -484,12 +488,28 @@ const _setLightDrawData =(lightData: LightDrawWorkerData, DirectionLightWorkerDa
     setPointLightPositionArr(pointLightData.positionArr, PointLightWorkerData);
 }
 
-const _initTextures =(textureData: TextureInitWorkerData, TextureWorkerData: any) => {
+const _setTextureDrawData =(textureData: TextureDrawWorkerData, MapManagerWorkerData:any, TextureWorkerData: any) => {
+    setIndex(textureData.index, TextureWorkerData);
+    setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
+    setMaterialTextureMap(textureData.materialTextureMap, MapManagerWorkerData);
+
+    //todo test async
+    //todo handle when complete?
+    addSourceMapByImageDataStream(textureData.needAddedImageDataArrayBufferIndexSizeArr, TextureWorkerData)
+        .subscribe(null, null, null);
+}
+
+const _initNewTextures = (gl:any, {needInitTextureIndexArr}, TextureWorkerData: any) => {
+    initNeedInitTextures(gl, needInitTextureIndexArr, TextureWorkerData);
+}
+
+const _initTextures = (textureData:TextureInitWorkerData, TextureWorkerData:any) => {
     if (_isDataNotExist(textureData)) {
         return empty();
     }
 
-    setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
-
-    return setSourceMapByImageSrcArrStream(textureData.imageSrcIndexArr, TextureWorkerData);
+    return callFunc(() => {
+        setIndex(textureData.index, TextureWorkerData);
+        setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
+    }).concat(addSourceMapByImageDataStream(textureData.needAddedImageDataArrayBufferIndexSizeArr, TextureWorkerData));
 }

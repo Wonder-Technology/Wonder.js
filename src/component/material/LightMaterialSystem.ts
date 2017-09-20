@@ -2,7 +2,7 @@ import { LightMaterial } from "./LightMaterial";
 import {
     addComponent as addMaterialComponent,
     create as createMaterial, createDefaultColor, disposeComponent as disposeMaterialComponent,
-    initMaterial as initMaterialMaterial,
+    initMaterial as initMaterialBase,
     setColorData
 } from "./MaterialSystem";
 import {
@@ -132,11 +132,11 @@ export const hasSpecularMap = (index: number, LightMaterialData: any) => {
 }
 
 export const initMaterialWithoutInitMap = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+    initMaterialBase(index, state, getClassName(), MaterialData);
 }
 
 export const initMaterial = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+    initMaterialBase(index, state, getClassName(), MaterialData);
 
     initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
 }

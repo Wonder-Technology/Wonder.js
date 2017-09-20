@@ -1,18 +1,30 @@
-import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
+import { ensureFunc, it } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Texture } from "./Texture";
 import {
     bindAndUpdate as bindAndUpdateUtils,
-    createTypeArrays, getBufferCount, getMapCount as getMapCountUtils, getMaxTextureCount
+    createTypeArrays,
+    getBufferCount,
+    getMapCount as getMapCountUtils,
+    getMaterialTextures,
+    getMaxTextureCount,
+    getStartTextureIndex
+    // initMapManager as initMapManagerUtils
 } from "../utils/worker/render_file/texture/mapManagerUtils";
 import {
-    bindToUnit, initData as initTextureData, initTexture, initTextures, needUpdate, setUniformSamplerName,
+    bindToUnit,
+    initData as initTextureData,
+    initTexture,
+    initTextures,
+    needUpdate, addNeedInitTextureIndexForWorker,
+    setUniformSamplerName,
     update
 } from "./TextureSystem";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { computeBufferLength, deleteSingleValueBySwapAndReset } from "../../utils/typeArrayUtils";
-import { forEach } from "../../utils/arrayUtils";
 import { createMap, deleteBySwap } from "../../utils/objectUtils";
+import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
+import { forEach } from "../../utils/arrayUtils";
 
 // export const create = (MapManagerData:any) => {
 //     var mapManager = new MapManager(),
@@ -28,10 +40,24 @@ export const initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => 
 }
 
 export const initMapManager = (gl: WebGLRenderingContext, materialIndex:number, MapManagerData: any, TextureData: any) => {
-    forEach(_getMaterialTextures(materialIndex, MapManagerData), (textureIndex:number) => {
+    forEach(getMaterialTextures(materialIndex, MapManagerData), (textureIndex:number) => {
         initTexture(gl, textureIndex, TextureData);
     });
 }
+
+// if(isSupportRenderWorkerAndSharedArrayBuffer()){
+//     initMapManager = (gl: WebGLRenderingContext, materialIndex:number, MapManagerData: any, TextureData: any) => {
+//        // addNeedInitTextureIndexForWorker(getMaterialTextures(materialIndex, MapManagerData), TextureData);
+//     }
+// }
+// else{
+//     initMapManager = (gl: WebGLRenderingContext, materialIndex:number, MapManagerData: any, TextureData: any) => {
+//         // initMapManagerUtils(gl, materialIndex, initTexture, MapManagerData, TextureData);
+//         forEach(getMaterialTextures(materialIndex, MapManagerData), (textureIndex:number) => {
+//             initTexture(gl, textureIndex, TextureData);
+//         });
+//     }
+// }
 
 export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Texture, count: number, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
@@ -49,18 +75,6 @@ export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Tex
     setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
 })
 
-export const getStartTextureIndex = ensureFunc((textureIndex) => {
-    it("startTextureIndex should >= 0", () => {
-        expect(textureIndex).gte(0);
-    });
-}, (materialIndex:number) => {
-    return getMaxTextureCount() * materialIndex;
-})
-
-const _getMaterialTextures = (materialIndex:number, MapManagerData:any) => {
-    return MapManagerData.materialTextureMap[materialIndex];
-}
-
 const _addTextureToMaterialTextureMap = (materialIndex:number, textureIndex:number, MapManagerData:any) => {
     var map = MapManagerData.materialTextureMap[materialIndex];
 
@@ -74,6 +88,8 @@ const _addTextureToMaterialTextureMap = (materialIndex:number, textureIndex:numb
 
     map.push(textureIndex);
 }
+
+export const getMaterialTextureMap = (MapManagerData:any) => MapManagerData.materialTextureMap;
 
 export const getMapCount = getMapCountUtils;
 

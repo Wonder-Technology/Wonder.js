@@ -2,9 +2,9 @@ import { SendUniformDataGLSLSenderDataMap } from "../../../../type/utilsType";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { sendData as sendTextureData } from "./textureUtils";
 import { getBufferTotalCount } from "../material/bufferUtils";
-import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
+import { ensureFunc, it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
-import { getStartTextureIndex } from "../../../../texture/MapManagerSystem";
+import { forEach } from "../../../../../utils/arrayUtils";
 
 //todo support multi textures
 
@@ -65,6 +65,16 @@ export const getMapCount = (materialIndex: number, MapManagerDataFromSystem: any
 //
 //     // MapManagerDataFromSystem.textureMap = [];
 // }
+//
+// export const initMapManager = (gl: WebGLRenderingContext, materialIndex:number, initTexture:Function, MapManagerDataFromSystem: any, TextureDataFromSystem: any) => {
+//     forEach(_getMaterialTextures(materialIndex, MapManagerDataFromSystem), (textureIndex:number) => {
+//         initTexture(gl, textureIndex, TextureDataFromSystem);
+//     });
+// }
+
+export const getMaterialTextures = (materialIndex:number, MapManagerDataFromSystem:any) => {
+    return MapManagerDataFromSystem.materialTextureMap[materialIndex];
+}
 
 export const getBufferCount = () => getBufferTotalCount() * getMaxTextureCount();
 
@@ -86,4 +96,12 @@ export const createTypeArrays = (buffer: any, count: number, MapManagerDataFromS
 
     return offset;
 }
+
+export const getStartTextureIndex = ensureFunc((textureIndex) => {
+    it("startTextureIndex should >= 0", () => {
+        expect(textureIndex).gte(0);
+    });
+}, (materialIndex: number) => {
+    return getMaxTextureCount() * materialIndex;
+})
 

@@ -13,7 +13,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount, getStartTextureIndex } from "../../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount} from "../../../../texture/MapManagerSystem";
 import {
     getColorArr3 as getAmbientLightColorArr3,
     isColorDirty as isAmbientLightColorDirty,
@@ -42,6 +42,7 @@ import { buildDrawFuncDataMap } from "../../../utils/worker/render_file/draw/lig
 import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { IWebGL2DrawDataMap } from "../../../utils/worker/render_file/interface/IUtils";
 import { DeferDrawDataMap } from "../../../utils/worker/render_file/type/utilsType";
+import { getStartTextureIndex } from "../../../../utils/worker/render_file/texture/mapManagerUtils";
 
 export const init = initUtils;
 

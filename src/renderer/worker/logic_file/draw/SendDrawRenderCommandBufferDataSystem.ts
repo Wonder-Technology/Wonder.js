@@ -2,7 +2,7 @@ import curry from "wonder-lodash/curry";
 import { EWorkerOperateType } from "../../both_file/EWorkerOperateType";
 import {
     clearDisposedGeometryIndexArray,
-    clearWorkerInfoList, hasDisposedGeometryIndexArrayData, hasNewPointData,
+    clearWorkerInfoList, getDisposedGeometryIndexArrayData, hasDisposedGeometryIndexArrayData, hasNewPointData,
     isReallocate
 } from "../../../../component/geometry/GeometrySystem";
 import { EGeometryWorkerDataOperateType } from "../../../enum/EGeometryWorkerDataOperateType";
@@ -11,15 +11,25 @@ import { RenderCommandBufferForDrawData } from "../../../utils/worker/render_fil
 import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
-import { clearDisposedTextureDataMap, hasDisposedTextureDataMap } from "../../../texture/TextureSystem";
+import {
+    clearDisposedTextureDataMap, clearNeedAddedSourceArr, clearNeedInitTextureDataArr, convertSourceMapToImageDataArr,
+    getDisposedTextureDataMap,
+    getNeedAddedSourceArr,
+    getNeedInitTextureDataArr,
+    getUniformSamplerNameMap,
+    hasDisposedTextureDataMap, hasNeedInitTextureDataArr
+} from "../../../texture/TextureSystem";
 import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
+import { getMaterialTextureMap } from "../../../texture/MapManagerSystem";
 
-export const sendDrawData = curry((WorkerInstanceData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
+export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapManagerData:any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         geometryDisposeData = null,
         textureDisposeData = null,
         materialData = null,
-        lightData = null;
+        lightData = null,
+        textureData = null,
+        transferList:Array<ArrayBuffer> = [];
 
     if (hasNewPointData(GeometryData)) {
         geometryData = {
@@ -44,13 +54,13 @@ export const sendDrawData = curry((WorkerInstanceData: any, TextureData: any, Ma
 
     if (hasDisposedGeometryIndexArrayData(GeometryData)) {
         geometryDisposeData = {
-            disposedGeometryIndexArray: GeometryData.disposedGeometryIndexArray
+            disposedGeometryIndexArray: getDisposedGeometryIndexArrayData(GeometryData)
         };
     }
 
     if (hasDisposedTextureDataMap(TextureData)) {
         textureDisposeData = {
-            disposedTextureDataMap: TextureData.disposedTextureDataMap
+            disposedTextureDataMap: getDisposedTextureDataMap(TextureData)
         };
     }
 
@@ -70,21 +80,43 @@ export const sendDrawData = curry((WorkerInstanceData: any, TextureData: any, Ma
         }
     }
 
+    if(hasNeedInitTextureDataArr(TextureData)){
+        let needAddedImageDataArrayBufferIndexSizeArr = convertSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery);
+
+        transferList = transferList.concat(needAddedImageDataArrayBufferIndexSizeArr.map(({arrayBuffer}) => {
+            return arrayBuffer as ArrayBuffer;
+        }));
+
+        textureData = {
+            index: TextureData.index,
+
+            //todo check index === needInitTextureIndexArr?
+            needAddedImageDataArrayBufferIndexSizeArr: needAddedImageDataArrayBufferIndexSizeArr,
+            uniformSamplerNameMap: getUniformSamplerNameMap(TextureData),
+            materialTextureMap: getMaterialTextureMap(MapManagerData),
+
+            needInitTextureIndexArr: getNeedInitTextureDataArr(TextureData)
+        };
+    }
+
     getRenderWorker(WorkerInstanceData).postMessage({
         operateType: EWorkerOperateType.DRAW,
         renderCommandBufferData: data,
         materialData: materialData,
         geometryData: geometryData,
         lightData: lightData,
+        textureData: textureData,
         disposeData: {
             geometryDisposeData: geometryDisposeData,
             textureDisposeData: textureDisposeData
         }
-    });
+    }, transferList);
 
     clearWorkerInfoList(GeometryData);
     clearDisposedGeometryIndexArray(GeometryData);
     clearDisposedTextureDataMap(TextureData);
+    clearNeedInitTextureDataArr(TextureData);
+    clearNeedAddedSourceArr(TextureData);
     clearWorkerInitList(MaterialData);
 })
 

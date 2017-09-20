@@ -34,7 +34,7 @@ import {
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
-import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
+// import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
 import { buildInitShaderDataMap } from "../utils/worker/render_file/material/materialUtils";
 import { initMaterialShader as initMaterialShaderWebGL2, initNoMaterialShader as initNoMaterialShaderWebGL2 } from "../webgl2/shader/ShaderSystem";
@@ -79,6 +79,11 @@ import { WebGL2DirectionLightData } from "../webgl2/light/DirectionLightData";
 import { DeferDirectionLightPassData } from "../webgl2/render/light/defer/light/DeferDirectionLightPassData";
 import { DeferPointLightPassData } from "../webgl2/render/light/defer/light/DeferPointLightPassData";
 import { DeferAmbientLightPassData } from "../webgl2/render/light/defer/light/DeferAmbientLightPassData";
+import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
+import {
+    convertSourceMapToImageDataArr, getNeedAddedSourceArr,
+    getUniformSamplerNameMap
+} from "../texture/TextureSystem";
 
 const _checkLightCount =requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     it("count should <= max count", () => {
@@ -157,7 +162,13 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData) => {
-        let renderWorker = getRenderWorker(WorkerInstanceData);
+        let renderWorker = getRenderWorker(WorkerInstanceData),
+            needAddedImageDataArrayBufferIndexSizeArr = convertSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
+            transferList:Array<ArrayBuffer> = [];
+
+        transferList = transferList.concat(needAddedImageDataArrayBufferIndexSizeArr.map(({arrayBuffer}) => {
+            return arrayBuffer as ArrayBuffer;
+        }));
 
         renderWorker.postMessage({
             operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
@@ -182,15 +193,17 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 indicesInfoList: GeometryData.indicesInfoList
             },
             lightData: lightData,
+            //todo test
             textureData: {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
+
                 index: TextureData.index,
-                imageSrcIndexArr: convertSourceMapToSrcIndexArr(TextureData),
+                needAddedImageDataArrayBufferIndexSizeArr: needAddedImageDataArrayBufferIndexSizeArr,
                 uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
             },
             renderData: renderData
-        });
+        }, transferList);
 
         renderWorker.onmessage = (e) => {
             var data = e.data,
@@ -204,7 +217,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
 
     let _render = (state: Map<any, any>, DirectionLightData, PointLightData: any) => {
         return compose(
-            sendDrawData(WorkerInstanceData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData),
+            sendDrawData(DomQuery, WorkerInstanceData, MapManagerData, TextureData, MaterialData, GeometryData, ThreeDTransformData, GameObjectData, AmbientLightData, DirectionLightData, PointLightData),
             // sortRenderCommands(state),
             createRenderCommandBufferWorkerData(state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData),
             getRenderList(state)

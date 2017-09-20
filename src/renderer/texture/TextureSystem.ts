@@ -25,7 +25,8 @@ import {
 } from "../utils/worker/render_file/texture/textureUtils";
 import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { ImageSrcIndexData } from "../type/messageDataType";
+import { ImageArrayBufferIndexSizeData } from "../type/messageDataType";
+import { getImageData } from "../utils/texture/textureUtils";
 
 export const create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
@@ -43,10 +44,6 @@ export const create = ensureFunc((component: Texture) => {
 })
 
 export const getSource = getSourceUtils;
-
-export const setSource = (textureIndex: number, source: any, TextureData: any) => {
-    TextureData.sourceMap[textureIndex] = source;
-}
 
 export const getWidth = getWidthUtils;
 
@@ -92,15 +89,6 @@ export const setUniformSamplerName = (index: number, name: string, TextureData: 
 export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 }
-//
-// const _getWebglTexture =(textureIndex:number, TextureData:any) => {
-//     return TextureData.glTextures[textureIndex];
-// }
-
-export const initTextures = initTexturesUtils;
-
-//todo fix worker
-export const initTexture = initTextureUtils;
 
 // export const initTexture = initTexture
 //
@@ -148,10 +136,29 @@ export const dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCach
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 }
 
-var _disposeGLTexture =null,
+export const initTextures = initTexturesUtils;
+
+export var addNeedInitTextureIndexForWorker = null,
+    initTexture = null,
+    setSource = null;
+
+var _disposeGLTexture = null,
     _addDisposeDataForWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    initTexture = (gl: WebGLRenderingContext, textureIndex, TextureData: any) => {
+        addNeedInitTextureIndexForWorker(textureIndex, TextureData);
+    }
+
+    addNeedInitTextureIndexForWorker = (textureIndex:number, TextureData:any) => {
+        TextureData.needInitTextureIndexArr.push(textureIndex);
+    }
+
+    setSource = (textureIndex: number, source: any, TextureData: any) => {
+        TextureData.sourceMap[textureIndex] = source;
+        TextureData.needAddedSourceArr.push(source);
+    }
+
     _disposeGLTexture = (...args) => {
     }
 
@@ -167,12 +174,25 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
+    initTexture = initTextureUtils;
+
+    addNeedInitTextureIndexForWorker = () => {
+    }
+
+    setSource = (textureIndex: number, source: any, TextureData: any) => {
+        TextureData.sourceMap[textureIndex] = source;
+    }
+
     _disposeGLTexture = (gl: WebGLRenderingContext, sourceIndex: number, lastComponentIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
         disposeGLTexture(gl, sourceIndex, lastComponentIndex, TextureCacheData, TextureData, GPUDetectData);
     }
 
     _addDisposeDataForWorker = (sourceIndex: number, lastComponentIndex: number, TextureData: any) => {
     }
+}
+
+export const getDisposedTextureDataMap = (TextureData: any) => {
+    return TextureData.disposedTextureDataMap;
 }
 
 export const hasDisposedTextureDataMap = (TextureData: any) => {
@@ -183,18 +203,45 @@ export const clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-export const convertSourceMapToSrcIndexArr = (TextureData: any) => {
-    var arr: Array<ImageSrcIndexData> = [];
+export const getNeedInitTextureDataArr = (TextureData: any) => {
+    return TextureData.needInitTextureIndexArr;
+}
 
-    forEach(TextureData.sourceMap, (source: HTMLImageElement, index: number) => {
+export const hasNeedInitTextureDataArr = (TextureData: any) => {
+    return TextureData.needInitTextureIndexArr.length > 0;
+}
+
+export const clearNeedInitTextureDataArr = (TextureData: any) => {
+    TextureData.needInitTextureIndexArr = [];
+}
+
+export const clearNeedAddedSourceArr = (TextureData: any) => {
+    TextureData.needAddedSourceArr = [];
+}
+
+export const getNeedAddedSourceArr = (TextureData: any) => {
+    return TextureData.needAddedSourceArr;
+}
+
+export const convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>, DomQuery:any) => {
+    var arr: Array<ImageArrayBufferIndexSizeData> = [];
+
+    forEach(sourceMap, (source: HTMLImageElement, index: number) => {
         if (_isSourceNotExist(source)) {
             return;
         }
 
-        arr.push({
-            src: source.src,
-            index: index
-        })
+        let width = source.width,
+            height = source.height;
+
+        arr.push(
+            {
+                arrayBuffer: getImageData(source, width, height, DomQuery).data.buffer,
+                width:width,
+                height: height,
+                index:index
+            }
+        )
     })
 
     return arr;
@@ -205,23 +252,6 @@ export const getUniformSamplerNameMap = (TextureData: any) => {
 }
 
 const _isSourceNotExist =(source: HTMLImageElement) => isNotValidVal(source);
-
-// export const convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>) => {
-//     var imageDataArr = [],
-//         canvas = getCanvas(getState(DirectorData)),
-//         canvasWidth = getCanvasWidth(canvas),
-//         canvasHeight = getCanvasHeight(canvas);
-//
-//     for(let source of sourceMap){
-//         imageDataArr.push(drawPartOfTextureByCanvas(source, canvasWidth, canvasHeight, 0, 0).getImageData(0, 0, canvasWidth, canvasHeight));
-//     }
-//
-//     var a = createImageBitmap(imageDataArr[0]).then((data) => {
-//         console.log(data)
-//     })
-//
-//     return imageDataArr;
-// }
 
 export const initData = (TextureCacheData: any, TextureData: any) => {
     initTextureCacheData(TextureCacheData);
@@ -236,6 +266,8 @@ export const initData = (TextureCacheData: any, TextureData: any) => {
     TextureData.uniformSamplerNameMap = [];
 
     TextureData.disposedTextureDataMap = [];
+    TextureData.needInitTextureIndexArr = [];
+    TextureData.needAddedSourceArr = [];
 
     _setDefaultData(TextureData);
 
