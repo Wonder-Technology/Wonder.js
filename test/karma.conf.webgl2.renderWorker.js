@@ -34,10 +34,11 @@
         'test/unit/worker/**/tool/*.js',
         'test/unit/worker/utils/*.js',
 
-        'test/unit/worker/**',
+        // 'test/unit/worker/**',
         // 'test/unit/worker/**/device*',
         // 'test/unit/worker/**/MainSpec*',
-        // 'test/unit/worker/**/texture*',
+        'test/unit/worker/**/texture*',
+        'test/unit/worker/**/hotLoad*',
         // 'test/unit/worker/**/material*',
         // 'test/unit/worker/**/lightMaterial*',
         // 'test/unit/worker/**/disposeTexture*',

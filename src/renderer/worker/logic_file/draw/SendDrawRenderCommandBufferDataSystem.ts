@@ -12,16 +12,18 @@ import { getRenderWorker } from "../../../../worker/WorkerInstanceSystem";
 import { getAllPositionData as getAllDirectionLightPositionData } from "../../../../component/light/DirectionLightSystem";
 import { getAllPositionData as getPointLightAllPositionData } from "../../../../component/light/PointLightSystem";
 import {
-    clearDisposedTextureDataMap, clearNeedAddedSourceArr, clearNeedInitTextureDataArr, convertSourceMapToImageDataArr,
+    clearDisposedTextureDataMap, clearNeedAddedSourceArr, clearNeedInitTextureDataArr,
+    convertNeedInitedSourceMapToImageDataArr,
     getDisposedTextureDataMap,
     getNeedAddedSourceArr,
-    getNeedInitTextureDataArr,
+    getNeedInitedTextureDataArr,
     getUniformSamplerNameMap,
     hasDisposedTextureDataMap, hasNeedInitTextureDataArr
 } from "../../../texture/TextureSystem";
 import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
-import { getMaterialTextureMap } from "../../../texture/MapManagerSystem";
+import { getMaterialTextureList } from "../../../texture/MapManagerSystem";
 
+//todo refactor
 export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapManagerData:any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         geometryDisposeData = null,
@@ -81,21 +83,21 @@ export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapMan
     }
 
     if(hasNeedInitTextureDataArr(TextureData)){
-        let needAddedImageDataArrayBufferIndexSizeArr = convertSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery);
+        let needInitedTextureDataArr = getNeedInitedTextureDataArr(TextureData),
+            needAddedImageDataArr = convertNeedInitedSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), needInitedTextureDataArr, DomQuery);
 
-        transferList = transferList.concat(needAddedImageDataArrayBufferIndexSizeArr.map(({arrayBuffer}) => {
+        transferList = transferList.concat(needAddedImageDataArr.map(({arrayBuffer}) => {
             return arrayBuffer as ArrayBuffer;
         }));
 
         textureData = {
             index: TextureData.index,
 
-            //todo check index === needInitTextureIndexArr?
-            needAddedImageDataArrayBufferIndexSizeArr: needAddedImageDataArrayBufferIndexSizeArr,
+            needAddedImageDataArr: needAddedImageDataArr,
             uniformSamplerNameMap: getUniformSamplerNameMap(TextureData),
-            materialTextureMap: getMaterialTextureMap(MapManagerData),
+            materialTextureList: getMaterialTextureList(MapManagerData),
 
-            needInitTextureIndexArr: getNeedInitTextureDataArr(TextureData)
+            needInitedTextureIndexArr: needInitedTextureDataArr
         };
     }
 

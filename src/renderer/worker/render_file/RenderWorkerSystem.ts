@@ -123,7 +123,7 @@ import { WebGL2DirectionLightWorkerData } from "../webgl2/render_file/light/Dire
 import { DeferDirectionLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferDirectionLightPassWorkerData";
 import { DeferPointLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferPointLightPassWorkerData";
 import { DeferAmbientLightPassWorkerData } from "../webgl2/render_file/render/light/defer/light/DeferAmbientLightPassWorkerData";
-import { initNeedInitTextures, setMaterialTextureMap } from "./texture/MapManagerWorkerSystem";
+import { initNeedInitTextures, setMaterialTextureList } from "./texture/MapManagerWorkerSystem";
 import { initData as initMateiralData, initMaterials } from "./material/AllMaterialWorkerSystem";
 
 declare var self: any;
@@ -491,25 +491,24 @@ const _setLightDrawData =(lightData: LightDrawWorkerData, DirectionLightWorkerDa
 const _setTextureDrawData =(textureData: TextureDrawWorkerData, MapManagerWorkerData:any, TextureWorkerData: any) => {
     setIndex(textureData.index, TextureWorkerData);
     setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
-    setMaterialTextureMap(textureData.materialTextureMap, MapManagerWorkerData);
+    setMaterialTextureList(textureData.materialTextureList, MapManagerWorkerData);
 
-    //todo test async
     //todo handle when complete?
-    addSourceMapByImageDataStream(textureData.needAddedImageDataArrayBufferIndexSizeArr, TextureWorkerData)
+    addSourceMapByImageDataStream(textureData.needAddedImageDataArr, TextureWorkerData)
         .subscribe(null, null, null);
 }
 
-const _initNewTextures = (gl:any, {needInitTextureIndexArr}, TextureWorkerData: any) => {
-    initNeedInitTextures(gl, needInitTextureIndexArr, TextureWorkerData);
+const _initNewTextures = (gl:any, {needInitedTextureIndexArr}, TextureWorkerData: any) => {
+    initNeedInitTextures(gl, needInitedTextureIndexArr, TextureWorkerData);
 }
 
 const _initTextures = (textureData:TextureInitWorkerData, TextureWorkerData:any) => {
-    if (_isDataNotExist(textureData)) {
-        return empty();
-    }
-
     return callFunc(() => {
+        if (_isDataNotExist(textureData)) {
+            return;
+        }
+
         setIndex(textureData.index, TextureWorkerData);
         setUniformSamplerNameMap(textureData.uniformSamplerNameMap, TextureWorkerData);
-    }).concat(addSourceMapByImageDataStream(textureData.needAddedImageDataArrayBufferIndexSizeArr, TextureWorkerData));
+    }).concat(addSourceMapByImageDataStream(textureData.needAddedImageDataArr, TextureWorkerData));
 }

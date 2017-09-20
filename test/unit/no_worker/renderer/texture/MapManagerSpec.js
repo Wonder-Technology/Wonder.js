@@ -150,7 +150,7 @@ describe("MapManager", function() {
                 });
 
                 describe("swap with last one and remove the last one", function(){
-                    it("remove from materialTextureMap", function () {
+                    it("remove from materialTextureList", function () {
                         var texture2 = textureSystemTool.create();
 
                         basicMaterialTool.addMap(material, texture);
@@ -163,8 +163,8 @@ describe("MapManager", function() {
 
                         gameObjectSystemTool.disposeComponent(obj, material);
 
-                        expect(MapManagerData.materialTextureMap[index1]).toEqual([texture.index]);
-                        expect(MapManagerData.materialTextureMap[index2]).toBeUndefined();
+                        expect(MapManagerData.materialTextureList[index1]).toEqual([texture.index]);
+                        expect(MapManagerData.materialTextureList[index2]).toBeUndefined();
                     });
                 });
             });

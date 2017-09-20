@@ -1,4 +1,4 @@
-import { MaterialTextureMap } from "../type/dataType";
+import { MaterialTextureList } from "../type/dataType";
 
 export class MapManagerData {
     public static buffer: SharedArrayBuffer = null;
@@ -6,5 +6,5 @@ export class MapManagerData {
     public static textureIndices: Uint32Array = null;
     public static textureCounts: Uint8Array = null;
 
-    public static materialTextureMap:MaterialTextureMap  = null;
+    public static materialTextureList:MaterialTextureList  = null;
 }

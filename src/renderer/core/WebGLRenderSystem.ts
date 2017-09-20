@@ -34,7 +34,6 @@ import {
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
 import { TextureCacheData } from "../texture/TextureCacheData";
-// import { convertSourceMapToSrcIndexArr, getUniformSamplerNameMap } from "../texture/TextureSystem";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
 import { buildInitShaderDataMap } from "../utils/worker/render_file/material/materialUtils";
 import { initMaterialShader as initMaterialShaderWebGL2, initNoMaterialShader as initNoMaterialShaderWebGL2 } from "../webgl2/shader/ShaderSystem";
@@ -81,8 +80,8 @@ import { DeferPointLightPassData } from "../webgl2/render/light/defer/light/Defe
 import { DeferAmbientLightPassData } from "../webgl2/render/light/defer/light/DeferAmbientLightPassData";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import {
-    convertSourceMapToImageDataArr, getNeedAddedSourceArr,
-    getUniformSamplerNameMap
+    clearNeedAddedSourceArr, getNeedAddedSourceArr,
+    getUniformSamplerNameMap, convertAllSourceMapToImageDataArr
 } from "../texture/TextureSystem";
 
 const _checkLightCount =requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
@@ -162,11 +161,12 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData) => {
+        //todo refactor with send
         let renderWorker = getRenderWorker(WorkerInstanceData),
-            needAddedImageDataArrayBufferIndexSizeArr = convertSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
+            needAddedImageDataArr = convertAllSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
             transferList:Array<ArrayBuffer> = [];
 
-        transferList = transferList.concat(needAddedImageDataArrayBufferIndexSizeArr.map(({arrayBuffer}) => {
+        transferList = transferList.concat(needAddedImageDataArr.map(({arrayBuffer}) => {
             return arrayBuffer as ArrayBuffer;
         }));
 
@@ -193,17 +193,18 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 indicesInfoList: GeometryData.indicesInfoList
             },
             lightData: lightData,
-            //todo test
             textureData: {
                 mapManagerBuffer: MapManagerData.buffer,
                 textureBuffer: TextureData.buffer,
 
                 index: TextureData.index,
-                needAddedImageDataArrayBufferIndexSizeArr: needAddedImageDataArrayBufferIndexSizeArr,
+                needAddedImageDataArr: needAddedImageDataArr,
                 uniformSamplerNameMap: getUniformSamplerNameMap(TextureData)
             },
             renderData: renderData
         }, transferList);
+
+        clearNeedAddedSourceArr(TextureData);
 
         renderWorker.onmessage = (e) => {
             var data = e.data,

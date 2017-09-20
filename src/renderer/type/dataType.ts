@@ -152,6 +152,4 @@ export type VboArrayMap = {
     [index: number]: Array<WebGLBuffer>
 }
 
-export type MaterialTextureMap = {
-    [materialIndex: number]: Array<number>
-}
+export type MaterialTextureList = Array<Array<number>>

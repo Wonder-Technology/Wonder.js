@@ -151,7 +151,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 
     addNeedInitTextureIndexForWorker = (textureIndex:number, TextureData:any) => {
-        TextureData.needInitTextureIndexArr.push(textureIndex);
+        TextureData.needInitedTextureIndexArr.push(textureIndex);
     }
 
     setSource = (textureIndex: number, source: any, TextureData: any) => {
@@ -203,16 +203,16 @@ export const clearDisposedTextureDataMap = (TextureData: any) => {
     TextureData.disposedTextureDataMap = [];
 }
 
-export const getNeedInitTextureDataArr = (TextureData: any) => {
-    return TextureData.needInitTextureIndexArr;
+export const getNeedInitedTextureDataArr = (TextureData: any) => {
+    return TextureData.needInitedTextureIndexArr;
 }
 
 export const hasNeedInitTextureDataArr = (TextureData: any) => {
-    return TextureData.needInitTextureIndexArr.length > 0;
+    return TextureData.needInitedTextureIndexArr.length > 0;
 }
 
 export const clearNeedInitTextureDataArr = (TextureData: any) => {
-    TextureData.needInitTextureIndexArr = [];
+    TextureData.needInitedTextureIndexArr = [];
 }
 
 export const clearNeedAddedSourceArr = (TextureData: any) => {
@@ -223,7 +223,7 @@ export const getNeedAddedSourceArr = (TextureData: any) => {
     return TextureData.needAddedSourceArr;
 }
 
-export const convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>, DomQuery:any) => {
+export const convertAllSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>, DomQuery:any) => {
     var arr: Array<ImageArrayBufferIndexSizeData> = [];
 
     forEach(sourceMap, (source: HTMLImageElement, index: number) => {
@@ -236,16 +236,46 @@ export const convertSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>
 
         arr.push(
             {
-                arrayBuffer: getImageData(source, width, height, DomQuery).data.buffer,
-                width:width,
+                arrayBuffer: _getArrayBuffer(getImageData(source, width, height, DomQuery)),
+                width: width,
                 height: height,
-                index:index
+                index: index
             }
         )
     })
 
     return arr;
 }
+
+export const convertNeedInitedSourceMapToImageDataArr = requireCheckFunc((sourceMap:Array<HTMLImageElement>, needInitedTextureDataArr:Array<number>, DomQuery:any) => {
+    it("needInitedTextureDataArr should corresponding to sourceMap", () => {
+        expect(needInitedTextureDataArr.length).equal(sourceMap.length);
+    });
+}, (sourceMap:Array<HTMLImageElement>, needInitedTextureDataArr:Array<number>, DomQuery:any) => {
+    var arr: Array<ImageArrayBufferIndexSizeData> = [];
+
+    forEach(sourceMap, (source: HTMLImageElement, index: number) => {
+        if (_isSourceNotExist(source)) {
+            return;
+        }
+
+        let width = source.width,
+            height = source.height;
+
+        arr.push(
+            {
+                arrayBuffer: _getArrayBuffer(getImageData(source, width, height, DomQuery)),
+                width:width,
+                height: height,
+                index:needInitedTextureDataArr[index]
+            }
+        )
+    })
+
+    return arr;
+})
+
+const _getArrayBuffer = (imageData:ImageData) => imageData.data.buffer as ArrayBuffer;
 
 export const getUniformSamplerNameMap = (TextureData: any) => {
     return TextureData.uniformSamplerNameMap;
@@ -266,7 +296,7 @@ export const initData = (TextureCacheData: any, TextureData: any) => {
     TextureData.uniformSamplerNameMap = [];
 
     TextureData.disposedTextureDataMap = [];
-    TextureData.needInitTextureIndexArr = [];
+    TextureData.needInitedTextureIndexArr = [];
     TextureData.needAddedSourceArr = [];
 
     _setDefaultData(TextureData);

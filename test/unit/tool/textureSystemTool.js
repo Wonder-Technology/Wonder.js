@@ -5,6 +5,9 @@ var TextureSystemTool = YYC.Class({
 
         isNeedUpdate: function (texture) {
             return wd.TextureData.isNeedUpdates[texture.index] === 0;
+        },
+        getImageData: function (source, width, height) {
+            return wd.getImageData(source, width, height, wd.DomQuery);
         }
     }
 });

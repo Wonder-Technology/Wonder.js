@@ -8,6 +8,7 @@ var TestTool = YYC.Class(TestToolBase, {
 
             deviceManagerTool.resetData();
             materialWorkerTool.resetData();
+            shaderTool.resetData();
             webglDetectWorkerTool.resetData();
             lightTool.resetData();
         },

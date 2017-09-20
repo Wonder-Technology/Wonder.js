@@ -34,7 +34,7 @@
 
         // 'test/unit/**/BufferWriter.js',
 
-        // 'test/unit/no_worker/**',
+        'test/unit/no_worker/**',
         // 'test/unit/no_worker/**/AssetData*',
         // 'test/unit/no_worker/**/TextureAsset*',
         // 'test/unit/no_worker/**/ImageTextureAsset*',
@@ -50,7 +50,7 @@
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
-        'test/unit/no_worker/**/*MapManager*',
+        // 'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
         // 'test/unit/no_worker/**/TextureSpec*',
         // 'test/unit/no_worker/**/ColorSpec*',
@@ -66,7 +66,7 @@
         // 'test/unit/no_worker/**/ThreeDTransform*',
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/draw*',
-        'test/unit/no_worker/**/*GameObject*',
+        // 'test/unit/no_worker/**/*GameObject*',
         // 'test/unit/no_worker/**/Camera*',
         // 'test/unit/no_worker/**/Main*',
         // 'test/unit/no_worker/**/vao*',

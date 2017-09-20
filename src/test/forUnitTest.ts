@@ -47,6 +47,7 @@ import { initData as initWebGL1GPUDetectDataSystem } from "../renderer/webgl1/de
 import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/device/GPUDetectSystem";
 import { initData as initDataSystem } from "../core/MainSystem";
 import { initData as initMaterialDataSystem } from "../component/material/AllMaterialSystem";
+import { getImageData as getImageDataUtils } from "../renderer/utils/texture/textureUtils";
 
 export const initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -131,3 +132,5 @@ export const updateSystem = updateAllSystems;
 export const getNormalMatrix = getNormalMatrixSystem;
 
 export const getWorldToCameraMatrix = getWorldToCameraMatrixSystem;
+
+export const getImageData = getImageDataUtils;

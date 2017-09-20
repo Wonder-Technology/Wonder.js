@@ -73,7 +73,7 @@ export const getMapCount = (materialIndex: number, MapManagerDataFromSystem: any
 // }
 
 export const getMaterialTextures = (materialIndex:number, MapManagerDataFromSystem:any) => {
-    return MapManagerDataFromSystem.materialTextureMap[materialIndex];
+    return MapManagerDataFromSystem.materialTextureList[materialIndex];
 }
 
 export const getBufferCount = () => getBufferTotalCount() * getMaxTextureCount();

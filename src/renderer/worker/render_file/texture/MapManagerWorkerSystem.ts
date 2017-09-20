@@ -7,7 +7,7 @@ import {
     needUpdate,
     update
 } from "./TextureWorkerSystem";
-import { MaterialTextureMap } from "../../../type/dataType";
+import { MaterialTextureList } from "../../../type/dataType";
 
 //todo fix
 
@@ -17,7 +17,7 @@ export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: an
 
 export const initNeedInitTextures = initNeedInitTexturesTexture;
 
-export const setMaterialTextureMap = (materialTextureMap:MaterialTextureMap, MapManagerWorkerData:any) => MapManagerWorkerData.materialTextureMap = materialTextureMap;
+export const setMaterialTextureList = (materialTextureList:MaterialTextureList, MapManagerWorkerData:any) => MapManagerWorkerData.materialTextureList = materialTextureList;
 
 export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
     var textureCounts = MapManagerWorkerData.textureCounts;

@@ -7,20 +7,25 @@ import {
     bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY, initTexture
 } from "../../../utils/worker/render_file/texture/textureUtils";
 import { ImageArrayBufferIndexSizeData, TextureDisposeWorkerData } from "../../../type/messageDataType";
-import { fromArray, fromPromise, just } from "wonder-frp/dist/es2015/global/Operator";
+import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";
 import { forEach, hasDuplicateItems } from "../../../../utils/arrayUtils";
-import { ensureFunc, it, requireCheckFunc } from "../../../../definition/typescript/decorator/contract";
+import { ensureFunc, it } from "../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 
 export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
-export const initTextures = initTexturesUtils;
+// export const initTextures = initTexturesUtils;
+export const initTextures = (gl: WebGLRenderingContext, TextureData: any) => {
+    for (let i = 0; i < TextureData.index; i++) {
+        initTexture(gl, i, TextureData);
+    }
+}
 
-export const initNeedInitTextures = (gl:WebGLRenderingContext, needInitTextureIndexArr:Array<number>, TextureWorkerData:any) => {
-    forEach(needInitTextureIndexArr, (textureIndex:number) => {
+export const initNeedInitTextures = (gl:WebGLRenderingContext, needInitedTextureIndexArr:Array<number>, TextureWorkerData:any) => {
+    forEach(needInitedTextureIndexArr, (textureIndex:number) => {
         initTexture(gl, textureIndex, TextureWorkerData);
     });
 }
@@ -65,31 +70,6 @@ export const setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, T
     TextureWorkerData.uniformSamplerNameMap = uniformSamplerNameMap;
 }
 
-// export const addSourceMapByImageDataStream = (imageDataArrayBufferArr: Array<ArrayBuffer>, TextureWorkerData: any) => {
-//     // return _convertImageSrcToImageBitmapStream(imageSrcIndexArr, TextureWorkerData)
-//     //     .do((imageBitmap: ImageBitmap) => {
-//     //         TextureWorkerData.sourceMap.push(imageBitmap)
-//     //     });
-// }
-//
-// const _convertImageSrcToImageBitmapStream =(imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
-//     //todo
-//     return fromArray(imageSrcIndexArr).flatMap(({ src, index }) => {
-//         return fromPromise(fetch(src))
-//             .flatMap((response: any) => {
-//                 return fromPromise(response.blob());
-//             })
-//             .flatMap((blob: Blob) => {
-//                 var flipY = getFlipY(index, TextureWorkerData);
-//
-//                 return fromPromise(_createImageBitmap(blob, {
-//                     imageOrientation: flipY === true ? "flipY" : "none"
-//                 }));
-//             });
-//     });
-// }
-
-//todo test
 export const addSourceMapByImageDataStream = (imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
     return _convertImageSrcToImageBitmapStream(imageArrayBufferIndexSizeDataArr, TextureWorkerData)
         .do((imageBitmap: ImageBitmap) => {

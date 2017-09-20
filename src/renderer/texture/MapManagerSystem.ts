@@ -70,18 +70,18 @@ export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Tex
 
     MapManagerData.textureCounts[materialIndex] = count + 1;
 
-    _addTextureToMaterialTextureMap(materialIndex, textureIndex, MapManagerData);
+    _addTextureToMaterialTextureList(materialIndex, textureIndex, MapManagerData);
 
     setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
 })
 
-const _addTextureToMaterialTextureMap = (materialIndex:number, textureIndex:number, MapManagerData:any) => {
-    var map = MapManagerData.materialTextureMap[materialIndex];
+const _addTextureToMaterialTextureList = (materialIndex:number, textureIndex:number, MapManagerData:any) => {
+    var map = MapManagerData.materialTextureList[materialIndex];
 
     if(map === void 0){
         map = [textureIndex];
 
-        MapManagerData.materialTextureMap[materialIndex] = map;
+        MapManagerData.materialTextureList[materialIndex] = map;
 
         return;
     }
@@ -89,7 +89,7 @@ const _addTextureToMaterialTextureMap = (materialIndex:number, textureIndex:numb
     map.push(textureIndex);
 }
 
-export const getMaterialTextureMap = (MapManagerData:any) => MapManagerData.materialTextureMap;
+export const getMaterialTextureList = (MapManagerData:any) => MapManagerData.materialTextureList;
 
 export const getMapCount = getMapCountUtils;
 
@@ -114,7 +114,7 @@ export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, start
 export const dispose = (materialSourceIndex: number, materialLastComponentIndex: number, MapManagerData: any) => {
     deleteSingleValueBySwapAndReset(materialSourceIndex, materialLastComponentIndex, MapManagerData.textureCounts, 0);
 
-    deleteBySwap(materialSourceIndex, materialLastComponentIndex, MapManagerData.materialTextureMap);
+    deleteBySwap(materialSourceIndex, materialLastComponentIndex, MapManagerData.materialTextureList);
 }
 
 export const initData = (TextureCacheData: any, TextureData: any, MapManagerData: any) => {
@@ -122,7 +122,7 @@ export const initData = (TextureCacheData: any, TextureData: any, MapManagerData
 
     _initBufferData(MapManagerData);
 
-    MapManagerData.materialTextureMap = createMap();
+    MapManagerData.materialTextureList = [];
 }
 
 const _initBufferData =(MapManagerData: any) => {
