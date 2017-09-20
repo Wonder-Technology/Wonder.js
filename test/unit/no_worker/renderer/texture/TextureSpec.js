@@ -162,6 +162,13 @@ describe("Texture", function () {
             textureSystemTool.setSource(texture, {});
         });
 
+        it("if source not exist, return", function () {
+            textureSystemTool.setSource(texture, undefined);
+
+            directorTool.loopBody(state);
+
+            expect(gl.pixelStorei.withArgs(gl.UNPACK_FLIP_Y_WEBGL, true)).not.toCalled();
+        });
         // it("if repeat texture and draw part of texture by changing texcoords in glsl, warn", function () {
         //     testTool.openContractCheck(sandbox);
         //     sandbox.stub(wd.Log, "warn");

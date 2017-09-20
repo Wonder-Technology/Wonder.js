@@ -161,7 +161,6 @@ export const update = requireCheckFunc((gl: WebGLRenderingContext, textureIndex:
     //     expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
     // });
 }, (gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
-    //todo test
     if(!_isSourceExist(textureIndex, TextureDataFromSystem)){
         return;
     }
