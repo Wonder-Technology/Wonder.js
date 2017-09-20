@@ -159,11 +159,11 @@ export class Color {
     }
 
     public toString() {
-        if(this._colorString !== null){
+        if (this._colorString !== null) {
             return this._colorString;
         }
 
-        let s = "#" + ((1 << 24) + (this.r*255 << 16) + (this.g*255 << 8) + this.b*255).toString(16).slice(1);
+        let s = "#" + ((1 << 24) + (parseInt(String(this.r * 255)) << 16) + (parseInt(String(this.g * 255)) << 8) + parseInt(String(this.b * 255)) * 255).toString(16).slice(1);
 
         return s;
     }
