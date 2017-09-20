@@ -38,15 +38,16 @@ import { LightRenderCommandBufferForDrawData } from "../../../../../../utils/wor
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../utils/worker/render_file/type/dataType";
 import { bindIndexBuffer } from "../../../shader/ShaderWorkerSystem";
 import { IWebGL1DrawDataMap } from "../../../../../../webgl1/utils/worker/render_file/interface/IUtils";
+import { getStartTextureIndex } from "../../../../../../utils/worker/render_file/texture/mapManagerUtils";
 
 export const render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
-    // frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
-    //     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
-    //     getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
-    //
-    //     getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
-    //
-    //     getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, isPointLightPositionDirty, isPointLightColorDirty, isPointLightIntensityDirty, isPointLightAttenuationDirty, cleanPointLightPositionDirty, cleanPointLightColorDirty, cleanPointLightIntensityDirty, cleanPointLightAttenuationDirty,
-    //     drawDataMap
-    // ), initShaderDataMap, bufferData, cameraData);
+    frontRender(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader), drawDataMap, buildSendUniformDataDataMap(
+        sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
+        getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
+
+        getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,
+
+        getPointLightPosition, getPointLightColorArr3, getConstant, getPointLightIntensity, getLinear, getQuadratic, getRange, isPointLightPositionDirty, isPointLightColorDirty, isPointLightIntensityDirty, isPointLightAttenuationDirty, cleanPointLightPositionDirty, cleanPointLightColorDirty, cleanPointLightIntensityDirty, cleanPointLightAttenuationDirty,
+        drawDataMap
+    ), initShaderDataMap, bufferData, cameraData);
 }
