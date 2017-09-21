@@ -1,5 +1,6 @@
 var assetTool = (function () {
     return {
-        load:wd.loadAsset
+        load:wd.loadAsset,
+        setTextureAsset: wd.setTextureAsset
     }
 })()

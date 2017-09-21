@@ -97,7 +97,9 @@
                 setTimeout(function () {
                     assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
                         .subscribe(null, null, () => {
-                            var texture = wd.getAsset("2").toTexture();
+                            assetTool.setTextureAsset("3", wd.getAsset("2").source, ".jpg");
+
+                            var texture = wd.getAsset("3").toTexture();
 
                             basicMaterialTool.setMap(material, texture);
 

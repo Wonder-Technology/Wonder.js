@@ -69,4 +69,31 @@ describe("AssetDatabase", function () {
             });
         });
     });
+
+    describe("setTextureAsset", function() {
+        beforeEach(function(){
+        });
+
+        it("set asset to container", function(){
+            var source1 = {a:1};
+            assetSystemTool.setTextureAsset("jpg", source1, ".jpg");
+
+
+            var source2 = {a:2};
+            assetSystemTool.setTextureAsset("png", source2, ".png");
+
+
+
+            var jpg = assetSystemTool.get("jpg"),
+                png = assetSystemTool.get("png");
+
+            expect(jpg).toBeInstanceOf(wd.ImageTextureAsset);
+            expect(jpg.format).toEqual(wd.ETextureFormat.RGB);
+            expect(jpg.source).toEqual(source1);
+
+            expect(png).toBeInstanceOf(wd.ImageTextureAsset);
+            expect(png.format).toEqual(wd.ETextureFormat.RGBA);
+            expect(png.source).toEqual(source2);
+        });
+    });
 });

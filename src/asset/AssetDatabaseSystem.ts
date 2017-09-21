@@ -1,10 +1,10 @@
 import { AssetData } from "./dataType";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
-import { load as loadTexture } from "./TextureLoaderSystem";
 import { Log } from "../utils/Log";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { isArray } from "../utils/JudgeUtils";
 import { fromArray } from "wonder-frp/dist/es2015/global/Operator";
+import { load as loadTexture, createImageTextureAsset } from "./texture/TextureAssetManagerSystem";
 
 export function load(assertData:AssetData, AssetDatabaseData:any);
 export function load(assetArr: Array<AssetData>, AssetDatabaseData:any);
@@ -69,13 +69,16 @@ export const streamLoad = () => {
 
 }
 
-//todo implement
-export const set = () => {
-
-}
-
 export const get = (id:string, {container}) => {
     return container.getChild(id);
+}
+
+export const setTextureAsset = (id:string, source:HTMLImageElement|HTMLCanvasElement, extname:string, AssetDatabaseData:any) => {
+    _set(id, createImageTextureAsset(source, extname), AssetDatabaseData);
+}
+
+const _set = (id:string, asset:any, {container}) => {
+    container.addChild(id, asset);
 }
 
 export const has = (id:string, {container}) => {
