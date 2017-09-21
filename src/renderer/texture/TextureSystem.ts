@@ -27,6 +27,7 @@ import { computeBufferLength, deleteOneItemBySwapAndReset, setTypeArrayValue } f
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
 import { ImageArrayBufferIndexSizeData } from "../type/messageDataType";
 import { getImageData } from "../utils/texture/textureUtils";
+import { deleteVal } from "../../utils/objectUtils";
 
 export const create = ensureFunc((component: Texture) => {
     it("index should <= max count", () => {
@@ -82,8 +83,16 @@ export const markNeedUpdate = markNeedUpdateUtils;
 //
 // export const getFlipY = getFlipYUtils;
 
+export const getUniformSamplerName = (index: number, TextureData: any) => {
+    return TextureData.uniformSamplerNameMap[index];
+}
+
 export const setUniformSamplerName = (index: number, name: string, TextureData: any) => {
     TextureData.uniformSamplerNameMap[index] = name;
+}
+
+export const removeFromUniformSamplerName = (index: number, TextureData: any) => {
+    deleteVal(index, TextureData.uniformSamplerNameMap);
 }
 
 export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {

@@ -78,6 +78,18 @@ export const removeItem = (arr: Array<any>, item: any) => {
     });
 }
 
+export const replaceItem = (arr: Array<any>, oldItem: any, newItem:any) => {
+    for(let i = 0, len = arr.length; i < len; i++){
+        let val = arr[i];
+
+        if(val === oldItem){
+            arr[i] = newItem;
+        }
+    }
+
+    return arr;
+}
+
 export const filter = (arr: Array<any>, func: (item: any) => boolean) => {
     let result = [];
 

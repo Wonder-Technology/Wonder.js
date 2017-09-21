@@ -17,14 +17,6 @@ export const getMaterialGameObject = requireCheckFunc((material: Material) => {
     return getGameObject(component.index, MaterialData);
 })
 
-// export const getMaterialShader = (material: Material) => {
-//     return getShader(material.index, MaterialData.shaderMap);
-// }
-//
-// export const initMaterialWithoutInitMap = (material: Material) => {
-//     initMaterialSystem(material.index, getState(DirectorData));
-// }
-
 export const checkShouldAlive = (material: Material) => {
     checkComponentShouldAlive(material, null, (material: Material) => {
         return isComponentIndexNotRemoved(material);

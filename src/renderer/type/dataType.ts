@@ -153,3 +153,9 @@ export type VboArrayMap = {
 }
 
 export type MaterialTextureList = Array<Array<number>>
+
+export type TextureOffsetMap = {
+    [materialIndex: number]: {
+        [uniformSamplerName:string]: number
+    }
+}

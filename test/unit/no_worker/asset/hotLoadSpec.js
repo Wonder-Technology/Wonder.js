@@ -1,10 +1,36 @@
 describe("hot load", function () {
     var sandbox = null;
+    var state,
+        gl;
+
+    var material1,
+        activeTextureCallCount,
+        bindTextureCallCount,
+        texImage2DCallCount;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
 
         testTool.clearAndOpenContractCheck(sandbox);
+
+        state = stateTool.createAndSetFakeGLState(sandbox);
+
+        gl = stateTool.getGLFromFakeGLState(state);
+
+        material1 = basicMaterialTool.create();
+
+        basicMaterialTool.setMap(material1, textureSystemTool.createTexture());
+
+        sceneSystemTool.prepareGameObjectAndAddToScene(false, null, material1);
+
+        directorTool.init(state);
+        directorTool.loopBody(state);
+
+
+        activeTextureCallCount = gl.activeTexture.callCount;
+        bindTextureCallCount = gl.bindTexture.callCount;
+        texImage2DCallCount = gl.texImage2D.callCount;
+
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -12,35 +38,8 @@ describe("hot load", function () {
     });
 
     describe("test load texture for new added gameObject at runtime", function () {
-        var state,
-            gl;
-
-        beforeEach(function () {
-            state = stateTool.createAndSetFakeGLState(sandbox);
-
-            gl = stateTool.getGLFromFakeGLState(state);
-        });
-
         describe("test load texture for basic material", function () {
             it("should bind,update,send loaded texture", function (done) {
-                var material1 = basicMaterialTool.create();
-                var texture1 = textureTool.create();
-                var source1 = {s:1};
-
-                textureTool.setSource(texture1, source1);
-
-                basicMaterialTool.addMap(material1, texture1);
-
-                sceneSystemTool.prepareGameObjectAndAddToScene(false, null, material1);
-
-                directorTool.init(state);
-                directorTool.loopBody(state);
-
-
-                var activeTextureCallCount = gl.activeTexture.callCount;
-                var bindTextureCallCount = gl.bindTexture.callCount;
-                var texImage2DCallCount = gl.texImage2D.callCount;
-
                 assetSystemTool.load({ url: resUtils.getRes("1.jpg"), id: "jpg" })
                     .subscribe(function (data) {
                     }, function (err) {
@@ -55,7 +54,7 @@ describe("hot load", function () {
                         var newGameObject = data.gameObject,
                             newMaterial = data.material;
 
-                        basicMaterialTool.addMap(newMaterial, texture2);
+                        basicMaterialTool.setMap(newMaterial, texture2);
 
 
 
@@ -86,6 +85,44 @@ describe("hot load", function () {
                         done();
                     });
             });
+        });
+    });
+
+    describe("test change texture at runtime", function () {
+        it("should bind,update,send new texture", function (done) {
+            assetSystemTool.load({ url: resUtils.getRes("1.jpg"), id: "jpg" })
+                .subscribe(function (data) {
+                }, function (err) {
+                    expect().toFail(err);
+                    done();
+                }, function () {
+                    var glTexture2 = {a:2};
+
+                    gl.createTexture.returns(glTexture2);
+
+
+                    var source2 = wd.getAsset("jpg").source;
+                    var texture2 = wd.getAsset("jpg").toTexture();
+
+
+                    basicMaterialTool.setMap(material1, texture2);
+
+                    textureSystemTool.init(texture2);
+
+
+
+
+                    directorTool.loopBody(state);
+
+
+
+                    expect(gl.activeTexture.getCall(activeTextureCallCount)).toCalledWith(gl.TEXTURE0);
+                    expect(gl.bindTexture.getCall(bindTextureCallCount)).toCalledWith(gl.TEXTURE_2D, glTexture2);
+                    expect(gl.texImage2D.getCall(texImage2DCallCount)).toCalledWith(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source2);
+
+
+                    done();
+                });
         });
     });
 });

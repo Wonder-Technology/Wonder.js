@@ -21,7 +21,7 @@ import { isWebgl1, isWebgl2 } from "../../render_file/device/webglDetectUtils";
 import { EBlendFunc } from "../../../../enum/EBlendFunc";
 import { EBlendEquation } from "../../../../enum/EBlendEquation";
 
-export const getGL = (DeviceManagerDataFromSystem: any, state: Map<any, any>): WebGLRenderingContext => {
+export const getGL = (DeviceManagerDataFromSystem: any, state?: Map<any, any>): WebGLRenderingContext => {
     // return state.getIn(["DeviceManager", "gl"]);
     return DeviceManagerDataFromSystem.gl;
 }

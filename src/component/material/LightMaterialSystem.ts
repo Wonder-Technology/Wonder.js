@@ -36,7 +36,7 @@ import { LightMaterialData } from "./LightMaterialData";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { Texture } from "../../renderer/texture/Texture";
-import { addMap, getMapCount, initMapManager } from "../../renderer/texture/MapManagerSystem";
+import { getMapCount, initMapManager, setMap } from "../../renderer/texture/MapManagerSystem";
 import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
 import { getGL } from "../../renderer/device/DeviceManagerSystem";
 import { TextureData } from "../../renderer/texture/TextureData";
@@ -70,17 +70,13 @@ export const setSpecularColor = (index: number, color: Color, LightMaterialData:
 }
 
 export const setDiffuseMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
-    var count = getMapCount(index, MapManagerData);
-
-    addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
+    setMap(index, map, "u_diffuseMapSampler", MapManagerData, TextureData);
 
     markHasMap(index, LightMaterialData.hasDiffuseMaps);
 }
 
 export const setSpecularMap = (index: number, map: Texture, MapManagerData: any, TextureData: any) => {
-    var count = getMapCount(index, MapManagerData);
-
-    addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
+    setMap(index, map, "u_specularMapSampler", MapManagerData, TextureData);
 
     markHasMap(index, LightMaterialData.hasSpecularMaps);
 }

@@ -53,24 +53,24 @@
 
 
 
-            setTimeout(function () {
-                assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
-                    .subscribe(null, null, () => {
-
-//                        let image = wd.getAsset("2").toTexture();
-
-                        var texture = wd.getAsset("2").toTexture();
-//                        textureTool.setSource(texture, image);
-
-                        let box = createBox(texture);
-
-                        gameObjectTool.init(box);
-
-                        sceneTool.addGameObject(box);
-//                        basicMaterialTool.addMap(material, texture);
-                    })
-
-            }, 1000)
+//            setTimeout(function () {
+//                assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
+//                    .subscribe(null, null, () => {
+//
+////                        let image = wd.getAsset("2").toTexture();
+//
+//                        var texture = wd.getAsset("2").toTexture();
+////                        textureTool.setSource(texture, image);
+//
+//                        let box = createBox(texture);
+//
+//                        gameObjectTool.init(box);
+//
+//                        sceneTool.addGameObject(box);
+////                        basicMaterialTool.setMap(material, texture);
+//                    })
+//
+//            }, 1000)
         }
 
         function createBox(texture) {
@@ -79,7 +79,7 @@
             basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
 
             if(!!texture){
-                basicMaterialTool.addMap(material, texture);
+                basicMaterialTool.setMap(material, texture);
             }
             else{
                 var map = textureTool.create();
@@ -89,7 +89,22 @@
 
 
 
-                basicMaterialTool.addMap(material, map);
+                basicMaterialTool.setMap(material, map);
+
+
+
+
+                setTimeout(function () {
+                    assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
+                        .subscribe(null, null, () => {
+                            var texture = wd.getAsset("2").toTexture();
+
+                            basicMaterialTool.setMap(material, texture);
+
+                            textureTool.init(texture);
+                        })
+
+                }, 1000)
             }
 
 

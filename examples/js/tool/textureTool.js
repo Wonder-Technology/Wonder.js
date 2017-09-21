@@ -1,6 +1,7 @@
 var textureTool = (function () {
     return {
         create:wd.createTexture,
+        init:wd.initTexture,
         dispose:wd.disposeTexture,
         getSource:wd.getTextureSource,
         setSource:wd.setTextureSource,

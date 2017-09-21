@@ -1,5 +1,6 @@
 import {
-    create, dispose, getHeight, getIsNeedUpdate, getSource, getWidth, setHeight, setIsNeedUpdate, setSource,
+    create, dispose, getHeight, getIsNeedUpdate, getSource, getWidth, initTexture as initTextureSystem, setHeight, setIsNeedUpdate,
+    setSource,
     setWidth
 } from "./TextureSystem";
 import { TextureData } from "./TextureData";
@@ -19,6 +20,10 @@ export class Texture implements ITexture {
 
 export const createTexture = () => {
     return create(TextureData);
+}
+
+export const initTexture = (texture:Texture) => {
+    initTextureSystem(getGL(DeviceManagerData), texture.index, TextureData);
 }
 
 export const disposeTexture = requireCheckFunc((texture: Texture) => {

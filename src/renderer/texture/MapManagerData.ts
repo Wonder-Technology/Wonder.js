@@ -1,4 +1,4 @@
-import { MaterialTextureList } from "../type/dataType";
+import { MaterialTextureList, TextureOffsetMap } from "../type/dataType";
 
 export class MapManagerData {
     public static buffer: SharedArrayBuffer = null;
@@ -7,4 +7,6 @@ export class MapManagerData {
     public static textureCounts: Uint8Array = null;
 
     public static materialTextureList:MaterialTextureList  = null;
+    //todo fix worker?
+    public static textureOffsetMap:TextureOffsetMap  = null;
 }

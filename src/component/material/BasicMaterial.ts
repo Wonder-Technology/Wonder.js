@@ -1,6 +1,6 @@
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
-import { addMap, create, initMaterial } from "./BasicMaterialSystem";
+import { create, initMaterial, setMap } from "./BasicMaterialSystem";
 import { MaterialData } from "./MaterialData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BasicMaterialData } from "./BasicMaterialData";
@@ -72,8 +72,8 @@ export const setBasicMaterialAlphaTest = requireCheckFunc((material: BasicMateri
     setAlphaTest(material.index, alphaTest, MaterialData);
 })
 
-export const addBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map: Texture) => {
+export const setBasicMaterialMap = requireCheckFunc((material: BasicMaterial, map: Texture) => {
     checkShouldAlive(material);
 }, (material: BasicMaterial, map: Texture) => {
-    addMap(material.index, map, MapManagerData, TextureData);
+    setMap(material.index, map, MapManagerData, TextureData);
 })

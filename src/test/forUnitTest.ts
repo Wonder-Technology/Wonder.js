@@ -48,6 +48,7 @@ import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/de
 import { initData as initDataSystem } from "../core/MainSystem";
 import { initData as initMaterialDataSystem } from "../component/material/AllMaterialSystem";
 import { getImageData as getImageDataUtils } from "../renderer/utils/texture/textureUtils";
+import { hasDiffuseMap as hasDiffuseMapSystem, hasSpecularMap as hasSpecularMapSystem } from "../component/material/LightMaterialSystem";
 
 export const initThreeDTransformData = initThreeDTransformDataSystem;
 
@@ -134,3 +135,7 @@ export const getNormalMatrix = getNormalMatrixSystem;
 export const getWorldToCameraMatrix = getWorldToCameraMatrixSystem;
 
 export const getImageData = getImageDataUtils;
+
+export const hasDiffuseMap = hasDiffuseMapSystem;
+
+export const hasSpecularMap = hasSpecularMapSystem;

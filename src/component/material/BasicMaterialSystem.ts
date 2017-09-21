@@ -20,7 +20,7 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
 } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
-import { addMap as addMapByMapManager, getMapCount, initMapManager } from "../../renderer/texture/MapManagerSystem";
+import { getMapCount, initMapManager, setMap as setMapMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
@@ -58,11 +58,21 @@ export const initMaterial = (index: number, state: Map<any, any>) => {
 //     return getMapByMapManager(materialIndex, MapManagerData);
 // }
 
-export const addMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
-    var count = getMapCount(materialIndex, MapManagerData);
+// export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+//     it("only support one map", () => {
+//         expect(getMapCount(materialIndex, MapManagerData)).equal(1);
+//     });
+// }, (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+//     var count = getMapCount(materialIndex, MapManagerData);
+//
+//     addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
+// })
 
-    addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
+export const setMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+    setMapMapManager(materialIndex, map, _buildMapUniformSamplerName(), MapManagerData, TextureData);
 }
+
+const _buildMapUniformSamplerName = () => "u_sampler2D";
 
 export const addComponent = (component: Material, gameObject: GameObject) => {
     addMaterialComponent(component, gameObject, MaterialData);
