@@ -163,9 +163,11 @@ export class Color {
             return this._colorString;
         }
 
-        let s = "#" + ((1 << 24) + (parseInt(String(this.r * 255)) << 16) + (parseInt(String(this.g * 255)) << 8) + parseInt(String(this.b * 255)) * 255).toString(16).slice(1);
+        return `#${(`000000${this._getHex().toString(16)}`).slice(-6)}`;
+    }
 
-        return s;
+    private _getHex () {
+        return ( this.r * 255 ) << 16 ^ ( this.g * 255 ) << 8 ^ ( this.b * 255 ) << 0;
     }
 
     public clone() {
