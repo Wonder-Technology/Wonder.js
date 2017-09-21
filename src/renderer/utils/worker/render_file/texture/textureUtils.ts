@@ -6,11 +6,8 @@ import { ETextureType } from "../../../../enum/ETextureType";
 import { deleteBySwap, isValidVal } from "../../../../../utils/arrayUtils";
 import { DataBufferConfig } from "../../../../../config/DataBufferConfig";
 import { setTypeArrayValue } from "../../../../../utils/typeArrayUtils";
-import { ensureFunc, it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { ETextureTarget } from "../../../../enum/ETextureTarget";
-import { expect } from "wonder-expect.js";
 import { clearAllBindTextureUnitCache } from "./textureCacheUtils";
-import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { SendUniformDataGLSLSenderDataMap } from "../../../../type/utilsType";
 import { EVariableType } from "../../../../enum/EVariableType";
@@ -156,11 +153,7 @@ export const markNeedUpdate = (textureIndex, value: boolean, TextureDataFromSyst
     }
 }
 
-export const update = requireCheckFunc((gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
-    // it("texture source should exist", () => {
-    //     expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
-    // });
-}, (gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
+export const update = (gl: WebGLRenderingContext, textureIndex: number, setFlipY: Function, TextureDataFromSystem: any) => {
     if(!_isSourceExist(textureIndex, TextureDataFromSystem)){
         return;
     }
@@ -200,7 +193,7 @@ export const update = requireCheckFunc((gl: WebGLRenderingContext, textureIndex:
     // }
 
     markNeedUpdate(textureIndex, false, TextureDataFromSystem);
-})
+}
 
 const _setTextureParameters =(gl: WebGLRenderingContext, textureType: any, isSourcePowerOfTwo: boolean, wrapS: ETextureWrapMode, wrapT: ETextureWrapMode, magFilter: ETextureFilterMode, minFilter: ETextureFilterMode) => {
     if (isSourcePowerOfTwo) {

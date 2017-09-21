@@ -7,6 +7,5 @@ export class MapManagerData {
     public static textureCounts: Uint8Array = null;
 
     public static materialTextureList:MaterialTextureList  = null;
-    //todo fix worker?
     public static textureOffsetMap:TextureOffsetMap  = null;
 }

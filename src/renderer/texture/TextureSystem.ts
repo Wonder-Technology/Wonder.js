@@ -83,35 +83,13 @@ export const markNeedUpdate = markNeedUpdateUtils;
 //
 // export const getFlipY = getFlipYUtils;
 
-export const getUniformSamplerName = (index: number, TextureData: any) => {
-    return TextureData.uniformSamplerNameMap[index];
-}
-
 export const setUniformSamplerName = (index: number, name: string, TextureData: any) => {
     TextureData.uniformSamplerNameMap[index] = name;
-}
-
-export const removeFromUniformSamplerName = (index: number, TextureData: any) => {
-    deleteVal(index, TextureData.uniformSamplerNameMap);
 }
 
 export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheData: any, TextureData: any, GPUDetectData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheData, TextureData, GPUDetectData, isCached, addActiveTexture);
 }
-
-// export const initTexture = initTexture
-//
-// const _createWebglTexture =(gl:WebGLRenderingContext, textureIndex:number, TextureData:any) => {
-//     var glTexture = _getWebglTexture(textureIndex, TextureData);
-//
-//     if(_isGLTextureExist(glTexture)){
-//         return;
-//     }
-//
-//     TextureData.glTextures[textureIndex] = gl.createTexture();
-// }
-//
-// const _isGLTextureExist =(glTexture:WebGLTexture) => isValidVal(glTexture);
 
 export const needUpdate = needUpdateUtils;
 
