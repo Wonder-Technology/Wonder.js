@@ -5,22 +5,31 @@ import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { isArray } from "../utils/JudgeUtils";
 import { fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { load as loadTexture, createImageTextureAsset } from "./texture/TextureAssetManagerSystem";
+import { enqueueTaskReturnPromise } from "../task/background/IdleTaskSystem";
 
-export function load(assertData:AssetData, AssetDatabaseData:any);
-export function load(assetArr: Array<AssetData>, AssetDatabaseData:any);
+export function load(assertData:AssetData, AssetDatabaseData:any, timeout:number);
+export function load(assertData:Array<AssetData>, AssetDatabaseData:any, timeout:number);
 
 export function load(...args) {
+    return enqueueTaskReturnPromise(args[2])
+        .concat(_load(args[0], args[1]));
+}
+
+function _load(assertData:AssetData, AssetDatabaseData:any);
+function _load(assertData:Array<AssetData>, AssetDatabaseData:any);
+
+function _load(...args){
+    var AssetDatabaseData = args[1];
+
     if (!isArray(args[0])) {
-        let {url, id} = args[0],
-            AssetDatabaseData:any = args[1];
+        let { url, id } = args[0];
 
         return _createLoadSingleAssetStream(url, id, AssetDatabaseData);
     }
     else {
-        var assetArr = args[0],
-            AssetDatabaseData:any = args[1];
+        let assetArr: Array<AssetData> = args[0];
 
-        return fromArray(assetArr).concatMap(({url, id}) => {
+        return fromArray(assetArr).concatMap(({ url, id }) => {
             return _createLoadSingleAssetStream(url, id, AssetDatabaseData);
         });
     }
@@ -31,7 +40,7 @@ const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData
         AssetDatabaseData.totalAssertCount += 1;
     }
 
-    return _getLoad(url)(url, id, AssetDatabaseData)
+    return _getLoadFunc(url)(url, id, AssetDatabaseData)
         .map(() => {
             AssetDatabaseData.currentLoadedCount += 1;
 
@@ -42,7 +51,7 @@ const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData
         });
 }
 
-const _getLoad = (url: string) => {
+const _getLoadFunc = (url: string) => {
     var extname = PathUtils.extname(url),
         load: Function = null;
 

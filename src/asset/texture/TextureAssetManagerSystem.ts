@@ -58,7 +58,7 @@ const _setTextureAssetByExtname = (asset:ImageTextureAsset, extname:string) => {
 }
 
 const _loadImage = (url:string) => {
-    return fromPromise(new Promise((resolve, reject) => {
+    return fromPromise(new Promise((resolve:Function, reject:Function) => {
         var img = null;
 
         img = new root.Image();

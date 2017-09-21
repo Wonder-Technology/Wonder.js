@@ -2,11 +2,17 @@ import { get, load, setTextureAsset as setTextureAssetSystem } from "./AssetData
 import { AssetData } from "./dataType";
 import { AssetDatabaseData } from "./AssetDatabaseData";
 
-export function loadAsset(url: string);
-export function loadAsset(assetArr: Array<AssetData>);
+// export function loadAsset(url: string, onNextFunc:Function, onErrorFunc:Function, onCompleteFunc:Function, timeout?:number);
+// export function loadAsset(assetArr: Array<AssetData>, onNextFunc:Function, onErrorFunc:Function, onCompleteFunc:Function, timeout?:number);
+//
+// export function loadAsset(...args){
+//     return load(args[0], AssetDatabaseData, args[1], args[2], args[3], args[4] || 100);
+// }
+export function loadAsset(url: string, timeout?:number);
+export function loadAsset(assetArr: Array<AssetData>, timeout?:number);
 
 export function loadAsset(...args){
-    return load(args[0], AssetDatabaseData);
+    return load(args[0], AssetDatabaseData, args[1] || 100);
 }
 
 export const getAsset = (id: string) => {
