@@ -64,11 +64,6 @@ const _getLoad = (url: string) => {
     return load;
 }
 
-//todo implement
-export const streamLoad = () => {
-
-}
-
 export const get = (id:string, {container}) => {
     return container.getChild(id);
 }
