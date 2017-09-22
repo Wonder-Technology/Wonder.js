@@ -1,4 +1,4 @@
-import { fromPromise } from "Wonder-FRP/dist/es2015/global/Operator";
+import { fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { root } from "../../definition/Variable";
 import { ImageTextureAsset } from "./ImageTextureAsset";
 import { ETextureFormat } from "../../renderer/enum/ETextureFormat";
