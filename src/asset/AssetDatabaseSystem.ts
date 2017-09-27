@@ -4,7 +4,7 @@ import { Log } from "../utils/Log";
 import { Hash } from "wonder-commonlib/dist/es2015/Hash";
 import { isArray } from "../utils/JudgeUtils";
 import { fromArray } from "wonder-frp/dist/es2015/global/Operator";
-import { load as loadTexture, createImageTextureAsset } from "./texture/TextureAssetManagerSystem";
+import { load as loadTexture, createImageTextureAsset } from "./texture/TextureAssetLoaderSystem";
 import { enqueueTaskReturnPromise } from "wonder-task/background/IdleTaskSystem";
 
 export function load(assertData:AssetData, AssetDatabaseData:any, timeout:number);
