@@ -7,7 +7,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../../definition/typescript
 import { expect } from "wonder-expect.js";
 import { ThreeDTransform } from "../../../component/transform/ThreeDTransform";
 import { isNotUndefined } from "../../../utils/JudgeUtils";
-import { execHandle, execInitHandle } from "../../../component/ComponentSystem";
+import { execBatchHandle, execHandle, execInitHandle } from "../../../component/ComponentSystem";
 import { Geometry } from "../../../component/geometry/Geometry";
 import { Material } from "../../../component/material/Material";
 import { filter, forEach } from "../../../utils/arrayUtils";
@@ -19,12 +19,16 @@ import { IUIdEntity } from "./IUIdEntity";
 import { MeshRenderer } from "../../../component/renderer/MeshRenderer";
 import { create as createMeshRenderer } from "../../../component/renderer/MeshRendererSystem";
 import { getTypeIdFromComponent } from "../../../component/ComponentTypeIdManager";
+import curry from "wonder-lodash/curry";
+import { compose, forEachArray, map } from "../../../utils/functionalUtils";
+import range from "wonder-lodash/range";
+import zip from "wonder-lodash/zip";
 
-export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform, GameObjectData: any) => {
+export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTransform|null, GameObjectData: any) => {
     it("componentMap should has data", () => {
         expect(_getComponentData(gameObject.uid, GameObjectData)).exist;
     });
-}, (transform: ThreeDTransform, GameObjectData: any) => {
+}, (transform: ThreeDTransform|null, GameObjectData: any) => {
     var gameObject: GameObject = new GameObject(),
         uid = _buildUId(GameObjectData);
 
@@ -32,7 +36,7 @@ export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTrans
 
     GameObjectData.aliveUIdArray.push(uid);
 
-    if (!transform) {
+    if (transform === null) {
         _setComponentData(uid, {}, GameObjectData);
     }
     else {
@@ -40,6 +44,41 @@ export const create = ensureFunc((gameObject: GameObject, transform: ThreeDTrans
     }
 
     return gameObject;
+})
+
+//todo move batch logic out
+
+export const createBatch = ensureFunc((gameObjects: Array<GameObject>, count:number, GameObjectData: any) => {
+    it("componentMap should has data", () => {
+        forEach(gameObjects, (gameObject:GameObject) => {
+            expect(_getComponentData(gameObject.uid, GameObjectData)).exist;
+        });
+    });
+}, (count:number, GameObjectData: any) => {
+    return compose(
+        map((uid:number) => {
+            var gameObject = new GameObject();
+
+            gameObject.uid = uid;
+
+            return gameObject;
+        }),
+        forEachArray((uid:number) => {
+            _setComponentData(uid, {}, GameObjectData);
+        }),
+        (uidArray:Array<number>) => {
+            GameObjectData.aliveUIdArray = GameObjectData.aliveUIdArray.concat(uidArray);
+
+            return uidArray;
+        },
+        (startUId:number, count:number) => {
+            var endUId = startUId + count;
+
+            GameObjectData.uid = endUId;
+
+            return range(startUId, endUId);
+        }
+    )(GameObjectData.uid, count);
 })
 
 const _buildUId = (GameObjectData: any) => {
@@ -146,6 +185,55 @@ export const addComponent = requireCheckFunc((gameObject: GameObject, component:
     data[componentId] = component;
 })
 
+export const addBatchComponents = curry(requireCheckFunc(() => {
+    //todo check
+    // it("component should exist", () => {
+    //     expect(component).exist;
+    // });
+    // it("should not has this type of component, please dispose it", () => {
+    //     expect(hasComponent(gameObject, getComponentIdFromComponent(component), GameObjectData)).false;
+    // });
+// }, (GameObjectData: any, gameObjects: Array<GameObject>, components: Array<Array<Component>>) => {
+}, (GameObjectData: any, [gameObjects, components]) => {
+    // var uid = gameObject.uid,
+    //     componentId = getComponentIdFromComponent(component),
+    //     data = _getComponentData(uid, GameObjectData);
+    //
+    // execHandle(component, "addComponentHandleMap", [component, gameObject]);
+    //
+    // if (!data) {
+    //     let d = {};
+    //
+    //     d[componentId] = component;
+    //     _setComponentData(uid, d, GameObjectData);
+    //
+    //     return;
+    // }
+    //
+    // data[componentId] = component;
+    //
+    //
+    // _setComponentData(uid, d, GameObjectData);
+
+    compose(
+        forEachArray((componentArr:Array<Component>) => {
+            execBatchHandle(componentArr, "addComponentHandleMap", zip(componentArr, gameObjects));
+        })
+    )(components)
+
+    // var d = {};
+
+    // compose(
+    //     forEachArray((component:Component) => {
+    //         d[getComponentIdFromComponent(component)] = component;
+    //     })
+    // )({}, components)
+
+    compose(
+
+    )(components)
+}), 2)
+
 const _removeComponent = (componentId: string, uid: number, GameObjectData: any) => {
     var data = _getComponentData(uid, GameObjectData);
 
@@ -234,6 +322,33 @@ export const setParent = (parent: GameObject, child: GameObject, ThreeDTransform
 
     _addChild(parentUId, child, GameObjectData);
 }
+
+// export const setBatchParents = (parent: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
+export const setBatchParents = curry((gameObjects:Array<GameObject>, ThreeDTransformData: any, GameObjectData: any, parentIndices:Uint32Array) => {
+    // var parentUId: number = parent.uid,
+    //     childUId: number = child.uid,
+    //     transform = getTransform(parentUId, GameObjectData),
+    //     childOriginParent: GameObject = getParent(childUId, GameObjectData);
+    //
+    // if (_isParentExist(childOriginParent)) {
+    //     removeChildWithoutDisposeMeshRenderer(childOriginParent.uid, childUId, ThreeDTransformData, GameObjectData);
+    // }
+    //
+    // _setParent(childUId, parent, GameObjectData);
+    //
+    // if (_isComponentExist(transform)) {
+    //     setThreeDTransformParent(transform, getTransform(childUId, GameObjectData), ThreeDTransformData);
+    // }
+    //
+    // _addChild(parentUId, child, GameObjectData);
+    //
+    //
+    //
+
+    //todo implement
+
+    return gameObjects;
+})
 
 const _setParent = (uid: number, parent: GameObject, GameObjectData: any) => {
     GameObjectData.parentMap[uid] = parent;

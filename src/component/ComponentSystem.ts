@@ -8,6 +8,8 @@ import { deleteBySwap, deleteVal, isNotValidMapValue } from "../utils/objectUtil
 import { Map as MapImmutable } from "immutable";
 import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
 import { IUIdEntity } from "../core/entityObject/gameObject/IUIdEntity";
+import { compose, forEachArray } from "../utils/functionalUtils";
+import head from "wonder-lodash/head";
 
 const _addHandle =(_class: any, handleMap: object, handle: Function) => {
     var typeId = getTypeIdFromClass(_class);
@@ -40,6 +42,22 @@ export const execHandle = (component: Component, handleMapName: string, args?: A
     else {
         handle(component);
     }
+}
+
+export const execBatchHandle = (components: Array<Component>, handleMapName: string, argArr:Array<Array<any>>) => {
+    var handle = compose(
+        (typeId:string) => {
+            return ComponentData[handleMapName][typeId];
+        },
+        getTypeIdFromComponent,
+        head
+    )(components);
+
+    compose(
+        forEachArray((arg:Array<any>) => {
+            handle.apply(null, arg);
+        })
+    )(argArr)
 }
 
 export const execInitHandle = (typeId: string, index: number, state: MapImmutable<any, any>) => {

@@ -83,6 +83,7 @@ import {
     clearNeedAddedSourceArr, getNeedAddedSourceArr,
     getUniformSamplerNameMap, convertAllSourceMapToImageDataArr
 } from "../texture/TextureSystem";
+import { map } from "../../utils/arrayUtils";
 
 const _checkLightCount =requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     it("count should <= max count", () => {
@@ -165,7 +166,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
             needAddedImageDataArr = convertAllSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
             transferList:Array<ArrayBuffer> = [];
 
-        transferList = transferList.concat(needAddedImageDataArr.map(({arrayBuffer}) => {
+        transferList = transferList.concat(map(needAddedImageDataArr, ({arrayBuffer}) => {
             return arrayBuffer as ArrayBuffer;
         }));
 

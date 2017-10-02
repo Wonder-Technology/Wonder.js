@@ -5,7 +5,7 @@ var threeDTransformTool = (function () {
         getLocalToWorldMatrix: wd.getThreeDTransformLocalToWorldMatrix,
         getLocalPosition: wd.getThreeDTransformLocalPosition,
         setLocalPosition: wd.setThreeDTransformLocalPosition,
-        setBatchTransformDatas: wd.setThreeDTransformBatchTransformDatas,
+        setBatchTransformData: wd.setThreeDTransformBatchTransformData,
         getParent: wd.getThreeDTransformParent,
         setParent: wd.setThreeDTransformParent,
         // dispose: wd.disposeThreeDTransform,

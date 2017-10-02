@@ -1,4 +1,6 @@
 import { isNotUndefined, isUndefined } from "./JudgeUtils";
+import { it, requireCheckFunc } from "../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
 export const deleteVal = (key: number, arr: Array<any>) => arr[key] = void 0;
 
@@ -90,6 +92,10 @@ export const replaceItem = (arr: Array<any>, oldItem: any, newItem:any) => {
     return arr;
 }
 
+export const map = (arr: Array<any>, func: (item: any) => any) => {
+    return arr.map(func);
+}
+
 export const filter = (arr: Array<any>, func: (item: any) => boolean) => {
     let result = [];
 
@@ -115,3 +121,27 @@ export const forEach = (arr: Array<any>, func: (item: any, index: number) => voi
         func(arr[i], i);
     }
 }
+
+export const forEachPair = requireCheckFunc(([arr1, arr2], func:(item1:any, item2:any, index:number) => void) =>{
+    it("pair arrays->length should equal", () => {
+        expect(arr1.length).equal(arr2.length);
+    });
+}, ([arr1, arr2], func:(item1:any, item2:any, index:number) => void) => {
+    for (let i = 0, len = arr1.length; i < len; i++) {
+        func(arr1[i], arr2[i], i);
+    }
+})
+
+export const mapPair = requireCheckFunc(([arr1, arr2], func:(item1:any, item2:any, index:number) => void) =>{
+    it("pair arrays->length should equal", () => {
+        expect(arr1.length).equal(arr2.length);
+    });
+}, ([arr1, arr2], func:(item1:any, item2:any, index:number) => void) => {
+    var result:Array<any> = [];
+
+    for (let i = 0, len = arr1.length; i < len; i++) {
+        result.push(func(arr1[i], arr2[i], i));
+    }
+
+    return result;
+})

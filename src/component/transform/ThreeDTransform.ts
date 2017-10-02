@@ -4,7 +4,7 @@ import { ThreeDTransformData } from "./ThreeDTransformData";
 import {
     checkShouldAlive,
     create, getGameObject,
-    getLocalPosition, getLocalToWorldMatrix, getPosition, getTempLocalToWorldMatrix, setBatchDatas,
+    getLocalPosition, getLocalToWorldMatrix, getPosition, getTempLocalToWorldMatrix, setBatchData,
     setLocalPosition,
     setParent,
     setPosition
@@ -15,23 +15,31 @@ import { Component } from "../Component";
 import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
+import { Maybe } from "wonder-fantasy-land/dist/es2015/types/Maybe";
 
 @registerClass("ThreeDTransform")
 export class ThreeDTransform extends Component implements IThreeDTransform {
     public uid: number = null;
 }
 
+//todo move out
 export interface IThreeDTransform {
     index: number;
     uid: number;
 }
 
+//todo move to batch interface
 export interface BatchTransformData {
     // uid:number;
     // index:number;
     transform: ThreeDTransform,
     position: Vector3;
     localPosition: Vector3;
+}
+
+export interface BatchTypeArrayTransformData {
+    transforms: Array<ThreeDTransform>,
+    localPosition: Maybe<Float32Array>;
 }
 
 
@@ -69,8 +77,8 @@ export const setThreeDTransformLocalPosition = requireCheckFunc((component: Thre
     setLocalPosition(component, localPosition, ThreeDTransformData);
 })
 
-export const setThreeDTransformBatchTransformDatas = (batchData: Array<BatchTransformData>) => {
-    setBatchDatas(batchData, GlobalTempData, ThreeDTransformData);
+export const setThreeDTransformBatchTransformData = (batchData: Array<BatchTransformData>) => {
+    setBatchData(batchData, GlobalTempData, ThreeDTransformData);
 }
 
 export const getThreeDTransformParent = requireCheckFunc((component: ThreeDTransform) => {
