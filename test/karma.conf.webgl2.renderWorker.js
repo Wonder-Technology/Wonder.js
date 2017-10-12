@@ -34,7 +34,8 @@
         'test/unit/worker/**/tool/*.js',
         'test/unit/worker/utils/*.js',
 
-        'test/unit/worker/**',
+        // 'test/unit/worker/**',
+        'test/unit/worker/**/hot*',
         // 'test/unit/worker/**/device*',
         // 'test/unit/worker/**/MainSpec*',
         // 'test/unit/worker/**/texture*',

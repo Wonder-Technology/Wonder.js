@@ -133,8 +133,8 @@ describe("texture", function () {
             var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             var mat = data.material;
 
-            basicMaterialTool.addMap(mat, texture2);
-            basicMaterialTool.addMap(mat, texture3);
+            basicMaterialTool.setMap(mat, texture2);
+            // basicMaterialTool.setMap(mat, texture3);
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -151,8 +151,7 @@ describe("texture", function () {
             }).args[0][0].textureData.uniformSamplerNameMap).toEqual(
                 [
                     undefined,
-                    "u_sampler2D0",
-                    "u_sampler2D1"
+                    "u_sampler2D"
                 ]
             )
         });
@@ -180,8 +179,7 @@ describe("texture", function () {
                             needAddedImageDataArr: [],
                             uniformSamplerNameMap: [
                                 undefined,
-                                "u_sampler2D0",
-                                "u_sampler2D1"
+                                "u_sampler2D"
                             ]
                         }
                     }
@@ -198,8 +196,7 @@ describe("texture", function () {
 
                 expect(TextureWorkerData.uniformSamplerNameMap).toEqual([
                     undefined,
-                    "u_sampler2D0",
-                    "u_sampler2D1"
+                    "u_sampler2D"
                 ]);
             });
 

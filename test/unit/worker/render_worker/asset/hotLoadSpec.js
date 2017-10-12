@@ -54,7 +54,7 @@ describe("hot load", function () {
 
             textureTool.setSource(texture1, source1);
 
-            basicMaterialTool.addMap(material1, texture1);
+            basicMaterialTool.setMap(material1, texture1);
 
             sceneSystemTool.prepareGameObjectAndAddToScene(false, null, material1);
         }
@@ -78,7 +78,7 @@ describe("hot load", function () {
             material2 = data.material;
             var gameObject2 = data.gameObject;
 
-            basicMaterialTool.addMap(material2, texture2);
+            basicMaterialTool.setMap(material2, texture2);
 
 
 
@@ -251,8 +251,8 @@ describe("hot load", function () {
                 textureData: {
                     index: sinon.match.any,
                     uniformSamplerNameMap: [
-                        "u_sampler2D0",
-                        "u_sampler2D0"
+                        "u_sampler2D",
+                        "u_sampler2D"
                     ],
                     materialTextureList: sinon.match.any,
                     needInitedTextureIndexArr: sinon.match.any,
