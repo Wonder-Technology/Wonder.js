@@ -196,7 +196,7 @@ describe("Shader", function() {
             var texture = textureSystemTool.create();
             textureSystemTool.setSource(texture, {});
 
-            basicMaterialTool.addMap(material, texture);
+            basicMaterialTool.setMap(material, texture);
 
 
             var material2;

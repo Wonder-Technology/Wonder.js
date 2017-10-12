@@ -125,7 +125,7 @@ describe("Geometry", function () {
                         var texture = textureSystemTool.create();
                         textureSystemTool.setSource(texture, {})
 
-                        basicMaterialTool.addMap(mat1, texture);
+                        basicMaterialTool.setMap(mat1, texture);
 
 
                         var data2 = sceneSystemTool.prepareGameObjectAndAddToScene(true, geo2);

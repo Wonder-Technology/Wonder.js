@@ -33,21 +33,21 @@ describe("MapManager", function() {
         sandbox.restore();
     });
 
-    // describe("addMap", function() {
+    // describe("setMap", function() {
     //     beforeEach(function(){
     //
     //     });
     //
     //     it("test add first map", function(){
-    //         basicMaterialTool.addMap(material, texture);
+    //         basicMaterialTool.setMap(material, texture);
     //
     //         expect(MapManagerData.textureIndices[material.index]).toEqual(texture.index);
     //     });
     //     it("test add second map", function () {
     //         var texture2 = textureSystemTool.create();
     //
-    //         basicMaterialTool.addMap(material, texture);
-    //         basicMaterialTool.addMap(material, texture2);
+    //         basicMaterialTool.setMap(material, texture);
+    //         basicMaterialTool.setMap(material, texture2);
     //
     //         expect(MapManagerData.textureIndices[material.index]).toEqual(texture.index);
     //         expect(MapManagerData.textureIndices[material.index + 1]).toEqual(texture2.index);
@@ -58,13 +58,13 @@ describe("MapManager", function() {
     //         for(var i = 0; i < 16; i++){
     //             texture = textureSystemTool.create();
     //
-    //             basicMaterialTool.addMap(material, texture);
+    //             basicMaterialTool.setMap(material, texture);
     //         }
     //
     //         var texture2 = textureSystemTool.create();
     //
     //         expect(function () {
-    //             basicMaterialTool.addMap(material, texture2);
+    //             basicMaterialTool.setMap(material, texture2);
     //         }).toThrow("map count shouldn't exceed max count")
     //     });
     // });

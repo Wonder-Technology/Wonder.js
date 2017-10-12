@@ -178,7 +178,7 @@ describe("basic render", function () {
                         var texture = textureSystemTool.create();
                         textureSystemTool.setSource(texture, {});
 
-                        basicMaterialTool.addMap(material, texture);
+                        basicMaterialTool.setMap(material, texture);
                     });
 
                     describe("send a_texCoord", function () {
@@ -221,9 +221,9 @@ describe("basic render", function () {
                         });
                     })
 
-                    it("send u_sampler2D0", function () {
+                    it("send u_sampler2D", function () {
                         var pos = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos);
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D").returns(pos);
 
                         directorTool.init(state);
                         directorTool.loopBody(state);
@@ -247,8 +247,8 @@ describe("basic render", function () {
                             var fs = getFsSource(gl);
 
                             expect(glslTool.contain(fs, "varying vec2 v_mapCoord0;\n")).toBeTruthy();
-                            expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D0;\n")).toBeTruthy();
-                            expect(glslTool.contain(fs, "totalColor *= texture2D(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D;\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "totalColor *= texture2D(u_sampler2D, v_mapCoord0);\n")).toBeTruthy();
                         });
                     });
                 });

@@ -33,7 +33,7 @@ describe("Texture", function () {
 
         texture = textureSystemTool.create();
 
-        basicMaterialTool.addMap(material, texture);
+        basicMaterialTool.setMap(material, texture);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -90,7 +90,7 @@ describe("Texture", function () {
                 testTool.closeContractCheck();
 
                 texture2 = textureSystemTool.create();
-                basicMaterialTool.addMap(material, texture2);
+                lightMaterialTool.setDiffuseMap(material, texture2);
 
                 glUnit0 = "TEXTURE0";
                 glUnit1 = "TEXTURE1";
@@ -143,13 +143,13 @@ describe("Texture", function () {
         it("send unit index", function () {
             var pos1 = 0;
             var pos2 = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos1);
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D1").returns(pos2);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D").returns(pos1);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_diffuseMapSampler").returns(pos2);
 
 
             var texture2 = textureSystemTool.create();
 
-            basicMaterialTool.addMap(material, texture2);
+            lightMaterialTool.setDiffuseMap(material, texture2);
 
 
             directorTool.init(state);

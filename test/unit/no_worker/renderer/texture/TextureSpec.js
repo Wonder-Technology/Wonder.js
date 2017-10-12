@@ -33,7 +33,7 @@ describe("Texture", function () {
 
         texture = textureSystemTool.create();
 
-        basicMaterialTool.addMap(material, texture);
+        basicMaterialTool.setMap(material, texture);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -339,7 +339,7 @@ describe("Texture", function () {
 
                 beforeEach(function(){
                     texture2 = textureSystemTool.create();
-                    basicMaterialTool.addMap(material, texture2);
+                    basicMaterialTool.setMap(material, texture2);
                 });
 
                 describe("test remove from map", function() {
@@ -415,7 +415,7 @@ describe("Texture", function () {
                 testTool.closeContractCheck();
 
                 texture2 = textureSystemTool.create();
-                basicMaterialTool.addMap(material, texture2);
+                basicMaterialTool.setMap(material, texture2);
 
                 glTexture1 = {t:1};
                 glTexture2 = {t:2};
