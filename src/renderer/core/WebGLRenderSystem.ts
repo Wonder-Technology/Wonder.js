@@ -33,6 +33,7 @@ import {
 } from "../utils/light/bufferUtils";
 import { TextureData } from "../texture/TextureData";
 import { MapManagerData } from "../texture/MapManagerData";
+import { initMapManagers } from "../texture/MapManagerSystem";
 import { TextureCacheData } from "../texture/TextureCacheData";
 import { GBufferData } from "../webgl2/render/light/defer/gbuffer/GBufferData";
 import { buildInitShaderDataMap } from "../utils/worker/render_file/material/materialUtils";
@@ -160,7 +161,10 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 
-    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData) => {
+    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData|null) => {
+        //todo need test
+        initMapManagers(null, TextureData);
+
         let renderWorker = getRenderWorker(WorkerInstanceData),
             needAddedImageDataArr = convertAllSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
             transferList:Array<ArrayBuffer> = [];

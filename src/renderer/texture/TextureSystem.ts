@@ -123,9 +123,10 @@ export const dispose = (gl: WebGLRenderingContext, texture: Texture, TextureCach
     _addDisposeDataForWorker(sourceIndex, lastComponentIndex, TextureData);
 }
 
-export const initTextures = initTexturesUtils;
+// export const initTextures = initTexturesUtils;
 
 export var addNeedInitTextureIndexForWorker = null,
+    initTextures = null,
     initTexture = null,
     setSource = null;
 
@@ -133,6 +134,13 @@ var _disposeGLTexture = null,
     _addDisposeDataForWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
+    //todo refactor: move to utils?
+    initTextures = (gl: WebGLRenderingContext, TextureDataFromSystem: any) => {
+        for (let i = 0; i < TextureDataFromSystem.index; i++) {
+            initTexture(gl, i, TextureDataFromSystem);
+        }
+    }
+
     initTexture = (gl: WebGLRenderingContext, textureIndex, TextureData: any) => {
         addNeedInitTextureIndexForWorker(textureIndex, TextureData);
     }
@@ -161,6 +169,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 else {
+    initTextures = initTexturesUtils;
+
     initTexture = initTextureUtils;
 
     addNeedInitTextureIndexForWorker = () => {

@@ -17,12 +17,7 @@ export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, texture
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
-// export const initTextures = initTexturesUtils;
-export const initTextures = (gl: WebGLRenderingContext, TextureData: any) => {
-    for (let i = 0; i < TextureData.index; i++) {
-        initTexture(gl, i, TextureData);
-    }
-}
+export const initTextures = initTexturesUtils;
 
 export const initNeedInitTextures = (gl:WebGLRenderingContext, needInitedTextureIndexArr:Array<number>, TextureWorkerData:any) => {
     forEach(needInitedTextureIndexArr, (textureIndex:number) => {
@@ -72,9 +67,12 @@ export const setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, T
 
 export const addSourceMapByImageDataStream = (imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
     return _convertImageSrcToImageBitmapStream(imageArrayBufferIndexSizeDataArr, TextureWorkerData)
-        .do((imageBitmap: ImageBitmap) => {
-            _addSource(imageBitmap, TextureWorkerData);
-        });
+    /*!
+    .do here not be triggered! but it's triggered if be moved to 100 line number! why? wonder-frp bug?
+    */
+        // .do((imageBitmap: ImageBitmap) => {
+            // _addSource(imageBitmap, TextureWorkerData);
+        // });
 }
 
 const _addSource = ensureFunc((sourceMap:Array<ImageBitmap>, imageBitmap:ImageBitmap, TextureWorkerData:any) => {
@@ -94,6 +92,9 @@ const _convertImageSrcToImageBitmapStream =(imageArrayBufferIndexSizeDataArr: Ar
     return fromArray(imageArrayBufferIndexSizeDataArr)
         .flatMap(({ arrayBuffer, width, height, index }) => {
             return fromPromise(_createImageBitmap(new ImageData(new Uint8ClampedArray(arrayBuffer), width, height), index, TextureWorkerData))
+                .do((imageBitmap: ImageBitmap) => {
+                    _addSource(imageBitmap, TextureWorkerData);
+                });
         });
 }
 
