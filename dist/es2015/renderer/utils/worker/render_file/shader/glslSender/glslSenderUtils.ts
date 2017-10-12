@@ -10,7 +10,7 @@ import { IWebGL2ShaderLibContentGenerator } from "../../../../../worker/webgl2/b
 import { forEach } from "../../../../../../utils/arrayUtils";
 import { isConfigDataExist } from "../../../../renderConfigUtils";
 
-export var sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
+export const sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number, buffer: WebGLBuffer, geometryIndex: number, GLSLSenderDataFromSystem: any, ArrayBufferData: any) => {
     var vertexAttribHistory = GLSLSenderDataFromSystem.vertexAttribHistory;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -23,7 +23,7 @@ export var sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number, b
     }
 }
 
-var _getBufferSizeByType = (type: string) => {
+const _getBufferSizeByType =(type: string) => {
     var size: number = null;
 
     switch (type) {
@@ -41,19 +41,19 @@ var _getBufferSizeByType = (type: string) => {
     return size;
 }
 
-export var sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export const sendMatrix3 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     _sendUniformData<Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
         gl.uniformMatrix3fv(pos, false, data);
     })
 }
 
-export var sendMatrix4 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export const sendMatrix4 = (gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: Float32Array, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     _sendUniformData<Float32Array>(gl, program, name, data, uniformLocationMap, getUniformLocation, isUniformLocationNotExist, (pos, data) => {
         gl.uniformMatrix4fv(pos, false, data);
     })
 }
 
-export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export const sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Vector3, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap),
         x = data.x,
         y = data.y,
@@ -70,7 +70,7 @@ export var sendVector3 = (gl: WebGLRenderingContext, shaderIndex: number, progra
     })
 }
 
-export var sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
+export const sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
     it("data should be number", () => {
         expect(data).be.a("number");
     });
@@ -88,7 +88,7 @@ export var sendInt = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: n
     })
 })
 
-export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
+export const sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: number, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, glFunc: Function) => {
     it("data should be number", () => {
         expect(data).be.a("number");
     });
@@ -106,7 +106,7 @@ export var sendFloat1 = requireCheckFunc((gl: WebGLRenderingContext, shaderIndex
     })
 })
 
-export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number> | Float32Array, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
+export const sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, name: string, data: Array<number> | Float32Array, uniformCacheMap: UniformCacheMap, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function) => {
     var recordedData: any = _getUniformCache(shaderIndex, name, uniformCacheMap),
         x = data[0],
         y = data[1],
@@ -123,7 +123,7 @@ export var sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, program
     })
 }
 
-var _getUniformCache = (shaderIndex: number, name: string, uniformCacheMap: UniformCacheMap) => {
+const _getUniformCache =(shaderIndex: number, name: string, uniformCacheMap: UniformCacheMap) => {
     var cache = uniformCacheMap[shaderIndex];
 
     if (_isCacheNotExist(cache)) {
@@ -136,13 +136,13 @@ var _getUniformCache = (shaderIndex: number, name: string, uniformCacheMap: Unif
     return cache[name];
 }
 
-var _isCacheNotExist = (cache: any) => isNotValidMapValue(cache);
+const _isCacheNotExist =(cache: any) => isNotValidMapValue(cache);
 
-var _setUniformCache = (shaderIndex: number, name: string, data: any, uniformCacheMap: UniformCacheMap) => {
+const _setUniformCache =(shaderIndex: number, name: string, data: any, uniformCacheMap: UniformCacheMap) => {
     uniformCacheMap[shaderIndex][name] = data;
 }
 
-var _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
+const _sendUniformData =<T>(gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
     var pos = getUniformLocation(gl, program, name, uniformLocationMap);
 
     if (isUniformLocationNotExist(pos)) {
@@ -152,7 +152,7 @@ var _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, nam
     send(pos, data);
 }
 
-export var initData = (GLSLSenderDataFromSystem: any) => {
+export const initData = (GLSLSenderDataFromSystem: any) => {
     GLSLSenderDataFromSystem.vaoConfigMap = createMap();
 
     GLSLSenderDataFromSystem.sendUniformConfigMap = createMap();
@@ -161,7 +161,7 @@ export var initData = (GLSLSenderDataFromSystem: any) => {
     GLSLSenderDataFromSystem.uniformCacheMap = createMap();
 }
 
-export var setVaoConfigData = requireCheckFunc((data: VaoConfigData, name: string, value: any) => {
+export const setVaoConfigData = requireCheckFunc((data: VaoConfigData, name: string, value: any) => {
     it("shouldn't exist duplicate data", () => {
         expect(data[name]).not.exist;
     });

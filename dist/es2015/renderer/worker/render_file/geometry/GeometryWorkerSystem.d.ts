@@ -1,10 +1,10 @@
 import { EBufferType } from "../../../enum/EBufferType";
 import { EDrawMode } from "../../../enum/EDrawMode";
-export declare var getVertices: Function;
-export declare var getNormals: Function;
-export declare var getTexCoords: Function;
-export declare var getIndices: Function;
-export declare var updatePointCacheDatas: (verticesInfoList: {
+export declare const getVertices: Function;
+export declare const getNormals: Function;
+export declare const getTexCoords: Function;
+export declare const getIndices: Function;
+export declare const updatePointCacheDatas: (verticesInfoList: {
     index: number;
     startIndex: number;
     endIndex: number;
@@ -21,7 +21,7 @@ export declare var updatePointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], GeometryWorkerData: any) => void;
-export declare var resetPointCacheDatas: (verticesInfoList: {
+export declare const resetPointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], normalsInfoList: {
@@ -36,7 +36,7 @@ export declare var resetPointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], GeometryWorkerData: any) => void;
-export declare var setPointCacheDatas: (verticesInfoList: {
+export declare const setPointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], normalsInfoList: {
@@ -49,10 +49,10 @@ export declare var setPointCacheDatas: (verticesInfoList: {
     startIndex: number;
     endIndex: number;
 }[], GeometryWorkerData: any) => void;
-export declare var getIndexType: (GeometryDataFromSystem: any) => any;
-export declare var getIndexTypeSize: (GeometryDataFromSystem: any) => any;
-export declare var hasIndices: (index: number, GeometryWorkerData: any) => boolean;
-export declare var getDrawMode: (index: number, GeometryDataFromSystem: any) => EDrawMode;
-export declare var getVerticesCount: (index: number, GeometryWorkerData: any) => any;
-export declare var getIndicesCount: (index: number, GeometryWorkerData: any) => any;
-export declare var initData: (buffer: SharedArrayBuffer, indexType: EBufferType, indexTypeSize: number, DataBufferConfig: any, GeometryWorkerData: any) => void;
+export declare const getIndexType: (GeometryDataFromSystem: any) => any;
+export declare const getIndexTypeSize: (GeometryDataFromSystem: any) => any;
+export declare const hasIndices: (index: number, GeometryWorkerData: any) => boolean;
+export declare const getDrawMode: (index: number, GeometryDataFromSystem: any) => EDrawMode;
+export declare const getVerticesCount: (index: number, GeometryWorkerData: any) => any;
+export declare const getIndicesCount: (index: number, GeometryWorkerData: any) => any;
+export declare const initData: (buffer: SharedArrayBuffer, indexType: EBufferType, indexTypeSize: number, DataBufferConfig: any, GeometryWorkerData: any) => void;

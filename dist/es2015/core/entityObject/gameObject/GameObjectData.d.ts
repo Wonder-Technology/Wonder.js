@@ -12,7 +12,7 @@ export declare type GameObjectComponentMap = {
     [uid: number]: GameObjectComponentData;
 };
 export declare type GameObjectComponentData = {
-    [typeId: number]: Component;
+    [componentId: number]: Component;
 };
 export declare type GameObjectParentMap = {
     [uid: number]: IUIdEntity;

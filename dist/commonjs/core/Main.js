@@ -33,6 +33,7 @@ var Main = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
+        DirectorSystem_1.initData(DirectorData_1.DirectorData);
         this._configState = MainSystem_1.setConfig(CompileConfig_1.CompileConfig.closeContractTest, InitConfigData_1.InitConfigData, WorkerDetectData_1.WorkerDetectData, WorkerInstanceData_1.WorkerInstanceData, WebGLDetectData_1.WebGLDetectData, configState).run();
         DirectorSystem_1.setState(DirectorSystem_1.getState(DirectorData_1.DirectorData).set("Main", this._configState.get("Main")), DirectorData_1.DirectorData).run();
         return this;
@@ -53,4 +54,8 @@ var Main = (function () {
     return Main;
 }());
 exports.Main = Main;
+exports.initAllData = function () {
+    DirectorSystem_1.initData(DirectorData_1.DirectorData);
+    MainSystem_1.initData();
+};
 //# sourceMappingURL=Main.js.map

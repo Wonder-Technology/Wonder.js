@@ -4,8 +4,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { ensure, assert } from "../../definition/typescript/decorator/contract";
-import { Log } from "../Log";
+import { ensure, it } from "../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 var TimeController = (function () {
     function TimeController() {
         this.elapsed = null;
@@ -41,7 +41,10 @@ var TimeController = (function () {
     };
     __decorate([
         ensure(function () {
-            assert(this.elapsed >= 0, Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+            var _this = this;
+            it("elapsed should >= 0, but actual is " + this.elapsed, function () {
+                expect(_this.elapsed).gte(0);
+            });
         })
     ], TimeController.prototype, "computeElapseTime", null);
     return TimeController;

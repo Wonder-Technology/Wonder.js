@@ -27,9 +27,6 @@ import {
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { isDisposeTooManyComponents, reAllocateGeometry } from "../../utils/memoryUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import {
-
-} from "../../renderer/utils/worker/render_file/geometry/geometryUtils";
 import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { fillTypeArr, getSubarray } from "../../utils/typeArrayUtils";
 import { isNotValidVal } from "../../utils/arrayUtils";
@@ -37,22 +34,22 @@ import { expect } from "wonder-expect.js";
 import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { hasExtensionUintIndices } from "../../renderer/utils/device/gpuDetectUtils";
 
-export var addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
+export const addAddComponentHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addAddComponentHandleToMap(BoxGeometry, addComponent);
     addAddComponentHandleToMap(CustomGeometry, addComponent);
 }
 
-// export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
+// export const addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
 //     addDisposeHandleToMap(BoxGeometry, disposeComponent);
 //     addDisposeHandleToMap(CustomGeometry, disposeComponent);
 // }
 
-export var addInitHandle = (BoxGeometry: any, CustomGeometry: any) => {
+export const addInitHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addInitHandleToMap(BoxGeometry, initGeometry);
     addInitHandleToMap(CustomGeometry, initGeometry);
 }
 
-export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {
+export const create = requireCheckFunc((geometry: Geometry, GeometryData: any) => {
     // checkIndexShouldEqualCount(GeometryData);
 }, (geometry: Geometry, GeometryData: any) => {
     var index = generateComponentIndex(GeometryData);
@@ -66,7 +63,7 @@ export var create = requireCheckFunc((geometry: Geometry, GeometryData: any) => 
     return geometry;
 })
 
-export var init = (GeometryData: any, state: Map<any, any>) => {
+export const init = (GeometryData: any, state: Map<any, any>) => {
     for (let i = 0, count = GeometryData.count; i < count; i++) {
         initGeometry(i, state);
     }
@@ -76,7 +73,7 @@ export var init = (GeometryData: any, state: Map<any, any>) => {
     return state;
 }
 
-export var initGeometry = (index: number, state: Map<any, any>) => {
+export const initGeometry = (index: number, state: Map<any, any>) => {
     var computeDataFunc = GeometryData.computeDataFuncMap[index];
 
     if (_isComputeDataFuncNotExist(computeDataFunc)) {
@@ -101,13 +98,13 @@ export var initGeometry = (index: number, state: Map<any, any>) => {
     setIndices(index, indices, GeometryData);
 }
 
-var _isComputeDataFuncNotExist = (func: Function) => isNotValidMapValue(func);
+const _isComputeDataFuncNotExist =(func: Function) => isNotValidMapValue(func);
 
-export var getVertices = (index: number, GeometryData: any) => {
+export const getVertices = (index: number, GeometryData: any) => {
     return _getPointData(index, GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList);
 }
 
-export var setVertices = requireCheckFunc((index: number, vertices: Array<number>, GeometryData: any) => {
+export const setVertices = requireCheckFunc((index: number, vertices: Array<number>, GeometryData: any) => {
     // it("vertices should not already exist", () => {
     //     expect(GeometryData.verticesCacheMap[index]).not.exist;
     // });
@@ -115,29 +112,29 @@ export var setVertices = requireCheckFunc((index: number, vertices: Array<number
     GeometryData.verticesOffset = _setPointData(index, vertices, getVertexDataSize(), GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList, GeometryData.verticesWorkerInfoList, GeometryData.verticesOffset, GeometryData);
 })
 
-export var getNormals = (index: number, GeometryData: any) => {
+export const getNormals = (index: number, GeometryData: any) => {
     return _getPointData(index, GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList);
 }
 
-export var setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
+export const setNormals = requireCheckFunc((index: number, normals: Array<number>, GeometryData: any) => {
 }, (index: number, normals: Array<number>, GeometryData: any) => {
     GeometryData.normalsOffset = _setPointData(index, normals, getNormalDataSize(), GeometryData.normals, GeometryData.normalsCacheMap, GeometryData.normalsInfoList, GeometryData.normalsWorkerInfoList, GeometryData.normalsOffset, GeometryData);
 })
 
-export var getTexCoords = (index: number, GeometryData: any) => {
+export const getTexCoords = (index: number, GeometryData: any) => {
     return _getPointData(index, GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList);
 }
 
-export var setTexCoords = requireCheckFunc((index: number, texCoords: Array<number>, GeometryData: any) => {
+export const setTexCoords = requireCheckFunc((index: number, texCoords: Array<number>, GeometryData: any) => {
 }, (index: number, texCoords: Array<number>, GeometryData: any) => {
     GeometryData.texCoordsOffset = _setPointData(index, texCoords, getTexCoordsDataSize(), GeometryData.texCoords, GeometryData.texCoordsCacheMap, GeometryData.texCoordsInfoList, GeometryData.texCoordsWorkerInfoList, GeometryData.texCoordsOffset, GeometryData);
 })
 
-export var getIndices = (index: number, GeometryData: any) => {
+export const getIndices = (index: number, GeometryData: any) => {
     return _getPointData(index, GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList);
 }
 
-export var setIndices = requireCheckFunc((index: number, indices: Array<number>, GeometryData: any) => {
+export const setIndices = requireCheckFunc((index: number, indices: Array<number>, GeometryData: any) => {
     // it("indices should not already exist", () => {
     //     expect(GeometryData.indicesCacheMap[index]).not.exist;
     // });
@@ -145,7 +142,7 @@ export var setIndices = requireCheckFunc((index: number, indices: Array<number>,
     GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 })
 
-var _getPointData = requireCheckFunc((index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
+const _getPointData =requireCheckFunc((index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
     it("infoList[index] should exist", () => {
         expect(infoList[index]).exist;
     });
@@ -165,7 +162,7 @@ var _getPointData = requireCheckFunc((index: number, points: Float32Array | Uint
     return dataArr;
 })
 
-var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
+const _setPointData =(index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
     var count = dataArr.length,
         startIndex = offset;
 
@@ -184,22 +181,22 @@ var _setPointData = (index: number, dataArr: Array<number>, dataSize: number, po
     return offset;
 }
 
-var _removeCache = (index: number, cacheMap: object) => {
+const _removeCache =(index: number, cacheMap: object) => {
     deleteVal(index, cacheMap);
 }
 
-var _buildInfo = (startIndex: number, endIndex: number) => {
+const _buildInfo =(startIndex: number, endIndex: number) => {
     return {
         startIndex: startIndex,
         endIndex: endIndex
     }
 }
 
-export var addComponent = (component: Geometry, gameObject: GameObject) => {
+export const addComponent = (component: Geometry, gameObject: GameObject) => {
     addComponentToGameObjectMap(GeometryData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = (component: Geometry, disposeBuffers: Function) => {
+export const disposeComponent = (component: Geometry, disposeBuffers: Function) => {
     var sourceIndex = component.index;
 
     deleteComponent(sourceIndex, GeometryData.geometryMap);
@@ -220,11 +217,11 @@ export var disposeComponent = (component: Geometry, disposeBuffers: Function) =>
     }
 }
 
-export var isReallocate = (GeometryData: any) => {
+export const isReallocate = (GeometryData: any) => {
     return GeometryData.isReallocate;
 }
 
-var _isBufferNearlyFull = (GeometryData: any) => {
+const _isBufferNearlyFull =(GeometryData: any) => {
     var infoList = GeometryData.indicesInfoList,
         lastInfo = infoList[infoList.length - 1];
 
@@ -235,22 +232,22 @@ var _isBufferNearlyFull = (GeometryData: any) => {
     return lastInfo.endIndex >= GeometryData.maxDisposeIndex;
 }
 
-export var getGameObject = (index: number, Data: any) => {
+export const getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-export var getConfigData = (index: number, GeometryData: any) => {
+export const getConfigData = (index: number, GeometryData: any) => {
     return GeometryData.configDataMap[index];
 }
 
-// var _createVerticesTypeArray = () => {
+// const _createVerticesTypeArray =() => {
 //     var count = DataBufferConfig.geometryDataBufferCount,
 //         size = Float32Array.BYTES_PER_ELEMENT * 3 + indicesArrayBytes * 1;
 //
 //     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
 // }
 
-var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectData: any) => {
+const _checkIsIndicesBufferNeed32BitsByConfig =(DataBufferConfig: any, GPUDetectData: any) => {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
@@ -258,39 +255,43 @@ var _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectD
     return hasExtensionUintIndices(GPUDetectData) === true;
 }
 
-export var isIndicesBufferNeed32BitsByData = (GeometryData: any) => {
+export const isIndicesBufferNeed32BitsByData = (GeometryData: any) => {
     return GeometryData.indexType === EBufferType.UNSIGNED_INT;
 }
 
 
-var _markIsInit = (GeometryData: any) => {
+const _markIsInit =(GeometryData: any) => {
     GeometryData.isInit = true;
 }
 
-var _isInit = (GeometryData: any) => {
+const _isInit =(GeometryData: any) => {
     return GeometryData.isInit;
 }
 
-export var clearWorkerInfoList = (GeometryData: any) => {
+export const clearWorkerInfoList = (GeometryData: any) => {
     GeometryData.verticesWorkerInfoList = [];
     GeometryData.normalsWorkerInfoList = [];
     GeometryData.texCoordsWorkerInfoList = [];
     GeometryData.indicesWorkerInfoList = [];
 };
 
-export var hasNewPointData = (GeometryData: any) => {
+export const hasNewPointData = (GeometryData: any) => {
     return GeometryData.verticesWorkerInfoList.length > 0;
 }
 
-export var hasDisposedGeometryIndexArrayData = (GeometryData: any) => {
+export const getDisposedGeometryIndexArrayData = (GeometryData: any) => {
+    return GeometryData.disposedGeometryIndexArray;
+}
+
+export const hasDisposedGeometryIndexArrayData = (GeometryData: any) => {
     return GeometryData.disposedGeometryIndexArray.length > 0;
 }
 
-export var clearDisposedGeometryIndexArray = (GeometryData: any) => {
+export const clearDisposedGeometryIndexArray = (GeometryData: any) => {
     GeometryData.disposedGeometryIndexArray = [];
 }
 
-var _addWorkerInfo = null;
+var _addWorkerInfo =null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
@@ -302,7 +303,7 @@ else {
     };
 }
 
-var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => {
+const _buildWorkerInfo =(index: number, startIndex: number, endIndex: number) => {
     return {
         index: index,
         startIndex: startIndex,
@@ -310,7 +311,7 @@ var _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => 
     }
 }
 
-export var initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData: any) => {
+export const initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData: any) => {
     var isIndicesBufferNeed32Bits = _checkIsIndicesBufferNeed32BitsByConfig(DataBufferConfig, GPUDetectData),
         indicesArrayBytes: number = null;
 
@@ -367,7 +368,7 @@ export var initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData: 
     GeometryData.isReallocate = false;
 }
 
-var _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
+const _initBufferData =(indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
         size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()) + indicesArrayBytes * getIndexDataSize();

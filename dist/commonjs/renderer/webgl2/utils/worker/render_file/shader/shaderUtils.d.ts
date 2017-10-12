@@ -5,11 +5,11 @@ import { IMaterialConfig, IShaderLibItem } from "../../../../../data/material_co
 import { IWebGL2InitShaderFuncDataMap } from "../interface/IUtils";
 import { WebGLVertexArrayObject } from "../../../../../extend/interface";
 import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
-export declare var getNoMaterialShaderIndex: (shaderName: string, ShaderDataFromSystem: any) => any;
-export declare var initNoMaterialShader: (state: Map<any, any>, shaderName: string, materialShaderLibConfig: (string | IShaderLibItem)[], material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => number;
-export declare var initMaterialShader: (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => number;
-export declare var bindVao: (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => void;
-export declare var createAndInitVao: (gl: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {positionLocation, normalLocation, texCoordLocation, getVertices, getNormals, getTexCoords, getIndices}: {
+export declare const getNoMaterialShaderIndex: (shaderName: string, ShaderDataFromSystem: any) => any;
+export declare const initNoMaterialShader: (state: Map<any, any>, shaderName: string, materialShaderLibConfig: (string | IShaderLibItem)[], material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => number;
+export declare const initMaterialShader: (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => number;
+export declare const bindVao: (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => void;
+export declare const createAndInitVao: (gl: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {positionLocation, normalLocation, texCoordLocation, getVertices, getNormals, getTexCoords, getIndices}: {
     positionLocation: any;
     normalLocation: any;
     texCoordLocation: any;
@@ -18,4 +18,4 @@ export declare var createAndInitVao: (gl: any, geometryIndex: number, vaoMap: Va
     getTexCoords: any;
     getIndices: any;
 }, GeometryDataFromSystem: any) => any;
-export declare var initData: (ShaderDataFromSystem: any) => void;
+export declare const initData: (ShaderDataFromSystem: any) => void;

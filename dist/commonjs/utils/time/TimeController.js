@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var contract_1 = require("../../definition/typescript/decorator/contract");
-var Log_1 = require("../Log");
+var wonder_expect_js_1 = require("wonder-expect.js");
 var TimeController = (function () {
     function TimeController() {
         this.elapsed = null;
@@ -43,7 +43,10 @@ var TimeController = (function () {
     };
     __decorate([
         contract_1.ensure(function () {
-            contract_1.assert(this.elapsed >= 0, Log_1.Log.info.FUNC_SHOULD("elapsed:" + this.elapsed, ">= 0"));
+            var _this = this;
+            contract_1.it("elapsed should >= 0, but actual is " + this.elapsed, function () {
+                wonder_expect_js_1.expect(_this.elapsed).gte(0);
+            });
         })
     ], TimeController.prototype, "computeElapseTime", null);
     return TimeController;

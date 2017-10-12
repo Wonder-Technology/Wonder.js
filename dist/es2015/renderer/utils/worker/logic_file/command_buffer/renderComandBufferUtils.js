@@ -15,14 +15,14 @@ export var createRenderCommandBufferData = requireCheckFunc(function (state, cre
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount);
     });
 }, function (state, createBasicRenderCommandBufferData, createLightRenderCommandBufferData, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData, renderGameObjectArray) {
-    var basicMaterialGameObjectArr = [], lightMaterialGameObjectArr = [], vMatrix = null, pMatrix = null, cameraPosition = null, normalMatrix = null, currentCamera = getCurrentCamera(SceneData), currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData), currentCameraIndex = currentCameraComponent.index, currentCameraTransform = getTransform(currentCamera, GameObjectData);
+    var basicMaterialGameObjectArr = [], lightMaterialGameObjectArr = [], vMatrix = null, pMatrix = null, cameraPosition = null, normalMatrix = null, currentCameraUId = getCurrentCamera(SceneData).uid, currentCameraComponent = getComponent(currentCameraUId, getComponentIdFromClass(CameraController), GameObjectData), currentCameraIndex = currentCameraComponent.index, currentCameraTransform = getTransform(currentCameraUId, GameObjectData);
     vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
     pMatrix = getPMatrix(currentCameraIndex, CameraData).values;
     cameraPosition = getPosition(currentCameraTransform, ThreeDTransformData).values;
     normalMatrix = getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData).values;
     for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
         var gameObject = renderGameObjectArray_1[_i];
-        var material = getMaterial(gameObject, GameObjectData);
+        var material = getMaterial(gameObject.uid, GameObjectData);
         if (ClassUtils.getClassNameByInstance(material) === "BasicMaterial") {
             basicMaterialGameObjectArr.push(gameObject);
         }

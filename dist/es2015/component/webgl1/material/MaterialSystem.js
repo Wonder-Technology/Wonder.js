@@ -1,5 +1,5 @@
 import { WebGL1PointLightData } from "../../../renderer/webgl1/light/PointLightData";
-import { init as initMaterial } from "../../material/MaterialSystem";
+import { init as initMaterial } from "../../material/AllMaterialSystem";
 import { WebGL1DirectionLightData } from "../../../renderer/webgl1/light/DirectionLightData";
 import { AmbientLightData } from "../../light/AmbientLightData";
 export var init = function (state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData) {

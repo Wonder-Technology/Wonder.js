@@ -36,6 +36,6 @@ export var removeSceneChild = requireCheckFunc(function (scene, gameObject) {
         expect(isAlive(scene, GameObjectData)).true;
     });
 }, function (scene, gameObject) {
-    removeChild(scene, gameObject, ThreeDTransformData, GameObjectData);
+    removeChild(scene.uid, gameObject.uid, ThreeDTransformData, GameObjectData);
 });
 //# sourceMappingURL=Scene.js.map

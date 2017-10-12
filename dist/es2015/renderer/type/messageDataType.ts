@@ -1,6 +1,6 @@
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
 import {
-    ContextConfigOptionsData, DisposedTextureDataMap,
+    ContextConfigOptionsData, DisposedTextureDataMap, MaterialTextureList,
 } from "./dataType";
 import { Vector3 } from "../../math/Vector3";
 import { EBufferType } from "../enum/EBufferType";
@@ -65,20 +65,26 @@ export type LightDrawWorkerData = {
     };
 }
 
+export type TextureDrawWorkerData = {
+    index: number;
+    needAddedImageDataArr: Array<ImageArrayBufferIndexSizeData>;
+    uniformSamplerNameMap: Array<string>;
+    materialTextureList: MaterialTextureList;
+}
+
 export type TextureInitWorkerData = {
     mapManagerBuffer: SharedArrayBuffer;
     textureBuffer: SharedArrayBuffer;
     index: number;
-    imageSrcIndexArr: Array<ImageSrcIndexData>;
+    needAddedImageDataArr: Array<ImageArrayBufferIndexSizeData>;
     uniformSamplerNameMap: Array<string>;
 }
 
-export type ImageSrcIndexData = {
-    src: string;
+export type ImageArrayBufferIndexSizeData = {
+    arrayBuffer: ArrayBuffer;
+    width: number;
+    height: number;
     index: number;
-}
-
-export type TextureUpdateWorkerData = {
 }
 
 export type TextureDisposeWorkerData = {

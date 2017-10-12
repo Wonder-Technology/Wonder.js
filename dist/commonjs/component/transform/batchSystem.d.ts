@@ -1,1 +1,1 @@
-export declare var setBatchDatas: Function;
+export declare const setBatchDatas: Function;

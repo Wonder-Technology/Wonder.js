@@ -7,4 +7,5 @@ exports.detect = curry_1.default(function (getGL, DeviceManagerData, GPUDetectDa
     return gpuDetectUtils_1.detect(getGL, DeviceManagerData, GPUDetectData, state);
 });
 exports.hasExtensionColorBufferFloat = gpuDetectUtils_2.hasExtensionColorBufferFloat;
+exports.initData = gpuDetectUtils_1.initData;
 //# sourceMappingURL=GPUDetectSystem.js.map

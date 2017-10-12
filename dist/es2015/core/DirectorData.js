@@ -1,9 +1,8 @@
-import { createState } from "../utils/stateUtils";
 var DirectorData = (function () {
     function DirectorData() {
     }
-    DirectorData.state = createState();
-    DirectorData.isInit = false;
+    DirectorData.state = null;
+    DirectorData.isInit = null;
     return DirectorData;
 }());
 export { DirectorData };

@@ -9,7 +9,7 @@ import {
 import { ExtendUtils } from "wonder-commonlib/dist/commonjs/utils/ExtendUtils";
 import { GlobalTempData } from "../../definition/GlobalTempData";
 
-export var create = (GeometryData: any) => {
+export const create = (GeometryData: any) => {
     var geometry = new BoxGeometry(),
         index: number = null;
 
@@ -24,7 +24,7 @@ export var create = (GeometryData: any) => {
     return geometry;
 }
 
-var _computeData = (index: number, GeometryData: any) => {
+const _computeData =(index: number, GeometryData: any) => {
     var {
             width,
         height,
@@ -121,7 +121,7 @@ var _computeData = (index: number, GeometryData: any) => {
     };
 }
 
-var _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
+const _getConfigData =ensureFunc((data: BoxGeometryConfigData) => {
     it("config data should be defined", () => {
         expect(data).exist;
         expect(data.width).exist;
@@ -135,7 +135,7 @@ var _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
     return GeometryData.configDataMap[index];
 })
 
-export var setConfigData = (index: number, data: BoxGeometryConfigData, GeometryData: any) => {
+export const setConfigData = (index: number, data: BoxGeometryConfigData, GeometryData: any) => {
     GeometryData.configDataMap[index] = ExtendUtils.extend({
         width: 10,
         height: 10,

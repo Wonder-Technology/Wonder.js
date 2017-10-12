@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { registerClass } from "../../../definition/typescript/decorator/registerClass";
-import { addChild, addComponent, addRemovedChild, create, dispose, disposeComponent, getAliveChildren, getComponent, getParent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem, isAlive, removeChild } from "./GameObjectSystem";
+import { addChild, addComponent, addRemovedChild, create, dispose, disposeComponent, getAliveChildren, getAllComponents, getComponent, getMaterial, getParent, getTransform, hasChild, hasComponent, initGameObject as initGameObjectSystem, isAlive, removeChild, setParent } from "./GameObjectSystem";
 import { GameObjectData } from "./GameObjectData";
 import { ThreeDTransformData } from "../../../component/transform/ThreeDTransformData";
 import { create as createThreeDTransform } from "../../../component/transform/ThreeDTransformSystem";
@@ -44,16 +44,28 @@ export var initGameObject = requireCheckFunc(function (gameObject) {
 export var disposeGameObjectComponent = requireCheckFunc(function (gameObject, component) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, function (gameObject, component) {
-    disposeComponent(gameObject, component, GameObjectData);
+    disposeComponent(gameObject.uid, component, GameObjectData);
 });
 export var getGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, function (gameObject, _class) {
-    return getComponent(gameObject, getComponentIdFromClass(_class), GameObjectData);
+    return getComponent(gameObject.uid, getComponentIdFromClass(_class), GameObjectData);
 });
-export var getGameObjectTransform = function (gameObject) {
-    return getTransform(gameObject, GameObjectData);
-};
+export var getGameObjectTransform = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getTransform(gameObject.uid, GameObjectData);
+});
+export var getGameObjectMaterial = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getMaterial(gameObject.uid, GameObjectData);
+});
+export var getGameObjectAllComponents = requireCheckFunc(function (gameObject) {
+    checkGameObjectShouldAlive(gameObject, GameObjectData);
+}, function (gameObject) {
+    return getAllComponents(gameObject.uid, GameObjectData);
+});
 export var hasGameObjectComponent = requireCheckFunc(function (gameObject, _class) {
 }, function (gameObject, _class) {
     return hasComponent(gameObject, getComponentIdFromClass(_class), GameObjectData);
@@ -74,7 +86,7 @@ export var addRemovedGameObject = requireCheckFunc(function (gameObject, child) 
 export var removeGameObject = requireCheckFunc(function (gameObject, child) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, function (gameObject, child) {
-    removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+    removeChild(gameObject.uid, child.uid, ThreeDTransformData, GameObjectData);
 });
 export var hasGameObject = requireCheckFunc(function (gameObject, child) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
@@ -90,5 +102,10 @@ export var getGameObjectParent = requireCheckFunc(function (gameObject) {
     checkGameObjectShouldAlive(gameObject, GameObjectData);
 }, function (gameObject) {
     return getParent(gameObject.uid, GameObjectData);
+});
+export var setGameObjectParent = requireCheckFunc(function (parent, child) {
+    checkGameObjectShouldAlive(parent, GameObjectData);
+}, function (parent, child) {
+    return setParent(parent, child, ThreeDTransformData, GameObjectData);
 });
 //# sourceMappingURL=GameObject.js.map

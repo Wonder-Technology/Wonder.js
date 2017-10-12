@@ -13,9 +13,12 @@ var basicMaterialUtils_1 = require("../../renderer/utils/worker/render_file/mate
 var MapManagerSystem_1 = require("../../renderer/texture/MapManagerSystem");
 var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
 var bufferUtils_2 = require("../../renderer/utils/material/bufferUtils");
+var DeviceManagerSystem_1 = require("../../renderer/device/DeviceManagerSystem");
+var DeviceManagerData_1 = require("../../renderer/device/DeviceManagerData");
+var TextureData_1 = require("../../renderer/texture/TextureData");
 exports.create = contract_1.ensureFunc(function (component) {
     contract_1.it("index should <= max count", function () {
-        wonder_expect_js_1.expect(component.index).lt(bufferUtils_2.getBasicMaterialBufferStartIndex() + bufferUtils_1.getBasicMaterialBufferCount());
+        wonder_expect_js_1.expect(component.index).lte(bufferUtils_2.getBasicMaterialBufferStartIndex() + bufferUtils_1.getBasicMaterialBufferCount());
     });
 }, function (ShaderData, MaterialData, BasicMaterialData) {
     var material = new BasicMaterial_1.BasicMaterial(), index = ComponentSystem_1.generateComponentIndex(BasicMaterialData);
@@ -23,13 +26,17 @@ exports.create = contract_1.ensureFunc(function (component) {
     material = MaterialSystem_1.create(index, material, ShaderData, MaterialData);
     return material;
 });
-exports.initMaterial = function (index, state) {
+exports.initMaterialWithoutInitMap = function (index, state) {
     MaterialSystem_1.initMaterial(index, state, basicMaterialUtils_1.getClassName(), MaterialData_1.MaterialData);
 };
-exports.addMap = function (materialIndex, map, MapManagerData, TextureData) {
-    var count = MapManagerSystem_1.getMapCount(materialIndex, MapManagerData);
-    MapManagerSystem_1.addMap(materialIndex, map, count, "u_sampler2D" + count, MapManagerData, TextureData);
+exports.initMaterial = function (index, state) {
+    MaterialSystem_1.initMaterial(index, state, basicMaterialUtils_1.getClassName(), MaterialData_1.MaterialData);
+    MapManagerSystem_1.initMapManager(DeviceManagerSystem_1.getGL(DeviceManagerData_1.DeviceManagerData, state), index, MapManagerData_1.MapManagerData, TextureData_1.TextureData);
 };
+exports.setMap = function (materialIndex, map, MapManagerData, TextureData) {
+    MapManagerSystem_1.setMap(materialIndex, map, _buildMapUniformSamplerName(), MapManagerData, TextureData);
+};
+var _buildMapUniformSamplerName = function () { return "u_sampler2D"; };
 exports.addComponent = function (component, gameObject) {
     MaterialSystem_1.addComponent(component, gameObject, MaterialData_1.MaterialData);
 };

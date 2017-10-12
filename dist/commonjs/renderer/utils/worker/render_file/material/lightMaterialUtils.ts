@@ -3,59 +3,59 @@ import { getColorArr3Data, getSingleSizeData } from "../../../common/operateBuff
 import { setTypeArrayValue } from "../../../../../utils/typeArrayUtils";
 import { getLightMaterialBufferStartIndex } from "../../../material/bufferUtils";
 
-export var getShadingDataSize = () => 1;
+export const getShadingDataSize = () => 1;
 
-export var getLightModelDataSize = () => 1;
+export const getLightModelDataSize = () => 1;
 
-export var getShininessDataSize = () => 1;
+export const getShininessDataSize = () => 1;
 
-export var getMapSize = () => 1;
+export const getMapSize = () => 1;
 
-export var getSpecularColorArr3 = (index: number, LightMaterialDataFromSystem: any) => {
+export const getSpecularColorArr3 = (index: number, LightMaterialDataFromSystem: any) => {
     return getColorArr3Data(index, LightMaterialDataFromSystem.specularColors);
 }
 
-export var getEmissionColorArr3 = (index: number, LightMaterialDataFromSystem: any) => {
+export const getEmissionColorArr3 = (index: number, LightMaterialDataFromSystem: any) => {
     return getColorArr3Data(index, LightMaterialDataFromSystem.emissionColors);
 }
 
-export var getShininess = (index: number, LightMaterialDataFromSystem: any) => {
+export const getShininess = (index: number, LightMaterialDataFromSystem: any) => {
     return getSingleSizeData(index, LightMaterialDataFromSystem.shininess);
 }
 
-export var getShading = (index: number, LightMaterialDataFromSystem: any) => {
+export const getShading = (index: number, LightMaterialDataFromSystem: any) => {
     return getSingleSizeData(index, LightMaterialDataFromSystem.shadings);
 }
 
-export var getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
+export const getLightModel = (index: number, LightMaterialDataFromSystem: any) => {
     return getSingleSizeData(index, LightMaterialDataFromSystem.lightModels);
 }
 
-export var hasDiffuseMap = (index: number, LightMaterialDataFromSystem: any) => {
+export const hasDiffuseMap = (index: number, LightMaterialDataFromSystem: any) => {
     return _hasMap(index, LightMaterialDataFromSystem.hasDiffuseMaps);
 }
 
-export var hasSpecularMap = (index: number, LightMaterialDataFromSystem: any) => {
+export const hasSpecularMap = (index: number, LightMaterialDataFromSystem: any) => {
     return _hasMap(index, LightMaterialDataFromSystem.hasSpecularMaps);
 }
 
-export var markHasMap = (index: number, hasMapTypArray: Uint8Array) => {
+export const markHasMap = (index: number, hasMapTypArray: Uint8Array) => {
     setTypeArrayValue(hasMapTypArray, computeLightBufferIndex(index), 1);
 }
 
-export var markNotHasMap = (index: number, hasMapTypArray: Uint8Array) => {
+export const markNotHasMap = (index: number, hasMapTypArray: Uint8Array) => {
     setTypeArrayValue(hasMapTypArray, computeLightBufferIndex(index), getNotHasMapValue());
 }
 
-export var getNotHasMapValue = () => 0;
+export const getNotHasMapValue = () => 0;
 
-var _hasMap = (index: number, hasMapTypArray: Uint8Array) => {
+const _hasMap =(index: number, hasMapTypArray: Uint8Array) => {
     return getSingleSizeData(index, hasMapTypArray) !== getNotHasMapValue();
 }
 
-export var computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
+export const computeLightBufferIndex = (index: number) => index - getLightMaterialBufferStartIndex();
 
-export var createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, offset: number, count: number, LightMaterialDataFromSystem: any) => {
     LightMaterialDataFromSystem.specularColors = new Float32Array(buffer, offset, count * getColorDataSize());
     offset += count * Float32Array.BYTES_PER_ELEMENT * getColorDataSize();
 
@@ -80,4 +80,4 @@ export var createTypeArrays = (buffer: any, offset: number, count: number, Light
     return offset;
 }
 
-export var getClassName = () => "LightMaterial";
+export const getClassName = () => "LightMaterial";

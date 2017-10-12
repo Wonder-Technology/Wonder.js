@@ -1,1 +1,1 @@
-export declare var render: any;
+export declare const render: any;

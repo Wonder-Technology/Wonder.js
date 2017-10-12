@@ -16,19 +16,19 @@ import {
     disposeComponent as disposeDirectionLightComponent
 } from "./DirectionLightSystem";
 
-export var addAddComponentHandle = (AmbientLight: any, DirectionLight: any, PointLight: any) => {
+export const addAddComponentHandle = (AmbientLight: any, DirectionLight: any, PointLight: any) => {
     addAddComponentHandleToMap(AmbientLight, addAmbientLightComponent);
     addAddComponentHandleToMap(DirectionLight, addDirectionLightComponent);
     addAddComponentHandleToMap(PointLight, addPointLightComponent);
 }
 
-export var addDisposeHandle = (AmbientLight: any, DirectionLight: any, PointLight: any) => {
+export const addDisposeHandle = (AmbientLight: any, DirectionLight: any, PointLight: any) => {
     addDisposeHandleToMap(AmbientLight, disposeAmbientLightComponent);
     addDisposeHandleToMap(DirectionLight, disposeDirectionLightComponent);
     addDisposeHandleToMap(PointLight, disposePointLightComponent);
 }
 
-export var initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
+export const initData = (AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     initAmbientLightData(AmbientLightData);
     initWebGL2DirectionLightData(DirectionLightData);
     initWebGL2PointLightData(PointLightData);

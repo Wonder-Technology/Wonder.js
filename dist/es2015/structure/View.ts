@@ -1,66 +1,74 @@
 import {
-    getCanvas, getHeight, getStyleHeight, getStyleWidth, getWidth, setHeight, setStyleWidth, getX, setX, getY, setY,
-    setWidth, setCanvas, setStyleHeight
+    getCanvas as getCanvasSystem,
+    getHeight,
+    getStyleHeight,
+    getStyleWidth,
+    getWidth,
+    setHeight,
+    setStyleWidth,
+    getX,
+    setX,
+    getY,
+    setY,
+    setWidth,
+    setCanvas as setCanvasSystem,
+    setStyleHeight
 } from "./ViewSystem";
-import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { getState } from "../core/DirectorSystem";
 import { DirectorData } from "../core/DirectorData";
 
-@registerClass("View")
-export class View {
-    public static create() {
-        var obj = new this();
-
-        return obj;
-    }
-
-    get dom() {
-        return getCanvas(getState(DirectorData));
-    }
-    // set dom(dom: HTMLCanvasElement) {
-    //     setCanvas(dom).run();
-    // }
-
-    get width() {
-        return getWidth(this.dom);
-    }
-    // set width(width: number) {
-    //     setWidth(width, this.dom).run();
-    // }
-
-    get height() {
-        return getHeight(this.dom);
-    }
-    // set height(height: number) {
-    //     setHeight(height, this.dom).run();
-    // }
-
-    get styleWidth() {
-        return getStyleWidth(this.dom);
-    }
-    // set styleWidth(styleWidth: string) {
-    //     setStyleWidth(styleWidth, this.dom).run();
-    // }
-
-    get styleHeight() {
-        return getStyleHeight(this.dom);
-    }
-    // set styleHeight(styleHeight: string) {
-    //     setStyleHeight(styleHeight, this.dom).run();
-    // }
-
-    get x() {
-        return getX(this.dom);
-    }
-    // set x(x: number) {
-    //     setX(x, this.dom).run();
-    // }
-
-    get y() {
-        return getY(this.dom);
-    }
-    // set y(y: number) {
-    //     setY(y, this.dom).run();
-    // }
+export const getCanvas = () => {
+    return getCanvasSystem(getState(DirectorData));
 }
 
+export const setCanvas = (canvas: HTMLCanvasElement) => {
+    setCanvasSystem(canvas, getState(DirectorData));
+}
+
+export const getCanvasLeft = (canvas: HTMLCanvasElement) => {
+    return getX(canvas);
+}
+
+export const setCanvasLeft = (canvas: HTMLCanvasElement, x: number) => {
+    setX(x, canvas).run();
+}
+
+export const getCanvasTop = (canvas: HTMLCanvasElement) => {
+    return getY(canvas);
+}
+
+export const setCanvasTop = (canvas: HTMLCanvasElement, y: number) => {
+    setY(y, canvas).run();
+}
+
+export const getCanvasWidth = (canvas: HTMLCanvasElement) => {
+    return getWidth(canvas);
+}
+
+export const setCanvasWidth = (canvas: HTMLCanvasElement, width: number) => {
+    setWidth(width, canvas).run();
+}
+
+export const getCanvasHeight = (canvas: HTMLCanvasElement) => {
+    return getHeight(canvas);
+}
+
+export const setCanvasHeight = (canvas: HTMLCanvasElement, height: number) => {
+    setHeight(height, canvas).run();
+}
+
+export const getCanvasStyleWidth = (canvas: HTMLCanvasElement) => {
+    return getStyleWidth(canvas);
+}
+
+export const setCanvasStyleWidth = (canvas: HTMLCanvasElement, width: number) => {
+    setStyleWidth(width, canvas).run();
+}
+
+export const getCanvasStyleHeight = (canvas: HTMLCanvasElement) => {
+    return getStyleHeight(canvas);
+}
+
+export const setCanvasStyleHeight = (canvas: HTMLCanvasElement, height: number) => {
+    setStyleHeight(height, canvas).run();
+}

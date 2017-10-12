@@ -1,2 +1,2 @@
 import { IUIdEntity } from "../core/entityObject/gameObject/IUIdEntity";
-export declare var removeChildEntity: (children: IUIdEntity[], targetUId: number) => void;
+export declare const removeChildEntity: (children: IUIdEntity[], targetUId: number) => void;

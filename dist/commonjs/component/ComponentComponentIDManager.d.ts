@@ -1,3 +1,3 @@
 import { Component } from "./Component";
-export declare var getComponentIdFromClass: (_class: any) => any;
-export declare var getComponentIdFromComponent: (component: Component) => any;
+export declare const getComponentIdFromClass: (_class: any) => any;
+export declare const getComponentIdFromComponent: (component: Component) => any;

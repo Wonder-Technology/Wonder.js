@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var PointLightData_1 = require("../../../renderer/webgl2/light/PointLightData");
-var MaterialSystem_1 = require("../../material/MaterialSystem");
+var AllMaterialSystem_1 = require("../../material/AllMaterialSystem");
 var DirectionLightData_1 = require("../../../renderer/webgl2/light/DirectionLightData");
 var AmbientLightData_1 = require("../../light/AmbientLightData");
 exports.init = function (state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData) {
-    MaterialSystem_1.init(state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData_1.AmbientLightData, DirectionLightData_1.WebGL2DirectionLightData, PointLightData_1.WebGL2PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData);
+    AllMaterialSystem_1.init(state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData_1.AmbientLightData, DirectionLightData_1.WebGL2DirectionLightData, PointLightData_1.WebGL2PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData);
 };
 //# sourceMappingURL=MaterialSystem.js.map

@@ -23,7 +23,7 @@ export type GameObjectComponentMap = {
 }
 
 export type GameObjectComponentData = {
-    [typeId: number]: Component;
+    [componentId: number]: Component;
 }
 
 export type GameObjectParentMap = {

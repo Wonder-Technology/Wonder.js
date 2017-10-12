@@ -15,7 +15,7 @@ import {
 import { isConfigDataExist } from "../renderConfigUtils";
 import { compose, filterArray, forEachArray } from "../../../utils/functionalUtils";
 
-export var getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk, GPUDetectData: any) => {
+export const getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLSLChunk, highp_fragment: GLSLChunk, GPUDetectData: any) => {
     var precision = getPrecision(GPUDetectData),
         result = null;
 
@@ -37,7 +37,7 @@ export var getPrecisionSource = (lowp_fragment: GLSLChunk, mediump_fragment: GLS
     return result;
 }
 
-export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
+export const getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShaderLibConfig, materialShaderLibGroup: IMaterialShaderLibGroup, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
     var nameArr: Array<string> = [];
 
     forEach(materialShaderLibConfig, (item: string | IShaderLibItem) => {
@@ -64,7 +64,7 @@ export var getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialShade
     return nameArr;
 }
 
-var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
+const _execBranch =requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
     it("branch should exist", () => {
         expect(i.branch).exist;
     });
@@ -72,9 +72,9 @@ var _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, in
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
 
-var _isShaderLibNameExist = (name: string) => !!name;
+const _isShaderLibNameExist =(name: string) => !!name;
 
-export var getEmptyFuncGLSLConfig = () => {
+export const getEmptyFuncGLSLConfig = () => {
     return {
         "top": "",
         "varDeclare": "",
@@ -85,7 +85,7 @@ export var getEmptyFuncGLSLConfig = () => {
     }
 }
 
-export var buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShaderDataMap: InitShaderDataMap) => {
+export const buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShaderDataMap: InitShaderDataMap) => {
     var result = "";
 
     for (let item of defineList) {
@@ -100,7 +100,7 @@ export var buildSourceDefine = (defineList: Array<IGLSLDefineListItem>, initShad
     return result;
 }
 
-export var getGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
+export const getGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     var partConfig = glslConfig[partName];
 
     if (isConfigDataExist(partConfig)) {
@@ -113,7 +113,7 @@ export var getGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     return "";
 }
 
-export var getGLSLDefineListData = (glslConfig: IGLSLConfig) => {
+export const getGLSLDefineListData = (glslConfig: IGLSLConfig) => {
     var partConfig = glslConfig.defineList;
 
     if (isConfigDataExist(partConfig)) {
@@ -123,19 +123,19 @@ export var getGLSLDefineListData = (glslConfig: IGLSLConfig) => {
     return [];
 }
 
-export var getFuncGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
+export const getFuncGLSLPartData = (glslConfig: IGLSLConfig, partName: string) => {
     return glslConfig[partName];
 }
 
-export var getFuncGLSLDefineListData = (glslConfig: IGLSLConfig) => {
+export const getFuncGLSLDefineListData = (glslConfig: IGLSLConfig) => {
     return glslConfig.defineList;
 }
 
-var _isInSource = (key: string, source: string) => {
+const _isInSource =(key: string, source: string) => {
     return source.indexOf(key) > -1;
 }
 
-export var generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
+export const generateUniformSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IShaderLibContentGenerator, sourceVarDeclare: string, sourceFuncDefine: string, sourceBody: string) => {
     var result = "",
         generateFunc = compose(
             forEachArray(({ name, type }) => {
@@ -170,7 +170,7 @@ export var generateUniformSource = (materialShaderLibNameArr: Array<string>, sha
     return result;
 }
 
-var _generateUniformSourceType = (type: string) => {
+const _generateUniformSourceType =(type: string) => {
     var sourceType: string = null;
 
     switch (type) {

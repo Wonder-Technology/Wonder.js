@@ -4,7 +4,7 @@ import { expect } from "wonder-expect.js";
 import { TypeArr } from "../../renderer/type/dataType";
 import { setTypeArrayValue } from "../../utils/typeArrayUtils";
 
-export var getColor3Data = (index: number, colors: Float32Array) => {
+export const getColor3Data = (index: number, colors: Float32Array) => {
     var color = Color.create(),
         size = 3,
         i = index * size;
@@ -17,7 +17,7 @@ export var getColor3Data = (index: number, colors: Float32Array) => {
 }
 
 
-export var setColor3Data = (index: number, color: Color, colors: Float32Array) => {
+export const setColor3Data = (index: number, color: Color, colors: Float32Array) => {
     var r = color.r,
         g = color.g,
         b = color.b,

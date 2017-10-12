@@ -593,14 +593,22 @@ var Matrix4 = (function () {
     ], Matrix4.prototype, "setRotate", null);
     __decorate([
         contract_1.requireCheck(function (left, right, bottom, top, near, far) {
-            contract_1.assert(left !== right && bottom !== top && near !== far, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+            contract_1.it("frustum should not be null", function () {
+                wonder_expect_js_1.expect(left !== right && bottom !== top && near !== far).true;
+            });
         })
     ], Matrix4.prototype, "setOrtho", null);
     __decorate([
         contract_1.requireCheck(function (fovy, aspect, near, far) {
-            contract_1.assert(near !== far && aspect !== 0, Log_1.Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-            contract_1.assert(near > 0, Log_1.Log.info.FUNC_MUST("near", "> 0"));
-            contract_1.assert(far > 0, Log_1.Log.info.FUNC_MUST("far", "> 0"));
+            contract_1.it("frustum should not be null", function () {
+                wonder_expect_js_1.expect(near !== far && aspect !== 0).true;
+            });
+            contract_1.it("near should > 0", function () {
+                wonder_expect_js_1.expect(near).gt(0);
+            });
+            contract_1.it("far should > 0", function () {
+                wonder_expect_js_1.expect(far).gt(0);
+            });
         })
     ], Matrix4.prototype, "setPerspective", null);
     Matrix4 = Matrix4_1 = __decorate([

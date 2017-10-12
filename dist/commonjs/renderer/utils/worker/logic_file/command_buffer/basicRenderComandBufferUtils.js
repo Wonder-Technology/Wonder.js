@@ -12,13 +12,13 @@ exports.createRenderCommandBufferData = contract_1.requireCheckFunc(function (st
     contract_1.it("renderGameObject should be basic material gameObject", function () {
         for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
             var gameObject = renderGameObjectArray_1[_i];
-            wonder_expect_js_1.expect(ClassUtils_1.ClassUtils.getClassNameByInstance(GameObjectSystem_1.getMaterial(gameObject, GameObjectData))).equal("BasicMaterial");
+            wonder_expect_js_1.expect(ClassUtils_1.ClassUtils.getClassNameByInstance(GameObjectSystem_1.getMaterial(gameObject.uid, GameObjectData))).equal("BasicMaterial");
         }
     });
 }, function (state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray, buildRenderCommandBufferForDrawData) {
     var count = renderGameObjectArray.length, buffer = RenderCommandBufferData.buffer, mMatrices = RenderCommandBufferData.mMatrices, materialIndices = RenderCommandBufferData.materialIndices, geometryIndices = RenderCommandBufferData.geometryIndices, mat4Length = typeArrayUtils_1.getMatrix4DataSize();
     for (var i = 0; i < count; i++) {
-        var matIndex = mat4Length * i, gameObject = renderGameObjectArray[i], geometry = GameObjectSystem_1.getGeometry(gameObject, GameObjectData), material = GameObjectSystem_1.getMaterial(gameObject, GameObjectData), transform = GameObjectSystem_1.getTransform(gameObject, GameObjectData), materialIndex = material.index;
+        var matIndex = mat4Length * i, gameObject = renderGameObjectArray[i], uid = gameObject.uid, geometry = GameObjectSystem_1.getGeometry(uid, GameObjectData), material = GameObjectSystem_1.getMaterial(uid, GameObjectData), transform = GameObjectSystem_1.getTransform(uid, GameObjectData), materialIndex = material.index;
         typeArrayUtils_1.setMatrices(mMatrices, ThreeDTransformSystem_1.getLocalToWorldMatrix(transform, ThreeDTransformSystem_1.getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData), matIndex);
         materialIndices[i] = materialIndex;
         geometryIndices[i] = geometry.index;

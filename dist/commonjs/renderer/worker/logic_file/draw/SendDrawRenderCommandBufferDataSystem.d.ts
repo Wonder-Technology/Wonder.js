@@ -1,2 +1,2 @@
-export declare var sendDrawData: any;
-export declare var initData: (SendDrawRenderCommandBufferData: any) => void;
+export declare const sendDrawData: any;
+export declare const initData: (SendDrawRenderCommandBufferData: any) => void;

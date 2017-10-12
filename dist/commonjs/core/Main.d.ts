@@ -5,3 +5,4 @@ export declare class Main {
     static setConfig(configState: MainConfigData): typeof Main;
     static init(): typeof Main;
 }
+export declare const initAllData: () => void;

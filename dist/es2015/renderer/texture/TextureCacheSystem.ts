@@ -3,11 +3,11 @@ import {
     isCached as isCachedUtils
 } from "../utils/worker/render_file/texture/textureCacheUtils";
 
-export var isCached = isCachedUtils;
+export const isCached = isCachedUtils;
 
-export var addActiveTexture = addActiveTextureUtils;
+export const addActiveTexture = addActiveTextureUtils;
 
-export var clearAllBindTextureUnitCache = clearAllBindTextureUnitCacheUtils;
+export const clearAllBindTextureUnitCache = clearAllBindTextureUnitCacheUtils;
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;
 

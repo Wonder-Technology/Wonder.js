@@ -15,21 +15,21 @@ import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 import { createState } from "../utils/stateUtils";
 
-export var getState = (DirectorData: any) => {
+export const getState = (DirectorData: any) => {
     return DirectorData.state;
 }
 
-export var setState = (state: Map<any, any>, DirectorData: any) => {
+export const setState = (state: Map<any, any>, DirectorData: any) => {
     return IO.of(() => {
         DirectorData.state = state;
     });
 }
 
-export var markIsInit = (DirectorData: any) => {
+export const markIsInit = (DirectorData: any) => {
     DirectorData.isInit = true;
 }
 
-export var isInit = (DirectorData: any) => {
+export const isInit = (DirectorData: any) => {
     return DirectorData.isInit === true;
 }
 
@@ -37,7 +37,7 @@ export var run = null;
 
 export var render = null;
 
-var _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
+const _sync =(elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
     scheduler.update(elapsed);
 
     var resultState = updateSystem(elapsed, state);
@@ -45,7 +45,7 @@ var _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
     return resultState;
 }
 
-export var updateSystem = (elapsed: number, state: Map<any, any>) => {
+export const updateSystem = (elapsed: number, state: Map<any, any>) => {
     var resultState = updateThreeDTransform(elapsed, GlobalTempData, ThreeDTransformData, state);
 
     resultState = updateCameraControllerSystem(PerspectiveCameraData, CameraData, CameraControllerData, state);
@@ -82,7 +82,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     render = (state: Map<any, any>) => {
         var resultState = null;
 
-        resultState = renderByWebGLRender(state)
+        resultState = renderByWebGLRender(state);
 
         return resultState;
     }
@@ -106,7 +106,7 @@ else {
     }
 }
 
-export var initData = (DirectorData: any) => {
-    // DirectorData.state = createState();
-    // DirectorData.isInit = false;
+export const initData = (DirectorData: any) => {
+    DirectorData.isInit = false;
+    DirectorData.state = createState();
 }

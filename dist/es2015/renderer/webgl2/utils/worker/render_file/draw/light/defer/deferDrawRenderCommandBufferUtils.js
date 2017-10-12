@@ -6,7 +6,7 @@ export var buildDrawDataMap = function (GBufferDataFromSystem, DeferAmbientLight
         DeferPointLightPassDataFromSystem: DeferPointLightPassDataFromSystem,
     };
 };
-export var buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex) {
+export var buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader, bindGBuffer, unbindGBuffer, getNewTextureUnitIndex) {
     return {
         sendAttributeData: sendAttributeData,
         sendUniformData: sendUniformData,
@@ -19,6 +19,7 @@ export var buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, 
         getVerticesCount: getVerticesCount,
         bindAndUpdate: bindAndUpdate,
         getMapCount: getMapCount,
+        getStartTextureIndex: getStartTextureIndex,
         useShader: useShader,
         bindGBuffer: bindGBuffer,
         unbindGBuffer: unbindGBuffer,

@@ -38,6 +38,6 @@ exports.removeSceneChild = contract_1.requireCheckFunc(function (scene, gameObje
         wonder_expect_js_1.expect(GameObjectSystem_1.isAlive(scene, GameObjectData_1.GameObjectData)).true;
     });
 }, function (scene, gameObject) {
-    SceneSystem_1.removeChild(scene, gameObject, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData);
+    SceneSystem_1.removeChild(scene.uid, gameObject.uid, ThreeDTransformData_1.ThreeDTransformData, GameObjectData_1.GameObjectData);
 });
 //# sourceMappingURL=Scene.js.map

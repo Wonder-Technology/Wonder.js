@@ -1,13 +1,15 @@
-export declare class Texture {
+import { ITexture } from "../interface/ITexture";
+export declare class Texture implements ITexture {
     index: number;
 }
-export declare var createTexture: () => any;
-export declare var disposeTexture: Function;
-export declare var getTextureSource: Function;
-export declare var setTextureSource: Function;
-export declare var getTextureWidth: Function;
-export declare var setTextureWidth: Function;
-export declare var getTextureHeight: Function;
-export declare var setTextureHeight: Function;
-export declare var getTextureIsNeedUpdate: Function;
-export declare var setTextureIsNeedUpdate: Function;
+export declare const createTexture: () => any;
+export declare const initTexture: (texture: Texture) => void;
+export declare const disposeTexture: Function;
+export declare const getTextureSource: Function;
+export declare const setTextureSource: Function;
+export declare const getTextureWidth: Function;
+export declare const setTextureWidth: Function;
+export declare const getTextureHeight: Function;
+export declare const setTextureHeight: Function;
+export declare const getTextureIsNeedUpdate: Function;
+export declare const setTextureIsNeedUpdate: Function;

@@ -1,73 +1,46 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-import { getCanvas, getHeight, getStyleHeight, getStyleWidth, getWidth, getX, getY } from "./ViewSystem";
-import { registerClass } from "../definition/typescript/decorator/registerClass";
+import { getCanvas as getCanvasSystem, getHeight, getStyleHeight, getStyleWidth, getWidth, setHeight, setStyleWidth, getX, setX, getY, setY, setWidth, setCanvas as setCanvasSystem, setStyleHeight } from "./ViewSystem";
 import { getState } from "../core/DirectorSystem";
 import { DirectorData } from "../core/DirectorData";
-var View = (function () {
-    function View() {
-    }
-    View.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    Object.defineProperty(View.prototype, "dom", {
-        get: function () {
-            return getCanvas(getState(DirectorData));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "width", {
-        get: function () {
-            return getWidth(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "height", {
-        get: function () {
-            return getHeight(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "styleWidth", {
-        get: function () {
-            return getStyleWidth(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "styleHeight", {
-        get: function () {
-            return getStyleHeight(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "x", {
-        get: function () {
-            return getX(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "y", {
-        get: function () {
-            return getY(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    View = __decorate([
-        registerClass("View")
-    ], View);
-    return View;
-}());
-export { View };
+export var getCanvas = function () {
+    return getCanvasSystem(getState(DirectorData));
+};
+export var setCanvas = function (canvas) {
+    setCanvasSystem(canvas, getState(DirectorData));
+};
+export var getCanvasLeft = function (canvas) {
+    return getX(canvas);
+};
+export var setCanvasLeft = function (canvas, x) {
+    setX(x, canvas).run();
+};
+export var getCanvasTop = function (canvas) {
+    return getY(canvas);
+};
+export var setCanvasTop = function (canvas, y) {
+    setY(y, canvas).run();
+};
+export var getCanvasWidth = function (canvas) {
+    return getWidth(canvas);
+};
+export var setCanvasWidth = function (canvas, width) {
+    setWidth(width, canvas).run();
+};
+export var getCanvasHeight = function (canvas) {
+    return getHeight(canvas);
+};
+export var setCanvasHeight = function (canvas, height) {
+    setHeight(height, canvas).run();
+};
+export var getCanvasStyleWidth = function (canvas) {
+    return getStyleWidth(canvas);
+};
+export var setCanvasStyleWidth = function (canvas, width) {
+    setStyleWidth(width, canvas).run();
+};
+export var getCanvasStyleHeight = function (canvas) {
+    return getStyleHeight(canvas);
+};
+export var setCanvasStyleHeight = function (canvas, height) {
+    setStyleHeight(height, canvas).run();
+};
 //# sourceMappingURL=View.js.map

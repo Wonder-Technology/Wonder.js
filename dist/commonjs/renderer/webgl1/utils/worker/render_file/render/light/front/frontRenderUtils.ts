@@ -4,18 +4,18 @@ import { IShaderLibGenerator } from "../../../../../../../data/shaderLib_generat
 import { IMaterialConfig } from "../../../../../../../data/material_config_interface";
 import { IRenderConfig } from "../../../../../../../worker/both_file/data/render_config";
 import { draw as drawFront } from "../../../../../draw/light/front/frontDrawRenderCommandBufferUtils";
-import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/Idraw";
+import { IWebGL1DrawFuncDataMap } from "../../../../../../interface/IDraw";
 import {
     LightRenderCommandBufferForDrawData
 } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { CameraRenderCommandBufferForDrawData } from "../../../../../../../utils/worker/render_file/type/dataType";
 import { IWebGL1DrawDataMap, IWebGL1LightSendUniformDataDataMap } from "../../../interface/IUtils";
 
-export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap: IWebGL1LightSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
+export const render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawFuncDataMap: IWebGL1DrawFuncDataMap, drawDataMap: IWebGL1DrawDataMap, sendDataMap: IWebGL1LightSendUniformDataDataMap, initShaderDataMap: InitShaderDataMap, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
     drawFront(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, drawFuncDataMap, drawDataMap, sendDataMap, initShaderDataMap, bufferData, cameraData);
 }
 
-export var buildSendUniformDataDataMap = (
+export const buildSendUniformDataDataMap = (
     sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
     getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
     getDirectionLightPosition, getDirectionLightColorArr3, getDirectionLightIntensity, isDirectionLightPositionDirty, isDirectionLightColorDirty, isDirectionLightIntensityDirty, cleanDirectionLightPositionDirty, cleanDirectionLightColorDirty, cleanDirectionLightIntensityDirty,

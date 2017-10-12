@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader) {
+exports.buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader) {
     return {
         sendAttributeData: sendAttributeData,
         sendUniformData: sendUniformData,
@@ -13,6 +13,7 @@ exports.buildDrawFuncDataMap = function (sendAttributeData, sendUniformData, dir
         getVerticesCount: getVerticesCount,
         bindAndUpdate: bindAndUpdate,
         getMapCount: getMapCount,
+        getStartTextureIndex: getStartTextureIndex,
         useShader: useShader,
     };
 };

@@ -2,7 +2,7 @@ import { createMap, deleteVal } from "../../../../../utils/objectUtils";
 import { isNotValidVal } from "../../../../../utils/arrayUtils";
 import { VaoMap, VboArrayMap } from "../../../../type/dataType";
 
-export var removeVao = (gl: any, index: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap) => {
+export const removeVao = (gl: any, index: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap) => {
     var vboArray = vboArrayMap[index];
 
     /*!
@@ -20,7 +20,7 @@ export var removeVao = (gl: any, index: number, vaoMap: VaoMap, vboArrayMap: Vbo
     }
 }
 
-export var initData = (VaoDataFromSystem: any) => {
+export const initData = (VaoDataFromSystem: any) => {
     VaoDataFromSystem.vaoMap = createMap();
     VaoDataFromSystem.vboArrayMap = createMap();
 }

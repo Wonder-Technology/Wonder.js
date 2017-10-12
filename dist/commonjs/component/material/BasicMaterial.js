@@ -85,9 +85,9 @@ exports.setBasicMaterialAlphaTest = contract_1.requireCheckFunc(function (materi
 }, function (material, alphaTest) {
     MaterialSystem_1.setAlphaTest(material.index, alphaTest, MaterialData_1.MaterialData);
 });
-exports.addBasicMaterialMap = contract_1.requireCheckFunc(function (material, map) {
+exports.setBasicMaterialMap = contract_1.requireCheckFunc(function (material, map) {
     Material_1.checkShouldAlive(material);
 }, function (material, map) {
-    BasicMaterialSystem_1.addMap(material.index, map, MapManagerData_1.MapManagerData, TextureData_1.TextureData);
+    BasicMaterialSystem_1.setMap(material.index, map, MapManagerData_1.MapManagerData, TextureData_1.TextureData);
 });
 //# sourceMappingURL=BasicMaterial.js.map

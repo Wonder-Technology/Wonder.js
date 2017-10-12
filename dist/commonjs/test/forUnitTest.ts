@@ -9,7 +9,7 @@ import {
     hasIndices,
     initData as initGeometryDataSystem, setIndices, setVertices
 } from "../component/geometry/GeometrySystem";
-import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
+import { getShaderIndex as getShaderIndexSystem} from "../component/material/MaterialSystem";
 import {
     use
 } from "../renderer/shader/ShaderSystem";
@@ -43,81 +43,99 @@ import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/sha
 import { initData as initWebGL1ShaderDataSystem } from "../renderer/webgl1/shader/ShaderSystem";
 import { initData as initWebGL2ShaderDataSystem } from "../renderer/webgl2/shader/ShaderSystem";
 import { initData as initDeferLightPassDataSystem } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
+import { initData as initWebGL1GPUDetectDataSystem } from "../renderer/webgl1/device/GPUDetectSystem";
+import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/device/GPUDetectSystem";
+import { initData as initDataSystem } from "../core/MainSystem";
+import { initData as initMaterialDataSystem } from "../component/material/AllMaterialSystem";
+import { getImageData as getImageDataUtils } from "../renderer/utils/texture/textureUtils";
+import { hasDiffuseMap as hasDiffuseMapSystem, hasSpecularMap as hasSpecularMapSystem } from "../component/material/LightMaterialSystem";
 
-export var initThreeDTransformData = initThreeDTransformDataSystem;
+export const initThreeDTransformData = initThreeDTransformDataSystem;
 
-export var DomQuery = DomQueryFromCommonlib;
+export const DomQuery = DomQueryFromCommonlib;
 
-export var fromArray = fromArrayFromFrp;
+export const fromArray = fromArrayFromFrp;
 
-export var initTagData = initTagDataSystem;
+export const initTagData = initTagDataSystem;
 
-export var initGeometryData = initGeometryDataSystem;
+export const initGeometryData = initGeometryDataSystem;
 
-export var initMaterialData = initMaterialDataSystem;
+export const initMaterialData = initMaterialDataSystem;
 
-export var initWebGL1ShaderData = initWebGL1ShaderDataSystem;
+export const initWebGL1ShaderData = initWebGL1ShaderDataSystem;
 
-export var initWebGL2ShaderData = initWebGL2ShaderDataSystem;
+export const initWebGL2ShaderData = initWebGL2ShaderDataSystem;
 
-export var initProgramData = initProgramDataSystem;
+export const initProgramData = initProgramDataSystem;
 
-export var initWebGL1LocationData = initWebGL1LocationDataSystem;
+export const initWebGL1LocationData = initWebGL1LocationDataSystem;
 
-export var initWebGL2LocationData = initWebGL2LocationDataSystem;
+export const initWebGL2LocationData = initWebGL2LocationDataSystem;
 
-export var initWebGL1GLSLSenderData = initWebGL1GLSLSenderDataSystem;
+export const initWebGL1GLSLSenderData = initWebGL1GLSLSenderDataSystem;
 
-export var initWebGL2GLSLSenderData = initWebGL2GLSLSenderDataSystem;
+export const initWebGL2GLSLSenderData = initWebGL2GLSLSenderDataSystem;
 
-export var initMeshRendererData = initMeshRendererDataSystem;
+export const initMeshRendererData = initMeshRendererDataSystem;
 
-export var initArrayBufferData = initArrayBufferDataSystem;
+export const initArrayBufferData = initArrayBufferDataSystem;
 
-export var initIndexBufferData = initIndexBufferDataSystem;
+export const initIndexBufferData = initIndexBufferDataSystem;
 
-export var initDeviceManagerData = initDeviceManagerDataSystem;
+export const initDeviceManagerData = initDeviceManagerDataSystem;
 
-export var initCameraControllerData = initCameraControllerDataSystem;
+export const initCameraControllerData = initCameraControllerDataSystem;
 
-export var initWebGL1LightData = initWebGL1LightDataSystem;
+export const initWebGL1LightData = initWebGL1LightDataSystem;
 
-export var initWebGL2LightData = initWebGL2LightDataSystem;
+export const initWebGL2LightData = initWebGL2LightDataSystem;
 
-export var initGameObjectData = initGameObjectDataSystem;
+export const initGameObjectData = initGameObjectDataSystem;
 
-export var initSceneData = initSceneDataSystem;
+export const initSceneData = initSceneDataSystem;
 
-export var initRenderCommandBufferData = initRenderCommandBufferDataSystem;
+export const initRenderCommandBufferData = initRenderCommandBufferDataSystem;
 
-export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
+export const initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSystem;
 
-export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
+export const initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
 
-export var initVaoData = initVaoDataSystem;
+export const initVaoData = initVaoDataSystem;
 
-export var initDeferLightPassData = initDeferLightPassDataSystem;
+export const initDeferLightPassData = initDeferLightPassDataSystem;
 
-export var createState = createStateUtils;
+export const initWebGL1GPUDetectData = initWebGL1GPUDetectDataSystem;
 
-export var useProgram = use;
+export const initWebGL2GPUDetectData = initWebGL2GPUDetectDataSystem;
 
-export var sendWebGL1AttributeData = sendWebGL1AttributeDataSystem;
+export const initData = initDataSystem;
 
-// export var sendUniformData = sendUniformDataSystem;
+export const createState = createStateUtils;
 
-export var disableVertexAttribArray = disableVertexAttribArrayUtils;
+export const useProgram = use;
 
-export var setGeometryIndices = setIndices;
+export const sendWebGL1AttributeData = sendWebGL1AttributeDataSystem;
 
-export var setGeometryVertices = setVertices;
+// export const sendUniformData = sendUniformDataSystem;
 
-export var hasGeometryIndices = hasIndices;
+export const disableVertexAttribArray = disableVertexAttribArrayUtils;
 
-export var getShaderIndex = getShaderIndexSystem;
+export const setGeometryIndices = setIndices;
 
-export var updateSystem = updateAllSystems;
+export const setGeometryVertices = setVertices;
 
-export var getNormalMatrix = getNormalMatrixSystem;
+export const hasGeometryIndices = hasIndices;
 
-export var getWorldToCameraMatrix = getWorldToCameraMatrixSystem;
+export const getShaderIndex = getShaderIndexSystem;
+
+export const updateSystem = updateAllSystems;
+
+export const getNormalMatrix = getNormalMatrixSystem;
+
+export const getWorldToCameraMatrix = getWorldToCameraMatrixSystem;
+
+export const getImageData = getImageDataUtils;
+
+export const hasDiffuseMap = hasDiffuseMapSystem;
+
+export const hasSpecularMap = hasSpecularMapSystem;

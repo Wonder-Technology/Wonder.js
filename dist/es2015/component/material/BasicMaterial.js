@@ -16,7 +16,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { registerClass } from "../../definition/typescript/decorator/registerClass";
 import { checkShouldAlive, Material } from "./Material";
-import { addMap, create, initMaterial } from "./BasicMaterialSystem";
+import { create, initMaterial, setMap } from "./BasicMaterialSystem";
 import { MaterialData } from "./MaterialData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { BasicMaterialData } from "./BasicMaterialData";
@@ -83,9 +83,9 @@ export var setBasicMaterialAlphaTest = requireCheckFunc(function (material) {
 }, function (material, alphaTest) {
     setAlphaTest(material.index, alphaTest, MaterialData);
 });
-export var addBasicMaterialMap = requireCheckFunc(function (material, map) {
+export var setBasicMaterialMap = requireCheckFunc(function (material, map) {
     checkShouldAlive(material);
 }, function (material, map) {
-    addMap(material.index, map, MapManagerData, TextureData);
+    setMap(material.index, map, MapManagerData, TextureData);
 });
 //# sourceMappingURL=BasicMaterial.js.map

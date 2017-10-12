@@ -1,6 +1,6 @@
 import { isBufferExist } from "./bufferUtils";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any) => {
+export const getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, buffers: Array<WebGLBuffer>, getDatas: Function, GeometryDataFromSystem: any) => {
     var buffer = buffers[geometryIndex];
 
     if (isBufferExist(buffer)) {
@@ -16,7 +16,7 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
     return buffer;
 }
 
-var _initBuffer = (gl: WebGLRenderingContext, data: Float32Array, buffer: WebGLBuffer) => {
+const _initBuffer =(gl: WebGLRenderingContext, data: Float32Array, buffer: WebGLBuffer) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
     gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -24,11 +24,11 @@ var _initBuffer = (gl: WebGLRenderingContext, data: Float32Array, buffer: WebGLB
     _resetBindedBuffer(gl);
 }
 
-var _resetBindedBuffer = (gl: WebGLRenderingContext) => {
+const _resetBindedBuffer =(gl: WebGLRenderingContext) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 }
 
-export var initData = (ArrayBufferDataFromSystemFromSystem: any) => {
+export const initData = (ArrayBufferDataFromSystemFromSystem: any) => {
     ArrayBufferDataFromSystemFromSystem.vertexBuffers = [];
     ArrayBufferDataFromSystemFromSystem.normalBuffers = [];
     ArrayBufferDataFromSystemFromSystem.texCoordBuffers = [];

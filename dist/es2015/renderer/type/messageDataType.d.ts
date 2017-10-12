@@ -1,5 +1,5 @@
 import { EWorkerOperateType } from "../worker/both_file/EWorkerOperateType";
-import { ContextConfigOptionsData, DisposedTextureDataMap } from "./dataType";
+import { ContextConfigOptionsData, DisposedTextureDataMap, MaterialTextureList } from "./dataType";
 import { EBufferType } from "../enum/EBufferType";
 import { GeometryInfoList, GeometryWorkerInfoList } from "../../definition/type/geometryType";
 import { EGeometryWorkerDataOperateType } from "../enum/EGeometryWorkerDataOperateType";
@@ -54,18 +54,25 @@ export declare type LightDrawWorkerData = {
         positionArr: Array<Float32Array>;
     };
 };
+export declare type TextureDrawWorkerData = {
+    index: number;
+    needAddedImageDataArr: Array<ImageArrayBufferIndexSizeData>;
+    uniformSamplerNameMap: Array<string>;
+    materialTextureList: MaterialTextureList;
+};
 export declare type TextureInitWorkerData = {
     mapManagerBuffer: SharedArrayBuffer;
     textureBuffer: SharedArrayBuffer;
     index: number;
-    imageSrcIndexArr: Array<ImageSrcIndexData>;
+    needAddedImageDataArr: Array<ImageArrayBufferIndexSizeData>;
     uniformSamplerNameMap: Array<string>;
 };
-export declare type ImageSrcIndexData = {
-    src: string;
+export declare type ImageArrayBufferIndexSizeData = {
+    arrayBuffer: ArrayBuffer;
+    width: number;
+    height: number;
     index: number;
 };
-export declare type TextureUpdateWorkerData = {};
 export declare type TextureDisposeWorkerData = {
     disposedTextureDataMap: DisposedTextureDataMap;
 };

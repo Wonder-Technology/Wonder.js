@@ -4,10 +4,18 @@ var TextureCacheWorkerSystem_1 = require("./TextureCacheWorkerSystem");
 var textureUtils_1 = require("../../../utils/worker/render_file/texture/textureUtils");
 var Operator_1 = require("wonder-frp/dist/commonjs/global/Operator");
 var bowser_1 = require("bowser");
+var arrayUtils_1 = require("../../../../utils/arrayUtils");
+var contract_1 = require("../../../../definition/typescript/decorator/contract");
+var wonder_expect_js_1 = require("wonder-expect.js");
 exports.bindToUnit = function (gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData) {
     textureUtils_1.bindToUnit(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, TextureCacheWorkerSystem_1.isCached, TextureCacheWorkerSystem_1.addActiveTexture);
 };
 exports.initTextures = textureUtils_1.initTextures;
+exports.initNeedInitTextures = function (gl, needInitedTextureIndexArr, TextureWorkerData) {
+    arrayUtils_1.forEach(needInitedTextureIndexArr, function (textureIndex) {
+        textureUtils_1.initTexture(gl, textureIndex, TextureWorkerData);
+    });
+};
 exports.needUpdate = textureUtils_1.needUpdate;
 exports.update = function (gl, textureIndex, TextureWorkerData) {
     textureUtils_1.update(gl, textureIndex, _setFlipY, TextureWorkerData);
@@ -35,36 +43,42 @@ exports.setIndex = function (index, TextureWorkerData) {
 exports.setUniformSamplerNameMap = function (uniformSamplerNameMap, TextureWorkerData) {
     TextureWorkerData.uniformSamplerNameMap = uniformSamplerNameMap;
 };
-exports.setSourceMapByImageSrcArrStream = function (imageSrcIndexArr, TextureWorkerData) {
-    return _convertImageSrcToImageBitmapStream(imageSrcIndexArr, TextureWorkerData)
-        .do(function (imageBitmap) {
-        TextureWorkerData.sourceMap.push(imageBitmap);
-    });
+exports.addSourceMapByImageDataStream = function (imageArrayBufferIndexSizeDataArr, TextureWorkerData) {
+    return _convertImageSrcToImageBitmapStream(imageArrayBufferIndexSizeDataArr, TextureWorkerData);
 };
-var _convertImageSrcToImageBitmapStream = function (imageSrcIndexArr, TextureWorkerData) {
-    return Operator_1.fromArray(imageSrcIndexArr).flatMap(function (_a) {
-        var src = _a.src, index = _a.index;
-        return Operator_1.fromPromise(fetch(src))
-            .flatMap(function (response) {
-            return Operator_1.fromPromise(response.blob());
-        })
-            .flatMap(function (blob) {
-            var flipY = textureUtils_1.getFlipY(index, TextureWorkerData);
-            return Operator_1.fromPromise(_createImageBitmap(blob, {
-                imageOrientation: flipY === true ? "flipY" : "none"
-            }));
+var _addSource = contract_1.ensureFunc(function (sourceMap, imageBitmap, TextureWorkerData) {
+    contract_1.it("should not has duplicate one", function () {
+        wonder_expect_js_1.expect(arrayUtils_1.hasDuplicateItems(sourceMap)).false;
+    });
+    contract_1.it("sourceMap.length should equal texture count", function () {
+        wonder_expect_js_1.expect(sourceMap.length).equal(TextureWorkerData.index);
+    });
+}, function (imageBitmap, TextureWorkerData) {
+    TextureWorkerData.sourceMap.push(imageBitmap);
+    return TextureWorkerData.sourceMap;
+});
+var _convertImageSrcToImageBitmapStream = function (imageArrayBufferIndexSizeDataArr, TextureWorkerData) {
+    return Operator_1.fromArray(imageArrayBufferIndexSizeDataArr)
+        .flatMap(function (_a) {
+        var arrayBuffer = _a.arrayBuffer, width = _a.width, height = _a.height, index = _a.index;
+        return Operator_1.fromPromise(_createImageBitmap(new ImageData(new Uint8ClampedArray(arrayBuffer), width, height), index, TextureWorkerData))
+            .do(function (imageBitmap) {
+            _addSource(imageBitmap, TextureWorkerData);
         });
     });
 };
 var _createImageBitmap = null;
 if (bowser_1.chrome) {
-    _createImageBitmap = function (blob, options) {
-        return createImageBitmap(blob, options);
+    _createImageBitmap = function (imageData, index, TextureWorkerData) {
+        var flipY = textureUtils_1.getFlipY(index, TextureWorkerData);
+        return createImageBitmap(imageData, {
+            imageOrientation: flipY === true ? "flipY" : "none"
+        });
     };
 }
 else if (bowser_1.firefox) {
-    _createImageBitmap = function (blob, options) {
-        return createImageBitmap(blob);
+    _createImageBitmap = function (imageData, index, TextureWorkerData) {
+        return createImageBitmap(imageData);
     };
 }
 exports.initData = function (buffer, TextureCacheWorkerData, TextureWorkerData) {

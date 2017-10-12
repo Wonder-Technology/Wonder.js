@@ -2,7 +2,7 @@ import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/de
 import { expect } from "wonder-expect.js";
 import { isValidMapValue } from "../../utils/objectUtils";
 
-export var getUId = requireCheckFunc((index: number, ThreeDTransformData: any) => {
+export const getUId = requireCheckFunc((index: number, ThreeDTransformData: any) => {
     it("index should exist", () => {
         expect(index).exist;
     });
@@ -13,7 +13,7 @@ export var getUId = requireCheckFunc((index: number, ThreeDTransformData: any) =
     return ThreeDTransformData.transformMap[index].uid;
 })
 
-export var isIndexUsed = ensureFunc((isExist: boolean, index: number, ThreeDTransformData: any) => {
+export const isIndexUsed = ensureFunc((isExist: boolean, index: number, ThreeDTransformData: any) => {
     // it("if(or not) exist data, the transform and its index should be(or not) setted to data container;relation item should(or not) exist", () => {
     //     if (isExist) {
     // expect(_isValidArrayValue(ThreeDTransformData.transforms[index])).true;
@@ -35,4 +35,4 @@ export var isIndexUsed = ensureFunc((isExist: boolean, index: number, ThreeDTran
 /*!
  regard 0 as the default index, so that _isValidIndex can judge whether the index is not the default index or not!
  */
-export var getStartIndexInArrayBuffer = () => 1;
+export const getStartIndexInArrayBuffer = () => 1;

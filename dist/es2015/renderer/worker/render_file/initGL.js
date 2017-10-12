@@ -1,5 +1,5 @@
 import { chain, compose, map } from "../../../utils/functionalUtils";
-import { getGL, setContextConfig, setGL, setViewport, setViewportOfGL } from "../both_file/device/DeviceManagerWorkerSystem";
+import { getGL, setContextConfig, setGL, setViewportOfGL } from "../both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerWorkerData } from "../both_file/device/DeviceManagerWorkerData";
 import { createState } from "../../../utils/stateUtils";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
@@ -8,7 +8,7 @@ import curry from "wonder-lodash/curry";
 import { setCanvas } from "../../../structure/ViewSystem";
 import { getOnlyGL } from "../../utils/worker/both_file/device/deviceManagerUtils";
 export var initGL = function (data, detect, WebGLDetectWorkerData, GPUDetectWorkerData) {
-    return compose(map(detect(getGL, DeviceManagerWorkerData, GPUDetectWorkerData)), chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)), map(setViewport(data.viewportData)), _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData))(createState());
+    return compose(map(detect(getGL, DeviceManagerWorkerData, GPUDetectWorkerData)), chain(setViewportOfGL(DeviceManagerWorkerData, data.viewportData)), _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData))(createState());
 };
 var _createGL = curry(function (canvas, options, WebGLDetectWorkerData, DeviceManagerWorkerData, state) {
     return IO.of(function () {

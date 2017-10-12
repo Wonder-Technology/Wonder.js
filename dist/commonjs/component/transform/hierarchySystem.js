@@ -13,14 +13,14 @@ exports.getParent = contract_1.requireCheckFunc(function (uid, ThreeDTransformDa
 }, function (uid, ThreeDTransformData) {
     return ThreeDTransformData.parentMap[uid];
 });
-exports.setParent = contract_1.requireCheckFunc(function (transform, parent, ThreeDTransformData) {
+exports.setParent = contract_1.requireCheckFunc(function (parent, child, ThreeDTransformData) {
     contract_1.it("parent should not be self", function () {
         if (parent !== null) {
-            wonder_expect_js_1.expect(_isTransformEqual(transform, parent)).false;
+            wonder_expect_js_1.expect(_isTransformEqual(child, parent)).false;
         }
     });
-}, function (transform, parent, ThreeDTransformData) {
-    var index = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = exports.getParent(uid, ThreeDTransformData), isCurrentParentExisit = exports.isParentExist(currentParent);
+}, function (parent, child, ThreeDTransformData) {
+    var index = child.index, uid = child.uid, parentIndexInArrayBuffer = null, currentParent = exports.getParent(uid, ThreeDTransformData), isCurrentParentExisit = exports.isParentExist(currentParent);
     if (parent === null) {
         if (isCurrentParentExisit) {
             _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
@@ -35,7 +35,7 @@ exports.setParent = contract_1.requireCheckFunc(function (transform, parent, Thr
         }
         _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
     }
-    _addToParent(uid, transform, parent, ThreeDTransformData);
+    _addToParent(uid, child, parent, ThreeDTransformData);
     dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 });
 var _isTransformEqual = function (tra1, tra2) { return tra1.uid === tra2.uid; };

@@ -1,6 +1,6 @@
 import { getMatrix4DataSize } from "../../../../utils/typeArrayUtils";
 
-export var initData = (BasicDrawRenderCommandBufferDataFromSystem: any) => {
+export const initData = (BasicDrawRenderCommandBufferDataFromSystem: any) => {
     var mat4Length = getMatrix4DataSize();
 
     BasicDrawRenderCommandBufferDataFromSystem.mMatrixFloatArrayForSend = new Float32Array(mat4Length);
@@ -8,7 +8,7 @@ export var initData = (BasicDrawRenderCommandBufferDataFromSystem: any) => {
     BasicDrawRenderCommandBufferDataFromSystem.pMatrixFloatArrayForSend = new Float32Array(mat4Length);
 }
 
-export var buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array) => {
+export const buildRenderCommandUniformData = (mMatrices: Float32Array, vMatrices: Float32Array, pMatrices: Float32Array) => {
     return {
         mMatrix: mMatrices,
         vMatrix: vMatrices,

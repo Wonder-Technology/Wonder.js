@@ -8,11 +8,11 @@ import { it, requireCheckFunc } from "../../../../../../../../../definition/type
 import { expect } from "wonder-expect.js";
 import { createMap } from "../../../../../../../../../utils/objectUtils";
 
-export var init = (gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
+export const init = (gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
     _setFullScreenQuadVaoData(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 }
 
-var _setFullScreenQuadVaoData = requireCheckFunc((gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
+const _setFullScreenQuadVaoData =requireCheckFunc((gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
     it("positionLocation, texCoordLocation should be defined in vaoConfig data", () => {
         var vaoConfig = getVaoConfig(shaderIndex, GLSLSenderDataFromSystem);
 
@@ -44,11 +44,11 @@ var _setFullScreenQuadVaoData = requireCheckFunc((gl: any, shaderIndex: number, 
     DeferLightPassDataFromSystem.fullScreenQuadIndicesCount = fullScreenQuadData.indices.length;
 })
 
-var _getPositionSize = () => 3;
+const _getPositionSize =() => 3;
 
-var _getTexCoordSize = () => 2;
+const _getTexCoordSize =() => 2;
 
-var _createFullScreenQuadData = () => {
+const _createFullScreenQuadData =() => {
     var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]),
         indices = new Uint16Array([0, 1, 2, 0, 2, 3]),
         texCoords = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);
@@ -60,6 +60,6 @@ var _createFullScreenQuadData = () => {
     }
 }
 
-export var initData = (DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any) => {
+export const initData = (DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any) => {
     DeferPointLightPassDataFromSystem.scissorRegionArrayCacheMap = createMap();
 }

@@ -1,3 +1,3 @@
-export declare var getMaterialBufferSize: () => number;
-export declare var getBasicMaterialBufferStartIndex: () => number;
-export declare var getLightMaterialBufferStartIndex: () => number;
+export declare const getMaterialBufferSize: () => number;
+export declare const getBasicMaterialBufferStartIndex: () => number;
+export declare const getLightMaterialBufferStartIndex: () => number;

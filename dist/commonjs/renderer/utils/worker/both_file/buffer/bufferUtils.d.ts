@@ -1,1 +1,1 @@
-export declare var disposeGeometryVboBuffers: (disposedIndexArray: number[], ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, disposeArrayBuffer: Function, disposeIndexBuffer: Function) => void;
+export declare const disposeGeometryVboBuffers: (disposedIndexArray: number[], ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, disposeArrayBuffer: Function, disposeIndexBuffer: Function) => void;

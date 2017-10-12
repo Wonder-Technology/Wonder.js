@@ -1,10 +1,10 @@
 import { Map } from "immutable";
 
-export var createState = () => {
+export const createState = () => {
     return Map();
 }
 
-export var isValueExist = (val: any) => {
+export const isValueExist = (val: any) => {
     return val !== void 0;
 }
 

@@ -9,22 +9,22 @@ import {
     initMaterialShader as initMaterialShaderUtils,
     initNoMaterialShader as initNoMaterialShaderUtils
 } from "../../../../webgl1/utils/worker/render_file/shader/shaderUtils";
-import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
+import { buildGLSLSource } from "./ShaderSourceBuildWorkerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
 import {
     getIndices, getNormals, getTexCoords,
     getVertices
 } from "../../../render_file/geometry/GeometryWorkerSystem";
 
-export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
+export const initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
     initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
+export const initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderDataMap: InitShaderDataMap) => {
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
-var _buildInitShaderFuncDataMap = () => {
+const _buildInitShaderFuncDataMap =() => {
     return {
         buildGLSLSource: buildGLSLSource,
         getGL: getGL,
@@ -39,8 +39,8 @@ var _buildInitShaderFuncDataMap = () => {
     }
 }
 
-export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramWorkerData: any, GeometryWorkerData: any, IndexBufferWorkerData: any) => {
+export const bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, ProgramWorkerData: any, GeometryWorkerData: any, IndexBufferWorkerData: any) => {
     bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramWorkerData, GeometryWorkerData, IndexBufferWorkerData);
 }
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;

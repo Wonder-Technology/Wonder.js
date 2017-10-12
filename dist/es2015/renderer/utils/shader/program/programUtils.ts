@@ -3,13 +3,13 @@ import { ensureFunc, it } from "../../../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { Log } from "../../../../utils/Log";
 
-export var registerProgram = (shaderIndex: number, ProgramDataFromSystem: any, program: WebGLProgram) => {
+export const registerProgram = (shaderIndex: number, ProgramDataFromSystem: any, program: WebGLProgram) => {
     ProgramDataFromSystem.programMap[shaderIndex] = program;
 }
 
-export var isProgramExist = (program: WebGLProgram) => isValidMapValue(program);
+export const isProgramExist = (program: WebGLProgram) => isValidMapValue(program);
 
-export var initShader = (program: WebGLProgram, vsSource: string, fsSource: string, gl: WebGLRenderingContext) => {
+export const initShader = (program: WebGLProgram, vsSource: string, fsSource: string, gl: WebGLRenderingContext) => {
     var vs = _compileShader(gl, vsSource, gl.createShader(gl.VERTEX_SHADER)),
         fs = _compileShader(gl, fsSource, gl.createShader(gl.FRAGMENT_SHADER));
 
@@ -63,7 +63,7 @@ export var initShader = (program: WebGLProgram, vsSource: string, fsSource: stri
     gl.deleteShader(fs);
 }
 
-var _linkProgram = ensureFunc((returnVal, gl: WebGLRenderingContext, program: WebGLProgram) => {
+const _linkProgram =ensureFunc((returnVal, gl: WebGLRenderingContext, program: WebGLProgram) => {
     it(`link program error:${gl.getProgramInfoLog(program)}`, () => {
         expect(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
     })
@@ -71,7 +71,7 @@ var _linkProgram = ensureFunc((returnVal, gl: WebGLRenderingContext, program: We
     gl.linkProgram(program);
 })
 
-var _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: WebGLShader) => {
+const _compileShader =(gl: WebGLRenderingContext, glslSource: string, shader: WebGLShader) => {
     gl.shaderSource(shader, glslSource);
     gl.compileShader(shader);
 

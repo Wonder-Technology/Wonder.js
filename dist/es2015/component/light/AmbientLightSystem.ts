@@ -22,7 +22,7 @@ import { getDirtyDataSize } from "../../renderer/utils/worker/render_file/light/
 import { DirectorData } from "../../core/DirectorData";
 import { isInit } from "../../core/DirectorSystem";
 
-export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
+export const create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     it("shouldn't create after Director->init", () => {
         expect(isInit(DirectorData)).false;
     });
@@ -34,21 +34,21 @@ export var create = ensureFunc((light: AmbientLight, AmbientLightData: any) => {
     return light;
 })
 
-export var getColor = getColorUtils;
+export const getColor = getColorUtils;
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var setColor = (index: number, color: Color, AmbientLightData: any) => {
+export const setColor = (index: number, color: Color, AmbientLightData: any) => {
     setSpecifyLightColor(index, color, AmbientLightData.colors);
 
     markDirty(index, AmbientLightData.isColorDirtys);
 }
 
-export var addComponent = (component: Light, gameObject: GameObject) => {
+export const addComponent = (component: Light, gameObject: GameObject) => {
     addSpecifyLightComponent(component, gameObject, AmbientLightData);
 }
 
-export var disposeComponent = requireCheckFunc(() => {
+export const disposeComponent = requireCheckFunc(() => {
     it("should only has 1 ambient light", () => {
         expect(AmbientLightData.count).equal(1);
     });
@@ -60,7 +60,7 @@ export var disposeComponent = requireCheckFunc(() => {
     AmbientLightData.isColorDirtys[0] = AmbientLightData.defaultDirty;
 })
 
-export var initData = (AmbientLightData: any) => {
+export const initData = (AmbientLightData: any) => {
     var count = getAmbientLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * getColorDataSize() + Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize(),
         buffer: any = null;
@@ -73,7 +73,7 @@ export var initData = (AmbientLightData: any) => {
     _setDefaultTypeArrData(count, AmbientLightData);
 }
 
-var _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {
+const _setDefaultTypeArrData =(count: number, AmbientLightData: any) => {
     var color = createDefaultColor();
 
     for (let i = 0; i < count; i++) {
@@ -81,6 +81,6 @@ var _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {
     }
 }
 
-export var isColorDirty = isColorDirtyUtils;
+export const isColorDirty = isColorDirtyUtils;
 
-export var cleanColorDirty = cleanColorDirtyUtils;
+export const cleanColorDirty = cleanColorDirtyUtils;

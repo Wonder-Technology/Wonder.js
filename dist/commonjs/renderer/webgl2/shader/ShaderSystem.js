@@ -4,21 +4,21 @@ var WorkerDetectSystem_1 = require("../../../device/WorkerDetectSystem");
 var DeviceManagerSystem_1 = require("../../device/DeviceManagerSystem");
 var MapManagerSystem_1 = require("../../texture/MapManagerSystem");
 var shaderUtils_1 = require("../utils/worker/render_file/shader/shaderUtils");
-var shaderSourceBuildSystem_1 = require("./shaderSourceBuildSystem");
+var ShaderSourceBuildSystem_1 = require("./ShaderSourceBuildSystem");
 var LightMaterialSystem_1 = require("../../../component/material/LightMaterialSystem");
 var GeometrySystem_1 = require("../../../component/geometry/GeometrySystem");
 exports.initNoMaterialShader = null;
 exports.initMaterialShader = null;
 if (!WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     exports.initNoMaterialShader = function (state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, initShaderDataMap) {
-        shaderUtils_1.initNoMaterialShader(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+        shaderUtils_1.initNoMaterialShader(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _buildInitShaderFuncDataMap_1(), initShaderDataMap);
     };
     exports.initMaterialShader = function (state, materialIndex, shaderName, material_config, shaderLib_generator, initShaderDataMap) {
-        return shaderUtils_1.initMaterialShader(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
+        return shaderUtils_1.initMaterialShader(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap_1(), initShaderDataMap);
     };
-    var _buildInitShaderFuncDataMap = function () {
+    var _buildInitShaderFuncDataMap_1 = function () {
         return {
-            buildGLSLSource: shaderSourceBuildSystem_1.buildGLSLSource,
+            buildGLSLSource: ShaderSourceBuildSystem_1.buildGLSLSource,
             getGL: DeviceManagerSystem_1.getGL,
             getMapCount: MapManagerSystem_1.getMapCount,
             hasSpecularMap: LightMaterialSystem_1.hasSpecularMap,

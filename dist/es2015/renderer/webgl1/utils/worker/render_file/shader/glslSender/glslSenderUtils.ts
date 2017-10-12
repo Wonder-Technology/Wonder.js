@@ -18,7 +18,7 @@ import { createMap } from "../../../../../../../utils/objectUtils";
 import { Log } from "../../../../../../../utils/Log";
 import { getAttribLocation } from "../location/locationUtils";
 
-export var addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
+export const addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, sendAttributeConfigMap: SendAttributeConfigMap) => {
     it("sendAttributeConfigMap should not has duplicate attribute name", () => {
         expect(hasDuplicateItems(sendAttributeConfigMap[shaderIndex])).false;
     });
@@ -40,7 +40,7 @@ export var addSendAttributeConfig = ensureFunc((returnVal, shaderIndex: number, 
     sendAttributeConfigMap[shaderIndex] = sendDataArr;
 }))
 
-export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, GLSLSenderDataFromSystem: any) => {
+export const addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, GLSLSenderDataFromSystem: any) => {
     it("sendUniformConfigMap should not has duplicate attribute name", () => {
         expect(hasDuplicateItems(GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex])).false;
     });
@@ -70,7 +70,7 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex] = sendUniformFuncDataArr;
 }))
 
-export var addVaoConfig = requireCheckFunc((gl: any, shaderIndex: number, program: WebGLProgram, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, attributeLocationMap: AttributeLocationMap, vaoConfigMap: VaoConfigMap) => {
+export const addVaoConfig = requireCheckFunc((gl: any, shaderIndex: number, program: WebGLProgram, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, attributeLocationMap: AttributeLocationMap, vaoConfigMap: VaoConfigMap) => {
     it("vaoConfigMap[shaderIndex] should not be defined", () => {
         expect(vaoConfigMap[shaderIndex]).not.exist;
     });
@@ -118,7 +118,7 @@ export var addVaoConfig = requireCheckFunc((gl: any, shaderIndex: number, progra
         vaoConfigMap[shaderIndex] = vaoConfigData;
     })
 
-export var initData = (GLSLSenderDataFromSystem: any) => {
+export const initData = (GLSLSenderDataFromSystem: any) => {
     initDataUtils(GLSLSenderDataFromSystem);
 
     GLSLSenderDataFromSystem.sendAttributeConfigMap = createMap();

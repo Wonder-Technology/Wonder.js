@@ -1,1 +1,1 @@
-export declare var initData: (startIndex: number, SpecifyMaterialData: any) => void;
+export declare const initData: (startIndex: number, SpecifyMaterialData: any) => void;

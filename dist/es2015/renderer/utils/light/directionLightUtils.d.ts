@@ -1,2 +1,2 @@
-export declare var getColorDataSize: () => number;
-export declare var getIntensityDataSize: () => number;
+export declare const getColorDataSize: () => number;
+export declare const getIntensityDataSize: () => number;

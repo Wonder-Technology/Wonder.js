@@ -1,5 +1,6 @@
-import { ensure, assert } from "../../definition/typescript/decorator/contract";
+import { ensure, it } from "../../definition/typescript/decorator/contract";
 import { Log } from "../Log";
+import { expect } from "wonder-expect.js";
 
 export abstract class TimeController {
     public elapsed: number = null;
@@ -26,7 +27,9 @@ export abstract class TimeController {
     }
 
     @ensure(function() {
-        assert(this.elapsed >= 0, Log.info.FUNC_SHOULD(`elapsed:${this.elapsed}`, ">= 0"));
+        it(`elapsed should >= 0, but actual is ${this.elapsed}`, () => {
+            expect(this.elapsed).gte(0);
+        });
     })
     public computeElapseTime(time: number) {
         if (this.pauseElapsed) {

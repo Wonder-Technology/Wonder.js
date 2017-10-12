@@ -1,6 +1,6 @@
 import { getMatrix3DataSize, getMatrix4DataSize, getVector3DataSize } from "../../../utils/typeArrayUtils";
 
-export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommandBufferDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommandBufferDataFromSystem: any) => {
     var mat3Length = getMatrix3DataSize(),
         mat4Length = getMatrix4DataSize(),
         cameraPositionLength = getVector3DataSize(),
@@ -30,7 +30,7 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, RenderCommand
     offset += Float32Array.BYTES_PER_ELEMENT * mat3Length;
 }
 
-export var buildRenderCommandBufferForDrawData = (count: number, materialIndices: Float32Array, geometryIndices: Float32Array, mMatrices: Float32Array) => {
+export const buildRenderCommandBufferForDrawData = (count: number, materialIndices: Float32Array, geometryIndices: Float32Array, mMatrices: Float32Array) => {
     return {
         renderCommandBufferData: {
             materialIndices: materialIndices,

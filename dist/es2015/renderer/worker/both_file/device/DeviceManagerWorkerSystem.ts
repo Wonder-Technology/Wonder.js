@@ -7,7 +7,8 @@ import {
     initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils,
     setSide as setSideUtils,
     setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils,
-    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils
+    setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils,
+    setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils, setClearColor as setClearColorUtils
 } from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
@@ -16,8 +17,9 @@ import { isValueExist } from "../../../../utils/stateUtils";
 import { Color } from "../../../../structure/Color";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { ESide } from "../../../enum/ESide";
+import { RectRegion } from "../../../../structure/RectRegion";
 
-export var createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, contextConfig: Map<string, any>, viewportData: ViewportData) => {
+export const createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, contextConfig: Map<string, any>, viewportData: ViewportData) => {
     return IO.of(() => {
         var offscreen = (<any>canvas).transferControlToOffscreen();
 
@@ -30,36 +32,31 @@ export var createGL = curry((canvas: HTMLCanvasElement, renderWorker: Worker, co
     })
 })
 
-export var setContextConfig = setContextConfigUtils;
+export const setContextConfig = setContextConfigUtils;
 
-export var getGL = getGLUtils;
+export const getGL = getGLUtils;
 
-export var setGL = setGLUtils;
+export const setGL = setGLUtils;
 
-export var setPixelRatio = setPixelRatioUtils;
+export const setPixelRatio = setPixelRatioUtils;
 
-export var getViewport = getViewportUtils;
+export const getViewport = getViewportUtils;
 
-export var setViewport = curry((viewportData: ViewportData | null, state: Map<any, any>) => {
+export const setViewportToState = curry((viewportData: ViewportData | null, state: Map<any, any>) => {
     if (viewportData === null) {
         return state;
     }
 
-    return setViewportUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
+    return setViewportToStateUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
 });
 
-export var getViewportData = (screenData: ScreenData, state: Map<any, any>) => {
-    var oldViewportData = getViewport(state),
-        {
-            x,
-            y,
-            width,
-            height
-        } = screenData;
-
-    if (isValueExist(oldViewportData) && oldViewportData.x === x && oldViewportData.y === y && oldViewportData.width === width && oldViewportData.height === height) {
-        return null;
-    }
+export const getViewportData = (screenData: ScreenData) => {
+    var {
+        x,
+        y,
+        width,
+        height
+    } = screenData;
 
     return {
         x: x,
@@ -69,26 +66,15 @@ export var getViewportData = (screenData: ScreenData, state: Map<any, any>) => {
     }
 }
 
-export var setViewportOfGL = curry((DeviceManagerWorkerData: any, {
-    x,
-    y,
-    width,
-    height
-}, state: Map<any, any>) => {
-    return IO.of(() => {
-        var gl = getGL(DeviceManagerWorkerData, state);
-
-        gl.viewport(x, y, width, height);
-
-        return state;
-    });
+export const setViewportOfGL = curry((DeviceManagerWorkerData: any, data:RectRegion, state: Map<any, any>) => {
+    return setViewportOfGLUtils(DeviceManagerWorkerData, state, data);
 })
 
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery: any, state: Map<any, any>) => {
+export const setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerData: any, DomQuery: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 
-var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
+const _setScreenData =curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -105,7 +91,7 @@ var _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElem
     });
 })
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
+export const setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement) => {
     return IO.of(() => {
         if (!useDevicePixelRatio) {
             return null;
@@ -115,10 +101,30 @@ export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HT
     });
 });
 
-export var clear = clearUtils;
+export const buildViewportData = (x: number, y: number, width: number, height: number) => {
+    return {
+        x:x,
+        y:y,
+        width:width,
+        height:height
+    }
+}
 
-export var setColorWrite = setColorWriteUtils;
+export const setClearColor = (gl: WebGLRenderingContext, colorArr4: Array<number>, DeviceManagerWorkerData: any) => {
+    var color = Color.create();
 
-export var setSide = setSideUtils;
+    color.r = colorArr4[0];
+    color.g = colorArr4[1];
+    color.b = colorArr4[2];
+    color.a = colorArr4[3];
 
-export var initData = initDataUtils;
+    setClearColorUtils(gl, color, DeviceManagerWorkerData);
+};
+
+export const clear = clearUtils;
+
+export const setColorWrite = setColorWriteUtils;
+
+export const setSide = setSideUtils;
+
+export const initData = initDataUtils;

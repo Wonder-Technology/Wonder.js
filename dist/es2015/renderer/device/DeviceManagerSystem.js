@@ -2,7 +2,7 @@ import { setCanvas, setHeight, setStyleHeight, setStyleWidth, setWidth, setY, se
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { chain, compose } from "../../utils/functionalUtils";
-import { clear as clearUtils, getGL as getGLUtils, getOnlyGL, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setClearColor as setClearColorUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setSide as setSideUtils, setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils } from "../utils/worker/both_file/device/deviceManagerUtils";
+import { clear as clearUtils, getGL as getGLUtils, getOnlyGL, getScreenSize as getScreenSizeUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setClearColor as setClearColorUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setSide as setSideUtils, setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils } from "../utils/worker/both_file/device/deviceManagerUtils";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 export var createGL = curry(function (canvas, contextConfig, WebGLDetectData, DeviceManagerData, state) {
     return IO.of(function () {
@@ -18,7 +18,8 @@ export var setGL = setGLUtils;
 export var setContextConfig = setContextConfigUtils;
 export var setPixelRatio = setPixelRatioUtils;
 export var getViewport = getViewportUtils;
-export var setViewport = setViewportUtils;
+export var setViewportToState = setViewportToStateUtils;
+export var setViewportOfGL = setViewportOfGLUtils;
 export var setCanvasPixelRatio = curry(function (useDevicePixelRatio, canvas, state) {
     return IO.of(function () {
         if (!useDevicePixelRatio) {
@@ -28,7 +29,6 @@ export var setCanvasPixelRatio = curry(function (useDevicePixelRatio, canvas, st
         return setPixelRatio(pixelRatio, state);
     });
 });
-export var setViewportOfGL = setViewportOfGLUtils;
 export var getScreenSize = getScreenSizeUtils;
 export var setScreen = curry(function (canvas, DeviceManagerData, DomQuery, state) {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
@@ -41,6 +41,9 @@ var _setScreenData = curry(function (DeviceManagerData, canvas, state, data) {
     });
 });
 export var clear = clearUtils;
+export var getClearColor = function (DeviceManagerData) {
+    return DeviceManagerData.clearColor;
+};
 export var setClearColor = setClearColorUtils;
 export var setColorWrite = setColorWriteUtils;
 export var setSide = setSideUtils;

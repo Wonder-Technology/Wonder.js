@@ -9,6 +9,7 @@ var operateDataSystem_1 = require("./operateDataSystem");
 var arrayUtils_1 = require("../../utils/arrayUtils");
 var LinkList_1 = require("./LinkList");
 var ThreeDTransformSystem_1 = require("./ThreeDTransformSystem");
+var isTransformSystem_1 = require("./isTransformSystem");
 exports.addFirstDirtyIndex = contract_1.ensureFunc(function (firstDirtyIndex, ThreeDTransformData) {
     contract_1.it("firstDirtyIndex should <= maxCount", function () {
         wonder_expect_js_1.expect(firstDirtyIndex).lte(ThreeDTransformData.maxCount);
@@ -92,6 +93,7 @@ exports.isNotDirty = function (index, firstDirtyIndex) {
 exports.addItAndItsChildrenToDirtyList = function (rootIndexInArrayBuffer, uid, ThreeDTransformData) {
     var indexInArraybuffer = rootIndexInArrayBuffer, children = hierarchySystem_1.getChildren(uid, ThreeDTransformData);
     if (exports.isNotDirty(indexInArraybuffer, ThreeDTransformData.firstDirtyIndex)) {
+        isTransformSystem_1.setIsTranslate(uid, true, ThreeDTransformData);
         exports.addToDirtyList(indexInArraybuffer, ThreeDTransformData);
     }
     if (hierarchySystem_1.isChildrenExist(children)) {

@@ -12,7 +12,6 @@ var updateSystem_1 = require("./updateSystem");
 var dirtySystem_1 = require("./dirtySystem");
 var hierarchySystem_1 = require("./hierarchySystem");
 var operateDataSystem_1 = require("./operateDataSystem");
-var isTransformSystem_1 = require("./isTransformSystem");
 var utils_1 = require("./utils");
 var contractUtils_1 = require("./contractUtils");
 var batchSystem_1 = require("./batchSystem");
@@ -105,73 +104,71 @@ exports.getParent = function (transform, ThreeDTransformData) {
     }
     return null;
 };
-exports.setParent = function (transform, parent, ThreeDTransformData) { return hierarchySystem_1.setParent(transform, parent, ThreeDTransformData); };
-exports.getLocalToWorldMatrix = contract_1.requireCheckFunc(function (transform, mat, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheUtils_1.cacheFunc(function (transform, mat, ThreeTransformData) {
-    return objectUtils_1.isValidMapValue(cacheSystem_1.getLocalToWorldMatrixCache(transform.uid, ThreeTransformData));
-}, function (transform, mat, ThreeTransformData) {
-    return cacheSystem_1.getLocalToWorldMatrixCache(transform.uid, ThreeTransformData);
-}, function (transform, mat, ThreeTransformData, returnedMat) {
-    cacheSystem_1.setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeTransformData);
-}, function (transform, mat, ThreeTransformData) {
-    return typeArrayUtils_1.createMatrix4ByIndex(mat, ThreeDTransformData_1.ThreeDTransformData.localToWorldMatrices, operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index));
+exports.setParent = function (parent, child, ThreeDTransformData) { return hierarchySystem_1.setParent(parent, child, ThreeDTransformData); };
+exports.getLocalToWorldMatrix = contract_1.requireCheckFunc(function (transform, mat, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheUtils_1.cacheFunc(function (transform, mat, ThreeDTransformData) {
+    return objectUtils_1.isValidMapValue(cacheSystem_1.getLocalToWorldMatrixCache(transform.uid, ThreeDTransformData));
+}, function (transform, mat, ThreeDTransformData) {
+    return cacheSystem_1.getLocalToWorldMatrixCache(transform.uid, ThreeDTransformData);
+}, function (transform, mat, ThreeDTransformData, returnedMat) {
+    cacheSystem_1.setLocalToWorldMatrixCache(transform.uid, returnedMat, ThreeDTransformData);
+}, function (transform, mat, ThreeDTransformData) {
+    return typeArrayUtils_1.createMatrix4ByIndex(mat, ThreeDTransformData.localToWorldMatrices, operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index));
 }));
-exports.getPosition = contract_1.requireCheckFunc(function (transform, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheUtils_1.cacheFunc(function (transform, ThreeTransformData) {
-    return objectUtils_1.isValidMapValue(cacheSystem_1.getPositionCache(transform.uid, ThreeTransformData));
-}, function (transform, ThreeTransformData) {
-    return cacheSystem_1.getPositionCache(transform.uid, ThreeTransformData);
-}, function (transform, ThreeTransformData, position) {
-    cacheSystem_1.setPositionCache(transform.uid, position, ThreeTransformData);
-}, function (transform, ThreeTransformData) {
-    var index = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index), localToWorldMatrices = ThreeTransformData.localToWorldMatrices;
-    return _getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).position.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
+exports.getPosition = contract_1.requireCheckFunc(function (transform, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheUtils_1.cacheFunc(function (transform, ThreeDTransformData) {
+    return objectUtils_1.isValidMapValue(cacheSystem_1.getPositionCache(transform.uid, ThreeDTransformData));
+}, function (transform, ThreeDTransformData) {
+    return cacheSystem_1.getPositionCache(transform.uid, ThreeDTransformData);
+}, function (transform, ThreeDTransformData, position) {
+    cacheSystem_1.setPositionCache(transform.uid, position, ThreeDTransformData);
+}, function (transform, ThreeDTransformData) {
+    var index = operateDataSystem_1.getMatrix4DataIndexInArrayBuffer(transform.index), localToWorldMatrices = ThreeDTransformData.localToWorldMatrices;
+    return _getTempData(transform.uid, ThreeDTransformData).position.set(localToWorldMatrices[index + 12], localToWorldMatrices[index + 13], localToWorldMatrices[index + 14]);
 }));
-exports.getNormalMatrix = contract_1.requireCheckFunc(function (transform, GlobalTempData, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheUtils_1.cacheFunc(function (transform, GlobalTempData, ThreeTransformData) {
-    return objectUtils_1.isValidMapValue(cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeTransformData));
-}, function (transform, GlobalTempData, ThreeTransformData) {
-    return cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeTransformData);
-}, function (transform, GlobalTempData, ThreeTransformData, mat) {
-    cacheSystem_1.setNormalMatrixCache(transform.uid, mat, ThreeTransformData);
+exports.getNormalMatrix = contract_1.requireCheckFunc(function (transform, GlobalTempData, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheUtils_1.cacheFunc(function (transform, GlobalTempData, ThreeDTransformData) {
+    return objectUtils_1.isValidMapValue(cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeDTransformData));
+}, function (transform, GlobalTempData, ThreeDTransformData) {
+    return cacheSystem_1.getNormalMatrixCache(transform.uid, ThreeDTransformData);
+}, function (transform, GlobalTempData, ThreeDTransformData, mat) {
+    cacheSystem_1.setNormalMatrixCache(transform.uid, mat, ThreeDTransformData);
 }, function (transform, GlobalTempData, ThreeDTransformData) {
     return exports.getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }));
 var _setTransformMap = function (index, transform, ThreeDTransformData) { return ThreeDTransformData.transformMap[index] = transform; };
-exports.setPosition = contract_1.requireCheckFunc(function (transform, position, GlobalTempData, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, function (transform, position, GlobalTempData, ThreeTransformData) {
-    var index = transform.index, uid = transform.uid, parent = hierarchySystem_1.getParent(uid, ThreeDTransformData_1.ThreeDTransformData), vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
-    operateDataSystem_1.setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeTransformData);
-    isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
-    _triggerChangePositionEvent(uid, ThreeTransformData);
-    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
+exports.setPosition = contract_1.requireCheckFunc(function (transform, position, GlobalTempData, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, function (transform, position, GlobalTempData, ThreeDTransformData) {
+    var index = transform.index, uid = transform.uid, parent = hierarchySystem_1.getParent(uid, ThreeDTransformData), vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
+    operateDataSystem_1.setPositionData(index, parent, vec3IndexInArrayBuffer, position, GlobalTempData, ThreeDTransformData);
+    _triggerChangePositionEvent(uid, ThreeDTransformData);
+    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 });
-exports.setBatchDatas = function (batchData, GlobalTempData, ThreeTransformData) { return batchSystem_1.setBatchDatas(batchData, GlobalTempData, ThreeDTransformData_1.ThreeDTransformData); };
-exports.getLocalPosition = contract_1.requireCheckFunc(function (transform, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, cacheUtils_1.cacheFunc(function (transform, ThreeTransformData) {
-    return objectUtils_1.isValidMapValue(cacheSystem_1.getLocalPositionCache(transform.uid, ThreeTransformData));
-}, function (transform, ThreeTransformData) {
-    return cacheSystem_1.getLocalPositionCache(transform.uid, ThreeTransformData);
-}, function (transform, ThreeTransformData, position) {
-    cacheSystem_1.setLocalPositionCache(transform.uid, position, ThreeTransformData);
-}, function (transform, ThreeTransformData) {
-    return typeArrayUtils_1.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData_1.ThreeDTransformData).localPosition, ThreeDTransformData_1.ThreeDTransformData.localPositions, operateDataSystem_1.getVector3DataIndexInArrayBuffer(transform.index));
+exports.setBatchDatas = function (batchData, GlobalTempData, ThreeDTransformData) { return batchSystem_1.setBatchDatas(batchData, GlobalTempData, ThreeDTransformData); };
+exports.getLocalPosition = contract_1.requireCheckFunc(function (transform, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, cacheUtils_1.cacheFunc(function (transform, ThreeDTransformData) {
+    return objectUtils_1.isValidMapValue(cacheSystem_1.getLocalPositionCache(transform.uid, ThreeDTransformData));
+}, function (transform, ThreeDTransformData) {
+    return cacheSystem_1.getLocalPositionCache(transform.uid, ThreeDTransformData);
+}, function (transform, ThreeDTransformData, position) {
+    cacheSystem_1.setLocalPositionCache(transform.uid, position, ThreeDTransformData);
+}, function (transform, ThreeDTransformData) {
+    return typeArrayUtils_1.createVector3ByIndex(_getTempData(transform.uid, ThreeDTransformData).localPosition, ThreeDTransformData.localPositions, operateDataSystem_1.getVector3DataIndexInArrayBuffer(transform.index));
 }));
-exports.setLocalPosition = contract_1.requireCheckFunc(function (transform, position, ThreeTransformData) {
-    contractUtils_1.checkTransformShouldAlive(transform, ThreeTransformData);
-}, function (transform, position, ThreeTransformData) {
+exports.setLocalPosition = contract_1.requireCheckFunc(function (transform, position, ThreeDTransformData) {
+    contractUtils_1.checkTransformShouldAlive(transform, ThreeDTransformData);
+}, function (transform, position, ThreeDTransformData) {
     var index = transform.index, uid = transform.uid, vec3IndexInArrayBuffer = operateDataSystem_1.getVector3DataIndexInArrayBuffer(index);
-    operateDataSystem_1.setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeTransformData);
-    isTransformSystem_1.setIsTranslate(uid, true, ThreeTransformData);
-    _triggerChangePositionEvent(uid, ThreeTransformData);
-    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeTransformData);
+    operateDataSystem_1.setLocalPositionData(position, vec3IndexInArrayBuffer, ThreeDTransformData);
+    _triggerChangePositionEvent(uid, ThreeDTransformData);
+    return dirtySystem_1.addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 });
-var _triggerChangePositionEvent = function (uid, ThreeTransformData) {
+var _triggerChangePositionEvent = function (uid, ThreeDTransformData) {
     EventManagerSystem_1.triggerEvent("changePosition");
 };
 exports.update = function (elapsed, GlobalTempData, ThreeDTransformData, state) {

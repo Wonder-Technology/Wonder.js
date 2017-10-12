@@ -1,8 +1,8 @@
 import { Geometry } from "./Geometry";
 export declare class BoxGeometry extends Geometry {
 }
-export declare var createBoxGeometry: () => BoxGeometry;
-export declare var setBoxGeometryConfigData: (geometry: BoxGeometry, data: BoxGeometryConfigData) => void;
+export declare const createBoxGeometry: () => BoxGeometry;
+export declare const setBoxGeometryConfigData: (geometry: BoxGeometry, data: BoxGeometryConfigData) => void;
 export declare type BoxGeometryConfigDataMap = {
     [index: number]: BoxGeometryConfigData;
 };

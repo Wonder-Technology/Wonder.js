@@ -8,7 +8,7 @@ import { Vector3 } from "../../math/Vector3";
 import { ThreeDTransformCacheMap } from "./ThreeDTransformData";
 import { Matrix3 } from "../../math/Matrix3";
 
-export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
+export const clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) => {
     var count: number = null,
         cacheMap: ThreeDTransformCacheMap = null;
 
@@ -37,45 +37,45 @@ export var clearCache = curry((ThreeDTransformData: any, state: Map<any, any>) =
     return state;
 })
 
-export var clearCacheMap = (ThreeDTransformData: any) => {
+export const clearCacheMap = (ThreeDTransformData: any) => {
     ThreeDTransformData.cacheMap = {};
 
     ThreeDTransformData.isClearCacheMap = true;
 }
 
-export var getLocalToWorldMatrixCache = (uid: number, ThreeTransformData: any) => {
+export const getLocalToWorldMatrixCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).localToWorldMatrix;
 }
 
-export var setLocalToWorldMatrixCache = (uid: number, mat: Matrix4, ThreeTransformData: any) => {
+export const setLocalToWorldMatrixCache = (uid: number, mat: Matrix4, ThreeTransformData: any) => {
     _getCache(uid, ThreeTransformData).localToWorldMatrix = mat;
 }
 
-export var getPositionCache = (uid: number, ThreeTransformData: any) => {
+export const getPositionCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).position;
 }
 
-export var setPositionCache = (uid: number, pos: Vector3, ThreeTransformData: any) => {
+export const setPositionCache = (uid: number, pos: Vector3, ThreeTransformData: any) => {
     _getCache(uid, ThreeTransformData).position = pos;
 }
 
-export var getLocalPositionCache = (uid: number, ThreeTransformData: any) => {
+export const getLocalPositionCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).localPosition;
 }
 
-export var setLocalPositionCache = (uid: number, pos: Vector3, ThreeTransformData: any) => {
+export const setLocalPositionCache = (uid: number, pos: Vector3, ThreeTransformData: any) => {
     ThreeTransformData.cacheMap[uid].localPosition = pos;
 }
 
-export var getNormalMatrixCache = (uid: number, ThreeTransformData: any) => {
+export const getNormalMatrixCache = (uid: number, ThreeTransformData: any) => {
     return _getCache(uid, ThreeTransformData).normalMatrix;
 }
 
-export var setNormalMatrixCache = (uid: number, mat: Matrix3, ThreeTransformData: any) => {
+export const setNormalMatrixCache = (uid: number, mat: Matrix3, ThreeTransformData: any) => {
     _getCache(uid, ThreeTransformData).normalMatrix = mat;
 }
 
-var _getCache = (uid: number, ThreeTransformData: any) => {
+const _getCache =(uid: number, ThreeTransformData: any) => {
     var cache = ThreeTransformData.cacheMap[uid];
 
     if (isNotValidMapValue(cache)) {

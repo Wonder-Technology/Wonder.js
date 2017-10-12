@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var DeviceManagerWorkerSystem_1 = require("../../../both_file/device/DeviceManagerWorkerSystem");
 var MapManagerWorkerSystem_1 = require("../../../render_file/texture/MapManagerWorkerSystem");
 var shaderUtils_1 = require("../../../../webgl2/utils/worker/render_file/shader/shaderUtils");
-var shaderSourceBuildWorkerSystem_1 = require("./shaderSourceBuildWorkerSystem");
+var ShaderSourceBuildWorkerSystem_1 = require("./ShaderSourceBuildWorkerSystem");
 var LightMaterialWorkerSystem_1 = require("../../../render_file/material/LightMaterialWorkerSystem");
 var GeometryWorkerSystem_1 = require("../../../render_file/geometry/GeometryWorkerSystem");
 exports.initNoMaterialShader = function (state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, initShaderDataMap) {
@@ -14,7 +14,7 @@ exports.initMaterialShader = function (state, materialIndex, shaderName, materia
 };
 var _buildInitShaderFuncDataMap = function () {
     return {
-        buildGLSLSource: shaderSourceBuildWorkerSystem_1.buildGLSLSource,
+        buildGLSLSource: ShaderSourceBuildWorkerSystem_1.buildGLSLSource,
         getGL: DeviceManagerWorkerSystem_1.getGL,
         getMapCount: MapManagerWorkerSystem_1.getMapCount,
         hasSpecularMap: LightMaterialWorkerSystem_1.hasSpecularMap,

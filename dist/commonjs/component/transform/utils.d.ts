@@ -1,3 +1,3 @@
-export declare var getUId: Function;
-export declare var isIndexUsed: Function;
-export declare var getStartIndexInArrayBuffer: () => number;
+export declare const getUId: Function;
+export declare const isIndexUsed: Function;
+export declare const getStartIndexInArrayBuffer: () => number;

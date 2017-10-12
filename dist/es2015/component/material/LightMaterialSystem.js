@@ -1,5 +1,5 @@
 import { LightMaterial } from "./LightMaterial";
-import { addComponent as addMaterialComponent, create as createMaterial, createDefaultColor, disposeComponent as disposeMaterialComponent, initMaterial as initMaterialMaterial, setColorData } from "./MaterialSystem";
+import { addComponent as addMaterialComponent, create as createMaterial, createDefaultColor, disposeComponent as disposeMaterialComponent, initMaterial as initMaterialBase, setColorData } from "./MaterialSystem";
 import { getColorDataSize } from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { deleteBySwapAndReset, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
 import { Color } from "../../structure/Color";
@@ -14,11 +14,14 @@ import { generateComponentIndex } from "../ComponentSystem";
 import { LightMaterialData } from "./LightMaterialData";
 import { getColor3Data } from "../utils/operateBufferDataUtils";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { addMap, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { initMapManager, setMap } from "../../renderer/texture/MapManagerSystem";
 import { getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getGL } from "../../renderer/device/DeviceManagerSystem";
+import { TextureData } from "../../renderer/texture/TextureData";
+import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
 export var create = ensureFunc(function (component) {
     it("index should <= max count", function () {
-        expect(component.index).lt(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
+        expect(component.index).lte(getLightMaterialBufferStartIndex() + getLightMaterialBufferCount());
     });
 }, function (ShaderData, MaterialData, LightMaterialData) {
     var material = new LightMaterial(), index = generateComponentIndex(LightMaterialData);
@@ -36,13 +39,11 @@ export var setSpecularColor = function (index, color, LightMaterialData) {
     setColorData(computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 };
 export var setDiffuseMap = function (index, map, MapManagerData, TextureData) {
-    var count = getMapCount(index, MapManagerData);
-    addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
+    setMap(index, map, "u_diffuseMapSampler", MapManagerData, TextureData);
     markHasMap(index, LightMaterialData.hasDiffuseMaps);
 };
 export var setSpecularMap = function (index, map, MapManagerData, TextureData) {
-    var count = getMapCount(index, MapManagerData);
-    addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
+    setMap(index, map, "u_specularMapSampler", MapManagerData, TextureData);
     markHasMap(index, LightMaterialData.hasSpecularMaps);
 };
 export var getEmissionColor = function (index, LightMaterialData) {
@@ -78,8 +79,12 @@ export var hasDiffuseMap = function (index, LightMaterialData) {
 export var hasSpecularMap = function (index, LightMaterialData) {
     return hasSpecularMapUtils(computeLightBufferIndex(index), LightMaterialData);
 };
+export var initMaterialWithoutInitMap = function (index, state) {
+    initMaterialBase(index, state, getClassName(), MaterialData);
+};
 export var initMaterial = function (index, state) {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+    initMaterialBase(index, state, getClassName(), MaterialData);
+    initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
 };
 export var addComponent = function (component, gameObject) {
     addMaterialComponent(component, gameObject, MaterialData);

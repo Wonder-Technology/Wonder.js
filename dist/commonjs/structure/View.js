@@ -1,75 +1,48 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var ViewSystem_1 = require("./ViewSystem");
-var registerClass_1 = require("../definition/typescript/decorator/registerClass");
 var DirectorSystem_1 = require("../core/DirectorSystem");
 var DirectorData_1 = require("../core/DirectorData");
-var View = (function () {
-    function View() {
-    }
-    View.create = function () {
-        var obj = new this();
-        return obj;
-    };
-    Object.defineProperty(View.prototype, "dom", {
-        get: function () {
-            return ViewSystem_1.getCanvas(DirectorSystem_1.getState(DirectorData_1.DirectorData));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "width", {
-        get: function () {
-            return ViewSystem_1.getWidth(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "height", {
-        get: function () {
-            return ViewSystem_1.getHeight(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "styleWidth", {
-        get: function () {
-            return ViewSystem_1.getStyleWidth(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "styleHeight", {
-        get: function () {
-            return ViewSystem_1.getStyleHeight(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "x", {
-        get: function () {
-            return ViewSystem_1.getX(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(View.prototype, "y", {
-        get: function () {
-            return ViewSystem_1.getY(this.dom);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    View = __decorate([
-        registerClass_1.registerClass("View")
-    ], View);
-    return View;
-}());
-exports.View = View;
+exports.getCanvas = function () {
+    return ViewSystem_1.getCanvas(DirectorSystem_1.getState(DirectorData_1.DirectorData));
+};
+exports.setCanvas = function (canvas) {
+    ViewSystem_1.setCanvas(canvas, DirectorSystem_1.getState(DirectorData_1.DirectorData));
+};
+exports.getCanvasLeft = function (canvas) {
+    return ViewSystem_1.getX(canvas);
+};
+exports.setCanvasLeft = function (canvas, x) {
+    ViewSystem_1.setX(x, canvas).run();
+};
+exports.getCanvasTop = function (canvas) {
+    return ViewSystem_1.getY(canvas);
+};
+exports.setCanvasTop = function (canvas, y) {
+    ViewSystem_1.setY(y, canvas).run();
+};
+exports.getCanvasWidth = function (canvas) {
+    return ViewSystem_1.getWidth(canvas);
+};
+exports.setCanvasWidth = function (canvas, width) {
+    ViewSystem_1.setWidth(width, canvas).run();
+};
+exports.getCanvasHeight = function (canvas) {
+    return ViewSystem_1.getHeight(canvas);
+};
+exports.setCanvasHeight = function (canvas, height) {
+    ViewSystem_1.setHeight(height, canvas).run();
+};
+exports.getCanvasStyleWidth = function (canvas) {
+    return ViewSystem_1.getStyleWidth(canvas);
+};
+exports.setCanvasStyleWidth = function (canvas, width) {
+    ViewSystem_1.setStyleWidth(width, canvas).run();
+};
+exports.getCanvasStyleHeight = function (canvas) {
+    return ViewSystem_1.getStyleHeight(canvas);
+};
+exports.setCanvasStyleHeight = function (canvas, height) {
+    ViewSystem_1.setStyleHeight(height, canvas).run();
+};
 //# sourceMappingURL=View.js.map

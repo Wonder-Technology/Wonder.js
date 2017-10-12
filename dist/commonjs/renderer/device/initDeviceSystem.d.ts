@@ -1,2 +1,2 @@
 export declare var initDevice: any;
-export declare var createCanvas: any;
+export declare const createCanvas: any;

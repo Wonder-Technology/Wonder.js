@@ -1,12 +1,12 @@
 import { isNotUndefined, isUndefined } from "./JudgeUtils";
 
-export var deleteVal = (key: number, arr: Array<any>) => arr[key] = void 0;
+export const deleteVal = (key: number, arr: Array<any>) => arr[key] = void 0;
 
-export var isNotValidVal = (val: any) => isUndefined(val);
+export const isNotValidVal = (val: any) => isUndefined(val);
 
-export var isValidVal = (val: any) => isNotUndefined(val);
+export const isValidVal = (val: any) => isNotUndefined(val);
 
-export var deleteBySwap = (index: number, lastIndex: number, array: Array<any>) => {
+export const deleteBySwap = (index: number, lastIndex: number, array: Array<any>) => {
     if (lastIndex === -1) {
         return null;
     }
@@ -16,7 +16,7 @@ export var deleteBySwap = (index: number, lastIndex: number, array: Array<any>) 
     array.pop();
 }
 
-export var hasDuplicateItems = (arr: Array<any>) => {
+export const hasDuplicateItems = (arr: Array<any>) => {
     var noRepeatArr = [],
         hasRepeat: boolean = false;
 
@@ -37,7 +37,7 @@ export var hasDuplicateItems = (arr: Array<any>) => {
     return hasRepeat;
 }
 
-var _contain = (arr: Array<any>, item: any): boolean => {
+const _contain =(arr: Array<any>, item: any): boolean => {
     var c: any = null;
 
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -55,7 +55,7 @@ var _contain = (arr: Array<any>, item: any): boolean => {
     return false;
 }
 
-export var removeDuplicateItems = (arr: Array<any>) => {
+export const removeDuplicateItems = (arr: Array<any>) => {
     var resultArr = [];
 
     for (let ele of arr) {
@@ -72,14 +72,30 @@ export var removeDuplicateItems = (arr: Array<any>) => {
     return resultArr;
 }
 
-export var removeItem = (arr: Array<any>, item: any) => {
+export const removeItem = (arr: Array<any>, item: any) => {
     return filter(arr, (ele) => {
         return ele !== item;
     });
 }
 
-export var filter = (arr: Array<any>, func: (item: any) => boolean) => {
+export const replaceItem = (arr: Array<any>, oldItem: any, newItem:any) => {
+    for(let i = 0, len = arr.length; i < len; i++){
+        let val = arr[i];
+
+        if(val === oldItem){
+            arr[i] = newItem;
+        }
+    }
+
+    return arr;
+}
+
+export const filter = (arr: Array<any>, func: (item: any) => boolean) => {
     let result = [];
+
+    if (isUndefined(arr)) {
+        return result;
+    }
 
     for (let ele of arr) {
         if (func(ele)) {
@@ -90,7 +106,11 @@ export var filter = (arr: Array<any>, func: (item: any) => boolean) => {
     return result;
 }
 
-export var forEach = (arr: Array<any>, func: (item: any, index: number) => void) => {
+export const forEach = (arr: Array<any>, func: (item: any, index: number) => void) => {
+    if (isUndefined(arr)) {
+        return;
+    }
+
     for (let i = 0, len = arr.length; i < len; i++) {
         func(arr[i], i);
     }

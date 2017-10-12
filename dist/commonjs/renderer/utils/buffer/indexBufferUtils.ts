@@ -1,6 +1,6 @@
 import { isBufferExist } from "./bufferUtils";
 
-export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndices: Function, GeometryWorkerData: any, IndexBufferDataFromSystem: any) => {
+export const getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndices: Function, GeometryWorkerData: any, IndexBufferDataFromSystem: any) => {
     var buffers = IndexBufferDataFromSystem.buffers,
         buffer = buffers[geometryIndex];
 
@@ -17,7 +17,7 @@ export var getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: number
     return buffer;
 }
 
-var _initBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, buffer: WebGLBuffer, IndexBufferDataFromSystem: any) => {
+const _initBuffer =(gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, buffer: WebGLBuffer, IndexBufferDataFromSystem: any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -25,10 +25,10 @@ var _initBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, b
     _resetBindedBuffer(gl, IndexBufferDataFromSystem);
 }
 
-var _resetBindedBuffer = (gl: WebGLRenderingContext, IndexBufferDataFromSystem: any) => {
+const _resetBindedBuffer =(gl: WebGLRenderingContext, IndexBufferDataFromSystem: any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 }
 
-export var initData = (IndexBufferDataFromSystem: any) => {
+export const initData = (IndexBufferDataFromSystem: any) => {
     IndexBufferDataFromSystem.buffers = [];
 }

@@ -1,6 +1,6 @@
 //todo dispose gbuffer(textures...)
 
-export var init = (gl: any, GBufferData: any) => {
+export const init = (gl: any, GBufferData: any) => {
     //todo support pass emission color in gbuffer or not in
 
     var gBuffer = gl.createFramebuffer();
@@ -27,7 +27,7 @@ export var init = (gl: any, GBufferData: any) => {
     GBufferData.depthTexture = depthTexture;
 }
 
-var _createPositionTarget = (gl: any) => {
+const _createPositionTarget =(gl: any) => {
     var positionTarget = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, positionTarget);
@@ -43,7 +43,7 @@ var _createPositionTarget = (gl: any) => {
     return positionTarget;
 }
 
-var _createNormalTarget = (gl: any) => {
+const _createNormalTarget =(gl: any) => {
     //todo use rbg16F?
     // (should use EXT_color_buffer_half_float extension)
     // refer to https://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float/
@@ -61,7 +61,7 @@ var _createNormalTarget = (gl: any) => {
     return normalTarget;
 }
 
-var _createColorTarget = (gl: any) => {
+const _createColorTarget =(gl: any) => {
     var colorTarget = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, colorTarget);
@@ -76,7 +76,7 @@ var _createColorTarget = (gl: any) => {
     return colorTarget;
 }
 
-var _createDepthTexture = (gl: any) => {
+const _createDepthTexture =(gl: any) => {
     var depthTexture = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, depthTexture);
@@ -91,7 +91,7 @@ var _createDepthTexture = (gl: any) => {
     return depthTexture;
 }
 
-export var bindGBufferTargets = (gl: any, GBufferData: any) => {
+export const bindGBufferTargets = (gl: any, GBufferData: any) => {
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, GBufferData.positionTarget);
     gl.activeTexture(gl.TEXTURE1);
@@ -101,7 +101,7 @@ export var bindGBufferTargets = (gl: any, GBufferData: any) => {
     gl.activeTexture(gl.TEXTURE3);
 }
 
-export var sendGBufferTargetData = (gl: any, lightPassProgram: WebGLProgram) => {
+export const sendGBufferTargetData = (gl: any, lightPassProgram: WebGLProgram) => {
     var positionBufferLocation = gl.getUniformLocation(lightPassProgram, "u_positionBuffer"),
         normalBufferLocation = gl.getUniformLocation(lightPassProgram, "u_normalBuffer"),
         colorBufferLocation = gl.getUniformLocation(lightPassProgram, "u_colorBuffer");
@@ -111,12 +111,12 @@ export var sendGBufferTargetData = (gl: any, lightPassProgram: WebGLProgram) => 
     gl.uniform1i(colorBufferLocation, 2);
 }
 
-export var bindGBuffer = (gl: any, GBufferData: any) => {
+export const bindGBuffer = (gl: any, GBufferData: any) => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, GBufferData.gBuffer);
 }
 
-export var unbindGBuffer = (gl: any) => {
+export const unbindGBuffer = (gl: any) => {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
-export var getNewTextureUnitIndex = () => 3;
+export const getNewTextureUnitIndex = () => 3;

@@ -4,7 +4,7 @@ import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDe
 import { expect } from "wonder-expect.js";
 import { chain, compose, map } from "../../utils/functionalUtils";
 import { createGL, getGL, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerSystem, setScreen as setScreenFromDeviceManagerSystem } from "./DeviceManagerSystem";
-import { createGL as createGLWorker, getViewportData, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem, setContextConfig, setPixelRatio, setScreen as setScreenFromDeviceManagerWorkerSystem, setViewport } from "../worker/both_file/device/DeviceManagerWorkerSystem";
+import { createGL as createGLWorker, setCanvasPixelRatio as setCanvasPixelRatioFromDeviceManagerWorkerSystem, setContextConfig, setPixelRatio, setScreen as setScreenFromDeviceManagerWorkerSystem, setViewportToState, getViewportData } from "../worker/both_file/device/DeviceManagerWorkerSystem";
 import { DeviceManagerData } from "./DeviceManagerData";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import { setCanvas } from "../../structure/ViewSystem";
@@ -16,9 +16,9 @@ export var initDevice = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry(function (contextConfig, state, configState, detect, DomQuery, canvas) {
         return IO.of(function () {
-            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(), viewportData = getViewportData(screenData, state);
+            var screenData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(), viewportData = getViewportData(screenData);
             createGLWorker(canvas, getRenderWorker(WorkerInstanceData), contextConfig, viewportData).run();
-            return compose(setCanvas(canvas), setContextConfig(contextConfig), setViewport(viewportData), setPixelRatio(setCanvasPixelRatioFromDeviceManagerWorkerSystem(configState.get("useDevicePixelRatio"), canvas).run()))(state);
+            return compose(setCanvas(canvas), setContextConfig(contextConfig), setViewportToState(viewportData), setPixelRatio(setCanvasPixelRatioFromDeviceManagerWorkerSystem(configState.get("useDevicePixelRatio"), canvas).run()))(state);
         });
     });
 }

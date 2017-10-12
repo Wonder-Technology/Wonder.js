@@ -9,10 +9,10 @@ import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 export class CameraController extends Component {
 }
 
-export var createCameraController = () => {
+export const createCameraController = () => {
     return create(CameraControllerData);
 }
 
-export var getCameraControllerGameObject = (component: CameraController) => {
+export const getCameraControllerGameObject = (component: CameraController) => {
     return getGameObject(component.index, CameraControllerData);
 }

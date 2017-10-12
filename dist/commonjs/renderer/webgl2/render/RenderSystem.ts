@@ -15,9 +15,9 @@ import { RenderCommandBufferForDrawData } from "../../utils/worker/render_file/t
 import { IWebGL2DrawDataMap } from "../utils/worker/render_file/interface/IUtils";
 import { DeferDrawDataMap } from "../utils/worker/render_file/type/utilsType";
 
-export var init = initUtils;
+export const init = initUtils;
 
-export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, renderCommandBufferForDrawData: RenderCommandBufferForDrawData) => {
+export const render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, renderCommandBufferForDrawData: RenderCommandBufferForDrawData) => {
     var {
             DeviceManagerDataFromSystem
         } = drawDataMap,
@@ -28,6 +28,6 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
     return state;
 })
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, GLSLSenderData: any, GeometryData: any, VaoData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, ProgramData, GLSLSenderData, GeometryData, VaoData);
+export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData: any, GLSLSenderData: any, GeometryData: any, VaoData: any) => sendAttributeDataUtils(gl, shaderIndex, geometryIndex, ProgramData, GLSLSenderData, GeometryData, VaoData);
 
 

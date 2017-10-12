@@ -1,23 +1,30 @@
 import { Map } from "immutable";
 import { ScreenData } from "../../../type/messageDataType";
 import { ESide } from "../../../enum/ESide";
-export declare var createGL: any;
-export declare var setContextConfig: any;
-export declare var getGL: (DeviceManagerDataFromSystem: any, state: Map<any, any>) => WebGLRenderingContext;
-export declare var setGL: any;
-export declare var setPixelRatio: any;
-export declare var getViewport: (state: Map<any, any>) => any;
-export declare var setViewport: any;
-export declare var getViewportData: (screenData: ScreenData, state: Map<any, any>) => {
+export declare const createGL: any;
+export declare const setContextConfig: any;
+export declare const getGL: (DeviceManagerDataFromSystem: any, state?: Map<any, any>) => WebGLRenderingContext;
+export declare const setGL: any;
+export declare const setPixelRatio: any;
+export declare const getViewport: (state: Map<any, any>) => any;
+export declare const setViewportToState: any;
+export declare const getViewportData: (screenData: ScreenData) => {
     x: number;
     y: number;
     width: number;
     height: number;
 };
-export declare var setViewportOfGL: any;
-export declare var setScreen: any;
-export declare var setCanvasPixelRatio: any;
-export declare var clear: (gl: WebGLRenderingContext, DeviceManagerDataFromSystem: any) => void;
-export declare var setColorWrite: (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => void;
-export declare var setSide: (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataFromSystem: any) => void;
-export declare var initData: (DeviceManagerDataFromSystem: any) => void;
+export declare const setViewportOfGL: any;
+export declare const setScreen: any;
+export declare const setCanvasPixelRatio: any;
+export declare const buildViewportData: (x: number, y: number, width: number, height: number) => {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
+export declare const setClearColor: (gl: WebGLRenderingContext, colorArr4: number[], DeviceManagerWorkerData: any) => void;
+export declare const clear: (gl: WebGLRenderingContext, DeviceManagerDataFromSystem: any) => void;
+export declare const setColorWrite: (gl: WebGLRenderingContext, writeRed: boolean, writeGreen: boolean, writeBlue: boolean, writeAlpha: boolean, DeviceManagerDataFromSystem: any) => void;
+export declare const setSide: (gl: WebGLRenderingContext, side: ESide, DeviceManagerDataFromSystem: any) => void;
+export declare const initData: (DeviceManagerDataFromSystem: any) => void;

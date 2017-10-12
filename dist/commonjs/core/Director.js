@@ -20,7 +20,7 @@ var SceneSystem_1 = require("./entityObject/scene/SceneSystem");
 var GeometrySystem_1 = require("../component/geometry/GeometrySystem");
 var WebGLRenderSystem_1 = require("../renderer/core/WebGLRenderSystem");
 var GeometryData_1 = require("../component/geometry/GeometryData");
-var MaterialSystem_1 = require("../component/material/MaterialSystem");
+var AllMaterialSystem_1 = require("../component/material/AllMaterialSystem");
 var MeshRendererSystem_1 = require("../component/renderer/MeshRendererSystem");
 var TagSystem_1 = require("../component/tag/TagSystem");
 var Tag_1 = require("../component/tag/Tag");
@@ -31,7 +31,6 @@ var PerspectiveCameraData_1 = require("../component/camera/PerspectiveCameraData
 var CameraData_1 = require("../component/camera/CameraData");
 var CameraControllerData_1 = require("../component/camera/CameraControllerData");
 var CameraController_1 = require("../component/camera/CameraController");
-var DeviceManager_1 = require("../renderer/device/DeviceManager");
 var Scheduler_1 = require("./Scheduler");
 var AmbientLight_1 = require("../component/light/AmbientLight");
 var DirectionLight_1 = require("../component/light/DirectionLight");
@@ -60,18 +59,17 @@ var Director = (function () {
     }
     Director.getInstance = function () { };
     ;
-    Object.defineProperty(Director.prototype, "view", {
-        get: function () {
-            return DeviceManager_1.DeviceManager.getInstance().view;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Director.prototype.initWhenCreate = function () {
         this.scheduler = Scheduler_1.Scheduler.create();
     };
     Director.prototype.start = function () {
         this._startLoop();
+    };
+    Director.prototype.init = function () {
+        DirectorSystem_1.setState(this._init(DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData);
+    };
+    Director.prototype.loopBody = function (time) {
+        DirectorSystem_1.setState(this._loopBody(time, DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData).run();
     };
     Director.prototype._startLoop = function () {
         var self = this;
@@ -79,13 +77,13 @@ var Director = (function () {
             .ignoreElements()
             .concat(this._buildLoopStream())
             .subscribe(function (time) {
-            DirectorSystem_1.setState(self._loopBody(time, DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData).run();
+            self.loopBody(time);
         });
     };
     Director.prototype._buildInitStream = function () {
         var _this = this;
         return Operator_1.callFunc(function () {
-            DirectorSystem_1.setState(_this._init(DirectorSystem_1.getState(DirectorData_1.DirectorData)), DirectorData_1.DirectorData);
+            _this.init();
         }, this);
     };
     Director.prototype._init = function (state) {
@@ -124,9 +122,12 @@ var Director = (function () {
     return Director;
 }());
 exports.Director = Director;
-MaterialSystem_1.addAddComponentHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
-MaterialSystem_1.addDisposeHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
-MaterialSystem_1.addInitHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
+exports.isDirectorInit = function () {
+    return DirectorSystem_1.isInit(DirectorData_1.DirectorData);
+};
+AllMaterialSystem_1.addAddComponentHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
+AllMaterialSystem_1.addDisposeHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
+AllMaterialSystem_1.addInitHandle(BasicMaterial_1.BasicMaterial, LightMaterial_1.LightMaterial);
 MeshRendererSystem_1.addAddComponentHandle(MeshRenderer_1.MeshRenderer);
 MeshRendererSystem_1.addDisposeHandle(MeshRenderer_1.MeshRenderer);
 TagSystem_1.addAddComponentHandle(Tag_1.Tag);

@@ -1,6 +1,6 @@
 import { EScreenSize } from "../renderer/device/EScreenSize";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
-export declare var setConfig: (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {canvasId, isTest, screenSize, useDevicePixelRatio, contextConfig, workerConfig}: {
+export declare const setConfig: (closeContractTest: boolean, InitConfigData: any, WorkerDetectData: any, WorkerInstanceData: any, WebGLDetectData: any, {canvasId, isTest, screenSize, useDevicePixelRatio, contextConfig, workerConfig}: {
     canvasId?: string;
     isTest?: boolean;
     screenSize?: EScreenSize;

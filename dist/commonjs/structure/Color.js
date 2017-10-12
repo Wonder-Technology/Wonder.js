@@ -23,6 +23,7 @@ var Color = (function () {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
         this._colorArr3Cache = null;
+        this._colorArr4Cache = null;
     }
     Color_1 = Color;
     Color.create = function (colorVal) {
@@ -107,8 +108,17 @@ var Color = (function () {
     Color.prototype.toArray3 = function () {
         return [this.r, this.g, this.b];
     };
+    Color.prototype.toArray4 = function () {
+        return [this.r, this.g, this.b, this.a];
+    };
     Color.prototype.toString = function () {
-        return this._colorString;
+        if (this._colorString !== null) {
+            return this._colorString;
+        }
+        return "#" + ("000000" + this._getHex().toString(16)).slice(-6);
+    };
+    Color.prototype._getHex = function () {
+        return (this.r * 255) << 16 ^ (this.g * 255) << 8 ^ (this.b * 255) << 0;
     };
     Color.prototype.clone = function () {
         return Color_1.create(this._colorString);
@@ -177,6 +187,7 @@ var Color = (function () {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
         this._colorArr3Cache = null;
+        this._colorArr4Cache = null;
     };
     __decorate([
         contract_1.ensureGetter(function (r) {
@@ -233,6 +244,15 @@ var Color = (function () {
             this._colorArr3Cache = result;
         })
     ], Color.prototype, "toArray3", null);
+    __decorate([
+        cache_1.cache(function () {
+            return this._colorArr4Cache !== null;
+        }, function () {
+            return this._colorArr4Cache;
+        }, function (result) {
+            this._colorArr4Cache = result;
+        })
+    ], Color.prototype, "toArray4", null);
     __decorate([
         contract_1.requireCheck(function (colorVal) {
             contract_1.it("color should be #xxxxxx", function () {

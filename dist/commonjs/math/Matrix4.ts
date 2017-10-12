@@ -1,7 +1,7 @@
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { Matrix3 } from "./Matrix3";
 import { Log } from "../utils/Log";
-import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "./Vector3";
 import { Vector4 } from "./Vector4";
@@ -474,7 +474,9 @@ export class Matrix4 {
     // }
 
     @requireCheck(function(left: number, right: number, bottom: number, top: number, near: number, far: number) {
-        assert(left !== right && bottom !== top && near !== far, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+        it("frustum should not be null", () => {
+            expect(left !== right && bottom !== top && near !== far).true;
+        });
     })
     public setOrtho(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
         var e = this.values,
@@ -524,10 +526,15 @@ export class Matrix4 {
      * @return this
      */
     @requireCheck(function(fovy: number, aspect: number, near: number, far: number) {
-        assert(near !== far && aspect !== 0, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-        assert(near > 0, Log.info.FUNC_MUST("near", "> 0"));
-        assert(far > 0, Log.info.FUNC_MUST("far", "> 0"));
-
+        it("frustum should not be null", () => {
+            expect(near !== far && aspect !== 0).true;
+        });
+        it("near should > 0", () => {
+            expect(near).gt(0);
+        });
+        it("far should > 0", () => {
+            expect(far).gt(0);
+        });
     })
     public setPerspective(fovy: number, aspect: number, near: number, far: number): Matrix4 {
         var e = null,

@@ -20,6 +20,9 @@ exports.Texture = Texture;
 exports.createTexture = function () {
     return TextureSystem_1.create(TextureData_1.TextureData);
 };
+exports.initTexture = function (texture) {
+    TextureSystem_1.initTexture(DeviceManagerSystem_1.getGL(DeviceManagerData_1.DeviceManagerData), texture.index, TextureData_1.TextureData);
+};
 exports.disposeTexture = contract_1.requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);
 }, function (texture) {

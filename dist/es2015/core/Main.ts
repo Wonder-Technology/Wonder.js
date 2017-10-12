@@ -1,10 +1,10 @@
 import {
-    init as initMain, initData as initDataMainSystem, setConfig
+    init as initMain, initData, initData as initDataMainSystem, setConfig
 } from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
 import { Map } from "immutable";
 import { DirectorData } from "./DirectorData";
-import { getState, setState } from "./DirectorSystem";
+import { getState, initData as initDirectorData, setState } from "./DirectorSystem";
 import { it, requireCheck } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
@@ -28,6 +28,8 @@ export class Main {
     private static _configState: Map<any, any> = null;
 
     public static setConfig(configState: MainConfigData) {
+        initDirectorData(DirectorData);
+
         this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, configState).run();
 
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
@@ -47,4 +49,9 @@ export class Main {
 
         return this;
     }
+}
+
+export const initAllData = () => {
+    initDirectorData(DirectorData);
+    initData();
 }

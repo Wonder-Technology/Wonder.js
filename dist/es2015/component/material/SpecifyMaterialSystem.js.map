@@ -1,1 +1,1 @@
-{"version":3,"file":"SpecifyMaterialSystem.js","sourceRoot":"","sources":["../../../../src/component/material/SpecifyMaterialSystem.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAI,QAAQ,GAAG,UAAC,UAAkB,EAAE,mBAAwB;IAC/D,mBAAmB,CAAC,KAAK,GAAG,UAAU,CAAC;AAC3C,CAAC,CAAA"}
+{"version":3,"file":"SpecifyMaterialSystem.js","sourceRoot":"","sources":["../../../../src/component/material/SpecifyMaterialSystem.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,IAAM,QAAQ,GAAG,UAAC,UAAkB,EAAE,mBAAwB;IACjE,mBAAmB,CAAC,KAAK,GAAG,UAAU,CAAC;AAC3C,CAAC,CAAA"}

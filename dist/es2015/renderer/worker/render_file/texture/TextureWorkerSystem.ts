@@ -4,24 +4,34 @@ import {
 import {
     createTypeArrays, getBufferCount,
     initTextures as initTexturesUtils, needUpdate as needUpdateUtils, update as updateUtils,
-    bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY
+    bindToUnit as bindToUnitUtils, disposeSourceMap, disposeGLTexture, getFlipY, initTexture
 } from "../../../utils/worker/render_file/texture/textureUtils";
-import { ImageSrcIndexData, TextureDisposeWorkerData } from "../../../type/messageDataType";
+import { ImageArrayBufferIndexSizeData, TextureDisposeWorkerData } from "../../../type/messageDataType";
 import { fromArray, fromPromise } from "wonder-frp/dist/es2015/global/Operator";
 import { firefox, chrome } from "bowser";
+import { forEach, hasDuplicateItems } from "../../../../utils/arrayUtils";
+import { ensureFunc, it } from "../../../../definition/typescript/decorator/contract";
+import { expect } from "wonder-expect.js";
 
-export var bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
+export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, textureIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     bindToUnitUtils(gl, unitIndex, textureIndex, TextureCacheWorkerData, TextureWorkerData, GPUDetectWorkerData, isCached, addActiveTexture);
 }
 
-export var initTextures = initTexturesUtils;
+export const initTextures = initTexturesUtils;
 
-export var needUpdate = needUpdateUtils;
+export const initNeedInitTextures = (gl:WebGLRenderingContext, needInitedTextureIndexArr:Array<number>, TextureWorkerData:any) => {
+    forEach(needInitedTextureIndexArr, (textureIndex:number) => {
+        initTexture(gl, textureIndex, TextureWorkerData);
+    });
+}
 
-export var update = (gl: WebGLRenderingContext, textureIndex: number, TextureWorkerData: any) => {
+export const needUpdate = needUpdateUtils;
+
+export const update = (gl: WebGLRenderingContext, textureIndex: number, TextureWorkerData: any) => {
     updateUtils(gl, textureIndex, _setFlipY, TextureWorkerData);
 }
-var _setFlipY = null;
+
+var _setFlipY =null;
 
 if (chrome) {
     _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
@@ -37,7 +47,7 @@ else if (firefox) {
     }
 }
 
-export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
+export const disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, gl: WebGLRenderingContext, TextureCacheWorkerData: any, TextureWorkerData: any, GPUDetectWorkerData: any) => {
     for (let {
         sourceIndex,
         lastComponentIndex
@@ -47,54 +57,68 @@ export var disposeSourceAndGLTexture = (disposeData: TextureDisposeWorkerData, g
     }
 }
 
-export var setIndex = (index: number, TextureWorkerData: any) => {
+export const setIndex = (index: number, TextureWorkerData: any) => {
     TextureWorkerData.index = index;
 }
 
-export var setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, TextureWorkerData: any) => {
+export const setUniformSamplerNameMap = (uniformSamplerNameMap: Array<string>, TextureWorkerData: any) => {
     TextureWorkerData.uniformSamplerNameMap = uniformSamplerNameMap;
 }
 
-export var setSourceMapByImageSrcArrStream = (imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
-    return _convertImageSrcToImageBitmapStream(imageSrcIndexArr, TextureWorkerData)
-        .do((imageBitmap: ImageBitmap) => {
-            TextureWorkerData.sourceMap.push(imageBitmap)
-        });
+export const addSourceMapByImageDataStream = (imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
+    return _convertImageSrcToImageBitmapStream(imageArrayBufferIndexSizeDataArr, TextureWorkerData)
+    /*!
+    .do here not be triggered! but it's triggered if be moved to 100 line number! why? wonder-frp bug?
+    */
+        // .do((imageBitmap: ImageBitmap) => {
+            // _addSource(imageBitmap, TextureWorkerData);
+        // });
 }
 
-var _convertImageSrcToImageBitmapStream = (imageSrcIndexArr: Array<ImageSrcIndexData>, TextureWorkerData: any) => {
-    return fromArray(imageSrcIndexArr).flatMap(({ src, index }) => {
-        return fromPromise(fetch(src))
-            .flatMap((response: any) => {
-                return fromPromise(response.blob());
-            })
-            .flatMap((blob: Blob) => {
-                var flipY = getFlipY(index, TextureWorkerData);
-
-                return fromPromise(_createImageBitmap(blob, {
-                    imageOrientation: flipY === true ? "flipY" : "none"
-                }));
-            });
+const _addSource = ensureFunc((sourceMap:Array<ImageBitmap>, imageBitmap:ImageBitmap, TextureWorkerData:any) => {
+    it("should not has duplicate one", () => {
+        expect(hasDuplicateItems(sourceMap)).false;
     });
+    it("sourceMap.length should equal texture count", () => {
+        expect(sourceMap.length).equal(TextureWorkerData.index);
+    });
+}, (imageBitmap:ImageBitmap, TextureWorkerData:any) => {
+    TextureWorkerData.sourceMap.push(imageBitmap);
+
+    return TextureWorkerData.sourceMap;
+})
+
+const _convertImageSrcToImageBitmapStream =(imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
+    return fromArray(imageArrayBufferIndexSizeDataArr)
+        .flatMap(({ arrayBuffer, width, height, index }) => {
+            return fromPromise(_createImageBitmap(new ImageData(new Uint8ClampedArray(arrayBuffer), width, height), index, TextureWorkerData))
+                .do((imageBitmap: ImageBitmap) => {
+                    _addSource(imageBitmap, TextureWorkerData);
+                });
+        });
 }
 
 var _createImageBitmap = null;
 
 if (chrome) {
-    _createImageBitmap = (blob: Blob, options: any) => {
-        return createImageBitmap(blob, options);
+    _createImageBitmap = (imageData:ImageData, index:number, TextureWorkerData:any) => {
+        var flipY = getFlipY(index, TextureWorkerData);
+
+        return createImageBitmap(imageData, {
+            imageOrientation: flipY === true ? "flipY" : "none"
+        });
     }
 }
 else if (firefox) {
-    _createImageBitmap = (blob: Blob, options: any) => {
+    _createImageBitmap = (imageData:ImageData, index:number, TextureWorkerData:any) => {
         /*!
         firefox not support options
          */
-        return createImageBitmap(blob);
+        return createImageBitmap(imageData);
     }
 }
 
-export var initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerData: any) => {
+export const initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerData: any) => {
     initTextureCacheData(TextureCacheWorkerData);
 
     TextureWorkerData.index = 0;
@@ -106,7 +130,7 @@ export var initData = (buffer: any, TextureCacheWorkerData: any, TextureWorkerDa
     _initBufferWorkerData(buffer, TextureWorkerData);
 }
 
-var _initBufferWorkerData = (buffer: any, TextureWorkerData: any) => {
+const _initBufferWorkerData =(buffer: any, TextureWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), TextureWorkerData);
 }
 

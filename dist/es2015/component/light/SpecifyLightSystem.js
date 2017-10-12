@@ -49,7 +49,7 @@ export var createDefaultColor = function () {
     return Color.create().setColorByNum("#ffffff");
 };
 export var getPosition = function (index, ThreeDTransformData, GameObjectData, SpecifyLightData) {
-    return getThreeDTransformPosition(getTransform(getGameObject(index, SpecifyLightData), GameObjectData), ThreeDTransformData);
+    return getThreeDTransformPosition(getTransform(getGameObject(index, SpecifyLightData).uid, GameObjectData), ThreeDTransformData);
 };
 export var getGameObject = function (index, SpecifyLightData) {
     return getComponentGameObject(SpecifyLightData.gameObjectMap, index);
@@ -60,12 +60,11 @@ export var markDirty = function (index, isDirtys) {
 export var bindChangePositionEvent = function (SpecifyLightData, state) {
     var eventName = "changePosition";
     var _loop_1 = function (i, count) {
-        _markPositionDirty = function () {
+        var _markPositionDirty = function () {
             markDirty(i, SpecifyLightData.isPositionDirtys);
         };
         registerEvent(eventName, _markPositionDirty);
     };
-    var _markPositionDirty;
     for (var i = 0, count = SpecifyLightData.count; i < count; i++) {
         _loop_1(i, count);
     }

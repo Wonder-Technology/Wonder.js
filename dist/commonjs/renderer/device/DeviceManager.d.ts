@@ -1,9 +1,5 @@
-import { View } from "../../structure/View";
-export declare class DeviceManager {
-    static getInstance(): any;
-    readonly gl: WebGLRenderingContext;
-    readonly viewport: any;
-    view: View;
-    private constructor();
-}
-export declare var setDeviceManagerGL: (gl: WebGLRenderingContext) => any;
+export declare const getDeviceManagerGL: () => WebGLRenderingContext;
+export declare const setDeviceManagerGL: (gl: WebGLRenderingContext) => any;
+export declare const getDeviceManagerViewport: () => any;
+export declare const getDeviceManagerClearColor: () => any;
+export declare var setDeviceManagerViewport: any, setDeviceManagerClearColor: any;

@@ -11,14 +11,14 @@ export var getParent = requireCheckFunc(function (uid, ThreeDTransformData) {
 }, function (uid, ThreeDTransformData) {
     return ThreeDTransformData.parentMap[uid];
 });
-export var setParent = requireCheckFunc(function (transform, parent, ThreeDTransformData) {
+export var setParent = requireCheckFunc(function (parent, child, ThreeDTransformData) {
     it("parent should not be self", function () {
         if (parent !== null) {
-            expect(_isTransformEqual(transform, parent)).false;
+            expect(_isTransformEqual(child, parent)).false;
         }
     });
-}, function (transform, parent, ThreeDTransformData) {
-    var index = transform.index, uid = transform.uid, parentIndexInArrayBuffer = null, currentParent = getParent(uid, ThreeDTransformData), isCurrentParentExisit = isParentExist(currentParent);
+}, function (parent, child, ThreeDTransformData) {
+    var index = child.index, uid = child.uid, parentIndexInArrayBuffer = null, currentParent = getParent(uid, ThreeDTransformData), isCurrentParentExisit = isParentExist(currentParent);
     if (parent === null) {
         if (isCurrentParentExisit) {
             _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
@@ -33,7 +33,7 @@ export var setParent = requireCheckFunc(function (transform, parent, ThreeDTrans
         }
         _removeHierarchyFromParent(currentParent, uid, ThreeDTransformData);
     }
-    _addToParent(uid, transform, parent, ThreeDTransformData);
+    _addToParent(uid, child, parent, ThreeDTransformData);
     addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 });
 var _isTransformEqual = function (tra1, tra2) { return tra1.uid === tra2.uid; };

@@ -1,1 +1,1 @@
-export declare var buildGLSLSource: Function;
+export declare const buildGLSLSource: Function;
