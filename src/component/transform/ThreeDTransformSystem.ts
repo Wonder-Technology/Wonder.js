@@ -1,6 +1,6 @@
 import { ThreeDTransformData } from "./ThreeDTransformData";
 import { ensureFunc, it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
-import { BatchTransformData, BatchTypeArrayTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
+import { BatchTransformData, IThreeDTransform, ThreeDTransform } from "./ThreeDTransform";
 import { Map as MapImmutable } from "immutable";
 import { Matrix4 } from "../../math/Matrix4";
 import { Vector3 } from "../../math/Vector3";
@@ -22,13 +22,13 @@ import {
     setParent as setParentHierarchy
 } from "./hierarchySystem";
 import {
-    getMatrix4DataIndexInArrayBuffer, getVector3DataIndexInArrayBuffer, setDefaultTypeArrData,
+    getMatrix4DataIndexInArrayBuffer, getVector3DataIndexInArrayBuffer,
     setLocalPositionData, setPositionData, setTransformDataInTypeArr,
     swap
 } from "./operateDataSystem";
 import { getStartIndexInArrayBuffer } from "./utils";
 import { checkTransformShouldAlive } from "./contractUtils";
-import { setBatchData as setBatchDataSystem } from "./batchSystem";
+import { setBatchDatas as setBatchDatasSystem } from "./batchSystem";
 import {
     getLocalPositionCache, getLocalToWorldMatrixCache, getNormalMatrixCache, getPositionCache, setLocalPositionCache,
     setLocalToWorldMatrixCache, setNormalMatrixCache, setPositionCache
@@ -45,8 +45,6 @@ import { expect } from "wonder-expect.js";
 import { Matrix3 } from "../../math/Matrix3";
 import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 import { triggerEvent } from "../../event/EventManagerSystem";
-import curry from "wonder-lodash/curry";
-import { createTempData, setTransformMap } from "./tempDataSystem";
 
 export const addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
@@ -65,7 +63,7 @@ export const create = ensureFunc((transform: ThreeDTransform, ThreeDTransformDat
     });
 }, (ThreeDTransformData: any) => {
     var transform = new ThreeDTransform(),
-        index = generateNotUsedIndexInArrayBuffer(ThreeDTransformData),
+        index = _generateIndexInArrayBuffer(ThreeDTransformData),
         uid = _buildUId(ThreeDTransformData);
 
     transform.index = index;
@@ -73,11 +71,11 @@ export const create = ensureFunc((transform: ThreeDTransform, ThreeDTransformDat
 
     ThreeDTransformData.count += 1;
 
-    createTempData(uid, ThreeDTransformData);
-    setTransformMap(index, transform, ThreeDTransformData);
+    _createTempData(uid, ThreeDTransformData);
+    _setTransformMap(index, transform, ThreeDTransformData);
     setChildren(uid, [], ThreeDTransformData);
 
-    setDefaultTypeArrData(index, ThreeDTransformData);
+    _setDefaultTypeArrData(index, ThreeDTransformData);
 
     ThreeDTransformData.aliveUIdArray.push(uid);
 
@@ -86,6 +84,20 @@ export const create = ensureFunc((transform: ThreeDTransform, ThreeDTransformDat
 
 const _buildUId =(ThreeDTransformData: any) => {
     return ThreeDTransformData.uid++;
+}
+
+const _generateIndexInArrayBuffer =(ThreeDTransformData: any) => {
+    return generateNotUsedIndexInArrayBuffer(ThreeDTransformData);
+}
+
+const _createTempData =(uid: number, ThreeDTransformData: any, ) => {
+    ThreeDTransformData.tempMap[uid] = {
+        position: Vector3.create(),
+        localPosition: Vector3.create(),
+        localToWorldMatrix: Matrix4.create()
+    }
+
+    return ThreeDTransformData;
 }
 
 export const checkShouldAlive = (component: ThreeDTransform, ThreeDTransformData: any) => {
@@ -189,6 +201,8 @@ export const getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, Glo
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
+const _setTransformMap = (index: number, transform: ThreeDTransform, ThreeDTransformData: any) => ThreeDTransformData.transformMap[index] =transform;
+
 export const setPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeDTransformData);
 }, (transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
@@ -204,7 +218,7 @@ export const setPosition = requireCheckFunc((transform: ThreeDTransform, positio
     return addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })
 
-export const setBatchData = (batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => setBatchDataSystem(batchData, GlobalTempData, ThreeDTransformData);
+export const setBatchDatas = (batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => setBatchDatasSystem(batchData, GlobalTempData, ThreeDTransformData);
 
 export const getLocalPosition = requireCheckFunc((transform: ThreeDTransform, ThreeDTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeDTransformData);
@@ -269,6 +283,10 @@ const _disposeFromDirtyList =(index: number, uid: number, GlobalTempData: any, T
     ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 }
 
+
+const _setDefaultTypeArrData =(index: number, ThreeDTransformData: any) => {
+    setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
+}
 
 export const getTempLocalToWorldMatrix = (transform: ThreeDTransform, ThreeDTransformData: any) => _getTempData(transform.uid, ThreeDTransformData).localToWorldMatrix;
 

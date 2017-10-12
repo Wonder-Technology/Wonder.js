@@ -14,8 +14,6 @@ import {
     getMatrix4DataSize, getQuaternionDataSize, getVector3DataSize, setMatrices, setQuaternions,
     setVectors
 } from "../../utils/typeArrayUtils";
-import curry from "wonder-lodash/curry";
-import { forEach } from "../../utils/arrayUtils";
 
 export const swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
@@ -175,9 +173,6 @@ export const moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number,
     return _changeTypeArrData(sourceIndex, targetIndex, _moveToTypeArr, ThreeDTransformData);
 }
 
-export const setDefaultTypeArrData = (index: number, ThreeDTransformData: any) => {
-    setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
-}
 
 export const setTransformDataInTypeArr = (index: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     // export const setTransformDataInTypeArr = (index: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
@@ -192,8 +187,8 @@ export const setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer
     setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
 }
 
-export const setLocalPositionData = (localPosition: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
-    setVectors(ThreeDTransformData.localPositions, localPosition, vec3IndexInArrayBuffer);
+export const setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+    setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
@@ -222,22 +217,6 @@ export const setPositionData = (index: number, parent: ThreeDTransform, vec3Inde
     else {
         setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
     }
-}
-
-export const setLocalPositionTypeArrayData = curry((transforms:Array<ThreeDTransform>, ThreeDTransformData: any, localPositions:Float32Array) => {
-    var targetTypeArray = ThreeDTransformData.localPositions;
-
-    forEach(transforms, ({index}, i:number) => {
-        _setVec3TypeArray(localPositions, targetTypeArray, i * 3, getVector3DataIndexInArrayBuffer(index));
-    });
-
-    return ThreeDTransformData;
-})
-
-const _setVec3TypeArray = (sourceTypeArray:Float32Array, targetTypeArray:Float32Array, sourceIndex:number, targetIndex:number) => {
-    targetTypeArray[targetIndex] = sourceTypeArray[sourceIndex];
-    targetTypeArray[targetIndex + 1] = sourceTypeArray[sourceIndex + 1];
-    targetTypeArray[targetIndex + 2] = sourceTypeArray[sourceIndex + 2];
 }
 
 export const getMatrix4DataIndexInArrayBuffer = (index: number) => index * getMatrix4DataSize();
