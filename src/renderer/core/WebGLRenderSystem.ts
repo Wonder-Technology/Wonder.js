@@ -81,7 +81,7 @@ import { DeferPointLightPassData } from "../webgl2/render/light/defer/light/Defe
 import { DeferAmbientLightPassData } from "../webgl2/render/light/defer/light/DeferAmbientLightPassData";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 import {
-    clearNeedAddedSourceArr, getNeedAddedSourceArr,
+    clearNeedAddedSourceArr, clearNeedInitTextureDataArr, getNeedAddedSourceArr,
     getUniformSamplerNameMap, convertAllSourceMapToImageDataArr
 } from "../texture/TextureSystem";
 
@@ -208,6 +208,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }, transferList);
 
         clearNeedAddedSourceArr(TextureData);
+        //todo need test
+        clearNeedInitTextureDataArr(TextureData);
 
         renderWorker.onmessage = (e) => {
             var data = e.data,
