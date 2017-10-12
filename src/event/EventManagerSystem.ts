@@ -2,7 +2,7 @@
 
 import { forEach } from "../utils/arrayUtils";
 
-const _data ={};
+const _data = {};
 
 export const registerEvent = (eventName: string, func: Function) => {
     if (!_data[eventName]) {

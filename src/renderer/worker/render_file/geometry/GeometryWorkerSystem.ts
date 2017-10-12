@@ -56,7 +56,7 @@ export const updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, 
     _updatePointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-const _updatePointCacheData =(infoList: GeometryWorkerInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+const _updatePointCacheData = (infoList: GeometryWorkerInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     if (infoList === void 0) {
         return;
     }
@@ -88,7 +88,7 @@ export const setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsIn
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-const _setPointCacheData =requireCheckFunc((infoList: GeometryInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+const _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     it("infoList should has no invalid value", () => {
         if (infoList === void 0) {
             return;

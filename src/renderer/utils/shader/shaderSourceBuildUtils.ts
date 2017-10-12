@@ -64,7 +64,7 @@ export const getMaterialShaderLibNameArr = (materialShaderLibConfig: MaterialSha
     return nameArr;
 }
 
-const _execBranch =requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
+const _execBranch = requireCheckFunc((i: IShaderLibItem, materialIndex: number, initShaderFuncDataMap: any, initShaderDataMap: InitShaderDataMap) => {
     it("branch should exist", () => {
         expect(i.branch).exist;
     });
@@ -72,7 +72,7 @@ const _execBranch =requireCheckFunc((i: IShaderLibItem, materialIndex: number, i
     return i.branch(materialIndex, initShaderFuncDataMap, initShaderDataMap);
 })
 
-const _isShaderLibNameExist =(name: string) => !!name;
+const _isShaderLibNameExist = (name: string) => !!name;
 
 export const getEmptyFuncGLSLConfig = () => {
     return {
@@ -131,7 +131,7 @@ export const getFuncGLSLDefineListData = (glslConfig: IGLSLConfig) => {
     return glslConfig.defineList;
 }
 
-const _isInSource =(key: string, source: string) => {
+const _isInSource = (key: string, source: string) => {
     return source.indexOf(key) > -1;
 }
 
@@ -170,7 +170,7 @@ export const generateUniformSource = (materialShaderLibNameArr: Array<string>, s
     return result;
 }
 
-const _generateUniformSourceType =(type: string) => {
+const _generateUniformSourceType = (type: string) => {
     var sourceType: string = null;
 
     switch (type) {

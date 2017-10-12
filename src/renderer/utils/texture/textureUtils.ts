@@ -1,4 +1,4 @@
-export const getImageData = (source: HTMLImageElement, width:number, height:number, DomQuery:any) => {
+export const getImageData = (source: HTMLImageElement, width: number, height: number, DomQuery: any) => {
     var canvas = DomQuery.create("<canvas></canvas>").get(0),
         ctx = null;
 

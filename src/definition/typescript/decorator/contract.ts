@@ -8,9 +8,9 @@ import {
     requireFunc as requireFuncCommonLib
 } from "wonder-commonlib/dist/es2015/typescript/decorator/contract";
 
-const _getCompileIsTest =() => CompileConfig.isCompileTest;
+const _getCompileIsTest = () => CompileConfig.isCompileTest;
 
-const _getRunTimeIsTest =() => {
+const _getRunTimeIsTest = () => {
     if (InitConfigData.isTest === true || InitConfigWorkerData.isTest === true) {
         return true;
     }

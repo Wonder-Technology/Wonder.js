@@ -1,7 +1,7 @@
 import { ClassUtils } from "../utils/ClassUtils";
 import { Component } from "./Component";
 
-const _generateComponentId =() => {
+const _generateComponentId = () => {
     var result = _componentId;
 
     _componentId += 1;
@@ -17,7 +17,7 @@ export const getComponentIdFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 
-const _addComponentId =(componentClassNameArr: Array<string>, table: object) => {
+const _addComponentId = (componentClassNameArr: Array<string>, table: object) => {
     var id = _generateComponentId();
 
     for (let className of componentClassNameArr) {
@@ -25,7 +25,7 @@ const _addComponentId =(componentClassNameArr: Array<string>, table: object) => 
     }
 }
 
-var _componentId =1;
+var _componentId = 1;
 var _table = {};
 
 _addComponentId(["ThreeDTransform"], _table);

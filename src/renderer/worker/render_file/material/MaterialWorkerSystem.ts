@@ -13,7 +13,7 @@ import { MaterialWorkerInitDataList } from "../../../type/dataType";
 import { IMaterialConfig } from "../../../data/material_config_interface";
 import { IShaderLibGenerator } from "../../../data/shaderLib_generator_interface";
 
-export const initMaterial = (index: number, state: Map<any, any>, className: string, MaterialWorkerData:any) => {
+export const initMaterial = (index: number, state: Map<any, any>, className: string, MaterialWorkerData: any) => {
 }
 
 // export const getShaderIndex = (materialIndex: number, MaterialWorkerData: any) => {
@@ -22,7 +22,7 @@ export const initMaterial = (index: number, state: Map<any, any>, className: str
 
 // export const getShaderIndexFromTable = getShaderIndexFromTableUtils;
 
-export const initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList, MaterialWorkerData:any) => {
+export const initNewInitedMaterials = (workerInitList: MaterialWorkerInitDataList, MaterialWorkerData: any) => {
     for (let { index, className } of workerInitList) {
         initMaterial(index, null, className, MaterialWorkerData);
     }

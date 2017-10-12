@@ -17,7 +17,7 @@ export const getOrCreateBuffer = (gl: WebGLRenderingContext, geometryIndex: numb
     return buffer;
 }
 
-const _initBuffer =(gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, buffer: WebGLBuffer, IndexBufferDataFromSystem: any) => {
+const _initBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, buffer: WebGLBuffer, IndexBufferDataFromSystem: any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
@@ -25,7 +25,7 @@ const _initBuffer =(gl: WebGLRenderingContext, data: Uint16Array | Uint32Array, 
     _resetBindedBuffer(gl, IndexBufferDataFromSystem);
 }
 
-const _resetBindedBuffer =(gl: WebGLRenderingContext, IndexBufferDataFromSystem: any) => {
+const _resetBindedBuffer = (gl: WebGLRenderingContext, IndexBufferDataFromSystem: any) => {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 }
 

@@ -98,7 +98,7 @@ export const initGeometry = (index: number, state: Map<any, any>) => {
     setIndices(index, indices, GeometryData);
 }
 
-const _isComputeDataFuncNotExist =(func: Function) => isNotValidMapValue(func);
+const _isComputeDataFuncNotExist = (func: Function) => isNotValidMapValue(func);
 
 export const getVertices = (index: number, GeometryData: any) => {
     return _getPointData(index, GeometryData.vertices, GeometryData.verticesCacheMap, GeometryData.verticesInfoList);
@@ -142,7 +142,7 @@ export const setIndices = requireCheckFunc((index: number, indices: Array<number
     GeometryData.indicesOffset = _setPointData(index, indices, getIndexDataSize(), GeometryData.indices, GeometryData.indicesCacheMap, GeometryData.indicesInfoList, GeometryData.indicesWorkerInfoList, GeometryData.indicesOffset, GeometryData);
 })
 
-const _getPointData =requireCheckFunc((index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
+const _getPointData = requireCheckFunc((index: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: object) => {
     it("infoList[index] should exist", () => {
         expect(infoList[index]).exist;
     });
@@ -162,7 +162,7 @@ const _getPointData =requireCheckFunc((index: number, points: Float32Array | Uin
     return dataArr;
 })
 
-const _setPointData =(index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
+const _setPointData = (index: number, dataArr: Array<number>, dataSize: number, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object, infoList: GeometryInfoList, workerInfoList: GeometryWorkerInfoList, offset: number, GeometryData: any) => {
     var count = dataArr.length,
         startIndex = offset;
 
@@ -181,11 +181,11 @@ const _setPointData =(index: number, dataArr: Array<number>, dataSize: number, p
     return offset;
 }
 
-const _removeCache =(index: number, cacheMap: object) => {
+const _removeCache = (index: number, cacheMap: object) => {
     deleteVal(index, cacheMap);
 }
 
-const _buildInfo =(startIndex: number, endIndex: number) => {
+const _buildInfo = (startIndex: number, endIndex: number) => {
     return {
         startIndex: startIndex,
         endIndex: endIndex
@@ -221,7 +221,7 @@ export const isReallocate = (GeometryData: any) => {
     return GeometryData.isReallocate;
 }
 
-const _isBufferNearlyFull =(GeometryData: any) => {
+const _isBufferNearlyFull = (GeometryData: any) => {
     var infoList = GeometryData.indicesInfoList,
         lastInfo = infoList[infoList.length - 1];
 
@@ -247,7 +247,7 @@ export const getConfigData = (index: number, GeometryData: any) => {
 //     GeometryData.vertices = new Float32Array(buffer, 0, count * getVertexDataSize());
 // }
 
-const _checkIsIndicesBufferNeed32BitsByConfig =(DataBufferConfig: any, GPUDetectData: any) => {
+const _checkIsIndicesBufferNeed32BitsByConfig = (DataBufferConfig: any, GPUDetectData: any) => {
     if (DataBufferConfig.geometryIndicesBufferBits === 16) {
         return false;
     }
@@ -260,11 +260,11 @@ export const isIndicesBufferNeed32BitsByData = (GeometryData: any) => {
 }
 
 
-const _markIsInit =(GeometryData: any) => {
+const _markIsInit = (GeometryData: any) => {
     GeometryData.isInit = true;
 }
 
-const _isInit =(GeometryData: any) => {
+const _isInit = (GeometryData: any) => {
     return GeometryData.isInit;
 }
 
@@ -291,7 +291,7 @@ export const clearDisposedGeometryIndexArray = (GeometryData: any) => {
     GeometryData.disposedGeometryIndexArray = [];
 }
 
-var _addWorkerInfo =null;
+var _addWorkerInfo = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _addWorkerInfo = (infoList: GeometryWorkerInfoList, index: number, startIndex: number, endIndex: number) => {
@@ -303,7 +303,7 @@ else {
     };
 }
 
-const _buildWorkerInfo =(index: number, startIndex: number, endIndex: number) => {
+const _buildWorkerInfo = (index: number, startIndex: number, endIndex: number) => {
     return {
         index: index,
         startIndex: startIndex,
@@ -368,7 +368,7 @@ export const initData = (DataBufferConfig: any, GeometryData: any, GPUDetectData
     GeometryData.isReallocate = false;
 }
 
-const _initBufferData =(indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
+const _initBufferData = (indicesArrayBytes: number, UintArray: any, DataBufferConfig: any, GeometryData: any) => {
     var buffer: any = null,
         count = DataBufferConfig.geometryDataBufferCount,
         size = Float32Array.BYTES_PER_ELEMENT * (getVertexDataSize() + getNormalDataSize() + getTexCoordsDataSize()) + indicesArrayBytes * getIndexDataSize();

@@ -17,7 +17,7 @@ export const initData = ({
     createTypeArrays(buffer, bufferCount, AmbientLightWorkerData);
 }
 
-const _setCount =setSpecifyLightCount;
+const _setCount = setSpecifyLightCount;
 
 export const isColorDirty = isColorDirtyUtils;
 

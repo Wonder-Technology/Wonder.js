@@ -9,7 +9,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount} from "../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
 import { sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3 } from "../../../shader/glslSender/GLSLSenderSystem";
 import { getColorArr3, getOpacity, useShader } from "../../../../component/material/MaterialSystem";
 import {
@@ -43,6 +43,6 @@ export const render = curry((gl: any, state: Map<any, any>, render_config: IRend
     ), initShaderDataMap, bufferData, cameraData);
 })
 
-const _sendUniformData =(gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL2DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IWebGL2BasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+const _sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL2DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IWebGL2BasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };

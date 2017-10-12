@@ -23,7 +23,7 @@ export const update = (elapsed: number, GlobalTempData: any, ThreeDTransformData
     )(state);
 }
 
-const _updateDirtyList =requireCheckFunc(curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
+const _updateDirtyList = requireCheckFunc(curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     it("firstDirtyIndex should <= maxCount", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
     })
@@ -40,7 +40,7 @@ const _updateDirtyList =requireCheckFunc(curry((GlobalTempData: any, ThreeDTrans
 }))
 
 //todo optimize: if transform not transformed in 5 frames, not move off
-const _cleanDirtyList =requireCheckFunc(curry((ThreeDTransformData: any, state: Map<any, any>) => {
+const _cleanDirtyList = requireCheckFunc(curry((ThreeDTransformData: any, state: Map<any, any>) => {
     it("firstDirtyIndex should <= maxCount", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
     })
@@ -56,17 +56,17 @@ const _cleanDirtyList =requireCheckFunc(curry((ThreeDTransformData: any, state: 
     return state;
 }))
 
-const _needMoveOffDirtyList =(index: number) => {
+const _needMoveOffDirtyList = (index: number) => {
     return true;
 }
 
-const _moveFromDirtyListToNormalList =(index: number, ThreeDTransformData: any) => {
+const _moveFromDirtyListToNormalList = (index: number, ThreeDTransformData: any) => {
     ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 
     moveToIndex(index, generateNotUsedIndexInNormalList(ThreeDTransformData), ThreeDTransformData);
 }
 
-const _transform =(index: number, GlobalTempData: any, ThreeDTransformData: any) => {
+const _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) => {
     var vec3Index = getVector3DataIndexInArrayBuffer(index),
         quaIndex = getQuaternionDataIndexInArrayBuffer(index),
         mat4Index = getMatrix4DataIndexInArrayBuffer(index),
@@ -94,7 +94,7 @@ const _transform =(index: number, GlobalTempData: any, ThreeDTransformData: any)
     );
 }
 
-const _sortParentBeforeChildInDirtyList =(ThreeDTransformData: any) => {
+const _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
     var count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {

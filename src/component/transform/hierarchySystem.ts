@@ -14,13 +14,13 @@ export const getParent = requireCheckFunc((uid: string, ThreeDTransformData: any
     return ThreeDTransformData.parentMap[uid];
 })
 
-export const setParent = requireCheckFunc((parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => {
+export const setParent = requireCheckFunc((parent: ThreeDTransform, child: ThreeDTransform, ThreeDTransformData: any) => {
     it("parent should not be self", () => {
         if (parent !== null) {
             expect(_isTransformEqual(child, parent)).false;
         }
     });
-}, (parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => {
+}, (parent: ThreeDTransform, child: ThreeDTransform, ThreeDTransformData: any) => {
     var index = child.index,
         uid = child.uid,
         parentIndexInArrayBuffer: number = null,
@@ -52,7 +52,7 @@ export const setParent = requireCheckFunc((parent: ThreeDTransform, child:ThreeD
     addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })
 
-const _isTransformEqual =(tra1: ThreeDTransform, tra2: ThreeDTransform) => tra1.uid === tra2.uid;
+const _isTransformEqual = (tra1: ThreeDTransform, tra2: ThreeDTransform) => tra1.uid === tra2.uid;
 
 export const getChildren = (uid: number, ThreeDTransformData: any) => {
     return ThreeDTransformData.childrenMap[uid];
@@ -70,7 +70,7 @@ export const removeHierarchyData = (uid: number, ThreeDTransformData: any) => {
     deleteVal(uid, ThreeDTransformData.childrenMap);
 }
 
-const _removeHierarchyFromParent =(parent: ThreeDTransform, targetUId: number, ThreeDTransformData: any) => {
+const _removeHierarchyFromParent = (parent: ThreeDTransform, targetUId: number, ThreeDTransformData: any) => {
     var parentUId = parent.uid,
         children = getChildren(parentUId, ThreeDTransformData);
 
@@ -83,11 +83,11 @@ const _removeHierarchyFromParent =(parent: ThreeDTransform, targetUId: number, T
     _removeChild(parentUId, targetUId, children, ThreeDTransformData);
 }
 
-const _removeChild =(parentUId: number, targetUId: number, children: Array<ThreeDTransform>, ThreeDTransformData: any) => {
+const _removeChild = (parentUId: number, targetUId: number, children: Array<ThreeDTransform>, ThreeDTransformData: any) => {
     removeChildEntity(children, targetUId);
 };
 
-const _addChild =requireCheckFunc((uid: number, child: ThreeDTransform, ThreeDTransformData: any) => {
+const _addChild = requireCheckFunc((uid: number, child: ThreeDTransform, ThreeDTransformData: any) => {
     it("children should be empty array if has no child", () => {
         expect(getChildren(uid, ThreeDTransformData)).be.a("array");
     });
@@ -101,11 +101,11 @@ export const setChildren = (uid: number, children: Array<ThreeDTransform>, Three
     ThreeDTransformData.childrenMap[uid] = children;
 }
 
-const _setParent =(uid: number, parent: ThreeDTransform, ThreeDTransformData: any) => {
+const _setParent = (uid: number, parent: ThreeDTransform, ThreeDTransformData: any) => {
     ThreeDTransformData.parentMap[uid] = parent;
 }
 
-const _addToParent =requireCheckFunc((targetUId: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
+const _addToParent = requireCheckFunc((targetUId: number, target: ThreeDTransform, parent: ThreeDTransform, ThreeDTransformData: any) => {
     it("the child one should not has parent", () => {
         expect(isValidMapValue(getParent(targetUId, ThreeDTransformData))).false;
     });

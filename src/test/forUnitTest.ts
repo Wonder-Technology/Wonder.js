@@ -9,7 +9,7 @@ import {
     hasIndices,
     initData as initGeometryDataSystem, setIndices, setVertices
 } from "../component/geometry/GeometrySystem";
-import { getShaderIndex as getShaderIndexSystem} from "../component/material/MaterialSystem";
+import { getShaderIndex as getShaderIndexSystem } from "../component/material/MaterialSystem";
 import {
     use
 } from "../renderer/shader/ShaderSystem";

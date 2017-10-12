@@ -19,8 +19,8 @@ export const bindToUnit = (gl: WebGLRenderingContext, unitIndex: number, texture
 
 export const initTextures = initTexturesUtils;
 
-export const initNeedInitTextures = (gl:WebGLRenderingContext, needInitedTextureIndexArr:Array<number>, TextureWorkerData:any) => {
-    forEach(needInitedTextureIndexArr, (textureIndex:number) => {
+export const initNeedInitTextures = (gl: WebGLRenderingContext, needInitedTextureIndexArr: Array<number>, TextureWorkerData: any) => {
+    forEach(needInitedTextureIndexArr, (textureIndex: number) => {
         initTexture(gl, textureIndex, TextureWorkerData);
     });
 }
@@ -31,7 +31,7 @@ export const update = (gl: WebGLRenderingContext, textureIndex: number, TextureW
     updateUtils(gl, textureIndex, _setFlipY, TextureWorkerData);
 }
 
-var _setFlipY =null;
+var _setFlipY = null;
 
 if (chrome) {
     _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
@@ -70,25 +70,25 @@ export const addSourceMapByImageDataStream = (imageArrayBufferIndexSizeDataArr: 
     /*!
     .do here not be triggered! but it's triggered if be moved to 100 line number! why? wonder-frp bug?
     */
-        // .do((imageBitmap: ImageBitmap) => {
-            // _addSource(imageBitmap, TextureWorkerData);
-        // });
+    // .do((imageBitmap: ImageBitmap) => {
+    // _addSource(imageBitmap, TextureWorkerData);
+    // });
 }
 
-const _addSource = ensureFunc((sourceMap:Array<ImageBitmap>, imageBitmap:ImageBitmap, TextureWorkerData:any) => {
+const _addSource = ensureFunc((sourceMap: Array<ImageBitmap>, imageBitmap: ImageBitmap, TextureWorkerData: any) => {
     it("should not has duplicate one", () => {
         expect(hasDuplicateItems(sourceMap)).false;
     });
     it("sourceMap.length should equal texture count", () => {
         expect(sourceMap.length).equal(TextureWorkerData.index);
     });
-}, (imageBitmap:ImageBitmap, TextureWorkerData:any) => {
+}, (imageBitmap: ImageBitmap, TextureWorkerData: any) => {
     TextureWorkerData.sourceMap.push(imageBitmap);
 
     return TextureWorkerData.sourceMap;
 })
 
-const _convertImageSrcToImageBitmapStream =(imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
+const _convertImageSrcToImageBitmapStream = (imageArrayBufferIndexSizeDataArr: Array<ImageArrayBufferIndexSizeData>, TextureWorkerData: any) => {
     return fromArray(imageArrayBufferIndexSizeDataArr)
         .flatMap(({ arrayBuffer, width, height, index }) => {
             return fromPromise(_createImageBitmap(new ImageData(new Uint8ClampedArray(arrayBuffer), width, height), index, TextureWorkerData))
@@ -101,7 +101,7 @@ const _convertImageSrcToImageBitmapStream =(imageArrayBufferIndexSizeDataArr: Ar
 var _createImageBitmap = null;
 
 if (chrome) {
-    _createImageBitmap = (imageData:ImageData, index:number, TextureWorkerData:any) => {
+    _createImageBitmap = (imageData: ImageData, index: number, TextureWorkerData: any) => {
         var flipY = getFlipY(index, TextureWorkerData);
 
         return createImageBitmap(imageData, {
@@ -110,7 +110,7 @@ if (chrome) {
     }
 }
 else if (firefox) {
-    _createImageBitmap = (imageData:ImageData, index:number, TextureWorkerData:any) => {
+    _createImageBitmap = (imageData: ImageData, index: number, TextureWorkerData: any) => {
         /*!
         firefox not support options
          */
@@ -130,7 +130,7 @@ export const initData = (buffer: any, TextureCacheWorkerData: any, TextureWorker
     _initBufferWorkerData(buffer, TextureWorkerData);
 }
 
-const _initBufferWorkerData =(buffer: any, TextureWorkerData: any) => {
+const _initBufferWorkerData = (buffer: any, TextureWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), TextureWorkerData);
 }
 

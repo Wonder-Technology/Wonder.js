@@ -1,3 +1,3 @@
-export interface ITexture{
-    index:number;
+export interface ITexture {
+    index: number;
 }

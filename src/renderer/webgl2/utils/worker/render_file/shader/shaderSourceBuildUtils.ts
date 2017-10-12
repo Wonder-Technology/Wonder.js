@@ -38,7 +38,7 @@ export const buildGLSLSource = requireCheckFunc((materialIndex: number, material
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
         fsBody: string = "";
-    const _setVs =(getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL2GLSLConfig) => {
+    const _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL2GLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
         vsDefine += buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
         vsVarDeclare += getGLSLPartData(vs, "varDeclare");
@@ -120,7 +120,7 @@ export const buildGLSLSource = requireCheckFunc((materialIndex: number, material
     }
 })
 
-const _generateAttributeSource =(materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator) => {
+const _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator) => {
     var result = "";
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {

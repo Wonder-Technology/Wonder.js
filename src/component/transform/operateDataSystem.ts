@@ -40,7 +40,7 @@ export const swapTypeArrData = (index1: number, index2: number, ThreeDTransformD
     return _changeTypeArrData(index1, index2, _swapTypeArr, ThreeDTransformData);
 }
 
-const _swapTypeArr =(dataArr: any, index1: number, index2: number, length: number) => {
+const _swapTypeArr = (dataArr: any, index1: number, index2: number, length: number) => {
     for (let i = 0; i < length; i++) {
         let newIndex1 = index1 + i,
             newIndex2 = index2 + i,
@@ -52,7 +52,7 @@ const _swapTypeArr =(dataArr: any, index1: number, index2: number, length: numbe
     }
 }
 
-const _swapTransformMap =(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+const _swapTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
     var sourceTransform = transformMap[sourceIndex],
         targetTransform = transformMap[targetIndex];
 
@@ -63,7 +63,7 @@ const _swapTransformMap =(transformMap: TransformMap, sourceIndex: number, targe
     transformMap[sourceIndex] = targetTransform;
 }
 
-const _changeTypeArrData =(sourceIndex: number, targetIndex: number, changeFunc: (arr: Float32Array, sourceIndex: number, targetIndex: number, length: number) => void, ThreeDTransformData: any) => {
+const _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: (arr: Float32Array, sourceIndex: number, targetIndex: number, length: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -86,7 +86,7 @@ const _changeTypeArrData =(sourceIndex: number, targetIndex: number, changeFunc:
     return ThreeDTransformData;
 }
 
-const _changeLocalScaleData =requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
+const _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
     it("source localScale data shouldn't be [0,0,0]", () => {
         if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
             && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
@@ -99,7 +99,7 @@ const _changeLocalScaleData =requireCheckFunc((vec3SourceIndex: number, vec3Targ
     changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
 })
 
-const _changeMapData =(sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
+const _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -113,7 +113,7 @@ const _changeMapData =(sourceIndex: number, targetIndex: number, changeFunc: (tr
 //     dataArr[index] = void 0;
 // }
 
-const _moveToTypeArr =(dataArr: Float32Array, sourceIndex: number, targetIndex: number, length: number
+const _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: number, length: number
 ) => {
     for (let i = 0; i < length; i++) {
         let newIndex1 = sourceIndex + i,
@@ -123,7 +123,7 @@ const _moveToTypeArr =(dataArr: Float32Array, sourceIndex: number, targetIndex: 
     }
 };
 
-const _moveToTransformMap =(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+const _moveToTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
     var sourceTransform = transformMap[sourceIndex];
 
     sourceTransform.index = targetIndex;

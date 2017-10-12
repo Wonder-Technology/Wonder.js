@@ -63,7 +63,7 @@ export const initShader = (program: WebGLProgram, vsSource: string, fsSource: st
     gl.deleteShader(fs);
 }
 
-const _linkProgram =ensureFunc((returnVal, gl: WebGLRenderingContext, program: WebGLProgram) => {
+const _linkProgram = ensureFunc((returnVal, gl: WebGLRenderingContext, program: WebGLProgram) => {
     it(`link program error:${gl.getProgramInfoLog(program)}`, () => {
         expect(gl.getProgramParameter(program, gl.LINK_STATUS)).true;
     })
@@ -71,7 +71,7 @@ const _linkProgram =ensureFunc((returnVal, gl: WebGLRenderingContext, program: W
     gl.linkProgram(program);
 })
 
-const _compileShader =(gl: WebGLRenderingContext, glslSource: string, shader: WebGLShader) => {
+const _compileShader = (gl: WebGLRenderingContext, glslSource: string, shader: WebGLShader) => {
     gl.shaderSource(shader, glslSource);
     gl.compileShader(shader);
 

@@ -12,13 +12,13 @@ export const detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDet
     return state;
 }
 
-const _detectExtension =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     detectExtensionSystem(state, gl, GPUDetectDataFromSystem);
 
     GPUDetectDataFromSystem.extensionColorBufferFloat = getExtension("EXT_color_buffer_float", state, gl);
 }
 
-const _detectCapabilty =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     detectCapabilty(state, gl, GPUDetectDataFromSystem);
 
     GPUDetectDataFromSystem.maxUniformBufferBindings = gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS);

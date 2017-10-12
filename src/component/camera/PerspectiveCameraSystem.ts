@@ -22,7 +22,7 @@ export const updateProjectionMatrix = requireCheckFunc((index: number, Perspecti
     setPMatrix(index, _getOrCreatePMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]), CameraData);
 })
 
-const _getOrCreatePMatrix =(index: number, CameraData: any) => {
+const _getOrCreatePMatrix = (index: number, CameraData: any) => {
     var mat = CameraData.pMatrixMap[index];
 
     if (isValidMapValue(mat)) {

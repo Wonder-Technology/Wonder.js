@@ -6,7 +6,7 @@ export const isCached = (unitIndex: number, textureIndex: number, TextureCacheDa
     return _getActiveTexture(unitIndex, TextureCacheDataFromSystem, GPUDetectDataFromSystem) === textureIndex;
 }
 
-const _getActiveTexture =requireCheckFunc((unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
+const _getActiveTexture = requireCheckFunc((unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     _checkUnit(unitIndex, GPUDetectDataFromSystem);
 }, (unitIndex: number, TextureCacheDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     return TextureCacheDataFromSystem.bindTextureUnitCache[unitIndex];
@@ -18,7 +18,7 @@ export const addActiveTexture = requireCheckFunc((unitIndex: number, textureInde
     TextureCacheDataFromSystem.bindTextureUnitCache[unitIndex] = textureIndex;
 })
 
-const _checkUnit =(unitIndex: number, GPUDetectDataFromSystem: any) => {
+const _checkUnit = (unitIndex: number, GPUDetectDataFromSystem: any) => {
     var maxTextureUnit = getMaxTextureUnit(GPUDetectDataFromSystem);
 
     it(`texture unitIndex should >= 0, but actual is ${unitIndex}`, () => {

@@ -72,9 +72,9 @@ export const drawLightPass = (gl: any, render_config: IRenderConfig, {
     unbindVao(gl);
 }
 
-const _hasLight =(count: number) => count > 0;
+const _hasLight = (count: number) => count > 0;
 
-const _drawAmbientLightPass =(gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, ambientLightData: IWebGL2SendUniformDataAmbientLightDataMap, ambientLightCount: number, DeferAmbientLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+const _drawAmbientLightPass = (gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, ambientLightData: IWebGL2SendUniformDataAmbientLightDataMap, ambientLightCount: number, DeferAmbientLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     var shaderIndex: number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferAmbientLightPassDataFromSystem);
@@ -105,7 +105,7 @@ const _drawAmbientLightPass =(gl: any, use: Function, drawDataMap: IWebGL2DrawDa
     }
 }
 
-const _buildAmbientLightValueDataMap =(colorArr3: Array<number>, isColorDirty: boolean) => {
+const _buildAmbientLightValueDataMap = (colorArr3: Array<number>, isColorDirty: boolean) => {
     return {
         colorArr3: colorArr3,
 
@@ -113,7 +113,7 @@ const _buildAmbientLightValueDataMap =(colorArr3: Array<number>, isColorDirty: b
     }
 }
 
-const _drawDirectionLightPass =(gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, directionLightData: IWebGL2SendUniformDataDirectionLightDataMap, directionLightCount: number, DeferDirectionLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+const _drawDirectionLightPass = (gl: any, use: Function, drawDataMap: IWebGL2DrawDataMap, directionLightData: IWebGL2SendUniformDataDirectionLightDataMap, directionLightCount: number, DeferDirectionLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     var shaderIndex: number = null;
 
     sendAttributeData(gl, ProgramDataFromSystem, DeferDirectionLightPassDataFromSystem);
@@ -161,7 +161,7 @@ const _drawDirectionLightPass =(gl: any, use: Function, drawDataMap: IWebGL2Draw
     }
 }
 
-const _buildDirectionLightValueDataMap =(position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty: boolean, isColorDirty: boolean, isIntensityDirty: boolean) => {
+const _buildDirectionLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, isPositionDirty: boolean, isColorDirty: boolean, isIntensityDirty: boolean) => {
     return {
         position: position,
         colorArr3: colorArr3,

@@ -23,14 +23,14 @@ import {
 import { ERenderWorkerState } from "../../both_file/ERenderWorkerState";
 import { getMaterialTextureList } from "../../../texture/MapManagerSystem";
 
-export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapManagerData:any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
+export const sendDrawData = curry((DomQuery: any, WorkerInstanceData: any, MapManagerData: any, TextureData: any, MaterialData: any, GeometryData: any, ThreeDTransformData: any, GameObjectData: any, AmbientLightData: any, DirectionLightData: any, PointLightData: any, data: RenderCommandBufferForDrawData) => {
     var geometryData = null,
         geometryDisposeData = null,
         textureDisposeData = null,
         materialData = null,
         lightData = null,
         textureData = null,
-        transferList:Array<ArrayBuffer> = [];
+        transferList: Array<ArrayBuffer> = [];
 
     geometryData = _buildSendGeometryData(GeometryData);
 
@@ -55,10 +55,10 @@ export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapMan
 
     lightData = _buildSendLightData(ThreeDTransformData, GameObjectData, DirectionLightData, PointLightData);
 
-    if(hasNeedInitTextureDataArr(TextureData)){
+    if (hasNeedInitTextureDataArr(TextureData)) {
         textureData = _buildSendTextureData(DomQuery, MapManagerData, TextureData);
 
-        transferList = transferList.concat(textureData.needAddedImageDataArr.map(({arrayBuffer}) => {
+        transferList = transferList.concat(textureData.needAddedImageDataArr.map(({ arrayBuffer }) => {
             return arrayBuffer as ArrayBuffer;
         }));
     }
@@ -79,7 +79,7 @@ export const sendDrawData = curry((DomQuery:any, WorkerInstanceData: any, MapMan
     _clearData(GeometryData, MaterialData, TextureData);
 })
 
-const _buildSendGeometryData = (GeometryData:any) => {
+const _buildSendGeometryData = (GeometryData: any) => {
     if (hasNewPointData(GeometryData)) {
         return {
             buffer: GeometryData.buffer,
@@ -104,7 +104,7 @@ const _buildSendGeometryData = (GeometryData:any) => {
     return null;
 }
 
-const _buildSendLightData = (ThreeDTransformData:any, GameObjectData:any, DirectionLightData:any, PointLightData:any) => {
+const _buildSendLightData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any, PointLightData: any) => {
     return {
         directionLightData: {
             positionArr: getAllDirectionLightPositionData(ThreeDTransformData, GameObjectData, DirectionLightData)
@@ -115,22 +115,22 @@ const _buildSendLightData = (ThreeDTransformData:any, GameObjectData:any, Direct
     }
 }
 
-const _buildSendTextureData = (DomQuery:any, MapManagerData:any, TextureData:any) => {
-        let needInitedTextureDataArr = getNeedInitedTextureDataArr(TextureData),
-            needAddedImageDataArr = convertNeedInitedSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), needInitedTextureDataArr, DomQuery);
+const _buildSendTextureData = (DomQuery: any, MapManagerData: any, TextureData: any) => {
+    let needInitedTextureDataArr = getNeedInitedTextureDataArr(TextureData),
+        needAddedImageDataArr = convertNeedInitedSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), needInitedTextureDataArr, DomQuery);
 
-        return {
-            index: TextureData.index,
+    return {
+        index: TextureData.index,
 
-            needAddedImageDataArr: needAddedImageDataArr,
-            uniformSamplerNameMap: getUniformSamplerNameMap(TextureData),
-            materialTextureList: getMaterialTextureList(MapManagerData),
+        needAddedImageDataArr: needAddedImageDataArr,
+        uniformSamplerNameMap: getUniformSamplerNameMap(TextureData),
+        materialTextureList: getMaterialTextureList(MapManagerData),
 
-            needInitedTextureIndexArr: needInitedTextureDataArr
-        };
+        needInitedTextureIndexArr: needInitedTextureDataArr
+    };
 }
 
-const _clearData = (GeometryData:any, MaterialData:any, TextureData:any) => {
+const _clearData = (GeometryData: any, MaterialData: any, TextureData: any) => {
     clearWorkerInfoList(GeometryData);
     clearDisposedGeometryIndexArray(GeometryData);
     clearDisposedTextureDataMap(TextureData);

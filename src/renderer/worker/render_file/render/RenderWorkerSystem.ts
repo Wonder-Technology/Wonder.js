@@ -6,7 +6,7 @@ export const getPointLightPosition = (index: number, PointLightDataFromSystem: a
     return _getLightPosition(index, PointLightDataFromSystem);
 }
 
-const _getLightPosition =(index: number, LightDataFromSystem: any) => {
+const _getLightPosition = (index: number, LightDataFromSystem: any) => {
     return LightDataFromSystem.positionArr[index];
 }
 

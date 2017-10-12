@@ -27,7 +27,7 @@ export const init = (gl: any, GBufferData: any) => {
     GBufferData.depthTexture = depthTexture;
 }
 
-const _createPositionTarget =(gl: any) => {
+const _createPositionTarget = (gl: any) => {
     var positionTarget = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, positionTarget);
@@ -43,7 +43,7 @@ const _createPositionTarget =(gl: any) => {
     return positionTarget;
 }
 
-const _createNormalTarget =(gl: any) => {
+const _createNormalTarget = (gl: any) => {
     //todo use rbg16F?
     // (should use EXT_color_buffer_half_float extension)
     // refer to https://www.khronos.org/registry/webgl/extensions/EXT_color_buffer_float/
@@ -61,7 +61,7 @@ const _createNormalTarget =(gl: any) => {
     return normalTarget;
 }
 
-const _createColorTarget =(gl: any) => {
+const _createColorTarget = (gl: any) => {
     var colorTarget = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, colorTarget);
@@ -76,7 +76,7 @@ const _createColorTarget =(gl: any) => {
     return colorTarget;
 }
 
-const _createDepthTexture =(gl: any) => {
+const _createDepthTexture = (gl: any) => {
     var depthTexture = gl.createTexture();
 
     gl.bindTexture(gl.TEXTURE_2D, depthTexture);

@@ -63,7 +63,7 @@ export const setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: an
     return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
 });
 
-const _setScreenData =curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
+const _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -82,7 +82,7 @@ const _setScreenData =curry((DeviceManagerData: any, canvas: HTMLCanvasElement, 
 
 export const clear = clearUtils;
 
-export const getClearColor = (DeviceManagerData:any) => {
+export const getClearColor = (DeviceManagerData: any) => {
     return DeviceManagerData.clearColor;
 }
 

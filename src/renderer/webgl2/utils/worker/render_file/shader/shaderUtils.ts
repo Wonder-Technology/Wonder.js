@@ -42,7 +42,7 @@ export const initMaterialShader = (state: Map<any, any>, materialIndex: number, 
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
-const _init =(state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+const _init = (state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         DeviceManagerDataFromSystem,

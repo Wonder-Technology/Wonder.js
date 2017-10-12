@@ -23,7 +23,7 @@ export class TextureData {
     public static defaultIsNeedUpdate: number = null;
 
     public static disposedTextureDataMap: DisposedTextureDataMap = null;
-    public static needInitedTextureIndexArr:Array<number> = null;
-    public static needAddedSourceArr:Array<HTMLImageElement> = null;
+    public static needInitedTextureIndexArr: Array<number> = null;
+    public static needAddedSourceArr: Array<HTMLImageElement> = null;
 }
 

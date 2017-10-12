@@ -17,7 +17,7 @@ export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number
     }
 }
 
-const _sendVbo =(gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+const _sendVbo = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
@@ -45,7 +45,7 @@ const _sendVbo =(gl: WebGLRenderingContext, shaderIndex: number, program: WebGLP
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-const _getOrCreateArrayBuffer =(gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
+const _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
     getVertices,
     getNormals,
     getTexCoords
@@ -93,7 +93,7 @@ export const buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFr
     }
 }
 
-const _bindVao =(gl: WebGLRenderingContext, extension: any, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
+const _bindVao = (gl: WebGLRenderingContext, extension: any, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
     vaoMap,
     vboArrayMap
 }) => {

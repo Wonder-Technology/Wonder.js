@@ -25,7 +25,7 @@ import { initData as initMapManagerData, initMapManagers } from "../../renderer/
 import {
     addAddComponentHandle as addAddComponentHandleToMap,
     addDisposeHandle as addDisposeHandleToMap,
-    addInitHandle as  addInitHandleToMap
+    addInitHandle as addInitHandleToMap
 } from "../ComponentSystem";
 import { Map } from "immutable";
 import {

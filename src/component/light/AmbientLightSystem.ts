@@ -73,7 +73,7 @@ export const initData = (AmbientLightData: any) => {
     _setDefaultTypeArrData(count, AmbientLightData);
 }
 
-const _setDefaultTypeArrData =(count: number, AmbientLightData: any) => {
+const _setDefaultTypeArrData = (count: number, AmbientLightData: any) => {
     var color = createDefaultColor();
 
     for (let i = 0; i < count; i++) {

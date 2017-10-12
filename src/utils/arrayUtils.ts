@@ -37,7 +37,7 @@ export const hasDuplicateItems = (arr: Array<any>) => {
     return hasRepeat;
 }
 
-const _contain =(arr: Array<any>, item: any): boolean => {
+const _contain = (arr: Array<any>, item: any): boolean => {
     var c: any = null;
 
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -78,11 +78,11 @@ export const removeItem = (arr: Array<any>, item: any) => {
     });
 }
 
-export const replaceItem = (arr: Array<any>, oldItem: any, newItem:any) => {
-    for(let i = 0, len = arr.length; i < len; i++){
+export const replaceItem = (arr: Array<any>, oldItem: any, newItem: any) => {
+    for (let i = 0, len = arr.length; i < len; i++) {
         let val = arr[i];
 
-        if(val === oldItem){
+        if (val === oldItem) {
             arr[i] = newItem;
         }
     }

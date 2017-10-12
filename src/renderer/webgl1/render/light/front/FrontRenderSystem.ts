@@ -13,7 +13,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount} from "../../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount } from "../../../../texture/MapManagerSystem";
 import {
     cleanColorDirty as cleanAmbientLightColorDirty,
     getColorArr3 as getAmbientLightColorArr3,

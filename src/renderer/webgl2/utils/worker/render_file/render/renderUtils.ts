@@ -72,7 +72,7 @@ export const buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFr
     }
 }
 
-const _bindVao =(gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
+const _bindVao = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
     vaoMap,
     vboArrayMap
 }) => {

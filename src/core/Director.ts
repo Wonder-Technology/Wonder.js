@@ -220,7 +220,7 @@ addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
 addGeometryInitHandle(BoxGeometry, CustomGeometry);
 
 
-var _initPointLight =null,
+var _initPointLight = null,
     _initDirectionLight = null;
 
 if (isWebgl1()) {

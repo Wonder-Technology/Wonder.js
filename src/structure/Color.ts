@@ -166,8 +166,8 @@ export class Color {
         return `#${(`000000${this._getHex().toString(16)}`).slice(-6)}`;
     }
 
-    private _getHex () {
-        return ( this.r * 255 ) << 16 ^ ( this.g * 255 ) << 8 ^ ( this.b * 255 ) << 0;
+    private _getHex() {
+        return (this.r * 255) << 16 ^ (this.g * 255) << 8 ^ (this.b * 255) << 0;
     }
 
     public clone() {

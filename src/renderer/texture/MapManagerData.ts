@@ -6,6 +6,6 @@ export class MapManagerData {
     public static textureIndices: Uint32Array = null;
     public static textureCounts: Uint8Array = null;
 
-    public static materialTextureList:MaterialTextureList  = null;
-    public static textureOffsetMap:TextureOffsetMap  = null;
+    public static materialTextureList: MaterialTextureList = null;
+    public static textureOffsetMap: TextureOffsetMap = null;
 }

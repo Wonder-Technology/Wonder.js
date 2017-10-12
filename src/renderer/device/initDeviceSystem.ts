@@ -25,7 +25,7 @@ export var initDevice = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initDevice = curry((contextConfig: Map<string, any>, state: Map<any, any>, configState: Map<any, any>, detect: Function, DomQuery: any, canvas: HTMLCanvasElement) => {
         return IO.of(() => {
-            var screenData:ViewportData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(),
+            var screenData: ViewportData = setScreenFromDeviceManagerWorkerSystem(canvas, null, DomQuery, state).run(),
                 viewportData: ViewportData = getViewportData(screenData);
 
             createGLWorker(canvas, getRenderWorker(WorkerInstanceData), contextConfig, viewportData).run();
@@ -60,7 +60,7 @@ export const createCanvas = curry((DomQuery: any, domId: string) => {
     })
 })
 
-const _getCanvasId =ensureFunc((id: string) => {
+const _getCanvasId = ensureFunc((id: string) => {
     it("dom id should be #string", () => {
         expect(/#[^#]+/.test(id)).true;
     });

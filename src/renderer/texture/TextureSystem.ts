@@ -97,7 +97,7 @@ export const update = (gl: WebGLRenderingContext, textureIndex: number, TextureD
     updateUtils(gl, textureIndex, _setFlipY, TextureData);
 }
 
-const _setFlipY =(gl: WebGLRenderingContext, flipY: boolean) => {
+const _setFlipY = (gl: WebGLRenderingContext, flipY: boolean) => {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, flipY);
 }
 
@@ -145,7 +145,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         addNeedInitTextureIndexForWorker(textureIndex, TextureData);
     }
 
-    addNeedInitTextureIndexForWorker = (textureIndex:number, TextureData:any) => {
+    addNeedInitTextureIndexForWorker = (textureIndex: number, TextureData: any) => {
         TextureData.needInitedTextureIndexArr.push(textureIndex);
     }
 
@@ -161,7 +161,7 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         TextureData.disposedTextureDataMap.push(_buildDisposedTextureData(sourceIndex, lastComponentIndex));
     }
 
-    const _buildDisposedTextureData =(sourceIndex: number, lastComponentIndex: number) => {
+    const _buildDisposedTextureData = (sourceIndex: number, lastComponentIndex: number) => {
         return {
             sourceIndex: sourceIndex,
             lastComponentIndex: lastComponentIndex
@@ -220,7 +220,7 @@ export const getNeedAddedSourceArr = (TextureData: any) => {
     return TextureData.needAddedSourceArr;
 }
 
-export const convertAllSourceMapToImageDataArr = (sourceMap:Array<HTMLImageElement>, DomQuery:any) => {
+export const convertAllSourceMapToImageDataArr = (sourceMap: Array<HTMLImageElement>, DomQuery: any) => {
     var arr: Array<ImageArrayBufferIndexSizeData> = [];
 
     forEach(sourceMap, (source: HTMLImageElement, index: number) => {
@@ -244,11 +244,11 @@ export const convertAllSourceMapToImageDataArr = (sourceMap:Array<HTMLImageEleme
     return arr;
 }
 
-export const convertNeedInitedSourceMapToImageDataArr = requireCheckFunc((sourceMap:Array<HTMLImageElement>, needInitedTextureDataArr:Array<number>, DomQuery:any) => {
+export const convertNeedInitedSourceMapToImageDataArr = requireCheckFunc((sourceMap: Array<HTMLImageElement>, needInitedTextureDataArr: Array<number>, DomQuery: any) => {
     it("needInitedTextureDataArr should corresponding to sourceMap", () => {
         expect(needInitedTextureDataArr.length).equal(sourceMap.length);
     });
-}, (sourceMap:Array<HTMLImageElement>, needInitedTextureDataArr:Array<number>, DomQuery:any) => {
+}, (sourceMap: Array<HTMLImageElement>, needInitedTextureDataArr: Array<number>, DomQuery: any) => {
     var arr: Array<ImageArrayBufferIndexSizeData> = [];
 
     forEach(sourceMap, (source: HTMLImageElement, index: number) => {
@@ -262,9 +262,9 @@ export const convertNeedInitedSourceMapToImageDataArr = requireCheckFunc((source
         arr.push(
             {
                 arrayBuffer: _getArrayBuffer(getImageData(source, width, height, DomQuery)),
-                width:width,
+                width: width,
                 height: height,
-                index:needInitedTextureDataArr[index]
+                index: needInitedTextureDataArr[index]
             }
         )
     })
@@ -272,13 +272,13 @@ export const convertNeedInitedSourceMapToImageDataArr = requireCheckFunc((source
     return arr;
 })
 
-const _getArrayBuffer = (imageData:ImageData) => imageData.data.buffer as ArrayBuffer;
+const _getArrayBuffer = (imageData: ImageData) => imageData.data.buffer as ArrayBuffer;
 
 export const getUniformSamplerNameMap = (TextureData: any) => {
     return TextureData.uniformSamplerNameMap;
 }
 
-const _isSourceNotExist =(source: HTMLImageElement) => isNotValidVal(source);
+const _isSourceNotExist = (source: HTMLImageElement) => isNotValidVal(source);
 
 export const initData = (TextureCacheData: any, TextureData: any) => {
     initTextureCacheData(TextureCacheData);
@@ -301,13 +301,13 @@ export const initData = (TextureCacheData: any, TextureData: any) => {
     _initBufferData(TextureData);
 }
 
-const _setDefaultData =(TextureData: any) => {
+const _setDefaultData = (TextureData: any) => {
     TextureData.defaultWidth = 0;
     TextureData.defaultHeight = 0;
     TextureData.defaultIsNeedUpdate = 0;
 }
 
-const _initBufferData =(TextureData: any) => {
+const _initBufferData = (TextureData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getBufferDataSize() * 2) + Uint8Array.BYTES_PER_ELEMENT * (getBufferDataSize()),
@@ -322,7 +322,7 @@ const _initBufferData =(TextureData: any) => {
     TextureData.buffer = buffer;
 }
 
-const _setDefaultTypeArrData =(count: number, TextureData: any) => {
+const _setDefaultTypeArrData = (count: number, TextureData: any) => {
     var width = TextureData.defaultWidth,
         height = TextureData.defaultHeight,
         isNeedUpdate = TextureData.defaultIsNeedUpdate;

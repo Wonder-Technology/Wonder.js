@@ -75,7 +75,7 @@ export const setNormalMatrixCache = (uid: number, mat: Matrix3, ThreeTransformDa
     _getCache(uid, ThreeTransformData).normalMatrix = mat;
 }
 
-const _getCache =(uid: number, ThreeTransformData: any) => {
+const _getCache = (uid: number, ThreeTransformData: any) => {
     var cache = ThreeTransformData.cacheMap[uid];
 
     if (isNotValidMapValue(cache)) {

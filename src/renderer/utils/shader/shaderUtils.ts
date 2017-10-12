@@ -75,9 +75,9 @@ export const initNoMaterialShader = (state: Map<any, any>, shaderName: string, m
     return shaderIndex;
 }
 
-const _buildShaderIndexMapKey =(materialShaderLibNameArr: Array<string>) => materialShaderLibNameArr.join("");
+const _buildShaderIndexMapKey = (materialShaderLibNameArr: Array<string>) => materialShaderLibNameArr.join("");
 
-const _isShaderIndexExist =(shaderIndex: number) => isNotUndefined(shaderIndex);
+const _isShaderIndexExist = (shaderIndex: number) => isNotUndefined(shaderIndex);
 
 export const genereateShaderIndex = (ShaderDataFromSystem: any) => {
     var index = ShaderDataFromSystem.index;

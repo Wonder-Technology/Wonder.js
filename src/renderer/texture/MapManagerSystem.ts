@@ -30,13 +30,13 @@ export const initMapManagers = (gl: WebGLRenderingContext, TextureData: any) => 
     initTextures(gl, TextureData);
 }
 
-export const initMapManager = (gl: WebGLRenderingContext, materialIndex:number, MapManagerData: any, TextureData: any) => {
-    forEach(getMaterialTextures(materialIndex, MapManagerData), (textureIndex:number) => {
+export const initMapManager = (gl: WebGLRenderingContext, materialIndex: number, MapManagerData: any, TextureData: any) => {
+    forEach(getMaterialTextures(materialIndex, MapManagerData), (textureIndex: number) => {
         initTexture(gl, textureIndex, TextureData);
     });
 }
 
-export const setMap = ensureFunc((returnVal:any, materialIndex: number, map: Texture, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
+export const setMap = ensureFunc((returnVal: any, materialIndex: number, map: Texture, uniformSamplerName: string, MapManagerData: any, TextureData: any) => {
     it("map count shouldn't exceed max count", () => {
         expect(getMapCount(materialIndex, MapManagerData)).lte(getMaxTextureCount());
     });
@@ -50,7 +50,7 @@ export const setMap = ensureFunc((returnVal:any, materialIndex: number, map: Tex
         count = getMapCount(materialIndex, MapManagerData),
         offset = _getTextureOffset(materialIndex, uniformSamplerName, textureOffsetMap);
 
-    if(_isSetMapBefore(offset)) {
+    if (_isSetMapBefore(offset)) {
         offset = count;
 
         _setTextureOffset(materialIndex, uniformSamplerName, offset, textureOffsetMap);
@@ -61,7 +61,7 @@ export const setMap = ensureFunc((returnVal:any, materialIndex: number, map: Tex
 
         setUniformSamplerName(textureIndex, uniformSamplerName, TextureData);
     }
-    else{
+    else {
         let oldMapIndex = _getMap(materialIndex, offset, textureIndices);
 
         _setTextureOffset(materialIndex, uniformSamplerName, offset, textureOffsetMap);
@@ -74,28 +74,28 @@ export const setMap = ensureFunc((returnVal:any, materialIndex: number, map: Tex
     _setMapInTextureIndices(materialIndex, offset, textureIndex, textureIndices);
 })
 
-const _setMapInTextureIndices = (materialIndex:number, offset:number, textureIndex:number, textureIndices:Uint32Array) => {
+const _setMapInTextureIndices = (materialIndex: number, offset: number, textureIndex: number, textureIndices: Uint32Array) => {
     textureIndices[getStartTextureIndex(materialIndex) + offset] = textureIndex;
 }
 
-const _getTextureOffset = (materialIndex:number, uniformSamplerName:string, textureOffsetMap:TextureOffsetMap) => {
+const _getTextureOffset = (materialIndex: number, uniformSamplerName: string, textureOffsetMap: TextureOffsetMap) => {
     var map = textureOffsetMap[materialIndex];
 
-    if(isNotExist(map)){
+    if (isNotExist(map)) {
         return void 0;
     }
 
     return map[uniformSamplerName];
 }
 
-const _setTextureOffset = requireCheckFunc((materialIndex:number, uniformSamplerName:string, offset:number, textureOffsetMap:TextureOffsetMap) => {
+const _setTextureOffset = requireCheckFunc((materialIndex: number, uniformSamplerName: string, offset: number, textureOffsetMap: TextureOffsetMap) => {
     it("offset should >= 0", () => {
         expect(offset).gte(0);
     });
-}, (materialIndex:number, uniformSamplerName:string, offset:number, textureOffsetMap:TextureOffsetMap) => {
+}, (materialIndex: number, uniformSamplerName: string, offset: number, textureOffsetMap: TextureOffsetMap) => {
     var map = textureOffsetMap[materialIndex];
 
-    if(isNotExist(map)){
+    if (isNotExist(map)) {
         let m = {};
 
         m[uniformSamplerName] = offset;
@@ -108,25 +108,25 @@ const _setTextureOffset = requireCheckFunc((materialIndex:number, uniformSampler
     map[uniformSamplerName] = offset;
 })
 
-const _isSetMapBefore = (offset:number) => isNotExist(offset);
+const _isSetMapBefore = (offset: number) => isNotExist(offset);
 
-const _getMap = (materialIndex:number, offset:number, textureIndices:Uint32Array) => {
+const _getMap = (materialIndex: number, offset: number, textureIndices: Uint32Array) => {
     return textureIndices[getStartTextureIndex(materialIndex) + offset];
 }
 
-const _replaceTextureInMaterialTextureList = requireCheckFunc ((materialIndex:number, oldTextureIndex:number, newTextureIndex:number, MapManagerData:any) => {
+const _replaceTextureInMaterialTextureList = requireCheckFunc((materialIndex: number, oldTextureIndex: number, newTextureIndex: number, MapManagerData: any) => {
     it("MapManagerData.materialTextureList[materialIndex] should be array", () => {
         expect(MapManagerData.materialTextureList[materialIndex]).exist;
         expect(MapManagerData.materialTextureList[materialIndex]).be.a("array");
     });
-}, (materialIndex:number, oldTextureIndex:number, newTextureIndex:number, MapManagerData:any) => {
+}, (materialIndex: number, oldTextureIndex: number, newTextureIndex: number, MapManagerData: any) => {
     replaceItem(MapManagerData.materialTextureList[materialIndex], oldTextureIndex, newTextureIndex);
 })
 
-const _addTextureToMaterialTextureList = (materialIndex:number, textureIndex:number, MapManagerData:any) => {
+const _addTextureToMaterialTextureList = (materialIndex: number, textureIndex: number, MapManagerData: any) => {
     var map = MapManagerData.materialTextureList[materialIndex];
 
-    if(map === void 0){
+    if (map === void 0) {
         map = [textureIndex];
 
         MapManagerData.materialTextureList[materialIndex] = map;
@@ -137,7 +137,7 @@ const _addTextureToMaterialTextureList = (materialIndex:number, textureIndex:num
     map.push(textureIndex);
 }
 
-export const getMaterialTextureList = (MapManagerData:any) => MapManagerData.materialTextureList;
+export const getMaterialTextureList = (MapManagerData: any) => MapManagerData.materialTextureList;
 
 export const getMapCount = getMapCountUtils;
 
@@ -149,7 +149,7 @@ export const getMapCount = getMapCountUtils;
 //     }
 // }
 
-export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex:number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex: number, TextureCacheData: any, TextureData: any, MapManagerData: any, GPUDetectData: any) => {
     bindAndUpdateUtils(gl, mapCount, startTextureIndex, definedStartTextureUnitIndex, TextureCacheData, TextureData, MapManagerData, GPUDetectData, bindToUnit, needUpdate, update);
 }
 
@@ -175,7 +175,7 @@ export const initData = (TextureCacheData: any, TextureData: any, MapManagerData
     MapManagerData.textureOffsetMap = createMap();
 }
 
-const _initBufferData =(MapManagerData: any) => {
+const _initBufferData = (MapManagerData: any) => {
     var buffer: any = null,
         count = getBufferCount(),
         size = Uint32Array.BYTES_PER_ELEMENT + Uint8Array.BYTES_PER_ELEMENT,
@@ -190,5 +190,5 @@ const _initBufferData =(MapManagerData: any) => {
     MapManagerData.buffer = buffer;
 }
 
-const _setDefaultTypeArrData =(count: number, MapManagerData: any) => {
+const _setDefaultTypeArrData = (count: number, MapManagerData: any) => {
 }

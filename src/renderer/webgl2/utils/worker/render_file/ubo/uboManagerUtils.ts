@@ -33,11 +33,11 @@ export const init = (gl: any, render_config: IRenderConfig, {
     _bindOneUboData(gl, render_config, oneUboDataList, uboBindingPointMap);
 }
 
-const _bindOneUboData =(gl: any, render_config: IRenderConfig, oneUboDataList: UboSingleBufferDataList, uboBindingPointMap: UboBindingPointMap) => {
+const _bindOneUboData = (gl: any, render_config: IRenderConfig, oneUboDataList: UboSingleBufferDataList, uboBindingPointMap: UboBindingPointMap) => {
     _bindSingleBufferUboData(gl, render_config, oneUboDataList, null, uboBindingPointMap);
 }
 
-const _buildUboDataMap =(uniformBlockBinding: number, buffer: WebGLBuffer, typeArray: Float32Array) => {
+const _buildUboDataMap = (uniformBlockBinding: number, buffer: WebGLBuffer, typeArray: Float32Array) => {
     return {
         uniformBlockBinding: uniformBlockBinding,
         buffer: buffer,
@@ -45,7 +45,7 @@ const _buildUboDataMap =(uniformBlockBinding: number, buffer: WebGLBuffer, typeA
     };
 }
 
-const _buildUboFuncMap =(bindUniformBufferBase: Function, bufferStaticData: Function, bufferDynamicData: Function, bufferSubDynamicData: Function, set: Function) => {
+const _buildUboFuncMap = (bindUniformBufferBase: Function, bufferStaticData: Function, bufferDynamicData: Function, bufferSubDynamicData: Function, set: Function) => {
     return {
         bindUniformBufferBase: bindUniformBufferBase,
         bufferStaticData: bufferStaticData,
@@ -55,7 +55,7 @@ const _buildUboFuncMap =(bindUniformBufferBase: Function, bufferStaticData: Func
     }
 }
 
-const _buildGlobalRenderDataMap =(render_config: IRenderConfig) => {
+const _buildGlobalRenderDataMap = (render_config: IRenderConfig) => {
     return {
         render_config: render_config
     }
@@ -89,7 +89,7 @@ export const bindPointLightUboData = (gl: any, pointLightIndex: number, sendUnif
     _bindLightUboData(gl, pointLightIndex, sendUniformDataPointLightDataMap, pointLightValueMap, drawDataMap, pointLightUboDataList, uboBindingPointMap);
 }
 
-const _bindLightUboData =(gl: any, lightIndex: number, sendUniformDataLightDataMap: IWebGL2SendUniformDataAmbientLightDataMap | IWebGL2SendUniformDataDirectionLightDataMap | IWebGL2SendUniformDataPointLightDataMap, lightValueMap: IWebGL2AmbientLightValueDataMap | IWebGL2DirectionLightValueDataMap | IWebGL2PointLightValueDataMap, drawDataMap: IWebGL2DrawDataMap, lightUboDataList, uboBindingPointMap) => {
+const _bindLightUboData = (gl: any, lightIndex: number, sendUniformDataLightDataMap: IWebGL2SendUniformDataAmbientLightDataMap | IWebGL2SendUniformDataDirectionLightDataMap | IWebGL2SendUniformDataPointLightDataMap, lightValueMap: IWebGL2AmbientLightValueDataMap | IWebGL2DirectionLightValueDataMap | IWebGL2PointLightValueDataMap, drawDataMap: IWebGL2DrawDataMap, lightUboDataList, uboBindingPointMap) => {
     var uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferStaticData, bufferDynamicData, bufferSubDynamicData, set);
 
     forEach(lightUboDataList, ({
@@ -107,7 +107,7 @@ const _bindLightUboData =(gl: any, lightIndex: number, sendUniformDataLightDataM
     });
 }
 
-const _bindSingleBufferUboData =(gl: any, render_config: IRenderConfig, singleBufferUboDataList: UboSingleBufferDataList, cameraData: CameraRenderCommandBufferForDrawData, uboBindingPointMap: UboBindingPointMap) => {
+const _bindSingleBufferUboData = (gl: any, render_config: IRenderConfig, singleBufferUboDataList: UboSingleBufferDataList, cameraData: CameraRenderCommandBufferForDrawData, uboBindingPointMap: UboBindingPointMap) => {
     var uboFuncMap = _buildUboFuncMap(bindUniformBufferBase, bufferStaticData, bufferDynamicData, bufferSubDynamicData, set),
         globalRenderDataMap = _buildGlobalRenderDataMap(render_config);
 
@@ -151,7 +151,7 @@ export const handleUboConfig = (gl: any, shaderIndex: number, program: WebGLProg
     });
 }
 
-const _setUniqueBindingPoint =ensureFunc((uboBindingPoint: number, name: string, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem: any) => {
+const _setUniqueBindingPoint = ensureFunc((uboBindingPoint: number, name: string, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     it("uboBindingPoint shouldn't exceed maxUniformBufferBindings", () => {
         expect(uboBindingPoint).lte(getMaxUniformBufferBindings(GPUDetectDataFromSystem));
     });
@@ -166,7 +166,7 @@ const _setUniqueBindingPoint =ensureFunc((uboBindingPoint: number, name: string,
     return uboBindingPoint;
 })
 
-const _addInitedUboFuncConfig =ensureFunc((list: UboSingleBufferDataList | UboMultiBufferDataList) => {
+const _addInitedUboFuncConfig = ensureFunc((list: UboSingleBufferDataList | UboMultiBufferDataList) => {
     it("list shouldn't has duplicate ubo data", () => {
         expect(hasDuplicateItems(list)).false;
     });
@@ -210,7 +210,7 @@ const _addInitedUboFuncConfig =ensureFunc((list: UboSingleBufferDataList | UboMu
         return list;
     })
 
-const _addLightInitedUboFuncConfig =(gl: any, list: UboMultiBufferDataList, typeArray: IWebGL2UboTypeArrayConfig, lightCount: number, name: string, setBufferDataFunc: Function) => {
+const _addLightInitedUboFuncConfig = (gl: any, list: UboMultiBufferDataList, typeArray: IWebGL2UboTypeArrayConfig, lightCount: number, name: string, setBufferDataFunc: Function) => {
     var buffers: Array<WebGLBuffer> = [],
         typeArrays: Array<Float32Array> = [];
 
@@ -229,7 +229,7 @@ const _addLightInitedUboFuncConfig =(gl: any, list: UboMultiBufferDataList, type
     return list;
 }
 
-const _createSingleBufferData =(gl: any, name: string, typeArray: IWebGL2UboTypeArrayConfig, setBufferDataFunc: Function) => {
+const _createSingleBufferData = (gl: any, name: string, typeArray: IWebGL2UboTypeArrayConfig, setBufferDataFunc: Function) => {
     return {
         name: name,
         typeArray: _createTypeArray(typeArray),
@@ -238,7 +238,7 @@ const _createSingleBufferData =(gl: any, name: string, typeArray: IWebGL2UboType
     };
 }
 
-const _createTypeArray =({
+const _createTypeArray = ({
                             length
                         }) => {
     return new Float32Array(length);

@@ -8,10 +8,10 @@ import { AssetDatabaseData } from "./AssetDatabaseData";
 // export function loadAsset(...args){
 //     return load(args[0], AssetDatabaseData, args[1], args[2], args[3], args[4] || 100);
 // }
-export function loadAsset(url: string, timeout?:number);
-export function loadAsset(assetArr: Array<AssetData>, timeout?:number);
+export function loadAsset(url: string, timeout?: number);
+export function loadAsset(assetArr: Array<AssetData>, timeout?: number);
 
-export function loadAsset(...args){
+export function loadAsset(...args) {
     return load(args[0], AssetDatabaseData, args[1] || 100);
 }
 
@@ -19,6 +19,6 @@ export const getAsset = (id: string) => {
     return get(id, AssetDatabaseData);
 }
 
-export function setTextureAsset(id: string, source:HTMLImageElement|HTMLCanvasElement, extname:string) {
+export function setTextureAsset(id: string, source: HTMLImageElement | HTMLCanvasElement, extname: string) {
     setTextureAssetSystem(id, source, extname, AssetDatabaseData);
 }

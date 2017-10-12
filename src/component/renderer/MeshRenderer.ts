@@ -24,7 +24,7 @@ export const getMeshRendererRenderList = () => {
     return getRenderList(null, MeshRendererData);
 }
 
-const _checkShouldAlive =(component: MeshRenderer, MeshRendererData: any) => {
+const _checkShouldAlive = (component: MeshRenderer, MeshRendererData: any) => {
     checkComponentShouldAlive(component, MeshRendererData, (component: MeshRenderer, MeshRendererData: any) => {
         return isComponentIndexNotRemoved(component);
     })

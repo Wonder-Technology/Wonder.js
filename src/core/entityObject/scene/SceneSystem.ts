@@ -21,11 +21,11 @@ export const addChild = (scene: Scene, child: GameObject, ThreeDTransformData: a
     addGameObject(scene, child, ThreeDTransformData, GameObjectData);
 }
 
-export const removeChild = (parentUId:number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
+export const removeChild = (parentUId: number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
     removeGameObject(parentUId, childUId, ThreeDTransformData, GameObjectData);
 }
 
-const _isCamera =(gameObject: GameObject, GameObjectData: any) => {
+const _isCamera = (gameObject: GameObject, GameObjectData: any) => {
     return hasComponent(gameObject, getComponentIdFromClass(CameraController), GameObjectData);
 }
 
