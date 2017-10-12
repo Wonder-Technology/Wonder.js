@@ -24,6 +24,8 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
                 operateType: EWorkerOperateType.INIT_CONFIG,
                 isTest: isTest
             });
+
+            setIsTestUtils(isTest, InitConfigData).run();
         })
     }
 }
