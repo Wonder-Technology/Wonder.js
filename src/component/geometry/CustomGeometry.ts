@@ -8,22 +8,22 @@ import { setIndices, setNormals, setTexCoords, setVertices } from "./GeometrySys
 export class CustomGeometry extends Geometry {
 }
 
-export var createCustomGeometry = () => {
+export const createCustomGeometry = () => {
     return create(GeometryData);
 }
 
-export var setCustomGeometryVertices = (geometry: Geometry, vertices: Float32Array) => {
+export const setCustomGeometryVertices = (geometry: Geometry, vertices: Float32Array) => {
     return setVertices(geometry.index, vertices, GeometryData);
 }
 
-export var setCustomGeometryNormals = (geometry: Geometry, normals: Float32Array) => {
+export const setCustomGeometryNormals = (geometry: Geometry, normals: Float32Array) => {
     return setNormals(geometry.index, normals, GeometryData);
 }
 
-export var setCustomGeometryTexCoords = (geometry: Geometry, texCoords: Float32Array) => {
+export const setCustomGeometryTexCoords = (geometry: Geometry, texCoords: Float32Array) => {
     return setTexCoords(geometry.index, texCoords, GeometryData);
 }
 
-export var setCustomGeometryIndices = (geometry: Geometry, indices: Uint16Array | Uint32Array) => {
+export const setCustomGeometryIndices = (geometry: Geometry, indices: Uint16Array | Uint32Array) => {
     return setIndices(geometry.index, indices, GeometryData);
 }

@@ -14,6 +14,8 @@ describe("LightMaterial", function () {
     var DataBufferConfig = wd.DataBufferConfig;
     var EShading = wd.EShading;
     var ELightModel = wd.ELightModel;
+    var MapManagerData = wd.MapManagerData;
+    var TextureData = wd.TextureData;
 
     beforeEach(function () {
         sandbox = sinon.sandbox.create();
@@ -31,7 +33,7 @@ describe("LightMaterial", function () {
 
     describe("only test light material", function () {
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -157,15 +159,15 @@ describe("LightMaterial", function () {
 
                 beforeEach(function () {
                     mat2 = lightMaterialTool.create();
-                    obj2 = gameObjectTool.create();
-                    gameObjectTool.addComponent(obj2, mat2);
-                    sceneTool.addGameObject(obj2);
+                    obj2 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.addComponent(obj2, mat2);
+                    sceneSystemTool.addGameObject(obj2);
                 });
 
                 it("index -= 1", function () {
                     var index = LightMaterialData.index;
 
-                    gameObjectTool.disposeComponent(obj, material);
+                    gameObjectSystemTool.disposeComponent(obj, material);
 
                     expect(LightMaterialData.index).toEqual(index - 1);
                 });
@@ -179,7 +181,7 @@ describe("LightMaterial", function () {
 
                         var materialIndex = material.index;
                         var mat2Index = mat2.index;
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
                         colorTool.judgeIsEqual(lightMaterialTool[getMethodName](componentTool.createComponent(materialIndex)), color2, expect);
                         colorTool.judgeIsEqual(lightMaterialTool[getMethodName](componentTool.createComponent(mat2Index)), defaultColor, expect);
@@ -187,25 +189,25 @@ describe("LightMaterial", function () {
 
                     function judgeSingleValue(getMethodName, setMethodName, defaultValue) {
                         disposeTool.judgeSingleValue(lightMaterialTool, getMethodName, setMethodName, defaultValue, material, mat2, function(material){
-                            gameObjectTool.disposeComponent(obj, material);
+                            gameObjectSystemTool.disposeComponent(obj, material);
                         })
                     }
 
                     function judgeMap(setMapMethodName, hasMapMethodName) {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
                         lightMaterialTool[setMapMethodName](material, texture);
 
-                        var texture2 = textureTool.create();
-                        textureTool.setSource(texture2, {});
+                        var texture2 = textureSystemTool.create();
+                        textureSystemTool.setSource(texture2, {});
 
                         lightMaterialTool[setMapMethodName](mat2, texture2);
 
                         var matIndex1 = material.index;
                         var matIndex2 = mat2.index;
 
-                        gameObjectTool.disposeComponent(obj, material);
+                        gameObjectSystemTool.disposeComponent(obj, material);
 
 
                         expect(LightMaterialData[hasMapMethodName][lightMaterialTool.computeLightBufferIndex(matIndex1)]).toEqual(1);
@@ -237,20 +239,20 @@ describe("LightMaterial", function () {
 
                 // describe("remove by swap the target one and the last one", function () {
                 //     function judge(methodName, mapDataName) {
-                //         var texture = textureTool.create();
-                //         textureTool.setSource(texture, {});
+                //         var texture = textureSystemTool.create();
+                //         textureSystemTool.setSource(texture, {});
                 //
                 //         lightMaterialTool[methodName](material, texture);
                 //
-                //         var texture2 = textureTool.create();
-                //         textureTool.setSource(texture2, {});
+                //         var texture2 = textureSystemTool.create();
+                //         textureSystemTool.setSource(texture2, {});
                 //
                 //         lightMaterialTool[methodName](mat2, texture2);
                 //
                 //         var matIndex1 = material.index;
                 //         var matIndex2 = mat2.index;
                 //
-                //         gameObjectTool.disposeComponent(obj, material);
+                //         gameObjectSystemTool.disposeComponent(obj, material);
                 //
                 //
                 //         expect(LightMaterialData[mapDataName][matIndex1]).toEqual(texture2.index);
@@ -264,6 +266,165 @@ describe("LightMaterial", function () {
                 //         judge("setSpecularMap", "specularMapMap");
                 //     });
                 // });
+            });
+        });
+    });
+
+    describe("test set map", function() {
+        beforeEach(function(){
+
+        });
+
+        describe("setDiffuseMap", function() {
+            var mat;
+            var texture;
+
+            beforeEach(function(){
+                mat = lightMaterialTool.create();
+                texture = textureSystemTool.createTexture();
+            });
+
+            describe("if not set before", function(){
+                it("uniform sampler name is u_diffuseMapSampler", function () {
+                    lightMaterialTool.setDiffuseMap(mat, texture);
+
+                    expect(TextureData.uniformSamplerNameMap[texture.index]).toEqual("u_diffuseMapSampler");
+                });
+            });
+
+            describe("else", function() {
+                var texture2;
+
+
+                beforeEach(function(){
+                    lightMaterialTool.setDiffuseMap(mat, texture);
+
+                    texture2 = textureSystemTool.createTexture();
+                });
+
+                it("replace old texture in matTextureList with new texture", function () {
+                    lightMaterialTool.setDiffuseMap(mat, texture2);
+
+                    expect(MapManagerData.materialTextureList[mat.index]).toEqual([texture2.index]);
+                });
+                it("uniform sampler name not change", function () {
+                    lightMaterialTool.setDiffuseMap(mat, texture2);
+
+                    expect(TextureData.uniformSamplerNameMap[texture.index]).toEqual("u_diffuseMapSampler");
+                });
+                it("texture offset not change", function () {
+                    lightMaterialTool.setDiffuseMap(mat, texture2);
+
+                    expect(MapManagerData.textureOffsetMap[mat.index]["u_diffuseMapSampler"]).toEqual(0);
+                });
+            });
+
+            it("hasDiffuseMap should return true", function () {
+                expect(lightMaterialTool.hasDiffuseMap(mat.index, LightMaterialData)).toBeFalsy();
+
+                lightMaterialTool.setDiffuseMap(mat, texture);
+
+                expect(lightMaterialTool.hasDiffuseMap(mat.index, LightMaterialData)).toBeTruthy();
+            });
+        });
+
+        describe("setSpecularMap", function() {
+            var mat;
+            var texture;
+
+            beforeEach(function(){
+                mat = lightMaterialTool.create();
+                texture = textureSystemTool.createTexture();
+            });
+
+            describe("if not set before", function(){
+                it("uniform sampler name is u_specularMapSampler", function () {
+                    lightMaterialTool.setSpecularMap(mat, texture);
+
+                    expect(TextureData.uniformSamplerNameMap[texture.index]).toEqual("u_specularMapSampler");
+                });
+            });
+
+            describe("else", function() {
+                var texture2;
+
+
+                beforeEach(function(){
+                    lightMaterialTool.setSpecularMap(mat, texture);
+
+                    texture2 = textureSystemTool.createTexture();
+                });
+
+                it("replace old texture in matTextureList with new texture", function () {
+                    lightMaterialTool.setSpecularMap(mat, texture2);
+
+                    expect(MapManagerData.materialTextureList[mat.index]).toEqual([texture2.index]);
+                });
+                it("uniform sampler name not change", function () {
+                    lightMaterialTool.setSpecularMap(mat, texture2);
+
+                    expect(TextureData.uniformSamplerNameMap[texture.index]).toEqual("u_specularMapSampler");
+                });
+            });
+
+            it("hasSpecularMap should return true", function () {
+                expect(lightMaterialTool.hasSpecularMap(mat.index, LightMaterialData)).toBeFalsy();
+
+                lightMaterialTool.setSpecularMap(mat, texture);
+
+                expect(lightMaterialTool.hasSpecularMap(mat.index, LightMaterialData)).toBeTruthy();
+            });
+        });
+
+        describe("test set different maps", function () {
+            var mat;
+            var diffuseTexture;
+            var specularTexture;
+
+            beforeEach(function(){
+                mat = lightMaterialTool.create();
+                diffuseTexture = textureSystemTool.createTexture();
+                specularTexture = textureSystemTool.createTexture();
+
+                lightMaterialTool.setDiffuseMap(mat, diffuseTexture);
+                lightMaterialTool.setSpecularMap(mat, specularTexture);
+            });
+
+            describe("if not set before", function(){
+                it("texture count + 1", function () {
+                    expect(MapManagerData.textureCounts[mat.index]).toEqual(2);
+                });
+                it("add texture to matTextureList", function () {
+                    expect(MapManagerData.materialTextureList[mat.index]).toEqual([diffuseTexture.index, specularTexture.index]);
+                });
+                it("test set texture offset", function () {
+                    expect(MapManagerData.textureOffsetMap[mat.index]["u_diffuseMapSampler"]).toEqual(0);
+                    expect(MapManagerData.textureOffsetMap[mat.index]["u_specularMapSampler"]).toEqual(1);
+                });
+            });
+
+            describe("else", function() {
+                var diffuseTexture2;
+                var specularTexture2;
+
+                beforeEach(function(){
+                    diffuseTexture2 = textureSystemTool.createTexture();
+                    specularTexture2 = textureSystemTool.createTexture();
+
+                    lightMaterialTool.setDiffuseMap(mat, diffuseTexture2);
+                    lightMaterialTool.setSpecularMap(mat, specularTexture2);
+                });
+
+                it("texture count not change", function () {
+                    expect(MapManagerData.textureCounts[mat.index]).toEqual(2);
+                });
+                it("replace old texture in matTextureList with new texture", function () {
+                    expect(MapManagerData.materialTextureList[mat.index]).toEqual([diffuseTexture2.index, specularTexture2.index]);
+                });
+                it("texture offset not change", function () {
+                    expect(MapManagerData.textureOffsetMap[mat.index]["u_diffuseMapSampler"]).toEqual(0);
+                    expect(MapManagerData.textureOffsetMap[mat.index]["u_specularMapSampler"]).toEqual(1);
+                });
             });
         });
     });

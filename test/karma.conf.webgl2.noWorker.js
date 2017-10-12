@@ -11,8 +11,8 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'test/unit/environment/webgl2.js',
-        'test/unit/environment/noWorker.js',
+        'test/helper/environment/webgl2.js',
+        'test/helper/environment/noWorker.js',
 
         'dist/wd.forTest.js',
 
@@ -35,20 +35,24 @@
         // 'test/unit/**/BufferWriter.js',
 
         // 'test/unit/no_worker/**',
+        // 'test/unit/no_worker/**/AssetData*',
+        // 'test/unit/no_worker/**/TextureAsset*',
+        // 'test/unit/no_worker/**/ImageTextureAsset*',
+        // 'test/unit/no_worker/**/hotLoad*',
         // 'test/unit/no_worker/**/ubo*',
         // 'test/unit/no_worker/**/*Ubo*',
         // 'test/unit/no_worker/**/deferShading*',
         // 'test/unit/no_worker/**/deferShadingBug*',
-        'test/unit/no_worker/**/drawDefer*',
+        // 'test/unit/no_worker/**/drawDefer*',
         // 'test/unit/no_worker/**/*Defer*',
         // 'test/unit/no_worker/**/initDeferShading*',
         // 'test/unit/no_worker/**/basicRender*',
         // 'test/unit/no_worker/**/glsl*',
         // 'test/unit/no_worker/**/shaderSpec*',
         // 'test/unit/no_worker/**/reallocate*',
-        // 'test/unit/no_worker/**/*MapManager*',
+        'test/unit/no_worker/**/*MapManager*',
         // 'test/unit/no_worker/**/*Geometry*',
-        // 'test/unit/no_worker/**/*Texture*',
+        // 'test/unit/no_worker/**/TextureSpec*',
         // 'test/unit/no_worker/**/ColorSpec*',
         // 'test/unit/no_worker/**/shader*Spec*',
         // 'test/unit/no_worker/**/Shader*Spec*',
@@ -57,8 +61,9 @@
         // 'test/unit/no_worker/**/*PointLightSpec*',
         // 'test/unit/no_worker/**/Ambient*Spec*',
         // 'test/unit/no_worker/**/*Geometry*',
-        // 'test/unit/no_worker/**/*LightMaterial*',
+        'test/unit/no_worker/**/*LightMaterial*',
         // 'test/unit/no_worker/**/*BasicMaterial*',
+        // 'test/unit/no_worker/**/ThreeDTransform*',
         // 'test/unit/no_worker/**/Material*',
         // 'test/unit/no_worker/**/draw*',
         // 'test/unit/no_worker/**/*GameObject*',
@@ -83,9 +88,9 @@
         // 'test/unit/**/Scene*',
         // 'test/unit/**/shaderSource*',
 
-        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
+        {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
 
-        // {pattern: 'test/res/**', watched: false, included: false, served: true}
+        {pattern: 'test/res/**', watched: false, included: false, served: true}
     ],
 
 

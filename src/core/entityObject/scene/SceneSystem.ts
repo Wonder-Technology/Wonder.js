@@ -9,11 +9,11 @@ import { ensureFunc, it } from "../../../definition/typescript/decorator/contrac
 import { expect } from "wonder-expect.js";
 import { getComponentIdFromClass } from "../../../component/ComponentComponentIdManager";
 
-export var create = (GameObjectData: any) => {
+export const create = (GameObjectData: any) => {
     return createGameObject(null, GameObjectData);
 }
 
-export var addChild = (scene: Scene, child: GameObject, ThreeDTransformData: any, GameObjectData: any, SceneData: any) => {
+export const addChild = (scene: Scene, child: GameObject, ThreeDTransformData: any, GameObjectData: any, SceneData: any) => {
     if (_isCamera(child, GameObjectData)) {
         SceneData.cameraArray.push(child);
     }
@@ -21,15 +21,15 @@ export var addChild = (scene: Scene, child: GameObject, ThreeDTransformData: any
     addGameObject(scene, child, ThreeDTransformData, GameObjectData);
 }
 
-export var removeChild = (gameObject: GameObject, child: GameObject, ThreeDTransformData: any, GameObjectData: any) => {
-    removeGameObject(gameObject, child, ThreeDTransformData, GameObjectData);
+export const removeChild = (parentUId:number, childUId: number, ThreeDTransformData: any, GameObjectData: any) => {
+    removeGameObject(parentUId, childUId, ThreeDTransformData, GameObjectData);
 }
 
-var _isCamera = (gameObject: GameObject, GameObjectData: any) => {
+const _isCamera =(gameObject: GameObject, GameObjectData: any) => {
     return hasComponent(gameObject, getComponentIdFromClass(CameraController), GameObjectData);
 }
 
-export var getCurrentCamera = ensureFunc((camera: GameObject, SceneData: any) => {
+export const getCurrentCamera = ensureFunc((camera: GameObject, SceneData: any) => {
     it("current camera should exist", () => {
         expect(camera).exist;
     });
@@ -37,6 +37,6 @@ export var getCurrentCamera = ensureFunc((camera: GameObject, SceneData: any) =>
     return SceneData.cameraArray[0];
 })
 
-export var initData = (SceneData: any) => {
+export const initData = (SceneData: any) => {
     SceneData.cameraArray = [];
 }

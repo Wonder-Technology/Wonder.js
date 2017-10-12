@@ -23,7 +23,7 @@ describe("test init ubo", function () {
         var geo;
 
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
             material = data.material;
             cameraGameObject = data.cameraGameObject;

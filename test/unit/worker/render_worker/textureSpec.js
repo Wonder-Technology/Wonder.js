@@ -4,7 +4,6 @@ describe("texture", function () {
     var worker;
 
     var EWorkerOperateType = wd.EWorkerOperateType;
-    var ERenderWorkerState = wd.ERenderWorkerState;
     var MapManagerData = wd.MapManagerData;
     var TextureData = wd.TextureData;
 
@@ -24,62 +23,91 @@ describe("texture", function () {
     describe("send texture data to render worker", function () {
         var texture1, texture2, texture3;
 
+        function createTextureSource(width, height) {
+            var source = new Image();
+            source.width = width || 100;
+            source.height = height || 200;
+
+            return source;
+        }
+
+        function getArrayBufferFromImageData(source, width, height) {
+            return textureSystemTool.getImageData(source, width, height).data.buffer;
+        }
+
         beforeEach(function () {
-            texture1 = textureTool.create();
-            texture2 = textureTool.create();
-            texture3 = textureTool.create();
+            texture1 = textureSystemTool.create();
+            texture2 = textureSystemTool.create();
+            texture3 = textureSystemTool.create();
         });
 
-        it("send source's src and index to render worker", function () {
-            var source1 = {
-                src:"a.jpg"
-            }
-            var source2 = {
-                src:"b.jpg"
-            }
+        describe("send all sources' imageData's arrayBuffer,width,height and texture index to render worker", function () {
+            var width1,height1;
+            var width2,height2;
+            var arrayBuffer1,arrayBuffer2;
 
-            textureTool.setSource(texture2, source1);
-            textureTool.setSource(texture3, source2);
+            beforeEach(function(){
+                width1 = 100;
+                height1 = 50;
+                var source1 = createTextureSource(width1, height1);
+
+                width2 = 101;
+                height2 = 51;
+                var source2 = createTextureSource(width2, height2);
+
+                textureSystemTool.setSource(texture2, source1);
+                textureSystemTool.setSource(texture3, source2);
+
+                arrayBuffer1 = getArrayBufferFromImageData(source1, width1, height1);
+                arrayBuffer2 = getArrayBufferFromImageData(source2, width2, height2);
+
+
+                sceneSystemTool.prepareGameObjectAndAddToScene();
+
+                directorTool.init(sandbox);
+                sendDrawRendercommandBufferTool.markInitComplete();
 
 
 
-            sceneTool.prepareGameObjectAndAddToScene();
+                worker = workerTool.getRenderWorker();
+            });
 
-            directorTool.init(sandbox);
-            sendDrawRendercommandBufferTool.markInitComplete();
-
-
-            // workerTool.runRender(1);
-
-
-            worker = workerTool.getRenderWorker();
-
-            expect(worker.postMessage).toCalledWith({
-                operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
-                materialData:sinon.match.any,
-                geometryData:sinon.match.any,
-                lightData:sinon.match.any,
-                renderData:sinon.match.any,
-                textureData: {
-                    mapManagerBuffer: sinon.match.any,
-                    textureBuffer: sinon.match.any,
-                    index: sinon.match.any,
-                    uniformSamplerNameMap: sinon.match.any,
-                    imageSrcIndexArr:[
-                        {
-                            src:source1.src,
-                            index:1
-                        },
-                        {
-                            src:source2.src,
-                            index:2
-                        },
-                    ]
-                }
+            it("test", function () {
+                expect(worker.postMessage).toCalledWith({
+                    operateType: EWorkerOperateType.INIT_MATERIAL_GEOMETRY_LIGHT_TEXTURE,
+                    materialData:sinon.match.any,
+                    geometryData:sinon.match.any,
+                    lightData:sinon.match.any,
+                    renderData:sinon.match.any,
+                    textureData: {
+                        mapManagerBuffer: sinon.match.any,
+                        textureBuffer: sinon.match.any,
+                        index: sinon.match.any,
+                        uniformSamplerNameMap: sinon.match.any,
+                        needAddedImageDataArr:[
+                            {
+                                arrayBuffer:arrayBuffer1,
+                                width:width1,
+                                height: height1,
+                                index:0
+                            },
+                            {
+                                arrayBuffer:arrayBuffer2,
+                                width:width2,
+                                height: height2,
+                                index:1
+                            }
+                        ]
+                    }
+                });
+            });
+            it("send imageData's arraybuffer as transferList", function () {
+                expect(worker.postMessage).toCalledWith(sinon.match.any, [arrayBuffer1, arrayBuffer2]);
             });
         });
+
         it("send texture count to render worker", function () {
-            sceneTool.prepareGameObjectAndAddToScene();
+            sceneSystemTool.prepareGameObjectAndAddToScene();
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -97,16 +125,16 @@ describe("texture", function () {
                     textureBuffer: sinon.match.any,
                     index: 3,
                     uniformSamplerNameMap: sinon.match.any,
-                    imageSrcIndexArr:sinon.match.any
+                    needAddedImageDataArr: sinon.match.any
                 }
             });
         });
         it("send uniformSamplerNameMap to render worker", function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             var mat = data.material;
 
-            basicMaterialTool.addMap(mat, texture2);
-            basicMaterialTool.addMap(mat, texture3);
+            basicMaterialTool.setMap(mat, texture2);
+            // basicMaterialTool.setMap(mat, texture3);
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -123,8 +151,7 @@ describe("texture", function () {
             }).args[0][0].textureData.uniformSamplerNameMap).toEqual(
                 [
                     undefined,
-                    "u_sampler2D0",
-                    "u_sampler2D1"
+                    "u_sampler2D"
                 ]
             )
         });
@@ -135,7 +162,6 @@ describe("texture", function () {
 
             beforeEach(function () {
                 gl = workerTool.createGL(sandbox);
-
 
                 var mapManagerBuffer = MapManagerData.buffer;
                 var textureBuffer = TextureData.buffer;
@@ -150,11 +176,10 @@ describe("texture", function () {
                             mapManagerBuffer: mapManagerBuffer,
                             textureBuffer: textureBuffer,
                             index: 3,
-                            imageSrcIndexArr: [],
+                            needAddedImageDataArr: [],
                             uniformSamplerNameMap: [
                                 undefined,
-                                "u_sampler2D0",
-                                "u_sampler2D1"
+                                "u_sampler2D"
                             ]
                         }
                     }
@@ -162,28 +187,21 @@ describe("texture", function () {
             });
 
             it("save texture count", function () {
-                testTool.closeContractCheck();
-
                 workerTool.execRenderWorkerMessageHandler(e);
 
                 expect(TextureWorkerData.index).toEqual(3);
             });
             it("save uniformSamplerNameMap", function () {
-                testTool.closeContractCheck();
-
                 workerTool.execRenderWorkerMessageHandler(e);
 
                 expect(TextureWorkerData.uniformSamplerNameMap).toEqual([
                     undefined,
-                    "u_sampler2D0",
-                    "u_sampler2D1"
+                    "u_sampler2D"
                 ]);
             });
 
             describe("create webgl texture", function () {
                 it("test create", function () {
-                    testTool.closeContractCheck();
-
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     expect(gl.createTexture.callCount).toEqual(3);
@@ -192,28 +210,44 @@ describe("texture", function () {
 
             describe("set TextureWorkerData's sourceMap", function () {
                 var postMessage;
+                var width1,height1;
+                var width2,height2;
 
                 function judgeWaitForInitComplete(done, judgeFunc, expect){
                     renderWorkerTool.judgeWaitForInitComplete(done, postMessage, judgeFunc, expect);
                 }
 
+                function createArrayBuffer(width, height) {
+                    return new ArrayBuffer(4 * width * height);
+                }
+
                 beforeEach(function(){
-                    e.data.textureData.imageSrcIndexArr = [
+                    testTool.closeContractCheck();
+
+                    width1 = 100;
+                    height1 = 200;
+                    width2 = 1;
+                    height2 = 2;
+
+                    e.data.textureData.needAddedImageDataArr = [
                         {
-                            src:resUtls.getRes("1.jpg"), index: 1
+                            arrayBuffer:createArrayBuffer(width1, height1),
+                            width:width1,
+                            height: height1,
+                            index:0
                         },
                         {
-                            src:resUtls.getRes("2.png"), index: 2
-                        },
-                        {
-                            src:resUtls.getRes("2.png"), index: 3
+                            arrayBuffer:createArrayBuffer(width2, height2),
+                            width:width2,
+                            height: height2,
+                            index:1
                         }
                     ]
 
                     postMessage = workerTool.getWorkerPostMessage();
                 })
 
-                it("fetch src and createImageBitmap", function (done) {
+                it("create ImageData from arrayBuffer and createImageBitmap", function (done) {
                     if(bowser.firefox){
                         done();
                         return;
@@ -222,10 +256,16 @@ describe("texture", function () {
                     workerTool.execRenderWorkerMessageHandler(e);
 
                     judgeWaitForInitComplete(done, function(expect){
-                        expect(TextureWorkerData.sourceMap.length).toEqual(3);
-                        expect(TextureWorkerData.sourceMap[0]).toBeInstanceOf(ImageBitmap);
-                        expect(TextureWorkerData.sourceMap[1]).toBeInstanceOf(ImageBitmap);
-                        expect(TextureWorkerData.sourceMap[2]).toBeInstanceOf(ImageBitmap);
+                        expect(TextureWorkerData.sourceMap.length).toEqual(2);
+                        var sourceMap1 = TextureWorkerData.sourceMap[0];
+                        expect(sourceMap1).toBeInstanceOf(ImageBitmap);
+                        expect(sourceMap1.width).toEqual(width1);
+                        expect(sourceMap1.height).toEqual(height1);
+                        var sourceMap2 = TextureWorkerData.sourceMap[1];
+                        expect(sourceMap2).toBeInstanceOf(ImageBitmap);
+                        expect(sourceMap2.width).toEqual(width2);
+                        expect(sourceMap2.height).toEqual(height2);
+
                     }, expect)
                 });
 
@@ -264,7 +304,6 @@ describe("texture", function () {
 
         describe("test in render worker", function () {
             var gl;
-            // var e;
 
             beforeEach(function () {
                 gl = workerTool.createGL(sandbox);

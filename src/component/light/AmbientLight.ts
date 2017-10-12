@@ -10,20 +10,20 @@ import { getGameObject } from "./SpecifyLightSystem";
 export class AmbientLight extends Light {
 }
 
-export var createAmbientLight = () => {
+export const createAmbientLight = () => {
     return create(AmbientLightData);
 }
 
-export var getAmbientLightGameObject = requireCheckFunc((component: AmbientLight) => {
+export const getAmbientLightGameObject = requireCheckFunc((component: AmbientLight) => {
     checkLightShouldAlive(component);
 }, (component: AmbientLight) => {
     return getGameObject(component.index, AmbientLightData);
 })
 
-export var getAmbientLightColor = (light: AmbientLight) => {
+export const getAmbientLightColor = (light: AmbientLight) => {
     return getColor(light.index, AmbientLightData);
 }
 
-export var setAmbientLightColor = (light: AmbientLight, color: Color) => {
+export const setAmbientLightColor = (light: AmbientLight, color: Color) => {
     setColor(light.index, color, AmbientLightData);
 }

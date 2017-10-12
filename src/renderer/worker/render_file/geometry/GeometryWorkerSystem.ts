@@ -17,7 +17,7 @@ import { isValidVal } from "../../../../utils/arrayUtils";
 import { EDrawMode } from "../../../enum/EDrawMode";
 import { getSlice } from "../../../../utils/typeArrayUtils";
 
-export var getVertices = ensureFunc((vertices: Float32Array, index: number, GeometryWorkerData: any) => {
+export const getVertices = ensureFunc((vertices: Float32Array, index: number, GeometryWorkerData: any) => {
     it("vertices should exist", () => {
         expect(vertices).exist;
     })
@@ -25,7 +25,7 @@ export var getVertices = ensureFunc((vertices: Float32Array, index: number, Geom
     return GeometryWorkerData.verticesCacheMap[index];
 })
 
-export var getNormals = ensureFunc((normals: Float32Array, index: number, GeometryWorkerData: any) => {
+export const getNormals = ensureFunc((normals: Float32Array, index: number, GeometryWorkerData: any) => {
     it("normals should exist", () => {
         expect(normals).exist;
     })
@@ -33,7 +33,7 @@ export var getNormals = ensureFunc((normals: Float32Array, index: number, Geomet
     return GeometryWorkerData.normalsCacheMap[index];
 })
 
-export var getTexCoords = ensureFunc((texCoords: Float32Array, index: number, GeometryWorkerData: any) => {
+export const getTexCoords = ensureFunc((texCoords: Float32Array, index: number, GeometryWorkerData: any) => {
     it("texCoords should exist", () => {
         expect(texCoords).exist;
     })
@@ -41,7 +41,7 @@ export var getTexCoords = ensureFunc((texCoords: Float32Array, index: number, Ge
     return GeometryWorkerData.texCoordsCacheMap[index];
 })
 
-export var getIndices = ensureFunc((indices: Uint16Array | Uint32Array, index: number, GeometryWorkerData: any) => {
+export const getIndices = ensureFunc((indices: Uint16Array | Uint32Array, index: number, GeometryWorkerData: any) => {
     it("indices should exist", () => {
         expect(indices).exist;
     })
@@ -49,14 +49,14 @@ export var getIndices = ensureFunc((indices: Uint16Array | Uint32Array, index: n
     return GeometryWorkerData.indicesCacheMap[index];
 })
 
-export var updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryWorkerInfoList, GeometryWorkerData: any) => {
+export const updatePointCacheDatas = (verticesInfoList: GeometryWorkerInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryWorkerInfoList, GeometryWorkerData: any) => {
     _updatePointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _updatePointCacheData(normalsInfoList, GeometryWorkerData.normals, GeometryWorkerData.normalsCacheMap);
     _updatePointCacheData(texCoordsInfoList, GeometryWorkerData.texCoords, GeometryWorkerData.texCoordsCacheMap);
     _updatePointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-var _updatePointCacheData = (infoList: GeometryWorkerInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+const _updatePointCacheData =(infoList: GeometryWorkerInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     if (infoList === void 0) {
         return;
     }
@@ -69,7 +69,7 @@ var _updatePointCacheData = (infoList: GeometryWorkerInfoList | undefined, point
     }
 }
 
-export var resetPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
+export const resetPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryWorkerInfoList, texCoordsInfoList: GeometryWorkerInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.normalsCacheMap = createMap();
     GeometryWorkerData.texCoordsCacheMap = createMap();
@@ -81,14 +81,14 @@ export var resetPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsIn
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-export var setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryInfoList, texCoordsInfoList: GeometryInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
+export const setPointCacheDatas = (verticesInfoList: GeometryInfoList, normalsInfoList: GeometryInfoList, texCoordsInfoList: GeometryInfoList, indicesInfoList: GeometryInfoList, GeometryWorkerData: any) => {
     _setPointCacheData(verticesInfoList, GeometryWorkerData.vertices, GeometryWorkerData.verticesCacheMap);
     _setPointCacheData(normalsInfoList, GeometryWorkerData.normals, GeometryWorkerData.normalsCacheMap);
     _setPointCacheData(texCoordsInfoList, GeometryWorkerData.texCoords, GeometryWorkerData.texCoordsCacheMap);
     _setPointCacheData(indicesInfoList, GeometryWorkerData.indices, GeometryWorkerData.indicesCacheMap);
 }
 
-var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
+const _setPointCacheData =requireCheckFunc((infoList: GeometryInfoList | undefined, points: Float32Array | Uint16Array | Uint32Array, cacheMap: object) => {
     it("infoList should has no invalid value", () => {
         if (infoList === void 0) {
             return;
@@ -111,19 +111,19 @@ var _setPointCacheData = requireCheckFunc((infoList: GeometryInfoList | undefine
     }
 })
 
-export var getIndexType = getIndexTypeUtils;
+export const getIndexType = getIndexTypeUtils;
 
-export var getIndexTypeSize = getIndexTypeSizeUtils;
+export const getIndexTypeSize = getIndexTypeSizeUtils;
 
-export var hasIndices = (index: number, GeometryWorkerData: any) => hasIndicesUtils(index, getIndices, GeometryWorkerData);
+export const hasIndices = (index: number, GeometryWorkerData: any) => hasIndicesUtils(index, getIndices, GeometryWorkerData);
 
-export var getDrawMode = getDrawModeUtils;
+export const getDrawMode = getDrawModeUtils;
 
-export var getVerticesCount = (index: number, GeometryWorkerData: any) => getVerticesCountUtils(index, getVertices, GeometryWorkerData);
+export const getVerticesCount = (index: number, GeometryWorkerData: any) => getVerticesCountUtils(index, getVertices, GeometryWorkerData);
 
-export var getIndicesCount = (index: number, GeometryWorkerData: any) => getIndicesCountUtils(index, getIndices, GeometryWorkerData);
+export const getIndicesCount = (index: number, GeometryWorkerData: any) => getIndicesCountUtils(index, getIndices, GeometryWorkerData);
 
-export var initData = (buffer: SharedArrayBuffer, indexType: EBufferType, indexTypeSize: number, DataBufferConfig: any, GeometryWorkerData: any) => {
+export const initData = (buffer: SharedArrayBuffer, indexType: EBufferType, indexTypeSize: number, DataBufferConfig: any, GeometryWorkerData: any) => {
     GeometryWorkerData.verticesCacheMap = createMap();
     GeometryWorkerData.normalsCacheMap = createMap();
     GeometryWorkerData.texCoordsCacheMap = createMap();

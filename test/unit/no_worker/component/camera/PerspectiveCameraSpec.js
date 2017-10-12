@@ -13,9 +13,9 @@ describe("PerspectiveCamera", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         cameraGameObject = data.cameraGameObject;
-        cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+        cameraController = gameObjectSystemTool.getComponent(cameraGameObject, wd.CameraController);
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 
@@ -32,9 +32,9 @@ describe("PerspectiveCamera", function () {
         });
 
         it("get fovy", function(){
-            cameraControllerTool.setPerspectiveCameraFovy(cameraController, 50);
+            cameraControllerSystemTool.setPerspectiveCameraFovy(cameraController, 50);
 
-            expect(cameraControllerTool.getPerspectiveCameraFovy(cameraController)).toEqual(50);
+            expect(cameraControllerSystemTool.getPerspectiveCameraFovy(cameraController)).toEqual(50);
         });
     });
 
@@ -44,9 +44,9 @@ describe("PerspectiveCamera", function () {
         });
 
         it("get aspect", function(){
-            cameraControllerTool.setPerspectiveCameraAspect(cameraController, 0.5);
+            cameraControllerSystemTool.setPerspectiveCameraAspect(cameraController, 0.5);
 
-            expect(cameraControllerTool.getPerspectiveCameraAspect(cameraController)).toEqual(0.5);
+            expect(cameraControllerSystemTool.getPerspectiveCameraAspect(cameraController)).toEqual(0.5);
         });
     });
 
@@ -56,14 +56,14 @@ describe("PerspectiveCamera", function () {
         });
 
         it("remove fovy", function () {
-            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(cameraGameObject, cameraController);
 
-            expect(cameraControllerTool.getPerspectiveCameraFovy(cameraController)).toBeUndefined();
+            expect(cameraControllerSystemTool.getPerspectiveCameraFovy(cameraController)).toBeUndefined();
         });
         it("remove aspect", function () {
-            gameObjectTool.disposeComponent(cameraGameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(cameraGameObject, cameraController);
 
-            expect(cameraControllerTool.getPerspectiveCameraAspect(cameraController)).toBeUndefined();
+            expect(cameraControllerSystemTool.getPerspectiveCameraAspect(cameraController)).toBeUndefined();
         });
     });
 });

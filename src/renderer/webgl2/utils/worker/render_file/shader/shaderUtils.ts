@@ -26,11 +26,11 @@ import { setEmptyLocationMap } from "./location/locationUtils";
 import { createMap } from "../../../../../../utils/objectUtils";
 import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
 
-export var getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
+export const getNoMaterialShaderIndex = (shaderName: string, ShaderDataFromSystem: any) => {
     return ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName];
 }
 
-export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export const initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var shaderIndex = initNoMaterialShaderUtils(state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 
     initShaderDataMap.ShaderDataFromSystem.shaderIndexByShaderNameMap[shaderName] = shaderIndex;
@@ -38,11 +38,11 @@ export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, mat
     return shaderIndex;
 }
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export const initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
-var _init = (state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+const _init =(state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL2ShaderLibContentGenerator, initShaderFuncDataMap: IWebGL2InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         DeviceManagerDataFromSystem,
@@ -84,7 +84,7 @@ var _init = (state: Map<any, any>, materialIndex: number | null, materialShaderL
     return shaderIndex;
 }
 
-export var bindVao = (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
+export const bindVao = (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
     if (ProgramDataFromSystem.lastBindedVao === vao) {
         return;
     }
@@ -94,7 +94,7 @@ export var bindVao = (gl: WebGLRenderingContext, vao: WebGLVertexArrayObject, Pr
     bindVaoUtils(gl, vao);
 }
 
-export var createAndInitVao = (gl: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {
+export const createAndInitVao = (gl: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {
     positionLocation,
     normalLocation,
     texCoordLocation,
@@ -132,7 +132,7 @@ export var createAndInitVao = (gl: any, geometryIndex: number, vaoMap: VaoMap, v
     return vao;
 }
 
-export var initData = (ShaderDataFromSystem: any) => {
+export const initData = (ShaderDataFromSystem: any) => {
     ShaderDataFromSystem.index = 0;
     ShaderDataFromSystem.count = 0;
 

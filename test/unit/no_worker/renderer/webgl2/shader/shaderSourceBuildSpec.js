@@ -12,7 +12,7 @@ describe("shader source build", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;

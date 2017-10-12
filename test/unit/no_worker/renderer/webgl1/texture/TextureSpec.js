@@ -21,7 +21,7 @@ describe("Texture", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -31,9 +31,9 @@ describe("Texture", function () {
         gl = stateTool.getGLFromFakeGLState(state);
 
 
-        texture = textureTool.create();
+        texture = textureSystemTool.create();
 
-        basicMaterialTool.addMap(material, texture);
+        basicMaterialTool.setMap(material, texture);
     });
     afterEach(function () {
         testTool.clear(sandbox);
@@ -89,8 +89,8 @@ describe("Texture", function () {
             beforeEach(function () {
                 testTool.closeContractCheck();
 
-                texture2 = textureTool.create();
-                basicMaterialTool.addMap(material, texture2);
+                texture2 = textureSystemTool.create();
+                lightMaterialTool.setDiffuseMap(material, texture2);
 
                 glUnit0 = "TEXTURE0";
                 glUnit1 = "TEXTURE1";
@@ -143,13 +143,13 @@ describe("Texture", function () {
         it("send unit index", function () {
             var pos1 = 0;
             var pos2 = 1;
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos1);
-            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D1").returns(pos2);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D").returns(pos1);
+            gl.getUniformLocation.withArgs(sinon.match.any, "u_diffuseMapSampler").returns(pos2);
 
 
-            var texture2 = textureTool.create();
+            var texture2 = textureSystemTool.create();
 
-            basicMaterialTool.addMap(material, texture2);
+            lightMaterialTool.setDiffuseMap(material, texture2);
 
 
             directorTool.init(state);

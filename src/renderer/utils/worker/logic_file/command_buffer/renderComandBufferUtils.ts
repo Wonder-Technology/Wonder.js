@@ -13,7 +13,7 @@ import { CameraController } from "../../../../../component/camera/CameraControll
 import { getPMatrix, getWorldToCameraMatrix } from "../../../../../component/camera/CameraControllerSystem";
 import { getNormalMatrix, getPosition } from "../../../../../component/transform/ThreeDTransformSystem";
 
-export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
+export const createRenderCommandBufferData = requireCheckFunc((state: Map<any, any>, createBasicRenderCommandBufferData: Function, createLightRenderCommandBufferData: Function, GlobalTempData: any, GameObjectData: any, ThreeDTransformData: any, CameraControllerData: any, CameraData: any, MaterialData: any, GeometryData: any, SceneData: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any, renderGameObjectArray: Array<GameObject>) => {
     it("renderGameObjectArray.length should not exceed RenderCommandBufferData->buffer's count", () => {
         expect(renderGameObjectArray.length).lte(DataBufferConfig.renderCommandBufferCount)
     })
@@ -24,10 +24,10 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
         pMatrix: Float32Array = null,
         cameraPosition: Float32Array = null,
         normalMatrix: Float32Array = null,
-        currentCamera = getCurrentCamera(SceneData),
-        currentCameraComponent = getComponent(currentCamera, getComponentIdFromClass(CameraController), GameObjectData),
+        currentCameraUId = getCurrentCamera(SceneData).uid,
+        currentCameraComponent = getComponent(currentCameraUId, getComponentIdFromClass(CameraController), GameObjectData),
         currentCameraIndex = currentCameraComponent.index,
-        currentCameraTransform = getTransform(currentCamera, GameObjectData);
+        currentCameraTransform = getTransform(currentCameraUId, GameObjectData);
 
     vMatrix = getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
     pMatrix = getPMatrix(currentCameraIndex, CameraData).values;
@@ -35,7 +35,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     normalMatrix = getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData).values;
 
     for (let gameObject of renderGameObjectArray) {
-        let material = getMaterial(gameObject, GameObjectData);
+        let material = getMaterial(gameObject.uid, GameObjectData);
 
         if (ClassUtils.getClassNameByInstance(material) === "BasicMaterial") {
             basicMaterialGameObjectArr.push(gameObject);
@@ -57,7 +57,7 @@ export var createRenderCommandBufferData = requireCheckFunc((state: Map<any, any
     }
 });
 
-export var initData = (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => {
+export const initData = (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => {
     initBasicRenderComandBufferData(DataBufferConfig, BasicRenderCommandBufferData);
     initLightRenderComandBufferData(DataBufferConfig, LightRenderCommandBufferData);
 }

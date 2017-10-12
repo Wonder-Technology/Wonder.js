@@ -18,15 +18,6 @@ var geometryTool = (function () {
         },
         setVertices: function (index, data) {
             wd.setGeometryVertices(index, data, wd.GeometryData);
-        },
-        setIndexType: function (type) {
-            wd.GeometryData.indexType = type;
-        },
-        setIndexTypeSize: function (size) {
-            wd.GeometryData.indexTypeSize = size;
-        },
-        resetData: function(){
-            wd.initGeometryData(wd.DataBufferConfig, wd.GeometryData, wd.GPUDetectData);
         }
     }
 })()

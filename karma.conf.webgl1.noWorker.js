@@ -11,8 +11,8 @@
 
         // list of files / patterns to load in the browser
         files: [
-            'test/unit/environment/webgl1.js',
-            'test/unit/environment/noWorker.js',
+            'test/helper/environment/webgl1.js',
+            'test/helper/environment/noWorker.js',
 
             'dist/wd.js',
 
@@ -33,9 +33,9 @@
 
             'test/unit/no_worker/**',
 
-            {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true}
+            {pattern: 'dist/wd.js.map', watched: false, included: false, served: true, nocache:true},
 
-            // {pattern: 'test/res/**', watched: false, included: false, served: true}
+            {pattern: 'test/res/**', watched: false, included: false, served: true}
         ],
 
 

@@ -34,6 +34,30 @@ var glslUtils = (function () {
                 TEXTURE_2D: "TEXTURE_2D",
                 TEXTURE_CUBE_MAP: "TEXTURE_CUBE_MAP",
 
+
+                TEXTURE0: "TEXTURE0",
+                TEXTURE1: "TEXTURE1",
+                TEXTURE2: "TEXTURE2",
+                TEXTURE3: "TEXTURE3",
+                TEXTURE4: "TEXTURE4",
+                TEXTURE5: "TEXTURE5",
+                TEXTURE6: "TEXTURE6",
+
+
+                RGB: "RGB",
+                RGBA: "RGBA",
+                ALPHA: "ALPHA",
+                LUMINANCE: "LUMINANCE",
+                LUMINANCE_ALPHA: "LUMINANCE_ALPHA",
+
+                RGB_S3TC_DXT1: "RGB_S3TC_DXT1",
+                RGBA_S3TC_DXT1: "RGBA_S3TC_DXT1",
+                RGBA_S3TC_DXT3: "RGBA_S3TC_DXT3",
+                RGBA_S3TC_DXT5: "RGBA_S3TC_DXT5",
+
+
+
+
                 FRAMEBUFFER: "FRAMEBUFFER",
                 RENDERBUFFER: "RENDERBUFFER",
 
@@ -53,11 +77,14 @@ var glslUtils = (function () {
 
                 UNSIGNED_SHORT: "UNSIGNED_SHORT",
                 UNSIGNED_BYTE: "UNSIGNED_BYTE",
+                UNSIGNED_SHORT_5_6_5: "UNSIGNED_SHORT_5_6_5",
+                UNSIGNED_SHORT_4_4_4_4: "UNSIGNED_SHORT_4_4_4_4",
+                UNSIGNED_SHORT_5_5_5_1: "UNSIGNED_SHORT_5_5_5_1",
 
 
                 DEPTH_COMPONENT: "DEPTH_COMPONENT",
 
-                LINK_STATUS: LINK_STATUS,
+                LINK_STATUS: "LINK_STATUS",
 
                 VERTEX_SHADER: "VERTEX_SHADER",
                 FRAGMENT_SHADER: "FRAGMENT_SHADER",

@@ -28,20 +28,20 @@ describe("dispose texture", function () {
         var texture1, texture2, texture3;
 
         beforeEach(function(){
-            texture1 = textureTool.create();
-            texture2 = textureTool.create();
-            texture3 = textureTool.create();
+            texture1 = textureSystemTool.create();
+            texture2 = textureSystemTool.create();
+            texture3 = textureSystemTool.create();
         });
 
         it("send disposed texture data array to render worker", function () {
-            sceneTool.prepareGameObjectAndAddToScene();
+            sceneSystemTool.prepareGameObjectAndAddToScene();
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
 
 
-            textureTool.dispose(texture1);
-            textureTool.dispose(texture3);
+            textureSystemTool.dispose(texture1);
+            textureSystemTool.dispose(texture3);
 
 
 
@@ -55,6 +55,7 @@ describe("dispose texture", function () {
                 materialData:sinon.match.any,
                 geometryData:sinon.match.any,
                 lightData:sinon.match.any,
+                textureData:sinon.match.any,
                 disposeData: {
                     geometryDisposeData:null,
                     textureDisposeData:{
@@ -87,30 +88,37 @@ describe("dispose texture", function () {
                 return {
                     data:{
                         operateType: EWorkerOperateType.DRAW,
-                            renderCommandBufferData:null,
-                            materialData:null,
-                            geometryData:null,
-                            lightData:null,
-                            disposeData: {
-                                geometryDisposeData: null,
-                                textureDisposeData:{
-                                    disposedTextureDataMap: [
-                                        {
-                                            sourceIndex: 0,
-                                            lastComponentIndex: 2
-                                        },
-                                        {
-                                            sourceIndex: 0,
-                                            lastComponentIndex: 1
-                                        }
-                                    ]
-                                }
+                        renderCommandBufferData:null,
+                        materialData:null,
+                        geometryData:null,
+                        lightData:null,
+                        textureData:null,
+                        disposeData: {
+                            geometryDisposeData: null,
+                            textureDisposeData:{
+                                disposedTextureDataMap: [
+                                    {
+                                        sourceIndex: 0,
+                                        lastComponentIndex: 2
+                                    },
+                                    {
+                                        sourceIndex: 0,
+                                        lastComponentIndex: 1
+                                    }
+                                ]
                             }
+                        }
                     }
                 }
             }
 
+            function createArrayBuffer(width, height) {
+                return new ArrayBuffer(4 * width * height);
+            }
+
             beforeEach(function () {
+                testTool.closeContractCheck();
+
                 gl = workerTool.createGL(sandbox);
 
                 var mapManagerBuffer = MapManagerData.buffer;
@@ -126,16 +134,30 @@ describe("dispose texture", function () {
                             mapManagerBuffer: mapManagerBuffer,
                             textureBuffer: textureBuffer,
                             index: 3,
-                            imageSrcIndexArr: [
+                            needAddedImageDataArr: [
                                 {
-                                    src:resUtls.getRes("1.jpg"), index: 1
+                                    arrayBuffer:createArrayBuffer(1,2),
+                                    width:1,
+                                    height: 2,
+                                    index:0
                                 },
                                 {
-                                    src:resUtls.getRes("2.png"), index: 2
+                                    arrayBuffer:createArrayBuffer(1,2),
+                                    width:1,
+                                    height: 2,
+                                    index:1
                                 },
                                 {
-                                    src:resUtls.getRes("2.png"), index: 3
+                                    arrayBuffer:createArrayBuffer(1,2),
+                                    width:1,
+                                    height: 2,
+                                    index:2
                                 }
+                            ],
+                            uniformSamplerNameMap: [
+                                undefined,
+                                "u_sampler2D0",
+                                "u_sampler2D1"
                             ]
                         }
                     }
@@ -179,7 +201,7 @@ describe("dispose texture", function () {
                     }, expect)
                 });
                 it("unbind all texture unit", function () {
-                //     //already test in no worker
+                    //already test in no worker
                 });
                 it("clear all bind texture unit cache", function () {
                     //already test in no worker

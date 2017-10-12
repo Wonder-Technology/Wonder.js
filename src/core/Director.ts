@@ -12,7 +12,7 @@ import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operato
 import {
     init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle
 } from "../component/transform/ThreeDTransformSystem";
-import { getState, markIsInit, run, setState } from "./DirectorSystem";
+import { getState, isInit, markIsInit, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { Map } from "immutable";
@@ -27,9 +27,10 @@ import {
 import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
 import {
-    addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle,
-    addInitHandle as addMaterialInitHandle
-} from "../component/material/MaterialSystem";
+    addInitHandle as addMaterialInitHandle,
+    addAddComponentHandle as addMaterialAddComponentHandle,
+    addDisposeHandle as addMaterialDisposeHandle
+} from "../component/material/AllMaterialSystem";
 import {
     addAddComponentHandle as addMeshRendererAddComponentHandle,
     addDisposeHandle as addMeshRendererDisposeHandle
@@ -45,7 +46,6 @@ import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
-import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
@@ -65,6 +65,7 @@ import { addDisposeHandle as addWebGL1GeometryDisposeHandle } from "../component
 import { addDisposeHandle as addWebGL2GeometryDisposeHandle } from "../component/webgl2/geometry/GeometrySystem";
 import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLightData";
 import { WebGL2DirectionLightData } from "../renderer/webgl2/light/DirectionLightData";
+import { addAddComponentHandle, addDisposeHandle } from "../component/material/AllMaterialSystem";
 
 @singleton(true)
 @registerClass("Director")
@@ -72,10 +73,6 @@ export class Director {
     public static getInstance(): any { };
 
     private constructor() { }
-
-    get view() {
-        return DeviceManager.getInstance().view;
-    }
 
     // public scene: SceneDispatcher = null;
     public scene: Scene = create(GameObjectData);
@@ -99,6 +96,14 @@ export class Director {
         this._startLoop();
     }
 
+    public init() {
+        setState(this._init(getState(DirectorData)), DirectorData);
+    }
+
+    public loopBody(time: number) {
+        setState(this._loopBody(time, getState(DirectorData)), DirectorData).run();
+    }
+
     private _startLoop() {
         var self = this;
 
@@ -113,7 +118,7 @@ export class Director {
                  I assume that the time is DOMHighResTimeStamp, but it may be DOMTimeStamp in some browser!
                  so it need polyfill
                  */
-                setState(self._loopBody(time, getState(DirectorData)), DirectorData).run();
+                self.loopBody(time);
                 // }, (e) => {
                 //     console.error(e);
                 //     throw e;
@@ -123,7 +128,7 @@ export class Director {
 
     private _buildInitStream() {
         return callFunc(() => {
-            setState(this._init(getState(DirectorData)), DirectorData);
+            this.init();
         }, this);
     }
 
@@ -190,6 +195,11 @@ export class Director {
     }
 }
 
+export const isDirectorInit = () => {
+    return isInit(DirectorData);
+}
+
+
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);
 addMaterialInitHandle(BasicMaterial, LightMaterial);
@@ -210,7 +220,7 @@ addGeometryAddComponentHandle(BoxGeometry, CustomGeometry);
 addGeometryInitHandle(BoxGeometry, CustomGeometry);
 
 
-var _initPointLight = null,
+var _initPointLight =null,
     _initDirectionLight = null;
 
 if (isWebgl1()) {

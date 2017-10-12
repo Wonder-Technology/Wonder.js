@@ -1,9 +1,9 @@
-var resUtls = (function () {
+var resUtils = (function () {
     return {
         resPath: "base/test/res/",
 
         getRes: function(resourcePath){
-            return resUtls.resPath + resourcePath;
+            return resUtils.resPath + resourcePath;
         }
     }
 })()

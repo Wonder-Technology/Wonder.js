@@ -36,14 +36,14 @@ describe("light", function () {
                 transformDataBufferCount:20
             });
 
-            sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-            // sceneTool.addAmbientLight();
-            sceneTool.addDirectionLight();
-            sceneTool.addDirectionLight();
-            sceneTool.addPointLight();
-            sceneTool.addPointLight();
-            sceneTool.addPointLight();
-            sceneTool.addPointLight();
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            // sceneSystemTool.addAmbientLight();
+            sceneSystemTool.addDirectionLight();
+            sceneSystemTool.addDirectionLight();
+            sceneSystemTool.addPointLight();
+            sceneSystemTool.addPointLight();
+            sceneSystemTool.addPointLight();
+            sceneSystemTool.addPointLight();
 
 
             directorTool.init(sandbox);
@@ -232,11 +232,11 @@ describe("light", function () {
                 pos3 = Vector3.create(10, 2, 3),
                 pos4 = Vector3.create(20, 2, 4);
 
-            sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
-            sceneTool.addDirectionLight(pos1);
-            sceneTool.addDirectionLight(pos2);
-            sceneTool.addPointLight(pos3);
-            sceneTool.addPointLight(pos4);
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            sceneSystemTool.addDirectionLight(pos1);
+            sceneSystemTool.addDirectionLight(pos2);
+            sceneSystemTool.addPointLight(pos3);
+            sceneSystemTool.addPointLight(pos4);
 
             directorTool.init(sandbox);
             sendDrawRendercommandBufferTool.markInitComplete();
@@ -248,6 +248,7 @@ describe("light", function () {
             worker = workerTool.getRenderWorker();
             expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
+                textureData:sinon.match.any,
                 renderCommandBufferData: sinon.match.any,
                 disposeData: sinon.match.any,
                 materialData: sinon.match.any,
@@ -287,6 +288,7 @@ describe("light", function () {
                 e = {
                     data: {
                         operateType: EWorkerOperateType.DRAW,
+                        textureData:null,
                         renderCommandBufferData: null,
                         disposeData: null,
                         materialData: null,
@@ -347,6 +349,7 @@ describe("light", function () {
                     e = {
                         data: {
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData: null,
                             disposeData: null,
                             materialData: null,

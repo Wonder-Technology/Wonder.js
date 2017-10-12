@@ -42,7 +42,7 @@ describe("defer shading", function () {
 
             it("test not exceed", function () {
                 for(var i = 0; i < 5; i++){
-                    sceneTool.addPointLight();
+                    sceneSystemTool.addPointLight();
                 }
 
                 expect(function () {
@@ -51,7 +51,7 @@ describe("defer shading", function () {
             });
             it("if exceed, error", function () {
                 for(var i = 0; i < 6; i++){
-                    sceneTool.addPointLight();
+                    sceneSystemTool.addPointLight();
                 }
 
                 expect(function () {
@@ -72,7 +72,7 @@ describe("defer shading", function () {
 
             it("test not exceed", function () {
                 for(var i = 0; i < 5; i++){
-                    sceneTool.addDirectionLight();
+                    sceneSystemTool.addDirectionLight();
                 }
 
                 expect(function () {
@@ -81,7 +81,7 @@ describe("defer shading", function () {
             });
             it("if exceed, error", function () {
                 for(var i = 0; i < 6; i++){
-                    sceneTool.addDirectionLight();
+                    sceneSystemTool.addDirectionLight();
                 }
 
                 expect(function () {
@@ -102,7 +102,7 @@ describe("defer shading", function () {
 
             it("test not exceed", function () {
                 for(var i = 0; i < 5; i++){
-                    sceneTool.addAmbientLight();
+                    sceneSystemTool.addAmbientLight();
                 }
 
                 expect(function () {
@@ -111,7 +111,7 @@ describe("defer shading", function () {
             });
             it("if exceed, error", function () {
                 for(var i = 0; i < 6; i++){
-                    sceneTool.addAmbientLight();
+                    sceneSystemTool.addAmbientLight();
                 }
 
                 expect(function () {
@@ -129,7 +129,7 @@ describe("defer shading", function () {
                 return gl.shaderSource.getCall(9).args[1];
             }
 
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             var obj = data.gameObject;
             var geo = data.geometry;
             var material = data.material;
@@ -137,16 +137,16 @@ describe("defer shading", function () {
 
             var mat = lightMaterialTool.create();
 
-            var texture = textureTool.create();
-            textureTool.setSource(texture, {});
+            var texture = textureSystemTool.create();
+            textureSystemTool.setSource(texture, {});
 
             lightMaterialTool.setDiffuseMap(mat, texture);
 
 
-            var data = sceneTool.createGameObject(null, mat);
+            var data = sceneSystemTool.createGameObject(null, mat);
 
 
-            sceneTool.addGameObject(data.gameObject);
+            sceneSystemTool.addGameObject(data.gameObject);
 
 
 
@@ -168,10 +168,10 @@ describe("defer shading", function () {
             }
 
             it("test one gameObject + one direcction light", function () {
-                var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
                 var geo = data.geometry;
 
-                sceneTool.addDirectionLight();
+                sceneSystemTool.addDirectionLight();
 
                 var vao1 = {a:1};
                 var vao2 = {a:2};

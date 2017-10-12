@@ -11,21 +11,13 @@ import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../Compon
 export abstract class Material extends Component {
 }
 
-export var getMaterialGameObject = requireCheckFunc((material: Material) => {
+export const getMaterialGameObject = requireCheckFunc((material: Material) => {
     checkShouldAlive(material);
 }, (component: Material) => {
     return getGameObject(component.index, MaterialData);
 })
 
-// export var getMaterialShader = (material: Material) => {
-//     return getShader(material.index, MaterialData.shaderMap);
-// }
-//
-// export var initMaterial = (material: Material) => {
-//     initMaterialSystem(material.index, getState(DirectorData));
-// }
-
-export var checkShouldAlive = (material: Material) => {
+export const checkShouldAlive = (material: Material) => {
     checkComponentShouldAlive(material, null, (material: Material) => {
         return isComponentIndexNotRemoved(material);
     })

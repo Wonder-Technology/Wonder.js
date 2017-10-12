@@ -6,7 +6,6 @@
 
     <script src="../../../dist/wd.js" type="text/javascript"></script>
     <script src="../../js/tool/threeDTransformTool.js"></script>
-    <script src="../../js/tool/materialTool.js"></script>
     <script src="../../js/tool/basicMaterialTool.js"></script>
     <script src="../../js/tool/textureTool.js"></script>
     <script src="../../js/tool/boxGeometryTool.js"></script>
@@ -14,24 +13,26 @@
     <script src="../../js/tool/cameraControllerTool.js"></script>
     <script src="../../js/tool/meshRendererTool.js"></script>
     <script src="../../js/tool/sceneTool.js"></script>
+    <script src="../../js/tool/assetTool.js"></script>
 </head>
 <body>
 
 <script>
     window.onload = function () {
-        var image = new Image();
+        wd.Main.setConfig({
+            isTest:true,
+            screenSize: wd.EScreenSize.FULL
+        }).init();
 
-        image.src = "../../asset/texture/1.jpg";
-
-        image.onload = function(){
-            wd.Main.setConfig({
-                isTest:true,
-                screenSize: wd.EScreenSize.FULL
-            }).init();
-
-            initSample();
-        }
-
+        assetTool.load({url: "../../asset/texture/1.jpg", id:"1"})
+            .subscribe(function ({
+                    currentLoadedCount,
+                    totalAssetCount
+                }) {
+                console.log(currentLoadedCount, totalAssetCount)
+            }, null, function () {
+                initSample();
+            });
 
 
 
@@ -49,18 +50,64 @@
             sceneTool.addGameObject(createCamera());
 
             director.start();
+
+
+
+//            setTimeout(function () {
+//                assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
+//                    .subscribe(null, null, () => {
+//
+////                        let image = wd.getAsset("2").toTexture();
+//
+//                        var texture = wd.getAsset("2").toTexture();
+////                        textureTool.setSource(texture, image);
+//
+//                        let box = createBox(texture);
+//
+//                        gameObjectTool.init(box);
+//
+//                        sceneTool.addGameObject(box);
+////                        basicMaterialTool.setMap(material, texture);
+//                    })
+//
+//            }, 1000)
         }
 
-        function createBox() {
+        function createBox(texture) {
             var material = basicMaterialTool.create();
 
             basicMaterialTool.setColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
 
-            var texture = textureTool.create();
+            if(!!texture){
+                basicMaterialTool.setMap(material, texture);
+            }
+            else{
+                var map = textureTool.create();
 
-            textureTool.setSource(texture, image);
+                var image = wd.getAsset("1").source;
+                textureTool.setSource(map, image);
 
-            basicMaterialTool.addMap(material, texture);
+
+
+                basicMaterialTool.setMap(material, map);
+
+
+
+
+                setTimeout(function () {
+                    assetTool.load({url: "../../asset/texture/2.jpg", id:"2"})
+                        .subscribe(null, null, () => {
+                            assetTool.setTextureAsset("3", wd.getAsset("2").source, ".jpg");
+
+                            var texture = wd.getAsset("3").toTexture();
+
+                            basicMaterialTool.setMap(material, texture);
+
+                            textureTool.init(texture);
+                        })
+
+                }, 1000)
+            }
 
 
 //            material.map = [wd.LoaderManager.getInstance().get("texture1").toTexture(), wd.LoaderManager.getInstance().get("texture2").toTexture()];

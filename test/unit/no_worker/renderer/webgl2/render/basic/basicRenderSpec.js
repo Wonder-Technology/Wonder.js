@@ -42,7 +42,7 @@ describe("basic render", function () {
         }
 
         beforeEach(function(){
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -91,12 +91,12 @@ describe("basic render", function () {
                 });
 
                 it("send u_mMatrix", function () {
-                    var transform = gameObjectTool.getComponent(obj, ThreeDTransform),
+                    var transform = gameObjectSystemTool.getComponent(obj, ThreeDTransform),
                         mat = Matrix4.create().setTranslate(1, 2, 3),
                         position = mat.getTranslation(),
                         pos = 0;
 
-                    threeDTransformTool.setPosition(transform, position);
+                    threeDTransformSystemTool.setPosition(transform, position);
                     gl.getUniformLocation.withArgs(sinon.match.any, "u_mMatrix").returns(pos);
 
 
@@ -137,7 +137,7 @@ describe("basic render", function () {
                     it("create buffer and init it when set vao", function () {
                         directorTool.init(state);
 
-                        var data = geometryTool.getVertices(geo);
+                        var data = geometrySystemTool.getVertices(geo);
 
 
                         directorTool.loopBody(state);
@@ -232,10 +232,10 @@ describe("basic render", function () {
 
                 describe("if has one map, add BasicMapShaderLib", function(){
                     beforeEach(function () {
-                        var texture = textureTool.create();
-                        textureTool.setSource(texture, {});
+                        var texture = textureSystemTool.create();
+                        textureSystemTool.setSource(texture, {});
 
-                        basicMaterialTool.addMap(material, texture);
+                        basicMaterialTool.setMap(material, texture);
                     });
 
                     describe("send a_texCoord", function () {
@@ -252,7 +252,7 @@ describe("basic render", function () {
                         it("create buffer and init it when first get", function () {
                             directorTool.init(state);
 
-                            var data = geometryTool.getTexCoords(geo);
+                            var data = geometrySystemTool.getTexCoords(geo);
 
 
                             directorTool.loopBody(state);
@@ -262,9 +262,9 @@ describe("basic render", function () {
                         });
                     })
 
-                    it("send u_sampler2D0", function () {
+                    it("send u_sampler2D", function () {
                         var pos = 0;
-                        gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D0").returns(pos);
+                        gl.getUniformLocation.withArgs(sinon.match.any, "u_sampler2D").returns(pos);
 
                         directorTool.init(state);
                         directorTool.loopBody(state);
@@ -295,8 +295,8 @@ describe("basic render", function () {
                             var fs = getFsSource(gl);
 
                             expect(glslTool.contain(fs, "in vec2 v_mapCoord0;\n")).toBeTruthy();
-                            expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D0;\n")).toBeTruthy();
-                            expect(glslTool.contain(fs, "totalColor *= texture(u_sampler2D0, v_mapCoord0);\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "uniform sampler2D u_sampler2D;\n")).toBeTruthy();
+                            expect(glslTool.contain(fs, "totalColor *= texture(u_sampler2D, v_mapCoord0);\n")).toBeTruthy();
                         });
                     });
                 });
@@ -349,10 +349,10 @@ describe("basic render", function () {
         beforeEach(function(){
             deferShadingTool.enableDeferShading(sandbox);
 
-            sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
 
-            sceneTool.addGameObject(sceneTool.createGameObject(null, lightMaterialTool.create()));
-            sceneTool.addPointLight();
+            sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, lightMaterialTool.create()));
+            sceneSystemTool.addPointLight();
         });
 
         it("clear main framebuffer only once in one frame", function(){

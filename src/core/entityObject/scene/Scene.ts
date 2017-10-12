@@ -10,7 +10,7 @@ import { SceneData } from "./SceneData";
 export class Scene extends GameObject {
 }
 
-export var addSceneChild = requireCheckFunc((scene: Scene, gameObject: GameObject) => {
+export const addSceneChild = requireCheckFunc((scene: Scene, gameObject: GameObject) => {
     it("scene should alive", () => {
         expect(isAlive(scene, GameObjectData)).true;
     });
@@ -18,10 +18,10 @@ export var addSceneChild = requireCheckFunc((scene: Scene, gameObject: GameObjec
     addChild(scene, gameObject, ThreeDTransformData, GameObjectData, SceneData);
 })
 
-export var removeSceneChild = requireCheckFunc((scene: Scene, gameObject: GameObject) => {
+export const removeSceneChild = requireCheckFunc((scene: Scene, gameObject: GameObject) => {
     it("scene should alive", () => {
         expect(isAlive(scene, GameObjectData)).true;
     });
 }, (scene: Scene, gameObject: GameObject) => {
-    removeChild(scene, gameObject, ThreeDTransformData, GameObjectData);
+    removeChild(scene.uid, gameObject.uid, ThreeDTransformData, GameObjectData);
 })

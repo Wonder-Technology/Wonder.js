@@ -37,8 +37,8 @@ describe("dispose geometry", function () {
                     geo1Index = geo1.index;
                     geo2Index = geo2.index;
 
-                    var data1 = sceneTool.prepareGameObjectAndAddToScene(false, geo1);
-                    var data2 = sceneTool.prepareGameObjectAndAddToScene(true, geo2);
+                    var data1 = sceneSystemTool.prepareGameObjectAndAddToScene(false, geo1);
+                    var data2 = sceneSystemTool.prepareGameObjectAndAddToScene(true, geo2);
 
                     obj1 = data1.gameObject;
                     obj2 = data2.gameObject;
@@ -52,8 +52,8 @@ describe("dispose geometry", function () {
 
 
 
-                    gameObjectTool.dispose(obj1);
-                    gameObjectTool.dispose(obj2);
+                    gameObjectSystemTool.dispose(obj1);
+                    gameObjectSystemTool.dispose(obj2);
 
 
 
@@ -68,6 +68,7 @@ describe("dispose geometry", function () {
                         materialData:sinon.match.any,
                         geometryData:sinon.match.any,
                         lightData:sinon.match.any,
+                        textureData:sinon.match.any,
                         disposeData: {
                             geometryDisposeData:{
                                 disposedGeometryIndexArray: [geo1Index, geo2Index],
@@ -82,11 +83,11 @@ describe("dispose geometry", function () {
                     directorTool.init(sandbox);
 
 
-                    gameObjectTool.dispose(obj1);
+                    gameObjectSystemTool.dispose(obj1);
 
 
                     expect(function () {
-                        gameObjectTool.dispose(obj2);
+                        gameObjectSystemTool.dispose(obj2);
                     }).toThrow("should not add data twice in one frame");
                 });
             });

@@ -22,7 +22,7 @@ import {
     IShaderLibContentGenerator
 } from "../../../../data/shaderLib_generator_interface";
 
-var _lightDefineList = [
+const _lightDefineList =[
     {
         "name": "DIRECTION_LIGHTS_COUNT",
         "valueFunc": ({
@@ -183,7 +183,7 @@ export const webgl1_shaderLib_generator = {
                 ],
                 "uniformDefine": [
                     {
-                        "name": "u_sampler2D0",
+                        "name": "u_sampler2D",
                         "type": "sampler2D"
                     }
                 ]

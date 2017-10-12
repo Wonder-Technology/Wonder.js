@@ -34,11 +34,11 @@ describe("ThreeDTransform", function () {
     }
 
     function getScale(tra){
-        return threeDTransformTool.getLocalToWorldMatrix(tra).getScale();
+        return threeDTransformSystemTool.getLocalToWorldMatrix(tra).getScale();
     }
 
     function getRotation(tra){
-        return threeDTransformTool.getLocalToWorldMatrix(tra).getRotation();
+        return threeDTransformSystemTool.getLocalToWorldMatrix(tra).getRotation();
     }
 
     beforeEach(function () {
@@ -62,17 +62,17 @@ describe("ThreeDTransform", function () {
                 return 10;
             });
 
-            threeDTransformTool.resetData();
+            threeDTransformSystemTool.resetData();
 
-            obj1 = gameObjectTool.create();
-            tra1 = gameObjectTool.getTransform(obj1);
+            obj1 = gameObjectSystemTool.create();
+            tra1 = gameObjectSystemTool.getTransform(obj1);
             tra1.name = "tra1";
 
-            obj2 = gameObjectTool.create();
-            tra2 = gameObjectTool.getTransform(obj2);
+            obj2 = gameObjectSystemTool.create();
+            tra2 = gameObjectSystemTool.getTransform(obj2);
             tra2.name = "tra2";
 
-            tra3 = threeDTransformTool.create();
+            tra3 = threeDTransformSystemTool.create();
             tra3.name = "tra3";
 
             director = directorTool.getDirector();
@@ -86,7 +86,7 @@ describe("ThreeDTransform", function () {
             });
 
             it("uid start from 0", function () {
-                var tra = threeDTransformTool.create();
+                var tra = threeDTransformSystemTool.create();
 
                 expect(tra.uid).toEqual(0);
             });
@@ -101,8 +101,8 @@ describe("ThreeDTransform", function () {
                 // var m1 = tra1[getAttr];
                 // var m2 = tra1[getAttr];
 
-                var m1 = threeDTransformTool["get" + getAttr[0].toUpperCase() + getAttr.slice(1)](tra1);
-                var m2 = threeDTransformTool["get" + getAttr[0].toUpperCase() + getAttr.slice(1)](tra1);
+                var m1 = threeDTransformSystemTool["get" + getAttr[0].toUpperCase() + getAttr.slice(1)](tra1);
+                var m2 = threeDTransformSystemTool["get" + getAttr[0].toUpperCase() + getAttr.slice(1)](tra1);
 
                 expect(m1 === m2).toBeTruthy();
                 // judgeStubFunc();
@@ -114,9 +114,9 @@ describe("ThreeDTransform", function () {
 
             // it("normalMatrix(getter)", function(){
             //     judgeCache(function(){
-            //         sandbox.spy(threeDTransformTool.getLocalToWorldMatrix(tra1), "invertTo3x3");
+            //         sandbox.spy(threeDTransformSystemTool.getLocalToWorldMatrix(tra1), "invertTo3x3");
             //     }, "normalMatrix", function(){
-            //         expect(threeDTransformTool.getLocalToWorldMatrix(tra1).invertTo3x3).toCalledOnce();
+            //         expect(threeDTransformSystemTool.getLocalToWorldMatrix(tra1).invertTo3x3).toCalledOnce();
             //     });
             // });
             it("localToWorldMatrix(getter)", function(){
@@ -147,16 +147,16 @@ describe("ThreeDTransform", function () {
             // });
             // it("scale(getter)", function(){
             //     judgeCache(function(){
-            //         sandbox.stub(threeDTransformTool.getLocalToWorldMatrix(tra1), "getScale");
+            //         sandbox.stub(threeDTransformSystemTool.getLocalToWorldMatrix(tra1), "getScale");
             //     }, "scale", function(){
-            //         expect(threeDTransformTool.getLocalToWorldMatrix(tra1).getScale).toCalledOnce();
+            //         expect(threeDTransformSystemTool.getLocalToWorldMatrix(tra1).getScale).toCalledOnce();
             //     });
             // });
             // it("eulerAngles(getter)", function(){
             //     judgeCache(function(){
-            //         sandbox.stub(threeDTransformTool.getLocalToWorldMatrix(tra1), "getEulerAngles");
+            //         sandbox.stub(threeDTransformSystemTool.getLocalToWorldMatrix(tra1), "getEulerAngles");
             //     }, "eulerAngles", function(){
-            //         expect(threeDTransformTool.getLocalToWorldMatrix(tra1).getEulerAngles).toCalledOnce();
+            //         expect(threeDTransformSystemTool.getLocalToWorldMatrix(tra1).getEulerAngles).toCalledOnce();
             //     });
             // });
             // it("localEulerAngles(getter)", function(){
@@ -174,14 +174,14 @@ describe("ThreeDTransform", function () {
                     localPosition:Vector3.create(0,0,1)
                 });
 
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+                threeDTransformSystemTool.setBatchTransformDatas(batchTransformDatas);
 
                 updateSystem(null, null);
-                var pos = threeDTransformTool.getLocalPosition(tra1).clone();
+                var pos = threeDTransformSystemTool.getLocalPosition(tra1).clone();
 
 
                 updateSystem(null, null);
-                var pos2 = threeDTransformTool.getLocalPosition(tra1).clone();
+                var pos2 = threeDTransformSystemTool.getLocalPosition(tra1).clone();
 
 
                 expect(getValues(pos)).toEqual(getValues(pos2));
@@ -189,20 +189,20 @@ describe("ThreeDTransform", function () {
             });
             it("test parent and children cache", function () {
                 // sandbox.spy(wd, "createVector3ByIndex");
-                threeDTransformTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
-                threeDTransformTool.setLocalPosition(tra1, Vector3.create(0,0,1));
-                threeDTransformTool.setLocalPosition(tra2, Vector3.create(4,0,1));
+                threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(0,0,1));
+                threeDTransformSystemTool.setLocalPosition(tra2, Vector3.create(4,0,1));
 
                 updateSystem(null, null);
-                var pos = threeDTransformTool.getLocalPosition(tra1).clone();
-                var pos2 = threeDTransformTool.getLocalPosition(tra2).clone();
+                var pos = threeDTransformSystemTool.getLocalPosition(tra1).clone();
+                var pos2 = threeDTransformSystemTool.getLocalPosition(tra2).clone();
 
                 // expect(wd.createVector3ByIndex).toCalledTwice();
 
                 updateSystem(null, null);
-                var pos3 = threeDTransformTool.getLocalPosition(tra1).clone();
-                var pos4 = threeDTransformTool.getLocalPosition(tra2).clone();
+                var pos3 = threeDTransformSystemTool.getLocalPosition(tra1).clone();
+                var pos4 = threeDTransformSystemTool.getLocalPosition(tra2).clone();
 
                 expect(getValues(pos)).toEqual(getValues(pos3));
                 expect(getValues(pos2)).toEqual(getValues(pos4));
@@ -214,52 +214,52 @@ describe("ThreeDTransform", function () {
                 });
 
                 it("test clear localToWorldMatrix cache", function () {
-                    threeDTransformTool.setPosition(tra1, Vector3.create(0, 0, 1))
+                    threeDTransformSystemTool.setPosition(tra1, Vector3.create(0, 0, 1))
                     updateSystem(null, null);
-                    var m1 = threeDTransformTool.getLocalToWorldMatrix(tra1).clone();
+                    var m1 = threeDTransformSystemTool.getLocalToWorldMatrix(tra1).clone();
 
-                    threeDTransformTool.setPosition(tra1, Vector3.create(1, 2, 3))
+                    threeDTransformSystemTool.setPosition(tra1, Vector3.create(1, 2, 3))
                     updateSystem(null, null);
 
-                    var m2 = threeDTransformTool.getLocalToWorldMatrix(tra1).clone()
+                    var m2 = threeDTransformSystemTool.getLocalToWorldMatrix(tra1).clone()
 
                     expect(getValues(m1)).not.toEqual(getValues(m2));
                 });
                 // it("test clear normalMatrix cache", function () {
                 //     var m1 = tra1.normalMatrix;
                 //
-                //     threeDTransformTool.setPosition(tra1, Vector3.create(1,2,3))
+                //     threeDTransformSystemTool.setPosition(tra1, Vector3.create(1,2,3))
                 //
                 //     var m2 = tra1.normalMatrix;
                 //
                 //     expect(m1 === m2).toBeFalsy();
                 // });
                 it("clear position cache", function () {
-                    threeDTransformTool.setPosition(tra1, Vector3.create(0, 0, 1))
+                    threeDTransformSystemTool.setPosition(tra1, Vector3.create(0, 0, 1))
                     updateSystem(null, null);
-                    var pos = threeDTransformTool.getPosition(tra1).clone();
+                    var pos = threeDTransformSystemTool.getPosition(tra1).clone();
 
-                    threeDTransformTool.setPosition(tra1, Vector3.create(1, 2, 3))
+                    threeDTransformSystemTool.setPosition(tra1, Vector3.create(1, 2, 3))
                     updateSystem(null, null);
 
-                    var pos2 = threeDTransformTool.getPosition(tra1).clone();
+                    var pos2 = threeDTransformSystemTool.getPosition(tra1).clone();
 
                     expect(getValues(pos)).not.toEqual(getValues(pos2));
                 });
                 it("clear localPosition cache", function () {
-                    threeDTransformTool.setLocalPosition(tra1, Vector3.create(0, 0, 2));
+                    threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(0, 0, 2));
                     updateSystem(null, null);
-                    var localPos = threeDTransformTool.getLocalPosition(tra1).clone();
+                    var localPos = threeDTransformSystemTool.getLocalPosition(tra1).clone();
 
-                    threeDTransformTool.setLocalPosition(tra1, Vector3.create(1, 0, 2));
+                    threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(1, 0, 2));
                     updateSystem(null, null);
 
-                    var localPos2 = threeDTransformTool.getLocalPosition(tra1).clone();
+                    var localPos2 = threeDTransformSystemTool.getLocalPosition(tra1).clone();
 
                     expect(getValues(localPos)).not.toEqual(getValues(localPos2));
                 });
                 //it("clear position,rotation,scale,eulerAngles,localEulerAngles cache", function () {
-                //    var m1 = threeDTransformTool.getPosition(tra1);
+                //    var m1 = threeDTransformSystemTool.getPosition(tra1);
                 //    var m2 = tra1.rotation;
                 //    var m3 = tra1.scale;
                 //    var m4 = tra1.eulerAngles;
@@ -281,10 +281,10 @@ describe("ThreeDTransform", function () {
                         position: Vector3.create(0, 0, 1)
                     });
 
-                    threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+                    threeDTransformSystemTool.setBatchTransformDatas(batchTransformDatas);
 
                     updateSystem(null, null);
-                    var pos = threeDTransformTool.getPosition(tra1).clone();
+                    var pos = threeDTransformSystemTool.getPosition(tra1).clone();
 
 
                     batchTransformDatas = [];
@@ -294,30 +294,30 @@ describe("ThreeDTransform", function () {
                         position: Vector3.create(1, 2, 3)
                     });
 
-                    threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+                    threeDTransformSystemTool.setBatchTransformDatas(batchTransformDatas);
                     updateSystem(null, null);
-                    var pos2 = threeDTransformTool.getPosition(tra1).clone();
+                    var pos2 = threeDTransformSystemTool.getPosition(tra1).clone();
 
 
                     expect(getValues(pos)).not.toEqual(getValues(pos2));
                 });
                 it("test clear parent and children cache", function () {
                     // sandbox.spy(wd, "createVector3ByIndex");
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
-                    threeDTransformTool.setLocalPosition(tra1, Vector3.create(0, 0, 1));
-                    threeDTransformTool.setLocalPosition(tra2, Vector3.create(4, 0, 1));
+                    threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(0, 0, 1));
+                    threeDTransformSystemTool.setLocalPosition(tra2, Vector3.create(4, 0, 1));
 
                     updateSystem(null, null);
-                    var pos = threeDTransformTool.getLocalPosition(tra1).clone();
-                    var pos2 = threeDTransformTool.getLocalPosition(tra2).clone();
+                    var pos = threeDTransformSystemTool.getLocalPosition(tra1).clone();
+                    var pos2 = threeDTransformSystemTool.getLocalPosition(tra2).clone();
 
 
-                    threeDTransformTool.setLocalPosition(tra1, Vector3.create(1, 0, 1));
-                    threeDTransformTool.setLocalPosition(tra2, Vector3.create(7, 1, 1));
+                    threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(1, 0, 1));
+                    threeDTransformSystemTool.setLocalPosition(tra2, Vector3.create(7, 1, 1));
                     updateSystem(null, null);
-                    var pos3 = threeDTransformTool.getLocalPosition(tra1).clone();
-                    var pos4 = threeDTransformTool.getLocalPosition(tra2).clone();
+                    var pos3 = threeDTransformSystemTool.getLocalPosition(tra1).clone();
+                    var pos4 = threeDTransformSystemTool.getLocalPosition(tra2).clone();
 
                     expect(getValues(pos)).not.toEqual(getValues(pos3));
                     expect(getValues(pos2)).not.toEqual(getValues(pos4));
@@ -332,11 +332,11 @@ describe("ThreeDTransform", function () {
             });
 
             it("default value should be null", function(){
-                expect(threeDTransformTool.getParent(tra1)).toBeNull();
+                expect(threeDTransformSystemTool.getParent(tra1)).toBeNull();
             });
             // it("if get parent before add to entityObject, contract error", function() {
             //     expect(function(){
-            //         threeDTransformTool.getParent(tra2);
+            //         threeDTransformSystemTool.getParent(tra2);
             //     }).toThrow();
             // });
         });
@@ -348,97 +348,97 @@ describe("ThreeDTransform", function () {
             describe("the change of parent before setted as parent will affect child", function(){
                 it("test one(parent)-one(child)", function () {
                     var pos = Vector3.create(1,1,1);
-                    threeDTransformTool.setPosition(tra2, pos)
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setPosition(tra2, pos)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(defaultPos);
                 });
                 it("test one(parent)-two(child)", function () {
                     var pos = Vector3.create(10,10,10);
-                    threeDTransformTool.setPosition(tra2, pos)
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setPosition(tra2, pos)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     var pos2 = Vector3.create(2,2,2);
-                    threeDTransformTool.setPosition(tra3, pos2)
+                    threeDTransformSystemTool.setPosition(tra3, pos2)
 
-                    threeDTransformTool.setParent(tra3, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra3)
 
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(defaultPos);
 
-                    expect(threeDTransformTool.getPosition(tra3)).toEqual(pos2.clone().add(pos));
-                    expect(threeDTransformTool.getLocalPosition(tra3)).toEqual(pos2);
+                    expect(threeDTransformSystemTool.getPosition(tra3)).toEqual(pos2.clone().add(pos));
+                    expect(threeDTransformSystemTool.getLocalPosition(tra3)).toEqual(pos2);
                 });
             });
 
             describe("if set parent to be null, remove its current parent", function () {
                 it("test one(parent)-one(child)", function () {
                     var pos = Vector3.create(1,1,1);
-                    threeDTransformTool.setPosition(tra2, pos)
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setPosition(tra2, pos)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
-                    threeDTransformTool.setParent(tra1, null)
+                    threeDTransformSystemTool.setParent(null, tra1)
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(defaultPos);
-                    expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(defaultPos);
                 });
                 it("test one(parent)-two(child)", function () {
                     var pos = Vector3.create(1,1,1);
-                    threeDTransformTool.setPosition(tra2, pos)
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setPosition(tra2, pos)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     var pos2 = Vector3.create(2,2,2);
-                    threeDTransformTool.setPosition(tra3, pos2)
+                    threeDTransformSystemTool.setPosition(tra3, pos2)
 
-                    threeDTransformTool.setParent(tra3, tra2)
-
-                    updateSystem(null, null);
-
-                    threeDTransformTool.setParent(tra1, null)
+                    threeDTransformSystemTool.setParent(tra2, tra3)
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(defaultPos);
-                    expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(defaultPos);
+                    threeDTransformSystemTool.setParent(null, tra1)
 
-                    expect(threeDTransformTool.getPosition(tra3)).toEqual(pos2.clone().add(pos));
-                    expect(threeDTransformTool.getLocalPosition(tra3)).toEqual(pos2);
+                    updateSystem(null, null);
+
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(defaultPos);
+
+                    expect(threeDTransformSystemTool.getPosition(tra3)).toEqual(pos2.clone().add(pos));
+                    expect(threeDTransformSystemTool.getLocalPosition(tra3)).toEqual(pos2);
                 });
             });
 
             it("if set the same parent, do nothing", function () {
                 var pos = Vector3.create(1,1,1);
-                threeDTransformTool.setPosition(tra2, pos)
-                threeDTransformTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setPosition(tra2, pos)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 updateSystem(null, null);
 
-                threeDTransformTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 updateSystem(null, null);
 
-                expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos);
-                expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
-                expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(defaultPos);
+                expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos);
+                expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
+                expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(defaultPos);
             });
 
             describe("fix bug", function() {
@@ -448,13 +448,37 @@ describe("ThreeDTransform", function () {
                 it("description:if dirty parent first, dirty child second, the ThreeDTransformData.transforms[childIndex] will === undefined", function(){
                     var pos = Vector3.create(1,1,1);
 
-                    threeDTransformTool.setPosition(tra2, pos)
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setPosition(tra2, pos)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos);
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
+                });
+                it("test set parent,child local position before setParent", function(){
+                    var pos1 = Vector3.create(0,0,0);
+                    var pos2 = Vector3.create(2,0,0);
+
+
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos1)
+
+                    threeDTransformSystemTool.setLocalPosition(tra2, pos2)
+
+
+                    updateSystem(null, null);
+
+
+                    threeDTransformSystemTool.setParent(tra2, tra1);
+
+
+
+                    updateSystem(null, null);
+
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(Vector3.create(0,0,0));
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(Vector3.create(2,0,0));
+
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(Vector3.create(2,0,0));
                 });
             });
         });
@@ -465,7 +489,7 @@ describe("ThreeDTransform", function () {
             });
 
             it("default value should be identiy matrix", function(){
-                expect(threeDTransformTool.getLocalToWorldMatrix(tra1)).toEqual(Matrix4.create().setIdentity());
+                expect(threeDTransformSystemTool.getLocalToWorldMatrix(tra1)).toEqual(Matrix4.create().setIdentity());
             });
         });
 
@@ -475,7 +499,7 @@ describe("ThreeDTransform", function () {
             });
 
             it("default value should be vec3(0,0,0)", function(){
-                expect(threeDTransformTool.getPosition(tra1)).toEqual(Vector3.create());
+                expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(Vector3.create());
             });
         });
 
@@ -485,16 +509,16 @@ describe("ThreeDTransform", function () {
             });
 
             it("default value should be vec3(0,0,0)", function(){
-                expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(Vector3.create());
+                expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(Vector3.create());
             });
 
             describe("fix bug", function () {
                 it("test get after get localToWorldMatrix", function () {
                     var pos = Vector3.create(1,2,3);
-                    threeDTransformTool.setLocalPosition(tra1, pos);
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos);
 
-                    var mat = threeDTransformTool.getLocalToWorldMatrix(tra1)
-                    var localPos = threeDTransformTool.getLocalPosition(tra1)
+                    var mat = threeDTransformSystemTool.getLocalToWorldMatrix(tra1)
+                    var localPos = threeDTransformSystemTool.getLocalPosition(tra1)
 
                     expect(localPos).toEqual(pos);
                 });
@@ -508,12 +532,12 @@ describe("ThreeDTransform", function () {
             
             it("test get after set position", function(){
                 var pos = Vector3.create(1, 2, 3);
-                threeDTransformTool.setPosition(tra1, pos.clone());
+                threeDTransformSystemTool.setPosition(tra1, pos.clone());
 
                 updateSystem(null, null);
 
                 expect(testTool.getValues(
-                    threeDTransformTool.getNormalMatrix(tra1, GlobalTempData, ThreeDTransformData).values
+                    threeDTransformSystemTool.getNormalMatrix(tra1, GlobalTempData, ThreeDTransformData).values
                 )).toEqual(
                     [
                         1, 0, 0, 0, 1, 0, 0, 0, 1
@@ -537,17 +561,17 @@ describe("ThreeDTransform", function () {
 
             it("can get the setted value which is setted by user after init", function () {
                 var pos = Vector3.create(1, 2, 3);
-                threeDTransformTool.setPosition(tra3, pos.clone());
-                gameObjectTool.disposeComponent(obj1, tra1);
-                gameObjectTool.addComponent(obj1, tra3);
+                threeDTransformSystemTool.setPosition(tra3, pos.clone());
+                gameObjectSystemTool.disposeComponent(obj1, tra1);
+                gameObjectSystemTool.addComponent(obj1, tra3);
 
-                sceneTool.addGameObject(obj1);
+                sceneSystemTool.addGameObject(obj1);
 
                 directorTool.init(state);
 
-                expect(threeDTransformTool.getPosition(tra3)).toEqual(pos);
-                // expect(threeDTransformTool.getPosition(tra3)).toEqual(pos);
-                // expect(threeDTransformTool.getLocalToWorldMatrix(tra3).getTranslation()).toEqual(pos);
+                expect(threeDTransformSystemTool.getPosition(tra3)).toEqual(pos);
+                // expect(threeDTransformSystemTool.getPosition(tra3)).toEqual(pos);
+                // expect(threeDTransformSystemTool.getLocalToWorldMatrix(tra3).getTranslation()).toEqual(pos);
             });
             //todo more
         });
@@ -557,9 +581,9 @@ describe("ThreeDTransform", function () {
             });
 
             // it("remove from gameObject", function () {
-            //     gameObjectTool.disposeComponent(obj1, tra1);
+            //     gameObjectSystemTool.disposeComponent(obj1, tra1);
             //
-            //     expect(threeDTransformTool.getGameObject(tra1)).toBeUndefined();
+            //     expect(threeDTransformSystemTool.getGameObject(tra1)).toBeUndefined();
             // });
 
             describe("remove related data in tra1Data", () => {
@@ -567,8 +591,8 @@ describe("ThreeDTransform", function () {
                 });
 
                 // it("clear all map datas", function () {
-                //     threeDTransformTool.setLocalPosition(tra1, Vector3.create(1,2,3));
-                //     gameObjectTool.disposeComponent(obj1, tra1);
+                //     threeDTransformSystemTool.setLocalPosition(tra1, Vector3.create(1,2,3));
+                //     gameObjectSystemTool.disposeComponent(obj1, tra1);
                 //
                 //     var uid = tra1.uid,
                 //         index = tra1.index;
@@ -582,25 +606,25 @@ describe("ThreeDTransform", function () {
                     var errorMsg = "should alive";
                     var pos = Vector3.create(1,2,3);
                     updateSystem(null, null);
-                    threeDTransformTool.setLocalPosition(tra1, pos.clone());
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
 
-                    gameObjectTool.disposeComponent(obj1, tra1);
+                    gameObjectSystemTool.disposeComponent(obj1, tra1);
                     updateSystem(null, null);
 
                     expect(function(){
-                        threeDTransformTool.getPosition(tra1);
+                        threeDTransformSystemTool.getPosition(tra1);
                     }).toThrow(errorMsg);
                     expect(function(){
-                        threeDTransformTool.getLocalToWorldMatrix(tra1);
+                        threeDTransformSystemTool.getLocalToWorldMatrix(tra1);
                     }).toThrow(errorMsg);
                     expect(function(){
-                        threeDTransformTool.getLocalPosition(tra1);
+                        threeDTransformSystemTool.getLocalPosition(tra1);
                     }).toThrow(errorMsg);
                     expect(function(){
-                        threeDTransformTool.setPosition(tra1, pos.clone());
+                        threeDTransformSystemTool.setPosition(tra1, pos.clone());
                     }).toThrow(errorMsg);
                     expect(function(){
-                        threeDTransformTool.setLocalPosition(tra1, pos.clone());
+                        threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
                     }).toThrow(errorMsg);
                 });
 
@@ -613,9 +637,9 @@ describe("ThreeDTransform", function () {
 
                     // it("reset its transform data after dispose", function(){
                     //     updateSystem(null, null);
-                    //     threeDTransformTool.setLocalPosition(tra1, pos.clone());
+                    //     threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
                     //
-                    //     gameObjectTool.disposeComponent(obj1, tra1);
+                    //     gameObjectSystemTool.disposeComponent(obj1, tra1);
                     //     updateSystem(null, null);
                     //
                     //     expect(getValues(ThreeDTransformData.localPositions)).toEqual([
@@ -625,14 +649,14 @@ describe("ThreeDTransform", function () {
                     it("the dispose of one transform shouldn\t affect other transform data", function () {
                         var pos2 = Vector3.create(10,2,3);
                         updateSystem(null, null);
-                        threeDTransformTool.setLocalPosition(tra1, pos.clone());
-                        threeDTransformTool.setLocalPosition(tra2, pos2.clone());
+                        threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
+                        threeDTransformSystemTool.setLocalPosition(tra2, pos2.clone());
 
 
-                        gameObjectTool.disposeComponent(obj1, tra1);
+                        gameObjectSystemTool.disposeComponent(obj1, tra1);
                         updateSystem(null, null);
 
-                        expect(threeDTransformTool.getPosition(tra2)).toEqual(pos2);
+                        expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos2);
                     });
                 });
 
@@ -647,9 +671,9 @@ describe("ThreeDTransform", function () {
                     });
 
                     // it("reset its transform data after dispose", function(){
-                    //     threeDTransformTool.setLocalPosition(tra1, pos.clone());
+                    //     threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
                     //
-                    //     gameObjectTool.disposeComponent(obj1, tra1);
+                    //     gameObjectSystemTool.disposeComponent(obj1, tra1);
                     //     updateSystem(null, null);
                     //
                     //     expect(getValues(ThreeDTransformData.localPositions)).toEqual([
@@ -658,13 +682,13 @@ describe("ThreeDTransform", function () {
                     // });
                     it("the dispose of one transform shouldn't affect other transform data", function () {
                         var pos2 = Vector3.create(10,2,3);
-                        threeDTransformTool.setLocalPosition(tra1, pos.clone());
-                        threeDTransformTool.setLocalPosition(tra2, pos2.clone());
+                        threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
+                        threeDTransformSystemTool.setLocalPosition(tra2, pos2.clone());
                         updateSystem(null, null);
 
-                        gameObjectTool.disposeComponent(obj1, tra1);
+                        gameObjectSystemTool.disposeComponent(obj1, tra1);
 
-                        expect(threeDTransformTool.getPosition(tra2)).toEqual(pos2);
+                        expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos2);
                     });
                 });
             });
@@ -672,38 +696,38 @@ describe("ThreeDTransform", function () {
             it("if component is disposed, getThreeDTransformPosition/setThreeDTransformPosition/getThreeDTransformLocalToWorldMatrix/getThreeDTransformLocalPosition/setThreeDTransformLocalPosition/getThreeDTransformParent/setThreeDTransformParent/getThreeDTransformGameObject should error", function () {
                 var errMsg = "component should alive";
 
-                gameObjectTool.disposeComponent(obj1, tra1);
+                gameObjectSystemTool.disposeComponent(obj1, tra1);
 
                 expect(function () {
-                    threeDTransformTool.getPosition(tra1);
+                    threeDTransformSystemTool.getPosition(tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.setPosition(tra1, null);
+                    threeDTransformSystemTool.setPosition(tra1, null);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.getLocalToWorldMatrix(tra1);
+                    threeDTransformSystemTool.getLocalToWorldMatrix(tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.getLocalPosition(tra1);
+                    threeDTransformSystemTool.getLocalPosition(tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.setLocalPosition(tra1, null);
+                    threeDTransformSystemTool.setLocalPosition(tra1, null);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.getParent(tra1);
+                    threeDTransformSystemTool.getParent(tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.setParent(tra1, null);
+                    threeDTransformSystemTool.setParent(null, tra1);
                 }).toThrow(errMsg);
 
                 expect(function () {
-                    threeDTransformTool.getGameObject(tra1);
+                    threeDTransformSystemTool.getGameObject(tra1);
                 }).toThrow(errMsg);
             });
 
@@ -714,20 +738,20 @@ describe("ThreeDTransform", function () {
 
                 it("dirtySystem->addItAndItsChildrenToDirtyList should not add disposed child to dirty list", function () {
                     var pos2 = Vector3.create(1,1,2);
-                    threeDTransformTool.setParent(tra1, tra2);
+                    threeDTransformSystemTool.setParent(tra2, tra1);
 
-                    threeDTransformTool.setPosition(tra1, Vector3.create(0,2,3));
+                    threeDTransformSystemTool.setPosition(tra1, Vector3.create(0,2,3));
 
-                    gameObjectTool.disposeComponent(obj1, tra1);
+                    gameObjectSystemTool.disposeComponent(obj1, tra1);
 
-                    threeDTransformTool.setPosition(tra2, pos2);
+                    threeDTransformSystemTool.setPosition(tra2, pos2);
 
                     updateSystem(null, null);
 
-                    expect(threeDTransformTool.getPosition(tra2)).toEqual(pos2);
+                    expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos2);
 
                     testTool.closeContractCheck();
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(defaultPos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(defaultPos);
                 });
                 it("batchSystem->_getAllTransfomrsNotDirtyIndexArrAndMarkTransform should not get disposed child's not-dirty-index", function () {
                     var batchTransformDatas = [];
@@ -735,15 +759,15 @@ describe("ThreeDTransform", function () {
                     var pos2 = Vector3.create(10,2,3);
                     var pos3 = Vector3.create(5,5,1);
 
-                    threeDTransformTool.setParent(tra1, tra2)
+                    threeDTransformSystemTool.setParent(tra2, tra1)
 
 
 
-                    var obj4 = gameObjectTool.create();
-                    var tra4 = gameObjectTool.getTransform(obj4);
+                    var obj4 = gameObjectSystemTool.create();
+                    var tra4 = gameObjectSystemTool.getTransform(obj4);
                     tra4.name = "tra4";
 
-                    threeDTransformTool.setParent(tra4, tra1)
+                    threeDTransformSystemTool.setParent(tra1, tra4)
 
 
 
@@ -761,9 +785,9 @@ describe("ThreeDTransform", function () {
 
 
 
-                    gameObjectTool.disposeComponent(obj4, tra4);
+                    gameObjectSystemTool.disposeComponent(obj4, tra4);
 
-                    threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+                    threeDTransformSystemTool.setBatchTransformDatas(batchTransformDatas);
 
 
 
@@ -783,32 +807,32 @@ describe("ThreeDTransform", function () {
                 var pos = Vector3.create(1,2,3);
                 var pos2 = Vector3.create(10,2,3);
 
-                threeDTransformTool.setParent(tra2, tra1)
+                threeDTransformSystemTool.setParent(tra1, tra2)
 
-                threeDTransformTool.setPosition(tra1, pos.clone())
-                threeDTransformTool.setPosition(tra2, pos2.clone())
+                threeDTransformSystemTool.setPosition(tra1, pos.clone())
+                threeDTransformSystemTool.setPosition(tra2, pos2.clone())
 
 
-                expect(threeDTransformTool.getPosition(tra1)).toEqual(defaultPos);
-                expect(threeDTransformTool.getPosition(tra2)).toEqual(defaultPos);
+                expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(defaultPos);
+                expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(defaultPos);
 
                 updateSystem(null, null);
 
-                expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
-                expect(threeDTransformTool.getPosition(tra2)).toEqual(pos.clone().add(pos2));
+                expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
+                expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos.clone().add(pos2));
             });
 
             describe("before update, can only get the old transform data(last update version)", function(){
                 it("test get position", function () {
                     var pos = Vector3.create(1,2,3);
                     var pos2 = Vector3.create(10,2,3);
-                    threeDTransformTool.setPosition(tra1, pos.clone())
+                    threeDTransformSystemTool.setPosition(tra1, pos.clone())
 
                     updateSystem(null, null);
 
-                    threeDTransformTool.setPosition(tra1, pos2.clone())
+                    threeDTransformSystemTool.setPosition(tra1, pos2.clone())
 
-                    expect(threeDTransformTool.getPosition(tra1)).toEqual(pos);
+                    expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos);
                 });
             });
 
@@ -816,13 +840,13 @@ describe("ThreeDTransform", function () {
                 it("test get local position", function () {
                     var pos = Vector3.create(1,2,3);
                     var pos2 = Vector3.create(10,2,3);
-                    threeDTransformTool.setLocalPosition(tra1, pos.clone());
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos.clone());
 
                     updateSystem(null, null);
 
-                    threeDTransformTool.setLocalPosition(tra1, pos2.clone());
+                    threeDTransformSystemTool.setLocalPosition(tra1, pos2.clone());
 
-                    expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(pos2);
+                    expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(pos2);
                 });
             });
         });
@@ -837,7 +861,7 @@ describe("ThreeDTransform", function () {
                 var pos2 = Vector3.create(10,2,3);
                 var pos3 = Vector3.create(5,5,1);
 
-                threeDTransformTool.setParent(tra1, tra2)
+                threeDTransformSystemTool.setParent(tra2, tra1)
 
                 batchTransformDatas.push({
         transform:tra1,
@@ -849,13 +873,13 @@ describe("ThreeDTransform", function () {
                     position:pos3.clone()
                 });
 
-                threeDTransformTool.setBatchTransformDatas(batchTransformDatas);
+                threeDTransformSystemTool.setBatchTransformDatas(batchTransformDatas);
                 updateSystem(null, null);
 
-                expect(threeDTransformTool.getLocalPosition(tra1)).toEqual(pos2.clone());
-                expect(threeDTransformTool.getPosition(tra1)).toEqual(pos3.clone().add(pos2))
-                expect(threeDTransformTool.getLocalPosition(tra2)).toEqual(pos3.clone());
-                expect(threeDTransformTool.getPosition(tra2)).toEqual(pos3.clone());
+                expect(threeDTransformSystemTool.getLocalPosition(tra1)).toEqual(pos2.clone());
+                expect(threeDTransformSystemTool.getPosition(tra1)).toEqual(pos3.clone().add(pos2));
+                expect(threeDTransformSystemTool.getLocalPosition(tra2)).toEqual(pos3.clone());
+                expect(threeDTransformSystemTool.getPosition(tra2)).toEqual(pos3.clone());
             });
         });
     });
@@ -869,20 +893,20 @@ describe("ThreeDTransform", function () {
                     return 5;
                 });
 
-                threeDTransformTool.resetData();
+                threeDTransformSystemTool.resetData();
 
-                obj1 = gameObjectTool.create();
-                tra1 = gameObjectTool.getTransform(obj1);
+                obj1 = gameObjectSystemTool.create();
+                tra1 = gameObjectSystemTool.getTransform(obj1);
                 tra1.name = "tra1";
 
-                obj2 = gameObjectTool.create();
-                tra2 = gameObjectTool.getTransform(obj2);
+                obj2 = gameObjectSystemTool.create();
+                tra2 = gameObjectSystemTool.getTransform(obj2);
                 tra2.name = "tra2";
             });
 
             it("the new one's transform data should be default value", function () {
-                threeDTransformTool.setPosition(tra1, Vector3.create(1,2,3));
-                threeDTransformTool.setPosition(tra2, Vector3.create(2,2,3));
+                threeDTransformSystemTool.setPosition(tra1, Vector3.create(1,2,3));
+                threeDTransformSystemTool.setPosition(tra2, Vector3.create(2,2,3));
 
 
                 updateSystem(null, null);
@@ -890,14 +914,14 @@ describe("ThreeDTransform", function () {
 
 
 
-                gameObjectTool.disposeComponent(obj1, tra1);
+                gameObjectSystemTool.disposeComponent(obj1, tra1);
 
 
-                obj1 = gameObjectTool.create();
-                tra1 = gameObjectTool.getTransform(obj1);
+                obj1 = gameObjectSystemTool.create();
+                tra1 = gameObjectSystemTool.getTransform(obj1);
 
                 expect(
-                    threeDTransformTool.getPosition(tra1)
+                    threeDTransformSystemTool.getPosition(tra1)
                 ).toEqual(defaultPos);
 
                 expect(getScale(tra1)).toEqual(defaultScale);
@@ -909,18 +933,73 @@ describe("ThreeDTransform", function () {
 
 
 
-                gameObjectTool.disposeComponent(obj2, tra2);
+                gameObjectSystemTool.disposeComponent(obj2, tra2);
 
 
-                obj2 = gameObjectTool.create();
-                tra2 = gameObjectTool.getTransform(obj2);
+                obj2 = gameObjectSystemTool.create();
+                tra2 = gameObjectSystemTool.getTransform(obj2);
 
 
                 expect(
-                    threeDTransformTool.getPosition(tra2)
+                    threeDTransformSystemTool.getPosition(tra2)
                 ).toEqual(defaultPos);
                 expect(getScale(tra2)).toEqual(defaultScale);
                 expect(getRotation(tra2)).toEqual(defaultRotation);
+            });
+        });
+
+        describe("should clean children's cache", function() {
+            function getPositionFromMatrix(mat) {
+                return mat.getTranslation();
+            }
+
+            function judge(setParentPositionFunc) {
+                var tra1 = threeDTransformSystemTool.create();
+                var tra2 = threeDTransformSystemTool.create();
+                var tra3 = threeDTransformSystemTool.create();
+
+                threeDTransformSystemTool.setParent(tra3, tra1);
+                threeDTransformSystemTool.setParent(tra3, tra2);
+
+
+                var pos1 = Vector3.create(1,2,3);
+                var pos2 = Vector3.create(3,2,3);
+                threeDTransformSystemTool.setPosition(tra1, pos1);
+                threeDTransformSystemTool.setPosition(tra2, pos2);
+
+
+
+                updateSystem(null, null);
+
+
+                expect(getPositionFromMatrix(threeDTransformSystemTool.getLocalToWorldMatrix(tra1))).toEqual(pos1);
+                expect(getPositionFromMatrix(threeDTransformSystemTool.getLocalToWorldMatrix(tra2))).toEqual(pos2);
+
+                var pos3 = Vector3.create(1, 2, 3);
+                setParentPositionFunc(tra3, pos3);
+
+
+                updateSystem(null, null);
+
+
+
+                expect(getPositionFromMatrix(threeDTransformSystemTool.getLocalToWorldMatrix(tra1))).toEqual(pos1.add(pos3));
+                expect(getPositionFromMatrix(threeDTransformSystemTool.getLocalToWorldMatrix(tra2))).toEqual(pos2.add(pos3));
+            }
+
+            beforeEach(function(){
+
+            });
+
+            it("test set parent's position", function(){
+                judge(function (tra3, pos3) {
+                    threeDTransformSystemTool.setPosition(tra3, pos3);
+                })
+            });
+            it("test set parent's local position", function () {
+                judge(function (tra3, pos3) {
+                    threeDTransformSystemTool.setLocalPosition(tra3, pos3);
+                })
             });
         });
     });
@@ -935,15 +1014,15 @@ describe("ThreeDTransform", function () {
                 return 2;
             });
 
-            threeDTransformTool.resetData();
+            threeDTransformSystemTool.resetData();
 
-            obj1 = gameObjectTool.create();
-            tra1 = gameObjectTool.getTransform(obj1);
+            obj1 = gameObjectSystemTool.create();
+            tra1 = gameObjectSystemTool.getTransform(obj1);
             tra1.name = "tra1";
 
 
             expect(function(){
-                obj2 = gameObjectTool.create();
+                obj2 = gameObjectSystemTool.create();
             }).toThrow();
         });
     });

@@ -14,9 +14,9 @@ describe("Camera", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
         cameraGameObject = data.cameraGameObject;
-        cameraController = gameObjectTool.getComponent(cameraGameObject, wd.CameraController);
+        cameraController = gameObjectSystemTool.getComponent(cameraGameObject, wd.CameraController);
 
         gameObject = data.gameObject;
 
@@ -35,9 +35,9 @@ describe("Camera", function () {
         });
 
         it("get near", function(){
-            cameraControllerTool.setCameraNear(cameraController, 0.2);
+            cameraControllerSystemTool.setCameraNear(cameraController, 0.2);
 
-            expect(cameraControllerTool.getCameraNear(cameraController)).toEqual(0.2);
+            expect(cameraControllerSystemTool.getCameraNear(cameraController)).toEqual(0.2);
         });
     });
 
@@ -47,9 +47,9 @@ describe("Camera", function () {
         });
 
         it("get aspect", function(){
-            cameraControllerTool.setCameraFar(cameraController, 100);
+            cameraControllerSystemTool.setCameraFar(cameraController, 100);
 
-            expect(cameraControllerTool.getCameraFar(cameraController)).toEqual(100);
+            expect(cameraControllerSystemTool.getCameraFar(cameraController)).toEqual(100);
         });
     });
 
@@ -59,24 +59,24 @@ describe("Camera", function () {
         });
 
         it("remove near", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(gameObject, cameraController);
 
-            expect(cameraControllerTool.getCameraNear(cameraController)).toBeUndefined();
+            expect(cameraControllerSystemTool.getCameraNear(cameraController)).toBeUndefined();
         });
         it("remove far", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(gameObject, cameraController);
 
-            expect(cameraControllerTool.getCameraFar(cameraController)).toBeUndefined();
+            expect(cameraControllerSystemTool.getCameraFar(cameraController)).toBeUndefined();
         });
         it("remove worldToCameraMatrix", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(gameObject, cameraController);
 
             expect(CameraData.worldToCameraMatrixMap[cameraController.index]).toBeUndefined();
         });
         it("remove pMatrixMap", function () {
-            gameObjectTool.disposeComponent(gameObject, cameraController);
+            gameObjectSystemTool.disposeComponent(gameObject, cameraController);
 
-            expect(cameraControllerTool.getCameraPMatrix(cameraController)).toBeUndefined();
+            expect(cameraControllerSystemTool.getCameraPMatrix(cameraController)).toBeUndefined();
         });
     });
 });

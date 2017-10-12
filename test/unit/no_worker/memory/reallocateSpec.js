@@ -38,35 +38,35 @@ describe("reallocate memory", function() {
 
 
             beforeEach(function(){
-                tag1 = tagTool.create(2);
+                tag1 = tagSystemTool.create(2);
 
-                gameObject1 = gameObjectTool.create();
+                gameObject1 = gameObjectSystemTool.create();
 
-                tagTool.addTag(tag1, "aaa");
-                tagTool.addTag(tag1, "bbb");
+                tagSystemTool.addTag(tag1, "aaa");
+                tagSystemTool.addTag(tag1, "bbb");
 
-                gameObjectTool.addComponent(gameObject1, tag1);
+                gameObjectSystemTool.addComponent(gameObject1, tag1);
             });
 
             beforeEach(function(){
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
 
-                tag2 = tagTool.create(2);
+                tag2 = tagSystemTool.create(2);
 
-                gameObject2 = gameObjectTool.create();
+                gameObject2 = gameObjectSystemTool.create();
 
-                tagTool.addTag(tag2, "qqq");
+                tagSystemTool.addTag(tag2, "qqq");
 
-                gameObjectTool.addComponent(gameObject2, tag2);
+                gameObjectSystemTool.addComponent(gameObject2, tag2);
             });
 
             it("new tagArray should has no holes", function(){
-                gameObjectTool.disposeComponent(gameObject1, tag1);
+                gameObjectSystemTool.disposeComponent(gameObject1, tag1);
 
                 expect(TagData.tagArray).toEqual(["qqq"]);
             });
             it("new gameObjectMap,slotCountMap,usedSlotCountMap,indexMap,indexInTagArrayMap,tagMap should only has not-removed data", function(){
-                gameObjectTool.disposeComponent(gameObject1, tag1);
+                gameObjectSystemTool.disposeComponent(gameObject1, tag1);
 
                 judgeMapData(TagData.gameObjectMap, {
                     0:gameObject2
@@ -79,84 +79,84 @@ describe("reallocate memory", function() {
                 expect(TagData.indexMap).toEqual([0]);
             });
             it("new indexInTagArrayMap should only has not-removed data and next data", function(){
-                gameObjectTool.disposeComponent(gameObject1, tag1);
+                gameObjectSystemTool.disposeComponent(gameObject1, tag1);
 
                 expect(TagData.indexInTagArrayMap).toEqual([0, 2]);
             });
             it("tag index should be update", function () {
-                gameObjectTool.disposeComponent(gameObject1, tag1);
+                gameObjectSystemTool.disposeComponent(gameObject1, tag1);
 
                 componentTool.judgeIsComponentIndexNotRemoved(tag1, expect);
                 expect(tag2.index).toEqual(0);
-                expect(tagTool.findGameObjectsByTag("qqq")).toEqual([gameObject2]);
+                expect(tagSystemTool.findGameObjectsByTag("qqq")).toEqual([gameObject2]);
             });
             it("test maxComponentDisposeCount > 1", function () {
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                var tag3 = tagTool.create(1);
+                var tag3 = tagSystemTool.create(1);
 
-                var gameObject3 = gameObjectTool.create();
+                var gameObject3 = gameObjectSystemTool.create();
 
-                tagTool.addTag(tag3, "www");
+                tagSystemTool.addTag(tag3, "www");
 
-                gameObjectTool.addComponent(gameObject3, tag3);
+                gameObjectSystemTool.addComponent(gameObject3, tag3);
 
-                gameObjectTool.disposeComponent(gameObject3, tag3);
-                gameObjectTool.disposeComponent(gameObject2, tag2);
+                gameObjectSystemTool.disposeComponent(gameObject3, tag3);
+                gameObjectSystemTool.disposeComponent(gameObject2, tag2);
 
                 expect(tag1.index).toEqual(0);
                 componentTool.judgeIsComponentIndexNotRemoved(tag2, expect);
                 componentTool.judgeIsComponentIndexNotRemoved(tag3, expect);
-                expect(tagTool.findGameObjectsByTag("qqq")).toEqual([]);
-                expect(tagTool.findGameObjectsByTag("www")).toEqual([]);
-                expect(tagTool.findGameObjectsByTag("aaa")).toEqual([gameObject1]);
-                expect(tagTool.findGameObjectsByTag("bbb")).toEqual([gameObject1]);
+                expect(tagSystemTool.findGameObjectsByTag("qqq")).toEqual([]);
+                expect(tagSystemTool.findGameObjectsByTag("www")).toEqual([]);
+                expect(tagSystemTool.findGameObjectsByTag("aaa")).toEqual([gameObject1]);
+                expect(tagSystemTool.findGameObjectsByTag("bbb")).toEqual([gameObject1]);
             });
 
             describe("test add new tag after dispose old one", function () {
                 it("findGameObjects by removed tag should return empty array", function () {
-                    gameObjectTool.disposeComponent(gameObject1, tag1);
-                    gameObjectTool.disposeComponent(gameObject2, tag2);
+                    gameObjectSystemTool.disposeComponent(gameObject1, tag1);
+                    gameObjectSystemTool.disposeComponent(gameObject2, tag2);
 
 
-                    var tag3 = tagTool.create(1);
+                    var tag3 = tagSystemTool.create(1);
 
-                    var gameObject3 = gameObjectTool.create();
+                    var gameObject3 = gameObjectSystemTool.create();
 
-                    tagTool.addTag(tag3, "ttt");
+                    tagSystemTool.addTag(tag3, "ttt");
 
-                    gameObjectTool.addComponent(gameObject3, tag3);
+                    gameObjectSystemTool.addComponent(gameObject3, tag3);
 
-                    expect(tagTool.findGameObjectsByTag("ttt")).toEqual([gameObject3]);
+                    expect(tagSystemTool.findGameObjectsByTag("ttt")).toEqual([gameObject3]);
                 });
                 it("test maxComponentDisposeCount > 1", function () {
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                    var tag3 = tagTool.create(1);
+                    var tag3 = tagSystemTool.create(1);
 
-                    var gameObject3 = gameObjectTool.create();
+                    var gameObject3 = gameObjectSystemTool.create();
 
-                    tagTool.addTag(tag3, "www");
+                    tagSystemTool.addTag(tag3, "www");
 
-                    gameObjectTool.addComponent(gameObject3, tag3);
+                    gameObjectSystemTool.addComponent(gameObject3, tag3);
 
-                    gameObjectTool.disposeComponent(gameObject3, tag3);
-                    gameObjectTool.disposeComponent(gameObject2, tag2);
-
-
+                    gameObjectSystemTool.disposeComponent(gameObject3, tag3);
+                    gameObjectSystemTool.disposeComponent(gameObject2, tag2);
 
 
-                    var tag4 = tagTool.create(3);
 
-                    var gameObject4 = gameObjectTool.create();
 
-                    tagTool.addTag(tag4, "ttt");
-                    tagTool.addTag(tag4, "mmm");
+                    var tag4 = tagSystemTool.create(3);
 
-                    gameObjectTool.addComponent(gameObject4, tag4);
+                    var gameObject4 = gameObjectSystemTool.create();
 
-                    expect(tagTool.findGameObjectsByTag("ttt")).toEqual([gameObject4]);
-                    expect(tagTool.findGameObjectsByTag("mmm")).toEqual([gameObject4]);
+                    tagSystemTool.addTag(tag4, "ttt");
+                    tagSystemTool.addTag(tag4, "mmm");
+
+                    gameObjectSystemTool.addComponent(gameObject4, tag4);
+
+                    expect(tagSystemTool.findGameObjectsByTag("ttt")).toEqual([gameObject4]);
+                    expect(tagSystemTool.findGameObjectsByTag("mmm")).toEqual([gameObject4]);
                 });
             });
         });
@@ -165,7 +165,7 @@ describe("reallocate memory", function() {
             var GameObjectData = wd.GameObjectData;
 
             beforeEach(function(){
-                // gameObjectTool.resetData();
+                // gameObjectSystemTool.resetData();
             });
 
             describe("clean children map", function () {
@@ -174,21 +174,21 @@ describe("reallocate memory", function() {
 
                 beforeEach(function(){
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
-                    gameObject = gameObjectTool.create();
+                    gameObject = gameObjectSystemTool.create();
 
-                    parent = gameObjectTool.create();
-                    gameObjectTool.add(parent, gameObject);
+                    parent = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(parent, gameObject);
 
-                    child1 = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child1);
+                    child1 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child1);
 
-                    child2 = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child2);
+                    child2 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child2);
                 })
 
                 it("batch remove from children map", function () {
-                    gameObjectTool.dispose(child1);
-                    gameObjectTool.dispose(child2);
+                    gameObjectSystemTool.dispose(child1);
+                    gameObjectSystemTool.dispose(child2);
 
 
                     var childrenMap = {};
@@ -198,8 +198,8 @@ describe("reallocate memory", function() {
                     judgeMapData(GameObjectData.childrenMap, childrenMap);
                 });
                 it("remove from parent map", function () {
-                    gameObjectTool.dispose(child1);
-                    gameObjectTool.dispose(child2);
+                    gameObjectSystemTool.dispose(child1);
+                    gameObjectSystemTool.dispose(child2);
 
 
                     var parentMap = {};
@@ -217,20 +217,20 @@ describe("reallocate memory", function() {
                 beforeEach(function(){
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
 
-                    gameObject = gameObjectTool.create();
+                    gameObject = gameObjectSystemTool.create();
 
-                    parent = gameObjectTool.create();
-                    gameObjectTool.add(parent, gameObject);
+                    parent = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(parent, gameObject);
 
-                    child = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child);
+                    child = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child);
 
-                    child11 = gameObjectTool.create();
-                    gameObjectTool.add(child, child11);
+                    child11 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(child, child11);
                 });
 
                 it("new parentMap,childrenMap,componentMap should only has not-removed data", function(){
-                    gameObjectTool.dispose(child);
+                    gameObjectSystemTool.dispose(child);
 
                     var parentMap = {};
                     parentMap[gameObject.uid] = parent;
@@ -250,7 +250,7 @@ describe("reallocate memory", function() {
                 it("test maxComponentDisposeCount > 1", function () {
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                    gameObjectTool.dispose(child);
+                    gameObjectSystemTool.dispose(child);
 
 
                     // var parentMap = {};
@@ -262,7 +262,7 @@ describe("reallocate memory", function() {
 
 
 
-                    gameObjectTool.dispose(gameObject);
+                    gameObjectSystemTool.dispose(gameObject);
 
 
                     var parentMap = {};
@@ -283,7 +283,7 @@ describe("reallocate memory", function() {
                     it("test maxComponentDisposeCount === 1", function () {
                         sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
 
-                        gameObjectTool.dispose(child11);
+                        gameObjectSystemTool.dispose(child11);
 
 
                         var parentMap = {};
@@ -295,9 +295,9 @@ describe("reallocate memory", function() {
 
 
 
-                        var child2 = gameObjectTool.create();
+                        var child2 = gameObjectSystemTool.create();
 
-                        gameObjectTool.add(child, child2);
+                        gameObjectSystemTool.add(child, child2);
 
                         var parentMap = {};
                         parentMap[parent.uid] = undefined;
@@ -316,11 +316,11 @@ describe("reallocate memory", function() {
                     it("test maxComponentDisposeCount > 1", function () {
                         sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
 
-                        var gameObject2 = gameObjectTool.create();
+                        var gameObject2 = gameObjectSystemTool.create();
 
-                        gameObjectTool.dispose(gameObject2);
-                        gameObjectTool.dispose(child11);
-                        gameObjectTool.dispose(gameObject);
+                        gameObjectSystemTool.dispose(gameObject2);
+                        gameObjectSystemTool.dispose(child11);
+                        gameObjectSystemTool.dispose(gameObject);
 
 
                         var parentMap = {};
@@ -330,9 +330,9 @@ describe("reallocate memory", function() {
 
 
 
-                        var child2 = gameObjectTool.create();
+                        var child2 = gameObjectSystemTool.create();
 
-                        gameObjectTool.add(parent, child2);
+                        gameObjectSystemTool.add(parent, child2);
 
                         var parentMap = {};
                         parentMap[parent.uid] = undefined;
@@ -367,25 +367,25 @@ describe("reallocate memory", function() {
 
                 beforeEach(function(){
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
-                    gameObject = gameObjectTool.create();
-                    gameObjectTra = gameObjectTool.getTransform(gameObject);
+                    gameObject = gameObjectSystemTool.create();
+                    gameObjectTra = gameObjectSystemTool.getTransform(gameObject);
 
-                    parent = gameObjectTool.create();
-                    gameObjectTool.add(parent, gameObject);
-                    parentTra = gameObjectTool.getTransform(parent);
+                    parent = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(parent, gameObject);
+                    parentTra = gameObjectSystemTool.getTransform(parent);
 
-                    child1 = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child1);
-                    child1Tra = gameObjectTool.getTransform(child1);
+                    child1 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child1);
+                    child1Tra = gameObjectSystemTool.getTransform(child1);
 
-                    child2 = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child2);
-                    child2Tra = gameObjectTool.getTransform(child2);
+                    child2 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child2);
+                    child2Tra = gameObjectSystemTool.getTransform(child2);
                 })
 
                 it("batch remove from children map", function () {
-                    gameObjectTool.dispose(child1);
-                    gameObjectTool.dispose(child2);
+                    gameObjectSystemTool.dispose(child1);
+                    gameObjectSystemTool.dispose(child2);
 
 
                     var childrenMap = {};
@@ -395,8 +395,8 @@ describe("reallocate memory", function() {
                     judgeMapData(ThreeDTransformData.childrenMap, childrenMap);
                 });
                 it("remove from parent map", function () {
-                    gameObjectTool.dispose(child1);
-                    gameObjectTool.dispose(child2);
+                    gameObjectSystemTool.dispose(child1);
+                    gameObjectSystemTool.dispose(child2);
 
 
                     var parentMap = {};
@@ -415,25 +415,25 @@ describe("reallocate memory", function() {
                 beforeEach(function(){
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 1);
 
-                    gameObject = gameObjectTool.create();
-                    gameObjectTra = gameObjectTool.getTransform(gameObject);
+                    gameObject = gameObjectSystemTool.create();
+                    gameObjectTra = gameObjectSystemTool.getTransform(gameObject);
 
-                    parent = gameObjectTool.create();
-                    gameObjectTool.add(parent, gameObject);
-                    parentTra = gameObjectTool.getTransform(parent);
+                    parent = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(parent, gameObject);
+                    parentTra = gameObjectSystemTool.getTransform(parent);
 
 
-                    child = gameObjectTool.create();
-                    gameObjectTool.add(gameObject, child);
-                    childTra = gameObjectTool.getTransform(child);
+                    child = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(gameObject, child);
+                    childTra = gameObjectSystemTool.getTransform(child);
 
-                    child11 = gameObjectTool.create();
-                    gameObjectTool.add(child, child11);
-                    child11Tra = gameObjectTool.getTransform(child11);
+                    child11 = gameObjectSystemTool.create();
+                    gameObjectSystemTool.add(child, child11);
+                    child11Tra = gameObjectSystemTool.getTransform(child11);
                 });
 
                 it("new parentMap,childrenMap,isTranslateMap,tempMap,gameObjectMap should only has not-removed data", function(){
-                    gameObjectTool.dispose(child);
+                    gameObjectSystemTool.dispose(child);
 
                     var parentMap = {};
                     parentMap[gameObjectTra.uid] = parentTra;
@@ -447,8 +447,8 @@ describe("reallocate memory", function() {
 
 
                     var isTranslateMap = {};
-                    isTranslateMap[gameObjectTra.uid] = undefined;
-                    isTranslateMap[parentTra.uid] = undefined;
+                    isTranslateMap[gameObjectTra.uid] = true;
+                    isTranslateMap[parentTra.uid] = true;
                     judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
                     var gameObjectMap = {};
@@ -464,11 +464,11 @@ describe("reallocate memory", function() {
                 });
                 it("test maxComponentDisposeCount > 1", function () {
                     /*!
-                     "gameObjectTool.dispose(childTra)" will dispose component twice:dispose childTra; dispose child11Tra, so maxComponentDisposeCount should be 3 instead of 2
+                     "gameObjectSystemTool.dispose(childTra)" will dispose component twice:dispose childTra; dispose child11Tra, so maxComponentDisposeCount should be 3 instead of 2
                      */
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 3);
 
-                    gameObjectTool.dispose(childTra);
+                    gameObjectSystemTool.dispose(childTra);
 
 
                     // var parentMap = {};
@@ -480,7 +480,7 @@ describe("reallocate memory", function() {
 
 
 
-                    gameObjectTool.dispose(gameObjectTra);
+                    gameObjectSystemTool.dispose(gameObjectTra);
 
 
                     var parentMap = {};
@@ -493,7 +493,7 @@ describe("reallocate memory", function() {
 
 
                     var isTranslateMap = {};
-                    isTranslateMap[parentTra.uid] = undefined;
+                    isTranslateMap[parentTra.uid] = true;
                     judgeMapData(ThreeDTransformData.isTranslateMap, isTranslateMap);
 
 
@@ -506,7 +506,7 @@ describe("reallocate memory", function() {
 
                 describe("test add new one after dispose old one", function () {
                     it("test maxComponentDisposeCount === 1", function () {
-                        gameObjectTool.dispose(child11);
+                        gameObjectSystemTool.dispose(child11);
 
 
                         var parentMap = {};
@@ -518,10 +518,10 @@ describe("reallocate memory", function() {
 
 
 
-                        var child2 = gameObjectTool.create();
-                        var child2Tra = gameObjectTool.getTransform(child2);
+                        var child2 = gameObjectSystemTool.create();
+                        var child2Tra = gameObjectSystemTool.getTransform(child2);
 
-                        gameObjectTool.add(child, child2);
+                        gameObjectSystemTool.add(child, child2);
 
                         var parentMap = {};
                         parentMap[parentTra.uid] = undefined;
@@ -541,11 +541,11 @@ describe("reallocate memory", function() {
                     it("test maxComponentDisposeCount > 1", function () {
                         sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 4);
 
-                        var gameObject2 = gameObjectTool.create();
+                        var gameObject2 = gameObjectSystemTool.create();
 
-                        gameObjectTool.dispose(gameObject2);
-                        gameObjectTool.dispose(child11);
-                        gameObjectTool.dispose(gameObject);
+                        gameObjectSystemTool.dispose(gameObject2);
+                        gameObjectSystemTool.dispose(child11);
+                        gameObjectSystemTool.dispose(gameObject);
 
 
                         var parentMap = {};
@@ -555,10 +555,10 @@ describe("reallocate memory", function() {
 
 
 
-                        var child2 = gameObjectTool.create();
-                        var child2Tra = gameObjectTool.getTransform(child2);
+                        var child2 = gameObjectSystemTool.create();
+                        var child2Tra = gameObjectSystemTool.getTransform(child2);
 
-                        gameObjectTool.add(parent, child2);
+                        gameObjectSystemTool.add(parent, child2);
 
                         var parentMap = {};
                         parentMap[parentTra.uid] = undefined;
@@ -594,7 +594,7 @@ describe("reallocate memory", function() {
             }
 
             beforeEach(function(){
-                obj1 = gameObjectTool.create();
+                obj1 = gameObjectSystemTool.create();
                 geo1VerticesData = [
                     -10, -10, 10, -10, 10, 10, 10, -10, 10
                 ];
@@ -609,7 +609,7 @@ describe("reallocate memory", function() {
                     1,2,0
                 ]
                 geo1 = customGeometryTool.create();
-                gameObjectTool.addComponent(obj1, geo1);
+                gameObjectSystemTool.addComponent(obj1, geo1);
 
                 customGeometryTool.setVertices(geo1, geo1VerticesData)
                 customGeometryTool.setNormals(geo1, geo1NormalsData)
@@ -627,9 +627,9 @@ describe("reallocate memory", function() {
 
 
 
-                obj2 = gameObjectTool.create();
+                obj2 = gameObjectSystemTool.create();
                 geo2 = boxGeometryTool.create();
-                gameObjectTool.addComponent(obj2, geo2);
+                gameObjectSystemTool.addComponent(obj2, geo2);
 
                 boxGeometryTool.setConfigData(geo2, {
                     width: 5,
@@ -655,7 +655,7 @@ describe("reallocate memory", function() {
 
 
 
-                obj3 = gameObjectTool.create();
+                obj3 = gameObjectSystemTool.create();
                 geo3VerticesData = [
                     -6, -6, 6, -6, 6, 6, 6, -6, 6,
                     1,1,2
@@ -675,7 +675,7 @@ describe("reallocate memory", function() {
                     2,0,1, 1,3,2
                 ]
                 geo3 = customGeometryTool.create();
-                gameObjectTool.addComponent(obj3, geo3);
+                gameObjectSystemTool.addComponent(obj3, geo3);
 
                 customGeometryTool.setVertices(geo3, geo3VerticesData)
                 customGeometryTool.setNormals(geo3, geo3NormalsData)
@@ -706,43 +706,43 @@ describe("reallocate memory", function() {
 
                 describe("pack type array with not-removed data", function(){
                     it("test1", function () {
-                        gameObjectTool.disposeComponent(obj1, geo1);
+                        gameObjectSystemTool.disposeComponent(obj1, geo1);
 
-                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
-                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
-                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
-                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
-                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
-                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                        expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
+                        expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                     });
                     it("test2", function () {
-                        gameObjectTool.disposeComponent(obj2, geo2);
+                        gameObjectSystemTool.disposeComponent(obj2, geo2);
 
-                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo1VerticesData);
-                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo1NormalsData);
-                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo1TexCoordsData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo1IndicesData);
-                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
-                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo1VerticesData);
+                        expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo1NormalsData);
+                        expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo1TexCoordsData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(0)))).toEqual(geo1IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                        expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
                     });
                     it("test3", function () {
-                        gameObjectTool.disposeComponent(obj1, geo1);
-                        gameObjectTool.disposeComponent(obj3, geo3);
+                        gameObjectSystemTool.disposeComponent(obj1, geo1);
+                        gameObjectSystemTool.disposeComponent(obj3, geo3);
 
-                        expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
-                        expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
-                        expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
-                        expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                        expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                        expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                        expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
+                        expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
                     });
                 });
             });
 
             it("update not-removed geometry's index", function () {
-                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                 componentTool.judgeIsComponentIndexNotRemoved(geo1, expect);
                 expect(geo2.index).toEqual(0);
@@ -751,7 +751,7 @@ describe("reallocate memory", function() {
 
             describe("test new info list", function () {
                 it("update startIndex,endIndex", function () {
-                    gameObjectTool.disposeComponent(obj1, geo1);
+                    gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                     expect(GeometryData.verticesInfoList).toEqual([
                         { startIndex: 0, endIndex: 72 },
@@ -771,7 +771,7 @@ describe("reallocate memory", function() {
                     ]);
                 });
                 it("should only has not-removed data", function () {
-                    gameObjectTool.disposeComponent(obj1, geo1);
+                    gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                     expect(GeometryData.verticesInfoList.length).toEqual(2);
                     expect(GeometryData.normalsInfoList.length).toEqual(2);
@@ -790,7 +790,7 @@ describe("reallocate memory", function() {
                 var oldIndicesCacheMap = GeometryData.indicesCacheMap;
                 var oldGeometryMap = GeometryData.geometryMap;
 
-                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                 judgeMap("gameObjectMap", oldGameObjectMap);
                 judgeMap("computeDataFuncMap", oldComputeDataFuncMap);
@@ -802,7 +802,7 @@ describe("reallocate memory", function() {
                 judgeMap("geometryMap", oldGeometryMap);
             });
             it("update offset", function () {
-                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                 expect(GeometryData.verticesOffset).toEqual(geo2VerticesData.length + geo3VerticesData.length);
                 expect(GeometryData.normalsOffset).toEqual(geo2NormalsData.length + geo3NormalsData.length);
@@ -810,8 +810,8 @@ describe("reallocate memory", function() {
                 expect(GeometryData.indicesOffset).toEqual(geo2IndicesData.length + geo3IndicesData.length);
             });
             it("update index", function () {
-                gameObjectTool.disposeComponent(obj1, geo1);
-                gameObjectTool.disposeComponent(obj3, geo3);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj3, geo3);
 
 
                 expect(GeometryData.index).toEqual(1);
@@ -819,7 +819,7 @@ describe("reallocate memory", function() {
             it("test maxComponentDisposeCount > 1", function () {
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                gameObjectTool.disposeComponent(obj2, geo2);
+                gameObjectSystemTool.disposeComponent(obj2, geo2);
 
                 var oldGeometryMap = GeometryData.geometryMap;
 
@@ -832,7 +832,7 @@ describe("reallocate memory", function() {
 
 
 
-                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
 
                 geometryMap = {};
                 geometryMap[0] = oldGeometryMap[2];
@@ -842,10 +842,10 @@ describe("reallocate memory", function() {
 
             describe("test add new one after dispose old one and then dispose new one", function () {
                 it("test maxComponentDisposeCount === 1", function () {
-                    gameObjectTool.disposeComponent(obj1, geo1);
+                    gameObjectSystemTool.disposeComponent(obj1, geo1);
 
 
-                    var obj4 = gameObjectTool.create();
+                    var obj4 = gameObjectSystemTool.create();
                     var geo4VerticesData = [
                         -3, -3, 3, -3, 3, 3, 3, -3, 3,
                         5,6,7
@@ -865,7 +865,7 @@ describe("reallocate memory", function() {
                         2,3,1, 1,3,0
                     ]
                     var geo4 = customGeometryTool.create();
-                    gameObjectTool.addComponent(obj4, geo4);
+                    gameObjectSystemTool.addComponent(obj4, geo4);
 
                     customGeometryTool.setVertices(geo4, geo4VerticesData)
                     customGeometryTool.setNormals(geo4, geo4NormalsData)
@@ -874,16 +874,16 @@ describe("reallocate memory", function() {
 
 
 
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
-                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
-                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(2)))).toEqual(geo4VerticesData);
-                    expect(testTool.getValues(geometryTool.getIndices(createGeometry(2)))).toEqual(geo4IndicesData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(0)))).toEqual(geo2IndicesData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(1)))).toEqual(geo3VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(1)))).toEqual(geo3NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(1)))).toEqual(geo3TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(1)))).toEqual(geo3IndicesData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(2)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getIndices(createGeometry(2)))).toEqual(geo4IndicesData);
 
 
                     expect(GeometryData.geometryMap[0]).toEqual(geo2);
@@ -895,16 +895,16 @@ describe("reallocate memory", function() {
 
 
 
-                    gameObjectTool.disposeComponent(obj3, geo3);
+                    gameObjectSystemTool.disposeComponent(obj3, geo3);
 
 
 
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
 
                     expect(GeometryData.geometryMap[0]).toEqual(geo2);
                     expect(GeometryData.geometryMap[1]).toEqual(geo4);
@@ -914,11 +914,11 @@ describe("reallocate memory", function() {
                 it("test maxComponentDisposeCount > 1", function () {
                     sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
 
-                    gameObjectTool.disposeComponent(obj1, geo1);
+                    gameObjectSystemTool.disposeComponent(obj1, geo1);
 
 
 
-                    var obj4 = gameObjectTool.create();
+                    var obj4 = gameObjectSystemTool.create();
                     var geo4VerticesData = [
                         -3, -3, 3, -3, 3, 3, 3, -3, 3,
                         5,6,7
@@ -938,7 +938,7 @@ describe("reallocate memory", function() {
                         2,3,1, 1,3,0
                     ]
                     var geo4 = customGeometryTool.create();
-                    gameObjectTool.addComponent(obj4, geo4);
+                    gameObjectSystemTool.addComponent(obj4, geo4);
 
                     customGeometryTool.setVertices(geo4, geo4VerticesData)
                     customGeometryTool.setNormals(geo4, geo4NormalsData)
@@ -947,16 +947,16 @@ describe("reallocate memory", function() {
 
 
 
-                    gameObjectTool.disposeComponent(obj3, geo3);
+                    gameObjectSystemTool.disposeComponent(obj3, geo3);
 
 
 
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
-                    expect(testTool.getValues(geometryTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
-                    expect(testTool.getValues(geometryTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
-                    expect(testTool.getValues(geometryTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(0)))).toEqual(geo2VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(0)))).toEqual(geo2NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(0)))).toEqual(geo2TexCoordsData);
+                    expect(testTool.getValues(geometrySystemTool.getVertices(createGeometry(1)))).toEqual(geo4VerticesData);
+                    expect(testTool.getValues(geometrySystemTool.getNormals(createGeometry(1)))).toEqual(geo4NormalsData);
+                    expect(testTool.getValues(geometrySystemTool.getTexCoords(createGeometry(1)))).toEqual(geo4TexCoordsData);
 
 
                     expect(GeometryData.geometryMap[0]).toEqual(geo2);
@@ -974,13 +974,13 @@ describe("reallocate memory", function() {
 
 
 
-                    gameObjectTool.disposeComponent(obj2, geo2);
-                    gameObjectTool.disposeComponent(obj4, geo4);
+                    gameObjectSystemTool.disposeComponent(obj2, geo2);
+                    gameObjectSystemTool.disposeComponent(obj4, geo4);
 
 
 
                     expect(function(){
-                        geometryTool.getVertices(createGeometry(0))
+                        geometrySystemTool.getVertices(createGeometry(0))
                     }).toThrow("should exist");
 
 
@@ -1004,7 +1004,7 @@ describe("reallocate memory", function() {
             var geo1;
 
             beforeEach(function(){
-                obj1 = gameObjectTool.create();
+                obj1 = gameObjectSystemTool.create();
                 geo1VerticesData = [
                     -10, -10, 10, -10, 10, 10, 10, -10, 10
                 ];
@@ -1013,7 +1013,7 @@ describe("reallocate memory", function() {
                     1,2,0
                 ]
                 geo1 = customGeometryTool.create();
-                gameObjectTool.addComponent(obj1, geo1);
+                gameObjectSystemTool.addComponent(obj1, geo1);
 
                 customGeometryTool.setVertices(geo1, geo1VerticesData)
                 customGeometryTool.setIndices(geo1, geo1IndicesData)
@@ -1025,11 +1025,11 @@ describe("reallocate memory", function() {
                 sandbox.stub(MemoryConfig, "maxComponentDisposeCount", 2);
                 sandbox.stub(GeometryData, "maxDisposeIndex", 3);
 
-                gameObjectTool.disposeComponent(obj1, geo1);
+                gameObjectSystemTool.disposeComponent(obj1, geo1);
 
 
                 expect(function(){
-                    geometryTool.getVertices(createGeometry(0))
+                    geometrySystemTool.getVertices(createGeometry(0))
                 }).toThrow("should exist");
 
 

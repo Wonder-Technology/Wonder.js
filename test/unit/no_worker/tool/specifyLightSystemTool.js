@@ -13,7 +13,7 @@ var specifyLightSystemTool = (function () {
             console.log(wd.DataBufferConfig)
 
 
-            gameObjectTool.disposeComponent(obj1, light1);
+            gameObjectSystemTool.disposeComponent(obj1, light1);
 
             expect(SpecifyLightData[isDirtyTypeArrayName][index1]).toEqual(1);
             expect(SpecifyLightData[isDirtyTypeArrayName][index2]).toEqual(0);
@@ -32,11 +32,11 @@ var specifyLightSystemTool = (function () {
                     var obj2, light2;
 
                     beforeEach(function () {
-                        obj1 = sceneTool[addLightMethodName]();
-                        light1 = gameObjectTool.getComponent(obj1, Light);
+                        obj1 = sceneSystemTool[addLightMethodName]();
+                        light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
-                        obj2 = sceneTool[addLightMethodName]();
-                        light2 = gameObjectTool.getComponent(obj2, Light);
+                        obj2 = sceneSystemTool[addLightMethodName]();
+                        light2 = gameObjectSystemTool.getComponent(obj2, Light);
                     });
 
                     describe("test remove from map", function () {
@@ -50,7 +50,7 @@ var specifyLightSystemTool = (function () {
                                 tool.setColor(light1, color1);
                                 tool.setColor(light2, color2);
 
-                                gameObjectTool.disposeComponent(obj1, light1);
+                                gameObjectSystemTool.disposeComponent(obj1, light1);
 
                                 colorTool.judgeIsEqual(tool.getColor(componentTool.createComponent(0)), color2, expect);
                                 colorTool.judgeIsEqual(tool.getColor(componentTool.createComponent(1)), colorTool.createDefaultColor(SpecifyLightData), expect);
@@ -64,12 +64,12 @@ var specifyLightSystemTool = (function () {
                             });
 
                             it("mark material removed", function () {
-                                gameObjectTool.disposeComponent(obj1, light1);
+                                gameObjectSystemTool.disposeComponent(obj1, light1);
 
                                 componentTool.judgeIsComponentIndexNotRemoved(light1, expect);
                             });
                             it("swap with last one and remove the last one", function () {
-                                gameObjectTool.disposeComponent(obj1, light1);
+                                gameObjectSystemTool.disposeComponent(obj1, light1);
 
                                 expect(SpecifyLightData.lightMap[0]).toEqual(light2);
                                 expect(SpecifyLightData.lightMap.length).toEqual(1);

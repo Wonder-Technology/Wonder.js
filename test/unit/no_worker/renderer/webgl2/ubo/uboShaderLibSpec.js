@@ -49,7 +49,7 @@ describe("test ubo shader lib", function () {
         }
 
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, basicMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -67,21 +67,21 @@ describe("test ubo shader lib", function () {
 
                 describe("set ubo data", function () {
                     it("set vMatrix, pMatrix, cameraPosition, normalMatrix", function () {
-                        var transform = gameObjectTool.getComponent(cameraGameObject, ThreeDTransform),
+                        var transform = gameObjectSystemTool.getComponent(cameraGameObject, ThreeDTransform),
                             mat = Matrix4.create().setTranslate(1, 2, 3),
                             position = mat.getTranslation();
 
-                        threeDTransformTool.setPosition(transform, position);
+                        threeDTransformSystemTool.setPosition(transform, position);
 
 
                         directorTool.init(state);
                         directorTool.loopBody(state);
 
-                        var cameraController = cameraControllerTool.getCameraController(cameraGameObject);
-                        var vMat = cameraControllerTool.getWorldToCameraMatrix(cameraController.index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData);
-                        var pMat = cameraControllerTool.getCameraPMatrix(cameraController, CameraData);
+                        var cameraController = cameraControllerSystemTool.getCameraController(cameraGameObject);
+                        var vMat = cameraControllerSystemTool.getWorldToCameraMatrix(cameraController.index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData);
+                        var pMat = cameraControllerSystemTool.getCameraPMatrix(cameraController, CameraData);
 
-                        var normalMatrixValues = threeDTransformTool.getNormalMatrix(transform, GlobalTempData, ThreeDTransformData).values;
+                        var normalMatrixValues = threeDTransformSystemTool.getNormalMatrix(transform, GlobalTempData, ThreeDTransformData).values;
 
 
                         var typeArr = new Float32Array(16 * 2 + 4 + 16);
@@ -135,7 +135,7 @@ describe("test ubo shader lib", function () {
         }
 
         beforeEach(function () {
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
             material = data.material;
             cameraGameObject = data.cameraGameObject;
@@ -168,8 +168,8 @@ describe("test ubo shader lib", function () {
                         judge();
                     });
                     it("test two point light", function () {
-                        sceneTool.addPointLight();
-                        sceneTool.addPointLight();
+                        sceneSystemTool.addPointLight();
+                        sceneSystemTool.addPointLight();
 
                         judge();
                     });
@@ -227,11 +227,11 @@ describe("test ubo shader lib", function () {
             }
 
             beforeEach(function () {
-                lightObj1 = sceneTool.addAmbientLight();
-                lightComponent1 = gameObjectTool.getComponent(lightObj1, Light);
+                lightObj1 = sceneSystemTool.addAmbientLight();
+                lightComponent1 = gameObjectSystemTool.getComponent(lightObj1, Light);
 
-                lightObj2 = sceneTool.addAmbientLight();
-                lightComponent2 = gameObjectTool.getComponent(lightObj2, Light);
+                lightObj2 = sceneSystemTool.addAmbientLight();
+                lightComponent2 = gameObjectSystemTool.getComponent(lightObj2, Light);
             });
 
             describe("set dyname ubo data before draw ambient light", function () {
@@ -365,11 +365,11 @@ describe("test ubo shader lib", function () {
             }
 
             beforeEach(function () {
-                lightObj1 = sceneTool.addDirectionLight();
-                lightComponent1 = gameObjectTool.getComponent(lightObj1, Light);
+                lightObj1 = sceneSystemTool.addDirectionLight();
+                lightComponent1 = gameObjectSystemTool.getComponent(lightObj1, Light);
 
-                lightObj2 = sceneTool.addDirectionLight();
-                lightComponent2 = gameObjectTool.getComponent(lightObj2, Light);
+                lightObj2 = sceneSystemTool.addDirectionLight();
+                lightComponent2 = gameObjectSystemTool.getComponent(lightObj2, Light);
             });
 
             describe("set dyname ubo data before draw direction light", function () {
@@ -407,8 +407,8 @@ describe("test ubo shader lib", function () {
 
 
                             var position = Vector3.create(1, 2, 3);
-                            var transform = gameObjectTool.getTransform(lightObj1);
-                            threeDTransformTool.setLocalPosition(transform, position);
+                            var transform = gameObjectSystemTool.getTransform(lightObj1);
+                            threeDTransformSystemTool.setLocalPosition(transform, position);
 
 
                             directorTool.loopBody(state);
@@ -423,8 +423,8 @@ describe("test ubo shader lib", function () {
 
 
                             var position = Vector3.create(1, 2, 3);
-                            var transform = gameObjectTool.getTransform(lightObj1);
-                            threeDTransformTool.setPosition(transform, position);
+                            var transform = gameObjectSystemTool.getTransform(lightObj1);
+                            threeDTransformSystemTool.setPosition(transform, position);
 
                             directorTool.loopBody(state);
 
@@ -440,8 +440,8 @@ describe("test ubo shader lib", function () {
 
 
                         var position = Vector3.create(1, 2, 3);
-                        var transform = gameObjectTool.getTransform(lightObj1);
-                        threeDTransformTool.setPosition(transform, position);
+                        var transform = gameObjectSystemTool.getTransform(lightObj1);
+                        threeDTransformSystemTool.setPosition(transform, position);
 
                         directorTool.loopBody(state);
 
@@ -611,11 +611,11 @@ describe("test ubo shader lib", function () {
             }
 
             beforeEach(function () {
-                lightObj1 = sceneTool.addPointLight();
-                lightComponent1 = gameObjectTool.getComponent(lightObj1, Light);
+                lightObj1 = sceneSystemTool.addPointLight();
+                lightComponent1 = gameObjectSystemTool.getComponent(lightObj1, Light);
 
-                lightObj2 = sceneTool.addPointLight();
-                lightComponent2 = gameObjectTool.getComponent(lightObj2, Light);
+                lightObj2 = sceneSystemTool.addPointLight();
+                lightComponent2 = gameObjectSystemTool.getComponent(lightObj2, Light);
             });
 
             describe("set dyname ubo data before draw point light", function () {
@@ -653,8 +653,8 @@ describe("test ubo shader lib", function () {
 
 
                             var position = Vector3.create(1, 2, 3);
-                            var transform = gameObjectTool.getTransform(lightObj1);
-                            threeDTransformTool.setLocalPosition(transform, position);
+                            var transform = gameObjectSystemTool.getTransform(lightObj1);
+                            threeDTransformSystemTool.setLocalPosition(transform, position);
 
 
                             directorTool.loopBody(state);
@@ -669,8 +669,8 @@ describe("test ubo shader lib", function () {
 
 
                             var position = Vector3.create(1, 2, 3);
-                            var transform = gameObjectTool.getTransform(lightObj1);
-                            threeDTransformTool.setPosition(transform, position);
+                            var transform = gameObjectSystemTool.getTransform(lightObj1);
+                            threeDTransformSystemTool.setPosition(transform, position);
 
                             directorTool.loopBody(state);
 
@@ -686,8 +686,8 @@ describe("test ubo shader lib", function () {
 
 
                         var position = Vector3.create(1, 2, 3);
-                        var transform = gameObjectTool.getTransform(lightObj1);
-                        threeDTransformTool.setPosition(transform, position);
+                        var transform = gameObjectSystemTool.getTransform(lightObj1);
+                        threeDTransformSystemTool.setPosition(transform, position);
 
                         directorTool.loopBody(state);
 

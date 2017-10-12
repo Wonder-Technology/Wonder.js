@@ -17,6 +17,7 @@ describe("Director", function () {
             materialData:sinon.match.any,
             geometryData:sinon.match.any,
             lightData:sinon.match.any,
+            textureData:sinon.match.any,
             disposeData:sinon.match.any
         }).callCount).toEqual(callCount);
     }
@@ -47,7 +48,7 @@ describe("Director", function () {
     //
     //
     //
-    //             sceneTool.prepareGameObjectAndAddToScene();
+    //             sceneSystemTool.prepareGameObjectAndAddToScene();
     //
     //             state = stateTool.createAndSetFakeGLState(sandbox);
     //
@@ -103,10 +104,10 @@ describe("Director", function () {
         beforeEach(function(){
             sandbox.stub(directorTool.getDirector()._timeController, "tick");
 
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
 
             // var gameObject = data.gameObject;
-            // // var tra = gameObjectTool.getTransform(gameObject);
+            // // var tra = gameObjectSystemTool.getTransform(gameObject);
 
             state = stateTool.createAndSetFakeGLState(sandbox);
 

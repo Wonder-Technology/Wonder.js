@@ -1,13 +1,13 @@
 import { DataBufferConfig } from "../../../config/DataBufferConfig";
 
-export var getAmbientLightBufferCount = () => {
+export const getAmbientLightBufferCount = () => {
     return DataBufferConfig.ambientLightDataBufferCount;
 }
 
-export var getDirectionLightBufferCount = () => {
+export const getDirectionLightBufferCount = () => {
     return DataBufferConfig.directionLightDataBufferCount;
 }
 
-export var getPointLightBufferCount = () => {
+export const getPointLightBufferCount = () => {
     return DataBufferConfig.pointLightDataBufferCount;
 }

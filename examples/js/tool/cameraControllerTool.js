@@ -11,15 +11,6 @@ var cameraControllerTool = (function () {
         setPerspectiveCameraAspect: wd.setPerspectiveCameraAspect,
         getCameraPMatrix: wd.getCameraPMatrix,
         getWorldToCameraMatrix: wd.getWorldToCameraMatrix,
-        getGameObject: wd.getCameraControllerGameObject,
-
-        getCameraController: function(gameObject){
-            return gameObjectTool.getComponent(gameObject, wd.CameraController, wd.GameObjectData);
-        },
-
-        resetData: function(){
-            wd.initCameraControllerData(wd.CameraControllerData, wd.PerspectiveCameraData, wd.CameraData);
-        }
     }
 })()
 

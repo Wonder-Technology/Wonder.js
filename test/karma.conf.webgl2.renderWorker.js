@@ -11,8 +11,8 @@
 
     // list of files / patterns to load in the browser
     files: [
-        'test/unit/environment/webgl2.js',
-        'test/unit/environment/renderWorker.js',
+        'test/helper/environment/webgl2.js',
+        'test/helper/environment/renderWorker.js',
 
         'dist/wd.forTest.js',
         'dist/worker/wd.renderWorker.js',
@@ -34,13 +34,17 @@
         'test/unit/worker/**/tool/*.js',
         'test/unit/worker/utils/*.js',
 
-        'test/unit/worker/**',
+        // 'test/unit/worker/**',
+        'test/unit/worker/**/hot*',
+        // 'test/unit/worker/**/device*',
         // 'test/unit/worker/**/MainSpec*',
         // 'test/unit/worker/**/texture*',
+        // 'test/unit/worker/**/hotLoad*',
         // 'test/unit/worker/**/material*',
         // 'test/unit/worker/**/lightMaterial*',
         // 'test/unit/worker/**/disposeTexture*',
         // 'test/unit/worker/**/disposeGeometry*',
+        // 'test/unit/worker/**/defer*',
         // 'test/unit/worker/**/lightSpec*',
         // 'test/unit/worker/**/DirectorSpec*',
 

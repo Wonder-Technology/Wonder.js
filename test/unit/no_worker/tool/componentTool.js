@@ -19,7 +19,8 @@ var componentTool = (function () {
                     tool[methodName](component);
                 }
             }).toThrow(errMsg);
-        }
+        },
+        getComponentIdFromClass: wd.getComponentIdFromClass
     }
 })()
 

@@ -30,6 +30,7 @@ describe("draw render command buffer", function () {
             e = {
                 data: {
                     operateType: EWorkerOperateType.DRAW,
+                    textureData:null,
                     renderCommandBufferData: null,
                     geometryData: null,
                     materialData: null,
@@ -41,7 +42,6 @@ describe("draw render command buffer", function () {
 
         it("commit gl", function () {
             workerTool.execRenderWorkerMessageHandler(e);
-
 
             expect(gl.commit).toCalledOnce();
         });

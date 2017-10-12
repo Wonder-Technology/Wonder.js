@@ -1,10 +1,11 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.5",
-  "authors": "Yuanchao Yang <395976266@qq.com>",
+  "version": "1.0.0-alpha.5.22",
+  "authors": "DreamForest",
   "description": "3d webgl engine",
-  "homepage": "https://github.com/yyc-git/Wonder.js",
+  "homepage": "https://github.com/DreamForeast/Wonder.js",
   "license": "MIT",
+  "main": "./dist/wd.js",
   "scripts": {
     "start": "node ./server/app.js",
     "codecov": "cat test/coverage/*/lcov.info | codecov"
@@ -48,7 +49,7 @@
     "util": "^0.10.3",
     "vinyl": "^0.4.6",
     "vinyl-bufferstream": "^1.0.1",
-    "wonder-package": "^0.1.29",
+    "wonder-package": "^0.1.30",
     "wonder-rollup-plugin-typescript": "^0.1.1",
     "wonder-tool-generate_es2015_index": "^0.1.4"
   },
@@ -57,12 +58,13 @@
     "@types/node": "^7.0.5",
     "@types/wonder-commonlib": "^0.2.0",
     "@types/wonder-frp": "^0.2.0",
-    "bowser": "^1.6.0",
-    "immutable": "^3.8.1",
-    "wonder-commonlib": "^0.1.9",
-    "wonder-expect.js": "^0.1.9",
+    "bowser": "1.7.2",
+    "immutable": "3.8.1",
+    "wonder-commonlib": "^0.1.12",
+    "wonder-expect.js": "^0.1.12",
     "wonder-fantasy-land": "^0.1.1",
-    "wonder-frp": "^0.1.20",
-    "wonder-lodash": "^0.1.3"
+    "wonder-frp": "^0.1.24",
+    "wonder-lodash": "^0.1.3",
+    "wonder-task": "^0.1.2"
   }
 }

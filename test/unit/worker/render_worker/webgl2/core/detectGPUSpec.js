@@ -14,8 +14,6 @@ describe("detect gpu", function () {
     });
 
     describe("detect extension", function () {
-        var gl;
-        var device;
         var canvasDom;
         var offscreen;
 
@@ -32,8 +30,6 @@ describe("detect gpu", function () {
         }
 
         beforeEach(function () {
-            device = DeviceManager.getInstance();
-
             offscreen = {
             };
 

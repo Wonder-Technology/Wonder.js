@@ -1,6 +1,6 @@
 import { isValueExist } from "../../utils/stateUtils";
 
-export var isConfigDataExist = (configData: any) => {
+export const isConfigDataExist = (configData: any) => {
     return isValueExist(configData);
 }
 

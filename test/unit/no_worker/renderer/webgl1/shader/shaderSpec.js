@@ -13,7 +13,7 @@ describe("Shader", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
         obj = data.gameObject;
         geo = data.geometry;
         material = data.material;
@@ -183,9 +183,9 @@ describe("Shader", function() {
         });
 
         it("basic material with map send a_texCoords, but the material with no map not send a_texCoords", function(){
-            sceneTool.removeGameObject(obj);
+            sceneSystemTool.removeGameObject(obj);
 
-            var data = sceneTool.prepareGameObjectAndAddToScene();
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene();
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -193,10 +193,10 @@ describe("Shader", function() {
 
             bufferTool.makeCreateDifferentBuffer(gl);
 
-            var texture = textureTool.create();
-            textureTool.setSource(texture, {});
+            var texture = textureSystemTool.create();
+            textureSystemTool.setSource(texture, {});
 
-            basicMaterialTool.addMap(material, texture);
+            basicMaterialTool.setMap(material, texture);
 
 
             var material2;
@@ -204,8 +204,8 @@ describe("Shader", function() {
             material2 = basicMaterialTool.create();
 
 
-            var obj2 = sceneTool.createGameObject(null, material2);
-            sceneTool.addGameObject(obj2);
+            var obj2 = sceneSystemTool.createGameObject(null, material2);
+            sceneSystemTool.addGameObject(obj2);
 
 
 
@@ -223,7 +223,7 @@ describe("Shader", function() {
 
             directorTool.init(state);
 
-            var data = geometryTool.getTexCoords(geo);
+            var data = geometrySystemTool.getTexCoords(geo);
 
 
             directorTool.loopBody(state);
@@ -241,8 +241,8 @@ describe("Shader", function() {
 
         var shaderSourceCallCount = gl.shaderSource.callCount;
 
-        var texture = textureTool.create();
-        textureTool.setSource(texture, {});
+        var texture = textureSystemTool.create();
+        textureSystemTool.setSource(texture, {});
 
         lightMaterialTool.setSpecularMap(material, texture);
 
@@ -271,7 +271,7 @@ describe("Shader", function() {
             gl = stateTool.getGLFromFakeGLState(state);
 
 
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
             material = data.material;
         });
@@ -308,7 +308,7 @@ describe("Shader", function() {
             });
 
             it("only init the shader of the same shader name once", function () {
-                sceneTool.addGameObject(sceneTool.createGameObject(null, lightMaterialTool.create()));
+                sceneSystemTool.addGameObject(sceneSystemTool.createGameObject(null, lightMaterialTool.create()));
 
                 directorTool.init(state);
                 directorTool.loopBody(state);

@@ -11,7 +11,7 @@ describe("WebGLRenderer", function() {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene();
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene();
 
         state = stateTool.createAndSetFakeGLState(sandbox);
 

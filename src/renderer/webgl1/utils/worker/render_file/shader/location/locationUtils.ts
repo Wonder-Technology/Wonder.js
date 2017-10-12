@@ -2,7 +2,7 @@ import { ensureFunc } from "../../../../../../../definition/typescript/decorator
 import { AttributeLocationMap } from "../../../../../../type/dataType";
 import { createMap, isValidMapValue } from "../../../../../../../utils/objectUtils";
 
-export var getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
+export const getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, program: WebGLProgram, name: string, attributeLocationMap: AttributeLocationMap) => {
     // it(`${name}'s attrib location should be number`, () => {
     //     expect(pos).be.a("number");
     // });
@@ -21,16 +21,16 @@ export var getAttribLocation = ensureFunc((pos: number, gl: WebGLRenderingContex
     return pos;
 })
 
-export var isAttributeLocationNotExist = (pos: number) => {
+export const isAttributeLocationNotExist = (pos: number) => {
     return pos === -1;
 }
 
-export var setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: any) => {
+export const setEmptyLocationMap = (shaderIndex: number, LocationDataFromSystem: any) => {
     LocationDataFromSystem.attributeLocationMap[shaderIndex] = createMap();
     LocationDataFromSystem.uniformLocationMap[shaderIndex] = createMap();
 }
 
-export var initData = (LocationDataFromSystem: any) => {
+export const initData = (LocationDataFromSystem: any) => {
     LocationDataFromSystem.attributeLocationMap = createMap();
     LocationDataFromSystem.uniformLocationMap = createMap();
 }

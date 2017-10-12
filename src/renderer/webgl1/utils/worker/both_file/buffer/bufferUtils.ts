@@ -4,7 +4,7 @@ import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { disposeGeometryVboBuffers } from "../../../../../utils/worker/both_file/buffer/bufferUtils";
 import { getGL } from "../../../../../utils/worker/both_file/device/deviceManagerUtils";
 
-export var disposeBuffers = (disposedIndexArray: Array<number>, disposeArrayBuffer: Function, disposeIndexBuffer: Function, GPUDetectDataFromSystem: any, VaoDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DeviceManagerDataFromSystem: any) => {
+export const disposeBuffers = (disposedIndexArray: Array<number>, disposeArrayBuffer: Function, disposeIndexBuffer: Function, GPUDetectDataFromSystem: any, VaoDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, DeviceManagerDataFromSystem: any) => {
     var extension = getExtensionVao(GPUDetectDataFromSystem);
 
     if (hasExtension(extension)) {
@@ -15,7 +15,7 @@ export var disposeBuffers = (disposedIndexArray: Array<number>, disposeArrayBuff
     }
 }
 
-export var disposeGeometryVaoBuffers = (extension: any, disposedIndexArray: Array<number>, DeviceManagerDataFromSystem, {
+export const disposeGeometryVaoBuffers = (extension: any, disposedIndexArray: Array<number>, DeviceManagerDataFromSystem, {
     vaoMap,
     vboArrayMap
 }) => {

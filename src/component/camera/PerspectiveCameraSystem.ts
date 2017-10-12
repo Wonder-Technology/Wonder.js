@@ -5,7 +5,7 @@ import { addToDirtyList } from "./CameraControllerSystem";
 import { Matrix4 } from "../../math/Matrix4";
 import { setPMatrix } from "./CameraSystem";
 
-export var updateProjectionMatrix = requireCheckFunc((index: number, PerspectiveCameraData: any, CameraData: any) => {
+export const updateProjectionMatrix = requireCheckFunc((index: number, PerspectiveCameraData: any, CameraData: any) => {
     it("fovy should exist", () => {
         expect(isValidMapValue(PerspectiveCameraData.fovyMap[index])).true;
     });
@@ -22,7 +22,7 @@ export var updateProjectionMatrix = requireCheckFunc((index: number, Perspective
     setPMatrix(index, _getOrCreatePMatrix(index, CameraData).setPerspective(PerspectiveCameraData.fovyMap[index], PerspectiveCameraData.aspectMap[index], CameraData.nearMap[index], CameraData.farMap[index]), CameraData);
 })
 
-var _getOrCreatePMatrix = (index: number, CameraData: any) => {
+const _getOrCreatePMatrix =(index: number, CameraData: any) => {
     var mat = CameraData.pMatrixMap[index];
 
     if (isValidMapValue(mat)) {
@@ -32,32 +32,32 @@ var _getOrCreatePMatrix = (index: number, CameraData: any) => {
     return Matrix4.create();
 }
 
-export var getFovy = (index: number, PerspectiveCameraData: any) => {
+export const getFovy = (index: number, PerspectiveCameraData: any) => {
     return PerspectiveCameraData.fovyMap[index];
 }
 
-export var setFovy = (index: number, fovy: number, PerspectiveCameraData: any, CameraControllerData: any) => {
+export const setFovy = (index: number, fovy: number, PerspectiveCameraData: any, CameraControllerData: any) => {
     PerspectiveCameraData.fovyMap[index] = fovy;
 
     addToDirtyList(index, CameraControllerData);
 }
 
-export var getAspect = (index: number, PerspectiveCameraData: any) => {
+export const getAspect = (index: number, PerspectiveCameraData: any) => {
     return PerspectiveCameraData.aspectMap[index];
 }
 
-export var setAspect = (index: number, aspect: number, PerspectiveCameraData: any, CameraControllerData: any) => {
+export const setAspect = (index: number, aspect: number, PerspectiveCameraData: any, CameraControllerData: any) => {
     PerspectiveCameraData.aspectMap[index] = aspect;
 
     addToDirtyList(index, CameraControllerData);
 }
 
-export var dispose = (index: number, PerspectiveCameraData: any) => {
+export const dispose = (index: number, PerspectiveCameraData: any) => {
     deleteVal(index, PerspectiveCameraData.fovyMap);
     deleteVal(index, PerspectiveCameraData.aspectMap);
 }
 
-export var initData = (PerspectiveCameraData: any) => {
+export const initData = (PerspectiveCameraData: any) => {
     PerspectiveCameraData.fovyMap = createMap();
     PerspectiveCameraData.aspectMap = createMap();
 }

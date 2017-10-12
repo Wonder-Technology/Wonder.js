@@ -3,7 +3,7 @@ describe("Scene", function() {
     var scene;
 
     function shouldAlive(scene, testFunc) {
-        sceneTool.dispose(scene);
+        sceneSystemTool.dispose(scene);
 
         var result = testFunc(scene);
 
@@ -27,17 +27,17 @@ describe("Scene", function() {
         });
 
         it("not set child->transform's parent", function () {
-            var child = gameObjectTool.create();
-            sceneTool.addGameObject(child);
+            var child = gameObjectSystemTool.create();
+            sceneSystemTool.addGameObject(child);
 
-            var childTran = gameObjectTool.getTransform(child);
+            var childTran = gameObjectSystemTool.getTransform(child);
 
-            expect(threeDTransformTool.getParent(childTran)).toBeNull();
+            expect(threeDTransformSystemTool.getParent(childTran)).toBeNull();
         });
         it("if gameObject not be added to scene, it will still be rendered", function () {
-            sceneTool.addCameraObject();
+            sceneSystemTool.addCameraObject();
 
-            sceneTool.createGameObject()
+            sceneSystemTool.createGameObject()
 
             state = stateTool.createAndSetFakeGLState(sandbox);
             gl = stateTool.getGLFromFakeGLState(state);
@@ -54,15 +54,15 @@ describe("Scene", function() {
         });
 
         it("test add gameObject which has parent to scene", function(){
-            var parent = gameObjectTool.create();
-            var child = gameObjectTool.create();
+            var parent = gameObjectSystemTool.create();
+            var child = gameObjectSystemTool.create();
 
 
-            gameObjectTool.add(parent, child);
+            gameObjectSystemTool.add(parent, child);
 
-            sceneTool.addGameObject(child);
+            sceneSystemTool.addGameObject(child);
 
-            expect(gameObjectTool.getParent(child)).toEqual(sceneTool.getScene());
+            expect(gameObjectSystemTool.getParent(child)).toEqual(sceneSystemTool.getScene());
         });
     });
 });

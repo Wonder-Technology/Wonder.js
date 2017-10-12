@@ -11,7 +11,7 @@ describe("PointLight", function () {
 
         testTool.clearAndOpenContractCheck(sandbox);
 
-        var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+        var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
         state = stateTool.createAndSetFakeGLState(sandbox);
     });
@@ -101,8 +101,8 @@ describe("PointLight", function () {
 
             it("get light gameObject's transform's position", function(){
                 var pos = Vector3.create(1,2,3);
-                var obj1 = sceneTool.addPointLight(pos);
-                var light1 = gameObjectTool.getComponent(obj1, Light);
+                var obj1 = sceneSystemTool.addPointLight(pos);
+                var light1 = gameObjectSystemTool.getComponent(obj1, Light);
 
                 directorTool.init(state);
 

@@ -119,8 +119,37 @@ describe("Color", function() {
     });
 
     describe("toString", function(){
-        it("get color string", function(){
+        it("if color string exist, get color string", function(){
             expect(Color.create("#ffffff").toString()).toEqual("#ffffff");
+        });
+
+        describe("else, convert rgb to string", function () {
+            var color;
+
+            beforeEach(function(){
+                color = Color.create();
+            });
+
+            it("test single case", function () {
+                expect(color.toString()).toEqual("#000000");
+            });
+            it("test special case", function () {
+                var str = "#f5a623",
+                    r = 0.9607843137254902,
+                    g = 0.6509803921568628,
+                    b = 0.13725490196078433;
+
+                color.r = r;
+                color.g = g;
+                color.b = b;
+
+                expect(color.toString()).toEqual(str);
+
+                var color2 = Color.create(str);
+                expect(color2.r).toEqual(r);
+                expect(color2.g).toEqual(g);
+                expect(color2.b).toEqual(b);
+            });
         });
     });
 

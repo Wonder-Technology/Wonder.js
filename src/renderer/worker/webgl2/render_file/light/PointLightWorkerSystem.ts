@@ -2,7 +2,7 @@ import { createTypeArrays } from "../../../../utils/worker/render_file/light/poi
 import { setCount } from "../../../render_file/light/SpecifyLightWorkerSystem";
 import { computeRadius as computeRadiusUtils } from "../../../../webgl2/utils/worker/render_file/light/pointLightUtils";
 
-export var initData = ({
+export const initData = ({
                            buffer,
     bufferCount,
     lightCount
@@ -11,6 +11,6 @@ export var initData = ({
 
     createTypeArrays(buffer, bufferCount, PointLightWorkerData);
 }
-export var computeRadius = computeRadiusUtils;
+export const computeRadius = computeRadiusUtils;
 
 

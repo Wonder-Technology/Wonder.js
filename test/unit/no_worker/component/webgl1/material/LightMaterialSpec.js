@@ -30,7 +30,7 @@ describe("LightMaterial", function () {
         beforeEach(function () {
             frontRenderTool.useFrontRender(sandbox);
 
-            var data = sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+            var data = sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
             obj = data.gameObject;
             geo = data.geometry;
             material = data.material;
@@ -39,8 +39,8 @@ describe("LightMaterial", function () {
             basicMaterial = basicMaterialTool.create();
             basicGeo = boxGeometryTool.create();
 
-            basicObj = sceneTool.createGameObject(basicGeo, basicMaterial);
-            sceneTool.addGameObject(basicObj);
+            basicObj = sceneSystemTool.createGameObject(basicGeo, basicMaterial);
+            sceneSystemTool.addGameObject(basicObj);
         });
 
         it("switch program between different shader", function () {
@@ -58,6 +58,81 @@ describe("LightMaterial", function () {
 
             expect(gl.createProgram.callCount).toEqual(createProgramCallCount + 2);
             expect(gl.useProgram.callCount).toEqual(useProgramCallCount + 2);
+        });
+    });
+
+    describe("setMap", function() {
+        describe("test in loopBody", function() {
+            var gl;
+            var state;
+            var material;
+
+            beforeEach(function(){
+                material = lightMaterialTool.create();
+
+                sceneSystemTool.prepareGameObjectAndAddToScene(false, null, material);
+
+                state = stateTool.createAndSetFakeGLState(sandbox);
+
+                gl = stateTool.getGLFromFakeGLState(state);
+            });
+
+            it("test activeTexture", function () {
+                lightMaterialTool.setDiffuseMap(material, textureSystemTool.createTexture());
+
+
+                directorTool.init(state);
+
+                directorTool.loopBody(state);
+
+                expect(gl.activeTexture.withArgs("TEXTURE0")).toCalledOnce();
+                expect(gl.activeTexture.withArgs("TEXTURE1")).not.toCalled();
+
+
+
+
+
+                lightMaterialTool.setDiffuseMap(material, textureSystemTool.createTexture());
+                lightMaterialTool.setSpecularMap(material, textureSystemTool.createTexture());
+
+
+                directorTool.loopBody(state);
+
+                expect(gl.activeTexture.withArgs("TEXTURE0")).toCalledTwice();
+                expect(gl.activeTexture.withArgs("TEXTURE1")).toCalledOnce();
+            });
+            it("test send map data", function () {
+                var pos1 = 0;
+                textureSystemTool.prepareSendData(gl, "u_diffuseMapSampler", pos1);
+                var pos2 = 1;
+                textureSystemTool.prepareSendData(gl, "u_specularMapSampler", pos2);
+
+                lightMaterialTool.setDiffuseMap(material, textureSystemTool.createTexture());
+
+
+                directorTool.init(state);
+
+                directorTool.loopBody(state);
+
+                expect(gl.uniform1i.withArgs(pos1, 0)).toCalledOnce();
+                expect(gl.uniform1i.withArgs(pos1, 1)).not.toCalled();
+
+
+
+
+
+                lightMaterialTool.setDiffuseMap(material, textureSystemTool.createTexture());
+                lightMaterialTool.setSpecularMap(material, textureSystemTool.createTexture());
+
+
+                directorTool.loopBody(state);
+
+                expect(gl.uniform1i.withArgs(pos1, 0)).toCalledOnce();
+                expect(gl.uniform1i.withArgs(pos1, 1)).not.toCalled();
+
+                expect(gl.uniform1i.withArgs(pos2, 1)).toCalledOnce();
+                expect(gl.uniform1i.withArgs(pos2, 0)).not.toCalled();
+            });
         });
     });
 });

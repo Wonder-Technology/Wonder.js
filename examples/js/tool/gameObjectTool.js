@@ -6,6 +6,7 @@ var gameObjectTool = (function () {
         getTransform : wd.getGameObjectTransform,
         getChildren : wd.getGameObjectChildren,
         getParent: wd.getGameObjectParent,
+        setParent: wd.setGameObjectParent,
         isAlive : wd.isGameObjectAlive,
         dispose: wd.disposeGameObject,
         // disposeBatchChildren: wd.disposeBatchGameObjectChildren,
@@ -15,10 +16,6 @@ var gameObjectTool = (function () {
         add: wd.addGameObject,
         addRemoved: wd.addRemovedGameObject,
         init: wd.initGameObject,
-        remove: wd.removeGameObject,
-
-        resetData: function(){
-            wd.initGameObjectData(wd.GameObjectData);
-        }
+        remove: wd.removeGameObject
     }
 })()

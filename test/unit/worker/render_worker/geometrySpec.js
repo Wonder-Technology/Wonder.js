@@ -29,7 +29,7 @@ describe("geometry", function () {
 
         it("send add-new-point data to render worker", function () {
             var geo1 = boxGeometryTool.create();
-            sceneTool.prepareGameObjectAndAddToScene(false, geo1);
+            sceneSystemTool.prepareGameObjectAndAddToScene(false, geo1);
 
 
             directorTool.init(sandbox);
@@ -39,7 +39,7 @@ describe("geometry", function () {
 
 
 
-            var obj2 = gameObjectTool.create();
+            var obj2 = gameObjectSystemTool.create();
             var geo2VerticesData = [
                 -3, -3, 3, -3, 3, 3, 3, -3, 3,
                 5,6,7
@@ -62,7 +62,7 @@ describe("geometry", function () {
                 2,3,1, 1,3,0
             ]
             var geo2 = customGeometryTool.create();
-            gameObjectTool.addComponent(obj2, geo2);
+            gameObjectSystemTool.addComponent(obj2, geo2);
 
             customGeometryTool.setVertices(geo2, geo2VerticesData)
             customGeometryTool.setNormals(geo2, geo2NormalsData)
@@ -76,6 +76,7 @@ describe("geometry", function () {
             expect(worker.postMessage).toCalledWith({
                 operateType: EWorkerOperateType.DRAW,
                 renderCommandBufferData:sinon.match.any,
+                textureData:sinon.match.any,
                 materialData:sinon.match.any,
                 disposeData: sinon.match.any,
                 lightData: sinon.match.any,
@@ -107,7 +108,7 @@ describe("geometry", function () {
                         return;
                     }
 
-                    var obj1 = gameObjectTool.create();
+                    var obj1 = gameObjectSystemTool.create();
                     var geo1VerticesData = [
                         -3, -3, 3, -3, 3, 3, 3, -3, 3,
                         5,6,7
@@ -129,7 +130,7 @@ describe("geometry", function () {
                         2,3,1, 1,3,0
                     ]
                     var geo1 = customGeometryTool.create();
-                    gameObjectTool.addComponent(obj1, geo1);
+                    gameObjectSystemTool.addComponent(obj1, geo1);
 
                     customGeometryTool.setVertices(geo1, geo1VerticesData)
                     customGeometryTool.setIndices(geo1, geo1IndicesData)
@@ -181,6 +182,7 @@ describe("geometry", function () {
                     e = {
                         data:{
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData:null,
                             materialData:null,
                             geometryData:null,
@@ -193,7 +195,7 @@ describe("geometry", function () {
 
 
 
-                    var obj2 = gameObjectTool.create();
+                    var obj2 = gameObjectSystemTool.create();
                     var geo2VerticesData = [
                         -300, -3, 3, -3, 3, 3, 3, -3, 3,
                         200,6,7
@@ -214,7 +216,7 @@ describe("geometry", function () {
                         1,2,3, 1,3,0
                     ]
                     var geo2 = customGeometryTool.create();
-                    gameObjectTool.addComponent(obj2, geo2);
+                    gameObjectSystemTool.addComponent(obj2, geo2);
 
                     customGeometryTool.setVertices(geo2, geo2VerticesData)
                     customGeometryTool.setIndices(geo2, geo2IndicesData)
@@ -232,6 +234,7 @@ describe("geometry", function () {
                     e = {
                         data:{
                             operateType: EWorkerOperateType.DRAW,
+                            textureData:null,
                             renderCommandBufferData:null,
                             materialData:null,
                             lightData:null,

@@ -28,7 +28,7 @@ describe("Material", function() {
             it("init DeferAmbientLightPass,DeferDirectionLightPass,DeferPointLightPass shader", function () {
                 deferShadingTool.useDeferShading(sandbox);
 
-                sceneTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
+                sceneSystemTool.prepareGameObjectAndAddToScene(false, null, lightMaterialTool.create());
 
                 directorTool.init(state);
 
@@ -45,12 +45,12 @@ describe("Material", function() {
 
                 var mat = lightMaterialTool.create();
 
-                var texture = textureTool.create();
-                textureTool.setSource(texture, {});
+                var texture = textureSystemTool.create();
+                textureSystemTool.setSource(texture, {});
 
                 lightMaterialTool.setDiffuseMap(mat, texture);
 
-                sceneTool.prepareGameObjectAndAddToScene(false, null, mat);
+                sceneSystemTool.prepareGameObjectAndAddToScene(false, null, mat);
 
                 directorTool.init(state);
 

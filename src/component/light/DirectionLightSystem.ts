@@ -28,7 +28,7 @@ import { isInit } from "../../core/DirectorSystem";
 import { DirectorData } from "../../core/DirectorData";
 import { expect } from "wonder-expect.js";
 
-export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
+export const create = ensureFunc((light: DirectionLight, DirectionLightData: any) => {
     it("shouldn't create after Director->init", () => {
         expect(isInit(DirectorData)).false;
     });
@@ -40,11 +40,11 @@ export var create = ensureFunc((light: DirectionLight, DirectionLightData: any) 
     return light;
 })
 
-export var getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
+export const getPosition = (index: number, ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any) => {
     return getSpecifyLightPosition(index, ThreeDTransformData, GameObjectData, DirectionLightData);
 }
 
-export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any): Array<Float32Array> => {
+export const getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, DirectionLightData: any): Array<Float32Array> => {
     var positionArr: Array<Float32Array> = [];
 
     for (let i = 0, count = DirectionLightData.count; i < count; i++) {
@@ -54,21 +54,21 @@ export var getAllPositionData = (ThreeDTransformData: any, GameObjectData: any, 
     return positionArr;
 }
 
-export var getColor = (index: number, DirectionLightData: any) => {
+export const getColor = (index: number, DirectionLightData: any) => {
     return getColor3Data(index, DirectionLightData.colors);
 }
 
-export var getColorArr3 = getColorArr3Utils;
+export const getColorArr3 = getColorArr3Utils;
 
-export var setColor = (index: number, color: Color, DirectionLightData: any) => {
+export const setColor = (index: number, color: Color, DirectionLightData: any) => {
     setSpecifyLightColor(index, color, DirectionLightData.colors);
 
     markDirty(index, DirectionLightData.isColorDirtys);
 }
 
-export var getIntensity = getIntensityUtils;
+export const getIntensity = getIntensityUtils;
 
-export var setIntensity = (index: number, intensity: number, DirectionLightData: any) => {
+export const setIntensity = (index: number, intensity: number, DirectionLightData: any) => {
     var size = getIntensityDataSize(),
         i = index * size;
 
@@ -77,7 +77,7 @@ export var setIntensity = (index: number, intensity: number, DirectionLightData:
     markDirty(index, DirectionLightData.isIntensityDirtys);
 }
 
-export var disposeComponent = (component: Light, DirectionLightData: any) => {
+export const disposeComponent = (component: Light, DirectionLightData: any) => {
     var intensityDataSize = getIntensityDataSize(),
         dirtyDataSize = getDirtyDataSize(),
         sourceIndex = component.index,
@@ -92,7 +92,7 @@ export var disposeComponent = (component: Light, DirectionLightData: any) => {
     deleteOneItemBySwapAndReset(sourceIndex * dirtyDataSize, lastComponentIndex * dirtyDataSize, DirectionLightData.isIntensityDirtys, DirectionLightData.defaultDirty);
 }
 
-export var initDataHelper = (DirectionLightData: any) => {
+export const initDataHelper = (DirectionLightData: any) => {
     var count = getDirectionLightBufferCount(),
         size = Float32Array.BYTES_PER_ELEMENT * (getColorDataSize() + getIntensityDataSize()) + Uint8Array.BYTES_PER_ELEMENT + (getDirtyDataSize() * 3),
         buffer: any = null;
@@ -108,7 +108,7 @@ export var initDataHelper = (DirectionLightData: any) => {
     _setDefaultTypeArrData(count, DirectionLightData);
 }
 
-var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
+const _setDefaultTypeArrData =(count: number, DirectionLightData: any) => {
     var color = createDefaultColor(),
         intensity = DirectionLightData.defaultIntensity;
 
@@ -118,18 +118,18 @@ var _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
     }
 }
 
-export var init = (DirectionLightData: any, state: Map<any, any>) => {
+export const init = (DirectionLightData: any, state: Map<any, any>) => {
     return bindChangePositionEvent(DirectionLightData, state);
 }
 
-export var isPositionDirty = isPositionDirtyUtils;
+export const isPositionDirty = isPositionDirtyUtils;
 
-export var isColorDirty = isColorDirtyUtils;
+export const isColorDirty = isColorDirtyUtils;
 
-export var isIntensityDirty = isIntensityDirtyUtils;
+export const isIntensityDirty = isIntensityDirtyUtils;
 
-export var cleanPositionDirty = cleanPositionDirtyUtils;
+export const cleanPositionDirty = cleanPositionDirtyUtils;
 
-export var cleanColorDirty = cleanColorDirtyUtils;
+export const cleanColorDirty = cleanColorDirtyUtils;
 
-export var cleanIntensityDirty = cleanIntensityDirtyUtils;
+export const cleanIntensityDirty = cleanIntensityDirtyUtils;

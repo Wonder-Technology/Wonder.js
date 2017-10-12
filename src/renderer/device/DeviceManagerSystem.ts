@@ -12,14 +12,14 @@ import {
     setColorWrite as setColorWriteUtils,
     setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils,
     setScreen as setScreenUtils, setSide as setSideUtils,
-    setViewport as setViewportUtils, setViewportOfGL as setViewportOfGLUtils
+    setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils
 } from "../utils/worker/both_file/device/deviceManagerUtils";
 import { Log } from "../../utils/Log";
 import { Color } from "../../structure/Color";
 import { ESide } from "../enum/ESide";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
 
-export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, WebGLDetectData: any, DeviceManagerData: any, state: Map<any, any>) => {
+export const createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<string, any>, WebGLDetectData: any, DeviceManagerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getOnlyGL(canvas, contextConfig.get("options").toObject(), WebGLDetectData);
 
@@ -31,19 +31,21 @@ export var createGL = curry((canvas: HTMLCanvasElement, contextConfig: Map<strin
     });
 })
 
-export var getGL = getGLUtils;
+export const getGL = getGLUtils;
 
-export var setGL = setGLUtils;
+export const setGL = setGLUtils;
 
-export var setContextConfig = setContextConfigUtils;
+export const setContextConfig = setContextConfigUtils;
 
-export var setPixelRatio = setPixelRatioUtils;
+export const setPixelRatio = setPixelRatioUtils;
 
-export var getViewport = getViewportUtils;
+export const getViewport = getViewportUtils;
 
-export var setViewport = setViewportUtils;
+export const setViewportToState = setViewportToStateUtils;
 
-export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement, state: Map<any, any>) => {
+export const setViewportOfGL = setViewportOfGLUtils;
+
+export const setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HTMLCanvasElement, state: Map<any, any>) => {
     return IO.of(() => {
         if (!useDevicePixelRatio) {
             return state;
@@ -55,15 +57,13 @@ export var setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: HT
     });
 });
 
-export var setViewportOfGL = setViewportOfGLUtils;
+export const getScreenSize = getScreenSizeUtils;
 
-export var getScreenSize = getScreenSizeUtils;
-
-export var setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, DomQuery: any, state: Map<any, any>) => {
+export const setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerData: any, DomQuery: any, state: Map<any, any>) => {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
 });
 
-var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
+const _setScreenData =curry((DeviceManagerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -80,12 +80,16 @@ var _setScreenData = curry((DeviceManagerData: any, canvas: HTMLCanvasElement, s
     });
 })
 
-export var clear = clearUtils;
+export const clear = clearUtils;
 
-export var setClearColor = setClearColorUtils;
+export const getClearColor = (DeviceManagerData:any) => {
+    return DeviceManagerData.clearColor;
+}
 
-export var setColorWrite = setColorWriteUtils;
+export const setClearColor = setClearColorUtils;
 
-export var setSide = setSideUtils;
+export const setColorWrite = setColorWriteUtils;
 
-export var initData = initDataUtils;
+export const setSide = setSideUtils;
+
+export const initData = initDataUtils;

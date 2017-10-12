@@ -19,7 +19,7 @@ import {
 } from "../../../../../utils/shader/shaderSourceBuildUtils";
 import { WebGL1InitShaderFuncDataMap } from "../../../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL1InitShaderFuncDataMap) => {
+export const buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL1InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
@@ -38,7 +38,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
         fsBody: string = "";
-    var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
+    const _setVs =(getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
         vsDefine += buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
         vsVarDeclare += getGLSLPartData(vs, "varDeclare");
@@ -117,7 +117,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator) => {
+const _generateAttributeSource =(materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator) => {
     var result = "";
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {
