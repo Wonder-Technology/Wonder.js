@@ -1,0 +1,23 @@
+####{BSB GENERATED: NO EDIT
+B lib/bs
+FLG -open Wonderjs
+FLG -ppx /Users/y/Github/Wonder.js/node_modules/bs-platform/bin/bsppx.exe
+S /Users/y/Github/Wonder.js/node_modules/bs-platform/lib/ocaml
+B /Users/y/Github/Wonder.js/node_modules/bs-platform/lib/ocaml
+FLG -nostdlib -no-alias-deps -color always
+FLG -w -40+6+7+27+32..39+44+45
+S /Users/y/Github/Wonder.js/node_modules/wonder-bs-jest/lib/ocaml
+B /Users/y/Github/Wonder.js/node_modules/wonder-bs-jest/lib/ocaml
+S test
+B lib/bs/test
+S test/unit
+B lib/bs/test/unit
+S test/helper
+B lib/bs/test/helper
+S test/helper/jest
+B lib/bs/test/helper/jest
+S test/external
+B lib/bs/test/external
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}

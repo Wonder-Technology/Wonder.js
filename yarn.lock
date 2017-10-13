@@ -714,6 +714,10 @@ browser-resolve@^1.11.2:
   dependencies:
     resolve "1.1.7"
 
+bs-fetch@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.2.0.tgz#0537d70169c5746b16eeba8639df7442057db7cf"
+
 bs-platform@^1.9.3:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-1.9.3.tgz#8c28976ea206165183f0e8bb2c3cfd8a04120a8a"
