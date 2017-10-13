@@ -6,8 +6,6 @@ Wonder.js is a 3D Javascript Game Engine. It is currently in alpha, any contribu
 * Goal
 To build a elegant, beautiful 3D game engine with full functions.
 * Document
-- [[https://github.com/DreamForeast/Wonder.js/wiki][wiki]]
-- [[https://github.com/DreamForeast/Wonder.js/wiki/Roadmap][Roadmap]]
 
 Please learn samples in examples/samples/ to get more info.
 * Design
@@ -36,75 +34,7 @@ Join us, We can create the amazing 3D world together!
 * Tool
 
 * Usage
-Include library in your html:
-#+BEGIN_SRC html
-  <script src="dist/wd.js"></script>
-#+END_SRC
-Here shows a spinning cube sample:
-#+BEGIN_SRC js
-  <script>
-      window.onload = function () {
-          //set full screen and init engine
-          wd.Main.setConfig({
-              screenSize: wd.EScreenSize.FULL
-          }).init();
 
-          initSample();
-
-          function initSample() {
-              var director = wd.Director.getInstance(),
-                  scene = director.scene;
-
-              wd.addSceneChild(scene, createBox());
-              wd.addSceneChild(scene, createCamera());
-
-              director.start();
-          }
-
-          function createBox() {
-              var material = wd.createBasicMaterial();
-              wd.setMaterialColor(material, wd.Color.create("rgb(1.0,0.0,1.0)"));
-
-
-              var geometry = wd.createBoxGeometry();
-              wd.setBoxGeometryConfigData(geometry, {
-                  width:5,
-                  height:5,
-                  depth:5
-              });
-
-              var gameObject = wd.createGameObject();
-
-              wd.addGameObjectComponent(gameObject, material);
-              wd.addGameObjectComponent(gameObject, geometry);
-              wd.addGameObjectComponent(gameObject, wd.createMeshRenderer());
-
-              return gameObject;
-          }
-
-          function createCamera() {
-              var view = wd.Director.getInstance().view;
-
-              var cameraObj = wd.createGameObject();
-              var cameraController = wd.createCameraController();
-
-              wd.setCameraNear(cameraController, 0.1);
-              wd.setCameraFar(cameraController, 1000);
-              wd.setPerspectiveCameraFovy(cameraController, 60);
-              wd.setPerspectiveCameraAspect(cameraController, view.width / view.height);
-
-              wd.addGameObjectComponent(cameraObj, cameraController);
-
-
-              var transform = wd.getGameObjectTransform(cameraObj);
-
-              wd.setThreeDTransformPosition(transform, wd.Vector3.create(0,0, 40));
-
-              return cameraObj;
-          }
-      };
-  </script>
-#+END_SRC
 * How to build
 * How to test
 * License
