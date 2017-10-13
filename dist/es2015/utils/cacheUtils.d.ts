@@ -1,1 +1,0 @@
-export declare const cacheFunc: <T>(hasCacheFunc: (...args: any[]) => boolean, getCacheFunc: (...args: any[]) => T, setCacheFunc: (...args: any[]) => void, bodyFunc: (...args: any[]) => T) => (...args: any[]) => any;

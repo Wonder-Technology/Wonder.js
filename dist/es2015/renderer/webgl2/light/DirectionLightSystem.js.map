@@ -1,1 +1,0 @@
-{"version":3,"file":"DirectionLightSystem.js","sourceRoot":"","sources":["../../../../../src/renderer/webgl2/light/DirectionLightSystem.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,+CAA+C,CAAC;AAE/E,MAAM,CAAC,IAAM,QAAQ,GAAG,UAAC,kBAAuB;IAC5C,cAAc,CAAC,kBAAkB,CAAC,CAAC;AACvC,CAAC,CAAA"}

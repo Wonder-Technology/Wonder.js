@@ -2,8 +2,10 @@
 .vscode/
 .DS_Store/
 lib/bs/
-lib/src/
+test/
+src/
+build/
 reference/
-node_modules/
 mine/
-test/coverage
+server/
+examples/

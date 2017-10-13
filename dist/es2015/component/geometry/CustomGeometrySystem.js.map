@@ -1,1 +1,0 @@
-{"version":3,"file":"CustomGeometrySystem.js","sourceRoot":"","sources":["../../../../src/component/geometry/CustomGeometrySystem.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,kBAAkB,CAAC;AAClD,OAAO,EAAE,MAAM,IAAI,cAAc,EAA2B,MAAM,kBAAkB,CAAC;AAErF,MAAM,CAAC,IAAM,MAAM,GAAG,UAAC,YAAiB;IACpC,MAAM,CAAC,cAAc,CAAC,IAAI,cAAc,EAAE,EAAE,YAAY,CAAC,CAAC;AAC9D,CAAC,CAAA"}

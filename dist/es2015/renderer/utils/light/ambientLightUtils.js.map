@@ -1,1 +1,0 @@
-{"version":3,"file":"ambientLightUtils.js","sourceRoot":"","sources":["../../../../../src/renderer/utils/light/ambientLightUtils.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,iDAAiD,CAAC;AAGhF,MAAM,CAAC,IAAM,QAAQ,GAAG,UAAC,KAAa,EAAE,0BAA+B;IACnE,MAAM,CAAC,aAAa,CAAC,KAAK,EAAE,0BAA0B,CAAC,MAAM,CAAC,CAAC;AACnE,CAAC,CAAA"}

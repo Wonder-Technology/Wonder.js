@@ -1,2 +1,0 @@
-window.webglVersion = 1;
-

@@ -1,1 +1,0 @@
-//# sourceMappingURL=geometryType.js.map

@@ -1,9 +1,0 @@
-export declare enum EDrawMode {
-    POINTS = "POINTS",
-    LINES = "LINES",
-    LINE_LOOP = "LINE_LOOP",
-    LINE_STRIP = "LINE_STRIP",
-    TRIANGLES = "TRIANGLES",
-    TRIANGLE_STRIP = "TRIANGLE_STRIP",
-    TRANGLE_FAN = "TRIANGLE_FAN",
-}

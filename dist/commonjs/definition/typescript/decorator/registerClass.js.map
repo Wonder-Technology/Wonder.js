@@ -1,1 +1,0 @@
-{"version":3,"file":"registerClass.js","sourceRoot":"","sources":["../../../../../src/definition/typescript/decorator/registerClass.ts"],"names":[],"mappings":";;AAAA,wDAAuD;AAEvD,uBAA8B,SAAiB;IAC3C,MAAM,CAAC,UAAS,MAAM;QAClB,uBAAU,CAAC,4BAA4B,CAAC,SAAS,EAAE,MAAM,CAAC,CAAC;QAC3D,uBAAU,CAAC,QAAQ,CAAC,SAAS,EAAE,MAAM,CAAC,CAAC;IAC3C,CAAC,CAAA;AACL,CAAC;AALD,sCAKC"}
