@@ -1,1 +1,1 @@
-export declare var getMaterialShaderLibConfig: Function;
+export declare const getMaterialShaderLibConfig: Function;

@@ -1,1 +1,1 @@
-export declare var initData: (VaoDataFromSystem: any) => void;
+export declare const initData: (VaoDataFromSystem: any) => void;

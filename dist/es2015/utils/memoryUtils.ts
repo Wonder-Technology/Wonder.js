@@ -20,19 +20,19 @@ import {
     setChildren as setThreeDTransformChildren
 } from "../component/transform/hierarchySystem";
 
-export var isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount: number = MemoryConfig.maxComponentDisposeCount) => {
+export const isDisposeTooManyComponents = (disposeCount: number, maxComponentDisposeCount: number = MemoryConfig.maxComponentDisposeCount) => {
     return disposeCount >= maxComponentDisposeCount;
 }
 
-var _setMapVal = (map: object, key: number, val: any) => {
+const _setMapVal =(map: object, key: number, val: any) => {
     map[key] = val;
 }
 
-var _setArrayVal = (arr: Array<any>, index: number, val: any) => {
+const _setArrayVal =(arr: Array<any>, index: number, val: any) => {
     arr[index] = val;
 }
 
-export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
+export const reAllocateThreeDTransform = (ThreeDTransformData: any) => {
     var val: any = null,
         newParentMap = createMap(),
         newChildrenMap = createMap(),
@@ -95,7 +95,7 @@ export var reAllocateThreeDTransform = (ThreeDTransformData: any) => {
     ThreeDTransformData.aliveUIdArray = newAliveUIdArray;
 }
 
-export var reAllocateGameObject = (GameObjectData: any) => {
+export const reAllocateGameObject = (GameObjectData: any) => {
     let val: any = null,
         newParentMap = createMap(),
         newChildrenMap = createMap(),
@@ -141,7 +141,7 @@ export var reAllocateGameObject = (GameObjectData: any) => {
     GameObjectData.aliveUIdArray = newAliveUIdArray;
 };
 
-var _cleanChildrenMap = (disposedUIdArr: Array<number>, parentMap: object, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
+const _cleanChildrenMap =(disposedUIdArr: Array<number>, parentMap: object, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var isCleanedParentMap = createMap();
 
     for (let uid of disposedUIdArr) {
@@ -161,7 +161,7 @@ var _cleanChildrenMap = (disposedUIdArr: Array<number>, parentMap: object, isAli
     }
 }
 
-var _cleanChildren = (parentUId: number, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
+const _cleanChildren =(parentUId: number, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var children = getChildren(parentUId, Data);
 
     if (!_isChildrenExist(children)) {
@@ -181,11 +181,11 @@ var _cleanChildren = (parentUId: number, isAlive: Function, getChildren: Functio
     setChildren(parentUId, newChildren, Data);
 };
 
-var _isParentExist = (parent: Component) => isNotUndefined(parent);
+const _isParentExist =(parent: Component) => isNotUndefined(parent);
 
-var _isChildrenExist = (children: Array<Component>) => isNotUndefined(children);
+const _isChildrenExist =(children: Array<Component>) => isNotUndefined(children);
 
-export var reAllocateTag = (TagData: any) => {
+export const reAllocateTag = (TagData: any) => {
     var usedSlotCountMap = TagData.usedSlotCountMap,
         slotCountMap = TagData.slotCountMap,
         indexMap = TagData.indexMap,
@@ -268,7 +268,7 @@ export var reAllocateTag = (TagData: any) => {
     TagData.index = tagIndex;
 };
 
-export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) => {
+export const reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) => {
     checkIndexShouldEqualCount(GeometryData);
 }, (GeometryData: any) => {
     let val: any = null,
@@ -410,14 +410,14 @@ export var reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any) =
     return disposedIndexArray;
 })
 
-var _updateComponentIndex = (componentMap: object, newComponentMap: object, oldIndex: number, newIndex: number) => {
+const _updateComponentIndex =(componentMap: object, newComponentMap: object, oldIndex: number, newIndex: number) => {
     let component: Component = componentMap[oldIndex];
 
     component.index = newIndex;
     newComponentMap[newIndex] = component;
 }
 
-var _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex: number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+const _fillTypeArr =requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex: number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     // it("targetStartIndex should <= sourceStartIndex", () => {
     //     expect(targetStartIndex).lte(startIndex);
     // })
@@ -432,7 +432,7 @@ var _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array |
     return typeArrIndex;
 })
 
-var _updateInfoList = ensureFunc((returnVal: any, newInfoList, newIndexInArrayBuffer, info: GeometryInfo, offset: number) => {
+const _updateInfoList =ensureFunc((returnVal: any, newInfoList, newIndexInArrayBuffer, info: GeometryInfo, offset: number) => {
     it("info.startIndex should >= 0", () => {
         expect(newInfoList[newIndexInArrayBuffer].startIndex).gte(0);
     });

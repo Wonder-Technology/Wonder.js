@@ -25,7 +25,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
     };
 
-    const _buildInitShaderFuncDataMap =() => {
+    const _buildInitShaderFuncDataMap = () => {
         return {
             buildGLSLSource: buildGLSLSource,
             getGL: getGL,

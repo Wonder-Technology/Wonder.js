@@ -1,12 +1,12 @@
-export var getDirectionLightPosition = (index: number, DirectionLightDataFromSystem: any) => {
+export const getDirectionLightPosition = (index: number, DirectionLightDataFromSystem: any) => {
     return _getLightPosition(index, DirectionLightDataFromSystem);
 }
 
-export var getPointLightPosition = (index: number, PointLightDataFromSystem: any) => {
+export const getPointLightPosition = (index: number, PointLightDataFromSystem: any) => {
     return _getLightPosition(index, PointLightDataFromSystem);
 }
 
-var _getLightPosition = (index: number, LightDataFromSystem: any) => {
+const _getLightPosition =(index: number, LightDataFromSystem: any) => {
     return LightDataFromSystem.positionArr[index];
 }
 

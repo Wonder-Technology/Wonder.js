@@ -1,8 +1,10 @@
 import { bindAndUpdate as bindAndUpdateUtils, createTypeArrays, getBufferCount } from "../../../utils/worker/render_file/texture/mapManagerUtils";
-import { bindToUnit, initData as initTextureData, initTextures, needUpdate, update } from "./TextureWorkerSystem";
+import { bindToUnit, initData as initTextureData, initNeedInitTextures as initNeedInitTexturesTexture, initTextures, needUpdate, update } from "./TextureWorkerSystem";
 export var initMapManagers = function (gl, TextureWorkerData) {
     initTextures(gl, TextureWorkerData);
 };
+export var initNeedInitTextures = initNeedInitTexturesTexture;
+export var setMaterialTextureList = function (materialTextureList, MapManagerWorkerData) { return MapManagerWorkerData.materialTextureList = materialTextureList; };
 export var getMapCount = function (materialIndex, MapManagerWorkerData) {
     var textureCounts = MapManagerWorkerData.textureCounts;
     if (textureCounts === null) {
@@ -10,8 +12,8 @@ export var getMapCount = function (materialIndex, MapManagerWorkerData) {
     }
     return textureCounts[materialIndex];
 };
-export var bindAndUpdate = function (gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData) {
-    bindAndUpdateUtils(gl, mapCount, startIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
+export var bindAndUpdate = function (gl, mapCount, startIndex, definedStartTextureUnitIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData) {
+    bindAndUpdateUtils(gl, mapCount, startIndex, definedStartTextureUnitIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
 };
 export var initData = function (textureData, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData) {
     initTextureData(textureData.textureBuffer, TextureCacheWorkerData, TextureWorkerData);

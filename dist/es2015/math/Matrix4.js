@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { registerClass } from "../definition/typescript/decorator/registerClass";
 import { Matrix3 } from "./Matrix3";
 import { Log } from "../utils/Log";
-import { requireCheck, it, assert } from "../definition/typescript/decorator/contract";
+import { requireCheck, it } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { Vector3 } from "./Vector3";
 import { Vector4 } from "./Vector4";
@@ -591,14 +591,22 @@ var Matrix4 = (function () {
     ], Matrix4.prototype, "setRotate", null);
     __decorate([
         requireCheck(function (left, right, bottom, top, near, far) {
-            assert(left !== right && bottom !== top && near !== far, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
+            it("frustum should not be null", function () {
+                expect(left !== right && bottom !== top && near !== far).true;
+            });
         })
     ], Matrix4.prototype, "setOrtho", null);
     __decorate([
         requireCheck(function (fovy, aspect, near, far) {
-            assert(near !== far && aspect !== 0, Log.info.FUNC_MUST_NOT_BE("frustum", "null"));
-            assert(near > 0, Log.info.FUNC_MUST("near", "> 0"));
-            assert(far > 0, Log.info.FUNC_MUST("far", "> 0"));
+            it("frustum should not be null", function () {
+                expect(near !== far && aspect !== 0).true;
+            });
+            it("near should > 0", function () {
+                expect(near).gt(0);
+            });
+            it("far should > 0", function () {
+                expect(far).gt(0);
+            });
         })
     ], Matrix4.prototype, "setPerspective", null);
     Matrix4 = Matrix4_1 = __decorate([

@@ -2,7 +2,7 @@ import { BasicMaterial } from "./BasicMaterial";
 import {
     addComponent as addMaterialComponent,
     create as createMaterial, disposeComponent as disposeMaterialComponent,
-    initMaterial as initMaterialMaterial
+    initMaterial as initMaterialBase
 } from "./MaterialSystem";
 import {
     initData as initSpecifyMaterialData
@@ -20,14 +20,17 @@ import {
     createTypeArrays as createTypeArraysUtils,
     getClassName
 } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
-import { addMap as addMapByMapManager, getMapCount } from "../../renderer/texture/MapManagerSystem";
+import { getMapCount, initMapManager, setMap as setMapMapManager } from "../../renderer/texture/MapManagerSystem";
 import { Texture } from "../../renderer/texture/Texture";
 import { MapManagerData } from "../../renderer/texture/MapManagerData";
 import { getBasicMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
+import { getGL } from "../../renderer/device/DeviceManagerSystem";
+import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
+import { TextureData } from "../../renderer/texture/TextureData";
 
-export var create = ensureFunc((component: Material) => {
+export const create = ensureFunc((component: Material) => {
     it("index should <= max count", () => {
-        expect(component.index).lt(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
+        expect(component.index).lte(getBasicMaterialBufferStartIndex() + getBasicMaterialBufferCount());
     });
 }, (ShaderData: any, MaterialData: any, BasicMaterialData: any) => {
     var material = new BasicMaterial(),
@@ -41,25 +44,41 @@ export var create = ensureFunc((component: Material) => {
     return material;
 })
 
-export var initMaterial = (index: number, state: Map<any, any>) => {
-    initMaterialMaterial(index, state, getClassName(), MaterialData);
+export const initMaterialWithoutInitMap = (index: number, state: Map<any, any>) => {
+    initMaterialBase(index, state, getClassName(), MaterialData);
 }
 
-// export var getMap = (materialIndex: number, MapManagerData:any) => {
+export const initMaterial = (index: number, state: Map<any, any>) => {
+    initMaterialBase(index, state, getClassName(), MaterialData);
+
+    initMapManager(getGL(DeviceManagerData, state), index, MapManagerData, TextureData);
+}
+
+// export const getMap = (materialIndex: number, MapManagerData:any) => {
 //     return getMapByMapManager(materialIndex, MapManagerData);
 // }
 
-export var addMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
-    var count = getMapCount(materialIndex, MapManagerData);
+// export const addMap = ensureFunc((returnVal:any, materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+//     it("only support one map", () => {
+//         expect(getMapCount(materialIndex, MapManagerData)).equal(1);
+//     });
+// }, (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+//     var count = getMapCount(materialIndex, MapManagerData);
+//
+//     addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
+// })
 
-    addMapByMapManager(materialIndex, map, count, `u_sampler2D${count}`, MapManagerData, TextureData);
+export const setMap = (materialIndex: number, map: Texture, MapManagerData: any, TextureData: any) => {
+    setMapMapManager(materialIndex, map, _buildMapUniformSamplerName(), MapManagerData, TextureData);
 }
 
-export var addComponent = (component: Material, gameObject: GameObject) => {
+const _buildMapUniformSamplerName = () => "u_sampler2D";
+
+export const addComponent = (component: Material, gameObject: GameObject) => {
     addMaterialComponent(component, gameObject, MaterialData);
 }
 
-export var disposeComponent = (component: Material) => {
+export const disposeComponent = (component: Material) => {
     var sourceIndex = component.index,
         lastComponentIndex: number = null;
 
@@ -72,13 +91,13 @@ export var disposeComponent = (component: Material) => {
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 }
 
-export var createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialData: any) => {
+export const createTypeArrays = (buffer: any, offset: number, count: number, BasicMaterialData: any) => {
     return createTypeArraysUtils(buffer, offset, count, BasicMaterialData);
 }
 
-export var initData = (BasicMaterialData: any) => {
+export const initData = (BasicMaterialData: any) => {
     initSpecifyMaterialData(getBasicMaterialBufferStartIndex(), BasicMaterialData);
 }
 
-export var setDefaultData = (BasicMaterialData: any) => {
+export const setDefaultData = (BasicMaterialData: any) => {
 }

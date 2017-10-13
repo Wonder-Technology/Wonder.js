@@ -6,9 +6,7 @@ import { ETextureType } from "../../../../enum/ETextureType";
 import { deleteBySwap, isValidVal } from "../../../../../utils/arrayUtils";
 import { DataBufferConfig } from "../../../../../config/DataBufferConfig";
 import { setTypeArrayValue } from "../../../../../utils/typeArrayUtils";
-import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { ETextureTarget } from "../../../../enum/ETextureTarget";
-import { expect } from "wonder-expect.js";
 import { clearAllBindTextureUnitCache } from "./textureCacheUtils";
 import { EVariableType } from "../../../../enum/EVariableType";
 import { getMaxTextureUnit } from "../../../device/gpuDetectUtils";
@@ -75,10 +73,10 @@ export var setIsNeedUpdate = function (textureIndex, value, TextureDataFromSyste
 };
 export var initTextures = function (gl, TextureDataFromSystem) {
     for (var i = 0; i < TextureDataFromSystem.index; i++) {
-        _initTexture(gl, i, TextureDataFromSystem);
+        initTexture(gl, i, TextureDataFromSystem);
     }
 };
-var _initTexture = function (gl, textureIndex, TextureDataFromSystem) {
+export var initTexture = function (gl, textureIndex, TextureDataFromSystem) {
     _createWebglTexture(gl, textureIndex, TextureDataFromSystem);
 };
 var _createWebglTexture = function (gl, textureIndex, TextureDataFromSystem) {
@@ -91,9 +89,6 @@ var _createWebglTexture = function (gl, textureIndex, TextureDataFromSystem) {
 var _isGLTextureExist = function (glTexture) { return isValidVal(glTexture); };
 var _isSourceExist = function (textureIndex, TextureDataFromSystem) { return _isSourceValueExist(TextureDataFromSystem.sourceMap[textureIndex]); };
 var _isSourceValueExist = function (source) { return isValidVal(source); };
-var _getWebglTexture = function (textureIndex, TextureData) {
-    return TextureData.glTextures[textureIndex];
-};
 export var getBufferCount = function () { return DataBufferConfig.textureDataBufferCount; };
 export var needUpdate = function (textureIndex, TextureDataFromSystem) {
     return getIsNeedUpdate(textureIndex, TextureDataFromSystem) === 0;
@@ -106,17 +101,16 @@ export var markNeedUpdate = function (textureIndex, value, TextureDataFromSystem
         setIsNeedUpdate(textureIndex, 0, TextureDataFromSystem);
     }
 };
-export var update = requireCheckFunc(function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
-    it("texture source should exist", function () {
-        expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
-    });
-}, function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
+export var update = function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
+    if (!_isSourceExist(textureIndex, TextureDataFromSystem)) {
+        return;
+    }
     var width = getWidth(textureIndex, TextureDataFromSystem), height = getHeight(textureIndex, TextureDataFromSystem), wrapS = getWrapS(textureIndex, TextureDataFromSystem), wrapT = getWrapT(textureIndex, TextureDataFromSystem), magFilter = getMagFilter(textureIndex, TextureDataFromSystem), minFilter = getMinFilter(textureIndex, TextureDataFromSystem), format = getFormat(textureIndex, TextureDataFromSystem), type = getType(textureIndex, TextureDataFromSystem), flipY = getFlipY(textureIndex, TextureDataFromSystem), source = TextureDataFromSystem.sourceMap[textureIndex], target = ETextureTarget.TEXTURE_2D, isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
     setFlipY(gl, flipY);
     _setTextureParameters(gl, gl[target], isSourcePowerOfTwo, wrapS, wrapT, magFilter, minFilter);
     _allocateSourceToTexture(gl, source, format, type);
     markNeedUpdate(textureIndex, false, TextureDataFromSystem);
-});
+};
 var _setTextureParameters = function (gl, textureType, isSourcePowerOfTwo, wrapS, wrapT, magFilter, minFilter) {
     if (isSourcePowerOfTwo) {
         gl.texParameteri(textureType, gl.TEXTURE_WRAP_S, gl[wrapS]);

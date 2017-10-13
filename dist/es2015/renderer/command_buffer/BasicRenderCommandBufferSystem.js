@@ -8,7 +8,7 @@ export var createRenderCommandBufferData = requireCheckFunc(function (state, Glo
     it("renderGameObject should be basic material gameObject", function () {
         for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
             var gameObject = renderGameObjectArray_1[_i];
-            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject, GameObjectData))).equal("BasicMaterial");
+            expect(ClassUtils.getClassNameByInstance(getMaterial(gameObject.uid, GameObjectData))).equal("BasicMaterial");
         }
     });
 }, function (state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray) {

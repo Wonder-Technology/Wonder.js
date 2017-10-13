@@ -2,7 +2,7 @@ import { WebGL2LightInitWorkerData } from "../../../../webgl2/type/messageDataTy
 import { initData as initPointLightData } from "./PointLightWorkerSystem";
 import { initData as initDirectionLightData } from "./DirectionLightWorkerSystem";
 
-export var initData = (lightData: WebGL2LightInitWorkerData, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any) => {
+export const initData = (lightData: WebGL2LightInitWorkerData, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any) => {
     initDirectionLightData(lightData.directionLightData, DirectionLightDataFromSystem);
     initPointLightData(lightData.pointLightData, PointLightDataFromSystem);
 }

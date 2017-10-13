@@ -1,5 +1,5 @@
-export declare var compose: any;
-export declare var chain: any;
-export declare var map: any;
-export declare var filterArray: any;
-export declare var forEachArray: any;
+export declare const compose: any;
+export declare const chain: any;
+export declare const map: any;
+export declare const filterArray: any;
+export declare const forEachArray: any;

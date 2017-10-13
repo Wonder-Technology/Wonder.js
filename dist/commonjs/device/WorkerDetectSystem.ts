@@ -6,7 +6,7 @@ import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
 import { WorkerConfigData } from "../definition/type/mainType";
 import { RenderWorkerConfig } from "../config/RenderWorkerConfig";
 
-export var detect = curry((WorkerDetectData: any) => {
+export const detect = curry((WorkerDetectData: any) => {
     /*!
     for unit test
      */
@@ -34,25 +34,25 @@ export var detect = curry((WorkerDetectData: any) => {
     }
 })
 
-export var isSupportSharedArrayBuffer = () => {
+export const isSupportSharedArrayBuffer = () => {
     return WorkerDetectData.isSupportSharedArrayBuffer;
 }
 
-export var isSupportRenderWorkerAndSharedArrayBuffer = () => {
+export const isSupportRenderWorkerAndSharedArrayBuffer = () => {
     return RenderWorkerConfig.useRenderWorker && WorkerDetectData.isSupportRenderWorkerAndSharedArrayBuffer;
 }
 
-export var setWorkerConfig = (config: WorkerConfigData, WorkerDetectData: any) => {
+export const setWorkerConfig = (config: WorkerConfigData, WorkerDetectData: any) => {
     return IO.of(() => {
         WorkerDetectData.renderWorkerFileDir = config.renderWorkerFileDir;
     })
 }
 
-export var getRenderWorkerFilePath = () => {
+export const getRenderWorkerFilePath = () => {
     return `${_getValidFileDir(WorkerDetectData.renderWorkerFileDir)}wd.renderWorker.js`
 }
 
-var _getValidFileDir = (dir: string) => {
+const _getValidFileDir =(dir: string) => {
     if (dir.slice(-1) !== '/') {
         return `${dir}/`;
     }

@@ -38,7 +38,7 @@ export const create = requireCheckFunc((MeshRendererData: any) => {
     return renderer;
 })
 
-const _setRenderGameObjectArray =requireCheckFunc((index: number, gameObject: GameObject, renderGameObjectArray: Array<GameObject>) => {
+const _setRenderGameObjectArray = requireCheckFunc((index: number, gameObject: GameObject, renderGameObjectArray: Array<GameObject>) => {
     it("should not exist gameObject", function() {
         expect(renderGameObjectArray[index]).not.exist;
     })

@@ -18,9 +18,9 @@ exports.initDevice = null;
 if (WorkerDetectSystem_1.isSupportRenderWorkerAndSharedArrayBuffer()) {
     exports.initDevice = curry_1.default(function (contextConfig, state, configState, detect, DomQuery, canvas) {
         return IO_1.IO.of(function () {
-            var screenData = DeviceManagerWorkerSystem_1.setScreen(canvas, null, DomQuery, state).run(), viewportData = DeviceManagerWorkerSystem_1.getViewportData(screenData, state);
+            var screenData = DeviceManagerWorkerSystem_1.setScreen(canvas, null, DomQuery, state).run(), viewportData = DeviceManagerWorkerSystem_1.getViewportData(screenData);
             DeviceManagerWorkerSystem_1.createGL(canvas, WorkerInstanceSystem_1.getRenderWorker(WorkerInstanceData_1.WorkerInstanceData), contextConfig, viewportData).run();
-            return functionalUtils_1.compose(ViewSystem_1.setCanvas(canvas), DeviceManagerWorkerSystem_1.setContextConfig(contextConfig), DeviceManagerWorkerSystem_1.setViewport(viewportData), DeviceManagerWorkerSystem_1.setPixelRatio(DeviceManagerWorkerSystem_1.setCanvasPixelRatio(configState.get("useDevicePixelRatio"), canvas).run()))(state);
+            return functionalUtils_1.compose(ViewSystem_1.setCanvas(canvas), DeviceManagerWorkerSystem_1.setContextConfig(contextConfig), DeviceManagerWorkerSystem_1.setViewportToState(viewportData), DeviceManagerWorkerSystem_1.setPixelRatio(DeviceManagerWorkerSystem_1.setCanvasPixelRatio(configState.get("useDevicePixelRatio"), canvas).run()))(state);
         });
     });
 }

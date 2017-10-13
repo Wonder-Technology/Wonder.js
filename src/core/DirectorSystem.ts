@@ -37,7 +37,7 @@ export var run = null;
 
 export var render = null;
 
-const _sync =(elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
+const _sync = (elapsed: number, state: Map<any, any>, scheduler: Scheduler) => {
     scheduler.update(elapsed);
 
     var resultState = updateSystem(elapsed, state);

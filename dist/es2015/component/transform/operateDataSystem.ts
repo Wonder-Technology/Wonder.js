@@ -15,7 +15,7 @@ import {
     setVectors
 } from "../../utils/typeArrayUtils";
 
-export var swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+export const swap = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
         expect(isIndexUsed(index1, ThreeDTransformData)).true;
         expect(isIndexUsed(index2, ThreeDTransformData)).true;
@@ -27,7 +27,7 @@ export var swap = requireCheckFunc((index1: number, index2: number, ThreeDTransf
     return ThreeDTransformData;
 })
 
-export var swapTransformMapData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
+export const swapTransformMapData = requireCheckFunc((index1: number, index2: number, ThreeDTransformData: any) => {
     it("source index and target index should be used", () => {
         expect(isIndexUsed(index1, ThreeDTransformData)).true;
         expect(isIndexUsed(index2, ThreeDTransformData)).true;
@@ -36,11 +36,11 @@ export var swapTransformMapData = requireCheckFunc((index1: number, index2: numb
     return _changeMapData(index1, index2, _swapTransformMap, ThreeDTransformData);
 })
 
-export var swapTypeArrData = (index1: number, index2: number, ThreeDTransformData: any) => {
+export const swapTypeArrData = (index1: number, index2: number, ThreeDTransformData: any) => {
     return _changeTypeArrData(index1, index2, _swapTypeArr, ThreeDTransformData);
 }
 
-var _swapTypeArr = (dataArr: any, index1: number, index2: number, length: number) => {
+const _swapTypeArr =(dataArr: any, index1: number, index2: number, length: number) => {
     for (let i = 0; i < length; i++) {
         let newIndex1 = index1 + i,
             newIndex2 = index2 + i,
@@ -52,7 +52,7 @@ var _swapTypeArr = (dataArr: any, index1: number, index2: number, length: number
     }
 }
 
-var _swapTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+const _swapTransformMap =(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
     var sourceTransform = transformMap[sourceIndex],
         targetTransform = transformMap[targetIndex];
 
@@ -63,7 +63,7 @@ var _swapTransformMap = (transformMap: TransformMap, sourceIndex: number, target
     transformMap[sourceIndex] = targetTransform;
 }
 
-var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: (arr: Float32Array, sourceIndex: number, targetIndex: number, length: number) => void, ThreeDTransformData: any) => {
+const _changeTypeArrData =(sourceIndex: number, targetIndex: number, changeFunc: (arr: Float32Array, sourceIndex: number, targetIndex: number, length: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -86,7 +86,7 @@ var _changeTypeArrData = (sourceIndex: number, targetIndex: number, changeFunc: 
     return ThreeDTransformData;
 }
 
-var _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
+const _changeLocalScaleData =requireCheckFunc((vec3SourceIndex: number, vec3TargetIndex: number, vec3Size: number, ThreeDTransformData: any, changeFunc: Function) => {
     it("source localScale data shouldn't be [0,0,0]", () => {
         if (ThreeDTransformData.localScales[vec3SourceIndex] === 0
             && ThreeDTransformData.localScales[vec3SourceIndex + 1] === 0
@@ -99,7 +99,7 @@ var _changeLocalScaleData = requireCheckFunc((vec3SourceIndex: number, vec3Targe
     changeFunc(ThreeDTransformData.localScales, vec3SourceIndex, vec3TargetIndex, vec3Size);
 })
 
-var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
+const _changeMapData =(sourceIndex: number, targetIndex: number, changeFunc: (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => void, ThreeDTransformData: any) => {
     if (sourceIndex === targetIndex) {
         return ThreeDTransformData;
     }
@@ -109,11 +109,11 @@ var _changeMapData = (sourceIndex: number, targetIndex: number, changeFunc: (tra
     return ThreeDTransformData;
 }
 
-// var _resetValInArr = (dataArr: Array<any>, index: number) => {
+// const _resetValInArr =(dataArr: Array<any>, index: number) => {
 //     dataArr[index] = void 0;
 // }
 
-var _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: number, length: number
+const _moveToTypeArr =(dataArr: Float32Array, sourceIndex: number, targetIndex: number, length: number
 ) => {
     for (let i = 0; i < length; i++) {
         let newIndex1 = sourceIndex + i,
@@ -123,7 +123,7 @@ var _moveToTypeArr = (dataArr: Float32Array, sourceIndex: number, targetIndex: n
     }
 };
 
-var _moveToTransformMap = (transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
+const _moveToTransformMap =(transformMap: TransformMap, sourceIndex: number, targetIndex: number) => {
     var sourceTransform = transformMap[sourceIndex];
 
     sourceTransform.index = targetIndex;
@@ -133,7 +133,7 @@ var _moveToTransformMap = (transformMap: TransformMap, sourceIndex: number, targ
 }
 
 
-export var moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+export const moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     it("source index should not be used", () => {
         expect(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
@@ -153,7 +153,7 @@ export var moveToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex
     return ThreeDTransformData;
 }))
 
-export var moveMapDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+export const moveMapDataToIndex = ensureFunc((returnVal, sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     it("source index should not be used", () => {
         expect(isIndexUsed(sourceIndex, ThreeDTransformData)).false;
     });
@@ -169,13 +169,13 @@ export var moveMapDataToIndex = ensureFunc((returnVal, sourceIndex: number, targ
 }))
 
 
-export var moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
+export const moveTypeArrDataToIndex = (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
     return _changeTypeArrData(sourceIndex, targetIndex, _moveToTypeArr, ThreeDTransformData);
 }
 
 
-export var setTransformDataInTypeArr = (index: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
-    // export var setTransformDataInTypeArr = (index: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+export const setTransformDataInTypeArr = (index: number, mat: Matrix4, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
+    // export const setTransformDataInTypeArr = (index: number, qua: Quaternion, positionVec: Vector3, scaleVec: Vector3, ThreeDTransformData: any) => {
     setLocalRotationData(qua, getQuaternionDataIndexInArrayBuffer(index), ThreeDTransformData);
     setLocalPositionData(positionVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
     setLocalScaleData(scaleVec, getVector3DataIndexInArrayBuffer(index), ThreeDTransformData);
@@ -183,29 +183,29 @@ export var setTransformDataInTypeArr = (index: number, mat: Matrix4, qua: Quater
     setLocalToWorldMatricesData(mat, getMatrix4DataIndexInArrayBuffer(index), ThreeDTransformData);
 }
 
-export var setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+export const setLocalToWorldMatricesData = (mat: Matrix4, mat4IndexInArrayBuffer: number, ThreeDTransformData: any) => {
     setMatrices(ThreeDTransformData.localToWorldMatrices, mat, mat4IndexInArrayBuffer);
 }
 
-export var setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+export const setLocalPositionData = (position: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
     setVectors(ThreeDTransformData.localPositions, position, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
-export var setLocalRotationData = (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => {
+export const setLocalRotationData = (qua: Quaternion, quaIndexInArrayBuffer: number, ThreeDTransformData: any) => {
     setQuaternions(ThreeDTransformData.localRotations, qua, quaIndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
-export var setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
+export const setLocalScaleData = (scale: Vector3, vec3IndexInArrayBuffer: number, ThreeDTransformData: any) => {
     setVectors(ThreeDTransformData.localScales, scale, vec3IndexInArrayBuffer);
 
     return ThreeDTransformData;
 }
 
-export var setPositionData = (index: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
+export const setPositionData = (index: number, parent: ThreeDTransform, vec3IndexInArrayBuffer: number, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     if (isParentExist(parent)) {
         let index = parent.index;
 
@@ -219,8 +219,8 @@ export var setPositionData = (index: number, parent: ThreeDTransform, vec3IndexI
     }
 }
 
-export var getMatrix4DataIndexInArrayBuffer = (index: number) => index * getMatrix4DataSize();
+export const getMatrix4DataIndexInArrayBuffer = (index: number) => index * getMatrix4DataSize();
 
-export var getVector3DataIndexInArrayBuffer = (index: number) => index * getVector3DataSize();
+export const getVector3DataIndexInArrayBuffer = (index: number) => index * getVector3DataSize();
 
-export var getQuaternionDataIndexInArrayBuffer = (index: number) => index * getQuaternionDataSize();
+export const getQuaternionDataIndexInArrayBuffer = (index: number) => index * getQuaternionDataSize();

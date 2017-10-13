@@ -49,7 +49,7 @@ export const markNotHasMap = (index: number, hasMapTypArray: Uint8Array) => {
 
 export const getNotHasMapValue = () => 0;
 
-const _hasMap =(index: number, hasMapTypArray: Uint8Array) => {
+const _hasMap = (index: number, hasMapTypArray: Uint8Array) => {
     return getSingleSizeData(index, hasMapTypArray) !== getNotHasMapValue();
 }
 

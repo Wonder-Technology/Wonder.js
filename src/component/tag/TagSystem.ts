@@ -62,7 +62,7 @@ export const setNextIndexInTagArrayMap = requireCheckFunc((index: number, slotCo
     indexInTagArrayMap[index + 1] = indexInTagArrayMap[index] + slotCount;
 })
 
-const _initIndexMap =(index: number, slotCount: number, TagData: any) => {
+const _initIndexMap = (index: number, slotCount: number, TagData: any) => {
     var indexMap = TagData.indexMap,
         lastIndexInTagArray = TagData.lastIndexInTagArray;
 
@@ -107,7 +107,7 @@ export const addTag = requireCheckFunc((tagComponent: Tag, tag: string, TagData:
     _setUsedSlotCount(index, currentUsedSlotCount + 1, usedSlotCountMap);
 })
 
-const _updateIndexInTagArrayMap =(startIndex: number, increasedSlotCount: number, TagData: any) => {
+const _updateIndexInTagArrayMap = (startIndex: number, increasedSlotCount: number, TagData: any) => {
     var count = TagData.count,
         indexInTagArrayMap = TagData.indexInTagArrayMap;
 
@@ -116,7 +116,7 @@ const _updateIndexInTagArrayMap =(startIndex: number, increasedSlotCount: number
     }
 }
 
-const _updateIndexMap =(indexInArray: number, index: number, increasedSlotCount: number, TagData: any) => {
+const _updateIndexMap = (indexInArray: number, index: number, increasedSlotCount: number, TagData: any) => {
     var indexMap = TagData.indexMap,
         lastIndexInTagArray = TagData.lastIndexInTagArray + increasedSlotCount,
         spliceParamArr = [indexInArray + increasedSlotCount, 0];
@@ -170,7 +170,7 @@ export const getSlotCount = (index: number, slotCountMap: Array<number>) => {
     return slotCountMap[index];
 }
 
-const _setSlotCount =(index: number, slotCount: number, slotCountMap: Array<number>) => {
+const _setSlotCount = (index: number, slotCount: number, slotCountMap: Array<number>) => {
     slotCountMap[index] = slotCount;
 }
 
@@ -178,11 +178,11 @@ export const getUsedSlotCount = (index: number, usedSlotCountMap: Array<number>)
     return usedSlotCountMap[index];
 }
 
-const _setUsedSlotCount =(index: number, slotCount: number, usedSlotCountMap: Array<number>) => {
+const _setUsedSlotCount = (index: number, slotCount: number, usedSlotCountMap: Array<number>) => {
     usedSlotCountMap[index] = slotCount;
 }
 
-const _isSlotAllUsed =requireCheckFunc((currentUsedSlotCount: number, currentSlotCount: number) => {
+const _isSlotAllUsed = requireCheckFunc((currentUsedSlotCount: number, currentSlotCount: number) => {
     it("usedSlotCount should <= slotCount", () => {
         expect(currentUsedSlotCount).lte(currentSlotCount);
     });
@@ -190,7 +190,7 @@ const _isSlotAllUsed =requireCheckFunc((currentUsedSlotCount: number, currentSlo
     return currentUsedSlotCount === currentSlotCount;
 })
 
-const _allocateDoubleSlotCountAndAddTag =(indexInArray: number, index: number, tag: string, currentSlotCount: number, currentUsedSlotCount: number, TagData: any) => {
+const _allocateDoubleSlotCountAndAddTag = (indexInArray: number, index: number, tag: string, currentSlotCount: number, currentUsedSlotCount: number, TagData: any) => {
     var spliceArr = [indexInArray + currentUsedSlotCount, 0, tag],
         tagArray = TagData.tagArray;
 
@@ -203,11 +203,11 @@ const _allocateDoubleSlotCountAndAddTag =(indexInArray: number, index: number, t
     return currentSlotCount;
 }
 
-const _convertTagIndexToIndexInArray =(tagIndex: number, TagData: any) => {
+const _convertTagIndexToIndexInArray = (tagIndex: number, TagData: any) => {
     return TagData.indexInTagArrayMap[tagIndex];
 }
 
-const _convertIndexInArrayToTagIndex =(indexInTagArray: number, TagData: any) => {
+const _convertIndexInArrayToTagIndex = (indexInTagArray: number, TagData: any) => {
     return TagData.indexMap[indexInTagArray];
 }
 

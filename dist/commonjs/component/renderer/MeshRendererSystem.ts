@@ -15,15 +15,15 @@ import { checkIndexShouldEqualCount } from "../utils/contractUtils";
 import { MeshRendererData } from "./MeshRendererData";
 import { IUIdEntity } from "../../core/entityObject/gameObject/IUIdEntity";
 
-export var addAddComponentHandle = (_class: any) => {
+export const addAddComponentHandle = (_class: any) => {
     addAddComponentHandleToMap(_class, addComponent);
 }
 
-export var addDisposeHandle = (_class: any) => {
+export const addDisposeHandle = (_class: any) => {
     addDisposeHandleToMap(_class, disposeComponent);
 }
 
-export var create = requireCheckFunc((MeshRendererData: any) => {
+export const create = requireCheckFunc((MeshRendererData: any) => {
     checkIndexShouldEqualCount(MeshRendererData);
 }, (MeshRendererData: any) => {
     var renderer = new MeshRenderer(),
@@ -38,7 +38,7 @@ export var create = requireCheckFunc((MeshRendererData: any) => {
     return renderer;
 })
 
-var _setRenderGameObjectArray = requireCheckFunc((index: number, gameObject: GameObject, renderGameObjectArray: Array<GameObject>) => {
+const _setRenderGameObjectArray =requireCheckFunc((index: number, gameObject: GameObject, renderGameObjectArray: Array<GameObject>) => {
     it("should not exist gameObject", function() {
         expect(renderGameObjectArray[index]).not.exist;
     })
@@ -46,13 +46,13 @@ var _setRenderGameObjectArray = requireCheckFunc((index: number, gameObject: Gam
     renderGameObjectArray[index] = gameObject;
 })
 
-export var addComponent = (component: MeshRenderer, gameObject: GameObject) => {
+export const addComponent = (component: MeshRenderer, gameObject: GameObject) => {
     _setRenderGameObjectArray(component.index, gameObject, MeshRendererData.renderGameObjectArray);
 
     addComponentToGameObjectMap(MeshRendererData.gameObjectMap, component.index, gameObject);
 }
 
-export var disposeComponent = ensureFunc((returnVal, component: MeshRenderer) => {
+export const disposeComponent = ensureFunc((returnVal, component: MeshRenderer) => {
     checkIndexShouldEqualCount(MeshRendererData);
 }, (component: MeshRenderer) => {
     var sourceIndex = component.index,
@@ -70,15 +70,15 @@ export var disposeComponent = ensureFunc((returnVal, component: MeshRenderer) =>
     deleteComponentBySwapArray(sourceIndex, lastComponentIndex, MeshRendererData.meshRendererMap);
 })
 
-export var getGameObject = (index: number, Data: any) => {
+export const getGameObject = (index: number, Data: any) => {
     return getComponentGameObject(Data.gameObjectMap, index);
 }
 
-export var getRenderList = curry((state: Map<any, any>, MeshRendererData: any) => {
+export const getRenderList = curry((state: Map<any, any>, MeshRendererData: any) => {
     return MeshRendererData.renderGameObjectArray;
 })
 
-export var initData = (MeshRendererData: any) => {
+export const initData = (MeshRendererData: any) => {
     MeshRendererData.renderGameObjectArray = [];
     MeshRendererData.gameObjectMap = [];
     MeshRendererData.meshRendererMap = [];

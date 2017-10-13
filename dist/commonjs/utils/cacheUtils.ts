@@ -1,4 +1,4 @@
-export var cacheFunc = <T>(hasCacheFunc: (...args) => boolean, getCacheFunc: (...args) => T, setCacheFunc: (...args) => void, bodyFunc: (...args) => T) => {
+export const cacheFunc = <T>(hasCacheFunc: (...args) => boolean, getCacheFunc: (...args) => T, setCacheFunc: (...args) => void, bodyFunc: (...args) => T) => {
     return (...args) => {
         if (hasCacheFunc.apply(null, args)) {
             return getCacheFunc.apply(null, args);

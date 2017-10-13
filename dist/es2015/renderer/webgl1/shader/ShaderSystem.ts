@@ -8,7 +8,7 @@ import {
     initNoMaterialShader as initNoMaterialShaderUtils, initMaterialShader as initMaterialShaderUtils,
     bindIndexBuffer as bindIndexBufferUtils, initData as initDataUtils
 } from "../utils/worker/render_file/shader/shaderUtils";
-import { buildGLSLSource } from "./shaderSourceBuildSystem";
+import { buildGLSLSource } from "./ShaderSourceBuildSystem";
 import { IMaterialConfig, MaterialShaderLibConfig } from "../../data/material_config_interface";
 import { hasDiffuseMap, hasSpecularMap } from "../../../component/material/LightMaterialSystem";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../../component/geometry/GeometrySystem";
@@ -32,7 +32,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
     }
 
-    var _buildInitShaderFuncDataMap = () => {
+    const _buildInitShaderFuncDataMap =() => {
         return {
             buildGLSLSource: buildGLSLSource,
             getGL: getGL,
@@ -48,4 +48,4 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
     }
 }
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;

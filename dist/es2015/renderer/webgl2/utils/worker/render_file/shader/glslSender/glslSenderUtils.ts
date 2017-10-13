@@ -16,7 +16,7 @@ import { VaoConfigData, VaoConfigMap } from "../../../../../../type/dataType";
 import { Log } from "../../../../../../../utils/Log";
 
 
-export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, GLSLSenderDataFromSystem: any) => {
+export const addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibConfig, GLSLSenderDataFromSystem: any) => {
     it("sendUniformConfigMap should not has duplicate attribute name", () => {
         expect(hasDuplicateItems(GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex])).false;
     });
@@ -46,7 +46,7 @@ export var addSendUniformConfig = ensureFunc((returnVal, shaderIndex: number, ma
     GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex] = sendUniformFuncDataArr;
 }))
 
-export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap) => {
+export const addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL2ShaderLibContentGenerator, vaoConfigMap: VaoConfigMap) => {
     it("vaoConfigMap[shaderIndex] should not be defined", () => {
         expect(vaoConfigMap[shaderIndex]).not.exist;
     });
@@ -92,9 +92,9 @@ export var addVaoConfig = requireCheckFunc((shaderIndex: number, materialShaderL
         vaoConfigMap[shaderIndex] = vaoConfigData;
     })
 
-export var getVaoConfig = (shaderIndex: number, GLSLSenderDataFromSystem: any) => GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex];
+export const getVaoConfig = (shaderIndex: number, GLSLSenderDataFromSystem: any) => GLSLSenderDataFromSystem.vaoConfigMap[shaderIndex];
 
-export var initData = (GLSLSenderDataFromSystem: any) => {
+export const initData = (GLSLSenderDataFromSystem: any) => {
     initDataUtils(GLSLSenderDataFromSystem);
 
     GLSLSenderDataFromSystem.uboBindingPoint = 0;

@@ -14,11 +14,14 @@ export declare class Color {
     private _colorVec3Cache;
     private _colorVec4Cache;
     private _colorArr3Cache;
+    private _colorArr4Cache;
     initWhenCreate(colorVal?: string): void;
     toVector3(): Vector3;
     toVector4(): any;
     toArray3(): number[];
+    toArray4(): number[];
     toString(): string;
+    private _getHex();
     clone(): Color;
     isEqual(color: Color): boolean;
     setColorByNum(colorVal: string): this;

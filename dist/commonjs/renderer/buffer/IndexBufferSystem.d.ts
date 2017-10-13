@@ -1,2 +1,2 @@
-export declare var initData: (IndexBufferDataFromSystem: any) => void;
-export declare var disposeBuffer: (geometryIndex: number, IndexBufferData: any) => void;
+export declare const initData: (IndexBufferDataFromSystem: any) => void;
+export declare const disposeBuffer: (geometryIndex: number, IndexBufferData: any) => void;

@@ -22,7 +22,7 @@ export const initGL = (data: MessageInitGLData, detect: Function, WebGLDetectWor
     )(createState());
 }
 
-const _createGL =curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData: any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
+const _createGL = curry((canvas: HTMLCanvasElement, options: ContextConfigOptionsData, WebGLDetectWorkerData: any, DeviceManagerWorkerData: any, state: Map<any, any>) => {
     return IO.of(() => {
         var gl = getOnlyGL(canvas, options, WebGLDetectWorkerData);
 

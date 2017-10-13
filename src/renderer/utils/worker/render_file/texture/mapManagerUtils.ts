@@ -18,7 +18,7 @@ export const getTextureIndexDataSize = () => 1;
 
 export const getTextureCountDataSize = () => 1;
 
-export const bindAndUpdate = requireCheckFunc((gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex:number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+export const bindAndUpdate = requireCheckFunc((gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     it("mapCount should >= 0", () => {
         expect(mapCount).gte(0);
     });
@@ -28,7 +28,7 @@ export const bindAndUpdate = requireCheckFunc((gl: WebGLRenderingContext, mapCou
     it("definedStartTextureUnitIndex should >= 0", () => {
         expect(definedStartTextureUnitIndex).gte(0);
     });
-}, (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex:number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
+}, (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex: number, TextureCacheDataFromSystem: any, TextureDataFromSystem: any, MapManagerDataFromSystem: any, GPUDetectDataFromSystem: any, bindToUnit: Function, needUpdate: Function, update: Function) => {
     var textureIndices = MapManagerDataFromSystem.textureIndices;
 
     for (let i = startTextureIndex, count = mapCount + startTextureIndex; i < count; i++) {
@@ -43,7 +43,7 @@ export const bindAndUpdate = requireCheckFunc((gl: WebGLRenderingContext, mapCou
     }
 })
 
-export const sendData = (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex:number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
+export const sendData = (gl: WebGLRenderingContext, mapCount: number, startTextureIndex: number, definedStartTextureUnitIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, directlySendUniformData: Function, TextureData: any, MapManagerData: any) => {
     var textureIndices = MapManagerData.textureIndices;
 
     for (let i = startTextureIndex, count = mapCount + startTextureIndex; i < count; i++) {
@@ -54,7 +54,7 @@ export const sendData = (gl: WebGLRenderingContext, mapCount: number, startTextu
     }
 }
 
-const _getUnitIndex = (index:number, startTextureIndex:number, definedStartTextureUnitIndex:number) => index - startTextureIndex + definedStartTextureUnitIndex;
+const _getUnitIndex = (index: number, startTextureIndex: number, definedStartTextureUnitIndex: number) => index - startTextureIndex + definedStartTextureUnitIndex;
 
 export const getMapCount = (materialIndex: number, MapManagerDataFromSystem: any) => {
     return MapManagerDataFromSystem.textureCounts[materialIndex];
@@ -72,7 +72,7 @@ export const getMapCount = (materialIndex: number, MapManagerDataFromSystem: any
 //     });
 // }
 
-export const getMaterialTextures = (materialIndex:number, MapManagerDataFromSystem:any) => {
+export const getMaterialTextures = (materialIndex: number, MapManagerDataFromSystem: any) => {
     return MapManagerDataFromSystem.materialTextureList[materialIndex];
 }
 

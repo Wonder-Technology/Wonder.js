@@ -1,1 +1,1 @@
-{"version":3,"file":"VaoWorkerSystem.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/vao/VaoWorkerSystem.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,IAAI,aAAa,EAAE,MAAM,gDAAgD,CAAC;AAE3F,MAAM,CAAC,IAAI,QAAQ,GAAG,aAAa,CAAC"}
+{"version":3,"file":"VaoWorkerSystem.js","sourceRoot":"","sources":["../../../../../../src/renderer/worker/render_file/vao/VaoWorkerSystem.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,IAAI,aAAa,EAAE,MAAM,gDAAgD,CAAC;AAE3F,MAAM,CAAC,IAAM,QAAQ,GAAG,aAAa,CAAC"}

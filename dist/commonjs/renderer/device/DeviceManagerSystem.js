@@ -20,7 +20,8 @@ exports.setGL = deviceManagerUtils_1.setGL;
 exports.setContextConfig = deviceManagerUtils_1.setContextConfig;
 exports.setPixelRatio = deviceManagerUtils_1.setPixelRatio;
 exports.getViewport = deviceManagerUtils_1.getViewport;
-exports.setViewport = deviceManagerUtils_1.setViewport;
+exports.setViewportToState = deviceManagerUtils_1.setViewportToState;
+exports.setViewportOfGL = deviceManagerUtils_1.setViewportOfGL;
 exports.setCanvasPixelRatio = curry_1.default(function (useDevicePixelRatio, canvas, state) {
     return IO_1.IO.of(function () {
         if (!useDevicePixelRatio) {
@@ -30,7 +31,6 @@ exports.setCanvasPixelRatio = curry_1.default(function (useDevicePixelRatio, can
         return exports.setPixelRatio(pixelRatio, state);
     });
 });
-exports.setViewportOfGL = deviceManagerUtils_1.setViewportOfGL;
 exports.getScreenSize = deviceManagerUtils_1.getScreenSize;
 exports.setScreen = curry_1.default(function (canvas, DeviceManagerData, DomQuery, state) {
     return deviceManagerUtils_1.setScreen(canvas, _setScreenData, DeviceManagerData, state, DomQuery);
@@ -43,6 +43,9 @@ var _setScreenData = curry_1.default(function (DeviceManagerData, canvas, state,
     });
 });
 exports.clear = deviceManagerUtils_1.clear;
+exports.getClearColor = function (DeviceManagerData) {
+    return DeviceManagerData.clearColor;
+};
 exports.setClearColor = deviceManagerUtils_1.setClearColor;
 exports.setColorWrite = deviceManagerUtils_1.setColorWrite;
 exports.setSide = deviceManagerUtils_1.setSide;

@@ -1,1 +1,1 @@
-export declare var trace: any;
+export declare const trace: any;

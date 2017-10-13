@@ -12,6 +12,7 @@ var CameraControllerSystem_1 = require("../component/camera/CameraControllerSyst
 var PerspectiveCameraData_1 = require("../component/camera/PerspectiveCameraData");
 var CameraData_1 = require("../component/camera/CameraData");
 var CameraControllerData_1 = require("../component/camera/CameraControllerData");
+var stateUtils_1 = require("../utils/stateUtils");
 exports.getState = function (DirectorData) {
     return DirectorData.state;
 };
@@ -79,5 +80,7 @@ else {
     };
 }
 exports.initData = function (DirectorData) {
+    DirectorData.isInit = false;
+    DirectorData.state = stateUtils_1.createState();
 };
 //# sourceMappingURL=DirectorSystem.js.map

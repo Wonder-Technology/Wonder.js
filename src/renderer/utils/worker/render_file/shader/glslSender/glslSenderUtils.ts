@@ -23,7 +23,7 @@ export const sendBuffer = (gl: WebGLRenderingContext, type: string, pos: number,
     }
 }
 
-const _getBufferSizeByType =(type: string) => {
+const _getBufferSizeByType = (type: string) => {
     var size: number = null;
 
     switch (type) {
@@ -123,7 +123,7 @@ export const sendFloat3 = (gl: WebGLRenderingContext, shaderIndex: number, progr
     })
 }
 
-const _getUniformCache =(shaderIndex: number, name: string, uniformCacheMap: UniformCacheMap) => {
+const _getUniformCache = (shaderIndex: number, name: string, uniformCacheMap: UniformCacheMap) => {
     var cache = uniformCacheMap[shaderIndex];
 
     if (_isCacheNotExist(cache)) {
@@ -136,13 +136,13 @@ const _getUniformCache =(shaderIndex: number, name: string, uniformCacheMap: Uni
     return cache[name];
 }
 
-const _isCacheNotExist =(cache: any) => isNotValidMapValue(cache);
+const _isCacheNotExist = (cache: any) => isNotValidMapValue(cache);
 
-const _setUniformCache =(shaderIndex: number, name: string, data: any, uniformCacheMap: UniformCacheMap) => {
+const _setUniformCache = (shaderIndex: number, name: string, data: any, uniformCacheMap: UniformCacheMap) => {
     uniformCacheMap[shaderIndex][name] = data;
 }
 
-const _sendUniformData =<T>(gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
+const _sendUniformData = <T>(gl: WebGLRenderingContext, program: WebGLProgram, name: string, data: T, uniformLocationMap: UniformShaderLocationMap, getUniformLocation: Function, isUniformLocationNotExist: Function, send: (pos: WebGLUniformLocation, data: T) => void) => {
     var pos = getUniformLocation(gl, program, name, uniformLocationMap);
 
     if (isUniformLocationNotExist(pos)) {

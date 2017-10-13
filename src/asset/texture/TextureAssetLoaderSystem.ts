@@ -6,7 +6,7 @@ import { Log } from "../../utils/Log";
 import { PathUtils } from "wonder-commonlib/dist/es2015/utils/PathUtils";
 import { load as loadBase } from "../LoaderSystem";
 
-export const load = (url: string, id: string, AssetDatabaseData:any) => {
+export const load = (url: string, id: string, AssetDatabaseData: any) => {
     return loadBase(url, id, _load, AssetDatabaseData);
 }
 
@@ -16,21 +16,21 @@ const _load = (url: string, id: string) => {
 
     extname = PathUtils.extname(url).toLowerCase();
 
-    switch (extname){
+    switch (extname) {
         case ".jpg":
         case ".jpeg":
         case ".gif":
         case ".bmp":
         case ".png":
             stream = _loadImage(url)
-                .map((image:HTMLImageElement) => {
+                .map((image: HTMLImageElement) => {
                     return createImageTextureAsset(image, extname);
                 });
             break;
         // case ".dds":
         //     todo handle cross origin?
-            // stream = CompressedTextureLoader.load(url);
-            // break;
+        // stream = CompressedTextureLoader.load(url);
+        // break;
         default:
             Log.error(true, Log.info.FUNC_NOT_SUPPORT(extname));
             break;
@@ -39,8 +39,8 @@ const _load = (url: string, id: string) => {
     return stream;
 }
 
-const _setTextureAssetByExtname = (asset:ImageTextureAsset, extname:string) => {
-    switch (extname){
+const _setTextureAssetByExtname = (asset: ImageTextureAsset, extname: string) => {
+    switch (extname) {
         case ".jpg":
         case ".jpeg":
         case ".gif":
@@ -57,8 +57,8 @@ const _setTextureAssetByExtname = (asset:ImageTextureAsset, extname:string) => {
     return asset;
 }
 
-const _loadImage = (url:string) => {
-    return fromPromise(new Promise((resolve:Function, reject:Function) => {
+const _loadImage = (url: string) => {
+    return fromPromise(new Promise((resolve: Function, reject: Function) => {
         var img = null;
 
         img = new root.Image();
@@ -67,11 +67,11 @@ const _loadImage = (url:string) => {
         //     img.crossOrigin = "anonymous";
         // }
 
-        img.onload = function () {
+        img.onload = function() {
             this.onload = null;
             resolve(img);
         };
-        img.onerror = function () {
+        img.onerror = function() {
             reject("error");
         };
 
@@ -79,6 +79,6 @@ const _loadImage = (url:string) => {
     }));
 }
 
-export const createImageTextureAsset = (source:HTMLImageElement|HTMLCanvasElement, extname:string) => {
+export const createImageTextureAsset = (source: HTMLImageElement | HTMLCanvasElement, extname: string) => {
     return _setTextureAssetByExtname(ImageTextureAsset.create(source), extname);
 }

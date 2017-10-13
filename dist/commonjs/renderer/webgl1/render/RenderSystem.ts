@@ -13,7 +13,7 @@ import { IShaderLibGenerator } from "../../data/shaderLib_generator_interface";
 import { render as basicRender } from "./basic/BasicRenderSystem";
 import { IWebGL1DrawDataMap } from "../utils/worker/render_file/interface/IUtils";
 
-export var render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
+export const render = curry((state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, {
     cameraData,
     basicData,
     lightData
@@ -36,7 +36,7 @@ export var render = curry((state: Map<any, any>, render_config: IRenderConfig, m
     return state;
 })
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any, GPUDetectData: any, VaoData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
+export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, ProgramData: any, LocationData: any, GLSLSenderData: any, GeometryData: any, ArrayBufferData: any, GPUDetectData: any, VaoData: any) => sendAttributeDataUtils(gl, shaderIndex, program, geometryIndex, {
     getVertices: getVertices,
     getNormals: getNormals,
     getTexCoords: getTexCoords

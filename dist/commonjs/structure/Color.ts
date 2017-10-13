@@ -102,6 +102,7 @@ export class Color {
     private _colorVec3Cache: Vector3 = null;
     private _colorVec4Cache: Vector4 = null;
     private _colorArr3Cache: Array<number> = null;
+    private _colorArr4Cache: Array<number> = null;
 
     public initWhenCreate(colorVal?: string) {
         if (!colorVal) {
@@ -145,8 +146,28 @@ export class Color {
         return [this.r, this.g, this.b];
     }
 
+
+    @cache(function() {
+        return this._colorArr4Cache !== null;
+    }, function() {
+        return this._colorArr4Cache;
+    }, function(result) {
+        this._colorArr4Cache = result;
+    })
+    public toArray4() {
+        return [this.r, this.g, this.b, this.a];
+    }
+
     public toString() {
-        return this._colorString;
+        if (this._colorString !== null) {
+            return this._colorString;
+        }
+
+        return `#${(`000000${this._getHex().toString(16)}`).slice(-6)}`;
+    }
+
+    private _getHex () {
+        return ( this.r * 255 ) << 16 ^ ( this.g * 255 ) << 8 ^ ( this.b * 255 ) << 0;
     }
 
     public clone() {
@@ -262,5 +283,6 @@ export class Color {
         this._colorVec3Cache = null;
         this._colorVec4Cache = null;
         this._colorArr3Cache = null;
+        this._colorArr4Cache = null;
     }
 }

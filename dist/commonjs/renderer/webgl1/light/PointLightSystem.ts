@@ -1,6 +1,6 @@
 import { initDataHelper } from "../../../component/light/PointLightSystem";
 
-export var initData = (PointLightData: any) => {
+export const initData = (PointLightData: any) => {
     initDataHelper(PointLightData);
 
     PointLightData.lightGLSLDataStructureMemberNameArr = [

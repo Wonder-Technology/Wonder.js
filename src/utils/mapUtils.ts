@@ -9,4 +9,4 @@ export const deleteBySwap = (sourceIndex: number, targetIndex: number, map: Map<
     deleteMapVal(targetIndex, map);
 }
 
-export const isNotExist = (val:any) => isUndefined(val);
+export const isNotExist = (val: any) => isUndefined(val);

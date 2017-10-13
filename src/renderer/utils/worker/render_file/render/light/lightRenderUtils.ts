@@ -11,7 +11,7 @@ export const sendUniformData = (gl: WebGLRenderingContext, materialIndex: number
     _sendUniformData(gl, materialIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, renderCommandUniformData, materialData, lightMaterialData);
     _sendUniformFuncData(gl, shaderIndex, program, sendDataMap, drawDataMap, uniformLocationMap, uniformCacheMap);
 }
-const _sendUniformData =(gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+const _sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, glslSenderData: SendUniformDataGLSLSenderDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var sendUniformDataArr = glslSenderData.GLSLSenderDataFromSystem.sendUniformConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformDataArr.length; i < len; i++) {
@@ -25,7 +25,7 @@ const _sendUniformData =(gl: WebGLRenderingContext, materialIndex: number, shade
         directlySendUniformData(gl, name, shaderIndex, program, type, data, glslSenderData, uniformLocationMap, uniformCacheMap);
     }
 }
-const _sendUniformFuncData =(gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: ILightSendUniformDataDataMap, drawDataMap: IDrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+const _sendUniformFuncData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, sendDataMap: ILightSendUniformDataDataMap, drawDataMap: IDrawDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     var sendUniformFuncDataArr = drawDataMap.GLSLSenderDataFromSystem.sendUniformFuncConfigMap[shaderIndex];
 
     for (let i = 0, len = sendUniformFuncDataArr.length; i < len; i++) {
@@ -34,7 +34,7 @@ const _sendUniformFuncData =(gl: WebGLRenderingContext, shaderIndex: number, pro
         sendFunc(gl, shaderIndex, program, sendDataMap, uniformLocationMap, uniformCacheMap);
     }
 }
-const _getUniformData =(materialIndex: number, field: string, from: string, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
+const _getUniformData = (materialIndex: number, field: string, from: string, renderCommandUniformData: LightRenderUniformData, materialData: MaterialForGetUniformDataDataMap, lightMaterialData: LightMaterialForGetUniformDataDataMap) => {
     var data: any = null;
 
     switch (from) {
@@ -51,7 +51,7 @@ const _getUniformData =(materialIndex: number, field: string, from: string, rend
 
     return data;
 }
-const _getUnifromDataFromLightMaterial =(field: string, index: number,
+const _getUnifromDataFromLightMaterial = (field: string, index: number,
     {
                                             getColorArr3,
         getOpacity,

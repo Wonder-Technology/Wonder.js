@@ -11,5 +11,6 @@ export interface IWebGL1DrawFuncDataMap {
     getVerticesCount: Function;
     bindAndUpdate: Function;
     getMapCount: Function;
+    getStartTextureIndex: Function;
     useShader: Function;
 }

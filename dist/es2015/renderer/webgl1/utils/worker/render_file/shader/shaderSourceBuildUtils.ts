@@ -1,7 +1,7 @@
 import { isConfigDataExist } from "../../../../../utils/renderConfigUtils";
 import { webgl1_main_begin, webgl1_main_end } from "../../../../../webgl1/shader/snippet/ShaderSnippet";
 import { highp_fragment, lowp_fragment, mediump_fragment } from "../../../../../shader/chunk/ShaderChunk";
-import { ExtendUtils } from "Wonder-CommonLib/dist/es2015/utils/ExtendUtils";
+import { ExtendUtils } from "wonder-commonlib/dist/es2015/utils/ExtendUtils";
 import { it, requireCheckFunc } from "../../../../../../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { forEach } from "../../../../../../utils/arrayUtils";
@@ -19,7 +19,7 @@ import {
 } from "../../../../../utils/shader/shaderSourceBuildUtils";
 import { WebGL1InitShaderFuncDataMap } from "../../../../type/utilsType";
 
-export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL1InitShaderFuncDataMap) => {
+export const buildGLSLSource = requireCheckFunc((materialIndex: number, materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator, funcDataMap: BuildGLSLSourceFuncFuncDataMap, initShaderDataMap: WebGL1InitShaderFuncDataMap) => {
     it("shaderLib should be defined", () => {
         forEach(materialShaderLibNameArr, (shaderLibName: string) => {
             expect(shaderLibData[shaderLibName]).exist;
@@ -38,7 +38,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
         fsFuncDeclare: string = "",
         fsFuncDefine: string = "",
         fsBody: string = "";
-    var _setVs = (getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
+    const _setVs =(getGLSLPartData: Function, getGLSLDefineListData: Function, vs: IWebGL1GLSLConfig) => {
         vsTop += getGLSLPartData(vs, "top");
         vsDefine += buildSourceDefine(getGLSLDefineListData(vs), initShaderDataMap) + getGLSLPartData(vs, "define");
         vsVarDeclare += getGLSLPartData(vs, "varDeclare");
@@ -117,7 +117,7 @@ export var buildGLSLSource = requireCheckFunc((materialIndex: number, materialSh
     }
 })
 
-var _generateAttributeSource = (materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator) => {
+const _generateAttributeSource =(materialShaderLibNameArr: Array<string>, shaderLibData: IWebGL1ShaderLibContentGenerator) => {
     var result = "";
 
     forEach(materialShaderLibNameArr, (shaderLibName: string) => {

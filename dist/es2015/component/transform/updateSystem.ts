@@ -15,7 +15,7 @@ import { it, requireCheckFunc } from "../../definition/typescript/decorator/cont
 import { expect } from "wonder-expect.js";
 import { setMatrix4ByIndex, setQuaternionByIndex, setVector3ByIndex } from "../../utils/typeArrayUtils";
 
-export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
+export const update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     return compose(
         _cleanDirtyList(ThreeDTransformData),
         _updateDirtyList(GlobalTempData, ThreeDTransformData),
@@ -23,7 +23,7 @@ export var update = (elapsed: number, GlobalTempData: any, ThreeDTransformData: 
     )(state);
 }
 
-var _updateDirtyList = requireCheckFunc(curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
+const _updateDirtyList =requireCheckFunc(curry((GlobalTempData: any, ThreeDTransformData: any, state: Map<any, any>) => {
     it("firstDirtyIndex should <= maxCount", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
     })
@@ -40,7 +40,7 @@ var _updateDirtyList = requireCheckFunc(curry((GlobalTempData: any, ThreeDTransf
 }))
 
 //todo optimize: if transform not transformed in 5 frames, not move off
-var _cleanDirtyList = requireCheckFunc(curry((ThreeDTransformData: any, state: Map<any, any>) => {
+const _cleanDirtyList =requireCheckFunc(curry((ThreeDTransformData: any, state: Map<any, any>) => {
     it("firstDirtyIndex should <= maxCount", () => {
         expect(ThreeDTransformData.firstDirtyIndex).lte(ThreeDTransformData.maxCount)
     })
@@ -56,17 +56,17 @@ var _cleanDirtyList = requireCheckFunc(curry((ThreeDTransformData: any, state: M
     return state;
 }))
 
-var _needMoveOffDirtyList = (index: number) => {
+const _needMoveOffDirtyList =(index: number) => {
     return true;
 }
 
-var _moveFromDirtyListToNormalList = (index: number, ThreeDTransformData: any) => {
+const _moveFromDirtyListToNormalList =(index: number, ThreeDTransformData: any) => {
     ThreeDTransformData.firstDirtyIndex = addFirstDirtyIndex(ThreeDTransformData);
 
     moveToIndex(index, generateNotUsedIndexInNormalList(ThreeDTransformData), ThreeDTransformData);
 }
 
-var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) => {
+const _transform =(index: number, GlobalTempData: any, ThreeDTransformData: any) => {
     var vec3Index = getVector3DataIndexInArrayBuffer(index),
         quaIndex = getQuaternionDataIndexInArrayBuffer(index),
         mat4Index = getMatrix4DataIndexInArrayBuffer(index),
@@ -94,7 +94,7 @@ var _transform = (index: number, GlobalTempData: any, ThreeDTransformData: any) 
     );
 }
 
-var _sortParentBeforeChildInDirtyList = (ThreeDTransformData: any) => {
+const _sortParentBeforeChildInDirtyList =(ThreeDTransformData: any) => {
     var count = ThreeDTransformData.maxCount;
 
     for (let i = ThreeDTransformData.firstDirtyIndex; i < count; i++) {

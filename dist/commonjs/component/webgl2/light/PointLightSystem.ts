@@ -6,10 +6,10 @@ import {
 import { WebGL2PointLightData } from "../../../renderer/webgl2/light/PointLightData";
 import { disposeComponent as disposePointLightComponent } from "../../light/PointLightSystem";
 
-export var addComponent = (component: Light, gameObject: GameObject) => {
+export const addComponent = (component: Light, gameObject: GameObject) => {
     addSpecifyLightComponent(component, gameObject, WebGL2PointLightData);
 }
 
-export var disposeComponent = (component: Light) => {
+export const disposeComponent = (component: Light) => {
     disposePointLightComponent(component, WebGL2PointLightData);
 }

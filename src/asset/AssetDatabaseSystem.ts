@@ -7,18 +7,18 @@ import { fromArray } from "wonder-frp/dist/es2015/global/Operator";
 import { load as loadTexture, createImageTextureAsset } from "./texture/TextureAssetLoaderSystem";
 import { enqueueTaskReturnPromise } from "wonder-task/background/IdleTaskSystem";
 
-export function load(assertData:AssetData, AssetDatabaseData:any, timeout:number);
-export function load(assertData:Array<AssetData>, AssetDatabaseData:any, timeout:number);
+export function load(assertData: AssetData, AssetDatabaseData: any, timeout: number);
+export function load(assertData: Array<AssetData>, AssetDatabaseData: any, timeout: number);
 
 export function load(...args) {
     return enqueueTaskReturnPromise(args[2])
         .concat(_load(args[0], args[1]));
 }
 
-function _load(assertData:AssetData, AssetDatabaseData:any);
-function _load(assertData:Array<AssetData>, AssetDatabaseData:any);
+function _load(assertData: AssetData, AssetDatabaseData: any);
+function _load(assertData: Array<AssetData>, AssetDatabaseData: any);
 
-function _load(...args){
+function _load(...args) {
     var AssetDatabaseData = args[1];
 
     if (!isArray(args[0])) {
@@ -35,8 +35,8 @@ function _load(...args){
     }
 }
 
-const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData:any) => {
-    if(!has(id, AssetDatabaseData)){
+const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData: any) => {
+    if (!has(id, AssetDatabaseData)) {
         AssetDatabaseData.totalAssertCount += 1;
     }
 
@@ -46,7 +46,7 @@ const _createLoadSingleAssetStream = (url: string, id: string, AssetDatabaseData
 
             return {
                 currentLoadedCount: AssetDatabaseData.currentLoadedCount,
-                totalAssetCount:AssetDatabaseData.totalAssertCount
+                totalAssetCount: AssetDatabaseData.totalAssertCount
             }
         });
 }
@@ -73,19 +73,19 @@ const _getLoadFunc = (url: string) => {
     return load;
 }
 
-export const get = (id:string, {container}) => {
+export const get = (id: string, { container }) => {
     return container.getChild(id);
 }
 
-export const setTextureAsset = (id:string, source:HTMLImageElement|HTMLCanvasElement, extname:string, AssetDatabaseData:any) => {
+export const setTextureAsset = (id: string, source: HTMLImageElement | HTMLCanvasElement, extname: string, AssetDatabaseData: any) => {
     _set(id, createImageTextureAsset(source, extname), AssetDatabaseData);
 }
 
-const _set = (id:string, asset:any, {container}) => {
+const _set = (id: string, asset: any, { container }) => {
     container.addChild(id, asset);
 }
 
-export const has = (id:string, {container}) => {
+export const has = (id: string, { container }) => {
     return container.hasChild(id);
 }
 

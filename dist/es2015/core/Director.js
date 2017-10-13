@@ -9,7 +9,7 @@ import { singleton } from "../definition/typescript/decorator/singleton";
 import { DirectorTimeController } from "../utils/time/DirectorTimeController";
 import { callFunc, intervalRequest } from "wonder-frp/dist/es2015/global/Operator";
 import { init as initTransform, addAddComponentHandle as addThreeDTransformAddComponentHandle, addDisposeHandle as addThreeDTransformDisposeHandle } from "../component/transform/ThreeDTransformSystem";
-import { getState, markIsInit, run, setState } from "./DirectorSystem";
+import { getState, isInit, markIsInit, run, setState } from "./DirectorSystem";
 import { DirectorData } from "./DirectorData";
 import { ThreeDTransformData } from "../component/transform/ThreeDTransformData";
 import { GlobalTempData } from "../definition/GlobalTempData";
@@ -18,7 +18,7 @@ import { create } from "./entityObject/scene/SceneSystem";
 import { addAddComponentHandle as addGeometryAddComponentHandle, addInitHandle as addGeometryInitHandle, init as initGeometry } from "../component/geometry/GeometrySystem";
 import { init as initRenderer } from "../renderer/core/WebGLRenderSystem";
 import { GeometryData } from "../component/geometry/GeometryData";
-import { addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle, addInitHandle as addMaterialInitHandle } from "../component/material/MaterialSystem";
+import { addInitHandle as addMaterialInitHandle, addAddComponentHandle as addMaterialAddComponentHandle, addDisposeHandle as addMaterialDisposeHandle } from "../component/material/AllMaterialSystem";
 import { addAddComponentHandle as addMeshRendererAddComponentHandle, addDisposeHandle as addMeshRendererDisposeHandle } from "../component/renderer/MeshRendererSystem";
 import { addAddComponentHandle as addTagAddComponentHandle, addDisposeHandle as addTagDisposeHandle } from "../component/tag/TagSystem";
 import { Tag } from "../component/tag/Tag";
@@ -29,7 +29,6 @@ import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
 import { CameraController } from "../component/camera/CameraController";
-import { DeviceManager } from "../renderer/device/DeviceManager";
 import { Scheduler } from "./Scheduler";
 import { AmbientLight } from "../component/light/AmbientLight";
 import { DirectionLight } from "../component/light/DirectionLight";
@@ -58,18 +57,17 @@ var Director = (function () {
     }
     Director.getInstance = function () { };
     ;
-    Object.defineProperty(Director.prototype, "view", {
-        get: function () {
-            return DeviceManager.getInstance().view;
-        },
-        enumerable: true,
-        configurable: true
-    });
     Director.prototype.initWhenCreate = function () {
         this.scheduler = Scheduler.create();
     };
     Director.prototype.start = function () {
         this._startLoop();
+    };
+    Director.prototype.init = function () {
+        setState(this._init(getState(DirectorData)), DirectorData);
+    };
+    Director.prototype.loopBody = function (time) {
+        setState(this._loopBody(time, getState(DirectorData)), DirectorData).run();
     };
     Director.prototype._startLoop = function () {
         var self = this;
@@ -77,13 +75,13 @@ var Director = (function () {
             .ignoreElements()
             .concat(this._buildLoopStream())
             .subscribe(function (time) {
-            setState(self._loopBody(time, getState(DirectorData)), DirectorData).run();
+            self.loopBody(time);
         });
     };
     Director.prototype._buildInitStream = function () {
         var _this = this;
         return callFunc(function () {
-            setState(_this._init(getState(DirectorData)), DirectorData);
+            _this.init();
         }, this);
     };
     Director.prototype._init = function (state) {
@@ -122,6 +120,9 @@ var Director = (function () {
     return Director;
 }());
 export { Director };
+export var isDirectorInit = function () {
+    return isInit(DirectorData);
+};
 addMaterialAddComponentHandle(BasicMaterial, LightMaterial);
 addMaterialDisposeHandle(BasicMaterial, LightMaterial);
 addMaterialInitHandle(BasicMaterial, LightMaterial);

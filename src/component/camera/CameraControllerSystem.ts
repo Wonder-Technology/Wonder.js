@@ -67,7 +67,7 @@ export const initCameraController = (state: Map<any, any>, index: number, Perspe
     initCamera(state, index, PerspectiveCameraData, CameraData);
 }
 
-const _forEachDirtyList =(dirtyIndexArray: Array<number>, func: (dirtyIndex: number) => void) => {
+const _forEachDirtyList = (dirtyIndexArray: Array<number>, func: (dirtyIndex: number) => void) => {
     var arr = removeDuplicateItems(dirtyIndexArray);
 
     for (let dirtyIndex of arr) {
@@ -75,7 +75,7 @@ const _forEachDirtyList =(dirtyIndexArray: Array<number>, func: (dirtyIndex: num
     }
 }
 
-const _clearDirtyList =(CameraControllerData: any) => {
+const _clearDirtyList = (CameraControllerData: any) => {
     CameraControllerData.dirtyIndexArray = [];
 }
 
@@ -125,7 +125,7 @@ export const getPMatrix = (index: number, CameraData: any) => {
     return getPMatrixCamera(index, CameraData);
 }
 
-const _clearCache =(CameraControllerData: any) => {
+const _clearCache = (CameraControllerData: any) => {
     CameraControllerData.worldToCameraMatrixCacheMap = {};
 }
 

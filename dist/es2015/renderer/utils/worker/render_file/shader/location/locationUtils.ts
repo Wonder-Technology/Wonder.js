@@ -3,7 +3,7 @@ import { createMap, isValidMapValue } from "../../../../../../utils/objectUtils"
 import { expect } from "wonder-expect.js";
 import { AttributeLocationMap, UniformLocationMap } from "../../../../../type/dataType";
 
-export var getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, name: string, uniformLocationMap: UniformLocationMap) => {
+export const getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingContext, name: string, uniformLocationMap: UniformLocationMap) => {
     // it(`${name}'s uniform location should exist in map`, () => {
     //     expect(isValidMapValue(pos)).true;
     // });
@@ -22,6 +22,6 @@ export var getUniformLocation = ensureFunc((pos: number, gl: WebGLRenderingConte
     return pos;
 })
 
-export var isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
+export const isUniformLocationNotExist = (pos: WebGLUniformLocation) => {
     return pos === null;
 }

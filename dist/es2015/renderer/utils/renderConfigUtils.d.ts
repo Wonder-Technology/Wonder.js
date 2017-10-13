@@ -1,1 +1,1 @@
-export declare var isConfigDataExist: (configData: any) => boolean;
+export declare const isConfigDataExist: (configData: any) => boolean;

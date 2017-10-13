@@ -33,8 +33,8 @@ var _init = function (state, materialIndex, materialShaderLibNameArr, material_c
     addSendUniformConfig(shaderIndex, materialShaderLibNameArr, shaderLibDataFromSystem, GLSLSenderDataFromSystem);
     return shaderIndex;
 };
-export var bindIndexBuffer = function (gl, geometryIndex, getIndicesFunc, ProgramDataFromSystem, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem) {
-    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem);
+export var bindIndexBuffer = function (gl, geometryIndex, getIndicesFunc, ProgramDataFromSystem, GeometryDataFromSystem, IndexBufferDataFromSystem) {
+    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryDataFromSystem, IndexBufferDataFromSystem);
     if (ProgramDataFromSystem.lastBindedIndexBuffer === buffer) {
         return;
     }

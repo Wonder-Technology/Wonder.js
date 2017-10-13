@@ -82,15 +82,15 @@ export const create = ensureFunc((transform: ThreeDTransform, ThreeDTransformDat
     return transform;
 })
 
-const _buildUId =(ThreeDTransformData: any) => {
+const _buildUId = (ThreeDTransformData: any) => {
     return ThreeDTransformData.uid++;
 }
 
-const _generateIndexInArrayBuffer =(ThreeDTransformData: any) => {
+const _generateIndexInArrayBuffer = (ThreeDTransformData: any) => {
     return generateNotUsedIndexInArrayBuffer(ThreeDTransformData);
 }
 
-const _createTempData =(uid: number, ThreeDTransformData: any, ) => {
+const _createTempData = (uid: number, ThreeDTransformData: any, ) => {
     ThreeDTransformData.tempMap[uid] = {
         position: Vector3.create(),
         localPosition: Vector3.create(),
@@ -160,7 +160,7 @@ export const getParent = (transform: ThreeDTransform, ThreeDTransformData: any) 
     return null;
 }
 
-export const setParent = (parent: ThreeDTransform, child:ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(parent, child, ThreeDTransformData);
+export const setParent = (parent: ThreeDTransform, child: ThreeDTransform, ThreeDTransformData: any) => setParentHierarchy(parent, child, ThreeDTransformData);
 
 export const getLocalToWorldMatrix = requireCheckFunc((transform: IThreeDTransform, mat: Matrix4, ThreeDTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeDTransformData);
@@ -201,7 +201,7 @@ export const getNormalMatrix = requireCheckFunc((transform: ThreeDTransform, Glo
     return getLocalToWorldMatrix(transform, GlobalTempData.matrix4_1, ThreeDTransformData).invertTo3x3().transpose();
 }))
 
-const _setTransformMap = (index: number, transform: ThreeDTransform, ThreeDTransformData: any) => ThreeDTransformData.transformMap[index] =transform;
+const _setTransformMap = (index: number, transform: ThreeDTransform, ThreeDTransformData: any) => ThreeDTransformData.transformMap[index] = transform;
 
 export const setPosition = requireCheckFunc((transform: ThreeDTransform, position: Vector3, GlobalTempData: any, ThreeDTransformData: any) => {
     checkTransformShouldAlive(transform, ThreeDTransformData);
@@ -246,7 +246,7 @@ export const setLocalPosition = requireCheckFunc((transform: ThreeDTransform, po
     return addItAndItsChildrenToDirtyList(index, uid, ThreeDTransformData);
 })
 
-const _triggerChangePositionEvent =(uid: number, ThreeDTransformData: any) => {
+const _triggerChangePositionEvent = (uid: number, ThreeDTransformData: any) => {
     triggerEvent("changePosition");
 }
 
@@ -254,25 +254,25 @@ export const update = (elapsed: number, GlobalTempData: any, ThreeDTransformData
     return updateSystem(elapsed, GlobalTempData, ThreeDTransformData, state);
 }
 
-const _disposeItemInDataContainer =(index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
+const _disposeItemInDataContainer = (index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
     removeHierarchyData(uid, ThreeDTransformData);
     _disposeMapDatas(index, uid, ThreeDTransformData);
 
     return ThreeDTransformData;
 }
 
-const _disposeMapDatas =(index: number, uid: number, ThreeDTransformData: any) => {
+const _disposeMapDatas = (index: number, uid: number, ThreeDTransformData: any) => {
     deleteVal(index, ThreeDTransformData.transformMap);
 }
 
-const _disposeFromNormalList =(index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
+const _disposeFromNormalList = (index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
     addNotUsedIndex(index, ThreeDTransformData.notUsedIndexLinkList);
 
     return _disposeItemInDataContainer(index, uid, GlobalTempData, ThreeDTransformData);
 }
 
 
-const _disposeFromDirtyList =(index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
+const _disposeFromDirtyList = (index: number, uid: number, GlobalTempData: any, ThreeDTransformData: any) => {
     var firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
 
     swap(index, firstDirtyIndex, ThreeDTransformData);
@@ -284,13 +284,13 @@ const _disposeFromDirtyList =(index: number, uid: number, GlobalTempData: any, T
 }
 
 
-const _setDefaultTypeArrData =(index: number, ThreeDTransformData: any) => {
+const _setDefaultTypeArrData = (index: number, ThreeDTransformData: any) => {
     setTransformDataInTypeArr(index, ThreeDTransformData.defaultLocalToWorldMatrice, ThreeDTransformData.defaultRotation, ThreeDTransformData.defaultPosition, ThreeDTransformData.defaultScale, ThreeDTransformData);
 }
 
 export const getTempLocalToWorldMatrix = (transform: ThreeDTransform, ThreeDTransformData: any) => _getTempData(transform.uid, ThreeDTransformData).localToWorldMatrix;
 
-const _getTempData =(uid: number, ThreeDTransformData: any) => {
+const _getTempData = (uid: number, ThreeDTransformData: any) => {
     var tempData = ThreeDTransformData.tempMap[uid];
 
     if (isNotValidMapValue(tempData)) {
@@ -336,7 +336,7 @@ export const initData = (GlobalTempData: any, ThreeDTransformData: any) => {
     ThreeDTransformData.aliveUIdArray = [];
 }
 
-const _initBufferData =(ThreeDTransformData: any) => {
+const _initBufferData = (ThreeDTransformData: any) => {
     var buffer: ArrayBuffer = null,
         count = ThreeDTransformData.maxCount,
         size = Float32Array.BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize() + getQuaternionDataSize() + getVector3DataSize());

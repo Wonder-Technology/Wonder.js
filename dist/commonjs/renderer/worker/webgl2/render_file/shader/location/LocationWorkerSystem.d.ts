@@ -1,1 +1,1 @@
-export declare var initData: (LocationDataFromSystem: any) => void;
+export declare const initData: (LocationDataFromSystem: any) => void;

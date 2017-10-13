@@ -4,10 +4,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { init as initMain, initData as initDataMainSystem, setConfig } from "./MainSystem";
+import { init as initMain, initData, initData as initDataMainSystem, setConfig } from "./MainSystem";
 import { CompileConfig } from "../config/CompileConfig";
 import { DirectorData } from "./DirectorData";
-import { getState, setState } from "./DirectorSystem";
+import { getState, initData as initDirectorData, setState } from "./DirectorSystem";
 import { it, requireCheck } from "../definition/typescript/decorator/contract";
 import { expect } from "wonder-expect.js";
 import { DomQuery } from "wonder-commonlib/dist/es2015/utils/DomQuery";
@@ -31,6 +31,7 @@ var Main = (function () {
         configurable: true
     });
     Main.setConfig = function (configState) {
+        initDirectorData(DirectorData);
         this._configState = setConfig(CompileConfig.closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, configState).run();
         setState(getState(DirectorData).set("Main", this._configState.get("Main")), DirectorData).run();
         return this;
@@ -51,4 +52,8 @@ var Main = (function () {
     return Main;
 }());
 export { Main };
+export var initAllData = function () {
+    initDirectorData(DirectorData);
+    initData();
+};
 //# sourceMappingURL=Main.js.map

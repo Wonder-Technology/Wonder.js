@@ -5,6 +5,7 @@ var MapManagerWorkerData = (function () {
     }
     MapManagerWorkerData.textureIndices = null;
     MapManagerWorkerData.textureCounts = null;
+    MapManagerWorkerData.materialTextureList = null;
     return MapManagerWorkerData;
 }());
 exports.MapManagerWorkerData = MapManagerWorkerData;

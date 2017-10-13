@@ -192,7 +192,7 @@ export const setDefaultData = (LightMaterialData: any) => {
     LightMaterialData.defaultHasMap = getNotHasMapValue();
 }
 
-const _setLightMaterialDefaultTypeArrData =(count: number, LightMaterialData: any) => {
+const _setLightMaterialDefaultTypeArrData = (count: number, LightMaterialData: any) => {
     var startIndex = getLightMaterialBufferStartIndex(),
         color = createDefaultColor(),
         emptyColor = LightMaterialData.emptyColor,
@@ -214,7 +214,7 @@ const _setLightMaterialDefaultTypeArrData =(count: number, LightMaterialData: an
     }
 }
 
-const _createEmptyColor =() => {
+const _createEmptyColor = () => {
     var color = Color.create("rgb(0,0,0)");
 
     return color;

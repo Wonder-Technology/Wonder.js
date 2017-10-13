@@ -1,1 +1,1 @@
-export declare var initData: (ProgramDataFromSystem: any) => void;
+export declare const initData: (ProgramDataFromSystem: any) => void;

@@ -17,14 +17,14 @@ exports.createRenderCommandBufferData = contract_1.requireCheckFunc(function (st
         wonder_expect_js_1.expect(renderGameObjectArray.length).lte(DataBufferConfig_1.DataBufferConfig.renderCommandBufferCount);
     });
 }, function (state, createBasicRenderCommandBufferData, createLightRenderCommandBufferData, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, BasicRenderCommandBufferData, LightRenderCommandBufferData, renderGameObjectArray) {
-    var basicMaterialGameObjectArr = [], lightMaterialGameObjectArr = [], vMatrix = null, pMatrix = null, cameraPosition = null, normalMatrix = null, currentCamera = SceneSystem_1.getCurrentCamera(SceneData), currentCameraComponent = GameObjectSystem_1.getComponent(currentCamera, ComponentComponentIdManager_1.getComponentIdFromClass(CameraController_1.CameraController), GameObjectData), currentCameraIndex = currentCameraComponent.index, currentCameraTransform = GameObjectSystem_1.getTransform(currentCamera, GameObjectData);
+    var basicMaterialGameObjectArr = [], lightMaterialGameObjectArr = [], vMatrix = null, pMatrix = null, cameraPosition = null, normalMatrix = null, currentCameraUId = SceneSystem_1.getCurrentCamera(SceneData).uid, currentCameraComponent = GameObjectSystem_1.getComponent(currentCameraUId, ComponentComponentIdManager_1.getComponentIdFromClass(CameraController_1.CameraController), GameObjectData), currentCameraIndex = currentCameraComponent.index, currentCameraTransform = GameObjectSystem_1.getTransform(currentCameraUId, GameObjectData);
     vMatrix = CameraControllerSystem_1.getWorldToCameraMatrix(currentCameraIndex, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).values;
     pMatrix = CameraControllerSystem_1.getPMatrix(currentCameraIndex, CameraData).values;
     cameraPosition = ThreeDTransformSystem_1.getPosition(currentCameraTransform, ThreeDTransformData).values;
     normalMatrix = ThreeDTransformSystem_1.getNormalMatrix(currentCameraTransform, GlobalTempData, ThreeDTransformData).values;
     for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
         var gameObject = renderGameObjectArray_1[_i];
-        var material = GameObjectSystem_1.getMaterial(gameObject, GameObjectData);
+        var material = GameObjectSystem_1.getMaterial(gameObject.uid, GameObjectData);
         if (ClassUtils_1.ClassUtils.getClassNameByInstance(material) === "BasicMaterial") {
             basicMaterialGameObjectArr.push(gameObject);
         }

@@ -1,4 +1,4 @@
-export declare var initData: ({buffer, bufferCount, lightCount, pointLightGLSLDataStructureMemberNameArr}: {
+export declare const initData: ({buffer, bufferCount, lightCount, pointLightGLSLDataStructureMemberNameArr}: {
     buffer: any;
     bufferCount: any;
     lightCount: any;

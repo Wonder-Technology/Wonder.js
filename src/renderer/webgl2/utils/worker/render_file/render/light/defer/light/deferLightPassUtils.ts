@@ -12,7 +12,7 @@ export const init = (gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any
     _setFullScreenQuadVaoData(gl, shaderIndex, GLSLSenderDataFromSystem, DeferLightPassDataFromSystem);
 }
 
-const _setFullScreenQuadVaoData =requireCheckFunc((gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
+const _setFullScreenQuadVaoData = requireCheckFunc((gl: any, shaderIndex: number, GLSLSenderDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
     it("positionLocation, texCoordLocation should be defined in vaoConfig data", () => {
         var vaoConfig = getVaoConfig(shaderIndex, GLSLSenderDataFromSystem);
 
@@ -44,11 +44,11 @@ const _setFullScreenQuadVaoData =requireCheckFunc((gl: any, shaderIndex: number,
     DeferLightPassDataFromSystem.fullScreenQuadIndicesCount = fullScreenQuadData.indices.length;
 })
 
-const _getPositionSize =() => 3;
+const _getPositionSize = () => 3;
 
-const _getTexCoordSize =() => 2;
+const _getTexCoordSize = () => 2;
 
-const _createFullScreenQuadData =() => {
+const _createFullScreenQuadData = () => {
     var positions = new Float32Array([-1, 1, 0, -1, -1, 0, 1, -1, 0, 1, 1, 0]),
         indices = new Uint16Array([0, 1, 2, 0, 2, 3]),
         texCoords = new Float32Array([-1, 1, -1, -1, 1, -1, 1, 1]);

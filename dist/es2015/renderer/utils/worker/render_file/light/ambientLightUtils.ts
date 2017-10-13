@@ -5,13 +5,13 @@ import {
     isDirty
 } from "./specifyLightUtils";
 
-export var getColorArr3 = (index: number, AmbientLightDataFromSystem: any) => {
+export const getColorArr3 = (index: number, AmbientLightDataFromSystem: any) => {
     return getColorArr3Utils(index, AmbientLightDataFromSystem);
 }
 
-export var getColorDataSize = getSpecifyLightColorDataSize;
+export const getColorDataSize = getSpecifyLightColorDataSize;
 
-export var createTypeArrays = (buffer: any, count: number, AmbientLightDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, count: number, AmbientLightDataFromSystem: any) => {
     var offset = 0;
 
     AmbientLightDataFromSystem.colors = new Float32Array(buffer, 0, count * getColorDataSize());
@@ -21,10 +21,10 @@ export var createTypeArrays = (buffer: any, count: number, AmbientLightDataFromS
     offset += count * Uint8Array.BYTES_PER_ELEMENT * getDirtyDataSize();
 }
 
-export var isColorDirty = (index: number, AmbientLightDataFromSystem: any) => {
+export const isColorDirty = (index: number, AmbientLightDataFromSystem: any) => {
     return isDirty(getSingleSizeData(index, AmbientLightDataFromSystem.isColorDirtys));
 }
 
-export var cleanColorDirty = (index: number, AmbientLightDataFromSystem: any) => {
+export const cleanColorDirty = (index: number, AmbientLightDataFromSystem: any) => {
     cleanDirty(index, AmbientLightDataFromSystem.isColorDirtys);
 }

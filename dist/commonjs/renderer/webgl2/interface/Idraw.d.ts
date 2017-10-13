@@ -10,6 +10,7 @@ export interface IWebGL2DrawFuncDataMap {
     getVerticesCount: Function;
     bindAndUpdate: Function;
     getMapCount: Function;
+    getStartTextureIndex: Function;
     useShader: Function;
 }
 export interface IWebGL2DeferDrawFuncDataMap extends IWebGL2DrawFuncDataMap {

@@ -3,7 +3,7 @@ import { UniformCacheMap, UniformLocationMap } from "../../../../type/dataType";
 import { Log } from "../../../../../utils/Log";
 import { getVao, isVaoExist } from "../shader/shaderUtils";
 
-export var directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
+export const directlySendUniformData = (gl: WebGLRenderingContext, name: string, shaderIndex: number, program: WebGLProgram, type: EVariableType, data: any, {
     sendMatrix3,
     sendMatrix4,
     sendVector3,

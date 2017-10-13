@@ -56,12 +56,12 @@ export abstract class TextureAsset {
 
     public abstract toTexture();
 
-    @requireCheck((textureIndex:number) => {
+    @requireCheck((textureIndex: number) => {
         it("textureIndex should exist", () => {
             expect(textureIndex).exist;
         });
     })
-    protected cloneTo(textureIndex:number){
+    protected cloneTo(textureIndex: number) {
         setSource(textureIndex, this.source, TextureData);
         setWidth(textureIndex, this.width, TextureData);
         setHeight(textureIndex, this.height, TextureData);

@@ -28,7 +28,7 @@ export const init = (gl: any, DataBufferConfig: any, GBufferDataFromSystem: any,
     _initDeferLightPass(gl, "DeferPointLightPass", ShaderDataFromSystem, GLSLSenderDataFromSystem, ProgramDataFromSystem, LocationDataFromSystem, DeferPointLightPassDataFromSystem);
 }
 
-const _initDeferLightPass =(gl: any, shaderName: string, ShaderDataFromSystem: any, GLSLSenderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
+const _initDeferLightPass = (gl: any, shaderName: string, ShaderDataFromSystem: any, GLSLSenderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, DeferLightPassDataFromSystem: any) => {
     var program: WebGLProgram = null,
         shaderIndex: number = null;
 

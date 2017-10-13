@@ -13,7 +13,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount } from "../../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount} from "../../../../texture/MapManagerSystem";
 import {
     cleanColorDirty as cleanAmbientLightColorDirty,
     getColorArr3 as getAmbientLightColorArr3,
@@ -42,9 +42,10 @@ import { sendAttributeData } from "../../RenderSystem";
 import { CameraRenderCommandBufferForDrawData } from "../../../../utils/worker/render_file/type/dataType";
 import { bindIndexBuffer } from "../../../shader/ShaderSystem";
 import { IWebGL1DrawDataMap } from "../../../utils/worker/render_file/interface/IUtils";
+import { getStartTextureIndex } from "../../../../utils/worker/render_file/texture/mapManagerUtils";
 
-export var render = curry((gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
-    renderFront(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, useShader), drawDataMap, buildSendUniformDataDataMap(
+export const render = curry((gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, drawDataMap: IWebGL1DrawDataMap, initShaderDataMap: InitShaderDataMap, ThreeDTransformData: any, GameObjectData: any, bufferData: LightRenderCommandBufferForDrawData, cameraData: CameraRenderCommandBufferForDrawData) => {
+    renderFront(gl, state, render_config, material_config, shaderLib_generator, DataBufferConfig, initMaterialShader, buildDrawFuncDataMap(bindIndexBuffer, sendAttributeData, sendUniformData, directlySendUniformData, use, hasIndices, getIndicesCount, getIndexType, getIndexTypeSize, getVerticesCount, bindAndUpdate, getMapCount, getStartTextureIndex, useShader), drawDataMap, buildSendUniformDataDataMap(
         sendFloat1, sendFloat3, sendMatrix4, sendVector3, sendInt, sendMatrix3,
         getAmbientLightColorArr3, isAmbientLightColorDirty, cleanAmbientLightColorDirty,
 

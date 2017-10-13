@@ -1,2 +1,2 @@
-export declare var createTypeArrays: (buffer: any, offset: number, count: number, BasicMaterialDataFromSystem: any) => number;
-export declare var getClassName: () => string;
+export declare const createTypeArrays: (buffer: any, offset: number, count: number, BasicMaterialDataFromSystem: any) => number;
+export declare const getClassName: () => string;

@@ -1,1 +1,1 @@
-{"version":3,"file":"DirectionLightSystem.js","sourceRoot":"","sources":["../../../../../src/renderer/webgl2/light/DirectionLightSystem.ts"],"names":[],"mappings":";;AAAA,sFAA+E;AAEpE,QAAA,QAAQ,GAAG,UAAC,kBAAuB;IAC1C,qCAAc,CAAC,kBAAkB,CAAC,CAAC;AACvC,CAAC,CAAA"}
+{"version":3,"file":"DirectionLightSystem.js","sourceRoot":"","sources":["../../../../../src/renderer/webgl2/light/DirectionLightSystem.ts"],"names":[],"mappings":";;AAAA,sFAA+E;AAElE,QAAA,QAAQ,GAAG,UAAC,kBAAuB;IAC5C,qCAAc,CAAC,kBAAkB,CAAC,CAAC;AACvC,CAAC,CAAA"}

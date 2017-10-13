@@ -24,7 +24,7 @@ export const create = (GeometryData: any) => {
     return geometry;
 }
 
-const _computeData =(index: number, GeometryData: any) => {
+const _computeData = (index: number, GeometryData: any) => {
     var {
             width,
         height,
@@ -121,7 +121,7 @@ const _computeData =(index: number, GeometryData: any) => {
     };
 }
 
-const _getConfigData =ensureFunc((data: BoxGeometryConfigData) => {
+const _getConfigData = ensureFunc((data: BoxGeometryConfigData) => {
     it("config data should be defined", () => {
         expect(data).exist;
         expect(data.width).exist;

@@ -116,3 +116,9 @@ export declare type VaoMap = {
 export declare type VboArrayMap = {
     [index: number]: Array<WebGLBuffer>;
 };
+export declare type MaterialTextureList = Array<Array<number>>;
+export declare type TextureOffsetMap = {
+    [materialIndex: number]: {
+        [uniformSamplerName: string]: number;
+    };
+};

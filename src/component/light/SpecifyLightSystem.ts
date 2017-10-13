@@ -95,7 +95,7 @@ export const bindChangePositionEvent = (SpecifyLightData: any, state: Map<any, a
     var eventName = "changePosition";
 
     for (let i = 0, count = SpecifyLightData.count; i < count; i++) {
-        const _markPositionDirty =() => {
+        const _markPositionDirty = () => {
             markDirty(i, SpecifyLightData.isPositionDirtys);
         }
 

@@ -52,7 +52,7 @@ export const getRenderWorkerFilePath = () => {
     return `${_getValidFileDir(WorkerDetectData.renderWorkerFileDir)}wd.renderWorker.js`
 }
 
-const _getValidFileDir =(dir: string) => {
+const _getValidFileDir = (dir: string) => {
     if (dir.slice(-1) !== '/') {
         return `${dir}/`;
     }

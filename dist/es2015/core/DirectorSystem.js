@@ -10,6 +10,7 @@ import { update as updateCameraControllerSystem } from "../component/camera/Came
 import { PerspectiveCameraData } from "../component/camera/PerspectiveCameraData";
 import { CameraData } from "../component/camera/CameraData";
 import { CameraControllerData } from "../component/camera/CameraControllerData";
+import { createState } from "../utils/stateUtils";
 export var getState = function (DirectorData) {
     return DirectorData.state;
 };
@@ -77,5 +78,7 @@ else {
     };
 }
 export var initData = function (DirectorData) {
+    DirectorData.isInit = false;
+    DirectorData.state = createState();
 };
 //# sourceMappingURL=DirectorSystem.js.map

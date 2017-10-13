@@ -15,16 +15,16 @@ import { addDisposeHandle as addDisposeHandleToMap } from "../../ComponentSystem
 import { disposeGeometryWorkerBuffers } from "../../../renderer/utils/buffer/bufferUtils";
 import { DeviceManagerData } from "../../../renderer/device/DeviceManagerData";
 
-export var addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
+export const addDisposeHandle = (BoxGeometry: any, CustomGeometry: any) => {
     addDisposeHandleToMap(BoxGeometry, disposeComponent);
     addDisposeHandleToMap(CustomGeometry, disposeComponent);
 }
 
-export var disposeComponent = (component: Geometry) => {
+export const disposeComponent = (component: Geometry) => {
     disposeComponentSystem(component, _disposeBuffers);
 }
 
-var _disposeBuffers = null;
+var _disposeBuffers =null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _disposeBuffers = (disposedIndexArray: Array<number>) => {

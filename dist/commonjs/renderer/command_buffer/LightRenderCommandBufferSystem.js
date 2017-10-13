@@ -11,7 +11,7 @@ exports.createRenderCommandBufferData = curry_1.default(contract_1.requireCheckF
     contract_1.it("renderGameObject should be light material gameObject", function () {
         for (var _i = 0, renderGameObjectArray_1 = renderGameObjectArray; _i < renderGameObjectArray_1.length; _i++) {
             var gameObject = renderGameObjectArray_1[_i];
-            wonder_expect_js_1.expect(ClassUtils_1.ClassUtils.getClassNameByInstance(GameObjectSystem_1.getMaterial(gameObject, GameObjectData))).equal("LightMaterial");
+            wonder_expect_js_1.expect(ClassUtils_1.ClassUtils.getClassNameByInstance(GameObjectSystem_1.getMaterial(gameObject.uid, GameObjectData))).equal("LightMaterial");
         }
     });
 }, function (state, GlobalTempData, GameObjectData, ThreeDTransformData, CameraControllerData, CameraData, MaterialData, GeometryData, SceneData, RenderCommandBufferData, renderGameObjectArray) {

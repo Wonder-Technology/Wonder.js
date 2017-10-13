@@ -1,1 +1,1 @@
-export declare var initData: (GLSLSenderDataFromSystem: any) => void;
+export declare const initData: (GLSLSenderDataFromSystem: any) => void;

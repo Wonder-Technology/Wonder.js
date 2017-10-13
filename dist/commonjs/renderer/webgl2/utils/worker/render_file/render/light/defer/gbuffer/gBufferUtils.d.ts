@@ -1,6 +1,6 @@
-export declare var init: (gl: any, GBufferData: any) => void;
-export declare var bindGBufferTargets: (gl: any, GBufferData: any) => void;
-export declare var sendGBufferTargetData: (gl: any, lightPassProgram: WebGLProgram) => void;
-export declare var bindGBuffer: (gl: any, GBufferData: any) => void;
-export declare var unbindGBuffer: (gl: any) => void;
-export declare var getNewTextureUnitIndex: () => number;
+export declare const init: (gl: any, GBufferData: any) => void;
+export declare const bindGBufferTargets: (gl: any, GBufferData: any) => void;
+export declare const sendGBufferTargetData: (gl: any, lightPassProgram: WebGLProgram) => void;
+export declare const bindGBuffer: (gl: any, GBufferData: any) => void;
+export declare const unbindGBuffer: (gl: any) => void;
+export declare const getNewTextureUnitIndex: () => number;

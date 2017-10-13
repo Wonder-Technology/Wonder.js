@@ -1,14 +1,14 @@
 import { getRenderWorkerFilePath, isSupportRenderWorkerAndSharedArrayBuffer } from "../device/WorkerDetectSystem";
 
-export var getRenderWorker = (WorkerInstanceData: any) => {
+export const getRenderWorker = (WorkerInstanceData: any) => {
     return WorkerInstanceData.renderWorker;
 }
 
-export var setRenderWorker = (worker: Worker, WorkerInstanceData: any) => {
+export const setRenderWorker = (worker: Worker, WorkerInstanceData: any) => {
     WorkerInstanceData.renderWorker = worker;
 }
 
-export var createWorker = (workerFilePath: string) => {
+export const createWorker = (workerFilePath: string) => {
     return new Worker(workerFilePath);
 }
 

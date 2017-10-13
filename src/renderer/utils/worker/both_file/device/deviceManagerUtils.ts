@@ -84,7 +84,7 @@ export const setViewportOfGL = curry((DeviceManagerDataFromSystem: any, state: M
     });
 })
 
-const _setBodyByScreenSize =(screenSize: EScreenSize, DomQuery: any) => {
+const _setBodyByScreenSize = (screenSize: EScreenSize, DomQuery: any) => {
     return IO.of(() => {
         if (screenSize === EScreenSize.FULL) {
             DomQuery.create("body").css("margin", "0");
@@ -94,7 +94,7 @@ const _setBodyByScreenSize =(screenSize: EScreenSize, DomQuery: any) => {
     });
 }
 
-const _getScreenData =(screenSize: EScreenSize | RectRegion) => {
+const _getScreenData = (screenSize: EScreenSize | RectRegion) => {
     return IO.of(() => {
         var x = null,
             y = null,

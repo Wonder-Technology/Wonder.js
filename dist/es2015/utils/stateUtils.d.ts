@@ -1,3 +1,3 @@
 import { Map } from "immutable";
-export declare var createState: () => Map<{}, {}>;
-export declare var isValueExist: (val: any) => boolean;
+export declare const createState: () => Map<{}, {}>;
+export declare const isValueExist: (val: any) => boolean;

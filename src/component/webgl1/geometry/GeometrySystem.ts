@@ -24,7 +24,7 @@ export const disposeComponent = (component: Geometry) => {
     disposeComponentSystem(component, _disposeBuffers);
 }
 
-var _disposeBuffers =null;
+var _disposeBuffers = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _disposeBuffers = (disposedIndexArray: Array<number>) => {

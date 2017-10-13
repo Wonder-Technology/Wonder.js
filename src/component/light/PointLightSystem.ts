@@ -203,7 +203,7 @@ export const initDataHelper = (PointLightData: any) => {
     _setDefaultTypeArrData(count, PointLightData);
 }
 
-const _setDefaultTypeArrData =(count: number, PointLightData: any) => {
+const _setDefaultTypeArrData = (count: number, PointLightData: any) => {
     var color = createDefaultColor(),
         intensity = PointLightData.defaultIntensity,
         constant = PointLightData.defaultConstant,

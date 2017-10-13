@@ -1,4 +1,4 @@
-import { create, dispose, getHeight, getIsNeedUpdate, getSource, getWidth, setHeight, setIsNeedUpdate, setSource, setWidth } from "./TextureSystem";
+import { create, dispose, getHeight, getIsNeedUpdate, getSource, getWidth, initTexture as initTextureSystem, setHeight, setIsNeedUpdate, setSource, setWidth } from "./TextureSystem";
 import { TextureData } from "./TextureData";
 import { requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../../component/ComponentSystem";
@@ -17,6 +17,9 @@ var Texture = (function () {
 export { Texture };
 export var createTexture = function () {
     return create(TextureData);
+};
+export var initTexture = function (texture) {
+    initTextureSystem(getGL(DeviceManagerData), texture.index, TextureData);
 };
 export var disposeTexture = requireCheckFunc(function (texture) {
     _checkShouldAlive(texture);

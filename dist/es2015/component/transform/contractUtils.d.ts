@@ -1,2 +1,2 @@
 import { ThreeDTransform } from "./ThreeDTransform";
-export declare var checkTransformShouldAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => void;
+export declare const checkTransformShouldAlive: (transform: ThreeDTransform, ThreeDTransformData: any) => void;

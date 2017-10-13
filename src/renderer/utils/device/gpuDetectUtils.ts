@@ -26,7 +26,7 @@ export const detectCapabilty = (state: Map<any, any>, gl: any, GPUDetectDataFrom
     _detectPrecision(state, gl, GPUDetectDataFromSystem);
 }
 
-const _getMaxBoneCount =(state: Map<any, any>, gl: any) => {
+const _getMaxBoneCount = (state: Map<any, any>, gl: any) => {
     var numUniforms: number = null,
         maxBoneCount: number = null;
 
@@ -48,13 +48,13 @@ const _getMaxBoneCount =(state: Map<any, any>, gl: any) => {
     return Math.min(maxBoneCount, 128);
 }
 
-const _getMaxAnisotropy =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _getMaxAnisotropy = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     var extension = GPUDetectDataFromSystem.extensionTextureFilterAnisotropic;
 
     return extension !== null ? gl.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
 }
 
-const _detectPrecision =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _detectPrecision = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     if (!gl.getShaderPrecisionFormat) {
         GPUDetectDataFromSystem.precision = EGPUPrecision.HIGHP;
 

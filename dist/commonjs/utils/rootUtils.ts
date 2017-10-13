@@ -1,7 +1,7 @@
 import { root } from "../definition/Variable";
 import { IO } from "wonder-fantasy-land/dist/commonjs/types/IO";
 
-export var getRootProperty = (propertyName: string) => {
+export const getRootProperty = (propertyName: string) => {
     return IO.of(() => {
         return root[propertyName];
     });

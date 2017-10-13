@@ -12,8 +12,8 @@ export var addChild = function (scene, child, ThreeDTransformData, GameObjectDat
     }
     addGameObject(scene, child, ThreeDTransformData, GameObjectData);
 };
-export var removeChild = function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    removeGameObject(gameObject, child, ThreeDTransformData, GameObjectData);
+export var removeChild = function (parentUId, childUId, ThreeDTransformData, GameObjectData) {
+    removeGameObject(parentUId, childUId, ThreeDTransformData, GameObjectData);
 };
 var _isCamera = function (gameObject, GameObjectData) {
     return hasComponent(gameObject, getComponentIdFromClass(CameraController), GameObjectData);

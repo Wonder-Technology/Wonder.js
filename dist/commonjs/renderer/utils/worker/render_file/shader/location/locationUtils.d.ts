@@ -1,2 +1,2 @@
-export declare var getUniformLocation: Function;
-export declare var isUniformLocationNotExist: (pos: WebGLUniformLocation) => boolean;
+export declare const getUniformLocation: Function;
+export declare const isUniformLocationNotExist: (pos: WebGLUniformLocation) => boolean;

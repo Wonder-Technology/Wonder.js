@@ -9,13 +9,13 @@ import { Map } from "immutable";
 import { IShaderLibGenerator } from "../../../../../data/shaderLib_generator_interface";
 import { InitShaderDataMap } from "../../../../../type/utilsType";
 import { BasicRenderUniformData, LightRenderUniformData } from "../../../../../type/dataType";
-import { IWebGL2DrawFuncDataMap } from "../../../../interface/Idraw";
+import { IWebGL2DrawFuncDataMap } from "../../../../interface/IDraw";
 import {
     IWebGL2BasicSendUniformDataDataMap, IWebGL2DrawDataMap,
     IWebGL2LightSendUniformDataDataMap
 } from "../interface/IUtils";
 
-export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, textureStartUnitIndex: number, useShaderName: string, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData: BasicRenderUniformData | LightRenderUniformData, {
+export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, definedStartTextureUnitIndex: number, useShaderName: string, initMaterialShader: Function, drawFuncDataMap: IWebGL2DrawFuncDataMap, drawDataMap: IWebGL2DrawDataMap, initShaderDataMap: InitShaderDataMap, sendDataMap: IWebGL2BasicSendUniformDataDataMap | IWebGL2LightSendUniformDataDataMap, renderCommandUniformData: BasicRenderUniformData | LightRenderUniformData, {
     renderCommandBufferData: {
         mMatrices,
     materialIndices,
@@ -25,12 +25,12 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
 }) => {
     var {
             TextureDataFromSystem,
-        TextureCacheDataFromSystem,
-        MapManagerDataFromSystem,
-        ProgramDataFromSystem,
-        LocationDataFromSystem,
-        GLSLSenderDataFromSystem,
-        GeometryDataFromSystem
+            TextureCacheDataFromSystem,
+            MapManagerDataFromSystem,
+            ProgramDataFromSystem,
+            LocationDataFromSystem,
+            GLSLSenderDataFromSystem,
+            GeometryDataFromSystem
         } = drawDataMap,
         {
             sendAttributeData,
@@ -43,6 +43,7 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
             getIndexTypeSize,
             getVerticesCount,
             getMapCount,
+            getStartTextureIndex,
             bindAndUpdate,
             useShader
         } = drawFuncDataMap,
@@ -59,6 +60,7 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
             geometryIndex = geometryIndices[i],
             materialIndex = materialIndices[i],
             mapCount = getMapCount(materialIndex, MapManagerDataFromSystem),
+            startTextureUnitIndex = getStartTextureIndex(materialIndex),
             drawMode = EDrawMode.TRIANGLES;
 
         let shaderIndex = useShader(materialIndex, useShaderName, state, material_config, shaderLib_generator, initMaterialShader, initShaderDataMap);
@@ -74,9 +76,9 @@ export var drawGameObjects = (gl: any, state: Map<any, any>, material_config: IM
 
         sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap);
 
-        bindAndUpdate(gl, mapCount, textureStartUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem, GPUDetectDataFromSystem);
+        bindAndUpdate(gl, mapCount, startTextureUnitIndex, definedStartTextureUnitIndex, TextureCacheDataFromSystem, TextureDataFromSystem, MapManagerDataFromSystem, GPUDetectDataFromSystem);
 
-        sendData(gl, mapCount, textureStartUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
+        sendData(gl, mapCount, startTextureUnitIndex, definedStartTextureUnitIndex, shaderIndex, program, sendDataMap.glslSenderData, uniformLocationMap, uniformCacheMap, directlySendUniformData, TextureDataFromSystem, MapManagerDataFromSystem);
 
         if (hasIndices(geometryIndex, GeometryDataFromSystem)) {
             drawElements(gl, geometryIndex, drawMode, getIndicesCount, getIndexType, getIndexTypeSize, GeometryDataFromSystem);

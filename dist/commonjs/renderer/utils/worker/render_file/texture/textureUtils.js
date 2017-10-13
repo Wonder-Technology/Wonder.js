@@ -8,9 +8,7 @@ var ETextureType_1 = require("../../../../enum/ETextureType");
 var arrayUtils_1 = require("../../../../../utils/arrayUtils");
 var DataBufferConfig_1 = require("../../../../../config/DataBufferConfig");
 var typeArrayUtils_1 = require("../../../../../utils/typeArrayUtils");
-var contract_1 = require("../../../../../definition/typescript/decorator/contract");
 var ETextureTarget_1 = require("../../../../enum/ETextureTarget");
-var wonder_expect_js_1 = require("wonder-expect.js");
 var textureCacheUtils_1 = require("./textureCacheUtils");
 var EVariableType_1 = require("../../../../enum/EVariableType");
 var gpuDetectUtils_1 = require("../../../device/gpuDetectUtils");
@@ -77,10 +75,10 @@ exports.setIsNeedUpdate = function (textureIndex, value, TextureDataFromSystem) 
 };
 exports.initTextures = function (gl, TextureDataFromSystem) {
     for (var i = 0; i < TextureDataFromSystem.index; i++) {
-        _initTexture(gl, i, TextureDataFromSystem);
+        exports.initTexture(gl, i, TextureDataFromSystem);
     }
 };
-var _initTexture = function (gl, textureIndex, TextureDataFromSystem) {
+exports.initTexture = function (gl, textureIndex, TextureDataFromSystem) {
     _createWebglTexture(gl, textureIndex, TextureDataFromSystem);
 };
 var _createWebglTexture = function (gl, textureIndex, TextureDataFromSystem) {
@@ -93,9 +91,6 @@ var _createWebglTexture = function (gl, textureIndex, TextureDataFromSystem) {
 var _isGLTextureExist = function (glTexture) { return arrayUtils_1.isValidVal(glTexture); };
 var _isSourceExist = function (textureIndex, TextureDataFromSystem) { return _isSourceValueExist(TextureDataFromSystem.sourceMap[textureIndex]); };
 var _isSourceValueExist = function (source) { return arrayUtils_1.isValidVal(source); };
-var _getWebglTexture = function (textureIndex, TextureData) {
-    return TextureData.glTextures[textureIndex];
-};
 exports.getBufferCount = function () { return DataBufferConfig_1.DataBufferConfig.textureDataBufferCount; };
 exports.needUpdate = function (textureIndex, TextureDataFromSystem) {
     return exports.getIsNeedUpdate(textureIndex, TextureDataFromSystem) === 0;
@@ -108,17 +103,16 @@ exports.markNeedUpdate = function (textureIndex, value, TextureDataFromSystem) {
         exports.setIsNeedUpdate(textureIndex, 0, TextureDataFromSystem);
     }
 };
-exports.update = contract_1.requireCheckFunc(function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
-    contract_1.it("texture source should exist", function () {
-        wonder_expect_js_1.expect(_isSourceExist(textureIndex, TextureDataFromSystem)).true;
-    });
-}, function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
+exports.update = function (gl, textureIndex, setFlipY, TextureDataFromSystem) {
+    if (!_isSourceExist(textureIndex, TextureDataFromSystem)) {
+        return;
+    }
     var width = exports.getWidth(textureIndex, TextureDataFromSystem), height = exports.getHeight(textureIndex, TextureDataFromSystem), wrapS = exports.getWrapS(textureIndex, TextureDataFromSystem), wrapT = exports.getWrapT(textureIndex, TextureDataFromSystem), magFilter = exports.getMagFilter(textureIndex, TextureDataFromSystem), minFilter = exports.getMinFilter(textureIndex, TextureDataFromSystem), format = exports.getFormat(textureIndex, TextureDataFromSystem), type = exports.getType(textureIndex, TextureDataFromSystem), flipY = exports.getFlipY(textureIndex, TextureDataFromSystem), source = TextureDataFromSystem.sourceMap[textureIndex], target = ETextureTarget_1.ETextureTarget.TEXTURE_2D, isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
     setFlipY(gl, flipY);
     _setTextureParameters(gl, gl[target], isSourcePowerOfTwo, wrapS, wrapT, magFilter, minFilter);
     _allocateSourceToTexture(gl, source, format, type);
     exports.markNeedUpdate(textureIndex, false, TextureDataFromSystem);
-});
+};
 var _setTextureParameters = function (gl, textureType, isSourcePowerOfTwo, wrapS, wrapT, magFilter, minFilter) {
     if (isSourcePowerOfTwo) {
         gl.texParameteri(textureType, gl.TEXTURE_WRAP_S, gl[wrapS]);

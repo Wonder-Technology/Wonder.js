@@ -18,9 +18,12 @@ var operateBufferDataUtils_1 = require("../utils/operateBufferDataUtils");
 var MapManagerData_1 = require("../../renderer/texture/MapManagerData");
 var MapManagerSystem_1 = require("../../renderer/texture/MapManagerSystem");
 var bufferUtils_2 = require("../../renderer/utils/material/bufferUtils");
+var DeviceManagerSystem_1 = require("../../renderer/device/DeviceManagerSystem");
+var TextureData_1 = require("../../renderer/texture/TextureData");
+var DeviceManagerData_1 = require("../../renderer/device/DeviceManagerData");
 exports.create = contract_1.ensureFunc(function (component) {
     contract_1.it("index should <= max count", function () {
-        wonder_expect_js_1.expect(component.index).lt(bufferUtils_2.getLightMaterialBufferStartIndex() + bufferUtils_1.getLightMaterialBufferCount());
+        wonder_expect_js_1.expect(component.index).lte(bufferUtils_2.getLightMaterialBufferStartIndex() + bufferUtils_1.getLightMaterialBufferCount());
     });
 }, function (ShaderData, MaterialData, LightMaterialData) {
     var material = new LightMaterial_1.LightMaterial(), index = ComponentSystem_1.generateComponentIndex(LightMaterialData);
@@ -38,13 +41,11 @@ exports.setSpecularColor = function (index, color, LightMaterialData) {
     MaterialSystem_1.setColorData(lightMaterialUtils_1.computeLightBufferIndex(index), color, LightMaterialData.specularColors);
 };
 exports.setDiffuseMap = function (index, map, MapManagerData, TextureData) {
-    var count = MapManagerSystem_1.getMapCount(index, MapManagerData);
-    MapManagerSystem_1.addMap(index, map, count, "u_diffuseMapSampler", MapManagerData, TextureData);
+    MapManagerSystem_1.setMap(index, map, "u_diffuseMapSampler", MapManagerData, TextureData);
     lightMaterialUtils_1.markHasMap(index, LightMaterialData_1.LightMaterialData.hasDiffuseMaps);
 };
 exports.setSpecularMap = function (index, map, MapManagerData, TextureData) {
-    var count = MapManagerSystem_1.getMapCount(index, MapManagerData);
-    MapManagerSystem_1.addMap(index, map, count, "u_specularMapSampler", MapManagerData, TextureData);
+    MapManagerSystem_1.setMap(index, map, "u_specularMapSampler", MapManagerData, TextureData);
     lightMaterialUtils_1.markHasMap(index, LightMaterialData_1.LightMaterialData.hasSpecularMaps);
 };
 exports.getEmissionColor = function (index, LightMaterialData) {
@@ -80,8 +81,12 @@ exports.hasDiffuseMap = function (index, LightMaterialData) {
 exports.hasSpecularMap = function (index, LightMaterialData) {
     return lightMaterialUtils_1.hasSpecularMap(lightMaterialUtils_1.computeLightBufferIndex(index), LightMaterialData);
 };
+exports.initMaterialWithoutInitMap = function (index, state) {
+    MaterialSystem_1.initMaterial(index, state, lightMaterialUtils_1.getClassName(), MaterialData_1.MaterialData);
+};
 exports.initMaterial = function (index, state) {
     MaterialSystem_1.initMaterial(index, state, lightMaterialUtils_1.getClassName(), MaterialData_1.MaterialData);
+    MapManagerSystem_1.initMapManager(DeviceManagerSystem_1.getGL(DeviceManagerData_1.DeviceManagerData, state), index, MapManagerData_1.MapManagerData, TextureData_1.TextureData);
 };
 exports.addComponent = function (component, gameObject) {
     MaterialSystem_1.addComponent(component, gameObject, MaterialData_1.MaterialData);

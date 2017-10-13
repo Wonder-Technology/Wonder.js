@@ -6,7 +6,7 @@ import { bindVao, createAndInitVao } from "../shader/shaderUtils";
 import { hasExtension } from "../../../../../utils/device/gpuDetectUtils";
 import { getVao, isVaoExist } from "../../../../../utils/worker/render_file/shader/shaderUtils";
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, GPUDetectDataFromSystem: any, VaoDataFromSystem: any) => {
+export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, GPUDetectDataFromSystem: any, VaoDataFromSystem: any) => {
     var vaoExtension = getExtensionVao(GPUDetectDataFromSystem);
 
     if (hasExtension(vaoExtension)) {
@@ -17,7 +17,7 @@ export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, 
     }
 }
 
-var _sendVbo = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
+const _sendVbo =(gl: WebGLRenderingContext, shaderIndex: number, program: WebGLProgram, geometryIndex: number, getArrayBufferDataFuncMap: GetArrayBufferDataFuncMap, getAttribLocation: Function, isAttributeLocationNotExist: Function, sendBuffer: Function, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any) => {
     var sendDataArr = GLSLSenderDataFromSystem.sendAttributeConfigMap[shaderIndex],
         attributeLocationMap = LocationDataFromSystem.attributeLocationMap[shaderIndex],
         lastBindedArrayBuffer = ProgramDataFromSystem.lastBindedArrayBuffer;
@@ -45,7 +45,7 @@ var _sendVbo = (gl: WebGLRenderingContext, shaderIndex: number, program: WebGLPr
     ProgramDataFromSystem.lastBindedArrayBuffer = lastBindedArrayBuffer;
 }
 
-var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
+const _getOrCreateArrayBuffer =(gl: WebGLRenderingContext, geometryIndex: number, bufferName: string, {
     getVertices,
     getNormals,
     getTexCoords
@@ -70,7 +70,7 @@ var _getOrCreateArrayBuffer = (gl: WebGLRenderingContext, geometryIndex: number,
     return buffer;
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
+export const buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, ArrayBufferDataFromSystem: any, IndexBufferDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         TextureDataFromSystem: TextureDataFromSystem,
@@ -93,7 +93,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
-var _bindVao = (gl: WebGLRenderingContext, extension: any, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
+const _bindVao =(gl: WebGLRenderingContext, extension: any, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
     vaoMap,
     vboArrayMap
 }) => {

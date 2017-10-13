@@ -13,7 +13,7 @@ import { bindVao, createAndInitVao } from "../shader/shaderUtils";
 import { IWebGL2DrawDataMap } from "../interface/IUtils";
 import { DeferDrawDataMap } from "../type/utilsType";
 
-export var init = (gl: any, render_config: IRenderConfig, DataBufferConfig: any, GBufferDataFromSystem: any, DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem: any) => {
+export const init = (gl: any, render_config: IRenderConfig, DataBufferConfig: any, GBufferDataFromSystem: any, DeferAmbientLightPassDataFromSystem: any, DeferDirectionLightPassDataFromSystem: any, DeferPointLightPassDataFromSystem: any, ShaderDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GPUDetectDataFromSystem: any) => {
     if (!hasExtensionColorBufferFloat(GPUDetectDataFromSystem)) {
         Log.warn("defer shading need support extensionColorBufferFloat extension");
     }
@@ -24,7 +24,7 @@ export var init = (gl: any, render_config: IRenderConfig, DataBufferConfig: any,
     initUbo(gl, render_config, GLSLSenderDataFromSystem);
 }
 
-export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender: Function, deferRender: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
+export const render = (gl: any, state: Map<any, any>, render_config: IRenderConfig, material_config: IMaterialConfig, shaderLib_generator: IShaderLibGenerator, DataBufferConfig: any, initMaterialShader: Function, basicRender: Function, deferRender: Function, drawDataMap: IWebGL2DrawDataMap, deferDrawDataMap: DeferDrawDataMap, initShaderDataMap: InitShaderDataMap, {
     cameraData,
     basicData,
     lightData
@@ -47,11 +47,11 @@ export var render = (gl: any, state: Map<any, any>, render_config: IRenderConfig
     }
 }
 
-export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
+export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, VaoDataFromSystem: any) => {
     _bindVao(gl, shaderIndex, geometryIndex, ProgramDataFromSystem, GLSLSenderDataFromSystem, GeometryDataFromSystem, VaoDataFromSystem);
 }
 
-export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
+export const buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFromSystem: any, TextureCacheDataFromSystem: any, MapManagerDataFromSystem: any, MaterialDataFromSystem: any, BasicMaterialDataFromSystem: any, LightMaterialDataFromSystem: any, AmbientLightDataFromSystem, DirectionLightDataFromSystem: any, PointLightDataFromSystem: any, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, BasicDrawRenderCommandBufferDataFromSystem: any, LightDrawRenderCommandBufferDataFromSystem: any) => {
     return {
         DeviceManagerDataFromSystem: DeviceManagerDataFromSystem,
         TextureDataFromSystem: TextureDataFromSystem,
@@ -72,7 +72,7 @@ export var buildDrawDataMap = (DeviceManagerDataFromSystem: any, TextureDataFrom
     }
 }
 
-var _bindVao = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
+const _bindVao =(gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramDataFromSystem: any, GLSLSenderDataFromSystem: any, GeometryDataFromSystem: any, {
     vaoMap,
     vboArrayMap
 }) => {

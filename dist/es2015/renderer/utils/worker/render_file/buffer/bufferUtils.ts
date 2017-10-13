@@ -1,7 +1,7 @@
 import { isBufferExist } from "../../../buffer/bufferUtils";
 import { deleteVal } from "../../../../../utils/arrayUtils";
 
-export var disposeBuffer = (geometryIndex: number, buffers: Array<WebGLBuffer>, getGL: Function, DeviceManagerDataFromSystem: any) => {
+export const disposeBuffer = (geometryIndex: number, buffers: Array<WebGLBuffer>, getGL: Function, DeviceManagerDataFromSystem: any) => {
     var gl = getGL(DeviceManagerDataFromSystem, null),
         buffer = buffers[geometryIndex];
 

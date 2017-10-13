@@ -9,7 +9,7 @@ import { Map as MapImmutable } from "immutable";
 import { deleteBySwap as deleteBySwapArray } from "../utils/arrayUtils";
 import { IUIdEntity } from "../core/entityObject/gameObject/IUIdEntity";
 
-const _addHandle =(_class: any, handleMap: object, handle: Function) => {
+const _addHandle = (_class: any, handleMap: object, handle: Function) => {
     var typeId = getTypeIdFromClass(_class);
 
     handleMap[typeId] = handle;
@@ -52,7 +52,7 @@ export const execInitHandle = (typeId: string, index: number, state: MapImmutabl
     handle(index, state);
 }
 
-const _isHandleNotExist =(handle: Function) => isNotValidMapValue(handle);
+const _isHandleNotExist = (handle: Function) => isNotValidMapValue(handle);
 
 export const checkComponentShouldAlive = (component: Component, data: any, isAlive: (component: Component, data: any) => boolean) => {
     it("component should alive", () => {

@@ -1,2 +1,2 @@
-export declare var createRenderCommandBufferData: Function;
-export declare var initData: (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => void;
+export declare const createRenderCommandBufferData: Function;
+export declare const initData: (DataBufferConfig: any, BasicRenderCommandBufferData: any, LightRenderCommandBufferData: any) => void;

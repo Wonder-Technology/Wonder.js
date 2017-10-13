@@ -32,7 +32,7 @@ if (!isSupportRenderWorkerAndSharedArrayBuffer()) {
         bindIndexBufferUtils(gl, geometryIndex, getIndices, ProgramData, GeometryData, IndexBufferData);
     }
 
-    const _buildInitShaderFuncDataMap =() => {
+    const _buildInitShaderFuncDataMap = () => {
         return {
             buildGLSLSource: buildGLSLSource,
             getGL: getGL,

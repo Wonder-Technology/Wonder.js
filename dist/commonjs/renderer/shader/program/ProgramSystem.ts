@@ -9,24 +9,24 @@ import {
 } from "../../utils/worker/render_file/shader/program/programUtils";
 // import { getVertices } from "../../../component/geometry/GeometrySystem";
 
-// export var use = useUtils;
+// export const use = useUtils;
 
-// export var disableVertexAttribArray = disableVertexAttribArrayUtils;
+// export const disableVertexAttribArray = disableVertexAttribArrayUtils;
 
-// export var getMaterialShaderLibConfig = getMaterialShaderLibConfigUtils;
+// export const getMaterialShaderLibConfig = getMaterialShaderLibConfigUtils;
 
-// export var registerProgram = registerProgramUtils;
+// export const registerProgram = registerProgramUtils;
 
-// export var getProgram = getProgramUtils;
+// export const getProgram = getProgramUtils;
 
-// export var isProgramExist = isProgramExistUtils;
+// export const isProgramExist = isProgramExistUtils;
 
-// export var initShader = initShaderUtils;
+// export const initShader = initShaderUtils;
 
-// export var sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => {
+// export const sendAttributeData = (gl: WebGLRenderingContext, shaderIndex: number, geometryIndex: number, ProgramData:any, LocationData: any, GLSLSenderData:any, GeometryData: any, ArrayBufferData: any) => {
 //     sendAttributeDataUtils(gl, shaderIndex, geometryIndex, getVertices, ProgramData, LocationData, GLSLSenderData, GeometryData, ArrayBufferData);
 // }
 
-// export var sendUniformData = sendUniformDataUtils;
+// export const sendUniformData = sendUniformDataUtils;
 
-export var initData = initDataUtils;
+export const initData = initDataUtils;

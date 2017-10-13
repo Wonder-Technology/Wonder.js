@@ -10,21 +10,21 @@ import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../Compon
 export class MeshRenderer extends Component {
 }
 
-export var createMeshRenderer = () => {
+export const createMeshRenderer = () => {
     return create(MeshRendererData);
 }
 
-export var getMeshRendererGameObject = requireCheckFunc((component: MeshRenderer) => {
+export const getMeshRendererGameObject = requireCheckFunc((component: MeshRenderer) => {
     _checkShouldAlive(component, MeshRendererData);
 }, (component: MeshRenderer) => {
     return getGameObject(component.index, MeshRendererData);
 })
 
-export var getMeshRendererRenderList = () => {
+export const getMeshRendererRenderList = () => {
     return getRenderList(null, MeshRendererData);
 }
 
-var _checkShouldAlive = (component: MeshRenderer, MeshRendererData: any) => {
+const _checkShouldAlive =(component: MeshRenderer, MeshRendererData: any) => {
     checkComponentShouldAlive(component, MeshRendererData, (component: MeshRenderer, MeshRendererData: any) => {
         return isComponentIndexNotRemoved(component);
     })

@@ -21,7 +21,7 @@ export const getWorldToCameraMatrix = (index: number, ThreeDTransformData: any, 
     return _getCameraToWorldMatrix(index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).clone().invert();
 }
 
-const _getCameraToWorldMatrix =(index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
+const _getCameraToWorldMatrix = (index: number, ThreeDTransformData: any, GameObjectData: any, CameraControllerData: any, CameraData: any) => {
     var transform = getTransform(getGameObject(index, CameraControllerData).uid, GameObjectData);
 
     return getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);

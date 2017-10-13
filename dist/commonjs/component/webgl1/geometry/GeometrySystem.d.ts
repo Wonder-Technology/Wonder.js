@@ -1,3 +1,3 @@
 import { Geometry } from "../../geometry/Geometry";
-export declare var addDisposeHandle: (BoxGeometry: any, CustomGeometry: any) => void;
-export declare var disposeComponent: (component: Geometry) => void;
+export declare const addDisposeHandle: (BoxGeometry: any, CustomGeometry: any) => void;
+export declare const disposeComponent: (component: Geometry) => void;

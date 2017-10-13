@@ -5,17 +5,17 @@ import { WebGLVertexArrayObject } from "../../../../extend/interface";
 import { isValidVal } from "../../../../../utils/arrayUtils";
 import { VaoMap } from "../../../../type/dataType";
 
-export var use = (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+export const use = (gl: WebGLRenderingContext, shaderIndex: number, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     return useProgram(gl, shaderIndex, ProgramDataFromSystem, LocationDataFromSystem, GLSLSenderDataFromSystem);
 }
 
-export var getVao = (geometryIndex: number, vaoMap: VaoMap) => {
+export const getVao = (geometryIndex: number, vaoMap: VaoMap) => {
     return vaoMap[geometryIndex];
 }
 
-export var isVaoExist = (vao: WebGLVertexArrayObject) => isValidVal(vao);
+export const isVaoExist = (vao: WebGLVertexArrayObject) => isValidVal(vao);
 
-export var createAndInitArrayBuffer = requireCheckFunc((gl: WebGLRenderingContext, data: Float32Array, location: number, size) => {
+export const createAndInitArrayBuffer = requireCheckFunc((gl: WebGLRenderingContext, data: Float32Array, location: number, size) => {
     it("location should be defined", () => {
         expect(location).exist;
     });
@@ -33,7 +33,7 @@ export var createAndInitArrayBuffer = requireCheckFunc((gl: WebGLRenderingContex
     return buffer;
 })
 
-export var createAndInitIndexBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array) => {
+export const createAndInitIndexBuffer = (gl: WebGLRenderingContext, data: Uint16Array | Uint32Array) => {
     var buffer = gl.createBuffer();
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);

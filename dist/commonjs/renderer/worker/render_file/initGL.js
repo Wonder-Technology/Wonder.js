@@ -10,7 +10,7 @@ var curry_1 = require("wonder-lodash/curry");
 var ViewSystem_1 = require("../../../structure/ViewSystem");
 var deviceManagerUtils_1 = require("../../utils/worker/both_file/device/deviceManagerUtils");
 exports.initGL = function (data, detect, WebGLDetectWorkerData, GPUDetectWorkerData) {
-    return functionalUtils_1.compose(functionalUtils_1.map(detect(DeviceManagerWorkerSystem_1.getGL, DeviceManagerWorkerData_1.DeviceManagerWorkerData, GPUDetectWorkerData)), functionalUtils_1.chain(DeviceManagerWorkerSystem_1.setViewportOfGL(DeviceManagerWorkerData_1.DeviceManagerWorkerData, data.viewportData)), functionalUtils_1.map(DeviceManagerWorkerSystem_1.setViewport(data.viewportData)), _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData_1.DeviceManagerWorkerData))(stateUtils_1.createState());
+    return functionalUtils_1.compose(functionalUtils_1.map(detect(DeviceManagerWorkerSystem_1.getGL, DeviceManagerWorkerData_1.DeviceManagerWorkerData, GPUDetectWorkerData)), functionalUtils_1.chain(DeviceManagerWorkerSystem_1.setViewportOfGL(DeviceManagerWorkerData_1.DeviceManagerWorkerData, data.viewportData)), _createGL(data.canvas, data.options, WebGLDetectWorkerData, DeviceManagerWorkerData_1.DeviceManagerWorkerData))(stateUtils_1.createState());
 };
 var _createGL = curry_1.default(function (canvas, options, WebGLDetectWorkerData, DeviceManagerWorkerData, state) {
     return IO_1.IO.of(function () {

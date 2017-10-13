@@ -14,7 +14,7 @@ import { bindPointLightUboData } from "../../../worker/render_file/ubo/uboManage
 import { Vector4 } from "../../../../../../math/Vector4";
 import { Vector2 } from "../../../../../../math/Vector2";
 
-export var drawPointLightPass = (gl: any, state: Map<any, any>, use: Function, drawDataMap: IWebGL2DrawDataMap, pointLightData: IWebGL2SendUniformDataPointLightDataMap, pointLightCount: number, vMatrix: Float32Array, pMatrix: Float32Array, DeferPointLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
+export const drawPointLightPass = (gl: any, state: Map<any, any>, use: Function, drawDataMap: IWebGL2DrawDataMap, pointLightData: IWebGL2SendUniformDataPointLightDataMap, pointLightCount: number, vMatrix: Float32Array, pMatrix: Float32Array, DeferPointLightPassDataFromSystem: any, ShaderDataFromSystem, ProgramDataFromSystem: any, LocationDataFromSystem: any, GLSLSenderDataFromSystem: any) => {
     var {
             x,
         y,
@@ -112,20 +112,20 @@ export var drawPointLightPass = (gl: any, state: Map<any, any>, use: Function, d
     _restoreState(gl, DeviceManagerDataFromSystem);
 }
 
-var _setState = (gl: any, DeviceManagerDataFromSystem: any) => {
+const _setState =(gl: any, DeviceManagerDataFromSystem: any) => {
     setScissorTest(gl, true, DeviceManagerDataFromSystem);
 
 }
 
-var _restoreState = (gl: any, DeviceManagerDataFromSystem: any) => {
+const _restoreState =(gl: any, DeviceManagerDataFromSystem: any) => {
     setScissorTest(gl, false, DeviceManagerDataFromSystem);
 }
 
-var _getFullScreenVal = () => 1;
+const _getFullScreenVal =() => 1;
 
-var _getNotInScreenVal = () => 2;
+const _getNotInScreenVal =() => 2;
 
-var _getBoxMinPointInScreenCoordinate = (lightPosition: Vector4, vMatrix: Float32Array, pMatrix: Float32Array, radius: number) => {
+const _getBoxMinPointInScreenCoordinate =(lightPosition: Vector4, vMatrix: Float32Array, pMatrix: Float32Array, radius: number) => {
     lightPosition.applyMatrix4(vMatrix, true);
     lightPosition.x -= radius;
     lightPosition.y -= radius;
@@ -136,7 +136,7 @@ var _getBoxMinPointInScreenCoordinate = (lightPosition: Vector4, vMatrix: Float3
     return lightPosition;
 }
 
-var _getBoxMaxPointInScreenCoordinate = (lightPosition: Vector4, vMatrix: Float32Array, pMatrix: Float32Array, radius: number) => {
+const _getBoxMaxPointInScreenCoordinate =(lightPosition: Vector4, vMatrix: Float32Array, pMatrix: Float32Array, radius: number) => {
     lightPosition.applyMatrix4(vMatrix, true);
     lightPosition.x += radius;
     lightPosition.y += radius;
@@ -147,7 +147,7 @@ var _getBoxMaxPointInScreenCoordinate = (lightPosition: Vector4, vMatrix: Float3
     return lightPosition;
 }
 
-var _getScissorForLight = (vMatrix: Float32Array, pMatrix: Float32Array, position: Float32Array, radius: number, width: number, height: number) => {
+const _getScissorForLight =(vMatrix: Float32Array, pMatrix: Float32Array, position: Float32Array, radius: number, width: number, height: number) => {
     var a = Vector4.create(position[0], position[1], position[2], 1),
         b = Vector4.create(position[0], position[1], position[2], 1),
         minpt: Vector2 = null,
@@ -189,7 +189,7 @@ var _getScissorForLight = (vMatrix: Float32Array, pMatrix: Float32Array, positio
     return ret;
 };
 
-var _buildPointLightValueDataMap = (position: Float32Array, colorArr3: Array<number>, intensity: number, constant: number, linear: number, quadratic: number, radius: number, isIntensityDirty: boolean, isOtherValueDirty: boolean) => {
+const _buildPointLightValueDataMap =(position: Float32Array, colorArr3: Array<number>, intensity: number, constant: number, linear: number, quadratic: number, radius: number, isIntensityDirty: boolean, isOtherValueDirty: boolean) => {
     return {
         position: position,
         colorArr3: colorArr3,

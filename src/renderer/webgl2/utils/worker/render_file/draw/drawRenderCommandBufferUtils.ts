@@ -25,12 +25,12 @@ export const drawGameObjects = (gl: any, state: Map<any, any>, material_config: 
 }) => {
     var {
             TextureDataFromSystem,
-            TextureCacheDataFromSystem,
-            MapManagerDataFromSystem,
-            ProgramDataFromSystem,
-            LocationDataFromSystem,
-            GLSLSenderDataFromSystem,
-            GeometryDataFromSystem
+        TextureCacheDataFromSystem,
+        MapManagerDataFromSystem,
+        ProgramDataFromSystem,
+        LocationDataFromSystem,
+        GLSLSenderDataFromSystem,
+        GeometryDataFromSystem
         } = drawDataMap,
         {
             sendAttributeData,

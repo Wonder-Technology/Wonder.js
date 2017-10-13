@@ -1,6 +1,6 @@
 import { getMatrix4DataSize } from "../../../utils/typeArrayUtils";
 
-export var createTypeArrays = (buffer: any, DataBufferConfig: any, BasicRenderCommandBufferDataFromSystem: any) => {
+export const createTypeArrays = (buffer: any, DataBufferConfig: any, BasicRenderCommandBufferDataFromSystem: any) => {
     var mat4Length = getMatrix4DataSize(),
         count = DataBufferConfig.renderCommandBufferCount,
         offset: number = 0;
@@ -22,7 +22,7 @@ export var createTypeArrays = (buffer: any, DataBufferConfig: any, BasicRenderCo
     offset += Float32Array.BYTES_PER_ELEMENT * mat4Length;
 }
 
-export var buildRenderCommandBufferForDrawData = (count: number, materialIndices: Float32Array, geometryIndices: Float32Array, mMatrices: Float32Array) => {
+export const buildRenderCommandBufferForDrawData = (count: number, materialIndices: Float32Array, geometryIndices: Float32Array, mMatrices: Float32Array) => {
     return {
         renderCommandBufferData: {
             materialIndices: materialIndices,

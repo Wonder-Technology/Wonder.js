@@ -1,4 +1,4 @@
-export declare var buildDrawFuncDataMap: (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, useShader: Function) => {
+export declare const buildDrawFuncDataMap: (sendAttributeData: Function, sendUniformData: Function, directlySendUniformData: Function, use: Function, hasIndices: Function, getIndicesCount: Function, getIndexType: Function, getIndexTypeSize: Function, getVerticesCount: Function, bindAndUpdate: Function, getMapCount: Function, getStartTextureIndex: Function, useShader: Function) => {
     sendAttributeData: Function;
     sendUniformData: Function;
     directlySendUniformData: Function;
@@ -10,5 +10,6 @@ export declare var buildDrawFuncDataMap: (sendAttributeData: Function, sendUnifo
     getVerticesCount: Function;
     bindAndUpdate: Function;
     getMapCount: Function;
+    getStartTextureIndex: Function;
     useShader: Function;
 };

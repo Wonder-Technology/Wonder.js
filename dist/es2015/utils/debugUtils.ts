@@ -1,7 +1,7 @@
 import curry from "wonder-lodash/curry";
 
 /*! side effect */
-export var trace = curry((tag: string, x: any) => {
+export const trace = curry((tag: string, x: any) => {
     try {
         console.log(`log:${tag}: ${x}`)
     }

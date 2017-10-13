@@ -14,33 +14,33 @@ import { GameObject } from "../../core/entityObject/gameObject/GameObject";
 export class Tag extends Component {
 }
 
-export var createTag = (slotCount: number = 4) => {
+export const createTag = (slotCount: number = 4) => {
     return create(slotCount, TagData);
 }
 
-export var addTag = requireCheckFunc((component: Tag, tag: string) => {
+export const addTag = requireCheckFunc((component: Tag, tag: string) => {
     _checkShouldAlive(component, TagData);
 }, (component: Tag, tag: string) => {
     addTagSystemTag(component, tag, TagData);
 })
 
-export var removeTag = requireCheckFunc((component: Tag, tag: string) => {
+export const removeTag = requireCheckFunc((component: Tag, tag: string) => {
     _checkShouldAlive(component, TagData);
 }, (component: Tag, tag: string) => {
     removeTagSystemTag(component, tag, TagData);
 })
 
-export var findGameObjectsByTag = (tag: string) => {
+export const findGameObjectsByTag = (tag: string) => {
     return findTagSystemTagGameObjectsByTag(tag, TagData);
 }
 
-export var getTagGameObject = requireCheckFunc((component: Tag) => {
+export const getTagGameObject = requireCheckFunc((component: Tag) => {
     _checkShouldAlive(component, TagData);
 }, (component: Tag) => {
     return getGameObject(component.index, TagData);
 })
 
-var _checkShouldAlive = (tag: Tag, TagData: any) => {
+const _checkShouldAlive =(tag: Tag, TagData: any) => {
     checkComponentShouldAlive(tag, TagData, (tag: Tag, TagData: any) => {
         return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
     })

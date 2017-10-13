@@ -16,53 +16,53 @@ import { checkComponentShouldAlive, isComponentIndexNotRemoved } from "../Compon
 export abstract class Geometry extends Component {
 }
 
-export var getDrawMode = requireCheckFunc((geometry: Geometry) => {
+export const getDrawMode = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryDrawMode(geometry.index, GeometryData);
 })
 
-export var getVertices = requireCheckFunc((geometry: Geometry) => {
+export const getVertices = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryVertices(geometry.index, GeometryData);
 })
 
-export var getNormals = requireCheckFunc((geometry: Geometry) => {
+export const getNormals = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryNormals(geometry.index, GeometryData);
 })
 
-export var getTexCoords = requireCheckFunc((geometry: Geometry) => {
+export const getTexCoords = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryTexCoords(geometry.index, GeometryData);
 })
 
-export var getIndices = requireCheckFunc((geometry: Geometry) => {
+export const getIndices = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGeometryIndices(geometry.index, GeometryData);
 })
 
-export var getGeometryConfigData = requireCheckFunc((geometry: Geometry) => {
+export const getGeometryConfigData = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getConfigData(geometry.index, GeometryData);
 })
 
-export var initGeometry = (geometry: Geometry) => {
+export const initGeometry = (geometry: Geometry) => {
     initGeometrySystem(geometry.index, getState(DirectorData));
 }
 
-export var getGeometryGameObject = requireCheckFunc((geometry: Geometry) => {
+export const getGeometryGameObject = requireCheckFunc((geometry: Geometry) => {
     _checkShouldAlive(geometry, GeometryData);
 }, (geometry: Geometry) => {
     return getGameObject(geometry.index, GeometryData);
 })
 
-var _checkShouldAlive = (geometry: Geometry, GeometryData: any) => {
+const _checkShouldAlive =(geometry: Geometry, GeometryData: any) => {
     checkComponentShouldAlive(geometry, GeometryData, (geometry: Geometry, GeometryData: any) => {
         return isComponentIndexNotRemoved(geometry);
     })

@@ -15,7 +15,7 @@ export const initMapManagers = (gl: WebGLRenderingContext, TextureWorkerData: an
 
 export const initNeedInitTextures = initNeedInitTexturesTexture;
 
-export const setMaterialTextureList = (materialTextureList:MaterialTextureList, MapManagerWorkerData:any) => MapManagerWorkerData.materialTextureList = materialTextureList;
+export const setMaterialTextureList = (materialTextureList: MaterialTextureList, MapManagerWorkerData: any) => MapManagerWorkerData.materialTextureList = materialTextureList;
 
 export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) => {
     var textureCounts = MapManagerWorkerData.textureCounts;
@@ -35,7 +35,7 @@ export const getMapCount = (materialIndex: number, MapManagerWorkerData: any) =>
 //     }
 // }
 
-export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, definedStartTextureUnitIndex:number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
+export const bindAndUpdate = (gl: WebGLRenderingContext, mapCount: number, startIndex: number, definedStartTextureUnitIndex: number, TextureCacheWorkerData: any, TextureWorkerData: any, MapManagerWorkerData: any, GPUDetectWorkerData: any) => {
     bindAndUpdateUtils(gl, mapCount, startIndex, definedStartTextureUnitIndex, TextureCacheWorkerData, TextureWorkerData, MapManagerWorkerData, GPUDetectWorkerData, bindToUnit, needUpdate, update);
 }
 
@@ -47,7 +47,7 @@ export const initData = (textureData: TextureInitWorkerData, TextureCacheWorkerD
     _initBufferData(textureData.mapManagerBuffer, MapManagerWorkerData);
 }
 
-const _initBufferData =(buffer: any, MapManagerWorkerData: any) => {
+const _initBufferData = (buffer: any, MapManagerWorkerData: any) => {
     createTypeArrays(buffer, getBufferCount(), MapManagerWorkerData);
 }
 

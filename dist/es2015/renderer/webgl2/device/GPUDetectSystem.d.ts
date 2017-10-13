@@ -1,2 +1,3 @@
-export declare var detect: any;
-export declare var hasExtensionColorBufferFloat: (GPUDetectDataFromSystem: any) => boolean;
+export declare const detect: any;
+export declare const hasExtensionColorBufferFloat: (GPUDetectDataFromSystem: any) => boolean;
+export declare const initData: (GPUDetectDataFromSystem: any) => void;

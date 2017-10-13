@@ -1,8 +1,8 @@
-export declare var addFirstDirtyIndex: Function;
-export declare var minusFirstDirtyIndex: Function;
-export declare var generateNotUsedIndexInArrayBuffer: Function;
-export declare var generateNotUsedIndexInNormalList: Function;
-export declare var addToDirtyList: Function;
-export declare var addNotUsedIndex: Function;
-export declare var isNotDirty: (index: number, firstDirtyIndex: number) => boolean;
-export declare var addItAndItsChildrenToDirtyList: (rootIndexInArrayBuffer: number, uid: number, ThreeDTransformData: any) => any;
+export declare const addFirstDirtyIndex: Function;
+export declare const minusFirstDirtyIndex: Function;
+export declare const generateNotUsedIndexInArrayBuffer: Function;
+export declare const generateNotUsedIndexInNormalList: Function;
+export declare const addToDirtyList: Function;
+export declare const addNotUsedIndex: Function;
+export declare const isNotDirty: (index: number, firstDirtyIndex: number) => boolean;
+export declare const addItAndItsChildrenToDirtyList: (rootIndexInArrayBuffer: number, uid: number, ThreeDTransformData: any) => any;

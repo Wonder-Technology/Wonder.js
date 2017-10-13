@@ -40,7 +40,7 @@ export const getTagGameObject = requireCheckFunc((component: Tag) => {
     return getGameObject(component.index, TagData);
 })
 
-const _checkShouldAlive =(tag: Tag, TagData: any) => {
+const _checkShouldAlive = (tag: Tag, TagData: any) => {
     checkComponentShouldAlive(tag, TagData, (tag: Tag, TagData: any) => {
         return isValidMapValue(TagData.indexMap[TagData.indexInTagArrayMap[tag.index]]);
     })

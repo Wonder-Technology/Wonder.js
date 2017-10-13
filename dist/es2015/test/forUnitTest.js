@@ -3,7 +3,7 @@ import { fromArray as fromArrayFromFrp } from "wonder-frp/dist/es2015/global/Ope
 import { getNormalMatrix as getNormalMatrixSystem, initData as initThreeDTransformDataSystem } from "../component/transform/ThreeDTransformSystem";
 import { initData as initTagDataSystem } from "../component/tag/TagSystem";
 import { hasIndices, initData as initGeometryDataSystem, setIndices, setVertices } from "../component/geometry/GeometrySystem";
-import { getShaderIndex as getShaderIndexSystem, initData as initMaterialDataSystem } from "../component/material/MaterialSystem";
+import { getShaderIndex as getShaderIndexSystem } from "../component/material/MaterialSystem";
 import { use } from "../renderer/shader/ShaderSystem";
 import { initData as initMeshRendererDataSystem } from "../component/renderer/MeshRendererSystem";
 import { createState as createStateUtils } from "../utils/stateUtils";
@@ -30,6 +30,12 @@ import { initData as initWebGL2LocationDataSystem } from "../renderer/webgl2/sha
 import { initData as initWebGL1ShaderDataSystem } from "../renderer/webgl1/shader/ShaderSystem";
 import { initData as initWebGL2ShaderDataSystem } from "../renderer/webgl2/shader/ShaderSystem";
 import { initData as initDeferLightPassDataSystem } from "../renderer/webgl2/render/light/defer/light/DeferLightPassSystem";
+import { initData as initWebGL1GPUDetectDataSystem } from "../renderer/webgl1/device/GPUDetectSystem";
+import { initData as initWebGL2GPUDetectDataSystem } from "../renderer/webgl2/device/GPUDetectSystem";
+import { initData as initDataSystem } from "../core/MainSystem";
+import { initData as initMaterialDataSystem } from "../component/material/AllMaterialSystem";
+import { getImageData as getImageDataUtils } from "../renderer/utils/texture/textureUtils";
+import { hasDiffuseMap as hasDiffuseMapSystem, hasSpecularMap as hasSpecularMapSystem } from "../component/material/LightMaterialSystem";
 export var initThreeDTransformData = initThreeDTransformDataSystem;
 export var DomQuery = DomQueryFromCommonlib;
 export var fromArray = fromArrayFromFrp;
@@ -57,6 +63,9 @@ export var initDrawRenderCommandBufferData = initDrawRenderCommandBufferDataSyst
 export var initSendDrawRenderCommandBufferData = initSendDrawRenderCommandBufferDataSystem;
 export var initVaoData = initVaoDataSystem;
 export var initDeferLightPassData = initDeferLightPassDataSystem;
+export var initWebGL1GPUDetectData = initWebGL1GPUDetectDataSystem;
+export var initWebGL2GPUDetectData = initWebGL2GPUDetectDataSystem;
+export var initData = initDataSystem;
 export var createState = createStateUtils;
 export var useProgram = use;
 export var sendWebGL1AttributeData = sendWebGL1AttributeDataSystem;
@@ -68,4 +77,7 @@ export var getShaderIndex = getShaderIndexSystem;
 export var updateSystem = updateAllSystems;
 export var getNormalMatrix = getNormalMatrixSystem;
 export var getWorldToCameraMatrix = getWorldToCameraMatrixSystem;
+export var getImageData = getImageDataUtils;
+export var hasDiffuseMap = hasDiffuseMapSystem;
+export var hasSpecularMap = hasSpecularMapSystem;
 //# sourceMappingURL=forUnitTest.js.map

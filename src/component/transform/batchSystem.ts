@@ -33,7 +33,7 @@ export const setBatchDatas = requireCheckFunc((batchData: Array<BatchTransformDa
     )(ThreeDTransformData);
 })
 
-const _setBatchTransformData =curry((batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
+const _setBatchTransformData = curry((batchData: Array<BatchTransformData>, GlobalTempData: any, ThreeDTransformData: any) => {
     for (let data of batchData) {
         let transform = data.transform,
             index = transform.index,
@@ -54,10 +54,10 @@ const _setBatchTransformData =curry((batchData: Array<BatchTransformData>, Globa
     return ThreeDTransformData;
 })
 
-const _getAllTransfomrsNotDirtyIndexArrAndMarkTransform =curry((batchData: Array<BatchTransformData>, ThreeDTransformData: any) => {
+const _getAllTransfomrsNotDirtyIndexArrAndMarkTransform = curry((batchData: Array<BatchTransformData>, ThreeDTransformData: any) => {
     var notDirtyIndexArr = [],
         firstDirtyIndex = ThreeDTransformData.firstDirtyIndex;
-    const _getNotDirtyIndex =(index, uid, notDirtyIndexArr, isTranslate: boolean, ThreeDTransformData) => {
+    const _getNotDirtyIndex = (index, uid, notDirtyIndexArr, isTranslate: boolean, ThreeDTransformData) => {
         var children = getChildren(uid, ThreeDTransformData);
 
         if (isTranslate) {
@@ -92,7 +92,7 @@ const _getAllTransfomrsNotDirtyIndexArrAndMarkTransform =curry((batchData: Array
 });
 
 
-const _addBatchToDirtyList =(ThreeDTransformData: any, targetDirtyIndex: number, swapFunc: Function, moveToIndexFunc: Function, notDirtyIndexArr: Array<number>) => {
+const _addBatchToDirtyList = (ThreeDTransformData: any, targetDirtyIndex: number, swapFunc: Function, moveToIndexFunc: Function, notDirtyIndexArr: Array<number>) => {
     for (let index of notDirtyIndexArr) {
         targetDirtyIndex = minusFirstDirtyIndex(targetDirtyIndex);
 
@@ -107,14 +107,14 @@ const _addBatchToDirtyList =(ThreeDTransformData: any, targetDirtyIndex: number,
     return targetDirtyIndex;
 }
 
-const _addBatchToDirtyListByChangeTypeArrData =curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
+const _addBatchToDirtyListByChangeTypeArrData = curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
     _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTypeArrData, moveTypeArrDataToIndex, notDirtyIndexArr);
 
     return notDirtyIndexArr;
 })
 
 
-const _addBatchToDirtyListByChangeMapData =curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
+const _addBatchToDirtyListByChangeMapData = curry((ThreeDTransformData: any, targetDirtyIndex: number, notDirtyIndexArr: Array<number>) => {
     return _addBatchToDirtyList(ThreeDTransformData, targetDirtyIndex, swapTransformMapData, (sourceIndex: number, targetIndex: number, ThreeDTransformData: any) => {
         moveMapDataToIndex(sourceIndex, targetIndex, ThreeDTransformData);
         addNotUsedIndex(sourceIndex, ThreeDTransformData.notUsedIndexLinkList);

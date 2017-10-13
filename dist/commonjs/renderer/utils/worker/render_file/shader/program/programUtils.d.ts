@@ -1,4 +1,4 @@
-export declare var use: Function;
-export declare var disableVertexAttribArray: Function;
-export declare var getProgram: Function;
-export declare var initData: (ProgramDataFromSystem: any) => void;
+export declare const use: Function;
+export declare const disableVertexAttribArray: Function;
+export declare const getProgram: Function;
+export declare const initData: (ProgramDataFromSystem: any) => void;

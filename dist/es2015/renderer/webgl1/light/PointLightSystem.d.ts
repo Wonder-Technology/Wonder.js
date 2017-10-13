@@ -1,1 +1,1 @@
-export declare var initData: (PointLightData: any) => void;
+export declare const initData: (PointLightData: any) => void;

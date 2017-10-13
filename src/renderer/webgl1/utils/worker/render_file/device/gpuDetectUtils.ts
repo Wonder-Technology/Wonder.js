@@ -10,7 +10,7 @@ export const detect = (getGL: Function, DeviceManagerDataFromSystem: any, GPUDet
     return state;
 }
 
-const _detectExtension =(state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
+const _detectExtension = (state: Map<any, any>, gl: any, GPUDetectDataFromSystem: any) => {
     detectExtensionSystem(state, gl, GPUDetectDataFromSystem);
 }
 

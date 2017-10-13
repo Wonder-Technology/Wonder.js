@@ -1,1 +1,1 @@
-{"version":3,"file":"DeferLightPassSystem.js","sourceRoot":"","sources":["../../../../../../../../src/renderer/webgl2/render/light/defer/light/DeferLightPassSystem.ts"],"names":[],"mappings":";;AAAA,yHAA8H;AAEnH,QAAA,QAAQ,GAAG,8BAAa,CAAC"}
+{"version":3,"file":"DeferLightPassSystem.js","sourceRoot":"","sources":["../../../../../../../../src/renderer/webgl2/render/light/defer/light/DeferLightPassSystem.ts"],"names":[],"mappings":";;AAAA,yHAA8H;AAEjH,QAAA,QAAQ,GAAG,8BAAa,CAAC"}

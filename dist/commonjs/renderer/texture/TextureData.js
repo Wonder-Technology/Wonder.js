@@ -16,6 +16,8 @@ var TextureData = (function () {
     TextureData.defaultHeight = null;
     TextureData.defaultIsNeedUpdate = null;
     TextureData.disposedTextureDataMap = null;
+    TextureData.needInitedTextureIndexArr = null;
+    TextureData.needAddedSourceArr = null;
     return TextureData;
 }());
 exports.TextureData = TextureData;

@@ -2,7 +2,7 @@ import { Light } from "./Light";
 import { Color } from "../../structure/Color";
 export declare class AmbientLight extends Light {
 }
-export declare var createAmbientLight: () => any;
-export declare var getAmbientLightGameObject: Function;
-export declare var getAmbientLightColor: (light: AmbientLight) => Color;
-export declare var setAmbientLightColor: (light: AmbientLight, color: Color) => void;
+export declare const createAmbientLight: () => any;
+export declare const getAmbientLightGameObject: Function;
+export declare const getAmbientLightColor: (light: AmbientLight) => Color;
+export declare const setAmbientLightColor: (light: AmbientLight, color: Color) => void;

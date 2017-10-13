@@ -117,7 +117,7 @@ export const setConfig = (closeContractTest: boolean, InitConfigData: any, Worke
     }
 }) => {
     return IO.of(() => {
-        var _isTest =false;
+        var _isTest = false;
 
         if (CompileConfig.closeContractTest) {
             _isTest = false;
@@ -223,7 +223,7 @@ else {
 
 export var init = null;
 
-var _initData =null;
+var _initData = null;
 
 if (isWebgl1()) {
     _initData = () => {
@@ -264,7 +264,7 @@ else {
     });
 }
 
-const _initBothData =() => {
+const _initBothData = () => {
     initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
 
     initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);

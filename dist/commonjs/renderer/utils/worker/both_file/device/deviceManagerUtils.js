@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var contract_1 = require("../../../../../definition/typescript/decorator/contract");
 var ViewSystem_1 = require("../../../../../structure/ViewSystem");
-var IO_1 = require("Wonder-Fantasy-Land/dist/commonjs/types/IO");
+var IO_1 = require("wonder-fantasy-land/dist/commonjs/types/IO");
 var curry_1 = require("wonder-lodash/curry");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var EScreenSize_1 = require("../../../../device/EScreenSize");
@@ -32,7 +32,7 @@ exports.setPixelRatio = curry_1.default(function (pixelRatio, state) {
 exports.getViewport = function (state) {
     return state.getIn(["DeviceManager", "viewport"]);
 };
-exports.setViewport = function (x, y, width, height, state) {
+exports.setViewportToState = function (x, y, width, height, state) {
     return state.setIn(["DeviceManager", "viewport"], RectRegion_1.RectRegion.create(x, y, width, height));
 };
 exports.setCanvasPixelRatio = curry_1.default(function (useDevicePixelRatio, canvas) {
@@ -51,7 +51,7 @@ exports.setViewportOfGL = curry_1.default(function (DeviceManagerDataFromSystem,
             return state;
         }
         gl.viewport(x, y, width, height);
-        return exports.setViewport(x, y, width, height, state);
+        return exports.setViewportToState(x, y, width, height, state);
     });
 });
 var _setBodyByScreenSize = function (screenSize, DomQuery) {
@@ -117,6 +117,9 @@ exports.setClearColor = function (gl, color, DeviceManagerDataFromSystem) {
         return;
     }
     gl.clearColor(color.r, color.g, color.b, color.a);
+    exports.setClearColorData(color, DeviceManagerDataFromSystem);
+};
+exports.setClearColorData = function (color, DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.clearColor = color;
 };
 exports.setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeAlpha, DeviceManagerDataFromSystem) {

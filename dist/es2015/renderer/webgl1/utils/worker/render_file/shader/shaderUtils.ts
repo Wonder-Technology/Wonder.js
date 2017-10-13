@@ -23,15 +23,15 @@ import { setEmptyLocationMap } from "./location/locationUtils";
 import { createMap } from "../../../../../../utils/objectUtils";
 import { VaoMap, VboArrayMap } from "../../../../../type/dataType";
 
-export var initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export const initNoMaterialShader = (state: Map<any, any>, shaderName: string, materialShaderLibConfig: MaterialShaderLibConfig, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     initNoMaterialShaderUtils(state, null, materialShaderLibConfig, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
-export var initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+export const initMaterialShader = (state: Map<any, any>, materialIndex: number, shaderName: string, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _init, initShaderFuncDataMap, initShaderDataMap);
 }
 
-var _init = (state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
+const _init =(state: Map<any, any>, materialIndex: number | null, materialShaderLibNameArr: Array<string>, material_config: IMaterialConfig, shaderLib_generator: IWebGL1ShaderLibContentGenerator, initShaderFuncDataMap: WebGL1InitShaderFuncDataMap, initShaderDataMap: InitShaderDataMap) => {
     var {
             ShaderDataFromSystem,
         DeviceManagerDataFromSystem,
@@ -73,8 +73,8 @@ var _init = (state: Map<any, any>, materialIndex: number | null, materialShaderL
     return shaderIndex;
 }
 
-export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryWorkerDataFromSystem: any, IndexBufferDataFromSystem: any) => {
-    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryWorkerDataFromSystem, IndexBufferDataFromSystem);
+export const bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, getIndicesFunc: Function, ProgramDataFromSystem: any, GeometryDataFromSystem: any, IndexBufferDataFromSystem: any) => {
+    var buffer = getOrCreateBuffer(gl, geometryIndex, getIndicesFunc, GeometryDataFromSystem, IndexBufferDataFromSystem);
 
     if (ProgramDataFromSystem.lastBindedIndexBuffer === buffer) {
         return;
@@ -85,7 +85,7 @@ export var bindIndexBuffer = (gl: WebGLRenderingContext, geometryIndex: number, 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 }
 
-export var bindVao = (extension: any, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
+export const bindVao = (extension: any, vao: WebGLVertexArrayObject, ProgramDataFromSystem: any) => {
     if (ProgramDataFromSystem.lastBindedVao === vao) {
         return;
     }
@@ -95,7 +95,7 @@ export var bindVao = (extension: any, vao: WebGLVertexArrayObject, ProgramDataFr
     bindVaoUtils(extension, vao);
 }
 
-export var createAndInitVao = (gl: any, extension: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {
+export const createAndInitVao = (gl: any, extension: any, geometryIndex: number, vaoMap: VaoMap, vboArrayMap: VboArrayMap, {
     positionLocation,
     normalLocation,
     texCoordLocation,
@@ -133,7 +133,7 @@ export var createAndInitVao = (gl: any, extension: any, geometryIndex: number, v
     return vao;
 }
 
-export var initData = (ShaderDataFromSystem: any) => {
+export const initData = (ShaderDataFromSystem: any) => {
     ShaderDataFromSystem.index = 0;
     ShaderDataFromSystem.count = 0;
 

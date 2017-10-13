@@ -13,7 +13,7 @@ export var getWorldToCameraMatrix = function (index, ThreeDTransformData, GameOb
     return _getCameraToWorldMatrix(index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData).clone().invert();
 };
 var _getCameraToWorldMatrix = function (index, ThreeDTransformData, GameObjectData, CameraControllerData, CameraData) {
-    var transform = getTransform(getGameObject(index, CameraControllerData), GameObjectData);
+    var transform = getTransform(getGameObject(index, CameraControllerData).uid, GameObjectData);
     return getLocalToWorldMatrix(transform, getTempLocalToWorldMatrix(transform, ThreeDTransformData), ThreeDTransformData);
 };
 export var getPMatrix = function (index, CameraData) {

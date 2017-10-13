@@ -165,7 +165,7 @@ export const disposeComponent = requireCheckFunc((sourceIndex: number, lastCompo
     //not dispose shader(for reuse shader)(if dipose shader, should change render worker)
 })
 
-var _checkDisposeComponentWorker =null;
+var _checkDisposeComponentWorker = null;
 
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     _checkDisposeComponentWorker = (materialIndex: number) => {

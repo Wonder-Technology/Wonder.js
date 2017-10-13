@@ -66,7 +66,7 @@ export const getViewportData = (screenData: ScreenData) => {
     }
 }
 
-export const setViewportOfGL = curry((DeviceManagerWorkerData: any, data:RectRegion, state: Map<any, any>) => {
+export const setViewportOfGL = curry((DeviceManagerWorkerData: any, data: RectRegion, state: Map<any, any>) => {
     return setViewportOfGLUtils(DeviceManagerWorkerData, state, data);
 })
 
@@ -74,7 +74,7 @@ export const setScreen = curry((canvas: HTMLCanvasElement, DeviceManagerWorkerDa
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
 });
 
-const _setScreenData =curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
+const _setScreenData = curry((DeviceManagerWorkerData: any, canvas: HTMLCanvasElement, state: Map<any, any>, data: any) => {
     var {
         x,
         y,
@@ -103,10 +103,10 @@ export const setCanvasPixelRatio = curry((useDevicePixelRatio: boolean, canvas: 
 
 export const buildViewportData = (x: number, y: number, width: number, height: number) => {
     return {
-        x:x,
-        y:y,
-        width:width,
-        height:height
+        x: x,
+        y: y,
+        width: width,
+        height: height
     }
 }
 

@@ -24,11 +24,11 @@ export const isDisposeTooManyComponents = (disposeCount: number, maxComponentDis
     return disposeCount >= maxComponentDisposeCount;
 }
 
-const _setMapVal =(map: object, key: number, val: any) => {
+const _setMapVal = (map: object, key: number, val: any) => {
     map[key] = val;
 }
 
-const _setArrayVal =(arr: Array<any>, index: number, val: any) => {
+const _setArrayVal = (arr: Array<any>, index: number, val: any) => {
     arr[index] = val;
 }
 
@@ -141,7 +141,7 @@ export const reAllocateGameObject = (GameObjectData: any) => {
     GameObjectData.aliveUIdArray = newAliveUIdArray;
 };
 
-const _cleanChildrenMap =(disposedUIdArr: Array<number>, parentMap: object, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
+const _cleanChildrenMap = (disposedUIdArr: Array<number>, parentMap: object, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var isCleanedParentMap = createMap();
 
     for (let uid of disposedUIdArr) {
@@ -161,7 +161,7 @@ const _cleanChildrenMap =(disposedUIdArr: Array<number>, parentMap: object, isAl
     }
 }
 
-const _cleanChildren =(parentUId: number, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
+const _cleanChildren = (parentUId: number, isAlive: Function, getChildren: Function, setChildren: Function, Data: any) => {
     var children = getChildren(parentUId, Data);
 
     if (!_isChildrenExist(children)) {
@@ -181,9 +181,9 @@ const _cleanChildren =(parentUId: number, isAlive: Function, getChildren: Functi
     setChildren(parentUId, newChildren, Data);
 };
 
-const _isParentExist =(parent: Component) => isNotUndefined(parent);
+const _isParentExist = (parent: Component) => isNotUndefined(parent);
 
-const _isChildrenExist =(children: Array<Component>) => isNotUndefined(children);
+const _isChildrenExist = (children: Array<Component>) => isNotUndefined(children);
 
 export const reAllocateTag = (TagData: any) => {
     var usedSlotCountMap = TagData.usedSlotCountMap,
@@ -410,14 +410,14 @@ export const reAllocateGeometry = ensureFunc((returnVal: any, GeometryData: any)
     return disposedIndexArray;
 })
 
-const _updateComponentIndex =(componentMap: object, newComponentMap: object, oldIndex: number, newIndex: number) => {
+const _updateComponentIndex = (componentMap: object, newComponentMap: object, oldIndex: number, newIndex: number) => {
     let component: Component = componentMap[oldIndex];
 
     component.index = newIndex;
     newComponentMap[newIndex] = component;
 }
 
-const _fillTypeArr =requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex: number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
+const _fillTypeArr = requireCheckFunc((targetTypeArr: Float32Array | Uint32Array | Uint16Array, targetStartIndex: number, sourceTypeArr: Float32Array | Uint32Array | Uint16Array, startIndex: number, endIndex: number) => {
     // it("targetStartIndex should <= sourceStartIndex", () => {
     //     expect(targetStartIndex).lte(startIndex);
     // })
@@ -432,7 +432,7 @@ const _fillTypeArr =requireCheckFunc((targetTypeArr: Float32Array | Uint32Array 
     return typeArrIndex;
 })
 
-const _updateInfoList =ensureFunc((returnVal: any, newInfoList, newIndexInArrayBuffer, info: GeometryInfo, offset: number) => {
+const _updateInfoList = ensureFunc((returnVal: any, newInfoList, newIndexInArrayBuffer, info: GeometryInfo, offset: number) => {
     it("info.startIndex should >= 0", () => {
         expect(newInfoList[newIndexInArrayBuffer].startIndex).gte(0);
     });

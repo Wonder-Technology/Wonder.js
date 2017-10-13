@@ -108,7 +108,7 @@ export const initDataHelper = (DirectionLightData: any) => {
     _setDefaultTypeArrData(count, DirectionLightData);
 }
 
-const _setDefaultTypeArrData =(count: number, DirectionLightData: any) => {
+const _setDefaultTypeArrData = (count: number, DirectionLightData: any) => {
     var color = createDefaultColor(),
         intensity = DirectionLightData.defaultIntensity;
 

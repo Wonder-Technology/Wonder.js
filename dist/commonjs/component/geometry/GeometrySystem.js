@@ -167,6 +167,9 @@ exports.clearWorkerInfoList = function (GeometryData) {
 exports.hasNewPointData = function (GeometryData) {
     return GeometryData.verticesWorkerInfoList.length > 0;
 };
+exports.getDisposedGeometryIndexArrayData = function (GeometryData) {
+    return GeometryData.disposedGeometryIndexArray;
+};
 exports.hasDisposedGeometryIndexArrayData = function (GeometryData) {
     return GeometryData.disposedGeometryIndexArray.length > 0;
 };

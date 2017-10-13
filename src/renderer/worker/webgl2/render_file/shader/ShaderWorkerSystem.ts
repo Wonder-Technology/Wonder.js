@@ -21,7 +21,7 @@ export const initMaterialShader = (state: Map<any, any>, materialIndex: number, 
     return initMaterialShaderUtils(state, materialIndex, shaderName, material_config, shaderLib_generator, _buildInitShaderFuncDataMap(), initShaderDataMap);
 };
 
-const _buildInitShaderFuncDataMap =() => {
+const _buildInitShaderFuncDataMap = () => {
     return {
         buildGLSLSource: buildGLSLSource,
         getGL: getGL,

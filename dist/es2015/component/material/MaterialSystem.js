@@ -1,54 +1,22 @@
 import { it, requireCheckFunc } from "../../definition/typescript/decorator/contract";
 import { Color } from "../../structure/Color";
 import { expect } from "wonder-expect.js";
-import { addAddComponentHandle as addAddComponentHandleToMap, addComponentToGameObjectMap, addDisposeHandle as addDisposeHandleToMap, addInitHandle as addInitHandleToMap, deleteComponentBySwapArray, getComponentGameObject } from "../ComponentSystem";
+import { addComponentToGameObjectMap, deleteComponentBySwapArray, getComponentGameObject } from "../ComponentSystem";
 import { MaterialData } from "./MaterialData";
 import { deleteBySwapAndNotReset, deleteBySwapAndReset, deleteOneItemBySwapAndReset, setTypeArrayValue } from "../../utils/typeArrayUtils";
-import { createTypeArrays, getOpacity as getOpacityUtils, getAlphaTest as getAlphaTestUtils, getColorDataSize, getOpacityDataSize, getAlphaTestDataSize, isTestAlpha as isTestAlphaUtils, buildInitShaderDataMap, setShaderIndex, initNoMaterialShaders, useShader as useShaderUtils } from "../../renderer/utils/worker/render_file/material/materialUtils";
+import { getAlphaTest as getAlphaTestUtils, getAlphaTestDataSize, getColorDataSize, getOpacity as getOpacityUtils, getOpacityDataSize, isTestAlpha as isTestAlphaUtils, useShader as useShaderUtils } from "../../renderer/utils/worker/render_file/material/materialUtils";
 import { isSupportRenderWorkerAndSharedArrayBuffer } from "../../device/WorkerDetectSystem";
-import { DeviceManagerData } from "../../renderer/device/DeviceManagerData";
-import { createSharedArrayBufferOrArrayBuffer } from "../../utils/arrayBufferUtils";
 import { deleteBySwap } from "../../utils/arrayUtils";
-import { addComponent as addBasicMaterialComponent, createTypeArrays as createBasicMaterialTypeArrays, disposeComponent as disposeBasicMaterialComponent, initData as initBasicMaterialData, initMaterial as initBasicMaterial, setDefaultData as setBasicMaterialDefaultData } from "./BasicMaterialSystem";
-import { addComponent as addLightMaterialComponent, createTypeArrays as createLightMaterialTypeArrays, disposeComponent as disposeLightMaterialComponent, initData as initLightMaterialData, initMaterial as initLightMaterial, setDefaultData as setLightMaterialDefaultData } from "./LightMaterialSystem";
-import { getBasicMaterialBufferCount, getBufferLength, getBufferTotalCount, getLightMaterialBufferCount } from "../../renderer/utils/worker/render_file/material/bufferUtils";
 import { create as createShader } from "../../renderer/shader/ShaderSystem";
 import { getColor3Data, setColor3Data } from "../utils/operateBufferDataUtils";
-import { dispose as disposeMapManager, initData as initMapManagerData, initMapManagers } from "../../renderer/texture/MapManagerSystem";
-import { MapManagerData } from "../../renderer/texture/MapManagerData";
-import { getClassName as getBasicMaterialClassName } from "../../renderer/utils/worker/render_file/material/basicMaterialUtils";
-import { getClassName as getLightMaterialClassName } from "../../renderer/utils/worker/render_file/material/lightMaterialUtils";
+import { dispose as disposeMapManager } from "../../renderer/texture/MapManagerSystem";
 import { getColorArr3 as getColorArr3Utils } from "../../renderer/worker/render_file/material/MaterialWorkerSystem";
-import { getBasicMaterialBufferStartIndex, getLightMaterialBufferStartIndex } from "../../renderer/utils/material/bufferUtils";
-export var addAddComponentHandle = function (BasicMaterial, LightMaterial) {
-    addAddComponentHandleToMap(BasicMaterial, addBasicMaterialComponent);
-    addAddComponentHandleToMap(LightMaterial, addLightMaterialComponent);
-};
-export var addDisposeHandle = function (BasicMaterial, LightMaterial) {
-    addDisposeHandleToMap(BasicMaterial, disposeBasicMaterialComponent);
-    addDisposeHandleToMap(LightMaterial, disposeLightMaterialComponent);
-};
-export var addInitHandle = function (BasicMaterial, LightMaterial) {
-    addInitHandleToMap(BasicMaterial, initBasicMaterial);
-    addInitHandleToMap(LightMaterial, initLightMaterial);
-};
 export var create = function (index, material, ShaderData, MaterialData) {
     MaterialData.materialMap[index] = material;
     createShader(ShaderData);
     return material;
 };
 export var useShader = useShaderUtils;
-export var init = function (state, gl, material_config, shaderLib_generator, initNoMaterialShader, TextureData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, GLSLSenderData, ProgramData, VaoData, LocationData, ShaderData) {
-    initNoMaterialShaders(state, material_config, shaderLib_generator, initNoMaterialShader, buildInitShaderDataMap(DeviceManagerData, ProgramData, LocationData, GLSLSenderData, ShaderData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData, AmbientLightData, DirectionLightData, PointLightData, GPUDetectData, VaoData));
-    _initMaterials(state, getBasicMaterialBufferStartIndex(), getBasicMaterialClassName(), BasicMaterialData, MaterialData);
-    _initMaterials(state, getLightMaterialBufferStartIndex(), getLightMaterialClassName(), LightMaterialData, MaterialData);
-    initMapManagers(gl, TextureData);
-};
-var _initMaterials = function (state, startIndex, className, SpecifyMaterialData, MaterialData) {
-    for (var i = startIndex; i < SpecifyMaterialData.index; i++) {
-        initMaterial(i, state, className, MaterialData);
-    }
-};
 export var initMaterial = null;
 if (isSupportRenderWorkerAndSharedArrayBuffer()) {
     initMaterial = function (index, state, className, MaterialData) {
@@ -149,41 +117,5 @@ export var isTestAlpha = isTestAlphaUtils;
 export var createDefaultColor = function () {
     var color = Color.create();
     return color.setColorByNum("#ffffff");
-};
-export var initData = function (TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData) {
-    MaterialData.materialMap = [];
-    MaterialData.gameObjectMap = [];
-    MaterialData.workerInitList = [];
-    _setMaterialDefaultData(MaterialData);
-    initBasicMaterialData(BasicMaterialData);
-    setBasicMaterialDefaultData(BasicMaterialData);
-    initLightMaterialData(LightMaterialData);
-    setLightMaterialDefaultData(LightMaterialData);
-    _initBufferData(MaterialData, BasicMaterialData, LightMaterialData);
-    initMapManagerData(TextureCacheData, TextureData, MapManagerData);
-};
-var _setMaterialDefaultData = function (MaterialData) {
-    MaterialData.defaultShaderIndex = 0;
-    MaterialData.defaultColorArr = createDefaultColor().toVector3().toArray();
-    MaterialData.defaultOpacity = 1;
-    MaterialData.defaultAlphaTest = -1;
-};
-var _initBufferData = function (MaterialData, BasicMaterialData, LightMaterialData) {
-    var buffer = null, count = getBufferTotalCount(), offset = null;
-    buffer = createSharedArrayBufferOrArrayBuffer(getBufferLength());
-    offset = createTypeArrays(buffer, count, MaterialData);
-    _setMaterialDefaultTypeArrData(count, MaterialData);
-    offset = createBasicMaterialTypeArrays(buffer, offset, getBasicMaterialBufferCount(), BasicMaterialData);
-    offset = createLightMaterialTypeArrays(buffer, offset, getLightMaterialBufferCount(), LightMaterialData);
-    MaterialData.buffer = buffer;
-};
-var _setMaterialDefaultTypeArrData = function (count, MaterialData) {
-    var shaderIndex = MaterialData.defaultShaderIndex, color = createDefaultColor(), opacity = MaterialData.defaultOpacity, alphaTest = MaterialData.defaultAlphaTest;
-    for (var i = 0; i < count; i++) {
-        setShaderIndex(i, shaderIndex, MaterialData);
-        setColor(i, color, MaterialData);
-        setOpacity(i, opacity, MaterialData);
-        setAlphaTest(i, alphaTest, MaterialData);
-    }
 };
 //# sourceMappingURL=MaterialSystem.js.map

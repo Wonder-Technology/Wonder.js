@@ -1,7 +1,7 @@
 import { ClassUtils } from "../utils/ClassUtils";
 import { Component } from "./Component";
 
-var _generateTypeId = () => {
+const _generateTypeId =() => {
     var result = _typeId;
 
     _typeId += 1;
@@ -9,15 +9,15 @@ var _generateTypeId = () => {
     return String(result);
 }
 
-export var getTypeIdFromClass = (_class: any) => {
+export const getTypeIdFromClass = (_class: any) => {
     return _table[ClassUtils.getClassNameByClass(_class)];
 }
 
-export var getTypeIdFromComponent = (component: Component) => {
+export const getTypeIdFromComponent = (component: Component) => {
     return _table[ClassUtils.getClassNameByInstance(component)];
 }
 
-var _addTypeId = (componentClassNameArr: Array<string>, table: object) => {
+const _addTypeId =(componentClassNameArr: Array<string>, table: object) => {
     var id = _generateTypeId();
 
     for (let className of componentClassNameArr) {
@@ -25,8 +25,8 @@ var _addTypeId = (componentClassNameArr: Array<string>, table: object) => {
     }
 }
 
-var _typeId = 1;
-const _table = {};
+var _typeId =1;
+var _table = {};
 
 _addTypeId(["ThreeDTransform"], _table);
 _addTypeId(["BoxGeometry"], _table);

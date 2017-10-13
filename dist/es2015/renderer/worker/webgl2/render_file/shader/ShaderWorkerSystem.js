@@ -1,7 +1,7 @@
 import { getGL } from "../../../both_file/device/DeviceManagerWorkerSystem";
 import { getMapCount } from "../../../render_file/texture/MapManagerWorkerSystem";
 import { initData as initDataUtils, initMaterialShader as initMaterialShaderUtils, initNoMaterialShader as initNoMaterialShaderUtils } from "../../../../webgl2/utils/worker/render_file/shader/shaderUtils";
-import { buildGLSLSource } from "./shaderSourceBuildWorkerSystem";
+import { buildGLSLSource } from "./ShaderSourceBuildWorkerSystem";
 import { hasDiffuseMap, hasSpecularMap } from "../../../render_file/material/LightMaterialWorkerSystem";
 import { getIndices, getNormals, getTexCoords, getVertices } from "../../../render_file/geometry/GeometryWorkerSystem";
 export var initNoMaterialShader = function (state, shaderName, materialShaderLibConfig, material_config, shaderLib_generator, initShaderDataMap) {

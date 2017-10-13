@@ -14,8 +14,8 @@ exports.addChild = function (scene, child, ThreeDTransformData, GameObjectData, 
     }
     GameObjectSystem_1.addChild(scene, child, ThreeDTransformData, GameObjectData);
 };
-exports.removeChild = function (gameObject, child, ThreeDTransformData, GameObjectData) {
-    GameObjectSystem_1.removeChild(gameObject, child, ThreeDTransformData, GameObjectData);
+exports.removeChild = function (parentUId, childUId, ThreeDTransformData, GameObjectData) {
+    GameObjectSystem_1.removeChild(parentUId, childUId, ThreeDTransformData, GameObjectData);
 };
 var _isCamera = function (gameObject, GameObjectData) {
     return GameObjectSystem_1.hasComponent(gameObject, ComponentComponentIdManager_1.getComponentIdFromClass(CameraController_1.CameraController), GameObjectData);

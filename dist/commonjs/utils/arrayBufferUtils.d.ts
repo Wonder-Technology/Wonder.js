@@ -1,1 +1,1 @@
-export declare var createSharedArrayBufferOrArrayBuffer: (length: number) => any;
+export declare const createSharedArrayBufferOrArrayBuffer: (length: number) => any;

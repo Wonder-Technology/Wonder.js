@@ -311,7 +311,7 @@ export var webgl2_shaderLib_generator = {
                 ],
                 "uniformDefine": [
                     {
-                        "name": "u_sampler2D0",
+                        "name": "u_sampler2D",
                         "type": "sampler2D"
                     }
                 ]

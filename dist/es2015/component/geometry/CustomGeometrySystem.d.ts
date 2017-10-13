@@ -1,1 +1,1 @@
-export declare var create: (GeometryData: any) => any;
+export declare const create: (GeometryData: any) => any;

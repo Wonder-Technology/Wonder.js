@@ -12,13 +12,13 @@ export interface BatchTransformData {
     position: Vector3;
     localPosition: Vector3;
 }
-export declare var createThreeDTransform: () => any;
-export declare var getThreeDTransformPosition: Function;
-export declare var setThreeDTransformPosition: Function;
-export declare var getThreeDTransformLocalToWorldMatrix: Function;
-export declare var getThreeDTransformLocalPosition: Function;
-export declare var setThreeDTransformLocalPosition: Function;
-export declare var setThreeDTransformBatchTransformDatas: (batchData: BatchTransformData[]) => void;
-export declare var getThreeDTransformParent: Function;
-export declare var setThreeDTransformParent: Function;
-export declare var getThreeDTransformGameObject: Function;
+export declare const createThreeDTransform: () => any;
+export declare const getThreeDTransformPosition: Function;
+export declare const setThreeDTransformPosition: Function;
+export declare const getThreeDTransformLocalToWorldMatrix: Function;
+export declare const getThreeDTransformLocalPosition: Function;
+export declare const setThreeDTransformLocalPosition: Function;
+export declare const setThreeDTransformBatchTransformDatas: (batchData: BatchTransformData[]) => void;
+export declare const getThreeDTransformParent: Function;
+export declare const setThreeDTransformParent: Function;
+export declare const getThreeDTransformGameObject: Function;

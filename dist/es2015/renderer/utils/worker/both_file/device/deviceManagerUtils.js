@@ -1,6 +1,6 @@
 import { it, requireCheckFunc } from "../../../../../definition/typescript/decorator/contract";
 import { initCanvas, getWebgl1Context, getWebgl2Context } from "../../../../../structure/ViewSystem";
-import { IO } from "Wonder-Fantasy-Land/dist/es2015/types/IO";
+import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 import curry from "wonder-lodash/curry";
 import { expect } from "wonder-expect.js";
 import { EScreenSize } from "../../../../device/EScreenSize";
@@ -30,7 +30,7 @@ export var setPixelRatio = curry(function (pixelRatio, state) {
 export var getViewport = function (state) {
     return state.getIn(["DeviceManager", "viewport"]);
 };
-export var setViewport = function (x, y, width, height, state) {
+export var setViewportToState = function (x, y, width, height, state) {
     return state.setIn(["DeviceManager", "viewport"], RectRegion.create(x, y, width, height));
 };
 export var setCanvasPixelRatio = curry(function (useDevicePixelRatio, canvas) {
@@ -49,7 +49,7 @@ export var setViewportOfGL = curry(function (DeviceManagerDataFromSystem, state,
             return state;
         }
         gl.viewport(x, y, width, height);
-        return setViewport(x, y, width, height, state);
+        return setViewportToState(x, y, width, height, state);
     });
 });
 var _setBodyByScreenSize = function (screenSize, DomQuery) {
@@ -115,6 +115,9 @@ export var setClearColor = function (gl, color, DeviceManagerDataFromSystem) {
         return;
     }
     gl.clearColor(color.r, color.g, color.b, color.a);
+    setClearColorData(color, DeviceManagerDataFromSystem);
+};
+export var setClearColorData = function (color, DeviceManagerDataFromSystem) {
     DeviceManagerDataFromSystem.clearColor = color;
 };
 export var setColorWrite = function (gl, writeRed, writeGreen, writeBlue, writeAlpha, DeviceManagerDataFromSystem) {

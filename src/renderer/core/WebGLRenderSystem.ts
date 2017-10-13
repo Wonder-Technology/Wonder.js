@@ -85,7 +85,7 @@ import {
     getUniformSamplerNameMap, convertAllSourceMapToImageDataArr
 } from "../texture/TextureSystem";
 
-const _checkLightCount =requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
+const _checkLightCount = requireCheckFunc((ambientLightCount: number, directionLightCount: number, pointLightCount: number, AmbientLightData: any, DirectionLightData: any, PointLightData: any) => {
     it("count should <= max count", () => {
         expect(AmbientLightData.count).lte(ambientLightCount);
         expect(DirectionLightData.count).lte(directionLightCount);
@@ -161,15 +161,15 @@ if (isSupportRenderWorkerAndSharedArrayBuffer()) {
         }
     }
 
-    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData|null) => {
+    let _init = (state: Map<any, any>, lightData: any, renderData: WebGL2RenderInitWorkerData | null) => {
         //todo need test
         initMapManagers(null, TextureData);
 
         let renderWorker = getRenderWorker(WorkerInstanceData),
             needAddedImageDataArr = convertAllSourceMapToImageDataArr(getNeedAddedSourceArr(TextureData), DomQuery),
-            transferList:Array<ArrayBuffer> = [];
+            transferList: Array<ArrayBuffer> = [];
 
-        transferList = transferList.concat(needAddedImageDataArr.map(({arrayBuffer}) => {
+        transferList = transferList.concat(needAddedImageDataArr.map(({ arrayBuffer }) => {
             return arrayBuffer as ArrayBuffer;
         }));
 

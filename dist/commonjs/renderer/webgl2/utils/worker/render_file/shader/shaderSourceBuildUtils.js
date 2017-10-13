@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var renderConfigUtils_1 = require("../../../../../utils/renderConfigUtils");
 var ShaderSnippet_1 = require("../../../../shader/snippet/ShaderSnippet");
 var ShaderChunk_1 = require("../../../../../shader/chunk/ShaderChunk");
-var ExtendUtils_1 = require("Wonder-CommonLib/dist/commonjs/utils/ExtendUtils");
+var ExtendUtils_1 = require("wonder-commonlib/dist/commonjs/utils/ExtendUtils");
 var contract_1 = require("../../../../../../definition/typescript/decorator/contract");
 var wonder_expect_js_1 = require("wonder-expect.js");
 var arrayUtils_1 = require("../../../../../../utils/arrayUtils");

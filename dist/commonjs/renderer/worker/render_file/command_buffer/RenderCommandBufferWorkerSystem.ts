@@ -2,7 +2,7 @@ import { WorkerRenderCommandBufferForDrawData } from "../type/dataType";
 import { createTypeArraysOnlyOnce as createBasicTypeArraysOnlyOnce } from "./BasicRenderCommandBufferWorkerSystem";
 import { createTypeArraysOnlyOnce as createLightTypeArraysOnlyOnce } from "./LightRenderCommandBufferWorkerSystem";
 
-export var createTypeArraysOnlyOnce = (renderCommandBufferData: WorkerRenderCommandBufferForDrawData, DataBufferConfig: any, BasicRenderCommandBufferWorkerData: any, LightRenderCommandBufferWorkerData: any) => {
+export const createTypeArraysOnlyOnce = (renderCommandBufferData: WorkerRenderCommandBufferForDrawData, DataBufferConfig: any, BasicRenderCommandBufferWorkerData: any, LightRenderCommandBufferWorkerData: any) => {
     return {
         cameraData: renderCommandBufferData.cameraData,
         basicData: {

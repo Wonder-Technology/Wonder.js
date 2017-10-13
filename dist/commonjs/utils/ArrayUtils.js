@@ -53,8 +53,20 @@ exports.removeItem = function (arr, item) {
         return ele !== item;
     });
 };
+exports.replaceItem = function (arr, oldItem, newItem) {
+    for (var i = 0, len = arr.length; i < len; i++) {
+        var val = arr[i];
+        if (val === oldItem) {
+            arr[i] = newItem;
+        }
+    }
+    return arr;
+};
 exports.filter = function (arr, func) {
     var result = [];
+    if (JudgeUtils_1.isUndefined(arr)) {
+        return result;
+    }
     for (var _i = 0, arr_3 = arr; _i < arr_3.length; _i++) {
         var ele = arr_3[_i];
         if (func(ele)) {
@@ -64,6 +76,9 @@ exports.filter = function (arr, func) {
     return result;
 };
 exports.forEach = function (arr, func) {
+    if (JudgeUtils_1.isUndefined(arr)) {
+        return;
+    }
     for (var i = 0, len = arr.length; i < len; i++) {
         func(arr[i], i);
     }

@@ -8,4 +8,4 @@ exports.buildGLSLSource = function (materialIndex, materialShaderLibNameArr, sha
         isTestAlpha: MaterialWorkerSystem_1.isTestAlpha
     }, initShaderDataMap);
 };
-//# sourceMappingURL=shaderSourceBuildWorkerSystem.js.map
+//# sourceMappingURL=ShaderSourceBuildWorkerSystem.js.map

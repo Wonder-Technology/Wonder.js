@@ -22,7 +22,7 @@ export const createTexture = () => {
     return create(TextureData);
 }
 
-export const initTexture = (texture:Texture) => {
+export const initTexture = (texture: Texture) => {
     initTextureSystem(getGL(DeviceManagerData), texture.index, TextureData);
 }
 
@@ -80,7 +80,7 @@ export const setTextureIsNeedUpdate = requireCheckFunc((texture: Texture) => {
     setIsNeedUpdate(texture.index, value, TextureData);
 })
 
-const _checkShouldAlive =(texture: Texture) => {
+const _checkShouldAlive = (texture: Texture) => {
     checkComponentShouldAlive(texture, null, (texture: Texture) => {
         return isComponentIndexNotRemoved(texture);
     })

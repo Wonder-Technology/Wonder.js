@@ -72,10 +72,10 @@ exports.getThreeDTransformParent = contract_1.requireCheckFunc(function (compone
 }, function (component) {
     return ThreeDTransformSystem_2.getParent(component, ThreeDTransformData_1.ThreeDTransformData);
 });
-exports.setThreeDTransformParent = contract_1.requireCheckFunc(function (component, parent) {
-    ThreeDTransformSystem_1.checkShouldAlive(component, ThreeDTransformData_1.ThreeDTransformData);
-}, function (component, parent) {
-    ThreeDTransformSystem_1.setParent(component, parent, ThreeDTransformData_1.ThreeDTransformData);
+exports.setThreeDTransformParent = contract_1.requireCheckFunc(function (parent, child) {
+    ThreeDTransformSystem_1.checkShouldAlive(child, ThreeDTransformData_1.ThreeDTransformData);
+}, function (parent, child) {
+    ThreeDTransformSystem_1.setParent(parent, child, ThreeDTransformData_1.ThreeDTransformData);
 });
 exports.getThreeDTransformGameObject = contract_1.requireCheckFunc(function (component) {
     ThreeDTransformSystem_1.checkShouldAlive(component, ThreeDTransformData_1.ThreeDTransformData);

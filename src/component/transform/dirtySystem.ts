@@ -40,11 +40,11 @@ export const generateNotUsedIndexInArrayBuffer = ensureFunc((index: number, Thre
     return result;
 })
 
-const _isValidArrayValue =(val: any) => {
+const _isValidArrayValue = (val: any) => {
     return isNotUndefined(val);
 }
 
-const _isValidLinkNode =(node: LinkNode<number>) => {
+const _isValidLinkNode = (node: LinkNode<number>) => {
     return node !== null;
 }
 
@@ -88,7 +88,7 @@ export const addToDirtyList = requireCheckFunc((index: number, ThreeDTransformDa
     return targetDirtyIndex;
 })
 
-const _getNotUsedIndexFromArr =(ThreeDTransformData: any) => {
+const _getNotUsedIndexFromArr = (ThreeDTransformData: any) => {
     var notUsedIndexLinkList = ThreeDTransformData.notUsedIndexLinkList,
         isValidLinkNode = true,
         node: LinkNode<number> = null;
@@ -106,7 +106,7 @@ const _getNotUsedIndexFromArr =(ThreeDTransformData: any) => {
     return node.val;
 }
 
-const _getNotUsedIndexNode =(notUsedIndexLinkList: LinkList<number>) => {
+const _getNotUsedIndexNode = (notUsedIndexLinkList: LinkList<number>) => {
     /*!
     optimize: return the first one to ensure that the result index be as much remote from firDirtyIndex as possible(so that it can reduce swap when add to dirty list).
 
@@ -151,7 +151,7 @@ export const addItAndItsChildrenToDirtyList = (rootIndexInArrayBuffer: number, u
     return ThreeDTransformData;
 }
 
-const _checkGeneratedNotUsedIndex =(ThreeDTransformData: any, index: number) => {
+const _checkGeneratedNotUsedIndex = (ThreeDTransformData: any, index: number) => {
     // it("notUsedIndexLinkList shouldn't contain the index", () => {
     //     expect(ThreeDTransformData.notUsedIndexLinkList.indexOf(index)).equal(-1);
     // });

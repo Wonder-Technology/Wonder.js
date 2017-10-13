@@ -9,7 +9,7 @@ import { initData as initSceneData } from "./entityObject/scene/SceneSystem";
 import { initData as initThreeDTransformData } from "../component/transform/ThreeDTransformSystem";
 import { initData as initGeometryData } from "../component/geometry/GeometrySystem";
 import { DataBufferConfig } from "../config/DataBufferConfig";
-import { initData as initMaterialData } from "../component/material/MaterialSystem";
+import { initData as initMaterialData } from "../component/material/AllMaterialSystem";
 import { MaterialData } from "../component/material/MaterialData";
 import { initData as initMeshRendererData } from "../component/renderer/MeshRendererSystem";
 import { MeshRendererData } from "../component/renderer/MeshRendererData";
@@ -49,8 +49,6 @@ import { EWorkerOperateType } from "../renderer/worker/both_file/EWorkerOperateT
 import { getVersion, isWebgl1 } from "../renderer/device/WebGLDetectSystem";
 import { WebGL1PointLightData } from "../renderer/webgl1/light/PointLightData";
 import { WebGL2PointLightData } from "../renderer/webgl2/light/PointLightData";
-import { initData as initDirectorData } from "./DirectorSystem";
-import { DirectorData } from "./DirectorData";
 import { initData as initWebGL1LightData } from "../component/webgl1/light/LightSystem";
 import { initData as initWebGL2LightData } from "../component/webgl2/light/LightSystem";
 import { GPUDetectData } from "../renderer/device/GPUDetectData";
@@ -83,6 +81,10 @@ import { WebGL1DirectionLightData } from "../renderer/webgl1/light/DirectionLigh
 import { DeferDirectionLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferDirectionLightPassData";
 import { DeferPointLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferPointLightPassData";
 import { DeferAmbientLightPassData } from "../renderer/webgl2/render/light/defer/light/DeferAmbientLightPassData";
+import { initData as initDeviceManagerData } from "../renderer/device/DeviceManagerSystem";
+import { DeviceManagerData } from "../renderer/device/DeviceManagerData";
+import { initData as initAssetDatabaseData } from "../asset/AssetDatabaseSystem";
+import { AssetDatabaseData } from "../asset/AssetDatabaseData";
 export var setConfig = function (closeContractTest, InitConfigData, WorkerDetectData, WorkerInstanceData, WebGLDetectData, _a) {
     var _b = _a.canvasId, canvasId = _b === void 0 ? "" : _b, _c = _a.isTest, isTest = _c === void 0 ? DebugConfig.isTest : _c, _d = _a.screenSize, screenSize = _d === void 0 ? EScreenSize.FULL : _d, _e = _a.useDevicePixelRatio, useDevicePixelRatio = _e === void 0 ? false : _e, _f = _a.contextConfig, contextConfig = _f === void 0 ? {
         options: {
@@ -151,19 +153,23 @@ else {
     if (isWebgl1()) {
         initData = function () {
             _initData();
+            initWebGL1ShaderData(WebGL1ShaderData);
             initProgramData(WebGL1ProgramData);
             initWebGL1LocationData(WebGL1LocationData);
             initArrayBufferData(ArrayBufferData);
             initIndexBufferData(IndexBufferData);
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+            initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
         };
     }
     else {
         initData = function () {
             _initData();
+            initWebGL2ShaderData(WebGL2ShaderData);
             initProgramData(WebGL2ProgramData);
             initWebGL2LocationData(WebGL2LocationData);
             initDrawRenderCommandBufferData(BasicDrawRenderCommandBufferData, LightDrawRenderCommandBufferData);
+            initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
         };
     }
     passDataToRenderWorker = function (WorkerInstanceData, WebGLDetectData) {
@@ -175,21 +181,8 @@ export var init = null;
 var _initData = null;
 if (isWebgl1()) {
     _initData = function () {
-        initDirectorData(DirectorData);
-        initWebGL1ShaderData(WebGL1ShaderData);
-        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
-        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
-        initMeshRendererData(MeshRendererData);
-        initTagData(TagData);
-        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-        initSceneData(SceneData);
-        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-        initGameObjectData(GameObjectData);
-        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        _initBothData();
         initWebGL1LightData(AmbientLightData, WebGL1DirectionLightData, WebGL1PointLightData);
-        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-        initWebGL1GLSLSenderData(WebGL1GLSLSenderData);
-        initVaoData(VaoData);
     };
     init = requireCheckFunc(function (gameState, configState, DomQuery) {
         it("should set config before", function () {
@@ -201,21 +194,8 @@ if (isWebgl1()) {
 }
 else {
     _initData = function () {
-        initDirectorData(DirectorData);
-        initWebGL2ShaderData(WebGL2ShaderData);
-        initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
-        initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
-        initMeshRendererData(MeshRendererData);
-        initTagData(TagData);
-        initThreeDTransformData(GlobalTempData, ThreeDTransformData);
-        initSceneData(SceneData);
-        initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
-        initGameObjectData(GameObjectData);
-        initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+        _initBothData();
         initWebGL2LightData(AmbientLightData, WebGL2DirectionLightData, WebGL2PointLightData);
-        initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
-        initWebGL2GLSLSenderData(WebGL2GLSLSenderData);
-        initVaoData(VaoData);
         initDeferLightPassData(DeferAmbientLightPassData, DeferDirectionLightPassData, DeferPointLightPassData);
     };
     init = requireCheckFunc(function (gameState, configState, DomQuery) {
@@ -226,4 +206,19 @@ else {
         return compose(chain(initDevice(configState.get("contextConfig"), gameState, configState, detectWebGL2, DomQuery)), createCanvas(DomQuery))(configState.get("canvasId"));
     });
 }
+var _initBothData = function () {
+    initGeometryData(DataBufferConfig, GeometryData, GPUDetectData);
+    initMaterialData(TextureCacheData, TextureData, MapManagerData, MaterialData, BasicMaterialData, LightMaterialData);
+    initMeshRendererData(MeshRendererData);
+    initTagData(TagData);
+    initThreeDTransformData(GlobalTempData, ThreeDTransformData);
+    initSceneData(SceneData);
+    initCameraControllerData(CameraControllerData, PerspectiveCameraData, CameraData);
+    initGameObjectData(GameObjectData);
+    initRenderCommandBufferData(DataBufferConfig, BasicRenderCommandBufferData, LightRenderCommandBufferData);
+    initSendDrawRenderCommandBufferData(SendDrawRenderCommandBufferData);
+    initVaoData(VaoData);
+    initDeviceManagerData(DeviceManagerData);
+    initAssetDatabaseData(AssetDatabaseData);
+};
 //# sourceMappingURL=MainSystem.js.map

@@ -1,9 +1,9 @@
 import { EWorkerOperateType } from "../EWorkerOperateType";
 import curry from "wonder-lodash/curry";
-import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setSide as setSideUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewport as setViewportUtils } from "../../../utils/worker/both_file/device/deviceManagerUtils";
+import { clear as clearUtils, getGL as getGLUtils, getViewport as getViewportUtils, initData as initDataUtils, setCanvasPixelRatio as setCanvasPixelRatioUtils, setSide as setSideUtils, setColorWrite as setColorWriteUtils, setContextConfig as setContextConfigUtils, setGL as setGLUtils, setPixelRatio as setPixelRatioUtils, setScreen as setScreenUtils, setViewportToState as setViewportToStateUtils, setViewportOfGL as setViewportOfGLUtils, setClearColor as setClearColorUtils } from "../../../utils/worker/both_file/device/deviceManagerUtils";
 import { chain, compose } from "../../../../utils/functionalUtils";
 import { setHeight, setStyleHeight, setStyleWidth, setWidth, setY, setX } from "../../../../structure/ViewSystem";
-import { isValueExist } from "../../../../utils/stateUtils";
+import { Color } from "../../../../structure/Color";
 import { IO } from "wonder-fantasy-land/dist/es2015/types/IO";
 export var createGL = curry(function (canvas, renderWorker, contextConfig, viewportData) {
     return IO.of(function () {
@@ -21,17 +21,14 @@ export var getGL = getGLUtils;
 export var setGL = setGLUtils;
 export var setPixelRatio = setPixelRatioUtils;
 export var getViewport = getViewportUtils;
-export var setViewport = curry(function (viewportData, state) {
+export var setViewportToState = curry(function (viewportData, state) {
     if (viewportData === null) {
         return state;
     }
-    return setViewportUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
+    return setViewportToStateUtils(viewportData.x, viewportData.y, viewportData.width, viewportData.height, state);
 });
-export var getViewportData = function (screenData, state) {
-    var oldViewportData = getViewport(state), x = screenData.x, y = screenData.y, width = screenData.width, height = screenData.height;
-    if (isValueExist(oldViewportData) && oldViewportData.x === x && oldViewportData.y === y && oldViewportData.width === width && oldViewportData.height === height) {
-        return null;
-    }
+export var getViewportData = function (screenData) {
+    var x = screenData.x, y = screenData.y, width = screenData.width, height = screenData.height;
     return {
         x: x,
         y: y,
@@ -39,13 +36,8 @@ export var getViewportData = function (screenData, state) {
         height: height
     };
 };
-export var setViewportOfGL = curry(function (DeviceManagerWorkerData, _a, state) {
-    var x = _a.x, y = _a.y, width = _a.width, height = _a.height;
-    return IO.of(function () {
-        var gl = getGL(DeviceManagerWorkerData, state);
-        gl.viewport(x, y, width, height);
-        return state;
-    });
+export var setViewportOfGL = curry(function (DeviceManagerWorkerData, data, state) {
+    return setViewportOfGLUtils(DeviceManagerWorkerData, state, data);
 });
 export var setScreen = curry(function (canvas, DeviceManagerWorkerData, DomQuery, state) {
     return setScreenUtils(canvas, _setScreenData, DeviceManagerWorkerData, state, DomQuery);
@@ -65,6 +57,22 @@ export var setCanvasPixelRatio = curry(function (useDevicePixelRatio, canvas) {
         return setCanvasPixelRatioUtils(useDevicePixelRatio, canvas).run();
     });
 });
+export var buildViewportData = function (x, y, width, height) {
+    return {
+        x: x,
+        y: y,
+        width: width,
+        height: height
+    };
+};
+export var setClearColor = function (gl, colorArr4, DeviceManagerWorkerData) {
+    var color = Color.create();
+    color.r = colorArr4[0];
+    color.g = colorArr4[1];
+    color.b = colorArr4[2];
+    color.a = colorArr4[3];
+    setClearColorUtils(gl, color, DeviceManagerWorkerData);
+};
 export var clear = clearUtils;
 export var setColorWrite = setColorWriteUtils;
 export var setSide = setSideUtils;

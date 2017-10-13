@@ -9,7 +9,7 @@ import {
     getIndexType, getIndexTypeSize, getIndicesCount, getVerticesCount,
     hasIndices
 } from "../../../../component/geometry/GeometrySystem";
-import { bindAndUpdate, getMapCount} from "../../../texture/MapManagerSystem";
+import { bindAndUpdate, getMapCount } from "../../../texture/MapManagerSystem";
 // import { getColorArr3 as getAmbientLightColorArr3 } from "../../../component/light/AmbientLightSystem";
 // import {
 //     getColorArr3 as getDirectionLightColorArr3, getIntensity as getDirectionLightIntensity,
@@ -58,7 +58,7 @@ export const render = curry((gl: any, state: Map<any, any>, render_config: IRend
     ), initShaderDataMap, bufferData, cameraData);
 })
 
-const _sendUniformData =(gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL1DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IWebGL1BasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
+const _sendUniformData = (gl: WebGLRenderingContext, materialIndex: number, shaderIndex: number, program: WebGLProgram, drawDataMap: IWebGL1DrawDataMap, renderCommandUniformData: BasicRenderUniformData, sendDataMap: IWebGL1BasicSendUniformDataDataMap, uniformLocationMap: UniformLocationMap, uniformCacheMap: UniformCacheMap) => {
     sendUniformData(gl, materialIndex, shaderIndex, program, drawDataMap, renderCommandUniformData, sendDataMap, uniformLocationMap, uniformCacheMap, buildMaterialDataForGetUniformData(getColorArr3, getOpacity, drawDataMap.MaterialDataFromSystem), buildBasicMaterialDataForGetUniformData(drawDataMap.BasicMaterialDataFromSystem));
 };
 //
