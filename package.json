@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node ./server/app.js",
     "codecov": "cat test/coverage/*/lcov.info | codecov",
-    "watch": "bsb -make-world -w",
+    "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
     "test": "npm run build && jest --config jest.json",
     "test:watch": "npm run build && jest --watch --config jest.json"
@@ -26,5 +26,6 @@
     "sinon": "^4.0.1",
     "wonder-bs-jest": "^0.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+  }
 }
