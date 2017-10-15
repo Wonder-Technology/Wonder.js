@@ -1,12 +1,13 @@
-open MainData;
-
 open ViewData;
 
 open InitConfigData;
 
+open DeviceManagerData;
+
 type state = {
   viewData,
-  initConfigData
+  initConfigData,
+  deviceManagerData
 };
 
 type stateData = {mutable state: option state};

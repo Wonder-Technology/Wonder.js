@@ -8,6 +8,8 @@ open InitDeviceSystem;
 
 open ViewSystem;
 
+open DeviceManagerSystem;
+
 let _getValueFromJsObj (valueFromJsObj: Js.nullable 'value) (defaultValue: 'value) =>
   switch (Js.Nullable.to_opt valueFromJsObj) {
   | Some value => value
@@ -45,7 +47,10 @@ let setConfig configState::(configState: Js.t {..}) (state: state) => {
   (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state)
 };
 
+/* todo detect, setscreensize, set pixel ratio ... */
 let init (configState: mainConfigData, state: state) =>
   createCanvas configState
   |> setCanvas ::state
-  |> setContextConfig contextConfig::configState.contextConfig;
+  |> setContextConfig contextConfig::configState.contextConfig
+  |> createGL
+  |> setGL ::state;
