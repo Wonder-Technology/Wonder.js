@@ -16,6 +16,13 @@ let _getValueFromJsObj (valueFromJsObj: Js.nullable 'value) (defaultValue: 'valu
   | None => defaultValue
   };
 
+let _getOptionValueFromJsObj (valueFromJsObj: Js.nullable 'value) =>
+  Js.Nullable.to_opt valueFromJsObj;
+
+/* switch (Js.Nullable.to_opt valueFromJsObj) {
+   | Some value => value
+   | None => defaultValue
+   }; */
 let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) => {
   alpha: _getValueFromJsObj contextConfigObj##alpha true,
   depth: _getValueFromJsObj contextConfigObj##depth true,
@@ -25,8 +32,27 @@ let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) => {
   preserveDrawingBuffer: _getValueFromJsObj contextConfigObj##preserveDrawingBuffer false
 };
 
-let _changeConfigStateToRecord (configState: Js.t {..}) :mainConfigData => {
-  canvasId: _getValueFromJsObj configState##canvasId None,
+type configStateJsObj =
+  Js.t {
+    .
+    canvasId : Js.nullable string,
+    isTest : Js.nullable bool,
+    contextConfig :
+      Js.nullable (
+        Js.t {
+          .
+          alpha : Js.nullable bool,
+          antialias : Js.nullable bool,
+          depth : Js.nullable bool,
+          premultipliedAlpha : Js.nullable bool,
+          preserveDrawingBuffer : Js.nullable bool,
+          stencil : Js.nullable bool
+        }
+      )
+  };
+
+let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData => {
+  canvasId: _getOptionValueFromJsObj configState##canvasId,
   isTest: _getValueFromJsObj configState##isTest false,
   contextConfig:
     switch (Js.Nullable.to_opt configState##contextConfig) {

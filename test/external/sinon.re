@@ -4,10 +4,16 @@ open Jest;
 
 external createSandbox : unit => Js.t {..} = "create" [@@bs.scope "sandbox"] [@@bs.module "sinon"];
 
+type sandbox;
+type stub;
+
+external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity";
+/* external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity"; */
+
 let getSandboxDefaultVal () => ref {"stub": 1};
 
 /* let restoreSandbox sandbox => sandbox##restore(); */
-let restoreSandbox = [%bs.raw
+let restoreSandbox: sandbox => unit = [%bs.raw
   {| function(sandbox) {
     sandbox.restore();
 }

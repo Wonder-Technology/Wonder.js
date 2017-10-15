@@ -10,7 +10,7 @@ let _ =
         open Sinon;
         let sandbox = getSandboxDefaultVal ();
         beforeAll (fun () => sandbox := createSandbox ());
-        afterAll (fun () => restoreSandbox !sandbox);
+        afterAll (fun () => restoreSandbox (refJsObjToSandbox !sandbox));
         test
           "test1"
           (
