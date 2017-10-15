@@ -1,8 +1,12 @@
 open StateData;
 
+open MainData;
+
 open InitConfigSystem;
 
 open InitDeviceSystem;
+
+open ViewSystem;
 
 let _getValueFromJsObj (valueFromJsObj: Js.nullable 'value) (defaultValue: 'value) =>
   switch (Js.Nullable.to_opt valueFromJsObj) {
@@ -36,11 +40,12 @@ let _changeConfigStateToRecord (configState: Js.t {..}) :mainConfigData => {
     }
 };
 
-let setConfig configState::(configState: Js.t {..}) (state: state) =>
-  _changeConfigStateToRecord configState
-  |> (fun configState => configState.isTest)
-  |> setIsTest ::state;
+let setConfig configState::(configState: Js.t {..}) (state: state) => {
+  let configState = _changeConfigStateToRecord configState;
+  (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state)
+};
 
-let init (state: state) =>
-  /* todo init device */
-  createCanvas state;
+let init (configState: mainConfigData, state: state) =>
+  createCanvas configState
+  |> setCanvas ::state
+  |> setContextConfig contextConfig::configState.contextConfig;

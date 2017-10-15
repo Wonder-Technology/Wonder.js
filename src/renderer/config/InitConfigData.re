@@ -1,0 +1,1 @@
+type initConfigData = {isTest: bool};

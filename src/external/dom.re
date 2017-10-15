@@ -1,30 +1,36 @@
 type htmlElement;
 
+type canvasElement;
+
 type document;
 
 external document : document = "" [@@bs.val];
 
 external createElement : document => string => Js.t {..} = "" [@@bs.send];
 
-external querySelectorAll : document => string => option (Js.t {..}) =
+external querySelectorAll : document => string => option htmlElement =
   "" [@@bs.return null_to_opt] [@@bs.send];
 
 external requestAnimationFrame : (float => unit) => unit = "" [@@bs.val];
+
+external htmlElementToJsObj : htmlElement => Js.t {..} = "%identity";
+
+external htmlElementToCanvasElement : htmlElement => canvasElement = "%identity";
 
 let setInnerHtml eleStr::(eleStr: string) htmlElement => {
   htmlElement##innerHTML#=eleStr;
   htmlElement
 };
 
-let getFirstChild htmlElement  => htmlElement##firstChild;
+let getFirstChild htmlElement => htmlElement##firstChild;
 
-let prependTo sourceElement targetElement::(targetElement: option (Js.t {..})) =>
+let prependTo (sourceElement: htmlElement) targetElement::(targetElement: option htmlElement) =>
   switch targetElement {
   | None => failwith "targetElement should exist"
   | Some targetEle =>
-    switch sourceElement##nodeType {
+    switch (htmlElementToJsObj sourceElement)##nodeType {
     | 1 =>
-      targetEle##prepend sourceElement;
+      (htmlElementToJsObj targetEle)##prepend sourceElement |> ignore;
       sourceElement
     | _ => sourceElement
     }

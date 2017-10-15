@@ -1,4 +1,4 @@
-open StateData;
+open MainData;
 
 open Dom;
 
@@ -21,13 +21,16 @@ let _getCanvasId (domId: string) =>
         r
     };
 
-let createCanvas {mainConfigData} =>
-  switch mainConfigData.canvasId {
-  | None =>
-    buildDom "<canvas></canvas>" |> prependTo targetElement::(querySelectorAll document "body")
-  | Some canvasId =>
-    switch (canvasId |> _getCanvasId |> querySelectorAll document) {
-    | None => failwith {j|canvas whose id is $canvasId should exist|j}
-    | Some canvas => canvas
-    }
-  };
+let createCanvas {canvasId} => {
+  let canvas =
+    switch canvasId {
+    | None =>
+      buildDom "<canvas></canvas>" |> prependTo targetElement::(querySelectorAll document "body")
+    | Some canvasId =>
+      switch (canvasId |> _getCanvasId |> querySelectorAll document) {
+      | None => failwith {j|canvas whose id is $canvasId should exist|j}
+      | Some canvas => canvas
+      }
+    };
+  htmlElementToCanvasElement canvas
+};
