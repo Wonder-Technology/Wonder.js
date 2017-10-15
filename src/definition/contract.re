@@ -7,13 +7,13 @@ open Exception;
 let describe (message: string) func ::preCondition=(fun () => true) () =>
   preCondition () ?
     try (func ()) {
-    | Check_fail faileMessage => failwith (Format.sprintf "%s->%s" message faileMessage)
+    | Check_fail failMessage => failwith {j|$message->$failMessage|j}
     } :
     ();
 
 let it (message: string) (func: unit => unit) =>
   try (func ()) {
-  | Check_fail faileMessage => failwith (Format.sprintf "%s->%s" message faileMessage)
+  | Check_fail failMessage => failwith {j|$message->$failMessage|j}
   };
 
 let requireCheck (f: unit => unit) :unit =>
@@ -46,11 +46,9 @@ type assertEqual _ =
   | Float :assertEqual float
   | String :assertEqual string;
 
-let assertEqual (type g) (kind: assertEqual g) (source: g) (target: g) => {
-  let result = source == target;
+let _getEqualMessage source target => {j|"expect to be $source, but actual is $target"|j};
+
+let assertEqual (type g) (kind: assertEqual g) (source: g) (target: g) =>
   switch kind {
-  | Int => _assert result (Format.sprintf "expect to be %i, but actual is %i" source target)
-  | Float => _assert result (Format.sprintf "expect to be %f, but actual is %f" source target)
-  | String => _assert result (Format.sprintf "expect to be %s, but actual is %s" source target)
-  }
-};
+  | _ => _assert (source == target) (_getEqualMessage source target)
+  };

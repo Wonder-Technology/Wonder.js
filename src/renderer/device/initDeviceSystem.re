@@ -10,7 +10,7 @@ let _getCanvasId (domId: string) =>
   String.contains domId '#' ?
     domId :
     {
-      let r = Format.sprintf "#%s" domId;
+      let r = {j|#$domId|j};
       ensureCheck
         (
           fun (id: string) =>
@@ -27,7 +27,7 @@ let createCanvas {mainConfigData} =>
     buildDom "<canvas></canvas>" |> prependTo targetElement::(querySelectorAll document "body")
   | Some canvasId =>
     switch (canvasId |> _getCanvasId |> querySelectorAll document) {
-    | None => failwith (Format.sprintf "canvas whose id is %s should exist" canvasId)
+    | None => failwith {j|canvas whose id is $canvasId should exist|j}
     | Some canvas => canvas
     }
   };
