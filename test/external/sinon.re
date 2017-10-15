@@ -5,7 +5,6 @@ open Jest;
 external createSandbox : unit => Js.t {..} = "create" [@@bs.scope "sandbox"] [@@bs.module "sinon"];
 
 type sandbox;
-type stub;
 
 external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity";
 /* external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity"; */
