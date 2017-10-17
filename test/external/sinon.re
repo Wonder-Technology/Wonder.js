@@ -1,33 +1,27 @@
 open Jest;
 
 /* type sandboxT = ref (Js.t {..}); */
-
 external createSandbox : unit => Js.t {..} = "create" [@@bs.scope "sandbox"] [@@bs.module "sinon"];
 
 type sandbox;
 
-external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity";
-/* external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity"; */
+external refJsObjToSandbox : Js.t {..} => sandbox = "%identity";
 
+/* external refJsObjToSandbox : ( Js.t {..} ) => sandbox = "%identity"; */
 let getSandboxDefaultVal () => ref {"stub": 1};
 
 /* let restoreSandbox sandbox => sandbox##restore(); */
-let restoreSandbox: sandbox => unit = [%bs.raw
-  {| function(sandbox) {
+let restoreSandbox: sandbox => unit = [%bs.raw {| function(sandbox) {
     sandbox.restore();
 }
-|}
-];
+|}];
 
 /* let createEmptyStub (sandbox:(Js.t {..})) => sandbox##stub (); */
 /* let createEmptyStub (sandbox:(Js.t {..})) => sandbox##stub (); */
-let createEmptyStub = [%bs.raw
-  {| function(sandbox) {
+let createEmptyStub = [%bs.raw {| function(sandbox) {
     return sandbox.stub();
 }
-|}
-];
-
+|}];
 
 let createMethodStub = [%bs.raw
   {| function(sandbox, obj, method) {
@@ -39,6 +33,10 @@ let createMethodStub = [%bs.raw
 }
 |}
 ];
+
+let setReturn stub ::returnVal => stub##returns returnVal;
+
+let withOneArg stub ::arg => stub##withArgs arg;
 
 let getCall stub (index: int) => stub##getCall index;
 

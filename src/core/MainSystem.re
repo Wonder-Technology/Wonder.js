@@ -1,6 +1,6 @@
-open StateData;
-
 open MainConfigType;
+
+open StateDataType;
 
 open InitConfigSystem;
 
@@ -74,9 +74,10 @@ let setConfig configState::(configState: Js.t {..}) (state: state) => {
 };
 
 /* todo detect, setscreensize, set pixel ratio ... */
-let init (configState: mainConfigData, state: state) =>
-  createCanvas configState
-  |> setCanvas ::state
+let init (configState: mainConfigData, state: state) => {
+  let canvas = createCanvas configState;
+  createGL canvas configState.contextConfig
+  |> setGL ::state
+  |> setCanvas ::canvas
   |> setContextConfig contextConfig::configState.contextConfig
-  |> createGL
-  |> setGL ::state;
+};

@@ -1,7 +1,6 @@
 type htmlElement;
 
-type canvasElement;
-
+/* type canvasElement; */
 type document;
 
 external document : document = "" [@@bs.val];
@@ -15,7 +14,16 @@ external requestAnimationFrame : (float => unit) => unit = "" [@@bs.val];
 
 external htmlElementToJsObj : htmlElement => Js.t {..} = "%identity";
 
-external htmlElementToCanvasElement : htmlElement => canvasElement = "%identity";
+/* external htmlElementToCanvasElement : htmlElement => canvasElement = "%identity"; */
+external querySelectorAll : document => string => array htmlElement = "" [@@bs.send];
+
+let findFirstHtmlElement document::(document: document) (str: string) :option htmlElement => {
+  let elements = querySelectorAll document str;
+  switch (Array.length elements) {
+  | 0 => None
+  | _ => Some elements.(0)
+  }
+};
 
 let setInnerHtml eleStr::(eleStr: string) htmlElement => {
   htmlElement##innerHTML#=eleStr;
