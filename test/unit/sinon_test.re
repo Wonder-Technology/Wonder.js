@@ -31,7 +31,7 @@ let _ =
                      x + 1;
                    };
                  }; */
-              let stub = createMethodStub !sandbox obj "func";
+              let stub = createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func";
               let func = obj##func;
               func 1 2;
               getCall stub 0 |> getArgs |> expect == [1, 2]
@@ -46,7 +46,8 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func": fun x y => x + y};
-                    let stub = createMethodStub !sandbox obj "func";
+                    let stub =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func";
                     let func = obj##func;
                     func 1 2;
                     getCall stub 0 |> expect |> toCalledWith [1, 2];
@@ -58,8 +59,10 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y, "func2": fun x y => x - y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
-                    let stub2 = createMethodStub !sandbox obj "func2";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
+                    let stub2 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func2";
                     let func = obj##func1;
                     func 1 2;
                     expect stub1 |> not_ |> toCalledBefore stub2;
@@ -73,8 +76,10 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y, "func2": fun x y => x - y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
-                    let stub2 = createMethodStub !sandbox obj "func2";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
+                    let stub2 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func2";
                     let func = obj##func1;
                     func 1 2;
                     expect stub2 |> not_ |> toCalledAfter stub1;
@@ -88,7 +93,8 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
                     let func = obj##func1;
                     expect stub1 |> not_ |> toCalled;
                     func 1 2;
@@ -100,7 +106,8 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
                     let func = obj##func1;
                     func 1 2;
                     expect stub1 |> toCalledOnce;
@@ -113,7 +120,8 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
                     let func = obj##func1;
                     func 1 2;
                     expect stub1 |> not_ |> toCalledTwice;
@@ -126,7 +134,8 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
                     let func = obj##func1;
                     func 1 2;
                     expect stub1 |> not_ |> toCalledThrice;
@@ -141,8 +150,10 @@ let _ =
                 (
                   fun () => {
                     let obj = {"func1": fun x y => x + y, "func2": fun x y => x - y};
-                    let stub1 = createMethodStub !sandbox obj "func1";
-                    let stub2 = createMethodStub !sandbox obj "func2";
+                    let stub1 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func1";
+                    let stub2 =
+                      createMethodStub (refJsObjToSandbox !sandbox) (jsObjToObj obj) "func2";
                     let func = obj##func1;
                     func 1 2;
                     func 2 2;
