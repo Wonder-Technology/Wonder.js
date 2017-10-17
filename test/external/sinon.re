@@ -25,13 +25,19 @@ let createEmptyStub = [%bs.raw {| function(sandbox) {
 
 type obj;
 
-type bbb;
+type call;
 
 type stub;
 
 external jsObjToObj : Js.t {..} => obj = "%identity";
 
 external stubToJsObj : stub => Js.t {..} = "%identity";
+
+external jsObjToStub : Js.t {..} => stub = "%identity";
+
+external callToJsObj : call => Js.t {..} = "%identity";
+
+external jsObjToCall : Js.t {..} => call = "%identity";
 
 let createMethodStub: sandbox => obj => string => stub = [%bs.raw
   {| function(sandbox, obj, method) {
@@ -44,20 +50,20 @@ let createMethodStub: sandbox => obj => string => stub = [%bs.raw
 |}
 ];
 
-let setReturn stub ::returnVal => stub##returns returnVal;
+let setReturn (stub: stub) ::returnVal :stub => (stubToJsObj stub)##returns returnVal;
 
-let withOneArg stub ::arg => stub##withArgs arg;
+let withOneArg (stub: stub) ::arg :stub => (stubToJsObj stub)##withArgs arg;
 
 let getCall (stub: stub) (index: int) => (stubToJsObj stub)##getCall index;
 
-let getArgsFromEmptyStub call => {
+let getArgsFromEmptyStub (call: Js.t {..}) => {
   let args = call##args;
   Array.to_list args.(0)
 };
 
-let getArgs call => Array.to_list call##args;
+let getArgs (call: Js.t {..}) => Array.to_list call##args;
 
-let getCallCount (stub: stub):int => (stubToJsObj stub)##callCount;
+let getCallCount (stub: stub) :int => (stubToJsObj stub)##callCount;
 
 let toCalledWith (expectedArg: list 'a) (expect: Expect.partial 'a) =>
   ExpectSinon.toCalledWith (Array.of_list expectedArg) @@ expect;
