@@ -1,4 +1,4 @@
-open MainData;
+open MainConfigType;
 
 open Dom;
 

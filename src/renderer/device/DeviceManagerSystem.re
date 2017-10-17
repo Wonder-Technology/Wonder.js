@@ -2,7 +2,7 @@ open StateData;
 
 open ViewSystem;
 
-open Gl;
+open GlType;
 
 let setGL (gl: webgl1Context) state::(state: state) => {...state, deviceManagerData: {gl: gl}};
 

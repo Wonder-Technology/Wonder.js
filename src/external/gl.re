@@ -1,10 +1,8 @@
 open Dom;
 
-open ViewData;
+open StateDataType;
 
-type webgl1Context;
-
-type options;
+open GlType;
 
 external contextConfigDataToOptions: contextConfigData => options = "%identity";
 

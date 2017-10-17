@@ -1,6 +1,6 @@
 open StateData;
 
-open MainData;
+open MainConfigType;
 
 open InitConfigSystem;
 

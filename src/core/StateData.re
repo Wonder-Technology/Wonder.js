@@ -1,8 +1,4 @@
-open ViewData;
-
-open InitConfigData;
-
-open DeviceManagerData;
+open StateDataType;
 
 type state = {
   viewData,
