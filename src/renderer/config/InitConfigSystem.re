@@ -4,10 +4,15 @@ open StateSystem;
 
 open StateDataType;
 
-let getIsTest () =>
+let getIsTest (state: state) => getOptionValueFromState state.initConfigData.isTest;
+
+let getIsTestFromStateData () =>
   switch stateData.state {
   | None => false
-  | Some state => getOptionValueFromState state.initConfigData.isTest
+  | Some state => getIsTest state
   };
 
-let setIsTest (isTest: bool) state::(state: state) => {...state, initConfigData: {isTest: Some isTest}};
+let setIsTest (isTest: bool) state::(state: state) => {
+  ...state,
+  initConfigData: {isTest: Some isTest}
+};

@@ -6,6 +6,8 @@ open ViewSystem;
 
 open DomTool;
 
+open InitConfigSystem;
+
 let _ =
   describe
     "Main"
@@ -20,31 +22,30 @@ let _ =
         describe
           "setMainConfig"
           (
-            fun () =>
-              /* describe
-                 "isTest"
-                 (
-                   fun () =>
-                     describe
-                       "if true"
-                       (
-                         fun () =>
-                           test
-                             "it will open wonder.js contract check"
-                             (
-                               fun () =>
-                                 expect (
-                                   fun () =>
-                                     setMainConfig {
-                                       "canvasId": Js.Nullable.undefined,
-                                       "isTest": Js.Nullable.return true,
-                                       "contextConfig": Js.Nullable.undefined
-                                     }
-                                 )
-                                 |> toThrowMessage "aaa"
-                             )
-                       )
-                 ); */
+            fun () => {
+              describe
+                "isTest"
+                (
+                  fun () =>
+                    describe
+                      "if true"
+                      (
+                        fun () =>
+                          test
+                            "it will open wonder.js contract check"
+                            (
+                              fun () =>
+                                setMainConfig {
+                                  "canvasId": Js.Nullable.undefined,
+                                  "isTest": Js.Nullable.return true,
+                                  "contextConfig": Js.Nullable.undefined
+                                }
+                                |> getIsTest
+                                |> expect
+                                == true
+                            )
+                      )
+                );
               describe
                 "canvasId"
                 (
@@ -80,7 +81,10 @@ let _ =
                                         "id": "a",
                                         "getContext": createEmptyStub !sandbox
                                       };
-                                      createMethodStub !sandbox Dom.document "querySelectorAll"
+                                      createMethodStub
+                                        (refJsObjToSandbox !sandbox)
+                                        (documentToObj Dom.document)
+                                        "querySelectorAll"
                                       |> withOneArg arg::"#a"
                                       |> setReturn returnVal::[canvasDom]
                                       |> ignore;
@@ -99,6 +103,7 @@ let _ =
                         }
                       )
                 )
+            }
           )
       }
     );

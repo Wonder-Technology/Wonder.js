@@ -1,3 +1,7 @@
 open Dom;
 
-let getId ( dom:htmlElement ) => (htmlElementToJsObj dom)##id;
+open Sinon;
+
+external documentToObj : document => obj = "%identity";
+
+let getId (dom: htmlElement) => (htmlElementToJsObj dom)##id;

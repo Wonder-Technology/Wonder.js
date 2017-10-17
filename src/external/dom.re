@@ -32,13 +32,21 @@ let setInnerHtml eleStr::(eleStr: string) htmlElement => {
 
 let getFirstChild htmlElement => htmlElement##firstChild;
 
+let _prepend (sourceElement: htmlElement) targetElement::(targetElement: htmlElement) => {
+  let targetEle = htmlElementToJsObj targetElement;
+  switch (Js.toOption targetEle##prepend) {
+  | None => targetEle##insertBefore sourceElement (getFirstChild targetEle)
+  | _ => targetEle##prepend sourceElement
+  }
+};
+
 let prependTo (sourceElement: htmlElement) targetElement::(targetElement: option htmlElement) =>
   switch targetElement {
   | None => failwith "targetElement should exist"
   | Some targetEle =>
     switch (htmlElementToJsObj sourceElement)##nodeType {
     | 1 =>
-      (htmlElementToJsObj targetEle)##prepend sourceElement |> ignore;
+      _prepend sourceElement (htmlElementToJsObj targetEle) |> ignore;
       sourceElement
     | _ => sourceElement
     }
