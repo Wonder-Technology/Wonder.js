@@ -35,5 +35,5 @@ let setContextConfig contextConfig::(contextConfig: contextConfigData) (state: s
 };
 
 /* todo support webgl2 */
-let getContext (canvas: htmlElement) options::(options: contextConfigData) =>
+let getContext (canvas: htmlElement) (options: contextConfigData) =>
   getWebgl1Context canvas (contextConfigDataToOptions options);

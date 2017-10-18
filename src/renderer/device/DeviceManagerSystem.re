@@ -13,4 +13,4 @@ let setGL (gl: webgl1Context) state::(state: state) => {
 
 /* let createGL (state: state) =>
    state |> getCanvas |> getContext options::(getContextConfig state); */
-let createGL (canvas: htmlElement) ::contextConfig => getContext canvas contextConfig;
+let createGL (canvas: htmlElement) contextConfig => getContext canvas contextConfig;
