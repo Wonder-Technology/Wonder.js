@@ -16,12 +16,12 @@ let restoreSandbox: sandbox => unit = [%bs.raw {| function(sandbox) {
 }
 |}];
 
-/* let createEmptyStub (sandbox:(Js.t {..})) => sandbox##stub (); */
-/* let createEmptyStub (sandbox:(Js.t {..})) => sandbox##stub (); */
-let createEmptyStub = [%bs.raw {| function(sandbox) {
+let createEmptyStub: sandbox => 'emptyStub = [%bs.raw
+  {| function(sandbox) {
     return sandbox.stub();
 }
-|}];
+|}
+];
 
 type obj;
 

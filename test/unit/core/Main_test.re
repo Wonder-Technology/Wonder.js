@@ -49,7 +49,7 @@ let _ =
               describe
                 "canvasId"
                 (
-                  fun () =>
+                  fun () => {
                     describe
                       "if pass canvas id"
                       (
@@ -71,23 +71,27 @@ let _ =
                           describe
                             "else"
                             (
-                              fun () =>
+                              fun () => {
+                                beforeEach (
+                                  fun () => {
+                                    let canvasDom = {
+                                      "id": "a",
+                                      "getContext": createEmptyStub (refJsObjToSandbox !sandbox)
+                                    };
+                                    createMethodStub
+                                      (refJsObjToSandbox !sandbox)
+                                      (documentToObj Dom.document)
+                                      "querySelectorAll"
+                                    |> withOneArg arg::"#a"
+                                    |> setReturn returnVal::[canvasDom]
+                                    |> ignore
+                                  }
+                                );
                                 test
                                   /* todo test webgl2 context */
                                   "save canvas to state and get webgl1 context from it"
                                   (
-                                    fun () => {
-                                      let canvasDom = {
-                                        "id": "a",
-                                        "getContext": createEmptyStub !sandbox
-                                      };
-                                      createMethodStub
-                                        (refJsObjToSandbox !sandbox)
-                                        (documentToObj Dom.document)
-                                        "querySelectorAll"
-                                      |> withOneArg arg::"#a"
-                                      |> setReturn returnVal::[canvasDom]
-                                      |> ignore;
+                                    fun () =>
                                       setMainConfig {
                                         "canvasId": Js.Nullable.return "a",
                                         "isTest": Js.Nullable.undefined,
@@ -97,11 +101,61 @@ let _ =
                                       |> getId
                                       |> expect
                                       == "a"
-                                    }
+                                  );
+                                test
+                                  "suppport pass canvas id which starts with #"
+                                  (
+                                    fun () =>
+                                      setMainConfig {
+                                        "canvasId": Js.Nullable.return "#a",
+                                        "isTest": Js.Nullable.undefined,
+                                        "contextConfig": Js.Nullable.undefined
+                                      }
+                                      |> getCanvas
+                                      |> getId
+                                      |> expect
+                                      == "a"
                                   )
+                              }
                             )
                         }
+                      );
+                    test
+                      "else, create canvas and prepend to body"
+                      (
+                        fun () => {
+                          let canvasDom = {
+                            "id": "a",
+                            "nodeType": 1,
+                            "getContext": createEmptyStub (refJsObjToSandbox !sandbox)
+                          };
+                          let div = {"innerHTML": "", "firstChild": canvasDom};
+                          let body = {"prepend": createEmptyStub (refJsObjToSandbox !sandbox)};
+                          createMethodStub
+                            (refJsObjToSandbox !sandbox)
+                            (documentToObj Dom.document)
+                            "createElement"
+                          |> withOneArg arg::"div"
+                          |> setReturn returnVal::div
+                          |> ignore;
+                          createMethodStub
+                            (refJsObjToSandbox !sandbox)
+                            (documentToObj Dom.document)
+                            "querySelectorAll"
+                          |> withOneArg arg::"body"
+                          |> setReturn returnVal::[body]
+                          |> ignore;
+                          setMainConfig {
+                            "canvasId": Js.Nullable.undefined,
+                            "isTest": Js.Nullable.undefined,
+                            "contextConfig": Js.Nullable.undefined
+                          }
+                          |> ignore;
+                          div##innerHTML |> expect == "<canvas></canvas>" |> ignore;
+                          body##prepend |> expect |> toCalledWith [canvasDom]
+                        }
                       )
+                  }
                 )
             }
           )

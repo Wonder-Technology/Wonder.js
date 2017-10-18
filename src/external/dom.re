@@ -32,7 +32,7 @@ let setInnerHtml eleStr::(eleStr: string) htmlElement => {
 
 let getFirstChild htmlElement => htmlElement##firstChild;
 
-let _prepend (sourceElement: htmlElement) targetElement::(targetElement: htmlElement) => {
+let _prepend (sourceElement: htmlElement) (targetElement: htmlElement) => {
   let targetEle = htmlElementToJsObj targetElement;
   switch (Js.toOption targetEle##prepend) {
   | None => targetEle##insertBefore sourceElement (getFirstChild targetEle)
@@ -46,7 +46,7 @@ let prependTo (sourceElement: htmlElement) targetElement::(targetElement: option
   | Some targetEle =>
     switch (htmlElementToJsObj sourceElement)##nodeType {
     | 1 =>
-      _prepend sourceElement (htmlElementToJsObj targetEle) |> ignore;
+      _prepend sourceElement targetEle |> ignore;
       sourceElement
     | _ => sourceElement
     }

@@ -15,7 +15,7 @@ let _ =
           "test1"
           (
             fun () => {
-              let stub = createEmptyStub !sandbox;
+              let stub = createEmptyStub (refJsObjToSandbox !sandbox);
               let func f => f (1, 2);
               func stub;
               getCall stub 0 |> getArgsFromEmptyStub |> expect == [1, 2]
