@@ -23,7 +23,7 @@ let _getOptionValueFromJsObj (valueFromJsObj: Js.nullable 'value) =>
    | Some value => value
    | None => defaultValue
    }; */
-let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) => {
+let _changeToContextConfigRecord (contextConfigObj: Js.t {..}):MainConfigType.contextConfigData => {
   alpha: _getValueFromJsObj contextConfigObj##alpha true,
   depth: _getValueFromJsObj contextConfigObj##depth true,
   stencil: _getValueFromJsObj contextConfigObj##stencil false,

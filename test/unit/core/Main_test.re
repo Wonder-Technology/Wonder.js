@@ -23,6 +23,26 @@ let _ =
           "setMainConfig"
           (
             fun () => {
+              let buildFakeDomForNotPassCanvasId () => {
+                let canvasDom = {
+                  "id": "a",
+                  "nodeType": 1,
+                  "getContext": createEmptyStub (refJsObjToSandbox !sandbox)
+                };
+                let div = {"innerHTML": "", "firstChild": canvasDom};
+                let body = {"prepend": createEmptyStub (refJsObjToSandbox !sandbox)};
+                createMethodStub
+                  (refJsObjToSandbox !sandbox) (documentToObj Dom.document) "createElement"
+                |> withOneArg arg::"div"
+                |> setReturn returnVal::div
+                |> ignore;
+                createMethodStub
+                  (refJsObjToSandbox !sandbox) (documentToObj Dom.document) "querySelectorAll"
+                |> withOneArg arg::"body"
+                |> setReturn returnVal::[body]
+                |> ignore;
+                (canvasDom, div, body)
+              };
               describe
                 "isTest"
                 (
@@ -124,27 +144,7 @@ let _ =
                       "else, create canvas and prepend to body"
                       (
                         fun () => {
-                          let canvasDom = {
-                            "id": "a",
-                            "nodeType": 1,
-                            "getContext": createEmptyStub (refJsObjToSandbox !sandbox)
-                          };
-                          let div = {"innerHTML": "", "firstChild": canvasDom};
-                          let body = {"prepend": createEmptyStub (refJsObjToSandbox !sandbox)};
-                          createMethodStub
-                            (refJsObjToSandbox !sandbox)
-                            (documentToObj Dom.document)
-                            "createElement"
-                          |> withOneArg arg::"div"
-                          |> setReturn returnVal::div
-                          |> ignore;
-                          createMethodStub
-                            (refJsObjToSandbox !sandbox)
-                            (documentToObj Dom.document)
-                            "querySelectorAll"
-                          |> withOneArg arg::"body"
-                          |> setReturn returnVal::[body]
-                          |> ignore;
+                          let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId ();
                           setMainConfig {
                             "canvasId": Js.Nullable.undefined,
                             "isTest": Js.Nullable.undefined,
@@ -156,6 +156,54 @@ let _ =
                         }
                       )
                   }
+                );
+              describe
+                "contextConfig"
+                (
+                  fun () =>
+                    describe
+                      "if pass contextConfig"
+                      (
+                        fun () =>
+                          test
+                            "set webgl context option by passed data.(use default value if the field isn't passed)"
+                            (
+                              fun () => {
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId ();
+                                setMainConfig {
+                                  "canvasId": Js.Nullable.undefined,
+                                  "isTest": Js.Nullable.undefined,
+                                  "contextConfig":
+                                    Js.Nullable.return {
+                                      "alpha": Js.Nullable.undefined,
+                                      "depth": Js.Nullable.undefined,
+                                      "stencil": Js.Nullable.return true,
+                                      "antialias": Js.Nullable.return false,
+                                      "premultipliedAlpha": Js.Nullable.return true,
+                                      "preserveDrawingBuffer": Js.Nullable.return false
+                                    }
+                                }
+                                |> ignore;
+                                canvasDom##getContext
+                                |> expect
+                                |> toCalledWith [
+                                     matchAny,
+                                     {
+                                       "alpha": Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "depth": Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "stencil":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "antialias":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean false),
+                                       "premultipliedAlpha":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "preserveDrawingBuffer":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean false)
+                                     }
+                                   ]
+                              }
+                            )
+                      )
                 )
             }
           )

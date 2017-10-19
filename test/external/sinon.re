@@ -23,6 +23,8 @@ let createEmptyStub: sandbox => 'emptyStub = [%bs.raw
 |}
 ];
 
+external matchAny  : 'any = "any" [@@bs.scope "match"] [@@bs.module "sinon"];
+
 type obj;
 
 type call;

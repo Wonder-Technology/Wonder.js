@@ -1,6 +1,13 @@
 open GlType;
 
-type contextConfigData = MainConfigType.contextConfigData;
+type contextConfigData = {
+  alpha: bool,
+  depth: bool,
+  stencil: bool,
+  antialias: bool,
+  premultipliedAlpha: bool,
+  preserveDrawingBuffer: bool
+};
 
 type viewData = {
   canvas: option Dom.htmlElement,
