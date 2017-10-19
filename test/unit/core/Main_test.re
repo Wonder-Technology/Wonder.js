@@ -160,7 +160,7 @@ let _ =
               describe
                 "contextConfig"
                 (
-                  fun () =>
+                  fun () => {
                     describe
                       "if pass contextConfig"
                       (
@@ -203,7 +203,44 @@ let _ =
                                    ]
                               }
                             )
+                      );
+                    describe
+                      "else"
+                      (
+                        fun () =>
+                          test
+                            "set default webgl context option"
+                            (
+                              fun () => {
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId ();
+                                setMainConfig {
+                                  "canvasId": Js.Nullable.undefined,
+                                  "isTest": Js.Nullable.undefined,
+                                  "contextConfig":
+                                    Js.Nullable.undefined
+                                }
+                                |> ignore;
+                                canvasDom##getContext
+                                |> expect
+                                |> toCalledWith [
+                                     matchAny,
+                                     {
+                                       "alpha": Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "depth": Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "stencil":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean false),
+                                       "antialias":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "premultipliedAlpha":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean true),
+                                       "preserveDrawingBuffer":
+                                         Js.Nullable.return (Js.Boolean.to_js_boolean false)
+                                     }
+                                   ]
+                              }
+                            )
                       )
+                  }
                 )
             }
           )
