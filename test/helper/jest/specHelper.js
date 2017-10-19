@@ -69,12 +69,7 @@ beforeEach(function () {
                             expectedArg = null,
                             message = null,
                             toString = function (arg) {
-                                try {
-                                    return Tool.convert.toString(arg).slice(1, -1);
-                                }
-                                catch (e) {
-                                    return arg.toString();
-                                }
+                                return JSON.stringify (arg);
                             };
 
                         // expectedArg = Array.prototype.slice.call(arguments, 1);
@@ -102,13 +97,8 @@ beforeEach(function () {
                             expectedArg = null,
                             message = null,
                             toString = function (arg) {
-                                try {
-                                    return Tool.convert.toString(arg).slice(1, -1);
-                                }
-                                catch (e) {
-                                    return arg.toString();
-                                }
-                            };
+                                return JSON.stringify (arg);
+                           };
 
                         // expectedArg = Array.prototype.slice.call(arguments, 1);
                         expectedArg = expected;

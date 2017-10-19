@@ -10,20 +10,6 @@ external mainConfigTypeContextConfigDataToStateDataTypeContextConfigData :
   MainConfigType.contextConfigData => StateDataType.contextConfigData =
   "%identity";
 
-/*
- let _getViewDataFromState (state: state) :viewData =>
-   switch state.viewData {
-   | None => handleStateValueNotExist "viewData"
-   | Some data => data
-   }; */
-/* let getOptionValueFromState (data:option 'a):'a =>
-   /* Js.Option.getExn data; */
-     switch data {
-     | None => Js_exn.raiseError "Bs_option.getExn"
-
-     | Some d => d
-     }; */
-/* let getCanvas (state: state) => (_getViewDataFromState state).canvas; */
 let getCanvas (state: state) => state.viewData.canvas |> getOptionValueFromState;
 
 let setCanvas canvas::(canvas: htmlElement) (state: state) => {
