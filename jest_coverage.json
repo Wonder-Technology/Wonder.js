@@ -1,0 +1,18 @@
+{
+  "automock": false,
+  "moduleFileExtensions": [
+    "js"
+  ],
+  "testRegex": "lib/es6_global/test/.+test\\.js$",
+  "transformIgnorePatterns": [
+    "<rootDir>/node_modules/(?!.*bs-)"
+  ],
+  "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
+  "notify": false,
+  "verbose": true,
+  "collectCoverage":true,
+  "coverageDirectory":"<rootDir>/test/coverage/",
+  "coveragePathIgnorePatterns":[
+  ],
+  "collectCoverageFrom" : ["lib/es6_global/src/**/*.{js}", "!**/node_modules/**", "!**/vendor/**"]
+}
