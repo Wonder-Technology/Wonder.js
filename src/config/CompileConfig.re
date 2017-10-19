@@ -1,9 +1,9 @@
 type compileConfig = {
-  isCompileTest: bool
+  mutable isCompileTest: bool
   /* closeContractTest: bool */
 };
 
 let compileConfig = {
-  isCompileTest: true
+  isCompileTest: false
   /* closeContractTest: false */
 };

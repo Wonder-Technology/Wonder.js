@@ -70,7 +70,8 @@ let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData =
 
 let setConfig configState::(configState: Js.t {..}) (state: state) => {
   let configState = _changeConfigStateToRecord configState;
-  (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state)
+  /* (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state) */
+  (configState, setIsTest isTest::configState.isTest state);
 };
 
 /* todo detect, setscreensize, set pixel ratio ... */

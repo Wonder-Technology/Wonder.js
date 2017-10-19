@@ -12,7 +12,7 @@ let getIsTestFromStateData (stateData:stateData) =>
   | Some state => getIsTest state
   };
 
-let setIsTest (isTest: bool) state::(state: state) => {
+let setIsTest isTest::(isTest: bool) (state: state) => {
   ...state,
   initConfigData: {isTest: Some isTest}
 };

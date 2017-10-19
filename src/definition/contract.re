@@ -19,17 +19,25 @@ let it (message: string) (func: unit => unit) =>
   };
 
 let requireCheck (f: unit => unit) :unit =>
-  switch (compileConfig.isCompileTest, getIsTestFromStateData stateData) {
-  | (true, true) => f ()
-  | (_, _) => ()
+  switch compileConfig.isCompileTest {
+  | false => ()
+  | true =>
+    switch (getIsTestFromStateData stateData) {
+    | true => f ()
+    | _ => ()
+    }
   };
 
 let ensureCheck (f: 'a => unit) (returnVal: 'a) :'a =>
-  switch (compileConfig.isCompileTest, getIsTestFromStateData stateData) {
-  | (true, true) =>
-    f returnVal;
-    returnVal
-  | (_, _) => returnVal
+  switch compileConfig.isCompileTest {
+  | false => returnVal
+  | true =>
+    switch (getIsTestFromStateData stateData) {
+    | true =>
+      f returnVal;
+      returnVal
+    | _ => returnVal
+    }
   };
 
 let _assert (result: bool) (message: string) =>
