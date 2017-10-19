@@ -5,6 +5,8 @@ open Main;
 open ViewSystem;
 
 open DomTool;
+open MainTool;
+
 
 open InitConfigSystem;
 
@@ -23,26 +25,6 @@ let _ =
           "setMainConfig"
           (
             fun () => {
-              let buildFakeDomForNotPassCanvasId () => {
-                let canvasDom = {
-                  "id": "a",
-                  "nodeType": 1,
-                  "getContext": createEmptyStub (refJsObjToSandbox !sandbox)
-                };
-                let div = {"innerHTML": "", "firstChild": canvasDom};
-                let body = {"prepend": createEmptyStub (refJsObjToSandbox !sandbox)};
-                createMethodStub
-                  (refJsObjToSandbox !sandbox) (documentToObj Dom.document) "createElement"
-                |> withOneArg arg::"div"
-                |> setReturn returnVal::div
-                |> ignore;
-                createMethodStub
-                  (refJsObjToSandbox !sandbox) (documentToObj Dom.document) "querySelectorAll"
-                |> withOneArg arg::"body"
-                |> setReturn returnVal::[body]
-                |> ignore;
-                (canvasDom, div, body)
-              };
               describe
                 "isTest"
                 (
@@ -144,7 +126,7 @@ let _ =
                       "else, create canvas and prepend to body"
                       (
                         fun () => {
-                          let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId ();
+                          let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId (sandbox);
                           setMainConfig {
                             "canvasId": Js.Nullable.undefined,
                             "isTest": Js.Nullable.undefined,
@@ -169,7 +151,7 @@ let _ =
                             "set webgl context option by passed data.(use default value if the field isn't passed)"
                             (
                               fun () => {
-                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId ();
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId (sandbox);
                                 setMainConfig {
                                   "canvasId": Js.Nullable.undefined,
                                   "isTest": Js.Nullable.undefined,
@@ -212,7 +194,7 @@ let _ =
                             "set default webgl context option"
                             (
                               fun () => {
-                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId ();
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId (sandbox);
                                 setMainConfig {
                                   "canvasId": Js.Nullable.undefined,
                                   "isTest": Js.Nullable.undefined,
