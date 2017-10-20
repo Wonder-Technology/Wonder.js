@@ -6,6 +6,8 @@ open StateDataType;
 
 open Contract;
 
+open GameObjectType;
+
 let _getGameObjectData (state: StateDataType.state) => state.gameObjectData;
 
 let _unsafeGetComponentData componentMap (uid: string) =>
@@ -28,7 +30,7 @@ let create (state: StateDataType.state) => {
   let newUId: int = increase gameObjectData.uid;
   gameObjectData.uid = newUId;
   let newUIdStr: string = Js.Int.toString newUId;
-  _setComponentData gameObjectData.componentMap newUIdStr (HashMapSystem.createEmpty ());
+  _setComponentData gameObjectData.componentMap newUIdStr (HashMapSystem.createEmpty ()) |> ignore;
   (
     /* {
          ...state,
@@ -49,7 +51,8 @@ let _getComponentFromComponentData componentId::(componentId: string) componentD
 
 let getComponent (uid: string) (componentId: string) (state: StateDataType.state) :option component => {
   let gameObjectData = _getGameObjectData state;
-  _unsafeGetComponentData gameObjectData.componentMap uid |> _getComponentFromComponentData ::componentId
+  _unsafeGetComponentData gameObjectData.componentMap uid
+  |> _getComponentFromComponentData ::componentId
 };
 
 let hasComponent (uid: string) (componentId: string) (state: StateDataType.state) :bool =>
@@ -67,15 +70,103 @@ let addComponent
     (componentId: string)
     (state: StateDataType.state) => {
   requireCheck (
-    fun () => {
+    fun () =>
       test
         "this type of component is already exist, shouldn't add again"
         (fun () => hasComponent uid componentId state |> assertFalse)
-    }
   );
   let gameObjectData = _getGameObjectData state;
-  _unsafeGetComponentData gameObjectData.componentMap uid |> _setComponent componentId component;
+  _unsafeGetComponentData gameObjectData.componentMap uid
+  |> _setComponent componentId component
+  |> ignore;
   state
 };
 
-let initData () => {uid: 0, componentMap: HashMapSystem.createEmpty ()};
+let getChildren (uid: string) (gameObjectData: gameObjectData) =>
+  HashMapSystem.get gameObjectData.childMap uid;
+
+let setChildren (uid: string) (children: array gameObject) (gameObjectData: gameObjectData) =>
+  HashMapSystem.set gameObjectData.childMap uid children;
+
+let _unsafeGetChildren (uid: string) (gameObjectData: gameObjectData) =>
+  HashMapSystem.unsafeGet gameObjectData.childMap uid;
+
+let _containChild (childUId: string) (children: array gameObject) =>
+  /* HashMapSystem.get (getChildren parentUId gameObjectData) childUId; */
+  ArrayUtils.includes childUId children;
+
+/* let _removeChildFromChildMap (childUId: string) (childMap: Js.Dict.t string) =>
+   /* todo reAllocate childMap if too many holes! */
+   HashMapSystem.deleteVal childMap childUId; */
+let _removeFromChildren (childUId: string) (children: array gameObject) => {
+  requireCheck (
+    fun () =>
+      test
+        "children should contain it"
+        (
+          fun () =>
+            /* _getChild (getChildren parentUId gameObjectData) childUId |> assertExist; */
+            _containChild childUId children |> assertTrue
+        )
+  );
+  /*
+   /* _unsafeGetChildren parentUId gameObjectData |> _removeChildFromChildMap childUId; */
+
+   /* todo reAllocate childMap if too many holes! */
+   /* HashMapSystem.deleteVal childMap childUId; */
+   */
+  ArrayUtils.remove childUId children
+};
+
+let _removeChild (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) => {
+  requireCheck (
+    fun () =>
+      test
+        "children should exist in childMap"
+        (
+          fun () =>
+            getChildren parentUId gameObjectData |> assertExist
+            /* HashMapSystem.get ( getChildren parentUId gameObjectData ) childUId |> assertExist; */
+            /* _getChild (getChildren parentUId gameObjectData) childUId |> assertExist; */
+        )
+  );
+  HashMapSystem.deleteVal gameObjectData.parentMap childUId |> ignore;
+  _unsafeGetChildren parentUId gameObjectData |> _removeFromChildren childUId |> ignore;
+  gameObjectData
+};
+
+let getParent (parentUId: string) (state: StateDataType.state) =>
+  HashMapSystem.get (_getGameObjectData state).parentMap parentUId;
+
+let _setParent (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) => {
+  HashMapSystem.set gameObjectData.parentMap childUId (HashMapSystem.stringToJsUndefine parentUId)
+  |> ignore;
+  gameObjectData
+};
+
+let _addChild (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) =>
+  switch (getChildren parentUId gameObjectData) {
+  | Some children => Js.Array.push childUId children |> ignore
+  | None => setChildren parentUId [|childUId|] gameObjectData |> ignore
+  };
+
+let setParent (parentUId: string) (childUId: string) (state: StateDataType.state) => {
+  let gameObjectData = _getGameObjectData state;
+  switch (getParent parentUId state) {
+  | Some originParent =>
+    _removeChild (HashMapSystem.jsUndefineToString originParent) childUId gameObjectData |> ignore
+  | None => ()
+  };
+  _setParent parentUId childUId gameObjectData |> _addChild parentUId childUId |> ignore;
+  state
+};
+
+let addChild (parentUId: string) (childUId: string) (state: StateDataType.state) =>
+  setParent parentUId childUId state;
+
+let initData () => {
+  uid: 0,
+  componentMap: HashMapSystem.createEmpty (),
+  parentMap: HashMapSystem.createEmpty (),
+  childMap: HashMapSystem.createEmpty ()
+};

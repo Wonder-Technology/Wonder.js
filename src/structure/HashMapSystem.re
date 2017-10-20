@@ -1,16 +1,13 @@
-let createEmpty () => {
-    Js.Dict.empty();
-};
+external stringToJsUndefine : string => Js.undefined string = "%identity";
 
-let set map ( key:string ) value => {
-    Js.Dict.set map key value;
-};
+external jsUndefineToString : Js.undefined string => string = "%identity";
 
-let get map (key:string) => {
-    Js.Dict.get map key;
-};
+let createEmpty () => Js.Dict.empty ();
 
-let unsafeGet map (key:string) => {
-    Js.Dict.unsafeGet map key;
-};
+let set map (key: string) value => Js.Dict.set map key value;
 
+let get map (key: string) => Js.Dict.get map key;
+
+let unsafeGet map (key: string) => Js.Dict.unsafeGet map key;
+
+let deleteVal map (key: string) => set map key Js.Undefined.empty;

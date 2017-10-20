@@ -1,5 +1,7 @@
 open GlType;
 
+open GameObjectType;
+
 type contextConfigData = {
   alpha: bool,
   depth: bool,
@@ -22,7 +24,16 @@ type directorData = {scene: option SceneType.scene};
 
 type gameObjectComponentData = Js.Dict.t ComponentType.component;
 
-type gameObjectData = {mutable uid: int, mutable componentMap: ( Js.Dict.t gameObjectComponentData )};
+type gameObjectParentMap = Js.Dict.t (Js.undefined gameObject);
+
+type gameObjectChildMap = Js.Dict.t (array gameObject);
+
+type gameObjectData = {
+  mutable uid: int,
+  mutable componentMap: Js.Dict.t gameObjectComponentData,
+  mutable parentMap: gameObjectParentMap,
+  mutable childMap: gameObjectChildMap
+};
 
 type state = {
   viewData,
