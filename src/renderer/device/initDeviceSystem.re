@@ -9,17 +9,12 @@ open Contract;
 let _getCanvasId (domId: string) =>
   String.contains domId '#' ?
     domId :
-    {
-      let r = {j|#$domId|j};
-      ensureCheck
-        (
-          fun (id: string) =>
-            it
-              "dom id should start with '#'"
-              (fun () => assertTrue (Js.Re.test id [%re "/#[^#]+/"]))
-        )
-        r
-    };
+    {j|#$domId|j}
+    |> ensureCheck (
+         fun (id: string) =>
+           test
+             "dom id should start with '#'" (fun () => assertTrue (Js.Re.test id [%re "/#[^#]+/"]))
+       );
 
 let createCanvas {canvasId} => {
   let canvas =

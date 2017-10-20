@@ -1,3 +1,5 @@
-type component = {
-    index:int
-};
+type component = int;
+
+type componentType =
+  | Geometry
+  | BoxGeometry;

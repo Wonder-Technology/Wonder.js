@@ -1,1 +1,1 @@
-type scene = int;
+type scene = string;

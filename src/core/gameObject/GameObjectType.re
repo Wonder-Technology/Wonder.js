@@ -1,1 +1,1 @@
-type gameObject = int;
+type gameObject = string;

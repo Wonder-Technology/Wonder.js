@@ -1,10 +1,18 @@
+open StateDataType;
+
 open StateData;
 
 open CompileConfig;
 
-open InitConfigSystem;
-
 open Exception;
+
+let _getIsTest (state: state) :bool => Js.Option.getExn state.initConfigData.isTest;
+
+let _getIsTestFromStateData (stateData: stateData) =>
+  switch stateData.state {
+  | None => false
+  | Some state => _getIsTest state
+  };
 
 let describe (message: string) func ::preCondition=(fun () => true) () =>
   preCondition () ?
@@ -13,7 +21,7 @@ let describe (message: string) func ::preCondition=(fun () => true) () =>
     } :
     ();
 
-let it (message: string) (func: unit => unit) =>
+let test (message: string) (func: unit => unit) =>
   try (func ()) {
   | Check_fail failMessage => failwith {j|$message->$failMessage|j}
   };
@@ -22,7 +30,7 @@ let requireCheck (f: unit => unit) :unit =>
   switch compileConfig.isCompileTest {
   | false => ()
   | true =>
-    switch (getIsTestFromStateData stateData) {
+    switch (_getIsTestFromStateData stateData) {
     | true => f ()
     | _ => ()
     }
@@ -32,7 +40,7 @@ let ensureCheck (f: 'a => unit) (returnVal: 'a) :'a =>
   switch compileConfig.isCompileTest {
   | false => returnVal
   | true =>
-    switch (getIsTestFromStateData stateData) {
+    switch (_getIsTestFromStateData stateData) {
     | true =>
       f returnVal;
       returnVal
@@ -50,6 +58,9 @@ let assertTrue (source: bool) => _assert (source == true) "expect to be true, bu
 
 let assertFalse (source: bool) =>
   _assert (source == false) "expect to be false, but actual is true";
+
+let assertExist (source: option 'a) =>
+  _assert (Js.Option.isSome source) "expect to be exist, but actual not";
 
 type assertEqual _ =
   | Int :assertEqual int
