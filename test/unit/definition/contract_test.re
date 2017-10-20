@@ -33,7 +33,7 @@ let _ =
                 (
                   fun () => {
                     compileConfig.isCompileTest = true;
-                    createState () |> setIsTest isTest::true |> setState stateData |> ignore;
+                    createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
                     judgeAndReturnStub () |> expect |> toCalledOnce
                   }
                 );
@@ -42,10 +42,10 @@ let _ =
                 (
                   fun () => {
                     compileConfig.isCompileTest = false;
-                    createState () |> setIsTest isTest::true |> setState stateData |> ignore;
+                    createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
                     judgeAndReturnStub () |> expect |> not_ |> toCalledOnce |> ignore;
                     compileConfig.isCompileTest = true;
-                    createState () |> setIsTest isTest::false |> setState stateData |> ignore;
+                    createState () |> setIsTest isTest::false |> setState ::stateData |> ignore;
                     judgeAndReturnStub () |> expect |> not_ |> toCalledOnce
                   }
                 )
