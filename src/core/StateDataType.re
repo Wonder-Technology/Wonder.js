@@ -18,11 +18,18 @@ type initConfigData = {isTest: option bool};
 
 type deviceManagerData = {gl: option webgl1Context};
 
+type directorData = {scene: option SceneType.scene};
+
+type gameObjectComponentData = Js.Dict.t ComponentType.component;
+
+type gameObjectData = {mutable uid: int, mutable componentMap: ( Js.Dict.t gameObjectComponentData )};
+
 type state = {
   viewData,
   initConfigData,
-  deviceManagerData
+  deviceManagerData,
+  directorData,
+  gameObjectData
 };
 
 type stateData = {mutable state: option state};
-

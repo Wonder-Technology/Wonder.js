@@ -1,10 +1,8 @@
-open StateData;
-
 open StateSystem;
 
 open StateDataType;
 
-let getIsTest (state: state) => getOptionValueFromState state.initConfigData.isTest;
+let getIsTest (state: state):bool => getOptionValueFromState state.initConfigData.isTest;
 
 let getIsTestFromStateData (stateData:stateData) =>
   switch stateData.state {

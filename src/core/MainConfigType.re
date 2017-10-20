@@ -1,3 +1,22 @@
+type configStateJsObj =
+  Js.t {
+    .
+    canvasId : Js.nullable string,
+    isTest : Js.nullable bool,
+    contextConfig :
+      Js.nullable (
+        Js.t {
+          .
+          alpha : Js.nullable bool,
+          antialias : Js.nullable bool,
+          depth : Js.nullable bool,
+          premultipliedAlpha : Js.nullable bool,
+          preserveDrawingBuffer : Js.nullable bool,
+          stencil : Js.nullable bool
+        }
+      )
+  };
+
 type contextConfigData = {
   alpha: bool,
   depth: bool,

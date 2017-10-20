@@ -23,7 +23,7 @@ let _getOptionValueFromJsObj (valueFromJsObj: Js.nullable 'value) =>
    | Some value => value
    | None => defaultValue
    }; */
-let _changeToContextConfigRecord (contextConfigObj: Js.t {..}):MainConfigType.contextConfigData => {
+let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) :MainConfigType.contextConfigData => {
   alpha: _getValueFromJsObj contextConfigObj##alpha true,
   depth: _getValueFromJsObj contextConfigObj##depth true,
   stencil: _getValueFromJsObj contextConfigObj##stencil false,
@@ -31,25 +31,6 @@ let _changeToContextConfigRecord (contextConfigObj: Js.t {..}):MainConfigType.co
   premultipliedAlpha: _getValueFromJsObj contextConfigObj##premultipliedAlpha true,
   preserveDrawingBuffer: _getValueFromJsObj contextConfigObj##preserveDrawingBuffer false
 };
-
-type configStateJsObj =
-  Js.t {
-    .
-    canvasId : Js.nullable string,
-    isTest : Js.nullable bool,
-    contextConfig :
-      Js.nullable (
-        Js.t {
-          .
-          alpha : Js.nullable bool,
-          antialias : Js.nullable bool,
-          depth : Js.nullable bool,
-          premultipliedAlpha : Js.nullable bool,
-          preserveDrawingBuffer : Js.nullable bool,
-          stencil : Js.nullable bool
-        }
-      )
-  };
 
 let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData => {
   canvasId: _getOptionValueFromJsObj configState##canvasId,
@@ -71,8 +52,11 @@ let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData =
 let setConfig configState::(configState: Js.t {..}) (state: state) => {
   let configState = _changeConfigStateToRecord configState;
   /* (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state) */
-  (configState, setIsTest isTest::configState.isTest state);
+  (configState, setIsTest isTest::configState.isTest state)
 };
+
+let _initDataFromState (state: StateDataType.state) =>
+  state |> DirectorSystem.initData;
 
 /* todo detect, setscreensize, set pixel ratio ... */
 let init (configState: mainConfigData, state: state) => {
@@ -81,4 +65,5 @@ let init (configState: mainConfigData, state: state) => {
   |> setGL ::state
   |> setCanvas ::canvas
   |> setContextConfig contextConfig::configState.contextConfig
+  |> _initDataFromState
 };
