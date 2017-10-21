@@ -105,17 +105,10 @@ let _removeFromChildren (childUId: string) (children: array gameObject) => {
         "children should contain it"
         (
           fun () =>
-            /* _getChild (getChildren parentUId gameObjectData) childUId |> assertExist; */
             _containChild childUId children |> assertTrue
         )
   );
-  /*
-   /* _unsafeGetChildren parentUId gameObjectData |> _removeChildFromChildMap childUId; */
-
-   /* todo reAllocate childMap if too many holes! */
-   /* HashMapSystem.deleteVal childMap childUId; */
-   */
-  ArrayUtils.remove childUId children
+  ArrayUtils.deleteBySwap (Js.Array.indexOf childUId children) (Js.Array.length children - 1) children
 };
 
 let _removeChild (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) => {
