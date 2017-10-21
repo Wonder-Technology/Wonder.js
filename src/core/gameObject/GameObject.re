@@ -4,9 +4,10 @@ open GameObjectSystem;
 
 open ComponentType;
 
-let addGameObjectGeometryComponent
+let addGameObjectTransformComponent
     (gameObject: gameObject)
     (component: component)
-    (state: StateDataType.state) =>
+    (state: StateDataType.state) => {
   /* todo check alive */
-  addComponent gameObject component (ComponentComponentIdSystem.getComponentId Geometry) state;
+  addTransformComponent gameObject component state;
+};

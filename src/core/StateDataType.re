@@ -2,6 +2,8 @@ open GlType;
 
 open GameObjectType;
 
+open TransformType;
+
 type contextConfigData = {
   alpha: bool,
   depth: bool,
@@ -28,9 +30,11 @@ type gameObjectParentMap = Js.Dict.t (Js.undefined gameObject);
 
 type gameObjectChildMap = Js.Dict.t (array gameObject);
 
+type gameObjectTransformMap = Js.Dict.t transform;
+
 type gameObjectData = {
   mutable uid: int,
-  mutable componentMap: Js.Dict.t gameObjectComponentData,
+  mutable transformMap: gameObjectTransformMap,
   mutable parentMap: gameObjectParentMap,
   mutable childMap: gameObjectChildMap
 };
