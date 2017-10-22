@@ -14,7 +14,8 @@ let createState () => {
   deviceManagerData: {gl: None},
   directorData: {scene: None},
   /* gameObjectData: {uid: Some 0, componentMap: None} */
-  gameObjectData: GameObjectSystem.initData()
+  gameObjectData: GameObjectSystem.initData(),
+  transformData: TransformSystem.initData()
 };
 
 let getOptionValueFromState value => Js.Option.getExn value;
