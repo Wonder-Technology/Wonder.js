@@ -1,7 +1,5 @@
 open GlType;
 
-open GameObjectType;
-
 open TransformType;
 
 type contextConfigData = {
@@ -26,19 +24,12 @@ type directorData = {scene: option SceneType.scene};
 
 type gameObjectComponentData = Js.Dict.t ComponentType.component;
 
-type gameObjectParentMap = Js.Dict.t (Js.undefined gameObject);
-
-type gameObjectChildMap = Js.Dict.t (array gameObject);
-
 type gameObjectTransformMap = Js.Dict.t transform;
 
 type gameObjectData = {
   mutable uid: int,
-  mutable transformMap: gameObjectTransformMap,
-  mutable parentMap: gameObjectParentMap,
-  mutable childMap: gameObjectChildMap
+  mutable transformMap: gameObjectTransformMap
 };
-
 
 type transformParentMap = Js.Dict.t (Js.undefined transform);
 
