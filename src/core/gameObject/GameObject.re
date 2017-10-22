@@ -9,4 +9,4 @@ let addGameObjectTransformComponent
     (component: component)
     (state: StateDataType.state) =>
   /* todo check alive */
-  addComponent gameObject component (ComponentComponentIdSystem.getComponentId Geometry) state;
+  addTransformComponent gameObject component state;
