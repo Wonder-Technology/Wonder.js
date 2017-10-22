@@ -1,5 +1,7 @@
 open OperateDataSystem;
 
+open TransformType;
+
 open TypeArrayUtils;
 
 open StateDataType;
@@ -7,8 +9,6 @@ open StateDataType;
 open Contract;
 
 let _getTransformData (state: StateDataType.state) => state.transformData;
-
-let _getMaxCount () => DataBufferConfig.dataBufferConfig.transformDataBufferCount;
 
 let create (state: StateDataType.state) => {
   let transformData = _getTransformData state;
@@ -20,7 +20,7 @@ let create (state: StateDataType.state) => {
        fun (state, index) => {
          open Contract.Operators;
          let {index, count} = _getTransformData state;
-         let maxCount = _getMaxCount ();
+         let maxCount = getMaxCount ();
          test "index should <= maxCount" (fun () => index <= maxCount);
          test "count should <= maxCount" (fun () => count <= maxCount)
        }
@@ -56,7 +56,7 @@ let _setDefaultTypeArrData (count: int) (buffer, localToWorldMatrices, localPosi
     if (index >= count) {
       typeArr
     } else {
-      setFunc index data typeArr |> _set (index + increase) increase data setFunc
+      setFunc index data typeArr [@bs] |> _set (index + increase) increase data setFunc
     };
   (
     buffer,
@@ -72,7 +72,7 @@ let _setDefaultTypeArrData (count: int) (buffer, localToWorldMatrices, localPosi
 
 let _initBufferData () => {
   open Js.Typed_array;
-  let count = _getMaxCount ();
+  let count = getMaxCount ();
   let size: int =
     Float32Array._BYTES_PER_ELEMENT * (getMatrix4DataSize () + getVector3DataSize ());
   let buffer = ArrayBuffer.make (count * size);
@@ -90,9 +90,14 @@ let _initBufferData () => {
 
 let _setDefaultChildren ({count, childMap} as transformData) => {
   for index in 0 to (count - 1) {
-    HashMapSystem.set childMap (Js.Int.toString index) [||]
+    HashMapSystem.set childMap (Js.Int.toString index) (ArraySystem.createEmpty ())
   };
   transformData
+};
+
+let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
+  HierachySystem.setParent (Js.toOption parent) child (_getTransformData state) |> ignore;
+  state
 };
 
 let initData () => {
@@ -103,7 +108,8 @@ let initData () => {
     localPositions,
     index: 0,
     count: 0,
-    /* firstDirtyIndex: _getMaxCount (), */
+    firstDirtyIndex: getMaxCount (),
+    oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (),
     parentMap: HashMapSystem.createEmpty (),
     childMap: HashMapSystem.createEmpty ()
   }

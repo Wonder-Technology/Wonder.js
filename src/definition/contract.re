@@ -54,6 +54,7 @@ let _assert (result: bool) (message: string) =>
   | true => ()
   };
 
+
 let assertTrue (source: bool) => _assert (source == true) "expect to be true, but actual is false";
 
 let assertFalse (source: bool) =>
@@ -61,6 +62,10 @@ let assertFalse (source: bool) =>
 
 let assertExist (source: option 'a) =>
   _assert (Js.Option.isSome source) "expect to be exist, but actual not";
+
+
+let assertNotExist (source: option 'a) =>
+  _assert (Js.Option.isNone source) "expect to be not exist, but actual exist";
 
 type assertEqual _ =
   | Int :assertEqual int

@@ -47,6 +47,8 @@ type transformChildMap = Js.Dict.t (array transform);
 type transformData = {
   mutable count: int,
   mutable index: int,
+  mutable firstDirtyIndex: int,
+  mutable oldIndexListBeforeAddToDirtyList: array int,
   mutable buffer: Js.Typed_array.array_buffer,
   mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
   mutable localPositions: Js.Typed_array.Float32Array.t,

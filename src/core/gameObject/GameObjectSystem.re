@@ -20,13 +20,13 @@ let create (state: StateDataType.state) => {
 let _getComponentFromComponentData componentId::(componentId: string) componentData =>
   HashMapSystem.get componentData componentId;
 
-let _getComponent (uid: string) (componentMap: Js.Dict.t int) :option component =>
+let _getComponent (uid: string) (componentMap: HashMapSystem.t int) :option component =>
   HashMapSystem.get componentMap uid;
 
-let hasComponent (uid: string) (componentMap: Js.Dict.t int) :bool =>
+let hasComponent (uid: string) (componentMap: HashMapSystem.t int) :bool =>
   Js.Option.isSome (_getComponent uid componentMap);
 
-let _addComponent (uid: string) (component: component) (componentMap: Js.Dict.t int) => {
+let _addComponent (uid: string) (component: component) (componentMap: HashMapSystem.t int) => {
   requireCheck (
     fun () =>
       test
@@ -54,15 +54,15 @@ let _unsafeGetChildren (uid: string) (gameObjectData: gameObjectData) =>
   HashMapSystem.unsafeGet gameObjectData.childMap uid;
 
 let _containChild (childUId: string) (children: array gameObject) =>
-  ArrayUtils.includes childUId children;
+  ArraySystem.includes childUId children;
 
 let _removeFromChildren (childUId: string) (children: array gameObject) => {
   requireCheck (
     fun () =>
       test "children should contain it" (fun () => _containChild childUId children |> assertTrue)
   );
-  ArrayUtils.deleteBySwap
-    (Js.Array.indexOf childUId children) (Js.Array.length children - 1) children
+  ArraySystem.deleteBySwap
+    (ArraySystem.indexOf childUId children) (ArraySystem.length children - 1) children
 };
 
 let _removeChild (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) => {
@@ -88,7 +88,7 @@ let _setParent (parentUId: string) (childUId: string) (gameObjectData: gameObjec
 
 let _addChild (parentUId: string) (childUId: string) (gameObjectData: gameObjectData) =>
   switch (getChildren parentUId gameObjectData) {
-  | Some children => Js.Array.push childUId children |> ignore
+  | Some children => ArraySystem.push childUId children |> ignore
   | None => setChildren parentUId [|childUId|] gameObjectData |> ignore
   };
 
