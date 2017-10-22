@@ -9,15 +9,35 @@ open OperateDataSystem;
 let _isNotDirty (index: int) (firstDirtyIndex: int) => index < firstDirtyIndex;
 
 let _minusFirstDirtyIndex (firstDirtyIndex: int) =>
-  firstDirtyIndex
-  - 1
+  pred firstDirtyIndex
   |> ensureCheck (
        fun r => Contract.Operators.(test "firstDirtyIndex should >= 0" (fun () => r >= 0))
+     );
+
+let addFirstDirtyIndex (firstDirtyIndex: int) =>
+  succ firstDirtyIndex
+  |> ensureCheck (
+       fun r =>
+         Contract.Operators.(
+           test "firstDirtyIndex should <= maxCount" (fun () => r <= getMaxCount ())
+         )
      );
 
 let _addOldIndex (index: int) (transformData: transformData) => {
   ArraySystem.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;
   transformData
+};
+
+let unsafePopOldIndexList (transformData: transformData) => {
+  requireCheck (
+    fun () =>
+      Contract.Operators.(
+        test
+          "old index should exist"
+          (fun () => ArraySystem.length transformData.oldIndexListBeforeAddToDirtyList >= 1)
+      )
+  );
+  ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
 };
 
 let _addToDirtyList (index: int) (transformData: transformData) => {

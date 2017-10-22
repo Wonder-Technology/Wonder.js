@@ -6,8 +6,6 @@ open StateDataType;
 
 open Contract;
 
-open GameObjectType;
-
 let _getGameObjectData (state: StateDataType.state) => state.gameObjectData;
 
 let create (state: StateDataType.state) => {
@@ -33,7 +31,7 @@ let _addComponent (uid: string) (component: component) (componentMap: HashMapSys
         "this type of component is already exist, shouldn't add again"
         (fun () => hasComponent uid componentMap |> assertFalse)
   );
-  HashMapSystem.set componentMap uid component |> ignore
+  HashMapSystem.set uid component componentMap |> ignore
 };
 
 let getTransformComponent (uid: string) (state: StateDataType.state) =>

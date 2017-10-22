@@ -31,7 +31,7 @@ let _removeFromParent
   |> _removeFromChildMap currentParentIndexStr child;
 
 let _setParent (parent: transform) (childIndex: string) (transformData: transformData) => {
-  HashMapSystem.set transformData.parentMap childIndex (CastTypeUtils.transformToJsUndefine parent)
+  HashMapSystem.set childIndex (CastTypeUtils.transformToJsUndefine parent) transformData.parentMap
   |> ignore;
   transformData
 };
@@ -62,10 +62,7 @@ let _addToParent (parent: transform) (child: transform) (transformData: transfor
   |> _addChild (Js.Int.toString parent) child
 };
 
-let setParent
-    (parent: option transform)
-    (child: transform)
-    (transformData: transformData) => {
+let setParent (parent: option transform) (child: transform) (transformData: transformData) => {
   let childStr = Js.Int.toString child;
   switch parent {
   | None =>
@@ -74,17 +71,19 @@ let setParent
     | Some currentParent =>
       let currentParentIndexStr = Js.Int.toString currentParent;
       _removeFromParent currentParentIndexStr child transformData
-      |> ( DirtySystem.addItAndItsChildrenToDirtyList child)
+      |> DirtySystem.addItAndItsChildrenToDirtyList child
     }
   | Some newParent =>
     switch (getParent childStr transformData) {
-    | None => _addToParent newParent child transformData |> ( DirtySystem.addItAndItsChildrenToDirtyList child)
+    | None =>
+      _addToParent newParent child transformData
+      |> DirtySystem.addItAndItsChildrenToDirtyList child
     | Some currentParent =>
       let currentParentIndexStr = Js.Int.toString currentParent;
       currentParent !== newParent ?
         _removeFromParent currentParentIndexStr child transformData
         |> _addToParent newParent child
-        |> ( DirtySystem.addItAndItsChildrenToDirtyList child) :
+        |> DirtySystem.addItAndItsChildrenToDirtyList child :
         transformData
     }
   }

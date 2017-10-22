@@ -14,6 +14,8 @@ let forEach = Js.Array.forEach;
 
 let push = Js.Array.push;
 
+let pop = Js.Array.pop;
+
 let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
   requireCheck (
     fun () =>

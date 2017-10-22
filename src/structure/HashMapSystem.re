@@ -8,7 +8,7 @@ type t 'a = Js.Dict.t 'a;
 
 let createEmpty () => Js.Dict.empty ();
 
-let set map (key: string) value => Js.Dict.set map key value;
+let set (key: string) value map => { Js.Dict.set map key value; map};
 
 let get map (key: string) => Js.Dict.get map key;
 
@@ -18,5 +18,5 @@ let deleteVal map (key: string) => {
   requireCheck (
     fun () => test "val should exist" (fun () => get map key |> Js.Option.isSome |> assertTrue)
   );
-  set map key Js.Undefined.empty
+  set key Js.Undefined.empty map;
 };

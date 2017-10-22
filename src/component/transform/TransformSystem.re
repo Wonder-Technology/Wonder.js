@@ -13,8 +13,8 @@ let _getTransformData (state: StateDataType.state) => state.transformData;
 let create (state: StateDataType.state) => {
   let transformData = _getTransformData state;
   let index = transformData.index;
-  transformData.index = transformData.index + 1;
-  transformData.count = transformData.count + 1;
+  transformData.index = succ transformData.index;
+  transformData.count = succ transformData.count;
   (state, index)
   |> ensureCheck (
        fun (state, index) => {
@@ -90,13 +90,18 @@ let _initBufferData () => {
 
 let _setDefaultChildren ({count, childMap} as transformData) => {
   for index in 0 to (count - 1) {
-    HashMapSystem.set childMap (Js.Int.toString index) (ArraySystem.createEmpty ())
+    HashMapSystem.set (Js.Int.toString index) (ArraySystem.createEmpty ()) childMap |> ignore
   };
   transformData
 };
 
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
   HierachySystem.setParent (Js.toOption parent) child (_getTransformData state) |> ignore;
+  state
+};
+
+let update (elapsed: float) (state: StateDataType.state) => {
+  UpdateSystem.update elapsed (_getTransformData state) |> ignore;
   state
 };
 
