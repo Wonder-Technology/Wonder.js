@@ -32,4 +32,6 @@ let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
   unsafePop arr |> ignore
 };
 
+let copy = Js.Array.copy;
+
 let createEmpty () => [||];
