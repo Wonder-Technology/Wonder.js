@@ -102,8 +102,8 @@ let setParent (parent: Js.nullable transform) (child: transform) (state: StateDa
   state
 };
 
-let update (elapsed: float) (state: StateDataType.state) => {
-  UpdateSystem.update elapsed state.tempData (_getTransformData state) |> ignore;
+let update (state: StateDataType.state) => {
+  UpdateSystem.update state.tempData (_getTransformData state) |> ignore;
   state
 };
 
@@ -121,6 +121,13 @@ let setLocalPosition
   /* todo check alive? */
   setFloat3 (getVector3DataIndex transform) localPosition transformData.localPositions |> ignore;
   addItAndItsChildrenToDirtyList transform transformData |> ignore;
+  state
+};
+
+let init (state: StateDataType.state) => update state;
+
+let handleAddComponent (transform: transform) (state: StateDataType.state) => {
+  addItAndItsChildrenToDirtyList transform (_getTransformData state) |> ignore;
   state
 };
 

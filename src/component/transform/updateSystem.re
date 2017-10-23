@@ -81,7 +81,7 @@ let _updateDirtyList ( floatArr_1:ArraySystem.t float) (transformData: transform
   dirtyList |> _sortParentBeforeChildInDirtyList transformData |> _transform floatArr_1 transformData
 };
 
-let update (elapsed: float) ({floatArr_1}) (transformData: transformData) =>
+let update ({floatArr_1}) (transformData: transformData) =>
   ListUtils.range transformData.firstDirtyIndex (getMaxCount () - 1)
   |> _updateDirtyList floatArr_1 transformData
   |> _cleanDirtyList transformData;
