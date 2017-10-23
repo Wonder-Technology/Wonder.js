@@ -1,8 +1,12 @@
 open Contract;
 
+type t 'a = Js.Array.t 'a;
+
 external unsafePop : 'a = "pop" [@@bs.send.pipe : array 'a];
 
-type t 'a = Js.Array.t 'a;
+external unsafeGet : t 'a => int => 'b = "" [@@bs.get_index];
+
+external unsafeSet : t 'a => int => 'b => unit = "" [@@bs.set_index];
 
 let includes = Js.Array.includes;
 

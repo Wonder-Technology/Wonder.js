@@ -47,10 +47,15 @@ type transformData = {
   mutable childMap: transformChildMap
 };
 
+type tempData = {
+  floatArr_1:Js.Array.t float
+};
+
 type state = {
   viewData,
   initConfigData,
   deviceManagerData,
+  tempData,
   directorData,
   gameObjectData,
   transformData

@@ -20,21 +20,21 @@ let _cleanDirtyList (transformData: transformData) (dirtyList: list int) => {
   transformData
 };
 
-let _transform ({localToWorldMatrices, localPositions} as transformData) (dirtyList: list int) => {
+let _transform (floatArr_1:ArraySystem.t float) ({localToWorldMatrices, localPositions} as transformData) (dirtyList: list int)  => {
   open Matrix4System;
   dirtyList
   |> List.iter (
        fun index => {
          /* todo from rotation, scale */
          let mat =
-           fromTranslation localPositions (getVector3DataIndex index) (ArraySystem.createEmpty ());
+           fromTranslation localPositions (getVector3DataIndex index) (floatArr_1);
          switch (getParent (Js.Int.toString index) transformData) {
          | Some parent =>
            setLocalToWorldMatricesTypeArr
            (getMatrix4DataIndex index)
            (
              multiply
-               localToWorldMatrices (getMatrix4DataIndex parent) mat 0 (ArraySystem.createEmpty ())
+               localToWorldMatrices (getMatrix4DataIndex parent) mat 0 (floatArr_1)
            )
            localToWorldMatrices
            [@bs]
@@ -49,7 +49,7 @@ let _transform ({localToWorldMatrices, localPositions} as transformData) (dirtyL
          }
        }
      );
-  dirtyList
+  dirtyList;
 };
 
 let _sortParentBeforeChildInDirtyList (transformData: transformData) (dirtyList: list int) => {
@@ -69,7 +69,7 @@ let _sortParentBeforeChildInDirtyList (transformData: transformData) (dirtyList:
   dirtyList
 };
 
-let _updateDirtyList (transformData: transformData) (dirtyList: list int) => {
+let _updateDirtyList ( floatArr_1:ArraySystem.t float) (transformData: transformData) (dirtyList: list int) => {
   requireCheck (
     fun () =>
       Contract.Operators.(
@@ -78,10 +78,10 @@ let _updateDirtyList (transformData: transformData) (dirtyList: list int) => {
           (fun () => transformData.firstDirtyIndex <= getMaxCount ())
       )
   );
-  dirtyList |> _sortParentBeforeChildInDirtyList transformData |> _transform transformData
+  dirtyList |> _sortParentBeforeChildInDirtyList transformData |> _transform floatArr_1 transformData
 };
 
-let update (elapsed: float) (transformData: transformData) =>
+let update (elapsed: float) ({floatArr_1}) (transformData: transformData) =>
   ListUtils.range transformData.firstDirtyIndex (getMaxCount () - 1)
-  |> _updateDirtyList transformData
+  |> _updateDirtyList floatArr_1 transformData
   |> _cleanDirtyList transformData;

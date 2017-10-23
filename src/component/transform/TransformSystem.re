@@ -101,7 +101,7 @@ let setParent (parent: Js.nullable transform) (child: transform) (state: StateDa
 };
 
 let update (elapsed: float) (state: StateDataType.state) => {
-  UpdateSystem.update elapsed (_getTransformData state) |> ignore;
+  UpdateSystem.update elapsed ( state.tempData ) (_getTransformData state) |> ignore;
   state
 };
 
