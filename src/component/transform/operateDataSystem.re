@@ -32,7 +32,7 @@ let _isIndexUsed (index: int) (transformData: transformData) => {
   isSome (HashMapSystem.get transformData.parentMap indexStr)
   || ArraySystem.length (HashMapSystem.unsafeGet transformData.childMap indexStr)
   > 0
-  || not (Float32Array.unsafe_get transformData.localPositions (getVector3DataIndex index) == 0.)
+  || Float32Array.unsafe_get transformData.localPositions (getVector3DataIndex index) != 0.
 };
 
 let _moveTypeArrDataTo
