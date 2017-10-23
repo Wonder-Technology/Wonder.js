@@ -8,6 +8,8 @@ open StateDataType;
 
 open Contract;
 
+open DirtySystem;
+
 let _getTransformData (state: StateDataType.state) => state.transformData;
 
 let create (state: StateDataType.state) => {
@@ -101,7 +103,24 @@ let setParent (parent: Js.nullable transform) (child: transform) (state: StateDa
 };
 
 let update (elapsed: float) (state: StateDataType.state) => {
-  UpdateSystem.update elapsed ( state.tempData ) (_getTransformData state) |> ignore;
+  UpdateSystem.update elapsed state.tempData (_getTransformData state) |> ignore;
+  state
+};
+
+let getLocalPosition (transform: transform) (state: StateDataType.state) =>
+  getFloat3
+    (getVector3DataIndex transform)
+    (_getTransformData state).localPositions
+    (ArraySystem.createEmpty ());
+
+let setLocalPosition
+    (transform: transform)
+    (localPosition: ArraySystem.t float)
+    (state: StateDataType.state) => {
+  let transformData = _getTransformData state;
+  /* todo check alive? */
+  setFloat3 (getVector3DataIndex transform) localPosition transformData.localPositions |> ignore;
+  addItAndItsChildrenToDirtyList transform transformData |> ignore;
   state
 };
 
