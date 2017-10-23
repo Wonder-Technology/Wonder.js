@@ -29,10 +29,12 @@ let getVector3DataIndex (index: int) => index * getVector3DataSize ();
 let _isIndexUsed (index: int) (transformData: transformData) => {
   open Js.Option;
   let indexStr = Js.Int.toString index;
-  isSome (HashMapSystem.get transformData.parentMap indexStr)
-  || ArraySystem.length (HashMapSystem.unsafeGet transformData.childMap indexStr)
-  > 0
-  || Float32Array.unsafe_get transformData.localPositions (getVector3DataIndex index) != 0.
+  /* isSome (HashMapSystem.get transformData.parentMap indexStr)
+     || ArraySystem.length (HashMapSystem.unsafeGet transformData.childMap indexStr)
+     > 0
+     || Float32Array.unsafe_get transformData.localPositions (getVector3DataIndex index)
+     != 0. */
+  HashMapSystem.get transformData.gameObjectMap indexStr |> Js.Option.isSome
 };
 
 let _moveTypeArrDataTo
@@ -71,9 +73,10 @@ let _moveMapDataTo (sourceIndex: int) (targetIndex: int) (map: HashMapSystem.t '
 let _moveAllMapDataTo
     (sourceIndex: int)
     (targetIndex: int)
-    ({parentMap, childMap} as transformData) => {
+    ({parentMap, childMap, gameObjectMap} as transformData) => {
   _moveMapDataTo sourceIndex targetIndex parentMap |> ignore;
   _moveMapDataTo sourceIndex targetIndex childMap |> ignore;
+  _moveMapDataTo sourceIndex targetIndex gameObjectMap |> ignore;
   transformData
 };
 
@@ -129,9 +132,13 @@ let _swapMapData (sourceIndex: int) (targetIndex: int) (map: HashMapSystem.t 'a)
   map |> HashMapSystem.set sIndexStr targetVal |> HashMapSystem.set tIndexStr sourceVal
 };
 
-let _swapAllMapData (sourceIndex: int) (targetIndex: int) ({parentMap, childMap} as transformData) => {
+let _swapAllMapData
+    (sourceIndex: int)
+    (targetIndex: int)
+    ({parentMap, childMap, gameObjectMap} as transformData) => {
   _swapMapData sourceIndex targetIndex parentMap |> ignore;
   _swapMapData sourceIndex targetIndex childMap |> ignore;
+  _swapMapData sourceIndex targetIndex gameObjectMap |> ignore;
   transformData
 };
 
