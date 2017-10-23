@@ -94,8 +94,8 @@ let _initBufferData () => {
   (buffer, localToWorldMatrices, localPositions) |> _setDefaultTypeArrData count
 };
 
-let _setDefaultChildren ({count, childMap} as transformData) => {
-  for index in 0 to (count - 1) {
+let _setDefaultChildren ({childMap} as transformData) => {
+  for index in 0 to (getMaxCount () - 1) {
     HashMapSystem.set (Js.Int.toString index) (ArraySystem.createEmpty ()) childMap |> ignore
   };
   transformData
@@ -136,7 +136,6 @@ let init (state: StateDataType.state) => update state;
 let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {
   _getTransformData state
   |> addComponentToGameObjectMap transform gameObjectUId
-  |> addItAndItsChildrenToDirtyList transform
   |> ignore;
   state
 };

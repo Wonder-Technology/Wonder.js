@@ -4,6 +4,6 @@ type compileConfig = {
 };
 
 let compileConfig = {
-  isCompileTest: false
+  isCompileTest: true
   /* closeContractTest: false */
 };

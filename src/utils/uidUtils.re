@@ -1,1 +1,1 @@
-let increase (uid:int) => uid + 1;
+let increase (uid:int) => succ uid;
