@@ -12,7 +12,6 @@ let createState () => {
   viewData: {canvas: None, contextConfig: None},
   initConfigData: {isTest: Some false},
   deviceManagerData: {gl: None},
-  directorData: {scene: None},
   tempData: {floatArr_1: ArraySystem.createEmpty ()},
   /* gameObjectData: {uid: Some 0, componentMap: None} */
   gameObjectData: GameObjectSystem.initData (),

@@ -1,3 +1,5 @@
+open ComponentSystem;
+
 open OperateDataSystem;
 
 open TransformType;
@@ -9,6 +11,8 @@ open StateDataType;
 open Contract;
 
 open DirtySystem;
+
+open ChildUtils;
 
 let _getTransformData (state: StateDataType.state) => state.transformData;
 
@@ -126,10 +130,16 @@ let setLocalPosition
 
 let init (state: StateDataType.state) => update state;
 
-let handleAddComponent (transform: transform) (state: StateDataType.state) => {
-  addItAndItsChildrenToDirtyList transform (_getTransformData state) |> ignore;
+let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {
+  _getTransformData state
+  |> addComponentToGameObjectMap transform gameObjectUId
+  |> addItAndItsChildrenToDirtyList transform
+  |> ignore;
   state
 };
+
+let getGameObject (transform: transform) (state: StateDataType.state) =>
+  _getTransformData state |> getComponentGameObject transform;
 
 let initData () => {
   let (buffer, localToWorldMatrices, localPositions) = _initBufferData ();
@@ -142,7 +152,8 @@ let initData () => {
     firstDirtyIndex: getMaxCount (),
     oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (),
     parentMap: HashMapSystem.createEmpty (),
-    childMap: HashMapSystem.createEmpty ()
+    childMap: HashMapSystem.createEmpty (),
+    gameObjectMap: HashMapSystem.createEmpty ()
   }
   |> _setDefaultChildren
 };

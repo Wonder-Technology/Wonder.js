@@ -4,8 +4,6 @@ open StateSystem;
 
 open StateData;
 
-let getScene (state: StateDataType.state) => getOptionValueFromState state.directorData.scene;
-
 let _initSystem (state: StateDataType.state) => state |> TransformSystem.init;
 
 let _init (state: StateDataType.state) => state |> _initSystem;
@@ -23,8 +21,3 @@ let _loopBody (time: float) =>
 
 let start (state: StateDataType.state) =>
   state |> _init |> (fun _ => Dom.requestAnimationFrame _loopBody);
-
-let initData (state: StateDataType.state) => {
-  let (state, scene) = SceneSystem.create state;
-  {...state, directorData: {scene: Some scene}}
-};

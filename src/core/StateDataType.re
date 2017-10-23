@@ -20,7 +20,7 @@ type initConfigData = {isTest: option bool};
 
 type deviceManagerData = {gl: option webgl1Context};
 
-type directorData = {scene: option SceneType.scene};
+type gameObjectMap = Js.Dict.t GameObjectType.gameObject;
 
 type gameObjectComponentData = Js.Dict.t ComponentType.component;
 
@@ -44,7 +44,8 @@ type transformData = {
   mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
   mutable localPositions: Js.Typed_array.Float32Array.t,
   mutable parentMap: transformParentMap,
-  mutable childMap: transformChildMap
+  mutable childMap: transformChildMap,
+  mutable gameObjectMap: gameObjectMap
 };
 
 type tempData = {
@@ -56,7 +57,6 @@ type state = {
   initConfigData,
   deviceManagerData,
   tempData,
-  directorData,
   gameObjectData,
   transformData
 };

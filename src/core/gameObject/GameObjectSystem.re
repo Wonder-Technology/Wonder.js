@@ -39,7 +39,7 @@ let getTransformComponent (uid: string) (state: StateDataType.state) =>
 
 let addTransformComponent (uid: string) (component: component) (state: StateDataType.state) => {
   (_getGameObjectData state).transformMap |> _addComponent uid component |> ignore;
-  TransformSystem.handleAddComponent component state
+  TransformSystem.handleAddComponent component uid state
 };
 
 let initData () => {uid: 0, transformMap: HashMapSystem.createEmpty ()};

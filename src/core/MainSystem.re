@@ -51,12 +51,8 @@ let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData =
 
 let setConfig configState::(configState: Js.t {..}) (state: state) => {
   let configState = _changeConfigStateToRecord configState;
-  /* (configState, configState |> (fun configState => configState.isTest) |> setIsTest ::state) */
   (configState, setIsTest isTest::configState.isTest state)
 };
-
-let _initDataFromState (state: StateDataType.state) =>
-  state |> DirectorSystem.initData;
 
 /* todo detect, setscreensize, set pixel ratio ... */
 let init (configState: mainConfigData, state: state) => {
@@ -65,5 +61,4 @@ let init (configState: mainConfigData, state: state) => {
   |> setGL ::state
   |> setCanvas ::canvas
   |> setContextConfig contextConfig::configState.contextConfig
-  |> _initDataFromState
 };
