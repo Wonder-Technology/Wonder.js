@@ -6,7 +6,12 @@ open Contract;
 
 open OperateDataSystem;
 
-let _isNotDirty (index: int) (firstDirtyIndex: int) => index < firstDirtyIndex;
+/* let _isNotDirty (originIndex: int) ({firstDirtyIndex, originToMoveIndexMap} as transformData) => { 
+  switch IndexMapUtils.getMoveIndex originIndex originToMoveIndexMap {
+  | None => true
+  | Some moveIndex => moveIndex < firstDirtyIndex
+  }
+}; */
 
 let _minusFirstDirtyIndex (firstDirtyIndex: int) =>
   pred firstDirtyIndex
@@ -23,12 +28,12 @@ let addFirstDirtyIndex (firstDirtyIndex: int) =>
          )
      );
 
-let _addOldIndex (index: int) (transformData: transformData) => {
+/* let _addOldIndex (index: int) (transformData: transformData) => {
   ArraySystem.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;
   transformData
-};
+}; */
 
-let unsafePopOldIndexList (transformData: transformData) => {
+/* let unsafePopOldIndexList (transformData: transformData) => {
   requireCheck (
     fun () =>
       Contract.Operators.(
@@ -38,10 +43,10 @@ let unsafePopOldIndexList (transformData: transformData) => {
       )
   );
   ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
-};
+}; */
 
-let _addToDirtyList (index: int) (firstDirtyIndex:int) (transformData: transformData) => {
-  requireCheck (
+let _addToDirtyList (index: int) ({dirtyList}) => {
+  /* requireCheck (
     fun () =>
       Contract.Operators.(
         test
@@ -49,22 +54,21 @@ let _addToDirtyList (index: int) (firstDirtyIndex:int) (transformData: transform
           (fun () => firstDirtyIndex <= getMaxCount ())
       )
   );
-  moveTo index firstDirtyIndex transformData
-  |> _addOldIndex index
+  moveToFromOrigin index firstDirtyIndex transformData */
+  ArraySystem.push index dirtyList;
 };
 
-/* todo change to recursive tail */
+/* todo change to recursive tail/loop */
 let rec addItAndItsChildrenToDirtyList (index: int) (transformData: transformData) =>
-  _isNotDirty index transformData.firstDirtyIndex ?
+  /* _isNotDirty index transformData ? */
     {
-      let newFirstDirtyIndex = _minusFirstDirtyIndex transformData.firstDirtyIndex;
-      transformData.firstDirtyIndex = newFirstDirtyIndex;
-      _addToDirtyList index newFirstDirtyIndex transformData |> ignore;
+      /* let newFirstDirtyIndex = _minusFirstDirtyIndex transformData.firstDirtyIndex;
+      transformData.firstDirtyIndex = newFirstDirtyIndex; */
+      _addToDirtyList index transformData |> ignore;
       ChildUtils.unsafeGetChildren (Js.Int.toString index) transformData
       |> ArraySystem.forEach (
            fun (child: transform) => addItAndItsChildrenToDirtyList child transformData |> ignore
          )
       |> ignore;
       transformData
-    } :
-    transformData;
+    }

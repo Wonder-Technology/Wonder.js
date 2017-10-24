@@ -80,7 +80,7 @@ let setParent (parent: option transform) (child: transform) (transformData: tran
       |> DirtySystem.addItAndItsChildrenToDirtyList child
     | Some currentParent =>
       let currentParentIndexStr = Js.Int.toString currentParent;
-      currentParent !== newParent ?
+      not (TransformJudgeUtils.isSame currentParent newParent) ?
         _removeFromParent currentParentIndexStr child transformData
         |> _addToParent newParent child
         |> DirtySystem.addItAndItsChildrenToDirtyList child :
@@ -88,3 +88,9 @@ let setParent (parent: option transform) (child: transform) (transformData: tran
     }
   }
 };
+
+let isParent (parent: transform) (child: transform) (transformData: transformData) =>
+  switch (getParent (Js.Int.toString child) transformData) {
+  | None => false
+  | Some currentParent => TransformJudgeUtils.isSame currentParent parent
+  };

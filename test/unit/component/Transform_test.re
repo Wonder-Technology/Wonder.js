@@ -21,7 +21,7 @@ let _ =
           }
         );
         afterEach (fun () => restoreSandbox (refJsObjToSandbox !sandbox));
-        /* describe
+        describe
           "create"
           (
             fun () => {
@@ -111,55 +111,76 @@ let _ =
                     getTransformParent transform state |> expect == Js.Nullable.empty
                   }
                 )
-          ); */
-describe
-"setTransformParent"
-(
-fun () => {
-describe
-"the change of parent before setted as parent will affect child"
-(
-fun () => {
-/* test
-"test one(parent)-one(child)"
-(
-fun () => {
-                    let (state, parent) = createTransform !state;
-                    let (state, child) = createTransform state;
-
-                    let pos = (1., 2., 3.);
-let state = setTransformLocalPosition parent pos state |> setTransformParent (Js.Nullable.return parent ) child |> update;
-
-state |> getTransformLocalPosition parent |> expect == pos |> ignore;
-state |> getTransformLocalPosition child |> expect == getDefaultPosition();
-}); */
-test
-"test one(parent)-two(child)"
-(
-fun () => {
-  open Vector3System;
-  open Vector3Type;
-                    let (state, parent) = createTransform !state;
-                    let (state, child1) = createTransform state;
-                    let (state, child2) = createTransform state;
-
-                    let pos1 = (1., 2., 3.);
-                    let pos2 = (10., 20., 30.);
-/* let state = setTransformLocalPosition parent pos1 state |> setTransformParent (Js.Nullable.return parent ) child1; */
-let state = setTransformLocalPosition parent pos1 state;
-let state = setTransformLocalPosition child2 pos2 state |> setTransformParent (Js.Nullable.return parent ) child2;
-let state = update state;
-/* 
-state |> getTransformLocalPosition parent |> expect == pos1 |> ignore;
-state |> getTransformLocalPosition child1 |> expect == getDefaultPosition() |> ignore;
-state |> getTransformLocalPosition child2 |> expect ==  pos2 |> ignore; */
-
-
-state |> getTransformLocalPosition parent |> expect == pos1 |> ignore;
-state |> getTransformLocalPosition child2 |> expect ==  pos2 |> ignore; 
-state |> getTransformPosition child2 |> expect ==  ( add Float pos1 pos2 ( ArraySystem.createEmpty() ));
-});
-});
-});
+          );
+        describe
+          "setTransformParent"
+          (
+            fun () =>
+              describe
+                "the change of parent before setted as parent will affect child"
+                (
+                  fun () => {
+                    test
+                      "test one(parent)-one(child)"
+                      (
+                        fun () => {
+                          let (state, parent) = createTransform !state;
+                          let (state, child) = createTransform state;
+                          let pos = (1., 2., 3.);
+                          let state =
+                            setTransformLocalPosition parent pos state
+                            |> setTransformParent (Js.Nullable.return parent) child
+                            |> update;
+                          state |> getTransformLocalPosition parent |> expect == pos |> ignore;
+                          state
+                          |> getTransformLocalPosition child
+                          |> expect
+                          == getDefaultPosition ()
+                        }
+                      );
+                    test
+                      "test one(parent)-two(child)"
+                      (
+                        fun () => {
+                          open Vector3System;
+                          open Vector3Type;
+                          let (state, parent) = createTransform !state;
+                          let (state, child1) = createTransform state;
+                          let (state, child2) = createTransform state;
+                          let pos1 = (1., 2., 3.);
+                          let pos2 = (10., 20., 30.);
+                          let state =
+                            setTransformLocalPosition parent pos1 state
+                            |> setTransformParent (Js.Nullable.return parent) child1;
+                          let state =
+                            setTransformLocalPosition child2 pos2 state
+                            |> setTransformParent (Js.Nullable.return parent) child2;
+                          let state = update state;
+                          state |> getTransformLocalPosition parent |> expect == pos1 |> ignore;
+                          state
+                          |> getTransformLocalPosition child1
+                          |> expect
+                          == getDefaultPosition ()
+                          |> ignore;
+                          state |> getTransformLocalPosition child2 |> expect == pos2 |> ignore;
+                          state |> getTransformLocalPosition parent |> expect == pos1 |> ignore;
+                          state
+                          |> getTransformPosition parent
+                          |> expect
+                          == pos1;
+                          state
+                          |> getTransformPosition child1
+                          |> expect
+                          == getDefaultPosition();
+                          state |> getTransformLocalPosition child2 |> expect == pos2 |> ignore;
+                          state
+                          |> getTransformPosition child2
+                          |> expect
+                          == add Float pos1 pos2 (ArraySystem.createEmpty ())
+                        }
+                      )
+                  }
+                )
+          )
       }
     );

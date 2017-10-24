@@ -51,7 +51,7 @@ let setPosition
       )
       localPositions
   };
-let _isIndexUsed (index: int) (transformData: transformData) => {
+/* let _isIndexUsed (index: int) (transformData: transformData) => {
   open Js.Option;
   let indexStr = Js.Int.toString index;
   /* isSome (HashMapSystem.get transformData.parentMap indexStr)
@@ -62,7 +62,7 @@ let _isIndexUsed (index: int) (transformData: transformData) => {
   HashMapSystem.get transformData.gameObjectMap indexStr |> Js.Option.isSome
 };
 
-let _moveTypeArrDataTo
+/* let _moveTypeArrDataTo
     (sourceIndex: int)
     (targetIndex: int)
     (length: int)
@@ -103,22 +103,27 @@ let _moveAllMapDataTo
   _moveMapDataTo sourceIndex targetIndex childMap |> ignore;
   _moveMapDataTo sourceIndex targetIndex gameObjectMap |> ignore;
   transformData
-};
+}; */
 
-let moveTo (sourceIndex: int) (targetIndex: int) (transformData: transformData) =>
+let moveFromOriginToDirty (originIndex: int) (moveIndex: int) ({originToMoveIndexMap, moveToOriginIndexMap} as transformData) =>{
   /* requireCheck (
        fun () => {
          open Contract.Operators;
-         test "sourceIndex should be used" (fun () => {
-           _isIndexUsed sourceIndex transformData |> assertTrue;
+         test "originIndex should be used" (fun () => {
+           _isIndexUsed originIndex transformData |> assertTrue;
          });
-         test "targetIndex shouldn't be used" (fun () => {
-           _isIndexUsed targetIndex transformData |> assertFalse;
+         test "moveIndex shouldn't be used" (fun () => {
+           _isIndexUsed moveIndex transformData |> assertFalse;
          })
        }
      ); */
-  _moveAllTypeArrDataTo sourceIndex targetIndex transformData
-  |> _moveAllMapDataTo sourceIndex targetIndex;
+  /* _moveAllTypeArrDataTo originIndex moveIndex transformData
+  |> _moveAllMapDataTo originIndex moveIndex; */
+  IndexMapUtils.setOriginToMoveIndexMapMap (Js.Int.toString originIndex ) moveIndex originToMoveIndexMap |> ignore;
+  IndexMapUtils.setMoveToOriginIndexMapMap (Js.Int.toString moveIndex ) originIndex moveToOriginIndexMap |> ignore;
+  transformData;
+  
+};
 
 let _swapTypeArrData (sourceIndex: int) (targetIndex: int) (length: int) (typeArr: Float32Array.t) =>
   for i in 0 to (length - 1) {
@@ -167,7 +172,7 @@ let _swapAllMapData
   transformData
 };
 
-let swap (sourceIndex: int) (targetIndex: int) (transformData: transformData) => {
+/* let swap (sourceIndex: int) (targetIndex: int) (transformData: transformData) => {
   requireCheck (
     fun () => {
       test
@@ -180,4 +185,27 @@ let swap (sourceIndex: int) (targetIndex: int) (transformData: transformData) =>
   );
   _swapAllTypeArrData sourceIndex targetIndex transformData
   |> _swapAllMapData sourceIndex targetIndex
-};
+}; */
+
+
+
+let swap (sourceIndex: int) (targetIndex: int) ({originToMoveIndexMap, moveToOriginIndexMap} as transformData) =>{
+
+  requireCheck (
+    fun () => {
+      test
+        "sourceIndex should be used"
+        (fun () => _isIndexUsed sourceIndex transformData |> assertTrue);
+      test
+        "targetIndex should be used"
+        (fun () => _isIndexUsed targetIndex transformData |> assertTrue)
+    }
+  );
+
+
+
+  IndexMapUtils.setOriginToMoveIndexMapMap (Js.Int.toString sourceIndex ) targetIndex originToMoveIndexMap |> ignore;
+  IndexMapUtils.setMoveToOriginIndexMapMap (Js.Int.toString targetIndex ) sourceIndex moveToOriginIndexMap |> ignore;
+  transformData;
+  
+}; */

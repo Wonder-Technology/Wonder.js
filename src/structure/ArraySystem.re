@@ -36,12 +36,29 @@ let copy = Js.Array.copy;
 
 let createEmpty () => [||];
 
-let rec range a b => {
-  let result = createEmpty();
-
-  for i in a to b {
-    push i result |> ignore;
-  };
-
-  result;
+/* let rec range a b => {
+     let result = createEmpty ();
+     for i in a to b {
+       push i result |> ignore
+     };
+     result
+   }; */
+let removeDuplicateItems arr => {
+  let resultArr = [||];
+  let map = HashMapSystem.createEmpty ();
+  arr
+  |> forEach (
+       fun item => {
+         let key = Js.Int.toString item;
+         switch (HashMapSystem.get map key) {
+         | None =>
+           push item resultArr |> ignore;
+           HashMapSystem.set key item map |> ignore
+         | Some _ => ()
+         }
+       }
+     );
+  resultArr
 };
+
+let fastSort = Array.fast_sort;

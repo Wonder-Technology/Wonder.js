@@ -175,11 +175,14 @@ let initData () => {
     localPositions,
     index: 0,
     count: 0,
-    firstDirtyIndex: getMaxCount (),
-    oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (),
+    /* firstDirtyIndex: getMaxCount (), */
+    /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
     parentMap: HashMapSystem.createEmpty (),
     childMap: HashMapSystem.createEmpty (),
-    gameObjectMap: HashMapSystem.createEmpty ()
+    gameObjectMap: HashMapSystem.createEmpty (),
+    /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
+    /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
+    dirtyList:ArraySystem.createEmpty()
   }
   |> _setDefaultChildren
 };
