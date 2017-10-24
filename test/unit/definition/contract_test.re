@@ -23,7 +23,7 @@ let _ =
           "requireCheck"
           (
             fun () => {
-              let judgeAndReturnStub () => {
+              let exec () => {
                 let stub = createEmptyStub (refJsObjToSandbox !sandbox);
                 Contract.requireCheck (fun () => stub () |> ignore) |> ignore;
                 stub
@@ -34,7 +34,7 @@ let _ =
                   fun () => {
                     compileConfig.isCompileTest = true;
                     createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
-                    judgeAndReturnStub () |> expect |> toCalledOnce
+                    exec () |> expect |> toCalledOnce
                   }
                 );
               test
@@ -43,10 +43,10 @@ let _ =
                   fun () => {
                     compileConfig.isCompileTest = false;
                     createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
-                    judgeAndReturnStub () |> expect |> not_ |> toCalledOnce |> ignore;
+                    exec () |> expect |> not_ |> toCalledOnce |> ignore;
                     compileConfig.isCompileTest = true;
                     createState () |> setIsTest isTest::false |> setState ::stateData |> ignore;
-                    judgeAndReturnStub () |> expect |> not_ |> toCalledOnce
+                    exec () |> expect |> not_ |> toCalledOnce
                   }
                 )
             }

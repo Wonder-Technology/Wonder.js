@@ -5,8 +5,8 @@ open Main;
 open ViewSystem;
 
 open DomTool;
-open MainTool;
 
+open MainTool;
 
 open InitConfigSystem;
 
@@ -122,19 +122,36 @@ let _ =
                             )
                         }
                       );
-                    test
-                      "else, create canvas and prepend to body"
+                    describe
+                      "else"
                       (
                         fun () => {
-                          let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId (sandbox);
-                          setMainConfig {
-                            "canvasId": Js.Nullable.undefined,
-                            "isTest": Js.Nullable.undefined,
-                            "contextConfig": Js.Nullable.undefined
-                          }
-                          |> ignore;
-                          div##innerHTML |> expect == "<canvas></canvas>" |> ignore;
-                          body##prepend |> expect |> toCalledWith [canvasDom]
+                          let exec () => {
+                            let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId sandbox;
+                            setMainConfig {
+                              "canvasId": Js.Nullable.undefined,
+                              "isTest": Js.Nullable.undefined,
+                              "contextConfig": Js.Nullable.undefined
+                            }
+                            |> ignore;
+                            (canvasDom, div, body)
+                          };
+                          test
+                            "test create canvas"
+                            (
+                              fun () => {
+                                let (canvasDom, div, body) = exec ();
+                                div##innerHTML |> expect == "<canvas></canvas>"
+                              }
+                            );
+                          test
+                            "prepend to body"
+                            (
+                              fun () => {
+                                let (canvasDom, div, body) = exec ();
+                                body##prepend |> expect |> toCalledWith [canvasDom]
+                              }
+                            )
                         }
                       )
                   }
@@ -151,7 +168,7 @@ let _ =
                             "set webgl context option by passed data.(use default value if the field isn't passed)"
                             (
                               fun () => {
-                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId (sandbox);
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
                                 setMainConfig {
                                   "canvasId": Js.Nullable.undefined,
                                   "isTest": Js.Nullable.undefined,
@@ -194,12 +211,11 @@ let _ =
                             "set default webgl context option"
                             (
                               fun () => {
-                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId (sandbox);
+                                let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
                                 setMainConfig {
                                   "canvasId": Js.Nullable.undefined,
                                   "isTest": Js.Nullable.undefined,
-                                  "contextConfig":
-                                    Js.Nullable.undefined
+                                  "contextConfig": Js.Nullable.undefined
                                 }
                                 |> ignore;
                                 canvasDom##getContext
