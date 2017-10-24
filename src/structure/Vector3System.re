@@ -37,7 +37,7 @@ let transformMat4
   out
 };
 
-let add (type g) (kind: number g) (x1, y1, z1) (x2, y2, z2) out =>
+let add (type g) (kind: number g) (x1, y1, z1) (x2, y2, z2) =>
   switch kind {
   | Float =>
     /* ArraySystem.unsafeSet out 0 (x1 +. x2);
