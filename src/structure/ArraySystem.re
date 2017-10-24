@@ -35,3 +35,13 @@ let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
 let copy = Js.Array.copy;
 
 let createEmpty () => [||];
+
+let rec range a b => {
+  let result = createEmpty();
+
+  for i in a to b {
+    push i result |> ignore;
+  };
+
+  result;
+};

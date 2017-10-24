@@ -40,17 +40,16 @@ let unsafePopOldIndexList (transformData: transformData) => {
   ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
 };
 
-let _addToDirtyList (index: int) (transformData: transformData) => {
+let _addToDirtyList (index: int) (firstDirtyIndex:int) (transformData: transformData) => {
   requireCheck (
     fun () =>
       Contract.Operators.(
         test
           "firstDirtyIndex should <= maxCount"
-          (fun () => transformData.firstDirtyIndex <= getMaxCount ())
+          (fun () => firstDirtyIndex <= getMaxCount ())
       )
   );
-  /* let targetDirtyIndex = _minusFirstDirtyIndex(ThreeDTransformData.firstDirtyIndex); */
-  moveTo index (_minusFirstDirtyIndex transformData.firstDirtyIndex) transformData
+  moveTo index firstDirtyIndex transformData
   |> _addOldIndex index
 };
 
@@ -58,7 +57,9 @@ let _addToDirtyList (index: int) (transformData: transformData) => {
 let rec addItAndItsChildrenToDirtyList (index: int) (transformData: transformData) =>
   _isNotDirty index transformData.firstDirtyIndex ?
     {
-      _addToDirtyList index transformData |> ignore;
+      let newFirstDirtyIndex = _minusFirstDirtyIndex transformData.firstDirtyIndex;
+      transformData.firstDirtyIndex = newFirstDirtyIndex;
+      _addToDirtyList index newFirstDirtyIndex transformData |> ignore;
       ChildUtils.unsafeGetChildren (Js.Int.toString index) transformData
       |> ArraySystem.forEach (
            fun (child: transform) => addItAndItsChildrenToDirtyList child transformData |> ignore

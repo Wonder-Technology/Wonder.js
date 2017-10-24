@@ -34,7 +34,7 @@ let create (state: StateDataType.state) => {
 };
 
 let _setDefaultTypeArrData (count: int) (buffer, localToWorldMatrices, localPositions) => {
-  let defaultPositions = [|0., 0., 0.|];
+  /* let defaultPositions = [|0., 0., 0.|]; */
   let defaultLocalToWorldMatrices = [|
     1.,
     0.,
@@ -66,7 +66,7 @@ let _setDefaultTypeArrData (count: int) (buffer, localToWorldMatrices, localPosi
     };
   (
     buffer,
-    _set 0 (getVector3DataSize ()) defaultPositions setLocalPositionTypeArr localPositions,
+    localPositions,
     _set
       0
       (getMatrix4DataSize ())
@@ -101,6 +101,9 @@ let _setDefaultChildren ({childMap} as transformData) => {
   transformData
 };
 
+let getParent (child: transform) (state: StateDataType.state) =>
+  HierachySystem.getParent (Js.Int.toString child) (_getTransformData state);
+
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
   HierachySystem.setParent (Js.toOption parent) child (_getTransformData state) |> ignore;
   state
@@ -115,18 +118,41 @@ let update (state: StateDataType.state) => {
 };
 
 let getLocalPosition (transform: transform) (state: StateDataType.state) =>
-  getFloat3
-    (getVector3DataIndex transform)
-    (_getTransformData state).localPositions
-    (ArraySystem.createEmpty ());
+  getFloat3 (getVector3DataIndex transform) (_getTransformData state).localPositions;
 
-let setLocalPosition
-    (transform: transform)
-    (localPosition: ArraySystem.t float)
-    (state: StateDataType.state) => {
+let setLocalPosition (transform: transform) (localPosition: position) (state: StateDataType.state) => {
   let transformData = _getTransformData state;
   /* todo check alive? */
-  setFloat3 (getVector3DataIndex transform) localPosition transformData.localPositions |> ignore;
+  setFloat3
+    (getVector3DataIndex transform)
+    (CastTypeUtils.tupleToJsArray localPosition)
+    transformData.localPositions
+  |> ignore;
+  addItAndItsChildrenToDirtyList transform transformData |> ignore;
+  state
+};
+
+/* todo add cache? */
+let getPosition (transform: transform) (state: StateDataType.state) => {
+  open Js.Typed_array;
+  let localToWorldMatrices = (_getTransformData state).localToWorldMatrices;
+  let index = getMatrix4DataIndex transform;
+  (
+    Float32Array.unsafe_get localToWorldMatrices (index + 12),
+    Float32Array.unsafe_get localToWorldMatrices (index + 13),
+    Float32Array.unsafe_get localToWorldMatrices (index + 14)
+  )
+};
+
+let setPosition (transform: transform) (position: position) (state: StateDataType.state) => {
+  let transformData = _getTransformData state;
+  OperateDataSystem.setPosition
+    (getMatrix4DataIndex transform)
+    (getVector3DataIndex transform)
+    (HierachySystem.getParent (Js.Int.toString transform) transformData)
+    position
+    transformData
+  |> ignore;
   addItAndItsChildrenToDirtyList transform transformData |> ignore;
   state
 };
@@ -134,9 +160,7 @@ let setLocalPosition
 let init (state: StateDataType.state) => update state;
 
 let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {
-  _getTransformData state
-  |> addComponentToGameObjectMap transform gameObjectUId
-  |> ignore;
+  _getTransformData state |> addComponentToGameObjectMap transform gameObjectUId |> ignore;
   state
 };
 
@@ -144,7 +168,7 @@ let getGameObject (transform: transform) (state: StateDataType.state) =>
   _getTransformData state |> getComponentGameObject transform;
 
 let initData () => {
-  let (buffer, localToWorldMatrices, localPositions) = _initBufferData ();
+  let (buffer, localPositions, localToWorldMatrices) = _initBufferData ();
   {
     buffer,
     localToWorldMatrices,

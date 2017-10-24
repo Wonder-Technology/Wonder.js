@@ -41,6 +41,10 @@ let _ =
                      hasGameObjectTransformComponent gameObject state |> expect == true
                    }
                  );
+                 describe
+                 "change state"
+                 (
+                 fun () => {
                test
                  "state->uid + 1"
                  (
@@ -49,6 +53,7 @@ let _ =
                      getData state |> (fun data => expect data.uid == 1)
                    }
                  )
+                 });
              }
            );
         describe

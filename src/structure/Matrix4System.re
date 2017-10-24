@@ -1,5 +1,6 @@
 open Js.Typed_array;
 
+/* todo refactor: change to tuple */
 let fromTranslation (translationTypeArr: Float32Array.t) (index: int) (out: ArraySystem.t float) => {
   ArraySystem.unsafeSet out 0 1.;
   /* ArraySystem.unsafeSet out 0 1.; */
