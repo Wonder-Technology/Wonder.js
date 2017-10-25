@@ -21,7 +21,7 @@ let setFloat3 (index: int) (data: ArraySystem.t float) (typeArray: Float32Array.
   typeArray
 };
 
-let getFloat16 (index: int) (typeArr: Float32Array.t) => (
+let getFloat16 (index: int) (typeArr: Float32Array.t) => [|
   Float32Array.unsafe_get typeArr index,
   Float32Array.unsafe_get typeArr (index + 1),
   Float32Array.unsafe_get typeArr (index + 2),
@@ -38,7 +38,7 @@ let getFloat16 (index: int) (typeArr: Float32Array.t) => (
   Float32Array.unsafe_get typeArr (index + 13),
   Float32Array.unsafe_get typeArr (index + 14),
   Float32Array.unsafe_get typeArr (index + 15)
-);
+|];
 
 let setFloat16 (index: int) (data: ArraySystem.t float) (typeArray: Float32Array.t) => {
   requireCheck (

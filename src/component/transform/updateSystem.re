@@ -28,12 +28,12 @@ let _transform
   |> ArraySystem.forEach (
        fun index => {
          /* todo from rotation, scale */
-         let mat = fromTranslation localPositions (getVector3DataIndex index) floatArr_1;
+         let mat = fromTranslation localPositions (getVector3DataIndex index) ;
          switch (getParent (Js.Int.toString index) transformData) {
          | Some parent =>
            setLocalToWorldMatricesTypeArr
            (getMatrix4DataIndex index)
-           (multiply localToWorldMatrices (getMatrix4DataIndex parent) mat 0 floatArr_1)
+           (multiply localToWorldMatrices (getMatrix4DataIndex parent) mat 0)
            localToWorldMatrices
            [@bs]
            |> ignore
