@@ -14,7 +14,7 @@ let _ =
         open Sinon;
         let sandbox = getSandboxDefaultVal ();
         let state = ref (StateSystem.createState ());
-        let judgeOneToOne
+        let _judgeOneToOne
             (parent, child)
             (parentLocalPos, parentPos)
             (childLocalPos, childPos)
@@ -27,7 +27,7 @@ let _ =
           )
           |> expect
           == (parentLocalPos, parentPos, childLocalPos, childPos);
-        let judgeOneToTwo
+        let _judgeOneToTwo
             (parent, child1, child2)
             (parentLocalPos, parentPos)
             (child1LocalPos, child1Pos)
@@ -66,19 +66,19 @@ let _ =
                 "ensure check"
                 (
                   fun () => {
-                    let buildState index count =>
+                    let _buildState index count =>
                       StateDataType.{
                         ...!state,
-                        transformData: {...(!state).transformData, index, count}
+                        transformData: Some ( {... ( Js.Option.getExn (!state).transformData ), index, count} )
                       };
                     beforeEach (
-                      fun () => BufferTool.setBufferSize transformDataBufferCount::2 () |> ignore
+                      fun () => BufferTool.setBufferSize transformDataBufferCount::2 !state |> ignore
                     );
                     test
                       "index should <= maxCount"
                       (
                         fun () => {
-                          state := buildState 2 0;
+                          state := _buildState 2 0;
                           expect (
                             fun () => {
                               let (state, transform) = createTransform !state;
@@ -92,7 +92,7 @@ let _ =
                       "count should <= maxCount"
                       (
                         fun () => {
-                          state := buildState 0 2;
+                          state := _buildState 0 2;
                           expect (
                             fun () => {
                               let (state, transform) = createTransform !state;
@@ -137,7 +137,7 @@ let _ =
                 (
                   fun () => {
                     let (state, transform) = createTransform !state;
-                    getTransformParent transform state |> expect == Js.Nullable.empty
+                    getTransformParent transform state |> expect == Js.Nullable.undefined
                   }
                 )
           );
@@ -162,7 +162,7 @@ let _ =
                             |> setTransformParent (Js.Nullable.return parent) child
                             |> update;
                           state
-                          |> judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos)
+                          |> _judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos)
                         }
                       );
                     test
@@ -186,7 +186,7 @@ let _ =
                             |> setTransformParent (Js.Nullable.return parent) child2;
                           let state = update state;
                           state
-                          |> judgeOneToTwo
+                          |> _judgeOneToTwo
                                (parent, child1, child2)
                                (pos1, pos1)
                                (getDefaultPosition (), pos1)
@@ -218,7 +218,7 @@ let _ =
                           == Js.Nullable.undefined
                           |> ignore;
                           state
-                          |> judgeOneToOne
+                          |> _judgeOneToOne
                                (parent, child)
                                (pos, pos)
                                (getDefaultPosition (), getDefaultPosition ())
@@ -246,7 +246,7 @@ let _ =
                           let state =
                             state |> update |> setTransformParent Js.Nullable.null child2 |> update;
                           state
-                          |> judgeOneToTwo
+                          |> _judgeOneToTwo
                                (parent, child1, child2)
                                (pos1, pos1)
                                (getDefaultPosition (), pos1)
@@ -275,7 +275,7 @@ let _ =
                     |> expect
                     == Js.Nullable.return parent
                     |> ignore;
-                    state |> judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos)
+                    state |> _judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos)
                   }
                 )
             }
@@ -306,7 +306,7 @@ let _ =
                     let (state, parent, child, pos1, pos2) = prepare ();
                     let state = setTransformLocalPosition parent pos2 state;
                     let state = state |> update;
-                    state |> judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
+                    state |> _judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
                   }
                 );
               test
@@ -316,7 +316,7 @@ let _ =
                     let (state, parent, child, pos1, pos2) = prepare ();
                     let state = setTransformLocalPosition child pos1 state;
                     let state = state |> update;
-                    state |> judgeOneToOne (parent, child) (pos1, pos1) (pos1, add Float pos1 pos1)
+                    state |> _judgeOneToOne (parent, child) (pos1, pos1) (pos1, add Float pos1 pos1)
                   }
                 )
             }
@@ -359,7 +359,7 @@ let _ =
                           let state = state |> setTransformPosition parent pos2;
                           let state = state |> update;
                           state
-                          |> judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
+                          |> _judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
                         }
                       );
                     test
@@ -380,7 +380,7 @@ let _ =
                           let state = state |> setTransformPosition child pos3;
                           let state = state |> update;
                           state
-                          |> judgeOneToOne
+                          |> _judgeOneToOne
                                (parent, child)
                                (pos1, pos1)
                                (add Float pos3 pos1, add Float (add Float pos3 pos1) pos1)

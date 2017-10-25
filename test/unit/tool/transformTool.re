@@ -1,6 +1,6 @@
 open TransformType;
 
-let getData (state: StateDataType.state) => state.transformData;
+let getData (state: StateDataType.state) => Js.Option.getExn state.transformData;
 
 let getDefaultPosition () => (0., 0., 0.);
 

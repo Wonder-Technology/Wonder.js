@@ -14,10 +14,11 @@ type configStateJsObj =
           preserveDrawingBuffer : Js.nullable bool,
           stencil : Js.nullable bool
         }
-      )
+      ),
+    bufferConfig : Js.nullable (Js.t {. transformDataBufferCount : Js.nullable int})
   };
 
-type contextConfigData = {
+type contextConfig = {
   alpha: bool,
   depth: bool,
   stencil: bool,
@@ -26,10 +27,13 @@ type contextConfigData = {
   preserveDrawingBuffer: bool
 };
 
+type bufferConfig = {transformDataBufferCount: int};
+
 type mainConfigData = {
   canvasId: option string,
   isTest: bool,
-  contextConfig: contextConfigData
+  contextConfig,
+  bufferConfig
   /* todo add more config */
   /* screenSize: any, */
   /* useDevicePixelRatio: bool, */

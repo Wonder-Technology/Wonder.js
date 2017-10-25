@@ -20,12 +20,7 @@ let _ =
           (
             fun () => {
               let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
-              setMainConfig {
-                "canvasId": Js.Nullable.undefined,
-                "isTest": Js.Nullable.return true,
-                "contextConfig": Js.Nullable.undefined
-              }
-              |> ignore;
+              setMainConfig (buildMainConfig isTest::(Js.Nullable.return true) ()) |> ignore;
               expect canvasDom##getContext |> toCalledWith ["webgl"]
             }
           )

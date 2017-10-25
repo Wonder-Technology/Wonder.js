@@ -8,7 +8,7 @@ open TypeArrayUtils;
 
 open TransformType;
 
-let getMaxCount () => DataBufferConfig.dataBufferConfig.transformDataBufferCount;
+let getMaxCount (state:StateDataType.state) => (BufferConfigSystem.getBufferConfig state).transformDataBufferCount;
 
 let getMatrix4DataIndex (index: int) => index * getMatrix4DataSize ();
 
@@ -33,7 +33,6 @@ let getLocalToWorldMatrix (index: int) localToWorldMatrices =>
   getFloat16 index localToWorldMatrices;
 
 let setPosition
-    (localToWorldMatricesIndex: int)
     (localPositionsIndex: int)
     (parent: option transform)
     (position: position)

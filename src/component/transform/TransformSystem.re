@@ -14,7 +14,7 @@ open DirtySystem;
 
 open ChildUtils;
 
-let _getTransformData (state: StateDataType.state) => state.transformData;
+let _getTransformData (state: StateDataType.state) => Js.Option.getExn state.transformData;
 
 let create (state: StateDataType.state) => {
   let transformData = _getTransformData state;
@@ -26,7 +26,7 @@ let create (state: StateDataType.state) => {
        fun (state, index) => {
          open Contract.Operators;
          let {index, count} = _getTransformData state;
-         let maxCount = getMaxCount ();
+         let maxCount = getMaxCount state;
          test "index should <= maxCount" (fun () => index <= maxCount);
          test "count should <= maxCount" (fun () => count <= maxCount)
        }
@@ -76,9 +76,8 @@ let _setDefaultTypeArrData (count: int) (buffer, localToWorldMatrices, localPosi
   )
 };
 
-let _initBufferData () => {
+let _initBufferData (count: int) => {
   open Js.Typed_array;
-  let count = getMaxCount ();
   let size: int =
     Float32Array._BYTES_PER_ELEMENT * (getMatrix4DataSize () + getVector3DataSize ());
   let buffer = ArrayBuffer.make (count * size);
@@ -94,8 +93,8 @@ let _initBufferData () => {
   (buffer, localToWorldMatrices, localPositions) |> _setDefaultTypeArrData count
 };
 
-let _setDefaultChildren ({childMap} as transformData) => {
-  for index in 0 to (getMaxCount () - 1) {
+let _setDefaultChildren (maxCount: int) ({childMap} as transformData) => {
+  for index in 0 to (maxCount - 1) {
     HashMapSystem.set (Js.Int.toString index) (ArraySystem.createEmpty ()) childMap |> ignore
   };
   transformData
@@ -147,7 +146,6 @@ let getPosition (transform: transform) (state: StateDataType.state) => {
 let setPosition (transform: transform) (position: position) (state: StateDataType.state) => {
   let transformData = _getTransformData state;
   OperateDataSystem.setPosition
-    (getMatrix4DataIndex transform)
     (getVector3DataIndex transform)
     (HierachySystem.getParent (Js.Int.toString transform) transformData)
     position
@@ -167,22 +165,27 @@ let handleAddComponent (transform: transform) (gameObjectUId: string) (state: St
 let getGameObject (transform: transform) (state: StateDataType.state) =>
   _getTransformData state |> getComponentGameObject transform;
 
-let initData () => {
-  let (buffer, localPositions, localToWorldMatrices) = _initBufferData ();
-  {
-    buffer,
-    localToWorldMatrices,
-    localPositions,
-    index: 0,
-    count: 0,
-    /* firstDirtyIndex: getMaxCount (), */
-    /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
-    parentMap: HashMapSystem.createEmpty (),
-    childMap: HashMapSystem.createEmpty (),
-    gameObjectMap: HashMapSystem.createEmpty (),
-    /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
-    /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
-    dirtyList:ArraySystem.createEmpty()
-  }
-  |> _setDefaultChildren
+let initData (state: StateDataType.state) => {
+  let maxCount = getMaxCount state;
+  let (buffer, localPositions, localToWorldMatrices) = _initBufferData maxCount;
+  state.transformData =
+    Some (
+      {
+        buffer,
+        localToWorldMatrices,
+        localPositions,
+        index: 0,
+        count: 0,
+        /* firstDirtyIndex: getMaxCount (), */
+        /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
+        parentMap: HashMapSystem.createEmpty (),
+        childMap: HashMapSystem.createEmpty (),
+        gameObjectMap: HashMapSystem.createEmpty (),
+        /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
+        /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
+        dirtyList: ArraySystem.createEmpty ()
+      }
+      |> _setDefaultChildren maxCount
+    );
+  state
 };

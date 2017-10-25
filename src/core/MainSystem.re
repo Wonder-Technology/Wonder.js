@@ -8,6 +8,8 @@ open InitDeviceSystem;
 
 open ViewSystem;
 
+open BufferConfigSystem;
+
 open DeviceManagerSystem;
 
 let _getValueFromJsObj (valueFromJsObj: Js.nullable 'value) (defaultValue: 'value) =>
@@ -19,17 +21,19 @@ let _getValueFromJsObj (valueFromJsObj: Js.nullable 'value) (defaultValue: 'valu
 let _getOptionValueFromJsObj (valueFromJsObj: Js.nullable 'value) =>
   Js.Nullable.to_opt valueFromJsObj;
 
-/* switch (Js.Nullable.to_opt valueFromJsObj) {
-   | Some value => value
-   | None => defaultValue
-   }; */
-let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) :MainConfigType.contextConfigData => {
+/* todo not set default twice! */
+let _changeToContextConfigRecord (contextConfigObj: Js.t {..}) :MainConfigType.contextConfig => {
   alpha: _getValueFromJsObj contextConfigObj##alpha true,
   depth: _getValueFromJsObj contextConfigObj##depth true,
   stencil: _getValueFromJsObj contextConfigObj##stencil false,
   antialias: _getValueFromJsObj contextConfigObj##antialias true,
   premultipliedAlpha: _getValueFromJsObj contextConfigObj##premultipliedAlpha true,
   preserveDrawingBuffer: _getValueFromJsObj contextConfigObj##preserveDrawingBuffer false
+};
+
+let _changeToBufferConfigRecord (bufferConfigObj: Js.t {..}) :MainConfigType.bufferConfig => {
+  transformDataBufferCount:
+    _getValueFromJsObj bufferConfigObj##transformDataBufferCount (20 * 1000)
 };
 
 let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData => {
@@ -46,6 +50,11 @@ let _changeConfigStateToRecord (configState: configStateJsObj) :mainConfigData =
         premultipliedAlpha: true,
         preserveDrawingBuffer: false
       }
+    },
+  bufferConfig:
+    switch (Js.Nullable.to_opt configState##bufferConfig) {
+    | Some bufferConfig => _changeToBufferConfigRecord bufferConfig
+    | None => {transformDataBufferCount: 20 * 1000}
     }
 };
 
@@ -54,6 +63,8 @@ let setConfig configState::(configState: Js.t {..}) (state: state) => {
   (configState, setIsTest isTest::configState.isTest state)
 };
 
+let _initDataFromState (state: StateDataType.state) => state |> TransformSystem.initData;
+
 /* todo detect, setscreensize, set pixel ratio ... */
 let init (configState: mainConfigData, state: state) => {
   let canvas = createCanvas configState;
@@ -61,4 +72,6 @@ let init (configState: mainConfigData, state: state) => {
   |> setGL ::state
   |> setCanvas ::canvas
   |> setContextConfig contextConfig::configState.contextConfig
+  |> setBufferConfig bufferConfig::configState.bufferConfig
+  |> _initDataFromState
 };

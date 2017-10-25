@@ -7,7 +7,7 @@ open Dom;
 open Gl;
 
 external mainConfigTypeContextConfigDataToStateDataTypeContextConfigData :
-  MainConfigType.contextConfigData => StateDataType.contextConfigData =
+  MainConfigType.contextConfig => StateDataType.contextConfig =
   "%identity";
 
 let getCanvas (state: state) => state.viewData.canvas |> getOptionValueFromState;
@@ -19,9 +19,7 @@ let setCanvas canvas::(canvas: htmlElement) (state: state) => {
 
 let getContextConfig (state: state) => getOptionValueFromState state.viewData.contextConfig;
 
-let setContextConfig
-    contextConfig::(contextConfig: MainConfigType.contextConfigData)
-    (state: state) => {
+let setContextConfig contextConfig::(contextConfig: MainConfigType.contextConfig) (state: state) => {
   ...state,
   viewData: {
     ...state.viewData,
@@ -32,7 +30,7 @@ let setContextConfig
 
 let _convertContextConfigDataToJsObj
     (
-      {alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer}: MainConfigType.contextConfigData
+      {alpha, depth, stencil, antialias, premultipliedAlpha, preserveDrawingBuffer}: MainConfigType.contextConfig
     ) => {
   "alpha": Js.Boolean.to_js_boolean alpha,
   "depth": Js.Boolean.to_js_boolean depth,
@@ -43,5 +41,5 @@ let _convertContextConfigDataToJsObj
 };
 
 /* todo support webgl2 */
-let getContext (canvas: htmlElement) (options: MainConfigType.contextConfigData) =>
+let getContext (canvas: htmlElement) (options: MainConfigType.contextConfig) =>
   getWebgl1Context canvas (_convertContextConfigDataToJsObj options);

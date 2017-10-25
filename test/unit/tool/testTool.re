@@ -1,17 +1,11 @@
-let _initConfig isTest =>{};
-
-let init ::isTest=(Js.Nullable.return true) () => {
-  _initConfig isTest |> ignore;
-  BufferTool.minBufferSize () |> ignore;
-  Main.setMainConfig {
-    "canvasId": Js.Nullable.undefined,
-    "isTest": isTest,
-    "contextConfig": Js.Nullable.undefined
-  }
+let init
+    ::isTest=(Js.Nullable.return true)
+    ::bufferConfig=(Js.Nullable.return {"transformDataBufferCount": Js.Nullable.return 5})
+    () =>
+  Main.setMainConfig (MainTool.buildMainConfig ::isTest ::bufferConfig ())
   |> (
     fun state => {
       StateData.stateData.state = Some state;
       state
     }
-  )
-};
+  );

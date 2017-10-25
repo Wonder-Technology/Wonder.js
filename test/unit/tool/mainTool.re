@@ -2,7 +2,7 @@ open Sinon;
 
 open DomTool;
 
-let buildFakeDomForNotPassCanvasId (sandbox) => {
+let buildFakeDomForNotPassCanvasId sandbox => {
   let canvasDom = {
     "id": "a",
     "nodeType": 1,
@@ -19,4 +19,16 @@ let buildFakeDomForNotPassCanvasId (sandbox) => {
   |> setReturn returnVal::[body]
   |> ignore;
   (canvasDom, div, body)
+};
+
+let buildMainConfig
+    ::bufferConfig=Js.Nullable.undefined
+    ::canvasId=Js.Nullable.undefined
+    ::isTest=Js.Nullable.undefined
+    ::contextConfig=Js.Nullable.undefined
+    () => {
+  "bufferConfig": bufferConfig,
+  "canvasId": canvasId,
+  "isTest": isTest,
+  "contextConfig": contextConfig
 };

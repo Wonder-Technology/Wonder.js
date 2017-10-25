@@ -19,14 +19,14 @@ let _minusFirstDirtyIndex (firstDirtyIndex: int) =>
        fun r => Contract.Operators.(test "firstDirtyIndex should >= 0" (fun () => r >= 0))
      );
 
-let addFirstDirtyIndex (firstDirtyIndex: int) =>
+/* let addFirstDirtyIndex (firstDirtyIndex: int) =>
   succ firstDirtyIndex
   |> ensureCheck (
        fun r =>
          Contract.Operators.(
            test "firstDirtyIndex should <= maxCount" (fun () => r <= getMaxCount ())
          )
-     );
+     ); */
 
 /* let _addOldIndex (index: int) (transformData: transformData) => {
   ArraySystem.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;

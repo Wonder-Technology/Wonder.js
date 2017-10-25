@@ -10,7 +10,7 @@ let getParent (index: string) (transformData: transformData) =>
   Js.Undefined.to_opt (HashMapSystem.unsafeGet transformData.parentMap index);
 
 let _removeFromParentMap (childIndex: string) (transformData: transformData) => {
-  HashMapSystem.deleteVal transformData.parentMap childIndex;
+  HashMapSystem.deleteVal transformData.parentMap childIndex |> ignore;
   transformData
 };
 

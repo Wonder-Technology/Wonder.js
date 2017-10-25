@@ -2,7 +2,7 @@ open GlType;
 
 open TransformType;
 
-type contextConfigData = {
+type contextConfig = {
   alpha: bool,
   depth: bool,
   stencil: bool,
@@ -11,9 +11,11 @@ type contextConfigData = {
   preserveDrawingBuffer: bool
 };
 
+type bufferConfig = {mutable transformDataBufferCount: int};
+
 type viewData = {
   canvas: option Dom.htmlElement,
-  contextConfig: option contextConfigData
+  contextConfig: option contextConfig
 };
 
 type initConfigData = {isTest: option bool};
@@ -49,23 +51,22 @@ type transformData = {
   mutable localPositions: Js.Typed_array.Float32Array.t,
   mutable parentMap: transformParentMap,
   mutable childMap: transformChildMap,
-  mutable gameObjectMap: gameObjectMap,
+  mutable gameObjectMap,
   /* mutable originToMoveIndexMap: originToMoveIndexMap,
-  mutable moveToOriginIndexMap: moveToOriginIndexMap */
+     mutable moveToOriginIndexMap: moveToOriginIndexMap */
   mutable dirtyList: transformDirtyList
 };
 
-type tempData = {
-  floatArr_1:Js.Array.t float
-};
+type tempData = {floatArr_1: Js.Array.t float};
 
 type state = {
+  bufferConfig: option bufferConfig,
   viewData,
   initConfigData,
   deviceManagerData,
   tempData,
   gameObjectData,
-  transformData
+  mutable transformData: option transformData
 };
 
 type stateData = {mutable state: option state};

@@ -37,11 +37,9 @@ let _ =
                             "it will open wonder.js contract check"
                             (
                               fun () =>
-                                setMainConfig {
-                                  "canvasId": Js.Nullable.undefined,
-                                  "isTest": Js.Nullable.return true,
-                                  "contextConfig": Js.Nullable.undefined
-                                }
+                                setMainConfig (
+                                  MainTool.buildMainConfig isTest::(Js.Nullable.return true) ()
+                                )
                                 |> getIsTest
                                 |> expect
                                 == true
@@ -62,11 +60,10 @@ let _ =
                               fun () =>
                                 expect (
                                   fun () =>
-                                    setMainConfig {
-                                      "canvasId": Js.Nullable.return "a",
-                                      "isTest": Js.Nullable.undefined,
-                                      "contextConfig": Js.Nullable.undefined
-                                    }
+                                    setMainConfig (
+                                      MainTool.buildMainConfig
+                                        canvasId::(Js.Nullable.return "a") ()
+                                    )
                                 )
                                 |> toThrowMessage "canvas whose id is a should exist"
                             );
@@ -94,11 +91,10 @@ let _ =
                                   "save canvas to state and get webgl1 context from it"
                                   (
                                     fun () =>
-                                      setMainConfig {
-                                        "canvasId": Js.Nullable.return "a",
-                                        "isTest": Js.Nullable.undefined,
-                                        "contextConfig": Js.Nullable.undefined
-                                      }
+                                      setMainConfig (
+                                        MainTool.buildMainConfig
+                                          canvasId::(Js.Nullable.return "a") ()
+                                      )
                                       |> getCanvas
                                       |> getId
                                       |> expect
@@ -108,11 +104,10 @@ let _ =
                                   "suppport pass canvas id which starts with #"
                                   (
                                     fun () =>
-                                      setMainConfig {
-                                        "canvasId": Js.Nullable.return "#a",
-                                        "isTest": Js.Nullable.undefined,
-                                        "contextConfig": Js.Nullable.undefined
-                                      }
+                                      setMainConfig (
+                                        MainTool.buildMainConfig
+                                          canvasId::(Js.Nullable.return "#a") ()
+                                      )
                                       |> getCanvas
                                       |> getId
                                       |> expect
@@ -128,12 +123,7 @@ let _ =
                         fun () => {
                           let exec () => {
                             let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId sandbox;
-                            setMainConfig {
-                              "canvasId": Js.Nullable.undefined,
-                              "isTest": Js.Nullable.undefined,
-                              "contextConfig": Js.Nullable.undefined
-                            }
-                            |> ignore;
+                            setMainConfig (MainTool.buildMainConfig ()) |> ignore;
                             (canvasDom, div, body)
                           };
                           test
@@ -169,19 +159,20 @@ let _ =
                             (
                               fun () => {
                                 let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
-                                setMainConfig {
-                                  "canvasId": Js.Nullable.undefined,
-                                  "isTest": Js.Nullable.undefined,
-                                  "contextConfig":
-                                    Js.Nullable.return {
-                                      "alpha": Js.Nullable.undefined,
-                                      "depth": Js.Nullable.undefined,
-                                      "stencil": Js.Nullable.return true,
-                                      "antialias": Js.Nullable.return false,
-                                      "premultipliedAlpha": Js.Nullable.return true,
-                                      "preserveDrawingBuffer": Js.Nullable.return false
-                                    }
-                                }
+                                setMainConfig (
+                                  MainTool.buildMainConfig
+                                    contextConfig::(
+                                      Js.Nullable.return {
+                                        "alpha": Js.Nullable.undefined,
+                                        "depth": Js.Nullable.undefined,
+                                        "stencil": Js.Nullable.return true,
+                                        "antialias": Js.Nullable.return false,
+                                        "premultipliedAlpha": Js.Nullable.return true,
+                                        "preserveDrawingBuffer": Js.Nullable.return false
+                                      }
+                                    )
+                                    ()
+                                )
                                 |> ignore;
                                 canvasDom##getContext
                                 |> expect
@@ -212,12 +203,7 @@ let _ =
                             (
                               fun () => {
                                 let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
-                                setMainConfig {
-                                  "canvasId": Js.Nullable.undefined,
-                                  "isTest": Js.Nullable.undefined,
-                                  "contextConfig": Js.Nullable.undefined
-                                }
-                                |> ignore;
+                                setMainConfig (MainTool.buildMainConfig ()) |> ignore;
                                 canvasDom##getContext
                                 |> expect
                                 |> toCalledWith [
@@ -235,6 +221,57 @@ let _ =
                                          Js.Nullable.return (Js.Boolean.to_js_boolean false)
                                      }
                                    ]
+                              }
+                            )
+                      )
+                  }
+                );
+              describe
+                "bufferConfig"
+                (
+                  fun () => {
+                    describe
+                      "if pass bufferConfig"
+                      (
+                        fun () =>
+                          test
+                            "set to state (use default value if the field isn't passed)"
+                            (
+                              fun () => {
+                                let (_, _, _) = buildFakeDomForNotPassCanvasId sandbox;
+                                let transformDataBufferCount = 100;
+                                let state =
+                                  setMainConfig (
+                                    MainTool.buildMainConfig
+                                      bufferConfig::(
+                                        Js.Nullable.return {
+                                          "transformDataBufferCount":
+                                            Js.Nullable.return transformDataBufferCount
+                                        }
+                                      )
+                                      ()
+                                  );
+                                state
+                                |> BufferConfigSystem.getBufferConfig
+                                |> expect
+                                == {transformDataBufferCount: transformDataBufferCount}
+                              }
+                            )
+                      );
+                    describe
+                      "else"
+                      (
+                        fun () =>
+                          test
+                            "set default data"
+                            (
+                              fun () => {
+                                let (_, _, _) = buildFakeDomForNotPassCanvasId sandbox;
+                                let state = setMainConfig (MainTool.buildMainConfig ());
+                                state
+                                |> BufferConfigSystem.getBufferConfig
+                                |> expect
+                                == {transformDataBufferCount: 20 * 1000}
                               }
                             )
                       )

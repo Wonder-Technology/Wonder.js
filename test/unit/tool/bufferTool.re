@@ -1,4 +1,11 @@
-let minBufferSize () :unit => DataBufferConfig.dataBufferConfig.transformDataBufferCount = 5;
+open BufferConfigSystem;
 
+/* let minBufferSize (state: StateDataType.state) => {
+  (getBufferConfig state).transformDataBufferCount = 5;
+  state
+}; */
 
-let setBufferSize ::transformDataBufferCount=10 () :unit => DataBufferConfig.dataBufferConfig.transformDataBufferCount = transformDataBufferCount;
+let setBufferSize ::transformDataBufferCount=10 (state: StateDataType.state) => {
+  (getBufferConfig state).transformDataBufferCount = transformDataBufferCount;
+  state
+};
