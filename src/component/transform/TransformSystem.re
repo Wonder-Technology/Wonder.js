@@ -113,7 +113,7 @@ let getChildren (transform: transform) (state: StateDataType.state) =>
   _getTransformData state |> unsafeGetChildren (Js.Int.toString transform) |> ArraySystem.copy;
 
 let update (state: StateDataType.state) => {
-  UpdateSystem.update state.tempData (_getTransformData state) |> ignore;
+  UpdateSystem.update (_getTransformData state) |> ignore;
   state
 };
 

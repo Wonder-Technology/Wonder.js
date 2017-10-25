@@ -57,14 +57,11 @@ type transformData = {
   mutable dirtyList: transformDirtyList
 };
 
-type tempData = {floatArr_1: Js.Array.t float};
-
 type state = {
   bufferConfig: option bufferConfig,
   viewData,
   initConfigData,
   deviceManagerData,
-  tempData,
   gameObjectData,
   mutable transformData: option transformData
 };

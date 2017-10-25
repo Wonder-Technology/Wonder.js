@@ -16,11 +16,9 @@ open DirtySystem;
 let _cleanDirtyList (transformData: transformData) =>
   /* dirtyList
      |> ArraySystem.forEach (fun index => _moveFromDirtyListToNormalList index transformData |> ignore); */
-  transformData.dirtyList =
-    ArraySystem.createEmpty ();
+  transformData.dirtyList = ArraySystem.createEmpty ();
 
 let _transform
-    (floatArr_1: ArraySystem.t float)
     ({localToWorldMatrices, localPositions} as transformData)
     (dirtyList: array int) => {
   open Matrix4System;
@@ -28,7 +26,7 @@ let _transform
   |> ArraySystem.forEach (
        fun index => {
          /* todo from rotation, scale */
-         let mat = fromTranslation localPositions (getVector3DataIndex index) ;
+         let mat = fromTranslation localPositions (getVector3DataIndex index);
          switch (getParent (Js.Int.toString index) transformData) {
          | Some parent =>
            setLocalToWorldMatricesTypeArr
@@ -67,10 +65,7 @@ let _sortParentBeforeChildInDirtyList (transformData: transformData) (dirtyList:
   dirtyList
 };
 
-let _updateDirtyList
-    (floatArr_1: ArraySystem.t float)
-    (transformData: transformData)
-    (dirtyList: array int) => {
+let _updateDirtyList (transformData: transformData) (dirtyList: array int) => {
   /* requireCheck (
        fun () =>
          Contract.Operators.(
@@ -81,16 +76,16 @@ let _updateDirtyList
      ); */
   dirtyList
   |> _sortParentBeforeChildInDirtyList transformData
-  |> _transform floatArr_1 transformData
+  |> _transform transformData
   |> ignore;
   transformData
 };
 
-let update {floatArr_1} (transformData: transformData) =>
+let update (transformData: transformData) =>
   /* ArraySystem.range transformData.firstDirtyIndex (getMaxCount () - 1)
      |> _updateDirtyList floatArr_1 transformData
      |> _cleanDirtyList transformData; */
   transformData.dirtyList
   |> ArraySystem.removeDuplicateItems
-  |> _updateDirtyList floatArr_1 transformData
+  |> _updateDirtyList transformData
   |> _cleanDirtyList;
