@@ -20,6 +20,8 @@ let push = Js.Array.push;
 
 let pop = Js.Array.pop;
 
+let concat = Js.Array.concat;
+
 let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
   requireCheck (
     fun () =>
