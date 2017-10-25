@@ -1,12 +1,8 @@
 open StateDataType;
 
-open Contract;
-
 open HierachySystem;
 
 open OperateDataSystem;
-
-open DirtySystem;
 
 /* let _moveFromDirtyListToNormalList (index: int) (transformData: transformData) => {
      transformData.firstDirtyIndex = addFirstDirtyIndex transformData.firstDirtyIndex;

@@ -65,7 +65,7 @@ let _ =
                 "create a new transform which is just index(int)"
                 (
                   fun () => {
-                    let (state, transform) = createTransform !state;
+                    let (_, transform) = createTransform !state;
                     expect transform == 0
                   }
                 );
@@ -90,8 +90,7 @@ let _ =
                           state := _buildState 2 0;
                           expect (
                             fun () => {
-                              let (state, transform) = createTransform !state;
-                              ()
+                              createTransform !state;
                             }
                           )
                           |> toThrowMessage "index should <= maxCount"
@@ -104,8 +103,7 @@ let _ =
                           state := _buildState 0 2;
                           expect (
                             fun () => {
-                              let (state, transform) = createTransform !state;
-                              ()
+                              createTransform !state;
                             }
                           )
                           |> toThrowMessage "count should <= maxCount"
@@ -121,7 +119,7 @@ let _ =
                       "state->index + 1"
                       (
                         fun () => {
-                          let (state, transform) = createTransform !state;
+                          let (state, _) = createTransform !state;
                           getData state |> (fun data => expect data.index == 1)
                         }
                       );
@@ -129,7 +127,7 @@ let _ =
                       "state->count + 1"
                       (
                         fun () => {
-                          let (state, transform) = createTransform !state;
+                          let (state, _) = createTransform !state;
                           getData state |> (fun data => expect data.count == 1)
                         }
                       )
@@ -231,7 +229,7 @@ let _ =
                             "test remove its current parent"
                             (
                               fun () => {
-                                let (state, parent, child, _) = exec ();
+                                let (state, _, child, _) = exec ();
                                 state
                                 |> getTransformParent child
                                 |> expect
@@ -256,8 +254,6 @@ let _ =
                       "test one(parent)-two(child)"
                       (
                         fun () => {
-                          open Vector3System;
-                          open Vector3Type;
                           let (state, parent) = createTransform !state;
                           let (state, child1) = createTransform state;
                           let (state, child2) = createTransform state;
@@ -369,7 +365,7 @@ let _ =
                 "change parent's localPosition should affect children"
                 (
                   fun () => {
-                    let (state, parent, child, pos1, pos2) = prepare ();
+                    let (state, parent, child, _, pos2) = prepare ();
                     let state = setTransformLocalPosition parent pos2 state;
                     let state = state |> update;
                     state
@@ -380,7 +376,7 @@ let _ =
                 "change child's localPosition shouldn't affect parent"
                 (
                   fun () => {
-                    let (state, parent, child, pos1, pos2) = prepare ();
+                    let (state, parent, child, pos1, _) = prepare ();
                     let state = setTransformLocalPosition child pos1 state;
                     let state = state |> update;
                     state
@@ -485,7 +481,7 @@ let _ =
                       "test get local position"
                       (
                         fun () => {
-                          let (state, transform, pos1, pos2) = _prepareOne ();
+                          let (state, transform, _, pos2) = _prepareOne ();
                           let state = state |> update;
                           let state = setTransformLocalPosition transform pos2 state;
                           state |> getTransformLocalPosition transform |> expect == pos2
@@ -502,7 +498,7 @@ let _ =
                 "clean dirty list after compute transform data"
                 (
                   fun () => {
-                    let (state, transform, pos1, pos2) = _prepareOne ();
+                    let (state, _,_,_) = _prepareOne ();
                     let len1 =
                       state
                       |> getData

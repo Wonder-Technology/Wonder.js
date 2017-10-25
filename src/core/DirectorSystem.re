@@ -1,5 +1,3 @@
-open StateDataType;
-
 open StateSystem;
 
 open StateData;

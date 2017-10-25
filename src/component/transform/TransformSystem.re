@@ -23,7 +23,7 @@ let create (state: StateDataType.state) => {
   transformData.count = succ transformData.count;
   (state, index)
   |> ensureCheck (
-       fun (state, index) => {
+       fun (state, _) => {
          open Contract.Operators;
          let {index, count} = _getTransformData state;
          let maxCount = getMaxCount state;

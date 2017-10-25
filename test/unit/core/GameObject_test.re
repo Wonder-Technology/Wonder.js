@@ -29,7 +29,7 @@ let _ =
                  "create a new gameObject which is just uidStr(string)"
                  (
                    fun () => {
-                     let (state, gameObject) = createGameObject !state;
+                     let (_, gameObject) = createGameObject !state;
                      expect gameObject == "0"
                    }
                  );
@@ -49,7 +49,7 @@ let _ =
                  "state->uid + 1"
                  (
                    fun () => {
-                     let (state, gameObject) = createGameObject !state;
+                     let (state, _) = createGameObject !state;
                      getData state |> (fun data => expect data.uid == 1)
                    }
                  )

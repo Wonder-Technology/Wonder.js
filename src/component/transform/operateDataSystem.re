@@ -1,7 +1,5 @@
 open Js.Typed_array;
 
-open Contract;
-
 open StateDataType;
 
 open TypeArrayUtils;

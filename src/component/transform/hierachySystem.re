@@ -15,7 +15,7 @@ let _removeFromParentMap (childIndex: string) (transformData: transformData) => 
 let unsafeGetChildren (index: string) (transformData: transformData) =>
   HashMapSystem.unsafeGet transformData.childMap index
   |> ensureCheck (
-       fun r =>
+       fun _ =>
          test
            "children should exist"
            (fun () => HashMapSystem.get transformData.childMap index |> assertExist)

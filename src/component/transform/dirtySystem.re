@@ -1,10 +1,4 @@
-open TransformType;
-
 open StateDataType;
-
-open Contract;
-
-open OperateDataSystem;
 
 /* let _isNotDirty (originIndex: int) ({firstDirtyIndex, originToMoveIndexMap} as transformData) => {
      switch IndexMapUtils.getMoveIndex originIndex originToMoveIndexMap {
@@ -52,7 +46,7 @@ let _addToDirtyList (index: int) {dirtyList} =>
      moveToFromOrigin index firstDirtyIndex transformData */
   ArraySystem.push index dirtyList;
 
-let rec addItAndItsChildrenToDirtyList (index: int) (transformData: transformData) => {
+let addItAndItsChildrenToDirtyList (index: int) (transformData: transformData) => {
   let children = ref [|index|];
   while (ArraySystem.length !children > 0) {
     let last: int = ArraySystem.unsafePop !children;

@@ -130,7 +130,7 @@ let _ =
                             "test create canvas"
                             (
                               fun () => {
-                                let (canvasDom, div, body) = exec ();
+                                let (_, div, _) = exec ();
                                 div##innerHTML |> expect == "<canvas></canvas>"
                               }
                             );
@@ -138,7 +138,7 @@ let _ =
                             "prepend to body"
                             (
                               fun () => {
-                                let (canvasDom, div, body) = exec ();
+                                let (canvasDom, _, body) = exec ();
                                 body##prepend |> expect |> toCalledWith [canvasDom]
                               }
                             )
@@ -228,7 +228,7 @@ let _ =
                       "set to state"
                       (
                         fun () => {
-                          let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
+                          let (_, _, _) = buildFakeDomForNotPassCanvasId sandbox;
                           let state = setMainConfig (MainTool.buildMainConfig ());
                           state
                           |> getContextConfig
