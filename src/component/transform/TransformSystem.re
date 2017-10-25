@@ -20,15 +20,13 @@ let create (state: StateDataType.state) => {
   let transformData = _getTransformData state;
   let index = transformData.index;
   transformData.index = succ transformData.index;
-  transformData.count = succ transformData.count;
   (state, index)
   |> ensureCheck (
        fun (state, _) => {
          open Contract.Operators;
-         let {index, count} = _getTransformData state;
+         let {index} = _getTransformData state;
          let maxCount = getMaxCount state;
          test "index should <= maxCount" (fun () => index <= maxCount);
-         test "count should <= maxCount" (fun () => count <= maxCount)
        }
      )
 };
@@ -176,7 +174,6 @@ let initData (state: StateDataType.state) => {
         localToWorldMatrices,
         localPositions,
         index: 0,
-        count: 0,
         /* firstDirtyIndex: getMaxCount (), */
         /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
         parentMap: HashMapSystem.createEmpty (),

@@ -42,7 +42,6 @@ type transformChildMap = Js.Dict.t (array transform);
 type transformDirtyList = array int;
 
 type transformData = {
-  mutable count: int,
   mutable index: int,
   /* mutable firstDirtyIndex: int, */
   /* mutable oldIndexListBeforeAddToDirtyList: array int, */

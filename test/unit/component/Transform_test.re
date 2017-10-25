@@ -73,11 +73,10 @@ let _ =
                 "ensure check"
                 (
                   fun () => {
-                    let _buildState index count =>
+                    let _buildState index =>
                       StateDataType.{
                         ...!state,
-                        transformData:
-                          Some {...Js.Option.getExn (!state).transformData, index, count}
+                        transformData: Some {...Js.Option.getExn (!state).transformData, index}
                       };
                     beforeEach (
                       fun () =>
@@ -87,26 +86,9 @@ let _ =
                       "index should <= maxCount"
                       (
                         fun () => {
-                          state := _buildState 2 0;
-                          expect (
-                            fun () => {
-                              createTransform !state;
-                            }
-                          )
+                          state := _buildState 2;
+                          expect (fun () => createTransform !state)
                           |> toThrowMessage "index should <= maxCount"
-                        }
-                      );
-                    test
-                      "count should <= maxCount"
-                      (
-                        fun () => {
-                          state := _buildState 0 2;
-                          expect (
-                            fun () => {
-                              createTransform !state;
-                            }
-                          )
-                          |> toThrowMessage "count should <= maxCount"
                         }
                       )
                   }
@@ -114,7 +96,7 @@ let _ =
               describe
                 "change state"
                 (
-                  fun () => {
+                  fun () =>
                     test
                       "state->index + 1"
                       (
@@ -122,16 +104,7 @@ let _ =
                           let (state, _) = createTransform !state;
                           getData state |> (fun data => expect data.index == 1)
                         }
-                      );
-                    test
-                      "state->count + 1"
-                      (
-                        fun () => {
-                          let (state, _) = createTransform !state;
-                          getData state |> (fun data => expect data.count == 1)
-                        }
                       )
-                  }
                 )
             }
           );
@@ -498,7 +471,7 @@ let _ =
                 "clean dirty list after compute transform data"
                 (
                   fun () => {
-                    let (state, _,_,_) = _prepareOne ();
+                    let (state, _, _, _) = _prepareOne ();
                     let len1 =
                       state
                       |> getData
