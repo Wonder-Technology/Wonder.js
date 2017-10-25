@@ -1,8 +1,4 @@
-let _initConfig isTest =>
-  switch (Js.toOption isTest) {
-  | Some true => CompileConfig.compileConfig.isCompileTest = true
-  | _ => ()
-  };
+let _initConfig isTest =>{};
 
 let init ::isTest=(Js.Nullable.return true) () => {
   _initConfig isTest |> ignore;

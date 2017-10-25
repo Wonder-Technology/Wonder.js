@@ -2,8 +2,6 @@ open StateDataType;
 
 open StateData;
 
-open CompileConfig;
-
 open Exception;
 
 let _getIsTest (state: state) :bool => Js.Option.getExn state.initConfigData.isTest;
@@ -26,26 +24,20 @@ let test (message: string) (func: unit => unit) =>
   | Check_fail failMessage => failwith {j|$message->$failMessage|j}
   };
 
+/* todo use conditional compilation */
 let requireCheck (f: unit => unit) :unit =>
-  switch compileConfig.isCompileTest {
-  | false => ()
-  | true =>
-    switch (_getIsTestFromStateData stateData) {
-    | true => f ()
-    | _ => ()
-    }
+  switch (_getIsTestFromStateData stateData) {
+  | true => f ()
+  | _ => ()
   };
 
+/* todo use conditional compilation */
 let ensureCheck (f: 'a => unit) (returnVal: 'a) :'a =>
-  switch compileConfig.isCompileTest {
-  | false => returnVal
+  switch (_getIsTestFromStateData stateData) {
   | true =>
-    switch (_getIsTestFromStateData stateData) {
-    | true =>
-      f returnVal;
-      returnVal
-    | _ => returnVal
-    }
+    f returnVal;
+    returnVal
+  | _ => returnVal
   };
 
 let _assert (result: bool) (message: string) =>

@@ -1,7 +1,5 @@
 open Jest;
 
-open CompileConfig;
-
 open StateSystem;
 
 open StateData;
@@ -29,10 +27,9 @@ let _ =
                 stub
               };
               test
-                "if CompileConfig.closeContractTest === true and state->isTest === true, check"
+                "if state->isTest === true, check"
                 (
                   fun () => {
-                    compileConfig.isCompileTest = true;
                     createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
                     exec () |> expect |> toCalledOnce
                   }
@@ -41,10 +38,8 @@ let _ =
                 "else, not check"
                 (
                   fun () => {
-                    compileConfig.isCompileTest = false;
                     createState () |> setIsTest isTest::true |> setState ::stateData |> ignore;
                     exec () |> expect |> not_ |> toCalledOnce |> ignore;
-                    compileConfig.isCompileTest = true;
                     createState () |> setIsTest isTest::false |> setState ::stateData |> ignore;
                     exec () |> expect |> not_ |> toCalledOnce
                   }
