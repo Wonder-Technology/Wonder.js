@@ -4,8 +4,6 @@ open StateDataType;
 
 open Contract;
 
-open ChildUtils;
-
 let getParent (index: string) (transformData: transformData) =>
   Js.Undefined.to_opt (HashMapSystem.unsafeGet transformData.parentMap index);
 
@@ -13,6 +11,15 @@ let _removeFromParentMap (childIndex: string) (transformData: transformData) => 
   HashMapSystem.deleteVal transformData.parentMap childIndex |> ignore;
   transformData
 };
+
+let unsafeGetChildren (index: string) (transformData: transformData) =>
+  HashMapSystem.unsafeGet transformData.childMap index
+  |> ensureCheck (
+       fun r =>
+         test
+           "children should exist"
+           (fun () => HashMapSystem.get transformData.childMap index |> assertExist)
+     );
 
 let _removeChild (childIndex: int) (children: array transform) =>
   ArraySystem.deleteBySwap
@@ -71,19 +78,14 @@ let setParent (parent: option transform) (child: transform) (transformData: tran
     | Some currentParent =>
       let currentParentIndexStr = Js.Int.toString currentParent;
       _removeFromParent currentParentIndexStr child transformData
-      |> DirtySystem.addItAndItsChildrenToDirtyList child
     }
   | Some newParent =>
     switch (getParent childStr transformData) {
-    | None =>
-      _addToParent newParent child transformData
-      |> DirtySystem.addItAndItsChildrenToDirtyList child
+    | None => _addToParent newParent child transformData
     | Some currentParent =>
       let currentParentIndexStr = Js.Int.toString currentParent;
       not (TransformJudgeUtils.isSame currentParent newParent) ?
-        _removeFromParent currentParentIndexStr child transformData
-        |> _addToParent newParent child
-        |> DirtySystem.addItAndItsChildrenToDirtyList child :
+        _removeFromParent currentParentIndexStr child transformData |> _addToParent newParent child :
         transformData
     }
   }

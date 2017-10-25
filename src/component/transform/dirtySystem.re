@@ -65,7 +65,7 @@ let rec addItAndItsChildrenToDirtyList (index: int) (transformData: transformDat
       /* let newFirstDirtyIndex = _minusFirstDirtyIndex transformData.firstDirtyIndex;
       transformData.firstDirtyIndex = newFirstDirtyIndex; */
       _addToDirtyList index transformData |> ignore;
-      ChildUtils.unsafeGetChildren (Js.Int.toString index) transformData
+      HierachySystem.unsafeGetChildren (Js.Int.toString index) transformData
       |> ArraySystem.forEach (
            fun (child: transform) => addItAndItsChildrenToDirtyList child transformData |> ignore
          )

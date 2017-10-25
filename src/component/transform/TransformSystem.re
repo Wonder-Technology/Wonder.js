@@ -12,7 +12,7 @@ open Contract;
 
 open DirtySystem;
 
-open ChildUtils;
+open HierachySystem;
 
 let _getTransformData (state: StateDataType.state) => Js.Option.getExn state.transformData;
 
@@ -104,7 +104,8 @@ let getParent (child: transform) (state: StateDataType.state) =>
   HierachySystem.getParent (Js.Int.toString child) (_getTransformData state);
 
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
-  HierachySystem.setParent (Js.toOption parent) child (_getTransformData state) |> ignore;
+  HierachySystem.setParent (Js.toOption parent) child (_getTransformData state)
+  |> addItAndItsChildrenToDirtyList child |> ignore;
   state
 };
 
