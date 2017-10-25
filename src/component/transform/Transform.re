@@ -16,6 +16,10 @@ let setTransformParent
     (state: StateDataType.state) =>
   setParent parent child state;
 
+let getTransformChildren (transform:transform) (state:StateDataType.state) => {
+  getChildren transform state;
+};
+
 let getTransformLocalPosition (transform: transform) (state: StateDataType.state) =>
   getLocalPosition transform state;
 

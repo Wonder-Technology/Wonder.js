@@ -13,6 +13,9 @@
   "collectCoverage":true,
   "coverageDirectory":"<rootDir>/test/coverage/",
   "coveragePathIgnorePatterns":[
+    "<rootDir>/lib/es6_global/src/.+/Director.*",
+    "<rootDir>/lib/es6_global/src/utils/",
+    "<rootDir>/lib/es6_global/src/definition/"
   ],
   "collectCoverageFrom" : ["lib/es6_global/src/**/*.{js}", "!**/node_modules/**", "!**/vendor/**"]
 }

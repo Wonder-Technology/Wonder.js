@@ -13,11 +13,11 @@ open OperateDataSystem;
   }
 }; */
 
-let _minusFirstDirtyIndex (firstDirtyIndex: int) =>
+/* let _minusFirstDirtyIndex (firstDirtyIndex: int) =>
   pred firstDirtyIndex
   |> ensureCheck (
        fun r => Contract.Operators.(test "firstDirtyIndex should >= 0" (fun () => r >= 0))
-     );
+     ); */
 
 /* let addFirstDirtyIndex (firstDirtyIndex: int) =>
   succ firstDirtyIndex

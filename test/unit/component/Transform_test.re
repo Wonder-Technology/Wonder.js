@@ -43,6 +43,13 @@ let _ =
           )
           |> expect
           == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos);
+        let _prepareOne () => {
+          let (state, transform) = createTransform !state;
+          let pos1 = (1., 2., 3.);
+          let pos2 = (5., 10., 30.);
+          let state = setTransformPosition transform pos1 state;
+          (state, transform, pos1, pos2)
+        };
         beforeEach (
           fun () => {
             sandbox := createSandbox ();
@@ -69,10 +76,12 @@ let _ =
                     let _buildState index count =>
                       StateDataType.{
                         ...!state,
-                        transformData: Some ( {... ( Js.Option.getExn (!state).transformData ), index, count} )
+                        transformData:
+                          Some {...Js.Option.getExn (!state).transformData, index, count}
                       };
                     beforeEach (
-                      fun () => BufferTool.setBufferSize transformDataBufferCount::2 !state |> ignore
+                      fun () =>
+                        BufferTool.setBufferSize transformDataBufferCount::2 !state |> ignore
                     );
                     test
                       "index should <= maxCount"
@@ -199,29 +208,48 @@ let _ =
                 "if set parent to be null, remove its current parent"
                 (
                   fun () => {
-                    test
+                    describe
                       "test one(parent)-one(child)"
                       (
                         fun () => {
-                          let (state, parent) = createTransform !state;
-                          let (state, child) = createTransform state;
-                          let pos = (1., 2., 3.);
-                          let state =
-                            state
-                            |> setTransformLocalPosition parent pos
-                            |> setTransformParent (Js.Nullable.return parent) child;
-                          let state =
-                            state |> update |> setTransformParent Js.Nullable.null child |> update;
-                          state
-                          |> getTransformParent child
-                          |> expect
-                          == Js.Nullable.undefined
-                          |> ignore;
-                          state
-                          |> _judgeOneToOne
-                               (parent, child)
-                               (pos, pos)
-                               (getDefaultPosition (), getDefaultPosition ())
+                          let exec () => {
+                            let (state, parent) = createTransform !state;
+                            let (state, child) = createTransform state;
+                            let pos = (1., 2., 3.);
+                            let state =
+                              state
+                              |> setTransformLocalPosition parent pos
+                              |> setTransformParent (Js.Nullable.return parent) child;
+                            let state =
+                              state
+                              |> update
+                              |> setTransformParent Js.Nullable.null child
+                              |> update;
+                            (state, parent, child, pos)
+                          };
+                          test
+                            "test remove its current parent"
+                            (
+                              fun () => {
+                                let (state, parent, child, _) = exec ();
+                                state
+                                |> getTransformParent child
+                                |> expect
+                                == Js.Nullable.undefined
+                              }
+                            );
+                          test
+                            "test position and local position"
+                            (
+                              fun () => {
+                                let (state, parent, child, pos) = exec ();
+                                state
+                                |> _judgeOneToOne
+                                     (parent, child)
+                                     (pos, pos)
+                                     (getDefaultPosition (), getDefaultPosition ())
+                              }
+                            )
                         }
                       );
                     test
@@ -255,30 +283,68 @@ let _ =
                       )
                   }
                 );
-              test
-                "can set the same parent"
+              describe
+                "if child already has parent"
                 (
                   fun () => {
-                    let (state, parent) = createTransform !state;
-                    let (state, child) = createTransform state;
-                    let pos = (1., 2., 3.);
-                    let state =
-                      setTransformLocalPosition parent pos state
-                      |> setTransformParent (Js.Nullable.return parent) child;
-                    let state =
-                      state
-                      |> update
-                      |> setTransformParent (Js.Nullable.return parent) child
-                      |> update;
-                    state
-                    |> getTransformParent child
-                    |> expect
-                    == Js.Nullable.return parent
-                    |> ignore;
-                    state |> _judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos)
+                    test
+                      "can set the same parent"
+                      (
+                        fun () => {
+                          let (state, parent) = createTransform !state;
+                          let (state, child) = createTransform state;
+                          let pos = (1., 2., 3.);
+                          let state =
+                            setTransformLocalPosition parent pos state
+                            |> setTransformParent (Js.Nullable.return parent) child;
+                          let state =
+                            state
+                            |> update
+                            |> setTransformParent (Js.Nullable.return parent) child
+                            |> update;
+                          state |> getTransformParent child |> expect == Js.Nullable.return parent
+                          /* state |> _judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos) */
+                        }
+                      );
+                    test
+                      "can set different parent"
+                      (
+                        fun () => {
+                          let (state, parent1) = createTransform !state;
+                          let (state, parent2) = createTransform state;
+                          let (state, child) = createTransform state;
+                          let pos1 = (1., 2., 3.);
+                          let pos2 = (300., 20., 30.);
+                          let state =
+                            setTransformLocalPosition parent1 pos1 state
+                            |> setTransformParent (Js.Nullable.return parent1) child;
+                          let state = state |> update;
+                          let state =
+                            setTransformLocalPosition parent2 pos2 state
+                            |> setTransformParent (Js.Nullable.return parent2) child;
+                          state |> getTransformParent child |> expect == Js.Nullable.return parent2
+                        }
+                      )
                   }
                 )
             }
+          );
+        describe
+          "getTransformChildren"
+          (
+            fun () =>
+              test
+                "get parent's all children"
+                (
+                  fun () => {
+                    let (state, parent) = createTransform !state;
+                    let (state, child1) = createTransform state;
+                    let (state, child2) = createTransform state;
+                    let state = setTransformParent (Js.Nullable.return parent) child1 state;
+                    let state = setTransformParent (Js.Nullable.return parent) child2 state;
+                    state |> getTransformChildren parent |> expect == [|child1, child2|]
+                  }
+                )
           );
         describe
           "setTransformLocalPosition"
@@ -306,7 +372,8 @@ let _ =
                     let (state, parent, child, pos1, pos2) = prepare ();
                     let state = setTransformLocalPosition parent pos2 state;
                     let state = state |> update;
-                    state |> _judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
+                    state
+                    |> _judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
                   }
                 );
               test
@@ -316,7 +383,8 @@ let _ =
                     let (state, parent, child, pos1, pos2) = prepare ();
                     let state = setTransformLocalPosition child pos1 state;
                     let state = state |> update;
-                    state |> _judgeOneToOne (parent, child) (pos1, pos1) (pos1, add Float pos1 pos1)
+                    state
+                    |> _judgeOneToOne (parent, child) (pos1, pos1) (pos1, add Float pos1 pos1)
                   }
                 )
             }
@@ -359,7 +427,8 @@ let _ =
                           let state = state |> setTransformPosition parent pos2;
                           let state = state |> update;
                           state
-                          |> _judgeOneToOne (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
+                          |> _judgeOneToOne
+                               (parent, child) (pos2, pos2) (pos2, add Float pos2 pos2)
                         }
                       );
                     test
@@ -393,14 +462,6 @@ let _ =
           "test before update"
           (
             fun () => {
-              let prepare () => {
-                let (state, transform) = createTransform !state;
-                let pos1 = (1., 2., 3.);
-                let pos2 = (5., 10., 30.);
-                let state = setTransformPosition transform pos1 state;
-                let state = state |> update;
-                (state, transform, pos1, pos2)
-              };
               describe
                 "should get the last updated transform data"
                 (
@@ -409,7 +470,8 @@ let _ =
                       "test get position"
                       (
                         fun () => {
-                          let (state, transform, pos1, pos2) = prepare ();
+                          let (state, transform, pos1, pos2) = _prepareOne ();
+                          let state = state |> update;
                           let state = setTransformPosition transform pos2 state;
                           state |> getTransformPosition transform |> expect == pos1
                         }
@@ -423,13 +485,36 @@ let _ =
                       "test get local position"
                       (
                         fun () => {
-                          let (state, transform, pos1, pos2) = prepare ();
+                          let (state, transform, pos1, pos2) = _prepareOne ();
+                          let state = state |> update;
                           let state = setTransformLocalPosition transform pos2 state;
                           state |> getTransformLocalPosition transform |> expect == pos2
                         }
                       )
                 )
             }
+          );
+        describe
+          "update"
+          (
+            fun () =>
+              test
+                "clean dirty list after compute transform data"
+                (
+                  fun () => {
+                    let (state, transform, pos1, pos2) = _prepareOne ();
+                    let len1 =
+                      state
+                      |> getData
+                      |> (fun transformData => ArraySystem.length transformData.dirtyList);
+                    let state = state |> update;
+                    let len2 =
+                      state
+                      |> getData
+                      |> (fun transformData => ArraySystem.length transformData.dirtyList);
+                    (len1, len2) |> expect == (1, 0)
+                  }
+                )
           )
       }
     );

@@ -223,6 +223,25 @@ let _ =
                                    ]
                               }
                             )
+                      );
+                    test
+                      "set to state"
+                      (
+                        fun () => {
+                          let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId sandbox;
+                          let state = setMainConfig (MainTool.buildMainConfig ());
+                          state
+                          |> getContextConfig
+                          |> expect
+                          == {
+                            alpha: true,
+                            depth: true,
+                            stencil: false,
+                            antialias: true,
+                            premultipliedAlpha: true,
+                            preserveDrawingBuffer: false
+                          }
+                        }
                       )
                   }
                 );
