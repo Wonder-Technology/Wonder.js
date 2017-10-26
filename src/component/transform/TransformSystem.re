@@ -14,17 +14,17 @@ open TransformDirtySystem;
 
 open TransformHierachySystem;
 
-let _getTransformData (state: StateDataType.state) => Js.Option.getExn state.transformData;
+open TransformStateUtils;
 
 let create (state: StateDataType.state) => {
-  let transformData = _getTransformData state;
+  let transformData = getTransformData state;
   let index = transformData.index;
   transformData.index = succ transformData.index;
   (state, index)
   |> ensureCheck (
        fun (state, _) => {
          open Contract.Operators;
-         let {index} = _getTransformData state;
+         let {index} = getTransformData state;
          let maxCount = getMaxCount state;
          test "index should <= maxCount" (fun () => index <= maxCount)
        }
@@ -99,28 +99,28 @@ let _setDefaultChildren (maxCount: int) ({childMap} as transformData) => {
 };
 
 let getParent (child: transform) (state: StateDataType.state) =>
-  TransformHierachySystem.getParent (Js.Int.toString child) (_getTransformData state);
+  TransformHierachySystem.getParent (Js.Int.toString child) (getTransformData state);
 
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
-  TransformHierachySystem.setParent (Js.toOption parent) child (_getTransformData state)
+  TransformHierachySystem.setParent (Js.toOption parent) child (getTransformData state)
   |> addItAndItsChildrenToDirtyList child
   |> ignore;
   state
 };
 
 let getChildren (transform: transform) (state: StateDataType.state) =>
-  _getTransformData state |> unsafeGetChildren (Js.Int.toString transform) |> ArraySystem.copy;
+  getTransformData state |> unsafeGetChildren (Js.Int.toString transform) |> ArraySystem.copy;
 
 let update (state: StateDataType.state) => {
-  TransformUpdateSystem.update (_getTransformData state) |> ignore;
+  TransformUpdateSystem.update (getTransformData state) |> ignore;
   state
 };
 
 let getLocalPosition (transform: transform) (state: StateDataType.state) =>
-  getFloat3 (getVector3DataIndex transform) (_getTransformData state).localPositions;
+  getFloat3 (getVector3DataIndex transform) (getTransformData state).localPositions;
 
 let setLocalPosition (transform: transform) (localPosition: position) (state: StateDataType.state) => {
-  let transformData = _getTransformData state;
+  let transformData = getTransformData state;
   /* todo check alive? */
   setFloat3
     (getVector3DataIndex transform)
@@ -134,7 +134,7 @@ let setLocalPosition (transform: transform) (localPosition: position) (state: St
 /* todo add cache? */
 let getPosition (transform: transform) (state: StateDataType.state) => {
   open Js.Typed_array;
-  let localToWorldMatrices = (_getTransformData state).localToWorldMatrices;
+  let localToWorldMatrices = (getTransformData state).localToWorldMatrices;
   let index = getMatrix4DataIndex transform;
   (
     Float32Array.unsafe_get localToWorldMatrices (index + 12),
@@ -144,7 +144,7 @@ let getPosition (transform: transform) (state: StateDataType.state) => {
 };
 
 let setPosition (transform: transform) (position: position) (state: StateDataType.state) => {
-  let transformData = _getTransformData state;
+  let transformData = getTransformData state;
   TransformOperateDataSystem.setPosition
     (getVector3DataIndex transform)
     (TransformHierachySystem.getParent (Js.Int.toString transform) transformData)
@@ -157,18 +157,12 @@ let setPosition (transform: transform) (position: position) (state: StateDataTyp
 
 let getLocalToWorldMatrix (transform: transform) (state: StateDataType.state) =>
   TransformOperateDataSystem.getLocalToWorldMatrix
-    transform (_getTransformData state).localToWorldMatrices;
+    transform (getTransformData state).localToWorldMatrices;
 
 let init (state: StateDataType.state) => update state;
 
-let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {
-  let transformData = _getTransformData state;
-  addComponentToGameObjectMap transform gameObjectUId transformData.gameObjectMap |> ignore;
-  state
-};
-
 let getGameObject (transform: transform) (state: StateDataType.state) => {
-  let transformData = _getTransformData state;
+  let transformData = getTransformData state;
   getComponentGameObject transform transformData.gameObjectMap
 };
 

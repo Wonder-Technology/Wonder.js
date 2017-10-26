@@ -1,15 +1,13 @@
-open StateDataType;
-
 open CameraControllerType;
 
 open CameraControllerDirtySystem;
 
 open Contract;
 
-let _getCameraControllerData (state: StateDataType.state) => state.cameraControllerData;
+open CameraControllerStateUtils;
 
 let create (state: StateDataType.state) => {
-  let cameraControllerData = _getCameraControllerData state;
+  let cameraControllerData = getCameraControllerData state;
   let index = cameraControllerData.index;
   cameraControllerData.index = succ cameraControllerData.index;
   addToDirtyList index cameraControllerData |> ignore;
@@ -23,7 +21,7 @@ let _initCameraController (dirtyIndex: int) (cameraControllerData: cameraControl
   PerspectiveCameraSystem.init dirtyIndex cameraControllerData;
 
 let init (state: StateDataType.state) => {
-  let cameraControllerData = _getCameraControllerData state;
+  let cameraControllerData = getCameraControllerData state;
   let dirtyList = cameraControllerData.dirtyList;
   switch (ArraySystem.length dirtyList) {
   | 0 => state
@@ -46,7 +44,7 @@ let setPerspectiveCamera (camera: int) (state: StateDataType.state) => {
           "updateCameraFunc shouldn't already exist"
           (
             fun () => {
-              let cameraControllerData = _getCameraControllerData state;
+              let cameraControllerData = getCameraControllerData state;
               cameraControllerData.updateCameraFuncMap
               |> HashMapSystem.get (Js.Int.toString camera)
               |> assertNotExist
@@ -54,7 +52,7 @@ let setPerspectiveCamera (camera: int) (state: StateDataType.state) => {
           )
       )
   );
-  let cameraControllerData = _getCameraControllerData state;
+  let cameraControllerData = getCameraControllerData state;
   cameraControllerData.updateCameraFuncMap
   |> HashMapSystem.set (Js.Int.toString camera) PerspectiveCameraSystem.update
   |> ignore;
@@ -69,7 +67,7 @@ let _updateCamera (index: int) (cameraControllerData: cameraControllerData) => {
 };
 
 let update (state: StateDataType.state) => {
-  let cameraControllerData = _getCameraControllerData state;
+  let cameraControllerData = getCameraControllerData state;
   let dirtyList = cameraControllerData.dirtyList;
   switch (ArraySystem.length dirtyList) {
   | 0 => state
@@ -84,7 +82,7 @@ let update (state: StateDataType.state) => {
 
 let getGameObject (cameraController: cameraController) (state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject
-    cameraController (_getCameraControllerData state).gameObjectMap;
+    cameraController (getCameraControllerData state).gameObjectMap;
 
 let _getCameraToWorldMatrix (cameraController: cameraController) (state: StateDataType.state) =>
   switch (getGameObject cameraController state) {
@@ -109,7 +107,7 @@ let getWorldToCameraMatrix =
     (
       (
         fun (state: StateDataType.state) =>
-          (_getCameraControllerData state).worldToCameraMatrixCacheMap
+          (getCameraControllerData state).worldToCameraMatrixCacheMap
       )
       [@bs]
     );

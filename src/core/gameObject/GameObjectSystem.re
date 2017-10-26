@@ -11,13 +11,10 @@ open Contract;
 let _getGameObjectData (state: StateDataType.state) => state.gameObjectData;
 
 let _getComponent (uid: string) (componentMap: HashMapSystem.t int) :option component =>
-  HashMapSystem.get uid componentMap ;
+  HashMapSystem.get uid componentMap;
 
 let _hasComponent (uid: string) (componentMap: HashMapSystem.t int) :bool =>
   Js.Option.isSome (_getComponent uid componentMap);
-
-let hasTransformComponent (uid: string) (state: StateDataType.state) :bool =>
-  (_getGameObjectData state).transformMap |> _hasComponent uid;
 
 let _addComponent (uid: string) (component: component) (componentMap: HashMapSystem.t int) => {
   requireCheck (
@@ -29,12 +26,26 @@ let _addComponent (uid: string) (component: component) (componentMap: HashMapSys
   HashMapSystem.set uid component componentMap |> ignore
 };
 
+let hasCameraControllerComponent (uid: string) (state: StateDataType.state) :bool =>
+  (_getGameObjectData state).cameraControllerMap |> _hasComponent uid;
+
+let getCameraControllerComponent (uid: string) (state: StateDataType.state) =>
+  (_getGameObjectData state).cameraControllerMap |> _getComponent uid;
+
+let addCameraControllerComponent (uid: string) (component: component) (state: StateDataType.state) => {
+  (_getGameObjectData state).cameraControllerMap |> _addComponent uid component |> ignore;
+  CameraControllerAddComponentUtils.handleAddComponent component uid state
+};
+
+let hasTransformComponent (uid: string) (state: StateDataType.state) :bool =>
+  (_getGameObjectData state).transformMap |> _hasComponent uid;
+
 let getTransformComponent (uid: string) (state: StateDataType.state) =>
   (_getGameObjectData state).transformMap |> _getComponent uid;
 
 let addTransformComponent (uid: string) (component: component) (state: StateDataType.state) => {
   (_getGameObjectData state).transformMap |> _addComponent uid component |> ignore;
-  TransformSystem.handleAddComponent component uid state
+  TransformAddComponentUtils.handleAddComponent component uid state
 };
 
 let create (state: StateDataType.state) => {
@@ -45,4 +56,8 @@ let create (state: StateDataType.state) => {
   (addTransformComponent newUIdStr transform newState, newUIdStr)
 };
 
-let initData () => {uid: 0, transformMap: HashMapSystem.createEmpty ()};
+let initData () => {
+  uid: 0,
+  transformMap: HashMapSystem.createEmpty (),
+  cameraControllerMap: HashMapSystem.createEmpty ()
+};
