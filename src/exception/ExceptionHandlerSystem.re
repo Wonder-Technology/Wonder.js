@@ -1,0 +1,1 @@
+let failwith (message: string) => failwith message;

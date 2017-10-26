@@ -11,7 +11,7 @@ open Contract;
 let _getGameObjectData (state: StateDataType.state) => state.gameObjectData;
 
 let _getComponent (uid: string) (componentMap: HashMapSystem.t int) :option component =>
-  HashMapSystem.get componentMap uid;
+  HashMapSystem.get uid componentMap ;
 
 let _hasComponent (uid: string) (componentMap: HashMapSystem.t int) :bool =>
   Js.Option.isSome (_getComponent uid componentMap);

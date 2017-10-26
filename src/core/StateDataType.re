@@ -1,6 +1,9 @@
+
 open GlType;
 
 open TransformType;
+
+open CameraControllerType;
 
 open GameObjectType;
 
@@ -30,7 +33,9 @@ type state = {
   initConfigData,
   deviceManagerData,
   gameObjectData,
-  mutable transformData: option transformData
+  mutable transformData: option transformData,
+  mutable cameraControllerData: cameraControllerData
 };
 
 type stateData = {mutable state: option state};
+

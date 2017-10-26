@@ -5,20 +5,20 @@ open StateDataType;
 open Contract;
 
 let getParent (index: string) (transformData: transformData) =>
-  Js.Undefined.to_opt (HashMapSystem.unsafeGet transformData.parentMap index);
+  Js.Undefined.to_opt (HashMapSystem.unsafeGet index transformData.parentMap);
 
 let _removeFromParentMap (childIndex: string) (transformData: transformData) => {
-  HashMapSystem.deleteVal transformData.parentMap childIndex |> ignore;
+  HashMapSystem.deleteVal childIndex transformData.parentMap |> ignore;
   transformData
 };
 
 let unsafeGetChildren (index: string) (transformData: transformData) =>
-  HashMapSystem.unsafeGet transformData.childMap index
+  HashMapSystem.unsafeGet index transformData.childMap
   |> ensureCheck (
        fun _ =>
          test
            "children should exist"
-           (fun () => HashMapSystem.get transformData.childMap index |> assertExist)
+           (fun () => HashMapSystem.get index transformData.childMap |> assertExist)
      );
 
 let _removeChild (childIndex: int) (children: array transform) =>
@@ -38,7 +38,8 @@ let _removeFromParent
   |> _removeFromChildMap currentParentIndexStr child;
 
 let _setParent (parent: transform) (childIndex: string) (transformData: transformData) => {
-  HashMapSystem.set childIndex (TransformCastTypeUtils.transformToJsUndefine parent) transformData.parentMap
+  HashMapSystem.set
+    childIndex (TransformCastTypeUtils.transformToJsUndefine parent) transformData.parentMap
   |> ignore;
   transformData
 };

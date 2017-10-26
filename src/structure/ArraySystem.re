@@ -52,7 +52,7 @@ let removeDuplicateItems arr => {
   |> forEach (
        fun item => {
          let key = Js.Int.toString item;
-         switch (HashMapSystem.get map key) {
+         switch (HashMapSystem.get key map) {
          | None =>
            push item resultArr |> ignore;
            HashMapSystem.set key item map |> ignore

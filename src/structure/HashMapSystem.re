@@ -8,15 +8,18 @@ type t 'a = Js.Dict.t 'a;
 
 let createEmpty () => Js.Dict.empty ();
 
-let set (key: string) value map => { Js.Dict.set map key value; map};
+let set (key: string) value map => {
+  Js.Dict.set map key value;
+  map
+};
 
-let get map (key: string) => Js.Dict.get map key;
+let get (key: string) map => Js.Dict.get map key;
 
-let unsafeGet map (key: string) => Js.Dict.unsafeGet map key;
+let unsafeGet (key: string) map  => Js.Dict.unsafeGet map key;
 
-let deleteVal map (key: string) => {
+let deleteVal (key: string) map  => {
   requireCheck (
-    fun () => test "val should exist" (fun () => get map key |> Js.Option.isSome |> assertTrue)
+    fun () => test "val should exist" (fun () => get key map |> Js.Option.isSome |> assertTrue)
   );
-  set key Js.Undefined.empty map;
+  set key Js.Undefined.empty map
 };

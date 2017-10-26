@@ -9,4 +9,4 @@ let addComponentToGameObjectMap
 };
 
 let getComponentGameObject (component: component) gameObjectMap =>
-  HashMapSystem.get gameObjectMap (Js.Int.toString component);
+  HashMapSystem.get (Js.Int.toString component) gameObjectMap ;

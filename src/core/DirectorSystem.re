@@ -2,11 +2,13 @@ open StateSystem;
 
 open StateData;
 
-let _initSystem (state: StateDataType.state) => state |> TransformSystem.init;
+let _initSystem (state: StateDataType.state) =>
+  state |> TransformSystem.init |> CameraControllerSystem.init;
 
 let _init (state: StateDataType.state) => state |> _initSystem;
 
-let _updateSystem (elapsed: float) (state: StateDataType.state) => state |> TransformSystem.update;
+let _updateSystem (elapsed: float) (state: StateDataType.state) =>
+  state |> TransformSystem.update |> CameraControllerSystem.update;
 
 let _sync (elapsed: float) (state: StateDataType.state) => _updateSystem elapsed state;
 

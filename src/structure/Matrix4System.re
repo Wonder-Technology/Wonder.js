@@ -109,3 +109,26 @@ let multiply
     b30 *. a03 +. b31 *. a13 +. b32 *. a23 +. b33 *. a33
   |]
 };
+
+let buildPerspective (fovy: float) (aspect: float) (near: float) (far: float) => {
+  let f = 1.0 /. (Js.Math.tan fovy /. 2.);
+  let nf = 1. /. (near -. far);
+  [|
+    f /. aspect,
+    0.,
+    0.,
+    0.,
+    0.,
+    f,
+    0.,
+    0.,
+    0.,
+    0.,
+    (far +. near) *. nf,
+    (-1.),
+    0.,
+    0.,
+    2. *. far *. near *. nf,
+    0.
+  |]
+};

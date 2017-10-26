@@ -13,7 +13,8 @@ let createState () => {
   initConfigData: {isTest: Some false},
   deviceManagerData: {gl: None},
   gameObjectData: GameObjectSystem.initData (),
-  transformData: None
+  transformData: None,
+  cameraControllerData: CameraControllerSystem.initData()
 };
 
 let getOptionValueFromState value => Js.Option.getExn value;
