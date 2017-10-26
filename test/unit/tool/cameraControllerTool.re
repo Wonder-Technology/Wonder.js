@@ -1,7 +1,5 @@
 open CameraControllerType;
 
-open CameraControllerSystem;
-
 let isCameraController (cameraController:cameraController) => {
   open Jest;
   open Expect;

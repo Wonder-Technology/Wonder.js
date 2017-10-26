@@ -31,7 +31,7 @@ let init (state: StateDataType.state) => {
     |> ArraySystem.forEach (
          fun dirtyIndex => _initCameraController dirtyIndex cameraControllerData |> ignore
        );
-    cameraControllerData |> clearDirtyList;
+    cameraControllerData |> clearDirtyList |> ignore;
     state
     |> ensureCheck (
          fun state =>
@@ -87,7 +87,7 @@ let update (state: StateDataType.state) => {
     dirtyList
     |> ArraySystem.removeDuplicateItems
     |> ArraySystem.forEach (fun dirtyIndex => _updateCamera dirtyIndex cameraControllerData);
-    cameraControllerData |> clearDirtyList |> _clearCache;
+    cameraControllerData |> clearDirtyList |> _clearCache |> ignore;
     state
   }
 };
