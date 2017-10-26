@@ -43,7 +43,7 @@ let setPosition
       (
         TransformCastTypeUtils.tupleToJsArray (
           Vector3System.transformMat4
-            position (getLocalToWorldMatrix (getMatrix4DataIndex parent) localToWorldMatrices)
+            position (Matrix4System.invert (getLocalToWorldMatrix (getMatrix4DataIndex parent) localToWorldMatrices))
         )
       )
       localPositions

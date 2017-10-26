@@ -424,8 +424,6 @@ let _ =
                       "change child's position shouldn't affect parent"
                       (
                         fun () => {
-                          open Vector3System;
-                          open Vector3Type;
                           let (state, parent) = createTransform !state;
                           let (state, child) = createTransform state;
                           let pos1 = (1., 2., 3.);
@@ -441,7 +439,7 @@ let _ =
                           |> _judgeOneToOne
                                (parent, child)
                                (pos1, pos1)
-                               (add Float pos3 pos1, add Float (add Float pos3 pos1) pos1)
+                               ((1.,1.,1.), pos3)
                         }
                       )
                   }
