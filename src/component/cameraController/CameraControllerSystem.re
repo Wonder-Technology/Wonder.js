@@ -31,8 +31,20 @@ let init (state: StateDataType.state) => {
     |> ArraySystem.forEach (
          fun dirtyIndex => _initCameraController dirtyIndex cameraControllerData |> ignore
        );
-    cameraControllerData |> clearDirtyList |> _clearCache;
+    cameraControllerData |> clearDirtyList;
     state
+    |> ensureCheck (
+         fun state =>
+           Contract.Operators.(
+             test
+               "should has no cache"
+               (
+                 fun () =>
+                   HashMapSystem.length (getCameraControllerData state).worldToCameraMatrixCacheMap
+                   == 0
+               )
+           )
+       )
   }
 };
 

@@ -15,11 +15,13 @@ let set (key: string) value map => {
 
 let get (key: string) map => Js.Dict.get map key;
 
-let unsafeGet (key: string) map  => Js.Dict.unsafeGet map key;
+let unsafeGet (key: string) map => Js.Dict.unsafeGet map key;
 
-let deleteVal (key: string) map  => {
+let deleteVal (key: string) map => {
   requireCheck (
     fun () => test "val should exist" (fun () => get key map |> Js.Option.isSome |> assertTrue)
   );
   set key Js.Undefined.empty map
 };
+
+let length map => Js.Array.length (Js.Dict.entries map);

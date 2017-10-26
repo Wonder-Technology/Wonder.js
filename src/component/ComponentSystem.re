@@ -1,5 +1,3 @@
-open StateDataType;
-
 open ComponentType;
 let addComponentToGameObjectMap
     (component: component)

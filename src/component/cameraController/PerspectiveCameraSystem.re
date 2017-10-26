@@ -2,29 +2,18 @@ open CameraControllerType;
 
 open PerspectiveCameraType;
 
-let _getCameraControllerData (state: StateDataType.state) => state.cameraControllerData;
+open CameraControllerStateUtils;
 
-let _getPerspectiveCameraDataFromCameraControllerData (cameraControllerData: cameraControllerData) =>
-  cameraControllerData.perspectiveCameraData;
-
-let _getPerspectiveCameraData (state: StateDataType.state) =>
-  _getPerspectiveCameraDataFromCameraControllerData (_getCameraControllerData state);
-
-let create (state: StateDataType.state) => {
-  let cameraControllerData = _getCameraControllerData state;
-  let index = cameraControllerData.index;
-  cameraControllerData.index = succ cameraControllerData.index;
-  (state, index)
-};
+open CameraControllerDirtySystem;
 
 let getFovy (cameraController: cameraController) (cameraData: perspectiveCameraData) =>
   HashMapSystem.get (Js.Int.toString cameraController) cameraData.fovyMap;
 
 let setFovy (cameraController: cameraController) (fovy: float) (state: StateDataType.state) => {
   HashMapSystem.set
-    (Js.Int.toString cameraController) fovy (_getPerspectiveCameraData state).fovyMap
+    (Js.Int.toString cameraController) fovy (getPerspectiveCameraData state).fovyMap
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList cameraController (_getCameraControllerData state)
+  CameraControllerDirtySystem.addToDirtyList cameraController (getCameraControllerData state)
   |> ignore;
   state
 };
@@ -34,9 +23,9 @@ let getAspect (cameraController: cameraController) (cameraData: perspectiveCamer
 
 let setAspect (cameraController: cameraController) (aspect: float) (state: StateDataType.state) => {
   HashMapSystem.set
-    (Js.Int.toString cameraController) aspect (_getPerspectiveCameraData state).aspectMap
+    (Js.Int.toString cameraController) aspect (getPerspectiveCameraData state).aspectMap
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList cameraController (_getCameraControllerData state)
+  CameraControllerDirtySystem.addToDirtyList cameraController (getCameraControllerData state)
   |> ignore;
   state
 };
@@ -46,9 +35,9 @@ let getNear (cameraController: cameraController) (cameraData: perspectiveCameraD
 
 let setNear (cameraController: cameraController) (near: float) (state: StateDataType.state) => {
   HashMapSystem.set
-    (Js.Int.toString cameraController) near (_getPerspectiveCameraData state).nearMap
+    (Js.Int.toString cameraController) near (getPerspectiveCameraData state).nearMap
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList cameraController (_getCameraControllerData state)
+  CameraControllerDirtySystem.addToDirtyList cameraController (getCameraControllerData state)
   |> ignore;
   state
 };
@@ -57,21 +46,21 @@ let getFar (cameraController: cameraController) (cameraData: perspectiveCameraDa
   HashMapSystem.get (Js.Int.toString cameraController) cameraData.farMap;
 
 let setFar (cameraController: cameraController) (far: float) (state: StateDataType.state) => {
-  HashMapSystem.set (Js.Int.toString cameraController) far (_getPerspectiveCameraData state).farMap
+  HashMapSystem.set (Js.Int.toString cameraController) far (getPerspectiveCameraData state).farMap
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList cameraController (_getCameraControllerData state)
+  CameraControllerDirtySystem.addToDirtyList cameraController (getCameraControllerData state)
   |> ignore;
   state
 };
 
 let _setPMatrix
-    cameraController::(cameraController: cameraController)
-    (pMatrix: ArraySystem.t float)
-    cameraControllerData::(cameraControllerData: cameraControllerData) =>
+    (cameraController: cameraController)
+    (cameraControllerData: cameraControllerData)
+    (pMatrix: ArraySystem.t float) =>
   HashMapSystem.set (Js.Int.toString cameraController) pMatrix cameraControllerData.pMatrixMap;
 
 let update (index: int) (cameraControllerData: cameraControllerData) => {
-  let cameraData = _getPerspectiveCameraDataFromCameraControllerData cameraControllerData;
+  let cameraData = getPerspectiveCameraDataFromCameraControllerData cameraControllerData;
   switch (
     getFovy index cameraData,
     getAspect index cameraData,
@@ -84,7 +73,7 @@ let update (index: int) (cameraControllerData: cameraControllerData) => {
      | (_, _, _, None) => ExceptionHandlerSystem.failwith "fovy,aspect,near,far should all exist" */
   | (Some fovy, Some aspect, Some near, Some far) =>
     Matrix4System.buildPerspective fovy aspect near far
-    |> _setPMatrix cameraController::index ::cameraControllerData
+    |> _setPMatrix index cameraControllerData
     |> ignore
   | (_, _, _, _) => ExceptionHandlerSystem.throwMessage "fovy,aspect,near,far should all exist"
   };
