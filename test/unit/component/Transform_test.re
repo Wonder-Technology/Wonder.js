@@ -504,6 +504,21 @@ let _ =
                     (len1, len2) |> expect == (1, 0)
                   }
                 )
+          );
+        describe
+          "getTransformGameObject"
+          (
+            fun () =>
+              test
+                "get transform's gameObject"
+                (
+                  fun () => {
+                    open GameObject;
+                    let (state, gameObject) = createGameObject !state;
+                    let transform = state |> getGameObjectTransformComponent gameObject;
+                    state |> getTransformGameObject transform |> expect == gameObject
+                  }
+                )
           )
       }
     );
