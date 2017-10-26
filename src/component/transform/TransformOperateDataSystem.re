@@ -36,12 +36,12 @@ let setPosition
     (position: position)
     ({localToWorldMatrices, localPositions} as transformData) =>
   switch parent {
-  | None => setFloat3 localPositionsIndex (CastTypeUtils.tupleToJsArray position) localPositions
+  | None => setFloat3 localPositionsIndex (TransformCastTypeUtils.tupleToJsArray position) localPositions
   | Some parent =>
     setFloat3
       localPositionsIndex
       (
-        CastTypeUtils.tupleToJsArray (
+        TransformCastTypeUtils.tupleToJsArray (
           Vector3System.transformMat4
             position (getLocalToWorldMatrix (getMatrix4DataIndex parent) localToWorldMatrices)
         )

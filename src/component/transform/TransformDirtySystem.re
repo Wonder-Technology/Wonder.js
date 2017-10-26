@@ -34,7 +34,7 @@ open StateDataType;
      );
      ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
    }; */
-let _addToDirtyList (index: int) {dirtyList} =>
+let _addToDirtyList (index: int) ( {dirtyList} : transformData ) =>
   /* requireCheck (
        fun () =>
          Contract.Operators.(
@@ -53,7 +53,7 @@ let addItAndItsChildrenToDirtyList (index: int) (transformData: transformData) =
     _addToDirtyList last transformData |> ignore;
     children :=
       ArraySystem.concat
-        !children (HierachySystem.unsafeGetChildren (Js.Int.toString last) transformData)
+        !children (TransformHierachySystem.unsafeGetChildren (Js.Int.toString last) transformData)
   };
   transformData
 };

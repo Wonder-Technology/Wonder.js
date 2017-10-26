@@ -38,7 +38,7 @@ let _removeFromParent
   |> _removeFromChildMap currentParentIndexStr child;
 
 let _setParent (parent: transform) (childIndex: string) (transformData: transformData) => {
-  HashMapSystem.set childIndex (CastTypeUtils.transformToJsUndefine parent) transformData.parentMap
+  HashMapSystem.set childIndex (TransformCastTypeUtils.transformToJsUndefine parent) transformData.parentMap
   |> ignore;
   transformData
 };

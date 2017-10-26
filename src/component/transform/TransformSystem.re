@@ -1,6 +1,6 @@
 open ComponentSystem;
 
-open OperateDataSystem;
+open TransformOperateDataSystem;
 
 open TransformType;
 
@@ -10,9 +10,9 @@ open StateDataType;
 
 open Contract;
 
-open DirtySystem;
+open TransformDirtySystem;
 
-open HierachySystem;
+open TransformHierachySystem;
 
 let _getTransformData (state: StateDataType.state) => Js.Option.getExn state.transformData;
 
@@ -99,10 +99,10 @@ let _setDefaultChildren (maxCount: int) ({childMap} as transformData) => {
 };
 
 let getParent (child: transform) (state: StateDataType.state) =>
-  HierachySystem.getParent (Js.Int.toString child) (_getTransformData state);
+  TransformHierachySystem.getParent (Js.Int.toString child) (_getTransformData state);
 
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
-  HierachySystem.setParent (Js.toOption parent) child (_getTransformData state)
+  TransformHierachySystem.setParent (Js.toOption parent) child (_getTransformData state)
   |> addItAndItsChildrenToDirtyList child |> ignore;
   state
 };
@@ -111,7 +111,7 @@ let getChildren (transform: transform) (state: StateDataType.state) =>
   _getTransformData state |> unsafeGetChildren (Js.Int.toString transform) |> ArraySystem.copy;
 
 let update (state: StateDataType.state) => {
-  UpdateSystem.update (_getTransformData state) |> ignore;
+  TransformUpdateSystem.update (_getTransformData state) |> ignore;
   state
 };
 
@@ -123,7 +123,7 @@ let setLocalPosition (transform: transform) (localPosition: position) (state: St
   /* todo check alive? */
   setFloat3
     (getVector3DataIndex transform)
-    (CastTypeUtils.tupleToJsArray localPosition)
+    (TransformCastTypeUtils.tupleToJsArray localPosition)
     transformData.localPositions
   |> ignore;
   addItAndItsChildrenToDirtyList transform transformData |> ignore;
@@ -144,9 +144,9 @@ let getPosition (transform: transform) (state: StateDataType.state) => {
 
 let setPosition (transform: transform) (position: position) (state: StateDataType.state) => {
   let transformData = _getTransformData state;
-  OperateDataSystem.setPosition
+  TransformOperateDataSystem.setPosition
     (getVector3DataIndex transform)
-    (HierachySystem.getParent (Js.Int.toString transform) transformData)
+    (TransformHierachySystem.getParent (Js.Int.toString transform) transformData)
     position
     transformData
   |> ignore;
