@@ -64,14 +64,11 @@ let setFar (cameraController: cameraController) (far: float) (state: StateDataTy
   state
 };
 
-let getPMatrix (cameraController: cameraController) (cameraData: perspectiveCameraData) =>
-  HashMapSystem.get (Js.Int.toString cameraController) cameraData.pMatrixMap;
-
 let _setPMatrix
     cameraController::(cameraController: cameraController)
     (pMatrix: ArraySystem.t float)
-    cameraData::(cameraData: perspectiveCameraData) =>
-  HashMapSystem.set (Js.Int.toString cameraController) pMatrix cameraData.pMatrixMap;
+    cameraControllerData::(cameraControllerData: cameraControllerData) =>
+  HashMapSystem.set (Js.Int.toString cameraController) pMatrix cameraControllerData.pMatrixMap;
 
 let update (index: int) (cameraControllerData: cameraControllerData) => {
   let cameraData = _getPerspectiveCameraDataFromCameraControllerData cameraControllerData;
@@ -87,13 +84,12 @@ let update (index: int) (cameraControllerData: cameraControllerData) => {
      | (_, _, _, None) => ExceptionHandlerSystem.failwith "fovy,aspect,near,far should all exist" */
   | (Some fovy, Some aspect, Some near, Some far) =>
     Matrix4System.buildPerspective fovy aspect near far
-    |> _setPMatrix cameraController::index ::cameraData
+    |> _setPMatrix cameraController::index ::cameraControllerData
     |> ignore
   | (_, _, _, _) => ExceptionHandlerSystem.throwMessage "fovy,aspect,near,far should all exist"
   };
   ()
 };
-
 
 let init (index: int) (cameraControllerData: cameraControllerData) =>
   update index cameraControllerData;
@@ -102,6 +98,5 @@ let initData () => {
   nearMap: HashMapSystem.createEmpty (),
   farMap: HashMapSystem.createEmpty (),
   fovyMap: HashMapSystem.createEmpty (),
-  aspectMap: HashMapSystem.createEmpty (),
-  pMatrixMap: HashMapSystem.createEmpty ()
+  aspectMap: HashMapSystem.createEmpty ()
 };

@@ -112,10 +112,14 @@ let getWorldToCameraMatrix =
       [@bs]
     );
 
+let getPMatrix (cameraController: cameraController) (state: StateDataType.state) =>
+  HashMapSystem.get (Js.Int.toString cameraController) (getCameraControllerData state).pMatrixMap;
+
 let initData () => {
   index: 0,
   dirtyList: ArraySystem.createEmpty (),
   worldToCameraMatrixCacheMap: HashMapSystem.createEmpty (),
+  pMatrixMap: HashMapSystem.createEmpty (),
   gameObjectMap: HashMapSystem.createEmpty (),
   updateCameraFuncMap: HashMapSystem.createEmpty (),
   perspectiveCameraData: PerspectiveCameraSystem.initData ()
