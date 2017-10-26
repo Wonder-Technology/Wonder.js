@@ -34,7 +34,7 @@ let setPosition
     (localPositionsIndex: int)
     (parent: option transform)
     (position: position)
-    ({localToWorldMatrices, localPositions} as transformData) =>
+    ({localToWorldMatrices, localPositions}) =>
   switch parent {
   | None => setFloat3 localPositionsIndex (TransformCastTypeUtils.tupleToJsArray position) localPositions
   | Some parent =>
