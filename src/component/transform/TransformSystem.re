@@ -26,7 +26,7 @@ let create (state: StateDataType.state) => {
          open Contract.Operators;
          let {index} = _getTransformData state;
          let maxCount = getMaxCount state;
-         test "index should <= maxCount" (fun () => index <= maxCount);
+         test "index should <= maxCount" (fun () => index <= maxCount)
        }
      )
 };
@@ -103,7 +103,8 @@ let getParent (child: transform) (state: StateDataType.state) =>
 
 let setParent (parent: Js.nullable transform) (child: transform) (state: StateDataType.state) => {
   TransformHierachySystem.setParent (Js.toOption parent) child (_getTransformData state)
-  |> addItAndItsChildrenToDirtyList child |> ignore;
+  |> addItAndItsChildrenToDirtyList child
+  |> ignore;
   state
 };
 
@@ -157,12 +158,15 @@ let setPosition (transform: transform) (position: position) (state: StateDataTyp
 let init (state: StateDataType.state) => update state;
 
 let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {
-  _getTransformData state |> addComponentToGameObjectMap transform gameObjectUId |> ignore;
+  let transformData = _getTransformData state;
+  addComponentToGameObjectMap transform gameObjectUId transformData.gameObjectMap |> ignore;
   state
 };
 
-let getGameObject (transform: transform) (state: StateDataType.state) =>
-  _getTransformData state |> getComponentGameObject transform;
+let getGameObject (transform: transform) (state: StateDataType.state) => {
+  let transformData = _getTransformData state;
+  getComponentGameObject transform transformData.gameObjectMap
+};
 
 let initData (state: StateDataType.state) => {
   let maxCount = getMaxCount state;

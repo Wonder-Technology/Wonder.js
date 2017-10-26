@@ -1,4 +1,4 @@
-open StateDataType;
+open TransformType;
 
 /* let _isNotDirty (originIndex: int) ({firstDirtyIndex, originToMoveIndexMap} as transformData) => {
      switch IndexMapUtils.getMoveIndex originIndex originToMoveIndexMap {
@@ -34,7 +34,7 @@ open StateDataType;
      );
      ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
    }; */
-let _addToDirtyList (index: int) ( {dirtyList} : transformData ) =>
+let _addToDirtyList (index: int) ({dirtyList}: transformData) =>
   /* requireCheck (
        fun () =>
          Contract.Operators.(

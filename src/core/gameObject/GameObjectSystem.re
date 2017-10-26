@@ -4,6 +4,8 @@ open ComponentType;
 
 open StateDataType;
 
+open GameObjectType;
+
 open Contract;
 
 let _getGameObjectData (state: StateDataType.state) => state.gameObjectData;
