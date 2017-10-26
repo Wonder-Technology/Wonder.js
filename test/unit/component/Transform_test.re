@@ -109,6 +109,26 @@ let _ =
             }
           );
         describe
+          "init"
+          (
+            fun () =>
+              test
+                "update transform"
+                (
+                  fun () => {
+                    let (state, parent) = createTransform !state;
+                    let (state, child) = createTransform state;
+                    let pos = (1., 2., 3.);
+                    let state =
+                      state
+                      |> setTransformLocalPosition parent pos
+                      |> setTransformParent (Js.Nullable.return parent) child;
+                    let state = state |> init;
+                    state |> getTransformPosition child |> expect == pos
+                  }
+                )
+          );
+        describe
           "getTransformParent"
           (
             fun () =>
