@@ -89,10 +89,11 @@ let update (index: int) (cameraControllerData: cameraControllerData) => {
     Matrix4System.buildPerspective fovy aspect near far
     |> _setPMatrix cameraController::index ::cameraData
     |> ignore
-  | (_, _, _, _) => ExceptionHandlerSystem.failwith "fovy,aspect,near,far should all exist"
+  | (_, _, _, _) => ExceptionHandlerSystem.throwMessage "fovy,aspect,near,far should all exist"
   };
   ()
 };
+
 
 let init (index: int) (cameraControllerData: cameraControllerData) =>
   update index cameraControllerData;

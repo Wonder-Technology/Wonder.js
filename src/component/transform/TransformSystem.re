@@ -155,6 +155,10 @@ let setPosition (transform: transform) (position: position) (state: StateDataTyp
   state
 };
 
+let getLocalToWorldMatrix (transform: transform) (state: StateDataType.state) =>
+  TransformOperateDataSystem.getLocalToWorldMatrix
+    transform (_getTransformData state).localToWorldMatrices;
+
 let init (state: StateDataType.state) => update state;
 
 let handleAddComponent (transform: transform) (gameObjectUId: string) (state: StateDataType.state) => {

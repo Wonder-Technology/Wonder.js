@@ -16,6 +16,9 @@ let create (state: StateDataType.state) => {
   (state, index)
 };
 
+let _clearCache (cameraControllerData: cameraControllerData) =>
+  cameraControllerData.worldToCameraMatrixCacheMap = HashMapSystem.createEmpty ();
+
 let _initCameraController (dirtyIndex: int) (cameraControllerData: cameraControllerData) =>
   PerspectiveCameraSystem.init dirtyIndex cameraControllerData;
 
@@ -30,7 +33,7 @@ let init (state: StateDataType.state) => {
     |> ArraySystem.forEach (
          fun dirtyIndex => _initCameraController dirtyIndex cameraControllerData |> ignore
        );
-    clearDirtyList cameraControllerData;
+    cameraControllerData |> clearDirtyList |> _clearCache;
     state
   }
 };
@@ -74,10 +77,42 @@ let update (state: StateDataType.state) => {
     dirtyList
     |> ArraySystem.removeDuplicateItems
     |> ArraySystem.forEach (fun dirtyIndex => _updateCamera dirtyIndex cameraControllerData);
-    clearDirtyList cameraControllerData;
+    cameraControllerData |> clearDirtyList |> _clearCache;
     state
   }
 };
+
+let getGameObject (cameraController: cameraController) (state: StateDataType.state) =>
+  ComponentSystem.getComponentGameObject
+    cameraController (_getCameraControllerData state).gameObjectMap;
+
+let _getCameraToWorldMatrix (cameraController: cameraController) (state: StateDataType.state) =>
+  switch (getGameObject cameraController state) {
+  | None => ExceptionHandlerSystem.throwMessage "cameraController's gameObject should exist"
+  | Some gameObject =>
+    switch (GameObjectSystem.getTransformComponent gameObject state) {
+    | None =>
+      ExceptionHandlerSystem.throwMessage "cameraController's gameObject's transform should exist"
+    | Some transform => TransformSystem.getLocalToWorldMatrix transform state
+    }
+  };
+
+let getWorldToCameraMatrix =
+  CacheUtils.memorizeIntState
+    (
+      (
+        fun (cameraController: cameraController) (state: StateDataType.state) =>
+          _getCameraToWorldMatrix cameraController state |> Matrix4System.invert
+      )
+      [@bs]
+    )
+    (
+      (
+        fun (state: StateDataType.state) =>
+          (_getCameraControllerData state).worldToCameraMatrixCacheMap
+      )
+      [@bs]
+    );
 
 let initData () => {
   index: 0,

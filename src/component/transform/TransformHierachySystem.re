@@ -1,7 +1,5 @@
 open TransformType;
 
-open StateDataType;
-
 open Contract;
 
 let getParent (index: string) (transformData: transformData) =>
