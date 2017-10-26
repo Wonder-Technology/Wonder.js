@@ -177,11 +177,32 @@ let _ =
                 let state = state |> setTransformLocalPosition transform (1., 2., 3.);
                 (state, gameObject, transform, cameraController)
               };
+              describe
+                "runtime check"
+                (
+                  fun () =>
+                    test
+                      "if cameraController->gameObject not exist, error"
+                      (
+                        fun () => {
+                          let (state, cameraController) =
+                            createCameraController_perspectiveCamera ();
+                          expect (
+                            fun () =>
+                              state
+                              |> getCameraControllerWorldToCameraMatrix cameraController
+                              |> ignore
+                          )
+                          |> toThrowMessage "cameraController's gameObject should exist"
+                        }
+                      )
+                    /* todo test if cameraController->gameObject->transform not exist, error */
+                );
               test
                 "get cameraController->gameObject->transform-> localToWorldMatrix->invert"
                 (
                   fun () => {
-                    let (state, gameObject, transform, cameraController) = prepare ();
+                    let (state, _, _, cameraController) = prepare ();
                     let state = state |> DirectorTool.init |> DirectorTool.loopBody;
                     state
                     |> getCameraControllerWorldToCameraMatrix cameraController
@@ -199,7 +220,7 @@ let _ =
                         fun () => {
                           open PerspectiveCamera;
                           open Transform;
-                          let (state, gameObject, transform, cameraController) = prepare ();
+                          let (state, _, transform, cameraController) = prepare ();
                           let state = state |> DirectorTool.init |> DirectorTool.loopBody;
                           let mat1 =
                             state |> getCameraControllerWorldToCameraMatrix cameraController;
@@ -217,7 +238,7 @@ let _ =
                       (
                         fun () => {
                           open Transform;
-                          let (state, gameObject, transform, cameraController) = prepare ();
+                          let (state, _, transform, cameraController) = prepare ();
                           let state = state |> DirectorTool.init |> DirectorTool.loopBody;
                           let state = state |> setTransformLocalPosition transform (10., 30., 40.);
                           let state = state |> DirectorTool.init |> DirectorTool.loopBody;

@@ -2,6 +2,13 @@ open CameraControllerType;
 
 open CameraControllerSystem;
 
+let isCameraController (cameraController:cameraController) => {
+  open Jest;
+  open Expect;
+  open! Expect.Operators;
+  expect cameraController >= 0
+};
+
 let getCameraControllerData (state: StateDataType.state) => state.cameraControllerData;
 
 let getDirtyList (state: StateDataType.state) => (getCameraControllerData state).dirtyList;
