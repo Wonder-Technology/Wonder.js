@@ -1,0 +1,4 @@
+[
+    {"name": "vertex_buffer", "type": "buffer"},
+    {"name": "index_buffer", "type": "buffer"}
+]

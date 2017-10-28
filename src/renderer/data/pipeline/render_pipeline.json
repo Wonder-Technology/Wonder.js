@@ -1,0 +1,8 @@
+{
+    "simple_basic_render":[
+        {"job": "clear_color"},
+        {"job": "create_render_command_buffer_data"},
+        {"job": "clear_buffer", "flags":["COLOR_BUFFER", "DEPTH_BUFFER", "STENCIL_BUFFER"]},
+        {"job": "render_basic"}
+    ]
+}

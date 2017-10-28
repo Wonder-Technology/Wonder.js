@@ -1,0 +1,141 @@
+{
+    "common": {
+        "glsl": [
+            {
+                "name": "vs",
+                "value": "common_vertex"
+            },
+            {
+                "name": "fs",
+                "value": "common_vertex"
+            }
+            // "vs": {
+            //     "source": [ "common_vertex" ],
+            //     "define": [ "common_define ", "common_vertex "],
+            //     "funcDefine": common_function.funcDefine + common_vertex.funcDefine
+            // },
+            // "fs": "common_fragment"
+            // "fs": {
+            //     "source": common_fragment,
+            //     "define": common_define.define + common_fragment.define,
+            //     "funcDefine": common_function.funcDefine + common_fragment.funcDefine
+            // }
+        ],
+        "variable": {
+            "uniform": [
+                {
+                    "name": "u_vMatrix",
+                    "field": "vMatrix",
+                    "type": "mat4"
+                },
+                {
+                    "name": "u_pMatrix",
+                    "field": "pMatrix",
+                    "type": "mat4"
+                }
+            ]
+        }
+    },
+    "model_matrix_no_instance": {
+        "glsl": [
+            {
+                "name": "vs",
+                "value": "modelMatrix_noInstance_vertex"
+            }
+        ],
+        "variable": {
+            "uniform": [
+                {
+                    "name": "u_mMatrix",
+                    "field": "mMatrix",
+                    "type": "mat4"
+                }
+            ]
+        }
+    },
+    "vertice_common": {
+        "variable": {
+            "attribute": [
+                {
+                    "name": "a_position",
+                    "buffer": "vertex",
+                    "type": "vec3"
+                }
+            ]
+        }
+    },
+    "basic": {
+        "glsl": [
+            {
+                "name": "vs",
+                "value": "webgl1_setPos_mvp"
+            }
+        ],
+        "variable": {
+            "uniform": [
+                {
+                    "name": "u_opacity",
+                    "from": "basicMaterial",
+                    "field": "opacity",
+                    "type": "float"
+                }
+            ]
+        }
+    },
+    "basic_end": {
+        "glsl": [
+            //                 "fs": 
+            // "webgl1_basic_end_fragment",
+            // "branch":[ 
+            // {"type": "branch_static", "glsl": "fs", "value": {
+            //     "target": "alpha_test",
+            //     "branch":[
+            // { 
+            //     "if": "is_test_alpha",
+            //     // "then": "if (gl_FragColor.a < ${alpha_test}){\ndiscard;\n}\n" + "webgl1_basic_end_fragment.body" 
+            //     "then": "webgl1_basic_end_isTestAlpha_fragment" 
+            // }
+            //     ]
+            // }}
+            //  ]
+            //                 "func": (materialIndex: number, {
+            //                     getAlphaTest,
+            //                     isTestAlpha
+            //                 }, {
+            //                     MaterialDataFromSystem
+            //                 }) => {
+            //                     var alphaTest = getAlphaTest(materialIndex, MaterialDataFromSystem);
+            //                     if (isTestAlpha(alphaTest)) {
+            //                         return {
+            //                             "fs": {
+            //                                 "body": `if (gl_FragColor.a < ${alphaTest}){
+            //     discard;
+            // }\n` + webgl1_basic_end_fragment.body
+            //                             }
+            //                         }
+            //                     }
+            //     return void 0;
+            // }
+            {
+                "name": "fs",
+                //todo judge is_test_alpha
+                // "type": "branch_static",
+                // "value": {
+                //     "target": "alpha_test",
+                //     "branch": [
+                //         {
+                //             "if": "is_test_alpha",
+                //             // "then": "if (gl_FragColor.a < ${alpha_test}){\ndiscard;\n}\n" + "webgl1_basic_end_fragment.body" 
+                //             "then": "webgl1_basic_end_isTestAlpha_fragment"
+                //         },
+                //         {
+                //             "if": "else",
+                //             "then": "webgl1_basic_end_fragment"
+                //         }
+                //     ]
+                // }
+                "value": "webgl1_basic_end_fragment"
+            }
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "clear_color": [
+        {}
+    ],
+    "clear_buffer": [
+        {}
+    ],
+    "create_render_command_buffer_data": [
+        {}
+    ],
+    "render_basic": [
+        {
+            "shader": "basic_render",
+            "input": [
+                "vertex_buffer",
+                "index_buffer"
+            ]
+        }
+    ]
+}
