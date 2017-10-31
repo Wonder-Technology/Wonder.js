@@ -10,9 +10,6 @@ let setState = (~stateData: stateData, state: state) => {
 /* todo move out */
 /* todo set more settings */
 let convertRenderSettingToRecord = (render_setting) => {
-  /* open RenderConfigType; */
-  /* open StateDataType; */
-  /* open Render_setting; */
   open Json;
   open Decode;
   let json = render_setting |> Js.Json.parseExn;
@@ -40,27 +37,24 @@ let convertRenderSettingToRecord = (render_setting) => {
                   }
                 )
          ),
-    /* [ {name: json |> field "name" string} ] }), */
-    init_pipeline: json |> field("init_pipelines", string),
-    render_pipeline: json |> field("render_pipelines", string)
+    init_pipeline: json |> field("init_pipeline", string),
+    render_pipeline: json |> field("render_pipeline", string)
   }
 };
 
 let convertInitPipelinesToRecord = (init_pipelines) =>
   Render_setting.(
     Json.(
-      Decode.
-        /* let json = init_pipelines |> Js.Json.parseExn; */
-        (
-          init_pipelines
-          |> Js.Json.parseExn
-          |> array(
-               (json) => {
-                 name: json |> field("name", string),
-                 jobs: json |> array((json) => {name: json |> field("name", string)})
-               }
-             )
-        )
+      Decode.(
+        init_pipelines
+        |> Js.Json.parseExn
+        |> array(
+             (json) => {
+               name: json |> field("name", string),
+               jobs: json |> field("jobs", array((json) => {name: json |> field("name", string)}))
+             }
+           )
+      )
     )
   );
 

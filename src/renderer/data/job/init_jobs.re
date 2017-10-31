@@ -1,3 +1,3 @@
 let init_jobs = {|
-    [{"name": "init_basic_material"}];
+    [{"name": "init_basic_material"}]
 |};
