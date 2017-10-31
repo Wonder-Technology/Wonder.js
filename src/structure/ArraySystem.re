@@ -22,6 +22,10 @@ let pop = Js.Array.pop;
 
 let concat = Js.Array.concat;
 
+let filter = Js.Array.filter;
+
+let map = Js.Array.map;
+
 let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
   requireCheck (
     fun () =>

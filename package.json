@@ -28,5 +28,6 @@
     "wonder-bs-jest": "^0.1.0"
   },
   "dependencies": {
+    "bs-json": "^0.2.3"
   }
 }

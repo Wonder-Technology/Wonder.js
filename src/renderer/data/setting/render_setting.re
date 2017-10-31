@@ -1,4 +1,5 @@
-{
+let render_setting = {|
+    {
     "platform": "pc",
     "browser": [
         {
@@ -12,11 +13,8 @@
     ],
     "backend": {
         "name": "webgl1"
-        // "fallback": {
-        //    "name": "auto"
-        // }
     },
-    "useRenderWorker": "no",
     "init_pipeline": "simple_basic_render",
     "render_pipeline": "simple_basic_render"
 }
+|};
