@@ -14,6 +14,7 @@
   "bs-dev-dependencies": [
     "wonder-bs-jest"
   ],
+  "refmt": 3,
   "bs-dependencies": [
     "bs-json"
   ],

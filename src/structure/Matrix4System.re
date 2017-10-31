@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let fromTranslation (translationTypeArr: Float32Array.t) (index: int) => [|
+let fromTranslation = (translationTypeArr: Float32Array.t, index: int) => [|
   1.,
   0.,
   0.,
@@ -13,33 +13,30 @@ let fromTranslation (translationTypeArr: Float32Array.t) (index: int) => [|
   0.,
   1.,
   0.,
-  Float32Array.unsafe_get translationTypeArr index,
-  Float32Array.unsafe_get translationTypeArr (index + 1),
-  Float32Array.unsafe_get translationTypeArr (index + 2),
+  Float32Array.unsafe_get(translationTypeArr, index),
+  Float32Array.unsafe_get(translationTypeArr, index + 1),
+  Float32Array.unsafe_get(translationTypeArr, index + 2),
   1.
 |];
 
-let multiply
-    (aMatTypeArr: Float32Array.t)
-    (aMatIndex: int)
-    (bMatArr: ArraySystem.t float)
-    (bMatIndex: int) => {
-  let a00 = Float32Array.unsafe_get aMatTypeArr aMatIndex;
-  let a01 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 1);
-  let a02 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 2);
-  let a03 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 3);
-  let a10 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 4);
-  let a11 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 5);
-  let a12 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 6);
-  let a13 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 7);
-  let a20 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 8);
-  let a21 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 9);
-  let a22 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 10);
-  let a23 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 11);
-  let a30 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 12);
-  let a31 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 13);
-  let a32 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 14);
-  let a33 = Float32Array.unsafe_get aMatTypeArr (aMatIndex + 15);
+let multiply =
+    (aMatTypeArr: Float32Array.t, aMatIndex: int, bMatArr: ArraySystem.t(float), bMatIndex: int) => {
+  let a00 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex);
+  let a01 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 1);
+  let a02 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 2);
+  let a03 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 3);
+  let a10 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 4);
+  let a11 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 5);
+  let a12 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 6);
+  let a13 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 7);
+  let a20 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 8);
+  let a21 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 9);
+  let a22 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 10);
+  let a23 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 11);
+  let a30 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 12);
+  let a31 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 13);
+  let a32 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 14);
+  let a33 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 15);
   /* Cache only the current line of the second matrix
      let b0 = ref (ArraySystem.unsafeGet bMatArr bMatIndex);
      let b1 = ref (ArraySystem.unsafeGet bMatArr (bMatIndex + 1));
@@ -74,22 +71,22 @@ let multiply
      ArraySystem.unsafeSet out 14 (!b0 *. a02 +. !b1 *. a12 +. !b2 *. a22 +. !b3 *. a32);
      ArraySystem.unsafeSet out 15 (!b0 *. a03 +. !b1 *. a13 +. !b2 *. a23 +. !b3 *. a33);
      out */
-  let b00 = ArraySystem.unsafeGet bMatArr bMatIndex;
-  let b01 = ArraySystem.unsafeGet bMatArr (bMatIndex + 1);
-  let b02 = ArraySystem.unsafeGet bMatArr (bMatIndex + 2);
-  let b03 = ArraySystem.unsafeGet bMatArr (bMatIndex + 3);
-  let b10 = ArraySystem.unsafeGet bMatArr (bMatIndex + 4);
-  let b11 = ArraySystem.unsafeGet bMatArr (bMatIndex + 5);
-  let b12 = ArraySystem.unsafeGet bMatArr (bMatIndex + 6);
-  let b13 = ArraySystem.unsafeGet bMatArr (bMatIndex + 7);
-  let b20 = ArraySystem.unsafeGet bMatArr (bMatIndex + 8);
-  let b21 = ArraySystem.unsafeGet bMatArr (bMatIndex + 9);
-  let b22 = ArraySystem.unsafeGet bMatArr (bMatIndex + 10);
-  let b23 = ArraySystem.unsafeGet bMatArr (bMatIndex + 11);
-  let b30 = ArraySystem.unsafeGet bMatArr (bMatIndex + 12);
-  let b31 = ArraySystem.unsafeGet bMatArr (bMatIndex + 13);
-  let b32 = ArraySystem.unsafeGet bMatArr (bMatIndex + 14);
-  let b33 = ArraySystem.unsafeGet bMatArr (bMatIndex + 15);
+  let b00 = ArraySystem.unsafeGet(bMatArr, bMatIndex);
+  let b01 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 1);
+  let b02 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 2);
+  let b03 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 3);
+  let b10 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 4);
+  let b11 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 5);
+  let b12 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 6);
+  let b13 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 7);
+  let b20 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 8);
+  let b21 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 9);
+  let b22 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 10);
+  let b23 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 11);
+  let b30 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 12);
+  let b31 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 13);
+  let b32 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 14);
+  let b33 = ArraySystem.unsafeGet(bMatArr, bMatIndex + 15);
   [|
     b00 *. a00 +. b01 *. a10 +. b02 *. a20 +. b03 *. a30,
     b00 *. a01 +. b01 *. a11 +. b02 *. a21 +. b03 *. a31,
@@ -110,8 +107,8 @@ let multiply
   |]
 };
 
-let buildPerspective (fovy: float) (aspect: float) (near: float) (far: float) => {
-  let f = 1.0 /. (Js.Math.tan fovy /. 2.);
+let buildPerspective = (fovy: float, aspect: float, near: float, far: float) => {
+  let f = 1.0 /. (Js.Math.tan(fovy) /. 2.);
   let nf = 1. /. (near -. far);
   [|
     f /. aspect,
@@ -133,23 +130,23 @@ let buildPerspective (fovy: float) (aspect: float) (near: float) (far: float) =>
   |]
 };
 
-let invert (mat: ArraySystem.t float) => {
-  let a00 = ArraySystem.unsafeGet mat 0;
-  let a01 = ArraySystem.unsafeGet mat 1;
-  let a02 = ArraySystem.unsafeGet mat 2;
-  let a03 = ArraySystem.unsafeGet mat 3;
-  let a10 = ArraySystem.unsafeGet mat 4;
-  let a11 = ArraySystem.unsafeGet mat 5;
-  let a12 = ArraySystem.unsafeGet mat 6;
-  let a13 = ArraySystem.unsafeGet mat 7;
-  let a20 = ArraySystem.unsafeGet mat 8;
-  let a21 = ArraySystem.unsafeGet mat 9;
-  let a22 = ArraySystem.unsafeGet mat 10;
-  let a23 = ArraySystem.unsafeGet mat 11;
-  let a30 = ArraySystem.unsafeGet mat 12;
-  let a31 = ArraySystem.unsafeGet mat 13;
-  let a32 = ArraySystem.unsafeGet mat 14;
-  let a33 = ArraySystem.unsafeGet mat 15;
+let invert = (mat: ArraySystem.t(float)) => {
+  let a00 = ArraySystem.unsafeGet(mat, 0);
+  let a01 = ArraySystem.unsafeGet(mat, 1);
+  let a02 = ArraySystem.unsafeGet(mat, 2);
+  let a03 = ArraySystem.unsafeGet(mat, 3);
+  let a10 = ArraySystem.unsafeGet(mat, 4);
+  let a11 = ArraySystem.unsafeGet(mat, 5);
+  let a12 = ArraySystem.unsafeGet(mat, 6);
+  let a13 = ArraySystem.unsafeGet(mat, 7);
+  let a20 = ArraySystem.unsafeGet(mat, 8);
+  let a21 = ArraySystem.unsafeGet(mat, 9);
+  let a22 = ArraySystem.unsafeGet(mat, 10);
+  let a23 = ArraySystem.unsafeGet(mat, 11);
+  let a30 = ArraySystem.unsafeGet(mat, 12);
+  let a31 = ArraySystem.unsafeGet(mat, 13);
+  let a32 = ArraySystem.unsafeGet(mat, 14);
+  let a33 = ArraySystem.unsafeGet(mat, 15);
   let b00 = a00 *. a11 -. a01 *. a10;
   let b01 = a00 *. a12 -. a02 *. a10;
   let b02 = a00 *. a13 -. a03 *. a10;
@@ -163,28 +160,28 @@ let invert (mat: ArraySystem.t float) => {
   let b10 = a21 *. a33 -. a23 *. a31;
   let b11 = a22 *. a33 -. a23 *. a32;
   /* Calculate the determinant */
-  let det = ref ( b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06 );
-  switch !det {
-  | 0. => ExceptionHandlerSystem.throwMessage "det shouldn't be 0."
+  let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
+  switch det^ {
+  | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
   | _ =>
-    det := 1.0 /. !det;
+    det := 1.0 /. det^;
     [|
-      (a11 *. b11 -. a12 *. b10 +. a13 *. b09) *. !det,
-      (a02 *. b10 -. a01 *. b11 -. a03 *. b09) *. !det,
-      (a31 *. b05 -. a32 *. b04 +. a33 *. b03) *. !det,
-      (a22 *. b04 -. a21 *. b05 -. a23 *. b03) *. !det,
-      (a12 *. b08 -. a10 *. b11 -. a13 *. b07) *. !det,
-      (a00 *. b11 -. a02 *. b08 +. a03 *. b07) *. !det,
-      (a32 *. b02 -. a30 *. b05 -. a33 *. b01) *. !det,
-      (a20 *. b05 -. a22 *. b02 +. a23 *. b01) *. !det,
-      (a10 *. b10 -. a11 *. b08 +. a13 *. b06) *. !det,
-      (a01 *. b08 -. a00 *. b10 -. a03 *. b06) *. !det,
-      (a30 *. b04 -. a31 *. b02 +. a33 *. b00) *. !det,
-      (a21 *. b02 -. a20 *. b04 -. a23 *. b00) *. !det,
-      (a11 *. b07 -. a10 *. b09 -. a12 *. b06) *. !det,
-      (a00 *. b09 -. a01 *. b07 +. a02 *. b06) *. !det,
-      (a31 *. b01 -. a30 *. b03 -. a32 *. b00) *. !det,
-      (a20 *. b03 -. a21 *. b01 +. a22 *. b00) *. !det
+      (a11 *. b11 -. a12 *. b10 +. a13 *. b09) *. det^,
+      (a02 *. b10 -. a01 *. b11 -. a03 *. b09) *. det^,
+      (a31 *. b05 -. a32 *. b04 +. a33 *. b03) *. det^,
+      (a22 *. b04 -. a21 *. b05 -. a23 *. b03) *. det^,
+      (a12 *. b08 -. a10 *. b11 -. a13 *. b07) *. det^,
+      (a00 *. b11 -. a02 *. b08 +. a03 *. b07) *. det^,
+      (a32 *. b02 -. a30 *. b05 -. a33 *. b01) *. det^,
+      (a20 *. b05 -. a22 *. b02 +. a23 *. b01) *. det^,
+      (a10 *. b10 -. a11 *. b08 +. a13 *. b06) *. det^,
+      (a01 *. b08 -. a00 *. b10 -. a03 *. b06) *. det^,
+      (a30 *. b04 -. a31 *. b02 +. a33 *. b00) *. det^,
+      (a21 *. b02 -. a20 *. b04 -. a23 *. b00) *. det^,
+      (a11 *. b07 -. a10 *. b09 -. a12 *. b06) *. det^,
+      (a00 *. b09 -. a01 *. b07 +. a02 *. b06) *. det^,
+      (a31 *. b01 -. a30 *. b03 -. a32 *. b00) *. det^,
+      (a20 *. b03 -. a21 *. b01 +. a22 *. b00) *. det^
     |]
   }
 };

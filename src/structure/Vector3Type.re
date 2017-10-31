@@ -1,2 +1,2 @@
-type number _ =
-  | Float :number float;
+type number(_) =
+  | Float: number(float);

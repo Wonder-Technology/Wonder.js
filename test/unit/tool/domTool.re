@@ -4,4 +4,4 @@ open Sinon;
 
 external documentToObj : document => obj = "%identity";
 
-let getId (dom: htmlElement) => (htmlElementToJsObj dom)##id;
+let getId = (dom: htmlElement) => htmlElementToJsObj(dom)##id;

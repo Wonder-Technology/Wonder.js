@@ -1,7 +1,3 @@
-let getScene (state:StateDataType.state) => {
+let getScene = (state: StateDataType.state) => {};
 
-};
-
-let startDirector (state: StateDataType.state) => {
-
-};
+let startDirector = (state: StateDataType.state) => {};

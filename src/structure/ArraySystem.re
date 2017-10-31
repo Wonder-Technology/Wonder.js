@@ -1,12 +1,12 @@
 open Contract;
 
-type t 'a = Js.Array.t 'a;
+type t('a) = Js.Array.t('a);
 
-external unsafePop : 'a = "pop" [@@bs.send.pipe : array 'a];
+[@bs.send.pipe : array('a)] external unsafePop : 'a = "pop";
 
-external unsafeGet : t 'a => int => 'b = "" [@@bs.get_index];
+[@bs.get_index] external unsafeGet : (t('a), int) => 'b = "";
 
-external unsafeSet : t 'a => int => 'b => unit = "" [@@bs.set_index];
+[@bs.set_index] external unsafeSet : (t('a), int, 'b) => unit = "";
 
 let includes = Js.Array.includes;
 
@@ -26,21 +26,22 @@ let filter = Js.Array.filter;
 
 let map = Js.Array.map;
 
-let deleteBySwap (index: int) (lastIndex: int) (arr: array 'item) => {
-  requireCheck (
-    fun () =>
-      test
-        "lastIndex should == arr.length"
-        (fun () => lastIndex |> assertEqual Int (Js.Array.length arr - 1))
+let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
+  requireCheck(
+    () =>
+      test(
+        "lastIndex should == arr.length",
+        () => lastIndex |> assertEqual(Int, Js.Array.length(arr) - 1)
+      )
   );
   /* arr.(index) = arr.(lastIndex); */
-  Array.unsafe_set arr index (Array.unsafe_get arr lastIndex);
-  unsafePop arr |> ignore
+  Array.unsafe_set(arr, index, Array.unsafe_get(arr, lastIndex));
+  unsafePop(arr) |> ignore
 };
 
 let copy = Js.Array.copy;
 
-let createEmpty () => [||];
+let createEmpty = () => [||];
 
 /* let rec range a b => {
      let result = createEmpty ();
@@ -49,18 +50,18 @@ let createEmpty () => [||];
      };
      result
    }; */
-let removeDuplicateItems arr => {
+let removeDuplicateItems = (arr) => {
   let resultArr = [||];
-  let map = HashMapSystem.createEmpty ();
+  let map = HashMapSystem.createEmpty();
   arr
-  |> forEach (
-       fun item => {
-         let key = Js.Int.toString item;
-         switch (HashMapSystem.get key map) {
+  |> forEach(
+       (item) => {
+         let key = Js.Int.toString(item);
+         switch (HashMapSystem.get(key, map)) {
          | None =>
-           push item resultArr |> ignore;
-           HashMapSystem.set key item map |> ignore
-         | Some _ => ()
+           push(item, resultArr) |> ignore;
+           HashMapSystem.set(key, item, map) |> ignore
+         | Some(_) => ()
          }
        }
      );

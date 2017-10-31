@@ -1,1 +1,1 @@
-let getData (state: StateDataType.state) => state.gameObjectData;
+let getData = (state: StateDataType.state) => state.gameObjectData;

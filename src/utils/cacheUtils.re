@@ -1,13 +1,13 @@
 open StateDataType;
 
-let memorizeIntState bodyFunc getCacheMapFunc (param: int) (state: state) => {
-  let cachedMap = getCacheMapFunc state [@bs];
-  let key = Js.Int.toString param;
-  switch (HashMapSystem.get key cachedMap) {
+let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => {
+  let cachedMap = [@bs] getCacheMapFunc(state);
+  let key = Js.Int.toString(param);
+  switch (HashMapSystem.get(key, cachedMap)) {
   | None =>
-    let value = bodyFunc param state [@bs];
-    HashMapSystem.set key value cachedMap |> ignore;
+    let value = [@bs] bodyFunc(param, state);
+    HashMapSystem.set(key, value, cachedMap) |> ignore;
     value
-  | Some value => value
+  | Some(value) => value
   }
 };

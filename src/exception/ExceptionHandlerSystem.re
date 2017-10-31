@@ -1,1 +1,1 @@
-let throwMessage (message: string) => failwith message;
+let throwMessage = (message: string) => failwith(message);

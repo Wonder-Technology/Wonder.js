@@ -6,47 +6,53 @@ open TypeArrayUtils;
 
 open TransformType;
 
-let getMaxCount (state: StateDataType.state) =>
-  (BufferConfigSystem.getBufferConfig state).transformDataBufferCount;
+let getMaxCount = (state: StateDataType.state) =>
+  BufferConfigSystem.getBufferConfig(state).transformDataBufferCount;
 
-let getMatrix4DataIndex (index: int) => index * getMatrix4DataSize ();
+let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 
-let getVector3DataIndex (index: int) => index * getVector3DataSize ();
+let getVector3DataIndex = (index: int) => index * getVector3DataSize();
 
 let setLocalPositionTypeArr =
+  [@bs]
   (
-    fun (index: int) (position: ArraySystem.t float) (localPositions: Float32Array.t) =>
-      setFloat3 index position localPositions
-  )
-  [@bs];
+    (index: int, position: ArraySystem.t(float), localPositions: Float32Array.t) =>
+      setFloat3(index, position, localPositions)
+  );
 
 let setLocalToWorldMatricesTypeArr =
+  [@bs]
   (
-    fun (index: int) (mat: ArraySystem.t float) (localToWorldMatrices: Float32Array.t) =>
-      setFloat16 index mat localToWorldMatrices
-  )
-  [@bs];
+    (index: int, mat: ArraySystem.t(float), localToWorldMatrices: Float32Array.t) =>
+      setFloat16(index, mat, localToWorldMatrices)
+  );
 
-let getLocalToWorldMatrix (index: int) localToWorldMatrices =>
-  getFloat16 index localToWorldMatrices;
+let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
+  getFloat16(index, localToWorldMatrices);
 
-let setPosition
-    (localPositionsIndex: int)
-    (parent: option transform)
-    (position: position)
-    ({localToWorldMatrices, localPositions}) =>
+let setPosition =
+    (
+      localPositionsIndex: int,
+      parent: option(transform),
+      position: position,
+      {localToWorldMatrices, localPositions}
+    ) =>
   switch parent {
-  | None => setFloat3 localPositionsIndex (TransformCastTypeUtils.tupleToJsArray position) localPositions
-  | Some parent =>
-    setFloat3
-      localPositionsIndex
-      (
-        TransformCastTypeUtils.tupleToJsArray (
-          Vector3System.transformMat4
-            position (Matrix4System.invert (getLocalToWorldMatrix (getMatrix4DataIndex parent) localToWorldMatrices))
+  | None =>
+    setFloat3(localPositionsIndex, TransformCastTypeUtils.tupleToJsArray(position), localPositions)
+  | Some(parent) =>
+    setFloat3(
+      localPositionsIndex,
+      TransformCastTypeUtils.tupleToJsArray(
+        Vector3System.transformMat4(
+          position,
+          Matrix4System.invert(
+            getLocalToWorldMatrix(getMatrix4DataIndex(parent), localToWorldMatrices)
+          )
         )
-      )
+      ),
       localPositions
+    )
   };
 /* let _isIndexUsed (index: int) (transformData: transformData) => {
      open Js.Option;

@@ -2,5 +2,6 @@ open Dom;
 
 open GlType;
 
-external getWebgl1Context : htmlElement => _ [@bs.as "webgl"] => options => webgl1Context =
-  "getContext" [@@bs.send];
+[@bs.send]
+external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
+  "getContext";

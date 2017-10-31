@@ -1,22 +1,20 @@
 open Jest;
 
 let _ =
-  describe
-    "Expect"
-    (
-      fun () => {
-        open Expect;
-        test "toBe1" (fun () => expect (1 + 2) |> toBe 3);
-        test "toBe2" (fun () => expect (1 + 2) |> toBe 3);
-      }
-    );
-
-describe
-  "Expect.Operators"
-  (
-    fun () => {
+  describe(
+    "Expect",
+    () => {
       open Expect;
-      open! Expect.Operators;
-      test "==" (fun () => expect (1 + 2) === 3);
+      test("toBe1", () => expect(1 + 2) |> toBe(3));
+      test("toBe2", () => expect(1 + 2) |> toBe(3))
     }
   );
+
+describe(
+  "Expect.Operators",
+  () => {
+    open Expect;
+    open! Expect.Operators;
+    test("==", () => expect(1 + 2) === 3)
+  }
+);

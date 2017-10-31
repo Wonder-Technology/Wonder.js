@@ -1,1 +1,1 @@
-let getTransformData (state: StateDataType.state) => Js.Option.getExn state.transformData;
+let getTransformData = (state: StateDataType.state) => Js.Option.getExn(state.transformData);

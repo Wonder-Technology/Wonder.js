@@ -20,22 +20,25 @@ type contextConfig = {
 type bufferConfig = {mutable transformDataBufferCount: int};
 
 type viewData = {
-  canvas: option Dom.htmlElement,
-  contextConfig: option contextConfig
+  canvas: option(Dom.htmlElement),
+  contextConfig: option(contextConfig)
 };
 
-type initConfigData = {isTest: option bool};
+type initConfigData = {isTest: option(bool)};
 
-type deviceManagerData = {gl: option webgl1Context};
+type deviceManagerData = {gl: option(webgl1Context)};
 
 type specificBowser = {
   name: string,
   version: string
 };
 
-type browser = array specificBowser;
+type browser = array(specificBowser);
 
-type backend = {name: string, fail: option string};
+type backend = {
+  name: string,
+  fail: option(string)
+};
 
 type render_setting = {
   platform: string,
@@ -46,41 +49,40 @@ type render_setting = {
 };
 
 type job = {name: string};
-/* type pipelineJob = {name: string}; */
 
+/* type pipelineJob = {name: string}; */
 type initPipeline = {
   name: string,
   /* jobs: array pipelineJob */
-  jobs: array job
+  jobs: array(job)
 };
 
-type init_pipelines = array initPipeline;
+type init_pipelines = array(initPipeline);
 
 /* type job = {name: string}; */
-
-type init_jobs = array job;
+type init_jobs = array(job);
 
 type hardwareRelatedSetting = {
-  platform:string,
+  platform: string,
   backend,
   browser
 };
 
 type renderConfig = {
-  jobHandleMap: Js.Dict.t (state => state),
+  jobHandleMap: Js.Dict.t((state => state)),
   render_setting,
   init_pipelines,
   init_jobs
 }
 and state = {
-  bufferConfig: option bufferConfig,
+  bufferConfig: option(bufferConfig),
   renderConfig,
   viewData,
   initConfigData,
   deviceManagerData,
   gameObjectData,
-  mutable transformData: option transformData,
+  mutable transformData: option(transformData),
   cameraControllerData
 };
 
-type stateData = {mutable state: option state};
+type stateData = {mutable state: option(state)};

@@ -9,34 +9,30 @@ open TransformOperateDataSystem;
      moveTo index (unsafePopOldIndexList transformData) transformData
    }; */
 /* ////todo optimize: if transform not transformed in 5 frames, not move off */
-let _cleanDirtyList (transformData: transformData) =>
+let _cleanDirtyList = (transformData: transformData) =>
   /* dirtyList
      |> ArraySystem.forEach (fun index => _moveFromDirtyListToNormalList index transformData |> ignore); */
-  transformData.dirtyList = ArraySystem.createEmpty ();
+  transformData.dirtyList = ArraySystem.createEmpty();
 
-let _transform
-    ({localToWorldMatrices, localPositions} as transformData)
-    (dirtyList: array int) => {
+let _transform = ({localToWorldMatrices, localPositions} as transformData, dirtyList: array(int)) => {
   open Matrix4System;
   dirtyList
-  |> ArraySystem.forEach (
-       fun index => {
+  |> ArraySystem.forEach(
+       (index) => {
          /* todo from rotation, scale */
-         let mat = fromTranslation localPositions (getVector3DataIndex index);
-         switch (getParent (Js.Int.toString index) transformData) {
-         | Some parent =>
-           setLocalToWorldMatricesTypeArr
-           (getMatrix4DataIndex index)
-           (multiply localToWorldMatrices (getMatrix4DataIndex parent) mat 0)
-           localToWorldMatrices
+         let mat = fromTranslation(localPositions, getVector3DataIndex(index));
+         switch (getParent(Js.Int.toString(index), transformData)) {
+         | Some(parent) =>
            [@bs]
+           setLocalToWorldMatricesTypeArr(
+             getMatrix4DataIndex(index),
+             multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
+             localToWorldMatrices
+           )
            |> ignore
          | None =>
-           setLocalToWorldMatricesTypeArr
-           (getMatrix4DataIndex index)
-           mat
-           localToWorldMatrices
            [@bs]
+           setLocalToWorldMatricesTypeArr(getMatrix4DataIndex(index), mat, localToWorldMatrices)
            |> ignore
          }
        }
@@ -44,8 +40,8 @@ let _transform
   dirtyList
 };
 
-let _sortParentBeforeChildInDirtyList (transformData: transformData) (dirtyList: array int) => {
-  dirtyList |> ArraySystem.fastSort (fun a b => isParent b a transformData ? 1 : 0);
+let _sortParentBeforeChildInDirtyList = (transformData: transformData, dirtyList: array(int)) => {
+  dirtyList |> ArraySystem.fastSort((a, b) => isParent(b, a, transformData) ? 1 : 0);
   /* |> ArraySystem.forEach (
        fun index =>
          switch (getParent (Js.Int.toString index) transformData) {
@@ -61,7 +57,7 @@ let _sortParentBeforeChildInDirtyList (transformData: transformData) (dirtyList:
   dirtyList
 };
 
-let _updateDirtyList (transformData: transformData) (dirtyList: array int) => {
+let _updateDirtyList = (transformData: transformData, dirtyList: array(int)) => {
   /* requireCheck (
        fun () =>
          Contract.Operators.(
@@ -71,17 +67,17 @@ let _updateDirtyList (transformData: transformData) (dirtyList: array int) => {
          )
      ); */
   dirtyList
-  |> _sortParentBeforeChildInDirtyList transformData
-  |> _transform transformData
+  |> _sortParentBeforeChildInDirtyList(transformData)
+  |> _transform(transformData)
   |> ignore;
   transformData
 };
 
-let update (transformData: transformData) =>
+let update = (transformData: transformData) =>
   /* ArraySystem.range transformData.firstDirtyIndex (getMaxCount () - 1)
      |> _updateDirtyList floatArr_1 transformData
      |> _cleanDirtyList transformData; */
   transformData.dirtyList
   |> ArraySystem.removeDuplicateItems
-  |> _updateDirtyList transformData
+  |> _updateDirtyList(transformData)
   |> _cleanDirtyList;
