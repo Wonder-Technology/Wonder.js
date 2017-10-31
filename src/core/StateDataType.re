@@ -6,8 +6,6 @@ open CameraControllerType;
 
 open GameObjectType;
 
-open RenderConfigType;
-
 type contextConfig = {
   alpha: bool,
   depth: bool,
