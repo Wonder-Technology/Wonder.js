@@ -60,7 +60,7 @@ let getCall = (stub: stub, index: int) => stubToJsObj(stub)##getCall(index);
 
 let getArgsFromEmptyStub = (call: Js.t({..})) => {
   let args = call##args;
-  Array.to_list(args[0])
+  Array.to_list(args)
 };
 
 let getArgs = (call: Js.t({..})) => Array.to_list(call##args);
