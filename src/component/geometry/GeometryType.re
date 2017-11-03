@@ -7,7 +7,7 @@ type geometryInfo = {
   endIndex: int
 };
 
-type geometryInfoList = array(geometryInfo);
+type geometryInfoList = array(option(geometryInfo));
 
 type geometryComputeData = {
   vertices: array(float),
@@ -18,7 +18,7 @@ type geometryComputeData = {
 type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));
 
 type geometryData = {
-  index: int,
+  mutable index: int,
   mutable buffer: Js.Typed_array.array_buffer,
   mutable vertices: Js.Typed_array.Float32Array.t,
   /* todo optimize: use Uint16Array based on config or query gpu extension */
@@ -27,7 +27,7 @@ type geometryData = {
   mutable indicesInfoList: geometryInfoList,
   mutable verticesOffset: int,
   mutable indicesOffset: int,
-  mutable computeDataFuncMap: Js.Dict.t(((int, configDataMap) => geometryComputeData)),
+  mutable computeDataFuncMap: Js.Dict.t(((int, geometryConfigDataMap) => geometryComputeData)),
   mutable configDataMap:geometryConfigDataMap,
   mutable gameObjectMap
 };

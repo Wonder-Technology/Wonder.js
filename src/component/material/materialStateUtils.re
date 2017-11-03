@@ -1,1 +1,1 @@
-let getMaterialData = (state:StateDataType.state) => state.materialData;
+let getMaterialData = (state:StateDataType.state) => Js.Option.getExn(state.materialData);

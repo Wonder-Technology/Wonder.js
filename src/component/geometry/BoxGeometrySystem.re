@@ -4,8 +4,8 @@ open BoxGeometryType;
 
 open GeometryStateUtils;
 
-let _getConfigData = (geometry: geometry, state: StateDataType.state) =>
-  getGeometryData(state).configMap |> HashMapSystem.get(geometry);
+let _getConfigData = (geometry: geometry, configDataMap:geometryConfigDataMap) =>
+  configDataMap |> HashMapSystem.get(Js.Int.toString(geometry));
 
 /* let setConfigData = (geometry:geometry, configData:HashMapSystem.t (float), state:StateDataType.state) => { */
 let setConfigData =
@@ -14,17 +14,19 @@ let setConfigData =
   let data = getGeometryData(state);
   let configDataHashMap =
     HashMapSystem.createEmpty()
-    |> HashMapSystem.set("width", getValueFromJsObj(configData##width, 10))
-    |> HashMapSystem.set("height", getValueFromJsObj(configData##height, 10))
-    |> HashMapSystem.set("depth", getValueFromJsObj(configData##depth, 10))
-    |> HashMapSystem.set("widthSegments", getValueFromJsObj(configData##widthSegments, 1))
-    |> HashMapSystem.set("heightSegments", getValueFromJsObj(configData##heightSegments, 1))
-    |> HashMapSystem.set("depthSegments", getValueFromJsObj(configData##depthSegments, 1));
-  getGeometryData(state).configDataMap |> HashMapSystem.set(geometry, configDataHashMap) |> ignore;
+    |> HashMapSystem.set("width", getValueFromJsObj(configData##width, 10.))
+    |> HashMapSystem.set("height", getValueFromJsObj(configData##height, 10.))
+    |> HashMapSystem.set("depth", getValueFromJsObj(configData##depth, 10.))
+    |> HashMapSystem.set("widthSegments", getValueFromJsObj(configData##widthSegments, 1.))
+    |> HashMapSystem.set("heightSegments", getValueFromJsObj(configData##heightSegments, 1.))
+    |> HashMapSystem.set("depthSegments", getValueFromJsObj(configData##depthSegments, 1.));
+  getGeometryData(state).configDataMap
+  |> HashMapSystem.set(Js.Int.toString(geometry), configDataHashMap)
+  |> ignore;
   state
 };
 
-let _computeData = (index: int, configDataMap) =>
+let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
   switch (_getConfigData(index, configDataMap)) {
   | None => ExceptionHandlerSystem.throwMessage("configData should exist")
   | Some(configDataHashMap) =>
@@ -43,37 +45,37 @@ let _computeData = (index: int, configDataMap) =>
        depthSegments
        } */
     /* let sides = {
-           FRONT: 0,
-           BACK: 1,
-           TOP: 2,
-           BOTTOM: 3,
-           RIGHT: 4,
-           LEFT: 5
+           front: 0,
+           back: 1,
+           top: 2,
+           bottom: 3,
+           right: 4,
+           left: 5
        }; */
-    let (FRONT, BACK, TOP, BOTTOM, RIGHT, LEFT) = (0, 1, 2, 3, 4, 5);
+    let (front, back, top, bottom, right, left) = (0, 1, 2, 3, 4, 5);
     let vertices = ArraySystem.createEmpty();
     let indices = ArraySystem.createEmpty();
     let faceAxes = [|
-      /* FRONT */
+      /* front */
       [|0, 1, 3|],
-      /* BACK */
+      /* back */
       [|4, 5, 7|],
-      /* TOP */
+      /* top */
       [|3, 2, 6|],
-      /* BOTTOM */
+      /* bottom */
       [|1, 0, 4|],
-      /* RIGHT */
+      /* right */
       [|1, 4, 2|],
-      /* LEFT */
+      /* left */
       [|5, 0, 6|]
     |];
     /* let faceNormals = [
-           [0, 0, 1], // FRONT
-           [0, 0, -1], // BACK
-           [0, 1, 0], // TOP
-           [0, -1, 0], // BOTTOM
-           [1, 0, 0], // RIGHT
-           [-1, 0, 0]  // LEFT
+           [0, 0, 1], // front
+           [0, 0, -1], // back
+           [0, 1, 0], // top
+           [0, -1, 0], // bottom
+           [1, 0, 0], // right
+           [-1, 0, 0]  // left
        ]; */
     /* let corners = [
            Vector3.create(-width, -height, depth),
@@ -86,16 +88,16 @@ let _computeData = (index: int, configDataMap) =>
            Vector3.create(width, height, -depth)
        ]; */
     let corners = [|
-      (- width, - height, depth),
-      (width, - height, depth),
+      (-. width, -. height, depth),
+      (width, -. height, depth),
       (width, height, depth),
-      (- width, height, depth),
-      (width, - height, - depth),
-      (- width, - height, - depth),
-      (- width, height, - depth),
-      (width, height, - depth)
+      (-. width, height, depth),
+      (width, -. height, -. depth),
+      (-. width, -. height, -. depth),
+      (-. width, height, -. depth),
+      (width, height, -. depth)
     |];
-    let _generateFace = (side, uSegments, vSegments) => {
+    let _generateFace = (side:int, uSegments:int, vSegments:int) => {
       /* let x, y, z, u, v; */
       /* let i, j; */
       let offset: int = ArraySystem.length(vertices) / 3;
@@ -105,13 +107,13 @@ let _computeData = (index: int, configDataMap) =>
             Vector3System.lerp(
               corners[faceAxes[side][0]],
               corners[faceAxes[side][1]],
-              i / uSegments
+             float_of_int(i / uSegments)
             );
           let temp2 =
             Vector3System.lerp(
               corners[faceAxes[side][0]],
               corners[faceAxes[side][2]],
-              j / vSegments
+              float_of_int(j / vSegments)
             );
           let temp3 = Vector3System.sub(Vector3Type.Float, temp2, corners[faceAxes[side][0]]);
           let (vx, vy, vz) = Vector3System.add(Vector3Type.Float, temp1, temp3);
@@ -121,13 +123,18 @@ let _computeData = (index: int, configDataMap) =>
             |> ArraySystem.pushMany([|
                  offset + j + i * (uSegments + 1),
                  offset + j + (i + 1) * (uSegments + 1),
-                 offset + j + i * (uSegments + 1) + 1
-               |])
-            |> ArraySystem.pushMany([|
+                 offset + j + i * (uSegments + 1) + 1,
+
+
                  offset + j + (i + 1) * (uSegments + 1),
                  offset + j + (i + 1) * (uSegments + 1) + 1,
                  offset + j + i * (uSegments + 1) + 1
                |])
+            /* |> Js.Array.pushMany([|
+                 offset + j + (i + 1) * (uSegments + 1),
+                 offset + j + (i + 1) * (uSegments + 1) + 1,
+                 offset + j + i * (uSegments + 1) + 1
+               |]) */
             |> ignore
           } else {
             ()
@@ -160,12 +167,12 @@ let _computeData = (index: int, configDataMap) =>
              }
          } */
     };
-    _generateFace(FRONT, widthSegments, heightSegments);
-    _generateFace(BACK, widthSegments, heightSegments);
-    _generateFace(TOP, widthSegments, depthSegments);
-    _generateFace(BOTTOM, widthSegments, depthSegments);
-    _generateFace(RIGHT, depthSegments, heightSegments);
-    _generateFace(LEFT, depthSegments, heightSegments);
+    _generateFace(front, int_of_float(widthSegments), int_of_float(heightSegments));
+    _generateFace(back, int_of_float(widthSegments), int_of_float(heightSegments));
+    _generateFace(top, int_of_float(widthSegments), int_of_float(depthSegments));
+    _generateFace(bottom, int_of_float(widthSegments), int_of_float(depthSegments));
+    _generateFace(right, int_of_float(depthSegments), int_of_float(heightSegments));
+    _generateFace(left, int_of_float(depthSegments), int_of_float(heightSegments));
     {
       vertices,
       /* normals: normals,
@@ -177,6 +184,6 @@ let _computeData = (index: int, configDataMap) =>
 let create = (state: StateDataType.state) => {
   let (state, index) = GeometrySystem.create(state);
   let data = getGeometryData(state);
-  data.computeDataFuncMap |> HashMapSystem.set(index, _computeData) |> ignore;
+  data.computeDataFuncMap |> HashMapSystem.set(Js.Int.toString( index ), _computeData) |> ignore;
   (state, index)
 };

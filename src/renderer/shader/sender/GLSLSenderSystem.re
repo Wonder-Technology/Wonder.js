@@ -10,7 +10,7 @@ open Js.Typed_array;
 
 let _getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
 
-let _getBufferSizeByType =
+let _getBufferSizeByType = (type_: string) =>
   switch type_ {
   | "vec2" => 2
   | "vec3" => 3
@@ -63,41 +63,47 @@ let addAttributeSendData =
          | Some({attributes}) =>
            switch attributes {
            | None => ()
-           | Some({name, buffer, type_}) =>
-             switch (name, type_) {
-             | (Some(name), Some(type_)) =>
-               sendDataArr
-               |> ArraySystem.push(
-                    _sendBuffer(
-                      gl,
-                      _getBufferSizeByType(type_),
-                      getAttribLocation(program, name, gl),
-                      switch buffer {
-                      | "vertex" =>
-                        ArrayBufferSystem.createBuffer(
-                          gl,
-                          geometryIndex,
-                          GeometrySystem.getVertices(geometryIndex, state)
-                        )
-                      }
-                    )
-                  )
-             | (_, _) =>
-               sendDataArr
-               |> ArraySystem.push(
-                    _bindIndexBuffer(
-                      gl,
-                      switch buffer {
-                      | "index" =>
-                        ElementnArrayBufferSystem.createBuffer(
-                          gl,
-                          geometryIndex,
-                          GeometrySystem.getIndices(geometryIndex, state)
-                        )
-                      }
-                    )
-                  )
-             }
+           | Some(attributes) =>
+             attributes
+             |> ArraySystem.forEach(
+                  ({name, buffer, type_}) =>
+                    switch (name, type_) {
+                    | (Some(name), Some(type_)) =>
+                      sendDataArr
+                      |> ArraySystem.push(
+                           _sendBuffer(
+                             gl,
+                             _getBufferSizeByType(type_),
+                             getAttribLocation(program, name, gl),
+                             switch buffer {
+                             | "vertex" =>
+                               ArrayBufferSystem.createBuffer(
+                                 gl,
+                                 geometryIndex,
+                                 GeometrySystem.getVertices(geometryIndex, state)
+                               )
+                             }
+                           )
+                         )
+                      |> ignore
+                    | (_, _) =>
+                      sendDataArr
+                      |> ArraySystem.push(
+                           _bindIndexBuffer(
+                             gl,
+                             switch buffer {
+                             | "index" =>
+                               ElementArrayBufferSystem.createBuffer(
+                                 gl,
+                                 geometryIndex,
+                                 GeometrySystem.getIndices(geometryIndex, state)
+                               )
+                             }
+                           )
+                         )
+                      |> ignore
+                    }
+                )
            }
          }
      );
@@ -108,15 +114,15 @@ let addAttributeSendData =
 };
 
 /* todo finish! */
-let _getCameraVMatrixData = (state: StateDataType.state) => state;
+let _getCameraVMatrixData = (state: StateDataType.state) => [||];
 
 /* todo finish! */
-let _getCameraPMatrixData = (state: StateDataType.state) => state;
+let _getCameraPMatrixData = (state: StateDataType.state) => [||];
 
 /* todo finish! */
-let _getModelMMatrixData = (uid: string, state: StateDataType.state) => state;
+let _getModelMMatrixData = (uid: string, state: StateDataType.state) => [||];
 
-let _sendMatrix4 = (gl, pos: int, data: Float32Array.t) =>
+let _sendMatrix4 = (gl, pos: int, data: ArraySystem.t(float)) =>
   uniformMatrix4fv(pos, Js.false_, data, gl);
 
 let addUniformSendData =
@@ -150,26 +156,31 @@ let addUniformSendData =
          | Some({uniforms}) =>
            switch uniforms {
            | None => ()
-           | Some({name, field, type_, from}) =>
-             sendDataArr
-             |> ArraySystem.push({
-                  getDataFunc:
-                    switch from {
-                    | "camera" =>
-                      switch field {
-                      | "vMatrix" => _getCameraVMatrixData
-                      | "pMatrix" => _getCameraPMatrixData
-                      }
-                    | "model" =>
-                      switch field {
-                      | "mMatrix" => _getModelMMatrixData(uid)
-                      }
-                    },
-                  sendFloat32ArrDataFunc:
-                    switch type_ {
-                    | "mat4" => _sendMatrix4(gl, getUniformLocation(program, name, gl))
-                    }
-                })
+           | Some(uniforms) =>
+             uniforms
+             |> ArraySystem.forEach(
+                  ({name, field, type_, from}) =>
+                    sendDataArr
+                    |> ArraySystem.push({
+                         getArrayDataFunc:
+                           switch from {
+                           | "camera" =>
+                             switch field {
+                             | "vMatrix" => _getCameraVMatrixData
+                             | "pMatrix" => _getCameraPMatrixData
+                             }
+                           | "model" =>
+                             switch field {
+                             | "mMatrix" => _getModelMMatrixData(uid)
+                             }
+                           },
+                         sendArrayDataFunc:
+                           switch type_ {
+                           | "mat4" => _sendMatrix4(gl, getUniformLocation(program, name, gl))
+                           }
+                       })
+                    |> ignore
+                )
            }
          }
      );

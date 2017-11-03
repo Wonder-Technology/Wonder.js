@@ -14,9 +14,9 @@ open ShaderType;
 
 open ProgramType;
 
-open LocationType;
-
 open ShaderChunkType;
+
+open Js.Typed_array;
 
 type contextConfig = {
   alpha: bool,
@@ -110,9 +110,9 @@ type glsl = {
 };
 
 type attribute = {
-  name: string,
+  name: option(string),
   buffer: string,
-  type_: string
+  type_: option(string)
 };
 
 type uniform = {
@@ -135,7 +135,20 @@ type shaderLib = {
 
 type shader_libs = array(shaderLib);
 
-type renderConfig = {
+type uniformData;
+
+type uniformSendData = {
+  getArrayDataFunc: state => array(float),
+  sendArrayDataFunc: array(float)=> unit
+  /* sendFloat32DataFunc: float => unit;
+     sendIntDataFunc: int => unit; */
+}
+and glslSenderData = {
+  attributeSendDataMap: Js.Dict.t(array((state => unit))),
+  uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
+  vertexAttribHistoryMap: Js.Dict.t(bool)
+}
+and renderConfig = {
   jobHandleMap: Js.Dict.t((state => state)),
   render_setting,
   init_pipelines,

@@ -14,7 +14,7 @@ let _init =
       geometryIndex: int,
       uid:string, 
       shaderLibDataArr: shader_libs,
-      {buildGLSLSource, getGL},
+      ( buildGLSLSource, getGL ),
       state: StateDataType.state
     ) => {
   /* let {
@@ -24,12 +24,12 @@ let _init =
   let shaderData = _getShaderData(state);
   let shaderIndex = _genereateShaderIndex(shaderData.index);
   shaderData.index = shaderIndex;
-  let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr);
+  let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
   let gl = [@bs] getGL(state);
   let program =
     gl
     |> ProgramSystem.createProgram
-    |> ProgramSystem.registerProgram(shaderIndex)
+    |> ProgramSystem.registerProgram(shaderIndex, state)
     |> ProgramSystem.initShader(vsSource, fsSource, gl);
   /* state |> LocationSystem.setEmptyLocationMap(shaderIndex)
 

@@ -4,6 +4,8 @@ open TypeArrayUtils;
 
 open GeometryStateUtils;
 
+open GeometryType;
+
 let create = (state: StateDataType.state) => {
   let data = getGeometryData(state);
   let index = data.index;
@@ -20,12 +22,12 @@ let _getFloat32PointData = (index: int, points: Float32Array.t, infoList) =>
   };
 
 let _setFloat32PointData =
-    (index: int, dataArr: ArraySystem.t(float), points: Float32Array.t, infoList, offset: int) => {
-  let count = ArraySystem.length(dataArr);
+    (index: int, data: ArraySystem.t(float), points: Float32Array.t, infoList:geometryInfoList, offset: int) => {
+  let count = ArraySystem.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  infoList[index] = _buildInfo(startIndex, newOffset);
-  fillFloat32Arr(points, dataArr, startIndex);
+  infoList[index] = Some(_buildInfo(startIndex, newOffset));
+  fillFloat32Arr(points, data, startIndex);
   newOffset
 };
 
@@ -37,12 +39,12 @@ let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) =>
   };
 
 let _setUint32PointData =
-    (index: int, dataArr: ArraySystem.t(float), points: Uint32Array.t, infoList, offset: int) => {
-  let count = ArraySystem.length(dataArr);
+    (index: int, data: ArraySystem.t(int), points: Uint32Array.t, infoList, offset: int) => {
+  let count = ArraySystem.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  infoList[index] = _buildInfo(startIndex, newOffset);
-  fillUint32Arr(points, dataArr, startIndex);
+  infoList[index] = Some(_buildInfo(startIndex, newOffset));
+  fillUint32Arr(points, data, startIndex);
   newOffset
 };
 
@@ -51,10 +53,11 @@ let getVertices = (index: int, state: StateDataType.state) => {
   _getFloat32PointData(index, vertices, verticesInfoList)
 };
 
-let setVertices = (index: int, vertices: ArraySystem.t(float), state: StateDataType.state) => {
-  let {verticesInfoList, verticesOffset} as geometryData = getGeometryData(state);
+let setVertices = (index: int, data: ArraySystem.t(float), state: StateDataType.state) => {
+  let {verticesInfoList, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
-    _setFloat32PointData(index, vertices, verticesInfoList, verticesOffset)
+    _setFloat32PointData(index, data, vertices, verticesInfoList, verticesOffset);
+    state;
 };
 
 let getIndices = (index: int, state: StateDataType.state) => {
@@ -62,17 +65,18 @@ let getIndices = (index: int, state: StateDataType.state) => {
   _getUint32PointData(index, indices, indicesInfoList)
 };
 
-let setIndices = (index: int, indices: ArraySystem.t(float), state: StateDataType.state) => {
-  let {indicesInfoList, indicesOffset} as geometryData = getGeometryData(state);
-  geometryData.indicesOffset = _setUint32PointData(index, indices, indicesInfoList, indicesOffset)
+let setIndices = (index: int, data: ArraySystem.t(int), state: StateDataType.state) => {
+  let {indicesInfoList, indices, indicesOffset} as geometryData = getGeometryData(state);
+  geometryData.indicesOffset = _setUint32PointData(index, data, indices, indicesInfoList, indicesOffset);
+  state;
 };
 
 let _initGeometry = (index: int, state: StateDataType.state) => {
   let geometryData = getGeometryData(state);
-  switch (geometryData.computeDataFuncMap |> HashMapSystem.get(index)) {
+  switch (geometryData.computeDataFuncMap |> HashMapSystem.get(Js.Int.toString( index ))) {
   | None => ()
   | Some(computeDataFunc) =>
-    let {vertices, indices} = computeDataFunc(index, geometryData.configDataMap);
+    let ( {vertices, indices} : geometryComputeData ) = computeDataFunc(index, geometryData.configDataMap);
     /* todo compute normals */
     state |> setVertices(index, vertices) |> setIndices(index, indices) |> ignore
   }

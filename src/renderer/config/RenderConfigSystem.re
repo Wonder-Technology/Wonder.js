@@ -79,5 +79,6 @@ let getMaterialShaderLibDataArr =
              ArraySystem.concat(shaderLibArr, resultDataArr) |> ignore
            }
          }
-     )
+     );
+     resultDataArr;
 };

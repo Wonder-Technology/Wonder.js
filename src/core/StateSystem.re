@@ -162,9 +162,9 @@ let convertShaderLibsToRecord = (shader_libs) =>
                                    json
                                    |> array(
                                         (json) => {
-                                          name: json |> field("name", string),
+                                          name: json |> optional(field("name", string)),
                                           buffer: json |> field("buffer", string),
-                                          type_: json |> field("type", string)
+                                          type_: json |> optional(field("type", string))
                                         }
                                       )
                                )
@@ -203,5 +203,3 @@ let createState = () => {
   glslSenderData: GLSLSenderSystem.initData(),
   glslChunkData: ShaderChunkSystem.initData()
 };
-
-let getOptionValueFromState = (value) => Js.Option.getExn(value);

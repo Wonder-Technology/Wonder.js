@@ -4,9 +4,9 @@ open ViewSystem;
 
 open GlType;
 
-open Dom;
+open DomType;
 
-let getGL = (state: state) => state.deviceManagerData.gl;
+let getGL = [@bs] ((state: state) =>Js.Option.getExn  (state.deviceManagerData.gl));
 
 let setGL = (gl: webgl1Context, ~state: state) => {...state, deviceManagerData: {gl: Some(gl)}};
 

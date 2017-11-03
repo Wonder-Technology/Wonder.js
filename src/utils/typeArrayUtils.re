@@ -59,7 +59,7 @@ let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex:
   Float32Array.subarray(startIndex, endIndex, typeArr);
 
 
-let fillUint32Arr = (typeArr: Uint32Array.t, dataArr: ArraySystem.t(float), startIndex: int) =>
+let fillUint32Arr = (typeArr: Uint32Array.t, dataArr: ArraySystem.t(int), startIndex: int) =>
   Uint32Array.setArrayOffset(dataArr, startIndex, typeArr);
 
 let getUint32ArrSubarray = (typeArr: Uint32Array.t, startIndex: int, endIndex: int) =>

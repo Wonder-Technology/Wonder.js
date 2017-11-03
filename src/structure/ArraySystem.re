@@ -19,7 +19,10 @@ let length = Js.Array.length;
 let forEach = Js.Array.forEach;
 
 let push = Js.Array.push;
-let pushMany = Js.Array.pushMany;
+
+/* let pushMany = Js.Array.pushMany; */
+
+[@bs.splice][@bs.send.pipe : Js.Array.t('a) as 'this]  external pushMany : array('a) => int = "push";
 
 let pop = Js.Array.pop;
 

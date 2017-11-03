@@ -75,5 +75,5 @@ external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
 [@bs.send.pipe : webgl1Context] external enableVertexAttribArray : int => unit = "";
 
 [@bs.send.pipe : webgl1Context]
-external uniformMatrix4fv : (int, Js.boolean, Float32Array.t) => unit =
+external uniformMatrix4fv : (int, Js.boolean, array(float)) => unit =
   "";

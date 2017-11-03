@@ -18,7 +18,7 @@ let webgl1_main_begin: string = "void main(void){\n";
 
 let webgl1_main_end: string = "}\n";
 
-let _getPrecisionSource = (highp: glslChunkData) =>
+let _getPrecisionSource = (highp: glslChunk) =>
   /* todo judge gpu detect data */
   highp.top;
 
@@ -36,7 +36,8 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
              ++ (
                attributes
                |> ArraySystem.reduce(
-                    (result: string, {name, type_}) => result ++ {j|attribute $type_ $name|j},
+                    (result: string, {name, type_}: attribute) =>
+                      result ++ {j|attribute $type_ $name|j},
                     ""
                   )
              )
@@ -47,7 +48,7 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
 
 let _isInSource = (key: string, source: string) => Js.String.indexOf(key, source) > (-1);
 
-let _generateUniformSourceType =
+let _generateUniformSourceType = (type_: string) =>
   switch type_ {
   | "float3" => "vec3"
   | _ => type_
@@ -73,13 +74,13 @@ let _generateUniformSource =
              ++ (
                uniforms
                |> ArraySystem.filter(
-                    ({name}) =>
+                    ({name}: uniform) =>
                       _isInSource(name, sourceVarDeclare)
                       || _isInSource(name, sourceFuncDefine)
                       || _isInSource(name, sourceBody)
                   )
                |> ArraySystem.reduce(
-                    (result: string, {name, type_}) => {
+                    (result: string, {name, type_}: uniform) => {
                       let type_ = _generateUniformSourceType(type_);
                       result ++ {j|uniform $type_ $name|j}
                     },
@@ -92,81 +93,84 @@ let _generateUniformSource =
      );
 
 let buildGLSLSource =
-    (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
-  let vs: glslChunk = {
-    top: "",
-    define: "",
-    varDeclare: "",
-    funcDeclare: "",
-    funcDefine: "",
-    body: ""
-  };
-  let fs: glslChunk = {
-    top: "",
-    define: "",
-    varDeclare: "",
-    funcDeclare: "",
-    funcDefine: "",
-    body: ""
-  };
-  /* let vs = ref ( ("", "", "", "", "") );
-     let fs = ref ( ("", "", "", "", "") ); */
-  /* let _buildSource  = ((sourceTop, sourceDefine, sourceVarDeclare, sourceFuncDeclare, sourceFuncDefine, sourceBody), { */
-  let _setSource =
-      (
-        {
-          top: sourceTop,
-          define: sourceDefine,
-          varDeclare: sourceVarDeclare,
-          funcDeclare: sourceFuncDeclare,
-          funcDefine: sourceFuncDefine,
-          body: sourceBody
-        } as sourceChunk,
-        {top, define, varDeclare, funcDeclare, funcDefine, body}
-      ) => {
-    /* (
-           sourceTop + top,
-           sourceDefine + define,
-           sourceVarDeclare + varDeclare,
-           sourceFuncDeclare + funcDeclare,
-           sourceFuncDefine + funcDefine,
-           sourceBody + body,
-       ); */
-    sourceChunk.top = sourceTop + top;
-    sourceChunk.define = sourceDefine + define;
-    sourceChunk.varDeclare = sourceVarDeclare + varDeclare;
-    sourceChunk.funcDeclare = sourceFuncDeclare + funcDeclare;
-    sourceChunk.funcDefine = sourceFuncDefine + funcDefine;
-    sourceChunk.body = sourceBody + body
-  };
-  vs.body = vs.body + webgl1_main_begin;
-  fs.body = fs.body + webgl1_main_begin;
-  fs.top = _getPrecisionSource(getChunk("highp_fragment", state)) + fs.top;
-  shaderLibDataArr
-  |> ArraySystem.forEach(
-       ({glsls}) =>
-         switch glsls {
-         | None => ()
-         | Some(glsls) =>
-           glsls
-           |> ArraySystem.forEach(
-                ({type_, name}) =>
-                  switch type_ {
-                  | "vs" => _setSource(vs, getChunk(name, state))
-                  | "fs" => _setSource(fs, getChunk(name, state))
-                  }
-              )
-         }
-     );
-  vs.body = vs.body + webgl1_main_end;
-  fs.body = fs.body + webgl1_main_end;
-  vs.top = vs.top + _generateAttributeSource(shaderLibDataArr);
-  vs.top =
-    vs.top + _generateUniformSource(shaderLibDataArr, vs.varDeclare, vs.funcDefine, vs.body);
-  fs.top =
-    fs.top + _generateUniformSource(shaderLibDataArr, fs.varDeclare, fs.funcDefine, fs.body);
+  [@bs]
   (
-    vs.top + vs.define + vs.varDeclare + vs.funcDeclare + vs.funcDefine + vs.body,
-    fs.top + fs.define + fs.varDeclare + fs.funcDeclare + fs.funcDefine + fs.body
-  )
-};
+    (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
+      let vs: glslChunk = {
+        top: "",
+        define: "",
+        varDeclare: "",
+        funcDeclare: "",
+        funcDefine: "",
+        body: ""
+      };
+      let fs: glslChunk = {
+        top: "",
+        define: "",
+        varDeclare: "",
+        funcDeclare: "",
+        funcDefine: "",
+        body: ""
+      };
+      /* let vs = ref ( ("", "", "", "", "") );
+         let fs = ref ( ("", "", "", "", "") ); */
+      /* let _buildSource  = ((sourceTop, sourceDefine, sourceVarDeclare, sourceFuncDeclare, sourceFuncDefine, sourceBody), { */
+      let _setSource =
+          (
+            {
+              top: sourceTop,
+              define: sourceDefine,
+              varDeclare: sourceVarDeclare,
+              funcDeclare: sourceFuncDeclare,
+              funcDefine: sourceFuncDefine,
+              body: sourceBody
+            } as sourceChunk,
+            {top, define, varDeclare, funcDeclare, funcDefine, body}
+          ) => {
+        /* (
+               sourceTop + top,
+               sourceDefine + define,
+               sourceVarDeclare + varDeclare,
+               sourceFuncDeclare + funcDeclare,
+               sourceFuncDefine + funcDefine,
+               sourceBody + body,
+           ); */
+        sourceChunk.top = sourceTop ++ top;
+        sourceChunk.define = sourceDefine ++ define;
+        sourceChunk.varDeclare = sourceVarDeclare ++ varDeclare;
+        sourceChunk.funcDeclare = sourceFuncDeclare ++ funcDeclare;
+        sourceChunk.funcDefine = sourceFuncDefine ++ funcDefine;
+        sourceChunk.body = sourceBody ++ body
+      };
+      vs.body = vs.body ++ webgl1_main_begin;
+      fs.body = fs.body ++ webgl1_main_begin;
+      fs.top = _getPrecisionSource(getChunk("highp_fragment", state)) ++ fs.top;
+      shaderLibDataArr
+      |> ArraySystem.forEach(
+           ({glsls}) =>
+             switch glsls {
+             | None => ()
+             | Some(glsls) =>
+               glsls
+               |> ArraySystem.forEach(
+                    ({type_, name}: glsl) =>
+                      switch type_ {
+                      | "vs" => _setSource(vs, getChunk(name, state))
+                      | "fs" => _setSource(fs, getChunk(name, state))
+                      }
+                  )
+             }
+         );
+      vs.body = vs.body ++ webgl1_main_end;
+      fs.body = fs.body ++ webgl1_main_end;
+      vs.top = vs.top ++ _generateAttributeSource(shaderLibDataArr);
+      vs.top =
+        vs.top ++ _generateUniformSource(shaderLibDataArr, vs.varDeclare, vs.funcDefine, vs.body);
+      fs.top =
+        fs.top ++ _generateUniformSource(shaderLibDataArr, fs.varDeclare, fs.funcDefine, fs.body);
+      (
+        vs.top ++ vs.define ++ vs.varDeclare ++ vs.funcDeclare ++ vs.funcDefine ++ vs.body,
+        fs.top ++ fs.define ++ fs.varDeclare ++ fs.funcDeclare ++ fs.funcDefine ++ fs.body
+      )
+    }
+  );

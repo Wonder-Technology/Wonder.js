@@ -2,7 +2,14 @@ open RenderConfigSystem;
 
 open StateDataType;
 
-let _initMaterialShader = (materialIndex: int, state: StateDataType.state) => {
+open MaterialSystem;
+
+let buildInitShaderFuncTuple = () => (
+  ShaderSourceBuildSystem.buildGLSLSource,
+  DeviceManagerSystem.getGL
+);
+
+let _initMaterialShader = (materialIndex: int, initShaderFuncTuple, state: StateDataType.state) => {
   let {groups, basic_material: basic_materialShaders} = getShaders(state);
   let shaderLibs = getShaderLibs(state);
   /* switch(getGameObject(materialIndex, state)){
@@ -19,6 +26,7 @@ let _initMaterialShader = (materialIndex: int, state: StateDataType.state) => {
            gameObject,
            name,
            getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
+           initShaderFuncTuple,
            state
          )
          |> ignore
@@ -26,10 +34,13 @@ let _initMaterialShader = (materialIndex: int, state: StateDataType.state) => {
 };
 
 let initMaterialShaders = (state: StateDataType.state) => {
+  let initShaderFuncTuple = buildInitShaderFuncTuple();
   /* let {groups, basic_material: basic_materialShaders} = getShaders(state); */
   /* todo check dispose:shouldn't dispose before init render! */
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
-  |> ArraySystem.forEach((materialIndex: int) => _initMaterialShader(materialIndex, state));
+  |> ArraySystem.forEach(
+       (materialIndex: int) => _initMaterialShader(materialIndex, initShaderFuncTuple, state)
+     );
   state
 };
 
