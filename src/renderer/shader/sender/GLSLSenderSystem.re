@@ -6,6 +6,8 @@ open GlType;
 
 open Gl;
 
+open Js.Typed_array;
+
 let _getGLSLSenderData = (state: StateDataType.state) => state.glslSenderData;
 
 let _getBufferSizeByType =
@@ -105,7 +107,80 @@ let addAttributeSendData =
   state
 };
 
+/* todo finish! */
+let _getCameraVMatrixData = (state: StateDataType.state) => state;
+
+/* todo finish! */
+let _getCameraPMatrixData = (state: StateDataType.state) => state;
+
+/* todo finish! */
+let _getModelMMatrixData = (uid: string, state: StateDataType.state) => state;
+
+let _sendMatrix4 = (gl, pos: int, data: Float32Array.t) =>
+  uniformMatrix4fv(pos, Js.false_, data, gl);
+
+let addUniformSendData =
+    (
+      gl,
+      shaderIndex: int,
+      geometryIndex: int,
+      uid: string,
+      program: program,
+      shaderLibDataArr: shader_libs,
+      state: StateDataType.state
+    ) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "shouldn't be added before",
+          () =>
+            _getGLSLSenderData(state).uniformSendDataMap
+            |> HashMapSystem.get(Js.Int.toString(shaderIndex))
+            |> assertNotExist
+        )
+      )
+  );
+  let sendDataArr = ArraySystem.createEmpty();
+  shaderLibDataArr
+  |> ArraySystem.forEach(
+       ({variables}) =>
+         switch variables {
+         | None => ()
+         | Some({uniforms}) =>
+           switch uniforms {
+           | None => ()
+           | Some({name, field, type_, from}) =>
+             sendDataArr
+             |> ArraySystem.push({
+                  getDataFunc:
+                    switch from {
+                    | "camera" =>
+                      switch field {
+                      | "vMatrix" => _getCameraVMatrixData
+                      | "pMatrix" => _getCameraPMatrixData
+                      }
+                    | "model" =>
+                      switch field {
+                      | "mMatrix" => _getModelMMatrixData(uid)
+                      }
+                    },
+                  sendFloat32ArrDataFunc:
+                    switch type_ {
+                    | "mat4" => _sendMatrix4(gl, getUniformLocation(program, name, gl))
+                    }
+                })
+           }
+         }
+     );
+  _getGLSLSenderData(state).uniformSendDataMap
+  |> HashMapSystem.set(Js.Int.toString(shaderIndex), sendDataArr)
+  |> ignore;
+  state
+};
+
 let initData = () => {
   attributeSendDataMap: HashMapSystem.createEmpty(),
+  uniformSendDataMap: HashMapSystem.createEmpty(),
   vertexAttribHistoryMap: HashMapSystem.createEmpty()
 };

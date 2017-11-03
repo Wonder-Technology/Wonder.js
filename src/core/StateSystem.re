@@ -147,7 +147,8 @@ let convertShaderLibsToRecord = (shader_libs) =>
                                         (json) => {
                                           name: json |> field("name", string),
                                           field: json |> field("field", string),
-                                          type_: json |> field("type", string)
+                                          type_: json |> field("type", string),
+                                          from: json |> field("from", string)
                                         }
                                       )
                                )

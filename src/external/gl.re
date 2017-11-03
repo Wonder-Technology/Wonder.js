@@ -53,6 +53,8 @@ external getShaderParameter : (webgl1Context, shader, int) => unit =
 
 [@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => int = "";
 
+[@bs.send.pipe : webgl1Context] external getUniformLocation : (program, string) => int = "";
+
 [@bs.send.pipe : webgl1Context] external bindBuffer : (int, buffer) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external resetBuffer : (int, Js.nullable(buffer)) => unit =
@@ -60,12 +62,18 @@ external getShaderParameter : (webgl1Context, shader, int) => unit =
 
 [@bs.send.pipe : webgl1Context] external createBuffer : buffer = "";
 
-[@bs.send.pipe : webgl1Context] external bufferFloat32Data : (int, Float32Array.t, int) => unit = "bufferData";
+[@bs.send.pipe : webgl1Context] external bufferFloat32Data : (int, Float32Array.t, int) => unit =
+  "bufferData";
 
-[@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit = "bufferData";
+[@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit =
+  "bufferData";
 
 [@bs.send.pipe : webgl1Context]
 external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external enableVertexAttribArray : int => unit = "";
+
+[@bs.send.pipe : webgl1Context]
+external uniformMatrix4fv : (int, Js.boolean, Float32Array.t) => unit =
+  "";

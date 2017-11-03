@@ -12,6 +12,7 @@ let _init =
     (
       materialIndex: int,
       geometryIndex: int,
+      uid:string, 
       shaderLibDataArr: shader_libs,
       {buildGLSLSource, getGL},
       state: StateDataType.state
@@ -45,6 +46,14 @@ let _init =
        program,
        shaderLibDataArr
      )
+  |> GLSLSenderSystem.addUniformSendData(
+       gl,
+       shaderIndex,
+       geometryIndex,
+     uid,
+       program,
+       shaderLibDataArr
+     )
   |> ignore;
   shaderIndex
 };
@@ -59,6 +68,7 @@ let initMaterialShader =
     (
       materialIndex: int,
       geometryIndex: int,
+      uid: string,
       shaderName: string,
       shaderLibDataArr,
       initShaderFuncRecord,
@@ -69,7 +79,7 @@ let initMaterialShader =
   | Some(shaderIndex) => shaderIndex
   | None =>
     let shaderIndex =
-      _init(materialIndex, geometryIndex, shaderLibDataArr, initShaderFuncRecord, state);
+      _init(materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
     _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore;
     shaderIndex
   }

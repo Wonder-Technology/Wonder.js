@@ -5,15 +5,15 @@ let shader_libs = {|
     "glsls": [{"type": "vs", "name": "common_vertex"}, {"type": "fs", "name": "common_vertex"}],
     "variables": {
       "uniforms": [
-        {"name": "u_vMatrix", "field": "vMatrix", "type": "mat4"},
-        {"name": "u_pMatrix", "field": "pMatrix", "type": "mat4"}
+        {"name": "u_vMatrix", "field": "vMatrix", "type": "mat4", "from": "camera"},
+        {"name": "u_pMatrix", "field": "pMatrix", "type": "mat4", "from": "camera"}
       ]
     }
   },
   {
     "name": "model_matrix_no_instance",
     "glsls": [{"type": "vs", "name": "modelMatrix_noInstance_vertex"}],
-    "variables": {"uniforms": [{"name": "u_mMatrix", "field": "mMatrix", "type": "mat4"}]}
+    "variables": {"uniforms": [{"name": "u_mMatrix", "field": "mMatrix", "type": "mat4", "from": "model"}]}
   },
   {
     "name": "common_vertex",

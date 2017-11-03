@@ -118,7 +118,8 @@ type attribute = {
 type uniform = {
   name: string,
   field: string,
-  type_: string
+  type_: string,
+  from: string
 };
 
 type variables = {

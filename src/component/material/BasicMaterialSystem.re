@@ -16,6 +16,7 @@ let _initMaterialShader = (materialIndex: int, state: StateDataType.state) => {
          ShaderSystem.initMaterialShader(
            materialIndex,
            geometry,
+           gameObject,
            name,
            getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
            state
