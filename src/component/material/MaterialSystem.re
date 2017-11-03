@@ -4,8 +4,15 @@ open Js.Typed_array;
 
 open MaterialStateUtils;
 
-/* open MaterialUtils; */
+let create = (state: StateDataType.state) => {
+  let data = getMaterialData(state);
+  let index = data.index;
+  data.index = succ(data.index);
+  (state, index)
+};
 
+let getGameObject = (material: material, state: StateDataType.state) =>
+  ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
 let setShaderIndex = (materialIndex: int, shaderIndex: int, shaderIndices) =>
   TypeArrayUtils.setUint32ArraySingleVale(materialIndex, shaderIndex, shaderIndices);
@@ -56,5 +63,7 @@ let _initBufferData = (state: StateDataType.state) => {
 
 let initData = (state: StateDataType.state) => {
   let (buffer, shaderIndices) = _initBufferData(state);
-  Some({index: 0, buffer, shaderIndices, gameObjectMap: HashMapSystem.createEmpty()})
+  state.materialData =
+    Some({index: 0, buffer, shaderIndices, gameObjectMap: HashMapSystem.createEmpty()});
+  state
 };

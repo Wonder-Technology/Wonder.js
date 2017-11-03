@@ -49,6 +49,17 @@ let addTransformComponent = (uid: string, component: component, state: StateData
   TransformAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
+let hasGeometryComponent = (uid: string, state: StateDataType.state) : bool =>
+  _getGameObjectData(state).geometryMap |> _hasComponent(uid);
+
+let getGeometryComponent = (uid: string, state: StateDataType.state) =>
+  _getGameObjectData(state).geometryMap |> _getComponent(uid);
+
+let addGeometryComponent = (uid: string, component: component, state: StateDataType.state) => {
+  _getGameObjectData(state).geometryMap |> _addComponent(uid, component) |> ignore;
+  GeometryAddComponentUtils.handleAddComponent(component, uid, state)
+};
+
 let create = (state: StateDataType.state) => {
   let gameObjectData = _getGameObjectData(state);
   let newUIdStr = Js.Int.toString(gameObjectData.uid);
@@ -60,5 +71,6 @@ let create = (state: StateDataType.state) => {
 let initData = () => {
   uid: 0,
   transformMap: HashMapSystem.createEmpty(),
-  cameraControllerMap: HashMapSystem.createEmpty()
+  cameraControllerMap: HashMapSystem.createEmpty(),
+  geometryMap: HashMapSystem.createEmpty()
 };

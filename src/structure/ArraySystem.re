@@ -19,6 +19,7 @@ let length = Js.Array.length;
 let forEach = Js.Array.forEach;
 
 let push = Js.Array.push;
+let pushMany = Js.Array.pushMany;
 
 let pop = Js.Array.pop;
 
@@ -47,7 +48,8 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
 
 let copy = Js.Array.copy;
 
-let rec range = (a, b) => {
+let rec range = (a: int, b: int) => {
+  requireCheck(() => Contract.Operators.(test("range should be valid", () => b >= a)));
   let result = createEmpty();
   for (i in a to b) {
     push(i, result) |> ignore

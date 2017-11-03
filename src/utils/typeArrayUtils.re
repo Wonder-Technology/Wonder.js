@@ -51,3 +51,16 @@ let setFloat16 = (index: int, data: ArraySystem.t(float), typeArray: Float32Arra
 
 let setUint32ArraySingleVale = (index: int, data: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_set(typeArray, index, data);
+
+let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: ArraySystem.t(float), startIndex: int) =>
+  Float32Array.setArrayOffset(dataArr, startIndex, typeArr);
+
+let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
+  Float32Array.subarray(startIndex, endIndex, typeArr);
+
+
+let fillUint32Arr = (typeArr: Uint32Array.t, dataArr: ArraySystem.t(float), startIndex: int) =>
+  Uint32Array.setArrayOffset(dataArr, startIndex, typeArr);
+
+let getUint32ArrSubarray = (typeArr: Uint32Array.t, startIndex: int, endIndex: int) =>
+  Uint32Array.subarray(startIndex, endIndex, typeArr);

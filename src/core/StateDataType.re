@@ -6,6 +6,8 @@ open CameraControllerType;
 
 open GameObjectType;
 
+open GeometryType;
+
 open MaterialType;
 
 open ShaderType;
@@ -27,6 +29,7 @@ type contextConfig = {
 
 type bufferConfig = {
   mutable transformDataBufferCount: int,
+  mutable geometryPointDataBufferCount: int,
   mutable basicMaterialDataBufferCount: int
 };
 
@@ -149,6 +152,7 @@ and state = {
   mutable transformData: option(transformData),
   cameraControllerData,
   mutable materialData: option(materialData),
+  mutable geometryData: option(geometryData),
   shaderData,
   programData,
   locationData,

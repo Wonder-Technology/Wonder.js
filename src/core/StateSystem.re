@@ -196,6 +196,7 @@ let createState = () => {
   transformData: None,
   cameraControllerData: CameraControllerSystem.initData(),
   materialData: None,
+  geometryData: None,
   shaderData: ShaderSystem.initData(),
   programData: ProgramSystem.initData(),
   locationData: LocationSystem.initData(),
