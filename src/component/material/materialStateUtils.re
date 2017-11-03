@@ -1,0 +1,1 @@
+let getMaterialData = (state:StateDataType.state) => state.materialData;

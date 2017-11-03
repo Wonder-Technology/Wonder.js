@@ -1,7 +1,4 @@
-type htmlElement;
-
-/* type canvasElement; */
-type document;
+open DomType;
 
 [@bs.val] external document : document = "";
 

@@ -1,0 +1,3 @@
+type htmlElement;
+
+type document;

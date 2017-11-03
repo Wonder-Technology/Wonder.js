@@ -48,3 +48,6 @@ let setFloat16 = (index: int, data: ArraySystem.t(float), typeArray: Float32Arra
   Float32Array.setArrayOffset(data, index, typeArray);
   typeArray
 };
+
+let setUint32ArraySingleVale = (index: int, data: int, typeArray: Uint32Array.t) =>
+  Uint32Array.unsafe_set(typeArray, index, data);

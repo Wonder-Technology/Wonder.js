@@ -1,5 +1,9 @@
 type webgl1Context;
 
+type program;
+
+type shader;
+
 type options = {
   .
   "alpha": Js.boolean,

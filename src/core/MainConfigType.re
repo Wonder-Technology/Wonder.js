@@ -14,7 +14,14 @@ type configStateJsObj = {
         "stencil": Js.nullable(bool)
       }
     ),
-  "bufferConfig": Js.nullable({. "transformDataBufferCount": Js.nullable(int)})
+  "bufferConfig":
+    Js.nullable(
+      {
+        .
+        "transformDataBufferCount": Js.nullable(int),
+        "basicMaterialDataBufferCount": Js.nullable(int)
+      }
+    )
 };
 
 type contextConfig = {
@@ -26,7 +33,10 @@ type contextConfig = {
   preserveDrawingBuffer: bool
 };
 
-type bufferConfig = {transformDataBufferCount: int};
+type bufferConfig = {
+  transformDataBufferCount: int,
+  basicMaterialDataBufferCount: int
+};
 
 type mainConfigData = {
   canvasId: option(string),

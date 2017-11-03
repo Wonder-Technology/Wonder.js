@@ -8,6 +8,8 @@ type t('a) = Js.Array.t('a);
 
 [@bs.set_index] external unsafeSet : (t('a), int, 'b) => unit = "";
 
+let createEmpty = () => [||];
+
 let includes = Js.Array.includes;
 
 let indexOf = Js.Array.indexOf;
@@ -26,6 +28,10 @@ let filter = Js.Array.filter;
 
 let map = Js.Array.map;
 
+let reduce = Js.Array.reduce;
+
+let flatten = (arr: array('item)) => arr |> reduce((a, b) => concat(b, a), createEmpty());
+
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   requireCheck(
     () =>
@@ -41,15 +47,14 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
 
 let copy = Js.Array.copy;
 
-let createEmpty = () => [||];
+let rec range = (a, b) => {
+  let result = createEmpty();
+  for (i in a to b) {
+    push(i, result) |> ignore
+  };
+  result
+};
 
-/* let rec range a b => {
-     let result = createEmpty ();
-     for i in a to b {
-       push i result |> ignore
-     };
-     result
-   }; */
 let removeDuplicateItems = (arr) => {
   let resultArr = [||];
   let map = HashMapSystem.createEmpty();

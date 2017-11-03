@@ -67,6 +67,115 @@ let convertInitJobsToRecord = (init_jobs) =>
     )
   );
 
+let convertShadersToRecord = (shaders) => {
+  open Json;
+  open Decode;
+  let json = shaders |> Js.Json.parseExn;
+  {
+    groups:
+      json
+      |> field(
+           "groups",
+           (json) =>
+             json
+             |> array(
+                  (json) => {name: json |> field("name", string), value: json |> array(string)}
+                )
+         ),
+    basic_material:
+      json
+      |> field(
+           "init_basic_material",
+           (json) =>
+             json
+             |> array(
+                  (json) => {
+                    name: json |> field("name", string),
+                    shader_libs:
+                      json
+                      |> array(
+                           fun (json) => (
+                             {
+                               type_: json |> optional(field("type", string)),
+                               name: json |> field("name", string)
+                             }: shaderLibItem
+                           )
+                         )
+                  }
+                )
+         )
+  }
+};
+
+let convertShaderLibsToRecord = (shader_libs) =>
+  Json.(
+    Decode.(
+      shader_libs
+      |> Js.Json.parseExn
+      |> array(
+           (json) => {
+             name: json |> field("name", string),
+             glsls:
+               json
+               |> optional(
+                    field(
+                      "glsls",
+                      (json) =>
+                        json
+                        |> array(
+                             (json) => {
+                               type_: json |> field("type", string),
+                               name: json |> field("name", string)
+                             }
+                           )
+                    )
+                  ),
+             variables:
+               json
+               |> optional(
+                    field(
+                      "variables",
+                      (json) => {
+                        uniforms:
+                          json
+                          |> optional(
+                               field(
+                                 "uniforms",
+                                 (json) =>
+                                   json
+                                   |> array(
+                                        (json) => {
+                                          name: json |> field("name", string),
+                                          field: json |> field("field", string),
+                                          type_: json |> field("type", string)
+                                        }
+                                      )
+                               )
+                             ),
+                        attributes:
+                          json
+                          |> optional(
+                               field(
+                                 "attributes",
+                                 (json) =>
+                                   json
+                                   |> array(
+                                        (json) => {
+                                          name: json |> field("name", string),
+                                          buffer: json |> field("buffer", string),
+                                          type_: json |> field("type", string)
+                                        }
+                                      )
+                               )
+                             )
+                      }
+                    )
+                  )
+           }
+         )
+    )
+  );
+
 let createJobHandleMap = () =>
   HashMapSystem.(createEmpty() |> set("init_basic_material", BasicMaterialSystem.init));
 
@@ -76,14 +185,21 @@ let createState = () => {
     jobHandleMap: createJobHandleMap(),
     render_setting: convertRenderSettingToRecord(Render_setting.render_setting),
     init_pipelines: convertInitPipelinesToRecord(Init_pipelines.init_pipelines),
-    init_jobs: convertInitJobsToRecord(Init_jobs.init_jobs)
+    init_jobs: convertInitJobsToRecord(Init_jobs.init_jobs),
+    shaders: convertShadersToRecord(Shaders.shaders),
+    shader_libs: convertShaderLibsToRecord(Shader_libs.shader_libs)
   },
   viewData: {canvas: None, contextConfig: None},
   initConfigData: {isTest: Some(false)},
   deviceManagerData: {gl: None},
   gameObjectData: GameObjectSystem.initData(),
   transformData: None,
-  cameraControllerData: CameraControllerSystem.initData()
+  cameraControllerData: CameraControllerSystem.initData(),
+  materialData: None,
+  shaderData: ShaderSystem.initData(),
+  programData: ProgramSystem.initData(),
+  locationData: LocationSystem.initData(),
+  glslChunkData: ShaderChunkSystem.initData()
 };
 
 let getOptionValueFromState = (value) => Js.Option.getExn(value);

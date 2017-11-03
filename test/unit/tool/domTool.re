@@ -1,3 +1,5 @@
+open DomType;
+
 open Dom;
 
 open Sinon;
