@@ -199,7 +199,7 @@ let createState = () => {
   geometryData: None,
   shaderData: ShaderSystem.initData(),
   programData: ProgramSystem.initData(),
-  locationData: LocationSystem.initData(),
+  glslSenderData: GLSLSenderSystem.initData(),
   glslChunkData: ShaderChunkSystem.initData()
 };
 

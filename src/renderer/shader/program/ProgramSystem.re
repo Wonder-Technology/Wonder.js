@@ -72,7 +72,7 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
     */
   deleteShader(vs, gl);
   deleteShader(fs, gl);
-  ()
+  program;
 };
 
 let getProgram = (shaderIndex: int, state: StateDataType.state) =>

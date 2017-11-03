@@ -155,7 +155,7 @@ and state = {
   mutable geometryData: option(geometryData),
   shaderData,
   programData,
-  locationData,
+  glslSenderData,
   glslChunkData
 };
 

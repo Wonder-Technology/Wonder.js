@@ -2,6 +2,22 @@ open DomType;
 
 open GlType;
 
+open Js.Typed_array;
+
+[@bs.get] external getCompileStatus : webgl1Context => int = "COMPILE_STATUS";
+
+[@bs.get] external getVertexShader : webgl1Context => int = "VERTEX_SHADER";
+
+[@bs.get] external getFragmentShader : webgl1Context => int = "FRAGMENT_SHADER";
+
+[@bs.get] external getArrayBuffer : webgl1Context => int = "ARRAY_BUFFER";
+
+[@bs.get] external getElementArrayBuffer : webgl1Context => int = "ELEMENT_ARRAY_BUFFER";
+
+[@bs.get] external getFloat : webgl1Context => int = "FLOAT";
+
+[@bs.get] external getStaticDraw : webgl1Context => int = "STATIC_DRAW";
+
 [@bs.send]
 external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
@@ -22,12 +38,6 @@ external getShaderParameter : (webgl1Context, shader, int) => unit =
 
 [@bs.send.pipe : webgl1Context] external createShader : int => shader = "";
 
-[@bs.get] external getCompileStatus : webgl1Context => int = "COMPILE_STATUS";
-
-[@bs.get] external getVertexShader : webgl1Context => int = "VERTEX_SHADER";
-
-[@bs.get] external getFragmentShader : webgl1Context => int = "FRAGMENT_SHADER";
-
 /* external linkStatus : context::contextT => int = "LINK_STATUS" [@@bs.get]; */
 /* external validateStatus : context::contextT => int = "VALIDATE_STATUS" [@@bs.get];
    external shaderType : context::contextT => int = "SHADER_TYPE" [@@bs.get]; */
@@ -40,3 +50,22 @@ external getShaderParameter : (webgl1Context, shader, int) => unit =
 [@bs.send.pipe : webgl1Context] external bindAttribLocation : (program, int, string) => unit = "";
 
 [@bs.send.pipe : webgl1Context] external deleteShader : shader => unit = "";
+
+[@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => int = "";
+
+[@bs.send.pipe : webgl1Context] external bindBuffer : (int, buffer) => unit = "";
+
+[@bs.send.pipe : webgl1Context] external resetBuffer : (int, Js.nullable(buffer)) => unit =
+  "bindBuffer";
+
+[@bs.send.pipe : webgl1Context] external createBuffer : buffer = "";
+
+[@bs.send.pipe : webgl1Context] external bufferFloat32Data : (int, Float32Array.t, int) => unit = "bufferData";
+
+[@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit = "bufferData";
+
+[@bs.send.pipe : webgl1Context]
+external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
+  "";
+
+[@bs.send.pipe : webgl1Context] external enableVertexAttribArray : int => unit = "";

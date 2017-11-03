@@ -1,7 +1,7 @@
 let shaders = {|
 {
   "groups": [
-      {"name": "top", "value": ["common", "model_matrix_no_instance", "vertice_common"]},
+      {"name": "top", "value": ["common", "model_matrix_no_instance", "common_vertex"]},
       {"name": "end", "value": ["end"]}
   ],
   "basic_material": [

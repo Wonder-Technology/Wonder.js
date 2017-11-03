@@ -4,6 +4,8 @@ type program;
 
 type shader;
 
+type buffer;
+
 type options = {
   .
   "alpha": Js.boolean,

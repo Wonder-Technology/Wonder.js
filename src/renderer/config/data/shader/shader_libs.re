@@ -16,7 +16,7 @@ let shader_libs = {|
     "variables": {"uniforms": [{"name": "u_mMatrix", "field": "mMatrix", "type": "mat4"}]}
   },
   {
-    "name": "vertice_common",
+    "name": "common_vertex",
     "glsls": [{"type": "vs", "name": "modelMatrix_noInstance_vertex"}],
     "variables": {"attributes": [{"name": "a_position", "buffer": "vertex", "type": "vec3"}]}
   },
@@ -24,6 +24,7 @@ let shader_libs = {|
     "name": "basic",
     "glsls": [{"name": "vs", "name": "webgl1_setPos_mvp"}]
   },
-  {"name": "basic_end", "glsls": [{"name": "fs", "name": "webgl1_basic_end_fragment"}]}
+  {"name": "basic_end", "glsls": [{"name": "fs", "name": "webgl1_basic_end_fragment"}]},
+  {"name": "end", "variables": {"attributes": [{"buffer": "index"}]}}
 ]
 |};
