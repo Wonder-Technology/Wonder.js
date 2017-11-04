@@ -148,6 +148,7 @@ type uniformSendData = {
 and glslSenderData = {
   attributeSendDataMap: Js.Dict.t(array((state => unit))),
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
+  drawPointsFuncMap: Js.Dict.t((webgl1Context) => unit),
   vertexAttribHistoryMap: Js.Dict.t(bool)
 }
 and renderConfig = {

@@ -12,9 +12,9 @@ let _init =
     (
       materialIndex: int,
       geometryIndex: int,
-      uid:string, 
+      uid: string,
       shaderLibDataArr: shader_libs,
-      ( buildGLSLSource, getGL ),
+      (buildGLSLSource, getGL),
       state: StateDataType.state
     ) => {
   /* let {
@@ -50,10 +50,11 @@ let _init =
        gl,
        shaderIndex,
        geometryIndex,
-     uid,
+       uid,
        program,
        shaderLibDataArr
      )
+  |> GLSLSenderSystem.addDrawPointsFunc(gl, shaderIndex, geometryIndex)
   |> ignore;
   shaderIndex
 };

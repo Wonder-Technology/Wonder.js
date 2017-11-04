@@ -190,8 +190,41 @@ let addUniformSendData =
   state
 };
 
+let _drawElement = (drawMode: int, type_: int, typeSize: int, indicesCount: int, gl) => {
+  let startOffset = 0;
+  drawElements(drawMode, indicesCount, type_, typeSize * startOffset, gl);
+  ()
+};
+
+let _drawArray = (drawMode: int, verticesCount: int, gl) => {
+  let startOffset = 0;
+  drawArray(drawMode, startOffset, verticesCount, gl);
+  ()
+};
+
+let addDrawPointsFunc = (gl, shaderIndex: int, geometryIndex: int, state: StateDataType.state) => {
+  _getGLSLSenderData(state).drawPointsFuncMap
+  |> HashMapSystem.set(
+       Js.Int.toString(shaderIndex),
+       GeometrySystem.hasIndices(geometryIndex, state) ?
+         _drawElement(
+           GeometrySystem.getDrawMode(gl),
+           GeometrySystem.getIndexType(gl),
+           GeometrySystem.getIndexTypeSize(gl),
+           GeometrySystem.getIndicesCount(geometryIndex, state)
+         ) :
+         _drawArray(
+           GeometrySystem.getDrawMode(gl),
+           GeometrySystem.getVerticesCount(geometryIndex, state)
+         )
+     )
+  |> ignore;
+  state
+};
+
 let initData = () => {
   attributeSendDataMap: HashMapSystem.createEmpty(),
   uniformSendDataMap: HashMapSystem.createEmpty(),
+  drawPointsFuncMap: HashMapSystem.createEmpty(),
   vertexAttribHistoryMap: HashMapSystem.createEmpty()
 };

@@ -18,6 +18,12 @@ open Js.Typed_array;
 
 [@bs.get] external getStaticDraw : webgl1Context => int = "STATIC_DRAW";
 
+[@bs.get] external getTriangles : webgl1Context => int = "TRIANGLES";
+
+[@bs.get] external getUnsignedInt : webgl1Context => int = "UNSIGNED_INT";
+
+[@bs.get] external getUnsignedShort : webgl1Context => int = "UNSIGNED_SHORT";
+
 [@bs.send]
 external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
@@ -77,3 +83,8 @@ external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
 [@bs.send.pipe : webgl1Context]
 external uniformMatrix4fv : (int, Js.boolean, array(float)) => unit =
   "";
+
+[@bs.send.pipe : webgl1Context] external drawElements : (int, int, int, int) => unit = "";
+
+
+[@bs.send.pipe : webgl1Context] external drawArray : (int, int, int) => unit = "";
