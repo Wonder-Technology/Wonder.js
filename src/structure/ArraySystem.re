@@ -21,8 +21,8 @@ let forEach = Js.Array.forEach;
 let push = Js.Array.push;
 
 /* let pushMany = Js.Array.pushMany; */
-
-[@bs.splice][@bs.send.pipe : Js.Array.t('a) as 'this]  external pushMany : array('a) => int = "push";
+[@bs.splice] [@bs.send.pipe : Js.Array.t('a) as 'this] external pushMany : array('a) => int =
+  "push";
 
 let pop = Js.Array.pop;
 
@@ -45,7 +45,7 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
       )
   );
   /* arr.(index) = arr.(lastIndex); */
-  Array.unsafe_set(arr, index, Array.unsafe_get(arr, lastIndex));
+  unsafeSet(arr, index, unsafeGet(arr, lastIndex));
   unsafePop(arr) |> ignore
 };
 

@@ -42,30 +42,47 @@ let convertRenderSettingToRecord = (render_setting) => {
   }
 };
 
-let convertInitPipelinesToRecord = (init_pipelines) =>
+let _convertPipelinesToRecord = (pipelines) =>
   Render_setting.(
     Json.(
       Decode.(
-        init_pipelines
+        pipelines
         |> Js.Json.parseExn
         |> array(
              (json) => {
                name: json |> field("name", string),
-               jobs: json |> field("jobs", array((json) => {name: json |> field("name", string)}))
+               jobs:
+                 json
+                 |> field(
+                      "jobs",
+                      array(
+                        (json) => {
+                          name: json |> field("name", string),
+                          flags: json |> optional(field("flags", (json) => json |> array(string)))
+                        }
+                      )
+                    )
              }
            )
       )
     )
   );
 
-let convertInitJobsToRecord = (init_jobs) =>
+let _convertJobsToRecord = (jobs) =>
   Render_setting.(
     Json.(
-      Decode.(
-        init_jobs |> Js.Json.parseExn |> array((json) => {name: json |> field("name", string)})
-      )
+      Decode.(jobs |> Js.Json.parseExn |> array((json) => {name: json |> field("name", string)}))
     )
   );
+
+let convertInitPipelinesToRecord = (init_pipelines) => _convertPipelinesToRecord(init_pipeline);
+
+let convertInitJobsToRecord = (init_jobs) => _convertJobsToRecord(init_jobs);
+
+let convertRenderPipelinesToRecord = (render_pipelines) =>
+  _convertPipelinesToRecord(render_pipeline);
+
+let convertRenderJobsToRecord = (render_jobs) => _convertJobsToRecord(render_jobs);
 
 let convertShadersToRecord = (shaders) => {
   open Json;
@@ -177,8 +194,34 @@ let convertShaderLibsToRecord = (shader_libs) =>
     )
   );
 
+  /* todo refactor: move out */
+
 let createJobHandleMap = () =>
-  HashMapSystem.(createEmpty() |> set("init_basic_material", BasicMaterialSystem.init));
+  HashMapSystem.(
+    createEmpty()
+    |> set("init_basic_material", BasicMaterialSystem.init)
+    /* |> set("get_render_list", MeshRendererSystem.getRenderList); */
+    |> set(
+         "get_render_list",
+         RenderDataSystem.setToStateRenderData(
+           (state) => {
+             state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
+             state
+           }
+         )
+       )
+    |> set(
+         "get_camera_data",
+         RenderDataSystem.setToStateRenderData(
+           (state) => {
+             state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
+             state
+           }
+         )
+       )
+    /* todo finish! */
+    /* |> set("clear_color")); */
+  );
 
 let createState = () => {
   bufferConfig: None,
@@ -186,7 +229,9 @@ let createState = () => {
     jobHandleMap: createJobHandleMap(),
     render_setting: convertRenderSettingToRecord(Render_setting.render_setting),
     init_pipelines: convertInitPipelinesToRecord(Init_pipelines.init_pipelines),
+    render_pipelines: convertRenderPipelinesToRecord(Render_pipelines.render_pipelines),
     init_jobs: convertInitJobsToRecord(Init_jobs.init_jobs),
+    render_jobs: convertRenderJobsToRecord(Render_jobs.render_jobs),
     shaders: convertShadersToRecord(Shaders.shaders),
     shader_libs: convertShaderLibsToRecord(Shader_libs.shader_libs)
   },
@@ -202,5 +247,6 @@ let createState = () => {
   shaderData: ShaderSystem.initData(),
   programData: ProgramSystem.initData(),
   glslSenderData: GLSLSenderSystem.initData(),
-  glslChunkData: ShaderChunkSystem.initData()
+  glslChunkData: ShaderChunkSystem.initData(),
+  renderData: {renderList: None}
 };

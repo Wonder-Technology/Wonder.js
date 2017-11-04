@@ -35,7 +35,7 @@ let init = (state: StateDataType.state) => {
     |> filterHardwareRelatedSetting
     |> decideSpecificRenderSettingAndSetToState(state);
   state
-  |> execJobs(
+  |> execJobItems(
        getInitPipelineJobs(
          getRenderSetting(state),
          getInitPipelines(state),
@@ -47,6 +47,24 @@ let init = (state: StateDataType.state) => {
        )
      )
 };
-/* todo finish render */
-/* let render (state: StateDataType.state) =>
-   state |> getRenderSetting |> getRenderPipelineJobs |> execJobs; */
+
+/* todo refactor with init */
+let render = (state: StateDataType.state) =>
+  Render_setting.(
+    Json.(
+      Decode.(
+        state
+        |> execJobItems(
+             getRenderPipelineJobs(
+               getRenderSetting(state),
+               getRenderPipelines(state),
+               ({name: targetName}) =>
+                 findFirst(
+                   getRenderJobs(state),
+                   [@bs] (({name}: job) => _filterTargetName(name, targetName))
+                 )
+             )
+           )
+      )
+    )
+  );

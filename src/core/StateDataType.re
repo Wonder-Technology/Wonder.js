@@ -18,6 +18,8 @@ open ProgramType;
 
 open ShaderChunkType;
 
+open RenderDataType;
+
 open Js.Typed_array;
 
 type contextConfig = {
@@ -64,7 +66,10 @@ type render_setting = {
   render_pipeline: string
 };
 
-type jobItem = {name: string};
+type jobItem = {
+  name: string,
+  flags: option(array(string))
+};
 
 /* type pipelineJob = {name: string}; */
 type initPipeline = {
@@ -75,10 +80,19 @@ type initPipeline = {
 
 type init_pipelines = array(initPipeline);
 
-/* type job = {name: string}; */
-type job = jobItem;
+type job = {name: string};
 
+/* type job = jobItem; */
 type init_jobs = array(job);
+
+type renderPipeline = {
+  name: string,
+  jobs: array(jobItem)
+};
+
+type render_pipelines = array(renderPipeline);
+
+type render_jobs = array(job);
 
 type hardwareRelatedSetting = {
   platform: string,
@@ -141,21 +155,23 @@ type uniformData;
 
 type uniformSendData = {
   getArrayDataFunc: state => array(float),
-  sendArrayDataFunc: array(float)=> unit
+  sendArrayDataFunc: array(float) => unit
   /* sendFloat32DataFunc: float => unit;
      sendIntDataFunc: int => unit; */
 }
 and glslSenderData = {
   attributeSendDataMap: Js.Dict.t(array((state => unit))),
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
-  drawPointsFuncMap: Js.Dict.t((webgl1Context) => unit),
+  drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
   vertexAttribHistoryMap: Js.Dict.t(bool)
 }
 and renderConfig = {
-  jobHandleMap: Js.Dict.t((state => state)),
+  jobHandleMap: Js.Dict.t(((array(string), state) => state)),
   render_setting,
   init_pipelines,
+  render_pipelines,
   init_jobs,
+  render_jobs,
   shaders,
   shader_libs
 }
@@ -174,7 +190,8 @@ and state = {
   shaderData,
   programData,
   glslSenderData,
-  glslChunkData
+  glslChunkData,
+  renderData
 };
 
 type stateData = {mutable state: option(state)};

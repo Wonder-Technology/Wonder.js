@@ -6,6 +6,10 @@ let getInitPipelines = (state: StateDataType.state) => state.renderConfig.init_p
 
 let getInitJobs = (state: StateDataType.state) => state.renderConfig.init_jobs;
 
+let getRenderPipelines = (state: StateDataType.state) => state.renderConfig.render_pipelines;
+
+let getRenderJobs = (state: StateDataType.state) => state.renderConfig.render_jobs;
+
 let getShaders = (state: StateDataType.state) => state.renderConfig.shaders;
 
 let getShaderLibs = (state: StateDataType.state) => state.renderConfig.shader_libs;
@@ -36,19 +40,34 @@ let getInitPipelineJobs = ({init_pipeline}, init_pipelines: init_pipelines, mapF
   init_pipelineItem.jobs |> ArraySystem.map(mapFunc)
 };
 
-let execJobs = (jobs: array(job), state: StateDataType.state) : state => {
+let getRenderPipelineJobs = ({render_pipeline}, render_pipelines: render_pipelines, mapFunc) => {
+  let render_pipelineItem: renderPipeline =
+    findFirst(
+      render_pipelines,
+      [@bs] (({name}: renderPipeline) => _filterTargetName(name, render_pipeline))
+    );
+  render_pipelineItem.jobs |> ArraySystem.map(mapFunc)
+};
+
+let execJobItems = (jobs: array(jobItem), state: StateDataType.state) : state => {
   let mutableState = ref(state);
   let jobHandleMap = getJobHandleMap(mutableState^);
   jobs
   |> ArraySystem.forEach(
-       ({name}: job) =>
+       ({name, flags}: jobItem) => {
+         let flags =
+           switch flags {
+           | None => ArraySystem.createEmpty()
+           | Some(flags) => flags
+           };
          mutableState :=
            (
              switch (HashMapSystem.get(name, jobHandleMap)) {
              | None => mutableState^
-             | Some(handle) => handle(mutableState^)
+             | Some(handle) => handle(flags, mutableState^)
              }
            )
+       }
      );
   mutableState^
 };
@@ -80,5 +99,5 @@ let getMaterialShaderLibDataArr =
            }
          }
      );
-     resultDataArr;
+  resultDataArr
 };

@@ -10,8 +10,28 @@ let create = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let index = cameraControllerData.index;
   cameraControllerData.index = succ(cameraControllerData.index);
+  /* todo unit test */
+  cameraControllerData.cameraArray |> ArraySystem.push(index) |> ignore;
   addToDirtyList(index, cameraControllerData) |> ignore;
   (state, index)
+};
+
+/* todo unit test */
+let getCurrentCameraController = (state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "should has at least one camera",
+          () => {
+            let {cameraArray} = getCameraControllerData(state);
+            ArraySystem.length(cameraArray) > 0
+          }
+        )
+      )
+  );
+  let {cameraArray} = getCameraControllerData(state);
+  cameraArray[0]
 };
 
 let _clearCache = (cameraControllerData: cameraControllerData) =>
@@ -123,6 +143,7 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
 
 let initData = () => {
   index: 0,
+  cameraArray: ArraySystem.createEmpty(),
   dirtyList: ArraySystem.createEmpty(),
   worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(),
   pMatrixMap: HashMapSystem.createEmpty(),
