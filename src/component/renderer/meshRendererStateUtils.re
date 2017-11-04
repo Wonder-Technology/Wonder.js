@@ -1,0 +1,1 @@
+let getMeshRendererData = (state: StateDataType.state) => state.meshRendererData;

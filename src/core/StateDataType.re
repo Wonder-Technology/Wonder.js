@@ -8,6 +8,8 @@ open GameObjectType;
 
 open GeometryType;
 
+open MeshRendererType;
+
 open MaterialType;
 
 open ShaderType;
@@ -167,6 +169,7 @@ and state = {
   cameraControllerData,
   mutable materialData: option(materialData),
   mutable geometryData: option(geometryData),
+  meshRendererData,
   shaderData,
   programData,
   glslSenderData,

@@ -60,6 +60,17 @@ let addGeometryComponent = (uid: string, component: component, state: StateDataT
   GeometryAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
+let hasMeshRendererComponent = (uid: string, state: StateDataType.state) : bool =>
+  _getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
+
+let getMeshRendererComponent = (uid: string, state: StateDataType.state) =>
+  _getGameObjectData(state).meshRendererMap |> _getComponent(uid);
+
+let addMeshRendererComponent = (uid: string, component: component, state: StateDataType.state) => {
+  _getGameObjectData(state).meshRendererMap |> _addComponent(uid, component) |> ignore;
+  MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
+};
+
 let create = (state: StateDataType.state) => {
   let gameObjectData = _getGameObjectData(state);
   let newUIdStr = Js.Int.toString(gameObjectData.uid);
@@ -72,5 +83,6 @@ let initData = () => {
   uid: 0,
   transformMap: HashMapSystem.createEmpty(),
   cameraControllerMap: HashMapSystem.createEmpty(),
-  geometryMap: HashMapSystem.createEmpty()
+  geometryMap: HashMapSystem.createEmpty(),
+  meshRendererMap: HashMapSystem.createEmpty()
 };
