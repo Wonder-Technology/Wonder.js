@@ -1,0 +1,4 @@
+let global_resources = {|
+[
+]
+|};
