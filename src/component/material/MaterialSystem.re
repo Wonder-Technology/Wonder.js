@@ -14,6 +14,9 @@ let create = (state: StateDataType.state) => {
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
+let getShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+  TypeArrayUtils.getUint32ArraySingleVale(materialIndex, getMaterialData(state).shaderIndices);
+
 let setShaderIndex = (materialIndex: int, shaderIndex: int, shaderIndices) =>
   TypeArrayUtils.setUint32ArraySingleVale(materialIndex, shaderIndex, shaderIndices);
 

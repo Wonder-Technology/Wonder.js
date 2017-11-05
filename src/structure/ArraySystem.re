@@ -18,6 +18,8 @@ let length = Js.Array.length;
 
 let forEach = Js.Array.forEach;
 
+let forEachi = Js.Array.forEachi;
+
 let push = Js.Array.push;
 
 /* let pushMany = Js.Array.pushMany; */

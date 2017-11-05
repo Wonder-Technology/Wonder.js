@@ -72,10 +72,19 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
     */
   deleteShader(vs, gl);
   deleteShader(fs, gl);
-  program;
+  program
 };
 
-let getProgram = (shaderIndex: int, state: StateDataType.state) =>
-  _getProgramData(state).programMap |> HashMapSystem.get(Js.Int.toString(shaderIndex));
+let getProgram = (shaderIndexStr: string, state: StateDataType.state) =>
+  _getProgramData(state).programMap |> HashMapSystem.get(shaderIndexStr);
+
+let use = (gl, shaderIndexStr: string, state: StateDataType.state) =>
+  switch (getProgram(shaderIndexStr, state)) {
+  | None => ExceptionHandlerSystem.throwMessage("program should exist")
+  | Some(program) =>
+    /* todo optimize: judge lastUsedProgram  */
+    useProgram(program, gl);
+    program
+  };
 
 let initData = () => {programMap: HashMapSystem.createEmpty()};

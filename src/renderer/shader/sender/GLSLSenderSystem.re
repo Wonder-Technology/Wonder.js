@@ -18,20 +18,29 @@ let _getBufferSizeByType = (type_: string) =>
   };
 
 let _sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.state) => {
-  let vertexAttribHistoryMap = _getGLSLSenderData(state).vertexAttribHistoryMap;
+  let {vertexAttribHistoryArray} = _getGLSLSenderData(state);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-  let posStr = Js.Int.toString(pos);
-  switch (HashMapSystem.get(posStr, vertexAttribHistoryMap)) {
-  | Some(value) when value != true =>
+  /* let posStr = Js.Int.toString(pos); */
+  /* switch (HashMapSystem.get(posStr, vertexAttribHistoryArray)) {
+     | Some(value) when value != true =>
+       enableVertexAttribArray(pos, gl);
+       HashMapSystem.set(posStr, true, vertexAttribHistoryArray) |> ignore
+     | _ => ()
+     } */
+  if (vertexAttribHistoryArray[pos] != true) {
     enableVertexAttribArray(pos, gl);
-    HashMapSystem.set(posStr, true, vertexAttribHistoryMap) |> ignore
-  | _ => ()
+    vertexAttribHistoryArray[pos] = true;
+    state
+  } else {
+    state
   }
 };
 
-let _bindIndexBuffer = (gl, buffer, state: StateDataType.state) =>
+let _bindIndexBuffer = (gl, buffer, state: StateDataType.state) => {
   bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+  state
+};
 
 let addAttributeSendData =
     (
@@ -220,9 +229,94 @@ let addDrawPointsFunc = (gl, shaderIndex: int, geometryIndex: int, state: StateD
   state
 };
 
+/* todo optimize? */
+let disableVertexAttribArray = (gl, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "vertexAttribHistory should has no hole",
+          () => {
+            let {vertexAttribHistoryArray} = _getGLSLSenderData(state);
+            vertexAttribHistoryArray
+            |> ArraySystem.filter((pos) => pos != true || pos != false)
+            |> ArraySystem.length == 0
+          }
+        )
+      )
+  );
+  let {vertexAttribHistoryArray} as data = _getGLSLSenderData(state);
+  vertexAttribHistoryArray
+  |> ArraySystem.forEachi(
+       (isEnable: bool, pos: int) =>
+         isEnable ?
+           disableVertexAttribArray(pos, gl) :
+           /* if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) { */
+           ExceptionHandlerSystem.throwMessage("should always be true")
+     );
+  data.vertexAttribHistoryArray = ArraySystem.createEmpty();
+  state
+};
+
+let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) => {
+  let {attributeSendDataMap} = _getGLSLSenderData(state);
+  attributeSendDataMap
+  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test
+             /* ("attribute send data should exist", () => Js.Nullable.to_opt(r) |> assertExist) */
+             (
+               "attribute send data should exist",
+               () => {
+                 let {attributeSendDataMap} = _getGLSLSenderData(state);
+                 attributeSendDataMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+               }
+             )
+         )
+     )
+};
+
+let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) => {
+  let {uniformSendDataMap} = _getGLSLSenderData(state);
+  uniformSendDataMap
+  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "uniform send data should exist",
+             () => {
+               let {uniformSendDataMap} = _getGLSLSenderData(state);
+               uniformSendDataMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+             }
+           )
+         )
+     )
+};
+
+let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => {
+  let {drawPointsFuncMap} = _getGLSLSenderData(state);
+  drawPointsFuncMap
+  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "draw points func should exist",
+             () => {
+               let {drawPointsFuncMap} = _getGLSLSenderData(state);
+               drawPointsFuncMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+             }
+           )
+         )
+     )
+};
+
 let initData = () => {
   attributeSendDataMap: HashMapSystem.createEmpty(),
   uniformSendDataMap: HashMapSystem.createEmpty(),
   drawPointsFuncMap: HashMapSystem.createEmpty(),
-  vertexAttribHistoryMap: HashMapSystem.createEmpty()
+  vertexAttribHistoryArray: ArraySystem.createEmpty()
 };

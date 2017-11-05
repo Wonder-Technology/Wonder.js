@@ -37,8 +37,7 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) 
   {name: jobItemName, flags, shader}
 };
 
-let getInitPipelineExecutableJobs =
-    ({init_pipeline}, init_pipelines, jobs: array(job)) => {
+let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: array(job)) => {
   let init_pipelineItem: pipeline =
     findFirst(
       init_pipelines,
@@ -48,8 +47,7 @@ let getInitPipelineExecutableJobs =
   init_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
 };
 
-let getRenderPipelineExecutableJobs =
-    ({render_pipeline}, render_pipelines, jobs: array(job)) => {
+let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs: array(job)) => {
   let render_pipelineItem: pipeline =
     findFirst(
       render_pipelines,
@@ -58,26 +56,36 @@ let getRenderPipelineExecutableJobs =
   render_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
 };
 
-let execJobs = (jobs: array(executableJob), state: StateDataType.state) : state => {
-  let mutableState = ref(state);
-  let jobHandleMap = getJobHandleMap(mutableState^);
+let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : state => {
+  /* let mutableState = ref(state);
+     let jobHandleMap = getJobHandleMap(mutableState^);
+     jobs
+     |> ArraySystem.forEach(
+          ({name, flags, shader}: executableJob) =>
+            /* let flags =
+               switch flags {
+               | None => ArraySystem.createEmpty()
+               | Some(flags) => flags
+               }; */
+            mutableState :=
+              (
+                switch (HashMapSystem.get(name, jobHandleMap)) {
+                | None => mutableState^
+                | Some(handle) => handle((flags, shader), gl, mutableState^)
+                }
+              )
+        );
+     mutableState^ */
+  let jobHandleMap = getJobHandleMap(state);
   jobs
-  |> ArraySystem.forEach(
-       ({name, flags, shader}: executableJob) =>
-         /* let flags =
-            switch flags {
-            | None => ArraySystem.createEmpty()
-            | Some(flags) => flags
-            }; */
-         mutableState :=
-           (
-             switch (HashMapSystem.get(name, jobHandleMap)) {
-             | None => mutableState^
-             | Some(handle) => handle((flags, shader), mutableState^)
-             }
-           )
-     );
-  mutableState^
+  |> ArraySystem.reduce(
+       (state, {name, flags, shader}: executableJob) =>
+         switch (HashMapSystem.get(name, jobHandleMap)) {
+         | None => state
+         | Some(handle) => handle((flags, shader), gl, state)
+         },
+       state
+     )
 };
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
@@ -110,4 +118,5 @@ let getMaterialShaderLibDataArr =
   resultDataArr
 };
 
-let throwJobFlagsShouldBeDefined = () => ExceptionHandlerSystem.throwMessage("jobFlags should be defined");
+let throwJobFlagsShouldBeDefined = () =>
+  ExceptionHandlerSystem.throwMessage("jobFlags should be defined");

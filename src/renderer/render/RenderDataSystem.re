@@ -17,3 +17,6 @@ let _getCameraData = (state: StateDataType.state) => Js.Option.getExn(state.rend
 let getCameraVMatrixDataFromState = (state: StateDataType.state) => _getCameraData(state).vMatrix;
 
 let getCameraPMatrixDataFromState = (state: StateDataType.state) => _getCameraData(state).pMatrix;
+
+let getRenderListFromState = (state: StateDataType.state) =>
+  Js.Option.getExn(state.renderData.renderList);

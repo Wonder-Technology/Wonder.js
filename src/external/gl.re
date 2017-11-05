@@ -34,6 +34,8 @@ open Js.Typed_array;
 external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
 
+[@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";
+
 /* [@bs.send]  external clearColor : context::contextT => r::float => g::float => b::float => a::float => unit =
    "clearColor" ; */
 [@bs.send.pipe : webgl1Context] external createProgram : program = "";
@@ -101,3 +103,7 @@ external uniformMatrix4fv : (int, Js.boolean, array(float)) => unit =
 [@bs.send.pipe : webgl1Context]
 external colorMask : (Js.boolean, Js.boolean, Js.boolean, Js.boolean) => unit =
   "";
+
+[@bs.send.pipe : webgl1Context] external useProgram : program => unit = "";
+
+[@bs.send.pipe : webgl1Context] external disableVertexAttribArray : int => unit = "";

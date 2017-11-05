@@ -96,6 +96,7 @@ type pipelines = array(pipeline);
 
 type job = {
   name: string,
+  /* no material shader which is used */
   shader: option(string)
 };
 
@@ -184,13 +185,13 @@ type uniformSendData = {
      sendIntDataFunc: int => unit; */
 }
 and glslSenderData = {
-  attributeSendDataMap: Js.Dict.t(array((state => unit))),
+  attributeSendDataMap: Js.Dict.t(array((state => state))),
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
   drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
-  vertexAttribHistoryMap: Js.Dict.t(bool)
+  mutable vertexAttribHistoryArray: array(bool)
 }
 and renderConfig = {
-  jobHandleMap: Js.Dict.t(((executableJobFlags, state) => state)),
+  jobHandleMap: Js.Dict.t(((executableJobFlags, webgl1Context, state) => state)),
   render_setting,
   init_pipelines: pipelines,
   render_pipelines: pipelines,

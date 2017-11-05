@@ -4,17 +4,20 @@ open StateDataType;
 
 open RenderConfigSystem;
 
+open GlType;
+
 let _getShaderData = (state: StateDataType.state) => state.shaderData;
 
 let _genereateShaderIndex = (index: int) => succ(index);
 
 let _init =
     (
+      gl,
       materialIndex: int,
       geometryIndex: int,
       uid: string,
       shaderLibDataArr: shader_libs,
-      (buildGLSLSource, getGL),
+      buildGLSLSource,
       state: StateDataType.state
     ) => {
   /* let {
@@ -25,7 +28,6 @@ let _init =
   let shaderIndex = _genereateShaderIndex(shaderData.index);
   shaderData.index = shaderIndex;
   let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
-  let gl = [@bs] getGL(state);
   let program =
     gl
     |> ProgramSystem.createProgram
@@ -67,6 +69,7 @@ let _setShaderIndex = (shaderName: string, shaderIndex: int, shaderIndexMap) =>
 
 let initMaterialShader =
     (
+      gl,
       materialIndex: int,
       geometryIndex: int,
       uid: string,
@@ -80,7 +83,7 @@ let initMaterialShader =
   | Some(shaderIndex) => shaderIndex
   | None =>
     let shaderIndex =
-      _init(materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
+      _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
     _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore;
     shaderIndex
   }

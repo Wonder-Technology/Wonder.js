@@ -36,17 +36,18 @@ let init = (state: StateDataType.state) => {
     |> decideSpecificRenderSettingAndSetToState(state);
   state
   |> execJobs(
+       [@bs] DeviceManagerSystem.getGL(state),
        getInitPipelineExecutableJobs(
          getRenderSetting(state),
          getInitPipelines(state),
          getInitJobs(state)
-         /* ({name: targetName}:jobItem) =>
-           findFirst(
-             getInitJobs(state),
-             [@bs] (({name}: job) => _filterTargetName(name, targetName))
-           ) */
        )
      )
+  /* ({name: targetName}:jobItem) =>
+     findFirst(
+       getInitJobs(state),
+       [@bs] (({name}: job) => _filterTargetName(name, targetName))
+     ) */
 };
 
 /* todo refactor with init */
@@ -56,17 +57,18 @@ let render = (state: StateDataType.state) =>
       Decode.(
         state
         |> execJobs(
+             [@bs] DeviceManagerSystem.getGL(state),
              getRenderPipelineExecutableJobs(
                getRenderSetting(state),
                getRenderPipelines(state),
                getRenderJobs(state)
-               /* ({name: targetName}:jobItem) =>
-                 findFirst(
-                   getRenderJobs(state),
-                   [@bs] (({name}: executableJob) => _filterTargetName(name, targetName))
-                 ) */
              )
            )
+        /* ({name: targetName}:jobItem) =>
+           findFirst(
+             getRenderJobs(state),
+             [@bs] (({name}: executableJob) => _filterTargetName(name, targetName))
+           ) */
       )
     )
   );

@@ -236,7 +236,7 @@ let _getBitFromFlags = (gl, flags) => {
 let createJobHandleMap = () =>
   HashMapSystem.(
     createEmpty()
-    |> set("init_basic_material", (configData, state) => BasicMaterialSystem.init(state))
+    |> set("init_basic_material", (configData, gl, state) => BasicMaterialSystem.init(gl, state))
     /* |> set("get_render_list", MeshRendererSystem.getRenderList); */
     |> set(
          "get_render_list",
@@ -247,7 +247,7 @@ let createJobHandleMap = () =>
               }
             ) */
          /* todo refactor? */
-         (configData, state) => {
+         (configData, gl, state) => {
            state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
            state
          }
@@ -260,31 +260,29 @@ let createJobHandleMap = () =>
                 state
               }
             ) */
-         (configData, state) => {
+         (configData, gl, state) => {
            state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
            state
          }
        )
     |> set(
          "clear_color",
-         ((flags: jobFlags, _), state) =>
+         ((flags: jobFlags, _), gl, state) =>
            switch flags {
            | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
            | Some(flags) =>
-             let gl = [@bs] DeviceManagerSystem.getGL(state);
              DeviceManagerSystem.clearColor(gl, ColorSystem.convert16HexToRGBA(flags[0]), state)
            }
        )
     |> set(
          "clear_buffer",
-         ((flags, _), state) =>
+         ((flags, _), gl, state) =>
            switch flags {
            | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
-           | Some(flags) =>
-             let gl = [@bs] DeviceManagerSystem.getGL(state);
-             DeviceManagerSystem.clearBuffer(gl, _getBitFromFlags(gl, flags), state)
+           | Some(flags) => DeviceManagerSystem.clearBuffer(gl, _getBitFromFlags(gl, flags), state)
            }
        )
+    |> set("render_basic", (configData, gl, state) => RenderBasicSystem.render(gl, state))
   );
 
 let createState = () => {
