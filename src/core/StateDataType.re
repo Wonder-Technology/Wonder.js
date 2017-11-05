@@ -151,6 +151,8 @@ type shaderLib = {
 
 type shader_libs = array(shaderLib);
 
+type jobFlags = array(string);
+
 type uniformData;
 
 type uniformSendData = {
@@ -166,7 +168,7 @@ and glslSenderData = {
   vertexAttribHistoryMap: Js.Dict.t(bool)
 }
 and renderConfig = {
-  jobHandleMap: Js.Dict.t(((array(string), state) => state)),
+  jobHandleMap: Js.Dict.t(((jobFlags, state) => state)),
   render_setting,
   init_pipelines,
   render_pipelines,

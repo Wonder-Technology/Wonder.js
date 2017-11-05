@@ -1,4 +1,6 @@
-let setToStateRenderData = (setFunc, state: StateDataType.state) => setFunc(state);
+/* open StateDataType; */
+
+/* let setToStateRenderData = (flags:jobFlags, state: StateDataType.state, setFunc) => setFunc(flags, state); */
 
 let getCameraData = (state: StateDataType.state) => {
   let currentCameraController = CameraControllerSystem.getCurrentCameraController(state);

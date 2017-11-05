@@ -194,30 +194,38 @@ let convertShaderLibsToRecord = (shader_libs) =>
     )
   );
 
-  /* todo refactor: move out */
-
+/* todo refactor: move out */
 let createJobHandleMap = () =>
   HashMapSystem.(
     createEmpty()
-    |> set("init_basic_material", BasicMaterialSystem.init)
+    |> set("init_basic_material", (flags, state) => BasicMaterialSystem.init(state))
     /* |> set("get_render_list", MeshRendererSystem.getRenderList); */
     |> set(
          "get_render_list",
-         RenderDataSystem.setToStateRenderData(
-           (state) => {
-             state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
-             state
-           }
-         )
+         /* RenderDataSystem.setToStateRenderData(
+              (flags, state) => {
+                state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
+                state
+              }
+            ) */
+         /* todo refactor? */
+         (flags, state) => {
+           state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
+           state
+         }
        )
     |> set(
          "get_camera_data",
-         RenderDataSystem.setToStateRenderData(
-           (state) => {
-             state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
-             state
-           }
-         )
+         /* RenderDataSystem.setToStateRenderData(
+              (flags, state) => {
+                state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
+                state
+              }
+            ) */
+         (flags, state) => {
+           state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
+           state
+         }
        )
     /* todo finish! */
     /* |> set("clear_color")); */
