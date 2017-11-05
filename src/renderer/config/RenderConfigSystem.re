@@ -78,12 +78,15 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
      mutableState^ */
   let jobHandleMap = getJobHandleMap(state);
   jobs
-  |> Js.Array.reduce(
-       (state, {name, flags, shader}: executableJob) =>
-         switch (HashMapSystem.get(name, jobHandleMap)) {
-         | None => state
-         | Some(handle) => handle((flags, shader), gl, state)
-         },
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, {name, flags, shader}: executableJob) =>
+           switch (HashMapSystem.get(name, jobHandleMap)) {
+           | None => state
+           | Some(handle) => handle((flags, shader), gl, state)
+           }
+       ),
        state
      )
 };
@@ -98,8 +101,7 @@ let getMaterialShaderLibDataArr =
   |> Js.Array.forEach(
        ({type_, name}: shaderLibItem) =>
          switch type_ {
-         | None =>
-           Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr) |> ignore
+         | None => Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr) |> ignore
          | Some(type_) =>
            switch type_ {
            | "group" =>

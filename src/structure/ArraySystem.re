@@ -77,4 +77,13 @@ let removeDuplicateItems = (arr) => {
      );
   resultArr
 };
+
 /* let fastSort = Array.fast_sort; */
+let reduceState = (func, state, arr) => {
+  let length = Js.Array.length(arr);
+  let mutableState = ref(state);
+  for (i in 0 to length - 1) {
+    mutableState := [@bs] func(mutableState^, arr[i])
+  };
+  mutableState^
+};

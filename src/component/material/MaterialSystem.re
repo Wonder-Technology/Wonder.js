@@ -54,21 +54,24 @@ let _initMaterialShader =
   let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
   let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
   materialShaders
-  |> Js.Array.reduce(
-       (state, {name, shader_libs}) => {
-         let shaderIndex =
-           ShaderSystem.initMaterialShader(
-             gl,
-             materialIndex,
-             geometry,
-             gameObject,
-             name,
-             getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
-             initShaderFuncTuple,
-             state
-           );
-         setShaderIndex(materialIndex, shaderIndex, state)
-       },
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, {name, shader_libs}) => {
+           let shaderIndex =
+             ShaderSystem.initMaterialShader(
+               gl,
+               materialIndex,
+               geometry,
+               gameObject,
+               name,
+               getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
+               initShaderFuncTuple,
+               state
+             );
+           setShaderIndex(materialIndex, shaderIndex, state)
+         }
+       ),
        state
      )
 };
@@ -77,9 +80,12 @@ let initMaterialShaders =
     (gl, materialShaders: array(shader), initShaderFuncTuple, state: StateDataType.state) =>
   /* todo check dispose:shouldn't dispose before init render! */
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
-  |> Js.Array.reduce(
-       (state, materialIndex: int) =>
-         _initMaterialShader(gl, materialIndex, materialShaders, initShaderFuncTuple, state),
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, materialIndex: int) =>
+           _initMaterialShader(gl, materialIndex, materialShaders, initShaderFuncTuple, state)
+       ),
        state
      );
 
