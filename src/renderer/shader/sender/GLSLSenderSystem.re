@@ -113,14 +113,11 @@ let addAttributeSendData =
   state
 };
 
-/* todo finish! */
-let _getCameraVMatrixData = (state: StateDataType.state) => [||];
-
-/* todo finish! */
-let _getCameraPMatrixData = (state: StateDataType.state) => [||];
-
-/* todo finish! */
-let _getModelMMatrixData = (uid: string, state: StateDataType.state) => [||];
+let _getModelMMatrixData = (uid: string, state: StateDataType.state) =>
+  TransformSystem.getLocalToWorldMatrix(
+    Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state)),
+    state
+  );
 
 let _sendMatrix4 = (gl, pos: int, data: ArraySystem.t(float)) =>
   uniformMatrix4fv(pos, Js.false_, data, gl);
@@ -167,8 +164,8 @@ let addUniformSendData =
                            switch from {
                            | "camera" =>
                              switch field {
-                             | "vMatrix" => _getCameraVMatrixData
-                             | "pMatrix" => _getCameraPMatrixData
+                             | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
+                             | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
                              }
                            | "model" =>
                              switch field {
