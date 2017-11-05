@@ -1,1 +1,0 @@
-external parseInt : (string, int) => float = "";
