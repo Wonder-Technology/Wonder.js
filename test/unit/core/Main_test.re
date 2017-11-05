@@ -218,6 +218,30 @@ let _ =
           describe(
             "bufferConfig",
             () => {
+              open StateDataType;
+              let _buildBufferConfig =
+                  (
+                    ~transformDataBufferCount=Js.Nullable.undefined,
+                    ~geometryPointDataBufferCount=Js.Nullable.undefined,
+                    ~basicMaterialDataBufferCount=Js.Nullable.undefined,
+                    ()
+                  ) =>
+                Js.Nullable.return({
+                  "transformDataBufferCount": transformDataBufferCount,
+                  "geometryPointDataBufferCount": geometryPointDataBufferCount,
+                  "basicMaterialDataBufferCount": basicMaterialDataBufferCount
+                });
+              let _buildExpectedBufferConfig =
+                  (
+                    ~transformDataBufferCount=20 * 1000,
+                    ~geometryPointDataBufferCount=1000 * 1000,
+                    ~basicMaterialDataBufferCount=20 * 1000,
+                    ()
+                  ) => {
+                transformDataBufferCount,
+                geometryPointDataBufferCount,
+                basicMaterialDataBufferCount
+              };
               describe(
                 "if pass bufferConfig",
                 () =>
@@ -230,16 +254,17 @@ let _ =
                         setMainConfig(
                           MainTool.buildMainConfig(
                             ~bufferConfig=
-                              Js.Nullable.return({
-                                "transformDataBufferCount":
-                                  Js.Nullable.return(transformDataBufferCount)
-                              }),
+                              _buildBufferConfig(
+                                ~transformDataBufferCount=
+                                  Js.Nullable.return(transformDataBufferCount),
+                                ()
+                              ),
                             ()
                           )
                         );
                       state
                       |> BufferConfigSystem.getBufferConfig
-                      |> expect == {transformDataBufferCount: transformDataBufferCount}
+                      |> expect == _buildExpectedBufferConfig(~transformDataBufferCount, ())
                     }
                   )
               );
@@ -253,7 +278,8 @@ let _ =
                       let state = setMainConfig(MainTool.buildMainConfig());
                       state
                       |> BufferConfigSystem.getBufferConfig
-                      |> expect == {transformDataBufferCount: 20 * 1000}
+                      |>
+                      expect == _buildExpectedBufferConfig(~transformDataBufferCount=20 * 1000, ())
                     }
                   )
               )
