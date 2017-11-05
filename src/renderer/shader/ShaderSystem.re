@@ -61,12 +61,11 @@ let _init =
   shaderIndex
 };
 
-let _getShaderIndex = (shaderName: string, shaderIndexMap) =>
-  HashMapSystem.get(shaderName, shaderIndexMap);
+/* let _getShaderIndex = (shaderName: string, shaderIndexMap) =>
+  HashMapSystem.get(shaderName, shaderIndexMap); */
 
-let _setShaderIndex = (shaderName: string, shaderIndex: int, shaderIndexMap) =>
-  HashMapSystem.set(shaderName, shaderIndex, shaderIndexMap);
-
+/* let _setShaderIndex = (shaderName: string, shaderIndex: int, shaderIndexMap) =>
+   HashMapSystem.set(shaderName, shaderIndex, shaderIndexMap); */
 let initMaterialShader =
     (
       gl,
@@ -78,19 +77,20 @@ let initMaterialShader =
       initShaderFuncRecord,
       state: StateDataType.state
     ) => {
-  let {shaderIndexMap} = _getShaderData(state);
-  switch (_getShaderIndex(shaderName, shaderIndexMap)) {
-  | Some(shaderIndex) => shaderIndex
-  | None =>
-    let shaderIndex =
-      _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
-    _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore;
-    shaderIndex
-  }
+  /* let {shaderIndexMap} = _getShaderData(state); */
+  /* switch (_getShaderIndex(shaderName, shaderIndexMap)) {
+     | Some(shaderIndex) => shaderIndex
+     | None => */
+  /* let shaderIndex = */
+  /* _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state); */
+  /* _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore; */
+  /* shaderIndex */
+  _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state)
+  /* } */
 };
 
 let initData = () => {
   index: 0,
-  shaderIndexMap: HashMapSystem.createEmpty(),
+  /* shaderIndexMap: HashMapSystem.createEmpty(), */
   shaderLibNameMap: HashMapSystem.createEmpty()
 };
