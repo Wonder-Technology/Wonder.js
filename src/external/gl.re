@@ -24,6 +24,12 @@ open Js.Typed_array;
 
 [@bs.get] external getUnsignedShort : webgl1Context => int = "UNSIGNED_SHORT";
 
+[@bs.get] external getColorBufferBit : webgl1Context => int = "COLOR_BUFFER_BIT";
+
+[@bs.get] external getDepthBufferBit : webgl1Context => int = "DEPTH_BUFFER_BIT";
+
+[@bs.get] external getStencilBufferBit : webgl1Context => int = "STENCIL_BUFFER_BIT";
+
 [@bs.send]
 external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1Context =
   "getContext";
@@ -86,5 +92,12 @@ external uniformMatrix4fv : (int, Js.boolean, array(float)) => unit =
 
 [@bs.send.pipe : webgl1Context] external drawElements : (int, int, int, int) => unit = "";
 
-
 [@bs.send.pipe : webgl1Context] external drawArray : (int, int, int) => unit = "";
+
+[@bs.send.pipe : webgl1Context] external clearColor : (float, float, float, float) => unit = "";
+
+[@bs.send.pipe : webgl1Context] external clear : int => unit = "";
+
+[@bs.send.pipe : webgl1Context]
+external colorMask : (Js.boolean, Js.boolean, Js.boolean, Js.boolean) => unit =
+  "";

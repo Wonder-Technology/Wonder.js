@@ -203,6 +203,35 @@ let convertShaderLibsToRecord = (shader_libs) =>
     )
   );
 
+/* todo is bucklescript support bit operation? */
+let _computeBitOr: (int, int) => int = [%bs.raw {| function(a, b) {
+    return a | b;
+}
+|}];
+
+let _getBitFromFlags = (gl, flags) => {
+  let bit = ref(None);
+  if (ArraySystem.includes("COLOR_BUFFER", flags)) {
+    switch bit^ {
+    | None => bit := Some(Gl.getColorBufferBit(gl))
+    | Some(b) => bit := Some(_computeBitOr(b, Gl.getColorBufferBit(gl)))
+    }
+  } else if (ArraySystem.includes("DEPTH_BUFFER", flags)) {
+    switch bit^ {
+    | None => bit := Some(Gl.getDepthBufferBit(gl))
+    | Some(b) => bit := Some(_computeBitOr(b, Gl.getDepthBufferBit(gl)))
+    }
+  } else if (ArraySystem.includes("STENCIL_BUFFER", flags)) {
+    switch bit^ {
+    | None => bit := Some(Gl.getStencilBufferBit(gl))
+    | Some(b) => bit := Some(_computeBitOr(b, Gl.getStencilBufferBit(gl)))
+    }
+  } else {
+    ()
+  };
+  Js.Option.getExn(bit^)
+};
+
 /* todo refactor: move out */
 let createJobHandleMap = () =>
   HashMapSystem.(
@@ -236,8 +265,26 @@ let createJobHandleMap = () =>
            state
          }
        )
-    /* todo finish! */
-    /* |> set("clear_color")); */
+    |> set(
+         "clear_color",
+         ((flags: jobFlags, _), state) =>
+           switch flags {
+           | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
+           | Some(flags) =>
+             let gl = [@bs] DeviceManagerSystem.getGL(state);
+             DeviceManagerSystem.clearColor(gl, ColorSystem.convert16HexToRGBA(flags[0]), state)
+           }
+       )
+    |> set(
+         "clear_buffer",
+         ((flags, _), state) =>
+           switch flags {
+           | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
+           | Some(flags) =>
+             let gl = [@bs] DeviceManagerSystem.getGL(state);
+             DeviceManagerSystem.clearBuffer(gl, _getBitFromFlags(gl, flags), state)
+           }
+       )
   );
 
 let createState = () => {
@@ -254,7 +301,7 @@ let createState = () => {
   },
   viewData: {canvas: None, contextConfig: None},
   initConfigData: {isTest: Some(false)},
-  deviceManagerData: {gl: None},
+  deviceManagerData: {gl: None, colorWrite: None, clearColor: None},
   gameObjectData: GameObjectSystem.initData(),
   transformData: None,
   cameraControllerData: CameraControllerSystem.initData(),
@@ -265,5 +312,5 @@ let createState = () => {
   programData: ProgramSystem.initData(),
   glslSenderData: GLSLSenderSystem.initData(),
   glslChunkData: ShaderChunkSystem.initData(),
-  renderData: {renderList: None, cameraData:None}
+  renderData: {renderList: None, cameraData: None}
 };

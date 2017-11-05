@@ -44,7 +44,13 @@ type viewData = {
 
 type initConfigData = {isTest: option(bool)};
 
-type deviceManagerData = {gl: option(webgl1Context)};
+type colorRgba = (float, float, float, float);
+
+type deviceManagerData = {
+  gl: option(webgl1Context),
+  colorWrite: option((Js.boolean, Js.boolean, Js.boolean, Js.boolean)),
+  clearColor: option(colorRgba)
+};
 
 type specificBowser = {
   name: string,
@@ -66,19 +72,20 @@ type render_setting = {
   render_pipeline: string
 };
 
+type jobFlags = option(array(string));
+
 type jobItem = {
   name: string,
-  flags: option(array(string))
+  flags: jobFlags
 };
 
 /* type initPipeline = {
-  name: string,
-  /* jobs: array pipelineJob */
-  jobs: array(jobItem)
-};
+     name: string,
+     /* jobs: array pipelineJob */
+     jobs: array(jobItem)
+   };
 
-type init_pipelines = array(initPipeline); */
-  
+   type init_pipelines = array(initPipeline); */
 type pipeline = {
   name: string,
   /* jobs: array pipelineJob */
@@ -86,7 +93,6 @@ type pipeline = {
 };
 
 type pipelines = array(pipeline);
-
 
 type job = {
   name: string,
@@ -97,12 +103,11 @@ type job = {
 type init_jobs = array(job);
 
 /* type renderPipeline = {
-  name: string,
-  jobs: array(jobItem)
-};
+     name: string,
+     jobs: array(jobItem)
+   };
 
-type render_pipelines = array(renderPipeline); */
-
+   type render_pipelines = array(renderPipeline); */
 type render_jobs = array(job);
 
 type executableJob = {
@@ -168,7 +173,7 @@ type shaderLib = {
 
 type shader_libs = array(shaderLib);
 
-type jobFlags = (option(array(string)), option(string));
+type executableJobFlags = (jobFlags, option(string));
 
 type uniformData;
 
@@ -185,10 +190,10 @@ and glslSenderData = {
   vertexAttribHistoryMap: Js.Dict.t(bool)
 }
 and renderConfig = {
-  jobHandleMap: Js.Dict.t(((jobFlags, state) => state)),
+  jobHandleMap: Js.Dict.t(((executableJobFlags, state) => state)),
   render_setting,
-  init_pipelines:pipelines,
-  render_pipelines:pipelines,
+  init_pipelines: pipelines,
+  render_pipelines: pipelines,
   init_jobs,
   render_jobs,
   shaders,
