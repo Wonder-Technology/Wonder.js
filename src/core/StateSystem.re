@@ -204,7 +204,7 @@ let convertShaderLibsToRecord = (shader_libs) =>
   );
 
 /* todo is bucklescript support bit operation? */
-let _computeBitOr: (int, int) => int = [%bs.raw {| function(a, b) {
+let _execBitOrOperation: (int, int) => int = [%bs.raw {| function(a, b) {
     return a | b;
 }
 |}];
@@ -214,17 +214,17 @@ let _getBitFromFlags = (gl, flags) => {
   if (ArraySystem.includes("COLOR_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getColorBufferBit(gl))
-    | Some(b) => bit := Some(_computeBitOr(b, Gl.getColorBufferBit(gl)))
+    | Some(b) => bit := Some(_execBitOrOperation(b, Gl.getColorBufferBit(gl)))
     }
   } else if (ArraySystem.includes("DEPTH_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getDepthBufferBit(gl))
-    | Some(b) => bit := Some(_computeBitOr(b, Gl.getDepthBufferBit(gl)))
+    | Some(b) => bit := Some(_execBitOrOperation(b, Gl.getDepthBufferBit(gl)))
     }
   } else if (ArraySystem.includes("STENCIL_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getStencilBufferBit(gl))
-    | Some(b) => bit := Some(_computeBitOr(b, Gl.getStencilBufferBit(gl)))
+    | Some(b) => bit := Some(_execBitOrOperation(b, Gl.getStencilBufferBit(gl)))
     }
   } else {
     ()
