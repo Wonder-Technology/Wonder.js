@@ -139,7 +139,24 @@ let getWorldToCameraMatrix =
   );
 
 let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  HashMapSystem.get(Js.Int.toString(cameraController), getCameraControllerData(state).pMatrixMap);
+  HashMapSystem.unsafeGet(
+    Js.Int.toString(cameraController),
+    getCameraControllerData(state).pMatrixMap
+  )
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "pMatrix should exist",
+             () =>
+               HashMapSystem.get(
+                 Js.Int.toString(cameraController),
+                 getCameraControllerData(state).pMatrixMap
+               )
+               |> assertExist
+           )
+         )
+     );
 
 let initData = () => {
   index: 0,

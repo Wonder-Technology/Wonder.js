@@ -16,11 +16,10 @@ let render_jobs = {|
   "clear_buffer": [{}],
   "render_basic": [
     {
-      "shader": "basic_render",
-      "input":
-        /* "vertex_buffer",
+      "shader": "basic_render"
+      /* "input":
+        "vertex_buffer",
            "index_buffer" */
-        []
     }
   ]
 }

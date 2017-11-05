@@ -35,15 +35,16 @@ let init = (state: StateDataType.state) => {
     |> filterHardwareRelatedSetting
     |> decideSpecificRenderSettingAndSetToState(state);
   state
-  |> execJobItems(
-       getInitPipelineJobs(
+  |> execJobs(
+       getInitPipelineExecutableJobs(
          getRenderSetting(state),
          getInitPipelines(state),
-         ({name: targetName}) =>
+         getInitJobs(state)
+         /* ({name: targetName}:jobItem) =>
            findFirst(
              getInitJobs(state),
              [@bs] (({name}: job) => _filterTargetName(name, targetName))
-           )
+           ) */
        )
      )
 };
@@ -54,15 +55,16 @@ let render = (state: StateDataType.state) =>
     Json.(
       Decode.(
         state
-        |> execJobItems(
-             getRenderPipelineJobs(
+        |> execJobs(
+             getRenderPipelineExecutableJobs(
                getRenderSetting(state),
                getRenderPipelines(state),
-               ({name: targetName}) =>
+               getRenderJobs(state)
+               /* ({name: targetName}:jobItem) =>
                  findFirst(
                    getRenderJobs(state),
-                   [@bs] (({name}: job) => _filterTargetName(name, targetName))
-                 )
+                   [@bs] (({name}: executableJob) => _filterTargetName(name, targetName))
+                 ) */
              )
            )
       )

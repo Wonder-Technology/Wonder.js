@@ -71,16 +71,25 @@ let _convertPipelinesToRecord = (pipelines) =>
 let _convertJobsToRecord = (jobs) =>
   Render_setting.(
     Json.(
-      Decode.(jobs |> Js.Json.parseExn |> array((json) => {name: json |> field("name", string)}))
+      Decode.(
+        jobs
+        |> Js.Json.parseExn
+        |> array(
+             (json) => {
+               name: json |> field("name", string),
+               shader: json |> optional(field("shader", string))
+             }
+           )
+      )
     )
   );
 
-let convertInitPipelinesToRecord = (init_pipelines) => _convertPipelinesToRecord(init_pipeline);
+let convertInitPipelinesToRecord = (init_pipelines) => _convertPipelinesToRecord(init_pipelines);
 
 let convertInitJobsToRecord = (init_jobs) => _convertJobsToRecord(init_jobs);
 
 let convertRenderPipelinesToRecord = (render_pipelines) =>
-  _convertPipelinesToRecord(render_pipeline);
+  _convertPipelinesToRecord(render_pipelines);
 
 let convertRenderJobsToRecord = (render_jobs) => _convertJobsToRecord(render_jobs);
 
@@ -198,7 +207,7 @@ let convertShaderLibsToRecord = (shader_libs) =>
 let createJobHandleMap = () =>
   HashMapSystem.(
     createEmpty()
-    |> set("init_basic_material", (flags, state) => BasicMaterialSystem.init(state))
+    |> set("init_basic_material", (configData, state) => BasicMaterialSystem.init(state))
     /* |> set("get_render_list", MeshRendererSystem.getRenderList); */
     |> set(
          "get_render_list",
@@ -209,7 +218,7 @@ let createJobHandleMap = () =>
               }
             ) */
          /* todo refactor? */
-         (flags, state) => {
+         (configData, state) => {
            state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
            state
          }
@@ -222,7 +231,7 @@ let createJobHandleMap = () =>
                 state
               }
             ) */
-         (flags, state) => {
+         (configData, state) => {
            state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
            state
          }
@@ -256,5 +265,5 @@ let createState = () => {
   programData: ProgramSystem.initData(),
   glslSenderData: GLSLSenderSystem.initData(),
   glslChunkData: ShaderChunkSystem.initData(),
-  renderData: {renderList: None}
+  renderData: {renderList: None, cameraData:None}
 };

@@ -31,43 +31,51 @@ let findFirst = (arr: array('a), func) =>
    ); */
 let _filterTargetName = (name, targetName) => name == targetName;
 
-let getInitPipelineJobs = ({init_pipeline}, init_pipelines: init_pipelines, mapFunc) => {
-  let init_pipelineItem: initPipeline =
+let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) => {
+  let {shader}: job =
+    findFirst(jobs, [@bs] (({name: jobName}: job) => _filterTargetName(jobName, jobItemName)));
+  {name: jobItemName, flags, shader}
+};
+
+let getInitPipelineExecutableJobs =
+    ({init_pipeline}, init_pipelines, jobs: array(job)) => {
+  let init_pipelineItem: pipeline =
     findFirst(
       init_pipelines,
-      [@bs] (({name}: initPipeline) => _filterTargetName(name, init_pipeline))
+      [@bs] (({name}: pipeline) => _filterTargetName(name, init_pipeline))
     );
-  init_pipelineItem.jobs |> ArraySystem.map(mapFunc)
+  /* init_pipelineItem.jobs |> ArraySystem.map(mapFunc) |> ArraySystem.map(_getExecutableJob(jobs)) */
+  init_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
 };
 
-let getRenderPipelineJobs = ({render_pipeline}, render_pipelines: render_pipelines, mapFunc) => {
-  let render_pipelineItem: renderPipeline =
+let getRenderPipelineExecutableJobs =
+    ({render_pipeline}, render_pipelines, jobs: array(job)) => {
+  let render_pipelineItem: pipeline =
     findFirst(
       render_pipelines,
-      [@bs] (({name}: renderPipeline) => _filterTargetName(name, render_pipeline))
+      [@bs] (({name}: pipeline) => _filterTargetName(name, render_pipeline))
     );
-  render_pipelineItem.jobs |> ArraySystem.map(mapFunc)
+  render_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
 };
 
-let execJobItems = (jobs: array(jobItem), state: StateDataType.state) : state => {
+let execJobs = (jobs: array(executableJob), state: StateDataType.state) : state => {
   let mutableState = ref(state);
   let jobHandleMap = getJobHandleMap(mutableState^);
   jobs
   |> ArraySystem.forEach(
-       ({name, flags}: jobItem) => {
-         let flags =
-           switch flags {
-           | None => ArraySystem.createEmpty()
-           | Some(flags) => flags
-           };
+       ({name, flags, shader}: executableJob) =>
+         /* let flags =
+            switch flags {
+            | None => ArraySystem.createEmpty()
+            | Some(flags) => flags
+            }; */
          mutableState :=
            (
              switch (HashMapSystem.get(name, jobHandleMap)) {
              | None => mutableState^
-             | Some(handle) => handle(flags, mutableState^)
+             | Some(handle) => handle((flags, shader), mutableState^)
              }
            )
-       }
      );
   mutableState^
 };

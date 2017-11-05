@@ -71,28 +71,45 @@ type jobItem = {
   flags: option(array(string))
 };
 
-/* type pipelineJob = {name: string}; */
-type initPipeline = {
+/* type initPipeline = {
   name: string,
   /* jobs: array pipelineJob */
   jobs: array(jobItem)
 };
 
-type init_pipelines = array(initPipeline);
+type init_pipelines = array(initPipeline); */
+  
+type pipeline = {
+  name: string,
+  /* jobs: array pipelineJob */
+  jobs: array(jobItem)
+};
 
-type job = {name: string};
+type pipelines = array(pipeline);
+
+
+type job = {
+  name: string,
+  shader: option(string)
+};
 
 /* type job = jobItem; */
 type init_jobs = array(job);
 
-type renderPipeline = {
+/* type renderPipeline = {
   name: string,
   jobs: array(jobItem)
 };
 
-type render_pipelines = array(renderPipeline);
+type render_pipelines = array(renderPipeline); */
 
 type render_jobs = array(job);
+
+type executableJob = {
+  name: string,
+  flags: option(array(string)),
+  shader: option(string)
+};
 
 type hardwareRelatedSetting = {
   platform: string,
@@ -151,7 +168,7 @@ type shaderLib = {
 
 type shader_libs = array(shaderLib);
 
-type jobFlags = array(string);
+type jobFlags = (option(array(string)), option(string));
 
 type uniformData;
 
@@ -170,8 +187,8 @@ and glslSenderData = {
 and renderConfig = {
   jobHandleMap: Js.Dict.t(((jobFlags, state) => state)),
   render_setting,
-  init_pipelines,
-  render_pipelines,
+  init_pipelines:pipelines,
+  render_pipelines:pipelines,
   init_jobs,
   render_jobs,
   shaders,

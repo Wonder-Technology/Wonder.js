@@ -1,4 +1,4 @@
-/* open StateDataType; */
+open RenderDataType;
 
 /* let setToStateRenderData = (flags:jobFlags, state: StateDataType.state, setFunc) => setFunc(flags, state); */
 
