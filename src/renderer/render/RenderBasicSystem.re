@@ -7,7 +7,7 @@ let render = (gl, state: StateDataType.state) => {
   let renderList = RenderDataSystem.getRenderListFromState(state);
   state
   |> RenderDataSystem.getRenderListFromState
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (state, uid: string) => {
          let materialIndex: int =
            Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
@@ -18,11 +18,11 @@ let render = (gl, state: StateDataType.state) => {
            state
            |> GLSLSenderSystem.disableVertexAttribArray(gl)
            |> GLSLSenderSystem.getAttributeSendData(shaderIndexStr)
-           |> ArraySystem.reduce((state, sendBufferFunc) => sendBufferFunc(state), state);
+           |> Js.Array.reduce((state, sendBufferFunc) => sendBufferFunc(state), state);
          let state =
            state
            |> GLSLSenderSystem.getUniformSendData(shaderIndexStr)
-           |> ArraySystem.reduce(
+           |> Js.Array.reduce(
                 (state, {getArrayDataFunc, sendArrayDataFunc}) => {
                   sendArrayDataFunc(getArrayDataFunc(state));
                   state

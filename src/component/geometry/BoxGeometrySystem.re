@@ -100,7 +100,7 @@ let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
     let _generateFace = (side:int, uSegments:int, vSegments:int) => {
       /* let x, y, z, u, v; */
       /* let i, j; */
-      let offset: int = ArraySystem.length(vertices) / 3;
+      let offset: int = Js.Array.length(vertices) / 3;
       for (i in 0 to uSegments) {
         for (j in 0 to vSegments) {
           let temp1 =

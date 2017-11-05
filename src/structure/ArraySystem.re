@@ -10,33 +10,32 @@ type t('a) = Js.Array.t('a);
 
 let createEmpty = () => [||];
 
-let includes = Js.Array.includes;
+/* let includes = Js.Array.includes;
 
-let indexOf = Js.Array.indexOf;
+   let indexOf = Js.Array.indexOf;
 
-let length = Js.Array.length;
+   let length = Js.Array.length;
 
-let forEach = Js.Array.forEach;
+   let forEach = Js.Array.forEach;
 
-let forEachi = Js.Array.forEachi;
+   let forEachi = Js.Array.forEachi;
 
-let push = Js.Array.push;
-
+   let push = Js.Array.push; */
 /* let pushMany = Js.Array.pushMany; */
 [@bs.splice] [@bs.send.pipe : Js.Array.t('a) as 'this] external pushMany : array('a) => int =
   "push";
 
-let pop = Js.Array.pop;
+/* let pop = Js.Array.pop;
 
-let concat = Js.Array.concat;
+   let concat = Js.Array.concat;
 
-let filter = Js.Array.filter;
+   let filter = Js.Array.filter;
 
-let map = Js.Array.map;
+   let map = Js.Array.map;
 
-let reduce = Js.Array.reduce;
-
-let flatten = (arr: array('item)) => arr |> reduce((a, b) => concat(b, a), createEmpty());
+   let reduce = Js.Array.reduce; */
+let flatten = (arr: array('item)) =>
+  arr |> Js.Array.reduce((a, b) => Js.Array.concat(b, a), createEmpty());
 
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   requireCheck(
@@ -51,13 +50,12 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   unsafePop(arr) |> ignore
 };
 
-let copy = Js.Array.copy;
-
+/* let copy = Js.Array.copy; */
 let rec range = (a: int, b: int) => {
   requireCheck(() => Contract.Operators.(test("range should be valid", () => b >= a)));
   let result = createEmpty();
   for (i in a to b) {
-    push(i, result) |> ignore
+    Js.Array.push(i, result) |> ignore
   };
   result
 };
@@ -66,12 +64,12 @@ let removeDuplicateItems = (arr) => {
   let resultArr = [||];
   let map = HashMapSystem.createEmpty();
   arr
-  |> forEach(
+  |> Js.Array.forEach(
        (item) => {
          let key = Js.Int.toString(item);
          switch (HashMapSystem.get(key, map)) {
          | None =>
-           push(item, resultArr) |> ignore;
+           Js.Array.push(item, resultArr) |> ignore;
            HashMapSystem.set(key, item, map) |> ignore
          | Some(_) => ()
          }
@@ -79,5 +77,4 @@ let removeDuplicateItems = (arr) => {
      );
   resultArr
 };
-
-let fastSort = Array.fast_sort;
+/* let fastSort = Array.fast_sort; */

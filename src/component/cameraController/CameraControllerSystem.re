@@ -11,7 +11,7 @@ let create = (state: StateDataType.state) => {
   let index = cameraControllerData.index;
   cameraControllerData.index = succ(cameraControllerData.index);
   /* todo unit test */
-  cameraControllerData.cameraArray |> ArraySystem.push(index) |> ignore;
+  cameraControllerData.cameraArray |> Js.Array.push(index) |> ignore;
   addToDirtyList(index, cameraControllerData) |> ignore;
   (state, index)
 };
@@ -25,7 +25,7 @@ let getCurrentCameraController = (state: StateDataType.state) => {
           "should has at least one camera",
           () => {
             let {cameraArray} = getCameraControllerData(state);
-            ArraySystem.length(cameraArray) > 0
+            Js.Array.length(cameraArray) > 0
           }
         )
       )
@@ -43,12 +43,12 @@ let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraContro
 let init = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let dirtyList = cameraControllerData.dirtyList;
-  switch (ArraySystem.length(dirtyList)) {
+  switch (Js.Array.length(dirtyList)) {
   | 0 => state
   | _ =>
     dirtyList
     |> ArraySystem.removeDuplicateItems
-    |> ArraySystem.forEach(
+    |> Js.Array.forEach(
          (dirtyIndex) => _initCameraController(dirtyIndex, cameraControllerData) |> ignore
        );
     cameraControllerData |> clearDirtyList |> ignore;
@@ -99,12 +99,12 @@ let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => 
 let update = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let dirtyList = cameraControllerData.dirtyList;
-  switch (ArraySystem.length(dirtyList)) {
+  switch (Js.Array.length(dirtyList)) {
   | 0 => state
   | _ =>
     dirtyList
     |> ArraySystem.removeDuplicateItems
-    |> ArraySystem.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
+    |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
     cameraControllerData |> clearDirtyList |> _clearCache |> ignore;
     state
   }

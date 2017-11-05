@@ -58,7 +58,7 @@ let setPosition =
      open Js.Option;
      let indexStr = Js.Int.toString index;
      /* isSome (HashMapSystem.get transformData.parentMap indexStr)
-        || ArraySystem.length (HashMapSystem.unsafeGet transformData.childMap indexStr)
+        || Js.Array.length (HashMapSystem.unsafeGet transformData.childMap indexStr)
         > 0
         || Float32Array.unsafe_get transformData.localPositions (getVector3DataIndex index)
         != 0. */

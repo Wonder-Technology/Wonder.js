@@ -440,12 +440,12 @@ let _ =
               let len1 =
                 state
                 |> getData
-                |> ((transformData) => ArraySystem.length(transformData.dirtyList));
+                |> ((transformData) => Js.Array.length(transformData.dirtyList));
               let state = state |> update;
               let len2 =
                 state
                 |> getData
-                |> ((transformData) => ArraySystem.length(transformData.dirtyList));
+                |> ((transformData) => Js.Array.length(transformData.dirtyList));
               (len1, len2) |> expect == (1, 0)
             }
           )

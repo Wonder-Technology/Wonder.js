@@ -205,19 +205,19 @@ let convertShaderLibsToRecord = (shader_libs) =>
 
 let _getBitFromFlags = (gl, flags) => {
   let bit = ref(None);
-  if (ArraySystem.includes("COLOR_BUFFER", flags)) {
+  if (Js.Array.includes("COLOR_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getColorBufferBit(gl))
     | Some(b) => bit := Some(b lor Gl.getColorBufferBit(gl))
     }
   };
-  if (ArraySystem.includes("DEPTH_BUFFER", flags)) {
+  if (Js.Array.includes("DEPTH_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getDepthBufferBit(gl))
     | Some(b) => bit := Some(b lor Gl.getDepthBufferBit(gl))
     }
   };
-  if (ArraySystem.includes("STENCIL_BUFFER", flags)) {
+  if (Js.Array.includes("STENCIL_BUFFER", flags)) {
     switch bit^ {
     | None => bit := Some(Gl.getStencilBufferBit(gl))
     | Some(b) => bit := Some(b lor Gl.getStencilBufferBit(gl))

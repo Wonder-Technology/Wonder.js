@@ -24,7 +24,7 @@ let _getPrecisionSource = (highp: glslChunk) =>
 
 let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
   shaderLibDataArr
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (result: string, {variables}) =>
          switch variables {
          | None => result
@@ -35,7 +35,7 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
              result
              ++ (
                attributes
-               |> ArraySystem.reduce(
+               |> Js.Array.reduce(
                     (result: string, {name, type_}: attribute) =>
                       result ++ {j|attribute $type_ $name|j},
                     ""
@@ -62,7 +62,7 @@ let _generateUniformSource =
       sourceBody: string
     ) =>
   shaderLibDataArr
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (result: string, {variables}) =>
          switch variables {
          | None => result
@@ -73,13 +73,13 @@ let _generateUniformSource =
              result
              ++ (
                uniforms
-               |> ArraySystem.filter(
+               |> Js.Array.filter(
                     ({name}: uniform) =>
                       _isInSource(name, sourceVarDeclare)
                       || _isInSource(name, sourceFuncDefine)
                       || _isInSource(name, sourceBody)
                   )
-               |> ArraySystem.reduce(
+               |> Js.Array.reduce(
                     (result: string, {name, type_}: uniform) => {
                       let type_ = _generateUniformSourceType(type_);
                       result ++ {j|uniform $type_ $name|j}
@@ -146,13 +146,13 @@ let buildGLSLSource =
       fs.body = fs.body ++ webgl1_main_begin;
       fs.top = _getPrecisionSource(getChunk("highp_fragment", state)) ++ fs.top;
       shaderLibDataArr
-      |> ArraySystem.forEach(
+      |> Js.Array.forEach(
            ({glsls}) =>
              switch glsls {
              | None => ()
              | Some(glsls) =>
                glsls
-               |> ArraySystem.forEach(
+               |> Js.Array.forEach(
                     ({type_, name}: glsl) =>
                       switch type_ {
                       | "vs" => _setSource(vs, getChunk(name, state))

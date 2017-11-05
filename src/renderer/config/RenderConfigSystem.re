@@ -19,9 +19,9 @@ let getRenderSetting = (state: StateDataType.state) => state.renderConfig.render
 let getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHandleMap;
 
 /* let findFirstByName = (targetName: string, arr, func) =>
-   arr |> ArraySystem.filter((item) => [@bs]( func(item, targetName) )) |> ArraySystem.unsafePop; */
+   arr |> Js.Array.filter((item) => [@bs]( func(item, targetName) )) |> ArraySystem.unsafePop; */
 let findFirst = (arr: array('a), func) =>
-  arr |> ArraySystem.filter((item: 'a) => [@bs] func(item)) |> ArraySystem.pop |> Js.Option.getExn;
+  arr |> Js.Array.filter((item: 'a) => [@bs] func(item)) |> Js.Array.pop |> Js.Option.getExn;
 
 /* |> ensureCheck(
      (r) =>
@@ -43,8 +43,8 @@ let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: arra
       init_pipelines,
       [@bs] (({name}: pipeline) => _filterTargetName(name, init_pipeline))
     );
-  /* init_pipelineItem.jobs |> ArraySystem.map(mapFunc) |> ArraySystem.map(_getExecutableJob(jobs)) */
-  init_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
+  /* init_pipelineItem.jobs |> Js.Array.map(mapFunc) |> Js.Array.map(_getExecutableJob(jobs)) */
+  init_pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 
 let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs: array(job)) => {
@@ -53,14 +53,14 @@ let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs
       render_pipelines,
       [@bs] (({name}: pipeline) => _filterTargetName(name, render_pipeline))
     );
-  render_pipelineItem.jobs |> ArraySystem.map(_getExecutableJob(jobs))
+  render_pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 
 let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : state => {
   /* let mutableState = ref(state);
      let jobHandleMap = getJobHandleMap(mutableState^);
      jobs
-     |> ArraySystem.forEach(
+     |> Js.Array.forEach(
           ({name, flags, shader}: executableJob) =>
             /* let flags =
                switch flags {
@@ -78,7 +78,7 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
      mutableState^ */
   let jobHandleMap = getJobHandleMap(state);
   jobs
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (state, {name, flags, shader}: executableJob) =>
          switch (HashMapSystem.get(name, jobHandleMap)) {
          | None => state
@@ -95,11 +95,11 @@ let getMaterialShaderLibDataArr =
     (materialIndex: int, groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) => {
   let resultDataArr = ArraySystem.createEmpty();
   shaderLibItems
-  |> ArraySystem.forEach(
+  |> Js.Array.forEach(
        ({type_, name}: shaderLibItem) =>
          switch type_ {
          | None =>
-           ArraySystem.push(_findFirstShaderData(name, shaderLibs), resultDataArr) |> ignore
+           Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr) |> ignore
          | Some(type_) =>
            switch type_ {
            | "group" =>
@@ -110,8 +110,8 @@ let getMaterialShaderLibDataArr =
                );
              let shaderLibArr =
                group.value
-               |> ArraySystem.map((name: string) => _findFirstShaderData(name, shaderLibs));
-             ArraySystem.concat(shaderLibArr, resultDataArr) |> ignore
+               |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
+             Js.Array.concat(shaderLibArr, resultDataArr) |> ignore
            }
          }
      );

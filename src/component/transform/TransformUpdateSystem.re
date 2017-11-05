@@ -11,13 +11,13 @@ open TransformOperateDataSystem;
 /* ////todo optimize: if transform not transformed in 5 frames, not move off */
 let _cleanDirtyList = (transformData: transformData) =>
   /* dirtyList
-     |> ArraySystem.forEach (fun index => _moveFromDirtyListToNormalList index transformData |> ignore); */
+     |> Js.Array.forEach (fun index => _moveFromDirtyListToNormalList index transformData |> ignore); */
   transformData.dirtyList = ArraySystem.createEmpty();
 
 let _transform = ({localToWorldMatrices, localPositions} as transformData, dirtyList: array(int)) => {
   open Matrix4System;
   dirtyList
-  |> ArraySystem.forEach(
+  |> Js.Array.forEach(
        (index) => {
          /* todo from rotation, scale */
          let mat = fromTranslation(localPositions, getVector3DataIndex(index));
@@ -41,8 +41,8 @@ let _transform = ({localToWorldMatrices, localPositions} as transformData, dirty
 };
 
 let _sortParentBeforeChildInDirtyList = (transformData: transformData, dirtyList: array(int)) => {
-  dirtyList |> ArraySystem.fastSort((a, b) => isParent(b, a, transformData) ? 1 : 0);
-  /* |> ArraySystem.forEach (
+  dirtyList |> Array.fast_sort((a, b) => isParent(b, a, transformData) ? 1 : 0);
+  /* |> Js.Array.forEach (
        fun index =>
          switch (getParent (Js.Int.toString index) transformData) {
          | Some parent =>

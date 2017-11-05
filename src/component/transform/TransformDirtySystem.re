@@ -20,7 +20,7 @@ open TransformType;
           )
       ); */
 /* let _addOldIndex (index: int) (transformData: transformData) => {
-     ArraySystem.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;
+     Js.Array.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;
      transformData
    }; */
 /* let unsafePopOldIndexList (transformData: transformData) => {
@@ -29,7 +29,7 @@ open TransformType;
          Contract.Operators.(
            test
              "old index should exist"
-             (fun () => ArraySystem.length transformData.oldIndexListBeforeAddToDirtyList >= 1)
+             (fun () => Js.Array.length transformData.oldIndexListBeforeAddToDirtyList >= 1)
          )
      );
      ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
@@ -44,15 +44,15 @@ let _addToDirtyList = (index: int, {dirtyList}: transformData) =>
          )
      );
      moveToFromOrigin index firstDirtyIndex transformData */
-  ArraySystem.push(index, dirtyList);
+  Js.Array.push(index, dirtyList);
 
 let addItAndItsChildrenToDirtyList = (index: int, transformData: transformData) => {
   let children = ref([|index|]);
-  while (ArraySystem.length(children^) > 0) {
+  while (Js.Array.length(children^) > 0) {
     let last: int = ArraySystem.unsafePop(children^);
     _addToDirtyList(last, transformData) |> ignore;
     children :=
-      ArraySystem.concat(
+      Js.Array.concat(
         children^,
         TransformHierachySystem.unsafeGetChildren(Js.Int.toString(last), transformData)
       )

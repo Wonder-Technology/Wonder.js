@@ -22,8 +22,8 @@ let unsafeGetChildren = (index: string, transformData: transformData) =>
 
 let _removeChild = (childIndex: int, children: array(transform)) =>
   ArraySystem.deleteBySwap(
-    ArraySystem.indexOf(childIndex, children),
-    ArraySystem.length(children) - 1,
+    Js.Array.indexOf(childIndex, children),
+    Js.Array.length(children) - 1,
     children
   );
 
@@ -48,7 +48,7 @@ let _setParent = (parent: transform, childIndex: string, transformData: transfor
 };
 
 let _addChild = (parentIndex: string, child: transform, transformData: transformData) => {
-  unsafeGetChildren(parentIndex, transformData) |> ArraySystem.push(child) |> ignore;
+  unsafeGetChildren(parentIndex, transformData) |> Js.Array.push(child) |> ignore;
   transformData
 };
 
@@ -64,7 +64,7 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
         "parent shouldn't already has the child",
         () =>
           unsafeGetChildren(Js.Int.toString(parent), transformData)
-          |> ArraySystem.includes(child)
+          |> Js.Array.includes(child)
           |> assertFalse
       )
     }

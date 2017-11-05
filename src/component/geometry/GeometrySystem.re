@@ -31,7 +31,7 @@ let _setFloat32PointData =
       infoList: geometryInfoList,
       offset: int
     ) => {
-  let count = ArraySystem.length(data);
+  let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
   infoList[index] = Some(_buildInfo(startIndex, newOffset));
@@ -48,7 +48,7 @@ let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) =>
 
 let _setUint32PointData =
     (index: int, data: ArraySystem.t(int), points: Uint32Array.t, infoList, offset: int) => {
-  let count = ArraySystem.length(data);
+  let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
   infoList[index] = Some(_buildInfo(startIndex, newOffset));
@@ -114,7 +114,7 @@ let _initGeometry = (index: int, state: StateDataType.state) => {
 let init = (state: StateDataType.state) => {
   let {index} = getGeometryData(state);
   ArraySystem.range(0, index - 1)
-  |> ArraySystem.forEach((geometryIndex: int) => _initGeometry(geometryIndex, state));
+  |> Js.Array.forEach((geometryIndex: int) => _initGeometry(geometryIndex, state));
   state
 };
 

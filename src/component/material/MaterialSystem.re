@@ -54,7 +54,7 @@ let _initMaterialShader =
   let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
   let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
   materialShaders
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (state, {name, shader_libs}) => {
          let shaderIndex =
            ShaderSystem.initMaterialShader(
@@ -77,7 +77,7 @@ let initMaterialShaders =
     (gl, materialShaders: array(shader), initShaderFuncTuple, state: StateDataType.state) =>
   /* todo check dispose:shouldn't dispose before init render! */
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
-  |> ArraySystem.reduce(
+  |> Js.Array.reduce(
        (state, materialIndex: int) =>
          _initMaterialShader(gl, materialIndex, materialShaders, initShaderFuncTuple, state),
        state

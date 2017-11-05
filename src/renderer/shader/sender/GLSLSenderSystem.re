@@ -65,7 +65,7 @@ let addAttributeSendData =
   );
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
-  |> ArraySystem.forEach(
+  |> Js.Array.forEach(
        ({variables}) =>
          switch variables {
          | None => ()
@@ -74,12 +74,12 @@ let addAttributeSendData =
            | None => ()
            | Some(attributes) =>
              attributes
-             |> ArraySystem.forEach(
+             |> Js.Array.forEach(
                   ({name, buffer, type_}) =>
                     switch (name, type_) {
                     | (Some(name), Some(type_)) =>
                       sendDataArr
-                      |> ArraySystem.push(
+                      |> Js.Array.push(
                            _sendBuffer(
                              gl,
                              _getBufferSizeByType(type_),
@@ -97,7 +97,7 @@ let addAttributeSendData =
                       |> ignore
                     | (_, _) =>
                       sendDataArr
-                      |> ArraySystem.push(
+                      |> Js.Array.push(
                            _bindIndexBuffer(
                              gl,
                              switch buffer {
@@ -156,7 +156,7 @@ let addUniformSendData =
   );
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
-  |> ArraySystem.forEach(
+  |> Js.Array.forEach(
        ({variables}) =>
          switch variables {
          | None => ()
@@ -165,10 +165,10 @@ let addUniformSendData =
            | None => ()
            | Some(uniforms) =>
              uniforms
-             |> ArraySystem.forEach(
+             |> Js.Array.forEach(
                   ({name, field, type_, from}) =>
                     sendDataArr
-                    |> ArraySystem.push({
+                    |> Js.Array.push({
                          getArrayDataFunc:
                            switch from {
                            | "camera" =>
@@ -239,15 +239,15 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
           () => {
             let {vertexAttribHistoryArray} = _getGLSLSenderData(state);
             vertexAttribHistoryArray
-            |> ArraySystem.filter((pos) => pos != true || pos != false)
-            |> ArraySystem.length == 0
+            |> Js.Array.filter((pos) => pos != true || pos != false)
+            |> Js.Array.length == 0
           }
         )
       )
   );
   let {vertexAttribHistoryArray} as data = _getGLSLSenderData(state);
   vertexAttribHistoryArray
-  |> ArraySystem.forEachi(
+  |> Js.Array.forEachi(
        (isEnable: bool, pos: int) =>
          isEnable ?
            disableVertexAttribArray(pos, gl) :

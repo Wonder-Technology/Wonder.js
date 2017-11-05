@@ -15,7 +15,7 @@ let getFloat3 = (index: int, typeArray: Float32Array.t) => (
 let setFloat3 = (index: int, data: ArraySystem.t(float), typeArray: Float32Array.t) => {
   requireCheck(
     () =>
-      Contract.Operators.(test("data.length should === 3", () => ArraySystem.length(data) == 3))
+      Contract.Operators.(test("data.length should === 3", () => Js.Array.length(data) == 3))
   );
   Float32Array.setArrayOffset(data, index, typeArray);
   typeArray
@@ -43,7 +43,7 @@ let getFloat16 = (index: int, typeArr: Float32Array.t) => [|
 let setFloat16 = (index: int, data: ArraySystem.t(float), typeArray: Float32Array.t) => {
   requireCheck(
     () =>
-      Contract.Operators.(test("data.length should === 16", () => ArraySystem.length(data) == 16))
+      Contract.Operators.(test("data.length should === 16", () => Js.Array.length(data) == 16))
   );
   Float32Array.setArrayOffset(data, index, typeArray);
   typeArray
