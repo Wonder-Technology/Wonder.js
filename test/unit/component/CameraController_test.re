@@ -95,7 +95,7 @@ let _ =
         () => {
           testBuildPMatrix((state) => state |> CameraControllerTool.init);
           describe(
-            "ensure check",
+            "contract check",
             () =>
               test(
                 "should has no cache",

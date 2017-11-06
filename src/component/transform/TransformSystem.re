@@ -24,7 +24,7 @@ let create = (state: StateDataType.state) => {
   |> ensureCheck(
        ((state, _)) => {
          open Contract.Operators;
-         let {index} = getTransformData(state);
+         let {index}: transformData = getTransformData(state);
          let maxCount = getMaxCount(state);
          test("index should <= maxCount", () => index <= maxCount)
        }

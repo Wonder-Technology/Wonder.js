@@ -1,10 +1,14 @@
 open Js.Typed_array;
 
+open Contract;
+
 open TypeArrayUtils;
 
 open GeometryStateUtils;
 
 open GeometryType;
+
+open StateDataType;
 
 open Gl;
 
@@ -14,6 +18,18 @@ let create = (state: StateDataType.state) => {
   data.index = succ(data.index);
   (state, index)
 };
+
+let _ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state: StateDataType.state) =>
+  state
+  |> ensureCheck(
+       (state) =>
+         Contract.Operators.(
+           test(
+             "should not exceed geometryPointDataBufferCount",
+             () => offset <= BufferConfigSystem.getBufferConfig(state).geometryPointDataBufferCount
+           )
+         )
+     );
 
 let _buildInfo = (startIndex: int, endIndex: int) => {startIndex, endIndex};
 
@@ -34,7 +50,7 @@ let _setFloat32PointData =
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  infoList[index] = Some(_buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoList, index, Some(_buildInfo(startIndex, newOffset)));
   fillFloat32Arr(points, data, startIndex);
   newOffset
 };
@@ -51,7 +67,7 @@ let _setUint32PointData =
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  infoList[index] = Some(_buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoList, index, Some(_buildInfo(startIndex, newOffset)));
   fillUint32Arr(points, data, startIndex);
   newOffset
 };
@@ -65,7 +81,7 @@ let setVertices = (index: int, data: ArraySystem.t(float), state: StateDataType.
   let {verticesInfoList, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
     _setFloat32PointData(index, data, vertices, verticesInfoList, verticesOffset);
-  state
+  state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).verticesOffset)
 };
 
 let getIndices = (index: int, state: StateDataType.state) => {
@@ -77,7 +93,7 @@ let setIndices = (index: int, data: ArraySystem.t(int), state: StateDataType.sta
   let {indicesInfoList, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
     _setUint32PointData(index, data, indices, indicesInfoList, indicesOffset);
-  state
+  state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).indicesOffset)
 };
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
@@ -87,7 +103,6 @@ let getIndicesCount = (index: int, state: StateDataType.state) =>
   Uint32Array.length(getIndices(index, state));
 
 let hasIndices = (index: int, state: StateDataType.state) => getIndicesCount(index, state) > 0;
-
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   Float32Array.length(getVertices(index, state));
@@ -104,8 +119,7 @@ let _initGeometry = (index: int, state: StateDataType.state) => {
   switch (geometryData.computeDataFuncMap |> HashMapSystem.get(Js.Int.toString(index))) {
   | None => ()
   | Some(computeDataFunc) =>
-    let {vertices, indices}: geometryComputeData =
-      computeDataFunc(index, geometryData.configDataMap);
+    let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
     /* todo compute normals */
     state |> setVertices(index, vertices) |> setIndices(index, indices) |> ignore
   }
@@ -113,10 +127,19 @@ let _initGeometry = (index: int, state: StateDataType.state) => {
 
 let init = (state: StateDataType.state) => {
   let {index} = getGeometryData(state);
+  /* todo check shouldn't dispose geometry before init */
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach((geometryIndex: int) => _initGeometry(geometryIndex, state));
   state
 };
+
+let getConfigData = (geometry: geometry, state: StateDataType.state) =>
+  JsObjUtils.(
+    getGeometryData(state).configDataMap |> HashMapSystem.get(Js.Int.toString(geometry))
+  );
+
+let getGameObject = (geometry: geometry, state: StateDataType.state) =>
+  ComponentSystem.getComponentGameObject(geometry, getGeometryData(state).gameObjectMap);
 
 let getVertexDataSize = () => 3;
 

@@ -27,3 +27,36 @@ let getGameObjectCameraControllerComponent = (gameObject: gameObject, state: Sta
 
 let hasGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) =>
   hasCameraControllerComponent(gameObject, state);
+
+let addGameObjectMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  addMaterialComponent(gameObject, component, state);
+
+let getGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  Js.Option.getExn(getMaterialComponent(gameObject, state));
+
+let hasGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  hasMaterialComponent(gameObject, state);
+
+let addGameObjectMeshRendererComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  addMeshRendererComponent(gameObject, component, state);
+
+let getGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  Js.Option.getExn(getMeshRendererComponent(gameObject, state));
+
+let hasGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  hasMeshRendererComponent(gameObject, state);
+
+let addGameObjectGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  addGeometryComponent(gameObject, component, state);
+
+let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  Js.Option.getExn(getGeometryComponent(gameObject, state));
+
+let hasGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) =>
+  hasGeometryComponent(gameObject, state);

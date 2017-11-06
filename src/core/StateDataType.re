@@ -1,5 +1,7 @@
 open GlType;
 
+open ComponentType;
+
 open TransformType;
 
 open CameraControllerType;
@@ -199,6 +201,20 @@ and renderConfig = {
   render_jobs,
   shaders,
   shader_libs
+}
+and geometryData = {
+  mutable index: int,
+  mutable buffer: Js.Typed_array.array_buffer,
+  mutable vertices: Js.Typed_array.Float32Array.t,
+  /* todo optimize: use Uint16Array based on config or query gpu extension */
+  mutable indices: Js.Typed_array.Uint32Array.t,
+  mutable verticesInfoList: geometryInfoList,
+  mutable indicesInfoList: geometryInfoList,
+  mutable verticesOffset: int,
+  mutable indicesOffset: int,
+  mutable computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
+  mutable configDataMap: geometryConfigDataMap,
+  mutable gameObjectMap
 }
 and state = {
   bufferConfig: option(bufferConfig),

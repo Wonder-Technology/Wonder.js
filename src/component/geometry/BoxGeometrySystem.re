@@ -4,9 +4,6 @@ open BoxGeometryType;
 
 open GeometryStateUtils;
 
-let _getConfigData = (geometry: geometry, configDataMap:geometryConfigDataMap) =>
-  configDataMap |> HashMapSystem.get(Js.Int.toString(geometry));
-
 /* let setConfigData = (geometry:geometry, configData:HashMapSystem.t (float), state:StateDataType.state) => { */
 let setConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
@@ -26,16 +23,16 @@ let setConfigData =
   state
 };
 
-let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
-  switch (_getConfigData(index, configDataMap)) {
+let _computeData = (index: int, state: StateDataType.state) =>
+  switch (GeometrySystem.getConfigData(index, state)) {
   | None => ExceptionHandlerSystem.throwMessage("configData should exist")
-  | Some(configDataHashMap) =>
-    let width = HashMapSystem.unsafeGet("width", configDataHashMap);
-    let height = HashMapSystem.unsafeGet("height", configDataHashMap);
-    let depth = HashMapSystem.unsafeGet("depth", configDataHashMap);
-    let widthSegments = HashMapSystem.unsafeGet("widthSegments", configDataHashMap);
-    let heightSegments = HashMapSystem.unsafeGet("heightSegments", configDataHashMap);
-    let depthSegments = HashMapSystem.unsafeGet("depthSegments", configDataHashMap);
+  | Some(configDataMap) =>
+    let width = HashMapSystem.unsafeGet("width", configDataMap);
+    let height = HashMapSystem.unsafeGet("height", configDataMap);
+    let depth = HashMapSystem.unsafeGet("depth", configDataMap);
+    let widthSegments = HashMapSystem.unsafeGet("widthSegments", configDataMap);
+    let heightSegments = HashMapSystem.unsafeGet("heightSegments", configDataMap);
+    let depthSegments = HashMapSystem.unsafeGet("depthSegments", configDataMap);
     /* let {
            width,
        height,
@@ -97,7 +94,7 @@ let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
       (-. width, height, -. depth),
       (width, height, -. depth)
     |];
-    let _generateFace = (side:int, uSegments:int, vSegments:int) => {
+    let _generateFace = (side: int, uSegments: int, vSegments: int) => {
       /* let x, y, z, u, v; */
       /* let i, j; */
       let offset: int = Js.Array.length(vertices) / 3;
@@ -107,13 +104,13 @@ let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
             Vector3System.lerp(
               corners[faceAxes[side][0]],
               corners[faceAxes[side][1]],
-             float_of_int(i / uSegments)
+              float_of_int(i) /. float_of_int(uSegments)
             );
           let temp2 =
             Vector3System.lerp(
               corners[faceAxes[side][0]],
               corners[faceAxes[side][2]],
-              float_of_int(j / vSegments)
+              float_of_int(j) /. float_of_int(vSegments)
             );
           let temp3 = Vector3System.sub(Vector3Type.Float, temp2, corners[faceAxes[side][0]]);
           let (vx, vy, vz) = Vector3System.add(Vector3Type.Float, temp1, temp3);
@@ -124,8 +121,6 @@ let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
                  offset + j + i * (uSegments + 1),
                  offset + j + (i + 1) * (uSegments + 1),
                  offset + j + i * (uSegments + 1) + 1,
-
-
                  offset + j + (i + 1) * (uSegments + 1),
                  offset + j + (i + 1) * (uSegments + 1) + 1,
                  offset + j + i * (uSegments + 1) + 1
@@ -184,6 +179,6 @@ let _computeData = (index: int, configDataMap:geometryConfigDataMap) =>
 let create = (state: StateDataType.state) => {
   let (state, index) = GeometrySystem.create(state);
   let data = getGeometryData(state);
-  data.computeDataFuncMap |> HashMapSystem.set(Js.Int.toString( index ), _computeData) |> ignore;
+  data.computeDataFuncMap |> HashMapSystem.set(Js.Int.toString(index), _computeData) |> ignore;
   (state, index)
 };

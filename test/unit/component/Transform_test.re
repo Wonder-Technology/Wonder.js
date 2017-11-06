@@ -65,7 +65,7 @@ let _ =
             }
           );
           describe(
-            "ensure check",
+            "contract check",
             () => {
               let _buildState = (index) =>
                 StateDataType.{

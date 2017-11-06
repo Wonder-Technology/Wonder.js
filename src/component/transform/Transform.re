@@ -2,30 +2,22 @@ open TransformSystem;
 
 open TransformType;
 
-let createTransform = (state: StateDataType.state) => create(state);
+let createTransform = create;
 
 let getTransformGameObject = (transform: transform, state: StateDataType.state) =>
-  Js.Option.getExn(getGameObject(transform, state));
+  getGameObject(transform, state) |> Js.Option.getExn;
 
 let getTransformParent = (transform: transform, state: StateDataType.state) =>
-  Js.Nullable.from_opt(getParent(transform, state));
+  getParent(transform, state) |> Js.Nullable.from_opt;
 
-let setTransformParent =
-    (parent: Js.nullable(transform), child: transform, state: StateDataType.state) =>
-  setParent(parent, child, state);
+let setTransformParent = setParent;
 
-let getTransformChildren = (transform: transform, state: StateDataType.state) =>
-  getChildren(transform, state);
+let getTransformChildren = getChildren;
 
-let getTransformLocalPosition = (transform: transform, state: StateDataType.state) =>
-  getLocalPosition(transform, state);
+let getTransformLocalPosition = getLocalPosition;
 
-let setTransformLocalPosition =
-    (transform: transform, localPosition: position, state: StateDataType.state) =>
-  setLocalPosition(transform, localPosition, state);
+let setTransformLocalPosition = setLocalPosition;
 
-let getTransformPosition = (transform: transform, state: StateDataType.state) =>
-  getPosition(transform, state);
+let getTransformPosition = getPosition;
 
-let setTransformPosition = (transform: transform, position: position, state: StateDataType.state) =>
-  setPosition(transform, position, state);
+let setTransformPosition = setPosition;
