@@ -60,7 +60,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "create",
+        "createCameraController",
         () => {
           test(
             "create a new camera which is just index(int)",

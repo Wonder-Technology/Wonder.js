@@ -16,5 +16,5 @@ let getGeometryIndices = getIndices;
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) =>
   getConfigData(geometry, state) |> Js.Option.getExn;
 
-let getGeometryGameObject = (geometry, state) =>
+let getGeometryGameObject = (geometry:geometry, state:StateDataType.state) =>
   getGameObject(geometry, state) |> Js.Option.getExn;

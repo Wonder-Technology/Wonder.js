@@ -55,7 +55,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "create",
+        "createTransform",
         () => {
           test(
             "create a new transform which is just index(int)",

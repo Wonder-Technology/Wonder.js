@@ -25,7 +25,7 @@ let _ =
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
-        "create",
+        "createBoxGeometry",
         () =>
           test(
             "create a new geometry which is just index(int)",

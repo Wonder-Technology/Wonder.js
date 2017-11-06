@@ -6,6 +6,8 @@ open MaterialSystem;
 
 open GlType;
 
+let create = (state: StateDataType.state) => MaterialSystem.create(state);
+
 let buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
 
 let initMaterialShaders = (gl, state: state) : state => {
