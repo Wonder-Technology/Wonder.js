@@ -250,6 +250,8 @@ let _ =
                     () => {
                       let (_, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       let transformDataBufferCount = 100;
+                      let geometryPointDataBufferCount = 200;
+                      let basicMaterialDataBufferCount = 300;
                       let state =
                         setMainConfig(
                           MainTool.buildMainConfig(
@@ -257,6 +259,10 @@ let _ =
                               _buildBufferConfig(
                                 ~transformDataBufferCount=
                                   Js.Nullable.return(transformDataBufferCount),
+                                ~geometryPointDataBufferCount=
+                                  Js.Nullable.return(geometryPointDataBufferCount),
+                                ~basicMaterialDataBufferCount=
+                                  Js.Nullable.return(basicMaterialDataBufferCount),
                                 ()
                               ),
                             ()
@@ -264,7 +270,13 @@ let _ =
                         );
                       state
                       |> BufferConfigSystem.getBufferConfig
-                      |> expect == _buildExpectedBufferConfig(~transformDataBufferCount, ())
+                      |>
+                      expect == _buildExpectedBufferConfig(
+                                  ~transformDataBufferCount,
+                                  ~geometryPointDataBufferCount,
+                                  ~basicMaterialDataBufferCount,
+                                  ()
+                                )
                     }
                   )
               );
@@ -279,7 +291,12 @@ let _ =
                       state
                       |> BufferConfigSystem.getBufferConfig
                       |>
-                      expect == _buildExpectedBufferConfig(~transformDataBufferCount=20 * 1000, ())
+                      expect == _buildExpectedBufferConfig(
+                                  ~transformDataBufferCount=20 * 1000,
+                                  ~geometryPointDataBufferCount=1000 * 1000,
+                                  ~basicMaterialDataBufferCount=20 * 1000,
+                                  ()
+                                )
                     }
                   )
               )
