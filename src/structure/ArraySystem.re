@@ -52,7 +52,7 @@ let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
 
 /* let copy = Js.Array.copy; */
 let rec range = (a: int, b: int) => {
-  requireCheck(() => Contract.Operators.(test("range should be valid", () => b >= a)));
+  requireCheck(() => Contract.Operators.(test("range should be valid", () => succ(b) >= a)));
   let result = createEmpty();
   for (i in a to b) {
     Js.Array.push(i, result) |> ignore

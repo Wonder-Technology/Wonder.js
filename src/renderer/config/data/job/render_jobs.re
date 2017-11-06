@@ -1,9 +1,9 @@
 let render_jobs = {|
-{
-  "get_render_list":[],
-  "get_camera_data": [],
-  "clear_color": [],
-  "clear_buffer": [],
-  "render_basic": []
-}
+[
+  {"name":"get_render_list"},
+  {"name":"get_camera_data"},
+  {"name":"clear_color"},
+  {"name":"clear_buffer"},
+  {"name":"render_basic"}
+]
 |};

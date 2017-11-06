@@ -105,30 +105,34 @@ let convertShadersToRecord = (shaders) => {
            (json) =>
              json
              |> array(
-                  (json) => {name: json |> field("name", string), value: json |> array(string)}
+                  (json) => {
+                    name: json |> field("name", string),
+                    value: json |> field("value", array(string))
+                  }
                 )
          ),
     basic_material:
       json
       |> field(
-           "init_basic_material",
-           (json) =>
-             json
-             |> array(
-                  (json) => {
-                    name: json |> field("name", string),
-                    shader_libs:
-                      json
-                      |> array(
-                           fun (json) => (
-                             {
-                               type_: json |> optional(field("type", string)),
-                               name: json |> field("name", string)
-                             }: shaderLibItem
-                           )
-                         )
-                  }
-                )
+           "basic_material",
+           array(
+             (json) => {
+               name: json |> field("name", string),
+               shader_libs:
+                 json
+                 |> field(
+                      "shader_libs",
+                      array(
+                        fun (json) => (
+                          {
+                            type_: json |> optional(field("type", string)),
+                            name: json |> field("name", string)
+                          }: shaderLibItem
+                        )
+                      )
+                    )
+             }
+           )
          )
   }
 };
@@ -265,6 +269,7 @@ let createJobHandleMap = () =>
            switch flags {
            | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
            | Some(flags) =>
+           DebugUtils.log(gl)|>ignore;
              DeviceManagerSystem.clearColor(gl, ColorSystem.convert16HexToRGBA(flags[0]), state)
            }
        )
