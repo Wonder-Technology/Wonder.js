@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialTool.initWithRenderConfig()
+          state := InitBasicMaterialJobTool.initWithRenderConfig()
         }
       );
       describe(
@@ -22,11 +22,11 @@ let _ =
             "generate shaderIndex, set to material data",
             () => {
               let (state, _, _, material1) =
-                InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
               let (state, _, _, material2) =
-                InitBasicMaterialTool.prepareGameObject(sandbox, state);
+                InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
               let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-              let state = state |> InitBasicMaterialTool.exec;
+              let state = state |> InitBasicMaterialJobTool.exec;
               (
                 MaterialTool.getShaderIndex(material1, state),
                 MaterialTool.getShaderIndex(material2, state)
@@ -37,11 +37,11 @@ let _ =
           test(
             "create program",
             () => {
-              let (state, _, _, _) = InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+              let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
               let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
-              let state = state |> InitBasicMaterialTool.exec;
+              let state = state |> InitBasicMaterialJobTool.exec;
               getCallCount(createProgram) |> expect == 1
             }
           );
@@ -49,12 +49,12 @@ let _ =
             "register program",
             () => {
               let (state, _, _, material) =
-                InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
               let program = Obj.magic(100);
               let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(program);
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
-              let state = state |> InitBasicMaterialTool.exec;
+              let state = state |> InitBasicMaterialJobTool.exec;
               let shaderIndex = MaterialTool.getShaderIndex(material, state);
               state
               |> ProgramTool.getProgram(Js.Int.toString(shaderIndex))
@@ -68,7 +68,7 @@ let _ =
               test(
                 "create vs shader",
                 () => {
-                  let (state, _, _, _) = InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                  let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let vertex_shader = 1;
                   let createShader = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =
@@ -76,14 +76,14 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~vertex_shader, ~createShader, ())
                        );
-                  let state = state |> InitBasicMaterialTool.exec;
+                  let state = state |> InitBasicMaterialJobTool.exec;
                   withOneArg(vertex_shader, createShader) |> expect |> toCalledOnce
                 }
               );
               test(
                 "create fs shader",
                 () => {
-                  let (state, _, _, _) = InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                  let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let fragment_shader = 1;
                   let createShader = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =
@@ -91,7 +91,7 @@ let _ =
                     |> FakeGlTool.setFakeGl(
                          FakeGlTool.buildFakeGl(~sandbox, ~fragment_shader, ~createShader, ())
                        );
-                  let state = state |> InitBasicMaterialTool.exec;
+                  let state = state |> InitBasicMaterialJobTool.exec;
                   withOneArg(fragment_shader, createShader) |> expect |> toCalledOnce
                 }
               );
@@ -102,7 +102,7 @@ let _ =
                     "compile vs and fs shader",
                     () => {
                       let (state, _, _, _) =
-                        InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                       let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
                       let compileShader = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -110,7 +110,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~compileShader, ())
                            );
-                      let state = state |> InitBasicMaterialTool.exec;
+                      let state = state |> InitBasicMaterialJobTool.exec;
                       (getCallCount(shaderSource), getCallCount(compileShader)) |> expect == (2, 2)
                     }
                   );
@@ -121,7 +121,7 @@ let _ =
                         "if gl.getShaderParameter return Js.false_, log shader info",
                         () => {
                           let (state, _, _, _) =
-                            InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                            InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                           let compile_status = 0;
                           let shader1 = 1;
                           let shader2 = 2;
@@ -152,7 +152,7 @@ let _ =
                                    ()
                                  )
                                );
-                          let state = state |> InitBasicMaterialTool.exec;
+                          let state = state |> InitBasicMaterialJobTool.exec;
                           (getCallCount(log), getCallCount(getShaderInfoLog)) |> expect == (4, 2)
                         }
                       )
@@ -161,14 +161,14 @@ let _ =
                     "attach vs and fs shader",
                     () => {
                       let (state, _, _, _) =
-                        InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                       let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ())
                            );
-                      let state = state |> InitBasicMaterialTool.exec;
+                      let state = state |> InitBasicMaterialJobTool.exec;
                       getCallCount(attachShader) |> expect == 2
                     }
                   );
@@ -176,14 +176,14 @@ let _ =
                     {|avoid "Attribute 0 is disabled."(because this has significant performance penalty)|},
                     () => {
                       let (state, _, _, _) =
-                        InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                       let bindAttribLocation = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~bindAttribLocation, ())
                            );
-                      let state = state |> InitBasicMaterialTool.exec;
+                      let state = state |> InitBasicMaterialJobTool.exec;
                       getCallCount(bindAttribLocation |> withThreeArgs(matchAny, 0, "a_position"))
                       |> expect == 1
                     }
@@ -195,14 +195,14 @@ let _ =
                         "test",
                         () => {
                           let (state, _, _, _) =
-                            InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                            InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                           let linkProgram = createEmptyStubWithJsObjSandbox(sandbox);
                           let state =
                             state
                             |> FakeGlTool.setFakeGl(
                                  FakeGlTool.buildFakeGl(~sandbox, ~linkProgram, ())
                                );
-                          let state = state |> InitBasicMaterialTool.exec;
+                          let state = state |> InitBasicMaterialJobTool.exec;
                           getCallCount(linkProgram) |> expect == 1
                         }
                       );
@@ -213,7 +213,7 @@ let _ =
                             "if getProgramParameter returns Js.false_, error",
                             () => {
                               let (state, _, _, _) =
-                                InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                               let link_status = 0;
                               let getProgramParameter =
                                 createEmptyStubWithJsObjSandbox(sandbox)
@@ -233,7 +233,7 @@ let _ =
                                        ()
                                      )
                                    );
-                              expect(() => state |> InitBasicMaterialTool.exec |> ignore)
+                              expect(() => state |> InitBasicMaterialJobTool.exec |> ignore)
                               |> toThrowMessage({j|link program error:$programInfo|j})
                             }
                           )
@@ -244,7 +244,7 @@ let _ =
                     "delete vs and fs shader after link",
                     () => {
                       let (state, _, _, _) =
-                        InitBasicMaterialTool.prepareGameObject(sandbox, state^);
+                        InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                       let deleteShader = createEmptyStubWithJsObjSandbox(sandbox);
                       let linkProgram = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
@@ -252,7 +252,7 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~deleteShader, ~linkProgram, ())
                            );
-                      let state = state |> InitBasicMaterialTool.exec;
+                      let state = state |> InitBasicMaterialJobTool.exec;
                       (
                         getCallCount(deleteShader),
                         calledAfter(deleteShader |> getCall(0), linkProgram |> getCall(0)),

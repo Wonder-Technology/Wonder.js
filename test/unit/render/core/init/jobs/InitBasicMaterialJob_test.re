@@ -4,7 +4,7 @@ open Jest;
 
 let _ =
   describe(
-    "init basic material",
+    "test init_basic_material job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialTool.initWithRenderConfig();
+          state := InitBasicMaterialJobTool.initWithRenderConfig();
         }
       );
       describe(
@@ -23,7 +23,7 @@ let _ =
           test(
             "glsl only set glPosition,glFragColor once",
             () => {
-              let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+              let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
               (
                 GlslTool.containSpecifyCount(
                   GlslTool.getVsSource(shaderSource),
@@ -45,7 +45,7 @@ let _ =
               test(
                 "test common shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.containMultiline(
                     GlslTool.getVsSource(shaderSource),
                     [{|uniform mat4 u_vMatrix;
@@ -58,7 +58,7 @@ let _ =
               test(
                 "test modelMatrix_noInstance shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.containMultiline(
                     GlslTool.getVsSource(shaderSource),
                     [
@@ -77,7 +77,7 @@ let _ =
               test(
                 "test vertex shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getVsSource(shaderSource)
                   |> expect
                   |> toContainString({|attribute vec3 a_position;
@@ -87,7 +87,7 @@ let _ =
               test(
                 "test basic shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getVsSource(shaderSource)
                   |> expect
                   |> toContainString(
@@ -100,7 +100,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
               test(
                 "test basic_end shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getFsSource(shaderSource)
                   |> expect
                   |> toContainString({|

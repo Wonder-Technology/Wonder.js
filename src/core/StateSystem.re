@@ -207,82 +207,6 @@ let convertShaderLibsToRecord = (shader_libs) =>
     )
   );
 
-let _getBitFromFlags = (gl, flags) => {
-  let bit = ref(None);
-  if (Js.Array.includes("COLOR_BUFFER", flags)) {
-    switch bit^ {
-    | None => bit := Some(Gl.getColorBufferBit(gl))
-    | Some(b) => bit := Some(b lor Gl.getColorBufferBit(gl))
-    }
-  };
-  if (Js.Array.includes("DEPTH_BUFFER", flags)) {
-    switch bit^ {
-    | None => bit := Some(Gl.getDepthBufferBit(gl))
-    | Some(b) => bit := Some(b lor Gl.getDepthBufferBit(gl))
-    }
-  };
-  if (Js.Array.includes("STENCIL_BUFFER", flags)) {
-    switch bit^ {
-    | None => bit := Some(Gl.getStencilBufferBit(gl))
-    | Some(b) => bit := Some(b lor Gl.getStencilBufferBit(gl))
-    }
-  };
-  Js.Option.getExn(bit^)
-};
-
-/* todo refactor: move out */
-let createJobHandleMap = () =>
-  HashMapSystem.(
-    createEmpty()
-    |> set("init_basic_material", (configData, gl, state) => BasicMaterialSystem.init(gl, state))
-    /* |> set("get_render_list", MeshRendererSystem.getRenderList); */
-    |> set(
-         "get_render_list",
-         /* RenderDataSystem.setToStateRenderData(
-              (flags, state) => {
-                state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
-                state
-              }
-            ) */
-         /* todo refactor? */
-         (configData, gl, state) => {
-           state.renderData.renderList = Some(MeshRendererSystem.getRenderList(state));
-           state
-         }
-       )
-    |> set(
-         "get_camera_data",
-         /* RenderDataSystem.setToStateRenderData(
-              (flags, state) => {
-                state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
-                state
-              }
-            ) */
-         (configData, gl, state) => {
-           state.renderData.cameraData = Some(RenderDataSystem.getCameraData(state));
-           state
-         }
-       )
-    |> set(
-         "clear_color",
-         ((flags: jobFlags, _), gl, state) =>
-           switch flags {
-           | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
-           | Some(flags) =>
-             DeviceManagerSystem.clearColor(gl, ColorSystem.convert16HexToRGBA(flags[0]), state)
-           }
-       )
-    |> set(
-         "clear_buffer",
-         ((flags, _), gl, state) =>
-           switch flags {
-           | None => RenderConfigSystem.throwJobFlagsShouldBeDefined()
-           | Some(flags) => DeviceManagerSystem.clearBuffer(gl, _getBitFromFlags(gl, flags), state)
-           }
-       )
-    |> set("render_basic", (configData, gl, state) => RenderBasicSystem.render(gl, state))
-  );
-
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =
     /* ~renderConfig=(
@@ -318,7 +242,7 @@ let createState =
   {
     bufferConfig: None,
     renderConfig: {
-      jobHandleMap: createJobHandleMap(),
+      jobHandleMap: JobHandleSystem.createJobHandleMap(),
       render_setting: convertRenderSettingToRecord(render_setting),
       init_pipelines: convertInitPipelinesToRecord(init_pipelines),
       render_pipelines: convertRenderPipelinesToRecord(render_pipelines),

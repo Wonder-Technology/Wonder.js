@@ -3,7 +3,7 @@ open StateDataType;
 open GlType;
 
 /* todo optimize: curry */
-let render = (gl, state: StateDataType.state) => {
+let _render = (gl, state: StateDataType.state) => {
   let renderList = RenderDataSystem.getRenderListFromState(state);
   state
   |> RenderDataSystem.getRenderListFromState
@@ -21,7 +21,10 @@ let render = (gl, state: StateDataType.state) => {
              state
              |> GLSLSenderSystem.disableVertexAttribArray(gl)
              |> GLSLSenderSystem.getAttributeSendData(shaderIndexStr)
-             |> ArraySystem.reduceState([@bs] ((state, sendBufferFunc) => sendBufferFunc(state)), state);
+             |> ArraySystem.reduceState(
+                  [@bs] ((state, sendBufferFunc) => sendBufferFunc(state)),
+                  state
+                );
            let state =
              state
              |> GLSLSenderSystem.getUniformSendData(shaderIndexStr)
@@ -43,3 +46,5 @@ let render = (gl, state: StateDataType.state) => {
        state
      )
 };
+
+let getJob = (configData, gl, state) => _render(gl, state);

@@ -1,5 +1,5 @@
 let initWithRenderConfig = () =>
-  TestTool.initWithRenderConfig(
+  /* TestTool.initWithRenderConfig(
     ~bufferConfig=
       Js.Nullable.return({
         "transformDataBufferCount": Js.Nullable.undefined,
@@ -31,6 +31,16 @@ let initWithRenderConfig = () =>
         ()
       ),
     ()
+  ); */
+
+  TestTool.init(
+    ~bufferConfig=
+      Js.Nullable.return({
+        "transformDataBufferCount": Js.Nullable.undefined,
+        "geometryPointDataBufferCount": Js.Nullable.return(1000),
+        "basicMaterialDataBufferCount": Js.Nullable.undefined
+      }),
+    ()
   );
 
 let prepareGameObject = (sandbox, state) => {
@@ -45,7 +55,7 @@ let prepareGameObject = (sandbox, state) => {
     state
     |> addGameObjectMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry, material);
+  (state, gameObject, geometry, material)
 };
 
 let prepareForJudgeGLSL = (sandbox, state) => {
@@ -57,9 +67,11 @@ let prepareForJudgeGLSL = (sandbox, state) => {
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
   let state = state |> GeometryTool.initGeometrys;
-  let state = state |> WebGLRenderSystem.init;
+  let state = state |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGL(state));
   shaderSource
 };
 
 let exec = (state: StateDataType.state) =>
-  state |> GeometryTool.initGeometrys |> WebGLRenderSystem.init;
+  state
+  |> GeometryTool.initGeometrys
+  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGL(state));

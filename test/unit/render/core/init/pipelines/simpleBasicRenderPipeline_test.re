@@ -2,7 +2,7 @@ open Jest;
 
 let _ =
   describe(
-    "build shader source",
+    "test simple_basic_render pipeline",
     () => {
       open Expect;
       open Expect.Operators;
@@ -12,27 +12,24 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialJobTool.initWithRenderConfig()
+          state := SimpleBasicRenderPipelineTool.initWithRenderConfig()
         }
       );
       describe(
-        "build glsl source",
+        "exec jobs",
         () =>
           describe(
-            "fs top define precision based on gpu->precision",
+            "exec init_basic_material job",
             () =>
               test(
-                "precision now is hard-coded HIGHP ",
+                "should contain basic_end shader lib's glsl",
                 () => {
                   let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.containSpecifyCount(
-                    GlslTool.getFsSource(shaderSource),
-                    {|precision highp float;
-precision highp int;
-|},
-                    ~count=1
-                  )
-                  |> expect == true
+                  GlslTool.getFsSource(shaderSource)
+                  |> expect
+                  |> toContainString({|
+gl_FragColor = vec4(1.0,0.5,1.0, 1.0);
+|})
                 }
               )
           )
