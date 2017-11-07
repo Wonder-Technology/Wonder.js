@@ -8,7 +8,7 @@ open Js.Typed_array;
 let createBuffer = (gl, geometryIndex: int, data: Uint32Array.t) => {
   let buffer = createBuffer(gl);
   bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-  bufferUint32Data(getElementArrayBuffer(gl), data, getStaticDraw(gl));
-  resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null);
+  bufferUint32Data(getElementArrayBuffer(gl), data, getStaticDraw(gl), gl);
+  resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
   buffer
 };
