@@ -32,3 +32,17 @@ let initWithRenderConfig = () =>
       ),
     ()
   );
+
+
+
+let prepareForJudgeGLSL = (sandbox, state) => {
+  open Sinon;
+  let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
+  let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+  let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+  let state =
+    state
+    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
+  let state = state |> GeometryTool.initGeometrys |> WebGLRenderSystem.init;
+  shaderSource
+};

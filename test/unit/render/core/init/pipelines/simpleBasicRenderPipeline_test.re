@@ -24,7 +24,7 @@ let _ =
               test(
                 "should contain basic_end shader lib's glsl",
                 () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                  let shaderSource = SimpleBasicRenderPipelineTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getFsSource(shaderSource)
                   |> expect
                   |> toContainString({|
