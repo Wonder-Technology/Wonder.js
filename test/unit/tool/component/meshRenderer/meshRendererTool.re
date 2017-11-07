@@ -1,0 +1,1 @@
+let getRenderList = (state:StateDataType.state) => MeshRendererSystem.getRenderList(state);

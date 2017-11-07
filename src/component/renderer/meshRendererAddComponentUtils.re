@@ -10,7 +10,7 @@ let _setRenderGameObjectArray =
       gameObject: gameObject,
       renderGameObjectArray: Js.Array.t(gameObject)
     ) =>
-  renderGameObjectArray[meshRenderer] = gameObject;
+  Array.unsafe_set(renderGameObjectArray, meshRenderer, gameObject);
 
 let handleAddComponent =
     (meshRenderer: meshRenderer, gameObjectUId: string, state: StateDataType.state) => {
