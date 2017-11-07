@@ -8,7 +8,7 @@ let _setRenderGameObjectArray =
     (
       meshRenderer: meshRenderer,
       gameObject: gameObject,
-      renderGameObjectArray: ArraySystem.t(gameObject)
+      renderGameObjectArray: Js.Array.t(gameObject)
     ) =>
   renderGameObjectArray[meshRenderer] = gameObject;
 

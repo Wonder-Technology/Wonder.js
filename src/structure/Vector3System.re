@@ -1,6 +1,6 @@
 open Vector3Type;
 
-let transformMat4 = ((x, y, z), mat4: ArraySystem.t(float)) => {
+let transformMat4 = ((x, y, z), mat4: Js.Array.t(float)) => {
   let w =
     ref(
       ArraySystem.unsafeGet(mat4, 3)

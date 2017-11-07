@@ -66,7 +66,7 @@ let _setPMatrix =
     (
       cameraController: cameraController,
       cameraControllerData: cameraControllerData,
-      pMatrix: ArraySystem.t(float)
+      pMatrix: Js.Array.t(float)
     ) =>
   HashMapSystem.set(Js.Int.toString(cameraController), pMatrix, cameraControllerData.pMatrixMap);
 

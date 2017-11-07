@@ -128,7 +128,7 @@ let _getModelMMatrixData = (uid: string, state: StateDataType.state) =>
     state
   );
 
-let _sendMatrix4 = (gl, pos: int, data: ArraySystem.t(float)) =>
+let _sendMatrix4 = (gl, pos: int, data: Js.Array.t(float)) =>
   uniformMatrix4fv(pos, Js.false_, data, gl);
 
 /* todo optimize: send uniform judge cache data */

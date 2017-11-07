@@ -28,6 +28,7 @@ let _init =
   let shaderIndex = _genereateShaderIndex(shaderData.index);
   shaderData.index = shaderIndex;
   let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
+
   let program =
     gl
     |> ProgramSystem.createProgram
@@ -40,6 +41,7 @@ let _init =
   /* "variables": {"attributes": [{"name": "a_position", "buffer": "vertex", "type": "vec3"}]} */
   /* todo prepare uniform data!
      decide commitDraw method(judge has indices) */
+
   state
   |> GLSLSenderSystem.addAttributeSendData(
        gl,
@@ -48,6 +50,7 @@ let _init =
        program,
        shaderLibDataArr
      )
+
   |> GLSLSenderSystem.addUniformSendData(
        gl,
        shaderIndex,

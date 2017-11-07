@@ -20,7 +20,7 @@ let fromTranslation = (translationTypeArr: Float32Array.t, index: int) => [|
 |];
 
 let multiply =
-    (aMatTypeArr: Float32Array.t, aMatIndex: int, bMatArr: ArraySystem.t(float), bMatIndex: int) => {
+    (aMatTypeArr: Float32Array.t, aMatIndex: int, bMatArr: Js.Array.t(float), bMatIndex: int) => {
   let a00 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex);
   let a01 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 1);
   let a02 = Float32Array.unsafe_get(aMatTypeArr, aMatIndex + 2);
@@ -130,7 +130,7 @@ let buildPerspective = (fovy: float, aspect: float, near: float, far: float) => 
   |]
 };
 
-let invert = (mat: ArraySystem.t(float)) => {
+let invert = (mat: Js.Array.t(float)) => {
   let a00 = ArraySystem.unsafeGet(mat, 0);
   let a01 = ArraySystem.unsafeGet(mat, 1);
   let a02 = ArraySystem.unsafeGet(mat, 2);

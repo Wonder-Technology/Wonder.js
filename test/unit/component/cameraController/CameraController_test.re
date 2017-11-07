@@ -151,7 +151,7 @@ let _ =
       describe(
         "getWorldToCameraMatrix",
         () => {
-          let prepare = () => {
+          let _prepare = () => {
             open GameObject;
             open Transform;
             let (state, cameraController) = createCameraController_perspectiveCamera();
@@ -182,7 +182,7 @@ let _ =
           test(
             "get cameraController->gameObject->transform-> localToWorldMatrix->invert",
             () => {
-              let (state, _, _, cameraController) = prepare();
+              let (state, _, _, cameraController) = _prepare();
               let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
               state
               |> getCameraControllerWorldToCameraMatrix(cameraController)
@@ -198,7 +198,7 @@ let _ =
                 () => {
                   open PerspectiveCamera;
                   open Transform;
-                  let (state, _, transform, cameraController) = prepare();
+                  let (state, _, transform, cameraController) = _prepare();
                   let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
                   let mat1 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
                   let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
@@ -212,7 +212,7 @@ let _ =
                 "clear cache after update",
                 () => {
                   open Transform;
-                  let (state, _, transform, cameraController) = prepare();
+                  let (state, _, transform, cameraController) = _prepare();
                   let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
                   let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
                   let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;

@@ -16,14 +16,14 @@ let getVector3DataIndex = (index: int) => index * getVector3DataSize();
 let setLocalPositionTypeArr =
   [@bs]
   (
-    (index: int, position: ArraySystem.t(float), localPositions: Float32Array.t) =>
+    (index: int, position: Js.Array.t(float), localPositions: Float32Array.t) =>
       setFloat3(index, position, localPositions)
   );
 
 let setLocalToWorldMatricesTypeArr =
   [@bs]
   (
-    (index: int, mat: ArraySystem.t(float), localToWorldMatrices: Float32Array.t) =>
+    (index: int, mat: Js.Array.t(float), localToWorldMatrices: Float32Array.t) =>
       setFloat16(index, mat, localToWorldMatrices)
   );
 

@@ -10,7 +10,7 @@ let _getDeviceManagerData = (state: state) => state.deviceManagerData;
 
 let getGL = [@bs] ((state: state) => Js.Option.getExn(_getDeviceManagerData(state).gl));
 
-let setGL = (gl: webgl1Context, ~state: state) => {
+let setGL = (gl: webgl1Context, state: state) => {
   ...state,
   deviceManagerData: {...state.deviceManagerData, gl: Some(gl)}
 };

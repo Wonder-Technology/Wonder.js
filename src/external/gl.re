@@ -46,10 +46,6 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external compileShader : shader => unit = "";
 
-[@bs.send.pipe : webgl1Context]
-external getShaderParameter : (webgl1Context, shader, int) => unit =
-  "";
-
 [@bs.send.pipe : webgl1Context] external createShader : int => shader = "";
 
 /* external linkStatus : context::contextT => int = "LINK_STATUS" [@@bs.get]; */

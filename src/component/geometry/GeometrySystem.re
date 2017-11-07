@@ -42,7 +42,7 @@ let _getFloat32PointData = (index: int, points: Float32Array.t, infoList) =>
 let _setFloat32PointData =
     (
       index: int,
-      data: ArraySystem.t(float),
+      data: Js.Array.t(float),
       points: Float32Array.t,
       infoList: geometryInfoList,
       offset: int
@@ -56,14 +56,19 @@ let _setFloat32PointData =
 };
 
 /* todo refactor: reduce duplicate: merge with _getFloat32PointData/_setFloat32PointData */
-let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) =>
+let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(test("info should exist", () => index <= Js.Array.length(infoList) - 1))
+  );
   switch infoList[index] {
   | None => ExceptionHandlerSystem.throwMessage({j|infoList[$index] should exist|j})
   | Some({startIndex, endIndex}) => getUint32ArrSubarray(points, startIndex, endIndex)
-  };
+  }
+};
 
 let _setUint32PointData =
-    (index: int, data: ArraySystem.t(int), points: Uint32Array.t, infoList, offset: int) => {
+    (index: int, data: Js.Array.t(int), points: Uint32Array.t, infoList, offset: int) => {
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
@@ -77,7 +82,7 @@ let getVertices = (index: int, state: StateDataType.state) => {
   _getFloat32PointData(index, vertices, verticesInfoList)
 };
 
-let setVertices = (index: int, data: ArraySystem.t(float), state: StateDataType.state) => {
+let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.state) => {
   let {verticesInfoList, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
     _setFloat32PointData(index, data, vertices, verticesInfoList, verticesOffset);
@@ -89,7 +94,7 @@ let getIndices = (index: int, state: StateDataType.state) => {
   _getUint32PointData(index, indices, indicesInfoList)
 };
 
-let setIndices = (index: int, data: ArraySystem.t(int), state: StateDataType.state) => {
+let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state) => {
   let {indicesInfoList, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
     _setUint32PointData(index, data, indices, indicesInfoList, indicesOffset);

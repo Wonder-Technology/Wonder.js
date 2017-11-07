@@ -77,8 +77,11 @@ let _ =
           test(
             "return TRIANGLES",
             () => {
-              let state = state^ |> FakeGlTool.setFakeGl;
-              state |> getGeometryDrawMode |> expect == FakeGlTool.triangles
+              let triangles = 1;
+              let state = state^ |> FakeGlTool.setFakeGl({
+                "TRIANGLES": triangles
+              });
+              state |> getGeometryDrawMode |> expect == triangles
             }
           )
       );
@@ -120,7 +123,7 @@ let _ =
                   expect(
                     () => state |> setGeometryIndices(geometry, [|1, 2, 3, 1, 2, 4|]) |> ignore
                   )
-                  |> toThrowMessage("Source is too large")
+                  |> toThrowMessage("should not exceed uint32Arr range")
                 }
               )
             }

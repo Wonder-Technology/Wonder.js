@@ -133,3 +133,9 @@ let setDefaultConfigData = (geometry: geometry, state: StateDataType.state) =>
          ()
        )
      );
+
+let createBoxGeometry = (state: StateDataType.state) => {
+  let (state, geometry) = createBoxGeometry(state);
+  let state = state |> setDefaultConfigData(geometry);
+  (state, geometry)
+};

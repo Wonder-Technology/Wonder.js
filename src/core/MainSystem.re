@@ -25,8 +25,7 @@ let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigTy
 };
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
-  transformDataBufferCount:
-    getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
+  transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
   /* todo unit test */
   geometryPointDataBufferCount:
     getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000),
@@ -52,7 +51,11 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
   bufferConfig:
     switch (Js.Nullable.to_opt(configState##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
-    | None => {transformDataBufferCount: 20 * 1000, geometryPointDataBufferCount: 1000 * 1000, basicMaterialDataBufferCount: 20 * 1000}
+    | None => {
+        transformDataBufferCount: 20 * 1000,
+        geometryPointDataBufferCount: 1000 * 1000,
+        basicMaterialDataBufferCount: 20 * 1000
+      }
     }
 };
 
@@ -67,8 +70,8 @@ let _initDataFromState = (state: StateDataType.state) =>
 /* todo detect, setscreensize, set pixel ratio ... */
 let init = ((configState: mainConfigData, state: state)) => {
   let canvas = createCanvas(configState);
-  createGL(canvas, configState.contextConfig)
-  |> setGL(~state)
+  state
+  |> setGL(createGL(canvas, configState.contextConfig))
   |> setCanvas(~canvas)
   |> setContextConfig(~contextConfig=configState.contextConfig)
   |> setBufferConfig(~bufferConfig=configState.bufferConfig)
