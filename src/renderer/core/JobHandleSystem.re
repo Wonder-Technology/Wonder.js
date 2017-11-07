@@ -1,12 +1,14 @@
 open StateDataType;
 
+let _getInitJobHandles = () => [("init_basic_material", InitBasicMaterialJobSystem.getJob)];
+
+let _getRenderJobHandles = () => [
+  ("get_render_list", GetRenderListJobSystem.getJob),
+  ("get_camera_data", GetCameraDataJobSystem.getJob),
+  ("clear_color", ClearColorJobSystem.getJob),
+  ("clear_buffer", ClearBufferJobSystem.getJob),
+  ("render_basic", RenderBasicJobSystem.getJob)
+];
+
 let createJobHandleMap = () =>
-  HashMapSystem.(
-    createEmpty()
-    |> set("init_basic_material", InitBasicMaterialJobSystem.getJob)
-    |> set("get_render_list", GetRenderListJobSystem.getJob)
-    |> set("get_camera_data", GetCameraDataJobSystem.getJob)
-    |> set("clear_color", ClearColorJobSystem.getJob)
-    |> set("clear_buffer", ClearBufferJobSystem.getJob)
-    |> set("render_basic", RenderBasicJobSystem.getJob)
-  );
+  HashMapSystem.fromList(List.concat([_getInitJobHandles(), _getRenderJobHandles()]));

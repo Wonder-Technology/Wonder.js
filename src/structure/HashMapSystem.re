@@ -25,3 +25,5 @@ let deleteVal = (key: string, map) => {
 };
 
 let length = (map) => Js.Array.length(Js.Dict.entries(map));
+
+let fromList = Js.Dict.fromList;
