@@ -115,8 +115,8 @@ let convertShadersToRecord = (shaders) => {
       json
       |> field(
            "basic_material",
-           array(
-             (json) => {
+           (json) => {
+             material_shader: json |> field("material_shader", (json) => {
                name: json |> field("name", string),
                shader_libs:
                  json
@@ -131,8 +131,8 @@ let convertShadersToRecord = (shaders) => {
                         )
                       )
                     )
-             }
-           )
+             })
+           }
          )
   }
 };

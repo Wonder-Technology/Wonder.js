@@ -69,8 +69,8 @@ let _ =
                             documentToObj(Dom.document),
                             "querySelectorAll"
                           )
-                          |> withOneArg(~arg="#a")
-                          |> setReturn(~returnVal=[canvasDom])
+                          |> withOneArg("#a")
+                          |> setReturn([canvasDom])
                           |> ignore
                         }
                       );

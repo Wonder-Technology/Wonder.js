@@ -8,7 +8,12 @@ open GlType;
 
 let _getShaderData = (state: StateDataType.state) => state.shaderData;
 
-let _genereateShaderIndex = (index: int) => succ(index);
+let _genereateShaderIndex = (state: StateDataType.state) => {
+  let shaderData = _getShaderData(state);
+  let index = shaderData.index;
+  shaderData.index = succ(index);
+  (state, index)
+};
 
 let _init =
     (
@@ -25,10 +30,8 @@ let _init =
          shaderIndexMap
      } = _getShaderData (state); */
   let shaderData = _getShaderData(state);
-  let shaderIndex = _genereateShaderIndex(shaderData.index);
-  shaderData.index = shaderIndex;
+  let (state, shaderIndex) = _genereateShaderIndex(state);
   let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
-
   let program =
     gl
     |> ProgramSystem.createProgram
@@ -41,7 +44,6 @@ let _init =
   /* "variables": {"attributes": [{"name": "a_position", "buffer": "vertex", "type": "vec3"}]} */
   /* todo prepare uniform data!
      decide commitDraw method(judge has indices) */
-
   state
   |> GLSLSenderSystem.addAttributeSendData(
        gl,
@@ -50,7 +52,6 @@ let _init =
        program,
        shaderLibDataArr
      )
-
   |> GLSLSenderSystem.addUniformSendData(
        gl,
        shaderIndex,
@@ -65,8 +66,7 @@ let _init =
 };
 
 /* let _getShaderIndex = (shaderName: string, shaderIndexMap) =>
-  HashMapSystem.get(shaderName, shaderIndexMap); */
-
+   HashMapSystem.get(shaderName, shaderIndexMap); */
 /* let _setShaderIndex = (shaderName: string, shaderIndex: int, shaderIndexMap) =>
    HashMapSystem.set(shaderName, shaderIndex, shaderIndexMap); */
 let initMaterialShader =
@@ -75,11 +75,10 @@ let initMaterialShader =
       materialIndex: int,
       geometryIndex: int,
       uid: string,
-      shaderName: string,
       shaderLibDataArr,
       initShaderFuncRecord,
       state: StateDataType.state
-    ) => {
+    ) =>
   /* let {shaderIndexMap} = _getShaderData(state); */
   /* switch (_getShaderIndex(shaderName, shaderIndexMap)) {
      | Some(shaderIndex) => shaderIndex
@@ -88,9 +87,9 @@ let initMaterialShader =
   /* _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state); */
   /* _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore; */
   /* shaderIndex */
-  _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state)
-  /* } */
-};
+  _init
+    (gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
+    /* } */
 
 let initData = () => {
   index: 0,

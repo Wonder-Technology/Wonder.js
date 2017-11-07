@@ -33,7 +33,7 @@ let initWithRenderConfig = () =>
     ()
   );
 
-let prepareForJudgeGLSL = (sandbox, state) => {
+let prepareGameObject = (sandbox, state) => {
   open GameObject;
   open BasicMaterial;
   open BoxGeometry;
@@ -45,8 +45,14 @@ let prepareForJudgeGLSL = (sandbox, state) => {
     state
     |> addGameObjectMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
-  let shaderSource = createEmptyStub(refJsObjToSandbox(sandbox^));
-  let createProgram = createEmptyStub(refJsObjToSandbox(sandbox^));
+  (state, gameObject, geometry, material);
+};
+
+let prepareForJudgeGLSL = (sandbox, state) => {
+  open Sinon;
+  let (state, _, _, _) = prepareGameObject(sandbox, state);
+  let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+  let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
@@ -54,3 +60,6 @@ let prepareForJudgeGLSL = (sandbox, state) => {
   let state = state |> WebGLRenderSystem.init;
   shaderSource
 };
+
+let exec = (state: StateDataType.state) =>
+  state |> GeometryTool.initGeometrys |> WebGLRenderSystem.init;

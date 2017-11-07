@@ -135,14 +135,16 @@ type shaderLibItem = {
   name: string
 };
 
-type shader = {
+type material_shader = {
   name: string,
   shader_libs: array(shaderLibItem)
 };
 
+type shader = {material_shader};
+
 type shaders = {
   groups: array(shaderGroup),
-  basic_material: array(shader)
+  basic_material: shader
 };
 
 type glsl = {

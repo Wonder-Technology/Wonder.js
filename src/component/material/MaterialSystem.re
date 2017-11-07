@@ -10,7 +10,7 @@ open StateDataType;
 let create = (state: StateDataType.state) => {
   let data = getMaterialData(state);
   let index = data.index;
-  data.index = succ(data.index);
+  data.index = succ(index);
   (state, index)
 };
 
@@ -44,7 +44,7 @@ let _initMaterialShader =
     (
       gl,
       materialIndex: int,
-      materialShaders: array(shader),
+      {material_shader}: shader,
       initShaderFuncTuple,
       state: StateDataType.state
     ) => {
@@ -53,38 +53,29 @@ let _initMaterialShader =
   let shaderLibs = getShaderLibs(state);
   let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
   let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
-  materialShaders
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, {name, shader_libs}) => {
-           let shaderIndex =
-             ShaderSystem.initMaterialShader(
-               gl,
-               materialIndex,
-               geometry,
-               gameObject,
-               name,
-               getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
-               initShaderFuncTuple,
-               state
-             );
-           setShaderIndex(materialIndex, shaderIndex, state)
-         }
-       ),
-       state
-     )
+  let {name, shader_libs} = material_shader;
+  let shaderIndex =
+    ShaderSystem.initMaterialShader(
+      gl,
+      materialIndex,
+      geometry,
+      gameObject,
+      getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
+      initShaderFuncTuple,
+      state
+    );
+  setShaderIndex(materialIndex, shaderIndex, state)
 };
 
 let initMaterialShaders =
-    (gl, materialShaders: array(shader), initShaderFuncTuple, state: StateDataType.state) =>
+    (gl, materialShader: shader, initShaderFuncTuple, state: StateDataType.state) =>
   /* todo check dispose:shouldn't dispose before init render! */
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(
        [@bs]
        (
          (state, materialIndex: int) =>
-           _initMaterialShader(gl, materialIndex, materialShaders, initShaderFuncTuple, state)
+           _initMaterialShader(gl, materialIndex, materialShader, initShaderFuncTuple, state)
        ),
        state
      );

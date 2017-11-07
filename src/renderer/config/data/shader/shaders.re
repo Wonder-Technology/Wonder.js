@@ -4,8 +4,8 @@ let shaders = {|
       {"name": "top", "value": ["common", "modelMatrix_noInstance", "vertex"]},
       {"name": "end", "value": ["end"]}
   ],
-  "basic_material": [
-    {
+  "basic_material": {
+    "material_shader": {
       "name": "basic_render",
       "shader_libs": [
         {"type": "group", "name": "top"},
@@ -14,6 +14,6 @@ let shaders = {|
         {"type": "group", "name": "end"}
       ]
     }
-  ]
+  }
 }
 |};

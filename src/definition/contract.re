@@ -24,6 +24,13 @@ let test = (message: string, func: unit => unit) =>
   | Check_fail(failMessage) => failwith({j|$message->$failMessage|j})
   };
 
+let testWithMessageFunc = (messageFunc: unit => string, func: unit => unit) =>
+  try (func()) {
+  | Check_fail(failMessage) =>
+    let message = messageFunc();
+    failwith({j|$message->$failMessage|j})
+  };
+
 /* todo use conditional compilation */
 let requireCheck = (f: unit => unit) : unit =>
   switch (_getIsTestFromStateData(stateData)) {
@@ -51,6 +58,12 @@ let assertTrue = (source: bool) =>
 
 let assertFalse = (source: bool) =>
   _assert(source == false, "expect to be false, but actual is true");
+
+let assertJsTrue = (source: Js.boolean) =>
+  _assert(source == Js.true_, "expect to be true, but actual is false");
+
+let assertJsFalse = (source: Js.boolean) =>
+  _assert(source == Js.false_, "expect to be false, but actual is true");
 
 let assertExist = (source: option('a)) =>
   _assert(Js.Option.isSome(source), "expect to be exist, but actual not");

@@ -1,0 +1,1 @@
+let getProgram = (shaderIndexStr: string, state: StateDataType.state) => ProgramSystem.getProgram(shaderIndexStr, state);

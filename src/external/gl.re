@@ -6,6 +6,8 @@ open Js.Typed_array;
 
 [@bs.get] external getCompileStatus : webgl1Context => int = "COMPILE_STATUS";
 
+[@bs.get] external getLinkStatus : webgl1Context => int = "LINK_STATUS";
+
 [@bs.get] external getVertexShader : webgl1Context => int = "VERTEX_SHADER";
 
 [@bs.get] external getFragmentShader : webgl1Context => int = "FRAGMENT_SHADER";
@@ -51,9 +53,14 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 /* external linkStatus : context::contextT => int = "LINK_STATUS" [@@bs.get]; */
 /* external validateStatus : context::contextT => int = "VALIDATE_STATUS" [@@bs.get];
    external shaderType : context::contextT => int = "SHADER_TYPE" [@@bs.get]; */
-[@bs.send.pipe : webgl1Context] external getShaderParameter : (shader, int) => int = "";
+[@bs.send.pipe : webgl1Context] external getShaderParameter : (shader, int) => Js.boolean = "";
+
+[@bs.send.pipe : webgl1Context] external getProgramParameter : (program, int) => Js.boolean = "";
+
 
 [@bs.send.pipe : webgl1Context] external getShaderInfoLog : shader => string = "";
+
+[@bs.send.pipe : webgl1Context] external getProgramInfoLog : program => string = "";
 
 [@bs.send.pipe : webgl1Context] external attachShader : (program, shader) => unit = "";
 

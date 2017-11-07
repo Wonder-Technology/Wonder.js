@@ -4,6 +4,8 @@ open GlType;
 
 open ProgramType;
 
+open Contract;
+
 let _getProgramData = (state: StateDataType.state) => state.programData;
 
 let createProgram = (gl) => createProgram(gl);
@@ -18,15 +20,30 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
   compileShader(shader, gl);
-  switch (getShaderParameter(shader, getCompileStatus(gl), gl)) {
-  | 0 =>
+  if (getShaderParameter(shader, getCompileStatus(gl), gl) == Js.false_) {
     LogUtils.log(getShaderInfoLog(shader, gl));
     LogUtils.log({j|source:
             $glslSource|j});
     shader
-  | _ => shader
+  } else {
+    shader
   }
 };
+
+let _linkProgram = (program, gl) =>
+  linkProgram(program, gl)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           testWithMessageFunc(
+             () => {
+               let message = getProgramInfoLog(program, gl);
+               {j|link program error:$message|j}
+             },
+             () => getProgramParameter(program, getLinkStatus(gl), gl) |> assertJsTrue
+           )
+         )
+     );
 
 let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
   let vs = _compileShader(gl, vsSource, createShader(getVertexShader(gl), gl));
@@ -61,7 +78,7 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
     Always have vertex attrib 0 array enabled. If you draw with vertex attrib 0 array disabled, you will force the browser to do complicated emulation when running on desktop OpenGL (e.g. on Mac OSX). This is because in desktop OpenGL, nothing gets drawn if vertex attrib 0 is not array-enabled. You can use bindAttribLocation() to force a vertex attribute to use location 0, and use enableVertexAttribArray() to make it array-enabled.
     */
   bindAttribLocation(program, 0, "a_position", gl);
-  linkProgram(program, gl);
+  _linkProgram(program, gl);
   /*!
     should detach and delete shaders after linking the program
 

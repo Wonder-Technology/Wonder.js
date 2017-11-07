@@ -11,12 +11,12 @@ let buildFakeDomForNotPassCanvasId = (sandbox) => {
   let div = {"innerHTML": "", "firstChild": canvasDom};
   let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^))};
   createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "createElement")
-  |> withOneArg(~arg="div")
-  |> setReturn(~returnVal=div)
+  |> withOneArg("div")
+  |> setReturn(div)
   |> ignore;
   createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "querySelectorAll")
-  |> withOneArg(~arg="body")
-  |> setReturn(~returnVal=[body])
+  |> withOneArg("body")
+  |> setReturn([body])
   |> ignore;
   (canvasDom, div, body)
 };

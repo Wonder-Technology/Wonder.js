@@ -1,6 +1,6 @@
-let getVsSource = (shaderSource) => List.nth(Sinon.getCall(shaderSource, 0) |> Sinon.getArgs, 1);
+let getVsSource = (shaderSource) => List.nth(shaderSource |> Sinon.getCall(0) |> Sinon.getArgs, 1);
 
-let getFsSource = (shaderSource) => List.nth(Sinon.getCall(shaderSource, 1) |> Sinon.getArgs, 1);
+let getFsSource = (shaderSource) => List.nth(shaderSource |> Sinon.getCall(1) |> Sinon.getArgs, 1);
 
 let containSpecifyCount = (source: string, target: string, ~count=1) =>
   switch (Js.String.match(Js.Re.fromStringWithFlags(target, "g"), source)) {
