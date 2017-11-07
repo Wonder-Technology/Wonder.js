@@ -37,7 +37,11 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
                attributes
                |> Js.Array.reduce(
                     (result: string, {name, type_}: attribute) =>
-                      result ++ {j|attribute $type_ $name|j},
+                      switch (name, type_) {
+                      | (Some(name), Some(type_)) => result ++ {j|attribute $type_ $name;
+  |j}
+                      | (_, _) => result
+                      },
                     ""
                   )
              )
@@ -46,6 +50,7 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
        ""
      );
 
+/* |> DebugUtils.log; */
 let _isInSource = (key: string, source: string) => Js.String.indexOf(key, source) > (-1);
 
 let _generateUniformSourceType = (type_: string) =>
@@ -82,7 +87,8 @@ let _generateUniformSource =
                |> Js.Array.reduce(
                     (result: string, {name, type_}: uniform) => {
                       let type_ = _generateUniformSourceType(type_);
-                      result ++ {j|uniform $type_ $name|j}
+                      result ++ {j|uniform $type_ $name;
+|j}
                     },
                     ""
                   )

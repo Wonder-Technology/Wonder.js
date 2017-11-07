@@ -14,71 +14,16 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state :=
-            TestTool.initWithRenderConfig(
-              ~bufferConfig=
-                Js.Nullable.return({
-                  "transformDataBufferCount": Js.Nullable.undefined,
-                  "geometryPointDataBufferCount": Js.Nullable.return(1000),
-                  "basicMaterialDataBufferCount": Js.Nullable.undefined
-                }),
-              ~renderConfig=
-                RenderConfigTool.buildRenderConfig(
-                  ~renderSetting={|
-    {
-    "platform": "pc",
-    "browser": [
-        {
-            "name": "chrome",
-            "version": "newest"
-        },
-        {
-            "name": "firefox",
-            "version": "newest"
-        }
-    ],
-    "backend": {
-        "name": "webgl1"
-    },
-    "init_pipeline": "simple_basic_render",
-    "render_pipeline": "simple_basic_render"
-}
-|},
-                  ()
-                ),
-              ()
-            )
+          state := InitBasicMaterialTool.initWithRenderConfig();
         }
       );
       describe(
         "test glsl",
         () => {
-          let _prepare = (state) => {
-            open GameObject;
-            open BasicMaterial;
-            open BoxGeometry;
-            let (state, material) = createBasicMaterial(state);
-            let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-            let (state, gameObject) = state |> createGameObject;
-            let state =
-              state
-              |> addGameObjectMaterialComponent(gameObject, material)
-              |> addGameObjectGeometryComponent(gameObject, geometry);
-            let shaderSource = createEmptyStub(refJsObjToSandbox(sandbox^));
-            let createProgram = createEmptyStub(refJsObjToSandbox(sandbox^));
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ())
-                 );
-            let state = state |> GeometryTool.initGeometrys;
-            let state = state |> WebGLRenderSystem.init;
-            shaderSource
-          };
           test(
             "glsl only set glPosition,glFragColor once",
             () => {
-              let shaderSource = _prepare(state^);
+              let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
               (
                 GlslTool.containSpecifyCount(
                   GlslTool.getVsSource(shaderSource),
@@ -97,19 +42,28 @@ let _ =
           describe(
             "test shader lib's glsl",
             () => {
-              /* test
-                 ("test common shader lib's glsl",
-                 (
-                 () => {
-                 })
-                 ); */
               test(
-                "test mopdelMatrix_noInstance shader lib's glsl",
+                "test common shader lib's glsl",
                 () => {
-                  let shaderSource = _prepare(state^);
+                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  GlslTool.containMultiline(
+                    GlslTool.getVsSource(shaderSource),
+                    [{|uniform mat4 u_vMatrix;
+|}, {|uniform mat4 u_pMatrix;
+|}]
+                  )
+                  |> expect == true
+                }
+              );
+              test(
+                "test modelMatrix_noInstance shader lib's glsl",
+                () => {
+                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.containMultiline(
                     GlslTool.getVsSource(shaderSource),
                     [
+                      {|uniform mat4 u_mMatrix;
+|},
                       {|mat4 getModelMatrix(){
     return u_mMatrix;
 }|},
@@ -120,16 +74,20 @@ let _ =
                   |> expect == true
                 }
               );
-              /* test
-                 ("test vertex shader lib's glsl",
-                 (
-                 () => {
-                 })
-                 ); */
+              test(
+                "test vertex shader lib's glsl",
+                () => {
+                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
+                  GlslTool.getVsSource(shaderSource)
+                  |> expect
+                  |> toContainString({|attribute vec3 a_position;
+|})
+                }
+              );
               test(
                 "test basic shader lib's glsl",
                 () => {
-                  let shaderSource = _prepare(state^);
+                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getVsSource(shaderSource)
                   |> expect
                   |> toContainString(
@@ -142,21 +100,19 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
               test(
                 "test basic_end shader lib's glsl",
                 () => {
-                  let shaderSource = _prepare(state^);
+                  let shaderSource = InitBasicMaterialTool.prepareForJudgeGLSL(sandbox, state^);
                   GlslTool.getFsSource(shaderSource)
                   |> expect
-                  |> toContainString(
-                       {|
+                  |> toContainString({|
 gl_FragColor = vec4(1.0,0.5,1.0, 1.0);
-|}
-                     )
+|})
                 }
-              );
+              )
               /* test(
-                "test end shader lib's glsl",
-                () => {
-                }
-              ) */
+                   "test end shader lib's glsl",
+                   () => {
+                   }
+                 ) */
             }
           )
         }
