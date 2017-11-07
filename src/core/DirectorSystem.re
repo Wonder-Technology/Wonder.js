@@ -3,7 +3,7 @@ open StateSystem;
 open StateData;
 
 let _initSystem = (state: StateDataType.state) =>
-  state |> TransformSystem.init |> CameraControllerSystem.init;
+  state |> TransformSystem.init |> CameraControllerSystem.init |> GeometrySystem.init;
 
 let _init = (state: StateDataType.state) => state |> _initSystem |> WebGLRenderSystem.init;
 
