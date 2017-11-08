@@ -42,6 +42,7 @@ let _bindIndexBuffer = (gl, buffer, state: StateDataType.state) => {
   state
 };
 
+/* todo refactor */
 let addAttributeSendData =
     (
       gl,
@@ -49,6 +50,7 @@ let addAttributeSendData =
       geometryIndex: int,
       program: program,
       shaderLibDataArr: shader_libs,
+      attributeLocationMap,
       state: StateDataType.state
     ) => {
   requireCheck(
@@ -63,6 +65,7 @@ let addAttributeSendData =
         )
       )
   );
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
   |> Js.Array.forEach(
@@ -83,7 +86,12 @@ let addAttributeSendData =
                            _sendBuffer(
                              gl,
                              _getBufferSizeByType(type_),
-                             getAttribLocation(program, name, gl),
+                             GLSLLocationSystem.getAttribLocation(
+                               program,
+                               name,
+                               attributeLocationMap,
+                               gl
+                             ),
                              switch buffer {
                              | "vertex" =>
                                ArrayBufferSystem.createBuffer(
@@ -117,9 +125,9 @@ let addAttributeSendData =
          }
      );
   _getGLSLSenderData(state).attributeSendDataMap
-  |> HashMapSystem.set(Js.Int.toString(shaderIndex), sendDataArr)
+  |> HashMapSystem.set(shaderIndexStr, sendDataArr)
   |> ignore;
-  state
+  state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
 let _getModelMMatrixData = (uid: string, state: StateDataType.state) =>
@@ -140,8 +148,10 @@ let addUniformSendData =
       uid: string,
       program: program,
       shaderLibDataArr: shader_libs,
+      uniformLocationMap,
       state: StateDataType.state
-    ) => {
+    )
+    : StateDataType.state => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -154,6 +164,7 @@ let addUniformSendData =
         )
       )
   );
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
   |> Js.Array.forEach(
@@ -183,7 +194,16 @@ let addUniformSendData =
                            },
                          sendArrayDataFunc:
                            switch type_ {
-                           | "mat4" => _sendMatrix4(gl, getUniformLocation(program, name, gl))
+                           | "mat4" =>
+                             _sendMatrix4(
+                               gl,
+                               GLSLLocationSystem.getUniformLocation(
+                                 program,
+                                 name,
+                                 uniformLocationMap,
+                                 gl
+                               )
+                             )
                            }
                        })
                     |> ignore
@@ -192,9 +212,9 @@ let addUniformSendData =
          }
      );
   _getGLSLSenderData(state).uniformSendDataMap
-  |> HashMapSystem.set(Js.Int.toString(shaderIndex), sendDataArr)
+  |> HashMapSystem.set(shaderIndexStr, sendDataArr)
   |> ignore;
-  state
+  state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
 };
 
 let _drawElement = (drawMode: int, type_: int, typeSize: int, indicesCount: int, gl) => {

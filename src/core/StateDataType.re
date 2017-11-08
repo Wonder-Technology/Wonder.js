@@ -18,6 +18,8 @@ open ShaderType;
 
 open ProgramType;
 
+open GLSLLocationType;
+
 open ShaderChunkType;
 
 open RenderDataType;
@@ -232,6 +234,7 @@ and state = {
   meshRendererData,
   shaderData,
   programData,
+  glslLocationData,
   glslSenderData,
   glslChunkData,
   renderData

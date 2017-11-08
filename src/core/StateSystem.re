@@ -62,6 +62,7 @@ let createState =
     meshRendererData: MeshRendererSystem.initData(),
     shaderData: ShaderSystem.initData(),
     programData: ProgramSystem.initData(),
+    glslLocationData: GLSLLocationSystem.initData(),
     glslSenderData: GLSLSenderSystem.initData(),
     glslChunkData: ShaderChunkSystem.initData(),
     renderData: {renderList: None, cameraData: None}

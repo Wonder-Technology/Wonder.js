@@ -45,6 +45,8 @@ let _initMaterialShader =
       gl,
       materialIndex: int,
       {material_shader}: shader,
+      attributeLocationMap,
+      uniformLocationMap,
       initShaderFuncTuple,
       state: StateDataType.state
     ) => {
@@ -61,6 +63,8 @@ let _initMaterialShader =
       geometry,
       gameObject,
       getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
+      attributeLocationMap,
+      uniformLocationMap,
       initShaderFuncTuple,
       state
     );
@@ -68,17 +72,28 @@ let _initMaterialShader =
 };
 
 let initMaterialShaders =
-    (gl, materialShader: shader, initShaderFuncTuple, state: StateDataType.state) =>
+    (gl, materialShader: shader, initShaderFuncTuple, state: StateDataType.state) => {
+  let attributeLocationMap = GLSLLocationSystem.createLocationMap();
+  let uniformLocationMap = GLSLLocationSystem.createLocationMap();
   /* todo check dispose:shouldn't dispose before init render! */
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(
        [@bs]
        (
          (state, materialIndex: int) =>
-           _initMaterialShader(gl, materialIndex, materialShader, initShaderFuncTuple, state)
+           _initMaterialShader(
+             gl,
+             materialIndex,
+             materialShader,
+             attributeLocationMap,
+             uniformLocationMap,
+             initShaderFuncTuple,
+             state
+           )
        ),
        state
-     );
+     )
+};
 
 /* let getShaderIndexDataSize = () => 1;
 

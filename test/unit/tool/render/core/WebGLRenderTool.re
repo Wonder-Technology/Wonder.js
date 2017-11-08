@@ -1,0 +1,1 @@
+let render = WebGLRenderSystem.render;

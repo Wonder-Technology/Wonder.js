@@ -22,6 +22,8 @@ let _init =
       geometryIndex: int,
       uid: string,
       shaderLibDataArr: shader_libs,
+      attributeLocationMap,
+      uniformLocationMap,
       buildGLSLSource,
       state: StateDataType.state
     ) => {
@@ -37,10 +39,6 @@ let _init =
     |> ProgramSystem.createProgram
     |> ProgramSystem.registerProgram(shaderIndex, state)
     |> ProgramSystem.initShader(vsSource, fsSource, gl);
-  /* state |> LocationSystem.setEmptyLocationMap(shaderIndex)
-
-
-     |> ignore; */
   /* "variables": {"attributes": [{"name": "a_position", "buffer": "vertex", "type": "vec3"}]} */
   /* todo prepare uniform data!
      decide commitDraw method(judge has indices) */
@@ -50,7 +48,8 @@ let _init =
        shaderIndex,
        geometryIndex,
        program,
-       shaderLibDataArr
+       shaderLibDataArr,
+       attributeLocationMap
      )
   |> GLSLSenderSystem.addUniformSendData(
        gl,
@@ -58,7 +57,8 @@ let _init =
        geometryIndex,
        uid,
        program,
-       shaderLibDataArr
+       shaderLibDataArr,
+       uniformLocationMap
      )
   |> GLSLSenderSystem.addDrawPointsFunc(gl, shaderIndex, geometryIndex)
   |> ignore;
@@ -76,7 +76,9 @@ let initMaterialShader =
       geometryIndex: int,
       uid: string,
       shaderLibDataArr,
-      initShaderFuncRecord,
+      attributeLocationMap,
+      uniformLocationMap,
+      initShaderFuncTuple,
       state: StateDataType.state
     ) =>
   /* let {shaderIndexMap} = _getShaderData(state); */
@@ -87,10 +89,19 @@ let initMaterialShader =
   /* _init(gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state); */
   /* _setShaderIndex(shaderName, shaderIndex, shaderIndexMap) |> ignore; */
   /* shaderIndex */
-  _init
-    (gl, materialIndex, geometryIndex, uid, shaderLibDataArr, initShaderFuncRecord, state);
-    /* } */
+  _init(
+    gl,
+    materialIndex,
+    geometryIndex,
+    uid,
+    shaderLibDataArr,
+    attributeLocationMap,
+    uniformLocationMap,
+    initShaderFuncTuple,
+    state
+  );
 
+/* } */
 let initData = () => {
   index: 0,
   /* shaderIndexMap: HashMapSystem.createEmpty(), */
