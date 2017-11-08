@@ -33,10 +33,11 @@ let setColorWrite =
   switch colorWrite {
   | Some((oldWriteRed, oldWriteGreen, oldWriteBlue, oldWriteAlpha))
       when
-        oldWriteRed != writeRed
-        || oldWriteGreen != writeGreen
-        || oldWriteBlue != writeBlue
-        || oldWriteAlpha != writeAlpha =>
+        oldWriteRed == writeRed
+        && oldWriteGreen == writeGreen
+        && oldWriteBlue == writeBlue
+        && oldWriteAlpha == writeAlpha => state
+  | _ =>
     Gl.colorMask(
       writeRed: Js.boolean,
       writeGreen: Js.boolean,
@@ -51,12 +52,11 @@ let setColorWrite =
         colorWrite: Some((writeRed, writeGreen, writeBlue, writeAlpha))
       }
     }
-  | _ => state
   }
 };
 
 let clearBuffer = (gl, bit: int, state: StateDataType.state) => {
-  setColorWrite(gl, Js.true_, Js.true_, Js.true_, Js.true_, state);
+  let state = setColorWrite(gl, Js.true_, Js.true_, Js.true_, Js.true_, state);
   /*! optimize in ANGLE:
     (need more verify:set color mask all false before clear?
     so here not do the recommendation)
