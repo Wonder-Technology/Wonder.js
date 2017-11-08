@@ -51,30 +51,16 @@ let _setDefaultTypeArrData = (count: int, (buffer, localToWorldMatrices, localPo
     0.,
     1.
   |];
-  let rec _set =
-          (
-            index: int,
-            data: array(float),
-            setFunc,
-            typeArr: Js.Typed_array.Float32Array.t
-          ) =>{
-            /* DebugUtils.log(( index, count )) |> ignore; */
-
-    if (index >= count ) {
+  let rec _set = (index: int, data: array(float), setFunc, typeArr: Js.Typed_array.Float32Array.t) =>
+    if (index >= count) {
       typeArr
     } else {
       [@bs] setFunc(index, data, typeArr) |> _set(index + 1, data, setFunc)
     };
-          };
   (
     buffer,
     localPositions,
-    _set(
-      0,
-      defaultLocalToWorldMatrices,
-      setLocalToWorldMatricesTypeArr,
-      localToWorldMatrices
-    )
+    _set(0, defaultLocalToWorldMatrices, setLocalToWorldMatricesTypeArr, localToWorldMatrices)
   )
 };
 
@@ -161,13 +147,11 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>{
-/* DebugUtils.log(getTransformData(state).localToWorldMatrices) |> ignore; */
+let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>
   TransformOperateDataSystem.getLocalToWorldMatrix(
     transform,
     getTransformData(state).localToWorldMatrices
   );
-};
 
 let init = (state: StateDataType.state) => update(state);
 
@@ -179,7 +163,6 @@ let getGameObject = (transform: transform, state: StateDataType.state) => {
 let initData = (state: StateDataType.state) => {
   let maxCount = getMaxCount(state);
   let (buffer, localPositions, localToWorldMatrices) = _initBufferData(maxCount);
-  /* DebugUtils.log(localToWorldMatrices) |> ignore; */
   state.transformData =
     Some(
       {

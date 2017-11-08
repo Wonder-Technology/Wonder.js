@@ -50,7 +50,6 @@ let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
        ""
      );
 
-/* |> DebugUtils.log; */
 let _isInSource = (key: string, source: string) => Js.String.indexOf(key, source) > (-1);
 
 let _generateUniformSourceType = (type_: string) =>

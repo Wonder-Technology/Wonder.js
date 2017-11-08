@@ -1,15 +1,5 @@
 open RenderDataType;
 
-/* let setToStateRenderData = (flags:jobFlags, state: StateDataType.state, setFunc) => setFunc(flags, state); */
-let getCameraData = (state: StateDataType.state) => {
-  let currentCameraController = CameraControllerSystem.getCurrentCameraController(state);
-  /* todo optimize: remove CameraController->worldToCameraMatrixCacheMap? */
-  {
-    vMatrix: CameraControllerSystem.getWorldToCameraMatrix(currentCameraController, state),
-    pMatrix: CameraControllerSystem.getPMatrix(currentCameraController, state)
-  }
-};
-
 let _getRenderData = (state: StateDataType.state) => state.renderData;
 
 let _getCameraData = (state: StateDataType.state) => Js.Option.getExn(state.renderData.cameraData);
@@ -20,3 +10,14 @@ let getCameraPMatrixDataFromState = (state: StateDataType.state) => _getCameraDa
 
 let getRenderListFromState = (state: StateDataType.state) =>
   Js.Option.getExn(state.renderData.renderList);
+
+let setRenderList = (renderList, state: StateDataType.state) =>
+  _getRenderData(state).renderList = (
+    switch (Js.Array.length(renderList)) {
+    | 0 => None
+    | _ => Some(renderList)
+    }
+  );
+
+let setCameraData = (cameraData, state: StateDataType.state) =>
+  _getRenderData(state).cameraData = Some(cameraData);

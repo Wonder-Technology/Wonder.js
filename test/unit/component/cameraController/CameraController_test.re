@@ -11,23 +11,12 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
-      let createCameraController_perspectiveCamera = () => {
-        open PerspectiveCamera;
-        let (state, cameraController) = createCameraController(state^);
-        let state =
-          state
-          |> setPerspectiveCameraNear(cameraController, 0.1)
-          |> setPerspectiveCameraFar(cameraController, 1000.)
-          |> setPerspectiveCameraFovy(cameraController, 65.)
-          |> setPerspectiveCameraAspect(cameraController, 0.8);
-        let state = state |> setCameraControllerPerspectiveCamera(cameraController);
-        (state, cameraController)
-      };
-      let testBuildPMatrix = (execFunc) =>
+      let _testBuildPMatrix = (execFunc) =>
         test(
           "build dirty cameraControllers' pMatrix",
           () => {
-            let (state, cameraController) = createCameraController_perspectiveCamera();
+            let (state, cameraController) =
+              CameraControllerTool.createCameraController_perspectiveCamera(state^);
             let state = state |> execFunc;
             state
             |> getCameraControllerPMatrix(cameraController)
@@ -93,14 +82,15 @@ let _ =
       describe(
         "initSystem",
         () => {
-          testBuildPMatrix((state) => state |> CameraControllerTool.init);
+          _testBuildPMatrix((state) => state |> CameraControllerTool.init);
           describe(
             "contract check",
             () =>
               test(
                 "should has no cache",
                 () => {
-                  let (state, cameraController) = createCameraController_perspectiveCamera();
+                  let (state, cameraController) =
+                    CameraControllerTool.createCameraController_perspectiveCamera(state^);
                   let state =
                     state
                     |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
@@ -114,12 +104,13 @@ let _ =
       describe(
         "update",
         () => {
-          testBuildPMatrix((state) => state |> CameraControllerTool.update);
+          _testBuildPMatrix((state) => state |> CameraControllerTool.update);
           test(
             "test dirty during multi updates",
             () => {
               open PerspectiveCamera;
-              let (state, cameraController) = createCameraController_perspectiveCamera();
+              let (state, cameraController) =
+                CameraControllerTool.createCameraController_perspectiveCamera(state^);
               let state = state |> CameraControllerTool.update;
               let state = state |> setPerspectiveCameraNear(cameraController, 0.2);
               let state = state |> CameraControllerTool.update;
@@ -154,7 +145,8 @@ let _ =
           let _prepare = () => {
             open GameObject;
             open Transform;
-            let (state, cameraController) = createCameraController_perspectiveCamera();
+            let (state, cameraController) =
+              CameraControllerTool.createCameraController_perspectiveCamera(state^);
             let (state, gameObject) = state |> createGameObject;
             let state =
               state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
@@ -162,23 +154,23 @@ let _ =
             let state = state |> setTransformLocalPosition(transform, (1., 2., 3.));
             (state, gameObject, transform, cameraController)
           };
-          describe
-            (
-              "runtime check",
-              () =>
-                test(
-                  "if cameraController->gameObject not exist, error",
-                  () => {
-                    let (state, cameraController) = createCameraController_perspectiveCamera();
-                    expect(
-                      () =>
-                        state |> getCameraControllerWorldToCameraMatrix(cameraController) |> ignore
-                    )
-                    |> toThrowMessage("cameraController's gameObject should exist")
-                  }
-                )
-            );
-            /* todo test if cameraController->gameObject->transform not exist, error */
+          describe(
+            "runtime check",
+            () =>
+              test(
+                "if cameraController->gameObject not exist, error",
+                () => {
+                  let (state, cameraController) =
+                    CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                  expect(
+                    () =>
+                      state |> getCameraControllerWorldToCameraMatrix(cameraController) |> ignore
+                  )
+                  |> toThrowMessage("cameraController's gameObject should exist")
+                }
+              )
+          );
+          /* todo test if cameraController->gameObject->transform not exist, error */
           test(
             "get cameraController->gameObject->transform-> localToWorldMatrix->invert",
             () => {
@@ -250,7 +242,8 @@ let _ =
             "get cameraController's gameObject",
             () => {
               open GameObject;
-              let (state, cameraController) = createCameraController_perspectiveCamera();
+              let (state, cameraController) =
+                CameraControllerTool.createCameraController_perspectiveCamera(state^);
               let (state, gameObject) = state |> createGameObject;
               let state =
                 state |> addGameObjectCameraControllerComponent(gameObject, cameraController);

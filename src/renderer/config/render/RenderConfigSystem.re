@@ -114,8 +114,6 @@ let getMaterialShaderLibDataArr =
              let shaderLibArr =
                group.value
                |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
-             /* DebugUtils.log(shaderLibArr)|>ignore; */
-             /* Js.Array.concat(shaderLibArr, resultDataArr) |> ignore */
              Js.Array.concat(shaderLibArr, resultDataArr)
            }
          },
