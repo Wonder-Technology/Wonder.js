@@ -9,7 +9,7 @@ let getCameraVMatrixDataFromState = (state: StateDataType.state) => _getCameraDa
 let getCameraPMatrixDataFromState = (state: StateDataType.state) => _getCameraData(state).pMatrix;
 
 let getRenderListFromState = (state: StateDataType.state) =>
-  Js.Option.getExn(state.renderData.renderList);
+state.renderData.renderList;
 
 let setRenderList = (renderList, state: StateDataType.state) =>
   _getRenderData(state).renderList = (
@@ -20,4 +20,4 @@ let setRenderList = (renderList, state: StateDataType.state) =>
   );
 
 let setCameraData = (cameraData, state: StateDataType.state) =>
-  _getRenderData(state).cameraData = Some(cameraData);
+  _getRenderData(state).cameraData = cameraData;

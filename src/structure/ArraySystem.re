@@ -87,3 +87,24 @@ let reduceState = (func, state, arr) => {
   };
   mutableState^
 };
+
+let get = (index: int, arr) =>
+  if (index >= Js.Array.length(arr)) {
+    None
+  } else {
+    Some(arr[index])
+  };
+
+let isEqual = (index: int, target, arr) =>
+  if (index >= Js.Array.length(arr)) {
+    false
+  } else {
+    arr[index] == target
+  };
+
+let isNotEqual = (index: int, target, arr) =>
+  if (index >= Js.Array.length(arr)) {
+    true
+  } else {
+    arr[index] != target
+  };

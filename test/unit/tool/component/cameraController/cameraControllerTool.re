@@ -32,7 +32,7 @@ let init = (state: StateDataType.state) => CameraControllerSystem.init(state);
 
 let update = (state: StateDataType.state) => CameraControllerSystem.update(state);
 
-let createCameraController_perspectiveCamera = (state) => {
+let createCameraControllerPerspectiveCamera = (state) => {
   open CameraController;
   open PerspectiveCamera;
   let (state, cameraController) = createCameraController(state);
@@ -46,11 +46,17 @@ let createCameraController_perspectiveCamera = (state) => {
   (state, cameraController)
 };
 
+let getPMatrixOfCreateCameraControllerPerspectiveCamera = () => {
+  [|
+  -1.7006360120001864, 0., 0., 0., 0., -1.3605088096001492, 0., 0., 0., 0., -1.0002000200020003, -1., 0., 0., -0.2000200020002, 0.
+  |]
+};
+
 let createCameraGameObject = (sandbox, state) => {
   open GameObject;
   open CameraController;
   open Sinon;
-  let (state, cameraController) = createCameraController_perspectiveCamera(state);
+  let (state, cameraController) = createCameraControllerPerspectiveCamera(state);
   let (state, gameObject) = state |> createGameObject;
   let state = state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
   (state, gameObject, getGameObjectTransformComponent(gameObject, state), cameraController)

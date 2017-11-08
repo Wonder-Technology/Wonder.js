@@ -66,7 +66,10 @@ let withTwoArgs = (arg1, arg2, stub: stub) : stub => stubToJsObj(stub)##withArgs
 let withThreeArgs = (arg1, arg2, arg3, stub: stub) : stub =>
   stubToJsObj(stub)##withArgs(arg1, arg2, arg3);
 
-let getCall = (index:int, stub: stub) => stubToJsObj(stub)##getCall(index);
+let withFourArgs = (arg1, arg2, arg3, arg4, stub: stub) : stub =>
+  stubToJsObj(stub)##withArgs(arg1, arg2, arg3, arg4);
+
+let getCall = (index: int, stub: stub) => stubToJsObj(stub)##getCall(index);
 
 let onCall = (index: int, stub: stub) : stub => stubToJsObj(stub)##onCall(index);
 

@@ -29,7 +29,7 @@ let getCurrentCameraController = (state: StateDataType.state) => {
       )
   );
   let {cameraArray} = getCameraControllerData(state);
-  Array.unsafe_get(cameraArray, 0)
+  ArraySystem.get(0, cameraArray);
 };
 
 let _clearCache = (cameraControllerData: cameraControllerData) =>

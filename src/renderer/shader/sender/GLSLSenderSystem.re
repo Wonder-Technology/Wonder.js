@@ -28,13 +28,13 @@ let _sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType
        HashMapSystem.set(posStr, true, vertexAttribHistoryArray) |> ignore
      | _ => ()
      } */
-  if (vertexAttribHistoryArray[pos] != true) {
-    enableVertexAttribArray(pos, gl);
-    vertexAttribHistoryArray[pos] = true;
+  ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
+    {
+      enableVertexAttribArray(pos, gl);
+      Array.unsafe_set(vertexAttribHistoryArray, pos, true);
+      state
+    } :
     state
-  } else {
-    state
-  }
 };
 
 let _bindIndexBuffer = (gl, buffer, state: StateDataType.state) => {
@@ -255,12 +255,12 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
     () =>
       Contract.Operators.(
         test(
-          "vertexAttribHistory should has no hole",
+          "vertexAttribHistory:array('a) should has no hole",
           () => {
             let {vertexAttribHistoryArray} = _getGLSLSenderData(state);
             vertexAttribHistoryArray
-            |> Js.Array.filter((pos) => pos != true || pos != false)
-            |> Js.Array.length == 0
+            |> Js.Array.filter(JudgeUtils.isBool)
+            |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
           }
         )
       )

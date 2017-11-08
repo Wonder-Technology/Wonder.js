@@ -17,3 +17,9 @@ let buildBoxGeometryConfigDataJsObj =
   "heightSegments": heightSegments,
   "depthSegments": depthSegments
 };
+
+let getIndicesCount = (index:int, state:StateDataType.state) => GeometrySystem.getIndicesCount(index, state);
+
+let getIndexType = (state:StateDataType.state) => [@bs] DeviceManagerSystem.getGL(state) |> GeometrySystem.getIndexType;
+
+let getIndexTypeSize = (state:StateDataType.state) => [@bs] DeviceManagerSystem.getGL(state) |> GeometrySystem.getIndexTypeSize;

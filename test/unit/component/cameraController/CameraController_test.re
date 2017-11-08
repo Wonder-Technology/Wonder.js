@@ -16,7 +16,7 @@ let _ =
           "build dirty cameraControllers' pMatrix",
           () => {
             let (state, cameraController) =
-              CameraControllerTool.createCameraController_perspectiveCamera(state^);
+              CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
             let state = state |> execFunc;
             state
             |> getCameraControllerPMatrix(cameraController)
@@ -90,7 +90,7 @@ let _ =
                 "should has no cache",
                 () => {
                   let (state, cameraController) =
-                    CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                    CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
                   let state =
                     state
                     |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
@@ -110,7 +110,7 @@ let _ =
             () => {
               open PerspectiveCamera;
               let (state, cameraController) =
-                CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
               let state = state |> CameraControllerTool.update;
               let state = state |> setPerspectiveCameraNear(cameraController, 0.2);
               let state = state |> CameraControllerTool.update;
@@ -146,7 +146,7 @@ let _ =
             open GameObject;
             open Transform;
             let (state, cameraController) =
-              CameraControllerTool.createCameraController_perspectiveCamera(state^);
+              CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
             let (state, gameObject) = state |> createGameObject;
             let state =
               state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
@@ -161,7 +161,7 @@ let _ =
                 "if cameraController->gameObject not exist, error",
                 () => {
                   let (state, cameraController) =
-                    CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                    CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
                   expect(
                     () =>
                       state |> getCameraControllerWorldToCameraMatrix(cameraController) |> ignore
@@ -243,7 +243,7 @@ let _ =
             () => {
               open GameObject;
               let (state, cameraController) =
-                CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
               let (state, gameObject) = state |> createGameObject;
               let state =
                 state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
@@ -258,11 +258,12 @@ let _ =
             "the first created cameraController is the current cameraController",
             () => {
               let (state, cameraController1) =
-                CameraControllerTool.createCameraController_perspectiveCamera(state^);
+                CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
               let (state, _) =
-                CameraControllerTool.createCameraController_perspectiveCamera(state);
+                CameraControllerTool.createCameraControllerPerspectiveCamera(state);
               state
               |> CameraControllerTool.getCurrentCameraController
+              |> Js.Option.getExn
               |> expect == cameraController1
             }
           );
