@@ -115,7 +115,7 @@ type render_jobs = array(job);
 
 type executableJob = {
   name: string,
-  flags: option(array(string)),
+  flags: jobFlags,
   shader: option(string)
 };
 

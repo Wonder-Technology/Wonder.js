@@ -1,0 +1,1 @@
+let getJob = (configData, state) => ClearColorJobSystem.getJob(configData, [@bs]DeviceManagerSystem.getGL(state), state);

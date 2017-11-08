@@ -82,7 +82,7 @@ beforeEach(function () {
                             message += ", but actual is not called";
                         }
                         else {
-                            message += ", but actual is " + toString(actualArg);
+                            message += ", but actual is " + toString(actualArg[0]);
                         }
 
                         return {
@@ -110,7 +110,7 @@ beforeEach(function () {
                             message += ", but actual is called";
                         }
                         else {
-                            message += ", but actual is called with " + toString(actualArg);
+                            message += ", but actual is called with " + toString(actualArg[0]);
                         }
                         return {
                             pass: (actual.calledWith.apply(actual, expectedArg)),

@@ -56,7 +56,7 @@ let initSystemAndRender = (state: StateDataType.state) =>
 
 let updateSystem = (state: StateDataType.state) => state |> DirectorTool.updateSystem;
 
-let setFakeGl = (sandbox, state: StateDataType.state) =>
+let passGl = (sandbox, state: StateDataType.state) =>
   state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
-let buildConfigData = (~flags=[||], ~shader="", ()) => (flags, shader);
+let buildConfigData = (~flags=None, ~shader=None, ()) => (flags, shader);
