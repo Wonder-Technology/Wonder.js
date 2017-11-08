@@ -55,7 +55,6 @@ let _setFloat32PointData =
   newOffset
 };
 
-/* todo refactor: reduce duplicate: merge with _getFloat32PointData/_setFloat32PointData */
 let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) => {
   requireCheck(
     () =>

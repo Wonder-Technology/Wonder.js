@@ -26,7 +26,6 @@ let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigTy
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
   transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
-  /* todo unit test */
   geometryPointDataBufferCount:
     getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000),
   basicMaterialDataBufferCount:

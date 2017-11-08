@@ -4,16 +4,6 @@ open ShaderChunkType;
 
 open ShaderChunkSystem;
 
-/* {
-     "name": "common",
-     "glsls": [{"type": "vs", "name": "common_vertex"}, {"type": "fs", "name": "common_vertex"}],
-     "variables": {
-       "uniform": [
-         {"name": "u_vMatrix", "field": "vMatrix", "type": "mat4"},
-         {"name": "u_pMatrix", "field": "pMatrix", "type": "mat4"}
-       ]
-     }
-   }, */
 let webgl1_main_begin: string = "void main(void){\n";
 
 let webgl1_main_end: string = "}\n";
@@ -117,9 +107,6 @@ let buildGLSLSource =
         funcDefine: "",
         body: ""
       };
-      /* let vs = ref ( ("", "", "", "", "") );
-         let fs = ref ( ("", "", "", "", "") ); */
-      /* let _buildSource  = ((sourceTop, sourceDefine, sourceVarDeclare, sourceFuncDeclare, sourceFuncDefine, sourceBody), { */
       let _setSource =
           (
             {
@@ -132,14 +119,6 @@ let buildGLSLSource =
             } as sourceChunk,
             {top, define, varDeclare, funcDeclare, funcDefine, body}
           ) => {
-        /* (
-               sourceTop + top,
-               sourceDefine + define,
-               sourceVarDeclare + varDeclare,
-               sourceFuncDeclare + funcDeclare,
-               sourceFuncDefine + funcDefine,
-               sourceBody + body,
-           ); */
         sourceChunk.top = sourceTop ++ top;
         sourceChunk.define = sourceDefine ++ define;
         sourceChunk.varDeclare = sourceVarDeclare ++ varDeclare;

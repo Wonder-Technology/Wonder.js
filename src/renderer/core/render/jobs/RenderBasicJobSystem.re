@@ -9,7 +9,7 @@ let _render = (gl, state: StateDataType.state) => {
   | None => state
   | Some(renderList) =>
     renderList
-    |>  ArraySystem.reduceState(
+    |> ArraySystem.reduceState(
          [@bs]
          (
            (state, uid: string) => {
@@ -18,18 +18,15 @@ let _render = (gl, state: StateDataType.state) => {
              let shaderIndex = MaterialSystem.getShaderIndex(materialIndex, state);
              let shaderIndexStr =
                Js.Int.toString(MaterialSystem.getShaderIndex(materialIndex, state));
-             /* let program = ProgramSystem.use(gl, shaderIndexStr, state); */
              let state =
                state
                |> ProgramSystem.use(gl, shaderIndexStr)
-               |> GLSLSenderSystem.getAttributeSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndexStr)
                |> ArraySystem.reduceState(
                     [@bs] ((state, sendBufferFunc) => sendBufferFunc(state)),
                     state
                   )
-               /* let state = */
-               /* state */
-               |> GLSLSenderSystem.getUniformSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndexStr)
                |> ArraySystem.reduceState(
                     [@bs]
                     (
@@ -40,7 +37,7 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   );
-             let drawPointsFunc = GLSLSenderSystem.getDrawPointsFunc(shaderIndexStr, state);
+             let drawPointsFunc = GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
              drawPointsFunc(gl);
              state
            }

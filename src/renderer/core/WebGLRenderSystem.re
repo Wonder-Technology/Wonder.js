@@ -43,14 +43,8 @@ let init = (state: StateDataType.state) => {
          getInitJobs(state)
        )
      )
-  /* ({name: targetName}:jobItem) =>
-     findFirst(
-       getInitJobs(state),
-       [@bs] (({name}: job) => _filterTargetName(name, targetName))
-     ) */
 };
 
-/* todo refactor with init */
 let render = (state: StateDataType.state) =>
   Render_setting.(
     Json.(
@@ -64,11 +58,6 @@ let render = (state: StateDataType.state) =>
                getRenderJobs(state)
              )
            )
-        /* ({name: targetName}:jobItem) =>
-           findFirst(
-             getRenderJobs(state),
-             [@bs] (({name}: executableJob) => _filterTargetName(name, targetName))
-           ) */
       )
     )
   );
