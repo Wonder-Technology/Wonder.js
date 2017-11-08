@@ -94,4 +94,4 @@ let buildFakeGl =
 };
 
 let setFakeGl = (fakeGlObj, state: StateDataType.state) =>
-  state |> DeviceManagerSystem.setGL(Obj.magic(fakeGlObj));
+  state |> DeviceManagerSystem.setGl(Obj.magic(fakeGlObj));

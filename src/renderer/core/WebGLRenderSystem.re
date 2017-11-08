@@ -36,7 +36,7 @@ let init = (state: StateDataType.state) => {
     |> decideSpecificRenderSettingAndSetToState(state);
   state
   |> execJobs(
-       [@bs] DeviceManagerSystem.getGL(state),
+       [@bs] DeviceManagerSystem.getGl(state),
        getInitPipelineExecutableJobs(
          getRenderSetting(state),
          getInitPipelines(state),
@@ -57,7 +57,7 @@ let render = (state: StateDataType.state) =>
       Decode.(
         state
         |> execJobs(
-             [@bs] DeviceManagerSystem.getGL(state),
+             [@bs] DeviceManagerSystem.getGl(state),
              getRenderPipelineExecutableJobs(
                getRenderSetting(state),
                getRenderPipelines(state),

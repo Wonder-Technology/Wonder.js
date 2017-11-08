@@ -1,5 +1,5 @@
 let disableVertexAttribArray = (state: StateDataType.state) =>
-  GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.getGL(state), state);
+  GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.getGl(state), state);
 
 module JudgeSendUniformData = {
   let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;

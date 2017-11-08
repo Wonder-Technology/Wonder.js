@@ -67,11 +67,11 @@ let prepareForJudgeGLSL = (sandbox, state) => {
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
   let state = state |> GeometryTool.initGeometrys;
-  let state = state |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGL(state));
+  let state = state |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
   shaderSource
 };
 
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
-  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGL(state));
+  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));

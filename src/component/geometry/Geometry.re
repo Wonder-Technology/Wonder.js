@@ -3,7 +3,7 @@ open GeometrySystem;
 open GeometryType;
 
 let getGeometryDrawMode = (state: StateDataType.state) =>
-  [@bs] DeviceManagerSystem.getGL(state) |> getDrawMode;
+  [@bs] DeviceManagerSystem.getGl(state) |> getDrawMode;
 
 let setGeometryVertices = setVertices;
 

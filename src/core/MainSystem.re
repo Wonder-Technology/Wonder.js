@@ -71,7 +71,7 @@ let _initDataFromState = (state: StateDataType.state) =>
 let init = ((configState: mainConfigData, state: state)) => {
   let canvas = createCanvas(configState);
   state
-  |> setGL(createGL(canvas, configState.contextConfig))
+  |> setGl(createGL(canvas, configState.contextConfig))
   |> setCanvas(~canvas)
   |> setContextConfig(~contextConfig=configState.contextConfig)
   |> setBufferConfig(~bufferConfig=configState.bufferConfig)
