@@ -10,13 +10,11 @@ let create = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let index = cameraControllerData.index;
   cameraControllerData.index = succ(cameraControllerData.index);
-  /* todo unit test */
   cameraControllerData.cameraArray |> Js.Array.push(index) |> ignore;
   addToDirtyList(index, cameraControllerData) |> ignore;
   (state, index)
 };
 
-/* todo unit test */
 let getCurrentCameraController = (state: StateDataType.state) => {
   requireCheck(
     () =>

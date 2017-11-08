@@ -52,8 +52,8 @@ let createCameraGameObject = (sandbox, state) => {
   open Sinon;
   let (state, cameraController) = createCameraController_perspectiveCamera(state);
   let (state, gameObject) = state |> createGameObject;
-  let state =
-    state
-    |> addGameObjectCameraControllerComponent(gameObject, cameraController);
+  let state = state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
   (state, gameObject, getGameObjectTransformComponent(gameObject, state), cameraController)
 };
+
+let getCurrentCameraController = CameraControllerSystem.getCurrentCameraController;

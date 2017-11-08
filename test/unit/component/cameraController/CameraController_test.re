@@ -250,6 +250,33 @@ let _ =
               state |> getCameraControllerGameObject(cameraController) |> expect == gameObject
             }
           )
+      );
+      describe(
+        "get current cameraController",
+        () => {
+          test(
+            "the first created cameraController is the current cameraController",
+            () => {
+              let (state, cameraController1) =
+                CameraControllerTool.createCameraController_perspectiveCamera(state^);
+              let (state, _) =
+                CameraControllerTool.createCameraController_perspectiveCamera(state);
+              state
+              |> CameraControllerTool.getCurrentCameraController
+              |> expect == cameraController1
+            }
+          );
+          describe(
+            "contract check",
+            () =>
+              test(
+                "current camera should exist",
+                () =>
+                  expect(() => state^ |> CameraControllerTool.getCurrentCameraController |> ignore)
+                  |> toThrowMessage("should has at least one camera")
+              )
+          )
+        }
       )
     }
   );
