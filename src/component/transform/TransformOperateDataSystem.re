@@ -13,22 +13,22 @@ let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 
 let getVector3DataIndex = (index: int) => index * getVector3DataSize();
 
-let setLocalPositionTypeArr =
+/* let setLocalPositionTypeArr =
   [@bs]
   (
     (index: int, position: Js.Array.t(float), localPositions: Float32Array.t) =>
-      setFloat3(index, position, localPositions)
-  );
+      setFloat3(getVector3DataIndex(index), position, localPositions)
+  ); */
 
 let setLocalToWorldMatricesTypeArr =
   [@bs]
   (
     (index: int, mat: Js.Array.t(float), localToWorldMatrices: Float32Array.t) =>
-      setFloat16(index, mat, localToWorldMatrices)
+      setFloat16(getMatrix4DataIndex(index), mat, localToWorldMatrices)
   );
 
 let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
-  getFloat16(index, localToWorldMatrices);
+  getFloat16(getMatrix4DataIndex(index), localToWorldMatrices);
 
 let setPosition =
     (

@@ -25,14 +25,14 @@ let _transform = ({localToWorldMatrices, localPositions} as transformData, dirty
          | Some(parent) =>
            [@bs]
            setLocalToWorldMatricesTypeArr(
-             getMatrix4DataIndex(index),
+             index,
              multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
              localToWorldMatrices
            )
            |> ignore
          | None =>
            [@bs]
-           setLocalToWorldMatricesTypeArr(getMatrix4DataIndex(index), mat, localToWorldMatrices)
+           setLocalToWorldMatricesTypeArr(index, mat, localToWorldMatrices)
            |> ignore
          }
        }

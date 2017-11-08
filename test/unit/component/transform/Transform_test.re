@@ -438,14 +438,10 @@ let _ =
             () => {
               let (state, _, _, _) = _prepareOne();
               let len1 =
-                state
-                |> getData
-                |> ((transformData) => Js.Array.length(transformData.dirtyList));
+                state |> getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
               let state = state |> update;
               let len2 =
-                state
-                |> getData
-                |> ((transformData) => Js.Array.length(transformData.dirtyList));
+                state |> getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
               (len1, len2) |> expect == (1, 0)
             }
           )
@@ -460,6 +456,21 @@ let _ =
               let (state, gameObject) = createGameObject(state^);
               let transform = state |> getGameObjectTransformComponent(gameObject);
               state |> getTransformGameObject(transform) |> expect == gameObject
+            }
+          )
+      );
+      describe(
+        "fix bug",
+        () =>
+          test(
+            "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
+            () => {
+              open GameObject;
+              let (state, transform1) = createTransform(state^);
+              let (state, transform2) = createTransform(state);
+
+              TransformTool.getLocalToWorldMatrix(transform2, state)
+              |> expect == TransformTool.getDefaultLocalToWorldMatrix()
             }
           )
       )
