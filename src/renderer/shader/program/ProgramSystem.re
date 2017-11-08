@@ -99,9 +99,14 @@ let use = (gl, shaderIndexStr: string, state: StateDataType.state) =>
   switch (getProgram(shaderIndexStr, state)) {
   | None => ExceptionHandlerSystem.throwMessage("program should exist")
   | Some(program) =>
-    /* todo optimize: judge lastUsedProgram  */
-    useProgram(program, gl);
-    program
+    let data = _getProgramData(state);
+    switch data.lastUsedProgram {
+    | Some(lastUsedProgram) when program === lastUsedProgram => state
+    | _ =>
+      data.lastUsedProgram = Some(program);
+      useProgram(program, gl);
+      state |> GLSLSenderSystem.disableVertexAttribArray(gl)
+    }
   };
 
-let initData = () => {programMap: HashMapSystem.createEmpty()};
+let initData = () => {programMap: HashMapSystem.createEmpty(), lastUsedProgram: None};
