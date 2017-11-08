@@ -45,3 +45,15 @@ let createCameraController_perspectiveCamera = (state) => {
   let state = state |> setCameraControllerPerspectiveCamera(cameraController);
   (state, cameraController)
 };
+
+let createCameraGameObject = (sandbox, state) => {
+  open GameObject;
+  open CameraController;
+  open Sinon;
+  let (state, cameraController) = createCameraController_perspectiveCamera(state);
+  let (state, gameObject) = state |> createGameObject;
+  let state =
+    state
+    |> addGameObjectCameraControllerComponent(gameObject, cameraController);
+  (state, gameObject, getGameObjectTransformComponent(gameObject, state), cameraController)
+};
