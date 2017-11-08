@@ -21,12 +21,8 @@ let _ =
           let (state, gameObject1, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
           let (state, gameObject2, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
           let render = (state: StateDataType.state) =>
-            state
-            |> GetRenderListJobSystem.getJob(
-                 RenderJobsTool.buildConfigData(),
-                 [@bs] DeviceManagerSystem.getGL(state)
-               );
-          let state = RenderJobsTool.setFakeGl(sandbox, state);
+            state |> GetRenderListJobTool.getJob(RenderJobsTool.buildConfigData());
+          let state = RenderJobsTool.passGl(sandbox, state);
           let state = state |> RenderJobsTool.initSystemAndRender |> render;
           state.renderData.renderList |> expect == Some([|gameObject1, gameObject2|])
         }

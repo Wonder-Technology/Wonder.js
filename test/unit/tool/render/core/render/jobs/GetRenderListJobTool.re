@@ -1,0 +1,1 @@
+let getJob = (configData, state) => GetRenderListJobSystem.getJob(configData, [@bs]DeviceManagerSystem.getGL(state), state);

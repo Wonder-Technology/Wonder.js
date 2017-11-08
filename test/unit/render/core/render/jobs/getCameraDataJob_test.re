@@ -24,12 +24,8 @@ let _ =
           let state = state |> Transform.setTransformLocalPosition(transform2, (1., 2., 3.));
           DebugUtils.log(transform2) |> ignore;
           let render = (state: StateDataType.state) =>
-            state
-            |> GetCameraDataJobSystem.getJob(
-                 RenderJobsTool.buildConfigData(),
-                 [@bs] DeviceManagerSystem.getGL(state)
-               );
-          let state = RenderJobsTool.setFakeGl(sandbox, state);
+            state |> GetCameraDataJobTool.getJob(RenderJobsTool.buildConfigData());
+          let state = RenderJobsTool.passGl(sandbox, state);
           let state =
             state |> RenderJobsTool.initSystemAndRender |> RenderJobsTool.updateSystem |> render;
           state.renderData.cameraData
