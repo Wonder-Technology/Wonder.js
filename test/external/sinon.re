@@ -57,7 +57,7 @@ let createMethodStub: (sandbox, obj, string) => stub = [%bs.raw
 let createMethodStubWithJsObjSandbox = (sandbox, obj, string) =>
   createMethodStub(refJsObjToSandbox(sandbox^), obj, string);
 
-let setReturn = (returnVal, stub: stub) : stub => stubToJsObj(stub)##returns(returnVal);
+let returns = (returnVal, stub: stub) : stub => stubToJsObj(stub)##returns(returnVal);
 
 let withOneArg = (arg, stub: stub) : stub => stubToJsObj(stub)##withArgs(arg);
 

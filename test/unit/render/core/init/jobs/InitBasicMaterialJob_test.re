@@ -72,7 +72,7 @@ let _ =
                     InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let array_buffer = 1;
                   let buffer = Obj.magic(10);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(buffer);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
                   let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                   let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =
@@ -152,7 +152,7 @@ let _ =
                     InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let element_array_buffer = 5;
                   let buffer = Obj.magic(10);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(buffer);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
                   let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                   let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =

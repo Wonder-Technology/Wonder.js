@@ -27,7 +27,7 @@ let _ =
           let _prepareForUseProgram = (sandbox, state) => {
             let state = _prepare(sandbox, state);
             let program = Obj.magic(1);
-            let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(program);
+            let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
             let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
             let state =
               state
@@ -120,7 +120,7 @@ let _ =
                   let state = _prepare(sandbox, state^);
                   let array_buffer = 1;
                   let buffer = Obj.magic(10);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(buffer);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
                   let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =
                     state
@@ -279,7 +279,7 @@ let _ =
                     let element_array_buffer = 1;
                     let buffer = Obj.magic(10);
                     let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                    createBuffer |> onCall(1) |> setReturn(buffer) |> ignore;
+                    createBuffer |> onCall(1) |> returns(buffer) |> ignore;
                     let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                     let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =

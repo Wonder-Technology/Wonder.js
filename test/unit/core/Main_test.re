@@ -70,7 +70,7 @@ let _ =
                             "querySelectorAll"
                           )
                           |> withOneArg("#a")
-                          |> setReturn([canvasDom])
+                          |> returns([canvasDom])
                           |> ignore
                         }
                       );

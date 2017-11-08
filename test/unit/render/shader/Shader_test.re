@@ -51,7 +51,7 @@ let _ =
               let (state, _, _, material) =
                 InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
               let program = Obj.magic(100);
-              let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(program);
+              let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
               let state =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
@@ -128,15 +128,15 @@ let _ =
                           let createShader =
                             createEmptyStubWithJsObjSandbox(sandbox)
                             |> onCall(0)
-                            |> setReturn(shader1)
+                            |> returns(shader1)
                             |> onCall(1)
-                            |> setReturn(shader2);
+                            |> returns(shader2);
                           let getShaderParameter =
                             createEmptyStubWithJsObjSandbox(sandbox)
                             |> withTwoArgs(shader1, compile_status)
-                            |> setReturn(Js.false_)
+                            |> returns(Js.false_)
                             |> withTwoArgs(shader2, compile_status)
-                            |> setReturn(Js.false_);
+                            |> returns(Js.false_);
                           let getShaderInfoLog = createEmptyStubWithJsObjSandbox(sandbox);
                           let log =
                             createMethodStubWithJsObjSandbox(sandbox, Console.console, "log");
@@ -218,10 +218,10 @@ let _ =
                               let getProgramParameter =
                                 createEmptyStubWithJsObjSandbox(sandbox)
                                 |> withTwoArgs(matchAny, link_status)
-                                |> setReturn(Js.false_);
+                                |> returns(Js.false_);
                               let programInfo = "err";
                               let getProgramInfoLog =
-                                createEmptyStubWithJsObjSandbox(sandbox) |> setReturn(programInfo);
+                                createEmptyStubWithJsObjSandbox(sandbox) |> returns(programInfo);
                               let state =
                                 state
                                 |> FakeGlTool.setFakeGl(
