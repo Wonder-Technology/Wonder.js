@@ -17,7 +17,7 @@ let getWorldToCameraMatrix = (cameraController, state: StateDataType.state) =>
 let getPMatrix = (cameraController, state: StateDataType.state) =>
   CameraControllerSystem.getPMatrix(cameraController, state);
 
-let setWorldToCameraMatrixCacheMap =
+/* let setWorldToCameraMatrixCacheMap =
     (cameraController, matrix: ArraySystem.t(float), state: StateDataType.state) => {
   HashMapSystem.set(
     Js.Int.toString(cameraController),
@@ -26,7 +26,7 @@ let setWorldToCameraMatrixCacheMap =
   )
   |> ignore;
   state
-};
+}; */
 
 let init = (state: StateDataType.state) => CameraControllerSystem.init(state);
 

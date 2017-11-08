@@ -102,8 +102,8 @@ let getChildren = (transform: transform, state: StateDataType.state) =>
   getTransformData(state) |> unsafeGetChildren(Js.Int.toString(transform)) |> Js.Array.copy;
 
 let update = (state: StateDataType.state) => {
-  TransformUpdateSystem.update(getTransformData(state)) |> ignore;
-  state
+  TransformUpdateSystem.update(getTransformData(state));
+  state |> cleanIsTransformMap
 };
 
 let getLocalPosition = (transform: transform, state: StateDataType.state) =>
@@ -119,6 +119,7 @@ let setLocalPosition = (transform: transform, localPosition: position, state: St
   )
   |> ignore;
   addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
+  markIsTransform(transform, transformData.isTransformMap);
   state
 };
 
@@ -144,14 +145,19 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   )
   |> ignore;
   addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
+  markIsTransform(transform, transformData.isTransformMap);
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getLocalToWorldMatrix(
-    transform,
-    getTransformData(state).localToWorldMatrices
-  );
+let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) => {
+  let data =
+    TransformOperateDataSystem.getLocalToWorldMatrix(
+      transform,
+      getTransformData(state).localToWorldMatrices
+    );
+  isTransform(transform, getTransformData(state).isTransformMap) ?
+    CacheType.Cache(data) : CacheType.New(data)
+};
 
 let init = (state: StateDataType.state) => update(state);
 
@@ -174,6 +180,7 @@ let initData = (state: StateDataType.state) => {
         /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
         parentMap: HashMapSystem.createEmpty(),
         childMap: HashMapSystem.createEmpty(),
+        isTransformMap: HashMapSystem.createEmpty(),
         gameObjectMap: HashMapSystem.createEmpty(),
         /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: HashMapSystem.createEmpty () */

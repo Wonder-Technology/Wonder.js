@@ -2,6 +2,8 @@ open StateDataType;
 
 open GlType;
 
+open CacheType;
+
 open Gl;
 
 open GlslSenderStateUtils;
@@ -27,12 +29,14 @@ let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.
     state
 };
 
-/* todo refactor */
 let getModelMMatrixData = (uid: string, state: StateDataType.state) =>
   TransformSystem.getLocalToWorldMatrix(
     Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state)),
     state
   );
 
-let sendMatrix4 = (gl, pos: int, data: Js.Array.t(float)) =>
-  uniformMatrix4fv(pos, Js.false_, data, gl);
+let sendMatrix4 = (gl, pos: int, data: cache(Js.Array.t(float))) =>
+  switch data {
+  | Cache(data) => ()
+  | New(data) => uniformMatrix4fv(pos, Js.false_, data, gl)
+  };

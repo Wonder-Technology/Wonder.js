@@ -8,6 +8,8 @@ type transformParentMap = Js.Dict.t(Js.undefined(transform));
 
 type transformChildMap = Js.Dict.t(array(transform));
 
+type transformIsTransformMap = Js.Dict.t(bool);
+
 /* type originToMoveIndexMap = Js.Dict.t int; */
 /* type moveToOriginIndexMap = Js.Dict.t int; */
 type transformDirtyList = array(int);
@@ -21,6 +23,7 @@ type transformData = {
   mutable localPositions: Js.Typed_array.Float32Array.t,
   mutable parentMap: transformParentMap,
   mutable childMap: transformChildMap,
+  mutable isTransformMap: transformIsTransformMap,
   mutable gameObjectMap,
   /* mutable originToMoveIndexMap: originToMoveIndexMap,
      mutable moveToOriginIndexMap: moveToOriginIndexMap */

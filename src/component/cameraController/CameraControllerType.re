@@ -15,7 +15,7 @@ and cameraControllerData = {
   mutable index: int,
   mutable cameraArray: array(cameraController),
   mutable dirtyList: cameraControllerDirtyList,
-  mutable worldToCameraMatrixCacheMap,
+  /* mutable worldToCameraMatrixCacheMap, */
   mutable pMatrixMap,
   mutable gameObjectMap,
   mutable updateCameraFuncMap,

@@ -29,12 +29,11 @@ let getCurrentCameraController = (state: StateDataType.state) => {
       )
   );
   let {cameraArray} = getCameraControllerData(state);
-  ArraySystem.get(0, cameraArray);
+  ArraySystem.get(0, cameraArray)
 };
 
-let _clearCache = (cameraControllerData: cameraControllerData) =>
-  cameraControllerData.worldToCameraMatrixCacheMap = HashMapSystem.createEmpty();
-
+/* let _clearCache = (cameraControllerData: cameraControllerData) =>
+   cameraControllerData.worldToCameraMatrixCacheMap = HashMapSystem.createEmpty(); */
 let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraControllerData) =>
   PerspectiveCameraSystem.init(dirtyIndex, cameraControllerData);
 
@@ -49,19 +48,19 @@ let init = (state: StateDataType.state) => {
     |> Js.Array.forEach(
          (dirtyIndex) => _initCameraController(dirtyIndex, cameraControllerData) |> ignore
        );
-    cameraControllerData |> clearDirtyList |> ignore;
+    cameraControllerData |> cleanDirtyList |> ignore;
     state
-    |> ensureCheck(
-         (state) =>
-           Contract.Operators.(
-             test(
-               "should has no cache",
-               () =>
-                 HashMapSystem.length(getCameraControllerData(state).worldToCameraMatrixCacheMap)
-                 == 0
-             )
+  /* |> ensureCheck(
+       (state) =>
+         Contract.Operators.(
+           test(
+             "should has no cache",
+             () =>
+               HashMapSystem.length(getCameraControllerData(state).worldToCameraMatrixCacheMap)
+               == 0
            )
-       )
+         )
+     ) */
   }
 };
 
@@ -103,7 +102,8 @@ let update = (state: StateDataType.state) => {
     dirtyList
     |> ArraySystem.removeDuplicateItems
     |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
-    cameraControllerData |> clearDirtyList |> _clearCache |> ignore;
+    /* cameraControllerData |> cleanDirtyList |> _clearCache |> ignore; */
+    cameraControllerData |> cleanDirtyList |> ignore;
     state
   }
 };
@@ -125,17 +125,27 @@ let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateD
     }
   };
 
-let getWorldToCameraMatrix =
-  CacheUtils.memorizeIntState(
-    [@bs]
-    (
-      (cameraController: cameraController, state: StateDataType.state) =>
-        _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert
-    ),
-    [@bs]
-    ((state: StateDataType.state) => getCameraControllerData(state).worldToCameraMatrixCacheMap)
+/* let getWorldToCameraMatrix =
+   CacheUtils.memorizeIntState(
+     [@bs]
+     (
+       (cameraController: cameraController, state: StateDataType.state) =>
+         _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert
+     ),
+     [@bs]
+     ((state: StateDataType.state) => getCameraControllerData(state).worldToCameraMatrixCacheMap)
+   ); */
+/* todo test remove cache */
+let getWorldToCameraMatrix = (cameraController: cameraController, state: StateDataType.state) =>
+  CacheUtils.mapDataInCacheType(
+    _getCameraToWorldMatrix(cameraController, state),
+    [@bs] ((data) => data |> Matrix4System.invert)
   );
 
+/* switch (_getCameraToWorldMatrix(cameraController, state)) {
+   | CacheType.Cache(data) => CacheType.Cache(data |> Matrix4System.invert)
+   | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
+   }; */
 let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   HashMapSystem.unsafeGet(
     Js.Int.toString(cameraController),
@@ -160,7 +170,7 @@ let initData = () => {
   index: 0,
   cameraArray: ArraySystem.createEmpty(),
   dirtyList: ArraySystem.createEmpty(),
-  worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(),
+  /* worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(), */
   pMatrixMap: HashMapSystem.createEmpty(),
   gameObjectMap: HashMapSystem.createEmpty(),
   updateCameraFuncMap: HashMapSystem.createEmpty(),

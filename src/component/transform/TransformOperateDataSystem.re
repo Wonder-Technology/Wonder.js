@@ -14,12 +14,11 @@ let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 let getVector3DataIndex = (index: int) => index * getVector3DataSize();
 
 /* let setLocalPositionTypeArr =
-  [@bs]
-  (
-    (index: int, position: Js.Array.t(float), localPositions: Float32Array.t) =>
-      setFloat3(getVector3DataIndex(index), position, localPositions)
-  ); */
-
+   [@bs]
+   (
+     (index: int, position: Js.Array.t(float), localPositions: Float32Array.t) =>
+       setFloat3(getVector3DataIndex(index), position, localPositions)
+   ); */
 let setLocalToWorldMatricesTypeArr =
   [@bs]
   (
@@ -54,3 +53,20 @@ let setPosition =
       localPositions
     )
   };
+
+  /* todo test */
+let isTransform = (transform: transform, isTransformMap) =>
+  switch (isTransformMap |> HashMapSystem.get(Js.Int.toString(transform))) {
+  | None => false
+  | Some(isTransform) => isTransform == true
+  };
+
+let markIsTransform = (transform: transform, isTransformMap) => {
+  isTransformMap |> HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
+  ()
+};
+
+let cleanIsTransformMap = (state:StateDataType.state) => {
+ TransformStateUtils.getTransformData(state).isTransformMap = HashMapSystem.createEmpty();
+  state;
+};

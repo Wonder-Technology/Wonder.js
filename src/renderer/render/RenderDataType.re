@@ -1,6 +1,8 @@
+open CacheType;
+
 type renderCameraData ={
-    vMatrix:array(float),
-    pMatrix:array(float)
+    vMatrix:cache(array(float)),
+    pMatrix:cache(array(float))
 };
 
 type renderData = {
