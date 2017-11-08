@@ -52,7 +52,7 @@ let createState =
       shader_libs: convertShaderLibsToRecord(shader_libs)
     },
     viewData: {canvas: None, contextConfig: None},
-    initConfigData: {isTest: Some(false)},
+    initConfig: {isTest: Some(false)},
     deviceManagerData: {gl: None, colorWrite: None, clearColor: None},
     gameObjectData: GameObjectSystem.initData(),
     transformData: None,

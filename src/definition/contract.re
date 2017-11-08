@@ -4,7 +4,7 @@ open StateData;
 
 open Exception;
 
-let _getIsTest = (state: state) : bool => Js.Option.getExn(state.initConfigData.isTest);
+let _getIsTest = (state: state) : bool => Js.Option.getExn(state.initConfig.isTest);
 
 let _getIsTestFromStateData = (stateData: stateData) =>
   switch stateData.state {

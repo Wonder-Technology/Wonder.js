@@ -2,9 +2,9 @@ open StateUtils;
 
 open StateDataType;
 
-let getIsTest = (state: state) : bool => getOptionValueFromState(state.initConfigData.isTest);
+let getIsTest = (state: state) : bool => getOptionValueFromState(state.initConfig.isTest);
 
 let setIsTest = (~isTest: bool, state: state) => {
   ...state,
-  initConfigData: {isTest: Some(isTest)}
+  initConfig: {isTest: Some(isTest)}
 };

@@ -46,7 +46,7 @@ type viewData = {
   contextConfig: option(contextConfig)
 };
 
-type initConfigData = {isTest: option(bool)};
+type initConfig = {isTest: option(bool)};
 
 type colorRgba = (float, float, float, float);
 
@@ -224,7 +224,7 @@ and state = {
   bufferConfig: option(bufferConfig),
   renderConfig,
   viewData,
-  initConfigData,
+  initConfig,
   deviceManagerData,
   gameObjectData,
   mutable transformData: option(transformData),
