@@ -37,7 +37,8 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   );
-             let drawPointsFunc = GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
+             let drawPointsFunc =
+               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
              drawPointsFunc(gl);
              state
            }

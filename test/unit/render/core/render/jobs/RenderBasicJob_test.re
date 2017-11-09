@@ -240,103 +240,138 @@ let _ =
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
-            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 1., 2., 3., 1.|]
+            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 1., 2., 3., 1.|],
+            ~testFunc=
+              (_prepareSendUinformData) =>
+                test(
+                  "if not do any transform operation, should still send identity matrix value on the first send",
+                  () => {
+                    let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+                      _prepareSendUinformData(sandbox, state^);
+                    let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+                    let pos = 0;
+                    let getUniformLocation =
+                      GlslLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
+                    let state =
+                      state
+                      |> FakeGlTool.setFakeGl(
+                           FakeGlTool.buildFakeGl(
+                             ~sandbox,
+                             ~uniformMatrix4fv,
+                             ~getUniformLocation,
+                             ()
+                           )
+                         );
+                    let state =
+                      state
+                      |> RenderJobsTool.initSystemAndRender
+                      |> RenderJobsTool.updateSystem
+                      |> _render;
+                    uniformMatrix4fv
+                    |> expect
+                    |> toCalledWith([
+                         pos,
+                         Obj.magic(Js.false_),
+                         Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
+                       ])
+                  }
+                ),
+            ()
           );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_vMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
-            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-10.), (-2.), (-3.), 1.|]
+            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-10.), (-2.), (-3.), 1.|],
+            ()
           );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_pMatrix",
             (gameObjectTransform, cameraTransform, cameraController, state) => state,
-            CameraControllerTool.getPMatrixOfCreateCameraControllerPerspectiveCamera()
+            CameraControllerTool.getPMatrixOfCreateCameraControllerPerspectiveCamera(),
+            ()
           )
         }
       );
-      describe
-        (
-          "draw",
-          () =>
-            describe(
-              "if geometry has index buffer, bind index buffer and drawElements",
-              () => {
-                let _prepareForDrawElements = (sandbox, state) => {
-                  let (state, _, geometry, _, _) =
-                    RenderJobsTool.prepareGameObject(sandbox, state);
-                  let (state, _, _, _) =
-                    CameraControllerTool.createCameraGameObject(sandbox, state);
-                  (state, geometry)
-                };
-                test(
-                  "bind index buffer",
-                  () => {
-                    let state = _prepare(sandbox, state^);
-                    let element_array_buffer = 1;
-                    let buffer = Obj.magic(10);
-                    let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                    createBuffer |> onCall(1) |> returns(buffer) |> ignore;
-                    let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                    let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-                    let state =
-                      state
-                      |> FakeGlTool.setFakeGl(
-                           FakeGlTool.buildFakeGl(
-                             ~sandbox,
-                             ~element_array_buffer,
-                             ~createBuffer,
-                             ~bindBuffer,
-                             ~drawElements,
-                             ()
-                           )
-                         );
-                    let state = state |> RenderJobsTool.initSystemAndRender;
-                    let bindIndexBufferCallCountAfterInit =
-                      bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                    let state = state |> _render;
-                    let bindIndexBufferCallCountAfterRender =
-                      bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                    bindIndexBufferCallCountAfterRender
-                    |> expect == bindIndexBufferCallCountAfterInit
-                    + 1
-                  }
-                );
-                test(
-                  "drawElements",
-                  () => {
-                    let (state, geometry) = _prepareForDrawElements(sandbox, state^);
-                    let triangles = 1;
-                    let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-                    let state =
-                      state
-                      |> FakeGlTool.setFakeGl(
-                           FakeGlTool.buildFakeGl(~sandbox, ~triangles, ~drawElements, ())
-                         );
-                    let state = state |> RenderJobsTool.initSystemAndRender;
-                    let state = state |> _render;
-                    drawElements
-                    |> withFourArgs(
-                         triangles,
-                         GeometryTool.getIndicesCount(geometry, state),
-                         GeometryTool.getIndexType(state),
-                         GeometryTool.getIndexTypeSize(state) * 0
-                       )
-                    |> expect
-                    |> toCalledOnce
-                  }
-                )
-              }
-            )
-        )
-        /* test
-            ("else, drawArrays",
-            (
+      describe(
+        "draw",
+        () =>
+          describe(
+            "if geometry has index buffer, bind index buffer and drawElements",
             () => {
-           todo test
-            })
-            ); */
+              let _prepareForDrawElements = (sandbox, state) => {
+                let (state, _, geometry, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
+                let (state, _, _, _) = CameraControllerTool.createCameraGameObject(sandbox, state);
+                (state, geometry)
+              };
+              test(
+                "bind index buffer",
+                () => {
+                  let state = _prepare(sandbox, state^);
+                  let element_array_buffer = 1;
+                  let buffer = Obj.magic(10);
+                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  createBuffer |> onCall(1) |> returns(buffer) |> ignore;
+                  let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(
+                           ~sandbox,
+                           ~element_array_buffer,
+                           ~createBuffer,
+                           ~bindBuffer,
+                           ~drawElements,
+                           ()
+                         )
+                       );
+                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let bindIndexBufferCallCountAfterInit =
+                    bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                  let state = state |> _render;
+                  let bindIndexBufferCallCountAfterRender =
+                    bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                  bindIndexBufferCallCountAfterRender
+                  |> expect == bindIndexBufferCallCountAfterInit
+                  + 1
+                }
+              );
+              test(
+                "drawElements",
+                () => {
+                  let (state, geometry) = _prepareForDrawElements(sandbox, state^);
+                  let triangles = 1;
+                  let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(~sandbox, ~triangles, ~drawElements, ())
+                       );
+                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let state = state |> _render;
+                  drawElements
+                  |> withFourArgs(
+                       triangles,
+                       GeometryTool.getIndicesCount(geometry, state),
+                       GeometryTool.getIndexType(state),
+                       GeometryTool.getIndexTypeSize(state) * 0
+                     )
+                  |> expect
+                  |> toCalledOnce
+                }
+              )
+            }
+          )
+      )
+      /* test
+          ("else, drawArrays",
+          (
+          () => {
+         todo test
+          })
+          ); */
     }
   );

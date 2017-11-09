@@ -8,8 +8,7 @@ let getCameraVMatrixDataFromState = (state: StateDataType.state) => _getCameraDa
 
 let getCameraPMatrixDataFromState = (state: StateDataType.state) => _getCameraData(state).pMatrix;
 
-let getRenderListFromState = (state: StateDataType.state) =>
-state.renderData.renderList;
+let getRenderListFromState = (state: StateDataType.state) => state.renderData.renderList;
 
 let setRenderList = (renderList, state: StateDataType.state) =>
   _getRenderData(state).renderList = (
@@ -21,3 +20,12 @@ let setRenderList = (renderList, state: StateDataType.state) =>
 
 let setCameraData = (cameraData, state: StateDataType.state) =>
   _getRenderData(state).cameraData = cameraData;
+
+let isFirstRender = (state: StateDataType.state) => _getRenderData(state).isFirstRender == true;
+
+let markIsNotFirstRender = (state: StateDataType.state) => {
+  _getRenderData(state).isFirstRender = false;
+  state
+};
+
+let initData = () => {isFirstRender: true, renderList: None, cameraData: None};

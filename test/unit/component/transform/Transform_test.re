@@ -1,7 +1,5 @@
 open Transform;
 
-open TransformTool;
-
 open Jest;
 
 let _ =
@@ -92,14 +90,14 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  getData(state) |> ((data) => expect(data.index) == 1)
+                  TransformTool.getData(state) |> ((data) => expect(data.index) == 1)
                 }
               )
           )
         }
       );
       describe(
-        "init",
+        "TransformTool.init",
         () =>
           test(
             "update transform",
@@ -111,7 +109,7 @@ let _ =
                 state
                 |> setTransformLocalPosition(parent, pos)
                 |> setTransformParent(Js.Nullable.return(parent), child);
-              let state = state |> init;
+              let state = state |> TransformTool.init;
               state |> getTransformPosition(child) |> expect == pos
             }
           )
@@ -143,8 +141,8 @@ let _ =
                     state
                     |> setTransformLocalPosition(parent, pos)
                     |> setTransformParent(Js.Nullable.return(parent), child)
-                    |> update;
-                  state |> _judgeOneToOne((parent, child), (pos, pos), (getDefaultPosition(), pos))
+                    |> TransformTool.update;
+                  state |> _judgeOneToOne((parent, child), (pos, pos), (TransformTool.getDefaultPosition(), pos))
                 }
               );
               test(
@@ -165,12 +163,12 @@ let _ =
                     state
                     |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
-                  let state = update(state);
+                  let state = TransformTool.update(state);
                   state
                   |> _judgeOneToTwo(
                        (parent, child1, child2),
                        (pos1, pos1),
-                       (getDefaultPosition(), pos1),
+                       (TransformTool.getDefaultPosition(), pos1),
                        (pos2, add(Float, pos1, pos2))
                      )
                 }
@@ -192,7 +190,7 @@ let _ =
                       |> setTransformLocalPosition(parent, pos)
                       |> setTransformParent(Js.Nullable.return(parent), child);
                     let state =
-                      state |> update |> setTransformParent(Js.Nullable.null, child) |> update;
+                      state |> TransformTool.update |> setTransformParent(Js.Nullable.null, child) |> TransformTool.update;
                     (state, parent, child, pos)
                   };
                   test(
@@ -210,7 +208,7 @@ let _ =
                       |> _judgeOneToOne(
                            (parent, child),
                            (pos, pos),
-                           (getDefaultPosition(), getDefaultPosition())
+                           (TransformTool.getDefaultPosition(), TransformTool.getDefaultPosition())
                          )
                     }
                   )
@@ -233,12 +231,12 @@ let _ =
                     |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
                   let state =
-                    state |> update |> setTransformParent(Js.Nullable.null, child2) |> update;
+                    state |> TransformTool.update |> setTransformParent(Js.Nullable.null, child2) |> TransformTool.update;
                   state
                   |> _judgeOneToTwo(
                        (parent, child1, child2),
                        (pos1, pos1),
-                       (getDefaultPosition(), pos1),
+                       (TransformTool.getDefaultPosition(), pos1),
                        (pos2, pos2)
                      )
                 }
@@ -259,11 +257,11 @@ let _ =
                     |> setTransformParent(Js.Nullable.return(parent), child);
                   let state =
                     state
-                    |> update
+                    |> TransformTool.update
                     |> setTransformParent(Js.Nullable.return(parent), child)
-                    |> update;
+                    |> TransformTool.update;
                   state |> getTransformParent(child) |> expect == Js.Nullable.return(parent)
-                  /* state |> _judgeOneToOne (parent, child) (pos, pos) (getDefaultPosition (), pos) */
+                  /* state |> _judgeOneToOne (parent, child) (pos, pos) (TransformTool.getDefaultPosition (), pos) */
                 }
               );
               test(
@@ -277,7 +275,7 @@ let _ =
                   let state =
                     setTransformLocalPosition(parent1, pos1, state)
                     |> setTransformParent(Js.Nullable.return(parent1), child);
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   let state =
                     setTransformLocalPosition(parent2, pos2, state)
                     |> setTransformParent(Js.Nullable.return(parent2), child);
@@ -318,7 +316,7 @@ let _ =
               state
               |> setTransformLocalPosition(parent, pos1)
               |> setTransformLocalPosition(child, pos2);
-            let state = state |> update;
+            let state = state |> TransformTool.update;
             (state, parent, child, pos1, pos2)
           };
           test(
@@ -326,7 +324,7 @@ let _ =
             () => {
               let (state, parent, child, _, pos2) = prepare();
               let state = setTransformLocalPosition(parent, pos2, state);
-              let state = state |> update;
+              let state = state |> TransformTool.update;
               state
               |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
             }
@@ -336,7 +334,7 @@ let _ =
             () => {
               let (state, parent, child, pos1, _) = prepare();
               let state = setTransformLocalPosition(child, pos1, state);
-              let state = state |> update;
+              let state = state |> TransformTool.update;
               state
               |> _judgeOneToOne((parent, child), (pos1, pos1), (pos1, add(Float, pos1, pos1)))
             }
@@ -350,7 +348,7 @@ let _ =
             "default value should be (0.,0.,0.)",
             () => {
               let (state, transform) = createTransform(state^);
-              state |> getTransformPosition(transform) |> expect == getDefaultPosition()
+              state |> getTransformPosition(transform) |> expect == TransformTool.getDefaultPosition()
             }
           )
       );
@@ -372,9 +370,9 @@ let _ =
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
                   let state = setTransformLocalPosition(parent, pos1, state);
                   let state = setTransformLocalPosition(child, pos2, state);
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   let state = state |> setTransformPosition(parent, pos2);
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   state
                   |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
                 }
@@ -390,9 +388,9 @@ let _ =
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
                   let state = setTransformLocalPosition(parent, pos1, state);
                   let state = setTransformLocalPosition(child, pos2, state);
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   let state = state |> setTransformPosition(child, pos3);
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   state |> _judgeOneToOne((parent, child), (pos1, pos1), ((1., 1., 1.), pos3))
                 }
               )
@@ -400,16 +398,16 @@ let _ =
           )
       );
       describe(
-        "test before update",
+        "test before TransformTool.update",
         () => {
           describe(
-            "should get the last updated transform data",
+            "should get the last TransformTool.updated transform data",
             () =>
               test(
                 "test get position",
                 () => {
                   let (state, transform, pos1, pos2) = _prepareOne();
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   let state = setTransformPosition(transform, pos2, state);
                   state |> getTransformPosition(transform) |> expect == pos1
                 }
@@ -422,7 +420,7 @@ let _ =
                 "test get local position",
                 () => {
                   let (state, transform, _, pos2) = _prepareOne();
-                  let state = state |> update;
+                  let state = state |> TransformTool.update;
                   let state = setTransformLocalPosition(transform, pos2, state);
                   state |> getTransformLocalPosition(transform) |> expect == pos2
                 }
@@ -448,8 +446,8 @@ let _ =
                 |> setTransformLocalPosition(parent, pos)
                 |> setTransformParent(Js.Nullable.return(parent), child);
                 
-              /* let state = state |> init; */
-              let state = state |> update;
+              /* let state = state |> TransformTool.init; */
+              let state = state |> TransformTool.update;
               (getTransformPosition(child, state), getTransformPosition(parent, state)) |> expect == (Vector3System.add(Float, pos, pos), pos)
  
           })
@@ -459,10 +457,10 @@ let _ =
             () => {
               let (state, _, _, _) = _prepareOne();
               let len1 =
-                state |> getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
-              let state = state |> update;
+                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
+              let state = state |> TransformTool.update;
               let len2 =
-                state |> getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
+                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
               (len1, len2) |> expect == (1, 0)
             }
           )

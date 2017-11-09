@@ -65,6 +65,6 @@ let createState =
     glslLocationData: GLSLLocationSystem.initData(),
     glslSenderData: GLSLSenderSystem.initData(),
     glslChunkData: ShaderChunkSystem.initData(),
-    renderData: {renderList: None, cameraData: None}
+    renderData: RenderDataSystem.initData()
   }
 };
