@@ -31,11 +31,8 @@ let _ =
           |>
           expect == Some({
                       vMatrix:
-                        CacheType.New(
-                          CameraControllerTool.getWorldToCameraMatrix(cameraController2, state)
-                        ),
-                      pMatrix:
-                        CacheType.New(CameraControllerTool.getPMatrix(cameraController2, state))
+                        CameraControllerTool.getWorldToCameraMatrix(cameraController2, state),
+                      pMatrix: CameraControllerTool.getPMatrix(cameraController2, state)
                     })
         }
       )

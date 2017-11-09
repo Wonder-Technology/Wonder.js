@@ -18,7 +18,7 @@ and cameraControllerData = {
   /* mutable worldToCameraMatrixCacheMap, */
   mutable pMatrixMap,
   mutable gameObjectMap,
-  mutable dirtyMap: Js.Dict.t(bool),
+  /* mutable dirtyMap: Js.Dict.t(bool), */
   mutable updateCameraFuncMap,
   mutable perspectiveCameraData
 };

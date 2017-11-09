@@ -21,11 +21,4 @@ let setRenderList = (renderList, state: StateDataType.state) =>
 let setCameraData = (cameraData, state: StateDataType.state) =>
   _getRenderData(state).cameraData = cameraData;
 
-let isFirstRender = (state: StateDataType.state) => _getRenderData(state).isFirstRender == true;
-
-let markIsNotFirstRender = (state: StateDataType.state) => {
-  _getRenderData(state).isFirstRender = false;
-  state
-};
-
-let initData = () => {isFirstRender: true, renderList: None, cameraData: None};
+let initData = () => {renderList: None, cameraData: None};

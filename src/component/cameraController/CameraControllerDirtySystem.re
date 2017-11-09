@@ -8,12 +8,12 @@ let cleanDirtyList = (cameraControllerData: cameraControllerData) => {
   cameraControllerData
 };
 
+/* 
 let isDirty = (cameraController: cameraController, cameraControllerData: cameraControllerData) =>
   switch (cameraControllerData.dirtyMap |> HashMapSystem.get(Js.Int.toString(cameraController))) {
   | None => false
   | Some(dirty) => dirty == true
   };
-
 
 let updateDirtyMap = (cameraControllerData: cameraControllerData, dirtyList: array(int)) => {
   cameraControllerData.dirtyMap = DirtyUtils.convertDirtyListToDirtyMap(dirtyList);
@@ -23,4 +23,4 @@ let updateDirtyMap = (cameraControllerData: cameraControllerData, dirtyList: arr
 let cleanDirtyMap = (cameraControllerData: cameraControllerData) => {
   cameraControllerData.dirtyMap = HashMapSystem.createEmpty();
   ()
-};
+}; */

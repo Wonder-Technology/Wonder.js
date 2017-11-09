@@ -58,7 +58,6 @@ let render = (state: StateDataType.state) =>
                getRenderJobs(state)
              )
            )
-        |> RenderDataSystem.markIsNotFirstRender
       )
     )
   );

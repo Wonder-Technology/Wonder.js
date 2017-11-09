@@ -31,7 +31,7 @@ module JudgeSendUniformData = {
               () => {
                 let state = ref(StateSystem.createState());
                 beforeEach(() => state := RenderJobsTool.initWithRenderConfig());
-                test(
+                /* test(
                   "if cached, not send",
                   () => {
                     let (state, _, gameObjectTransform, cameraTransform, cameraController) =
@@ -60,9 +60,9 @@ module JudgeSendUniformData = {
                     let state = state |> RenderJobsTool.updateSystem |> _render;
                     uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 1
                   }
-                );
+                ); */
                 test(
-                  "else, send",
+                  "test send",
                   () => {
                     let (state, _, gameObjectTransform, cameraTransform, cameraController) =
                       _prepareSendUinformData(sandbox, state^);

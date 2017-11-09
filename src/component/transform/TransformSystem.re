@@ -162,9 +162,6 @@ let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =
     getTransformData(state).localToWorldMatrices
   );
 
-let isDirty = (transform: transform, state: StateDataType.state) =>
-  TransformDirtySystem.isDirty(transform, getTransformData(state));
-
 let init = (state: StateDataType.state) => {
   TransformUpdateSystem.update(getTransformData(state));
   state
@@ -192,8 +189,7 @@ let initData = (state: StateDataType.state) => {
         gameObjectMap: HashMapSystem.createEmpty(),
         /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
-        dirtyList: ArraySystem.createEmpty(),
-        dirtyMap: HashMapSystem.createEmpty()
+        dirtyList: ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
     );

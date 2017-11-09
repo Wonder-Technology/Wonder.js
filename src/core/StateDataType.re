@@ -24,8 +24,6 @@ open ShaderChunkType;
 
 open RenderDataType;
 
-open CacheType;
-
 open Js.Typed_array;
 
 type contextConfig = {
@@ -186,8 +184,8 @@ type executableJobFlags = (jobFlags, option(string));
 type uniformData;
 
 type uniformSendData = {
-  getArrayDataFunc: state => cache(array(float)),
-  sendArrayDataFunc: cache(array(float)) => unit
+  getArrayDataFunc: state => array(float),
+  sendArrayDataFunc: array(float) => unit
   /* sendFloat32DataFunc: float => unit;
      sendIntDataFunc: int => unit; */
 }

@@ -7,7 +7,7 @@ let _getCameraData = (state: StateDataType.state) =>
   | None => None
   | Some(currentCameraController) =>
     let transform = CameraControllerSystem.getTransform(currentCameraController, state);
-    RenderDataSystem.isFirstRender(state) ?
+    /* RenderDataSystem.isFirstRender(state) ?
       Some({
         vMatrix:
           CacheType.New(CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)),
@@ -24,6 +24,14 @@ let _getCameraData = (state: StateDataType.state) =>
           CameraControllerSystem.isDirty(currentCameraController, state) ?
             CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state)) :
             CacheType.Cache
+      }) */
+
+
+
+      Some({
+        vMatrix:
+          CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state),
+        pMatrix: CameraControllerSystem.getPMatrix(currentCameraController, state)
       })
   };
 

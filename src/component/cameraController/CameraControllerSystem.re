@@ -32,8 +32,6 @@ let getCurrentCameraController = (state: StateDataType.state) => {
   ArraySystem.get(0, cameraArray)
 };
 
-
-
 /* let _clearCache = (cameraControllerData: cameraControllerData) =>
    cameraControllerData.worldToCameraMatrixCacheMap = HashMapSystem.createEmpty(); */
 let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraControllerData) =>
@@ -98,24 +96,23 @@ let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => 
 let update = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let dirtyList = cameraControllerData.dirtyList;
-  switch (Js.Array.length(dirtyList)) {
-  | 0 => 
-  CameraControllerDirtySystem.cleanDirtyMap(cameraControllerData) |> ignore; 
-  state;
-  | _ =>
-    dirtyList
-    |> ArraySystem.removeDuplicateItems
-    |> CameraControllerDirtySystem.updateDirtyMap(cameraControllerData)
-    |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
-    /* cameraControllerData |> cleanDirtyList |> _clearCache |> ignore; */
-    cameraControllerData |> cleanDirtyList |> ignore;
-    state
-  }
+  /* switch (Js.Array.length(dirtyList)) {
+     | 0 =>
+     CameraControllerDirtySystem.cleanDirtyMap(cameraControllerData) |> ignore;
+     state;
+     | _ => */
+  dirtyList
+  |> ArraySystem.removeDuplicateItems
+  /* |> CameraControllerDirtySystem.updateDirtyMap(cameraControllerData) */
+  |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
+  /* cameraControllerData |> cleanDirtyList |> _clearCache |> ignore; */
+  cameraControllerData |> cleanDirtyList |> ignore;
+  state
+  /* } */
 };
 
-let isDirty = (cameraController: cameraController, state: StateDataType.state) =>
-  CameraControllerDirtySystem.isDirty(cameraController, getCameraControllerData(state));
-
+/* let isDirty = (cameraController: cameraController, state: StateDataType.state) =>
+   CameraControllerDirtySystem.isDirty(cameraController, getCameraControllerData(state)); */
 let getGameObject = (cameraController: cameraController, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     cameraController,
@@ -191,7 +188,7 @@ let initData = () => {
   /* worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(), */
   pMatrixMap: HashMapSystem.createEmpty(),
   gameObjectMap: HashMapSystem.createEmpty(),
-  dirtyMap: HashMapSystem.createEmpty(),
+  /* dirtyMap: HashMapSystem.createEmpty(), */
   updateCameraFuncMap: HashMapSystem.createEmpty(),
   perspectiveCameraData: PerspectiveCameraSystem.initData()
 };

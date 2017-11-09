@@ -102,10 +102,7 @@ let addAttributeSendData =
 
 let _getModelMMatrixData = (uid: string, state: StateDataType.state) => {
   let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state));
-  RenderDataSystem.isFirstRender(state) ?
-    CacheType.New(TransformSystem.getLocalToWorldMatrix(transform, state)) :
-    TransformSystem.isDirty(transform, state) ?
-      CacheType.New(TransformSystem.getLocalToWorldMatrix(transform, state)) : CacheType.Cache
+  TransformSystem.getLocalToWorldMatrix(transform, state)
 };
 
 let addUniformSendData =
