@@ -1,10 +1,20 @@
+open StateDataType;
+
 open Gl;
 
 open GLSLSenderSendDataSystem;
 
+open GlslSenderStateUtils;
+
 let bindIndexBuffer = (gl, buffer, state: StateDataType.state) => {
-  bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-  state
+  let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state);
+  switch lastSendElementArrayBuffer {
+  | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
+  | _ =>
+    data.lastSendElementArrayBuffer = Some(buffer);
+    bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+    state
+  }
 };
 
 let drawElement = (drawMode: int, type_: int, typeSize: int, indicesCount: int, gl) => {

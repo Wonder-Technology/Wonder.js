@@ -115,30 +115,7 @@ let _ =
             "send a_position",
             () => {
               test(
-                "bind array buffer",
-                () => {
-                  let state = _prepare(sandbox, state^);
-                  let array_buffer = 1;
-                  let buffer = Obj.magic(10);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
-                  let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~array_buffer,
-                           ~createBuffer,
-                           ~bindBuffer,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  bindBuffer |> expect |> toCalledWith([array_buffer, buffer])
-                }
-              );
-              test(
-                "attach buffer to attribute",
+                "if lastSendArrayBuffer === buffer, not send",
                 () => {
                   let state = _prepare(sandbox, state^);
                   let float = 1;
@@ -157,47 +134,45 @@ let _ =
                            ()
                          )
                        );
-                  let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  vertexAttribPointer
-                  |> expect
-                  |> toCalledWith([pos, 3, float, Obj.magic(Js.false_), 0, 0])
+                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let state = state |> _render;
+                  let state = state |> _render;
+                  vertexAttribPointer |> getCallCount |> expect == 1
                 }
               );
               describe(
-                "enable attribute",
+                "else",
                 () => {
                   test(
-                    "if already enabled since use this program, not enable",
+                    "bind array buffer",
                     () => {
                       let state = _prepare(sandbox, state^);
-                      let float = 1;
-                      let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
-                      let pos = 0;
-                      let getAttribLocation =
-                        GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                      let array_buffer = 1;
+                      let buffer = Obj.magic(10);
+                      let createBuffer =
+                        createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
+                      let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(
                                ~sandbox,
-                               ~float,
-                               ~enableVertexAttribArray,
-                               ~getAttribLocation,
+                               ~array_buffer,
+                               ~createBuffer,
+                               ~bindBuffer,
                                ()
                              )
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
-                      let state = state |> _render;
-                      let state = state |> _render;
-                      enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 1
+                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                      bindBuffer |> expect |> toCalledWith([array_buffer, buffer])
                     }
                   );
                   test(
-                    "else, enable",
+                    "attach buffer to attribute",
                     () => {
                       let state = _prepare(sandbox, state^);
                       let float = 1;
-                      let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
+                      let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
                       let pos = 0;
                       let getAttribLocation =
                         GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
@@ -207,26 +182,86 @@ let _ =
                              FakeGlTool.buildFakeGl(
                                ~sandbox,
                                ~float,
-                               ~enableVertexAttribArray,
+                               ~vertexAttribPointer,
                                ~getAttribLocation,
                                ()
                              )
                            );
-                      let state = state |> RenderJobsTool.initSystemAndRender;
-                      let state = state |> _render;
-                      let state = state |> GlslSenderTool.disableVertexAttribArray;
-                      let state = state |> _render;
-                      enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
+                      let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                      vertexAttribPointer
+                      |> expect
+                      |> toCalledWith([pos, 3, float, Obj.magic(Js.false_), 0, 0])
+                    }
+                  );
+                  describe(
+                    "enable attribute",
+                    () => {
+                      test(
+                        "if already enabled since use this program, not enable",
+                        () => {
+                          let state = _prepare(sandbox, state^);
+                          let float = 1;
+                          let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
+                          let pos = 0;
+                          let getAttribLocation =
+                            GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(
+                                   ~sandbox,
+                                   ~float,
+                                   ~enableVertexAttribArray,
+                                   ~getAttribLocation,
+                                   ()
+                                 )
+                               );
+                          let state = state |> RenderJobsTool.initSystemAndRender;
+                          let state = state |> _render;
+                          let state = state |> _render;
+                          enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 1
+                        }
+                      );
+                      test(
+                        "else, enable",
+                        () => {
+                          let state = _prepare(sandbox, state^);
+                          let float = 1;
+                          let enableVertexAttribArray = createEmptyStubWithJsObjSandbox(sandbox);
+                          let pos = 0;
+                          let getAttribLocation =
+                            GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                          let state =
+                            state
+                            |> FakeGlTool.setFakeGl(
+                                 FakeGlTool.buildFakeGl(
+                                   ~sandbox,
+                                   ~float,
+                                   ~enableVertexAttribArray,
+                                   ~getAttribLocation,
+                                   ()
+                                 )
+                               );
+                          let state = state |> RenderJobsTool.initSystemAndRender;
+                          let state = state |> _render;
+                          let state =
+                            state
+                            |> GlslSenderTool.disableVertexAttribArray
+                            |> GlslSenderTool.cleanLastSendArrayBuffer;
+                          let state = state |> _render;
+                          enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
+                        }
+                      )
+                      /* test
+                         ("differenc shader's vertexAttribHistory of the same attribute data pos are independent",
+                         (
+                         () => {
+                           todo test switch program
+                         })
+                         );
+                         */
                     }
                   )
-                  /* test
-                     ("differenc shader's vertexAttribHistory of the same attribute data pos are independent",
-                     (
-                     () => {
-                       todo test switch program
-                     })
-                     );
-                     */
                 }
               )
             }
@@ -306,37 +341,60 @@ let _ =
                 let (state, _, _, _) = CameraControllerTool.createCameraGameObject(sandbox, state);
                 (state, geometry)
               };
-              test(
+              describe(
                 "bind index buffer",
                 () => {
-                  let state = _prepare(sandbox, state^);
-                  let element_array_buffer = 1;
-                  let buffer = Obj.magic(10);
-                  let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                  createBuffer |> onCall(1) |> returns(buffer) |> ignore;
-                  let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~element_array_buffer,
-                           ~createBuffer,
-                           ~bindBuffer,
-                           ~drawElements,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender;
-                  let bindIndexBufferCallCountAfterInit =
-                    bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                  let state = state |> _render;
-                  let bindIndexBufferCallCountAfterRender =
-                    bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                  bindIndexBufferCallCountAfterRender
-                  |> expect == bindIndexBufferCallCountAfterInit
-                  + 1
+                  let _prepare = (state) => {
+                    let state = _prepare(sandbox, state);
+                    let element_array_buffer = 1;
+                    let buffer = Obj.magic(10);
+                    let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                    createBuffer |> onCall(1) |> returns(buffer) |> ignore;
+                    let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                    let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+                    let state =
+                      state
+                      |> FakeGlTool.setFakeGl(
+                           FakeGlTool.buildFakeGl(
+                             ~sandbox,
+                             ~element_array_buffer,
+                             ~createBuffer,
+                             ~bindBuffer,
+                             ~drawElements,
+                             ()
+                           )
+                         );
+                    let state = state |> RenderJobsTool.initSystemAndRender;
+                    (state, bindBuffer, element_array_buffer, buffer)
+                  };
+                  test(
+                    "if lastSendElementArrayBuffer === buffer, not bind",
+                    () => {
+                      let (state, bindBuffer, element_array_buffer, buffer) = _prepare(state^);
+                      let state = state |> _render;
+                      let bindIndexBufferCallCountBeforeSecondRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      let state = state |> _render;
+                      let bindIndexBufferCallCountAfterSecondRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      bindIndexBufferCallCountAfterSecondRender
+                      |> expect == bindIndexBufferCallCountBeforeSecondRender
+                    }
+                  );
+                  test(
+                    "else, bind",
+                    () => {
+                      let (state, bindBuffer, element_array_buffer, buffer) = _prepare(state^);
+                      let bindIndexBufferCallCountAfterInit =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      let state = state |> _render;
+                      let bindIndexBufferCallCountAfterRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      bindIndexBufferCallCountAfterRender
+                      |> expect == bindIndexBufferCallCountAfterInit
+                      + 1
+                    }
+                  )
                 }
               );
               test(

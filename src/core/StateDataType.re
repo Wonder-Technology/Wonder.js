@@ -196,7 +196,9 @@ and glslSenderData = {
   attributeSendDataMap: Js.Dict.t(array((state => state))),
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
   drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
-  mutable vertexAttribHistoryArray: array(bool)
+  mutable vertexAttribHistoryArray: array(bool),
+  mutable lastSendArrayBuffer: option(buffer),
+  mutable lastSendElementArrayBuffer: option(buffer)
 }
 and renderConfig = {
   jobHandleMap: Js.Dict.t(((executableJobFlags, webgl1Context, state) => state)),

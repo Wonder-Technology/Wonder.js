@@ -1,6 +1,11 @@
 let disableVertexAttribArray = (state: StateDataType.state) =>
   GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.getGl(state), state);
 
+let cleanLastSendArrayBuffer = (state: StateDataType.state) => {
+  GlslSenderStateUtils.getGLSLSenderData(state).lastSendArrayBuffer = None;
+  state
+};
+
 module JudgeSendUniformData = {
   let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
   let _prepareSendUinformData = (sandbox, state) => {
@@ -15,7 +20,8 @@ module JudgeSendUniformData = {
       cameraController
     )
   };
-  let testSendMatrix4 = (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
+  let testSendMatrix4 =
+      (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
     Jest.(
       Expect.(
         Expect.Operators.(

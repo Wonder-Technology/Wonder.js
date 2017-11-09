@@ -17,18 +17,22 @@ let getBufferSizeByType = (type_: string) =>
 
 /* todo optimize: judge last buffer(only when use vao?) */
 let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.state) => {
-  let {vertexAttribHistoryArray} = getGLSLSenderData(state);
-  bindBuffer(getArrayBuffer(gl), buffer, gl);
-  vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-  ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
-    {
-      enableVertexAttribArray(pos, gl);
-      Array.unsafe_set(vertexAttribHistoryArray, pos, true);
+  let {vertexAttribHistoryArray, lastSendArrayBuffer} as data = getGLSLSenderData(state);
+  switch lastSendArrayBuffer {
+  | Some(lastSendArrayBuffer) when lastSendArrayBuffer === buffer => state
+  | _ =>
+    data.lastSendArrayBuffer = Some(buffer);
+    bindBuffer(getArrayBuffer(gl), buffer, gl);
+    vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
+    ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
+      {
+        enableVertexAttribArray(pos, gl);
+        Array.unsafe_set(vertexAttribHistoryArray, pos, true);
+        state
+      } :
       state
-    } :
-    state
+  }
 };
-
 
 let sendMatrix4 = (gl, pos: int, data: cache(Js.Array.t(float))) =>
   switch data {
