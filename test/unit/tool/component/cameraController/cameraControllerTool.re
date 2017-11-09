@@ -45,9 +45,25 @@ let createCameraControllerPerspectiveCamera = (state) => {
   (state, cameraController)
 };
 
-let getPMatrixOfCreateCameraControllerPerspectiveCamera = () => [|
-  1.7320508075688776,0.,0.,0.,0.,1.7320508075688776,0.,0.,0.,0.,-1.0002000200020003,-1.,0.,0.,-0.2000200020002,0.
-|];
+let getPMatrixOfCreateCameraControllerPerspectiveCamera = () =>
+  Js.Typed_array.Float32Array.create([|
+    1.7320508075688776,
+    0.,
+    0.,
+    0.,
+    0.,
+    1.7320508075688776,
+    0.,
+    0.,
+    0.,
+    0.,
+    (-1.0002000200020003),
+    (-1.),
+    0.,
+    0.,
+    (-0.2000200020002),
+    0.
+  |]);
 
 let createCameraGameObject = (sandbox, state) => {
   open GameObject;

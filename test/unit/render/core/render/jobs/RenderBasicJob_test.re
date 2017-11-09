@@ -113,33 +113,33 @@ let _ =
         () =>
           describe(
             "send a_position",
-            () => {
-              test(
-                "if lastSendArrayBuffer === buffer, not send",
-                () => {
-                  let state = _prepare(sandbox, state^);
-                  let float = 1;
-                  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                  let pos = 0;
-                  let getAttribLocation =
-                    GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
-                  let state =
-                    state
-                    |> FakeGlTool.setFakeGl(
-                         FakeGlTool.buildFakeGl(
-                           ~sandbox,
-                           ~float,
-                           ~vertexAttribPointer,
-                           ~getAttribLocation,
-                           ()
-                         )
-                       );
-                  let state = state |> RenderJobsTool.initSystemAndRender;
-                  let state = state |> _render;
-                  let state = state |> _render;
-                  vertexAttribPointer |> getCallCount |> expect == 1
-                }
-              );
+            () =>
+              /* test(
+                   "if lastSendArrayBuffer === buffer, not send",
+                   () => {
+                     let state = _prepare(sandbox, state^);
+                     let float = 1;
+                     let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
+                     let pos = 0;
+                     let getAttribLocation =
+                       GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                     let state =
+                       state
+                       |> FakeGlTool.setFakeGl(
+                            FakeGlTool.buildFakeGl(
+                              ~sandbox,
+                              ~float,
+                              ~vertexAttribPointer,
+                              ~getAttribLocation,
+                              ()
+                            )
+                          );
+                     let state = state |> RenderJobsTool.initSystemAndRender;
+                     let state = state |> _render;
+                     let state = state |> _render;
+                     vertexAttribPointer |> getCallCount |> expect == 1
+                   }
+                 ); */
               describe(
                 "else",
                 () => {
@@ -244,10 +244,8 @@ let _ =
                                );
                           let state = state |> RenderJobsTool.initSystemAndRender;
                           let state = state |> _render;
-                          let state =
-                            state
-                            |> GlslSenderTool.disableVertexAttribArray;
-                            /* |> GlslSenderTool.cleanLastSendArrayBuffer; */
+                          let state = state |> GlslSenderTool.disableVertexAttribArray;
+                          /* |> GlslSenderTool.cleanLastSendArrayBuffer; */
                           let state = state |> _render;
                           enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
                         }
@@ -264,7 +262,6 @@ let _ =
                   )
                 }
               )
-            }
           )
       );
       describe(
@@ -275,7 +272,24 @@ let _ =
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
-            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 1., 2., 3., 1.|],
+            Js.Typed_array.Float32Array.create([|
+              1.,
+              0.,
+              0.,
+              0.,
+              0.,
+              1.,
+              0.,
+              0.,
+              0.,
+              0.,
+              1.,
+              0.,
+              1.,
+              2.,
+              3.,
+              1.
+            |]),
             ~testFunc=
               (_prepareSendUinformData) => {
                 test(
@@ -363,7 +377,24 @@ let _ =
             "u_vMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
-            [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-10.), (-2.), (-3.), 1.|],
+            Js.Typed_array.Float32Array.create([|
+              1.,
+              0.,
+              0.,
+              0.,
+              0.,
+              1.,
+              0.,
+              0.,
+              0.,
+              0.,
+              1.,
+              0.,
+              (-10.),
+              (-2.),
+              (-3.),
+              1.
+            |]),
             ()
           );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
