@@ -11,6 +11,14 @@ let _genereateShaderIndex = (state: StateDataType.state) => {
   (state, index)
 };
 
+let _getShaderIndex = (key: string, {shaderIndexMap}) => shaderIndexMap |> HashMapSystem.get(key);
+
+let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
+  shaderIndexMap |> HashMapSystem.set(key, shaderIndex);
+
+let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) =>
+  shaderLibDataArr |> Js.Array.joinWith("");
+
 let _init =
     (
       gl,
@@ -24,16 +32,30 @@ let _init =
       state: StateDataType.state
     ) => {
   let shaderData = _getShaderData(state);
-  let (state, shaderIndex) = _genereateShaderIndex(state);
-  let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
-  let program =
-    gl
-    |> ProgramSystem.createProgram
-    |> ProgramSystem.registerProgram(shaderIndex, state)
-    |> ProgramSystem.initShader(vsSource, fsSource, gl);
+  let materialIndexStr = Js.Int.toString(materialIndex);
+  let key = _buildShaderIndexMapKey(shaderLibDataArr);
+  let (shaderIndex, program) =
+    switch (_getShaderIndex(key, shaderData)) {
+    | None =>
+      let (state, shaderIndex) = _genereateShaderIndex(state);
+      _setShaderIndex(key, shaderIndex, shaderData) |> ignore;
+      let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
+      (
+        shaderIndex,
+        gl
+        |> ProgramSystem.createProgram
+        |> ProgramSystem.registerProgram(shaderIndex, state)
+        |> ProgramSystem.initShader(vsSource, fsSource, gl)
+      )
+    | Some(shaderIndex) => (
+        shaderIndex,
+        Js.Option.getExn(ProgramSystem.getProgram(Js.Int.toString(shaderIndex), state))
+      )
+    };
   state
   |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
        gl,
+       materialIndexStr,
        shaderIndex,
        geometryIndex,
        program,
@@ -42,6 +64,7 @@ let _init =
      )
   |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
        gl,
+       materialIndexStr,
        shaderIndex,
        geometryIndex,
        uid,
@@ -49,7 +72,7 @@ let _init =
        shaderLibDataArr,
        uniformLocationMap
      )
-  |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, shaderIndex, geometryIndex)
+  |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex)
   |> ignore;
   shaderIndex
 };
@@ -78,4 +101,7 @@ let initMaterialShader =
     state
   );
 
-let initData = () => {index: 0, shaderLibNameMap: HashMapSystem.createEmpty()};
+let initData = () => {
+  index: 0,
+  shaderIndexMap: HashMapSystem.createEmpty()
+};

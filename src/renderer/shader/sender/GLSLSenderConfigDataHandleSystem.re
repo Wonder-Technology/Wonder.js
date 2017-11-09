@@ -15,6 +15,7 @@ open GLSLSenderDrawSystem;
 let addAttributeSendData =
     (
       gl,
+      materialIndexStr: string,
       shaderIndex: int,
       geometryIndex: int,
       program: program,
@@ -29,12 +30,11 @@ let addAttributeSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).attributeSendDataMap
-            |> HashMapSystem.get(Js.Int.toString(shaderIndex))
+            |> HashMapSystem.get(materialIndexStr)
             |> assertNotExist
         )
       )
   );
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
   |> Js.Array.forEach(
@@ -94,8 +94,9 @@ let addAttributeSendData =
          }
      );
   getGLSLSenderData(state).attributeSendDataMap
-  |> HashMapSystem.set(shaderIndexStr, sendDataArr)
+  |> HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
@@ -110,6 +111,7 @@ let _getModelMMatrixData = (uid: string, state: StateDataType.state) => {
 let addUniformSendData =
     (
       gl,
+      materialIndexStr: string,
       shaderIndex: int,
       geometryIndex: int,
       uid: string,
@@ -126,12 +128,11 @@ let addUniformSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).uniformSendDataMap
-            |> HashMapSystem.get(Js.Int.toString(shaderIndex))
+            |> HashMapSystem.get(materialIndexStr)
             |> assertNotExist
         )
       )
   );
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
   |> Js.Array.forEach(
@@ -179,15 +180,17 @@ let addUniformSendData =
          }
      );
   getGLSLSenderData(state).uniformSendDataMap
-  |> HashMapSystem.set(shaderIndexStr, sendDataArr)
+  |> HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
 };
 
-let addDrawPointsFunc = (gl, shaderIndex: int, geometryIndex: int, state: StateDataType.state) => {
+let addDrawPointsFunc =
+    (gl, materialIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
   getGLSLSenderData(state).drawPointsFuncMap
   |> HashMapSystem.set(
-       Js.Int.toString(shaderIndex),
+       materialIndexStr,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
            GeometrySystem.getDrawMode(gl),

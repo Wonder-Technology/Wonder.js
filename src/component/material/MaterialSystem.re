@@ -44,7 +44,7 @@ let _initMaterialShader =
     (
       gl,
       materialIndex: int,
-      {material_shader}: shader,
+      {shader_libs}: material_shader,
       attributeLocationMap,
       uniformLocationMap,
       initShaderFuncTuple,
@@ -55,7 +55,6 @@ let _initMaterialShader =
   let shaderLibs = getShaderLibs(state);
   let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
   let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
-  let {name, shader_libs} = material_shader;
   let shaderIndex =
     ShaderSystem.initMaterialShader(
       gl,
@@ -72,7 +71,7 @@ let _initMaterialShader =
 };
 
 let initMaterialShaders =
-    (gl, materialShader: shader, initShaderFuncTuple, state: StateDataType.state) => {
+    (gl, {material_shader}: shader, initShaderFuncTuple, state: StateDataType.state) => {
   let attributeLocationMap = GLSLLocationSystem.createLocationMap();
   let uniformLocationMap = GLSLLocationSystem.createLocationMap();
   /* todo check dispose:shouldn't dispose before init render! */
@@ -84,7 +83,7 @@ let initMaterialShaders =
            _initMaterialShader(
              gl,
              materialIndex,
-             materialShader,
+             material_shader,
              attributeLocationMap,
              uniformLocationMap,
              initShaderFuncTuple,

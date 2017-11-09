@@ -6,7 +6,6 @@ let shaders = {|
   ],
   "basic_material": {
     "material_shader": {
-      "name": "basic_render",
       "shader_libs": [
         {"type": "group", "name": "top"},
         {"name": "basic"},

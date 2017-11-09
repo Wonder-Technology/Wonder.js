@@ -140,7 +140,6 @@ type shaderLibItem = {
 };
 
 type material_shader = {
-  name: string,
   shader_libs: array(shaderLibItem)
 };
 

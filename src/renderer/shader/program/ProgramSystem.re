@@ -10,13 +10,6 @@ let _getProgramData = (state: StateDataType.state) => state.programData;
 
 let createProgram = (gl) => createProgram(gl);
 
-let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
-  _getProgramData(state).programMap
-  |> HashMapSystem.set(Js.Int.toString(shaderIndex), program)
-  |> ignore;
-  program
-};
-
 let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
   compileShader(shader, gl);
@@ -94,6 +87,22 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
 
 let getProgram = (shaderIndexStr: string, state: StateDataType.state) =>
   _getProgramData(state).programMap |> HashMapSystem.get(shaderIndexStr);
+
+let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
+  _getProgramData(state).programMap
+  |> HashMapSystem.set(Js.Int.toString(shaderIndex), program)
+  |> ignore;
+  program
+};
+
+/* let getProgram = (shaderLibDataKey: string, state: StateDataType.state) =>
+     _getProgramData(state).programMap |> HashMapSystem.get(shaderLibDataKey);
+
+   let setProgram = (shaderLibDataKey: string, program: program, state: StateDataType.state) => {
+     _getProgramData(state).programMap |> HashMapSystem.set(shaderLibDataKey, program) |> ignore;
+     state
+   }; */
+/* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
 
 let use = (gl, shaderIndexStr: string, state: StateDataType.state) =>
   switch (getProgram(shaderIndexStr, state)) {

@@ -19,7 +19,7 @@ let _ =
         "init material shader",
         () => {
           test(
-            "generate shaderIndex, set to material data",
+            "if the material with the same shaderLibDataArr is already inited, not init",
             () => {
               let (state, _, _, material1) =
                 InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
@@ -31,7 +31,18 @@ let _ =
                 MaterialTool.getShaderIndex(material1, state),
                 MaterialTool.getShaderIndex(material2, state)
               )
-              |> expect == (0, 1)
+              |> expect == (0, 0)
+            }
+          );
+          test(
+            "generate shaderIndex, set to material data",
+            () => {
+              let (state, _, _, material1) =
+                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+              InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
+              let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+              let state = state |> InitBasicMaterialJobTool.exec;
+              MaterialTool.getShaderIndex(material1, state) |> expect == 0
             }
           );
           test(
@@ -68,7 +79,8 @@ let _ =
               test(
                 "create vs shader",
                 () => {
-                  let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                  let (state, _, _, _) =
+                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let vertex_shader = 1;
                   let createShader = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =
@@ -83,7 +95,8 @@ let _ =
               test(
                 "create fs shader",
                 () => {
-                  let (state, _, _, _) = InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                  let (state, _, _, _) =
+                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
                   let fragment_shader = 1;
                   let createShader = createEmptyStubWithJsObjSandbox(sandbox);
                   let state =

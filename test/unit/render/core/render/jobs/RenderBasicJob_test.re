@@ -277,7 +277,7 @@ let _ =
               state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
             [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 1., 2., 3., 1.|],
             ~testFunc=
-              (_prepareSendUinformData) =>
+              (_prepareSendUinformData) => {
                 test(
                   "if not do any transform operation, should still send identity matrix value on the first send",
                   () => {
@@ -310,7 +310,52 @@ let _ =
                          Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
                        ])
                   }
-                ),
+                );
+                describe(
+                  "test two gameObjects",
+                  () =>
+                    test(
+                      "if only set first one's transform, second one's sended u_mMatrix data shouldn't be affect",
+                      () => {
+                        let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+                          _prepareSendUinformData(sandbox, state^);
+                        let (state, gameObject2, _, _, _) =
+                          RenderJobsTool.prepareGameObject(sandbox, state);
+                        let state =
+                          state
+                          |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.));
+                        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+                        let pos = 0;
+                        let getUniformLocation =
+                          GlslLocationTool.getUniformLocation(~pos, sandbox, "u_mMatrix");
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(
+                                 ~sandbox,
+                                 ~uniformMatrix4fv,
+                                 ~getUniformLocation,
+                                 ()
+                               )
+                             );
+                        let state =
+                          state
+                          |> RenderJobsTool.initSystemAndRender
+                          |> RenderJobsTool.updateSystem
+                          |> _render;
+                        uniformMatrix4fv
+                        |> withOneArg(pos)
+                        |> getCall(1)
+                        |> expect
+                        |> toCalledWith([
+                             pos,
+                             Obj.magic(Js.false_),
+                             Obj.magic(TransformTool.getDefaultLocalToWorldMatrix())
+                           ])
+                      }
+                    )
+                )
+              },
             ()
           );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(

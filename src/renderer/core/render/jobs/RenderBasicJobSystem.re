@@ -15,18 +15,20 @@ let _render = (gl, state: StateDataType.state) => {
            (state, uid: string) => {
              let materialIndex: int =
                Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
+             let materialIndexStr =
+               Js.Int.toString(materialIndex);
              let shaderIndex = MaterialSystem.getShaderIndex(materialIndex, state);
              let shaderIndexStr =
                Js.Int.toString(MaterialSystem.getShaderIndex(materialIndex, state));
              let state =
                state
                |> ProgramSystem.use(gl, shaderIndexStr)
-               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(materialIndexStr)
                |> ArraySystem.reduceState(
                     [@bs] ((state, sendBufferFunc) => sendBufferFunc(state)),
                     state
                   )
-               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(materialIndexStr)
                |> ArraySystem.reduceState(
                     [@bs]
                     (
@@ -38,7 +40,7 @@ let _render = (gl, state: StateDataType.state) => {
                     state
                   );
              let drawPointsFunc =
-               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
+               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(materialIndexStr, state);
              drawPointsFunc(gl);
              state
            }

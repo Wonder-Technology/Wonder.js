@@ -113,7 +113,6 @@ let convertShadersToRecord = (shaders) => {
                |> field(
                     "material_shader",
                     (json) => {
-                      name: json |> field("name", string),
                       shader_libs:
                         json
                         |> field(
