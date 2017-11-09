@@ -6,6 +6,8 @@ type shader;
 
 type buffer;
 
+type uniformLocation;
+
 type options = {
   .
   "alpha": Js.boolean,

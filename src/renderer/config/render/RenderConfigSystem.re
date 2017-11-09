@@ -92,7 +92,7 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
 };
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
-  findFirst(shaderLibs, [@bs] ((item) => _filterTargetName(item.name, shaderLibName)));
+  findFirst(shaderLibs, [@bs] ((item:shaderLib) => _filterTargetName(item.name, shaderLibName)));
 
 let getMaterialShaderLibDataArr =
     (materialIndex: int, groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>

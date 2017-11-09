@@ -103,19 +103,18 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
      state
    }; */
 /* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
-
-let use = (gl, shaderIndexStr: string, state: StateDataType.state) =>
-  switch (getProgram(shaderIndexStr, state)) {
-  | None => ExceptionHandlerSystem.throwMessage("program should exist")
-  | Some(program) =>
-    let data = _getProgramData(state);
-    switch data.lastUsedProgram {
-    | Some(lastUsedProgram) when program === lastUsedProgram => state
-    | _ =>
-      data.lastUsedProgram = Some(program);
-      useProgram(program, gl);
-      state |> GLSLSenderSystem.disableVertexAttribArray(gl)
-    }
-  };
+let use = (gl, program: program, state: StateDataType.state) => {
+  /* switch (getProgram(shaderIndexStr, state)) {
+     | None => ExceptionHandlerSystem.throwMessage("program should exist")
+     | Some(program) => */
+  let data = _getProgramData(state);
+  switch data.lastUsedProgram {
+  | Some(lastUsedProgram) when program === lastUsedProgram => state
+  | _ =>
+    data.lastUsedProgram = Some(program);
+    useProgram(program, gl);
+    state |> GLSLSenderSystem.disableVertexAttribArray(gl)
+  }
+};
 
 let initData = () => {programMap: HashMapSystem.createEmpty(), lastUsedProgram: None};

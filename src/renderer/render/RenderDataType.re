@@ -1,8 +1,9 @@
 open CacheType;
+open Js.Typed_array;
 
 type renderCameraData = {
-  vMatrix: array(float),
-  pMatrix: array(float)
+  vMatrix: Float32Array.t,
+  pMatrix: Float32Array.t
 };
 
 type renderData = {

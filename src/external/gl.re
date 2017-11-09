@@ -69,7 +69,7 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => int = "";
 
-[@bs.send.pipe : webgl1Context] external getUniformLocation : (program, string) => int = "";
+[@bs.send.pipe : webgl1Context] external getUniformLocation : (program, string) => uniformLocation = "";
 
 [@bs.send.pipe : webgl1Context] external bindBuffer : (int, buffer) => unit = "";
 
@@ -94,7 +94,7 @@ external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
 [@bs.send.pipe : webgl1Context] external enableVertexAttribArray : int => unit = "";
 
 [@bs.send.pipe : webgl1Context]
-external uniformMatrix4fv : (int, Js.boolean, array(float)) => unit =
+external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =
   "";
 
 [@bs.send.pipe : webgl1Context] external drawElements : (int, int, int, int) => unit = "";

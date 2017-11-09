@@ -21,7 +21,7 @@ let _ =
             state
             |> getCameraControllerPMatrix(cameraController)
             |>
-            expect == [|
+            expect == Js.Typed_array.Float32Array.create([|
                         1.7320508075688776,
                         0.,
                         0.,
@@ -38,7 +38,7 @@ let _ =
                         0.,
                         (-0.2000200020002),
                         0.
-                      |]
+                      |])
           }
         );
       beforeEach(
@@ -115,7 +115,7 @@ let _ =
               state
               |> getCameraControllerPMatrix(cameraController)
               |>
-              expect == [|
+              expect == Js.Typed_array.Float32Array.create([|
                           1.7320508075688776,
                           0.,
                           0.,
@@ -132,7 +132,7 @@ let _ =
                           0.,
                           (-0.40008001600320064),
                           0.
-                        |]
+                        |])
             }
           )
         }
@@ -177,7 +177,24 @@ let _ =
               state
               |> getCameraControllerWorldToCameraMatrix(cameraController)
               |>
-              expect == [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-1.), (-2.), (-3.), 1.|]
+              expect == Js.Typed_array.Float32Array.create([|
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          0.,
+                          0.,
+                          0.,
+                          1.,
+                          0.,
+                          (-1.),
+                          (-2.),
+                          (-3.),
+                          1.
+                        |])
             }
           )
           /* describe(

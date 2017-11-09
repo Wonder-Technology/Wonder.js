@@ -137,9 +137,7 @@ type shaderLibItem = {
   name: string
 };
 
-type material_shader = {
-  shader_libs: array(shaderLibItem)
-};
+type material_shader = {shader_libs: array(shaderLibItem)};
 
 type shader = {material_shader};
 
@@ -184,8 +182,9 @@ type executableJobFlags = (jobFlags, option(string));
 type uniformData;
 
 type uniformSendData = {
-  getArrayDataFunc: state => array(float),
-  sendArrayDataFunc: array(float) => unit
+  name: string,
+  getArrayDataFunc: [@bs] (gameObject, state) => Float32Array.t,
+  sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
   /* sendFloat32DataFunc: float => unit;
      sendIntDataFunc: int => unit; */
 }

@@ -39,11 +39,19 @@
 
             function initSample(state) {
                 var [state, box1] = createBox(state);
+                var [state, box2] = createBox(state);
+
+                var state$ = state;
+                for(let i = 0; i < 5000; i++){
+                var [state$, box] = createBox(state$);
+                }
+
+                var state = state$;
 
 
                 var transform = getGameObjectTransformComponent(box1, state);
 
-                // state = setTransformLocalPosition(transform, [0, 0, 0], state);
+                state = setTransformLocalPosition(transform, [20, 0, 0], state);
 
 
 

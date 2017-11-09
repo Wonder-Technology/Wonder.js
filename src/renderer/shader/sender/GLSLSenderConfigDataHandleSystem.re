@@ -2,6 +2,8 @@ open GlType;
 
 open Gl;
 
+open GameObjectType;
+
 open StateDataType;
 
 open Contract;
@@ -100,8 +102,8 @@ let addAttributeSendData =
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
-let _getModelMMatrixData = (uid: string, state: StateDataType.state) => {
-  let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state));
+let _getModelMMatrixData = [@bs] (gameObject: gameObject, state: StateDataType.state) => {
+  let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(gameObject, state));
   TransformSystem.getLocalToWorldMatrix(transform, state)
 };
 
@@ -145,6 +147,7 @@ let addUniformSendData =
                   ({name, field, type_, from}) =>
                     sendDataArr
                     |> Js.Array.push({
+                         name,
                          getArrayDataFunc:
                            switch from {
                            | "camera" =>
@@ -154,21 +157,22 @@ let addUniformSendData =
                              }
                            | "model" =>
                              switch field {
-                             | "mMatrix" => _getModelMMatrixData(uid)
+                             | "mMatrix" => _getModelMMatrixData
                              }
                            },
                          sendArrayDataFunc:
                            switch type_ {
                            | "mat4" =>
-                             sendMatrix4(
-                               gl,
-                               GLSLLocationSystem.getUniformLocation(
-                                 program,
-                                 name,
-                                 uniformLocationMap,
-                                 gl
-                               )
-                             )
+                             /* sendMatrix4(
+                                  gl,
+                                  GLSLLocationSystem.getUniformLocation(
+                                    program,
+                                    name,
+                                    uniformLocationMap,
+                                    gl
+                                  )
+                                ) */
+                             sendMatrix4
                            }
                        })
                     |> ignore

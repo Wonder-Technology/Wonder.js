@@ -6,9 +6,9 @@ type cameraController = int;
 
 type cameraControllerDirtyList = array(int);
 
-type worldToCameraMatrixCacheMap = Js.Dict.t(array(float));
+/* type worldToCameraMatrixCacheMap = Js.Dict.t(array(float)); */
 
-type pMatrixMap = Js.Dict.t(array(float));
+type pMatrixMap = Js.Dict.t(Js.Typed_array.Float32Array.t);
 
 type updateCameraFuncMap = Js.Dict.t(((int, cameraControllerData) => unit))
 and cameraControllerData = {

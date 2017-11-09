@@ -27,7 +27,11 @@ let setLocalToWorldMatricesTypeArr =
   );
 
 let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
-  getFloat16(getMatrix4DataIndex(index), localToWorldMatrices);
+  getFloat32ArrSubarray(
+    localToWorldMatrices,
+    getMatrix4DataIndex(index),
+    getMatrix4DataIndex(index) + 16
+  );
 
 let setPosition =
     (
@@ -53,20 +57,18 @@ let setPosition =
       localPositions
     )
   };
-
-
 /* let isTransform = (transform: transform, isTransformMap) =>
-  switch (isTransformMap |> HashMapSystem.get(Js.Int.toString(transform))) {
-  | None => false
-  | Some(isTransform) => isTransform == true
-  };
+     switch (isTransformMap |> HashMapSystem.get(Js.Int.toString(transform))) {
+     | None => false
+     | Some(isTransform) => isTransform == true
+     };
 
-let markIsTransform = (transform: transform, isTransformMap) => {
-  isTransformMap |> HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
-  ()
-};
+   let markIsTransform = (transform: transform, isTransformMap) => {
+     isTransformMap |> HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
+     ()
+   };
 
-let cleanIsTransformMap = (state:StateDataType.state) => {
- TransformStateUtils.getTransformData(state).isTransformMap = HashMapSystem.createEmpty();
-  state;
-}; */
+   let cleanIsTransformMap = (state:StateDataType.state) => {
+    TransformStateUtils.getTransformData(state).isTransformMap = HashMapSystem.createEmpty();
+     state;
+   }; */

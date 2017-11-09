@@ -1,6 +1,7 @@
 open Vector3Type;
+open Js.Typed_array;
 
-let transformMat4 = ((x, y, z), mat4: Js.Array.t(float)) => {
+/* let transformMat4 = ((x, y, z), mat4: Js.Array.t(float)) => {
   let w =
     ref(
       ArraySystem.unsafeGet(mat4, 3)
@@ -50,7 +51,61 @@ let transformMat4 = ((x, y, z), mat4: Js.Array.t(float)) => {
     )
     /. w^
   )
+}; */
+
+
+let transformMat4 = ((x, y, z), mat4: Float32Array.t) => {
+  let w =
+    ref(
+      Float32Array.unsafe_get(mat4, 3)
+      *. x
+      +. Float32Array.unsafe_get(mat4, 7)
+      *. y
+      +. Float32Array.unsafe_get(mat4, 11)
+      *. z
+      +. Float32Array.unsafe_get(mat4, 15)
+    );
+  w :=
+    (
+      switch w^ {
+      | 0. => 1.0
+      | d => d
+      }
+    );
+  (
+    (
+      Float32Array.unsafe_get(mat4, 0)
+      *. x
+      +. Float32Array.unsafe_get(mat4, 4)
+      *. y
+      +. Float32Array.unsafe_get(mat4, 8)
+      *. z
+      +. Float32Array.unsafe_get(mat4, 12)
+    )
+    /. w^,
+    (
+      Float32Array.unsafe_get(mat4, 1)
+      *. x
+      +. Float32Array.unsafe_get(mat4, 5)
+      *. y
+      +. Float32Array.unsafe_get(mat4, 9)
+      *. z
+      +. Float32Array.unsafe_get(mat4, 13)
+    )
+    /. w^,
+    (
+      Float32Array.unsafe_get(mat4, 2)
+      *. x
+      +. Float32Array.unsafe_get(mat4, 6)
+      *. y
+      +. Float32Array.unsafe_get(mat4, 10)
+      *. z
+      +. Float32Array.unsafe_get(mat4, 14)
+    )
+    /. w^
+  )
 };
+
 
 let add = (type g, kind: number(g), (x1, y1, z1), (x2, y2, z2)) =>
   switch kind {

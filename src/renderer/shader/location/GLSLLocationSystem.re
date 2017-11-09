@@ -18,6 +18,9 @@ let getUniformLocation = (program, name, uniformLocationMap, gl) =>
     pos
   };
 
+let getAttributeLocationMap = (shaderIndexStr: string, state: StateDataType.state) =>
+  state.glslLocationData.attributeLocationMap |> HashMapSystem.get(shaderIndexStr);
+
 let setAttributeLocationMap =
     (shaderIndexStr: string, attributeLocationMap: Js.Dict.t(int), state: StateDataType.state) => {
   state.glslLocationData.attributeLocationMap
@@ -26,8 +29,11 @@ let setAttributeLocationMap =
   state
 };
 
+let getUniformLocationMap = (shaderIndexStr: string, state: StateDataType.state) =>
+  state.glslLocationData.uniformLocationMap |> HashMapSystem.get(shaderIndexStr);
+
 let setUniformLocationMap =
-    (shaderIndexStr: string, uniformLocationMap: Js.Dict.t(int), state: StateDataType.state) => {
+    (shaderIndexStr: string, uniformLocationMap, state: StateDataType.state) => {
   state.glslLocationData.uniformLocationMap
   |> HashMapSystem.set(shaderIndexStr, uniformLocationMap)
   |> ignore;

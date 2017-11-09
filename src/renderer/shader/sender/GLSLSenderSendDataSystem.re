@@ -32,5 +32,9 @@ let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.
   }
 };
 
-let sendMatrix4 = (gl, pos: int, data: Js.Array.t(float)) =>
-  uniformMatrix4fv(pos, Js.false_, data, gl);
+let sendMatrix4 =
+  [@bs]
+  (
+    (gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
+      uniformMatrix4fv(pos, Js.false_, data, gl)
+  );
