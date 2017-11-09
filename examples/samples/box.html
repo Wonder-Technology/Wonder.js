@@ -42,7 +42,7 @@
                 var [state, box2] = createBox(state);
 
                 var state$ = state;
-                for(let i = 0; i < 5000; i++){
+                for(let i = 0; i < 7000; i++){
                 var [state$, box] = createBox(state$);
                 }
 
@@ -94,7 +94,7 @@
                 var [state, cameraController] = createCameraController(state);
 
                 state = setPerspectiveCameraNear(cameraController, 0.1, state);
-                state = setPerspectiveCameraFar(cameraController, 1000, state);
+                state = setPerspectiveCameraFar(cameraController, 2000, state);
                 state = setPerspectiveCameraFovy(cameraController, 60, state);
                 state = setPerspectiveCameraAspect(cameraController, 1.0, state);
 
@@ -109,7 +109,7 @@
 
                 var transform = getGameObjectTransformComponent(obj, state);
 
-                state = setTransformLocalPosition(transform, [0, 0, 40], state);
+                state = setTransformLocalPosition(transform, [0, 0, 1500], state);
 
                 return [state, obj];
             }

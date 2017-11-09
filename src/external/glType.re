@@ -6,6 +6,8 @@ type shader;
 
 type buffer;
 
+type attributeLocation = int;
+
 type uniformLocation;
 
 type options = {

@@ -67,7 +67,7 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external deleteShader : shader => unit = "";
 
-[@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => int = "";
+[@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => attributeLocation = "";
 
 [@bs.send.pipe : webgl1Context] external getUniformLocation : (program, string) => uniformLocation = "";
 
@@ -88,10 +88,10 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
   "bufferData";
 
 [@bs.send.pipe : webgl1Context]
-external vertexAttribPointer : (int, int, int, Js.boolean, int, int) => unit =
+external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, int) => unit =
   "";
 
-[@bs.send.pipe : webgl1Context] external enableVertexAttribArray : int => unit = "";
+[@bs.send.pipe : webgl1Context] external enableVertexAttribArray : attributeLocation => unit = "";
 
 [@bs.send.pipe : webgl1Context]
 external uniformMatrix4fv : (uniformLocation, Js.boolean, Float32Array.t) => unit =

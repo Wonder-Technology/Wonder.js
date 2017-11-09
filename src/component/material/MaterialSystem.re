@@ -17,9 +17,9 @@ let create = (state: StateDataType.state) => {
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
-let getShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
-  |> HashMapSystem.unsafeGet(Js.Int.toString(materialIndex))
+  |> HashMapSystem.unsafeGet(materialIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -27,7 +27,7 @@ let getShaderIndex = (materialIndex: int, state: StateDataType.state) =>
              "shaderIndex should exist",
              () =>
                getMaterialData(state).shaderIndexMap
-               |> HashMapSystem.get(Js.Int.toString(materialIndex))
+               |> HashMapSystem.get(materialIndexStr)
                |> assertExist
            )
          )

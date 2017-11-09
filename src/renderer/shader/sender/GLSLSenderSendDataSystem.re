@@ -14,7 +14,9 @@ let getBufferSizeByType = (type_: string) =>
   };
 
 /* todo optimize: judge last buffer(only when use vao?) */
-let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.state) => {
+let sendBuffer =  (gl, size: option(int), pos: option(attributeLocation), buffer: buffer, state: StateDataType.state) => {
+  let pos = Js.Option.getExn(pos);
+  let size = Js.Option.getExn(size);
   let {vertexAttribHistoryArray, lastSendArrayBuffer} as data = getGLSLSenderData(state);
   switch lastSendArrayBuffer {
   | Some(lastSendArrayBuffer) when lastSendArrayBuffer === buffer => state

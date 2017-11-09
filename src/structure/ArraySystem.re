@@ -83,7 +83,7 @@ let reduceState = (func, state, arr) => {
   let length = Js.Array.length(arr);
   let mutableState = ref(state);
   for (i in 0 to length - 1) {
-    mutableState := [@bs] func(mutableState^, arr[i])
+    mutableState := [@bs] func(mutableState^, Array.unsafe_get(arr, i))
   };
   mutableState^
 };
@@ -92,19 +92,19 @@ let get = (index: int, arr) =>
   if (index >= Js.Array.length(arr)) {
     None
   } else {
-    Some(arr[index])
+    Some(Array.unsafe_get(arr, index))
   };
 
 let isEqual = (index: int, target, arr) =>
   if (index >= Js.Array.length(arr)) {
     false
   } else {
-    arr[index] == target
+    Array.unsafe_get(arr, index) == target
   };
 
 let isNotEqual = (index: int, target, arr) =>
   if (index >= Js.Array.length(arr)) {
     true
   } else {
-    arr[index] != target
+    Array.unsafe_get(arr, index) != target
   };

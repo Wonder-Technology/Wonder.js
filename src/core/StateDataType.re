@@ -181,15 +181,21 @@ type executableJobFlags = (jobFlags, option(string));
 
 type uniformData;
 
-type uniformSendData = {
-  name: string,
-  getArrayDataFunc: [@bs] (gameObject, state) => Float32Array.t,
+type attributeSendData = {
+  pos: option(attributeLocation),
+  size: option(int),
+  buffer,
+  sendFunc: ((webgl1Context, option(attributeLocation), option(int), buffer, state) => state)
+}
+and uniformSendData = {
+  pos: uniformLocation,
+  getArrayDataFunc: [@bs] ((gameObject, state) => Float32Array.t),
   sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
   /* sendFloat32DataFunc: float => unit;
      sendIntDataFunc: int => unit; */
 }
 and glslSenderData = {
-  attributeSendDataMap: Js.Dict.t(array((state => state))),
+  attributeSendDataMap: Js.Dict.t(array(attributeSendData)),
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
   drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),

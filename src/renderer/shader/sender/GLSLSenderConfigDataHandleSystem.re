@@ -53,42 +53,78 @@ let addAttributeSendData =
                     switch (name, type_) {
                     | (Some(name), Some(type_)) =>
                       sendDataArr
-                      |> Js.Array.push(
-                           sendBuffer(
-                             gl,
-                             getBufferSizeByType(type_),
-                             GLSLLocationSystem.getAttribLocation(
-                               program,
-                               name,
-                               attributeLocationMap,
-                               gl
-                             ),
-                             switch buffer {
-                             | "vertex" =>
-                               ArrayBufferSystem.createBuffer(
-                                 gl,
-                                 geometryIndex,
-                                 GeometrySystem.getVertices(geometryIndex, state)
-                               )
-                             }
-                           )
-                         )
+                      |> Js.Array.push
+                           ({
+                             pos:
+                               Some(
+                                 GLSLLocationSystem.getAttribLocation(
+                                   program,
+                                   name,
+                                   attributeLocationMap,
+                                   gl
+                                 )
+                               ),
+                             size: Some(getBufferSizeByType(type_)),
+                             buffer:
+                               switch buffer {
+                               | "vertex" =>
+                                 ArrayBufferSystem.createBuffer(
+                                   gl,
+                                   geometryIndex,
+                                   GeometrySystem.getVertices(geometryIndex, state)
+                                 )
+                               },
+                             sendFunc: sendBuffer
+                           })
+                           /* sendBuffer(
+                                gl,
+                                getBufferSizeByType(type_),
+                                GLSLLocationSystem.getAttribLocation(
+                                  program,
+                                  name,
+                                  attributeLocationMap,
+                                  gl
+                                ),
+                                switch buffer {
+                                | "vertex" =>
+                                  ArrayBufferSystem.createBuffer(
+                                    gl,
+                                    geometryIndex,
+                                    GeometrySystem.getVertices(geometryIndex, state)
+                                  )
+                                }
+                              )*/
                       |> ignore
                     | (_, _) =>
                       sendDataArr
-                      |> Js.Array.push(
-                           bindIndexBuffer(
-                             gl,
-                             switch buffer {
-                             | "index" =>
-                               ElementArrayBufferSystem.createBuffer(
-                                 gl,
-                                 geometryIndex,
-                                 GeometrySystem.getIndices(geometryIndex, state)
-                               )
-                             }
-                           )
-                         )
+                      |> Js.Array.push
+                           /* bindIndexBuffer(
+                                gl,
+                                switch buffer {
+                                | "index" =>
+                                  ElementArrayBufferSystem.createBuffer(
+                                    gl,
+                                    geometryIndex,
+                                    GeometrySystem.getIndices(geometryIndex, state)
+                                  )
+                                }
+                              ) */
+                           /* pos: Obj.magic(0), */
+                           /* bufferSize: 0, */
+                           ({
+                             pos: None,
+                             size: None,
+                             buffer:
+                               switch buffer {
+                               | "index" =>
+                                 ElementArrayBufferSystem.createBuffer(
+                                   gl,
+                                   geometryIndex,
+                                   GeometrySystem.getIndices(geometryIndex, state)
+                                 )
+                               },
+                             sendFunc:  bindIndexBuffer
+                           })
                       |> ignore
                     }
                 )
@@ -102,10 +138,14 @@ let addAttributeSendData =
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
-let _getModelMMatrixData = [@bs] (gameObject: gameObject, state: StateDataType.state) => {
-  let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(gameObject, state));
-  TransformSystem.getLocalToWorldMatrix(transform, state)
-};
+let _getModelMMatrixData =
+  [@bs]
+  (
+    (gameObject: gameObject, state: StateDataType.state) => {
+      let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(gameObject, state));
+      TransformSystem.getLocalToWorldMatrix(transform, state)
+    }
+  );
 
 let addUniformSendData =
     (
@@ -147,7 +187,13 @@ let addUniformSendData =
                   ({name, field, type_, from}) =>
                     sendDataArr
                     |> Js.Array.push({
-                         name,
+                         pos:
+                           GLSLLocationSystem.getUniformLocation(
+                             program,
+                             name,
+                             uniformLocationMap,
+                             gl
+                           ),
                          getArrayDataFunc:
                            switch from {
                            | "camera" =>
