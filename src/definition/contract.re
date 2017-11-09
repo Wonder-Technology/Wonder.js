@@ -83,6 +83,18 @@ let assertEqual = (type g, kind: assertEqual(g), source: g, target: g) =>
   | _ => _assert(source == target, _getEqualMessage(source, target))
   };
 
+type assertNotEqual(_) =
+  | Int: assertNotEqual(int)
+  | Float: assertNotEqual(float)
+  | String: assertNotEqual(string);
+
+let _getNotEqualMessage = (source, target) => {j|"expect to be $source, but actual is $target"|j};
+
+let assertNotEqual = (type g, kind: assertNotEqual(g), source: g, target: g) =>
+  switch kind {
+  | _ => _assert(source != target, _getEqualMessage(source, target))
+  };
+
 type assertNumber(_) =
   | Int: assertNumber(int)
   | Float: assertNumber(float);
@@ -112,6 +124,8 @@ let assertLte = (type g, kind: assertNumber(g), source: g, target: g) =>
 module Operators = {
   let (==) = (a, b) => assertEqual(Int, a, b);
   let (==.) = (a, b) => assertEqual(Float, a, b);
+  let (<>=) = (a, b) => assertNotEqual(Int, a, b);
+  let (<>=.) = (a, b) => assertNotEqual(Float, a, b);
   let (>) = (a, b) => assertGt(Int, a, b);
   let (>.) = (a, b) => assertGt(Float, a, b);
   let (>=) = (a, b) => assertGte(Int, a, b);

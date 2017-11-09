@@ -47,11 +47,11 @@ let setFloat16 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t
   typeArray
 };
 
-let getUint32ArraySingleVale = (index: int, typeArray: Uint32Array.t) =>
-  Uint32Array.unsafe_get(typeArray, index);
+let getUint16ArraySingleVale = (index: int, typeArray: Uint16Array.t) =>
+  Uint16Array.unsafe_get(typeArray, index);
 
-let setUint32ArraySingleVale = (index: int, data: int, typeArray: Uint32Array.t) =>
-  Uint32Array.unsafe_set(typeArray, index, data);
+let setUint16ArraySingleVale = (index: int, data: int, typeArray: Uint16Array.t) =>
+  Uint16Array.unsafe_set(typeArray, index, data);
 
 let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
   requireCheck(
@@ -69,18 +69,18 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(startIndex, endIndex, typeArr);
 
-let fillUint32Arr = (typeArr: Uint32Array.t, dataArr: Js.Array.t(int), startIndex: int) =>{
+let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) =>{
   requireCheck(
     () =>
       Contract.Operators.(
         test(
           "should not exceed uint32Arr range",
-          () => Js.Array.length(dataArr) + startIndex <= Uint32Array.length(typeArr)
+          () => Js.Array.length(dataArr) + startIndex <= Uint16Array.length(typeArr)
         )
       )
   );
-  Uint32Array.setArrayOffset(dataArr, startIndex, typeArr);
+  Uint16Array.setArrayOffset(dataArr, startIndex, typeArr);
 };
 
-let getUint32ArrSubarray = (typeArr: Uint32Array.t, startIndex: int, endIndex: int) =>
-  Uint32Array.subarray(startIndex, endIndex, typeArr);
+let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
+  Uint16Array.subarray(startIndex, endIndex, typeArr);

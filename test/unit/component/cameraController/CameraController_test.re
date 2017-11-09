@@ -22,12 +22,12 @@ let _ =
             |> getCameraControllerPMatrix(cameraController)
             |>
             expect == [|
-                        (-1.7006360120001864),
+                        1.7320508075688776,
                         0.,
                         0.,
                         0.,
                         0.,
-                        (-1.3605088096001492),
+                        1.7320508075688776,
                         0.,
                         0.,
                         0.,
@@ -81,26 +81,24 @@ let _ =
       );
       describe(
         "initSystem",
-        () =>
-          _testBuildPMatrix
-            ((state) => state |> CameraControllerTool.init)
-            /* describe(
-                 "contract check",
-                 () =>
-                   test(
-                     "should has no cache",
-                     () => {
-                       let (state, cameraController) =
-                         CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
-                       let state =
-                         state
-                         |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
-                       expect(() => state |> CameraControllerTool.init |> ignore)
-                       |> toThrowMessage("should has no cache")
-                     }
-                   )
-               ) */
+        () => _testBuildPMatrix((state) => state |> CameraControllerTool.init)
       );
+      /* describe(
+           "contract check",
+           () =>
+             test(
+               "should has no cache",
+               () => {
+                 let (state, cameraController) =
+                   CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
+                 let state =
+                   state
+                   |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
+                 expect(() => state |> CameraControllerTool.init |> ignore)
+                 |> toThrowMessage("should has no cache")
+               }
+             )
+         ) */
       describe(
         "update",
         () => {
@@ -118,12 +116,12 @@ let _ =
               |> getCameraControllerPMatrix(cameraController)
               |>
               expect == [|
-                          (-1.7006360120001864),
+                          1.7320508075688776,
                           0.,
                           0.,
                           0.,
                           0.,
-                          (-1.3605088096001492),
+                          1.7320508075688776,
                           0.,
                           0.,
                           0.,

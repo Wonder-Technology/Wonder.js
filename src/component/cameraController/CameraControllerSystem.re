@@ -66,7 +66,7 @@ let init = (state: StateDataType.state) => {
   }
 };
 
-let setPerspectiveCamera = (camera: int, state: StateDataType.state) => {
+let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -75,7 +75,7 @@ let setPerspectiveCamera = (camera: int, state: StateDataType.state) => {
           () => {
             let cameraControllerData = getCameraControllerData(state);
             cameraControllerData.updateCameraFuncMap
-            |> HashMapSystem.get(Js.Int.toString(camera))
+            |> HashMapSystem.get(Js.Int.toString(cameraController))
             |> assertNotExist
           }
         )
@@ -83,7 +83,7 @@ let setPerspectiveCamera = (camera: int, state: StateDataType.state) => {
   );
   let cameraControllerData = getCameraControllerData(state);
   cameraControllerData.updateCameraFuncMap
-  |> HashMapSystem.set(Js.Int.toString(camera), PerspectiveCameraSystem.update)
+  |> HashMapSystem.set(Js.Int.toString(cameraController), PerspectiveCameraSystem.update)
   |> ignore;
   state
 };

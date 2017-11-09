@@ -44,7 +44,7 @@ let getDefaultIndicesArray = () => [|
   21
 |];
 
-let getDefaultIndices = () => Js.Typed_array.Uint32Array.make(getDefaultIndicesArray());
+let getDefaultIndices = () => Js.Typed_array.Uint16Array.make(getDefaultIndicesArray());
 
 let getDefaultVertices = () =>
   Js.Typed_array.Float32Array.create([|

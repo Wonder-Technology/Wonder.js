@@ -55,24 +55,24 @@ let _setFloat32PointData =
   newOffset
 };
 
-let _getUint32PointData = (index: int, points: Uint32Array.t, infoList) => {
+let _getUint16PointData = (index: int, points: Uint16Array.t, infoList) => {
   requireCheck(
     () =>
       Contract.Operators.(test("info should exist", () => index <= Js.Array.length(infoList) - 1))
   );
   switch infoList[index] {
   | None => ExceptionHandlerSystem.throwMessage({j|infoList[$index] should exist|j})
-  | Some({startIndex, endIndex}) => getUint32ArrSubarray(points, startIndex, endIndex)
+  | Some({startIndex, endIndex}) => getUint16ArrSubarray(points, startIndex, endIndex)
   }
 };
 
-let _setUint32PointData =
-    (index: int, data: Js.Array.t(int), points: Uint32Array.t, infoList, offset: int) => {
+let _setUint16PointData =
+    (index: int, data: Js.Array.t(int), points: Uint16Array.t, infoList, offset: int) => {
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
   Array.unsafe_set(infoList, index, Some(_buildInfo(startIndex, newOffset)));
-  fillUint32Arr(points, data, startIndex);
+  fillUint16Arr(points, data, startIndex);
   newOffset
 };
 
@@ -90,13 +90,13 @@ let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.sta
 
 let getIndices = (index: int, state: StateDataType.state) => {
   let {indices, indicesInfoList} = getGeometryData(state);
-  _getUint32PointData(index, indices, indicesInfoList)
+  _getUint16PointData(index, indices, indicesInfoList)
 };
 
 let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state) => {
   let {indicesInfoList, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
-    _setUint32PointData(index, data, indices, indicesInfoList, indicesOffset);
+    _setUint16PointData(index, data, indices, indicesInfoList, indicesOffset);
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).indicesOffset)
 };
 
@@ -104,7 +104,7 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
   Float32Array.length(getVertices(index, state));
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  Uint32Array.length(getIndices(index, state));
+  Uint16Array.length(getIndices(index, state));
 
 let hasIndices = (index: int, state: StateDataType.state) => getIndicesCount(index, state) > 0;
 
@@ -113,10 +113,10 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
 
 let getDrawMode = (gl) => getTriangles(gl);
 
-/* todo handle UInt16Array */
-let getIndexType = (gl) => getUnsignedInt(gl);
+/* todo handle UInt32Array */
+let getIndexType = (gl) => getUnsignedShort(gl);
 
-let getIndexTypeSize = (gl) => Uint32Array._BYTES_PER_ELEMENT;
+let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
 let _initGeometry = (index: int, state: StateDataType.state) => {
   let geometryData = getGeometryData(state);
@@ -155,15 +155,15 @@ let _createTypeArrays = (buffer, count: int) => {
     Float32Array.fromBufferRange(buffer, ~offset=offset^, ~length=count * getVertexDataSize());
   offset := count * Float32Array._BYTES_PER_ELEMENT * getVertexDataSize();
   let indices =
-    Uint32Array.fromBufferRange(buffer, ~offset=offset^, ~length=count * getIndexDataSize());
-  offset := count * Uint32Array._BYTES_PER_ELEMENT * getIndexDataSize();
+    Uint16Array.fromBufferRange(buffer, ~offset=offset^, ~length=count * getIndexDataSize());
+  offset := count * Uint16Array._BYTES_PER_ELEMENT * getIndexDataSize();
   (buffer, vertices, indices)
 };
 
 let _getBufferSize = () =>
   Float32Array._BYTES_PER_ELEMENT
   * getVertexDataSize()
-  + Uint32Array._BYTES_PER_ELEMENT
+  + Uint16Array._BYTES_PER_ELEMENT
   * getIndexDataSize();
 
 let _getBufferCount = (state: StateDataType.state) =>

@@ -57,7 +57,6 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external getProgramParameter : (program, int) => Js.boolean = "";
 
-
 [@bs.send.pipe : webgl1Context] external getShaderInfoLog : shader => string = "";
 
 [@bs.send.pipe : webgl1Context] external getProgramInfoLog : program => string = "";
@@ -80,6 +79,9 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 [@bs.send.pipe : webgl1Context] external createBuffer : buffer = "";
 
 [@bs.send.pipe : webgl1Context] external bufferFloat32Data : (int, Float32Array.t, int) => unit =
+  "bufferData";
+
+[@bs.send.pipe : webgl1Context] external bufferUint16Data : (int, Uint16Array.t, int) => unit =
   "bufferData";
 
 [@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit =

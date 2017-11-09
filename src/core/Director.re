@@ -1,3 +1,3 @@
-let getScene = (state: StateDataType.state) => {};
+open DirectorSystem;
 
-let startDirector = (state: StateDataType.state) => {};
+let startDirector = start;

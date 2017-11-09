@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+
+<body>
+    <script type="module">
+        import { setMainConfig } from "../../lib/es6_global/src/core/Main.js";
+
+        import { startDirector } from "../../lib/es6_global/src/core/Director.js";
+
+        import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/component/geometry/BoxGeometry.js";
+
+
+        import { createMeshRenderer } from "../../lib/es6_global/src/component/renderer/MeshRenderer.js";
+
+        import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
+
+
+        import { setTransformLocalPosition } from "../../lib/es6_global/src/component/transform/Transform.js";
+
+
+        import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/cameraController/CameraController.js";
+        import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
+
+
+        import { getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+
+
+        window.onload = function () {
+            var state = setMainConfig({
+                isTest: true
+            });
+
+            initSample(state);
+
+            function initSample(state) {
+                var [state, box1] = createBox(state);
+
+
+                var transform = getGameObjectTransformComponent(box1, state);
+
+                state = setTransformLocalPosition(transform, [0, 0, 0], state);
+
+
+
+
+                var [state, camera] = createCamera(state);
+
+                startDirector(state);
+            }
+
+            function createBox(state) {
+                var [state, material] = createBasicMaterial(state);
+
+                var [state, meshRenderer] = createMeshRenderer(state);
+
+                var [state, obj] = createGameObject(state);
+
+                state = addGameObjectMaterialComponent(obj, material, state);
+                state = addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+
+                var [state, geometry] = createBoxGeometry(state);
+
+                state = setBoxGeometryConfigData(geometry, {
+                    width: 5,
+                    height: 5,
+                    depth: 5
+                }, state);
+
+
+
+                state = addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            }
+
+            function createCamera(state) {
+
+                var [state, cameraController] = createCameraController(state);
+
+                state = setPerspectiveCameraNear(cameraController, 0.1, state);
+                state = setPerspectiveCameraFar(cameraController, 1000, state);
+                state = setPerspectiveCameraFovy(cameraController, 60, state);
+                state = setPerspectiveCameraAspect(cameraController, 1.0, state);
+
+
+                state = setCameraControllerPerspectiveCamera(cameraController, state);
+
+
+
+                var [state, obj] = createGameObject(state);
+
+                state = addGameObjectCameraControllerComponent(obj, cameraController, state);
+
+                var transform = getGameObjectTransformComponent(obj, state);
+
+                state = setTransformLocalPosition(transform, [0, 0, 40], state);
+
+                return [state, obj];
+            }
+        }
+    </script>
+</body>
+
+</html>

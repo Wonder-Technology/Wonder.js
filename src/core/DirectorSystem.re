@@ -17,8 +17,17 @@ let _run = (~elapsed: float, state: StateDataType.state) =>
 
 /* todo add time logic */
 /* todo add scheduler */
-let _loopBody = (time: float) =>
-  getState(stateData) |> _run(~elapsed=time) |> setState(~stateData) |> ignore;
+/* todo unit test */
+let loopBody = (time: float, state: StateDataType.state) =>
+  state |> _run(~elapsed=time);
 
-let start = (state: StateDataType.state) =>
-  state |> _init |> ((_) => Dom.requestAnimationFrame(_loopBody));
+let start = (state: StateDataType.state) => {
+  let rec _loop = (time: float, state: StateDataType.state) =>
+    Dom.requestAnimationFrame(
+      (time: float) =>
+        state
+        |> loopBody(time)
+        |> _loop(time)
+    );
+  state |> _init |> _loop(0.)
+};

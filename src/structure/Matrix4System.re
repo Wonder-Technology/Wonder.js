@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+open Contract;
+
 let fromTranslation = (translationTypeArr: Float32Array.t, index: int) => [|
   1.,
   0.,
@@ -108,24 +110,38 @@ let multiply =
 };
 
 let buildPerspective = (fovy: float, aspect: float, near: float, far: float) => {
-  let f = 1.0 /. (Js.Math.tan(fovy) /. 2.);
-  let nf = 1. /. (near -. far);
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "frustum shouldn't be null",
+          () => {
+            let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
+            Js.Math.sin(fovy) <>=. 0.
+          }
+        )
+      )
+  );
+  let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
+  let s = Js.Math.sin(fovy);
+  let rd = 1. /. (far -. near);
+  let ct = Js.Math.cos(fovy) /. s;
   [|
-    f /. aspect,
+    ct /. aspect,
     0.,
     0.,
     0.,
     0.,
-    f,
+    ct,
     0.,
     0.,
     0.,
     0.,
-    (far +. near) *. nf,
+    -. (far +. near) *. rd,
     (-1.),
     0.,
     0.,
-    2. *. far *. near *. nf,
+    (-2.) *. far *. near *. rd,
     0.
   |]
 };

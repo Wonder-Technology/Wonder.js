@@ -212,8 +212,8 @@ and geometryData = {
   mutable index: int,
   mutable buffer: Js.Typed_array.array_buffer,
   mutable vertices: Js.Typed_array.Float32Array.t,
-  /* todo optimize: use Uint16Array based on config or query gpu extension */
-  mutable indices: Js.Typed_array.Uint32Array.t,
+  /* todo optimize: use Uint32Array based on config or query gpu extension */
+  mutable indices: Js.Typed_array.Uint16Array.t,
   mutable verticesInfoList: geometryInfoList,
   mutable indicesInfoList: geometryInfoList,
   mutable verticesOffset: int,
