@@ -12,7 +12,7 @@ module JudgeSendUniformData = {
       gameObject,
       GameObject.getGameObjectTransformComponent(gameObject, state),
       cameraTransform,
-cameraController
+      cameraController
     )
   };
   let testSendMatrix4 = (sandbox, name, setFunc, targetData) => {
@@ -20,16 +20,40 @@ cameraController
     open Expect;
     open Expect.Operators;
     open Sinon;
-    let state = RenderJobsTool.initWithRenderConfig();
     describe(
       {j|send $name|j},
-      () =>
+      () => {
+      let state = ref(StateSystem.createState());
+        beforeEach(()=>{
+    state := RenderJobsTool.initWithRenderConfig();
+        });
         test(
-          "test send",
+          "if cached, not send",
           () => {
             let (state, _, gameObjectTransform, cameraTransform, cameraController) =
-              _prepareSendUinformData(sandbox, state);
-            /* let state = state |> Transform.setTransformLocalPosition(cameraTransform, (10.,2.,3.)); */
+              _prepareSendUinformData(sandbox, state^);
+            let state = setFunc(gameObjectTransform, cameraTransform, cameraController, state);
+            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+            let pos = 0;
+            let getUniformLocation = GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
+                 );
+            let state =
+              state |> RenderJobsTool.initSystemAndRender |> RenderJobsTool.updateSystem |> _render;
+            let state = state |> RenderJobsTool.updateSystem |> _render;
+
+
+            uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 1
+          }
+        );
+        test(
+          "else, send",
+          () => {
+            let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+              _prepareSendUinformData(sandbox, state^);
             let state = setFunc(gameObjectTransform, cameraTransform, cameraController, state);
             let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
             let pos = 0;
@@ -42,14 +66,15 @@ cameraController
             let state =
               state |> RenderJobsTool.initSystemAndRender |> RenderJobsTool.updateSystem |> _render;
             /* uniformMatrix4fv
-            |> getArgs
-            |> expect
-            == [] */
+               |> getArgs
+               |> expect
+               == [] */
             uniformMatrix4fv
             |> expect
             |> toCalledWith([pos, Obj.magic(Js.false_), Obj.magic(targetData)])
           }
         )
+      }
     )
   };
 };

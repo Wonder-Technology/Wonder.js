@@ -59,3 +59,10 @@ let addItAndItsChildrenToDirtyList = (index: int, transformData: transformData) 
   };
   transformData
 };
+
+  /* todo test */
+let isDirty = (transform: transform, transformData: transformData) =>
+  switch (transformData.dirtyMap |> HashMapSystem.get(Js.Int.toString(transform))) {
+  | None => false
+  | Some(dirty) => dirty == true
+  };

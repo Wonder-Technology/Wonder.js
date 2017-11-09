@@ -54,8 +54,8 @@ let setPosition =
     )
   };
 
-  /* todo test */
-let isTransform = (transform: transform, isTransformMap) =>
+
+/* let isTransform = (transform: transform, isTransformMap) =>
   switch (isTransformMap |> HashMapSystem.get(Js.Int.toString(transform))) {
   | None => false
   | Some(isTransform) => isTransform == true
@@ -69,4 +69,4 @@ let markIsTransform = (transform: transform, isTransformMap) => {
 let cleanIsTransformMap = (state:StateDataType.state) => {
  TransformStateUtils.getTransformData(state).isTransformMap = HashMapSystem.createEmpty();
   state;
-};
+}; */

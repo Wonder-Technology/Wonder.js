@@ -99,6 +99,12 @@ let addAttributeSendData =
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
+let _getModelMMatrixData = (uid: string, state: StateDataType.state) => {
+  let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state));
+  TransformSystem.isDirty(transform, state) ?
+    CacheType.New(TransformSystem.getLocalToWorldMatrix(transform, state)) : CacheType.Cache
+};
+
 let addUniformSendData =
     (
       gl,
@@ -148,7 +154,7 @@ let addUniformSendData =
                              }
                            | "model" =>
                              switch field {
-                             | "mMatrix" => getModelMMatrixData(uid)
+                             | "mMatrix" => _getModelMMatrixData(uid)
                              }
                            },
                          sendArrayDataFunc:
@@ -195,6 +201,7 @@ let addDrawPointsFunc = (gl, shaderIndex: int, geometryIndex: int, state: StateD
   |> ignore;
   state
 };
+
 let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap

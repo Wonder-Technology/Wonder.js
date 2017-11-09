@@ -22,7 +22,6 @@ let _ =
           let (state, _, transform2, cameraController2) =
             CameraControllerTool.createCameraGameObject(sandbox, state);
           let state = state |> Transform.setTransformLocalPosition(transform2, (1., 2., 3.));
-          DebugUtils.log(transform2) |> ignore;
           let render = (state: StateDataType.state) =>
             state |> GetCameraDataJobTool.getJob(RenderJobsTool.buildConfigData());
           let state = RenderJobsTool.passGl(sandbox, state);
@@ -32,8 +31,11 @@ let _ =
           |>
           expect == Some({
                       vMatrix:
-                        CameraControllerTool.getWorldToCameraMatrix(cameraController2, state),
-                      pMatrix: CacheType.New(CameraControllerTool.getPMatrix(cameraController2, state))
+                        CacheType.New(
+                          CameraControllerTool.getWorldToCameraMatrix(cameraController2, state)
+                        ),
+                      pMatrix:
+                        CacheType.New(CameraControllerTool.getPMatrix(cameraController2, state))
                     })
         }
       )

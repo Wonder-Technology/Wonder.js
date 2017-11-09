@@ -32,6 +32,8 @@ let getCurrentCameraController = (state: StateDataType.state) => {
   ArraySystem.get(0, cameraArray)
 };
 
+
+
 /* let _clearCache = (cameraControllerData: cameraControllerData) =>
    cameraControllerData.worldToCameraMatrixCacheMap = HashMapSystem.createEmpty(); */
 let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraControllerData) =>
@@ -48,7 +50,7 @@ let init = (state: StateDataType.state) => {
     |> Js.Array.forEach(
          (dirtyIndex) => _initCameraController(dirtyIndex, cameraControllerData) |> ignore
        );
-    cameraControllerData |> cleanDirtyList |> ignore;
+    /* cameraControllerData |> cleanDirtyList |> ignore; */
     state
   /* |> ensureCheck(
        (state) =>
@@ -97,10 +99,13 @@ let update = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
   let dirtyList = cameraControllerData.dirtyList;
   switch (Js.Array.length(dirtyList)) {
-  | 0 => state
+  | 0 => 
+  CameraControllerDirtySystem.cleanDirtyMap(cameraControllerData) |> ignore; 
+  state;
   | _ =>
     dirtyList
     |> ArraySystem.removeDuplicateItems
+    |> CameraControllerDirtySystem.updateDirtyMap(cameraControllerData)
     |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
     /* cameraControllerData |> cleanDirtyList |> _clearCache |> ignore; */
     cameraControllerData |> cleanDirtyList |> ignore;
@@ -108,22 +113,31 @@ let update = (state: StateDataType.state) => {
   }
 };
 
+let isDirty = (cameraController: cameraController, state: StateDataType.state) =>
+  CameraControllerDirtySystem.isDirty(cameraController, getCameraControllerData(state));
+
 let getGameObject = (cameraController: cameraController, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     cameraController,
     getCameraControllerData(state).gameObjectMap
   );
 
-let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateDataType.state) =>
+let getTransform = (cameraController: cameraController, state: StateDataType.state) =>
   switch (getGameObject(cameraController, state)) {
   | None => ExceptionHandlerSystem.throwMessage("cameraController's gameObject should exist")
   | Some(gameObject) =>
     switch (GameObjectSystem.getTransformComponent(gameObject, state)) {
     | None =>
       ExceptionHandlerSystem.throwMessage("cameraController's gameObject's transform should exist")
-    | Some(transform) => TransformSystem.getLocalToWorldMatrix(transform, state)
+    | Some(transform) => transform
     }
   };
+
+let _getCameraToWorldMatrixByTransform = (transform, state: StateDataType.state) =>
+  TransformSystem.getLocalToWorldMatrix(transform, state);
+
+let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateDataType.state) =>
+  _getCameraToWorldMatrixByTransform(getTransform(cameraController, state), state);
 
 /* let getWorldToCameraMatrix =
    CacheUtils.memorizeIntState(
@@ -137,11 +151,15 @@ let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateD
    ); */
 /* todo test remove cache */
 let getWorldToCameraMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  CacheUtils.mapDataInCacheType(
-    _getCameraToWorldMatrix(cameraController, state),
-    [@bs] ((data) => data |> Matrix4System.invert)
-  );
+  /* CacheUtils.mapDataInCacheType( */
+  _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert;
 
+let getWorldToCameraMatrixByTransform = (transform, state: StateDataType.state) =>
+  /* CacheUtils.mapDataInCacheType( */
+  _getCameraToWorldMatrixByTransform(transform, state) |> Matrix4System.invert;
+
+/* [@bs] ((data) => data |> Matrix4System.invert) */
+/* ); */
 /* switch (_getCameraToWorldMatrix(cameraController, state)) {
    | CacheType.Cache(data) => CacheType.Cache(data |> Matrix4System.invert)
    | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
@@ -173,6 +191,7 @@ let initData = () => {
   /* worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(), */
   pMatrixMap: HashMapSystem.createEmpty(),
   gameObjectMap: HashMapSystem.createEmpty(),
+  dirtyMap: HashMapSystem.createEmpty(),
   updateCameraFuncMap: HashMapSystem.createEmpty(),
   perspectiveCameraData: PerspectiveCameraSystem.initData()
 };

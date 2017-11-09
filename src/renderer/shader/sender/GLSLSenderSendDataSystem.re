@@ -15,7 +15,7 @@ let getBufferSizeByType = (type_: string) =>
   | _ => ExceptionHandlerSystem.throwMessage({j|invalide type_:$type_|j})
   };
 
-/* todo optimize: send uniform judge cache data */
+/* todo optimize: judge last buffer(only when use vao?) */
 let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.state) => {
   let {vertexAttribHistoryArray} = getGLSLSenderData(state);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
@@ -29,14 +29,9 @@ let sendBuffer = (gl, size: int, pos: int, buffer: buffer, state: StateDataType.
     state
 };
 
-let getModelMMatrixData = (uid: string, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrix(
-    Js.Option.getExn(GameObjectSystem.getTransformComponent(uid, state)),
-    state
-  );
 
 let sendMatrix4 = (gl, pos: int, data: cache(Js.Array.t(float))) =>
   switch data {
-  | Cache(data) => ()
+  | Cache => ()
   | New(data) => uniformMatrix4fv(pos, Js.false_, data, gl)
   };

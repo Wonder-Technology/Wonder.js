@@ -103,7 +103,7 @@ let getChildren = (transform: transform, state: StateDataType.state) =>
 
 let update = (state: StateDataType.state) => {
   TransformUpdateSystem.update(getTransformData(state));
-  state |> cleanIsTransformMap
+  state
 };
 
 let getLocalPosition = (transform: transform, state: StateDataType.state) =>
@@ -119,7 +119,7 @@ let setLocalPosition = (transform: transform, localPosition: position, state: St
   )
   |> ignore;
   addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
-  markIsTransform(transform, transformData.isTransformMap);
+  /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
 
@@ -145,21 +145,30 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   )
   |> ignore;
   addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
-  markIsTransform(transform, transformData.isTransformMap);
+  /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) => {
-  let data =
-    TransformOperateDataSystem.getLocalToWorldMatrix(
-      transform,
-      getTransformData(state).localToWorldMatrices
-    );
-  isTransform(transform, getTransformData(state).isTransformMap) ?
-    CacheType.Cache(data) : CacheType.New(data)
-};
+let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>
+  /* let data =
+       TransformOperateDataSystem.getLocalToWorldMatrix(
+         transform,
+         getTransformData(state).localToWorldMatrices
+       );
+     isTransform(transform, getTransformData(state).isTransformMap) ?
+       CacheType.Cache(data) : CacheType.New(data) */
+  TransformOperateDataSystem.getLocalToWorldMatrix(
+    transform,
+    getTransformData(state).localToWorldMatrices
+  );
 
-let init = (state: StateDataType.state) => update(state);
+let isDirty = (transform: transform, state: StateDataType.state) =>
+  TransformDirtySystem.isDirty(transform, getTransformData(state));
+
+let init = (state: StateDataType.state) => {
+  TransformUpdateSystem.updateForInit(getTransformData(state));
+  state
+};
 
 let getGameObject = (transform: transform, state: StateDataType.state) => {
   let transformData = getTransformData(state);
@@ -180,11 +189,11 @@ let initData = (state: StateDataType.state) => {
         /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
         parentMap: HashMapSystem.createEmpty(),
         childMap: HashMapSystem.createEmpty(),
-        isTransformMap: HashMapSystem.createEmpty(),
         gameObjectMap: HashMapSystem.createEmpty(),
         /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
-        dirtyList: ArraySystem.createEmpty()
+        dirtyList: ArraySystem.createEmpty(),
+        dirtyMap: HashMapSystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
     );

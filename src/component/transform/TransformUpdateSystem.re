@@ -30,10 +30,7 @@ let _transform = ({localToWorldMatrices, localPositions} as transformData, dirty
              localToWorldMatrices
            )
            |> ignore
-         | None =>
-           [@bs]
-           setLocalToWorldMatricesTypeArr(index, mat, localToWorldMatrices)
-           |> ignore
+         | None => [@bs] setLocalToWorldMatricesTypeArr(index, mat, localToWorldMatrices) |> ignore
          }
        }
      );
@@ -73,11 +70,35 @@ let _updateDirtyList = (transformData: transformData, dirtyList: array(int)) => 
   transformData
 };
 
+let _cleanDirtyMap = (transformData: transformData) => {
+  transformData.dirtyMap = HashMapSystem.createEmpty();
+  ()
+};
+
+let _updateDirtyMap = (transformData: transformData, dirtyList: array(int)) => {
+  transformData.dirtyMap = DirtyUtils.convertDirtyListToDirtyMap(dirtyList);
+  dirtyList
+};
+
+let updateForInit = (transformData: transformData) =>
+  switch (Js.Array.length(transformData.dirtyList)) {
+  | 0 => ()
+  | _ =>
+    transformData.dirtyList
+    |> ArraySystem.removeDuplicateItems
+    /* |> _updateDirtyMap(transformData) */
+    |> _updateDirtyList(transformData)
+    |> ignore
+  /* |> _cleanDirtyList */
+  };
+
 let update = (transformData: transformData) =>
-  /* ArraySystem.range transformData.firstDirtyIndex (getMaxCount () - 1)
-     |> _updateDirtyList floatArr_1 transformData
-     |> _cleanDirtyList transformData; */
-  transformData.dirtyList
-  |> ArraySystem.removeDuplicateItems
-  |> _updateDirtyList(transformData)
-  |> _cleanDirtyList;
+  switch (Js.Array.length(transformData.dirtyList)) {
+  | 0 => _cleanDirtyMap(transformData)
+  | _ =>
+    transformData.dirtyList
+    |> ArraySystem.removeDuplicateItems
+    |> _updateDirtyMap(transformData)
+    |> _updateDirtyList(transformData)
+    |> _cleanDirtyList
+  };

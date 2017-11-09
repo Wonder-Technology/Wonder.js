@@ -81,25 +81,25 @@ let _ =
       );
       describe(
         "initSystem",
-        () => {
-          _testBuildPMatrix((state) => state |> CameraControllerTool.init);
-          /* describe(
-            "contract check",
-            () =>
-              test(
-                "should has no cache",
-                () => {
-                  let (state, cameraController) =
-                    CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
-                  let state =
-                    state
-                    |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
-                  expect(() => state |> CameraControllerTool.init |> ignore)
-                  |> toThrowMessage("should has no cache")
-                }
-              )
-          ) */
-        }
+        () =>
+          _testBuildPMatrix
+            ((state) => state |> CameraControllerTool.init)
+            /* describe(
+                 "contract check",
+                 () =>
+                   test(
+                     "should has no cache",
+                     () => {
+                       let (state, cameraController) =
+                         CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
+                       let state =
+                         state
+                         |> CameraControllerTool.setWorldToCameraMatrixCacheMap(cameraController, [||]);
+                       expect(() => state |> CameraControllerTool.init |> ignore)
+                       |> toThrowMessage("should has no cache")
+                     }
+                   )
+               ) */
       );
       describe(
         "update",
@@ -179,60 +179,60 @@ let _ =
               state
               |> getCameraControllerWorldToCameraMatrix(cameraController)
               |>
-              expect == CacheType.New([|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-1.), (-2.), (-3.), 1.|]);
+              expect == [|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., (-1.), (-2.), (-3.), 1.|]
             }
-          );
+          )
           /* describe(
-            "test cache",
-            () => {
-              test(
-                "cache data after first get",
-                () => {
-                  open PerspectiveCamera;
-                  open Transform;
-                  let (state, _, transform, cameraController) = _prepare();
-                  let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
-                  let mat1 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
-                  let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
-                  let mat2 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
-                  let state = state |> setPerspectiveCameraFovy(cameraController, 101.);
-                  let mat3 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
-                  (mat2, mat3) |> expect == (mat1, mat1)
-                }
-              );
-              test(
-                "clear cache after update",
-                () => {
-                  open Transform;
-                  let (state, _, transform, cameraController) = _prepare();
-                  let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
-                  let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
-                  let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
-                  state
-                  |> getCameraControllerWorldToCameraMatrix(cameraController)
-                  |>
-                  expect == CacheType.New([|
-                              1.,
-                              0.,
-                              0.,
-                              0.,
-                              0.,
-                              1.,
-                              0.,
-                              0.,
-                              0.,
-                              0.,
-                              1.,
-                              0.,
-                              (-10.),
-                              (-30.),
-                              (-40.),
-                              1.
-                            |])
-                }
-              )
-            }
-          ) */
+               "test cache",
+               () => {
+                 test(
+                   "cache data after first get",
+                   () => {
+                     open PerspectiveCamera;
+                     open Transform;
+                     let (state, _, transform, cameraController) = _prepare();
+                     let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
+                     let mat1 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
+                     let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
+                     let mat2 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
+                     let state = state |> setPerspectiveCameraFovy(cameraController, 101.);
+                     let mat3 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
+                     (mat2, mat3) |> expect == (mat1, mat1)
+                   }
+                 );
+                 test(
+                   "clear cache after update",
+                   () => {
+                     open Transform;
+                     let (state, _, transform, cameraController) = _prepare();
+                     let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
+                     let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
+                     let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
+                     state
+                     |> getCameraControllerWorldToCameraMatrix(cameraController)
+                     |>
+                     expect == CacheType.New([|
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 0.,
+                                 1.,
+                                 0.,
+                                 (-10.),
+                                 (-30.),
+                                 (-40.),
+                                 1.
+                               |])
+                   }
+                 )
+               }
+             ) */
         }
       );
       describe(
@@ -259,8 +259,7 @@ let _ =
             () => {
               let (state, cameraController1) =
                 CameraControllerTool.createCameraControllerPerspectiveCamera(state^);
-              let (state, _) =
-                CameraControllerTool.createCameraControllerPerspectiveCamera(state);
+              let (state, _) = CameraControllerTool.createCameraControllerPerspectiveCamera(state);
               state
               |> CameraControllerTool.getCurrentCameraController
               |> Js.Option.getExn

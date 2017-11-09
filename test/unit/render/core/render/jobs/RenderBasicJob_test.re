@@ -252,17 +252,16 @@ let _ =
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_pMatrix",
-            (gameObjectTransform, cameraTransform, cameraController, state) =>
-              state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
+            (gameObjectTransform, cameraTransform, cameraController, state) => state,
             CameraControllerTool.getPMatrixOfCreateCameraControllerPerspectiveCamera()
           )
         }
       );
-      describe(
-        "draw",
-        () =>
-          describe
-            (
+      describe
+        (
+          "draw",
+          () =>
+            describe(
               "if geometry has index buffer, bind index buffer and drawElements",
               () => {
                 let _prepareForDrawElements = (sandbox, state) => {
@@ -331,13 +330,13 @@ let _ =
                 )
               }
             )
-            /* test
-                ("else, drawArrays",
-                (
-                () => {
-               todo test
-                })
-                ); */
-      )
+        )
+        /* test
+            ("else, drawArrays",
+            (
+            () => {
+           todo test
+            })
+            ); */
     }
   );

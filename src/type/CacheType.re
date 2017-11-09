@@ -1,3 +1,3 @@
 type cache('value) =
-  | Cache('value)
+  | Cache
   | New('value);
