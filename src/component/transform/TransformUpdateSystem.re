@@ -70,19 +70,9 @@ let _updateDirtyList = (transformData: transformData, dirtyList: array(int)) => 
   transformData
 };
 
-let updateForInit = (transformData: transformData) =>
-  switch (Js.Array.length(transformData.dirtyList)) {
-  | 0 => ()
-  | _ =>
-    transformData.dirtyList
-    |> ArraySystem.removeDuplicateItems
-    |> _updateDirtyList(transformData)
-    |> ignore
-  };
-
 let update = (transformData: transformData) =>
   switch (Js.Array.length(transformData.dirtyList)) {
-  | 0 =>  TransformDirtySystem.cleanDirtyMap(transformData)
+  | 0 => TransformDirtySystem.cleanDirtyMap(transformData)
   | _ =>
     transformData.dirtyList
     |> ArraySystem.removeDuplicateItems

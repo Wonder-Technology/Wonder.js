@@ -7,18 +7,24 @@ let _getCameraData = (state: StateDataType.state) =>
   | None => None
   | Some(currentCameraController) =>
     let transform = CameraControllerSystem.getTransform(currentCameraController, state);
-    Some({
-      vMatrix:
-        TransformSystem.isDirty(transform, state) ?
-          CacheType.New(
-            CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)
-          ) :
-          CacheType.Cache,
-      pMatrix:
-        CameraControllerSystem.isDirty(currentCameraController, state) ?
-          CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state)) :
-          CacheType.Cache
-    })
+    RenderDataSystem.isFirstRender(state) ?
+      Some({
+        vMatrix:
+          CacheType.New(CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)),
+        pMatrix: CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state))
+      }) :
+      Some({
+        vMatrix:
+          TransformSystem.isDirty(transform, state) ?
+            CacheType.New(
+              CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state)
+            ) :
+            CacheType.Cache,
+        pMatrix:
+          CameraControllerSystem.isDirty(currentCameraController, state) ?
+            CacheType.New(CameraControllerSystem.getPMatrix(currentCameraController, state)) :
+            CacheType.Cache
+      })
   };
 
 let getJob = (configData, gl, state) => {

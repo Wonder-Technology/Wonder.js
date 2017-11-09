@@ -166,7 +166,7 @@ let isDirty = (transform: transform, state: StateDataType.state) =>
   TransformDirtySystem.isDirty(transform, getTransformData(state));
 
 let init = (state: StateDataType.state) => {
-  TransformUpdateSystem.updateForInit(getTransformData(state));
+  TransformUpdateSystem.update(getTransformData(state));
   state
 };
 
