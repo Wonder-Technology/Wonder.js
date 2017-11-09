@@ -432,7 +432,28 @@ let _ =
       );
       describe(
         "update",
-        () =>
+        () =>{
+          test
+          ("sort dirtyList, make parent before child", 
+          (
+          () => {
+              let (state, child) = createTransform(state^);
+              let (state, parent) = createTransform(state);
+              let pos = (1., 2., 3.);
+              let state =
+                state
+                |> setTransformLocalPosition(child, pos);
+              let state =
+                state
+                |> setTransformLocalPosition(parent, pos)
+                |> setTransformParent(Js.Nullable.return(parent), child);
+                
+              /* let state = state |> init; */
+              let state = state |> update;
+              (getTransformPosition(child, state), getTransformPosition(parent, state)) |> expect == (Vector3System.add(Float, pos, pos), pos)
+ 
+          })
+          );
           test(
             "clean dirty list after compute transform data",
             () => {
@@ -445,6 +466,7 @@ let _ =
               (len1, len2) |> expect == (1, 0)
             }
           )
+          }
       );
       describe(
         "getTransformGameObject",
