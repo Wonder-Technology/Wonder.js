@@ -44,6 +44,6 @@ let initData = () => {
   uniformSendDataMap: HashMapSystem.createEmpty(),
   drawPointsFuncMap: HashMapSystem.createEmpty(),
   vertexAttribHistoryArray: ArraySystem.createEmpty(),
-  lastSendArrayBuffer: None,
+  /* lastSendArrayBuffer: None, */
   lastSendElementArrayBuffer: None
 };

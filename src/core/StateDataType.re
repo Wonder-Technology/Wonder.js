@@ -182,10 +182,10 @@ type executableJobFlags = (jobFlags, option(string));
 type uniformData;
 
 type attributeSendData = {
-  pos: option(attributeLocation),
-  size: option(int),
+  pos: attributeLocation,
+  size: int,
   buffer,
-  sendFunc: ((webgl1Context, option(attributeLocation), option(int), buffer, state) => state)
+  sendFunc: ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
 and uniformSendData = {
   pos: uniformLocation,
@@ -199,7 +199,7 @@ and glslSenderData = {
   uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
   drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),
-  mutable lastSendArrayBuffer: option(buffer),
+  /* mutable lastSendArrayBuffer: option(buffer), */
   mutable lastSendElementArrayBuffer: option(buffer)
 }
 and renderConfig = {

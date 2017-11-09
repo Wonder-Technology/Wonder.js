@@ -246,8 +246,8 @@ let _ =
                           let state = state |> _render;
                           let state =
                             state
-                            |> GlslSenderTool.disableVertexAttribArray
-                            |> GlslSenderTool.cleanLastSendArrayBuffer;
+                            |> GlslSenderTool.disableVertexAttribArray;
+                            /* |> GlslSenderTool.cleanLastSendArrayBuffer; */
                           let state = state |> _render;
                           enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
                         }

@@ -53,47 +53,44 @@ let addAttributeSendData =
                     switch (name, type_) {
                     | (Some(name), Some(type_)) =>
                       sendDataArr
-                      |> Js.Array.push
-                           ({
-                             pos:
-                               Some(
-                                 GLSLLocationSystem.getAttribLocation(
-                                   program,
-                                   name,
-                                   attributeLocationMap,
-                                   gl
-                                 )
-                               ),
-                             size: Some(getBufferSizeByType(type_)),
-                             buffer:
-                               switch buffer {
-                               | "vertex" =>
-                                 ArrayBufferSystem.createBuffer(
-                                   gl,
-                                   geometryIndex,
-                                   GeometrySystem.getVertices(geometryIndex, state)
-                                 )
-                               },
-                             sendFunc: sendBuffer
-                           })
-                           /* sendBuffer(
-                                gl,
-                                getBufferSizeByType(type_),
-                                GLSLLocationSystem.getAttribLocation(
-                                  program,
-                                  name,
-                                  attributeLocationMap,
-                                  gl
-                                ),
-                                switch buffer {
-                                | "vertex" =>
-                                  ArrayBufferSystem.createBuffer(
-                                    gl,
-                                    geometryIndex,
-                                    GeometrySystem.getVertices(geometryIndex, state)
-                                  )
-                                }
-                              )*/
+                      |> Js.Array.push({
+                           pos:
+                             GLSLLocationSystem.getAttribLocation(
+                               program,
+                               name,
+                               attributeLocationMap,
+                               gl
+                             ),
+                           size: getBufferSizeByType(type_),
+                           buffer:
+                             switch buffer {
+                             | "vertex" =>
+                               ArrayBufferSystem.createBuffer(
+                                 gl,
+                                 geometryIndex,
+                                 GeometrySystem.getVertices(geometryIndex, state)
+                               )
+                             },
+                           sendFunc: sendBuffer
+                         })
+                      /* sendBuffer(
+                           gl,
+                           getBufferSizeByType(type_),
+                           GLSLLocationSystem.getAttribLocation(
+                             program,
+                             name,
+                             attributeLocationMap,
+                             gl
+                           ),
+                           switch buffer {
+                           | "vertex" =>
+                             ArrayBufferSystem.createBuffer(
+                               gl,
+                               geometryIndex,
+                               GeometrySystem.getVertices(geometryIndex, state)
+                             )
+                           }
+                         )*/
                       |> ignore
                     | (_, _) =>
                       sendDataArr
@@ -112,8 +109,8 @@ let addAttributeSendData =
                            /* pos: Obj.magic(0), */
                            /* bufferSize: 0, */
                            ({
-                             pos: None,
-                             size: None,
+                             pos: 0,
+                             size: 0,
                              buffer:
                                switch buffer {
                                | "index" =>
@@ -123,7 +120,7 @@ let addAttributeSendData =
                                    GeometrySystem.getIndices(geometryIndex, state)
                                  )
                                },
-                             sendFunc:  bindIndexBuffer
+                             sendFunc: bindIndexBuffer
                            })
                       |> ignore
                     }
