@@ -16,24 +16,22 @@ let _cleanDirtyList = (transformData: transformData) =>
 
 let _transform = ({localToWorldMatrices, localPositions} as transformData, dirtyList: array(int)) => {
   open Matrix4System;
-  dirtyList
-  |> Js.Array.forEach(
-       (index) => {
-         /* todo from rotation, scale */
-         let mat = fromTranslation(localPositions, getVector3DataIndex(index));
-         switch (getParent(Js.Int.toString(index), transformData)) {
-         | Some(parent) =>
-           [@bs]
-           setLocalToWorldMatricesTypeArr(
-             index,
-             multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
-             localToWorldMatrices
-           )
-           |> ignore
-         | None => [@bs] setLocalToWorldMatricesTypeArr(index, mat, localToWorldMatrices) |> ignore
-         }
-       }
-     );
+  for (i in 0 to Js.Array.length(dirtyList) - 1) {
+    let index = Array.unsafe_get(dirtyList, i);
+    /* todo from rotation, scale */
+    let mat = fromTranslation(localPositions, getVector3DataIndex(index));
+    switch (getParent(Js.Int.toString(index), transformData)) {
+    | Some(parent) =>
+      [@bs]
+      setLocalToWorldMatricesTypeArr(
+        index,
+        multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
+        localToWorldMatrices
+      )
+      |> ignore
+    | None => [@bs] setLocalToWorldMatricesTypeArr(index, mat, localToWorldMatrices) |> ignore
+    }
+  };
   dirtyList
 };
 

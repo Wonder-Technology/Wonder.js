@@ -18,16 +18,23 @@ let _run = (~elapsed: float, state: StateDataType.state) =>
 /* todo add time logic */
 /* todo add scheduler */
 /* todo unit test */
-let loopBody = (time: float, state: StateDataType.state) =>
-  state |> _run(~elapsed=time);
+let loopBody = (time: float) => getState(stateData) |> _run(~elapsed=time) |> setState(~stateData);
 
 let start = (state: StateDataType.state) => {
-  let rec _loop = (time: float, state: StateDataType.state) =>
+  let rec _loop = (time: float) =>
     Dom.requestAnimationFrame(
-      (time: float) =>
-        state
-        |> loopBody(time)
-        |> _loop(time)
+      (time: float) => {
+        /* state
+           |> loopBody(time)
+           |> setState(~stateData)
+           |> _loop(time) */
+        loopBody(time) |> ignore;
+        /* state
+           |> loopBody(time) */
+        _loop(time)
+      }
     );
-  state |> _init |> _loop(0.)
+  state |> _init |> setState(~stateData) |> ignore;
+  
+  _loop(0.);
 };

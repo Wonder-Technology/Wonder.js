@@ -8,6 +8,11 @@
 
 <body>
     <script type="module">
+
+        import { getState, setState } from "../../lib/es6_global/src/core/StateSystem.js";
+        import { stateData } from "../../lib/es6_global/src/core/StateData.js";
+
+
         import { setMainConfig } from "../../lib/es6_global/src/core/Main.js";
 
         import { startDirector } from "../../lib/es6_global/src/core/Director.js";
@@ -20,7 +25,7 @@
         import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
 
 
-        import { setTransformLocalPosition } from "../../lib/es6_global/src/component/transform/Transform.js";
+        import { getTransformPosition, getTransformLocalPosition, setTransformLocalPosition, setTransformPosition } from "../../lib/es6_global/src/component/transform/Transform.js";
 
 
         import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/cameraController/CameraController.js";
@@ -32,21 +37,26 @@
 
         window.onload = function () {
             var state = setMainConfig({
-                isTest: true
+                // todo fix bug!
+                isTest: false
             });
 
             initSample(state);
+
+
 
             function initSample(state) {
                 var [state, box1] = createBox(state);
                 var [state, box2] = createBox(state);
 
+                var boxes = [];
                 var state$ = state;
-                for(let i = 0; i < 7000; i++){
-                var [state$, box] = createBox(state$);
+                for (let i = 0; i < 5000; i++) {
+                    var [state$, box] = createBox(state$);
+                    boxes.push(box);
                 }
 
-                var state = state$;
+                state = state$;
 
 
                 var transform = getGameObjectTransformComponent(box1, state);
@@ -58,8 +68,44 @@
 
                 var [state, camera] = createCamera(state);
 
+                setData(boxes);
+
                 startDirector(state);
             }
+
+            function setData(boxes) {
+                let _getRandom = function (num) {
+                    return Math.floor(Math.random() * num);
+                }
+
+                let _setData = () => {
+                    var state = getState(stateData);
+                    boxes.forEach(function (box) {
+                        var transform = getGameObjectTransformComponent(box, state);
+
+
+                        var pos = getTransformPosition(transform, state);
+                        var localPos = getTransformLocalPosition(transform, state);
+
+
+                        // var state$ = state;
+
+
+
+                        if (pos[0] >= 500) {
+                            state = setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
+
+                        }
+                        else if (pos[0] < 500) {
+                            state = setTransformPosition(transform, [pos[0] + 10, pos[1], pos[2]], state);
+                        }
+                    });
+
+                    setState(stateData, state);
+                };
+
+                setInterval(() => _setData(), 16);
+            };
 
             function createBox(state) {
                 var [state, material] = createBasicMaterial(state);
