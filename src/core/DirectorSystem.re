@@ -5,12 +5,14 @@ open StateData;
 let _initSystem = (state: StateDataType.state) =>
   state |> TransformSystem.init |> CameraControllerSystem.init |> GeometrySystem.init;
 
-let _init = (state: StateDataType.state) => state |> _initSystem |> WebGLRenderSystem.init;
+let _init = (state: StateDataType.state) =>
+  state |> _initSystem |> WebGLRenderSystem.init |> ScheduleControllerSystem.start;
 
 let _updateSystem = (elapsed: float, state: StateDataType.state) =>
   state |> TransformSystem.update |> CameraControllerSystem.update;
 
-let _sync = (elapsed: float, state: StateDataType.state) => _updateSystem(elapsed, state);
+let _sync = (elapsed: float, state: StateDataType.state) =>
+  state |> ScheduleControllerSystem.update(elapsed) |> _updateSystem(elapsed);
 
 let _run = (~elapsed: float, state: StateDataType.state) =>
   _sync(elapsed, state) |> WebGLRenderSystem.render;
@@ -35,6 +37,5 @@ let start = (state: StateDataType.state) => {
       }
     );
   state |> _init |> setState(~stateData) |> ignore;
-  
-  _loop(0.);
+  _loop(0.)
 };

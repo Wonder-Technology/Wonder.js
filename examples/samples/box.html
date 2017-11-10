@@ -8,9 +8,7 @@
 
 <body>
     <script type="module">
-
-        import { getState, setState } from "../../lib/es6_global/src/core/StateSystem.js";
-        import { stateData } from "../../lib/es6_global/src/core/StateData.js";
+        import {scheduleLoop} from "../../lib/es6_global/src/core/scheduler/Scheduler.js";
 
 
         import { setMainConfig } from "../../lib/es6_global/src/core/Main.js";
@@ -50,7 +48,7 @@
 
                 var boxes = [];
                 var state$ = state;
-                for (let i = 0; i < 5000; i++) {
+                for (let i = 0; i < 7000; i++) {
                     var [state$, box] = createBox(state$);
                     boxes.push(box);
                 }
@@ -67,7 +65,7 @@
 
                 var [state, camera] = createCamera(state);
 
-                // setData(boxes);
+                // state = setData(boxes, state);
                 state = setParent(boxes, state);
 
                 startDirector(state);
@@ -77,19 +75,13 @@
                 return Math.floor(Math.random() * num);
             }
 
-            let _setData = (boxes) => {
-                var state = getState(stateData);
+            let _setData = (boxes, state) => {
                 boxes.forEach(function (box) {
                     var transform = getGameObjectTransformComponent(box, state);
 
 
                     var pos = getTransformPosition(transform, state);
                     var localPos = getTransformLocalPosition(transform, state);
-
-
-                    // var state$ = state;
-
-
 
                     if (pos[0] >= 500) {
                         state = setTransformLocalPosition(transform, [100, localPos[1], localPos[2]], state);
@@ -100,11 +92,11 @@
                     }
                 });
 
-                setState(stateData, state);
+                return state;
             };
 
-            function setData(boxes) {
-                setInterval(() => _setData(boxes), 16);
+            function setData(boxes, state) {
+                return scheduleLoop((elapsed, state) => _setData(boxes, state), state)
             };
 
             function getRandomParentIndex(num) {
@@ -113,29 +105,19 @@
 
 
             function setParent(boxes, state) {
-                // var state = getState(stateData);
-
                 for (var i = 1, len = 10; i < len; i++) {
                     var box = boxes[i];
 
                     state = setTransformParent(boxes[i - 1], box, state)
                 }
 
-                // setState(stateData, state);
-
-                setInterval(() => {
-                    var state = getState(stateData);
-
+                return scheduleLoop((elapsed, state) => {
                     var box = boxes[i];
 
                     state = setTransformParent(boxes[getRandomParentIndex(10)], box, state);
 
-                    setState(stateData, state);
-
-                    _setData(boxes);
-                }, 16);
-
-                return state
+                    return _setData(boxes, state);
+                }, state)
             }
 
 

@@ -73,7 +73,7 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
 };
 
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
-  Float32Array.subarray(startIndex, endIndex, typeArr);
+  Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
 
 let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
   requireCheck(
@@ -89,4 +89,4 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
 };
 
 let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
-  Uint16Array.subarray(startIndex, endIndex, typeArr);
+  Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);

@@ -181,11 +181,21 @@ type executableJobFlags = (jobFlags, option(string));
 
 type uniformData;
 
-type attributeSendData = {
+type schedulerFuncRecord = {
+    update: (float, state) => state,
+    isFinish: state => bool,
+    start: state => state
+}
+and schedulerData = {
+  mutable count: int,
+  funcRecordArray: array(schedulerFuncRecord),
+  isFinishMap: Js.Dict.t(bool)
+}
+and attributeSendData = {
   pos: attributeLocation,
   size: int,
   buffer,
-  sendFunc: ((webgl1Context, attributeLocation, int, buffer, state) => state)
+  sendFunc: (webgl1Context, attributeLocation, int, buffer, state) => state
 }
 and uniformSendData = {
   pos: uniformLocation,
@@ -243,7 +253,8 @@ and state = {
   glslLocationData,
   glslSenderData,
   glslChunkData,
-  renderData
+  renderData,
+  schedulerData
 };
 
 type stateData = {mutable state: option(state)};

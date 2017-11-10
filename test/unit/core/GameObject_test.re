@@ -2,8 +2,6 @@ open Jest;
 
 open GameObject;
 
-open GameObjectTool;
-
 let _ =
   describe(
     "GameObject",
@@ -44,7 +42,7 @@ let _ =
                 "state->uid + 1",
                 () => {
                   let (state, _) = createGameObject(state^);
-                  getData(state) |> ((data) => expect(data.uid) == 1)
+                  GameObjectTool.getData(state) |> ((data) => expect(data.uid) == 1)
                 }
               )
           )

@@ -11,7 +11,7 @@ let _ =
       let state = ref(StateSystem.createState());
       let _prepare = (sandbox, state) => {
         let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
-        let (state, _, _, _) = CameraControllerTool.createCameraGameObject(sandbox, state);
+        let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
         state
       };
       let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
@@ -414,7 +414,7 @@ let _ =
             () => {
               let _prepareForDrawElements = (sandbox, state) => {
                 let (state, _, geometry, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
-                let (state, _, _, _) = CameraControllerTool.createCameraGameObject(sandbox, state);
+                let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
                 (state, geometry)
               };
               describe(

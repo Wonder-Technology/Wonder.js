@@ -65,6 +65,7 @@ let createState =
     glslLocationData: GLSLLocationSystem.initData(),
     glslSenderData: GLSLSenderSystem.initData(),
     glslChunkData: ShaderChunkSystem.initData(),
-    renderData: RenderDataSystem.initData()
+    renderData: RenderDataSystem.initData(),
+    schedulerData: ScheduleControllerSystem.initData()
   }
 };

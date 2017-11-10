@@ -65,7 +65,7 @@ let getPMatrixOfCreateCameraControllerPerspectiveCamera = () =>
     0.
   |]);
 
-let createCameraGameObject = (sandbox, state) => {
+let createCameraGameObject = (state) => {
   open GameObject;
   open CameraController;
   open Sinon;

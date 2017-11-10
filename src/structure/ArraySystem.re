@@ -1,5 +1,7 @@
 open Contract;
 
+open StateDataType;
+
 type t('a) = Js.Array.t('a);
 
 [@bs.send.pipe : array('a)] external unsafePop : 'a = "pop";
@@ -77,10 +79,9 @@ let removeDuplicateItems = (arr) => {
 };
 
 /* let fastSort = Array.fast_sort; */
-let reduceState = (func, state, arr) => {
-  let length = Js.Array.length(arr);
+let reduceState = (func, state, arr) : state => {
   let mutableState = ref(state);
-  for (i in 0 to length - 1) {
+  for (i in 0 to Js.Array.length(arr) - 1) {
     mutableState := [@bs] func(mutableState^, Array.unsafe_get(arr, i))
   };
   mutableState^
@@ -106,3 +107,17 @@ let isNotEqual = (index: int, target, arr) =>
   } else {
     Array.unsafe_get(arr, index) != target
   };
+
+let forEach = (func, arr) => {
+  for (i in 0 to Js.Array.length(arr) - 1) {
+    [@bs] func(Array.unsafe_get(arr, i)) |> ignore
+  };
+  ()
+};
+
+let forEachi = (func, arr) => {
+  for (i in 0 to Js.Array.length(arr) - 1) {
+    [@bs] func(Array.unsafe_get(arr, i), i) |> ignore
+  };
+  ()
+};
