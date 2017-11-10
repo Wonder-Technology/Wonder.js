@@ -1,6 +1,6 @@
 let init =
     (
-      ~isTest=Js.Nullable.return(true),
+      ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
                       "geometryPointDataBufferCount": Js.Nullable.return(5),
@@ -27,7 +27,7 @@ let initWithRenderConfig =
                       Shaders.shaders,
                       Shader_libs.shader_libs
                     ), */
-      ~isTest=Js.Nullable.return(true),
+      ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
                       "geometryPointDataBufferCount": Js.Nullable.return(5),

@@ -37,6 +37,7 @@ let requireCheck = (f: unit => unit) : unit =>
   | true => f()
   | _ => ()
   };
+  /* (); */
 
 /* todo use conditional compilation */
 let ensureCheck = (f: 'a => unit, returnVal: 'a) : 'a =>
@@ -46,6 +47,8 @@ let ensureCheck = (f: 'a => unit, returnVal: 'a) : 'a =>
     returnVal
   | _ => returnVal
   };
+  /* returnVal; */
+
 
 let _assert = (result: bool, message: string) =>
   switch result {

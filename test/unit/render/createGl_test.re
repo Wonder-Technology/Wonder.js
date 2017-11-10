@@ -18,7 +18,7 @@ let _ =
         "get webgl1 context",
         () => {
           let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
-          setMainConfig(buildMainConfig(~isTest=Js.Nullable.return(true), ())) |> ignore;
+          setMainConfig(buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())) |> ignore;
           expect(canvasDom##getContext) |> toCalledWith(["webgl"])
         }
       )

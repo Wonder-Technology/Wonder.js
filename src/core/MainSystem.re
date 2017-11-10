@@ -16,13 +16,14 @@ open JsObjUtils;
 
 /* todo not set default twice! */
 let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigType.contextConfig => {
-  alpha: getValueFromJsObj(contextConfigObj##alpha, true),
-  depth: getValueFromJsObj(contextConfigObj##depth, true),
-  stencil: getValueFromJsObj(contextConfigObj##stencil, false),
-  antialias: getValueFromJsObj(contextConfigObj##antialias, true),
-  premultipliedAlpha: getValueFromJsObj(contextConfigObj##premultipliedAlpha, true),
-  preserveDrawingBuffer: getValueFromJsObj(contextConfigObj##preserveDrawingBuffer, false)
+  alpha: Js.to_bool(getValueFromJsObj(contextConfigObj##alpha, Js.true_)),
+  depth: Js.to_bool(getValueFromJsObj(contextConfigObj##depth, Js.true_)),
+  stencil: Js.to_bool(getValueFromJsObj(contextConfigObj##stencil, Js.false_)),
+  antialias: Js.to_bool(getValueFromJsObj(contextConfigObj##antialias, Js.true_)),
+  premultipliedAlpha: Js.to_bool(getValueFromJsObj(contextConfigObj##premultipliedAlpha, Js.true_)),
+  preserveDrawingBuffer: Js.to_bool(getValueFromJsObj(contextConfigObj##preserveDrawingBuffer, Js.false_))
 };
+                               
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
   transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
@@ -34,7 +35,7 @@ let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType
 
 let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigData => {
   canvasId: getOptionValueFromJsObj(configState##canvasId),
-  isTest: getValueFromJsObj(configState##isTest, false),
+  isTest: Js.to_bool(getValueFromJsObj(configState##isTest, Js.false_)),
   contextConfig:
     switch (Js.Nullable.to_opt(configState##contextConfig)) {
     | Some(contextConfig) => _changeToContextConfigRecord(contextConfig)

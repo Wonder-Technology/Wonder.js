@@ -32,7 +32,9 @@ let _ =
                   test(
                     "it will open wonder.js contract check",
                     () =>
-                      setMainConfig(MainTool.buildMainConfig(~isTest=Js.Nullable.return(true), ()))
+                      setMainConfig(
+                        MainTool.buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())
+                      )
                       |> getIsTest
                       |> expect == true
                   )
@@ -142,10 +144,10 @@ let _ =
                             Js.Nullable.return({
                               "alpha": Js.Nullable.undefined,
                               "depth": Js.Nullable.undefined,
-                              "stencil": Js.Nullable.return(true),
-                              "antialias": Js.Nullable.return(false),
-                              "premultipliedAlpha": Js.Nullable.return(true),
-                              "preserveDrawingBuffer": Js.Nullable.return(false)
+                              "stencil": Js.Nullable.return(Js.true_),
+                              "antialias": Js.Nullable.return(Js.false_),
+                              "premultipliedAlpha": Js.Nullable.return(Js.true_),
+                              "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
                             }),
                           ()
                         )
@@ -156,14 +158,12 @@ let _ =
                       |> toCalledWith([
                            matchAny,
                            {
-                             "alpha": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "depth": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "stencil": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "antialias": Js.Nullable.return(Js.Boolean.to_js_boolean(false)),
-                             "premultipliedAlpha":
-                               Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "preserveDrawingBuffer":
-                               Js.Nullable.return(Js.Boolean.to_js_boolean(false))
+                             "alpha": Js.Nullable.return(Js.true_),
+                             "depth": Js.Nullable.return(Js.true_),
+                             "stencil": Js.Nullable.return(Js.true_),
+                             "antialias": Js.Nullable.return(Js.false_),
+                             "premultipliedAlpha": Js.Nullable.return(Js.true_),
+                             "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
                            }
                          ])
                     }
@@ -182,14 +182,12 @@ let _ =
                       |> toCalledWith([
                            matchAny,
                            {
-                             "alpha": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "depth": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "stencil": Js.Nullable.return(Js.Boolean.to_js_boolean(false)),
-                             "antialias": Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "premultipliedAlpha":
-                               Js.Nullable.return(Js.Boolean.to_js_boolean(true)),
-                             "preserveDrawingBuffer":
-                               Js.Nullable.return(Js.Boolean.to_js_boolean(false))
+                             "alpha": Js.Nullable.return(Js.true_),
+                             "depth": Js.Nullable.return(Js.true_),
+                             "stencil": Js.Nullable.return(Js.false_),
+                             "antialias": Js.Nullable.return(Js.true_),
+                             "premultipliedAlpha": Js.Nullable.return(Js.true_),
+                             "preserveDrawingBuffer": Js.Nullable.return(Js.false_)
                            }
                          ])
                     }

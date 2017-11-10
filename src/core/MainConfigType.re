@@ -1,17 +1,17 @@
 type configStateJsObj = {
   .
   "canvasId": Js.nullable(string),
-  "isTest": Js.nullable(bool),
+  "isTest": Js.nullable(Js.boolean),
   "contextConfig":
     Js.nullable(
       {
         .
-        "alpha": Js.nullable(bool),
-        "antialias": Js.nullable(bool),
-        "depth": Js.nullable(bool),
-        "premultipliedAlpha": Js.nullable(bool),
-        "preserveDrawingBuffer": Js.nullable(bool),
-        "stencil": Js.nullable(bool)
+        "alpha": Js.nullable(Js.boolean),
+        "antialias": Js.nullable(Js.boolean),
+        "depth": Js.nullable(Js.boolean),
+        "premultipliedAlpha": Js.nullable(Js.boolean),
+        "preserveDrawingBuffer": Js.nullable(Js.boolean),
+        "stencil": Js.nullable(Js.boolean)
       }
     ),
   "bufferConfig":
