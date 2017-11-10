@@ -35,8 +35,7 @@ let _transform = ({localToWorldMatrices, localPositions} as transformData, dirty
   dirtyList
 };
 
-let _sortParentBeforeChildInDirtyList = (transformData: transformData, dirtyList: array(int)) => {
-  dirtyList |> Array.fast_sort((a, b) => isParent(b, a, transformData) ? 1 : 0);
+let _sortParentBeforeChildInDirtyList = (transformData: transformData, dirtyList: array(int)) =>
   /* |> Js.Array.forEach (
        fun index =>
          switch (getParent (Js.Int.toString index) transformData) {
@@ -49,8 +48,7 @@ let _sortParentBeforeChildInDirtyList = (transformData: transformData, dirtyList
          | None => ()
          }
      ); */
-  dirtyList
-};
+  dirtyList |> Js.Array.sortInPlaceWith((a, b) => isParent(b, a, transformData) ? 1 : 0);
 
 let _updateDirtyList = (transformData: transformData, dirtyList: array(int)) => {
   /* requireCheck (
