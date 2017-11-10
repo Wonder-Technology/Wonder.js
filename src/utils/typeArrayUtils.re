@@ -16,7 +16,10 @@ let setFloat3 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t)
   requireCheck(
     () => Contract.Operators.(test("data.length should === 3", () => Js.Array.length(data) == 3))
   );
-  Float32Array.setArrayOffset(data, index, typeArray);
+  /* Float32Array.setArrayOffset(data, index, typeArray); */
+  for (i in index to index + 2) {
+    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(data, i - index))
+  };
   typeArray
 };
 
@@ -43,7 +46,10 @@ let setFloat16 = (index: int, data: Js.Array.t(float), typeArray: Float32Array.t
   requireCheck(
     () => Contract.Operators.(test("data.length should === 16", () => Js.Array.length(data) == 16))
   );
-  Float32Array.setArrayOffset(data, index, typeArray);
+  /* Float32Array.setArrayOffset(data, index, typeArray); */
+  for (i in index to index + 15) {
+    Float32Array.unsafe_set(typeArray, i, Array.unsafe_get(data, i - index))
+  };
   typeArray
 };
 
@@ -69,7 +75,7 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(startIndex, endIndex, typeArr);
 
-let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) =>{
+let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -79,7 +85,7 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
         )
       )
   );
-  Uint16Array.setArrayOffset(dataArr, startIndex, typeArr);
+  Uint16Array.setArrayOffset(dataArr, startIndex, typeArr)
 };
 
 let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
