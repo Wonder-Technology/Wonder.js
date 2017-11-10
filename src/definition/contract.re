@@ -4,12 +4,10 @@ open StateData;
 
 open Exception;
 
-let _getIsTest = (state: state) : bool => Js.Option.getExn(state.initConfig.isTest);
-
 let _getIsTestFromStateData = (stateData: stateData) =>
-  switch stateData.state {
+  switch stateData.isTest {
   | None => false
-  | Some(state) => _getIsTest(state)
+  | Some(isTest) => isTest
   };
 
 let describe = (message: string, func, ~preCondition=() => true, ()) =>
@@ -37,8 +35,8 @@ let requireCheck = (f: unit => unit) : unit =>
   | true => f()
   | _ => ()
   };
-  /* (); */
 
+/* (); */
 /* todo use conditional compilation */
 let ensureCheck = (f: 'a => unit, returnVal: 'a) : 'a =>
   switch (_getIsTestFromStateData(stateData)) {
@@ -47,9 +45,8 @@ let ensureCheck = (f: 'a => unit, returnVal: 'a) : 'a =>
     returnVal
   | _ => returnVal
   };
-  /* returnVal; */
 
-
+/* returnVal; */
 let _assert = (result: bool, message: string) =>
   switch result {
   | false => raise(Check_fail(message))

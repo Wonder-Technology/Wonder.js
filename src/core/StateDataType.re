@@ -257,4 +257,4 @@ and state = {
   schedulerData
 };
 
-type stateData = {mutable state: option(state)};
+type stateData = {mutable state: option(state), mutable isTest: option(bool)};

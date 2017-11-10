@@ -25,18 +25,16 @@ let _ =
             stub
           };
           test(
-            "if state->isTest === true, check",
+            "if stateData->isTest === true, check",
             () => {
-              createState() |> setIsTest(~isTest=true) |> setState(~stateData) |> ignore;
+              setIsTest(~isTest=true, createState(), StateData.stateData) |> ignore;
               exec() |> expect |> toCalledOnce
             }
           );
           test(
             "else, not check",
             () => {
-              createState() |> setIsTest(~isTest=true) |> setState(~stateData) |> ignore;
-              exec() |> expect |> not_ |> toCalledOnce |> ignore;
-              createState() |> setIsTest(~isTest=false) |> setState(~stateData) |> ignore;
+              setIsTest(~isTest=false, createState(), StateData.stateData) |> ignore;
               exec() |> expect |> not_ |> toCalledOnce
             }
           )

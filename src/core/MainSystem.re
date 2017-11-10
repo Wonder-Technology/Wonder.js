@@ -61,7 +61,7 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
 
 let setConfig = (~configState: Js.t({..}), state: state) => {
   let configState = _changeConfigStateToRecord(configState);
-  (configState, setIsTest(~isTest=configState.isTest, state))
+  (configState, setIsTest(~isTest=configState.isTest, state, StateData.stateData))
 };
 
 let _initDataFromState = (state: StateDataType.state) =>
