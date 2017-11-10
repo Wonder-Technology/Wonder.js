@@ -63,18 +63,16 @@ let rec range = (a: int, b: int) => {
 let removeDuplicateItems = (arr) => {
   let resultArr = [||];
   let map = HashMapSystem.createEmpty();
-  arr
-  |> Js.Array.forEach(
-       (item) => {
-         let key = Js.Int.toString(item);
-         switch (HashMapSystem.get(key, map)) {
-         | None =>
-           Js.Array.push(item, resultArr) |> ignore;
-           HashMapSystem.set(key, item, map) |> ignore
-         | Some(_) => ()
-         }
-       }
-     );
+  for (i in 0 to Js.Array.length(arr) - 1) {
+    let item = Array.unsafe_get(arr, i);
+    let key = Js.Int.toString(item);
+    switch (HashMapSystem.get(key, map)) {
+    | None =>
+      Js.Array.push(item, resultArr) |> ignore;
+      HashMapSystem.set(key, item, map) |> ignore
+    | Some(_) => ()
+    }
+  };
   resultArr
 };
 
