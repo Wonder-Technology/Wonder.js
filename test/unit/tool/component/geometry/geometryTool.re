@@ -18,8 +18,18 @@ let buildBoxGeometryConfigDataJsObj =
   "depthSegments": depthSegments
 };
 
-let getIndicesCount = (index:int, state:StateDataType.state) => GeometrySystem.getIndicesCount(index, state);
+let getIndicesCount = (index: int, state: StateDataType.state) =>
+  GeometrySystem.getIndicesCount(index, state);
 
-let getIndexType = (state:StateDataType.state) => [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;
+let getIndexType = (state: StateDataType.state) =>
+  [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;
 
-let getIndexTypeSize = (state:StateDataType.state) => [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
+let getIndexTypeSize = (state: StateDataType.state) =>
+  [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
+
+let isGeometry = (geometry) => {
+  open Jest;
+  open Expect;
+  open! Expect.Operators;
+  expect(geometry) >= 0
+};

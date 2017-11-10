@@ -8,7 +8,7 @@ open GlslSenderStateUtils;
 
 let getBufferSizeByType = (type_: string) =>
   switch type_ {
-  | "vec2" => 2
+  /* | "vec2" => 2 */
   | "vec3" => 3
   | _ => ExceptionHandlerSystem.throwMessage({j|invalide type_:$type_|j})
   };

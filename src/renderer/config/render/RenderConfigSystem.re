@@ -16,7 +16,7 @@ let getShaderLibs = (state: StateDataType.state) => state.renderConfig.shader_li
 
 let getRenderSetting = (state: StateDataType.state) => state.renderConfig.render_setting;
 
-let getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHandleMap;
+let _getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHandleMap;
 
 /* let findFirstByName = (targetName: string, arr, func) =>
    arr |> Js.Array.filter((item) => [@bs]( func(item, targetName) )) |> ArraySystem.unsafePop; */
@@ -57,26 +57,7 @@ let getRenderPipelineExecutableJobs = ({render_pipeline}, render_pipelines, jobs
 };
 
 let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : state => {
-  /* let mutableState = ref(state);
-     let jobHandleMap = getJobHandleMap(mutableState^);
-     jobs
-     |> Js.Array.forEach(
-          ({name, flags, shader}: executableJob) =>
-            /* let flags =
-               switch flags {
-               | None => ArraySystem.createEmpty()
-               | Some(flags) => flags
-               }; */
-            mutableState :=
-              (
-                switch (HashMapSystem.get(name, jobHandleMap)) {
-                | None => mutableState^
-                | Some(handle) => handle((flags, shader), gl, mutableState^)
-                }
-              )
-        );
-     mutableState^ */
-  let jobHandleMap = getJobHandleMap(state);
+  let jobHandleMap = _getJobHandleMap(state);
   jobs
   |> ArraySystem.reduceState(
        [@bs]
@@ -92,7 +73,7 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
 };
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
-  findFirst(shaderLibs, [@bs] ((item:shaderLib) => _filterTargetName(item.name, shaderLibName)));
+  findFirst(shaderLibs, [@bs] ((item: shaderLib) => _filterTargetName(item.name, shaderLibName)));
 
 let getMaterialShaderLibDataArr =
     (materialIndex: int, groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>

@@ -36,8 +36,8 @@ let createEmpty = () => [||];
    let map = Js.Array.map;
 
    let reduce = Js.Array.reduce; */
-let flatten = (arr: array('item)) =>
-  arr |> Js.Array.reduce((a, b) => Js.Array.concat(b, a), createEmpty());
+/* let flatten = (arr: array('item)) =>
+  arr |> Js.Array.reduce((a, b) => Js.Array.concat(b, a), createEmpty()); */
 
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   requireCheck(
@@ -94,12 +94,12 @@ let get = (index: int, arr) =>
     Some(Array.unsafe_get(arr, index))
   };
 
-let isEqual = (index: int, target, arr) =>
+/* let isEqual = (index: int, target, arr) =>
   if (index >= Js.Array.length(arr)) {
     false
   } else {
     Array.unsafe_get(arr, index) == target
-  };
+  }; */
 
 let isNotEqual = (index: int, target, arr) =>
   if (index >= Js.Array.length(arr)) {
@@ -115,9 +115,9 @@ let forEach = (func, arr) => {
   ()
 };
 
-let forEachi = (func, arr) => {
+/* let forEachi = (func, arr) => {
   for (i in 0 to Js.Array.length(arr) - 1) {
     [@bs] func(Array.unsafe_get(arr, i), i) |> ignore
   };
   ()
-};
+}; */

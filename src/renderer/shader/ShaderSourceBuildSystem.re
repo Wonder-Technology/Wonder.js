@@ -44,7 +44,7 @@ let _isInSource = (key: string, source: string) => Js.String.indexOf(key, source
 
 let _generateUniformSourceType = (type_: string) =>
   switch type_ {
-  | "float3" => "vec3"
+  /* | "float3" => "vec3" */
   | _ => type_
   };
 

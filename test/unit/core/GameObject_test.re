@@ -112,6 +112,102 @@ let _ =
             }
           );
           describe(
+            "test material component",
+            () => {
+              describe(
+                "getGameObjectMaterialComponent",
+                () =>
+                  test(
+                    "get material component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, material) = BasicMaterial.createBasicMaterial(state);
+                      let state = state |> addGameObjectMaterialComponent(gameObject, material);
+                      getGameObjectMaterialComponent(gameObject, state) |> MaterialTool.isMaterial
+                    }
+                  )
+              );
+              describe(
+                "hasGameObjectMaterialComponent",
+                () =>
+                  test(
+                    "has material component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, material) = BasicMaterial.createBasicMaterial(state);
+                      let state = state |> addGameObjectMaterialComponent(gameObject, material);
+                      hasGameObjectMaterialComponent(gameObject, state) |> expect == true
+                    }
+                  )
+              )
+            }
+          );
+          describe(
+            "test geometry component",
+            () => {
+              describe(
+                "getGameObjectMaterialComponent",
+                () =>
+                  test(
+                    "get geometry component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, geometry) = BoxGeometry.createBoxGeometry(state);
+                      let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
+                      getGameObjectGeometryComponent(gameObject, state) |> GeometryTool.isGeometry
+                    }
+                  )
+              );
+              describe(
+                "hasGameObjectGeometryComponent",
+                () =>
+                  test(
+                    "has geometry component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, geometry) = BoxGeometry.createBoxGeometry(state);
+                      let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
+                      hasGameObjectGeometryComponent(gameObject, state) |> expect == true
+                    }
+                  )
+              )
+            }
+          );
+          describe(
+            "test meshRenderer component",
+            () => {
+              describe(
+                "getGameObjectMeshRendererComponent",
+                () =>
+                  test(
+                    "get meshRenderer component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, meshRenderer) = MeshRenderer.createMeshRenderer(state);
+                      let state =
+                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      getGameObjectMeshRendererComponent(gameObject, state)
+                      |> MeshRendererTool.isMeshRenderer
+                    }
+                  )
+              );
+              describe(
+                "hasGameObjectMeshRendererComponent",
+                () =>
+                  test(
+                    "has meshRenderer component",
+                    () => {
+                      let (state, gameObject) = createGameObject(state^);
+                      let (state, meshRenderer) = MeshRenderer.createMeshRenderer(state);
+                      let state =
+                        state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+                      hasGameObjectMeshRendererComponent(gameObject, state) |> expect == true
+                    }
+                  )
+              )
+            }
+          );
+          describe(
             "test cameraController component",
             () => {
               let prepare = () => {

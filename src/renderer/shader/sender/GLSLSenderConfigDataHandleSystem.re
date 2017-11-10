@@ -39,98 +39,106 @@ let addAttributeSendData =
   );
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
-  |> Js.Array.forEach(
-       ({variables}) =>
-         switch variables {
-         | None => ()
-         | Some({attributes}) =>
-           switch attributes {
+  |> ArraySystem.forEach(
+       [@bs]
+       (
+         ({variables}) =>
+           switch variables {
            | None => ()
-           | Some(attributes) =>
-             attributes
-             |> Js.Array.forEach(
-                  ({name, buffer, type_}) =>
-                    switch (name, type_) {
-                    | (Some(name), Some(type_)) =>
-                      sendDataArr
-                      |> Js.Array.push({
-                           pos:
-                             GLSLLocationSystem.getAttribLocation(
-                               program,
-                               name,
-                               attributeLocationMap,
-                               gl
-                             ),
-                           size: getBufferSizeByType(type_),
-                           buffer:
-                             switch buffer {
-                             | "vertex" =>
-                               ArrayBufferSystem.createBuffer(
-                                 gl,
-                                 geometryIndex,
-                                 GeometrySystem.getVertices(geometryIndex, state)
-                               )
-                             | _ =>
-                               ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
-                             },
-                           sendFunc: sendBuffer
-                         })
-                      /* sendBuffer(
-                           gl,
-                           getBufferSizeByType(type_),
-                           GLSLLocationSystem.getAttribLocation(
-                             program,
-                             name,
-                             attributeLocationMap,
-                             gl
-                           ),
-                           switch buffer {
-                           | "vertex" =>
-                             ArrayBufferSystem.createBuffer(
+           | Some({attributes}) =>
+             switch attributes {
+             | None => ()
+             | Some(attributes) =>
+               attributes
+               |> ArraySystem.forEach(
+                    [@bs]
+                    (
+                      ({name, buffer, type_}) =>
+                        switch (name, type_) {
+                        | (Some(name), Some(type_)) =>
+                          sendDataArr
+                          |> Js.Array.push({
+                               pos:
+                                 GLSLLocationSystem.getAttribLocation(
+                                   program,
+                                   name,
+                                   attributeLocationMap,
+                                   gl
+                                 ),
+                               size: getBufferSizeByType(type_),
+                               buffer:
+                                 switch buffer {
+                                 | "vertex" =>
+                                   ArrayBufferSystem.createBuffer(
+                                     gl,
+                                     geometryIndex,
+                                     GeometrySystem.getVertices(geometryIndex, state)
+                                   )
+                                 | _ =>
+                                   ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
+                                 },
+                               sendFunc: sendBuffer
+                             })
+                          /* sendBuffer(
                                gl,
-                               geometryIndex,
-                               GeometrySystem.getVertices(geometryIndex, state)
-                             )
-                           }
-                         )*/
-                      |> ignore
-                    | (_, _) =>
-                      sendDataArr
-                      |> Js.Array.push
-                           /* bindIndexBuffer(
-                                gl,
-                                switch buffer {
-                                | "index" =>
-                                  ElementArrayBufferSystem.createBuffer(
-                                    gl,
-                                    geometryIndex,
-                                    GeometrySystem.getIndices(geometryIndex, state)
-                                  )
-                                }
-                              ) */
-                           /* pos: Obj.magic(0), */
-                           /* bufferSize: 0, */
-                           ({
-                             pos: 0,
-                             size: 0,
-                             buffer:
+                               getBufferSizeByType(type_),
+                               GLSLLocationSystem.getAttribLocation(
+                                 program,
+                                 name,
+                                 attributeLocationMap,
+                                 gl
+                               ),
                                switch buffer {
-                               | "index" =>
-                                 ElementArrayBufferSystem.createBuffer(
+                               | "vertex" =>
+                                 ArrayBufferSystem.createBuffer(
                                    gl,
                                    geometryIndex,
-                                   GeometrySystem.getIndices(geometryIndex, state)
+                                   GeometrySystem.getVertices(geometryIndex, state)
                                  )
-                               | _ =>
-                                 ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
-                               },
-                             sendFunc: bindIndexBuffer
-                           })
-                      |> ignore
-                    }
-                )
+                               }
+                             )*/
+                          |> ignore
+                        | (_, _) =>
+                          sendDataArr
+                          |> Js.Array.push
+                               /* bindIndexBuffer(
+                                    gl,
+                                    switch buffer {
+                                    | "index" =>
+                                      ElementArrayBufferSystem.createBuffer(
+                                        gl,
+                                        geometryIndex,
+                                        GeometrySystem.getIndices(geometryIndex, state)
+                                      )
+                                    }
+                                  ) */
+                               /* pos: Obj.magic(0), */
+                               /* bufferSize: 0, */
+                               ({
+                                 pos: 0,
+                                 size: 0,
+                                 buffer:
+                                   switch buffer {
+                                   | "index" =>
+                                     ElementArrayBufferSystem.createBuffer(
+                                       gl,
+                                       geometryIndex,
+                                       GeometrySystem.getIndices(geometryIndex, state)
+                                     )
+                                   | _ =>
+                                     ExceptionHandlerSystem.throwMessage(
+                                       {j|unknow buffer:$buffer|j}
+                                     )
+                                   },
+                                 sendFunc: bindIndexBuffer
+                               })
+                          |> ignore
+                        }
+                    )
+                  )
+             }
            }
-         }
+       )
      );
   getGLSLSenderData(state).attributeSendDataMap
   |> HashMapSystem.set(materialIndexStr, sendDataArr)
@@ -175,61 +183,69 @@ let addUniformSendData =
   );
   let sendDataArr = ArraySystem.createEmpty();
   shaderLibDataArr
-  |> Js.Array.forEach(
-       ({variables}) =>
-         switch variables {
-         | None => ()
-         | Some({uniforms}) =>
-           switch uniforms {
+  |> ArraySystem.forEach(
+       [@bs]
+       (
+         ({variables}) =>
+           switch variables {
            | None => ()
-           | Some(uniforms) =>
-             uniforms
-             |> Js.Array.forEach(
-                  ({name, field, type_, from}) =>
-                    sendDataArr
-                    |> Js.Array.push({
-                         pos:
-                           GLSLLocationSystem.getUniformLocation(
-                             program,
-                             name,
-                             uniformLocationMap,
-                             gl
-                           ),
-                         getArrayDataFunc:
-                           switch from {
-                           | "camera" =>
-                             switch field {
-                             | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
-                             | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
-                             | _ => ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
-                             }
-                           | "model" =>
-                             switch field {
-                             | "mMatrix" => _getModelMMatrixData
-                             | _ => ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
-                             }
-                           | _ => ExceptionHandlerSystem.throwMessage({j|unknow from:$from|j})
-                           },
-                         sendArrayDataFunc:
-                           switch type_ {
-                           | "mat4" =>
-                             /* sendMatrix4(
-                                  gl,
-                                  GLSLLocationSystem.getUniformLocation(
-                                    program,
-                                    name,
-                                    uniformLocationMap,
-                                    gl
-                                  )
-                                ) */
-                             sendMatrix4
-                           | _ => ExceptionHandlerSystem.throwMessage({j|unknow type:$type_|j})
-                           }
-                       })
-                    |> ignore
-                )
+           | Some({uniforms}) =>
+             switch uniforms {
+             | None => ()
+             | Some(uniforms) =>
+               uniforms
+               |> ArraySystem.forEach(
+                    [@bs]
+                    (
+                      ({name, field, type_, from}) =>
+                        sendDataArr
+                        |> Js.Array.push({
+                             pos:
+                               GLSLLocationSystem.getUniformLocation(
+                                 program,
+                                 name,
+                                 uniformLocationMap,
+                                 gl
+                               ),
+                             getArrayDataFunc:
+                               switch from {
+                               | "camera" =>
+                                 switch field {
+                                 | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
+                                 | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
+                                 | _ =>
+                                   ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
+                                 }
+                               | "model" =>
+                                 switch field {
+                                 | "mMatrix" => _getModelMMatrixData
+                                 | _ =>
+                                   ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
+                                 }
+                               | _ => ExceptionHandlerSystem.throwMessage({j|unknow from:$from|j})
+                               },
+                             sendArrayDataFunc:
+                               switch type_ {
+                               | "mat4" =>
+                                 /* sendMatrix4(
+                                      gl,
+                                      GLSLLocationSystem.getUniformLocation(
+                                        program,
+                                        name,
+                                        uniformLocationMap,
+                                        gl
+                                      )
+                                    ) */
+                                 sendMatrix4
+                               | _ => ExceptionHandlerSystem.throwMessage({j|unknow type:$type_|j})
+                               }
+                           })
+                        |> ignore
+                    )
+                  )
+             }
            }
-         }
+       )
      );
   getGLSLSenderData(state).uniformSendDataMap
   |> HashMapSystem.set(materialIndexStr, sendDataArr)
