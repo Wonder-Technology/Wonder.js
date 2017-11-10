@@ -188,7 +188,7 @@ type schedulerFuncRecord = {
 }
 and schedulerData = {
   mutable count: int,
-  funcRecordArray: array(schedulerFuncRecord),
+  funcRecordList: array(schedulerFuncRecord),
   isFinishMap: Js.Dict.t(bool)
 }
 and attributeSendData = {
