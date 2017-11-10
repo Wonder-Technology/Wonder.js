@@ -21,7 +21,7 @@ let _ =
             state
             |> getCameraControllerPMatrix(cameraController)
             |>
-            expect == Js.Typed_array.Float32Array.create([|
+            expect == Js.Typed_array.Float32Array.make([|
                         1.7320508075688776,
                         0.,
                         0.,
@@ -115,7 +115,7 @@ let _ =
               state
               |> getCameraControllerPMatrix(cameraController)
               |>
-              expect == Js.Typed_array.Float32Array.create([|
+              expect == Js.Typed_array.Float32Array.make([|
                           1.7320508075688776,
                           0.,
                           0.,
@@ -177,7 +177,7 @@ let _ =
               state
               |> getCameraControllerWorldToCameraMatrix(cameraController)
               |>
-              expect == Js.Typed_array.Float32Array.create([|
+              expect == Js.Typed_array.Float32Array.make([|
                           1.,
                           0.,
                           0.,

@@ -46,7 +46,7 @@ let createCameraControllerPerspectiveCamera = (state) => {
 };
 
 let getPMatrixOfCreateCameraControllerPerspectiveCamera = () =>
-  Js.Typed_array.Float32Array.create([|
+  Js.Typed_array.Float32Array.make([|
     1.7320508075688776,
     0.,
     0.,

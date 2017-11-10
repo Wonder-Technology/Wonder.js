@@ -4,7 +4,7 @@ let getData = (state: StateDataType.state) => Js.Option.getExn(state.transformDa
 
 let getDefaultPosition = () => (0., 0., 0.);
 
-let getDefaultLocalToWorldMatrix = () => Js.Typed_array.Float32Array.create([|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|]);
+let getDefaultLocalToWorldMatrix = () => Js.Typed_array.Float32Array.make([|1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.|]);
 
 let isTransform = (transform: transform) => {
   open Jest;

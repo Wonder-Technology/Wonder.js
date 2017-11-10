@@ -236,7 +236,7 @@ let invert = (mat: Float32Array.t) => {
   | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
-    Float32Array.create([|
+    Float32Array.make([|
       (a11 *. b11 -. a12 *. b10 +. a13 *. b09) *. det^,
       (a02 *. b10 -. a01 *. b11 -. a03 *. b09) *. det^,
       (a31 *. b05 -. a32 *. b04 +. a33 *. b03) *. det^,
@@ -273,7 +273,7 @@ let buildPerspective = (fovy: float, aspect: float, near: float, far: float) => 
   let s = Js.Math.sin(fovy);
   let rd = 1. /. (far -. near);
   let ct = Js.Math.cos(fovy) /. s;
-  Float32Array.create([|
+  Float32Array.make([|
     ct /. aspect,
     0.,
     0.,
@@ -383,7 +383,7 @@ let invert = (mat: Float32Array.t) => {
   | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
-    Float32Array.create([|
+    Float32Array.make([|
       (a11 *. b11 -. a12 *. b10 +. a13 *. b09) *. det^,
       (a02 *. b10 -. a01 *. b11 -. a03 *. b09) *. det^,
       (a31 *. b05 -. a32 *. b04 +. a33 *. b03) *. det^,

@@ -272,7 +272,7 @@ let _ =
             "u_mMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(gameObjectTransform, (1., 2., 3.)),
-            Js.Typed_array.Float32Array.create([|
+            Js.Typed_array.Float32Array.make([|
               1.,
               0.,
               0.,
@@ -377,7 +377,7 @@ let _ =
             "u_vMatrix",
             (gameObjectTransform, cameraTransform, _, state) =>
               state |> Transform.setTransformLocalPosition(cameraTransform, (10., 2., 3.)),
-            Js.Typed_array.Float32Array.create([|
+            Js.Typed_array.Float32Array.make([|
               1.,
               0.,
               0.,
