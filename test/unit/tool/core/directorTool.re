@@ -1,5 +1,5 @@
 let prepare = (state: StateDataType.state) => {
-  Root.root##performance#={"now": () => 0.};
+  TimeControllerTool.setStartTime(0.);
   state
 };
 

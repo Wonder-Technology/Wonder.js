@@ -36,7 +36,7 @@ let tick = (elapsed: float, state: StateDataType.state) => {
 
 let _getNow = () => {
   let now = root##performance##now;
-  now()
+  [@bs] now()
 };
 
 let start = (state: StateDataType.state) => {

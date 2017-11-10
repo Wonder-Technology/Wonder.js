@@ -14,7 +14,8 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init() |> DirectorTool.prepare
+          state := TestTool.init();
+          TimeControllerTool.setStartTime(0.)
         }
       );
       describe(
