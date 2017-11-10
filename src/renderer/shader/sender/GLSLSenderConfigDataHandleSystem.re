@@ -70,6 +70,8 @@ let addAttributeSendData =
                                  geometryIndex,
                                  GeometrySystem.getVertices(geometryIndex, state)
                                )
+                             | _ =>
+                               ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
                              },
                            sendFunc: sendBuffer
                          })
@@ -119,6 +121,8 @@ let addAttributeSendData =
                                    geometryIndex,
                                    GeometrySystem.getIndices(geometryIndex, state)
                                  )
+                               | _ =>
+                                 ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
                                },
                              sendFunc: bindIndexBuffer
                            })
@@ -197,11 +201,14 @@ let addUniformSendData =
                              switch field {
                              | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
                              | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
+                             | _ => ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
                              }
                            | "model" =>
                              switch field {
                              | "mMatrix" => _getModelMMatrixData
+                             | _ => ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
                              }
+                           | _ => ExceptionHandlerSystem.throwMessage({j|unknow from:$from|j})
                            },
                          sendArrayDataFunc:
                            switch type_ {
@@ -216,6 +223,7 @@ let addUniformSendData =
                                   )
                                 ) */
                              sendMatrix4
+                           | _ => ExceptionHandlerSystem.throwMessage({j|unknow type:$type_|j})
                            }
                        })
                     |> ignore

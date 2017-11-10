@@ -5,3 +5,5 @@ function(str) {
 }
 |}
 ];
+
+let leastFloat = (min, num) => num < 0. ? 0. : num;

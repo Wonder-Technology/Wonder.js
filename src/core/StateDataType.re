@@ -24,6 +24,8 @@ open ShaderChunkType;
 
 open RenderDataType;
 
+open TimeControllerType;
+
 open Js.Typed_array;
 
 type contextConfig = {
@@ -254,7 +256,8 @@ and state = {
   glslSenderData,
   glslChunkData,
   renderData,
-  schedulerData
+  schedulerData,
+  timeControllerData
 };
 
 type stateData = {mutable state: option(state), mutable isTest: option(bool)};

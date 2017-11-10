@@ -66,6 +66,7 @@ let createState =
     glslSenderData: GLSLSenderSystem.initData(),
     glslChunkData: ShaderChunkSystem.initData(),
     renderData: RenderDataSystem.initData(),
-    schedulerData: ScheduleControllerSystem.initData()
+    schedulerData: ScheduleControllerSystem.initData(),
+    timeControllerData: TimeControllerSystem.initData()
   }
 };

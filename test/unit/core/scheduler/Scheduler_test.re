@@ -1,3 +1,5 @@
+open Scheduler;
+
 open Jest;
 
 let _ =
@@ -12,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init()
+          state := TestTool.init() |> DirectorTool.prepare
         }
       );
       test(
@@ -22,7 +24,7 @@ let _ =
           let localPos = (1., 2., 3.);
           let state =
             state
-            |> Scheduler.scheduleLoop(
+            |> scheduleLoop(
                  [@bs]
                  (
                    (elapsed, state) =>
@@ -30,7 +32,7 @@ let _ =
                  )
                );
           let state = state |> DirectorTool.init;
-          let state = DirectorTool.sync(state, ~elapsed=1., ());
+          let state = DirectorTool.sync(state, ~time=1., ());
           state |> Transform.getTransformLocalPosition(transform) |> expect == localPos
         }
       );
@@ -43,7 +45,7 @@ let _ =
               let result = ref(0.);
               let state =
                 state^
-                |> Scheduler.scheduleLoop(
+                |> scheduleLoop(
                      [@bs]
                      (
                        (elapsed, state) => {
@@ -53,8 +55,8 @@ let _ =
                      )
                    );
               let state = state |> DirectorTool.init;
-              let state = DirectorTool.sync(state, ~elapsed=1., ());
-              let state = DirectorTool.sync(state, ~elapsed=2., ());
+              let state = DirectorTool.sync(state, ~time=1., ());
+              let state = DirectorTool.sync(state, ~time=2., ());
               result^ |> expect == 3.
             }
           )

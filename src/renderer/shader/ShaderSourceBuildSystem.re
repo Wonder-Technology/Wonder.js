@@ -141,6 +141,7 @@ let buildGLSLSource =
                       switch type_ {
                       | "vs" => _setSource(vs, getChunk(name, state))
                       | "fs" => _setSource(fs, getChunk(name, state))
+                      | _ => ExceptionHandlerSystem.throwMessage({j|unknow glsl type:$type_|j})
                       }
                   )
              }

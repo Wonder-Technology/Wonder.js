@@ -6,21 +6,34 @@ let _initSystem = (state: StateDataType.state) =>
   state |> TransformSystem.init |> CameraControllerSystem.init |> GeometrySystem.init;
 
 let _init = (state: StateDataType.state) =>
-  state |> _initSystem |> WebGLRenderSystem.init |> ScheduleControllerSystem.start;
+  state
+  |> _initSystem
+  |> WebGLRenderSystem.init
+  |> TimeControllerSystem.start
+  |> ScheduleControllerSystem.start;
 
 let _updateSystem = (elapsed: float, state: StateDataType.state) =>
   state |> TransformSystem.update |> CameraControllerSystem.update;
 
-let _sync = (elapsed: float, state: StateDataType.state) =>
-  state |> ScheduleControllerSystem.update(elapsed) |> _updateSystem(elapsed);
+let _sync = (time: float, state: StateDataType.state) => {
+  let elapsed = TimeControllerSystem.computeElapseTime(time, state);
+  state
+  |> TimeControllerSystem.tick(elapsed)
+  |> ScheduleControllerSystem.update(elapsed)
+  |> _updateSystem(elapsed)
+};
 
-let _run = (~elapsed: float, state: StateDataType.state) =>
-  _sync(elapsed, state) |> WebGLRenderSystem.render;
+let _run = (time: float, state: StateDataType.state) =>
+  /* let elapsed = TimeControllerSystem.computeElapseTime(time, state); */
+  state |> _sync(time) |> WebGLRenderSystem.render;
 
 /* todo add time logic */
 /* todo add scheduler */
 /* todo unit test */
-let loopBody = (time: float) => getState(stateData) |> _run(~elapsed=time) |> setState(~stateData);
+let loopBody = (time: float) => {
+  let state = getState(stateData);
+  state |> _run(time) |> setState(~stateData)
+};
 
 let start = (state: StateDataType.state) => {
   let rec _loop = (time: float) =>
