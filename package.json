@@ -8,7 +8,7 @@
   "main": "",
   "scripts": {
     "start": "node ./server/app.js",
-    "codecov": "cat test/coverage/*/lcov.info | codecov",
+    "codecov": "cat test/coverage/lcov.info | codecov",
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
     "test": "npm run build && jest --config jest.json",
@@ -16,6 +16,7 @@
     "test:watch": "npm run build && jest --watch --config jest.json"
   },
   "devDependencies": {
+    "codecov.io": "^0.1.6",
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
