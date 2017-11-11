@@ -2,7 +2,6 @@ yarn.lock
 .merlin
 .idea/
 .vscode/
-.DS_Store/
 lib/bs/
 lib/**/src/
 reference/
