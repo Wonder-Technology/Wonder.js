@@ -37,7 +37,7 @@ let initWithRenderConfig =
       ()
     ) =>
   StateSystem.createState(~renderConfig=renderConfig, ())
-  |> MainSystem.setConfig(~configState=MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
+  |> MainSystem.setConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
   |> MainSystem.init
   |> (
     (state) => {

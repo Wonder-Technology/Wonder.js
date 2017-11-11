@@ -4,5 +4,5 @@ open StateSystem;
 
 let setMainConfig = (configState: Js.t({..})) =>
   createState()
-  |> setConfig(~configState)
+  |> setConfig(configState)
   |> init;

@@ -27,14 +27,14 @@ let _ =
           test(
             "if stateData->isTest === true, check",
             () => {
-              setIsTest(~isTest=true, createState(), StateData.stateData) |> ignore;
+              setIsTest(~isTest=true, StateData.stateData) |> ignore;
               exec() |> expect |> toCalledOnce
             }
           );
           test(
             "else, not check",
             () => {
-              setIsTest(~isTest=false, createState(), StateData.stateData) |> ignore;
+              setIsTest(~isTest=false, StateData.stateData) |> ignore;
               exec() |> expect |> not_ |> toCalledOnce
             }
           )

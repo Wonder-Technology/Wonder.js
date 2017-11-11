@@ -21,9 +21,9 @@ let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigTy
   stencil: Js.to_bool(getValueFromJsObj(contextConfigObj##stencil, Js.false_)),
   antialias: Js.to_bool(getValueFromJsObj(contextConfigObj##antialias, Js.true_)),
   premultipliedAlpha: Js.to_bool(getValueFromJsObj(contextConfigObj##premultipliedAlpha, Js.true_)),
-  preserveDrawingBuffer: Js.to_bool(getValueFromJsObj(contextConfigObj##preserveDrawingBuffer, Js.false_))
+  preserveDrawingBuffer:
+    Js.to_bool(getValueFromJsObj(contextConfigObj##preserveDrawingBuffer, Js.false_))
 };
-                               
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
   transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
@@ -59,9 +59,10 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
     }
 };
 
-let setConfig = (~configState: Js.t({..}), state: state) => {
+let setConfig = (configState: Js.t({..}), state: state) => {
   let configState = _changeConfigStateToRecord(configState);
-  (configState, setIsTest(~isTest=configState.isTest, state, StateData.stateData))
+  setIsTest(~isTest=configState.isTest, StateData.stateData);
+  (configState, state)
 };
 
 let _initDataFromState = (state: StateDataType.state) =>

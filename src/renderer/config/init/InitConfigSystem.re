@@ -2,9 +2,6 @@ open StateUtils;
 
 open StateDataType;
 
-let getIsTest = (state: state) : bool => getOptionValueFromState(state.initConfig.isTest);
+let getIsTest = ({isTest}: stateData) : bool => Js.Option.getExn(isTest);
 
-let setIsTest = (~isTest: bool, state:state, stateData:stateData) => {
-  stateData.isTest = Some(isTest);
-  {...state, initConfig: {isTest: Some(isTest)}}
-};
+let setIsTest = (~isTest: bool, stateData: stateData) => stateData.isTest = Some(isTest);

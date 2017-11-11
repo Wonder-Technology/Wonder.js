@@ -31,12 +31,13 @@ let _ =
                 () =>
                   test(
                     "it will open wonder.js contract check",
-                    () =>
+                    () => {
                       setMainConfig(
                         MainTool.buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())
                       )
-                      |> getIsTest
-                      |> expect == true
+                      |> ignore;
+                      getIsTest(StateData.stateData) |> expect == true
+                    }
                   )
               )
           );
