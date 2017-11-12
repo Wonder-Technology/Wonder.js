@@ -31,7 +31,7 @@ let _render = (gl, state: StateDataType.state) => {
                     [@bs]
                     (
                       (state, {pos, size, buffer, sendFunc}) =>
-                        sendFunc(gl, size, pos, buffer, state)
+                        [@bs] sendFunc(gl, size, pos, buffer, state)
                     ),
                     state
                   )

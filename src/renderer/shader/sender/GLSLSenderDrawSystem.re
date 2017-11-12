@@ -8,16 +8,20 @@ open GLSLSenderSendDataSystem;
 
 open GlslSenderStateUtils;
 
-let bindIndexBuffer =  (gl,  size, pos, buffer, state: StateDataType.state) => {
-  let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state);
-  switch lastSendElementArrayBuffer {
-  | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
-  | _ =>
-    data.lastSendElementArrayBuffer = Some(buffer);
-    bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-    state
-  }
-};
+let bindIndexBuffer =
+  [@bs]
+  (
+    (gl, size: int, pos: attributeLocation, buffer, state: StateDataType.state) => {
+      let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state);
+      switch lastSendElementArrayBuffer {
+      | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
+      | _ =>
+        data.lastSendElementArrayBuffer = Some(buffer);
+        bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+        state
+      }
+    }
+  );
 
 let drawElement = (drawMode: int, type_: int, typeSize: int, indicesCount: int, gl) => {
   let startOffset = 0;
