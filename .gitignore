@@ -1,3 +1,4 @@
+.DS_Store
 yarn.lock
 .merlin
 .idea/
@@ -8,3 +9,4 @@ reference/
 node_modules/
 mine/
 test/coverage
+
