@@ -93,7 +93,7 @@ let getParent = (child: transform, state: StateDataType.state) =>
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
   TransformHierachySystem.setParent(Js.toOption(parent), child, getTransformData(state))
-  |> addItAndItsChildrenToDirtyList(child)
+  |> addItAndItsChildrenToDirtyArray(child)
   |> ignore;
   state
 };
@@ -118,7 +118,7 @@ let setLocalPosition = (transform: transform, localPosition: position, state: St
     transformData.localPositions
   )
   |> ignore;
-  addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
+  addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore;
   /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
@@ -144,7 +144,7 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
     transformData
   )
   |> ignore;
-  addItAndItsChildrenToDirtyList(transform, transformData) |> ignore;
+  addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore;
   /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
@@ -183,13 +183,13 @@ let initData = (state: StateDataType.state) => {
         localPositions,
         index: 0,
         /* firstDirtyIndex: getMaxCount (), */
-        /* oldIndexListBeforeAddToDirtyList: ArraySystem.createEmpty (), */
+        /* oldIndexArrayBeforeAddToDirtyArray: ArraySystem.createEmpty (), */
         parentMap: HashMapSystem.createEmpty(),
         childMap: HashMapSystem.createEmpty(),
         gameObjectMap: HashMapSystem.createEmpty(),
         /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
-        dirtyList: ArraySystem.createEmpty()
+        dirtyArray: ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
     );

@@ -1,0 +1,1 @@
+let getJob = (configData, state) => GetRenderArrayJobSystem.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);

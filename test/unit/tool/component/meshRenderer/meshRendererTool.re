@@ -1,4 +1,4 @@
-let getRenderList = (state: StateDataType.state) => MeshRendererSystem.getRenderList(state);
+let getRenderArray = (state: StateDataType.state) => MeshRendererSystem.getRenderArray(state);
 
 let isMeshRenderer = (meshRenderer) => {
   open Jest;

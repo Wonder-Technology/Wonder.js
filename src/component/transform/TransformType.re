@@ -12,12 +12,12 @@ type transformDirtyMap = Js.Dict.t(bool);
 
 /* type originToMoveIndexMap = Js.Dict.t int; */
 /* type moveToOriginIndexMap = Js.Dict.t int; */
-type transformDirtyList = array(int);
+type transformDirtyArray = array(int);
 
 type transformData = {
   mutable index: int,
   /* mutable firstDirtyIndex: int, */
-  /* mutable oldIndexListBeforeAddToDirtyList: array int, */
+  /* mutable oldIndexArrayBeforeAddToDirtyArray: array int, */
   mutable buffer: Js.Typed_array.array_buffer,
   mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
   mutable localPositions: Js.Typed_array.Float32Array.t,
@@ -26,5 +26,5 @@ type transformData = {
   mutable gameObjectMap,
   /* mutable originToMoveIndexMap: originToMoveIndexMap,
      mutable moveToOriginIndexMap: moveToOriginIndexMap */
-  mutable dirtyList: transformDirtyList
+  mutable dirtyArray: transformDirtyArray
 };

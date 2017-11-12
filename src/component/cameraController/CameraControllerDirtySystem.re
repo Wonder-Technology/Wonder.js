@@ -1,10 +1,10 @@
 open CameraControllerType;
 
-let addToDirtyList = (cameraController: cameraController, {dirtyList}) =>
-  Js.Array.push(cameraController, dirtyList);
+let addToDirtyArray = (cameraController: cameraController, {dirtyArray}) =>
+  Js.Array.push(cameraController, dirtyArray);
 
-let cleanDirtyList = (cameraControllerData: cameraControllerData) => {
-  cameraControllerData.dirtyList = ArraySystem.createEmpty();
+let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
+  cameraControllerData.dirtyArray = ArraySystem.createEmpty();
   cameraControllerData
 };
 
@@ -15,9 +15,9 @@ let isDirty = (cameraController: cameraController, cameraControllerData: cameraC
   | Some(dirty) => dirty == true
   };
 
-let updateDirtyMap = (cameraControllerData: cameraControllerData, dirtyList: array(int)) => {
-  cameraControllerData.dirtyMap = DirtyUtils.convertDirtyListToDirtyMap(dirtyList);
-  dirtyList
+let updateDirtyMap = (cameraControllerData: cameraControllerData, dirtyArray: array(int)) => {
+  cameraControllerData.dirtyMap = DirtyUtils.convertDirtyArrayToDirtyMap(dirtyArray);
+  dirtyArray
 };
 
 let cleanDirtyMap = (cameraControllerData: cameraControllerData) => {

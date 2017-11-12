@@ -5,33 +5,33 @@ open StateDataType;
 /* todo add pause,resume, stop control */
 /* todo add more Items */
 let _remove = (index: int, state: state) => {
-  let {count, funcRecordList} as data = ScheduleStateUtils.getSchedulerData(state);
-  ArraySystem.deleteBySwap(index, count - 1, funcRecordList) |> ignore;
+  let {count, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
+  ArraySystem.deleteBySwap(index, count - 1, funcRecordArray) |> ignore;
   data.count = pred(data.count);
   state
 };
 
-let _getFuncRecord = (index: int, funcRecordList) => {
+let _getFuncRecord = (index: int, funcRecordArray) => {
   requireCheck(
     () =>
       Contract.Operators.(
         test(
-          {j|$funcRecordList[$index] should exist|j},
-          () => ArraySystem.get(index, funcRecordList) |> assertExist
+          {j|$funcRecordArray[$index] should exist|j},
+          () => ArraySystem.get(index, funcRecordArray) |> assertExist
         )
       )
   );
-  Array.unsafe_get(funcRecordList, index)
+  Array.unsafe_get(funcRecordArray, index)
 };
 
 let update = (elapsed: float, state: state) : state => {
-  let {count, funcRecordList} = ScheduleStateUtils.getSchedulerData(state);
+  let {count, funcRecordArray} = ScheduleStateUtils.getSchedulerData(state);
   ArraySystem.range(0, count - 1)
   |> ArraySystem.reduceState(
        [@bs]
        (
          (state, index: int) => {
-           let {update, isFinish} = _getFuncRecord(index, funcRecordList);
+           let {update, isFinish} = _getFuncRecord(index, funcRecordArray);
            let state = state |> update(elapsed);
            if (isFinish(state)) {
              _remove(index, state)
@@ -45,13 +45,13 @@ let update = (elapsed: float, state: state) : state => {
 };
 
 let start = (state: state) => {
-  let {count, funcRecordList} as data = ScheduleStateUtils.getSchedulerData(state);
+  let {count, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
   ArraySystem.range(0, count - 1)
   |> ArraySystem.reduceState(
        [@bs]
        (
          (state, index: int) => {
-           let {start} = _getFuncRecord(index, funcRecordList);
+           let {start} = _getFuncRecord(index, funcRecordArray);
            state |> start
          }
        ),
@@ -60,9 +60,9 @@ let start = (state: state) => {
 };
 
 let scheduleLoop = (taskFunc, state: state) => {
-  let {count: index, funcRecordList} as data = ScheduleStateUtils.getSchedulerData(state);
+  let {count: index, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
   Array.unsafe_set(
-    funcRecordList,
+    funcRecordArray,
     index,
     {
       update: ScheduleLoopItemSystem.update(taskFunc),
@@ -76,6 +76,6 @@ let scheduleLoop = (taskFunc, state: state) => {
 
 let initData = () => {
   count: 0,
-  funcRecordList: ArraySystem.createEmpty(),
+  funcRecordArray: ArraySystem.createEmpty(),
   isFinishMap: HashMapSystem.createEmpty()
 };

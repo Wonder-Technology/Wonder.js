@@ -5,7 +5,7 @@ type geometryInfo = {
   endIndex: int
 };
 
-type geometryInfoList = array(option(geometryInfo));
+type geometryInfoArray = array(option(geometryInfo));
 
 type geometryComputeData = {
   vertices: array(float),

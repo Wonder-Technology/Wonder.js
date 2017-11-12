@@ -4,7 +4,7 @@ open PerspectiveCameraType;
 
 type cameraController = int;
 
-type cameraControllerDirtyList = array(int);
+type cameraControllerDirtyArray = array(int);
 
 /* type worldToCameraMatrixCacheMap = Js.Dict.t(array(float)); */
 
@@ -14,7 +14,7 @@ type updateCameraFuncMap = Js.Dict.t(((int, cameraControllerData) => unit))
 and cameraControllerData = {
   mutable index: int,
   mutable cameraArray: array(cameraController),
-  mutable dirtyList: cameraControllerDirtyList,
+  mutable dirtyArray: cameraControllerDirtyArray,
   /* mutable worldToCameraMatrixCacheMap, */
   mutable pMatrixMap,
   mutable gameObjectMap,

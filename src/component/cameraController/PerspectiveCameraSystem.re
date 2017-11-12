@@ -16,7 +16,7 @@ let setFovy = (cameraController: cameraController, fovy: float, state: StateData
     getPerspectiveCameraData(state).fovyMap
   )
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList(cameraController, getCameraControllerData(state))
+  CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };
@@ -31,7 +31,7 @@ let setAspect = (cameraController: cameraController, aspect: float, state: State
     getPerspectiveCameraData(state).aspectMap
   )
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList(cameraController, getCameraControllerData(state))
+  CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };
@@ -46,7 +46,7 @@ let setNear = (cameraController: cameraController, near: float, state: StateData
     getPerspectiveCameraData(state).nearMap
   )
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList(cameraController, getCameraControllerData(state))
+  CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };
@@ -57,7 +57,7 @@ let getFar = (cameraController: cameraController, cameraData: perspectiveCameraD
 let setFar = (cameraController: cameraController, far: float, state: StateDataType.state) => {
   HashMapSystem.set(Js.Int.toString(cameraController), far, getPerspectiveCameraData(state).farMap)
   |> ignore;
-  CameraControllerDirtySystem.addToDirtyList(cameraController, getCameraControllerData(state))
+  CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };

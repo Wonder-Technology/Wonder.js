@@ -432,7 +432,7 @@ let _ =
         "update",
         () =>{
           test
-          ("sort dirtyList, make parent before child", 
+          ("sort dirtyArray, make parent before child", 
           (
           () => {
               let (state, child) = createTransform(state^);
@@ -453,14 +453,14 @@ let _ =
           })
           );
           test(
-            "clean dirty list after compute transform data",
+            "clean dirty array after compute transform data",
             () => {
               let (state, _, _, _) = _prepareOne();
               let len1 =
-                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
+                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyArray));
               let state = state |> TransformTool.update;
               let len2 =
-                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyList));
+                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyArray));
               (len1, len2) |> expect == (1, 0)
             }
           )

@@ -9,7 +9,7 @@ let create = (state: StateDataType.state) => {
   (state, index)
 };
 
-let getRenderList = (state: StateDataType.state) =>
+let getRenderArray = (state: StateDataType.state) =>
   getMeshRendererData(state).renderGameObjectArray;
 
 let initData = () => {

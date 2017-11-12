@@ -9,7 +9,7 @@ let isCameraController = (cameraController: cameraController) => {
 
 let getCameraControllerData = (state: StateDataType.state) => state.cameraControllerData;
 
-let getDirtyList = (state: StateDataType.state) => getCameraControllerData(state).dirtyList;
+let getDirtyArray = (state: StateDataType.state) => getCameraControllerData(state).dirtyArray;
 
 let getWorldToCameraMatrix = (cameraController, state: StateDataType.state) =>
   CameraControllerSystem.getWorldToCameraMatrix(cameraController, state);

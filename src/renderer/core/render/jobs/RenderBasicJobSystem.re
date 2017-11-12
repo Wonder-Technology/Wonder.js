@@ -6,11 +6,11 @@ open GameObjectType;
 
 /* todo optimize: curry */
 let _render = (gl, state: StateDataType.state) => {
-  let renderList = RenderDataSystem.getRenderListFromState(state);
-  switch (state |> RenderDataSystem.getRenderListFromState) {
+  let renderArray = RenderDataSystem.getRenderArrayFromState(state);
+  switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
-  | Some(renderList) =>
-    renderList
+  | Some(renderArray) =>
+    renderArray
     |> ArraySystem.reduceState(
          [@bs]
          (

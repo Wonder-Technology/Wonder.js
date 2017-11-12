@@ -2,7 +2,7 @@ open Jest;
 
 let _ =
   describe(
-    "test get_render_list job",
+    "test get_render_array job",
     () => {
       open Expect;
       open Expect.Operators;
@@ -16,15 +16,15 @@ let _ =
         }
       );
       test(
-        "set render list to state.renderData.renderList",
+        "set render array to state.renderData.renderArray",
         () => {
           let (state, gameObject1, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
           let (state, gameObject2, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state);
           let render = (state: StateDataType.state) =>
-            state |> GetRenderListJobTool.getJob(RenderJobsTool.buildConfigData());
+            state |> GetRenderArrayJobTool.getJob(RenderJobsTool.buildConfigData());
           let state = RenderJobsTool.passGl(sandbox, state);
           let state = state |> RenderJobsTool.initSystemAndRender |> render;
-          state.renderData.renderList |> expect == Some([|gameObject1, gameObject2|])
+          state.renderData.renderArray |> expect == Some([|gameObject1, gameObject2|])
         }
       )
     }

@@ -20,21 +20,21 @@ open TransformType;
           )
       ); */
 /* let _addOldIndex (index: int) (transformData: transformData) => {
-     Js.Array.push index transformData.oldIndexListBeforeAddToDirtyList |> ignore;
+     Js.Array.push index transformData.oldIndexArrayBeforeAddToDirtyArray |> ignore;
      transformData
    }; */
-/* let unsafePopOldIndexList (transformData: transformData) => {
+/* let unsafePopOldIndexArray (transformData: transformData) => {
      requireCheck (
        fun () =>
          Contract.Operators.(
            test
              "old index should exist"
-             (fun () => Js.Array.length transformData.oldIndexListBeforeAddToDirtyList >= 1)
+             (fun () => Js.Array.length transformData.oldIndexArrayBeforeAddToDirtyArray >= 1)
          )
      );
-     ArraySystem.unsafePop transformData.oldIndexListBeforeAddToDirtyList
+     ArraySystem.unsafePop transformData.oldIndexArrayBeforeAddToDirtyArray
    }; */
-let _addToDirtyList = (index: int, {dirtyList}: transformData) =>
+let _addToDirtyArray = (index: int, {dirtyArray}: transformData) =>
   /* requireCheck (
        fun () =>
          Contract.Operators.(
@@ -44,13 +44,13 @@ let _addToDirtyList = (index: int, {dirtyList}: transformData) =>
          )
      );
      moveToFromOrigin index firstDirtyIndex transformData */
-  Js.Array.push(index, dirtyList);
+  Js.Array.push(index, dirtyArray);
 
-let addItAndItsChildrenToDirtyList = (index: int, transformData: transformData) => {
+let addItAndItsChildrenToDirtyArray = (index: int, transformData: transformData) => {
   let children = ref([|index|]);
   while (Js.Array.length(children^) > 0) {
     let last: int = ArraySystem.unsafePop(children^);
-    _addToDirtyList(last, transformData) |> ignore;
+    _addToDirtyArray(last, transformData) |> ignore;
     children :=
       Js.Array.concat(
         children^,

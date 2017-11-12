@@ -12,7 +12,7 @@
 //              );
 //   }
 
-//bool isRenderListEmpty(int isRenderListEmpty){
-//  return isRenderListEmpty == 1;
+//bool isRenderArrayEmpty(int isRenderArrayEmpty){
+//  return isRenderArrayEmpty == 1;
 //}
 @end

@@ -71,10 +71,10 @@ let _ =
               )
           );
           test(
-            "add to dirty list",
+            "add to dirty array",
             () => {
               let (state, cameraController) = createCameraController(state^);
-              state |> CameraControllerTool.getDirtyList |> expect == [|cameraController|]
+              state |> CameraControllerTool.getDirtyArray |> expect == [|cameraController|]
             }
           )
         }

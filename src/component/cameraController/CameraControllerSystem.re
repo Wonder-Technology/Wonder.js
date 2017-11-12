@@ -11,7 +11,7 @@ let create = (state: StateDataType.state) => {
   let index = cameraControllerData.index;
   cameraControllerData.index = succ(cameraControllerData.index);
   cameraControllerData.cameraArray |> Js.Array.push(index) |> ignore;
-  addToDirtyList(index, cameraControllerData) |> ignore;
+  addToDirtyArray(index, cameraControllerData) |> ignore;
   (state, index)
 };
 
@@ -39,16 +39,16 @@ let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraContro
 
 let init = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
-  let dirtyList = cameraControllerData.dirtyList;
-  switch (Js.Array.length(dirtyList)) {
+  let dirtyArray = cameraControllerData.dirtyArray;
+  switch (Js.Array.length(dirtyArray)) {
   | 0 => state
   | _ =>
-    dirtyList
+    dirtyArray
     |> ArraySystem.removeDuplicateItems
     |> Js.Array.forEach(
          (dirtyIndex) => _initCameraController(dirtyIndex, cameraControllerData) |> ignore
        );
-    /* cameraControllerData |> cleanDirtyList |> ignore; */
+    /* cameraControllerData |> cleanDirtyArray |> ignore; */
     state
   /* |> ensureCheck(
        (state) =>
@@ -95,18 +95,18 @@ let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => 
 
 let update = (state: StateDataType.state) => {
   let cameraControllerData = getCameraControllerData(state);
-  let dirtyList = cameraControllerData.dirtyList;
-  /* switch (Js.Array.length(dirtyList)) {
+  let dirtyArray = cameraControllerData.dirtyArray;
+  /* switch (Js.Array.length(dirtyArray)) {
      | 0 =>
      CameraControllerDirtySystem.cleanDirtyMap(cameraControllerData) |> ignore;
      state;
      | _ => */
-  dirtyList
+  dirtyArray
   |> ArraySystem.removeDuplicateItems
   /* |> CameraControllerDirtySystem.updateDirtyMap(cameraControllerData) */
   |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
-  /* cameraControllerData |> cleanDirtyList |> _clearCache |> ignore; */
-  cameraControllerData |> cleanDirtyList |> ignore;
+  /* cameraControllerData |> cleanDirtyArray |> _clearCache |> ignore; */
+  cameraControllerData |> cleanDirtyArray |> ignore;
   state
   /* } */
 };
@@ -184,7 +184,7 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
 let initData = () => {
   index: 0,
   cameraArray: ArraySystem.createEmpty(),
-  dirtyList: ArraySystem.createEmpty(),
+  dirtyArray: ArraySystem.createEmpty(),
   /* worldToCameraMatrixCacheMap: HashMapSystem.createEmpty(), */
   pMatrixMap: HashMapSystem.createEmpty(),
   gameObjectMap: HashMapSystem.createEmpty(),

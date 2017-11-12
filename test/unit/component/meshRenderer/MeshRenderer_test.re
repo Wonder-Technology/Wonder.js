@@ -18,7 +18,7 @@ let _ =
         }
       );
       describe(
-        "getRenderList",
+        "getRenderArray",
         () =>
           test(
             "get array of gameObject which has MeshRenderer component",
@@ -31,7 +31,7 @@ let _ =
               let (state, gameObject2) = state |> GameObject.createGameObject;
               let state =
                 state |> GameObject.addGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
-              state |> MeshRendererTool.getRenderList |> expect == [|gameObject1, gameObject2|]
+              state |> MeshRendererTool.getRenderArray |> expect == [|gameObject1, gameObject2|]
             }
           )
       )

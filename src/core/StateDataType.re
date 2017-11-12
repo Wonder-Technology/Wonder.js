@@ -190,7 +190,7 @@ type schedulerFuncRecord = {
 }
 and schedulerData = {
   mutable count: int,
-  funcRecordList: array(schedulerFuncRecord),
+  funcRecordArray: array(schedulerFuncRecord),
   isFinishMap: Js.Dict.t(bool)
 }
 and attributeSendData = {
@@ -230,8 +230,8 @@ and geometryData = {
   mutable vertices: Js.Typed_array.Float32Array.t,
   /* todo optimize: use Uint32Array based on config or query gpu extension */
   mutable indices: Js.Typed_array.Uint16Array.t,
-  mutable verticesInfoList: geometryInfoList,
-  mutable indicesInfoList: geometryInfoList,
+  mutable verticesInfoArray: geometryInfoArray,
+  mutable indicesInfoArray: geometryInfoArray,
   mutable verticesOffset: int,
   mutable indicesOffset: int,
   mutable computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),

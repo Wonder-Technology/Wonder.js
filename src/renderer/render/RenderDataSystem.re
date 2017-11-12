@@ -12,17 +12,17 @@ let getCameraVMatrixDataFromState = [@bs] (gameObject: gameObject, state: StateD
 let getCameraPMatrixDataFromState = [@bs] (gameObject: gameObject, state: StateDataType.state) =>
   _getCameraData(state).pMatrix;
 
-let getRenderListFromState = (state: StateDataType.state) => state.renderData.renderList;
+let getRenderArrayFromState = (state: StateDataType.state) => state.renderData.renderArray;
 
-let setRenderList = (renderList, state: StateDataType.state) =>
-  _getRenderData(state).renderList = (
-    switch (Js.Array.length(renderList)) {
+let setRenderArray = (renderArray, state: StateDataType.state) =>
+  _getRenderData(state).renderArray = (
+    switch (Js.Array.length(renderArray)) {
     | 0 => None
-    | _ => Some(renderList)
+    | _ => Some(renderArray)
     }
   );
 
 let setCameraData = (cameraData, state: StateDataType.state) =>
   _getRenderData(state).cameraData = cameraData;
 
-let initData = () => {renderList: None, cameraData: None};
+let initData = () => {renderArray: None, cameraData: None};
