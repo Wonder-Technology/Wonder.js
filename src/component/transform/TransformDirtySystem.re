@@ -32,7 +32,7 @@ open TransformType;
              (fun () => Js.Array.length transformData.oldIndexArrayBeforeAddToDirtyArray >= 1)
          )
      );
-     ArraySystem.unsafePop transformData.oldIndexArrayBeforeAddToDirtyArray
+     WonderCommonlib.ArraySystem.unsafePop transformData.oldIndexArrayBeforeAddToDirtyArray
    }; */
 let _addToDirtyArray = (index: int, {dirtyArray}: transformData) =>
   /* requireCheck (
@@ -49,7 +49,7 @@ let _addToDirtyArray = (index: int, {dirtyArray}: transformData) =>
 let addItAndItsChildrenToDirtyArray = (index: int, transformData: transformData) => {
   let children = ref([|index|]);
   while (Js.Array.length(children^) > 0) {
-    let last: int = ArraySystem.unsafePop(children^);
+    let last: int = WonderCommonlib.ArraySystem.unsafePop(children^);
     _addToDirtyArray(last, transformData) |> ignore;
     children :=
       Js.Array.concat(

@@ -58,17 +58,17 @@ let setPosition =
     )
   };
 /* let isTransform = (transform: transform, isTransformMap) =>
-     switch (isTransformMap |> HashMapSystem.get(Js.Int.toString(transform))) {
+     switch (isTransformMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(transform))) {
      | None => false
      | Some(isTransform) => isTransform == true
      };
 
    let markIsTransform = (transform: transform, isTransformMap) => {
-     isTransformMap |> HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
+     isTransformMap |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
      ()
    };
 
    let cleanIsTransformMap = (state:StateDataType.state) => {
-    TransformStateUtils.getTransformData(state).isTransformMap = HashMapSystem.createEmpty();
+    TransformStateUtils.getTransformData(state).isTransformMap = WonderCommonlib.HashMapSystem.createEmpty();
      state;
    }; */

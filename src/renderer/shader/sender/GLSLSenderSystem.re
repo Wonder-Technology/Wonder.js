@@ -20,7 +20,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
           () => {
             let {vertexAttribHistoryArray} = getGLSLSenderData(state);
             vertexAttribHistoryArray
-            |> Js.Array.filter(JudgeUtils.isBool)
+            |> Js.Array.filter(WonderCommonlib.JudgeUtils.isBool)
             |> Js.Array.length == Js.Array.length(vertexAttribHistoryArray)
           }
         )
@@ -35,15 +35,15 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
            /* if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) { */
            ExceptionHandlerSystem.throwMessage("should always be true")
      );
-  data.vertexAttribHistoryArray = ArraySystem.createEmpty();
+  data.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state
 };
 
 let initData = () => {
-  attributeSendDataMap: HashMapSystem.createEmpty(),
-  uniformSendDataMap: HashMapSystem.createEmpty(),
-  drawPointsFuncMap: HashMapSystem.createEmpty(),
-  vertexAttribHistoryArray: ArraySystem.createEmpty(),
+  attributeSendDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  uniformSendDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  drawPointsFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
   /* lastSendArrayBuffer: None, */
   lastSendElementArrayBuffer: None
 };

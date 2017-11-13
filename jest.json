@@ -5,7 +5,7 @@
   ],
   "testRegex": "lib/es6_global/test/.+test\\.js$",
   "transformIgnorePatterns": [
-    "<rootDir>/node_modules/(?!.*bs-)"
+    "<rootDir>/node_modules/(?!(.*bs-)|(wonder-commonlib))"
   ],
   "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
   "notify": false,

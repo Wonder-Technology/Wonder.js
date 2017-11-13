@@ -28,7 +28,7 @@ let getIndexTypeSize = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
 
 let isGeometry = (geometry) => {
-  open Jest;
+  open Wonder_jest;
   open Expect;
   open! Expect.Operators;
   expect(geometry) >= 0

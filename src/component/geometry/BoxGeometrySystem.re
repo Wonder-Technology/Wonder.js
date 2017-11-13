@@ -4,21 +4,21 @@ open BoxGeometryType;
 
 open GeometryStateUtils;
 
-/* let setConfigData = (geometry:geometry, configData:HashMapSystem.t (float), state:StateDataType.state) => { */
+/* let setConfigData = (geometry:geometry, configData:WonderCommonlib.HashMapSystem.t (float), state:StateDataType.state) => { */
 let setConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
   open JsObjUtils;
   let data = getGeometryData(state);
   let configDataHashMap =
-    HashMapSystem.createEmpty()
-    |> HashMapSystem.set("width", getValueFromJsObj(configData##width, 10.))
-    |> HashMapSystem.set("height", getValueFromJsObj(configData##height, 10.))
-    |> HashMapSystem.set("depth", getValueFromJsObj(configData##depth, 10.))
-    |> HashMapSystem.set("widthSegments", getValueFromJsObj(configData##widthSegments, 1.))
-    |> HashMapSystem.set("heightSegments", getValueFromJsObj(configData##heightSegments, 1.))
-    |> HashMapSystem.set("depthSegments", getValueFromJsObj(configData##depthSegments, 1.));
+    WonderCommonlib.HashMapSystem.createEmpty()
+    |> WonderCommonlib.HashMapSystem.set("width", getValueFromJsObj(configData##width, 10.))
+    |> WonderCommonlib.HashMapSystem.set("height", getValueFromJsObj(configData##height, 10.))
+    |> WonderCommonlib.HashMapSystem.set("depth", getValueFromJsObj(configData##depth, 10.))
+    |> WonderCommonlib.HashMapSystem.set("widthSegments", getValueFromJsObj(configData##widthSegments, 1.))
+    |> WonderCommonlib.HashMapSystem.set("heightSegments", getValueFromJsObj(configData##heightSegments, 1.))
+    |> WonderCommonlib.HashMapSystem.set("depthSegments", getValueFromJsObj(configData##depthSegments, 1.));
   getGeometryData(state).configDataMap
-  |> HashMapSystem.set(Js.Int.toString(geometry), configDataHashMap)
+  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometry), configDataHashMap)
   |> ignore;
   state
 };
@@ -27,12 +27,12 @@ let _computeData = (index: int, state: StateDataType.state) =>
   switch (GeometrySystem.getConfigData(index, state)) {
   | None => ExceptionHandlerSystem.throwMessage("configData should exist")
   | Some(configDataMap) =>
-    let width = HashMapSystem.unsafeGet("width", configDataMap);
-    let height = HashMapSystem.unsafeGet("height", configDataMap);
-    let depth = HashMapSystem.unsafeGet("depth", configDataMap);
-    let widthSegments = HashMapSystem.unsafeGet("widthSegments", configDataMap);
-    let heightSegments = HashMapSystem.unsafeGet("heightSegments", configDataMap);
-    let depthSegments = HashMapSystem.unsafeGet("depthSegments", configDataMap);
+    let width = WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap);
+    let height = WonderCommonlib.HashMapSystem.unsafeGet("height", configDataMap);
+    let depth = WonderCommonlib.HashMapSystem.unsafeGet("depth", configDataMap);
+    let widthSegments = WonderCommonlib.HashMapSystem.unsafeGet("widthSegments", configDataMap);
+    let heightSegments = WonderCommonlib.HashMapSystem.unsafeGet("heightSegments", configDataMap);
+    let depthSegments = WonderCommonlib.HashMapSystem.unsafeGet("depthSegments", configDataMap);
     /* let {
            width,
        height,
@@ -50,8 +50,8 @@ let _computeData = (index: int, state: StateDataType.state) =>
            left: 5
        }; */
     let (front, back, top, bottom, right, left) = (0, 1, 2, 3, 4, 5);
-    let vertices = ArraySystem.createEmpty();
-    let indices = ArraySystem.createEmpty();
+    let vertices = WonderCommonlib.ArraySystem.createEmpty();
+    let indices = WonderCommonlib.ArraySystem.createEmpty();
     let faceAxes = [|
       /* front */
       [|0, 1, 3|],
@@ -114,10 +114,10 @@ let _computeData = (index: int, state: StateDataType.state) =>
             );
           let temp3 = Vector3System.sub(Vector3Type.Float, temp2, corners[faceAxes[side][0]]);
           let (vx, vy, vz) = Vector3System.add(Vector3Type.Float, temp1, temp3);
-          vertices |> ArraySystem.pushMany([|vx, vy, vz|]) |> ignore;
+          vertices |> WonderCommonlib.ArraySystem.pushMany([|vx, vy, vz|]) |> ignore;
           if (i < uSegments && j < vSegments) {
             indices
-            |> ArraySystem.pushMany([|
+            |> WonderCommonlib.ArraySystem.pushMany([|
                  offset + j + i * (uSegments + 1),
                  offset + j + (i + 1) * (uSegments + 1),
                  offset + j + i * (uSegments + 1) + 1,
@@ -179,6 +179,6 @@ let _computeData = (index: int, state: StateDataType.state) =>
 let create = (state: StateDataType.state) => {
   let (state, index) = GeometrySystem.create(state);
   let data = getGeometryData(state);
-  data.computeDataFuncMap |> HashMapSystem.set(Js.Int.toString(index), _computeData) |> ignore;
+  data.computeDataFuncMap |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(index), _computeData) |> ignore;
   (state, index)
 };

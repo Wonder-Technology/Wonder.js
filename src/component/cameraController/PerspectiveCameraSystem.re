@@ -7,10 +7,10 @@ open CameraControllerStateUtils;
 open CameraControllerDirtySystem;
 
 let getFovy = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  HashMapSystem.get(Js.Int.toString(cameraController), cameraData.fovyMap);
+  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.fovyMap);
 
 let setFovy = (cameraController: cameraController, fovy: float, state: StateDataType.state) => {
-  HashMapSystem.set(
+  WonderCommonlib.HashMapSystem.set(
     Js.Int.toString(cameraController),
     fovy,
     getPerspectiveCameraData(state).fovyMap
@@ -22,10 +22,10 @@ let setFovy = (cameraController: cameraController, fovy: float, state: StateData
 };
 
 let getAspect = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  HashMapSystem.get(Js.Int.toString(cameraController), cameraData.aspectMap);
+  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.aspectMap);
 
 let setAspect = (cameraController: cameraController, aspect: float, state: StateDataType.state) => {
-  HashMapSystem.set(
+  WonderCommonlib.HashMapSystem.set(
     Js.Int.toString(cameraController),
     aspect,
     getPerspectiveCameraData(state).aspectMap
@@ -37,10 +37,10 @@ let setAspect = (cameraController: cameraController, aspect: float, state: State
 };
 
 let getNear = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  HashMapSystem.get(Js.Int.toString(cameraController), cameraData.nearMap);
+  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.nearMap);
 
 let setNear = (cameraController: cameraController, near: float, state: StateDataType.state) => {
-  HashMapSystem.set(
+  WonderCommonlib.HashMapSystem.set(
     Js.Int.toString(cameraController),
     near,
     getPerspectiveCameraData(state).nearMap
@@ -52,10 +52,10 @@ let setNear = (cameraController: cameraController, near: float, state: StateData
 };
 
 let getFar = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  HashMapSystem.get(Js.Int.toString(cameraController), cameraData.farMap);
+  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.farMap);
 
 let setFar = (cameraController: cameraController, far: float, state: StateDataType.state) => {
-  HashMapSystem.set(Js.Int.toString(cameraController), far, getPerspectiveCameraData(state).farMap)
+  WonderCommonlib.HashMapSystem.set(Js.Int.toString(cameraController), far, getPerspectiveCameraData(state).farMap)
   |> ignore;
   CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
@@ -68,7 +68,7 @@ let _setPMatrix =
       cameraControllerData: cameraControllerData,
       pMatrix: Js.Typed_array.Float32Array.t
     ) =>
-  HashMapSystem.set(Js.Int.toString(cameraController), pMatrix, cameraControllerData.pMatrixMap);
+  WonderCommonlib.HashMapSystem.set(Js.Int.toString(cameraController), pMatrix, cameraControllerData.pMatrixMap);
 
 let update = (index: int, cameraControllerData: cameraControllerData) => {
   let cameraData = getPerspectiveCameraDataFromCameraControllerData(cameraControllerData);
@@ -95,8 +95,8 @@ let init = (index: int, cameraControllerData: cameraControllerData) =>
   update(index, cameraControllerData);
 
 let initData = () => {
-  nearMap: HashMapSystem.createEmpty(),
-  farMap: HashMapSystem.createEmpty(),
-  fovyMap: HashMapSystem.createEmpty(),
-  aspectMap: HashMapSystem.createEmpty()
+  nearMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  farMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  fovyMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  aspectMap: WonderCommonlib.HashMapSystem.createEmpty()
 };

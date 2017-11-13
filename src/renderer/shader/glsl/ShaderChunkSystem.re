@@ -5,7 +5,7 @@ open ShaderChunkType;
 let _getGLSLChunkMap = (state: StateDataType.state) => state.glslChunkData.chunkMap;
 
 let getChunk = (name: string, state: StateDataType.state) =>
-  state |> _getGLSLChunkMap |> HashMapSystem.get(name) |> Js.Option.getExn;
+  state |> _getGLSLChunkMap |> WonderCommonlib.HashMapSystem.get(name) |> Js.Option.getExn;
 
 let _buildChunk =
     (
@@ -26,7 +26,7 @@ let _buildChunk =
 
 /* todo auto write by glsl compiler */
 let initData = () =>
-  HashMapSystem.{
+  WonderCommonlib.HashMapSystem.{
     chunkMap:
       createEmpty()
       |> set(

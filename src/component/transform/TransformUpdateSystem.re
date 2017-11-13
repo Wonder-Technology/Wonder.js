@@ -12,7 +12,7 @@ open TransformOperateDataSystem;
 let _cleanDirtyArray = (transformData: transformData) =>
   /* dirtyArray
      |> Js.Array.forEach (fun index => _moveFromDirtyArrayToNormalArray index transformData |> ignore); */
-  transformData.dirtyArray = ArraySystem.createEmpty();
+  transformData.dirtyArray = WonderCommonlib.ArraySystem.createEmpty();
 
 let _transform = ({localToWorldMatrices, localPositions} as transformData, dirtyArray: array(int)) => {
   open Matrix4System;
@@ -68,6 +68,6 @@ let _updateDirtyArray = (transformData: transformData, dirtyArray: array(int)) =
 
 let update = (transformData: transformData) =>
   transformData.dirtyArray
-  |> ArraySystem.removeDuplicateItems
+  |> WonderCommonlib.ArraySystem.removeDuplicateItems
   |> _updateDirtyArray(transformData)
   |> _cleanDirtyArray;

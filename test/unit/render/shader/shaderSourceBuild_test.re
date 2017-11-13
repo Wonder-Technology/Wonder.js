@@ -1,4 +1,4 @@
-open Jest;
+open Wonder_jest;
 
 let _ =
   describe(

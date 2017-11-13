@@ -32,14 +32,14 @@ let addAttributeSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).attributeSendDataMap
-            |> HashMapSystem.get(materialIndexStr)
+            |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
             |> assertNotExist
         )
       )
   );
-  let sendDataArr = ArraySystem.createEmpty();
+  let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
-  |> ArraySystem.forEach(
+  |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
          ({variables}) =>
@@ -50,7 +50,7 @@ let addAttributeSendData =
              | None => ()
              | Some(attributes) =>
                attributes
-               |> ArraySystem.forEach(
+               |> WonderCommonlib.ArraySystem.forEach(
                     [@bs]
                     (
                       ({name, buffer, type_}) =>
@@ -141,7 +141,7 @@ let addAttributeSendData =
        )
      );
   getGLSLSenderData(state).attributeSendDataMap
-  |> HashMapSystem.set(materialIndexStr, sendDataArr)
+  |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
   let shaderIndexStr = Js.Int.toString(shaderIndex);
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
@@ -176,14 +176,14 @@ let addUniformSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).uniformSendDataMap
-            |> HashMapSystem.get(materialIndexStr)
+            |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
             |> assertNotExist
         )
       )
   );
-  let sendDataArr = ArraySystem.createEmpty();
+  let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
-  |> ArraySystem.forEach(
+  |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
          ({variables}) =>
@@ -194,7 +194,7 @@ let addUniformSendData =
              | None => ()
              | Some(uniforms) =>
                uniforms
-               |> ArraySystem.forEach(
+               |> WonderCommonlib.ArraySystem.forEach(
                     [@bs]
                     (
                       ({name, field, type_, from}) =>
@@ -248,7 +248,7 @@ let addUniformSendData =
        )
      );
   getGLSLSenderData(state).uniformSendDataMap
-  |> HashMapSystem.set(materialIndexStr, sendDataArr)
+  |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
   let shaderIndexStr = Js.Int.toString(shaderIndex);
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
@@ -257,7 +257,7 @@ let addUniformSendData =
 let addDrawPointsFunc =
     (gl, materialIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
   getGLSLSenderData(state).drawPointsFuncMap
-  |> HashMapSystem.set(
+  |> WonderCommonlib.HashMapSystem.set(
        materialIndexStr,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
@@ -278,7 +278,7 @@ let addDrawPointsFunc =
 let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
-  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -288,7 +288,7 @@ let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) 
                "attribute send data should exist",
                () => {
                  let {attributeSendDataMap} = getGLSLSenderData(state);
-                 attributeSendDataMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+                 attributeSendDataMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
                }
              )
          )
@@ -298,7 +298,7 @@ let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) 
 let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) => {
   let {uniformSendDataMap} = getGLSLSenderData(state);
   uniformSendDataMap
-  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -306,7 +306,7 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
              "uniform send data should exist",
              () => {
                let {uniformSendDataMap} = getGLSLSenderData(state);
-               uniformSendDataMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+               uniformSendDataMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
              }
            )
          )
@@ -316,7 +316,7 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
 let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => {
   let {drawPointsFuncMap} = getGLSLSenderData(state);
   drawPointsFuncMap
-  |> HashMapSystem.unsafeGet(shaderIndexStr)
+  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -324,7 +324,7 @@ let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => 
              "draw points func should exist",
              () => {
                let {drawPointsFuncMap} = getGLSLSenderData(state);
-               drawPointsFuncMap |> HashMapSystem.get(shaderIndexStr) |> assertExist
+               drawPointsFuncMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
              }
            )
          )

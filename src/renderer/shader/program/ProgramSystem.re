@@ -14,8 +14,8 @@ let _compileShader = (gl, glslSource: string, shader) => {
   shaderSource(shader, glslSource, gl);
   compileShader(shader, gl);
   if (getShaderParameter(shader, getCompileStatus(gl), gl) == Js.false_) {
-    LogUtils.log(getShaderInfoLog(shader, gl));
-    LogUtils.log({j|source:
+    WonderCommonlib.LogUtils.log(getShaderInfoLog(shader, gl));
+    WonderCommonlib.LogUtils.log({j|source:
             $glslSource|j});
     shader
   } else {
@@ -86,20 +86,20 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
 };
 
 let getProgram = (shaderIndexStr: string, state: StateDataType.state) =>
-  _getProgramData(state).programMap |> HashMapSystem.get(shaderIndexStr);
+  _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr);
 
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
   _getProgramData(state).programMap
-  |> HashMapSystem.set(Js.Int.toString(shaderIndex), program)
+  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(shaderIndex), program)
   |> ignore;
   program
 };
 
 /* let getProgram = (shaderLibDataKey: string, state: StateDataType.state) =>
-     _getProgramData(state).programMap |> HashMapSystem.get(shaderLibDataKey);
+     _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.get(shaderLibDataKey);
 
    let setProgram = (shaderLibDataKey: string, program: program, state: StateDataType.state) => {
-     _getProgramData(state).programMap |> HashMapSystem.set(shaderLibDataKey, program) |> ignore;
+     _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.set(shaderLibDataKey, program) |> ignore;
      state
    }; */
 /* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
@@ -117,4 +117,4 @@ let use = (gl, program: program, state: StateDataType.state) => {
   }
 };
 
-let initData = () => {programMap: HashMapSystem.createEmpty(), lastUsedProgram: None};
+let initData = () => {programMap: WonderCommonlib.HashMapSystem.createEmpty(), lastUsedProgram: None};

@@ -21,7 +21,7 @@ module JudgeSendUniformData = {
   };
   let testSendMatrix4 =
       (sandbox, name, setFunc, targetData, ~testFunc=(_prepareSendUinformData) => (), ()) =>
-    Jest.(
+    Wonder_jest.(
       Expect.(
         Expect.Operators.(
           Sinon.(

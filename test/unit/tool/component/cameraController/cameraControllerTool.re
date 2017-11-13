@@ -1,7 +1,7 @@
 open CameraControllerType;
 
 let isCameraController = (cameraController: cameraController) => {
-  open Jest;
+  open Wonder_jest;
   open Expect;
   open! Expect.Operators;
   expect(cameraController) >= 0

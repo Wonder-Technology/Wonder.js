@@ -14,6 +14,6 @@ let getRenderArray = (state: StateDataType.state) =>
 
 let initData = () => {
   index: 0,
-  renderGameObjectArray: ArraySystem.createEmpty(),
-  gameObjectMap: HashMapSystem.createEmpty()
+  renderGameObjectArray: WonderCommonlib.ArraySystem.createEmpty(),
+  gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty()
 };

@@ -19,7 +19,7 @@ let getGameObject = (material: material, state: StateDataType.state) =>
 
 let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
-  |> HashMapSystem.unsafeGet(materialIndexStr)
+  |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -27,7 +27,7 @@ let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
              "shaderIndex should exist",
              () =>
                getMaterialData(state).shaderIndexMap
-               |> HashMapSystem.get(materialIndexStr)
+               |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
                |> assertExist
            )
          )
@@ -35,7 +35,7 @@ let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
 
 let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
   getMaterialData(state).shaderIndexMap
-  |> HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
+  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
   |> ignore;
   state
 };
@@ -143,8 +143,8 @@ let initData = (state: StateDataType.state) => {
     Some({
       index: 0,
       /* buffer, */
-      shaderIndexMap: HashMapSystem.createEmpty(),
-      gameObjectMap: HashMapSystem.createEmpty()
+      shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty()
     });
   state
 };

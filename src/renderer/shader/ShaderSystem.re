@@ -11,10 +11,10 @@ let _genereateShaderIndex = (state: StateDataType.state) => {
   (state, index)
 };
 
-let _getShaderIndex = (key: string, {shaderIndexMap}) => shaderIndexMap |> HashMapSystem.get(key);
+let _getShaderIndex = (key: string, {shaderIndexMap}) => shaderIndexMap |> WonderCommonlib.HashMapSystem.get(key);
 
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
-  shaderIndexMap |> HashMapSystem.set(key, shaderIndex);
+  shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
 
 let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) =>
   shaderLibDataArr |> Js.Array.joinWith("");
@@ -103,5 +103,5 @@ let initMaterialShader =
 
 let initData = () => {
   index: 0,
-  shaderIndexMap: HashMapSystem.createEmpty()
+  shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty()
 };

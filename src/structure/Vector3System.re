@@ -4,13 +4,13 @@ open Js.Typed_array;
 /* let transformMat4 = ((x, y, z), mat4: Js.Array.t(float)) => {
   let w =
     ref(
-      ArraySystem.unsafeGet(mat4, 3)
+      WonderCommonlib.ArraySystem.unsafeGet(mat4, 3)
       *. x
-      +. ArraySystem.unsafeGet(mat4, 7)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 7)
       *. y
-      +. ArraySystem.unsafeGet(mat4, 11)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 11)
       *. z
-      +. ArraySystem.unsafeGet(mat4, 15)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 15)
     );
   w :=
     (
@@ -21,33 +21,33 @@ open Js.Typed_array;
     );
   (
     (
-      ArraySystem.unsafeGet(mat4, 0)
+      WonderCommonlib.ArraySystem.unsafeGet(mat4, 0)
       *. x
-      +. ArraySystem.unsafeGet(mat4, 4)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 4)
       *. y
-      +. ArraySystem.unsafeGet(mat4, 8)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 8)
       *. z
-      +. ArraySystem.unsafeGet(mat4, 12)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 12)
     )
     /. w^,
     (
-      ArraySystem.unsafeGet(mat4, 1)
+      WonderCommonlib.ArraySystem.unsafeGet(mat4, 1)
       *. x
-      +. ArraySystem.unsafeGet(mat4, 5)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 5)
       *. y
-      +. ArraySystem.unsafeGet(mat4, 9)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 9)
       *. z
-      +. ArraySystem.unsafeGet(mat4, 13)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 13)
     )
     /. w^,
     (
-      ArraySystem.unsafeGet(mat4, 2)
+      WonderCommonlib.ArraySystem.unsafeGet(mat4, 2)
       *. x
-      +. ArraySystem.unsafeGet(mat4, 6)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 6)
       *. y
-      +. ArraySystem.unsafeGet(mat4, 10)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 10)
       *. z
-      +. ArraySystem.unsafeGet(mat4, 14)
+      +. WonderCommonlib.ArraySystem.unsafeGet(mat4, 14)
     )
     /. w^
   )

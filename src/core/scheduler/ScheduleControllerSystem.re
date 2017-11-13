@@ -17,7 +17,7 @@ let _getFuncRecord = (index: int, funcRecordArray) => {
       Contract.Operators.(
         test(
           {j|$funcRecordArray[$index] should exist|j},
-          () => ArraySystem.get(index, funcRecordArray) |> assertExist
+          () => WonderCommonlib.ArraySystem.get(index, funcRecordArray) |> assertExist
         )
       )
   );
@@ -76,6 +76,6 @@ let scheduleLoop = (taskFunc, state: state) => {
 
 let initData = () => {
   count: 0,
-  funcRecordArray: ArraySystem.createEmpty(),
-  isFinishMap: HashMapSystem.createEmpty()
+  funcRecordArray: WonderCommonlib.ArraySystem.createEmpty(),
+  isFinishMap: WonderCommonlib.HashMapSystem.createEmpty()
 };

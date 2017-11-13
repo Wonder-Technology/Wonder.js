@@ -3,7 +3,7 @@ open TransformType;
 open Contract;
 
 let getParent = (index: string, transformData: transformData) =>
-  Js.Undefined.to_opt(HashMapSystem.unsafeGet(index, transformData.parentMap));
+  Js.Undefined.to_opt(WonderCommonlib.HashMapSystem.unsafeGet(index, transformData.parentMap));
 
 let _removeFromParentMap = (childIndex: string, transformData: transformData) => {
   HashMapSystem.deleteVal(childIndex, transformData.parentMap) |> ignore;
@@ -11,12 +11,12 @@ let _removeFromParentMap = (childIndex: string, transformData: transformData) =>
 };
 
 let unsafeGetChildren = (index: string, transformData: transformData) =>
-  HashMapSystem.unsafeGet(index, transformData.childMap)
+  WonderCommonlib.HashMapSystem.unsafeGet(index, transformData.childMap)
   |> ensureCheck(
        (_) =>
          test(
            "children should exist",
-           () => HashMapSystem.get(index, transformData.childMap) |> assertExist
+           () => WonderCommonlib.HashMapSystem.get(index, transformData.childMap) |> assertExist
          )
      );
 
@@ -38,7 +38,7 @@ let _removeFromParent =
   |> _removeFromChildMap(currentParentIndexStr, child);
 
 let _setParent = (parent: transform, childIndex: string, transformData: transformData) => {
-  HashMapSystem.set(
+  WonderCommonlib.HashMapSystem.set(
     childIndex,
     TransformCastTypeUtils.transformToJsUndefine(parent),
     transformData.parentMap

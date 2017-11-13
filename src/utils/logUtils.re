@@ -1,3 +1,3 @@
-let log = (message:string) => {
+/* let log = (message:string) => {
     Js.log (message);
-};
+}; */

@@ -10,13 +10,13 @@ open Contract;
 
 let _getGameObjectData = (state: StateDataType.state) => state.gameObjectData;
 
-let _getComponent = (uid: string, componentMap: HashMapSystem.t(int)) : option(component) =>
-  HashMapSystem.get(uid, componentMap);
+let _getComponent = (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int)) : option(component) =>
+  WonderCommonlib.HashMapSystem.get(uid, componentMap);
 
-let _hasComponent = (uid: string, componentMap: HashMapSystem.t(int)) : bool =>
+let _hasComponent = (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int)) : bool =>
   Js.Option.isSome(_getComponent(uid, componentMap));
 
-let _addComponent = (uid: string, component: component, componentMap: HashMapSystem.t(int)) => {
+let _addComponent = (uid: string, component: component, componentMap: WonderCommonlib.HashMapSystem.t(int)) => {
   requireCheck(
     () =>
       test(
@@ -24,7 +24,7 @@ let _addComponent = (uid: string, component: component, componentMap: HashMapSys
         () => _hasComponent(uid, componentMap) |> assertFalse
       )
   );
-  HashMapSystem.set(uid, component, componentMap) |> ignore
+  WonderCommonlib.HashMapSystem.set(uid, component, componentMap) |> ignore
 };
 
 let hasCameraControllerComponent = (uid: string, state: StateDataType.state) : bool =>
@@ -92,9 +92,9 @@ let create = (state: StateDataType.state) => {
 
 let initData = () => {
   uid: 0,
-  transformMap: HashMapSystem.createEmpty(),
-  cameraControllerMap: HashMapSystem.createEmpty(),
-  geometryMap: HashMapSystem.createEmpty(),
-  meshRendererMap: HashMapSystem.createEmpty(),
-  materialMap: HashMapSystem.createEmpty()
+  transformMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  cameraControllerMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  geometryMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  meshRendererMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  materialMap: WonderCommonlib.HashMapSystem.createEmpty()
 };

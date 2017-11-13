@@ -11,4 +11,4 @@ let _getRenderJobHandles = () => [
 ];
 
 let createJobHandleMap = () =>
-  HashMapSystem.fromList(List.concat([_getInitJobHandles(), _getRenderJobHandles()]));
+  WonderCommonlib.HashMapSystem.fromList(List.concat([_getInitJobHandles(), _getRenderJobHandles()]));

@@ -2,7 +2,7 @@ open Material;
 
 open BasicMaterial;
 
-open Jest;
+open Wonder_jest;
 
 let _ =
   describe(

@@ -120,7 +120,7 @@ let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
 let _initGeometry = (index: int, state: StateDataType.state) => {
   let geometryData = getGeometryData(state);
-  switch (geometryData.computeDataFuncMap |> HashMapSystem.get(Js.Int.toString(index))) {
+  switch (geometryData.computeDataFuncMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(index))) {
   | None => ()
   | Some(computeDataFunc) =>
     let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
@@ -139,7 +139,7 @@ let init = (state: StateDataType.state) => {
 
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
   JsObjUtils.(
-    getGeometryData(state).configDataMap |> HashMapSystem.get(Js.Int.toString(geometry))
+    getGeometryData(state).configDataMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(geometry))
   );
 
 let getGameObject = (geometry: geometry, state: StateDataType.state) =>
@@ -185,13 +185,13 @@ let initData = (state: StateDataType.state) => {
       buffer,
       vertices,
       indices,
-      verticesInfoArray: ArraySystem.createEmpty(),
-      indicesInfoArray: ArraySystem.createEmpty(),
+      verticesInfoArray: WonderCommonlib.ArraySystem.createEmpty(),
+      indicesInfoArray: WonderCommonlib.ArraySystem.createEmpty(),
       verticesOffset: 0,
       indicesOffset: 0,
-      configDataMap: HashMapSystem.createEmpty(),
-      computeDataFuncMap: HashMapSystem.createEmpty(),
-      gameObjectMap: HashMapSystem.createEmpty()
+      configDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      computeDataFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty()
     });
   state
 };

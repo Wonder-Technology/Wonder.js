@@ -23,7 +23,7 @@ let sendBuffer =
        data.lastSendArrayBuffer = Some(buffer); */
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   vertexAttribPointer(pos, size, getFloat(gl), Js.false_, 0, 0, gl);
-  ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
+  WonderCommonlib.ArraySystem.isNotEqual(pos, true, vertexAttribHistoryArray) ?
     {
       enableVertexAttribArray(pos, gl);
       Array.unsafe_set(vertexAttribHistoryArray, pos, true);

@@ -83,7 +83,7 @@ let _initBufferData = (count: int) => {
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
-    HashMapSystem.set(Js.Int.toString(index), ArraySystem.createEmpty(), childMap) |> ignore
+    WonderCommonlib.HashMapSystem.set(Js.Int.toString(index), WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
   };
   transformData
 };
@@ -183,13 +183,13 @@ let initData = (state: StateDataType.state) => {
         localPositions,
         index: 0,
         /* firstDirtyIndex: getMaxCount (), */
-        /* oldIndexArrayBeforeAddToDirtyArray: ArraySystem.createEmpty (), */
-        parentMap: HashMapSystem.createEmpty(),
-        childMap: HashMapSystem.createEmpty(),
-        gameObjectMap: HashMapSystem.createEmpty(),
-        /* originToMoveIndexMap: HashMapSystem.createEmpty (), */
-        /* moveToOriginIndexMap: HashMapSystem.createEmpty () */
-        dirtyArray: ArraySystem.createEmpty()
+        /* oldIndexArrayBeforeAddToDirtyArray: WonderCommonlib.ArraySystem.createEmpty (), */
+        parentMap: WonderCommonlib.HashMapSystem.createEmpty(),
+        childMap: WonderCommonlib.HashMapSystem.createEmpty(),
+        gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+        /* originToMoveIndexMap: WonderCommonlib.HashMapSystem.createEmpty (), */
+        /* moveToOriginIndexMap: WonderCommonlib.HashMapSystem.createEmpty () */
+        dirtyArray: WonderCommonlib.ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
     );

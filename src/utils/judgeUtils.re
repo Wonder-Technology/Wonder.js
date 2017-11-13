@@ -1,1 +1,1 @@
-let isBool = (target) => target == true || target == false;
+/* let isBool = (target) => target == true || target == false; */

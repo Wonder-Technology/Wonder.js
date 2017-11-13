@@ -19,7 +19,7 @@ let getRenderSetting = (state: StateDataType.state) => state.renderConfig.render
 let _getJobHandleMap = (state: StateDataType.state) => state.renderConfig.jobHandleMap;
 
 /* let findFirstByName = (targetName: string, arr, func) =>
-   arr |> Js.Array.filter((item) => [@bs]( func(item, targetName) )) |> ArraySystem.unsafePop; */
+   arr |> Js.Array.filter((item) => [@bs]( func(item, targetName) )) |> WonderCommonlib.ArraySystem.unsafePop; */
 let findFirst = (arr: array('a), func) =>
   arr |> Js.Array.filter((item: 'a) => [@bs] func(item)) |> Js.Array.pop |> Js.Option.getExn;
 
@@ -63,7 +63,7 @@ let execJobs = (gl, jobs: array(executableJob), state: StateDataType.state) : st
        [@bs]
        (
          (state, {name, flags, shader}: executableJob) =>
-           switch (HashMapSystem.get(name, jobHandleMap)) {
+           switch (WonderCommonlib.HashMapSystem.get(name, jobHandleMap)) {
            | None => state
            | Some(handle) => handle((flags, shader), gl, state)
            }
@@ -98,7 +98,7 @@ let getMaterialShaderLibDataArr =
              Js.Array.concat(shaderLibArr, resultDataArr)
            }
          },
-       ArraySystem.createEmpty()
+       WonderCommonlib.ArraySystem.createEmpty()
      );
 
 let throwJobFlagsShouldBeDefined = () =>
