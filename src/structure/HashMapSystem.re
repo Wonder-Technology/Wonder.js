@@ -1,9 +1,5 @@
 open Contract;
 
-external stringToJsUndefine : string => Js.undefined(string) = "%identity";
-
-external jsUndefineToString : Js.undefined(string) => string = "%identity";
-
 type t('a) = Js.Dict.t('a);
 
 let createEmpty = () => Js.Dict.empty();
