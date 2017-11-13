@@ -22,11 +22,14 @@
     "bs-platform": "2.0.0",
     "codecov.io": "^0.1.6",
     "express": "^4.16.1",
+    "gulp": "^3.9.1",
+    "gulp-sync": "^0.1.4",
     "http": "^0.0.0",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1",
     "wonder-bs-jest": "0.2.0",
-    "wonder-bs-sinon": "^0.1.0"
+    "wonder-bs-sinon": "^0.1.0",
+    "wonder-glsl-compiler": "0.0.8"
   },
   "dependencies": {
     "bs-json": "^0.2.3",

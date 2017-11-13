@@ -2,12 +2,7 @@ open Contract;
 
 open WonderCommonlib.HashMapSystem;
 
-let deleteVal = (key: string, map) => {
-  requireCheck(
-    () => test("val should exist", () => get(key, map) |> Js.Option.isSome |> assertTrue)
-  );
-  set(key, Js.Undefined.empty, map)
-};
+let deleteVal = (key: string, map) => set(key, Js.Undefined.empty, map);
 /*
 
  type t('a) = Js.Dict.t('a);

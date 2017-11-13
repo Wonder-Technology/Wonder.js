@@ -1,6 +1,5 @@
 @define
-// #import * from "common_define"
-#import "common_vertex"
+#import "common_define"
 
 // #export 
 
@@ -21,5 +20,5 @@
 
 @funcDefine
 // #import * from "common_function"
-#import "common_vertex"
+#import "common_function"
 @end
