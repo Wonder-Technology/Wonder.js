@@ -29,7 +29,7 @@
     "jest-cli": "^21.2.1",
     "wonder-bs-jest": "0.2.0",
     "wonder-bs-sinon": "^0.1.0",
-    "wonder-glsl-compiler": "0.0.8"
+    "wonder-glsl-compiler": "0.0.9"
   },
   "dependencies": {
     "bs-json": "^0.2.3",
