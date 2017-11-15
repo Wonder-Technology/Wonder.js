@@ -5,7 +5,7 @@ open StateData;
 let _initSystem = (state: StateDataType.state) =>
   state |> TransformSystem.init |> CameraControllerSystem.init |> GeometrySystem.init;
 
-let _init = (state: StateDataType.state) =>
+let init = (state: StateDataType.state) =>
   state
   |> _initSystem
   |> WebGLRenderSystem.init
@@ -27,28 +27,17 @@ let _run = (time: float, state: StateDataType.state) =>
   /* let elapsed = TimeControllerSystem.computeElapseTime(time, state); */
   state |> _sync(time) |> WebGLRenderSystem.render;
 
-/* todo add time logic */
-/* todo add scheduler */
 /* todo unit test */
-let loopBody = (time: float) => {
-  let state = getState(stateData);
-  state |> _run(time) |> setState(~stateData)
-};
+let loopBody = (time: float, state: StateDataType.state) =>
+  state |> _run(time);
 
 let start = (state: StateDataType.state) => {
-  let rec _loop = (time: float) =>
-    Dom.requestAnimationFrame(
-      (time: float) => {
-        /* state
-           |> loopBody(time)
-           |> setState(~stateData)
-           |> _loop(time) */
-        loopBody(time) |> ignore;
-        /* state
-           |> loopBody(time) */
-        _loop(time)
-      }
-    );
-  state |> _init |> setState(~stateData) |> ignore;
-  _loop(0.)
+  /* todo save loop id */
+  let rec _loop = (time: float, state: StateDataType.state) : int =>
+    Dom.requestAnimationFrame
+      (
+        (time: float) =>
+          state |> loopBody(time) |> setState(stateData) |> _loop(time) |> ignore
+      );
+  state |> init |> _loop(0.) |> ignore
 };

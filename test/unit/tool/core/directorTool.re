@@ -3,7 +3,7 @@ let prepare = (state: StateDataType.state) => {
   state
 };
 
-let init = (state: StateDataType.state) => DirectorSystem._init(state);
+let init = (state: StateDataType.state) => DirectorSystem.init(state);
 
 let initSystem = (state: StateDataType.state) => DirectorSystem._initSystem(state);
 

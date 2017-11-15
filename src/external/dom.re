@@ -8,7 +8,7 @@ open DomType;
 external querySelectorAll : (document, string) => option(htmlElement) =
   "";
 
-[@bs.val] external requestAnimationFrame : (float => unit) => unit = "";
+[@bs.val] external requestAnimationFrame : (float => unit) => int = "";
 
 external htmlElementToJsObj : htmlElement => Js.t({..}) = "%identity";
 

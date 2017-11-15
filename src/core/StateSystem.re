@@ -3,7 +3,7 @@ open RenderConfigParseSystem;
 
 let getState = (stateData: stateData) : state => Js.Option.getExn(stateData.state);
 
-let setState = (~stateData: stateData, state: state) => {
+let setState = (stateData: stateData, state: state) => {
   stateData.state = Some(state);
   state
 };
