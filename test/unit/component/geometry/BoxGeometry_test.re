@@ -50,9 +50,9 @@ let _ =
                        ~width=Js.Nullable.return(10.),
                        ~height=Js.Nullable.return(20.),
                        ~depth=Js.Nullable.return(30.),
-                       ~widthSegments=Js.Nullable.return(2.),
-                       ~heightSegments=Js.Nullable.return(3.),
-                       ~depthSegments=Js.Nullable.return(4.),
+                       ~widthSegment=Js.Nullable.return(2.),
+                       ~heightSegment=Js.Nullable.return(3.),
+                       ~depthSegment=Js.Nullable.return(4.),
                        ()
                      )
                    );
@@ -63,9 +63,9 @@ let _ =
                           ("width", 10.),
                           ("height", 20.),
                           ("depth", 30.),
-                          ("widthSegments", 2.),
-                          ("heightSegments", 3.),
-                          ("depthSegments", 4.)
+                          ("widthSegment", 2.),
+                          ("heightSegment", 3.),
+                          ("depthSegment", 4.)
                         ])
             }
           );
@@ -89,9 +89,9 @@ let _ =
                           ("width", 10.),
                           ("height", 20.),
                           ("depth", 10.),
-                          ("widthSegments", 1.),
-                          ("heightSegments", 1.),
-                          ("depthSegments", 1.)
+                          ("widthSegment", 1.),
+                          ("heightSegment", 1.),
+                          ("depthSegment", 1.)
                         ])
             }
           )
@@ -112,9 +112,9 @@ let _ =
                        ~width=Js.Nullable.return(10.),
                        ~height=Js.Nullable.return(20.),
                        ~depth=Js.Nullable.return(30.),
-                       ~widthSegments=Js.Nullable.return(2.),
-                       ~heightSegments=Js.Nullable.return(2.),
-                       ~depthSegments=Js.Nullable.return(2.),
+                       ~widthSegment=Js.Nullable.return(2.),
+                       ~heightSegment=Js.Nullable.return(2.),
+                       ~depthSegment=Js.Nullable.return(2.),
                        ()
                      )
                    );

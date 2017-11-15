@@ -5,17 +5,17 @@ let buildBoxGeometryConfigDataJsObj =
       ~width=Js.Nullable.undefined,
       ~height=Js.Nullable.undefined,
       ~depth=Js.Nullable.undefined,
-      ~widthSegments=Js.Nullable.undefined,
-      ~heightSegments=Js.Nullable.undefined,
-      ~depthSegments=Js.Nullable.undefined,
+      ~widthSegment=Js.Nullable.undefined,
+      ~heightSegment=Js.Nullable.undefined,
+      ~depthSegment=Js.Nullable.undefined,
       ()
     ) => {
   "width": width,
   "height": height,
   "depth": depth,
-  "widthSegments": widthSegments,
-  "heightSegments": heightSegments,
-  "depthSegments": depthSegments
+  "widthSegment": widthSegment,
+  "heightSegment": heightSegment,
+  "depthSegment": depthSegment
 };
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>

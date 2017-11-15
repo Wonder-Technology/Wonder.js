@@ -3,7 +3,7 @@ type boxGeometryConfigDataJsObj = {
   "width": Js.nullable(float),
   "height": Js.nullable(float),
   "depth": Js.nullable(float),
-  "widthSegments": Js.nullable(float),
-  "heightSegments": Js.nullable(float),
-  "depthSegments": Js.nullable(float)
+  "widthSegment": Js.nullable(float),
+  "heightSegment": Js.nullable(float),
+  "depthSegment": Js.nullable(float)
 };
