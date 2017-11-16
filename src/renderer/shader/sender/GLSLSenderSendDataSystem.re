@@ -10,7 +10,7 @@ let getBufferSizeByType = (type_: string) =>
   switch type_ {
   /* | "vec2" => 2 */
   | "vec3" => 3
-  | _ => ExceptionHandlerSystem.throwMessage({j|invalide type_:$type_|j})
+  | _ => ExceptionHandleSystem.throwMessage({j|invalide type_:$type_|j})
   };
 
 /* todo optimize: judge last buffer(only when use vao?) */

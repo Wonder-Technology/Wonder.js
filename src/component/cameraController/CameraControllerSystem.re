@@ -121,11 +121,11 @@ let getGameObject = (cameraController: cameraController, state: StateDataType.st
 
 let getTransform = (cameraController: cameraController, state: StateDataType.state) =>
   switch (getGameObject(cameraController, state)) {
-  | None => ExceptionHandlerSystem.throwMessage("cameraController's gameObject should exist")
+  | None => ExceptionHandleSystem.throwMessage("cameraController's gameObject should exist")
   | Some(gameObject) =>
     switch (GameObjectSystem.getTransformComponent(gameObject, state)) {
     | None =>
-      ExceptionHandlerSystem.throwMessage("cameraController's gameObject's transform should exist")
+      ExceptionHandleSystem.throwMessage("cameraController's gameObject's transform should exist")
     | Some(transform) => transform
     }
   };

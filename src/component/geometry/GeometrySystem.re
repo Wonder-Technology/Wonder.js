@@ -35,7 +35,7 @@ let _buildInfo = (startIndex: int, endIndex: int) => {startIndex, endIndex};
 
 let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) =>
   switch infoArray[index] {
-  | None => ExceptionHandlerSystem.throwMessage({j|infoArray[$index] should exist|j})
+  | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
   | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
   };
 
@@ -61,7 +61,7 @@ let _getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
       Contract.Operators.(test("info should exist", () => index <= Js.Array.length(infoArray) - 1))
   );
   switch infoArray[index] {
-  | None => ExceptionHandlerSystem.throwMessage({j|infoArray[$index] should exist|j})
+  | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
   | Some({startIndex, endIndex}) => getUint16ArrSubarray(points, startIndex, endIndex)
   }
 };

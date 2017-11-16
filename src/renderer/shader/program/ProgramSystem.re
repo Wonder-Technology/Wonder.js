@@ -105,7 +105,7 @@ let registerProgram = (shaderIndex: int, state: StateDataType.state, program: pr
 /* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
 let use = (gl, program: program, state: StateDataType.state) => {
   /* switch (getProgram(shaderIndexStr, state)) {
-     | None => ExceptionHandlerSystem.throwMessage("program should exist")
+     | None => ExceptionHandleSystem.throwMessage("program should exist")
      | Some(program) => */
   let data = _getProgramData(state);
   switch data.lastUsedProgram {

@@ -33,7 +33,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
          isEnable ?
            disableVertexAttribArray(pos, gl) :
            /* if (isEnable === false || i > gl.VERTEX_ATTRIB_ARRAY_ENABLED) { */
-           ExceptionHandlerSystem.throwMessage("should always be true")
+           ExceptionHandleSystem.throwMessage("should always be true")
      );
   data.vertexAttribHistoryArray = WonderCommonlib.ArraySystem.createEmpty();
   state

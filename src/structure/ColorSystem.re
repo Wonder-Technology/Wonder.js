@@ -3,10 +3,10 @@ let regex_num = [%re {|/^\#([0-9a-f]{6})$/i|}];
 
 let convert16HexToRGBA = (hexStr: string) =>
   switch (regex_num |> Js.Re.exec(hexStr)) {
-  | None => ExceptionHandlerSystem.throwMessage("color should be #xxxxxx")
+  | None => ExceptionHandleSystem.throwMessage("color should be #xxxxxx")
   | Some(result) =>
     switch (Js.Nullable.to_opt(Js.Re.captures(result)[1])) {
-    | None => ExceptionHandlerSystem.throwMessage("color should be #xxxxxx")
+    | None => ExceptionHandleSystem.throwMessage("color should be #xxxxxx")
     | Some(result) =>
       let hex =
         Js.Math.floor

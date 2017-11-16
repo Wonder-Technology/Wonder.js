@@ -75,7 +75,7 @@ let addAttributeSendData =
                                      GeometrySystem.getVertices(geometryIndex, state)
                                    )
                                  | _ =>
-                                   ExceptionHandlerSystem.throwMessage({j|unknow buffer:$buffer|j})
+                                   ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
                                  },
                                sendFunc: sendBuffer
                              })
@@ -126,7 +126,7 @@ let addAttributeSendData =
                                        GeometrySystem.getIndices(geometryIndex, state)
                                      )
                                    | _ =>
-                                     ExceptionHandlerSystem.throwMessage(
+                                     ExceptionHandleSystem.throwMessage(
                                        {j|unknow buffer:$buffer|j}
                                      )
                                    },
@@ -214,15 +214,15 @@ let addUniformSendData =
                                  | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
                                  | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
                                  | _ =>
-                                   ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
+                                   ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
                                  }
                                | "model" =>
                                  switch field {
                                  | "mMatrix" => _getModelMMatrixData
                                  | _ =>
-                                   ExceptionHandlerSystem.throwMessage({j|unknow field:$field|j})
+                                   ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
                                  }
-                               | _ => ExceptionHandlerSystem.throwMessage({j|unknow from:$from|j})
+                               | _ => ExceptionHandleSystem.throwMessage({j|unknow from:$from|j})
                                },
                              sendArrayDataFunc:
                                switch type_ {
@@ -237,7 +237,7 @@ let addUniformSendData =
                                       )
                                     ) */
                                  sendMatrix4
-                               | _ => ExceptionHandlerSystem.throwMessage({j|unknow type:$type_|j})
+                               | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
                                }
                            })
                         |> ignore

@@ -81,12 +81,12 @@ let update = (index: int, cameraControllerData: cameraControllerData) => {
   /* | (None, _, _, _)
      | (_, None, _, _)
      | (_, _, None, _)
-     | (_, _, _, None) => ExceptionHandlerSystem.failwith "fovy,aspect,near,far should all exist" */
+     | (_, _, _, None) => ExceptionHandleSystem.failwith "fovy,aspect,near,far should all exist" */
   | (Some(fovy), Some(aspect), Some(near), Some(far)) =>
     Matrix4System.buildPerspective(fovy, aspect, near, far)
     |> _setPMatrix(index, cameraControllerData)
     |> ignore
-  | (_, _, _, _) => ExceptionHandlerSystem.throwMessage("fovy,aspect,near,far should all exist")
+  | (_, _, _, _) => ExceptionHandleSystem.throwMessage("fovy,aspect,near,far should all exist")
   };
   ()
 };

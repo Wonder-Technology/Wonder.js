@@ -102,4 +102,4 @@ let getMaterialShaderLibDataArr =
      );
 
 let throwJobFlagsShouldBeDefined = () =>
-  ExceptionHandlerSystem.throwMessage("jobFlags should be defined");
+  ExceptionHandleSystem.throwMessage("jobFlags should be defined");

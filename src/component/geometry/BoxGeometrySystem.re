@@ -25,7 +25,7 @@ let setConfigData =
 
 let _computeData = (index: int, state: StateDataType.state) =>
   switch (GeometrySystem.getConfigData(index, state)) {
-  | None => ExceptionHandlerSystem.throwMessage("configData should exist")
+  | None => ExceptionHandleSystem.throwMessage("configData should exist")
   | Some(configDataMap) =>
     let width = WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap);
     let height = WonderCommonlib.HashMapSystem.unsafeGet("height", configDataMap);

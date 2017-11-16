@@ -178,7 +178,7 @@ let invert = (mat: Js.Array.t(float)) => {
   /* Calculate the determinant */
   let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
   switch det^ {
-  | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
+  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
     [|
@@ -233,7 +233,7 @@ let invert = (mat: Float32Array.t) => {
   /* Calculate the determinant */
   let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
   switch det^ {
-  | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
+  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
     Float32Array.make([|
@@ -325,7 +325,7 @@ let invert = (mat: Js.Array.t(float)) => {
   /* Calculate the determinant */
   let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
   switch det^ {
-  | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
+  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
     [|
@@ -380,7 +380,7 @@ let invert = (mat: Float32Array.t) => {
   /* Calculate the determinant */
   let det = ref(b00 *. b11 -. b01 *. b10 +. b02 *. b09 +. b03 *. b08 -. b04 *. b07 +. b05 *. b06);
   switch det^ {
-  | 0. => ExceptionHandlerSystem.throwMessage("det shouldn't be 0.")
+  | 0. => ExceptionHandleSystem.throwMessage("det shouldn't be 0.")
   | _ =>
     det := 1.0 /. det^;
     Float32Array.make([|
