@@ -22,7 +22,9 @@ let handleDisposeComponent = (transform: transform, state: StateDataType.state) 
   state
 };
 
-let getDisposedIndex = ({disposedIndexArray}) => {
-    /* disposedIndexArray |> WonderCommonlib.ArraySystem.unsafePop */
-    disposedIndexArray |> Js.Array.pop;
-};
+let getDisposedIndex = ({disposedIndexArray}) =>
+  /* disposedIndexArray |> WonderCommonlib.ArraySystem.unsafePop */
+  disposedIndexArray |> Js.Array.pop;
+
+let isAlive = (transform, {disposedIndexArray}) =>
+  ! Js.Array.includes(transform, disposedIndexArray);

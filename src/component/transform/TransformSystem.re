@@ -31,6 +31,9 @@ let _generateIndex = (maxCount: int, {index, disposedIndexArray} as transformDat
     index
   };
 
+let isAlive = (transform: transform, state: StateDataType.state) =>
+  TransformDisposeComponentUtils.isAlive(transform, getTransformData(state));
+
 let create = (state: StateDataType.state) => {
   let transformData = getTransformData(state);
   (state, _generateIndex(getMaxCount(state), transformData))
