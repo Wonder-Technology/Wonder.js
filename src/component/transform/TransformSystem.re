@@ -52,10 +52,9 @@ let _setDefaultTypeArrData = (count: int, (buffer, localToWorldMatrices, localPo
     1.
   |];
   let rec _set = (index: int, data: array(float), setFunc, typeArr: Js.Typed_array.Float32Array.t) =>
-    if (index >= count) {
-      typeArr
-    } else {
-      [@bs] setFunc(index, data, typeArr) |> _set(index + 1, data, setFunc)
+    switch index {
+    | index when index >= count => typeArr
+    | index => [@bs] setFunc(index, data, typeArr) |> _set(index + 1, data, setFunc)
     };
   (
     buffer,
@@ -83,7 +82,12 @@ let _initBufferData = (count: int) => {
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
-    WonderCommonlib.HashMapSystem.set(Js.Int.toString(index), WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
+    WonderCommonlib.HashMapSystem.set(
+      Js.Int.toString(index),
+      WonderCommonlib.ArraySystem.createEmpty(),
+      childMap
+    )
+    |> ignore
   };
   transformData
 };
