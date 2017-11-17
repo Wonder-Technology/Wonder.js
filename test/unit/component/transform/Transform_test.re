@@ -78,7 +78,9 @@ let _ =
                 () => {
                   state := _buildState(2);
                   expect(() => createTransform(state^))
-                  |> toThrowMessage("have create too many transforms(the count of transforms shouldn't exceed 2")
+                  |> toThrowMessage(
+                       "have create too many transforms(the count of transforms shouldn't exceed 2"
+                     )
                 }
               )
             }
@@ -142,7 +144,12 @@ let _ =
                     |> setTransformLocalPosition(parent, pos)
                     |> setTransformParent(Js.Nullable.return(parent), child)
                     |> TransformTool.update;
-                  state |> _judgeOneToOne((parent, child), (pos, pos), (TransformTool.getDefaultPosition(), pos))
+                  state
+                  |> _judgeOneToOne(
+                       (parent, child),
+                       (pos, pos),
+                       (TransformTool.getDefaultPosition(), pos)
+                     )
                 }
               );
               test(
@@ -190,7 +197,10 @@ let _ =
                       |> setTransformLocalPosition(parent, pos)
                       |> setTransformParent(Js.Nullable.return(parent), child);
                     let state =
-                      state |> TransformTool.update |> setTransformParent(Js.Nullable.null, child) |> TransformTool.update;
+                      state
+                      |> TransformTool.update
+                      |> setTransformParent(Js.Nullable.null, child)
+                      |> TransformTool.update;
                     (state, parent, child, pos)
                   };
                   test(
@@ -231,7 +241,10 @@ let _ =
                     |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
                   let state =
-                    state |> TransformTool.update |> setTransformParent(Js.Nullable.null, child2) |> TransformTool.update;
+                    state
+                    |> TransformTool.update
+                    |> setTransformParent(Js.Nullable.null, child2)
+                    |> TransformTool.update;
                   state
                   |> _judgeOneToTwo(
                        (parent, child1, child2),
@@ -348,7 +361,9 @@ let _ =
             "default value should be (0.,0.,0.)",
             () => {
               let (state, transform) = createTransform(state^);
-              state |> getTransformPosition(transform) |> expect == TransformTool.getDefaultPosition()
+              state
+              |> getTransformPosition(transform)
+              |> expect == TransformTool.getDefaultPosition()
             }
           )
       );
@@ -430,41 +445,41 @@ let _ =
       );
       describe(
         "update",
-        () =>{
-          test
-          ("sort dirtyArray, make parent before child", 
-          (
-          () => {
+        () => {
+          test(
+            "sort dirtyArray, make parent before child",
+            () => {
               let (state, child) = createTransform(state^);
               let (state, parent) = createTransform(state);
               let pos = (1., 2., 3.);
-              let state =
-                state
-                |> setTransformLocalPosition(child, pos);
+              let state = state |> setTransformLocalPosition(child, pos);
               let state =
                 state
                 |> setTransformLocalPosition(parent, pos)
                 |> setTransformParent(Js.Nullable.return(parent), child);
-                
               /* let state = state |> TransformTool.init; */
               let state = state |> TransformTool.update;
-              (getTransformPosition(child, state), getTransformPosition(parent, state)) |> expect == (Vector3System.add(Float, pos, pos), pos)
- 
-          })
+              (getTransformPosition(child, state), getTransformPosition(parent, state))
+              |> expect == (Vector3System.add(Float, pos, pos), pos)
+            }
           );
           test(
             "clean dirty array after compute transform data",
             () => {
               let (state, _, _, _) = _prepareOne();
               let len1 =
-                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                state
+                |> TransformTool.getData
+                |> ((transformData) => Js.Array.length(transformData.dirtyArray));
               let state = state |> TransformTool.update;
               let len2 =
-                state |> TransformTool.getData |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                state
+                |> TransformTool.getData
+                |> ((transformData) => Js.Array.length(transformData.dirtyArray));
               (len1, len2) |> expect == (1, 0)
             }
           )
-          }
+        }
       );
       describe(
         "getTransformGameObject",
@@ -480,6 +495,172 @@ let _ =
           )
       );
       describe(
+        "dispose component",
+        () => {
+          let dispose = (transform, state) =>
+            GameObject.disposeGameObjectTransformComponent("0", transform, state);
+          let _prepare = () => {
+            let (state, transform1) = createTransform(state^);
+            let (state, transform2) = createTransform(state);
+            let state = state |> setTransformParent(Js.Nullable.return(transform1), transform2);
+            (state, transform1, transform2)
+          };
+          /* test
+             ("if set/get transform data after dispose, error",
+             (
+             () => {
+
+             })
+             );  */
+          describe(
+            "test if dirty",
+            () =>
+              test(
+                "the disposed transform shouldn't affect other alive ones' data",
+                () => {
+                  let (state, transform1) = createTransform(state^);
+                  let (state, transform2) = createTransform(state);
+                  let state = state |> TransformTool.update;
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (5., 10., 30.);
+                  let state =
+                    state
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
+                  let state = state |> dispose(transform1);
+                  let state = state |> TransformTool.update;
+                  state |> getTransformLocalPosition(transform2) |> expect == pos2
+                }
+              )
+          );
+          describe(
+            "test if not dirty",
+            () =>
+              test(
+                "the disposed transform shouldn't affect other alive ones' data",
+                () => {
+                  let (state, transform1) = createTransform(state^);
+                  let (state, transform2) = createTransform(state);
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (5., 10., 30.);
+                  let state =
+                    state
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
+                  let state = state |> dispose(transform1);
+                  let state = state |> TransformTool.update;
+                  state |> getTransformLocalPosition(transform2) |> expect == pos2
+                }
+              )
+          );
+          describe(
+            "if child is disposed",
+            () =>
+              test(
+                "should remove it from childMap",
+                () => {
+                  let (state, transform1) = createTransform(state^);
+                  let (state, transform2) = createTransform(state);
+                  let state =
+                    state |> setTransformParent(Js.Nullable.return(transform1), transform2);
+                  let state = state |> dispose(transform2);
+                  let state = state |> TransformTool.update;
+                  state |> getTransformChildren(transform1) |> expect == [||]
+                }
+              )
+          );
+          describe(
+            "if parent is disposed",
+            () => {
+              test(
+                "should remove it from parentMap",
+                () => {
+                  let (state, transform1, transform2) = _prepare();
+                  let state = state |> dispose(transform1);
+                  let state = state |> TransformTool.update;
+                  state |> getTransformParent(transform2) |> expect == Js.Nullable.undefined
+                }
+              );
+              describe(
+                "shouldn't affect children when update",
+                () => {
+                  test(
+                    "test disposed one has no parent",
+                    () => {
+                      let (state, transform1, transform2) = _prepare();
+                      let pos1 = (1., 2., 3.);
+                      let pos2 = (5., 10., 30.);
+                      let state =
+                        state
+                        |> setTransformLocalPosition(transform1, pos1)
+                        |> setTransformLocalPosition(transform2, pos2);
+                      let state = state |> dispose(transform1);
+                      let state = state |> TransformTool.update;
+                      state |> getTransformPosition(transform2) |> expect == pos2
+                    }
+                  );
+                  test(
+                    "test disposed one has parent",
+                    () => {
+                      let (state, transform1, transform2) = _prepare();
+                      let (state, transform0) = createTransform(state);
+                      let state =
+                        state |> setTransformParent(Js.Nullable.return(transform0), transform1);
+                      let pos0 = (2., 4., 6.);
+                      let pos1 = (1., 2., 3.);
+                      let pos2 = (5., 10., 30.);
+                      let state =
+                        state
+                        |> setTransformLocalPosition(transform0, pos0)
+                        |> setTransformLocalPosition(transform1, pos1)
+                        |> setTransformLocalPosition(transform2, pos2);
+                      let state = state |> dispose(transform1);
+                      let state = state |> TransformTool.update;
+                      state |> getTransformPosition(transform2) |> expect == pos2
+                    }
+                  )
+                }
+              )
+            }
+          );
+          describe(
+            "test gameObject add new transform after dispose old one",
+            () => {
+              beforeEach(
+                () => BufferTool.setBufferSize(~transformDataBufferCount=2, state^) |> ignore
+              );
+              test(
+                "if transformData.index == maxCount, use disposed index(transform) as new index",
+                () => {
+                  let (state, transform1, transform2) = _prepare();
+                  let state = state |> dispose(transform1);
+                  let (state, transform3) = createTransform(state);
+                  transform3 |> expect == transform1
+                }
+              );
+              test(
+                "if has no disposed one, error",
+                () => {
+                  let (state, transform1, transform2) = _prepare();
+                  expect(() => createTransform(state))
+                  |> toThrowMessage("have create too many transforms")
+                }
+              )
+            }
+          );
+          test(
+            "if transform is disposed, getTransformPosition/setTransformPosition/getTransformLocalPosition/setTransformLocalPosition/getTransformParent/setTransformParent/getTransformGameObject should error",
+            () => {
+              let (state, transform1) = createTransform(state^);
+              let state = state |> dispose(transform1);
+              expect(() => getTransformPosition(transform1, state))
+              |> toThrowMessage("component should alive")
+              /* todo test more */
+            }
+          )
+        }
+      );
+      describe(
         "fix bug",
         () =>
           test(
@@ -488,7 +669,6 @@ let _ =
               open GameObject;
               let (state, transform1) = createTransform(state^);
               let (state, transform2) = createTransform(state);
-
               TransformTool.getLocalToWorldMatrix(transform2, state)
               |> expect == TransformTool.getDefaultLocalToWorldMatrix()
             }
