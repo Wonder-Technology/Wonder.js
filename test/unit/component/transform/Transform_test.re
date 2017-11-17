@@ -74,11 +74,11 @@ let _ =
                 () => BufferTool.setBufferSize(~transformDataBufferCount=2, state^) |> ignore
               );
               test(
-                "index should <= maxCount",
+                "have create too many transforms(the count of transforms shouldn't exceed maxCount",
                 () => {
                   state := _buildState(2);
                   expect(() => createTransform(state^))
-                  |> toThrowMessage("index should <= maxCount")
+                  |> toThrowMessage("have create too many transforms(the count of transforms shouldn't exceed 2")
                 }
               )
             }

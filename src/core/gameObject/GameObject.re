@@ -11,6 +11,11 @@ let addGameObjectTransformComponent =
   /* todo check alive */
   addTransformComponent(gameObject, component, state);
 
+let disposeGameObjectTransformComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  disposeTransformComponent(gameObject, component, state);
+
 let getGameObjectTransformComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getTransformComponent(gameObject, state));
 

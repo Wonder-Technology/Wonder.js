@@ -48,6 +48,10 @@ let addTransformComponent = (uid: string, component: component, state: StateData
   _getGameObjectData(state).transformMap |> _addComponent(uid, component) |> ignore;
   TransformAddComponentUtils.handleAddComponent(component, uid, state)
 };
+let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) => {
+  TransformDisposeComponentUtils.handleDisposeComponent(component, state)
+};
+
 
 let hasGeometryComponent = (uid: string, state: StateDataType.state) : bool =>
   _getGameObjectData(state).geometryMap |> _hasComponent(uid);

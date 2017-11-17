@@ -16,17 +16,33 @@ open TransformHierachySystem;
 
 open TransformStateUtils;
 
+let _generateIndex = (maxCount: int, {index, disposedIndexArray} as transformData) =>
+  switch index {
+  | index when index >= maxCount =>
+    switch (TransformDisposeComponentUtils.getDisposedIndex(transformData)) {
+    | None =>
+      ExceptionHandleSystem.throwMessage(
+        {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j}
+      )
+    | Some(index) => index
+    }
+  | index =>
+    transformData.index = succ(index);
+    index
+  };
+
 let create = (state: StateDataType.state) => {
   let transformData = getTransformData(state);
-  let index = transformData.index;
-  transformData.index = succ(transformData.index);
-  (state, index)
+  (state, _generateIndex(getMaxCount(state), transformData))
   |> ensureCheck(
        ((state, _)) => {
          open Contract.Operators;
          let {index}: transformData = getTransformData(state);
          let maxCount = getMaxCount(state);
-         test("index should <= maxCount", () => index <= maxCount)
+         test(
+           {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j},
+           () => index <= maxCount
+         )
        }
      )
 };
@@ -193,7 +209,8 @@ let initData = (state: StateDataType.state) => {
         gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
         /* originToMoveIndexMap: WonderCommonlib.HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: WonderCommonlib.HashMapSystem.createEmpty () */
-        dirtyArray: WonderCommonlib.ArraySystem.createEmpty()
+        dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
+        disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
     );

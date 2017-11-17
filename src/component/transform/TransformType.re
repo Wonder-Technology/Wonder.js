@@ -26,5 +26,6 @@ type transformData = {
   mutable gameObjectMap,
   /* mutable originToMoveIndexMap: originToMoveIndexMap,
      mutable moveToOriginIndexMap: moveToOriginIndexMap */
-  mutable dirtyArray: transformDirtyArray
+  mutable dirtyArray: transformDirtyArray,
+  mutable disposedIndexArray: array(transform)
 };
