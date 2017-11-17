@@ -39,6 +39,7 @@ type contextConfig = {
 
 type bufferConfig = {
   mutable transformDataBufferCount: int,
+  mutable meshRendererDataBufferCount: int,
   mutable geometryPointDataBufferCount: int,
   mutable basicMaterialDataBufferCount: int
 };

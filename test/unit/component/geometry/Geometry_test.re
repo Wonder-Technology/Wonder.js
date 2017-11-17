@@ -16,16 +16,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state :=
-            TestTool.init(
-              ~bufferConfig=
-                Js.Nullable.return({
-                  "transformDataBufferCount": Js.Nullable.undefined,
-                  "geometryPointDataBufferCount": Js.Nullable.return(1000),
-                  "basicMaterialDataBufferCount": Js.Nullable.undefined
-                }),
-              ()
-            )
+          state := TestTool.init(~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -78,9 +69,7 @@ let _ =
             "return TRIANGLES",
             () => {
               let triangles = 1;
-              let state = state^ |> FakeGlTool.setFakeGl({
-                "TRIANGLES": triangles
-              });
+              let state = state^ |> FakeGlTool.setFakeGl({"TRIANGLES": triangles});
               state |> getGeometryDrawMode |> expect == triangles
             }
           )
@@ -94,15 +83,7 @@ let _ =
               let errMeg = "should not exceed geometryPointDataBufferCount";
               let _prepare = () => {
                 let state =
-                  TestTool.init(
-                    ~bufferConfig=
-                      Js.Nullable.return({
-                        "transformDataBufferCount": Js.Nullable.undefined,
-                        "geometryPointDataBufferCount": Js.Nullable.return(5),
-                        "basicMaterialDataBufferCount": Js.Nullable.undefined
-                      }),
-                    ()
-                  );
+                  TestTool.init(~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)), ());
                 createBoxGeometry(state)
               };
               test(

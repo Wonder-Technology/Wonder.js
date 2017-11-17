@@ -71,15 +71,15 @@ let _ =
                   transformData: Some({...Js.Option.getExn(state^.transformData), index})
                 };
               beforeEach(
-                () => BufferTool.setBufferSize(~transformDataBufferCount=2, state^) |> ignore
+                () => BufferTool.setBufferSize(state^, ~transformDataBufferCount=2, ()) |> ignore
               );
               test(
-                "have create too many transforms(the count of transforms shouldn't exceed maxCount",
+                "have create too many components(the count of transforms shouldn't exceed maxCount",
                 () => {
                   state := _buildState(2);
                   expect(() => createTransform(state^))
                   |> toThrowMessage(
-                       "have create too many transforms(the count of transforms shouldn't exceed 2"
+                       "have create too many components(the count of transforms shouldn't exceed 2"
                      )
                 }
               )
@@ -505,13 +505,6 @@ let _ =
             let state = state |> setTransformParent(Js.Nullable.return(transform1), transform2);
             (state, transform1, transform2)
           };
-          /* test
-             ("if set/get transform data after dispose, error",
-             (
-             () => {
-
-             })
-             );  */
           describe(
             "test if dirty",
             () =>
@@ -627,7 +620,7 @@ let _ =
             "test gameObject add new transform after dispose old one",
             () => {
               beforeEach(
-                () => BufferTool.setBufferSize(~transformDataBufferCount=2, state^) |> ignore
+                () => BufferTool.setBufferSize(state^, ~transformDataBufferCount=2, ()) |> ignore
               );
               test(
                 "if transformData.index == maxCount, use disposed index(transform) as new index",
@@ -643,7 +636,7 @@ let _ =
                 () => {
                   let (state, transform1, transform2) = _prepare();
                   expect(() => createTransform(state))
-                  |> toThrowMessage("have create too many transforms")
+                  |> toThrowMessage("have create too many components")
                 }
               )
             }

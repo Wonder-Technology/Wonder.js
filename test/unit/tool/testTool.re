@@ -3,6 +3,7 @@ let init =
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
+                      "meshRendererDataBufferCount": Js.Nullable.return(5),
                       "geometryPointDataBufferCount": Js.Nullable.return(5),
                       "basicMaterialDataBufferCount": Js.Nullable.return(5)
                     }),
@@ -30,6 +31,7 @@ let initWithRenderConfig =
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
+                      "meshRendererDataBufferCount": Js.Nullable.return(5),
                       "geometryPointDataBufferCount": Js.Nullable.return(5),
                       "basicMaterialDataBufferCount": Js.Nullable.return(5)
                     }),

@@ -16,34 +16,35 @@ open TransformHierachySystem;
 
 open TransformStateUtils;
 
-let _generateIndex = (maxCount: int, {index, disposedIndexArray} as transformData) =>
-  switch index {
-  | index when index >= maxCount =>
-    switch (TransformDisposeComponentUtils.getDisposedIndex(transformData)) {
-    | None =>
-      ExceptionHandleSystem.throwMessage(
-        {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j}
-      )
-    | Some(index) => index
-    }
-  | index =>
-    transformData.index = succ(index);
-    index
-  };
-
+/* let _generateIndex = (maxCount: int, {index, disposedIndexArray} as transformData) =>
+   switch index {
+   | index when index >= maxCount =>
+     switch (TransformDisposeComponentUtils.getDisposedIndex(transformData)) {
+     | None =>
+       ExceptionHandleSystem.throwMessage(
+         {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j}
+       )
+     | Some(index) => index
+     }
+   | index =>
+     transformData.index = succ(index);
+     index
+   }; */
 let isAlive = (transform: transform, state: StateDataType.state) =>
-  TransformDisposeComponentUtils.isAlive(transform, getTransformData(state));
+  ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
 
 let create = (state: StateDataType.state) => {
-  let transformData = getTransformData(state);
-  (state, _generateIndex(getMaxCount(state), transformData))
+  let {index, disposedIndexArray} as data = getTransformData(state);
+  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
+  data.index = succ(index);
+  (state, index)
   |> ensureCheck(
        ((state, _)) => {
          open Contract.Operators;
          let {index}: transformData = getTransformData(state);
          let maxCount = getMaxCount(state);
          test(
-           {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j},
+           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
            () => index <= maxCount
          )
        }

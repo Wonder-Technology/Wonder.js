@@ -1,11 +1,6 @@
 let initWithRenderConfig = () =>
   TestTool.initWithRenderConfig(
-    ~bufferConfig=
-      Js.Nullable.return({
-        "transformDataBufferCount": Js.Nullable.undefined,
-        "geometryPointDataBufferCount": Js.Nullable.return(1000),
-        "basicMaterialDataBufferCount": Js.Nullable.undefined
-      }),
+    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
     ~renderConfig=
       RenderConfigTool.buildRenderConfig(
         ~renderSetting={|

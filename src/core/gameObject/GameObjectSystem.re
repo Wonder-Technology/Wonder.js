@@ -10,13 +10,16 @@ open Contract;
 
 let _getGameObjectData = (state: StateDataType.state) => state.gameObjectData;
 
-let _getComponent = (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int)) : option(component) =>
+let _getComponent =
+    (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int))
+    : option(component) =>
   WonderCommonlib.HashMapSystem.get(uid, componentMap);
 
 let _hasComponent = (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int)) : bool =>
   Js.Option.isSome(_getComponent(uid, componentMap));
 
-let _addComponent = (uid: string, component: component, componentMap: WonderCommonlib.HashMapSystem.t(int)) => {
+let _addComponent =
+    (uid: string, component: component, componentMap: WonderCommonlib.HashMapSystem.t(int)) => {
   requireCheck(
     () =>
       test(
@@ -48,10 +51,9 @@ let addTransformComponent = (uid: string, component: component, state: StateData
   _getGameObjectData(state).transformMap |> _addComponent(uid, component) |> ignore;
   TransformAddComponentUtils.handleAddComponent(component, uid, state)
 };
-let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) => {
-  TransformDisposeComponentUtils.handleDisposeComponent(component, state)
-};
 
+let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) =>
+  TransformDisposeComponentUtils.handleDisposeComponent(component, uid, state);
 
 let hasGeometryComponent = (uid: string, state: StateDataType.state) : bool =>
   _getGameObjectData(state).geometryMap |> _hasComponent(uid);
@@ -74,6 +76,9 @@ let addMeshRendererComponent = (uid: string, component: component, state: StateD
   _getGameObjectData(state).meshRendererMap |> _addComponent(uid, component) |> ignore;
   MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
 };
+
+let disposeMeshRendererComponent = (uid: string, component: component, state: StateDataType.state) =>
+  MeshRendererDisposeComponentUtils.handleDisposeComponent(component, uid, state);
 
 let hasMaterialComponent = (uid: string, state: StateDataType.state) : bool =>
   _getGameObjectData(state).materialMap |> _hasComponent(uid);

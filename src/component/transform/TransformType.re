@@ -18,14 +18,12 @@ type transformData = {
   mutable index: int,
   /* mutable firstDirtyIndex: int, */
   /* mutable oldIndexArrayBeforeAddToDirtyArray: array int, */
-  mutable buffer: Js.Typed_array.array_buffer,
-  mutable localToWorldMatrices: Js.Typed_array.Float32Array.t,
-  mutable localPositions: Js.Typed_array.Float32Array.t,
-  mutable parentMap: transformParentMap,
-  mutable childMap: transformChildMap,
-  mutable gameObjectMap,
-  /* mutable originToMoveIndexMap: originToMoveIndexMap,
-     mutable moveToOriginIndexMap: moveToOriginIndexMap */
+  buffer: Js.Typed_array.array_buffer,
+  localToWorldMatrices: Js.Typed_array.Float32Array.t,
+  localPositions: Js.Typed_array.Float32Array.t,
+  parentMap: transformParentMap,
+  childMap: transformChildMap,
+  gameObjectMap,
   mutable dirtyArray: transformDirtyArray,
-  mutable disposedIndexArray: array(transform)
+  disposedIndexArray: array(transform)
 };

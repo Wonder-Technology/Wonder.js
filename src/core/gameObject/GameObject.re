@@ -49,6 +49,11 @@ let addGameObjectMeshRendererComponent =
   /* todo check alive */
   addMeshRendererComponent(gameObject, component, state);
 
+let disposeGameObjectMeshRendererComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  disposeMeshRendererComponent(gameObject, component, state);
+
 let getGameObjectMeshRendererComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getMeshRendererComponent(gameObject, state));
 

@@ -33,3 +33,10 @@ let isGeometry = (geometry) => {
   open! Expect.Operators;
   expect(geometry) >= 0
 };
+
+      let buildBufferConfig = (count) => {
+        "transformDataBufferCount": Js.Nullable.undefined,
+        "meshRendererDataBufferCount": Js.Nullable.undefined,
+        "geometryPointDataBufferCount": Js.Nullable.return(count),
+        "basicMaterialDataBufferCount": Js.Nullable.undefined
+      };
