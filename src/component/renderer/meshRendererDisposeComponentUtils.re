@@ -1,5 +1,3 @@
-open GameObjectType;
-
 open MeshRendererType;
 
 open MeshRendererStateUtils;
@@ -7,13 +5,13 @@ open MeshRendererStateUtils;
 open Contract;
 
 /* todo optimize: add batch remove  */
-let _removeFromRenderArray = (gameObject: gameObject, {renderGameObjectArray} as meshRendererData) =>
+let _removeFromRenderArray = (gameObjectUid: string, {renderGameObjectArray} as meshRendererData) =>
   meshRendererData.renderGameObjectArray =
     renderGameObjectArray
-    |> Js.Array.filter((renderGameObject: gameObject) => renderGameObject !== gameObject);
+    |> Js.Array.filter((renderGameObject: string) => renderGameObject !== gameObjectUid);
 
 let handleDisposeComponent =
-    (meshRenderer: meshRenderer, gameObject: gameObject, state: StateDataType.state) => {
+    (meshRenderer: meshRenderer, gameObjectUid: string, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -28,6 +26,6 @@ let handleDisposeComponent =
   );
   let {renderGameObjectArray, disposedIndexArray} as meshRendererData = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
-  _removeFromRenderArray(gameObject, meshRendererData);
+  _removeFromRenderArray(gameObjectUid, meshRendererData);
   state
 };

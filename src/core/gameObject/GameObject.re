@@ -76,3 +76,6 @@ let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
 
 let disposeGameObject = (gameObject: gameObject, state: StateDataType.state) =>
   dispose(gameObject, state);
+
+let initGameObject = (gameObject: gameObject, state: StateDataType.state) =>
+  initGameObject(gameObject, state);

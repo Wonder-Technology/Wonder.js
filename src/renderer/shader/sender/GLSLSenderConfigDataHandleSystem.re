@@ -22,7 +22,7 @@ let addAttributeSendData =
       geometryIndex: int,
       program: program,
       shaderLibDataArr: shader_libs,
-      attributeLocationMap,
+      /* attributeLocationMap, */
       state: StateDataType.state
     ) => {
   requireCheck(
@@ -37,6 +37,12 @@ let addAttributeSendData =
         )
       )
   );
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
+  let attributeLocationMap =
+    switch (state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndexStr)) {
+    | None => WonderCommonlib.HashMapSystem.createEmpty()
+    | Some(map) => map
+    };
   let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
@@ -143,7 +149,7 @@ let addAttributeSendData =
   getGLSLSenderData(state).attributeSendDataMap
   |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
+  /* let shaderIndexStr = Js.Int.toString(shaderIndex); */
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
@@ -151,7 +157,8 @@ let _getModelMMatrixData =
   [@bs]
   (
     (gameObject: gameObject, state: StateDataType.state) => {
-      let transform = Js.Option.getExn(GameObjectSystem.getTransformComponent(gameObject, state));
+      let transform =
+        Js.Option.getExn(GameObjectComponentUtils.getTransformComponent(gameObject, state));
       TransformSystem.getLocalToWorldMatrix(transform, state)
     }
   );
@@ -161,11 +168,11 @@ let addUniformSendData =
       gl,
       materialIndexStr: string,
       shaderIndex: int,
-      geometryIndex: int,
-      uid: string,
+      /* geometryIndex: int, */
+      /* uid: string, */
       program: program,
       shaderLibDataArr: shader_libs,
-      uniformLocationMap,
+      /* uniformLocationMap, */
       state: StateDataType.state
     )
     : StateDataType.state => {
@@ -181,6 +188,12 @@ let addUniformSendData =
         )
       )
   );
+  let shaderIndexStr = Js.Int.toString(shaderIndex);
+  let uniformLocationMap =
+    switch (state |> GLSLLocationSystem.getUniformLocationMap(shaderIndexStr)) {
+    | None => WonderCommonlib.HashMapSystem.createEmpty()
+    | Some(map) => map
+    };
   let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
@@ -250,7 +263,7 @@ let addUniformSendData =
   getGLSLSenderData(state).uniformSendDataMap
   |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
   |> ignore;
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
+  /* let shaderIndexStr = Js.Int.toString(shaderIndex); */
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
 };
 
@@ -288,7 +301,9 @@ let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) 
                "attribute send data should exist",
                () => {
                  let {attributeSendDataMap} = getGLSLSenderData(state);
-                 attributeSendDataMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
+                 attributeSendDataMap
+                 |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+                 |> assertExist
                }
              )
          )
@@ -306,7 +321,9 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
              "uniform send data should exist",
              () => {
                let {uniformSendDataMap} = getGLSLSenderData(state);
-               uniformSendDataMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
+               uniformSendDataMap
+               |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+               |> assertExist
              }
            )
          )
@@ -324,7 +341,9 @@ let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => 
              "draw points func should exist",
              () => {
                let {drawPointsFuncMap} = getGLSLSenderData(state);
-               drawPointsFuncMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr) |> assertExist
+               drawPointsFuncMap
+               |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+               |> assertExist
              }
            )
          )

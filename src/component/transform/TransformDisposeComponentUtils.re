@@ -1,5 +1,3 @@
-open GameObjectType;
-
 open TransformType;
 
 open TransformStateUtils;
@@ -7,7 +5,7 @@ open TransformStateUtils;
 open Contract;
 
 let handleDisposeComponent =
-    (transform: transform, gameObject: gameObject, state: StateDataType.state) => {
+    (transform: transform, gameObjectUid: string, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(

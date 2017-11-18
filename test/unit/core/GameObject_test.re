@@ -482,6 +482,41 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "initGameObject",
+        () =>
+          describe(
+            "init components",
+            () => {
+              beforeEach(() => state := InitBasicMaterialJobTool.initWithRenderConfig());
+              test(
+                "init material component",
+                () => {
+                  let (state, gameObject, _, _) =
+                    InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+                  let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()));
+                  let state = state |> initGameObject(gameObject);
+                  getCallCount(attachShader) |> expect == 2
+                }
+              );
+              test(
+                "init geometry component",
+                () => {
+                  let (state, gameObject) = createGameObject(state^);
+                  let (state, geometry) = BoxGeometry.createBoxGeometry(state);
+                  let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
+                  let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
+                  let state = state |> initGameObject(gameObject);
+                  Geometry.getGeometryVertices(geometry, state)
+                  |> expect == BoxGeometryTool.getDefaultVertices()
+                }
+              )
+            }
+          )
       )
     }
   );

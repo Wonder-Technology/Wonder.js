@@ -11,7 +11,8 @@ let _genereateShaderIndex = (state: StateDataType.state) => {
   (state, index)
 };
 
-let _getShaderIndex = (key: string, {shaderIndexMap}) => shaderIndexMap |> WonderCommonlib.HashMapSystem.get(key);
+let _getShaderIndex = (key: string, {shaderIndexMap}) =>
+  shaderIndexMap |> WonderCommonlib.HashMapSystem.get(key);
 
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
   shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
@@ -24,10 +25,10 @@ let _init =
       gl,
       materialIndex: int,
       geometryIndex: int,
-      uid: string,
+      /* uid: string, */
       shaderLibDataArr: shader_libs,
-      attributeLocationMap,
-      uniformLocationMap,
+      /* attributeLocationMap,
+         uniformLocationMap, */
       buildGLSLSource,
       state: StateDataType.state
     ) => {
@@ -59,19 +60,17 @@ let _init =
        shaderIndex,
        geometryIndex,
        program,
-       shaderLibDataArr,
-       attributeLocationMap
+       shaderLibDataArr
      )
+  /* attributeLocationMap */
   |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
        gl,
        materialIndexStr,
        shaderIndex,
-       geometryIndex,
-       uid,
        program,
-       shaderLibDataArr,
-       uniformLocationMap
+       shaderLibDataArr
      )
+  /* uniformLocationMap */
   |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex)
   |> ignore;
   shaderIndex
@@ -82,10 +81,10 @@ let initMaterialShader =
       gl,
       materialIndex: int,
       geometryIndex: int,
-      uid: string,
+      /* uid: string, */
       shaderLibDataArr,
-      attributeLocationMap,
-      uniformLocationMap,
+      /* attributeLocationMap,
+         uniformLocationMap, */
       initShaderFuncTuple,
       state: StateDataType.state
     ) =>
@@ -93,15 +92,12 @@ let initMaterialShader =
     gl,
     materialIndex,
     geometryIndex,
-    uid,
+    /* uid, */
     shaderLibDataArr,
-    attributeLocationMap,
-    uniformLocationMap,
+    /* attributeLocationMap,
+       uniformLocationMap, */
     initShaderFuncTuple,
     state
   );
 
-let initData = () => {
-  index: 0,
-  shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty()
-};
+let initData = () => {index: 0, shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty()};

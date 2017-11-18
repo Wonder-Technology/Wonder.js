@@ -8,96 +8,39 @@ open GameObjectType;
 
 open Contract;
 
-let _getComponent =
-    (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int))
-    : option(component) =>
-  WonderCommonlib.HashMapSystem.get(uid, componentMap);
+let hasCameraControllerComponent = GameObjectComponentUtils.hasCameraControllerComponent;
 
-let _hasComponent = (uid: string, componentMap: WonderCommonlib.HashMapSystem.t(int)) : bool =>
-  Js.Option.isSome(_getComponent(uid, componentMap));
+let getCameraControllerComponent = GameObjectComponentUtils.getCameraControllerComponent;
 
-let _addComponent =
-    (uid: string, component: component, componentMap: WonderCommonlib.HashMapSystem.t(int)) => {
-  requireCheck(
-    () =>
-      test(
-        "this type of component is already exist, shouldn't add again",
-        () => _hasComponent(uid, componentMap) |> assertFalse
-      )
-  );
-  WonderCommonlib.HashMapSystem.set(uid, component, componentMap) |> ignore
-};
+let addCameraControllerComponent = GameObjectComponentUtils.addCameraControllerComponent;
 
-let hasCameraControllerComponent = (uid: string, state: StateDataType.state) : bool =>
-  GameObjectStateUtils.getGameObjectData(state).cameraControllerMap |> _hasComponent(uid);
+let hasTransformComponent = GameObjectComponentUtils.hasTransformComponent;
 
-let getCameraControllerComponent = (uid: string, state: StateDataType.state) =>
-  GameObjectStateUtils.getGameObjectData(state).cameraControllerMap |> _getComponent(uid);
+let getTransformComponent = GameObjectComponentUtils.getTransformComponent;
 
-let addCameraControllerComponent = (uid: string, component: component, state: StateDataType.state) => {
-  GameObjectStateUtils.getGameObjectData(state).cameraControllerMap
-  |> _addComponent(uid, component)
-  |> ignore;
-  CameraControllerAddComponentUtils.handleAddComponent(component, uid, state)
-};
+let addTransformComponent = GameObjectComponentUtils.addTransformComponent;
 
-let hasTransformComponent = (uid: string, state: StateDataType.state) : bool =>
-  GameObjectStateUtils.getGameObjectData(state).transformMap |> _hasComponent(uid);
+let disposeTransformComponent = GameObjectComponentUtils.disposeTransformComponent;
 
-let getTransformComponent = (uid: string, state: StateDataType.state) =>
-  GameObjectStateUtils.getGameObjectData(state).transformMap |> _getComponent(uid);
+let hasGeometryComponent = GameObjectComponentUtils.hasGeometryComponent;
 
-let addTransformComponent = (uid: string, component: component, state: StateDataType.state) => {
-  GameObjectStateUtils.getGameObjectData(state).transformMap
-  |> _addComponent(uid, component)
-  |> ignore;
-  TransformAddComponentUtils.handleAddComponent(component, uid, state)
-};
+let getGeometryComponent = GameObjectComponentUtils.getGeometryComponent;
 
-let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) =>
-  TransformDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+let addGeometryComponent = GameObjectComponentUtils.addGeometryComponent;
 
-let hasGeometryComponent = (uid: string, state: StateDataType.state) : bool =>
-  GameObjectStateUtils.getGameObjectData(state).geometryMap |> _hasComponent(uid);
+let hasMeshRendererComponent = GameObjectComponentUtils.hasMeshRendererComponent;
 
-let getGeometryComponent = (uid: string, state: StateDataType.state) =>
-  GameObjectStateUtils.getGameObjectData(state).geometryMap |> _getComponent(uid);
+let getMeshRendererComponent = GameObjectComponentUtils.getMeshRendererComponent;
 
-let addGeometryComponent = (uid: string, component: component, state: StateDataType.state) => {
-  GameObjectStateUtils.getGameObjectData(state).geometryMap
-  |> _addComponent(uid, component)
-  |> ignore;
-  GeometryAddComponentUtils.handleAddComponent(component, uid, state)
-};
+let addMeshRendererComponent = GameObjectComponentUtils.addMeshRendererComponent;
 
-let hasMeshRendererComponent = (uid: string, state: StateDataType.state) : bool =>
-  GameObjectStateUtils.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
+let disposeMeshRendererComponent = GameObjectComponentUtils.disposeMeshRendererComponent;
 
-let getMeshRendererComponent = (uid: string, state: StateDataType.state) =>
-  GameObjectStateUtils.getGameObjectData(state).meshRendererMap |> _getComponent(uid);
+let hasMaterialComponent = GameObjectComponentUtils.hasMaterialComponent;
 
-let addMeshRendererComponent = (uid: string, component: component, state: StateDataType.state) => {
-  GameObjectStateUtils.getGameObjectData(state).meshRendererMap
-  |> _addComponent(uid, component)
-  |> ignore;
-  MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
-};
+let getMaterialComponent = GameObjectComponentUtils.getMaterialComponent;
 
-let disposeMeshRendererComponent = (uid: string, component: component, state: StateDataType.state) =>
-  MeshRendererDisposeComponentUtils.handleDisposeComponent(component, uid, state);
-
-let hasMaterialComponent = (uid: string, state: StateDataType.state) : bool =>
-  GameObjectStateUtils.getGameObjectData(state).materialMap |> _hasComponent(uid);
-
-let getMaterialComponent = (uid: string, state: StateDataType.state) =>
-  GameObjectStateUtils.getGameObjectData(state).materialMap |> _getComponent(uid);
-
-let addMaterialComponent = (uid: string, component: component, state: StateDataType.state) => {
-  GameObjectStateUtils.getGameObjectData(state).materialMap
-  |> _addComponent(uid, component)
-  |> ignore;
-  MaterialAddComponentUtils.handleAddComponent(component, uid, state)
-};
+let addMaterialComponent = GameObjectComponentUtils.addMaterialComponent;
 
 let create = (state: StateDataType.state) => {
   let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
@@ -140,6 +83,26 @@ let isAlive = (uid: string, state: StateDataType.state) => {
   | false => hasTransformComponent(uid, state)
   | true => false
   }
+};
+
+let initGameObject = (uid: string, state: StateDataType.state) => {
+  let state =
+    switch (getGeometryComponent(uid, state)) {
+    | Some(geometry) => GeometryInitComponentUtils.handleInitComponent(geometry, uid, state)
+    | None => state
+    };
+  let state =
+    switch (getMaterialComponent(uid, state)) {
+    | Some(material) =>
+      MaterialInitComponentUtils.handleInitComponent(
+        [@bs] DeviceManagerSystem.getGl(state),
+        material,
+        uid,
+        state
+      )
+    | None => state
+    };
+  state
 };
 
 let initData = () => {

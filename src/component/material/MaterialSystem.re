@@ -17,30 +17,33 @@ let create = (state: StateDataType.state) => {
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
-let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
-  getMaterialData(state).shaderIndexMap
-  |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "shaderIndex should exist",
-             () =>
-               getMaterialData(state).shaderIndexMap
-               |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
-               |> assertExist
-           )
-         )
-     );
+/* let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
+     getMaterialData(state).shaderIndexMap
+     |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
+     |> ensureCheck(
+          (r) =>
+            Contract.Operators.(
+              test(
+                "shaderIndex should exist",
+                () =>
+                  getMaterialData(state).shaderIndexMap
+                  |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
+                  |> assertExist
+              )
+            )
+        );
 
-let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
-  getMaterialData(state).shaderIndexMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
-  |> ignore;
-  state
-};
+   let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
+     getMaterialData(state).shaderIndexMap
+     |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
+     |> ignore;
+     state
+   }; */
+let getShaderIndex = MaterialShaderIndexUtils.getShaderIndex;
 
-let _initMaterialShader =
+let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
+
+/* let _initMaterialShader =
     (
       gl,
       materialIndex: int,
@@ -68,32 +71,31 @@ let _initMaterialShader =
       state
     );
   setShaderIndex(materialIndex, shaderIndex, state)
-};
+}; */
 
-let initMaterialShaders =
-    (gl, {material_shader}: shader, initShaderFuncTuple, state: StateDataType.state) => {
-  let attributeLocationMap = GLSLLocationSystem.createLocationMap();
-  let uniformLocationMap = GLSLLocationSystem.createLocationMap();
-  /* todo check dispose:shouldn't dispose before init render! */
-  ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
-  |> ArraySystem.reduceState(
-       [@bs]
-       (
-         (state, materialIndex: int) =>
-           _initMaterialShader(
-             gl,
-             materialIndex,
-             material_shader,
-             attributeLocationMap,
-             uniformLocationMap,
-             initShaderFuncTuple,
-             state
-           )
-       ),
-       state
-     )
-};
-
+/* let initMaterialShaders =
+       (gl, {material_shader}: shader, initShaderFuncTuple, state: StateDataType.state) => {
+     let attributeLocationMap = GLSLLocationSystem.createLocationMap();
+     let uniformLocationMap = GLSLLocationSystem.createLocationMap();
+     /* todo check dispose:shouldn't dispose before init render! */
+     ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
+     |> ArraySystem.reduceState(
+          [@bs]
+          (
+            (state, materialIndex: int) =>
+              _initMaterialShader(
+                gl,
+                materialIndex,
+                material_shader,
+                attributeLocationMap,
+                uniformLocationMap,
+                initShaderFuncTuple,
+                state
+              )
+          ),
+          state
+        )
+   }; */
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */
