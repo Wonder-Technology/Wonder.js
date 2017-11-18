@@ -98,7 +98,7 @@ let initMaterialShaders =
 
    /* let getColorDataSize = () => 3; */
    let getBasicMaterialBufferCount = (state: StateDataType.state) =>
-     BufferConfigSystem.getBufferConfig(state).basicMaterialDataBufferCount;
+     BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount;
 
    let getMaterialBufferSize = () =>
      /* Float32Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getColorDataSize()); */

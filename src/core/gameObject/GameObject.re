@@ -70,3 +70,9 @@ let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataTy
 
 let hasGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) =>
   hasGeometryComponent(gameObject, state);
+
+let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
+  isAlive(gameObject, state);
+
+let disposeGameObject = (gameObject: gameObject, state: StateDataType.state) =>
+  dispose(gameObject, state);

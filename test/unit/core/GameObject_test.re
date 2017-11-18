@@ -280,6 +280,208 @@ let _ =
             }
           )
         }
+      );
+      describe(
+        "dispose",
+        () => {
+          describe(
+            "test alive",
+            () => {
+              test(
+                "disposed one shouldn't alive before reallocate",
+                () => {
+                  let (state, gameObject) = createGameObject(state^);
+                  /* isGameObjectAlive(gameObject, state) */
+                  let state = state |> disposeGameObject(gameObject);
+                  state |> isGameObjectAlive(gameObject) |> expect == false
+                }
+              );
+              test(
+                "disposed one shouldn't alive after reallocate",
+                () => {
+                  let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                  let (state, gameObject1) = createGameObject(state);
+                  let (state, gameObject2) = createGameObject(state);
+                  let (state, gameObject3) = createGameObject(state);
+                  let (state, gameObject4) = createGameObject(state);
+                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> disposeGameObject(gameObject2);
+                  let state = state |> disposeGameObject(gameObject3);
+                  (
+                    isGameObjectAlive(gameObject1, state),
+                    isGameObjectAlive(gameObject2, state),
+                    isGameObjectAlive(gameObject3, state),
+                    isGameObjectAlive(gameObject4, state)
+                  )
+                  |> expect == (false, false, false, true)
+                }
+              )
+            }
+          );
+          describe(
+            "should dispose all components",
+            () => {
+              test(
+                "dispose tranform component",
+                () => {
+                  let (state, gameObject1) = createGameObject(state^);
+                  let (state, gameObject2) = createGameObject(state);
+                  let transform1 = getGameObjectTransformComponent(gameObject1, state);
+                  let transform2 = getGameObjectTransformComponent(gameObject2, state);
+                  let state =
+                    state
+                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform2);
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (2., 3., 4.);
+                  let state =
+                    state
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2);
+                  let state = state |> disposeGameObject(gameObject1);
+                  let state = state |> TransformTool.update;
+                  state |> Transform.getTransformPosition(transform2) |> expect == pos2
+                }
+              );
+              test(
+                "dispose meshRenderer component",
+                () => {
+                  let (state, gameObject1) = createGameObject(state^);
+                  let (state, gameObject2) = createGameObject(state);
+                  let (state, meshRenderer1) = MeshRenderer.createMeshRenderer(state);
+                  let (state, meshRenderer2) = MeshRenderer.createMeshRenderer(state);
+                  let state =
+                    state
+                    |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
+                    |> addGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
+                  let state = state |> disposeGameObject(gameObject1);
+                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                }
+              )
+            }
+          );
+          describe(
+            "test reallocate gameObject",
+            () =>
+              describe(
+                "if have dispose too many gameObjects, reallocate gameObject",
+                () => {
+                  describe(
+                    "reallocate component maps",
+                    () => {
+                      test(
+                        "new transformMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let (state, gameObject1) = createGameObject(state);
+                          let (state, gameObject2) = createGameObject(state);
+                          let (state, gameObject3) = createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let {transformMap} = GameObjectTool.getData(state);
+                          (
+                            transformMap |> HashMapSystem.has(gameObject1),
+                            transformMap |> HashMapSystem.has(gameObject2),
+                            transformMap |> HashMapSystem.has(gameObject3)
+                          )
+                          |> expect == (false, false, true)
+                        }
+                      );
+                      test(
+                        "new meshRendererMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let (state, gameObject1) = createGameObject(state);
+                          let (state, gameObject2) = createGameObject(state);
+                          let (state, gameObject3) = createGameObject(state);
+                          let (state, meshRenderer1) = MeshRenderer.createMeshRenderer(state);
+                          let (state, meshRenderer2) = MeshRenderer.createMeshRenderer(state);
+                          let (state, meshRenderer3) = MeshRenderer.createMeshRenderer(state);
+                          let state =
+                            state
+                            |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
+                            |> addGameObjectMeshRendererComponent(gameObject2, meshRenderer2)
+                            |> addGameObjectMeshRendererComponent(gameObject3, meshRenderer3);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let {meshRendererMap} = GameObjectTool.getData(state);
+                          (
+                            meshRendererMap |> HashMapSystem.has(gameObject1),
+                            meshRendererMap |> HashMapSystem.has(gameObject2),
+                            meshRendererMap |> HashMapSystem.has(gameObject3)
+                          )
+                          |> expect == (false, false, true)
+                        }
+                      )
+                    }
+                  );
+                  describe(
+                    "test reallocate twice",
+                    () =>
+                      test(
+                        "test reallocate component maps",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let (state, gameObject1) = createGameObject(state);
+                          let (state, gameObject2) = createGameObject(state);
+                          let (state, gameObject3) = createGameObject(state);
+                          let (state, gameObject4) = createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let state = state |> disposeGameObject(gameObject3);
+                          let state = state |> disposeGameObject(gameObject4);
+                          let {transformMap} = GameObjectTool.getData(state);
+                          (
+                            transformMap |> HashMapSystem.has(gameObject1),
+                            transformMap |> HashMapSystem.has(gameObject2),
+                            transformMap |> HashMapSystem.has(gameObject3),
+                            transformMap |> HashMapSystem.has(gameObject4)
+                          )
+                          |> expect == (false, false, false, false)
+                        }
+                      )
+                  );
+                  test(
+                    "empty disposedUidMap",
+                    () => {
+                      open GameObjectType;
+                      let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                      let (state, gameObject1) = createGameObject(state);
+                      let (state, gameObject2) = createGameObject(state);
+                      let (state, gameObject3) = createGameObject(state);
+                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> disposeGameObject(gameObject2);
+                      let state = state |> disposeGameObject(gameObject3);
+                      let {disposedUidMap} = GameObjectTool.getData(state);
+                      (
+                        disposedUidMap |> HashMapSystem.has(gameObject1),
+                        disposedUidMap |> HashMapSystem.has(gameObject2),
+                        disposedUidMap |> HashMapSystem.has(gameObject3)
+                      )
+                      |> expect == (false, false, true)
+                    }
+                  );
+                  test(
+                    "update aliveUidArray",
+                    () => {
+                      open GameObjectType;
+                      let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                      let (state, gameObject1) = createGameObject(state);
+                      let (state, gameObject2) = createGameObject(state);
+                      let (state, gameObject3) = createGameObject(state);
+                      let state = state |> disposeGameObject(gameObject1);
+                      let state = state |> disposeGameObject(gameObject2);
+                      let state = state |> disposeGameObject(gameObject3);
+                      let {aliveUidArray} = GameObjectTool.getData(state);
+                      aliveUidArray |> expect == [|gameObject3|]
+                    }
+                  )
+                }
+              )
+          )
+        }
       )
     }
   );

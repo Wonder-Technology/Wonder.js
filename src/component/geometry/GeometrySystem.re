@@ -26,7 +26,7 @@ let _ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state: Sta
          Contract.Operators.(
            test(
              "should not exceed geometryPointDataBufferCount",
-             () => offset <= BufferConfigSystem.getBufferConfig(state).geometryPointDataBufferCount
+             () => offset <= BufferConfigSystem.getConfig(state).geometryPointDataBufferCount
            )
          )
      );
@@ -167,7 +167,7 @@ let _getBufferSize = () =>
   * getIndexDataSize();
 
 let _getBufferCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getBufferConfig(state).geometryPointDataBufferCount;
+  BufferConfigSystem.getConfig(state).geometryPointDataBufferCount;
 
 let _getBufferLength = (state: StateDataType.state) => _getBufferCount(state) * _getBufferSize();
 

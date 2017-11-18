@@ -7,7 +7,7 @@ open TypeArrayUtils;
 open TransformType;
 
 let getMaxCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getBufferConfig(state).transformDataBufferCount;
+  BufferConfigSystem.getConfig(state).transformDataBufferCount;
 
 let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 

@@ -8,8 +8,6 @@ open InitDeviceSystem;
 
 open ViewSystem;
 
-open BufferConfigSystem;
-
 open DeviceManagerSystem;
 
 open JsObjUtils;
@@ -77,6 +75,6 @@ let init = ((configState: mainConfigData, state: state)) => {
   |> setGl(createGL(canvas, configState.contextConfig))
   |> setCanvas(~canvas)
   |> setContextConfig(~contextConfig=configState.contextConfig)
-  |> setBufferConfig(~bufferConfig=configState.bufferConfig)
+  |> BufferConfigSystem.setConfig(~bufferConfig=configState.bufferConfig)
   |> _initDataFromState
 };

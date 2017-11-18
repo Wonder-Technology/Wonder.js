@@ -275,7 +275,7 @@ let _ =
                           )
                         );
                       state
-                      |> BufferConfigSystem.getBufferConfig
+                      |> BufferConfigSystem.getConfig
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount,
@@ -296,7 +296,7 @@ let _ =
                       let (_, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       let state = setMainConfig(MainTool.buildMainConfig());
                       state
-                      |> BufferConfigSystem.getBufferConfig
+                      |> BufferConfigSystem.getConfig
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount=20 * 1000,

@@ -66,7 +66,7 @@ let _ =
         "test gameObject add new meshRenderer after dispose old one",
         () => {
           beforeEach(
-            () => BufferTool.setBufferSize(state^, ~meshRendererDataBufferCount=2, ()) |> ignore
+            () => BufferConfigTool.setBufferSize(state^, ~meshRendererDataBufferCount=2, ()) |> ignore
           );
           test(
             "if meshRendererData.index == maxCount, use disposed index(meshRenderer) as new index",

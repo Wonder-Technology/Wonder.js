@@ -3,6 +3,7 @@ open Contract;
 open WonderCommonlib.HashMapSystem;
 
 let deleteVal = (key: string, map) => set(key, Js.Undefined.empty, map);
+
 /*
 
  type t('a) = Js.Dict.t('a);
@@ -21,3 +22,4 @@ let deleteVal = (key: string, map) => set(key, Js.Undefined.empty, map);
  let length = (map) => Js.Array.length(Js.Dict.entries(map));
 
  let fromList = Js.Dict.fromList; */
+let has = (key, map) => map |> WonderCommonlib.HashMapSystem.get(key) |> Js.Option.isSome;

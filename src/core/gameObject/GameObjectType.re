@@ -8,6 +8,12 @@ open MeshRendererType;
 
 open MaterialType;
 
+type gameObject = string;
+
+type gameObjectDisposedUidMap = Js.Dict.t(bool);
+
+type gameObjectAliveUidArray = array(gameObject);
+
 type gameObjectComponentData = Js.Dict.t(ComponentType.component);
 
 type gameObjectTransformMap = Js.Dict.t(transform);
@@ -22,11 +28,12 @@ type gameObjectMaterialMap = Js.Dict.t(material);
 
 type gameObjectData = {
   mutable uid: int,
+  mutable disposeCount: int,
+  mutable disposedUidMap: gameObjectDisposedUidMap,
+  mutable aliveUidArray: gameObjectAliveUidArray,
   mutable transformMap: gameObjectTransformMap,
   mutable cameraControllerMap: gameObjectCameraControllerMap,
   mutable geometryMap: gameObjectGeometryMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable materialMap: gameObjectMaterialMap
 };
-
-type gameObject = string;

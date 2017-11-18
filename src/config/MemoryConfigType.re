@@ -1,0 +1,1 @@
+type memoryConfig = {mutable maxDisposeCount: int};

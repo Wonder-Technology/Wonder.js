@@ -7,7 +7,7 @@ open MeshRendererType;
 open Contract;
 
 let getMaxCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getBufferConfig(state).meshRendererDataBufferCount;
+  BufferConfigSystem.getConfig(state).meshRendererDataBufferCount;
 
 let create = (state: StateDataType.state) => {
   let {index, disposedIndexArray} as data = getMeshRendererData(state);

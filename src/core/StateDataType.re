@@ -28,6 +28,8 @@ open TimeControllerType;
 
 open Js.Typed_array;
 
+open MemoryConfigType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -241,6 +243,7 @@ and geometryData = {
 }
 and state = {
   bufferConfig: option(bufferConfig),
+  memoryConfig,
   renderConfig,
   viewData,
   initConfig,

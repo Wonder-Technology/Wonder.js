@@ -41,6 +41,7 @@ let createState =
   ) = renderConfig;
   {
     bufferConfig: None,
+    memoryConfig: MemoryConfigSystem.initData(),
     renderConfig: {
       jobHandleMap: JobHandleSystem.createJobHandleMap(),
       render_setting: convertRenderSettingToRecord(render_setting),

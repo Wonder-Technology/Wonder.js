@@ -71,7 +71,8 @@ let _ =
                   transformData: Some({...Js.Option.getExn(state^.transformData), index})
                 };
               beforeEach(
-                () => BufferTool.setBufferSize(state^, ~transformDataBufferCount=2, ()) |> ignore
+                () =>
+                  state := BufferConfigTool.setBufferSize(state^, ~transformDataBufferCount=2, ())
               );
               test(
                 "have create too many components(the count of transforms shouldn't exceed maxCount",
@@ -620,7 +621,8 @@ let _ =
             "test gameObject add new transform after dispose old one",
             () => {
               beforeEach(
-                () => BufferTool.setBufferSize(state^, ~transformDataBufferCount=2, ()) |> ignore
+                () =>
+                  state := BufferConfigTool.setBufferSize(state^, ~transformDataBufferCount=2, ())
               );
               test(
                 "if transformData.index == maxCount, use disposed index(transform) as new index",
