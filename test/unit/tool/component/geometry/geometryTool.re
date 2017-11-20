@@ -1,3 +1,5 @@
+let getData = (state: StateDataType.state) => GeometryStateUtils.getGeometryData(state);
+
 let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
 let buildBoxGeometryConfigDataJsObj =
@@ -34,9 +36,10 @@ let isGeometry = (geometry) => {
   expect(geometry) >= 0
 };
 
-      let buildBufferConfig = (count) => {
-        "transformDataBufferCount": Js.Nullable.undefined,
-        "meshRendererDataBufferCount": Js.Nullable.undefined,
-        "geometryPointDataBufferCount": Js.Nullable.return(count),
-        "basicMaterialDataBufferCount": Js.Nullable.undefined
-      };
+let buildBufferConfig = (count) => {
+  "transformDataBufferCount": Js.Nullable.undefined,
+  "meshRendererDataBufferCount": Js.Nullable.undefined,
+  "geometryDataBufferCount": Js.Nullable.return(count),
+  "geometryPointDataBufferCount": Js.Nullable.return(count),
+  "basicMaterialDataBufferCount": Js.Nullable.undefined
+};

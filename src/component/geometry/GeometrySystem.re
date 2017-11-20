@@ -1,3 +1,5 @@
+open ComponentSystem;
+
 open Js.Typed_array;
 
 open Contract;
@@ -12,11 +14,26 @@ open StateDataType;
 
 open Gl;
 
+let getMaxCount = (state: StateDataType.state) =>
+  BufferConfigSystem.getConfig(state).geometryDataBufferCount;
+
 let create = (state: StateDataType.state) => {
-  let data = getGeometryData(state);
-  let index = data.index;
-  data.index = succ(data.index);
+  let {index, disposedIndexArray} as data = getGeometryData(state);
+     let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
+  /* let {index} as data = getGeometryData(state); */
+  data.index = succ(index);
   (state, index)
+  |> ensureCheck(
+       ((state, _)) => {
+         open Contract.Operators;
+         let {index} = getGeometryData(state);
+         let maxCount = getMaxCount(state);
+         test(
+           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
+           () => index <= maxCount
+         )
+       }
+     )
 };
 
 /* let _ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state: StateDataType.state) =>
@@ -106,7 +123,8 @@ let init = (state: StateDataType.state) => {
   /* todo check shouldn't dispose geometry before init */
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach(
-       (geometryIndex: int) => GeometryInitComponentUtils.initGeometry(geometryIndex, state) |> ignore
+       (geometryIndex: int) =>
+         GeometryInitComponentUtils.initGeometry(geometryIndex, state) |> ignore
      );
   state
 };
@@ -166,7 +184,9 @@ let initData = (state: StateDataType.state) => {
       indicesOffset: 0,
       configDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
       computeDataFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty()
+      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
+      /* disposeCount: 0 */
     });
   state
 };

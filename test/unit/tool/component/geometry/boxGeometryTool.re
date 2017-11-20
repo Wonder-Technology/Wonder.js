@@ -139,3 +139,11 @@ let createBoxGeometry = (state: StateDataType.state) => {
   let state = state |> setDefaultConfigData(geometry);
   (state, geometry)
 };
+
+let createGameObject = (state: StateDataType.state) => {
+  let (state, geometry) = createBoxGeometry(state);
+  let state = state |> setDefaultConfigData(geometry);
+  let (state, gameObject) = GameObject.createGameObject(state);
+  let state = state |> GameObject.addGameObjectGeometryComponent(gameObject, geometry);
+  (state, gameObject, geometry)
+};

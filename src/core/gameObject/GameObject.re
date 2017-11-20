@@ -70,6 +70,11 @@ let addGameObjectGeometryComponent =
   /* todo check alive */
   addGeometryComponent(gameObject, component, state);
 
+let disposeGameObjectGeometryComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  disposeGeometryComponent(gameObject, component, state);
+
 let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getGeometryComponent(gameObject, state));
 

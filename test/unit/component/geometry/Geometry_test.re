@@ -123,6 +123,42 @@ let _ =
               state |> getGeometryGameObject(geometry) |> expect == gameObject
             }
           )
-      )
+      );
+      describe
+      ("disposeComponent",
+      (
+      () => {
+          describe(
+            "test gameObject add new geometry after dispose old one",
+            () => {
+              beforeEach(
+                () =>
+                  BufferConfigTool.setBufferSize(state^, ~geometryDataBufferCount=2, ())
+                  |> ignore
+              );
+              test(
+                "if geometryData.index == maxCount, use disposed index(geometry) as new index",
+                () => {
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
+                  geometry3 |> expect == geometry1
+                }
+              );
+              test(
+                "if has no disposed one, error",
+                () => {
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  expect(() => createBoxGeometry(state))
+                  |> toThrowMessage("have create too many components")
+                }
+              )
+            }
+          )
+      })
+      );
     }
   );

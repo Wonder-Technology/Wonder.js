@@ -10,10 +10,12 @@ let setBufferSize =
       ~transformDataBufferCount=10,
       ~meshRendererDataBufferCount=10,
       ~basicMaterialDataBufferCount=10,
+      ~geometryDataBufferCount=10,
       ()
     ) => {
   getConfig(state).transformDataBufferCount = transformDataBufferCount;
   getConfig(state).meshRendererDataBufferCount = meshRendererDataBufferCount;
   getConfig(state).basicMaterialDataBufferCount = basicMaterialDataBufferCount;
+  getConfig(state).geometryDataBufferCount = geometryDataBufferCount;
   state
 };

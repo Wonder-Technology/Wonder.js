@@ -27,6 +27,7 @@ let hasGeometryComponent = GameObjectComponentUtils.hasGeometryComponent;
 let getGeometryComponent = GameObjectComponentUtils.getGeometryComponent;
 
 let addGeometryComponent = GameObjectComponentUtils.addGeometryComponent;
+let disposeGeometryComponent = GameObjectComponentUtils.disposeGeometryComponent;
 
 let hasMeshRendererComponent = GameObjectComponentUtils.hasMeshRendererComponent;
 
@@ -73,6 +74,11 @@ let dispose = (uid: string, state: StateDataType.state) => {
   let state =
     switch (getMaterialComponent(uid, state)) {
     | Some(material) => disposeMaterialComponent(uid, material, state)
+    | None => state
+    };
+  let state =
+    switch (getGeometryComponent(uid, state)) {
+    | Some(geometry) => disposeGeometryComponent(uid, geometry, state)
     | None => state
     };
   /* todo dispose more components */

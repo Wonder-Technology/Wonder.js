@@ -42,6 +42,7 @@ type contextConfig = {
 type bufferConfig = {
   mutable transformDataBufferCount: int,
   mutable meshRendererDataBufferCount: int,
+  mutable geometryDataBufferCount: int,
   mutable geometryPointDataBufferCount: int,
   mutable basicMaterialDataBufferCount: int
 };
@@ -229,17 +230,19 @@ and renderConfig = {
 }
 and geometryData = {
   mutable index: int,
-  mutable buffer: Js.Typed_array.array_buffer,
-  mutable vertices: Js.Typed_array.Float32Array.t,
+  buffer: Js.Typed_array.array_buffer,
+  vertices: Js.Typed_array.Float32Array.t,
   /* todo optimize: use Uint32Array based on config or query gpu extension */
-  mutable indices: Js.Typed_array.Uint16Array.t,
-  mutable verticesInfoArray: geometryInfoArray,
-  mutable indicesInfoArray: geometryInfoArray,
+  indices: Js.Typed_array.Uint16Array.t,
+  verticesInfoArray: geometryInfoArray,
+  indicesInfoArray: geometryInfoArray,
   mutable verticesOffset: int,
   mutable indicesOffset: int,
-  mutable computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
-  mutable configDataMap: geometryConfigDataMap,
-  mutable gameObjectMap
+  computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
+  configDataMap: geometryConfigDataMap,
+  gameObjectMap,
+  /* mutable disposeCount:int */
+  disposedIndexArray: array(geometry)
 }
 and state = {
   bufferConfig: option(bufferConfig),

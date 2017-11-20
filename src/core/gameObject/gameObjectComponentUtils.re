@@ -66,6 +66,9 @@ let addGeometryComponent = (uid: string, component: component, state: StateDataT
   GeometryAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
+let disposeGeometryComponent = (uid: string, component: component, state: StateDataType.state) =>
+  GeometryDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+
 let hasMeshRendererComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
 
@@ -94,5 +97,6 @@ let addMaterialComponent = (uid: string, component: component, state: StateDataT
   |> ignore;
   MaterialAddComponentUtils.handleAddComponent(component, uid, state)
 };
+
 let disposeMaterialComponent = (uid: string, component: component, state: StateDataType.state) =>
   MaterialDisposeComponentUtils.handleDisposeComponent(component, uid, state);
