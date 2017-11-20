@@ -356,6 +356,27 @@ let _ =
                   let state = state |> disposeGameObject(gameObject1);
                   state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
                 }
+              );
+              test(
+                "dispose material component",
+                () => {
+                  open MaterialType;
+                  let (state, gameObject1) = createGameObject(state^);
+                  let (state, gameObject2) = createGameObject(state);
+                  let (state, material1) = BasicMaterial.createBasicMaterial(state);
+                  let (state, material2) = BasicMaterial.createBasicMaterial(state);
+                  let state =
+                    state
+                    |> addGameObjectMaterialComponent(gameObject1, material1)
+                    |> addGameObjectMaterialComponent(gameObject2, material2);
+                  let state = state |> disposeGameObject(gameObject1);
+                  let {disposedIndexArray} = state |> MaterialTool.getData;
+                  (
+                    disposedIndexArray |> Js.Array.includes(material1),
+                    disposedIndexArray |> Js.Array.includes(material2)
+                  )
+                  |> expect == (true, false)
+                }
               )
             }
           );

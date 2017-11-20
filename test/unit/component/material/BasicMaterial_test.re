@@ -29,5 +29,39 @@ let _ =
             }
           )
       );
+      describe(
+        "disposeComponent",
+        () =>
+          describe(
+            "test gameObject add new material after dispose old one",
+            () => {
+              beforeEach(
+                () =>
+                  BufferConfigTool.setBufferSize(state^, ~basicMaterialDataBufferCount=2, ())
+                  |> ignore
+              );
+              test(
+                "if materialData.index == maxCount, use disposed index(material) as new index",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
+                  material3 |> expect == material1
+                }
+              );
+              test(
+                "if has no disposed one, error",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
+                  expect(() => createBasicMaterial(state))
+                  |> toThrowMessage("have create too many components")
+                }
+              )
+            }
+          )
+      )
     }
   );

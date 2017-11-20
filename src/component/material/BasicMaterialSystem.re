@@ -1,3 +1,5 @@
+open ComponentSystem;
+
 open RenderConfigSystem;
 
 open StateDataType;
@@ -6,7 +8,33 @@ open MaterialSystem;
 
 open GlType;
 
-let create = (state: StateDataType.state) => MaterialSystem.create(state);
+open MaterialType;
+
+open MaterialStateUtils;
+
+open Contract;
+
+let getMaxCount = (state: StateDataType.state) =>
+  BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount;
+
+let create = (state: StateDataType.state) => {
+  let {index, disposedIndexArray} as data = getMaterialData(state);
+  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
+  data.index = succ(index);
+  (state, index)
+  |> ensureCheck(
+       ((state, _)) => {
+         open Contract.Operators;
+         let {index} = getMaterialData(state);
+         let maxCount = getMaxCount(state);
+         test(
+           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
+           () => index <= maxCount
+         )
+       }
+     )
+  /* MaterialSystem.create(state); */
+};
 
 /* let buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
 

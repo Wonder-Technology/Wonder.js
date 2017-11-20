@@ -42,6 +42,8 @@ let getMaterialComponent = GameObjectComponentUtils.getMaterialComponent;
 
 let addMaterialComponent = GameObjectComponentUtils.addMaterialComponent;
 
+let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent;
+
 let create = (state: StateDataType.state) => {
   let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
   let newUIdStr = Js.Int.toString(uid);
@@ -65,7 +67,12 @@ let dispose = (uid: string, state: StateDataType.state) => {
     };
   let state =
     switch (getMeshRendererComponent(uid, state)) {
-    | Some(transform) => disposeMeshRendererComponent(uid, transform, state)
+    | Some(meshRenderer) => disposeMeshRendererComponent(uid, meshRenderer, state)
+    | None => state
+    };
+  let state =
+    switch (getMaterialComponent(uid, state)) {
+    | Some(material) => disposeMaterialComponent(uid, material, state)
     | None => state
     };
   /* todo dispose more components */

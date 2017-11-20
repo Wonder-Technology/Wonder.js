@@ -94,3 +94,5 @@ let addMaterialComponent = (uid: string, component: component, state: StateDataT
   |> ignore;
   MaterialAddComponentUtils.handleAddComponent(component, uid, state)
 };
+let disposeMaterialComponent = (uid: string, component: component, state: StateDataType.state) =>
+  MaterialDisposeComponentUtils.handleDisposeComponent(component, uid, state);

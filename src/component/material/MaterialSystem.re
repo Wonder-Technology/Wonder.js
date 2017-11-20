@@ -7,12 +7,12 @@ open Contract;
 
 open StateDataType;
 
-let create = (state: StateDataType.state) => {
+/* let create = (state: StateDataType.state) => {
   let data = getMaterialData(state);
-  let index = data.index;
+  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
   data.index = succ(index);
   (state, index)
-};
+}; */
 
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
@@ -44,35 +44,34 @@ let getShaderIndex = MaterialShaderIndexUtils.getShaderIndex;
 let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
 
 /* let _initMaterialShader =
-    (
-      gl,
-      materialIndex: int,
-      {shader_libs}: material_shader,
-      attributeLocationMap,
-      uniformLocationMap,
-      initShaderFuncTuple,
-      state: StateDataType.state
-    ) => {
-  open RenderConfigSystem;
-  let {groups} = getShaders(state);
-  let shaderLibs = getShaderLibs(state);
-  let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
-  let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
-  let shaderIndex =
-    ShaderSystem.initMaterialShader(
-      gl,
-      materialIndex,
-      geometry,
-      gameObject,
-      getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
-      attributeLocationMap,
-      uniformLocationMap,
-      initShaderFuncTuple,
-      state
-    );
-  setShaderIndex(materialIndex, shaderIndex, state)
-}; */
-
+       (
+         gl,
+         materialIndex: int,
+         {shader_libs}: material_shader,
+         attributeLocationMap,
+         uniformLocationMap,
+         initShaderFuncTuple,
+         state: StateDataType.state
+       ) => {
+     open RenderConfigSystem;
+     let {groups} = getShaders(state);
+     let shaderLibs = getShaderLibs(state);
+     let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
+     let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
+     let shaderIndex =
+       ShaderSystem.initMaterialShader(
+         gl,
+         materialIndex,
+         geometry,
+         gameObject,
+         getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
+         attributeLocationMap,
+         uniformLocationMap,
+         initShaderFuncTuple,
+         state
+       );
+     setShaderIndex(materialIndex, shaderIndex, state)
+   }; */
 /* let initMaterialShaders =
        (gl, {material_shader}: shader, initShaderFuncTuple, state: StateDataType.state) => {
      let attributeLocationMap = GLSLLocationSystem.createLocationMap();
@@ -146,7 +145,8 @@ let initData = (state: StateDataType.state) => {
       index: 0,
       /* buffer, */
       shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty()
+      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
     });
   state
 };

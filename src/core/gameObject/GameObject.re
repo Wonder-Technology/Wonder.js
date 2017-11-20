@@ -38,6 +38,11 @@ let addGameObjectMaterialComponent =
   /* todo check alive */
   addMaterialComponent(gameObject, component, state);
 
+let disposeGameObjectMaterialComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  disposeMaterialComponent(gameObject, component, state);
+
 let getGameObjectMaterialComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getMaterialComponent(gameObject, state));
 

@@ -30,7 +30,7 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
 
 
-        import { getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
 
 
         window.onload = function () {
@@ -41,24 +41,36 @@
             initSample(state);
 
 
-
-            function initSample(state) {
-                var [state, box1] = createBox(state);
-                var [state, box2] = createBox(state);
-
+            function createBoxes(count, state){
                 var boxes = [];
                 var state$ = state;
-                for (let i = 0; i < 7000; i++) {
+                for (let i = 0; i < count; i++) {
                     var [state$, box] = createBox(state$);
                     boxes.push(box);
                 }
 
-                state = state$;
+                return [ state$, boxes ];
+            }
+
+            function initSample(state) {
+                // var [state, box1] = createBox(state);
+                // var [state, box2] = createBox(state);
+
+                // var boxes = [];
+                // var state$ = state;
+                // for (let i = 0; i < 7000; i++) {
+                //     var [state$, box] = createBox(state$);
+                //     boxes.push(box);
+                // }
+
+                var [state, boxes] = createBoxes(1, state);
+
+                // state = state$;
 
 
-                var transform = getGameObjectTransformComponent(box1, state);
+                // var transform = getGameObjectTransformComponent(box1, state);
 
-                state = setTransformLocalPosition(transform, [20, 0, 0], state);
+                // state = setTransformLocalPosition(transform, [20, 0, 0], state);
 
 
 
@@ -66,7 +78,8 @@
                 var [state, camera] = createCamera(state);
 
                 // state = setData(boxes, state);
-                state = setParent(boxes, state);
+                // state = setParent(boxes, state);
+                state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
@@ -117,6 +130,33 @@
                     state = setTransformParent(boxes[getRandomParentIndex(10)], box, state);
 
                     return _setData(boxes, state);
+                }, state)
+            }
+
+            window.newBoxes$ = null;
+
+            function createAndDisposeGameObjects(boxes, state) {
+                    // var state = boxes.reduce((state, box) => {
+                    //     return disposeGameObject(box, state);
+                    // }, state);
+
+// window.newBoxes$ = boxes;
+window.boxes = boxes;
+
+
+                return scheduleLoop((elapsed, state) => {
+                    var state = window.boxes.reduce((state, box) => {
+                        return disposeGameObject(box, state);
+                    }, state);
+
+                    var [state, newBoxes] = createBoxes(100, state);
+
+
+window.boxes = newBoxes;
+
+                    return newBoxes.reduce((state, box) => {
+                        return initGameObject(box, state);
+                    }, state);
                 }, state)
             }
 

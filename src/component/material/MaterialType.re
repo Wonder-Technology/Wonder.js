@@ -7,5 +7,6 @@ type materialData = {
   /* mutable buffer: Js.Typed_array.array_buffer, */
   mutable shaderIndexMap: Js.Dict.t(int),
   /* mutable colors: Js.Typed_array.Float32Array.t, */
-  mutable gameObjectMap
+  mutable gameObjectMap,
+  disposedIndexArray: array(material)
 };
