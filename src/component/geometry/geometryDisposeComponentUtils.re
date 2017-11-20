@@ -6,10 +6,15 @@ open GeometryStateUtils;
 
 open Contract;
 
-let handleDisposeComponent =
-    (geometry: geometry, gameObjectUid: string, state: StateDataType.state) => {
+let _isDisposeTooMany = (disposeCount: int, state: StateDataType.state) =>
+  disposeCount >= state.memoryConfig.maxDisposeCount;
+
+/* let handleDisposeComponent =
+   (geometry: geometry, gameObjectUid: string, state: StateDataType.state) => { */
+let handleDisposeComponent = (geometry:geometry, gameObjectUid: string, state: StateDataType.state) => {
   /* todo refactor: duplicate */
-  requireCheck(
+  /* todo check */
+  /* requireCheck(
        () =>
          Contract.Operators.(
            test(
@@ -20,10 +25,15 @@ let handleDisposeComponent =
              }
            )
          )
-     );
-  let {disposedIndexArray} as geometryData = getGeometryData(state);
-     disposedIndexArray |> Js.Array.push(geometry) |> ignore;
-  /* let {disposeCount} as geometryData = getGeometryData(state);
-  geometryData.disposeCount = succ(disposeCount); */
-  state
+     ); */
+  let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
+  disposedIndexMap |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometry), true) |> ignore;
+  data.disposeCount = succ(disposeCount);
+  if (_isDisposeTooMany(data.disposeCount, state)) {
+    data.disposeCount = 0;
+    /* todo handle vbo buffer */
+    CpuMemorySystem.reAllocateGeometry(state)
+  } else {
+    state
+  }
 };

@@ -234,15 +234,16 @@ and geometryData = {
   vertices: Js.Typed_array.Float32Array.t,
   /* todo optimize: use Uint32Array based on config or query gpu extension */
   indices: Js.Typed_array.Uint16Array.t,
-  verticesInfoArray: geometryInfoArray,
-  indicesInfoArray: geometryInfoArray,
+  mutable verticesInfoArray: geometryInfoArray,
+  mutable indicesInfoArray: geometryInfoArray,
   mutable verticesOffset: int,
   mutable indicesOffset: int,
-  computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
-  configDataMap: geometryConfigDataMap,
-  gameObjectMap,
-  /* mutable disposeCount:int */
-  disposedIndexArray: array(geometry)
+  mutable computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
+  mutable configDataMap: geometryConfigDataMap,
+  mutable gameObjectMap,
+  mutable disposeCount: int,
+  mutable indexMap: geometryIndexMap,
+  mutable disposedIndexMap: geometryDisposeIndexMap
 }
 and state = {
   bufferConfig: option(bufferConfig),

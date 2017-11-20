@@ -22,13 +22,44 @@ let _ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state: Sta
          )
      );
 
-let _buildInfo = (startIndex: int, endIndex: int) => {startIndex, endIndex};
+let buildInfo = (startIndex: int, endIndex: int) =>
+  {startIndex, endIndex}
+  |> ensureCheck(
+       (r) => {
+         open Contract.Operators;
+         test("startIndex should >= 0", () => r.startIndex >= 0);
+         test("endIndex should >= startIndex", () => r.endIndex >= r.startIndex)
+       }
+     );
 
-let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) =>
-  switch infoArray[index] {
-  | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
-  | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
-  };
+let getInfo = (infoArray, index) =>
+  Array.unsafe_get(infoArray, index)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             {j|infoArray[$index] should exist|j},
+             () => infoArray |> Js.Array.length >= index + 1
+           )
+         )
+     );
+
+/* switch infoArray[index] {
+   | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+   | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
+   }; */
+let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
+  /* switch infoArray[index] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+     | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
+     }; */
+  let {startIndex, endIndex} = getInfo(infoArray, index);
+  /* switch infoArray[index] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+     | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
+     }; */
+  getFloat32ArrSubarray(points, startIndex, endIndex)
+};
 
 let _setFloat32PointData =
     (
@@ -41,7 +72,8 @@ let _setFloat32PointData =
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, index, Some(_buildInfo(startIndex, newOffset)));
+  /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
+  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
   fillFloat32Arr(points, data, startIndex);
   newOffset
 };
@@ -51,10 +83,12 @@ let _getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
     () =>
       Contract.Operators.(test("info should exist", () => index <= Js.Array.length(infoArray) - 1))
   );
-  switch infoArray[index] {
-  | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
-  | Some({startIndex, endIndex}) => getUint16ArrSubarray(points, startIndex, endIndex)
-  }
+  /* switch infoArray[index] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+     | Some({startIndex, endIndex}) => getUint16ArrSubarray(points, startIndex, endIndex)
+     } */
+  let {startIndex, endIndex} = getInfo(infoArray, index);
+  getUint16ArrSubarray(points, startIndex, endIndex)
 };
 
 let _setUint16PointData =
@@ -62,7 +96,8 @@ let _setUint16PointData =
   let count = Js.Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, index, Some(_buildInfo(startIndex, newOffset)));
+  /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
+  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
   fillUint16Arr(points, data, startIndex);
   newOffset
 };
