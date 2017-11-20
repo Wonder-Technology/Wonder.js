@@ -41,17 +41,48 @@ let _ =
       );
       describe(
         "dispose component",
-        () =>
-          test(
+        () => {
+          let _prepareOne = (state) => {
+            let (state, meshRenderer1) = createMeshRenderer(state);
+            let (state, gameObject1) = state |> GameObject.createGameObject;
+            let state =
+              state |> GameObject.addGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
+            (state, gameObject1, meshRenderer1)
+          };
+          describe(
             "remove from renderGameObjectArray",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
-              let state =
-                state
-                |> GameObject.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-              state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+              test(
+                "test getRenderArray",
+                () => {
+                  let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                    _prepareTwo();
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject1,
+                         meshRenderer1
+                       );
+                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                }
+              );
+              test(
+                "test add gameObject after dispose",
+                () => {
+                  let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject1,
+                         meshRenderer1
+                       );
+                  let (state, gameObject2, meshRenderer2) = _prepareOne(state);
+                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                }
+              )
             }
           )
+        }
       );
       test(
         "the disposed meshRenderer shouldn't affect other alive ones' data",
@@ -66,7 +97,8 @@ let _ =
         "test gameObject add new meshRenderer after dispose old one",
         () => {
           beforeEach(
-            () => BufferConfigTool.setBufferSize(state^, ~meshRendererDataBufferCount=2, ()) |> ignore
+            () =>
+              BufferConfigTool.setBufferSize(state^, ~meshRendererDataBufferCount=2, ()) |> ignore
           );
           test(
             "if meshRendererData.index == maxCount, use disposed index(meshRenderer) as new index",
