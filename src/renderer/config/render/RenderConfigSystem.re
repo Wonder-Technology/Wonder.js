@@ -71,23 +71,26 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
 let getMaterialShaderLibDataArr =
     (materialIndex: int, groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>
   shaderLibItems
-  |> Js.Array.reduce(
-       (resultDataArr, {type_, name}: shaderLibItem) =>
-         switch type_ {
-         | None =>
-           Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr);
-           resultDataArr
-         | Some(type_) =>
+  |> ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         (resultDataArr, {type_, name}: shaderLibItem) =>
            switch type_ {
-           | "group" =>
-             let group: shaderGroup =
-               findFirst(groups, (item: shaderGroup) => _filterTargetName(item.name, name));
-             let shaderLibArr =
-               group.value
-               |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
-             Js.Array.concat(shaderLibArr, resultDataArr)
+           | None =>
+             Js.Array.push(_findFirstShaderData(name, shaderLibs), resultDataArr);
+             resultDataArr
+           | Some(type_) =>
+             switch type_ {
+             | "group" =>
+               let group: shaderGroup =
+                 findFirst(groups, (item: shaderGroup) => _filterTargetName(item.name, name));
+               let shaderLibArr =
+                 group.value
+                 |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
+               Js.Array.concat(shaderLibArr, resultDataArr)
+             }
            }
-         },
+       ),
        WonderCommonlib.ArraySystem.createEmpty()
      );
 
