@@ -4,6 +4,8 @@ open Contract;
 
 open StateDataType;
 
+[@bs.send.pipe : array('a)] external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
+
 /*
 
  type t('a) = Js.Array.t('a);
