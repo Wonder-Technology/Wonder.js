@@ -35,13 +35,8 @@ let _ =
           describe(
             "test gameObject add new material after dispose old one",
             () => {
-              beforeEach(
-                () =>
-                  BufferConfigTool.setBufferSize(state^, ~basicMaterialDataBufferCount=2, ())
-                  |> ignore
-              );
               test(
-                "if materialData.index == maxCount, use disposed index(material) as new index",
+                "use disposed index as new index firstly",
                 () => {
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
@@ -52,12 +47,15 @@ let _ =
                 }
               );
               test(
-                "if has no disposed one, error",
+                "if has no disposed index, get index from meshRendererData.index",
                 () => {
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
-                  expect(() => createBasicMaterial(state))
-                  |> toThrowMessage("have create too many components")
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  let (state, gameObject3, material3) = BasicMaterialTool.createGameObject(state);
+                  let (state, gameObject4, material4) = BasicMaterialTool.createGameObject(state);
+                  (material3, material4) |> expect == (material1, material2 + 1)
                 }
               )
             }

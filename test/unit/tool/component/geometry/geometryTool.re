@@ -20,6 +20,9 @@ let buildBoxGeometryConfigDataJsObj =
   "depthSegment": depthSegment
 };
 
+let getVerticesCount = (index: int, state: StateDataType.state) =>
+  GeometrySystem.getVerticesCount(Js.Int.toString(index), state);
+
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(Js.Int.toString(index), state);
 
@@ -38,8 +41,13 @@ let isGeometry = (geometry) => {
 
 let buildBufferConfig = (count) => {
   "transformDataBufferCount": Js.Nullable.undefined,
-  "meshRendererDataBufferCount": Js.Nullable.undefined,
-  "geometryDataBufferCount": Js.Nullable.return(count),
+  /* "meshRendererDataBufferCount": Js.Nullable.undefined, */
+  /* "geometryDataBufferCount": Js.Nullable.return(count), */
   "geometryPointDataBufferCount": Js.Nullable.return(count),
   "basicMaterialDataBufferCount": Js.Nullable.undefined
 };
+
+let getIndexFromIndexMap = (index, state: StateDataType.state) =>
+  getData(state).indexMap |> GeometryIndexUtils.getIndexFromIndexMap(Js.Int.toString(index));
+
+let buildInfo = GeometryOperateDataUtils.buildInfo;

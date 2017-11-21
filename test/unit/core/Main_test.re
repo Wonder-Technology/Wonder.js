@@ -221,31 +221,31 @@ let _ =
               let _buildBufferConfig =
                   (
                     ~transformDataBufferCount=Js.Nullable.undefined,
-                    ~meshRendererDataBufferCount=Js.Nullable.undefined,
-                    ~geometryDataBufferCount=Js.Nullable.undefined,
+                    /* ~meshRendererDataBufferCount=Js.Nullable.undefined, */
+                    /* ~geometryDataBufferCount=Js.Nullable.undefined, */
                     ~geometryPointDataBufferCount=Js.Nullable.undefined,
                     ~basicMaterialDataBufferCount=Js.Nullable.undefined,
                     ()
                   ) =>
                 Js.Nullable.return({
                   "transformDataBufferCount": transformDataBufferCount,
-                  "meshRendererDataBufferCount": meshRendererDataBufferCount,
-                  "geometryDataBufferCount": geometryDataBufferCount,
+                  /* "meshRendererDataBufferCount": meshRendererDataBufferCount, */
+                  /* "geometryDataBufferCount": geometryDataBufferCount, */
                   "geometryPointDataBufferCount": geometryPointDataBufferCount,
                   "basicMaterialDataBufferCount": basicMaterialDataBufferCount
                 });
               let _buildExpectedBufferConfig =
                   (
                     ~transformDataBufferCount=20 * 1000,
-                    ~meshRendererDataBufferCount=20 * 1000,
-                    ~geometryDataBufferCount=20 * 1000,
+                    /* ~meshRendererDataBufferCount=20 * 1000, */
+                    /* ~geometryDataBufferCount=20 * 1000, */
                     ~geometryPointDataBufferCount=1000 * 1000,
                     ~basicMaterialDataBufferCount=20 * 1000,
                     ()
                   ) => {
                 transformDataBufferCount,
-                meshRendererDataBufferCount,
-                geometryDataBufferCount,
+                /* meshRendererDataBufferCount, */
+                /* geometryDataBufferCount, */
                 geometryPointDataBufferCount,
                 basicMaterialDataBufferCount
               };
@@ -259,8 +259,8 @@ let _ =
                       let transformDataBufferCount = 100;
                       let geometryPointDataBufferCount = 200;
                       let basicMaterialDataBufferCount = 300;
-                      let meshRendererDataBufferCount = 400;
-                      let geometryDataBufferCount = 500;
+                      /* let meshRendererDataBufferCount = 400; */
+                      /* let geometryDataBufferCount = 500; */
                       let state =
                         setMainConfig(
                           MainTool.buildMainConfig(
@@ -268,10 +268,10 @@ let _ =
                               _buildBufferConfig(
                                 ~transformDataBufferCount=
                                   Js.Nullable.return(transformDataBufferCount),
-                                ~meshRendererDataBufferCount=
+                                /* ~meshRendererDataBufferCount=
                                   Js.Nullable.return(meshRendererDataBufferCount),
                                 ~geometryDataBufferCount=
-                                  Js.Nullable.return(geometryDataBufferCount),
+                                  Js.Nullable.return(geometryDataBufferCount), */
                                 ~geometryPointDataBufferCount=
                                   Js.Nullable.return(geometryPointDataBufferCount),
                                 ~basicMaterialDataBufferCount=
@@ -286,8 +286,8 @@ let _ =
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount,
-                                  ~meshRendererDataBufferCount,
-                                  ~geometryDataBufferCount,
+                                  /* ~meshRendererDataBufferCount, */
+                                  /* ~geometryDataBufferCount, */
                                   ~geometryPointDataBufferCount,
                                   ~basicMaterialDataBufferCount,
                                   ()
@@ -308,7 +308,7 @@ let _ =
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount=20 * 1000,
-                                  ~geometryDataBufferCount=20 * 1000,
+                                  /* ~geometryDataBufferCount=20 * 1000, */
                                   ~geometryPointDataBufferCount=1000 * 1000,
                                   ~basicMaterialDataBufferCount=20 * 1000,
                                   ()

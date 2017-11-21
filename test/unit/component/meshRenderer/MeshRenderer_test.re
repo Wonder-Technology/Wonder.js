@@ -96,12 +96,8 @@ let _ =
       describe(
         "test gameObject add new meshRenderer after dispose old one",
         () => {
-          beforeEach(
-            () =>
-              BufferConfigTool.setBufferSize(state^, ~meshRendererDataBufferCount=2, ()) |> ignore
-          );
           test(
-            "if meshRendererData.index == maxCount, use disposed index(meshRenderer) as new index",
+            "use disposed index as new index firstly",
             () => {
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
               let state =
@@ -112,13 +108,17 @@ let _ =
             }
           );
           test(
-            "if has no disposed one, error",
+            "if has no disposed index, get index from meshRendererData.index",
             () => {
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
-              expect(() => createMeshRenderer(state))
-              |> toThrowMessage("have create too many components")
+              let state =
+                state
+                |> GameObject.disposeGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
+              let (state, meshRenderer3) = createMeshRenderer(state);
+              let (state, meshRenderer4) = createMeshRenderer(state);
+              ( meshRenderer3, meshRenderer4 ) |> expect == (meshRenderer2, meshRenderer2 + 1);
             }
-          )
+          );
         }
       )
       /*

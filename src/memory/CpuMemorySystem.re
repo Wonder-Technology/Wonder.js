@@ -117,8 +117,8 @@ let _fillFloat32Array =
     () =>
       Contract.Operators.(
         test(
-          "targetStartIndex should < sourceStartIndex",
-          () => targetStartIndex < sourceStartIndex
+          "targetStartIndex should <= sourceStartIndex",
+          () => targetStartIndex <= sourceStartIndex
         )
       )
   );

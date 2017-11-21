@@ -174,7 +174,7 @@ let getVerticesCount =
           )
         )
     ),
-    [@bs] ((state: StateDataType.state) => getGeometryData(state).indicesCountCacheMap)
+    [@bs] ((state: StateDataType.state) => getGeometryData(state).verticesCountCacheMap)
   );
 
 let getDrawMode = (gl) => getTriangles(gl);
