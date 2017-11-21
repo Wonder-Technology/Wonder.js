@@ -35,45 +35,42 @@ let _init =
   let shaderData = _getShaderData(state);
   let materialIndexStr = Js.Int.toString(materialIndex);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
-  let (shaderIndex, program) =
-    switch (_getShaderIndex(key, shaderData)) {
-    | None =>
-      let (state, shaderIndex) = _genereateShaderIndex(state);
-      _setShaderIndex(key, shaderIndex, shaderData) |> ignore;
-      let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
-      (
-        shaderIndex,
-        gl
-        |> ProgramSystem.createProgram
-        |> ProgramSystem.registerProgram(shaderIndex, state)
-        |> ProgramSystem.initShader(vsSource, fsSource, gl)
-      )
-    | Some(shaderIndex) => (
-        shaderIndex,
-        Js.Option.getExn(ProgramSystem.getProgram(Js.Int.toString(shaderIndex), state))
-      )
-    };
-  state
-  |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
-       gl,
-       materialIndexStr,
-       shaderIndex,
-       geometryIndex,
-       program,
-       shaderLibDataArr
-     )
-  /* attributeLocationMap */
-  |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
-       gl,
-       materialIndexStr,
-       shaderIndex,
-       program,
-       shaderLibDataArr
-     )
-  /* uniformLocationMap */
-  |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex)
-  |> ignore;
-  shaderIndex
+  switch (_getShaderIndex(key, shaderData)) {
+  | None =>
+    let (state, shaderIndex) = _genereateShaderIndex(state);
+    _setShaderIndex(key, shaderIndex, shaderData) |> ignore;
+    let (vsSource, fsSource) = [@bs] buildGLSLSource(materialIndex, shaderLibDataArr, state);
+    let program =
+      gl
+      |> ProgramSystem.createProgram
+      |> ProgramSystem.registerProgram(shaderIndex, state)
+      |> ProgramSystem.initShader(vsSource, fsSource, gl);
+    let shaderIndexStr = Js.Int.toString(shaderIndex);
+    state
+    |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
+         gl,
+         shaderIndexStr,
+         geometryIndex,
+         program,
+         shaderLibDataArr
+       )
+    |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
+         gl,
+         shaderIndexStr,
+         program,
+         shaderLibDataArr
+       )
+    |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, shaderIndexStr, geometryIndex)
+    |> ignore;
+    shaderIndex
+  | Some(shaderIndex) =>
+    /* (
+         shaderIndex,
+         Js.Option.getExn(ProgramSystem.getProgram(Js.Int.toString(shaderIndex), state))
+       ) */
+    shaderIndex
+  }
+  /* shaderIndex */
 };
 
 let initMaterialShader =

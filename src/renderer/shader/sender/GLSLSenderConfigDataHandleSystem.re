@@ -17,8 +17,7 @@ open GLSLSenderDrawSystem;
 let addAttributeSendData =
     (
       gl,
-      materialIndexStr: string,
-      shaderIndex: int,
+      shaderIndexStr: string,
       geometryIndex: int,
       program: program,
       shaderLibDataArr: shader_libs,
@@ -32,12 +31,11 @@ let addAttributeSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).attributeSendDataMap
-            |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
+            |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
             |> assertNotExist
         )
       )
   );
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let attributeLocationMap =
     switch (state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndexStr)) {
     | None => WonderCommonlib.HashMapSystem.createEmpty()
@@ -147,9 +145,8 @@ let addAttributeSendData =
        )
      );
   getGLSLSenderData(state).attributeSendDataMap
-  |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
+  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, sendDataArr)
   |> ignore;
-  /* let shaderIndexStr = Js.Int.toString(shaderIndex); */
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
 };
 
@@ -166,8 +163,7 @@ let _getModelMMatrixData =
 let addUniformSendData =
     (
       gl,
-      materialIndexStr: string,
-      shaderIndex: int,
+      shaderIndexStr: string,
       /* geometryIndex: int, */
       /* uid: string, */
       program: program,
@@ -183,12 +179,11 @@ let addUniformSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).uniformSendDataMap
-            |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
+            |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
             |> assertNotExist
         )
       )
   );
-  let shaderIndexStr = Js.Int.toString(shaderIndex);
   let uniformLocationMap =
     switch (state |> GLSLLocationSystem.getUniformLocationMap(shaderIndexStr)) {
     | None => WonderCommonlib.HashMapSystem.createEmpty()
@@ -261,17 +256,17 @@ let addUniformSendData =
        )
      );
   getGLSLSenderData(state).uniformSendDataMap
-  |> WonderCommonlib.HashMapSystem.set(materialIndexStr, sendDataArr)
+  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, sendDataArr)
   |> ignore;
   /* let shaderIndexStr = Js.Int.toString(shaderIndex); */
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
 };
 
 let addDrawPointsFunc =
-    (gl, materialIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
+    (gl, shaderIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
   getGLSLSenderData(state).drawPointsFuncMap
   |> WonderCommonlib.HashMapSystem.set(
-       materialIndexStr,
+       shaderIndexStr,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
            GeometrySystem.getDrawMode(gl),

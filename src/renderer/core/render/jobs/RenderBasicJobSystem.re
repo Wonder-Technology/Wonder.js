@@ -26,7 +26,7 @@ let _render = (gl, state: StateDataType.state) => {
              let state =
                state
                |> ProgramSystem.use(gl, program)
-               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(materialIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndexStr)
                |> ArraySystem.reduceState(
                     [@bs]
                     (
@@ -35,7 +35,7 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   )
-               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(materialIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndexStr)
                |> ArraySystem.reduceState(
                     [@bs]
                     (
@@ -47,7 +47,7 @@ let _render = (gl, state: StateDataType.state) => {
                     state
                   );
              let drawPointsFunc =
-               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(materialIndexStr, state);
+               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
              drawPointsFunc(gl);
              state
            }
