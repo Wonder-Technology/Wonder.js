@@ -69,7 +69,13 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
         )
       )
   );
-  Float32Array.setArrayOffset(dataArr, startIndex, typeArr)
+  let dataArrIndex = ref(0);
+  for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
+    /* Js.Typed_array.Float32Array.unsafe_set(typeArr, i, dataArr[dataArrIndex^]); */
+    Js.Typed_array.Float32Array.unsafe_set(typeArr, i, Array.unsafe_get(dataArr, dataArrIndex^));
+    dataArrIndex := succ(dataArrIndex^)
+  };
+  typeArr
 };
 
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
@@ -85,7 +91,12 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
         )
       )
   );
-  Uint16Array.setArrayOffset(dataArr, startIndex, typeArr)
+  let dataArrIndex = ref(0);
+  for (i in startIndex to startIndex + Js.Array.length(dataArr) |> pred) {
+    Js.Typed_array.Uint16Array.unsafe_set(typeArr, i, Array.unsafe_get(dataArr, dataArrIndex^));
+    dataArrIndex := succ(dataArrIndex^)
+  };
+  typeArr
 };
 
 let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>
