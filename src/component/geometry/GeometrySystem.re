@@ -99,13 +99,17 @@ let create = (state: StateDataType.state) => {
    let getIndices = GeometryOperateDataUtils.getIndices;
 
    let setIndices = GeometryOperateDataUtils.setIndices; */
-let getVertices = (index: int, state: StateDataType.state) =>
-  GeometryOperateDataUtils.getVertices(
-    GeometryIndexUtils.getIndexFromIndexMap(
-      Js.Int.toString(index),
-      GeometryIndexUtils.getIndexMap(state)
-    ),
-    state
+let getVertices =
+  [@bs]
+  (
+    (index: int, state: StateDataType.state) =>
+      GeometryOperateDataUtils.getVertices(
+        GeometryIndexUtils.getIndexFromIndexMap(
+          Js.Int.toString(index),
+          GeometryIndexUtils.getIndexMap(state)
+        ),
+        state
+      )
   );
 
 let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.state) =>
@@ -118,13 +122,17 @@ let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.sta
     state
   );
 
-let getIndices = (index: int, state: StateDataType.state) =>
-  GeometryOperateDataUtils.getIndices(
-    GeometryIndexUtils.getIndexFromIndexMap(
-      Js.Int.toString(index),
-      GeometryIndexUtils.getIndexMap(state)
-    ),
-    state
+let getIndices =
+  [@bs]
+  (
+    (index: int, state: StateDataType.state) =>
+      GeometryOperateDataUtils.getIndices(
+        GeometryIndexUtils.getIndexFromIndexMap(
+          Js.Int.toString(index),
+          GeometryIndexUtils.getIndexMap(state)
+        ),
+        state
+      )
   );
 
 let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state) =>
@@ -139,6 +147,7 @@ let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state)
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   Float32Array.length(
+    [@bs]
     getVertices(
       GeometryIndexUtils.getIndexFromIndexMap(
         Js.Int.toString(index),
@@ -150,6 +159,7 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   Uint16Array.length(
+    [@bs]
     getIndices(
       GeometryIndexUtils.getIndexFromIndexMap(
         Js.Int.toString(index),
@@ -171,6 +181,7 @@ let hasIndices = (index: int, state: StateDataType.state) =>
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   Float32Array.length(
+    [@bs]
     getVertices(
       GeometryIndexUtils.getIndexFromIndexMap(
         Js.Int.toString(index),

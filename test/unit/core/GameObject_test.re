@@ -371,22 +371,22 @@ let _ =
                   )
                   |> expect == (true, false)
                 }
-              );
+              )
               /* test(
-                "dispose geometry component",
-                () => {
-                  open StateDataType;
-                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                  let state = state |> disposeGameObject(gameObject1);
-                  let {disposedIndexArray} = state |> GeometryTool.getData;
-                  (
-                    disposedIndexArray |> Js.Array.includes(geometry1),
-                    disposedIndexArray |> Js.Array.includes(geometry2)
-                  )
-                  |> expect == (true, false)
-                }
-              ) */
+                   "dispose geometry component",
+                   () => {
+                     open StateDataType;
+                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                     let state = state |> disposeGameObject(gameObject1);
+                     let {disposedIndexArray} = state |> GeometryTool.getData;
+                     (
+                       disposedIndexArray |> Js.Array.includes(geometry1),
+                       disposedIndexArray |> Js.Array.includes(geometry2)
+                     )
+                     |> expect == (true, false)
+                   }
+                 ) */
             }
           );
           describe(
@@ -541,7 +541,7 @@ let _ =
                   let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
                   let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
                   let state = state |> initGameObject(gameObject);
-                  Geometry.getGeometryVertices(geometry, state)
+                  [@bs] Geometry.getGeometryVertices(geometry, state)
                   |> expect == BoxGeometryTool.getDefaultVertices()
                 }
               )

@@ -4,6 +4,8 @@ open GlType;
 
 open GameObjectType;
 
+open VboBufferType;
+
 /* todo optimize: curry */
 let _render = (gl, state: StateDataType.state) => {
   let renderArray = RenderDataSystem.getRenderArrayFromState(state);
@@ -20,6 +22,9 @@ let _render = (gl, state: StateDataType.state) => {
              let materialIndexStr = Js.Int.toString(materialIndex);
              let shaderIndex = MaterialSystem.getShaderIndex(materialIndexStr, state);
              let shaderIndexStr = Js.Int.toString(shaderIndex);
+             let geometryIndex: int =
+               Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
+             let {vertexBufferMap, indexBufferMap} = VboBufferSystem.getData(state);
              let uniformLocationMap =
                Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndexStr, state));
              let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndexStr, state));
@@ -30,8 +35,29 @@ let _render = (gl, state: StateDataType.state) => {
                |> ArraySystem.reduceState(
                     [@bs]
                     (
-                      (state, {pos, size, buffer, sendFunc}) =>
-                        [@bs] sendFunc(gl, size, pos, buffer, state)
+                      (state, {pos, size, buffer, sendFunc}) => {
+                        let arrayBuffer =
+                          switch buffer {
+                          | "vertex" =>
+                            ArrayBufferSystem.getOrCreateBuffer(
+                              gl,
+                              geometryIndex,
+                              vertexBufferMap,
+                              [@bs] GeometrySystem.getVertices,
+                              state
+                            )
+                          | "index" =>
+                            ElementArrayBufferSystem.getOrCreateBuffer(
+                              gl,
+                              geometryIndex,
+                              indexBufferMap,
+                              [@bs] GeometrySystem.getIndices,
+                              state
+                            )
+                          | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+                          };
+                        [@bs] sendFunc(gl, size, pos, arrayBuffer, state)
+                      }
                     ),
                     state
                   )
@@ -46,9 +72,22 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   );
-             let drawPointsFunc =
-               GLSLSenderConfigDataHandleSystem.getDrawPointsFunc(shaderIndexStr, state);
-             drawPointsFunc(gl);
+             GeometrySystem.hasIndices(geometryIndex, state) ?
+               GLSLSenderDrawSystem.drawElement(
+                 GeometrySystem.getDrawMode(gl),
+                 GeometrySystem.getIndexType(gl),
+                 GeometrySystem.getIndexTypeSize(gl),
+                 /* todo optimize: add cache! */
+                 GeometrySystem.getIndicesCount(geometryIndex, state),
+                 /* 36, */
+                 gl
+               ) :
+               GLSLSenderDrawSystem.drawArray(
+                 GeometrySystem.getDrawMode(gl),
+                 /* todo optimize: add cache! */
+                 GeometrySystem.getVerticesCount(geometryIndex, state),
+                 gl
+               );
              state
            }
          ),

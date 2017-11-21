@@ -1,4 +1,5 @@
 open StateDataType;
+
 open RenderConfigParseSystem;
 
 let getState = (stateData: stateData) : state => Js.Option.getExn(stateData.state);
@@ -7,6 +8,7 @@ let setState = (stateData: stateData, state: state) => {
   stateData.state = Some(state);
   state
 };
+
 /* let createState = (( render_setting, init_pipelines, render_pipelines, init_jobs, render_jobs, shaders, shader_libs )) => { */
 let createState =
     /* ~renderConfig=(
@@ -68,6 +70,7 @@ let createState =
     glslChunkData: ShaderChunkSystem.initData(),
     renderData: RenderDataSystem.initData(),
     schedulerData: ScheduleControllerSystem.initData(),
-    timeControllerData: TimeControllerSystem.initData()
+    timeControllerData: TimeControllerSystem.initData(),
+    vboBufferData: VboBufferSystem.initData()
   }
 };

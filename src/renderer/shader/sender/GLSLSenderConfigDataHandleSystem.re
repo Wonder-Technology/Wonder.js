@@ -18,7 +18,7 @@ let addAttributeSendData =
     (
       gl,
       shaderIndexStr: string,
-      geometryIndex: int,
+      /* geometryIndex: int, */
       program: program,
       shaderLibDataArr: shader_libs,
       /* attributeLocationMap, */
@@ -71,7 +71,7 @@ let addAttributeSendData =
                                  ),
                                size: getBufferSizeByType(type_),
                                buffer:
-                                 switch buffer {
+                                 /* switch buffer {
                                  | "vertex" =>
                                    ArrayBufferSystem.createBuffer(
                                      gl,
@@ -80,7 +80,8 @@ let addAttributeSendData =
                                    )
                                  | _ =>
                                    ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-                                 },
+                                 }, */
+                                 buffer,
                                sendFunc: sendBuffer
                              })
                           /* sendBuffer(
@@ -122,7 +123,7 @@ let addAttributeSendData =
                                  pos: 0,
                                  size: 0,
                                  buffer:
-                                   switch buffer {
+                                   /* switch buffer {
                                    | "index" =>
                                      ElementArrayBufferSystem.createBuffer(
                                        gl,
@@ -133,7 +134,8 @@ let addAttributeSendData =
                                      ExceptionHandleSystem.throwMessage(
                                        {j|unknow buffer:$buffer|j}
                                      )
-                                   },
+                                   }, */
+                                   buffer,
                                  sendFunc: bindIndexBuffer
                                })
                           |> ignore
@@ -262,11 +264,11 @@ let addUniformSendData =
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
 };
 
-let addDrawPointsFunc =
-    (gl, shaderIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
-  getGLSLSenderData(state).drawPointsFuncMap
+/* let addDrawPointsFunc =
+    (gl, materialIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
+  /* getGLSLSenderData(state).drawPointsFuncMap
   |> WonderCommonlib.HashMapSystem.set(
-       shaderIndexStr,
+       materialIndexStr,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
            GeometrySystem.getDrawMode(gl),
@@ -279,9 +281,9 @@ let addDrawPointsFunc =
            GeometrySystem.getVerticesCount(geometryIndex, state)
          )
      )
-  |> ignore;
+  |> ignore; */
   state
-};
+}; */
 
 let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
@@ -325,10 +327,19 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
      )
 };
 
-let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => {
-  let {drawPointsFuncMap} = getGLSLSenderData(state);
+/* let getDrawPointsFunc = (materialIndexStr: string, state: StateDataType.state) => {
+let gl = [@bs]DeviceManagerSystem.getGl(state);
+  drawElement(
+           GeometrySystem.getDrawMode(gl),
+           GeometrySystem.getIndexType(gl),
+           GeometrySystem.getIndexTypeSize(gl),
+           /* GeometrySystem.getIndicesCount(geometryIndex, state) */
+           /* GeometrySystem.getIndicesCount(geometryIndex, state) */
+           36
+  )
+  /* let {drawPointsFuncMap} = getGLSLSenderData(state);
   drawPointsFuncMap
-  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
+  |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -337,10 +348,10 @@ let getDrawPointsFunc = (shaderIndexStr: string, state: StateDataType.state) => 
              () => {
                let {drawPointsFuncMap} = getGLSLSenderData(state);
                drawPointsFuncMap
-               |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+               |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
                |> assertExist
              }
            )
          )
-     )
-};
+     ) */
+}; */

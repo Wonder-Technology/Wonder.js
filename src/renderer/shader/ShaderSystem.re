@@ -24,7 +24,7 @@ let _init =
     (
       gl,
       materialIndex: int,
-      geometryIndex: int,
+      /* geometryIndex: int, */
       /* uid: string, */
       shaderLibDataArr: shader_libs,
       /* attributeLocationMap,
@@ -32,8 +32,11 @@ let _init =
       buildGLSLSource,
       state: StateDataType.state
     ) => {
+  /* let materialIndexStr = Js.Int.toString(materialIndex);
+  let state =
+    state
+    |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex); */
   let shaderData = _getShaderData(state);
-  let materialIndexStr = Js.Int.toString(materialIndex);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {
   | None =>
@@ -50,7 +53,7 @@ let _init =
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          gl,
          shaderIndexStr,
-         geometryIndex,
+         /* geometryIndex, */
          program,
          shaderLibDataArr
        )
@@ -60,24 +63,17 @@ let _init =
          program,
          shaderLibDataArr
        )
-    |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, shaderIndexStr, geometryIndex)
     |> ignore;
     shaderIndex
-  | Some(shaderIndex) =>
-    /* (
-         shaderIndex,
-         Js.Option.getExn(ProgramSystem.getProgram(Js.Int.toString(shaderIndex), state))
-       ) */
-    shaderIndex
+  | Some(shaderIndex) => shaderIndex
   }
-  /* shaderIndex */
 };
 
 let initMaterialShader =
     (
       gl,
       materialIndex: int,
-      geometryIndex: int,
+      /* geometryIndex: int, */
       /* uid: string, */
       shaderLibDataArr,
       /* attributeLocationMap,
@@ -88,7 +84,7 @@ let initMaterialShader =
   _init(
     gl,
     materialIndex,
-    geometryIndex,
+    /* geometryIndex, */
     /* uid, */
     shaderLibDataArr,
     /* attributeLocationMap,

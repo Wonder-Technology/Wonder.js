@@ -16,7 +16,11 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init(~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), ())
+          state :=
+            TestTool.init(
+              ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+              ()
+            )
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -38,7 +42,10 @@ let _ =
                 () => {
                   let (state, geometry1, geometry2) = _prepare();
                   let state = state |> GeometryTool.initGeometrys;
-                  (getGeometryVertices(geometry1, state), getGeometryVertices(geometry2, state))
+                  (
+                    [@bs] getGeometryVertices(geometry1, state),
+                    [@bs] getGeometryVertices(geometry2, state)
+                  )
                   |>
                   expect == (
                               BoxGeometryTool.getDefaultVertices(),
@@ -51,7 +58,10 @@ let _ =
                 () => {
                   let (state, geometry1, geometry2) = _prepare();
                   let state = state |> GeometryTool.initGeometrys;
-                  (getGeometryIndices(geometry1, state), getGeometryIndices(geometry2, state))
+                  (
+                    [@bs] getGeometryIndices(geometry1, state),
+                    [@bs] getGeometryIndices(geometry2, state)
+                  )
                   |>
                   expect == (
                               BoxGeometryTool.getDefaultIndices(),
@@ -83,7 +93,10 @@ let _ =
               let errMeg = "should not exceed geometryPointDataBufferCount";
               let _prepare = () => {
                 let state =
-                  TestTool.init(~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)), ());
+                  TestTool.init(
+                    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)),
+                    ()
+                  );
                 createBoxGeometry(state)
               };
               test(
@@ -124,17 +137,15 @@ let _ =
             }
           )
       );
-      describe
-      ("disposeComponent",
-      (
-      () => {
+      describe(
+        "disposeComponent",
+        () =>
           describe(
             "test gameObject add new geometry after dispose old one",
             () => {
               beforeEach(
                 () =>
-                  BufferConfigTool.setBufferSize(state^, ~geometryDataBufferCount=2, ())
-                  |> ignore
+                  BufferConfigTool.setBufferSize(state^, ~geometryDataBufferCount=2, ()) |> ignore
               );
               test(
                 "if geometryData.index == maxCount, use disposed index(geometry) as new index",
@@ -158,7 +169,6 @@ let _ =
               )
             }
           )
-      })
-      );
+      )
     }
   );

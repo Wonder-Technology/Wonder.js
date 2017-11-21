@@ -65,7 +65,7 @@ let init = (gl, state: state) =>
            MaterialInitComponentUtils.initMaterial(
              gl,
              materialIndex,
-             Js.Option.getExn(MaterialSystem.getGameObject(materialIndex, state)),
+             /* Js.Option.getExn(MaterialSystem.getGameObject(materialIndex, state)), */
              state
            )
        ),

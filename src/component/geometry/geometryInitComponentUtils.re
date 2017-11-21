@@ -12,7 +12,8 @@ let initGeometry = (index: int, state: StateDataType.state) => {
       GeometryIndexUtils.getIndexMap(state)
     );
   switch (
-    geometryData.computeDataFuncMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(mapedIndex))
+    geometryData.computeDataFuncMap
+    |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(mapedIndex))
   ) {
   | None => state
   | Some(computeDataFunc) =>

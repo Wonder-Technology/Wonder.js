@@ -30,6 +30,8 @@ open Js.Typed_array;
 
 open MemoryConfigType;
 
+open VboBufferType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -200,7 +202,7 @@ and schedulerData = {
 and attributeSendData = {
   pos: attributeLocation,
   size: int,
-  buffer,
+  buffer: string,
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
 and uniformSendData = {
@@ -265,7 +267,8 @@ and state = {
   glslChunkData,
   renderData,
   schedulerData,
-  timeControllerData
+  timeControllerData,
+  vboBufferData
 };
 
 type stateData = {
