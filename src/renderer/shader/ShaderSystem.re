@@ -17,8 +17,15 @@ let _getShaderIndex = (key: string, {shaderIndexMap}) =>
 let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
   shaderIndexMap |> WonderCommonlib.HashMapSystem.set(key, shaderIndex);
 
-let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) =>
-  shaderLibDataArr |> Js.Array.joinWith("");
+let _join = (array) => {
+  let output = ref("");
+  for (i in 0 to Js.Array.length(array) |> pred) {
+    output := output^ ++ array[i].name
+  };
+  output^
+};
+
+let _buildShaderIndexMapKey = (shaderLibDataArr: shader_libs) => shaderLibDataArr |> _join;
 
 let _init =
     (
@@ -33,9 +40,9 @@ let _init =
       state: StateDataType.state
     ) => {
   /* let materialIndexStr = Js.Int.toString(materialIndex);
-  let state =
-    state
-    |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex); */
+     let state =
+       state
+       |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex); */
   let shaderData = _getShaderData(state);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {

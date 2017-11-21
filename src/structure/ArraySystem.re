@@ -91,6 +91,7 @@ let reduceState = (func, state, arr) : state => {
   };
   mutableState^
 };
+
 /* let get = (index: int, arr) =>
      if (index >= Js.Array.length(arr)) {
        None
@@ -125,3 +126,10 @@ let reduceState = (func, state, arr) : state => {
      };
      ()
    }; */ */
+let join = (array) => {
+  let output = ref("");
+  for (i in 0 to Js.Array.length(array)) {
+    output := output^ ++ array[i]
+  };
+  output^
+};
