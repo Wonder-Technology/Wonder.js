@@ -21,7 +21,7 @@ let buildBoxGeometryConfigDataJsObj =
 };
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getIndicesCount(index, state);
+  GeometrySystem.getIndicesCount(Js.Int.toString(index), state);
 
 let getIndexType = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;

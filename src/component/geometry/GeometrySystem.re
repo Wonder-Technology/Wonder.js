@@ -145,50 +145,51 @@ let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state)
     state
   );
 
-let getVerticesCount = (index: int, state: StateDataType.state) =>
-  Float32Array.length(
+let getIndicesCount =
+  CacheUtils.memorizeStringState(
     [@bs]
-    getVertices(
-      GeometryIndexUtils.getIndexFromIndexMap(
-        Js.Int.toString(index),
-        GeometryIndexUtils.getIndexMap(state)
-      ),
-      state
-    )
+    (
+      (indexStr: string, state: StateDataType.state) =>
+        Uint16Array.length(
+          [@bs]
+          getIndices(
+            GeometryIndexUtils.getIndexFromIndexMap(
+              indexStr,
+              GeometryIndexUtils.getIndexMap(state)
+            ),
+            state
+          )
+        )
+    ),
+    [@bs] ((state: StateDataType.state) => getGeometryData(state).indicesCountCacheMap)
   );
 
-let getIndicesCount = (index: int, state: StateDataType.state) =>
-  Uint16Array.length(
-    [@bs]
-    getIndices(
-      GeometryIndexUtils.getIndexFromIndexMap(
-        Js.Int.toString(index),
-        GeometryIndexUtils.getIndexMap(state)
-      ),
-      state
-    )
-  );
-
-let hasIndices = (index: int, state: StateDataType.state) =>
+let hasIndices = (indexStr: string, state: StateDataType.state) =>
   getIndicesCount(
-    GeometryIndexUtils.getIndexFromIndexMap(
-      Js.Int.toString(index),
-      GeometryIndexUtils.getIndexMap(state)
+    Js.Int.toString(
+      GeometryIndexUtils.getIndexFromIndexMap(indexStr, GeometryIndexUtils.getIndexMap(state))
     ),
     state
   )
   > 0;
 
-let getVerticesCount = (index: int, state: StateDataType.state) =>
-  Float32Array.length(
+let getVerticesCount =
+  CacheUtils.memorizeStringState(
     [@bs]
-    getVertices(
-      GeometryIndexUtils.getIndexFromIndexMap(
-        Js.Int.toString(index),
-        GeometryIndexUtils.getIndexMap(state)
-      ),
-      state
-    )
+    (
+      (indexStr: string, state: StateDataType.state) =>
+        Float32Array.length(
+          [@bs]
+          getVertices(
+            GeometryIndexUtils.getIndexFromIndexMap(
+              indexStr,
+              GeometryIndexUtils.getIndexMap(state)
+            ),
+            state
+          )
+        )
+    ),
+    [@bs] ((state: StateDataType.state) => getGeometryData(state).indicesCountCacheMap)
   );
 
 let getDrawMode = (gl) => getTriangles(gl);
@@ -267,7 +268,9 @@ let initData = (state: StateDataType.state) => {
       gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
       disposeCount: 0,
       disposedIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      indexMap: WonderCommonlib.HashMapSystem.createEmpty()
+      indexMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      indicesCountCacheMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      verticesCountCacheMap: WonderCommonlib.HashMapSystem.createEmpty()
     });
   state
 };

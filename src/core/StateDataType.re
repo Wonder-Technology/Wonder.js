@@ -245,7 +245,9 @@ and geometryData = {
   mutable gameObjectMap,
   mutable disposeCount: int,
   mutable indexMap: geometryIndexMap,
-  mutable disposedIndexMap: geometryDisposeIndexMap
+  mutable disposedIndexMap: geometryDisposeIndexMap,
+  mutable indicesCountCacheMap: geometryIndicesCountCacheMap,
+  mutable verticesCountCacheMap: geometryVerticesCountCacheMap,
 }
 and state = {
   bufferConfig: option(bufferConfig),

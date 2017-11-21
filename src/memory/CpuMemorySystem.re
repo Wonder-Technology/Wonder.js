@@ -1,4 +1,3 @@
-
 open GameObjectType;
 
 open Contract;
@@ -158,6 +157,8 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         configDataMap,
         computeDataFuncMap,
         gameObjectMap,
+        indicesCountCacheMap,
+        verticesCountCacheMap,
         disposedIndexMap
       } as data =
     GeometryStateUtils.getGeometryData(state);
@@ -166,6 +167,8 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newComputeDataFuncMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newConfigDataMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newGameObjectMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newIndicesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newVerticesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newVerticesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newIndicesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newVerticesOffset = ref(0);
@@ -219,6 +222,18 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                     gameObjectMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
                   )
                |> ignore;
+               newIndicesCountCacheMap
+               |> WonderCommonlib.HashMapSystem.set(
+                    newIndexStr,
+                    indicesCountCacheMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+                  )
+               |> ignore;
+               newVerticesCountCacheMap
+               |> WonderCommonlib.HashMapSystem.set(
+                    newIndexStr,
+                    verticesCountCacheMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+                  )
+               |> ignore;
                newIndex := succ(newIndex^)
              }
        )
@@ -232,7 +247,8 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   data.configDataMap = newConfigDataMap;
   data.computeDataFuncMap = newComputeDataFuncMap;
   data.gameObjectMap = newGameObjectMap;
+  data.indicesCountCacheMap = newIndicesCountCacheMap;
+  data.verticesCountCacheMap = newVerticesCountCacheMap;
   /* data.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty(); */
   state
 };
-

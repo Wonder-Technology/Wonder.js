@@ -18,3 +18,7 @@ type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));
 type geometryIndexMap = Js.Dict.t(int);
 
 type geometryDisposeIndexMap = Js.Dict.t(bool);
+
+type geometryIndicesCountCacheMap = Js.Dict.t(int);
+
+type geometryVerticesCountCacheMap = Js.Dict.t(int);

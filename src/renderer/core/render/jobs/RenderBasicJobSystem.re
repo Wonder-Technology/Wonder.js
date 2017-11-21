@@ -24,6 +24,7 @@ let _render = (gl, state: StateDataType.state) => {
              let shaderIndexStr = Js.Int.toString(shaderIndex);
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
+             let geometryIndexStr = Js.Int.toString(geometryIndex);
              let {vertexBufferMap, indexBufferMap} = VboBufferSystem.getData(state);
              let uniformLocationMap =
                Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndexStr, state));
@@ -72,20 +73,17 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   );
-             GeometrySystem.hasIndices(geometryIndex, state) ?
+             GeometrySystem.hasIndices(geometryIndexStr, state) ?
                GLSLSenderDrawSystem.drawElement(
                  GeometrySystem.getDrawMode(gl),
                  GeometrySystem.getIndexType(gl),
                  GeometrySystem.getIndexTypeSize(gl),
-                 /* todo optimize: add cache! */
-                 GeometrySystem.getIndicesCount(geometryIndex, state),
-                 /* 36, */
+                 GeometrySystem.getIndicesCount(geometryIndexStr, state),
                  gl
                ) :
                GLSLSenderDrawSystem.drawArray(
                  GeometrySystem.getDrawMode(gl),
-                 /* todo optimize: add cache! */
-                 GeometrySystem.getVerticesCount(geometryIndex, state),
+                 GeometrySystem.getVerticesCount(geometryIndexStr, state),
                  gl
                );
              state
