@@ -14,26 +14,11 @@ open StateDataType;
 
 open Gl;
 
-/* let getMaxCount = (state: StateDataType.state) =>
-   BufferConfigSystem.getConfig(state).geometryDataBufferCount; */
 let create = (state: StateDataType.state) => {
-  /* let {index, disposedIndexArray} as data = getGeometryData(state);
-     let index = generateIndex(getMaxCount(state), index, disposedIndexArray); */
   let {index, indexMap} as data = getGeometryData(state);
   data.index = succ(index);
   GeometryIndexUtils.setIndexToIndexMap(Js.Int.toString(index), index, indexMap) |> ignore;
   (state, index)
-  /* |> ensureCheck(
-       ((state, _)) => {
-         open Contract.Operators;
-         let {index} = getGeometryData(state);
-         let maxCount = getMaxCount(state);
-         test(
-           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
-           () => index <= maxCount
-         )
-       }
-     ) */
 };
 
 /* let _ensureCheckNotExceedGeometryPointDataBufferCount = (offset: int, state: StateDataType.state) =>

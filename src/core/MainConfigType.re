@@ -19,8 +19,8 @@ type configStateJsObj = {
       {
         .
         "transformDataBufferCount": Js.nullable(int),
-        "meshRendererDataBufferCount": Js.nullable(int),
-        "geometryDataBufferCount": Js.nullable(int),
+        /* "meshRendererDataBufferCount": Js.nullable(int), */
+        /* "geometryDataBufferCount": Js.nullable(int), */
         "geometryPointDataBufferCount": Js.nullable(int),
         "basicMaterialDataBufferCount": Js.nullable(int)
       }
@@ -38,8 +38,8 @@ type contextConfig = {
 
 type bufferConfig = {
   transformDataBufferCount: int,
-  meshRendererDataBufferCount: int,
-  geometryDataBufferCount: int,
+  /* meshRendererDataBufferCount: int, */
+  /* geometryDataBufferCount: int, */
   geometryPointDataBufferCount: int,
   basicMaterialDataBufferCount: int
 };

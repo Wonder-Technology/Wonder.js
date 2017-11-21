@@ -16,30 +16,12 @@ open TransformHierachySystem;
 
 open TransformStateUtils;
 
-/* let _generateIndex = (maxCount: int, {index, disposedIndexArray} as transformData) =>
-   switch index {
-   | index when index >= maxCount =>
-     switch (TransformDisposeComponentUtils.getDisposedIndex(transformData)) {
-     | None =>
-       ExceptionHandleSystem.throwMessage(
-         {j|have create too many transforms(the count of transforms shouldn't exceed $maxCount)|j}
-       )
-     | Some(index) => index
-     }
-   | index =>
-     transformData.index = succ(index);
-     index
-   }; */
 let isAlive = (transform: transform, state: StateDataType.state) =>
   ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
 
 let create = (state: StateDataType.state) => {
-  /* let ({index, disposedIndexArray} as data): transformData = getTransformData(state); */
-  /* let index = generateIndex(getMaxCount(state), index, disposedIndexArray); */
-  /* let index = generateIndex(Obj.magic(getTransformData(state))); */
-let {index, disposedIndexArray} as data = getTransformData(state);
-
-  let ( index, newIndex ) = generateIndex(index, disposedIndexArray);
+  let {index, disposedIndexArray} as data = getTransformData(state);
+  let (index, newIndex) = generateIndex(index, disposedIndexArray);
   data.index = newIndex;
   (state, index)
   |> ensureCheck(

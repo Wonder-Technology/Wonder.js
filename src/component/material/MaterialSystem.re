@@ -7,13 +7,6 @@ open Contract;
 
 open StateDataType;
 
-/* let create = (state: StateDataType.state) => {
-  let data = getMaterialData(state);
-  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
-  data.index = succ(index);
-  (state, index)
-}; */
-
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 

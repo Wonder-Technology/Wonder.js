@@ -14,31 +14,14 @@ open MaterialStateUtils;
 
 open Contract;
 
-let getMaxCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount;
+/* let getMaxCount = (state: StateDataType.state) =>
+  BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount; */
 
 let create = (state: StateDataType.state) => {
-  /* let {index, disposedIndexArray} as data = getMaterialData(state);
-  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
-  data.index = succ(index); */
-  /* let index = generateIndex(Obj.magic(getMaterialData(state)) ); */
-let {index, disposedIndexArray} as data = getMaterialData(state);
-
-  let ( index, newIndex ) = generateIndex(index, disposedIndexArray);
+  let {index, disposedIndexArray} as data = getMaterialData(state);
+  let (index, newIndex) = generateIndex(index, disposedIndexArray);
   data.index = newIndex;
   (state, index)
-  |> ensureCheck(
-       ((state, _)) => {
-         open Contract.Operators;
-         let {index} = getMaterialData(state);
-         let maxCount = getMaxCount(state);
-         test(
-           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
-           () => index <= maxCount
-         )
-       }
-     )
-  /* MaterialSystem.create(state); */
 };
 
 /* let buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
