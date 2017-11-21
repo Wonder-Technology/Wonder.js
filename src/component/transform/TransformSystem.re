@@ -34,9 +34,13 @@ let isAlive = (transform: transform, state: StateDataType.state) =>
   ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
 
 let create = (state: StateDataType.state) => {
-  let ({index, disposedIndexArray} as data): transformData = getTransformData(state);
-  let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
-  data.index = succ(index);
+  /* let ({index, disposedIndexArray} as data): transformData = getTransformData(state); */
+  /* let index = generateIndex(getMaxCount(state), index, disposedIndexArray); */
+  /* let index = generateIndex(Obj.magic(getTransformData(state))); */
+let {index, disposedIndexArray} as data = getTransformData(state);
+
+  let ( index, newIndex ) = generateIndex(index, disposedIndexArray);
+  data.index = newIndex;
   (state, index)
   |> ensureCheck(
        ((state, _)) => {

@@ -16,8 +16,16 @@ let checkComponentShouldAlive = (component: component, isAliveFunc, state: State
 
 let _getDisposedIndex = (disposedIndexArray) => disposedIndexArray |> Js.Array.pop;
 
-let generateIndex = (maxCount: int, index, disposedIndexArray) =>
-  switch index {
+let generateIndex = (index, disposedIndexArray) =>
+    switch (_getDisposedIndex(disposedIndexArray)) {
+    | None =>
+  /* data.index = succ(index); */
+  ( index, succ(index) )
+    | Some(disposedIndex) => ( disposedIndex, index )
+    }
+
+
+  /* switch index {
   | index when index >= maxCount =>
     switch (_getDisposedIndex(disposedIndexArray)) {
     | None =>
@@ -29,4 +37,4 @@ let generateIndex = (maxCount: int, index, disposedIndexArray) =>
   | index =>
     /* transformData.index = succ(index); */
     index
-  };
+  }; */

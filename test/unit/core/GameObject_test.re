@@ -372,7 +372,7 @@ let _ =
                   |> expect == (true, false)
                 }
               );
-              test(
+              /* test(
                 "dispose geometry component",
                 () => {
                   open StateDataType;
@@ -386,7 +386,7 @@ let _ =
                   )
                   |> expect == (true, false)
                 }
-              )
+              ) */
             }
           );
           describe(

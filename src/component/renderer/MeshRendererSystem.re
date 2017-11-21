@@ -10,9 +10,16 @@ let getMaxCount = (state: StateDataType.state) =>
   BufferConfigSystem.getConfig(state).meshRendererDataBufferCount;
 
 let create = (state: StateDataType.state) => {
-  let {index, disposedIndexArray} as data = getMeshRendererData(state);
+  /* let {index, disposedIndexArray} as data = getMeshRendererData(state);
   let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
-  data.index = succ(index);
+  data.index = succ(index); */
+
+  /* let index = generateIndex(Obj.magic(getMeshRendererData(state)) ); */
+let {index, disposedIndexArray} as data = getMeshRendererData(state);
+
+  let ( index, newIndex ) = generateIndex(index, disposedIndexArray);
+  data.index = newIndex;
+
   (state, index)
   |> ensureCheck(
        ((state, _)) => {

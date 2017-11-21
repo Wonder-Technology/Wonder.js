@@ -18,9 +18,14 @@ let getMaxCount = (state: StateDataType.state) =>
   BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount;
 
 let create = (state: StateDataType.state) => {
-  let {index, disposedIndexArray} as data = getMaterialData(state);
+  /* let {index, disposedIndexArray} as data = getMaterialData(state);
   let index = generateIndex(getMaxCount(state), index, disposedIndexArray);
-  data.index = succ(index);
+  data.index = succ(index); */
+  /* let index = generateIndex(Obj.magic(getMaterialData(state)) ); */
+let {index, disposedIndexArray} as data = getMaterialData(state);
+
+  let ( index, newIndex ) = generateIndex(index, disposedIndexArray);
+  data.index = newIndex;
   (state, index)
   |> ensureCheck(
        ((state, _)) => {
