@@ -67,13 +67,15 @@ let _ =
           );
           describe(
             "contract check",
-            () => {
+            () =>
               test(
                 "shouldn't dispose any geometry before init",
                 () => {
                   let (state, geometry1) = BoxGeometryTool.createBoxGeometry(state^);
                   let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
+                  TestTool.closeContractCheck();
                   let state = state |> GeometryTool.dispose(geometry1);
+                  TestTool.openContractCheck();
                   expect(
                     () => {
                       let state = state |> GeometryTool.initGeometrys;
@@ -83,7 +85,6 @@ let _ =
                   |> toThrowMessage("shouldn't dispose any geometry before init")
                 }
               )
-            }
           )
         }
       );
@@ -162,6 +163,7 @@ let _ =
                 "if have dispose too many geometrys, reallocate geometry",
                 () => {
                   let _prepare = (state) => {
+                    TestTool.closeContractCheck();
                     let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=1, ());
                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);

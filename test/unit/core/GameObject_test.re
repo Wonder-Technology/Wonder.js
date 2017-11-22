@@ -375,6 +375,7 @@ let _ =
               test(
                 "dispose geometry component",
                 () => {
+                  TestTool.closeContractCheck();
                   open StateDataType;
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
@@ -471,6 +472,7 @@ let _ =
                                 Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
                               ()
                             );
+                          TestTool.closeContractCheck();
                           let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=2, ());
                           let (state, gameObject1, geometry1) =
                             BoxGeometryTool.createGameObject(state);

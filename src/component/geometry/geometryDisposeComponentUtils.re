@@ -8,8 +8,7 @@ open Contract;
 
 /* let handleDisposeComponent =
    (geometry: geometry, gameObjectUid: string, state: StateDataType.state) => { */
-let handleDisposeComponent =
-    (geometry: geometry, state: StateDataType.state) => {
+let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
   /* todo refactor: duplicate */
   /* todo check */
   /* requireCheck(
@@ -25,7 +24,9 @@ let handleDisposeComponent =
          )
      ); */
   let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
-  disposedIndexMap |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometry), true) |> ignore;
+  let geometryIndexStr = Js.Int.toString(geometry);
+  disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
+  let state = VboBufferSystem.addBufferToPool(geometryIndexStr, state);
   data.disposeCount = succ(disposeCount);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;

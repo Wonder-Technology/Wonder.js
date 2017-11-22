@@ -10,8 +10,8 @@ open VboBufferType;
 let createBuffer =
   [@bs]
   (
-    (gl, geometryIndex: int, data: Float32Array.t) => {
-      let buffer = createBuffer(gl);
+    (gl, geometryIndex: int, data: Float32Array.t, state:StateDataType.state) => {
+      let buffer = VboBufferPoolSystem.getArrayBuffer(gl, state);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       bufferFloat32Data(getArrayBuffer(gl), data, getStaticDraw(gl), gl);
       resetBuffer(getArrayBuffer(gl), Js.Nullable.null, gl);
