@@ -21,16 +21,31 @@ let buildBoxGeometryConfigDataJsObj =
 };
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getVerticesCount(Js.Int.toString(index), state);
+  GeometrySystem.getVerticesCount(
+    GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), GeometryIndexUtils.getMappedIndexMap(state)),
+    state
+  );
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getIndicesCount(Js.Int.toString(index), state);
+  GeometrySystem.getIndicesCount(
+    GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), GeometryIndexUtils.getMappedIndexMap(state)),
+    state
+  );
 
 let getIndexType = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;
 
 let getIndexTypeSize = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
+
+let hasIndices = (indexStr: string, state: StateDataType.state) =>
+  GeometrySystem.hasIndices
+    /* Js.Int.toString( */
+    (
+      GeometryIndexUtils.getMappedIndex(indexStr, GeometryIndexUtils.getMappedIndexMap(state)),
+      /* ), */
+      state
+    );
 
 let isGeometry = (geometry) => {
   open Wonder_jest;
@@ -47,7 +62,7 @@ let buildBufferConfig = (count) => {
   "basicMaterialDataBufferCount": Js.Nullable.undefined
 };
 
-let getIndexFromIndexMap = (index, state: StateDataType.state) =>
-  getData(state).indexMap |> GeometryIndexUtils.getIndexFromIndexMap(Js.Int.toString(index));
+let getMappedIndex = (index, state: StateDataType.state) =>
+  getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex(Js.Int.toString(index));
 
 let buildInfo = GeometryOperateDataUtils.buildInfo;

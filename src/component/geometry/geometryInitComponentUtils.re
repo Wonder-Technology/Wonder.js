@@ -6,22 +6,21 @@ open GeometryOperateDataUtils;
 
 let initGeometry = (index: int, state: StateDataType.state) => {
   let geometryData = getGeometryData(state);
-  let mapedIndex =
-    GeometryIndexUtils.getIndexFromIndexMap(
-      Js.Int.toString(index),
-      GeometryIndexUtils.getIndexMap(state)
-    );
+  /* let mapedIndex =
+     GeometryIndexUtils.getMappedIndex(
+       Js.Int.toString(index),
+       GeometryIndexUtils.getMappedIndexMap(state)
+     ); */
   switch (
-    geometryData.computeDataFuncMap
-    |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(mapedIndex))
+    geometryData.computeDataFuncMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(index))
   ) {
   | None => state
   | Some(computeDataFunc) =>
-    let {vertices, indices}: geometryComputeData = computeDataFunc(mapedIndex, state);
+    let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
     /* todo compute normals */
-    state |> setVertices(mapedIndex, vertices) |> setIndices(mapedIndex, indices)
+    state |> setVertices(index, vertices) |> setIndices(index, indices)
   }
 };
 
-let handleInitComponent = (index: int, gameObjectUid: string, state: StateDataType.state) =>
+let handleInitComponent = (index: int, state: StateDataType.state) =>
   initGeometry(index, state);

@@ -304,7 +304,7 @@ let _ =
             (state, gameObject1, cameraController1, gameObject2, cameraController2)
           };
           describe(
-            "test gameObject add new cameraController after dispose old one",
+            "test add new one after dispose old one",
             () => {
               test(
                 "use disposed index as new index firstly",

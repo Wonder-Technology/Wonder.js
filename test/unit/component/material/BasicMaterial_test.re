@@ -33,7 +33,7 @@ let _ =
         "disposeComponent",
         () =>
           describe(
-            "test gameObject add new material after dispose old one",
+            "test add new one after dispose old one",
             () => {
               test(
                 "use disposed index as new index firstly",

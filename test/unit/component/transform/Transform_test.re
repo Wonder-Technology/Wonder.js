@@ -618,7 +618,7 @@ let _ =
             }
           );
           describe(
-            "test gameObject add new transform after dispose old one",
+            "test add new one after dispose old one",
             () => {
               beforeEach(
                 () =>

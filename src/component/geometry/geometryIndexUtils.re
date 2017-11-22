@@ -1,8 +1,8 @@
-let getIndexFromIndexMap = (indexStr, indexMap) =>
-  indexMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr);
+let getMappedIndex = (indexStr, mappedIndexMap) =>
+  mappedIndexMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr);
 
-let setIndexToIndexMap = (oldIndexStr, newIndex, indexMap) =>
-  indexMap |> WonderCommonlib.HashMapSystem.set(oldIndexStr, newIndex);
+let setMappedIndex = (indexStr, mappedIndex, mappedIndexMap) =>
+  mappedIndexMap |> WonderCommonlib.HashMapSystem.set(indexStr, mappedIndex);
 
-let getIndexMap = (state: StateDataType.state) =>
-  GeometryStateUtils.getGeometryData(state).indexMap;
+let getMappedIndexMap = (state: StateDataType.state) =>
+  GeometryStateUtils.getGeometryData(state).mappedIndexMap;

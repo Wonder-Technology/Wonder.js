@@ -631,7 +631,7 @@ let _ =
                   let state = state |> BoxGeometryTool.setDefaultConfigData(geometry);
                   let state = state |> addGameObjectGeometryComponent(gameObject, geometry);
                   let state = state |> initGameObject(gameObject);
-                  [@bs] Geometry.getGeometryVertices(geometry, state)
+                  Geometry.getGeometryVertices(geometry, state)
                   |> expect == BoxGeometryTool.getDefaultVertices()
                 }
               )

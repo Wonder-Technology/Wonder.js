@@ -115,10 +115,10 @@ let _ =
             "init vbo buffers when first send",
             () => {
               let _prepare = (sandbox, state) => {
-                let (state, gameObject, geomemtry, _, _) =
+                let (state, gameObject, geometry, _, _) =
                   RenderJobsTool.prepareGameObject(sandbox, state);
                 let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
-                (state, geomemtry)
+                (state, geometry)
               };
               describe(
                 "init vertex buffer",
@@ -158,7 +158,7 @@ let _ =
                              )
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      let vertices = [@bs] Geometry.getGeometryVertices(geometry, state);
+                      let vertices = Geometry.getGeometryVertices(geometry, state);
                       bufferData
                       |> withThreeArgs(array_buffer, vertices, static_draw)
                       |> expect
@@ -238,7 +238,7 @@ let _ =
                              )
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                      let indices = [@bs] Geometry.getGeometryIndices(geometry, state);
+                      let indices = Geometry.getGeometryIndices(geometry, state);
                       bufferData
                       |> withThreeArgs(element_array_buffer, indices, static_draw)
                       |> expect
@@ -467,8 +467,8 @@ let _ =
                          )
                        );
                   let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                  let indices = [@bs] Geometry.getGeometryIndices(geometry1, state);
-                  let vertices = [@bs] Geometry.getGeometryVertices(geometry1, state);
+                  let indices =  Geometry.getGeometryIndices(geometry1, state);
+                  let vertices =  Geometry.getGeometryVertices(geometry1, state);
                   (
                     bufferData |> withThreeArgs(array_buffer, vertices, static_draw) |> getCallCount,
                     bufferData

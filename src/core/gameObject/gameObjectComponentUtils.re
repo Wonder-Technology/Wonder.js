@@ -71,7 +71,12 @@ let addGeometryComponent = (uid: string, component: component, state: StateDataT
 };
 
 let disposeGeometryComponent = (uid: string, component: component, state: StateDataType.state) =>
-  GeometryDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+  GeometryDisposeComponentUtils.handleDisposeComponent
+    /* GeometryIndexUtils.getMappedIndex(
+         Js.Int.toString(component),
+         GeometryIndexUtils.getMappedIndexMap(state)
+       ), */
+    (component, uid, state);
 
 let hasMeshRendererComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);

@@ -4,12 +4,18 @@ let getData = (state: StateDataType.state) => state.vboBufferData;
 
 let getOrCreateBuffer =
     (gl, geometryIndex: int, bufferMap, createBuffer, getDataFunc, state: StateDataType.state) => {
-  let geometryIndexStr = Js.Int.toString(geometryIndex);
-  switch (WonderCommonlib.HashMapSystem.get(geometryIndexStr, bufferMap)) {
+  let mappedGeometryIndex =
+    GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(geometryIndex),
+      GeometryIndexUtils.getMappedIndexMap(state)
+    );
+  let mappedGeometryIndexStr = Js.Int.toString(mappedGeometryIndex);
+  switch (WonderCommonlib.HashMapSystem.get(mappedGeometryIndexStr, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
-    let buffer = [@bs] createBuffer(gl, geometryIndex, [@bs] getDataFunc(geometryIndex, state));
-    bufferMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, buffer) |> ignore;
+    let buffer =
+      [@bs] createBuffer(gl, mappedGeometryIndex, [@bs] getDataFunc(mappedGeometryIndex, state));
+    bufferMap |> WonderCommonlib.HashMapSystem.set(mappedGeometryIndexStr, buffer) |> ignore;
     buffer
   }
 };

@@ -230,6 +230,7 @@ and renderConfig = {
 }
 and geometryData = {
   mutable index: int,
+  mutable mappedIndex: int,
   buffer: Js.Typed_array.array_buffer,
   vertices: Js.Typed_array.Float32Array.t,
   /* todo optimize: use Uint32Array based on config or query gpu extension */
@@ -242,8 +243,9 @@ and geometryData = {
   mutable configDataMap: geometryConfigDataMap,
   mutable gameObjectMap,
   mutable disposeCount: int,
-  mutable indexMap: geometryIndexMap,
+  mutable mappedIndexMap: geometryMappedIndexMap,
   mutable disposedIndexMap: geometryDisposeIndexMap,
+  mutable aliveIndexArray: geometryAliveIndexArray,
   mutable indicesCountCacheMap: geometryIndicesCountCacheMap,
   mutable verticesCountCacheMap: geometryVerticesCountCacheMap,
 }

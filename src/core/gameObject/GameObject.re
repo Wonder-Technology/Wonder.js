@@ -78,7 +78,15 @@ let addGameObjectGeometryComponent =
 let disposeGameObjectGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) =>
   /* todo check alive */
-  disposeGeometryComponent(gameObject, component, state);
+  disposeGeometryComponent(
+    gameObject,
+    /* GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(component),
+      GeometryIndexUtils.getMappedIndexMap(state)
+    ), */
+    component,
+    state
+  );
 
 let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getGeometryComponent(gameObject, state));

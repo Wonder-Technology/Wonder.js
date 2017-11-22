@@ -95,7 +95,7 @@ let _ =
             }
           );
           describe(
-            "test gameObject add new meshRenderer after dispose old one",
+            "test add new one after dispose old one",
             () => {
               test(
                 "use disposed index as new index firstly",

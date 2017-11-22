@@ -14,9 +14,9 @@ let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => 
   }
 }; */
 
-let memorizeStringState = (bodyFunc, getCacheMapFunc, param: string, state: state) => {
+let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => {
   let cachedMap = [@bs] getCacheMapFunc(state);
-  let key = param;
+  let key = Js.Int.toString(param);
   switch (WonderCommonlib.HashMapSystem.get(key, cachedMap)) {
   | None =>
     let value = [@bs] bodyFunc(param, state);

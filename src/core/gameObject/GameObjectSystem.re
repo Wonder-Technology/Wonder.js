@@ -52,7 +52,7 @@ let create = (state: StateDataType.state) => {
   let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
   let newUIdStr = Js.Int.toString(uid);
   data.uid = increase(uid);
-  aliveUidArray |> Js.Array.push(newUIdStr);
+  aliveUidArray |> Js.Array.push(newUIdStr) |> ignore;
   let (newState, transform) = TransformSystem.create(state);
   (addTransformComponent(newUIdStr, transform, newState), newUIdStr)
 };
@@ -105,7 +105,14 @@ let isAlive = (uid: string, state: StateDataType.state) => {
 let initGameObject = (uid: string, state: StateDataType.state) => {
   let state =
     switch (getGeometryComponent(uid, state)) {
-    | Some(geometry) => GeometryInitComponentUtils.handleInitComponent(geometry, uid, state)
+    | Some(geometry) =>
+      GeometryInitComponentUtils.handleInitComponent(
+        GeometryIndexUtils.getMappedIndex(
+          Js.Int.toString(geometry),
+          GeometryIndexUtils.getMappedIndexMap(state)
+        ),
+        state
+      )
     | None => state
     };
   let state =
@@ -114,7 +121,6 @@ let initGameObject = (uid: string, state: StateDataType.state) => {
       MaterialInitComponentUtils.handleInitComponent(
         [@bs] DeviceManagerSystem.getGl(state),
         material,
-        uid,
         state
       )
     | None => state

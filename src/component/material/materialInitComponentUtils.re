@@ -44,5 +44,5 @@ let _buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
 let initMaterial = (gl, materialIndex: int, state: state) =>
   _initMaterialShader(gl, materialIndex, _buildInitShaderFuncTuple(), state);
 
-let handleInitComponent = (gl, index: int, gameObjectUid: string, state: StateDataType.state) =>
+let handleInitComponent = (gl, index: int, state: StateDataType.state) =>
   initMaterial(gl, index, state);

@@ -186,10 +186,12 @@ let _computeData = (index: int, state: StateDataType.state) =>
   };
 
 let create = (state: StateDataType.state) => {
+  open StateDataType;
   let (state, index) = GeometrySystem.create(state);
-  let data = getGeometryData(state);
+  let {mappedIndexMap} as data = getGeometryData(state);
+  let mappedIndex = GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), mappedIndexMap);
   data.computeDataFuncMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(index), _computeData)
+  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), _computeData)
   |> ignore;
   (state, index)
 };

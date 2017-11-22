@@ -23,18 +23,21 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   let newCameraControllerMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newMaterialMap = WonderCommonlib.HashMapSystem.createEmpty();
   /* todo optimize? */
+  /* let newAliveUidArray =
+     aliveUidArray
+     |> Js.Array.reduce(
+          (newAliveUidArray, aliveUid) =>
+            switch (MemoryUtils.isDisposed(aliveUid, disposedUidMap)) {
+            | false =>
+              newAliveUidArray |> Js.Array.push(aliveUid);
+              newAliveUidArray
+            | true => newAliveUidArray
+            },
+          [||]
+        ); */
   let newAliveUidArray =
     aliveUidArray
-    |> Js.Array.reduce(
-         (newAliveUidArray, aliveUid) =>
-           switch (MemoryUtils.isDisposed(aliveUid, disposedUidMap)) {
-           | false =>
-             newAliveUidArray |> Js.Array.push(aliveUid);
-             newAliveUidArray
-           | true => newAliveUidArray
-           },
-         [||]
-       );
+    |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
   newAliveUidArray
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
@@ -149,6 +152,7 @@ let _fillUint16Array = (targetTypeArr, targetStartIndex, sourceTypeArr, sourceSt
 let reAllocateGeometry = (state: StateDataType.state) => {
   let {
         index,
+        mappedIndex,
         vertices,
         indices,
         verticesInfoArray,
@@ -158,7 +162,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         gameObjectMap,
         indicesCountCacheMap,
         verticesCountCacheMap,
-        disposedIndexMap
+        mappedIndexMap,
+        disposedIndexMap,
+        aliveIndexArray
       } as data =
     GeometryStateUtils.getGeometryData(state);
   let newIndex = ref(0);
@@ -172,7 +178,25 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndicesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newVerticesOffset = ref(0);
   let newIndicesOffset = ref(0);
-  ArraySystem.range(0, index - 1)
+  /* ArraySystem.range(0, mappedIndex - 1) */
+  /* let newAliveIndexArray =
+     aliveIndexArray
+     |> Js.Array.reduce(
+          (newAliveIndexArray, aliveIndex) =>
+            switch (MemoryUtils.isDisposed(Js.Int.toString(aliveIndex), disposedIndexMap)) {
+            | false =>
+              newAliveIndexArray |> Js.Array.push(aliveIndex);
+              newAliveIndexArray
+            | true => newAliveIndexArray
+            },
+          [||]
+        ); */
+  let newAliveIndexArray =
+    aliveIndexArray
+    |> Js.Array.filter(
+         (aliveIndex) => ! MemoryUtils.isDisposed(Js.Int.toString(aliveIndex), disposedIndexMap)
+       );
+  newAliveIndexArray
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
@@ -184,7 +208,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                let newIndexStr = Js.Int.toString(newIndex^);
                let verticesInfo = GeometryOperateDataUtils.getInfo(verticesInfoArray, newIndex^);
                let indicesInfo = GeometryOperateDataUtils.getInfo(indicesInfoArray, newIndex^);
-               GeometryIndexUtils.setIndexToIndexMap(indexStr, newIndex^, newIndexMap) |> ignore;
+               GeometryIndexUtils.setMappedIndex(indexStr, newIndex^, newIndexMap) |> ignore;
                _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^);
                _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^);
                newVerticesOffset :=
@@ -237,8 +261,8 @@ let reAllocateGeometry = (state: StateDataType.state) => {
              }
        )
      );
-  data.index = newIndex^;
-  data.indexMap = newIndexMap;
+  data.mappedIndex = newIndex^;
+  data.mappedIndexMap = newIndexMap;
   data.verticesOffset = newVerticesOffset^;
   data.indicesOffset = newIndicesOffset^;
   data.verticesInfoArray = newVerticesInfoArray;
@@ -248,6 +272,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   data.gameObjectMap = newGameObjectMap;
   data.indicesCountCacheMap = newIndicesCountCacheMap;
   data.verticesCountCacheMap = newVerticesCountCacheMap;
-  /* data.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty(); */
+  data.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
+  data.aliveIndexArray = newAliveIndexArray;
   state
 };
