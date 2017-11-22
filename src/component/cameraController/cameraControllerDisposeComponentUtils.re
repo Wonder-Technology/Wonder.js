@@ -5,7 +5,7 @@ open CameraControllerStateUtils;
 open Contract;
 
 let handleDisposeComponent =
-    (cameraController: cameraController, gameObjectUid: string, state: StateDataType.state) => {
+    (cameraController: cameraController, state: StateDataType.state) => {
   /* todo refactor: duplicate */
   requireCheck(
     () =>

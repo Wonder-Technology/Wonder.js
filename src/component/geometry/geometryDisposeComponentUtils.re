@@ -8,7 +8,8 @@ open Contract;
 
 /* let handleDisposeComponent =
    (geometry: geometry, gameObjectUid: string, state: StateDataType.state) => { */
-let handleDisposeComponent = (geometry:geometry, gameObjectUid: string, state: StateDataType.state) => {
+let handleDisposeComponent =
+    (geometry: geometry, state: StateDataType.state) => {
   /* todo refactor: duplicate */
   /* todo check */
   /* requireCheck(
@@ -34,3 +35,6 @@ let handleDisposeComponent = (geometry:geometry, gameObjectUid: string, state: S
     state
   }
 };
+
+let isNotDisposed = ({index, mappedIndex, disposeCount}) =>
+  index == mappedIndex && disposeCount == 0;

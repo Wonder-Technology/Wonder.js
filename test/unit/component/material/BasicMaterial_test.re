@@ -29,6 +29,32 @@ let _ =
             }
           )
       );
+      describe
+      ("init",
+      (
+      () => {
+          describe(
+            "contract check",
+            () => {
+              test(
+                "shouldn't dispose any material before init",
+                () => {
+              let (state, material1) = createBasicMaterial(state^);
+              let (state, material2) = createBasicMaterial(state);
+                  let state = state |> MaterialTool.dispose(material1);
+                  expect(
+                    () => {
+                      let state = state |> BasicMaterialTool.initMaterials([@bs] DeviceManagerSystem.getGl(state));
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose any material before init")
+                }
+              )
+            }
+          )
+      })
+      );
       describe(
         "disposeComponent",
         () =>

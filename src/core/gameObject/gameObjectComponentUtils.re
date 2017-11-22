@@ -39,7 +39,7 @@ let addCameraControllerComponent = (uid: string, component: component, state: St
 
 let disposeCameraControllerComponent =
     (uid: string, component: component, state: StateDataType.state) =>
-  CameraControllerDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+  CameraControllerDisposeComponentUtils.handleDisposeComponent(component, state);
 
 let hasTransformComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).transformMap |> _hasComponent(uid);
@@ -55,7 +55,7 @@ let addTransformComponent = (uid: string, component: component, state: StateData
 };
 
 let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) =>
-  TransformDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+  TransformDisposeComponentUtils.handleDisposeComponent(component, state);
 
 let hasGeometryComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).geometryMap |> _hasComponent(uid);
@@ -71,12 +71,7 @@ let addGeometryComponent = (uid: string, component: component, state: StateDataT
 };
 
 let disposeGeometryComponent = (uid: string, component: component, state: StateDataType.state) =>
-  GeometryDisposeComponentUtils.handleDisposeComponent
-    /* GeometryIndexUtils.getMappedIndex(
-         Js.Int.toString(component),
-         GeometryIndexUtils.getMappedIndexMap(state)
-       ), */
-    (component, uid, state);
+  GeometryDisposeComponentUtils.handleDisposeComponent(component, state);
 
 let hasMeshRendererComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
@@ -108,4 +103,4 @@ let addMaterialComponent = (uid: string, component: component, state: StateDataT
 };
 
 let disposeMaterialComponent = (uid: string, component: component, state: StateDataType.state) =>
-  MaterialDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+  MaterialDisposeComponentUtils.handleDisposeComponent(component, state);

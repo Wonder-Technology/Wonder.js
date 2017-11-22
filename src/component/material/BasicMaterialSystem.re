@@ -15,8 +15,7 @@ open MaterialStateUtils;
 open Contract;
 
 /* let getMaxCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount; */
-
+   BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount; */
 let create = (state: StateDataType.state) => {
   let {index, disposedIndexArray} as data = getMaterialData(state);
   let (index, newIndex) = generateIndex(index, disposedIndexArray);
@@ -30,7 +29,18 @@ let create = (state: StateDataType.state) => {
      let {basic_material} = getShaders(state);
      MaterialSystem.initMaterialShaders(gl, basic_material, buildInitShaderFuncTuple(), state)
    }; */
-let init = (gl, state: state) =>
+let init = (gl, state: state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "shouldn't dispose any material before init",
+          () =>
+            MaterialDisposeComponentUtils.isNotDisposed(MaterialStateUtils.getMaterialData(state))
+            |> assertTrue
+        )
+      )
+  );
   ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(
        [@bs]
@@ -53,6 +63,5 @@ let init = (gl, state: state) =>
            )
        ),
        state
-     );
-/* state |> initMaterialShaders(gl); */
-/* let init = (state: StateDataType.state) => state; */
+     )
+};

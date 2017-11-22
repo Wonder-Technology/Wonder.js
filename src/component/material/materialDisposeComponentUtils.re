@@ -4,8 +4,7 @@ open MaterialStateUtils;
 
 open Contract;
 
-let handleDisposeComponent =
-    (material: material, gameObjectUid: string, state: StateDataType.state) => {
+let handleDisposeComponent = (material: material, state: StateDataType.state) => {
   /* todo refactor: duplicate */
   requireCheck(
     () =>
@@ -24,3 +23,5 @@ let handleDisposeComponent =
   /* _removeFromRenderArray(gameObjectUid, materialData); */
   state
 };
+
+let isNotDisposed = ({disposedIndexArray}) => disposedIndexArray |> Js.Array.length == 0;

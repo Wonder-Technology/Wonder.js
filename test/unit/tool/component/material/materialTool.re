@@ -9,3 +9,5 @@ let isMaterial = (material) => {
   open! Expect.Operators;
   expect(material) >= 0
 };
+
+let dispose = MaterialDisposeComponentUtils.handleDisposeComponent;

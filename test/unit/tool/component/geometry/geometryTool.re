@@ -22,13 +22,19 @@ let buildBoxGeometryConfigDataJsObj =
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getVerticesCount(
-    GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), GeometryIndexUtils.getMappedIndexMap(state)),
+    GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(index),
+      GeometryIndexUtils.getMappedIndexMap(state)
+    ),
     state
   );
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(
-    GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), GeometryIndexUtils.getMappedIndexMap(state)),
+    GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(index),
+      GeometryIndexUtils.getMappedIndexMap(state)
+    ),
     state
   );
 
@@ -66,3 +72,5 @@ let getMappedIndex = (index, state: StateDataType.state) =>
   getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex(Js.Int.toString(index));
 
 let buildInfo = GeometryOperateDataUtils.buildInfo;
+
+let dispose = GeometryDisposeComponentUtils.handleDisposeComponent;

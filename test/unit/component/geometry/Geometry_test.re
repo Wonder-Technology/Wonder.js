@@ -26,7 +26,7 @@ let _ =
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "init",
-        () =>
+        () => {
           describe(
             "init all geometrys",
             () => {
@@ -64,7 +64,28 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "contract check",
+            () => {
+              test(
+                "shouldn't dispose any geometry before init",
+                () => {
+                  let (state, geometry1) = BoxGeometryTool.createBoxGeometry(state^);
+                  let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
+                  let state = state |> GeometryTool.dispose(geometry1);
+                  expect(
+                    () => {
+                      let state = state |> GeometryTool.initGeometrys;
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose any geometry before init")
+                }
+              )
+            }
           )
+        }
       );
       describe(
         "getDrawMode",

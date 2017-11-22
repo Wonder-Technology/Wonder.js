@@ -178,8 +178,16 @@ let getIndexType = (gl) => getUnsignedShort(gl);
 let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
 let init = (state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "shouldn't dispose any geometry before init",
+          () => GeometryDisposeComponentUtils.isNotDisposed(getGeometryData(state)) |> assertTrue
+        )
+      )
+  );
   let {index, mappedIndexMap} = getGeometryData(state);
-  /* todo check shouldn't dispose geometry before init */
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach(
        (geometryIndex: int) =>

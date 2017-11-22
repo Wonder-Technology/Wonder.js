@@ -7,3 +7,5 @@ let createGameObject = (state) => {
   let state = state |> addGameObjectMaterialComponent(gameObject, material);
   (state, gameObject, material)
 };
+
+let initMaterials = BasicMaterialSystem.init;
