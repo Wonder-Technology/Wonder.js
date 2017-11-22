@@ -5,7 +5,7 @@ open MeshRendererStateUtils;
 open Contract;
 
 /* todo optimize: add batch remove  */
-let _removeFromRenderArray = (gameObjectUid: string, {renderGameObjectArray} as meshRendererData) => {
+let _removeFromRenderArray = (gameObjectUid: string, {renderGameObjectArray} as data) => {
   let index = renderGameObjectArray |> Js.Array.indexOf(gameObjectUid);
   let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
   renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex)
@@ -25,8 +25,8 @@ let handleDisposeComponent =
         )
       )
   );
-  let {renderGameObjectArray, disposedIndexArray} as meshRendererData = getMeshRendererData(state);
+  let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
-  _removeFromRenderArray(gameObjectUid, meshRendererData);
+  _removeFromRenderArray(gameObjectUid, data);
   state
 };

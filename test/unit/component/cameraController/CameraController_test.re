@@ -292,6 +292,58 @@ let _ =
               )
           )
         }
+      );
+      describe(
+        "disposeComponent",
+        () => {
+          let _prepareTwo = (state) => {
+            let (state, gameObject1, _, cameraController1) =
+              CameraControllerTool.createCameraGameObject(state);
+            let (state, gameObject2, _, cameraController2) =
+              CameraControllerTool.createCameraGameObject(state);
+            (state, gameObject1, cameraController1, gameObject2, cameraController2)
+          };
+          describe(
+            "test gameObject add new cameraController after dispose old one",
+            () => {
+              test(
+                "use disposed index as new index firstly",
+                () => {
+                  let (state, gameObject1, cameraController1, gameObject2, cameraController2) =
+                    _prepareTwo(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectCameraControllerComponent(
+                         gameObject1,
+                         cameraController1
+                       );
+                  let (state, gameObject3, _, cameraController3) =
+                    CameraControllerTool.createCameraGameObject(state);
+                  cameraController3 |> expect == cameraController1
+                }
+              );
+              test(
+                "if has no disposed index, get index from meshRendererData.index",
+                () => {
+                  let (state, gameObject1, cameraController1, gameObject2, cameraController2) =
+                    _prepareTwo(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectCameraControllerComponent(
+                         gameObject1,
+                         cameraController1
+                       );
+                  let (state, gameObject3, _, cameraController3) =
+                    CameraControllerTool.createCameraGameObject(state);
+                  let (state, gameObject4, _, cameraController4) =
+                    CameraControllerTool.createCameraGameObject(state);
+                  (cameraController3, cameraController4)
+                  |> expect == (cameraController1, cameraController2 + 1)
+                }
+              )
+            }
+          )
+        }
       )
     }
   );

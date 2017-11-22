@@ -18,23 +18,23 @@ let handleDisposeComponent =
         )
       )
   );
-  let {disposedIndexArray} as transformData = getTransformData(state);
+  let {disposedIndexArray} as data = getTransformData(state);
   disposedIndexArray |> Js.Array.push(transform) |> ignore;
   let transformStr = Js.Int.toString(transform);
-  transformData
+  data
   |> TransformHierachySystem.unsafeGetChildren(transformStr)
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
          (child: transform) =>
-           TransformHierachySystem.removeFromParentMap(Js.Int.toString(child), transformData)
+           TransformHierachySystem.removeFromParentMap(Js.Int.toString(child), data)
            |> ignore
        )
      );
-  switch (TransformHierachySystem.getParent(transformStr, transformData)) {
+  switch (TransformHierachySystem.getParent(transformStr, data)) {
   | None => ()
   | Some(parent) =>
-    transformData
+    data
     |> TransformHierachySystem.removeFromChildMap(Js.Int.toString(parent), transform)
     |> ignore
   };

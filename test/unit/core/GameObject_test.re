@@ -371,22 +371,39 @@ let _ =
                   )
                   |> expect == (true, false)
                 }
+              );
+              test(
+                "dispose geometry component",
+                () => {
+                  open StateDataType;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> disposeGameObject(gameObject1);
+                  let {disposedIndexMap} = state |> GeometryTool.getData;
+                  (
+                    disposedIndexMap |> HashMapSystem.has(Js.Int.toString(geometry1)),
+                    disposedIndexMap |> HashMapSystem.has(Js.Int.toString(geometry2))
+                  )
+                  |> expect == (true, false)
+                }
+              );
+              test(
+                "dispose cameraController component",
+                () => {
+                  open CameraControllerType;
+                  let (state, gameObject1, _, cameraController1) =
+                    CameraControllerTool.createCameraGameObject(state^);
+                  let (state, gameObject2, _, cameraController2) =
+                    CameraControllerTool.createCameraGameObject(state);
+                  let state = state |> disposeGameObject(gameObject1);
+                  let {disposedIndexArray} = state |> CameraControllerTool.getData;
+                  (
+                    disposedIndexArray |> Js.Array.includes(cameraController1),
+                    disposedIndexArray |> Js.Array.includes(cameraController2)
+                  )
+                  |> expect == (true, false)
+                }
               )
-              /* test(
-                   "dispose geometry component",
-                   () => {
-                     open StateDataType;
-                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                     let state = state |> disposeGameObject(gameObject1);
-                     let {disposedIndexArray} = state |> GeometryTool.getData;
-                     (
-                       disposedIndexArray |> Js.Array.includes(geometry1),
-                       disposedIndexArray |> Js.Array.includes(geometry2)
-                     )
-                     |> expect == (true, false)
-                   }
-                 ) */
             }
           );
           describe(
@@ -440,6 +457,79 @@ let _ =
                             meshRendererMap |> HashMapSystem.has(gameObject1),
                             meshRendererMap |> HashMapSystem.has(gameObject2),
                             meshRendererMap |> HashMapSystem.has(gameObject3)
+                          )
+                          |> expect == (false, false, true)
+                        }
+                      );
+                      test(
+                        "new geometryMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state =
+                            TestTool.init(
+                              ~bufferConfig=
+                                Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+                              ()
+                            );
+                          let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=2, ());
+                          let (state, gameObject1, geometry1) =
+                            BoxGeometryTool.createGameObject(state);
+                          let (state, gameObject2, geometry2) =
+                            BoxGeometryTool.createGameObject(state);
+                          let (state, gameObject3, geometry3) =
+                            BoxGeometryTool.createGameObject(state);
+                          let state = state |> GeometryTool.initGeometrys;
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let {geometryMap} = GameObjectTool.getData(state);
+                          (
+                            geometryMap |> HashMapSystem.has(gameObject1),
+                            geometryMap |> HashMapSystem.has(gameObject2),
+                            geometryMap |> HashMapSystem.has(gameObject3)
+                          )
+                          |> expect == (false, false, true)
+                        }
+                      );
+                      test(
+                        "new materialMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let (state, gameObject1, material1) =
+                            BasicMaterialTool.createGameObject(state);
+                          let (state, gameObject2, material2) =
+                            BasicMaterialTool.createGameObject(state);
+                          let (state, gameObject3, material3) =
+                            BasicMaterialTool.createGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let {materialMap} = GameObjectTool.getData(state);
+                          (
+                            materialMap |> HashMapSystem.has(gameObject1),
+                            materialMap |> HashMapSystem.has(gameObject2),
+                            materialMap |> HashMapSystem.has(gameObject3)
+                          )
+                          |> expect == (false, false, true)
+                        }
+                      );
+                      test(
+                        "new cameraControllerMap should only has alive data",
+                        () => {
+                          open GameObjectType;
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                          let (state, gameObject1, _, cameraController1) =
+                            CameraControllerTool.createCameraGameObject(state);
+                          let (state, gameObject2, _, cameraController2) =
+                            CameraControllerTool.createCameraGameObject(state);
+                          let (state, gameObject3, _, cameraController3) =
+                            CameraControllerTool.createCameraGameObject(state);
+                          let state = state |> disposeGameObject(gameObject1);
+                          let state = state |> disposeGameObject(gameObject2);
+                          let {cameraControllerMap} = GameObjectTool.getData(state);
+                          (
+                            cameraControllerMap |> HashMapSystem.has(gameObject1),
+                            cameraControllerMap |> HashMapSystem.has(gameObject2),
+                            cameraControllerMap |> HashMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }

@@ -14,6 +14,8 @@ let getCameraControllerComponent = GameObjectComponentUtils.getCameraControllerC
 
 let addCameraControllerComponent = GameObjectComponentUtils.addCameraControllerComponent;
 
+let disposeCameraControllerComponent = GameObjectComponentUtils.disposeCameraControllerComponent;
+
 let hasTransformComponent = GameObjectComponentUtils.hasTransformComponent;
 
 let getTransformComponent = GameObjectComponentUtils.getTransformComponent;
@@ -27,6 +29,7 @@ let hasGeometryComponent = GameObjectComponentUtils.hasGeometryComponent;
 let getGeometryComponent = GameObjectComponentUtils.getGeometryComponent;
 
 let addGeometryComponent = GameObjectComponentUtils.addGeometryComponent;
+
 let disposeGeometryComponent = GameObjectComponentUtils.disposeGeometryComponent;
 
 let hasMeshRendererComponent = GameObjectComponentUtils.hasMeshRendererComponent;
@@ -54,9 +57,6 @@ let create = (state: StateDataType.state) => {
   (addTransformComponent(newUIdStr, transform, newState), newUIdStr)
 };
 
-let _isDisposeTooMany = (disposeCount: int, state: StateDataType.state) =>
-  disposeCount >= state.memoryConfig.maxDisposeCount;
-
 let dispose = (uid: string, state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
@@ -81,8 +81,12 @@ let dispose = (uid: string, state: StateDataType.state) => {
     | Some(geometry) => disposeGeometryComponent(uid, geometry, state)
     | None => state
     };
-  /* todo dispose more components */
-  if (_isDisposeTooMany(data.disposeCount, state)) {
+  let state =
+    switch (getCameraControllerComponent(uid, state)) {
+    | Some(cameraController) => disposeCameraControllerComponent(uid, cameraController, state)
+    | None => state
+    };
+  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)
   } else {

@@ -25,7 +25,6 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   /* todo optimize? */
   let newAliveUidArray =
     aliveUidArray
-    /* todo handle more component */
     |> Js.Array.reduce(
          (newAliveUidArray, aliveUid) =>
            switch (MemoryUtils.isDisposed(aliveUid, disposedUidMap)) {

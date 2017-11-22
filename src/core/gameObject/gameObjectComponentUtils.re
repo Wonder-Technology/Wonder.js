@@ -37,6 +37,10 @@ let addCameraControllerComponent = (uid: string, component: component, state: St
   CameraControllerAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
+let disposeCameraControllerComponent =
+    (uid: string, component: component, state: StateDataType.state) =>
+  CameraControllerDisposeComponentUtils.handleDisposeComponent(component, uid, state);
+
 let hasTransformComponent = (uid: string, state: StateDataType.state) : bool =>
   GameObjectStateUtils.getGameObjectData(state).transformMap |> _hasComponent(uid);
 

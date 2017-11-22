@@ -19,7 +19,7 @@ let handleDisposeComponent =
         )
       )
   );
-  let {disposedIndexArray} as materialData = getMaterialData(state);
+  let {disposedIndexArray} = getMaterialData(state);
   disposedIndexArray |> Js.Array.push(material) |> ignore;
   /* _removeFromRenderArray(gameObjectUid, materialData); */
   state

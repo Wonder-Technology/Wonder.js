@@ -1,5 +1,7 @@
 open CameraControllerType;
 
+let getData = CameraControllerStateUtils.getCameraControllerData;
+
 let isCameraController = (cameraController: cameraController) => {
   open Wonder_jest;
   open Expect;

@@ -27,6 +27,11 @@ let addGameObjectCameraControllerComponent =
   /* todo check alive */
   addCameraControllerComponent(gameObject, component, state);
 
+let disposeGameObjectCameraControllerComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) =>
+  /* todo check alive */
+  disposeCameraControllerComponent(gameObject, component, state);
+
 let getGameObjectCameraControllerComponent = (gameObject: gameObject, state: StateDataType.state) =>
   Js.Option.getExn(getCameraControllerComponent(gameObject, state));
 

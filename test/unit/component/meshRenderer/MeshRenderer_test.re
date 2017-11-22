@@ -40,7 +40,7 @@ let _ =
           )
       );
       describe(
-        "dispose component",
+        "disposeComponent",
         () => {
           let _prepareOne = (state) => {
             let (state, meshRenderer1) = createMeshRenderer(state);
@@ -81,56 +81,67 @@ let _ =
                 }
               )
             }
-          )
-        }
-      );
-      test(
-        "the disposed meshRenderer shouldn't affect other alive ones' data",
-        () => {
-          let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
-          let state =
-            state |> GameObject.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-          state |> MeshRenderer.getMeshRendererGameObject(meshRenderer2) |> expect == gameObject2
-        }
-      );
-      describe(
-        "test gameObject add new meshRenderer after dispose old one",
-        () => {
+          );
           test(
-            "use disposed index as new index firstly",
+            "the disposed meshRenderer shouldn't affect other alive ones' data",
             () => {
               let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
               let state =
                 state
                 |> GameObject.disposeGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-              let (state, meshRenderer3) = createMeshRenderer(state);
-              meshRenderer3 |> expect == meshRenderer1
+              state
+              |> MeshRenderer.getMeshRendererGameObject(meshRenderer2)
+              |> expect == gameObject2
             }
           );
-          test(
-            "if has no disposed index, get index from meshRendererData.index",
+          describe(
+            "test gameObject add new meshRenderer after dispose old one",
             () => {
-              let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) = _prepareTwo();
-              let state =
-                state
-                |> GameObject.disposeGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
-              let (state, meshRenderer3) = createMeshRenderer(state);
-              let (state, meshRenderer4) = createMeshRenderer(state);
-              ( meshRenderer3, meshRenderer4 ) |> expect == (meshRenderer2, meshRenderer2 + 1);
+              test(
+                "use disposed index as new index firstly",
+                () => {
+                  let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                    _prepareTwo();
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject1,
+                         meshRenderer1
+                       );
+                  let (state, meshRenderer3) = createMeshRenderer(state);
+                  meshRenderer3 |> expect == meshRenderer1
+                }
+              );
+              test(
+                "if has no disposed index, get index from meshRendererData.index",
+                () => {
+                  let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                    _prepareTwo();
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject2,
+                         meshRenderer2
+                       );
+                  let (state, meshRenderer3) = createMeshRenderer(state);
+                  let (state, meshRenderer4) = createMeshRenderer(state);
+                  (meshRenderer3, meshRenderer4) |> expect == (meshRenderer2, meshRenderer2 + 1)
+                }
+              )
+              /*
+               todo test
+                test(
+                  "if meshRenderer is disposed, getMeshRendererGameObject/getMeshRendererGameObject should error",
+                  () => {
+                    /* let (state, transform1) = createTransform(state^);
+                    let state = state |> dispose(transform1);
+                    expect(() => getTransformPosition(transform1, state))
+                    |> toThrowMessage("component should alive") */
+                  }
+                ) */
             }
-          );
+          )
         }
       )
-      /*
-       todo test
-        test(
-          "if meshRenderer is disposed, getMeshRendererGameObject/getMeshRendererGameObject should error",
-          () => {
-            /* let (state, transform1) = createTransform(state^);
-            let state = state |> dispose(transform1);
-            expect(() => getTransformPosition(transform1, state))
-            |> toThrowMessage("component should alive") */
-          }
-        ) */
     }
   );
