@@ -639,6 +639,160 @@ let _ =
               )
             }
           )
+      );
+      describe(
+        "contract check: is alive",
+        () =>
+          describe(
+            "if gameObject is disposed",
+            () => {
+              let _testTwoParamFunc = (func) => {
+                let (state, gameObject) = createGameObject(state^);
+                let state = state |> disposeGameObject(gameObject);
+                expect(() => func(gameObject, state))
+                |> toThrowMessage("gameObject should alive")
+              };
+              let _testThreeParmFunc = (func) => {
+                let (state, gameObject) = createGameObject(state^);
+                let state = state |> disposeGameObject(gameObject);
+                expect(() => func(Obj.magic(gameObject), Obj.magic(1), state))
+                |> toThrowMessage("gameObject should alive")
+              };
+              test(
+                "getGameObjectTransformComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    getGameObjectTransformComponent
+                  )
+              );
+              test(
+                "getGameObjectMaterialComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    getGameObjectMaterialComponent
+                  )
+              );
+              test(
+                "getGameObjectMeshRendererComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    getGameObjectMeshRendererComponent
+                  )
+              );
+              test(
+                "getGameObjectGeometryComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    getGameObjectGeometryComponent
+                  )
+              );
+              test(
+                "getGameObjectCameraControllerComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    getGameObjectCameraControllerComponent
+                  )
+              );
+              test(
+                "disposeGameObject should error",
+                () =>
+                  _testTwoParamFunc(
+                    disposeGameObject
+                  )
+              );
+              test(
+                "initGameObject should error",
+                () =>
+                  _testTwoParamFunc(
+                    initGameObject
+                  )
+              );
+              test(
+                "hasGameObjectGeometryComponent should error",
+                () =>
+                  _testTwoParamFunc(
+                    hasGameObjectGeometryComponent
+                  )
+              );
+              test(
+                "addGameObjectTransformComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectTransformComponent
+                  )
+              );
+              test(
+                "disposeGameObjectTransformComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    disposeGameObjectTransformComponent
+                  )
+              );
+              test(
+                "addGameObjectCameraControllerComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectCameraControllerComponent
+                  )
+              );
+              test(
+                "disposeGameObjectCameraControllerComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    disposeGameObjectCameraControllerComponent
+                  )
+              );
+              test(
+                "addGameObjectMaterialComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectMaterialComponent
+                  )
+              );
+              test(
+                "disposeGameObjectMaterialComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    disposeGameObjectMaterialComponent
+                  )
+              );
+              test(
+                "addGameObjectMeshRendererComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectTransformComponent
+                  )
+              );
+              test(
+                "addGameObjectMeshRendererComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectTransformComponent
+                  )
+              );
+              test(
+                "disposeGameObjectMeshRendererComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    disposeGameObjectMeshRendererComponent
+                  )
+              );
+              test(
+                "addGameObjectGeometryComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    addGameObjectGeometryComponent
+                  )
+              );
+              test(
+                "disposeGameObjectGeometryComponent should error",
+                () =>
+                  _testThreeParmFunc(
+                    disposeGameObjectGeometryComponent
+                  )
+              );
+            }
+          )
       )
     }
   );

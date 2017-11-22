@@ -95,11 +95,9 @@ let dispose = (uid: string, state: StateDataType.state) => {
 };
 
 let isAlive = (uid: string, state: StateDataType.state) => {
-  let {disposedUidMap} = GameObjectStateUtils.getGameObjectData(state);
-  switch (MemoryUtils.isDisposed(uid, disposedUidMap)) {
-  | false => hasTransformComponent(uid, state)
-  | true => false
-  }
+  let {transformMap, disposedUidMap} = GameObjectStateUtils.getGameObjectData(state);
+  disposedUidMap |> HashMapSystem.has(uid) ?
+    false : transformMap |> HashMapSystem.has(uid) ? true : false
 };
 
 let initGameObject = (uid: string, state: StateDataType.state) => {

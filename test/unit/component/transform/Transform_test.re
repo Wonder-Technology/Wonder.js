@@ -498,8 +498,7 @@ let _ =
       describe(
         "dispose component",
         () => {
-          let dispose = (transform, state) =>
-            GameObject.disposeGameObjectTransformComponent("0", transform, state);
+          let dispose = (transform, state) => TransformTool.dispose(transform, state);
           let _prepare = () => {
             let (state, transform1) = createTransform(state^);
             let (state, transform2) = createTransform(state);
@@ -651,17 +650,15 @@ let _ =
           describe(
             "if transform is disposed",
             () => {
-              let dispose = (transform, state) =>
-                GameObject.disposeGameObjectTransformComponent("0", transform, state);
               let _testGetFunc = (getFunc) => {
                 let (state, transform1) = createTransform(state^);
-                let state = state |> dispose(transform1);
+                let state = state |> TransformTool.dispose(transform1);
                 expect(() => getFunc(transform1, state))
                 |> toThrowMessage("component should alive")
               };
               let _testSetFunc = (setFunc) => {
                 let (state, transform1) = createTransform(state^);
-                let state = state |> dispose(transform1);
+                let state = state |> TransformTool.dispose(transform1);
                 expect(() => setFunc(Obj.magic(transform1), Obj.magic(1), state))
                 |> toThrowMessage("component should alive")
               };
