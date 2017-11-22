@@ -11,6 +11,13 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
+      let _prepareOne = (state) => {
+        let (state, meshRenderer1) = createMeshRenderer(state);
+        let (state, gameObject1) = state |> GameObject.createGameObject;
+        let state =
+          state |> GameObject.addGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
+        (state, gameObject1, meshRenderer1)
+      };
       let _prepareTwo = () => {
         let (state, meshRenderer1) = createMeshRenderer(state^);
         let (state, gameObject1) = state |> GameObject.createGameObject;
@@ -42,13 +49,6 @@ let _ =
       describe(
         "disposeComponent",
         () => {
-          let _prepareOne = (state) => {
-            let (state, meshRenderer1) = createMeshRenderer(state);
-            let (state, gameObject1) = state |> GameObject.createGameObject;
-            let state =
-              state |> GameObject.addGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-            (state, gameObject1, meshRenderer1)
-          };
           describe(
             "remove from renderGameObjectArray",
             () => {
@@ -128,20 +128,31 @@ let _ =
                   (meshRenderer3, meshRenderer4) |> expect == (meshRenderer2, meshRenderer2 + 1)
                 }
               )
-              /*
-               todo test
-                test(
-                  "if meshRenderer is disposed, getMeshRendererGameObject/getMeshRendererGameObject should error",
-                  () => {
-                    /* let (state, transform1) = createTransform(state^);
-                    let state = state |> dispose(transform1);
-                    expect(() => getTransformPosition(transform1, state))
-                    |> toThrowMessage("component should alive") */
-                  }
-                ) */
             }
           )
         }
+      );
+      describe(
+        "contract check: is alive",
+        () =>
+          describe(
+            "if meshRenderer is disposed",
+            () =>
+              test(
+                "getMeshRendererGameObject should error",
+                () => {
+                  let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject1,
+                         meshRenderer1
+                       );
+                  expect(() => getMeshRendererGameObject(meshRenderer1, state))
+                  |> toThrowMessage("component should alive")
+                }
+              )
+          )
       )
     }
   );

@@ -436,6 +436,30 @@ let _ =
                         )
             }
           )
+      );
+      describe(
+        "contract check: is alive",
+        () =>
+          describe(
+            "if geometry is disposed",
+            () => {
+              let _testSetFunc = (setFunc) => {
+                open GameObject;
+                let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
+                let state = state |> GeometryTool.initGeometrys;
+                TestTool.closeContractCheck();
+                let state =
+                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                TestTool.openContractCheck();
+                expect(() => setFunc(geometry, Obj.magic(0), state))
+                |> toThrowMessage("component should alive")
+              };
+              test(
+                "setBoxGeometryConfigData should error",
+                () => _testSetFunc(setBoxGeometryConfigData)
+              )
+            }
+          )
       )
     }
   );

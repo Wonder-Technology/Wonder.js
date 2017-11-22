@@ -68,19 +68,19 @@ let init = (state: StateDataType.state) => {
 
 let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) => {
   /* requireCheck(
-    () =>
-      Contract.Operators.(
-        test(
-          "updateCameraFunc shouldn't already exist",
-          () => {
-            let cameraControllerData = getCameraControllerData(state);
-            cameraControllerData.updateCameraFuncMap
-            |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController))
-            |> assertNotExist
-          }
-        )
-      )
-  ); */
+       () =>
+         Contract.Operators.(
+           test(
+             "updateCameraFunc shouldn't already exist",
+             () => {
+               let cameraControllerData = getCameraControllerData(state);
+               cameraControllerData.updateCameraFuncMap
+               |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController))
+               |> assertNotExist
+             }
+           )
+         )
+     ); */
   let cameraControllerData = getCameraControllerData(state);
   cameraControllerData.updateCameraFuncMap
   |> WonderCommonlib.HashMapSystem.set(
@@ -186,6 +186,12 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
            )
          )
      );
+
+let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
+  ComponentDisposeComponentUtils.isAlive(
+    cameraController,
+    getCameraControllerData(state).disposedIndexArray
+  );
 
 let initData = () => {
   index: 0,

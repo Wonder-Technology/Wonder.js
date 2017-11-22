@@ -344,6 +344,61 @@ let _ =
             }
           )
         }
+      );
+      describe(
+        "contract check: is alive",
+        () =>
+          describe(
+            "if cameraController is disposed",
+            () => {
+              let _testGetFunc = (getFunc) => {
+                open GameObject;
+                let (state, gameObject, _, cameraController) =
+                  CameraControllerTool.createCameraGameObject(state^);
+                let state =
+                  state
+                  |> GameObject.disposeGameObjectCameraControllerComponent(
+                       gameObject,
+                       cameraController
+                     );
+                expect(() => getFunc(cameraController, state))
+                |> toThrowMessage("component should alive")
+              };
+              let _testSetFunc = (setFunc) => {
+                open GameObject;
+                let (state, gameObject, _, cameraController) =
+                  CameraControllerTool.createCameraGameObject(state^);
+                let state =
+                  state
+                  |> GameObject.disposeGameObjectCameraControllerComponent(
+                       gameObject,
+                       cameraController
+                     );
+                expect(() => setFunc(cameraController, Obj.magic(0), state))
+                |> toThrowMessage("component should alive")
+              };
+              test(
+                "getCameraControllerPMatrix should error",
+                () => _testGetFunc(getCameraControllerPMatrix)
+              );
+              test(
+                "getCameraControllerGameObject should error",
+                () => _testGetFunc(getCameraControllerGameObject)
+              );
+              test(
+                "getCameraControllerPMatrix should error",
+                () => _testGetFunc(getCameraControllerPMatrix)
+              );
+              test(
+                "getCameraControllerWorldToCameraMatrix should error",
+                () => _testGetFunc(getCameraControllerWorldToCameraMatrix)
+              );
+              test(
+                "setCameraControllerPerspectiveCamera should error",
+                () => _testGetFunc(setCameraControllerPerspectiveCamera)
+              )
+            }
+          )
       )
     }
   );

@@ -36,6 +36,9 @@ let getShaderIndex = MaterialShaderIndexUtils.getShaderIndex;
 
 let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
 
+let isAlive = (material: material, state: StateDataType.state) =>
+  ComponentDisposeComponentUtils.isAlive(material, getMaterialData(state).disposedIndexArray);
+
 /* let _initMaterialShader =
        (
          gl,

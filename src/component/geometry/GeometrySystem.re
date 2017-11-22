@@ -213,6 +213,16 @@ let getVertexDataSize = () => 3;
 
 let getIndexDataSize = () => 1;
 
+let isAlive = (geometry: geometry, state: StateDataType.state) => {
+  let {mappedIndexMap, disposedIndexMap} = GeometryStateUtils.getGeometryData(state);
+  let geometryIndexStr = Js.Int.toString(geometry);
+  disposedIndexMap |> HashMapSystem.has(geometryIndexStr) ?
+    false :
+    mappedIndexMap
+    |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(geometry))
+    |> Js.Option.isSome
+};
+
 let _createTypeArrays = (buffer, count: int) => {
   let offset = ref(0);
   let vertices =

@@ -642,18 +642,48 @@ let _ =
                 }
               )
             }
-          );
-          test(
-            "if transform is disposed, getTransformPosition/setTransformPosition/getTransformLocalPosition/setTransformLocalPosition/getTransformParent/setTransformParent/getTransformGameObject should error",
-            () => {
-              let (state, transform1) = createTransform(state^);
-              let state = state |> dispose(transform1);
-              expect(() => getTransformPosition(transform1, state))
-              |> toThrowMessage("component should alive")
-              /* todo test more */
-            }
           )
         }
+      );
+      describe(
+        "contract check: is alive",
+        () =>
+          describe(
+            "if transform is disposed",
+            () => {
+              let dispose = (transform, state) =>
+                GameObject.disposeGameObjectTransformComponent("0", transform, state);
+              let _testGetFunc = (getFunc) => {
+                let (state, transform1) = createTransform(state^);
+                let state = state |> dispose(transform1);
+                expect(() => getFunc(transform1, state))
+                |> toThrowMessage("component should alive")
+              };
+              let _testSetFunc = (setFunc) => {
+                let (state, transform1) = createTransform(state^);
+                let state = state |> dispose(transform1);
+                expect(() => setFunc(Obj.magic(transform1), Obj.magic(1), state))
+                |> toThrowMessage("component should alive")
+              };
+              test("getTransformPosition should error", () => _testGetFunc(getTransformPosition));
+              test(
+                "getTransformLocalPosition should error",
+                () => _testGetFunc(getTransformLocalPosition)
+              );
+              test("getTransformParent should error", () => _testGetFunc(getTransformParent));
+              test("getTransformChildren should error", () => _testGetFunc(getTransformChildren));
+              test(
+                "getTransformGameObject should error",
+                () => _testGetFunc(getTransformGameObject)
+              );
+              test("setTransformPosition should error", () => _testSetFunc(setTransformPosition));
+              test(
+                "setTransformLocalPosition should error",
+                () => _testSetFunc(setTransformLocalPosition)
+              );
+              test("setTransformParent should error", () => _testSetFunc(setTransformParent))
+            }
+          )
       );
       describe(
         "fix bug",
