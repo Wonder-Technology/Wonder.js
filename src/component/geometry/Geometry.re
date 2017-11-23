@@ -48,6 +48,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
     state
   )
 };
+
 let setGeometryIndices = (geometry: int, data: Js.Array.t(int), state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
@@ -61,7 +62,6 @@ let setGeometryIndices = (geometry: int, data: Js.Array.t(int), state: StateData
     state
   )
 };
-
 
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(

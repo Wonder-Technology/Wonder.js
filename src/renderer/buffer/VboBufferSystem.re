@@ -8,7 +8,6 @@ let getOrCreateBuffer =
       geometryIndexStr,
       GeometryIndexUtils.getMappedIndexMap(state)
     );
-  let mappedGeometryIndexStr = Js.Int.toString(mappedGeometryIndex);
   switch (WonderCommonlib.HashMapSystem.get(geometryIndexStr, bufferMap)) {
   | Some(buffer) => buffer
   | None =>

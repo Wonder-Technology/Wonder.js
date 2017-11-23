@@ -11,7 +11,10 @@ let createBoxGeometry = create;
 let setBoxGeometryConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
   requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, GeometrySystem.isAlive, state))
+    () =>
+      Contract.Operators.(
+        ComponentSystem.checkComponentShouldAlive(geometry, GeometrySystem.isAlive, state)
+      )
   );
   setConfigData(
     GeometryIndexUtils.getMappedIndex(

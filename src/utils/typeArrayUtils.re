@@ -78,6 +78,29 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
   typeArr
 };
 
+let fillFloat32ArrayWithFloat32Array =
+    (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "targetStartIndex should <= sourceStartIndex",
+          () => targetStartIndex <= sourceStartIndex
+        )
+      )
+  );
+  let typeArrIndex = ref(targetStartIndex);
+  for (i in sourceStartIndex to endIndex - 1) {
+    Js.Typed_array.Float32Array.unsafe_set(
+      targetTypeArr,
+      typeArrIndex^,
+      Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i)
+    );
+    typeArrIndex := succ(typeArrIndex^)
+  };
+  typeArrIndex^
+};
+
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
 
@@ -97,6 +120,29 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
     dataArrIndex := succ(dataArrIndex^)
   };
   typeArr
+};
+
+let fillUint16ArrWithUint16Arr =
+    (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "targetStartIndex should <= sourceStartIndex",
+          () => targetStartIndex <= sourceStartIndex
+        )
+      )
+  );
+  let typeArrIndex = ref(targetStartIndex);
+  for (i in sourceStartIndex to endIndex - 1) {
+    Js.Typed_array.Uint16Array.unsafe_set(
+      targetTypeArr,
+      typeArrIndex^,
+      Js.Typed_array.Uint16Array.unsafe_get(sourceTypeArr, i)
+    );
+    typeArrIndex := succ(typeArrIndex^)
+  };
+  typeArrIndex^
 };
 
 let getUint16ArrSubarray = (typeArr: Uint16Array.t, startIndex: int, endIndex: int) =>

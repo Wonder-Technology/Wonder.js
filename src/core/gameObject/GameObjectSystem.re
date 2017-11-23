@@ -6,8 +6,6 @@ open StateDataType;
 
 open GameObjectType;
 
-open Contract;
-
 let hasCameraControllerComponent = GameObjectComponentUtils.hasCameraControllerComponent;
 
 let getCameraControllerComponent = GameObjectComponentUtils.getCameraControllerComponent;
@@ -50,11 +48,11 @@ let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent
 
 let create = (state: StateDataType.state) => {
   let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
-  let newUidStr = Js.Int.toString(uid);
+  let newUIdStr = Js.Int.toString(uid);
   data.uid = increase(uid);
-  aliveUidArray |> Js.Array.push(newUidStr) |> ignore;
+  aliveUidArray |> Js.Array.push(newUIdStr) |> ignore;
   let (newState, transform) = TransformSystem.create(state);
-  (addTransformComponent(newUidStr, transform, newState), newUidStr)
+  (addTransformComponent(newUIdStr, transform, newState), newUIdStr)
 };
 
 let dispose = (uid: string, state: StateDataType.state) => {

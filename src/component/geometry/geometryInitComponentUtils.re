@@ -6,11 +6,6 @@ open GeometryOperateDataUtils;
 
 let initGeometry = (index: int, state: StateDataType.state) => {
   let geometryData = getGeometryData(state);
-  /* let mapedIndex =
-     GeometryIndexUtils.getMappedIndex(
-       Js.Int.toString(index),
-       GeometryIndexUtils.getMappedIndexMap(state)
-     ); */
   switch (
     geometryData.computeDataFuncMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(index))
   ) {
@@ -22,5 +17,4 @@ let initGeometry = (index: int, state: StateDataType.state) => {
   }
 };
 
-let handleInitComponent = (index: int, state: StateDataType.state) =>
-  initGeometry(index, state);
+let handleInitComponent = (index: int, state: StateDataType.state) => initGeometry(index, state);

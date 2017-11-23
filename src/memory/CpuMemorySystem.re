@@ -71,13 +71,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   state
 };
 
-let _updateInfoArray =
-    /* ensureFunc((returnVal: any, newInfoArray, newIndexInArrayBuffer, info: GeometryInfo, offset: number) => {
-           it("info.startIndex should >= 0", () => {
-               expect(newInfoArray[newIndexInArrayBuffer].startIndex).gte(0);
-           });
-       }, */
-    (newInfoArray, newIndex: int, {startIndex, endIndex}, offset: int) => {
+let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, offset: int) => {
   let increment = endIndex - startIndex;
   Array.unsafe_set(
     newInfoArray,
@@ -85,54 +79,6 @@ let _updateInfoArray =
     GeometryOperateDataUtils.buildInfo(offset, offset + increment)
   );
   newInfoArray
-  /* |> ensureCheck ((r) => {
-     open Contract.Operators;
-     test
-     ("startIndex should >= 0",
-     (
-     () => {
-     r.startIndex >= 0
-     })
-     );
-     });
-
-              test("endIndex should >= startIndex", () => r.endIndex >= r.startIndex) */
-};
-
-let _fillFloat32Array =
-    (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
-  requireCheck(
-    () =>
-      Contract.Operators.(
-        test(
-          "targetStartIndex should <= sourceStartIndex",
-          () => targetStartIndex <= sourceStartIndex
-        )
-      )
-  );
-  let typeArrIndex = ref(targetStartIndex);
-  for (i in sourceStartIndex to endIndex - 1) {
-    Js.Typed_array.Float32Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex^,
-      Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i)
-    );
-    typeArrIndex := succ(typeArrIndex^)
-  };
-  typeArrIndex^
-};
-
-let _fillUint16Array = (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
-  let typeArrIndex = ref(targetStartIndex);
-  for (i in sourceStartIndex to endIndex - 1) {
-    Js.Typed_array.Uint16Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex^,
-      Js.Typed_array.Uint16Array.unsafe_get(sourceTypeArr, i)
-    );
-    typeArrIndex := succ(typeArrIndex^)
-  };
-  typeArrIndex^
 };
 
 let reAllocateGeometry = (state: StateDataType.state) => {
@@ -164,19 +110,6 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndicesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newVerticesOffset = ref(0);
   let newIndicesOffset = ref(0);
-  /* ArraySystem.range(0, mappedIndex - 1) */
-  /* let newAliveIndexArray =
-     aliveIndexArray
-     |> Js.Array.reduce(
-          (newAliveIndexArray, aliveIndex) =>
-            switch (MemoryUtils.isDisposed(Js.Int.toString(aliveIndex), disposedIndexMap)) {
-            | false =>
-              newAliveIndexArray |> Js.Array.push(aliveIndex);
-              newAliveIndexArray
-            | true => newAliveIndexArray
-            },
-          [||]
-        ); */
   let newAliveIndexArray =
     aliveIndexArray
     |> Js.Array.filter(
@@ -198,7 +131,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^);
                _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^);
                newVerticesOffset :=
-                 _fillFloat32Array(
+                 TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
                    vertices,
                    newVerticesOffset^,
                    vertices,
@@ -206,7 +139,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                    verticesInfo.endIndex
                  );
                newIndicesOffset :=
-                 _fillUint16Array(
+                 TypeArrayUtils.fillUint16ArrWithUint16Arr(
                    indices,
                    newIndicesOffset^,
                    indices,

@@ -6,11 +6,10 @@ open Js.Typed_array;
 
 open VboBufferType;
 
-/* todo optimize: use buffer pool */
 let createBuffer =
   [@bs]
   (
-    (gl, geometryIndex: int, data: Float32Array.t, state:StateDataType.state) => {
+    (gl, geometryIndex: int, data: Float32Array.t, state: StateDataType.state) => {
       let buffer = VboBufferPoolSystem.getArrayBuffer(gl, state);
       bindBuffer(getArrayBuffer(gl), buffer, gl);
       bufferFloat32Data(getArrayBuffer(gl), data, getStaticDraw(gl), gl);
@@ -28,13 +27,3 @@ let getOrCreateBuffer = (gl, geometryIndex, bufferMap, getDataFunc, state: State
     getDataFunc,
     state
   );
-/* switch (WonderCommonlib.HashMapSystem.get(geometryIndex, bufferMap)) {
-   | Some(buffer) => buffer
-   | None =>
-     let buffer =
-       createBuffer(gl, geometryIndex, getDataFunc(geometryIndex, state));
-     bufferMap
-     |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometryIndex), buffer)
-     |> ignore;
-     buffer
-   }; */

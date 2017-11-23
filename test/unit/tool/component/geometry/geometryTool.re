@@ -45,13 +45,10 @@ let getIndexTypeSize = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
 
 let hasIndices = (indexStr: string, state: StateDataType.state) =>
-  GeometrySystem.hasIndices
-    /* Js.Int.toString( */
-    (
-      GeometryIndexUtils.getMappedIndex(indexStr, GeometryIndexUtils.getMappedIndexMap(state)),
-      /* ), */
-      state
-    );
+  GeometrySystem.hasIndices(
+    GeometryIndexUtils.getMappedIndex(indexStr, GeometryIndexUtils.getMappedIndexMap(state)),
+    state
+  );
 
 let isGeometry = (geometry) => {
   open Wonder_jest;
@@ -62,8 +59,6 @@ let isGeometry = (geometry) => {
 
 let buildBufferConfig = (count) => {
   "transformDataBufferCount": Js.Nullable.undefined,
-  /* "meshRendererDataBufferCount": Js.Nullable.undefined, */
-  /* "geometryDataBufferCount": Js.Nullable.return(count), */
   "geometryPointDataBufferCount": Js.Nullable.return(count),
   "basicMaterialDataBufferCount": Js.Nullable.undefined
 };

@@ -25,9 +25,6 @@ let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigTy
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
   transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
-  /* meshRendererDataBufferCount: getValueFromJsObj(bufferConfigObj##meshRendererDataBufferCount, 20 * 1000), */
-  /* geometryDataBufferCount:
-     getValueFromJsObj(bufferConfigObj##geometryDataBufferCount, 20 * 1000), */
   geometryPointDataBufferCount:
     getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000),
   basicMaterialDataBufferCount:
@@ -54,8 +51,6 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
     | None => {
         transformDataBufferCount: 20 * 1000,
-        /* meshRendererDataBufferCount: 20 * 1000, */
-        /* geometryDataBufferCount: 20 * 1000, */
         geometryPointDataBufferCount: 1000 * 1000,
         basicMaterialDataBufferCount: 20 * 1000
       }

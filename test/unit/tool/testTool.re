@@ -6,8 +6,6 @@ let init =
                       "geometryPointDataBufferCount": Js.Nullable.return(200),
                       "basicMaterialDataBufferCount": Js.Nullable.return(5)
                     }),
-      /* "meshRendererDataBufferCount": Js.Nullable.return(5), */
-      /* "geometryDataBufferCount": Js.Nullable.return(5), */
       ()
     ) =>
   Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
@@ -35,8 +33,6 @@ let initWithRenderConfig =
                       "geometryPointDataBufferCount": Js.Nullable.return(5),
                       "basicMaterialDataBufferCount": Js.Nullable.return(5)
                     }),
-      /* "meshRendererDataBufferCount": Js.Nullable.return(5), */
-      /* "geometryDataBufferCount": Js.Nullable.return(5), */
       ~renderConfig,
       ()
     ) =>
@@ -52,5 +48,6 @@ let initWithRenderConfig =
 
 let openContractCheck = () =>
   InitConfigSystem.setIsTest(~isTest=true, StateData.stateData) |> ignore;
+
 let closeContractCheck = () =>
   InitConfigSystem.setIsTest(~isTest=false, StateData.stateData) |> ignore;

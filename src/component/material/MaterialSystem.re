@@ -1,6 +1,5 @@
 open MaterialType;
 
-/* open Js.Typed_array; */
 open MaterialStateUtils;
 
 open Contract;
@@ -10,34 +9,13 @@ open StateDataType;
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
-/* let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
-     getMaterialData(state).shaderIndexMap
-     |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
-     |> ensureCheck(
-          (r) =>
-            Contract.Operators.(
-              test(
-                "shaderIndex should exist",
-                () =>
-                  getMaterialData(state).shaderIndexMap
-                  |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
-                  |> assertExist
-              )
-            )
-        );
-
-   let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
-     getMaterialData(state).shaderIndexMap
-     |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
-     |> ignore;
-     state
-   }; */
 let getShaderIndex = MaterialShaderIndexUtils.getShaderIndex;
 
 let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
 
 let isAlive = (material: material, state: StateDataType.state) =>
   MaterialDisposeComponentUtils.isAlive(material, state);
+
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */
