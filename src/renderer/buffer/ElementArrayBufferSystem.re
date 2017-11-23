@@ -6,7 +6,6 @@ open Js.Typed_array;
 
 open VboBufferType;
 
-/* todo optimize: use buffer pool */
 let createBuffer =
   [@bs]
   (

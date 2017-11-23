@@ -152,7 +152,6 @@ let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateD
      [@bs]
      ((state: StateDataType.state) => getCameraControllerData(state).worldToCameraMatrixCacheMap)
    ); */
-/* todo test remove cache */
 let getWorldToCameraMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   /* CacheUtils.mapDataInCacheType( */
   _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert;

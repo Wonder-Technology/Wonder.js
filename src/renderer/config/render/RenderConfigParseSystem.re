@@ -1,6 +1,5 @@
 open StateDataType;
 
-/* todo set more settings */
 let convertRenderSettingToRecord = (render_setting) => {
   open Json;
   open Decode;

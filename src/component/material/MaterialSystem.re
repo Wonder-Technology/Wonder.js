@@ -38,59 +38,6 @@ let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
 
 let isAlive = (material: material, state: StateDataType.state) =>
   MaterialDisposeComponentUtils.isAlive(material, state);
-
-/* let _initMaterialShader =
-       (
-         gl,
-         materialIndex: int,
-         {shader_libs}: material_shader,
-         attributeLocationMap,
-         uniformLocationMap,
-         initShaderFuncTuple,
-         state: StateDataType.state
-       ) => {
-     open RenderConfigSystem;
-     let {groups} = getShaders(state);
-     let shaderLibs = getShaderLibs(state);
-     let gameObject = Js.Option.getExn(getGameObject(materialIndex, state));
-     let geometry = Js.Option.getExn(GameObjectSystem.getGeometryComponent(gameObject, state));
-     let shaderIndex =
-       ShaderSystem.initMaterialShader(
-         gl,
-         materialIndex,
-         geometry,
-         gameObject,
-         getMaterialShaderLibDataArr(materialIndex, groups, shader_libs, shaderLibs),
-         attributeLocationMap,
-         uniformLocationMap,
-         initShaderFuncTuple,
-         state
-       );
-     setShaderIndex(materialIndex, shaderIndex, state)
-   }; */
-/* let initMaterialShaders =
-       (gl, {material_shader}: shader, initShaderFuncTuple, state: StateDataType.state) => {
-     let attributeLocationMap = GLSLLocationSystem.createLocationMap();
-     let uniformLocationMap = GLSLLocationSystem.createLocationMap();
-     /* todo check dispose:shouldn't dispose before init render! */
-     ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
-     |> ArraySystem.reduceState(
-          [@bs]
-          (
-            (state, materialIndex: int) =>
-              _initMaterialShader(
-                gl,
-                materialIndex,
-                material_shader,
-                attributeLocationMap,
-                uniformLocationMap,
-                initShaderFuncTuple,
-                state
-              )
-          ),
-          state
-        )
-   }; */
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */

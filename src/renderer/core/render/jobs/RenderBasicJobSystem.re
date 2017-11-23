@@ -6,7 +6,6 @@ open GameObjectType;
 
 open VboBufferType;
 
-/* todo optimize: curry */
 let _render = (gl, state: StateDataType.state) => {
   let renderArray = RenderDataSystem.getRenderArrayFromState(state);
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
@@ -24,11 +23,13 @@ let _render = (gl, state: StateDataType.state) => {
              let shaderIndexStr = Js.Int.toString(shaderIndex);
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
-             /* let geometryIndexStr = Js.Int.toString(geometryIndex); */
-
-      let mappedGeometryIndex = GeometryIndexUtils.getMappedIndex(Js.Int.toString(geometryIndex), GeometryIndexUtils.getMappedIndexMap(state));
-
-             let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+             let mappedGeometryIndex =
+               GeometryIndexUtils.getMappedIndex(
+                 Js.Int.toString(geometryIndex),
+                 GeometryIndexUtils.getMappedIndexMap(state)
+               );
+             let {vertexBufferMap, elementArrayBufferMap} =
+               VboBufferStateUtils.getVboBufferData(state);
              let uniformLocationMap =
                Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndexStr, state));
              let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndexStr, state));

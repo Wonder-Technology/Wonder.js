@@ -121,7 +121,6 @@ let getLocalPosition = (transform: transform, state: StateDataType.state) =>
 
 let setLocalPosition = (transform: transform, localPosition: position, state: StateDataType.state) => {
   let transformData = getTransformData(state);
-  /* todo check alive? */
   setFloat3(
     getVector3DataIndex(transform),
     TransformCastTypeUtils.tupleToJsArray(localPosition),

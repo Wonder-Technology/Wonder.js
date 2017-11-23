@@ -22,19 +22,6 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   let newGeometryMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newCameraControllerMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newMaterialMap = WonderCommonlib.HashMapSystem.createEmpty();
-  /* todo optimize? */
-  /* let newAliveUidArray =
-     aliveUidArray
-     |> Js.Array.reduce(
-          (newAliveUidArray, aliveUid) =>
-            switch (MemoryUtils.isDisposed(aliveUid, disposedUidMap)) {
-            | false =>
-              newAliveUidArray |> Js.Array.push(aliveUid);
-              newAliveUidArray
-            | true => newAliveUidArray
-            },
-          [||]
-        ); */
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
@@ -78,7 +65,6 @@ let reAllocateGameObject = (state: StateDataType.state) => {
   data.aliveUidArray = newAliveUidArray;
   data.transformMap = newTransformMap;
   data.meshRendererMap = newMeshRendererMap;
-  /* todo test */
   data.geometryMap = newGeometryMap;
   data.materialMap = newMaterialMap;
   data.cameraControllerMap = newCameraControllerMap;
