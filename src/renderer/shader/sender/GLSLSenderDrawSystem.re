@@ -8,7 +8,7 @@ open GLSLSenderSendDataSystem;
 
 open GlslSenderStateUtils;
 
-let bindIndexBuffer =
+let bindElementArrayBuffer =
   [@bs]
   (
     (gl, size: int, pos: attributeLocation, buffer, state: StateDataType.state) => {

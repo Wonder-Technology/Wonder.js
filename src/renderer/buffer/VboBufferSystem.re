@@ -21,7 +21,7 @@ let getOrCreateBuffer =
 };
 
 let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) =>
-  /* let {vertexBufferMap, indexBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+  /* let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
 
      _unsafeGetBufferFromBufferMap(geometryIndexStr, vertexBufferMap) |> Js.Array.push()
 
@@ -33,7 +33,7 @@ let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) =>
 
 let initData = () => {
   vertexBufferMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  indexBufferMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  elementArrayBufferMap: WonderCommonlib.HashMapSystem.createEmpty(),
   arrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty()
 };

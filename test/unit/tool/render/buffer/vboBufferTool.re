@@ -12,7 +12,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
-    VboBufferStateUtils.getVboBufferData(state).indexBufferMap,
+    VboBufferStateUtils.getVboBufferData(state).elementArrayBufferMap,
     [@bs] ElementArrayBufferSystem.createBuffer,
     [@bs] GeometrySystem.getIndices,
     state

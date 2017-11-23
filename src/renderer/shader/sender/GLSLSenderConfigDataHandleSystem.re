@@ -106,7 +106,7 @@ let addAttributeSendData =
                         | (_, _) =>
                           sendDataArr
                           |> Js.Array.push
-                               /* bindIndexBuffer(
+                               /* bindElementArrayBuffer(
                                     gl,
                                     switch buffer {
                                     | "index" =>
@@ -136,7 +136,7 @@ let addAttributeSendData =
                                      )
                                    }, */
                                    buffer,
-                                 sendFunc: bindIndexBuffer
+                                 sendFunc: bindElementArrayBuffer
                                })
                           |> ignore
                         }

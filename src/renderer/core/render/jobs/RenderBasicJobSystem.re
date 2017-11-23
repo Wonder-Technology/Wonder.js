@@ -28,7 +28,7 @@ let _render = (gl, state: StateDataType.state) => {
 
       let mappedGeometryIndex = GeometryIndexUtils.getMappedIndex(Js.Int.toString(geometryIndex), GeometryIndexUtils.getMappedIndexMap(state));
 
-             let {vertexBufferMap, indexBufferMap} = VboBufferStateUtils.getVboBufferData(state);
+             let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
              let uniformLocationMap =
                Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndexStr, state));
              let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndexStr, state));
@@ -54,7 +54,7 @@ let _render = (gl, state: StateDataType.state) => {
                             ElementArrayBufferSystem.getOrCreateBuffer(
                               gl,
                               geometryIndex,
-                              indexBufferMap,
+                              elementArrayBufferMap,
                               [@bs] GeometrySystem.getIndices,
                               state
                             )

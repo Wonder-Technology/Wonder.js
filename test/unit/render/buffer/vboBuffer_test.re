@@ -39,28 +39,28 @@ let _ =
                   let (state, gameObject1, geometry1) = _prepare(state^);
                   let arrayBuffer1 = Obj.magic(10);
                   let arrayBuffer2 = Obj.magic(11);
-                  let indexBuffer1 = Obj.magic(12);
-                  let indexBuffer2 = Obj.magic(13);
+                  let elementArrayBuffer1 = Obj.magic(12);
+                  let elementArrayBuffer2 = Obj.magic(13);
                   let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                   createBuffer |> onCall(0) |> returns(arrayBuffer1);
-                  createBuffer |> onCall(1) |> returns(indexBuffer1);
+                  createBuffer |> onCall(1) |> returns(elementArrayBuffer1);
                   createBuffer |> onCall(2) |> returns(arrayBuffer2);
-                  createBuffer |> onCall(3) |> returns(indexBuffer2);
+                  createBuffer |> onCall(3) |> returns(elementArrayBuffer2);
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ()));
                   let resultArrayBuffer1 = VboBufferTool.getOrCreateArrayBuffer(geometry1, state);
-                  let resultIndexBuffer1 =
+                  let resultElementArrayBuffer1 =
                     VboBufferTool.getOrCreateElementArrayBuffer(geometry1, state);
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> GameObject.initGameObject(gameObject2);
                   let resultArrayBuffer2 = VboBufferTool.getOrCreateArrayBuffer(geometry2, state);
-                  let resultIndexBuffer2 =
+                  let resultElementArrayBuffer2 =
                     VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
-                  (createBuffer |> getCallCount, resultArrayBuffer2, resultIndexBuffer2)
-                  |> expect == (2, arrayBuffer1, indexBuffer1)
+                  (createBuffer |> getCallCount, resultArrayBuffer2, resultElementArrayBuffer2)
+                  |> expect == (2, arrayBuffer1, elementArrayBuffer1)
                 }
               )
             }

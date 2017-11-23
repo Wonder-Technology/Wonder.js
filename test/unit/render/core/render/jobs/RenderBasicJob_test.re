@@ -681,7 +681,7 @@ let _ =
               describe(
                 "bind index buffer",
                 () => {
-                  let _prepareForIndexBuffer = (state) => {
+                  let _prepareForElementArrayBuffer = (state) => {
                     /* let state = _prepare(sandbox, state); */
                     let element_array_buffer = 1;
                     let buffer = Obj.magic(10);
@@ -710,15 +710,15 @@ let _ =
                        () => {
                          let state = _prepare(sandbox, state^);
                          let (state, bindBuffer, element_array_buffer, buffer) =
-                           _prepareForIndexBuffer(state);
+                           _prepareForElementArrayBuffer(state);
                          let state = state |> _render;
-                         let bindIndexBufferCallCountBeforeSecondRender =
+                         let bindElementArrayBufferCallCountBeforeSecondRender =
                            bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
                          let state = state |> _render;
-                         let bindIndexBufferCallCountAfterSecondRender =
+                         let bindElementArrayBufferCallCountAfterSecondRender =
                            bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                         bindIndexBufferCallCountAfterSecondRender
-                         |> expect == bindIndexBufferCallCountBeforeSecondRender
+                         bindElementArrayBufferCallCountAfterSecondRender
+                         |> expect == bindElementArrayBufferCallCountBeforeSecondRender
                        }
                      ); */
                   test
@@ -728,14 +728,14 @@ let _ =
                       () => {
                         let state = _prepare(sandbox, state^);
                         let (state, bindBuffer, element_array_buffer, buffer) =
-                          _prepareForIndexBuffer(state);
-                        let bindIndexBufferCallCountAfterInit =
+                          _prepareForElementArrayBuffer(state);
+                        let bindElementArrayBufferCallCountAfterInit =
                           bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
                         let state = state |> _render;
-                        let bindIndexBufferCallCountAfterRender =
+                        let bindElementArrayBufferCallCountAfterRender =
                           bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                        bindIndexBufferCallCountAfterRender
-                        |> expect == bindIndexBufferCallCountAfterInit
+                        bindElementArrayBufferCallCountAfterRender
+                        |> expect == bindElementArrayBufferCallCountAfterInit
                         + 1
                         + 1
                       }
@@ -751,19 +751,19 @@ let _ =
                           let (state, _, _, _) =
                             CameraControllerTool.createCameraGameObject(state);
                           let (state, bindBuffer, element_array_buffer, buffer) =
-                            _prepareForIndexBuffer(state);
+                            _prepareForElementArrayBuffer(state);
                           let state = state |> _render;
                           let state = state |> GameObject.disposeGameObject(gameObject1);
                           let (state, gameObject2, _, _, _) =
                             RenderJobsTool.prepareGameObject(sandbox, state);
                           let state = state |> GameObject.initGameObject(gameObject2);
-                          let bindIndexBufferCallCountAfterFirstRender =
+                          let bindElementArrayBufferCallCountAfterFirstRender =
                             bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
                           let state = state |> _render;
-                          let bindIndexBufferCallCountAfterSecondRender =
+                          let bindElementArrayBufferCallCountAfterSecondRender =
                             bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
-                          bindIndexBufferCallCountAfterSecondRender
-                          |> expect == bindIndexBufferCallCountAfterFirstRender
+                          bindElementArrayBufferCallCountAfterSecondRender
+                          |> expect == bindElementArrayBufferCallCountAfterFirstRender
                           + 2
                           + 1
                         }

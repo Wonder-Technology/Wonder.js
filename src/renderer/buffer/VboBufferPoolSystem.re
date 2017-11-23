@@ -38,13 +38,13 @@ let _unsafeGetBufferFromBufferMap = (geometryIndexStr: string, bufferMap) =>
      );
 
 let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) => {
-  let {vertexBufferMap, indexBufferMap, arrayBufferPool, elementArrayBufferPool} =
+  let {vertexBufferMap, elementArrayBufferMap, arrayBufferPool, elementArrayBufferPool} =
     VboBufferStateUtils.getVboBufferData(state);
   arrayBufferPool
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndexStr, vertexBufferMap))
   |> ignore;
   elementArrayBufferPool
-  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndexStr, indexBufferMap))
+  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndexStr, elementArrayBufferMap))
   |> ignore;
   state
 };
