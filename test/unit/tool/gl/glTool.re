@@ -1,0 +1,1 @@
+let getGl = DeviceManagerSystem.getGl;
