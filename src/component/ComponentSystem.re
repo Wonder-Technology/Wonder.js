@@ -1,7 +1,7 @@
 open ComponentType;
 
-let addComponentToGameObjectMap = (component: component, gameObjectUId: string, gameObjectMap) =>
-  WonderCommonlib.HashMapSystem.set(Js.Int.toString(component), gameObjectUId, gameObjectMap)
+let addComponentToGameObjectMap = (component: component, gameObjectUid: string, gameObjectMap) =>
+  WonderCommonlib.HashMapSystem.set(Js.Int.toString(component), gameObjectUid, gameObjectMap)
   |> ignore;
 
 let getComponentGameObject = (component: component, gameObjectMap) =>

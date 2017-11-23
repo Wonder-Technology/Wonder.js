@@ -14,9 +14,9 @@ let _setRenderGameObjectArray =
   renderGameObjectArray |> Js.Array.push(gameObject) |> ignore;
 
 let handleAddComponent =
-    (meshRenderer: meshRenderer, gameObjectUId: string, state: StateDataType.state) => {
+    (meshRenderer: meshRenderer, gameObjectUid: string, state: StateDataType.state) => {
   let {renderGameObjectArray, gameObjectMap} = getMeshRendererData(state);
-  _setRenderGameObjectArray(meshRenderer, gameObjectUId, renderGameObjectArray);
-  ComponentSystem.addComponentToGameObjectMap(meshRenderer, gameObjectUId, gameObjectMap) |> ignore;
+  _setRenderGameObjectArray(meshRenderer, gameObjectUid, renderGameObjectArray);
+  ComponentSystem.addComponentToGameObjectMap(meshRenderer, gameObjectUid, gameObjectMap) |> ignore;
   state
 };

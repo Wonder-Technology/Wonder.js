@@ -50,11 +50,11 @@ let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent
 
 let create = (state: StateDataType.state) => {
   let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
-  let newUIdStr = Js.Int.toString(uid);
+  let newUidStr = Js.Int.toString(uid);
   data.uid = increase(uid);
-  aliveUidArray |> Js.Array.push(newUIdStr) |> ignore;
+  aliveUidArray |> Js.Array.push(newUidStr) |> ignore;
   let (newState, transform) = TransformSystem.create(state);
-  (addTransformComponent(newUIdStr, transform, newState), newUIdStr)
+  (addTransformComponent(newUidStr, transform, newState), newUidStr)
 };
 
 let dispose = (uid: string, state: StateDataType.state) => {
