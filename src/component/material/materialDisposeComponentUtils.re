@@ -19,4 +19,24 @@ let handleDisposeComponent = (material: material, state: StateDataType.state) =>
   state
 };
 
+let handleBatchDisposeComponent =
+    (materialArray: array(material), gameObjectUidMap, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        materialArray
+        |> WonderCommonlib.ArraySystem.forEach(
+             [@bs]
+             (
+               (material) =>
+                 ComponentDisposeComponentUtils.checkComponentShouldAlive(material, isAlive, state)
+             )
+           )
+      )
+  );
+  let {disposedIndexArray} as data = getMaterialData(state);
+  data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(materialArray);
+  state
+};
+
 let isNotDisposed = ({disposedIndexArray}) => disposedIndexArray |> Js.Array.length == 0;

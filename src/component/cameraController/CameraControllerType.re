@@ -21,5 +21,5 @@ and cameraControllerData = {
   /* mutable dirtyMap: Js.Dict.t(bool), */
   mutable updateCameraFuncMap,
   mutable perspectiveCameraData,
-  disposedIndexArray: array(cameraController)
+  mutable disposedIndexArray: array(cameraController)
 };

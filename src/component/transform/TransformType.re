@@ -25,5 +25,5 @@ type transformData = {
   childMap: transformChildMap,
   gameObjectMap,
   mutable dirtyArray: transformDirtyArray,
-  disposedIndexArray: array(transform)
+  mutable disposedIndexArray: array(transform)
 };

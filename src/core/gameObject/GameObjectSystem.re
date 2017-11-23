@@ -92,6 +92,41 @@ let dispose = (uid: string, state: StateDataType.state) => {
   }
 };
 
+let batchDispose = (uidArray: array(string), state: StateDataType.state) => {
+  let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
+  let uidMap = WonderCommonlib.HashMapSystem.createEmpty();
+  uidArray
+  |> WonderCommonlib.ArraySystem.forEach(
+       [@bs]
+       (
+         (uid) => {
+           /* todo optimize remove? */
+           uidMap |> WonderCommonlib.HashMapSystem.set(uid, true) |> ignore;
+           disposedUidMap |> WonderCommonlib.HashMapSystem.set(uid, true) |> ignore
+         }
+       )
+     );
+  data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
+  let state =
+    state
+    |> GameObjectComponentUtils.batchGetMeshRendererComponent(uidArray)
+    |> GameObjectComponentUtils.batchDisposeMeshRendererComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchGetTransformComponent(uidArray)
+    |> GameObjectComponentUtils.batchDisposeTransformComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchGetMaterialComponent(uidArray)
+    |> GameObjectComponentUtils.batchDisposeMaterialComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchGetGeometryComponent(uidArray)
+    |> GameObjectComponentUtils.batchDisposeGeometryComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchGetCameraControllerComponent(uidArray)
+    |> GameObjectComponentUtils.batchDisposeCameraControllerComponent(uidMap, state);
+  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
+    data.disposeCount = 0;
+    CpuMemorySystem.reAllocateGameObject(state)
+  } else {
+    state
+  }
+};
+
 let isAlive = (uid: string, state: StateDataType.state) => {
   let {transformMap, disposedUidMap} = GameObjectStateUtils.getGameObjectData(state);
   disposedUidMap |> HashMapSystem.has(uid) ?

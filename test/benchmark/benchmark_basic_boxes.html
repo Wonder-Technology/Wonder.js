@@ -30,7 +30,7 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
 
 
-        import { disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
 
 
         window.onload = function () {
@@ -162,12 +162,17 @@ window.boxes = [];
                     //     // index += 1;
                     //     return disposeGameObject(box, state);
                     // }, state);
-                    var state = state;
 
-                    for(let i = 0, len = window.boxes.length; i < len; i++){
-                        let box = window.boxes[i];
-                        state = disposeGameObject(box, state);
-                    }
+
+                    // var state = state;
+
+                    // for(let i = 0, len = window.boxes.length; i < len; i++){
+                    //     let box = window.boxes[i];
+                    //     state = disposeGameObject(box, state);
+                    // }
+
+                    var state = batchDisposeGameObject(window.boxes, state);
+
 
                     // var state = window.boxes.reduce((state, box) => {
                     //     // if(index > 1000){
@@ -178,7 +183,7 @@ window.boxes = [];
                     // }, state);
 
 
-                    var [state, newBoxes] = createBoxes(1000, state);
+                    var [state, newBoxes] = createBoxes(2000, state);
 
                 var playgroundSize = 500;
 

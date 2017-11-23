@@ -345,14 +345,10 @@ let _ =
               test(
                 "dispose meshRenderer component",
                 () => {
-                  let (state, gameObject1) = createGameObject(state^);
-                  let (state, gameObject2) = createGameObject(state);
-                  let (state, meshRenderer1) = MeshRenderer.createMeshRenderer(state);
-                  let (state, meshRenderer2) = MeshRenderer.createMeshRenderer(state);
-                  let state =
-                    state
-                    |> addGameObjectMeshRendererComponent(gameObject1, meshRenderer1)
-                    |> addGameObjectMeshRendererComponent(gameObject2, meshRenderer2);
+                  let (state, gameObject1, meshRenderer1) =
+                    MeshRendererTool.createGameObject(state^);
+                  let (state, gameObject2, meshRenderer2) =
+                    MeshRendererTool.createGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
                   state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
                 }
@@ -606,6 +602,130 @@ let _ =
         }
       );
       describe(
+        "batchDispose",
+        () => {
+          describe(
+            "batch dispose all components",
+            () => {
+              test(
+                "batch dispose meshRenderer components",
+                () => {
+                  let (state, gameObject1, meshRenderer1) =
+                    MeshRendererTool.createGameObject(state^);
+                  let (state, gameObject2, meshRenderer2) =
+                    MeshRendererTool.createGameObject(state);
+                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                  state |> MeshRendererTool.getRenderArray |> expect == [||]
+                }
+              );
+              test(
+                "batch dispose transform componets",
+                () => {
+                  let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                  let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
+                  let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
+                  let state =
+                    state
+                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform2)
+                    |> Transform.setTransformParent(Js.Nullable.return(transform2), transform3);
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (2., 3., 4.);
+                  let pos3 = (4., 3., 4.);
+                  let state =
+                    state
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2)
+                    |> Transform.setTransformLocalPosition(transform3, pos3);
+                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                  let state = state |> TransformTool.update;
+                  state |> Transform.getTransformPosition(transform3) |> expect == pos3
+                }
+              );
+              test(
+                "batch dispose material componets",
+                () => {
+                  open MaterialType;
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
+                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                  let {disposedIndexArray} = state |> MaterialTool.getData;
+                  (
+                    disposedIndexArray |> Js.Array.includes(material1),
+                    disposedIndexArray |> Js.Array.includes(material2)
+                  )
+                  |> expect == (true, true)
+                }
+              );
+              test(
+                "batch dispose geometry componets",
+                () => {
+                  TestTool.closeContractCheck();
+                  open StateDataType;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                  let {disposedIndexMap} = state |> GeometryTool.getData;
+                  (
+                    disposedIndexMap |> HashMapSystem.has(Js.Int.toString(geometry1)),
+                    disposedIndexMap |> HashMapSystem.has(Js.Int.toString(geometry2))
+                  )
+                  |> expect == (true, true)
+                }
+              );
+              test(
+                "batch dispose cameraController componets",
+                () => {
+                  open CameraControllerType;
+                  let (state, gameObject1, _, cameraController1) =
+                    CameraControllerTool.createCameraGameObject(state^);
+                  let (state, gameObject2, _, cameraController2) =
+                    CameraControllerTool.createCameraGameObject(state);
+                  let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
+                  let {disposedIndexArray} = state |> CameraControllerTool.getData;
+                  (
+                    disposedIndexArray |> Js.Array.includes(cameraController1),
+                    disposedIndexArray |> Js.Array.includes(cameraController2)
+                  )
+                  |> expect == (true, true)
+                }
+              )
+            }
+          );
+          describe(
+            "test reallocate gameObject",
+            () =>
+              test(
+                "if have dispose too many gameObjects, reallocate gameObject",
+                () => {
+                  open GameObjectType;
+                  let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=2, ());
+                  let (state, gameObject1) = createGameObject(state);
+                  let (state, gameObject2) = createGameObject(state);
+                  let (state, gameObject3) = createGameObject(state);
+                  let (state, gameObject4) = createGameObject(state);
+                  let state =
+                    state
+                    |> batchDisposeGameObject([|
+                         gameObject1,
+                         gameObject2,
+                         gameObject3,
+                         gameObject4
+                       |]);
+                  let {transformMap, disposeCount} = GameObjectTool.getData(state);
+                  (
+                    disposeCount,
+                    transformMap |> HashMapSystem.has(gameObject1),
+                    transformMap |> HashMapSystem.has(gameObject2),
+                    transformMap |> HashMapSystem.has(gameObject3),
+                    transformMap |> HashMapSystem.has(gameObject4)
+                  )
+                  |> expect == (0, false, false, false, false)
+                }
+              )
+          )
+        }
+      );
+      describe(
         "initGameObject",
         () =>
           describe(
@@ -649,8 +769,7 @@ let _ =
               let _testTwoParamFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
                 let state = state |> disposeGameObject(gameObject);
-                expect(() => func(gameObject, state))
-                |> toThrowMessage("gameObject should alive")
+                expect(() => func(gameObject, state)) |> toThrowMessage("gameObject should alive")
               };
               let _testThreeParmFunc = (func) => {
                 let (state, gameObject) = createGameObject(state^);
@@ -660,137 +779,83 @@ let _ =
               };
               test(
                 "getGameObjectTransformComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    getGameObjectTransformComponent
-                  )
+                () => _testTwoParamFunc(getGameObjectTransformComponent)
               );
               test(
                 "getGameObjectMaterialComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    getGameObjectMaterialComponent
-                  )
+                () => _testTwoParamFunc(getGameObjectMaterialComponent)
               );
               test(
                 "getGameObjectMeshRendererComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    getGameObjectMeshRendererComponent
-                  )
+                () => _testTwoParamFunc(getGameObjectMeshRendererComponent)
               );
               test(
                 "getGameObjectGeometryComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    getGameObjectGeometryComponent
-                  )
+                () => _testTwoParamFunc(getGameObjectGeometryComponent)
               );
               test(
                 "getGameObjectCameraControllerComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    getGameObjectCameraControllerComponent
-                  )
+                () => _testTwoParamFunc(getGameObjectCameraControllerComponent)
               );
+              test("disposeGameObject should error", () => _testTwoParamFunc(disposeGameObject));
               test(
-                "disposeGameObject should error",
-                () =>
-                  _testTwoParamFunc(
-                    disposeGameObject
-                  )
+                "batchDisposeGameObject should error",
+                () => {
+                  let (state, gameObject) = createGameObject(state^);
+                  let state = state |> disposeGameObject(gameObject);
+                  expect(() => batchDisposeGameObject([|gameObject|], state))
+                  |> toThrowMessage("gameObject should alive")
+                }
               );
-              test(
-                "initGameObject should error",
-                () =>
-                  _testTwoParamFunc(
-                    initGameObject
-                  )
-              );
+              test("initGameObject should error", () => _testTwoParamFunc(initGameObject));
               test(
                 "hasGameObjectGeometryComponent should error",
-                () =>
-                  _testTwoParamFunc(
-                    hasGameObjectGeometryComponent
-                  )
+                () => _testTwoParamFunc(hasGameObjectGeometryComponent)
               );
               test(
                 "addGameObjectTransformComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectTransformComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectTransformComponent)
               );
               test(
                 "disposeGameObjectTransformComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    disposeGameObjectTransformComponent
-                  )
+                () => _testThreeParmFunc(disposeGameObjectTransformComponent)
               );
               test(
                 "addGameObjectCameraControllerComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectCameraControllerComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectCameraControllerComponent)
               );
               test(
                 "disposeGameObjectCameraControllerComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    disposeGameObjectCameraControllerComponent
-                  )
+                () => _testThreeParmFunc(disposeGameObjectCameraControllerComponent)
               );
               test(
                 "addGameObjectMaterialComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectMaterialComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectMaterialComponent)
               );
               test(
                 "disposeGameObjectMaterialComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    disposeGameObjectMaterialComponent
-                  )
+                () => _testThreeParmFunc(disposeGameObjectMaterialComponent)
               );
               test(
                 "addGameObjectMeshRendererComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectTransformComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectTransformComponent)
               );
               test(
                 "addGameObjectMeshRendererComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectTransformComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectTransformComponent)
               );
               test(
                 "disposeGameObjectMeshRendererComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    disposeGameObjectMeshRendererComponent
-                  )
+                () => _testThreeParmFunc(disposeGameObjectMeshRendererComponent)
               );
               test(
                 "addGameObjectGeometryComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    addGameObjectGeometryComponent
-                  )
+                () => _testThreeParmFunc(addGameObjectGeometryComponent)
               );
               test(
                 "disposeGameObjectGeometryComponent should error",
-                () =>
-                  _testThreeParmFunc(
-                    disposeGameObjectGeometryComponent
-                  )
-              );
+                () => _testThreeParmFunc(disposeGameObjectGeometryComponent)
+              )
             }
           )
       )

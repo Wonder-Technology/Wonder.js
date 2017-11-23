@@ -6,3 +6,12 @@ let isMeshRenderer = (meshRenderer) => {
   open! Expect.Operators;
   expect(meshRenderer) >= 0
 };
+
+let createGameObject = (state) => {
+  open MeshRenderer;
+  open GameObject;
+  let (state, meshRenderer) = createMeshRenderer(state);
+  let (state, gameObject) = state |> createGameObject;
+  let state = state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+  (state, gameObject, meshRenderer)
+};

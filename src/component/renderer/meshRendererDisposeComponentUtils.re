@@ -5,11 +5,18 @@ open MeshRendererStateUtils;
 open Contract;
 
 /* todo optimize: add batch remove  */
-let _removeFromRenderArray = (gameObjectUid: string, {renderGameObjectArray} as data) => {
-  let index = renderGameObjectArray |> Js.Array.indexOf(gameObjectUid);
+let _removeFromRenderArray = (disposedGameObjectUid: string, {renderGameObjectArray} as data) => {
+  let index = renderGameObjectArray |> Js.Array.indexOf(disposedGameObjectUid);
   let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
   renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex)
 };
+
+let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectArray} as data) =>
+  data.renderGameObjectArray =
+    renderGameObjectArray
+    |> Js.Array.filter(
+         (renderGameObject) => disposedGameObjectUidMap |> HashMapSystem.has(renderGameObject) == false
+       );
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   ComponentDisposeComponentUtils.isAlive(
@@ -28,5 +35,30 @@ let handleDisposeComponent =
   let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
   _removeFromRenderArray(gameObjectUid, data);
+  state
+};
+
+let handleBatchDisposeComponent =
+    (meshRendererArray: array(meshRenderer), gameObjectUidMap, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        meshRendererArray
+        |> WonderCommonlib.ArraySystem.forEach(
+             [@bs]
+             (
+               (meshRenderer) =>
+                 ComponentDisposeComponentUtils.checkComponentShouldAlive(
+                   meshRenderer,
+                   isAlive,
+                   state
+                 )
+             )
+           )
+      )
+  );
+  let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+  data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(meshRendererArray);
+  _batchRemoveFromRenderArray(gameObjectUidMap, data);
   state
 };

@@ -12,11 +12,7 @@ let _ =
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
       let _prepareOne = (state) => {
-        let (state, meshRenderer1) = createMeshRenderer(state);
-        let (state, gameObject1) = state |> GameObject.createGameObject;
-        let state =
-          state |> GameObject.addGameObjectMeshRendererComponent(gameObject1, meshRenderer1);
-        (state, gameObject1, meshRenderer1)
+        MeshRendererTool.createGameObject(state);
       };
       let _prepareTwo = () => {
         let (state, meshRenderer1) = createMeshRenderer(state^);

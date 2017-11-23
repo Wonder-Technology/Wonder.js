@@ -104,3 +104,91 @@ let addMaterialComponent = (uid: string, component: component, state: StateDataT
 
 let disposeMaterialComponent = (uid: string, component: component, state: StateDataType.state) =>
   MaterialDisposeComponentUtils.handleDisposeComponent(component, state);
+
+let _batchGetComponent = (uidArray: array(string), componentMap, state: StateDataType.state) =>
+  uidArray
+  |> ArraySystem.reduceOneParam(
+       [@bs]
+       (
+         (arr, uid) =>
+           switch (componentMap |> _getComponent(uid)) {
+           | None => arr
+           | Some(component) =>
+             arr |> Js.Array.push(component) |> ignore;
+             arr
+           }
+       ),
+       [||]
+     );
+
+let _batchDisposeComponent =
+    (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
+  handleFunc(componentArray, uidMap, state);
+
+let batchGetTransformComponent = (uidArray: array(string), state: StateDataType.state) =>
+  _batchGetComponent(uidArray, GameObjectStateUtils.getGameObjectData(state).transformMap, state);
+
+let batchDisposeTransformComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    TransformDisposeComponentUtils.handleBatchDisposeComponent,
+    componentArray
+  );
+
+let batchGetMeshRendererComponent = (uidArray: array(string), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateUtils.getGameObjectData(state).meshRendererMap,
+    state
+  );
+
+let batchDisposeMeshRendererComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    MeshRendererDisposeComponentUtils.handleBatchDisposeComponent,
+    componentArray
+  );
+
+let batchGetMaterialComponent = (uidArray: array(string), state: StateDataType.state) =>
+  _batchGetComponent(uidArray, GameObjectStateUtils.getGameObjectData(state).materialMap, state);
+
+let batchDisposeMaterialComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    MaterialDisposeComponentUtils.handleBatchDisposeComponent,
+    componentArray
+  );
+
+let batchGetGeometryComponent = (uidArray: array(string), state: StateDataType.state) =>
+  _batchGetComponent(uidArray, GameObjectStateUtils.getGameObjectData(state).geometryMap, state);
+
+let batchDisposeGeometryComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    GeometryDisposeComponentUtils.handleBatchDisposeComponent,
+    componentArray
+  );
+
+let batchGetCameraControllerComponent = (uidArray: array(string), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateUtils.getGameObjectData(state).cameraControllerMap,
+    state
+  );
+
+let batchDisposeCameraControllerComponent =
+    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+  _batchDisposeComponent(
+    uidMap,
+    state,
+    CameraControllerDisposeComponentUtils.handleBatchDisposeComponent,
+    componentArray
+  );

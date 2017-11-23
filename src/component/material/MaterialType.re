@@ -8,5 +8,5 @@ type materialData = {
   mutable shaderIndexMap: Js.Dict.t(int),
   /* mutable colors: Js.Typed_array.Float32Array.t, */
   mutable gameObjectMap,
-  disposedIndexArray: array(material)
+  mutable disposedIndexArray: array(material)
 };

@@ -137,3 +137,16 @@ let initGameObject = (gameObject: gameObject, state: StateDataType.state) => {
   requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
   initGameObject(gameObject, state)
 };
+
+let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        gameObjectArray
+        |> WonderCommonlib.ArraySystem.forEach(
+             [@bs] ((gameObject) => _checkGameObjectShouldAlive(gameObject, state))
+           )
+      )
+  );
+  batchDispose(gameObjectArray, state)
+};
