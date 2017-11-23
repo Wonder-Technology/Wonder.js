@@ -27,7 +27,8 @@ let _ =
             (child1LocalPos, child1Pos),
             (child2LocalPos, child2Pos),
             state
-          ) =>
+          ) => {
+        DebugUtils.log(child2Pos) |> ignore;
         (
           state |> getTransformLocalPosition(parent),
           state |> getTransformPosition(parent),
@@ -37,7 +38,8 @@ let _ =
           state |> getTransformPosition(child2)
         )
         |>
-        expect == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos);
+        expect == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos)
+      };
       let _prepareOne = () => {
         let (state, transform) = createTransform(state^);
         let pos1 = (1., 2., 3.);
@@ -173,12 +175,14 @@ let _ =
                     |> setTransformParent(Js.Nullable.return(parent), child2);
                   let state = TransformTool.update(state);
                   state
-                  |> _judgeOneToTwo(
-                       (parent, child1, child2),
-                       (pos1, pos1),
-                       (TransformTool.getDefaultPosition(), pos1),
-                       (pos2, add(Float, pos1, pos2))
-                     )
+                  |> _judgeOneToTwo
+                       (
+                         (parent, child1, child2),
+                         (pos1, pos1),
+                         (TransformTool.getDefaultPosition(), pos1),
+                         (pos2, add(Float, pos1, pos2))
+                       )
+                       /* (pos2,  pos2) */
                 }
               )
             }
@@ -297,6 +301,48 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "fix bug",
+            () =>
+              test(
+                "test two(parent)-two(child)",
+                () => {
+                  let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                  let (state, gameObject2, transform2) = GameObjectTool.createGameObject(state);
+                  let (state, gameObject3, transform3) = GameObjectTool.createGameObject(state);
+                  let (state, gameObject4, transform4) = GameObjectTool.createGameObject(state);
+                  let state =
+                    state
+                    |> Transform.setTransformParent(Js.Nullable.return(transform1), transform3)
+                    |> Transform.setTransformParent(Js.Nullable.return(transform2), transform4);
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (2., 3., 4.);
+                  let pos3 = (4., 3., 4.);
+                  let pos4 = (7., 3., 4.);
+                  let data = TransformTool.getData(state);
+                  let state =
+                    state
+                    |> Transform.setTransformLocalPosition(transform1, pos1)
+                    |> Transform.setTransformLocalPosition(transform2, pos2)
+                    |> Transform.setTransformLocalPosition(transform3, pos3)
+                    |> Transform.setTransformLocalPosition(transform4, pos4);
+                  let state = state |> TransformTool.update;
+                  (
+                    state |> Transform.getTransformPosition(transform1),
+                    state |> Transform.getTransformPosition(transform2),
+                    state |> Transform.getTransformPosition(transform3),
+                    state |> Transform.getTransformPosition(transform4)
+                  )
+                  |>
+                  expect == (
+                              pos1,
+                              pos2,
+                              Vector3System.add(Vector3Type.Float, pos3, pos1),
+                              Vector3System.add(Vector3Type.Float, pos4, pos2)
+                            )
+                }
+              )
           )
         }
       );

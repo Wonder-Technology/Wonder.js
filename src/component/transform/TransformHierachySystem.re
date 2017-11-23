@@ -2,6 +2,9 @@ open TransformType;
 
 open Contract;
 
+let _unsafeGetParent = (index: string, transformData: transformData) =>
+  WonderCommonlib.HashMapSystem.unsafeGet(index, transformData.parentMap);
+
 let getParent = (index: string, transformData: transformData) =>
   Js.Undefined.to_opt(WonderCommonlib.HashMapSystem.unsafeGet(index, transformData.parentMap));
 
@@ -97,7 +100,8 @@ let setParent = (parent: option(transform), child: transform, transformData: tra
 };
 
 let isParent = (parent: transform, child: transform, transformData: transformData) =>
-  switch (getParent(Js.Int.toString(child), transformData)) {
-  | None => false
-  | Some(currentParent) => TransformJudgeUtils.isSame(currentParent, parent)
-  };
+  _unsafeGetParent(Js.Int.toString(child), transformData) === Js.Undefined.return(parent);
+/* switch (getParent(Js.Int.toString(child), transformData)) {
+   | None => false
+   | Some(currentParent) => TransformJudgeUtils.isSame(currentParent, parent)
+   }; */
