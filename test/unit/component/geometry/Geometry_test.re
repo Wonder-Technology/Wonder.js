@@ -167,21 +167,7 @@ let _ =
                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                     let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
-                    let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
-                        geometry1,
-                        state
-                      );
-                    let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
-                        geometry2,
-                        state
-                      );
-                    let state =
-                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
-                        geometry3,
-                        state
-                      );
+                    TestTool.closeContractCheck();
                     let state = state |> GeometryTool.initGeometrys;
                     (state, gameObject1, geometry1, gameObject2, geometry2, gameObject3, geometry3)
                   };
