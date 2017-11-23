@@ -73,9 +73,9 @@ let _ =
                 () => {
                   let (state, geometry1) = BoxGeometryTool.createBoxGeometry(state^);
                   let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
-                  TestTool.closeContractCheck();
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
                   let state = state |> GeometryTool.dispose(geometry1);
-                  TestTool.openContractCheck();
                   expect(
                     () => {
                       let state = state |> GeometryTool.initGeometrys;
@@ -155,7 +155,7 @@ let _ =
       );
       describe(
         "disposeComponent",
-        () =>
+        () => {
           describe(
             "test reallocate geometry",
             () =>
@@ -163,11 +163,25 @@ let _ =
                 "if have dispose too many geometrys, reallocate geometry",
                 () => {
                   let _prepare = (state) => {
-                    TestTool.closeContractCheck();
                     let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=1, ());
                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                     let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
+                    let state =
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                        geometry1,
+                        state
+                      );
+                    let state =
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                        geometry2,
+                        state
+                      );
+                    let state =
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(
+                        geometry3,
+                        state
+                      );
                     let state = state |> GeometryTool.initGeometrys;
                     (state, gameObject1, geometry1, gameObject2, geometry2, gameObject3, geometry3)
                   };
@@ -677,7 +691,32 @@ let _ =
                   )
                 }
               )
+          );
+          describe(
+            "contract check",
+            () =>
+              test(
+                "shouldn't dispose the component which isn't alive",
+                () => {
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state = state |> GameObject.initGameObject(gameObject1);
+                  let state =
+                    VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry1, state);
+                  let state =
+                    state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                  expect(
+                    () => {
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                }
+              )
           )
+        }
       );
       describe(
         "contract check: is alive",
@@ -689,20 +728,20 @@ let _ =
                 open GameObject;
                 let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                 let state = state |> GeometryTool.initGeometrys;
-                TestTool.closeContractCheck();
+                let state =
+                  VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                 let state =
                   state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
-                TestTool.openContractCheck();
                 expect(() => getFunc(geometry, state)) |> toThrowMessage("component should alive")
               };
               let _testSetFunc = (setFunc) => {
                 open GameObject;
                 let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
                 let state = state |> GeometryTool.initGeometrys;
-                TestTool.closeContractCheck();
+                let state =
+                  VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
                 let state =
                   state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
-                TestTool.openContractCheck();
                 expect(() => setFunc(geometry, Obj.magic(0), state))
                 |> toThrowMessage("component should alive")
               };

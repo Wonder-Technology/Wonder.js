@@ -641,6 +641,28 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "contract check",
+            () =>
+              test(
+                "shouldn't dispose the component which isn't alive",
+                () => {
+                  let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                  expect(
+                    () => {
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                }
+              )
           )
         }
       );

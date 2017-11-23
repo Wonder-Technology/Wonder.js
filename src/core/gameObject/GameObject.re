@@ -112,11 +112,7 @@ let addGameObjectGeometryComponent =
 let disposeGameObjectGeometryComponent =
     (gameObject: gameObject, component: component, state: StateDataType.state) => {
   requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
-  disposeGeometryComponent(
-    gameObject,
-    component,
-    state
-  )
+  disposeGeometryComponent(gameObject, component, state)
 };
 
 let getGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataType.state) => {

@@ -4,23 +4,18 @@ open MaterialStateUtils;
 
 open Contract;
 
+let isAlive = (material: material, state: StateDataType.state) =>
+  ComponentDisposeComponentUtils.isAlive(material, getMaterialData(state).disposedIndexArray);
+
 let handleDisposeComponent = (material: material, state: StateDataType.state) => {
-  /* todo refactor: duplicate */
   requireCheck(
     () =>
       Contract.Operators.(
-        test(
-          "shouldn't dispose before",
-          () => {
-            let {disposedIndexArray} = getMaterialData(state);
-            disposedIndexArray |> Js.Array.includes(material) |> assertFalse
-          }
-        )
+        ComponentDisposeComponentUtils.checkComponentShouldAlive(material, isAlive, state)
       )
   );
   let {disposedIndexArray} = getMaterialData(state);
   disposedIndexArray |> Js.Array.push(material) |> ignore;
-  /* _removeFromRenderArray(gameObjectUid, materialData); */
   state
 };
 

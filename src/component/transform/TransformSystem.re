@@ -17,7 +17,7 @@ open TransformHierachySystem;
 open TransformStateUtils;
 
 let isAlive = (transform: transform, state: StateDataType.state) =>
-  ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
+  TransformDisposeComponentUtils.isAlive(transform, state);
 
 let create = (state: StateDataType.state) => {
   let {index, disposedIndexArray} as data = getTransformData(state);

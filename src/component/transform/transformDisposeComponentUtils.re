@@ -4,18 +4,14 @@ open TransformStateUtils;
 
 open Contract;
 
-let handleDisposeComponent =
-    (transform: transform, state: StateDataType.state) => {
+let isAlive = (transform: transform, state: StateDataType.state) =>
+  ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
+
+let handleDisposeComponent = (transform: transform, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
-        test(
-          "shouldn't dispose before",
-          () => {
-            let {disposedIndexArray} = getTransformData(state);
-            disposedIndexArray |> Js.Array.includes(transform) |> assertFalse
-          }
-        )
+        ComponentDisposeComponentUtils.checkComponentShouldAlive(transform, isAlive, state)
       )
   );
   let {disposedIndexArray} as data = getTransformData(state);
@@ -27,8 +23,7 @@ let handleDisposeComponent =
        [@bs]
        (
          (child: transform) =>
-           TransformHierachySystem.removeFromParentMap(Js.Int.toString(child), data)
-           |> ignore
+           TransformHierachySystem.removeFromParentMap(Js.Int.toString(child), data) |> ignore
        )
      );
   switch (TransformHierachySystem.getParent(transformStr, data)) {

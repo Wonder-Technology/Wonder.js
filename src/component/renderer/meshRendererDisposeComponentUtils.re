@@ -11,18 +11,18 @@ let _removeFromRenderArray = (gameObjectUid: string, {renderGameObjectArray} as 
   renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex)
 };
 
+let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
+  ComponentDisposeComponentUtils.isAlive(
+    meshRenderer,
+    getMeshRendererData(state).disposedIndexArray
+  );
+
 let handleDisposeComponent =
     (meshRenderer: meshRenderer, gameObjectUid: string, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
-        test(
-          "shouldn't dispose before",
-          () => {
-            let {disposedIndexArray} = getMeshRendererData(state);
-            disposedIndexArray |> Js.Array.includes(meshRenderer) |> assertFalse
-          }
-        )
+        ComponentDisposeComponentUtils.checkComponentShouldAlive(meshRenderer, isAlive, state)
       )
   );
   let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);

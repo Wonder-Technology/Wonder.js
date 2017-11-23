@@ -22,10 +22,7 @@ let getGameObject = (meshRenderer: meshRenderer, state: StateDataType.state) => 
 };
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
-  ComponentDisposeComponentUtils.isAlive(
-    meshRenderer,
-    getMeshRendererData(state).disposedIndexArray
-  );
+  MeshRendererDisposeComponentUtils.isAlive(meshRenderer, state);
 
 let initData = () => {
   index: 0,

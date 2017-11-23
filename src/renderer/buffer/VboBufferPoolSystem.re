@@ -5,21 +5,10 @@ open Contract;
 let _getBuffer = (gl, bufferPool, state: StateDataType.state) =>
   switch (bufferPool |> Js.Array.pop) {
   | Some(buffer) => buffer
-  | None =>
-    let buffer = Gl.createBuffer(gl);
-    /* bufferPool |> Js.Array.push(buffer) |> ignore; */
-    buffer
+  | None => Gl.createBuffer(gl)
   };
 
 let getArrayBuffer = (gl, state: StateDataType.state) =>
-  /* let {arrayBufferPool} = VboBufferStateUtils.getVboBufferData(state);
-     switch (bufferPool |> Js.Array.pop) {
-     | Some(buffer) => buffer
-     | None =>
-       let buffer = Gl.createBuffer(gl);
-       bufferPool |> Js.Array.push(buffer) |> ignore;
-       buffer
-     } */
   _getBuffer(gl, VboBufferStateUtils.getVboBufferData(state).arrayBufferPool, state);
 
 let getElementArrayBuffer = (gl, state: StateDataType.state) =>

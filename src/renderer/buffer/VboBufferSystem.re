@@ -21,14 +21,6 @@ let getOrCreateBuffer =
 };
 
 let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) =>
-  /* let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
-
-     _unsafeGetBufferFromBufferMap(geometryIndexStr, vertexBufferMap) |> Js.Array.push()
-
-       switch (_unsafeGetBufferFromBufferMap(geometryIndexStr, bufferMap)) {
-       | Some(buffer) => buffer
-       | None => () */
-  /* } */
   VboBufferPoolSystem.addBufferToPool(geometryIndexStr, state);
 
 let initData = () => {

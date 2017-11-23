@@ -342,6 +342,35 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "contract check",
+            () =>
+              test(
+                "shouldn't dispose the component which isn't alive",
+                () => {
+                  let (state, gameObject1, cameraController1, gameObject2, cameraController2) =
+                    _prepareTwo(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectCameraControllerComponent(
+                         gameObject1,
+                         cameraController1
+                       );
+                  expect(
+                    () => {
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectCameraControllerComponent(
+                             gameObject1,
+                             cameraController1
+                           );
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                }
+              )
           )
         }
       );

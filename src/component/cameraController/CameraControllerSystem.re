@@ -188,10 +188,7 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
-  ComponentDisposeComponentUtils.isAlive(
-    cameraController,
-    getCameraControllerData(state).disposedIndexArray
-  );
+  CameraControllerDisposeComponentUtils.isAlive(cameraController, state);
 
 let initData = () => {
   index: 0,

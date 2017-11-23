@@ -6,23 +6,23 @@ open GeometryStateUtils;
 
 open Contract;
 
-/* let handleDisposeComponent =
-   (geometry: geometry, gameObjectUid: string, state: StateDataType.state) => { */
+let isAlive = (geometry: geometry, state: StateDataType.state) => {
+  let {mappedIndexMap, disposedIndexMap} = GeometryStateUtils.getGeometryData(state);
+  let geometryIndexStr = Js.Int.toString(geometry);
+  disposedIndexMap |> HashMapSystem.has(geometryIndexStr) ?
+    false :
+    mappedIndexMap
+    |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(geometry))
+    |> Js.Option.isSome
+};
+
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
-  /* todo refactor: duplicate */
-  /* todo check */
-  /* requireCheck(
-       () =>
-         Contract.Operators.(
-           test(
-             "shouldn't dispose before",
-             () => {
-               let {disposedIndexArray} = getGeometryData(state);
-               disposedIndexArray |> Js.Array.includes(geometry) |> assertFalse
-             }
-           )
-         )
-     ); */
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        ComponentDisposeComponentUtils.checkComponentShouldAlive(geometry, isAlive, state)
+      )
+  );
   let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
   let geometryIndexStr = Js.Int.toString(geometry);
   disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
@@ -30,7 +30,6 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   data.disposeCount = succ(disposeCount);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
-    /* todo handle vbo buffer */
     CpuMemorySystem.reAllocateGeometry(state)
   } else {
     state

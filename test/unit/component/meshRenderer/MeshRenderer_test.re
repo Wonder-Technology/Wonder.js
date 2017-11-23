@@ -129,6 +129,35 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "contract check",
+            () =>
+              test(
+                "shouldn't dispose the component which isn't alive",
+                () => {
+                  let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                    _prepareTwo();
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectMeshRendererComponent(
+                         gameObject1,
+                         meshRenderer1
+                       );
+                  expect(
+                    () => {
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                             gameObject1,
+                             meshRenderer1
+                           );
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                }
+              )
           )
         }
       );

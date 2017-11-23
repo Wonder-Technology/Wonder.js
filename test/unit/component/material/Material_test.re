@@ -35,6 +35,31 @@ let _ =
           )
       );
       describe(
+        "disposeComponent",
+        () =>
+          describe(
+            "contract check",
+            () =>
+              test(
+                "shouldn't dispose the component which isn't alive",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  expect(
+                    () => {
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                      ()
+                    }
+                  )
+                  |> toThrowMessage("shouldn't dispose the component which isn't alive")
+                }
+              )
+          )
+      );
+      describe(
         "contract check: is alive",
         () =>
           describe(
