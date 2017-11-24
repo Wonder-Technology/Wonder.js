@@ -136,11 +136,19 @@ let batchDispose = (uidArray: array(string), state: StateDataType.state) => {
                    ////shareGeometry:false
    } */
 /* let clone = (uid: string,  state: StateDataType.state, config:Js.t({..}), ~count:int=1,  ()) => { */
-let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
-  let countRangeArr = ArraySystem.range(0, count);
-  let clonedGameObjectArr = [||];
+let clone = (uid: string, state: StateDataType.state, count: int) => {
+  let countRangeArr = ArraySystem.range(0, count - 1);
+  let totalClonedGameObjectArr = [||];
   let rec _clone =
-          (uid: string, transform, countRangeArr, clonedGameObjectArr, state: StateDataType.state) => {
+          (
+            uid: string,
+            transform,
+            countRangeArr,
+            clonedParentTransformArr,
+            totalClonedGameObjectArr,
+            state: StateDataType.state
+          ) => {
+    let clonedGameObjectArr = [||];
     let state =
       countRangeArr
       |> ArraySystem.reduceState(
@@ -154,6 +162,7 @@ let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
            ),
            state
          );
+    totalClonedGameObjectArr |> Js.Array.push(clonedGameObjectArr) |> ignore;
     let state =
       switch (getMeshRendererComponent(uid, state)) {
       | Some(meshRenderer) =>
@@ -215,8 +224,6 @@ let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
            clonedTransformArr
          )
        }; */
-    let transformData = TransformStateUtils.getTransformData(state);
-    TransformDirtyUtils.addToDirtyArray(transform, transformData) |> ignore;
     let (state, clonedTransformArr) =
       GameObjectComponentUtils.cloneTransformComponent(transform, countRangeArr, state);
     /* todo optimize compare: add in each loop? */
@@ -226,6 +233,24 @@ let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
            clonedGameObjectArr,
            clonedTransformArr
          );
+    /* DebugUtils.log(transform) |> ignore; */
+    /* clonedParentTransformArr */
+    /* let transformData = TransformStateUtils.getTransformData(state); */
+    clonedParentTransformArr
+    /* |> DebugUtils.log */
+    |> ArraySystem.reduceOneParami(
+         [@bs]
+         (
+           (transformData, clonedParentTransform, i) =>
+             transformData
+             |> TransformHierachySystem.setParent(
+                  Some(clonedParentTransform),
+                  clonedTransformArr[i]
+                )
+         ),
+         TransformStateUtils.getTransformData(state)
+       );
+    /* DebugUtils.log(("child:", clonedTransformArr )) |> ignore; */
     /* todo optimize: use loop */
     TransformHierachySystem.unsafeGetChildren(
       Js.Int.toString(transform),
@@ -234,20 +259,21 @@ let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
     |> ArraySystem.reduceState(
          [@bs]
          (
-           (state, childTransform) => {
-             let transformData = TransformStateUtils.getTransformData(state);
-             let transformData =
-               transformData |> TransformHierachySystem.setParent(Some(transform), childTransform);
+           (state, childTransform) =>
+             /* DebugUtils.log(( transform, childTransform )) |> ignore; */
+             /* let transformData = TransformStateUtils.getTransformData(state); */
+             /* let transformData =
+                transformData |> TransformHierachySystem.setParent(Some(transform), childTransform); */
              state
              |> _clone(
-                  transformData
+                  TransformStateUtils.getTransformData(state)
                   |> TransformGameObjectUtils.getGameObject(childTransform)
                   |> Js.Option.getExn,
                   childTransform,
                   countRangeArr,
-                  clonedGameObjectArr
+                  clonedTransformArr,
+                  totalClonedGameObjectArr
                 )
-           }
          ),
          state
        )
@@ -268,10 +294,11 @@ let clone = (uid: string, state: StateDataType.state, ~count: int=1) => {
       uid,
       getTransformComponent(uid, state) |> Js.Option.getExn,
       countRangeArr,
-      clonedGameObjectArr,
+      [||],
+      totalClonedGameObjectArr,
       state
     ),
-    clonedGameObjectArr
+    totalClonedGameObjectArr
   )
 };
 

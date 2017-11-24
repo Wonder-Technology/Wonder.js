@@ -7,7 +7,6 @@ open GeometryStateUtils;
 open GeometryOperateDataUtils;
 
 let initGeometry = (mappedIndex: int, state: StateDataType.state) => {
-  /* todo test */
   let {isClonedMap, computeDataFuncMap} = getGeometryData(state);
   GeometryCloneComponentUtils.isCloned(Js.Int.toString(mappedIndex), isClonedMap) ?
     state :

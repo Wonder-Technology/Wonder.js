@@ -1,21 +1,21 @@
 open BufferConfigSystem;
 
-/* let minBufferSize (state: StateDataType.state) => {
-     (getConfig state).transformDataBufferCount = 5;
-     state
-   }; */
 let setBufferSize =
     (
       state: StateDataType.state,
       ~transformDataBufferCount=10,
-      /* ~meshRendererDataBufferCount=10, */
       ~basicMaterialDataBufferCount=10,
-      /* ~geometryDataBufferCount=10, */
+      ~geometryPointDataBufferCount=100,
       ()
     ) => {
   getConfig(state).transformDataBufferCount = transformDataBufferCount;
-  /* getConfig(state).meshRendererDataBufferCount = meshRendererDataBufferCount; */
   getConfig(state).basicMaterialDataBufferCount = basicMaterialDataBufferCount;
-  /* getConfig(state).geometryDataBufferCount = geometryDataBufferCount; */
+  getConfig(state).geometryPointDataBufferCount = geometryPointDataBufferCount;
   state
+};
+
+let buildBufferConfig = (count) => {
+  "transformDataBufferCount": Js.Nullable.return(count),
+  "geometryPointDataBufferCount": Js.Nullable.return(count),
+  "basicMaterialDataBufferCount": Js.Nullable.return(count)
 };

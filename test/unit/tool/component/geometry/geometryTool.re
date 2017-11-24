@@ -2,6 +2,15 @@ let getData = (state: StateDataType.state) => GeometryStateUtils.getGeometryData
 
 let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
+let initGeometry = (geometry, state: StateDataType.state) =>
+  GeometryInitComponentUtils.initGeometry(
+    GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(geometry),
+      GeometryStateUtils.getGeometryData(state).mappedIndexMap
+    ),
+    state
+  );
+
 let buildBoxGeometryConfigDataJsObj =
     (
       ~width=Js.Nullable.undefined,
