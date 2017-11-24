@@ -3,7 +3,7 @@ open GeometryType;
 open BoxGeometry;
 
 let computeData = (geometry, state: StateDataType.state) =>
-  BoxGeometrySystem._computeData(geometry, state);
+  BoxGeometryCreateUtils._computeData(geometry, state);
 
 let getDefaultIndicesArray = () => [|
   0,

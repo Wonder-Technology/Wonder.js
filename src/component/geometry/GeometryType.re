@@ -9,8 +9,8 @@ type geometryInfo = {
 type geometryInfoArray = array(geometryInfo);
 
 type geometryComputeData = {
-  vertices: array(float),
-  indices: array(int)
+  vertices: Js.Typed_array.Float32Array.t,
+  indices: Js.Typed_array.Uint16Array.t
 };
 
 type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));
@@ -24,3 +24,5 @@ type geometryAliveIndexArray = array(geometry);
 type geometryIndicesCountCacheMap = Js.Dict.t(int);
 
 type geometryVerticesCountCacheMap = Js.Dict.t(int);
+
+type geometryIsClonedMap = Js.Dict.t(bool);

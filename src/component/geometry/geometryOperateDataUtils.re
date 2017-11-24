@@ -64,17 +64,18 @@ let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
 let _setFloat32PointData =
     (
       index: int,
-      data: Js.Array.t(float),
+      data: Float32Array.t,
       points: Float32Array.t,
       infoArray: geometryInfoArray,
       offset: int
     ) => {
-  let count = Js.Array.length(data);
+  /* let count = Js.Array.length(data); */
+  let count = Float32Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
   /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
   Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
-  fillFloat32Arr(points, data, startIndex);
+  fillFloat32ArrayWithOffset(points, data, startIndex);
   newOffset
 };
 
@@ -92,13 +93,14 @@ let _getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
 };
 
 let _setUint16PointData =
-    (index: int, data: Js.Array.t(int), points: Uint16Array.t, infoArray, offset: int) => {
-  let count = Js.Array.length(data);
+    (index: int, data: Uint16Array.t, points: Uint16Array.t, infoArray, offset: int) => {
+  /* let count = Js.Array.length(data); */
+  let count = Uint16Array.length(data);
   let startIndex = offset;
   let newOffset = offset + count;
   /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
   Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
-  fillUint16Arr(points, data, startIndex);
+  fillUint16ArrWithOffset(points, data, startIndex);
   newOffset
 };
 
@@ -107,7 +109,8 @@ let getVertices = (index: int, state: StateDataType.state) => {
   _getFloat32PointData(index, vertices, verticesInfoArray)
 };
 
-let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.state) => {
+/* let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.state) => { */
+let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
   let {verticesInfoArray, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
     _setFloat32PointData(index, data, vertices, verticesInfoArray, verticesOffset);
@@ -119,7 +122,7 @@ let getIndices = (index: int, state: StateDataType.state) => {
   _getUint16PointData(index, indices, indicesInfoArray)
 };
 
-let setIndices = (index: int, data: Js.Array.t(int), state: StateDataType.state) => {
+let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
   let {indicesInfoArray, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
     _setUint16PointData(index, data, indices, indicesInfoArray, indicesOffset);

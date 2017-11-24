@@ -8,6 +8,8 @@ open GeometryType;
 
 open Wonder_jest;
 
+open Js.Typed_array;
+
 let _ =
   describe(
     "BoxGeometry",
@@ -123,7 +125,7 @@ let _ =
               (vertices, indices)
               |>
               expect == (
-                          [|
+                          Float32Array.make([|
                             (-10.),
                             (-20.),
                             30.,
@@ -286,8 +288,8 @@ let _ =
                             (-10.),
                             20.,
                             30.
-                          |],
-                          [|
+                          |]),
+                          Uint16Array.make([|
                             0,
                             3,
                             1,
@@ -432,7 +434,7 @@ let _ =
                             52,
                             53,
                             50
-                          |]
+                          |])
                         )
             }
           )

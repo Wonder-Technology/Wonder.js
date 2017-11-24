@@ -3,6 +3,7 @@ open Geometry;
 open BoxGeometry;
 
 open Wonder_jest;
+open Js.Typed_array;
 
 let _ =
   describe(
@@ -121,7 +122,7 @@ let _ =
                   let (state, geometry) = _prepare();
                   expect(
                     () =>
-                      state |> setGeometryVertices(geometry, [|1., 2., 3., 1., 2., 3.|]) |> ignore
+                      state |> setGeometryVertices(geometry,  Float32Array.make([|1., 2., 3., 1., 2., 3.|])) |> ignore
                   )
                   |> toThrowMessage(errMeg)
                 }
@@ -131,7 +132,7 @@ let _ =
                 () => {
                   let (state, geometry) = _prepare();
                   expect(
-                    () => state |> setGeometryIndices(geometry, [|1, 2, 3, 1, 2, 4|]) |> ignore
+                    () => state |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|])) |> ignore
                   )
                   |> toThrowMessage("should not exceed uint32Arr range")
                 }

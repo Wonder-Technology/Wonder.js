@@ -1,38 +1,11 @@
-open GeometryType;
+open GeometryStateUtils;
 
 open BoxGeometryType;
 
-open GeometryStateUtils;
+open GeometryType;
 
-/* let setConfigData = (geometry:geometry, configData:WonderCommonlib.HashMapSystem.t (float), state:StateDataType.state) => { */
-let setConfigData =
-    (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
-  open JsObjUtils;
-  let configDataHashMap =
-    WonderCommonlib.HashMapSystem.createEmpty()
-    |> WonderCommonlib.HashMapSystem.set("width", getValueFromJsObj(configData##width, 10.))
-    |> WonderCommonlib.HashMapSystem.set("height", getValueFromJsObj(configData##height, 10.))
-    |> WonderCommonlib.HashMapSystem.set("depth", getValueFromJsObj(configData##depth, 10.))
-    |> WonderCommonlib.HashMapSystem.set(
-         "widthSegment",
-         getValueFromJsObj(configData##widthSegment, 1.)
-       )
-    |> WonderCommonlib.HashMapSystem.set(
-         "heightSegment",
-         getValueFromJsObj(configData##heightSegment, 1.)
-       )
-    |> WonderCommonlib.HashMapSystem.set(
-         "depthSegment",
-         getValueFromJsObj(configData##depthSegment, 1.)
-       );
-  getGeometryData(state).configDataMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometry), configDataHashMap)
-  |> ignore;
-  state
-};
-
-/* let _computeData = (index: int, state: StateDataType.state) =>
-  switch (GeometrySystem.getConfigData(index, state)) {
+let _computeData = (index: int, state: StateDataType.state) =>
+  switch (GeometryConfigDataUtils.getConfigData(index, state)) {
   | None => ExceptionHandleSystem.throwMessage("configData should exist")
   | Some(configDataMap) =>
     let width = WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap);
@@ -177,21 +150,20 @@ let setConfigData =
     _generateFace(right, int_of_float(depthSegment), int_of_float(heightSegment));
     _generateFace(left, int_of_float(depthSegment), int_of_float(heightSegment));
     {
-      vertices,
+      vertices: Js.Typed_array.Float32Array.make(vertices),
       /* normals: normals,
          texCoords: texCoords, */
-      indices
+      indices: Js.Typed_array.Uint16Array.make(indices)
     }
   };
 
 let create = (state: StateDataType.state) => {
   open StateDataType;
-  let (state, index) = GeometrySystem.create(state);
+  let (state, index) = GeometryCreateUtils.create(state);
   let {mappedIndexMap} as data = getGeometryData(state);
   let mappedIndex = GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), mappedIndexMap);
   data.computeDataFuncMap
   |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), _computeData)
   |> ignore;
   (state, index)
-}; */
-let create = BoxGeometryCreateUtils.create;
+};

@@ -64,7 +64,7 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
     () =>
       Contract.Operators.(
         test(
-          "should not exceed float32Arr range",
+          "should not exceed Float32Array range",
           () => Js.Array.length(dataArr) + startIndex <= Float32Array.length(typeArr)
         )
       )
@@ -76,6 +76,11 @@ let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), start
     dataArrIndex := succ(dataArrIndex^)
   };
   typeArr
+};
+
+let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr:Float32Array.t, offset) => {
+  requireCheck(() => Contract.Operators.(test("offset should >= 0", () => offset >= 0)));
+  targetTypeArr |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
 let fillFloat32ArrayWithFloat32Array =
@@ -109,7 +114,7 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
     () =>
       Contract.Operators.(
         test(
-          "should not exceed uint32Arr range",
+          "should not exceed Uint16Array range",
           () => Js.Array.length(dataArr) + startIndex <= Uint16Array.length(typeArr)
         )
       )
@@ -120,6 +125,11 @@ let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startInde
     dataArrIndex := succ(dataArrIndex^)
   };
   typeArr
+};
+
+let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
+  requireCheck(() => Contract.Operators.(test("offset should >= 0", () => offset >= 0)));
+  targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
 let fillUint16ArrWithUint16Arr =

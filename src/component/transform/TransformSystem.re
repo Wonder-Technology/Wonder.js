@@ -1,6 +1,4 @@
-open ComponentSystem;
-
-open TransformOperateDataSystem;
+open TransformOperateDataUtils;
 
 open TransformType;
 
@@ -19,72 +17,7 @@ open TransformStateUtils;
 let isAlive = (transform: transform, state: StateDataType.state) =>
   TransformDisposeComponentUtils.isAlive(transform, state);
 
-let create = (state: StateDataType.state) => {
-  let {index, disposedIndexArray} as data = getTransformData(state);
-  let (index, newIndex) = generateIndex(index, disposedIndexArray);
-  data.index = newIndex;
-  (state, index)
-  |> ensureCheck(
-       ((state, _)) => {
-         open Contract.Operators;
-         let {index}: transformData = getTransformData(state);
-         let maxCount = getMaxCount(state);
-         test(
-           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
-           () => index <= maxCount
-         )
-       }
-     )
-};
-
-let _setDefaultTypeArrData = (count: int, (buffer, localToWorldMatrices, localPositions)) => {
-  /* let defaultPositions = [|0., 0., 0.|]; */
-  let defaultLocalToWorldMatrices = [|
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.,
-    0.,
-    0.,
-    0.,
-    0.,
-    1.
-  |];
-  let rec _set = (index: int, data: array(float), setFunc, typeArr: Js.Typed_array.Float32Array.t) =>
-    switch index {
-    | index when index >= count => typeArr
-    | index => [@bs] setFunc(index, data, typeArr) |> _set(index + 1, data, setFunc)
-    };
-  (
-    buffer,
-    localPositions,
-    _set(0, defaultLocalToWorldMatrices, setLocalToWorldMatricesTypeArr, localToWorldMatrices)
-  )
-};
-
-let _initBufferData = (count: int) => {
-  open Js.Typed_array;
-  let size: int = Float32Array._BYTES_PER_ELEMENT * (getMatrix4DataSize() + getVector3DataSize());
-  let buffer = ArrayBuffer.make(count * size);
-  let typeArrCount = ref(count * getMatrix4DataSize());
-  let offset = ref(0);
-  let localToWorldMatrices =
-    Float32Array.fromBufferRange(buffer, ~offset=offset^, ~length=typeArrCount^);
-  offset := typeArrCount^ * Float32Array._BYTES_PER_ELEMENT;
-  typeArrCount := count * getVector3DataSize();
-  let localPositions =
-    Float32Array.fromBufferRange(buffer, ~offset=offset^, ~length=typeArrCount^);
-  offset := offset^ + typeArrCount^ * Float32Array._BYTES_PER_ELEMENT;
-  /* todo set localRotations,localScales */
-  (buffer, localToWorldMatrices, localPositions) |> _setDefaultTypeArrData(count)
-};
+let create = TransformCreateUtils.create;
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
@@ -117,17 +50,22 @@ let update = (state: StateDataType.state) => {
 };
 
 let getLocalPosition = (transform: transform, state: StateDataType.state) =>
-  getFloat3(getVector3DataIndex(transform), getTransformData(state).localPositions);
+  /* getFloat3(getVector3DataIndex(transform), getTransformData(state).localPositions); */
+  TransformOperateDataUtils.getLocalPosition(transform, getTransformData(state));
 
 let setLocalPosition = (transform: transform, localPosition: position, state: StateDataType.state) => {
-  let transformData = getTransformData(state);
-  setFloat3(
-    getVector3DataIndex(transform),
-    TransformCastTypeUtils.tupleToJsArray(localPosition),
-    transformData.localPositions
-  )
+  /* let transformData = getTransformData(state);
+     setFloat3(
+       getVector3DataIndex(transform),
+       TransformCastTypeUtils.tupleToJsArray(localPosition),
+       transformData.localPositions
+     )
+     |> ignore; */
+  state
+  |> getTransformData
+  |> TransformOperateDataUtils.setLocalPosition(transform, localPosition)
+  |> addItAndItsChildrenToDirtyArray(transform)
   |> ignore;
-  addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore;
   /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
@@ -146,7 +84,7 @@ let getPosition = (transform: transform, state: StateDataType.state) => {
 
 let setPosition = (transform: transform, position: position, state: StateDataType.state) => {
   let transformData = getTransformData(state);
-  TransformOperateDataSystem.setPosition(
+  TransformOperateDataUtils.setPosition(
     getVector3DataIndex(transform),
     TransformHierachySystem.getParent(Js.Int.toString(transform), transformData),
     position,
@@ -160,13 +98,13 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
 
 let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>
   /* let data =
-       TransformOperateDataSystem.getLocalToWorldMatrix(
+       TransformOperateDataUtils.getLocalToWorldMatrix(
          transform,
          getTransformData(state).localToWorldMatrices
        );
      isTransform(transform, getTransformData(state).isTransformMap) ?
        CacheType.Cache(data) : CacheType.New(data) */
-  TransformOperateDataSystem.getLocalToWorldMatrix(
+  TransformOperateDataUtils.getLocalToWorldMatrix(
     transform,
     getTransformData(state).localToWorldMatrices
   );
@@ -176,14 +114,13 @@ let init = (state: StateDataType.state) => {
   state
 };
 
-let getGameObject = (transform: transform, state: StateDataType.state) => {
-  let transformData = getTransformData(state);
-  getComponentGameObject(transform, transformData.gameObjectMap)
-};
+let getGameObject = (transform: transform, state: StateDataType.state) =>
+  TransformGameObjectUtils.getGameObject(transform, getTransformData(state));
 
 let initData = (state: StateDataType.state) => {
-  let maxCount = getMaxCount(state);
-  let (buffer, localPositions, localToWorldMatrices) = _initBufferData(maxCount);
+  let maxCount = TransformBufferUtils.getMaxCount(state);
+  let (buffer, localPositions, localToWorldMatrices) =
+    TransformBufferUtils.initBufferData(maxCount);
   state.transformData =
     Some(
       {

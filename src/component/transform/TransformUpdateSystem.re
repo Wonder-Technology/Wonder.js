@@ -2,7 +2,7 @@ open TransformType;
 
 open TransformHierachySystem;
 
-open TransformOperateDataSystem;
+open TransformOperateDataUtils;
 
 /* let _moveFromDirtyArrayToNormalArray (index: int) (transformData: transformData) => {
      transformData.firstDirtyIndex = addFirstDirtyIndex transformData.firstDirtyIndex;

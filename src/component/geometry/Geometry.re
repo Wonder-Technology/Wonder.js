@@ -21,7 +21,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   )
 };
 
-let setGeometryVertices = (geometry: int, data: Js.Array.t(float), state: StateDataType.state) => {
+let setGeometryVertices = (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
@@ -49,7 +49,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   )
 };
 
-let setGeometryIndices = (geometry: int, data: Js.Array.t(int), state: StateDataType.state) => {
+let setGeometryIndices = (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );

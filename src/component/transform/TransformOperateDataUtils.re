@@ -6,9 +6,6 @@ open TypeArrayUtils;
 
 open TransformType;
 
-let getMaxCount = (state: StateDataType.state) =>
-  BufferConfigSystem.getConfig(state).transformDataBufferCount;
-
 let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 
 let getVector3DataIndex = (index: int) => index * getVector3DataSize();
@@ -57,6 +54,7 @@ let setPosition =
       localPositions
     )
   };
+
 /* let isTransform = (transform: transform, isTransformMap) =>
      switch (isTransformMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(transform))) {
      | None => false
@@ -72,3 +70,18 @@ let setPosition =
     TransformStateUtils.getTransformData(state).isTransformMap = WonderCommonlib.HashMapSystem.createEmpty();
      state;
    }; */
+let getLocalPosition = (transform: transform, transformData) =>
+  getFloat3(getVector3DataIndex(transform), transformData.localPositions);
+
+let setLocalPosition = (transform: transform, localPosition: position, transformData) => {
+  /* let transformData = getTransformData(state); */
+  setFloat3(
+    getVector3DataIndex(transform),
+    TransformCastTypeUtils.tupleToJsArray(localPosition),
+    transformData.localPositions
+  )
+  |> ignore;
+  /* addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore; */
+  /* state */
+  transformData
+};

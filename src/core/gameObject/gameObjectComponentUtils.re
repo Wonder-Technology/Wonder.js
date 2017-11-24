@@ -192,3 +192,66 @@ let batchDisposeCameraControllerComponent =
     CameraControllerDisposeComponentUtils.handleBatchDisposeComponent,
     componentArray
   );
+
+let _batchAddComponent =
+    (
+      uidArray: array(string),
+      componentArr: array(component),
+      componentMap,
+      state: StateDataType.state
+    ) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "one gameObject should add one component",
+          () => uidArray |> Js.Array.length == (componentArr |> Js.Array.length)
+        )
+      )
+  );
+  uidArray
+  |> WonderCommonlib.ArraySystem.forEachi(
+       [@bs]
+       ((uid, index) => _addComponent(uid, Array.unsafe_get(componentArr, index), componentMap))
+     );
+  state
+};
+
+let batchAddTransformComponent =
+    (uidArray: array(string), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    uidArray,
+    componentArr,
+    GameObjectStateUtils.getGameObjectData(state).transformMap,
+    state
+  );
+
+let batchAddMeshRendererComponent =
+    (uidArray: array(string), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    uidArray,
+    componentArr,
+    GameObjectStateUtils.getGameObjectData(state).meshRendererMap,
+    state
+  );
+
+let batchAddGeometryComponent =
+    (uidArray: array(string), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    uidArray,
+    componentArr,
+    GameObjectStateUtils.getGameObjectData(state).geometryMap,
+    state
+  );
+
+let cloneTransformComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  TransformCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
+
+let cloneMeshRendererComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  MeshRendererCloneComponentUtils.handleCloneComponent(countRangeArr, state);
+
+let cloneGeometryComponent =
+    (mappedSourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  GeometryCloneComponentUtils.handleCloneComponent(mappedSourceComponent, countRangeArr, state);

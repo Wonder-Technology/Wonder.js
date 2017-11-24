@@ -50,7 +50,7 @@ let addItAndItsChildrenToDirtyArray = (index: int, transformData: transformData)
   let children = ref([|index|]);
   while (Js.Array.length(children^) > 0) {
     let last: int = WonderCommonlib.ArraySystem.unsafePop(children^);
-    _addToDirtyArray(last, transformData) |> ignore;
+    TransformDirtyUtils.addToDirtyArray(last, transformData) |> ignore;
     children :=
       Js.Array.concat(
         children^,
