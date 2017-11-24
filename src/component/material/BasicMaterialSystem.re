@@ -16,12 +16,7 @@ open Contract;
 
 /* let getMaxCount = (state: StateDataType.state) =>
    BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount; */
-let create = (state: StateDataType.state) => {
-  let {index, disposedIndexArray} as data = getMaterialData(state);
-  let (index, newIndex) = generateIndex(index, disposedIndexArray);
-  data.index = newIndex;
-  (state, index)
-};
+let create = (state: StateDataType.state) => BasicMaterialCreateUtils.create(state);
 
 /* let buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
 

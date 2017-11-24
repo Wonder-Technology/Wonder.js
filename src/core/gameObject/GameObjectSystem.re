@@ -194,6 +194,18 @@ let clone = (uid: string, state: StateDataType.state, count: int) => {
            )
       | None => state
       };
+    let state =
+      switch (getMaterialComponent(uid, state)) {
+      | Some(meshRenderer) =>
+        let (state, clonedMaterialArr) =
+          GameObjectComponentUtils.cloneMaterialComponent(meshRenderer, countRangeArr, state);
+        state
+        |> GameObjectComponentUtils.batchAddMaterialComponent(
+             clonedGameObjectArr,
+             clonedMaterialArr
+           )
+      | None => state
+      };
     /* let (state, transform, clonedTransformArr) = {
          /* switch (getTransformComponent(uid, state)) {
             | Some(transform) =>

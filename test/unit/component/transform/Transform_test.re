@@ -28,7 +28,6 @@ let _ =
             (child2LocalPos, child2Pos),
             state
           ) => {
-        DebugUtils.log(child2Pos) |> ignore;
         (
           state |> getTransformLocalPosition(parent),
           state |> getTransformPosition(parent),

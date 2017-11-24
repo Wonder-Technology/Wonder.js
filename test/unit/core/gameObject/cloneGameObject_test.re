@@ -144,6 +144,26 @@ let _ =
             }
           );
           describe(
+            "test clone material component",
+            () =>
+              test(
+                "test clone specific count of materials",
+                () => {
+                  open GameObjectType;
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, state, ~count=2);
+                  clonedGameObjectArr
+                  |> _getFlattenClonedGameObjectArr
+                  |> Js.Array.map(
+                       (clonedGameObject) =>
+                         getGameObjectMaterialComponent(clonedGameObject, state)
+                     )
+                  |> Js.Array.length
+                  |> expect == 2
+                }
+              )
+          );
+          describe(
             "test clone transform component",
             () => {
               test(
@@ -236,10 +256,10 @@ let _ =
                       open GameObjectType;
                       let (state, gameObject1, geometry1) =
                         BoxGeometryTool.createGameObject(state^);
-                      let transform1 = getGameObjectGeometryComponent(gameObject1, state);
+                      let transform1 = getGameObjectTransformComponent(gameObject1, state);
                       let (state, gameObject2, geometry2) =
                         BoxGeometryTool.createGameObject(state);
-                      let transform2 = getGameObjectGeometryComponent(gameObject2, state);
+                      let transform2 = getGameObjectTransformComponent(gameObject2, state);
                       let state =
                         state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                       let state = state |> GeometryTool.initGeometrys;
@@ -250,6 +270,34 @@ let _ =
                       |> Js.Array.map(
                            (clonedGameObject) =>
                              getGameObjectGeometryComponent(clonedGameObject, state)
+                         )
+                      |> Js.Array.length
+                      |> expect == 4
+                    }
+                  )
+              );
+              describe(
+                "test clone material component",
+                () =>
+                  test(
+                    "test clone specific count of materials",
+                    () => {
+                      open GameObjectType;
+                      let (state, gameObject1, material1) =
+                        BasicMaterialTool.createGameObject(state^);
+                      let transform1 = getGameObjectTransformComponent(gameObject1, state);
+                      let (state, gameObject2, material2) =
+                        BasicMaterialTool.createGameObject(state);
+                      let transform2 = getGameObjectTransformComponent(gameObject2, state);
+                      let state =
+                        state |> setTransformParent(Js.Nullable.return(transform1), transform2);
+                      let (state, clonedGameObjectArr) =
+                        cloneGameObject(gameObject1, state, ~count=2);
+                      clonedGameObjectArr
+                      |> _getFlattenClonedGameObjectArr
+                      |> Js.Array.map(
+                           (clonedGameObject) =>
+                             getGameObjectMaterialComponent(clonedGameObject, state)
                          )
                       |> Js.Array.length
                       |> expect == 4

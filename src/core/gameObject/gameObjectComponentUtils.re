@@ -244,6 +244,15 @@ let batchAddGeometryComponent =
     state
   );
 
+let batchAddMaterialComponent =
+    (uidArray: array(string), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    uidArray,
+    componentArr,
+    GameObjectStateUtils.getGameObjectData(state).materialMap,
+    state
+  );
+
 let cloneTransformComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   TransformCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
@@ -255,3 +264,7 @@ let cloneMeshRendererComponent =
 let cloneGeometryComponent =
     (mappedSourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   GeometryCloneComponentUtils.handleCloneComponent(mappedSourceComponent, countRangeArr, state);
+
+let cloneMaterialComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  MaterialCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
