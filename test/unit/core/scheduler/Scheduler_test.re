@@ -20,6 +20,7 @@ let _ =
       test(
         "update scheduler before update system",
         () => {
+          TestTool.closeContractCheck();
           let (state, gameObject, transform) = GameObjectTool.createGameObject(state^);
           let localPos = (1., 2., 3.);
           let state =
@@ -42,6 +43,7 @@ let _ =
           test(
             "schedule the task in each frame",
             () => {
+              TestTool.closeContractCheck();
               let result = ref(0.);
               let state =
                 state^

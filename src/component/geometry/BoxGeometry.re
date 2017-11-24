@@ -17,11 +17,10 @@ let setBoxGeometryConfigData =
       )
   );
   setConfigData(
-    /* GeometryIndexUtils.getMappedIndex(
+    GeometryIndexUtils.getMappedIndex(
       Js.Int.toString(geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
-    ), */
-    geometry,
+    ),
     configData,
     state
   )

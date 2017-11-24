@@ -134,7 +134,7 @@ let _ =
                   expect(
                     () => state |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|])) |> ignore
                   )
-                  |> toThrowMessage("should not exceed uint32Arr range")
+                  |> toThrowMessage("sourceTypeArr.length + offset should <= targetTypeArr.length")
                 }
               )
             }

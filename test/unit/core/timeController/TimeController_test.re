@@ -15,7 +15,8 @@ let _ =
         () => {
           sandbox := createSandbox();
           state := TestTool.init();
-          TimeControllerTool.setStartTime(0.)
+          TimeControllerTool.setStartTime(0.);
+          TestTool.closeContractCheck()
         }
       );
       describe(

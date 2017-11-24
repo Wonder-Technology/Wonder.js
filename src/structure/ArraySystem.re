@@ -92,7 +92,7 @@ let reduceState = (func, state, arr) : state => {
   mutableState^
 };
 
-let reduceOneParam = (func, param, arr)  => {
+let reduceOneParam = (func, param, arr) => {
   let mutableParam = ref(param);
   for (i in 0 to Js.Array.length(arr) - 1) {
     mutableParam := [@bs] func(mutableParam^, Array.unsafe_get(arr, i))
@@ -100,14 +100,13 @@ let reduceOneParam = (func, param, arr)  => {
   mutableParam^
 };
 
-let reduceOneParami = (func, param, arr)  => {
+let reduceOneParami = (func, param, arr) => {
   let mutableParam = ref(param);
   for (i in 0 to Js.Array.length(arr) - 1) {
     mutableParam := [@bs] func(mutableParam^, Array.unsafe_get(arr, i), i)
   };
   mutableParam^
 };
-
 
 /* let get = (index: int, arr) =>
      if (index >= Js.Array.length(arr)) {

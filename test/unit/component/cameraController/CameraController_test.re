@@ -173,7 +173,8 @@ let _ =
             "get cameraController->gameObject->transform-> localToWorldMatrix->invert",
             () => {
               let (state, _, _, cameraController) = _prepare();
-              let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
+              let state = state |> CameraControllerTool.init;
+              let state = state |> DirectorTool.updateSystem;
               state
               |> getCameraControllerWorldToCameraMatrix(cameraController)
               |>
