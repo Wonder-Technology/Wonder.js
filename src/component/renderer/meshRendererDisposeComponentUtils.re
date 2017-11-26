@@ -4,7 +4,6 @@ open MeshRendererStateUtils;
 
 open Contract;
 
-/* todo optimize: add batch remove  */
 let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
   let index = renderGameObjectArray |> Js.Array.indexOf(disposedGameObjectUid);
   let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
@@ -15,7 +14,8 @@ let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectAr
   data.renderGameObjectArray =
     renderGameObjectArray
     |> Js.Array.filter(
-         (renderGameObject) => disposedGameObjectUidMap |> SparseMapSystem.has(renderGameObject) == false
+         (renderGameObject) =>
+           disposedGameObjectUidMap |> SparseMapSystem.has(renderGameObject) == false
        );
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>

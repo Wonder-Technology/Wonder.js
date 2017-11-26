@@ -46,11 +46,9 @@ let addMaterialComponent = GameObjectComponentUtils.addMaterialComponent;
 
 let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent;
 
-/* todo refactor: move to gameObjectCreateUtils*/
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateUtils.create(state);
-  /* todo refactor: use TransformXXXUtils */
-  let (state, transform) = TransformSystem.create(state);
+  let (state, transform) = TransformCreateUtils.create(state);
   (addTransformComponent(uid, transform, state), uid)
 };
 
@@ -123,7 +121,6 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
                    cloneGeometry:true
                    ////shareGeometry:false
    } */
-/* let clone = (uid: int,  state: StateDataType.state, config:Js.t({..}), ~count:int=1,  ()) => { */
 let clone = (uid: int, count: int, state: StateDataType.state) => {
   let countRangeArr = ArraySystem.range(0, count - 1);
   let totalClonedGameObjectArr = [||];
@@ -194,7 +191,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
            )
       | None => state
       };
-      /* DebugUtils.log(uid) |> ignore; */
     let state =
       switch (getCameraControllerComponent(uid, state)) {
       | Some(cameraController) =>
@@ -211,36 +207,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
            )
       | None => state
       };
-    /* let (state, transform, clonedTransformArr) = {
-         /* switch (getTransformComponent(uid, state)) {
-            | Some(transform) =>
-              let (state, clonedTransformArr) =
-                GameObjectComponentUtils.cloneTransformComponent(transform, countRangeArr, state);
-              /* todo optimize compare: add in each loop? */
-              (
-                state
-                |> GameObjectComponentUtils.batchAddTransformComponent(
-                     clonedGameObjectArr,
-                     clonedTransformArr
-                   ),
-                   transform,
-                clonedTransformArr
-              )
-            | None => ExceptionHandleSystem.throwMessage("transform component should exist in gameObject")
-            }; */
-         let (state, clonedTransformArr) =
-           GameObjectComponentUtils.cloneTransformComponent(transform, countRangeArr, state);
-         /* todo optimize compare: add in each loop? */
-         (
-           state
-           |> GameObjectComponentUtils.batchAddTransformComponent(
-                clonedGameObjectArr,
-                clonedTransformArr
-              ),
-           transform,
-           clonedTransformArr
-         )
-       }; */
     let (state, clonedTransformArr) =
       GameObjectComponentUtils.cloneTransformComponent(transform, countRangeArr, state);
     /* todo optimize compare: add in each loop? */
@@ -250,11 +216,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
            clonedGameObjectArr,
            clonedTransformArr
          );
-    /* DebugUtils.log(transform) |> ignore; */
-    /* clonedParentTransformArr */
-    /* let transformData = TransformStateUtils.getTransformData(state); */
     clonedParentTransformArr
-    /* |> DebugUtils.log */
     |> ArraySystem.reduceOneParami(
          [@bs]
          (
@@ -267,7 +229,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
          ),
          TransformStateUtils.getTransformData(state)
        );
-    /* DebugUtils.log(("child:", clonedTransformArr )) |> ignore; */
     /* todo optimize: use loop */
     TransformHierachySystem.unsafeGetChildren(
       transform,
@@ -277,10 +238,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
          [@bs]
          (
            (state, childTransform) =>
-             /* DebugUtils.log(( transform, childTransform )) |> ignore; */
-             /* let transformData = TransformStateUtils.getTransformData(state); */
-             /* let transformData =
-                transformData |> TransformHierachySystem.setParent(Some(transform), childTransform); */
              state
              |> _clone(
                   TransformStateUtils.getTransformData(state)
@@ -295,17 +252,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
          state
        )
   };
-  /* clonedTransformArr |>  */
-  /* let (state, clonedGameObjectArr) = countRangeArr |>
-
-
-                  /* todo optimize compare: set in each loop? */
-     countRangeArr |> WonderCommonlib.ArraySystem.forEachi((_, index) => {
-       let (state, gameObject) = GameObjectCreateUtils.create(state);
-
-       GameObjectComponentUtils.addTransformComponent(gameObject, clonedTransformArr[index]);
-       GameObjectComponentUtils.addTransformComponent(gameObject, clonedTransformArr[index]);
-     }); */
   (
     _clone(
       uid,
