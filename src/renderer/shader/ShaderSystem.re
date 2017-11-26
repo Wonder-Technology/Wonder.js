@@ -31,18 +31,10 @@ let _init =
     (
       gl,
       materialIndex: int,
-      /* geometryIndex: int, */
-      /* uid: string, */
       shaderLibDataArr: shader_libs,
-      /* attributeLocationMap,
-         uniformLocationMap, */
       buildGLSLSource,
       state: StateDataType.state
     ) => {
-  /* let materialIndexStr = Js.Int.toString(materialIndex);
-     let state =
-       state
-       |> GLSLSenderConfigDataHandleSystem.addDrawPointsFunc(gl, materialIndexStr, geometryIndex); */
   let shaderData = _getShaderData(state);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {
@@ -60,7 +52,6 @@ let _init =
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          gl,
          shaderIndexStr,
-         /* geometryIndex, */
          program,
          shaderLibDataArr
        )
@@ -77,27 +68,7 @@ let _init =
 };
 
 let initMaterialShader =
-    (
-      gl,
-      materialIndex: int,
-      /* geometryIndex: int, */
-      /* uid: string, */
-      shaderLibDataArr,
-      /* attributeLocationMap,
-         uniformLocationMap, */
-      initShaderFuncTuple,
-      state: StateDataType.state
-    ) =>
-  _init(
-    gl,
-    materialIndex,
-    /* geometryIndex, */
-    /* uid, */
-    shaderLibDataArr,
-    /* attributeLocationMap,
-       uniformLocationMap, */
-    initShaderFuncTuple,
-    state
-  );
+    (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
+  _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
 
 let initData = () => {index: 0, shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty()};

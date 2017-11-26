@@ -2,7 +2,7 @@ open MaterialStateUtils;
 
 open Contract;
 
-let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
+let unsafeGetShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
   |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
   |> ensureCheck(
@@ -18,9 +18,12 @@ let getShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
          )
      );
 
-let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
+let hasShaderIndex = (materialIndexStr: string, state: StateDataType.state) =>
+  getMaterialData(state).shaderIndexMap |> HashMapSystem.has(materialIndexStr);
+
+let setShaderIndex = (materialIndexStr: string, shaderIndex: int, state: StateDataType.state) => {
   getMaterialData(state).shaderIndexMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(materialIndex), shaderIndex)
+  |> WonderCommonlib.HashMapSystem.set(materialIndexStr, shaderIndex)
   |> ignore;
   state
 };

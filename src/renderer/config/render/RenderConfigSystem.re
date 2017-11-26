@@ -69,7 +69,7 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   findFirst(shaderLibs, (item: shaderLib) => _filterTargetName(item.name, shaderLibName));
 
 let getMaterialShaderLibDataArr =
-    (materialIndex: int, groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>
+    (groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>
   shaderLibItems
   |> ArraySystem.reduceOneParam(
        [@bs]

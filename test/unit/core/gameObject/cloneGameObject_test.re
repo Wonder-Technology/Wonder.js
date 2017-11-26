@@ -139,7 +139,7 @@ let _ =
                 }
               );
               describe(
-                "test initGeometry",
+                "test init cloned geometry",
                 () => {
                   test(
                     "can correctly get cloned one's vertices after init",
@@ -203,6 +203,7 @@ let _ =
             () => {
               let _prepare = () => {
                 let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                let state = state |> MaterialTool.setShaderIndex(material1, 0);
                 let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
                 (
                   state,
@@ -223,6 +224,27 @@ let _ =
                   let (state, _, _, _, clonedMaterialArr) = _prepare();
                   clonedMaterialArr |> Js.Array.length |> expect == 2
                 }
+              );
+              describe(
+                "test init cloned material",
+                () =>
+                  test(
+                    "can correctly set cloned one's shader index",
+                    () => {
+                      let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare();
+                      let state =
+                        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state =
+                        state
+                        |> GameObject.initGameObject(clonedGameObjectArr[0])
+                        |> GameObject.initGameObject(clonedGameObjectArr[1]);
+                      (
+                        MaterialTool.unsafeGetShaderIndex(clonedMaterialArr[0], state),
+                        MaterialTool.unsafeGetShaderIndex(clonedMaterialArr[1], state)
+                      )
+                      |> expect == (0, 0)
+                    }
+                  )
               );
               test(
                 "add cloned material's gameObject to map",
@@ -375,9 +397,11 @@ let _ =
                       open GameObjectType;
                       let (state, gameObject1, material1) =
                         BasicMaterialTool.createGameObject(state^);
+                      let state = state |> MaterialTool.setShaderIndex(material1, 0);
                       let transform1 = getGameObjectTransformComponent(gameObject1, state);
                       let (state, gameObject2, material2) =
                         BasicMaterialTool.createGameObject(state);
+                      let state = state |> MaterialTool.setShaderIndex(material2, 0);
                       let transform2 = getGameObjectTransformComponent(gameObject2, state);
                       let state =
                         state |> setTransformParent(Js.Nullable.return(transform1), transform2);

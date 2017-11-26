@@ -19,7 +19,7 @@ let _render = (gl, state: StateDataType.state) => {
              let materialIndex: int =
                Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
              let materialIndexStr = Js.Int.toString(materialIndex);
-             let shaderIndex = MaterialSystem.getShaderIndex(materialIndexStr, state);
+             let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndexStr, state);
              let shaderIndexStr = Js.Int.toString(shaderIndex);
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));

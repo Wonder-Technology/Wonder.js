@@ -9,7 +9,7 @@ open StateDataType;
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
-let getShaderIndex = MaterialShaderIndexUtils.getShaderIndex;
+let unsafeGetShaderIndex = MaterialShaderIndexUtils.unsafeGetShaderIndex;
 
 let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
 
