@@ -24,14 +24,20 @@ open Gl;
    }; */
 let getVertices =
   [@bs]
-  ((mappedIndex: int, state: StateDataType.state) => GeometryOperateDataUtils.getVertices(mappedIndex, state));
+  (
+    (mappedIndex: int, state: StateDataType.state) =>
+      GeometryOperateDataUtils.getVertices(mappedIndex, state)
+  );
 
 let setVertices = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) =>
   GeometryOperateDataUtils.setVerticesWithTypeArray(mappedIndex, data, state);
 
 let getIndices =
   [@bs]
-  ((mappedIndex: int, state: StateDataType.state) => GeometryOperateDataUtils.getIndices(mappedIndex, state));
+  (
+    (mappedIndex: int, state: StateDataType.state) =>
+      GeometryOperateDataUtils.getIndices(mappedIndex, state)
+  );
 
 let setIndices = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) =>
   GeometryOperateDataUtils.setIndicesWithTypeArray(mappedIndex, data, state);
@@ -40,12 +46,14 @@ let getIndicesCount =
   CacheUtils.memorizeIntState(
     [@bs]
     (
-      (mappedIndex: int, state: StateDataType.state) => Uint16Array.length([@bs] getIndices(mappedIndex, state))
+      (mappedIndex: int, state: StateDataType.state) =>
+        Uint16Array.length([@bs] getIndices(mappedIndex, state))
     ),
     [@bs] ((state: StateDataType.state) => getGeometryData(state).indicesCountCacheMap)
   );
 
-let hasIndices = (mappedIndex: int, state: StateDataType.state) => getIndicesCount(mappedIndex, state) > 0;
+let hasIndices = (mappedIndex: int, state: StateDataType.state) =>
+  getIndicesCount(mappedIndex, state) > 0;
 
 let getVerticesCount =
   CacheUtils.memorizeIntState(
@@ -88,7 +96,7 @@ let init = (state: StateDataType.state) => {
 };
 
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
-GeometryConfigDataUtils.getConfigData(geometry, state);
+  GeometryConfigDataUtils.getConfigData(geometry, state);
 
 let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(mappedGeometry, getGeometryData(state).gameObjectMap);
@@ -143,9 +151,9 @@ let initData = (state: StateDataType.state) => {
       indicesOffset: 0,
       configDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
       computeDataFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      gameObjectMap: SparseMapSystem.createEmpty(),
       disposeCount: 0,
-      disposedIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      disposedIndexMap: SparseMapSystem.createEmpty(),
       mappedIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
       aliveIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
       indicesCountCacheMap: WonderCommonlib.HashMapSystem.createEmpty(),

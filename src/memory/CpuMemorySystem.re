@@ -19,11 +19,11 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         cameraControllerMap
       } as data =
     GameObjectStateUtils.getGameObjectData(state);
-  let newTransformMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newMeshRendererMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newGeometryMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newCameraControllerMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newMaterialMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newTransformMap = SparseMapSystem.createEmpty();
+  let newMeshRendererMap = SparseMapSystem.createEmpty();
+  let newGeometryMap = SparseMapSystem.createEmpty();
+  let newCameraControllerMap = SparseMapSystem.createEmpty();
+  let newMaterialMap = SparseMapSystem.createEmpty();
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter((aliveUid) => ! MemoryUtils.isDisposed(aliveUid, disposedUidMap));
@@ -33,37 +33,30 @@ let reAllocateGameObject = (state: StateDataType.state) => {
        (
          (uid) => {
            newTransformMap
-           |> WonderCommonlib.HashMapSystem.set(
-                uid,
-                transformMap |> WonderCommonlib.HashMapSystem.unsafeGet(uid)
-              )
+           |> SparseMapSystem.set(uid, transformMap |> SparseMapSystem.unsafeGet(uid))
            |> ignore;
-           switch (meshRendererMap |> WonderCommonlib.HashMapSystem.get(uid)) {
+           switch (meshRendererMap |> SparseMapSystem.get(uid)) {
            | None => ()
            | Some(meshRenderer) =>
-             newMeshRendererMap |> WonderCommonlib.HashMapSystem.set(uid, meshRenderer) |> ignore
+             newMeshRendererMap |> SparseMapSystem.set(uid, meshRenderer) |> ignore
            };
-           switch (geometryMap |> WonderCommonlib.HashMapSystem.get(uid)) {
+           switch (geometryMap |> SparseMapSystem.get(uid)) {
            | None => ()
-           | Some(geometry) =>
-             newGeometryMap |> WonderCommonlib.HashMapSystem.set(uid, geometry) |> ignore
+           | Some(geometry) => newGeometryMap |> SparseMapSystem.set(uid, geometry) |> ignore
            };
-           switch (materialMap |> WonderCommonlib.HashMapSystem.get(uid)) {
+           switch (materialMap |> SparseMapSystem.get(uid)) {
            | None => ()
-           | Some(material) =>
-             newMaterialMap |> WonderCommonlib.HashMapSystem.set(uid, material) |> ignore
+           | Some(material) => newMaterialMap |> SparseMapSystem.set(uid, material) |> ignore
            };
-           switch (cameraControllerMap |> WonderCommonlib.HashMapSystem.get(uid)) {
+           switch (cameraControllerMap |> SparseMapSystem.get(uid)) {
            | None => ()
            | Some(cameraController) =>
-             newCameraControllerMap
-             |> WonderCommonlib.HashMapSystem.set(uid, cameraController)
-             |> ignore
+             newCameraControllerMap |> SparseMapSystem.set(uid, cameraController) |> ignore
            }
          }
        )
      );
-  data.disposedUidMap = WonderCommonlib.HashMapSystem.createEmpty();
+  data.disposedUidMap = SparseMapSystem.createEmpty();
   data.aliveUidArray = newAliveUidArray;
   data.transformMap = newTransformMap;
   data.meshRendererMap = newMeshRendererMap;
@@ -108,7 +101,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newComputeDataFuncMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newConfigDataMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newGameObjectMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newGameObjectMap = SparseMapSystem.createEmpty();
   let newIndicesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newVerticesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newIsClonedMap = WonderCommonlib.HashMapSystem.createEmpty();
@@ -121,7 +114,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newAliveIndexArray =
     aliveIndexArray
     |> Js.Array.filter(
-         (aliveIndex) => ! MemoryUtils.isDisposed(Js.Int.toString(aliveIndex), disposedIndexMap)
+         (aliveIndex) => ! MemoryUtils.isDisposed(aliveIndex, disposedIndexMap)
        );
   newAliveIndexArray
   |> WonderCommonlib.ArraySystem.forEach(
@@ -129,7 +122,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
        (
          (index) => {
            let indexStr = Js.Int.toString(index);
-           MemoryUtils.isDisposed(indexStr, disposedIndexMap) ?
+           MemoryUtils.isDisposed(index, disposedIndexMap) ?
              () :
              {
                let newIndexStr = Js.Int.toString(newIndex^);
@@ -167,9 +160,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                   )
                |> ignore;
                newGameObjectMap
-               |> WonderCommonlib.HashMapSystem.set(
-                    newIndexStr,
-                    gameObjectMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+               |> SparseMapSystem.set(
+                    newIndex^,
+                    gameObjectMap |> SparseMapSystem.unsafeGet(index)
                   )
                |> ignore;
                newIndicesCountCacheMap
@@ -216,7 +209,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   geometryData.indicesCountCacheMap = newIndicesCountCacheMap;
   geometryData.verticesCountCacheMap = newVerticesCountCacheMap;
   geometryData.isClonedMap = newIsClonedMap;
-  geometryData.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
+  geometryData.disposedIndexMap = SparseMapSystem.createEmpty();
   geometryData.aliveIndexArray = newAliveIndexArray;
   vboBufferData.vertexBufferMap = newVertexBufferMap;
   vboBufferData.elementArrayBufferMap = newElementArrayBufferMap;

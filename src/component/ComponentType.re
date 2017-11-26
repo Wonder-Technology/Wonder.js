@@ -1,3 +1,3 @@
-type gameObjectMap = Js.Dict.t(string);
+type gameObjectMap = array(int);
 
 type component = int;

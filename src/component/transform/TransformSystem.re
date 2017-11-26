@@ -132,7 +132,7 @@ let initData = (state: StateDataType.state) => {
         /* oldIndexArrayBeforeAddToDirtyArray: WonderCommonlib.ArraySystem.createEmpty (), */
         parentMap: WonderCommonlib.HashMapSystem.createEmpty(),
         childMap: WonderCommonlib.HashMapSystem.createEmpty(),
-        gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+        gameObjectMap: SparseMapSystem.createEmpty(),
         /* originToMoveIndexMap: WonderCommonlib.HashMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: WonderCommonlib.HashMapSystem.createEmpty () */
         dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),

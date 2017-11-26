@@ -8,8 +8,7 @@ open Contract;
 
 let isAlive = (geometry: geometry, state: StateDataType.state) => {
   let {mappedIndexMap, disposedIndexMap} = GeometryStateUtils.getGeometryData(state);
-  let geometryIndexStr = Js.Int.toString(geometry);
-  disposedIndexMap |> HashMapSystem.has(geometryIndexStr) ?
+  disposedIndexMap |> SparseMapSystem.has(geometry) ?
     false :
     mappedIndexMap
     |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(geometry))
@@ -24,8 +23,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
       )
   );
   let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
-  let geometryIndexStr = Js.Int.toString(geometry);
-  disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
+  disposedIndexMap |> SparseMapSystem.set(geometry, true) |> ignore;
   let state = VboBufferSystem.addBufferToPool(geometry, state);
   data.disposeCount = succ(disposeCount);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
@@ -57,8 +55,7 @@ let handleBatchDisposeComponent =
        [@bs]
        (
          (state, geometry) => {
-           let geometryIndexStr = Js.Int.toString(geometry);
-           disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
+           disposedIndexMap |> SparseMapSystem.set(geometry, true) |> ignore;
            VboBufferSystem.addBufferToPool(geometry, state)
          }
        ),

@@ -15,7 +15,7 @@ let _render = (gl, state: StateDataType.state) => {
     |> ArraySystem.reduceState(
          [@bs]
          (
-           (state, uid: string) => {
+           (state, uid: int) => {
              let materialIndex: int =
                Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
              let materialIndexStr = Js.Int.toString(materialIndex);

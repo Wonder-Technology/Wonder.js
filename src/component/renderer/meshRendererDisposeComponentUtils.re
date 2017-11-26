@@ -5,7 +5,7 @@ open MeshRendererStateUtils;
 open Contract;
 
 /* todo optimize: add batch remove  */
-let _removeFromRenderArray = (disposedGameObjectUid: string, {renderGameObjectArray} as data) => {
+let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
   let index = renderGameObjectArray |> Js.Array.indexOf(disposedGameObjectUid);
   let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
   renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex)
@@ -15,7 +15,7 @@ let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectAr
   data.renderGameObjectArray =
     renderGameObjectArray
     |> Js.Array.filter(
-         (renderGameObject) => disposedGameObjectUidMap |> HashMapSystem.has(renderGameObject) == false
+         (renderGameObject) => disposedGameObjectUidMap |> SparseMapSystem.has(renderGameObject) == false
        );
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
@@ -25,7 +25,7 @@ let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   );
 
 let handleDisposeComponent =
-    (meshRenderer: meshRenderer, gameObjectUid: string, state: StateDataType.state) => {
+    (meshRenderer: meshRenderer, gameObjectUid: int, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(

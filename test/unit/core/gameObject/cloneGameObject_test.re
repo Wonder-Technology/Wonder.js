@@ -39,7 +39,7 @@ let _ =
           open GameObjectType;
           let (state, gameObject1) = createGameObject(state^);
           let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
-          clonedGameObjectArr |> expect == [|[|"1", "2"|]|]
+          clonedGameObjectArr |> expect == [|[|1, 2|]|]
         }
       );
       describe(
@@ -323,7 +323,7 @@ let _ =
                   let state =
                     state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                   let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
-                  clonedGameObjectArr |> expect == [|[|"2", "3"|], [|"4", "5"|]|]
+                  clonedGameObjectArr |> expect == [|[|2, 3|], [|4, 5|]|]
                 }
               )
           );

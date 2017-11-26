@@ -8,23 +8,23 @@ open MeshRendererType;
 
 open MaterialType;
 
-type gameObject = string;
+type gameObject = int;
 
-type gameObjectDisposedUidMap = Js.Dict.t(bool);
+type gameObjectDisposedUidMap = array(bool);
 
 type gameObjectAliveUidArray = array(gameObject);
 
-type gameObjectComponentData = Js.Dict.t(ComponentType.component);
+type gameObjectComponentData = array(ComponentType.component);
 
-type gameObjectTransformMap = Js.Dict.t(transform);
+type gameObjectTransformMap = array(transform);
 
-type gameObjectCameraControllerMap = Js.Dict.t(cameraController);
+type gameObjectCameraControllerMap = array(cameraController);
 
-type gameObjectGeometryMap = Js.Dict.t(geometry);
+type gameObjectGeometryMap = array(geometry);
 
-type gameObjectMeshRendererMap = Js.Dict.t(meshRenderer);
+type gameObjectMeshRendererMap = array(meshRenderer);
 
-type gameObjectMaterialMap = Js.Dict.t(material);
+type gameObjectMaterialMap = array(material);
 
 type gameObjectData = {
   mutable uid: int,

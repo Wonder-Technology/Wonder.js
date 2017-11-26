@@ -40,7 +40,7 @@ let getLocalToWorldMatrix = (transform, state: StateDataType.state) =>
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();
-  let state = GameObject.disposeGameObjectTransformComponent("0", transform, state);
+  let state = GameObject.disposeGameObjectTransformComponent(0, transform, state);
   TestTool.openContractCheck();
   state
 };

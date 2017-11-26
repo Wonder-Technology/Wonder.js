@@ -4,7 +4,7 @@ type meshRenderer = int;
 
 type meshRendererData = {
   mutable index: int,
-  mutable renderGameObjectArray: array(string),
+  mutable renderGameObjectArray: array(int),
   gameObjectMap,
   mutable disposedIndexArray: array(meshRenderer)
 };

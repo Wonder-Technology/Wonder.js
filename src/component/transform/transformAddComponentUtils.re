@@ -5,7 +5,7 @@ open TransformStateUtils;
 let handleAddComponent =
   [@bs]
   (
-    (transform: transform, gameObjectUid: string, state: StateDataType.state) => {
+    (transform: transform, gameObjectUid: int, state: StateDataType.state) => {
       let transformData = getTransformData(state);
       ComponentSystem.addComponentToGameObjectMap(
         transform,

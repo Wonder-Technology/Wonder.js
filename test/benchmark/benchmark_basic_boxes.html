@@ -8,7 +8,7 @@
 
 <body>
     <script type="module">
-        import {scheduleLoop} from "../../lib/es6_global/src/core/scheduler/Scheduler.js";
+        import { scheduleLoop } from "../../lib/es6_global/src/core/scheduler/Scheduler.js";
 
 
         import { setMainConfig } from "../../lib/es6_global/src/core/Main.js";
@@ -30,25 +30,25 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
 
 
-        import { batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
 
 
         window.onload = function () {
             var state = setMainConfig({
-                isTest: false, 
-//                 bufferConfig:{
-// geometryDataBufferCount:50000,
-// basicMaterialDataBufferCount:50000,
-// transformDataBufferCount:50000,
-// meshRendererDataBufferCount:50000
-// // geometryDataBufferCount:200,
-//                 }
+                isTest: false,
+                //                 bufferConfig:{
+                // geometryDataBufferCount:50000,
+                // basicMaterialDataBufferCount:50000,
+                // transformDataBufferCount:50000,
+                // meshRendererDataBufferCount:50000
+                // // geometryDataBufferCount:200,
+                //                 }
             });
 
             initSample(state);
 
 
-            function createBoxes(count, state){
+            function createBoxes(count, state) {
                 var boxes = [];
                 var state$ = state;
                 for (let i = 0; i < count; i++) {
@@ -56,7 +56,7 @@
                     boxes.push(box);
                 }
 
-                return [ state$, boxes ];
+                return [state$, boxes];
             }
 
             function initSample(state) {
@@ -70,7 +70,7 @@
                 //     boxes.push(box);
                 // }
 
-                var [state, boxes] = createBoxes(3, state);
+                var [state, boxes] = createBoxes(2000, state);
 
                 // state = state$;
 
@@ -143,15 +143,16 @@
             window.newBoxes$ = null;
 
             function createAndDisposeGameObjects(boxes, state) {
-                    // var state = boxes.reduce((state, box) => {
-                    //     return disposeGameObject(box, state);
-                    // }, state);
+                // var state = boxes.reduce((state, box) => {
+                //     return disposeGameObject(box, state);
+                // }, state);
 
-// window.newBoxes$ = boxes;
-// window.boxes = boxes.slice(0, 1000);
-window.boxes = [];
+                // window.newBoxes$ = boxes;
+                // window.boxes = boxes.slice(0, 1000);
+                window.sourceBox = boxes[0];
+                window.boxes = [];
 
-// var index = 0;
+                // var index = 0;
 
                 return scheduleLoop((elapsed, state) => {
 
@@ -183,30 +184,41 @@ window.boxes = [];
                     // }, state);
 
 
-                    var [state, newBoxes] = createBoxes(2000, state);
+                    // var [state, newBoxes] = createBoxes(2000, state);
 
-                var playgroundSize = 500;
+                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 2000, state);
+                    let flatten = (arr) => {
+                        return arr.reduce((a, b) => {
+                            let arr = a.concat(b);
+                            return arr;
+                        }, []);
+                    };
+                    newBoxes = flatten(newBoxes);
 
-                    for(let i = 0, len = newBoxes.length; i < len; i++){
+
+                    var playgroundSize = 500;
+
+                    for (let i = 0, len = newBoxes.length; i < len; i++) {
                         let box = newBoxes[i];
                         // state = initGameObject(box, state);
 
 
-                    var transform = getGameObjectTransformComponent(box, state);
+                        var transform = getGameObjectTransformComponent(box, state);
 
 
-                    // var pos = getTransformPosition(transform, state);
-                    var localPos = getTransformLocalPosition(transform, state);
+                        // var pos = getTransformPosition(transform, state);
+                        var localPos = getTransformLocalPosition(transform, state);
 
                         state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
 
 
+                        // console.log(getTransformLocalPosition(transform, state));
                     }
 
 
 
 
-window.boxes = newBoxes;
+                    window.boxes = newBoxes;
 
                     // return newBoxes.reduce((state, box) => {
                     //     return initGameObject(box, state);
@@ -214,7 +226,7 @@ window.boxes = newBoxes;
 
 
 
-                    for(let i = 0, len = newBoxes.length; i < len; i++){
+                    for (let i = 0, len = newBoxes.length; i < len; i++) {
                         let box = newBoxes[i];
                         state = initGameObject(box, state);
                     }
@@ -282,10 +294,3 @@ window.boxes = newBoxes;
 </body>
 
 </html>
-
-
-
-
-
-
-

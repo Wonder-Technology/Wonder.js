@@ -1,11 +1,11 @@
 open ComponentType;
 
-let addComponentToGameObjectMap = (component: component, gameObjectUid: string, gameObjectMap) =>
-  WonderCommonlib.HashMapSystem.set(Js.Int.toString(component), gameObjectUid, gameObjectMap)
+let addComponentToGameObjectMap = (component: component, gameObjectUid: int, gameObjectMap) =>
+  SparseMapSystem.set(component, gameObjectUid, gameObjectMap)
   |> ignore;
 
 let getComponentGameObject = (component: component, gameObjectMap) =>
-  WonderCommonlib.HashMapSystem.get(Js.Int.toString(component), gameObjectMap);
+  SparseMapSystem.get(component, gameObjectMap);
 
 let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>
   Contract.(

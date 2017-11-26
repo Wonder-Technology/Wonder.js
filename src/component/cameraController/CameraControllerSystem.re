@@ -195,7 +195,7 @@ let initData = () => {
   dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
   /* worldToCameraMatrixCacheMap: WonderCommonlib.HashMapSystem.createEmpty(), */
   pMatrixMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  gameObjectMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  gameObjectMap: SparseMapSystem.createEmpty(),
   /* dirtyMap: WonderCommonlib.HashMapSystem.createEmpty(), */
   updateCameraFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
   perspectiveCameraData: PerspectiveCameraSystem.initData(),

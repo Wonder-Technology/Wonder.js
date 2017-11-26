@@ -17,7 +17,7 @@ type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));
 
 type geometryMappedIndexMap = Js.Dict.t(int);
 
-type geometryDisposeIndexMap = Js.Dict.t(bool);
+type geometryDisposeIndexMap = array(bool);
 
 type geometryAliveIndexArray = array(geometry);
 

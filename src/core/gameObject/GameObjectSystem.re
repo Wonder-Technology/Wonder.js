@@ -58,10 +58,10 @@ let create = (state: StateDataType.state) => {
   (addTransformComponent(uidStr, transform, state), uidStr)
 };
 
-let dispose = (uid: string, state: StateDataType.state) => {
+let dispose = (uid: int, state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
-  disposedUidMap |> WonderCommonlib.HashMapSystem.set(uid, true) |> ignore;
+  disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore;
   let state =
     switch (getTransformComponent(uid, state)) {
     | Some(transform) => disposeTransformComponent(uid, transform, state)
@@ -95,17 +95,17 @@ let dispose = (uid: string, state: StateDataType.state) => {
   }
 };
 
-let batchDispose = (uidArray: array(string), state: StateDataType.state) => {
+let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
-  let uidMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let uidMap = SparseMapSystem.createEmpty();
   uidArray
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
          (uid) => {
            /* todo optimize remove? */
-           uidMap |> WonderCommonlib.HashMapSystem.set(uid, true) |> ignore;
-           disposedUidMap |> WonderCommonlib.HashMapSystem.set(uid, true) |> ignore
+           uidMap |> SparseMapSystem.set(uid, true) |> ignore;
+           disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore
          }
        )
      );
@@ -135,13 +135,13 @@ let batchDispose = (uidArray: array(string), state: StateDataType.state) => {
                    cloneGeometry:true
                    ////shareGeometry:false
    } */
-/* let clone = (uid: string,  state: StateDataType.state, config:Js.t({..}), ~count:int=1,  ()) => { */
-let clone = (uid: string, state: StateDataType.state, count: int) => {
+/* let clone = (uid: int,  state: StateDataType.state, config:Js.t({..}), ~count:int=1,  ()) => { */
+let clone = (uid: int, state: StateDataType.state, count: int) => {
   let countRangeArr = ArraySystem.range(0, count - 1);
   let totalClonedGameObjectArr = [||];
   let rec _clone =
           (
-            uid: string,
+            uid: int,
             transform,
             countRangeArr,
             clonedParentTransformArr,
@@ -314,13 +314,13 @@ let clone = (uid: string, state: StateDataType.state, count: int) => {
   )
 };
 
-let isAlive = (uid: string, state: StateDataType.state) => {
+let isAlive = (uid: int, state: StateDataType.state) => {
   let {transformMap, disposedUidMap} = GameObjectStateUtils.getGameObjectData(state);
-  disposedUidMap |> HashMapSystem.has(uid) ?
-    false : transformMap |> HashMapSystem.has(uid) ? true : false
+  disposedUidMap |> SparseMapSystem.has(uid) ?
+    false : transformMap |> SparseMapSystem.has(uid) ? true : false
 };
 
-let initGameObject = (uid: string, state: StateDataType.state) => {
+let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getGeometryComponent(uid, state)) {
     | Some(geometry) =>
@@ -349,11 +349,11 @@ let initGameObject = (uid: string, state: StateDataType.state) => {
 let initData = () => {
   uid: 0,
   disposeCount: 0,
-  disposedUidMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  disposedUidMap: SparseMapSystem.createEmpty(),
   aliveUidArray: WonderCommonlib.ArraySystem.createEmpty(),
-  transformMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  cameraControllerMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  geometryMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  meshRendererMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  materialMap: WonderCommonlib.HashMapSystem.createEmpty()
+  transformMap: SparseMapSystem.createEmpty(),
+  cameraControllerMap: SparseMapSystem.createEmpty(),
+  geometryMap: SparseMapSystem.createEmpty(),
+  meshRendererMap: SparseMapSystem.createEmpty(),
+  materialMap: SparseMapSystem.createEmpty()
 };

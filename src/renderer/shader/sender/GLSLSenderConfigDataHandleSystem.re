@@ -167,7 +167,7 @@ let addUniformSendData =
       gl,
       shaderIndexStr: string,
       /* geometryIndex: int, */
-      /* uid: string, */
+      /* uid: int, */
       program: program,
       shaderLibDataArr: shader_libs,
       /* uniformLocationMap, */

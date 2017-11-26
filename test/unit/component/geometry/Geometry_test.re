@@ -317,6 +317,11 @@ let _ =
                         map
                         |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(index))
                         |> Js.Option.isSome;
+                      let _unsafeGetSparseMapData = (index, map, state) =>
+                        map
+                        |> SparseMapSystem.unsafeGet(
+                             GeometryTool.getMappedIndex(index, state)
+                           );
                       let _unsafeGetMapData = (index, map, state) =>
                         map
                         |> WonderCommonlib.HashMapSystem.unsafeGet(
@@ -350,8 +355,8 @@ let _ =
                                        );
                                   let {gameObjectMap} = state |> GeometryTool.getData;
                                   (
-                                    _unsafeGetMapData(geometry2, gameObjectMap, state),
-                                    _unsafeGetMapData(geometry3, gameObjectMap, state)
+                                    _unsafeGetSparseMapData(geometry2, gameObjectMap, state),
+                                    _unsafeGetSparseMapData(geometry3, gameObjectMap, state)
                                   )
                                   |> expect == (gameObject2, gameObject3)
                                 }
@@ -595,7 +600,7 @@ let _ =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                       let {disposedIndexMap} = state |> GeometryTool.getData;
-                      disposedIndexMap |> expect == WonderCommonlib.HashMapSystem.createEmpty()
+                      disposedIndexMap |> expect == SparseMapSystem.createEmpty()
                     }
                   );
                   test(

@@ -7,6 +7,6 @@ type renderCameraData = {
 };
 
 type renderData = {
-  mutable renderArray: option(array(string)),
+  mutable renderArray: option(array(int)),
   mutable cameraData: option(renderCameraData)
 };
