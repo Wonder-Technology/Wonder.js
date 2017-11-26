@@ -4073,9 +4073,9 @@ wonder-commonlib@^0.2.0, wonder-commonlib@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.8.tgz#1682a6bad5e8aacbc60a561b86a1597d36f26394"
 
-wonder-glsl-compiler@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.0.9.tgz#af7e76bbb7ad1eff4e64b55bccd92333d3233879"
+wonder-glsl-compiler@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.0.10.tgz#64a2d25c30412f872d82640843cfd4418981586f"
   dependencies:
     bs-glob reasonml-community/bs-glob
     bs-node buckletypes/bs-node
