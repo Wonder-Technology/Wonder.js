@@ -20,15 +20,15 @@ let handleCloneComponent =
          [@bs]
          (
            (state, _) => {
-             let (state, index) = createFunc(state);
+             let (state, index, mappedIndex) = createFunc(state);
              /* todo optimize compare: set in each loop? */
              let state =
                state
-               |> GeometryOperateDataUtils.setVertices(index, vertices)
-               |> GeometryOperateDataUtils.setIndices(index, indices);
+               |> GeometryOperateDataUtils.setVertices(mappedIndex, vertices)
+               |> GeometryOperateDataUtils.setIndices(mappedIndex, indices);
              /* todo optimize compare: set in another loop? */
              isClonedMap
-             |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(index), true)
+             |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), true)
              |> ignore;
              componentArr |> Js.Array.push(index) |> ignore;
              state

@@ -165,5 +165,5 @@ let create = (state: StateDataType.state) => {
   data.computeDataFuncMap
   |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), _computeData)
   |> ignore;
-  (state, index)
+  (state, index, mappedIndex)
 };

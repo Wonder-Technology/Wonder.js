@@ -6,7 +6,10 @@ open BoxGeometryType;
 
 open Contract;
 
-let createBoxGeometry = create;
+let createBoxGeometry = (state: StateDataType.state) => {
+  let (state, index, _) = create(state);
+  (state, index)
+};
 
 let setBoxGeometryConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {

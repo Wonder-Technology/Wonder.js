@@ -90,10 +90,12 @@ let _ =
           describe(
             "test clone geometry component",
             () => {
-              let _prepare = () => {
-                open GameObjectType;
-                let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+              let _createAndInitGameObject = (state) => {
+                let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state);
                 let state = state |> initGameObject(gameObject1);
+                (state, gameObject1, geometry1)
+              };
+              let _clone = (state, gameObject1, geometry1) => {
                 let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
                 (
                   state,
@@ -107,6 +109,11 @@ let _ =
                          getGameObjectGeometryComponent(clonedGameObject, state)
                      )
                 )
+              };
+              let _prepare = (state) => {
+                open GameObjectType;
+                let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
+                _clone(state, gameObject1, geometry1)
               };
               let _initClonedGeometrys = (clonedGeometryArr, state) =>
                 clonedGeometryArr
@@ -130,21 +137,21 @@ let _ =
               test(
                 "test clone specific count of geometrys",
                 () => {
-                  let (_, _, _, _, clonedGeometryArr) = _prepare();
+                  let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
                   clonedGeometryArr |> Js.Array.length |> expect == 2
                 }
               );
               test(
                 "set cloned geometry's vertices by source geometry's vertices",
                 () => {
-                  let (state, _, geometry1, _, clonedGeometryArr) = _prepare();
+                  let (state, _, geometry1, _, clonedGeometryArr) = _prepare(state^);
                   _testClonedGeometryVertices(state, geometry1, clonedGeometryArr)
                 }
               );
               test(
                 "set cloned geometry's indices by source geometry's indices",
                 () => {
-                  let (state, _, geometry1, _, clonedGeometryArr) = _prepare();
+                  let (state, _, geometry1, _, clonedGeometryArr) = _prepare(state^);
                   _testClonedGeometryIndices(state, geometry1, clonedGeometryArr)
                 }
               );
@@ -154,7 +161,7 @@ let _ =
                   test(
                     "can correctly get cloned one's vertices after init",
                     () => {
-                      let (state, _, geometry1, _, clonedGeometryArr) = _prepare();
+                      let (state, _, geometry1, _, clonedGeometryArr) = _prepare(state^);
                       let state = state |> _initClonedGeometrys(clonedGeometryArr);
                       _testClonedGeometryVertices(state, geometry1, clonedGeometryArr)
                     }
@@ -162,17 +169,43 @@ let _ =
                   test(
                     "can correctly get cloned one's indices after init",
                     () => {
-                      let (state, _, geometry1, _, clonedGeometryArr) = _prepare();
+                      let (state, _, geometry1, _, clonedGeometryArr) = _prepare(state^);
                       let state = state |> _initClonedGeometrys(clonedGeometryArr);
                       _testClonedGeometryIndices(state, geometry1, clonedGeometryArr)
                     }
                   )
                 }
               );
+              describe(
+                "fix bug",
+                () =>
+                  describe(
+                    "test clone after reallocate geometry",
+                    () =>
+                      test(
+                        "test getVertices",
+                        () => {
+                          let state = MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                          let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
+                          let (state, gameObject2, geometry2) = _createAndInitGameObject(state);
+                          let state =
+                            state
+                            |> GeometryTool.disposeGeometryByCloseContractCheck(
+                                 gameObject1,
+                                 geometry1
+                               );
+                          let (state, gameObject2, geometry2, _, clonedGeometryArr) =
+                            _clone(state, gameObject2, geometry2);
+                          let state = state |> _initClonedGeometrys(clonedGeometryArr);
+                          _testClonedGeometryVertices(state, geometry2, clonedGeometryArr)
+                        }
+                      )
+                  )
+              );
               test(
                 "add cloned geometry's gameObject to map",
                 () => {
-                  let (state, _, _, clonedGameObjectArr, clonedGeometryArr) = _prepare();
+                  let (state, _, _, clonedGameObjectArr, clonedGeometryArr) = _prepare(state^);
                   (
                     Geometry.getGeometryGameObject(clonedGeometryArr[0], state),
                     Geometry.getGeometryGameObject(clonedGeometryArr[1], state)

@@ -78,3 +78,10 @@ let getMappedIndex = (index, state: StateDataType.state) =>
 let buildInfo = GeometryOperateDataUtils.buildInfo;
 
 let dispose = GeometryDisposeComponentUtils.handleDisposeComponent;
+
+let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
+  TestTool.closeContractCheck();
+  let state = state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+  TestTool.openContractCheck();
+  state;
+};
