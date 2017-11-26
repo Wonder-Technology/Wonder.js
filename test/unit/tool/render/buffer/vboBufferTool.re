@@ -27,3 +27,5 @@ let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: State
   |> ignore;
   state
 };
+
+let getData = VboBufferStateUtils.getVboBufferData;

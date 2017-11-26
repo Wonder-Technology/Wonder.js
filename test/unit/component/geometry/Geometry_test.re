@@ -3,6 +3,7 @@ open Geometry;
 open BoxGeometry;
 
 open Wonder_jest;
+
 open Js.Typed_array;
 
 let _ =
@@ -122,7 +123,12 @@ let _ =
                   let (state, geometry) = _prepare();
                   expect(
                     () =>
-                      state |> setGeometryVertices(geometry,  Float32Array.make([|1., 2., 3., 1., 2., 3.|])) |> ignore
+                      state
+                      |> setGeometryVertices(
+                           geometry,
+                           Float32Array.make([|1., 2., 3., 1., 2., 3.|])
+                         )
+                      |> ignore
                   )
                   |> toThrowMessage(errMeg)
                 }
@@ -132,7 +138,10 @@ let _ =
                 () => {
                   let (state, geometry) = _prepare();
                   expect(
-                    () => state |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|])) |> ignore
+                    () =>
+                      state
+                      |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|]))
+                      |> ignore
                   )
                   |> toThrowMessage("sourceTypeArr.length + offset should <= targetTypeArr.length")
                 }
@@ -362,7 +371,7 @@ let _ =
                            );
                       describe(
                         "maps should only has alive data",
-                        () =>
+                        () => {
                           test(
                             "test gameObjectMap",
                             () => {
@@ -390,70 +399,144 @@ let _ =
                               )
                               |> expect == (gameObject2, gameObject3)
                             }
+                          );
+                          test(
+                            "test other maps",
+                            () => {
+                              open StateDataType;
+                              let (
+                                state,
+                                gameObject1,
+                                geometry1,
+                                gameObject2,
+                                geometry2,
+                                gameObject3,
+                                geometry3
+                              ) =
+                                _prepare(state^);
+                              let _ = state |> GeometryTool.getVerticesCount(geometry1);
+                              let _ = state |> GeometryTool.getVerticesCount(geometry2);
+                              let _ = state |> GeometryTool.getVerticesCount(geometry3);
+                              let _ = state |> GeometryTool.getIndicesCount(geometry1);
+                              let _ = state |> GeometryTool.getIndicesCount(geometry2);
+                              let _ = state |> GeometryTool.getIndicesCount(geometry3);
+                              let state =
+                                state
+                                |> GameObject.disposeGameObjectGeometryComponent(
+                                     gameObject1,
+                                     geometry1
+                                   );
+                              let {
+                                configDataMap,
+                                computeDataFuncMap,
+                                indicesCountCacheMap,
+                                verticesCountCacheMap
+                              } =
+                                state |> GeometryTool.getData;
+                              (
+                                _hasMapData(0, configDataMap),
+                                _hasMapData(1, configDataMap),
+                                _hasMapData(2, configDataMap),
+                                _hasMapData(0, computeDataFuncMap),
+                                _hasMapData(1, computeDataFuncMap),
+                                _hasMapData(2, computeDataFuncMap),
+                                _hasMapData(0, verticesCountCacheMap),
+                                _hasMapData(1, verticesCountCacheMap),
+                                _hasMapData(2, verticesCountCacheMap),
+                                _hasMapData(0, indicesCountCacheMap),
+                                _hasMapData(1, indicesCountCacheMap),
+                                _hasMapData(2, indicesCountCacheMap)
+                              )
+                              |>
+                              expect == (
+                                          true,
+                                          true,
+                                          false,
+                                          true,
+                                          true,
+                                          false,
+                                          true,
+                                          true,
+                                          false,
+                                          true,
+                                          true,
+                                          false
+                                        )
+                            }
+                          );
+                          test(
+                            "test isClonedMap",
+                            () => {
+                              open StateDataType;
+                              let (
+                                state,
+                                gameObject1,
+                                geometry1,
+                                gameObject2,
+                                geometry2,
+                                gameObject3,
+                                geometry3
+                              ) =
+                                _prepare(state^);
+                              let (state, _, _, _, clonedGeometryArr1) =
+                                CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
+                              let (state, _, _, _, clonedGeometryArr2) =
+                                CloneTool.cloneWithGeometry(state, gameObject2, geometry2, 1);
+                              let (state, _, _, _, clonedGeometryArr3) =
+                                CloneTool.cloneWithGeometry(state, gameObject3, geometry3, 1);
+                              let state =
+                                state
+                                |> GameObject.disposeGameObjectGeometryComponent(
+                                     gameObject1,
+                                     geometry1
+                                   );
+                              let {isClonedMap} = state |> GeometryTool.getData;
+                              (
+                                _hasMapData(0, isClonedMap),
+                                _hasMapData(1, isClonedMap),
+                                _hasMapData(2, isClonedMap),
+                                _hasMapData(3, isClonedMap),
+                                _hasMapData(4, isClonedMap)
+                              )
+                              |> expect == (false, false, true, true, true)
+                            }
+                          );
+                          test(
+                            "test buffer map",
+                            () => {
+                              open StateDataType;
+                              open VboBufferType;
+                              let state =
+                                MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
+                              let (state, gameObject1, geometry1, _, _) =
+                                RenderJobsTool.prepareGameObject(sandbox, state);
+                              let (state, _, _, _) =
+                                CameraControllerTool.createCameraGameObject(state);
+                              let buffer = Obj.magic(10);
+                              let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                              createBuffer |> returns(buffer) |> ignore;
+                              let state =
+                                state
+                                |> FakeGlTool.setFakeGl(
+                                     FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
+                                   );
+                              let state = state |> RenderJobsTool.initSystemAndRender;
+                              let state = state |> WebGLRenderTool.render;
+                              let state =
+                                state
+                                |> GameObject.disposeGameObjectGeometryComponent(
+                                     gameObject1,
+                                     geometry1
+                                   );
+                              let {vertexBufferMap, elementArrayBufferMap} =
+                                VboBufferTool.getData(state);
+                              (
+                                _hasMapData(0, vertexBufferMap),
+                                _hasMapData(0, elementArrayBufferMap)
+                              )
+                              |> expect == (false, false)
+                            }
                           )
-                      );
-                      test(
-                        "test other maps",
-                        () => {
-                          open StateDataType;
-                          let (
-                            state,
-                            gameObject1,
-                            geometry1,
-                            gameObject2,
-                            geometry2,
-                            gameObject3,
-                            geometry3
-                          ) =
-                            _prepare(state^);
-                          let _ = state |> GeometryTool.getVerticesCount(geometry1);
-                          let _ = state |> GeometryTool.getVerticesCount(geometry2);
-                          let _ = state |> GeometryTool.getVerticesCount(geometry3);
-                          let _ = state |> GeometryTool.getIndicesCount(geometry1);
-                          let _ = state |> GeometryTool.getIndicesCount(geometry2);
-                          let _ = state |> GeometryTool.getIndicesCount(geometry3);
-                          let state =
-                            state
-                            |> GameObject.disposeGameObjectGeometryComponent(
-                                 gameObject1,
-                                 geometry1
-                               );
-                          let {
-                            configDataMap,
-                            computeDataFuncMap,
-                            indicesCountCacheMap,
-                            verticesCountCacheMap
-                          } =
-                            state |> GeometryTool.getData;
-                          (
-                            _hasMapData(0, configDataMap),
-                            _hasMapData(1, configDataMap),
-                            _hasMapData(2, configDataMap),
-                            _hasMapData(0, computeDataFuncMap),
-                            _hasMapData(1, computeDataFuncMap),
-                            _hasMapData(2, computeDataFuncMap),
-                            _hasMapData(0, verticesCountCacheMap),
-                            _hasMapData(1, verticesCountCacheMap),
-                            _hasMapData(2, verticesCountCacheMap),
-                            _hasMapData(0, indicesCountCacheMap),
-                            _hasMapData(1, indicesCountCacheMap),
-                            _hasMapData(2, indicesCountCacheMap)
-                          )
-                          |>
-                          expect == (
-                                      true,
-                                      true,
-                                      false,
-                                      true,
-                                      true,
-                                      false,
-                                      true,
-                                      true,
-                                      false,
-                                      true,
-                                      true,
-                                      false
-                                    )
                         }
                       )
                     }

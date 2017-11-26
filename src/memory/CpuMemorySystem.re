@@ -1,5 +1,7 @@
 open GameObjectType;
 
+open VboBufferType;
+
 open Contract;
 
 open StateDataType;
@@ -96,9 +98,12 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         verticesCountCacheMap,
         mappedIndexMap,
         disposedIndexMap,
-        aliveIndexArray
-      } as data =
+        aliveIndexArray,
+        isClonedMap
+      } as geometryData =
     GeometryStateUtils.getGeometryData(state);
+  let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
+    VboBufferStateUtils.getVboBufferData(state);
   let newIndex = ref(0);
   let newIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newComputeDataFuncMap = WonderCommonlib.HashMapSystem.createEmpty();
@@ -106,6 +111,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newGameObjectMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newIndicesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newVerticesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newIsClonedMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newVertexBufferMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newElementArrayBufferMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newVerticesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newIndicesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newVerticesOffset = ref(0);
@@ -119,11 +127,11 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
-         (index) =>
-           MemoryUtils.isDisposed(Js.Int.toString(index), disposedIndexMap) ?
+         (index) => {
+           let indexStr = Js.Int.toString(index);
+           MemoryUtils.isDisposed(indexStr, disposedIndexMap) ?
              () :
              {
-               let indexStr = Js.Int.toString(index);
                let newIndexStr = Js.Int.toString(newIndex^);
                let verticesInfo = GeometryOperateDataUtils.getInfo(verticesInfoArray, newIndex^);
                let indicesInfo = GeometryOperateDataUtils.getInfo(indicesInfoArray, newIndex^);
@@ -176,22 +184,44 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                     verticesCountCacheMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
                   )
                |> ignore;
+               newIsClonedMap
+               |> WonderCommonlib.HashMapSystem.set(
+                    newIndexStr,
+                    isClonedMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+                  )
+               |> ignore;
+               newVertexBufferMap
+               |> WonderCommonlib.HashMapSystem.set(
+                    indexStr,
+                    vertexBufferMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+                  )
+               |> ignore;
+               newElementArrayBufferMap
+               |> WonderCommonlib.HashMapSystem.set(
+                    indexStr,
+                    elementArrayBufferMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+                  )
+               |> ignore;
                newIndex := succ(newIndex^)
              }
+         }
        )
      );
-  data.mappedIndex = newIndex^;
-  data.mappedIndexMap = newIndexMap;
-  data.verticesOffset = newVerticesOffset^;
-  data.indicesOffset = newIndicesOffset^;
-  data.verticesInfoArray = newVerticesInfoArray;
-  data.indicesInfoArray = newIndicesInfoArray;
-  data.configDataMap = newConfigDataMap;
-  data.computeDataFuncMap = newComputeDataFuncMap;
-  data.gameObjectMap = newGameObjectMap;
-  data.indicesCountCacheMap = newIndicesCountCacheMap;
-  data.verticesCountCacheMap = newVerticesCountCacheMap;
-  data.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
-  data.aliveIndexArray = newAliveIndexArray;
+  geometryData.mappedIndex = newIndex^;
+  geometryData.mappedIndexMap = newIndexMap;
+  geometryData.verticesOffset = newVerticesOffset^;
+  geometryData.indicesOffset = newIndicesOffset^;
+  geometryData.verticesInfoArray = newVerticesInfoArray;
+  geometryData.indicesInfoArray = newIndicesInfoArray;
+  geometryData.configDataMap = newConfigDataMap;
+  geometryData.computeDataFuncMap = newComputeDataFuncMap;
+  geometryData.gameObjectMap = newGameObjectMap;
+  geometryData.indicesCountCacheMap = newIndicesCountCacheMap;
+  geometryData.verticesCountCacheMap = newVerticesCountCacheMap;
+  geometryData.isClonedMap = newIsClonedMap;
+  geometryData.disposedIndexMap = WonderCommonlib.HashMapSystem.createEmpty();
+  geometryData.aliveIndexArray = newAliveIndexArray;
+  vboBufferData.vertexBufferMap = newVertexBufferMap;
+  vboBufferData.elementArrayBufferMap = newElementArrayBufferMap;
   state
 };
