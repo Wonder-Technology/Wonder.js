@@ -1,4 +1,4 @@
-type configStateJsObj = {
+type configJsObj = {
   .
   "canvasId": Js.nullable(string),
   "isTest": Js.nullable(Js.boolean),

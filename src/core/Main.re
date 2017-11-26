@@ -2,7 +2,7 @@ open MainSystem;
 
 open StateSystem;
 
-let setMainConfig = (configState: Js.t({..})) =>
+let setMainConfig = (config: Js.t({..})) =>
   createState()
-  |> setConfig(configState)
+  |> setConfig(config)
   |> init;

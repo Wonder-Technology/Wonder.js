@@ -31,11 +31,11 @@ let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType
     getValueFromJsObj(bufferConfigObj##basicMaterialDataBufferCount, 20 * 1000)
 };
 
-let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigData => {
-  canvasId: getOptionValueFromJsObj(configState##canvasId),
-  isTest: Js.to_bool(getValueFromJsObj(configState##isTest, Js.false_)),
+let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
+  canvasId: getOptionValueFromJsObj(config##canvasId),
+  isTest: Js.to_bool(getValueFromJsObj(config##isTest, Js.false_)),
   contextConfig:
-    switch (Js.Nullable.to_opt(configState##contextConfig)) {
+    switch (Js.Nullable.to_opt(config##contextConfig)) {
     | Some(contextConfig) => _changeToContextConfigRecord(contextConfig)
     | None => {
         alpha: true,
@@ -47,7 +47,7 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
       }
     },
   bufferConfig:
-    switch (Js.Nullable.to_opt(configState##bufferConfig)) {
+    switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
     | None => {
         transformDataBufferCount: 20 * 1000,
@@ -57,22 +57,22 @@ let _changeConfigStateToRecord = (configState: configStateJsObj) : mainConfigDat
     }
 };
 
-let setConfig = (configState: Js.t({..}), state: state) => {
-  let configState = _changeConfigStateToRecord(configState);
-  setIsTest(~isTest=configState.isTest, StateData.stateData);
-  (configState, state)
+let setConfig = (config: Js.t({..}), state: state) => {
+  let config = _changeConfigToRecord(config);
+  setIsTest(~isTest=config.isTest, StateData.stateData);
+  (config, state)
 };
 
 let _initDataFromState = (state: StateDataType.state) =>
   state |> TransformSystem.initData |> MaterialSystem.initData |> GeometrySystem.initData;
 
 /* todo detect, setscreensize, set pixel ratio ... */
-let init = ((configState: mainConfigData, state: state)) => {
-  let canvas = createCanvas(configState);
+let init = ((config: mainConfigData, state: state)) => {
+  let canvas = createCanvas(config);
   state
-  |> setGl(createGL(canvas, configState.contextConfig))
+  |> setGl(createGL(canvas, config.contextConfig))
   |> setCanvas(~canvas)
-  |> setContextConfig(~contextConfig=configState.contextConfig)
-  |> BufferConfigSystem.setConfig(~bufferConfig=configState.bufferConfig)
+  |> setContextConfig(~contextConfig=config.contextConfig)
+  |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> _initDataFromState
 };
