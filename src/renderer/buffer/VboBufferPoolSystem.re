@@ -14,26 +14,26 @@ let getArrayBuffer = (gl, state: StateDataType.state) =>
 let getElementArrayBuffer = (gl, state: StateDataType.state) =>
   _getBuffer(gl, VboBufferStateUtils.getVboBufferData(state).elementArrayBufferPool, state);
 
-let _unsafeGetBufferFromBufferMap = (geometryIndexStr: string, bufferMap) =>
-  WonderCommonlib.HashMapSystem.unsafeGet(geometryIndexStr, bufferMap)
+let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
+  SparseMapSystem.unsafeGet(geometryIndex, bufferMap)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "buffer should exist in bufferMap",
-             () => HashMapSystem.has(geometryIndexStr, bufferMap) |> assertTrue
+             () => SparseMapSystem.has(geometryIndex, bufferMap) |> assertTrue
            )
          )
      );
 
-let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) => {
+let addBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap, arrayBufferPool, elementArrayBufferPool} =
     VboBufferStateUtils.getVboBufferData(state);
   arrayBufferPool
-  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndexStr, vertexBufferMap))
+  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, vertexBufferMap))
   |> ignore;
   elementArrayBufferPool
-  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndexStr, elementArrayBufferMap))
+  |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, elementArrayBufferMap))
   |> ignore;
   state
 };

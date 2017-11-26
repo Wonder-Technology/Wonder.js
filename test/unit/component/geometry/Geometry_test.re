@@ -490,6 +490,7 @@ let _ =
                           test(
                             "test buffer map",
                             () => {
+                              let _hasMapData = (index, map) => map |> SparseMapSystem.has(index);
                               open StateDataType;
                               open VboBufferType;
                               let state =

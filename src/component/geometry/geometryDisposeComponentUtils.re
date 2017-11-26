@@ -26,7 +26,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
   let geometryIndexStr = Js.Int.toString(geometry);
   disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
-  let state = VboBufferSystem.addBufferToPool(geometryIndexStr, state);
+  let state = VboBufferSystem.addBufferToPool(geometry, state);
   data.disposeCount = succ(disposeCount);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
@@ -59,7 +59,7 @@ let handleBatchDisposeComponent =
          (state, geometry) => {
            let geometryIndexStr = Js.Int.toString(geometry);
            disposedIndexMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, true) |> ignore;
-           VboBufferSystem.addBufferToPool(geometryIndexStr, state)
+           VboBufferSystem.addBufferToPool(geometry, state)
          }
        ),
        state

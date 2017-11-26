@@ -8,23 +8,23 @@ let getOrCreateBuffer =
       geometryIndexStr,
       GeometryIndexUtils.getMappedIndexMap(state)
     );
-  switch (WonderCommonlib.HashMapSystem.get(geometryIndexStr, bufferMap)) {
+  switch (SparseMapSystem.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
     let buffer =
       [@bs]
       createBuffer(gl, mappedGeometryIndex, [@bs] getDataFunc(mappedGeometryIndex, state), state);
-    bufferMap |> WonderCommonlib.HashMapSystem.set(geometryIndexStr, buffer) |> ignore;
+    bufferMap |> SparseMapSystem.set(geometryIndex, buffer) |> ignore;
     buffer
   }
 };
 
-let addBufferToPool = (geometryIndexStr: string, state: StateDataType.state) =>
-  VboBufferPoolSystem.addBufferToPool(geometryIndexStr, state);
+let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
+  VboBufferPoolSystem.addBufferToPool(geometryIndex, state);
 
 let initData = () => {
-  vertexBufferMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  elementArrayBufferMap: WonderCommonlib.HashMapSystem.createEmpty(),
+  vertexBufferMap: SparseMapSystem.createEmpty(),
+  elementArrayBufferMap: SparseMapSystem.createEmpty(),
   arrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty()
 };

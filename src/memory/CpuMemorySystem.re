@@ -112,8 +112,8 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndicesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newVerticesCountCacheMap = WonderCommonlib.HashMapSystem.createEmpty();
   let newIsClonedMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newVertexBufferMap = WonderCommonlib.HashMapSystem.createEmpty();
-  let newElementArrayBufferMap = WonderCommonlib.HashMapSystem.createEmpty();
+  let newVertexBufferMap = SparseMapSystem.createEmpty();
+  let newElementArrayBufferMap = SparseMapSystem.createEmpty();
   let newVerticesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newIndicesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
   let newVerticesOffset = ref(0);
@@ -191,15 +191,12 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                   )
                |> ignore;
                newVertexBufferMap
-               |> WonderCommonlib.HashMapSystem.set(
-                    indexStr,
-                    vertexBufferMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
-                  )
+               |> SparseMapSystem.set(index, vertexBufferMap |> SparseMapSystem.unsafeGet(index))
                |> ignore;
                newElementArrayBufferMap
-               |> WonderCommonlib.HashMapSystem.set(
-                    indexStr,
-                    elementArrayBufferMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr)
+               |> SparseMapSystem.set(
+                    index,
+                    elementArrayBufferMap |> SparseMapSystem.unsafeGet(index)
                   )
                |> ignore;
                newIndex := succ(newIndex^)
