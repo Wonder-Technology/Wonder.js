@@ -18,14 +18,14 @@ let _render = (gl, state: StateDataType.state) => {
            (state, uid: int) => {
              let materialIndex: int =
                Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
-             let materialIndex = (materialIndex);
+             let materialIndex = materialIndex;
              let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
-             let shaderIndex = (shaderIndex);
+             let shaderIndex = shaderIndex;
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
              let mappedGeometryIndex =
                GeometryIndexUtils.getMappedIndex(
-                 (geometryIndex),
+                 geometryIndex,
                  GeometryIndexUtils.getMappedIndexMap(state)
                );
              let {vertexBufferMap, elementArrayBufferMap} =
@@ -47,6 +47,7 @@ let _render = (gl, state: StateDataType.state) => {
                             ArrayBufferSystem.getOrCreateBuffer(
                               gl,
                               geometryIndex,
+                              mappedGeometryIndex,
                               vertexBufferMap,
                               [@bs] GeometrySystem.getVertices,
                               state
@@ -55,6 +56,7 @@ let _render = (gl, state: StateDataType.state) => {
                             ElementArrayBufferSystem.getOrCreateBuffer(
                               gl,
                               geometryIndex,
+                              mappedGeometryIndex,
                               elementArrayBufferMap,
                               [@bs] GeometrySystem.getIndices,
                               state

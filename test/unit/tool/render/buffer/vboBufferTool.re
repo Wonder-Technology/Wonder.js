@@ -2,6 +2,7 @@ let getOrCreateArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
+    GeometryIndexUtils.getMappedIndex(geometryIndex, GeometryIndexUtils.getMappedIndexMap(state)),
     VboBufferStateUtils.getVboBufferData(state).vertexBufferMap,
     [@bs] ArrayBufferSystem.createBuffer,
     [@bs] GeometrySystem.getVertices,
@@ -12,6 +13,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
+    GeometryIndexUtils.getMappedIndex(geometryIndex, GeometryIndexUtils.getMappedIndexMap(state)),
     VboBufferStateUtils.getVboBufferData(state).elementArrayBufferMap,
     [@bs] ElementArrayBufferSystem.createBuffer,
     [@bs] GeometrySystem.getIndices,

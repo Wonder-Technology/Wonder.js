@@ -1,13 +1,15 @@
 open VboBufferType;
 
 let getOrCreateBuffer =
-    (gl, geometryIndex: int, bufferMap, createBuffer, getDataFunc, state: StateDataType.state) => {
-  let geometryIndex = (geometryIndex);
-  let mappedGeometryIndex =
-    GeometryIndexUtils.getMappedIndex(
-      geometryIndex,
-      GeometryIndexUtils.getMappedIndexMap(state)
-    );
+    (
+      gl,
+      geometryIndex: int,
+      mappedGeometryIndex: int,
+      bufferMap,
+      createBuffer,
+      getDataFunc,
+      state: StateDataType.state
+    ) =>
   switch (SparseMapSystem.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
@@ -16,8 +18,7 @@ let getOrCreateBuffer =
       createBuffer(gl, mappedGeometryIndex, [@bs] getDataFunc(mappedGeometryIndex, state), state);
     bufferMap |> SparseMapSystem.set(geometryIndex, buffer) |> ignore;
     buffer
-  }
-};
+  };
 
 let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
   VboBufferPoolSystem.addBufferToPool(geometryIndex, state);
