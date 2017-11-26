@@ -8,14 +8,13 @@ let isAlive = (transform: transform, state: StateDataType.state) =>
   ComponentDisposeComponentUtils.isAlive(transform, getTransformData(state).disposedIndexArray);
 
 let _disposeFromParentAndChildMap = (transform, data) => {
-  let transformStr = transform;
   data
-  |> TransformHierachySystem.unsafeGetChildren(transformStr)
+  |> TransformHierachySystem.unsafeGetChildren(transform)
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        ((child: transform) => TransformHierachySystem.removeFromParentMap(child, data) |> ignore)
      );
-  switch (TransformHierachySystem.getParent(transformStr, data)) {
+  switch (TransformHierachySystem.getParent(transform, data)) {
   | None => ()
   | Some(parent) => data |> TransformHierachySystem.removeFromChildMap(parent, transform) |> ignore
   }

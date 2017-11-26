@@ -68,17 +68,16 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
 };
 
 let setParent = (parent: option(transform), child: transform, transformData: transformData) => {
-  let childStr = child;
   switch parent {
   | None =>
-    switch (getParent(childStr, transformData)) {
+    switch (getParent(child, transformData)) {
     | None => transformData
     | Some(currentParent) =>
       let currentParentIndex = currentParent;
       _removeFromParent(currentParentIndex, child, transformData)
     }
   | Some(newParent) =>
-    switch (getParent(childStr, transformData)) {
+    switch (getParent(child, transformData)) {
     | None => _addToParent(newParent, child, transformData)
     | Some(currentParent) =>
       let currentParentIndex = currentParent;

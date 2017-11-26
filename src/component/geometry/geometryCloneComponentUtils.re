@@ -37,5 +37,5 @@ let handleCloneComponent =
   (state, componentArr)
 };
 
-let isCloned = (mappedGeometryStr, isClonedMap) =>
-  isClonedMap |> SparseMapSystem.has(mappedGeometryStr);
+let isCloned = (mappedGeometry, isClonedMap) =>
+  isClonedMap |> SparseMapSystem.has(mappedGeometry);

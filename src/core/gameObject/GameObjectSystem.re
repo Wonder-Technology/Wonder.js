@@ -48,14 +48,10 @@ let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent
 
 /* todo refactor: move to gameObjectCreateUtils*/
 let create = (state: StateDataType.state) => {
-  /* let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
-     let newUIdStr = (uid);
-     data.uid = increase(uid);
-     aliveUidArray |> Js.Array.push(newUIdStr) |> ignore; */
-  let (state, uidStr) = GameObjectCreateUtils.create(state);
+  let (state, uid) = GameObjectCreateUtils.create(state);
   /* todo refactor: use TransformXXXUtils */
   let (state, transform) = TransformSystem.create(state);
-  (addTransformComponent(uidStr, transform, state), uidStr)
+  (addTransformComponent(uid, transform, state), uid)
 };
 
 let dispose = (uid: int, state: StateDataType.state) => {
@@ -99,12 +95,7 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
   uidArray
   |> WonderCommonlib.ArraySystem.forEach(
-       [@bs]
-       (
-         (uid) => {
-           disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore
-         }
-       )
+       [@bs] ((uid) => disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore)
      );
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let state =
