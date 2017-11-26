@@ -67,7 +67,15 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  getConfigData(geometry, state) |> Js.Option.getExn
+  getConfigData(
+    
+  
+  
+    GeometryIndexUtils.getMappedIndex(
+      Js.Int.toString(geometry),
+      GeometryIndexUtils.getMappedIndexMap(state)
+    ),
+  state) |> Js.Option.getExn
 };
 
 let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => {

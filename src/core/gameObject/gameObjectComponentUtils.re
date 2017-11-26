@@ -51,7 +51,7 @@ let addTransformComponent = (uid: string, component: component, state: StateData
   GameObjectStateUtils.getGameObjectData(state).transformMap
   |> _addComponent(uid, component)
   |> ignore;
-  TransformAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs] TransformAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeTransformComponent = (uid: string, component: component, state: StateDataType.state) =>
@@ -67,7 +67,7 @@ let addGeometryComponent = (uid: string, component: component, state: StateDataT
   GameObjectStateUtils.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
   |> ignore;
-  GeometryAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs]GeometryAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeGeometryComponent = (uid: string, component: component, state: StateDataType.state) =>
@@ -83,7 +83,7 @@ let addMeshRendererComponent = (uid: string, component: component, state: StateD
   GameObjectStateUtils.getGameObjectData(state).meshRendererMap
   |> _addComponent(uid, component)
   |> ignore;
-  MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs]MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeMeshRendererComponent = (uid: string, component: component, state: StateDataType.state) =>
@@ -99,7 +99,7 @@ let addMaterialComponent = (uid: string, component: component, state: StateDataT
   GameObjectStateUtils.getGameObjectData(state).materialMap
   |> _addComponent(uid, component)
   |> ignore;
-  MaterialAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs]MaterialAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeMaterialComponent = (uid: string, component: component, state: StateDataType.state) =>
@@ -198,6 +198,7 @@ let _batchAddComponent =
       uidArray: array(string),
       componentArr: array(component),
       componentMap,
+      handleAddComponentFunc,
       state: StateDataType.state
     ) => {
   requireCheck(
@@ -210,11 +211,18 @@ let _batchAddComponent =
       )
   );
   uidArray
-  |> WonderCommonlib.ArraySystem.forEachi(
+  |> ArraySystem.reduceOneParami(
        [@bs]
-       ((uid, index) => _addComponent(uid, Array.unsafe_get(componentArr, index), componentMap))
-     );
-  state
+       (
+         (state, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           _addComponent(uid, component, componentMap);
+           [@bs] handleAddComponentFunc(component, uid, state)
+         }
+       ),
+       state
+     )
+  /* state */
 };
 
 let batchAddTransformComponent =
@@ -223,6 +231,7 @@ let batchAddTransformComponent =
     uidArray,
     componentArr,
     GameObjectStateUtils.getGameObjectData(state).transformMap,
+    TransformAddComponentUtils.handleAddComponent,
     state
   );
 
@@ -232,6 +241,7 @@ let batchAddMeshRendererComponent =
     uidArray,
     componentArr,
     GameObjectStateUtils.getGameObjectData(state).meshRendererMap,
+    MeshRendererAddComponentUtils.handleAddComponent,
     state
   );
 
@@ -241,6 +251,7 @@ let batchAddGeometryComponent =
     uidArray,
     componentArr,
     GameObjectStateUtils.getGameObjectData(state).geometryMap,
+    GeometryAddComponentUtils.handleAddComponent,
     state
   );
 
@@ -250,6 +261,7 @@ let batchAddMaterialComponent =
     uidArray,
     componentArr,
     GameObjectStateUtils.getGameObjectData(state).materialMap,
+    MaterialAddComponentUtils.handleAddComponent,
     state
   );
 
