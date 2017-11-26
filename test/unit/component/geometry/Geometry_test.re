@@ -103,53 +103,6 @@ let _ =
           )
       );
       describe(
-        "contract check",
-        () =>
-          describe(
-            "check set point data: should not exceed geometryPointDataBufferCount",
-            () => {
-              let errMeg = "should not exceed geometryPointDataBufferCount";
-              let _prepare = () => {
-                let state =
-                  TestTool.init(
-                    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)),
-                    ()
-                  );
-                createBoxGeometry(state)
-              };
-              test(
-                "check setVertices",
-                () => {
-                  let (state, geometry) = _prepare();
-                  expect(
-                    () =>
-                      state
-                      |> setGeometryVertices(
-                           geometry,
-                           Float32Array.make([|1., 2., 3., 1., 2., 3.|])
-                         )
-                      |> ignore
-                  )
-                  |> toThrowMessage(errMeg)
-                }
-              );
-              test(
-                "check setIndices",
-                () => {
-                  let (state, geometry) = _prepare();
-                  expect(
-                    () =>
-                      state
-                      |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|]))
-                      |> ignore
-                  )
-                  |> toThrowMessage("sourceTypeArr.length + offset should <= targetTypeArr.length")
-                }
-              )
-            }
-          )
-      );
-      describe(
         "getGeometryGameObject",
         () =>
           test(
@@ -822,46 +775,117 @@ let _ =
         }
       );
       describe(
-        "contract check: is alive",
-        () =>
+        "contract check",
+        () => {
           describe(
-            "if geometry is disposed",
+            "check set point data: should not exceed geometryPointDataBufferCount",
             () => {
-              let _testGetFunc = (getFunc) => {
-                open GameObject;
-                let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                let state = state |> GeometryTool.initGeometrys;
+              let errMeg = "should not exceed geometryPointDataBufferCount";
+              let _prepare = () => {
                 let state =
-                  VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
-                let state =
-                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
-                expect(() => getFunc(geometry, state)) |> toThrowMessage("component should alive")
+                  TestTool.init(
+                    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)),
+                    ()
+                  );
+                createBoxGeometry(state)
               };
-              let _testSetFunc = (setFunc) => {
-                open GameObject;
-                let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
-                let state = state |> GeometryTool.initGeometrys;
-                let state =
-                  VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
-                let state =
-                  state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
-                expect(() => setFunc(geometry, Obj.magic(0), state))
-                |> toThrowMessage("component should alive")
-              };
-              test("getGeometryVertices should error", () => _testGetFunc(getGeometryVertices));
-              test("getGeometryIndices should error", () => _testGetFunc(getGeometryIndices));
               test(
-                "getGeometryConfigData should error",
-                () => _testGetFunc(getGeometryConfigData)
+                "check setVertices",
+                () => {
+                  let (state, geometry) = _prepare();
+                  expect(
+                    () =>
+                      state
+                      |> setGeometryVertices(
+                           geometry,
+                           Float32Array.make([|1., 2., 3., 1., 2., 3.|])
+                         )
+                      |> ignore
+                  )
+                  |> toThrowMessage(errMeg)
+                }
               );
               test(
-                "getGeometryGameObject should error",
-                () => _testGetFunc(getGeometryGameObject)
-              );
-              test("setGeometryVertices should error", () => _testSetFunc(setGeometryVertices));
-              test("setGeometryIndices should error", () => _testSetFunc(setGeometryIndices))
+                "check setIndices",
+                () => {
+                  let (state, geometry) = _prepare();
+                  expect(
+                    () =>
+                      state
+                      |> setGeometryIndices(geometry, Uint16Array.make([|1, 2, 3, 1, 2, 4|]))
+                      |> ignore
+                  )
+                  |> toThrowMessage("sourceTypeArr.length + offset should <= targetTypeArr.length")
+                }
+              )
             }
+          );
+          describe(
+            "check is alive",
+            () =>
+              describe(
+                "if geometry is disposed",
+                () => {
+                  let _testGetFunc = (getFunc) => {
+                    open GameObject;
+                    let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
+                    let state = state |> GeometryTool.initGeometrys;
+                    let state =
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
+                    let state =
+                      state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                    expect(() => getFunc(geometry, state))
+                    |> toThrowMessage("component should alive")
+                  };
+                  let _testSetFunc = (setFunc) => {
+                    open GameObject;
+                    let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
+                    let state = state |> GeometryTool.initGeometrys;
+                    let state =
+                      VboBufferTool.passBufferShouldExistCheckWhenDisposeGeometry(geometry, state);
+                    let state =
+                      state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
+                    expect(() => setFunc(geometry, Obj.magic(0), state))
+                    |> toThrowMessage("component should alive")
+                  };
+                  test(
+                    "getGeometryVertices should error",
+                    () => _testGetFunc(getGeometryVertices)
+                  );
+                  test("getGeometryIndices should error", () => _testGetFunc(getGeometryIndices));
+                  test(
+                    "getGeometryConfigData should error",
+                    () => _testGetFunc(getGeometryConfigData)
+                  );
+                  test(
+                    "getGeometryGameObject should error",
+                    () => _testGetFunc(getGeometryGameObject)
+                  );
+                  test(
+                    "setGeometryVertices should error",
+                    () => _testSetFunc(setGeometryVertices)
+                  );
+                  test("setGeometryIndices should error", () => _testSetFunc(setGeometryIndices))
+                }
+              )
+          );
+          describe(
+            "check getGeometryConfigData",
+            () =>
+              test(
+                "cloned geometry have no config data, shouldn't get it",
+                () => {
+                  open StateDataType;
+                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                  let state = state |> GeometryTool.initGeometrys;
+                  let (state, _, _, _, clonedGeometryArr) =
+                    CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
+                  expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
+                  |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
+                }
+              )
           )
+        }
       )
     }
   );

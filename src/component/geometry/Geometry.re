@@ -67,7 +67,27 @@ let setGeometryIndices =
 
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
+    () => {
+      open Contract.Operators;
+      ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state);
+      test(
+        "cloned geometry have no config data, shouldn't get it",
+        () => {
+          open StateDataType;
+          let {isClonedMap} = GeometryStateUtils.getGeometryData(state);
+          GeometryCloneComponentUtils.isCloned(
+            Js.Int.toString(
+              GeometryIndexUtils.getMappedIndex(
+                Js.Int.toString(geometry),
+                GeometryIndexUtils.getMappedIndexMap(state)
+              )
+            ),
+            isClonedMap
+          )
+          |> assertFalse
+        }
+      )
+    }
   );
   getConfigData(
     GeometryIndexUtils.getMappedIndex(
