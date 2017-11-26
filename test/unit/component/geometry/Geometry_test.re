@@ -372,36 +372,69 @@ let _ =
                       describe(
                         "maps should only has alive data",
                         () => {
-                          test(
+                          describe(
                             "test gameObjectMap",
                             () => {
-                              open StateDataType;
-                              let (
-                                state,
-                                gameObject1,
-                                geometry1,
-                                gameObject2,
-                                geometry2,
-                                gameObject3,
-                                geometry3
-                              ) =
-                                _prepare(state^);
-                              let state =
-                                state
-                                |> GameObject.disposeGameObjectGeometryComponent(
-                                     gameObject1,
-                                     geometry1
-                                   );
-                              let {gameObjectMap} = state |> GeometryTool.getData;
-                              (
-                                _unsafeGetMapData(geometry2, gameObjectMap, state),
-                                _unsafeGetMapData(geometry3, gameObjectMap, state)
+                              test(
+                                "test gameObjectMap",
+                                () => {
+                                  open StateDataType;
+                                  let (
+                                    state,
+                                    gameObject1,
+                                    geometry1,
+                                    gameObject2,
+                                    geometry2,
+                                    gameObject3,
+                                    geometry3
+                                  ) =
+                                    _prepare(state^);
+                                  let state =
+                                    state
+                                    |> GameObject.disposeGameObjectGeometryComponent(
+                                         gameObject1,
+                                         geometry1
+                                       );
+                                  let {gameObjectMap} = state |> GeometryTool.getData;
+                                  (
+                                    _unsafeGetMapData(geometry2, gameObjectMap, state),
+                                    _unsafeGetMapData(geometry3, gameObjectMap, state)
+                                  )
+                                  |> expect == (gameObject2, gameObject3)
+                                }
+                              );
+                              test(
+                                "test Geometry.getGeometryGameObject",
+                                () => {
+                                  open StateDataType;
+                                  let (
+                                    state,
+                                    gameObject1,
+                                    geometry1,
+                                    gameObject2,
+                                    geometry2,
+                                    gameObject3,
+                                    geometry3
+                                  ) =
+                                    _prepare(state^);
+                                  let state =
+                                    state
+                                    |> GameObject.disposeGameObjectGeometryComponent(
+                                         gameObject1,
+                                         geometry1
+                                       );
+                                  let {gameObjectMap} = state |> GeometryTool.getData;
+                                  (
+                                    Geometry.getGeometryGameObject(geometry2, state),
+                                    Geometry.getGeometryGameObject(geometry3, state)
+                                  )
+                                  |> expect == (gameObject2, gameObject3)
+                                }
                               )
-                              |> expect == (gameObject2, gameObject3)
                             }
                           );
                           test(
-                            "test other maps",
+                            "test configDataMap, computeDataFuncMap, indicesCountCacheMap, verticesCountCacheMap",
                             () => {
                               open StateDataType;
                               let (

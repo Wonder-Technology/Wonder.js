@@ -90,8 +90,8 @@ let init = (state: StateDataType.state) => {
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
 GeometryConfigDataUtils.getConfigData(geometry, state);
 
-let getGameObject = (geometry: geometry, state: StateDataType.state) =>
-  ComponentSystem.getComponentGameObject(geometry, getGeometryData(state).gameObjectMap);
+let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
+  ComponentSystem.getComponentGameObject(mappedGeometry, getGeometryData(state).gameObjectMap);
 
 let getVertexDataSize = () => 3;
 
