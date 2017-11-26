@@ -4,16 +4,13 @@ open ComponentType;
 
 open Contract;
 
-let _getComponent =
-    (uid: int, componentMap: array(int))
-    : option(component) =>
+let _getComponent = (uid: int, componentMap: array(int)) : option(component) =>
   SparseMapSystem.get(uid, componentMap);
 
 let _hasComponent = (uid: int, componentMap: array(int)) : bool =>
   Js.Option.isSome(_getComponent(uid, componentMap));
 
-let _addComponent =
-    (uid: int, component: component, componentMap: array(int)) => {
+let _addComponent = (uid: int, component: component, componentMap: array(int)) => {
   requireCheck(
     () =>
       test(
@@ -34,11 +31,10 @@ let addCameraControllerComponent = (uid: int, component: component, state: State
   GameObjectStateUtils.getGameObjectData(state).cameraControllerMap
   |> _addComponent(uid, component)
   |> ignore;
-  CameraControllerAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs] CameraControllerAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
-let disposeCameraControllerComponent =
-    (uid: int, component: component, state: StateDataType.state) =>
+let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
   CameraControllerDisposeComponentUtils.handleDisposeComponent(component, state);
 
 let hasTransformComponent = (uid: int, state: StateDataType.state) : bool =>
@@ -67,7 +63,7 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   GameObjectStateUtils.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs]GeometryAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs] GeometryAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
@@ -83,7 +79,7 @@ let addMeshRendererComponent = (uid: int, component: component, state: StateData
   GameObjectStateUtils.getGameObjectData(state).meshRendererMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs]MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs] MeshRendererAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
@@ -99,7 +95,7 @@ let addMaterialComponent = (uid: int, component: component, state: StateDataType
   GameObjectStateUtils.getGameObjectData(state).materialMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs]MaterialAddComponentUtils.handleAddComponent(component, uid, state)
+  [@bs] MaterialAddComponentUtils.handleAddComponent(component, uid, state)
 };
 
 let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
@@ -265,6 +261,16 @@ let batchAddMaterialComponent =
     state
   );
 
+let batchAddCameraControllerComponent =
+    (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
+  _batchAddComponent(
+    uidArray,
+    componentArr,
+    GameObjectStateUtils.getGameObjectData(state).cameraControllerMap,
+    CameraControllerAddComponentUtils.handleAddComponent,
+    state
+  );
+
 let cloneTransformComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   TransformCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
@@ -280,3 +286,7 @@ let cloneGeometryComponent =
 let cloneMaterialComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
   MaterialCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
+
+let cloneCameraControllerComponent =
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  CameraControllerCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);

@@ -152,4 +152,4 @@ let batchDisposeGameObject = (gameObjectArray: array(gameObject), state: StateDa
 };
 
 let cloneGameObject = (gameObject: gameObject, count: int, state: StateDataType.state) =>
-  clone(gameObject, state, count);
+  clone(gameObject, count, state);

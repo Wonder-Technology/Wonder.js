@@ -304,6 +304,96 @@ let _ =
                 }
               )
             }
+          );
+          describe(
+            "test clone cameraController component",
+            () => {
+              let _prepare = (state) => {
+                open GameObjectType;
+                let (state, gameObject1, _, cameraController1) =
+                  CameraControllerTool.createCameraGameObject(state);
+                let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 2, state);
+                (
+                  state,
+                  gameObject1,
+                  cameraController1,
+                  clonedGameObjectArr,
+                  clonedGameObjectArr
+                  |> CloneTool.getFlattenClonedGameObjectArr
+                  |> Js.Array.map(
+                       (clonedGameObject) =>
+                         getGameObjectCameraControllerComponent(clonedGameObject, state)
+                     )
+                )
+              };
+              test(
+                "test clone specific count of cameraControllers",
+                () => {
+                  let (_, _, _, _, clonedCameraControllerArr) = _prepare(state^);
+                  clonedCameraControllerArr |> Js.Array.length |> expect == 2
+                }
+              );
+              test(
+                "set cloned cameraController's near by source one's near",
+                () => {
+                  let (state, _, cameraController1, _, clonedCameraControllerArr) =
+                    _prepare(state^);
+                  let sourceNear =
+                    PerspectiveCamera.getPerspectiveCameraNear(cameraController1, state);
+                  clonedCameraControllerArr
+                  |> Js.Array.map(
+                       (cameraController) =>
+                         PerspectiveCamera.getPerspectiveCameraNear(cameraController, state)
+                     )
+                  |> expect == [|sourceNear, sourceNear|]
+                }
+              );
+              test(
+                "set cloned cameraController's far by source one's far",
+                () => {
+                  let (state, _, cameraController1, _, clonedCameraControllerArr) =
+                    _prepare(state^);
+                  let sourceFar =
+                    PerspectiveCamera.getPerspectiveCameraFar(cameraController1, state);
+                  clonedCameraControllerArr
+                  |> Js.Array.map(
+                       (cameraController) =>
+                         PerspectiveCamera.getPerspectiveCameraFar(cameraController, state)
+                     )
+                  |> expect == [|sourceFar, sourceFar|]
+                }
+              );
+              test(
+                "set cloned cameraController's fovy by source one's fovy",
+                () => {
+                  let (state, _, cameraController1, _, clonedCameraControllerArr) =
+                    _prepare(state^);
+                  let sourceFovy =
+                    PerspectiveCamera.getPerspectiveCameraFovy(cameraController1, state);
+                  clonedCameraControllerArr
+                  |> Js.Array.map(
+                       (cameraController) =>
+                         PerspectiveCamera.getPerspectiveCameraFovy(cameraController, state)
+                     )
+                  |> expect == [|sourceFovy, sourceFovy|]
+                }
+              );
+              test(
+                "set cloned cameraController's aspect by source one's aspect",
+                () => {
+                  let (state, _, cameraController1, _, clonedCameraControllerArr) =
+                    _prepare(state^);
+                  let sourceAspect =
+                    PerspectiveCamera.getPerspectiveCameraAspect(cameraController1, state);
+                  clonedCameraControllerArr
+                  |> Js.Array.map(
+                       (cameraController) =>
+                         PerspectiveCamera.getPerspectiveCameraAspect(cameraController, state)
+                     )
+                  |> expect == [|sourceAspect, sourceAspect|]
+                }
+              )
+            }
           )
         }
       );

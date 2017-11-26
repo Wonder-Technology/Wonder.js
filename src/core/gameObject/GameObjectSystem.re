@@ -124,7 +124,7 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
                    ////shareGeometry:false
    } */
 /* let clone = (uid: int,  state: StateDataType.state, config:Js.t({..}), ~count:int=1,  ()) => { */
-let clone = (uid: int, state: StateDataType.state, count: int) => {
+let clone = (uid: int, count: int, state: StateDataType.state) => {
   let countRangeArr = ArraySystem.range(0, count - 1);
   let totalClonedGameObjectArr = [||];
   let rec _clone =
@@ -191,6 +191,23 @@ let clone = (uid: int, state: StateDataType.state, count: int) => {
         |> GameObjectComponentUtils.batchAddMaterialComponent(
              clonedGameObjectArr,
              clonedMaterialArr
+           )
+      | None => state
+      };
+      /* DebugUtils.log(uid) |> ignore; */
+    let state =
+      switch (getCameraControllerComponent(uid, state)) {
+      | Some(cameraController) =>
+        let (state, clonedCameraControllerArr) =
+          GameObjectComponentUtils.cloneCameraControllerComponent(
+            cameraController,
+            countRangeArr,
+            state
+          );
+        state
+        |> GameObjectComponentUtils.batchAddCameraControllerComponent(
+             clonedGameObjectArr,
+             clonedCameraControllerArr
            )
       | None => state
       };

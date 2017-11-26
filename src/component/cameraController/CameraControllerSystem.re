@@ -2,20 +2,13 @@ open ComponentSystem;
 
 open CameraControllerType;
 
-open CameraControllerDirtySystem;
+open CameraControllerDirtyUtils;
 
 open Contract;
 
 open CameraControllerStateUtils;
 
-let create = (state: StateDataType.state) => {
-  let {index, cameraArray, disposedIndexArray} as data = getCameraControllerData(state);
-  let (index, newIndex) = generateIndex(index, disposedIndexArray);
-  data.index = newIndex;
-  cameraArray |> Js.Array.push(index) |> ignore;
-  addToDirtyArray(index, data) |> ignore;
-  (state, index)
-};
+let create = (state: StateDataType.state) => CameraControllerCreateUtils.create(state);
 
 let getCurrentCameraController = (state: StateDataType.state) => {
   requireCheck(
