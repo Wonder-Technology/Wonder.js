@@ -13,16 +13,16 @@ type geometryComputeData = {
   indices: array(int)
 };
 
-type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));
+type geometryConfigDataMap = array(Js.Dict.t(float));
 
-type geometryMappedIndexMap = Js.Dict.t(int);
+type geometryMappedIndexMap = array(int);
 
 type geometryDisposeIndexMap = array(bool);
 
 type geometryAliveIndexArray = array(geometry);
 
-type geometryIndicesCountCacheMap = Js.Dict.t(int);
+type geometryIndicesCountCacheMap = array(int);
 
-type geometryVerticesCountCacheMap = Js.Dict.t(int);
+type geometryVerticesCountCacheMap = array(int);
 
-type geometryIsClonedMap = Js.Dict.t(bool);
+type geometryIsClonedMap = array(bool);

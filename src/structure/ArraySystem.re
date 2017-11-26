@@ -70,14 +70,14 @@ let range = (a: int, b: int) => {
 /*
  let removeDuplicateItems = (arr) => {
    let resultArr = [||];
-   let map = HashMapSystem.createEmpty();
+   let map = SparseMapSystem.createEmpty();
    for (i in 0 to Js.Array.length(arr) - 1) {
      let item = Array.unsafe_get(arr, i);
-     let key = Js.Int.toString(item);
-     switch (HashMapSystem.get(key, map)) {
+     let key = (item);
+     switch (SparseMapSystem.get(key, map)) {
      | None =>
        Js.Array.push(item, resultArr) |> ignore;
-       HashMapSystem.set(key, item, map) |> ignore
+       SparseMapSystem.set(key, item, map) |> ignore
      | Some(_) => ()
      }
    };

@@ -195,7 +195,7 @@ type schedulerFuncRecord = {
 and schedulerData = {
   mutable count: int,
   funcRecordArray: array(schedulerFuncRecord),
-  isFinishMap: Js.Dict.t(bool)
+  isFinishMap: array(bool)
 }
 and attributeSendData = {
   pos: attributeLocation,
@@ -211,9 +211,9 @@ and uniformSendData = {
      sendIntDataFunc: int => unit; */
 }
 and glslSenderData = {
-  attributeSendDataMap: Js.Dict.t(array(attributeSendData)),
-  uniformSendDataMap: Js.Dict.t(array(uniformSendData)),
-  drawPointsFuncMap: Js.Dict.t((webgl1Context => unit)),
+  attributeSendDataMap: array(array(attributeSendData)),
+  uniformSendDataMap: array(array(uniformSendData)),
+  drawPointsFuncMap: array((webgl1Context => unit)),
   mutable vertexAttribHistoryArray: array(bool),
   /* mutable lastSendArrayBuffer: option(buffer), */
   mutable lastSendElementArrayBuffer: option(buffer)
@@ -239,7 +239,7 @@ and geometryData = {
   mutable indicesInfoArray: geometryInfoArray,
   mutable verticesOffset: int,
   mutable indicesOffset: int,
-  mutable computeDataFuncMap: Js.Dict.t(((int, state) => geometryComputeData)),
+  mutable computeDataFuncMap: array(((int, state) => geometryComputeData)),
   mutable configDataMap: geometryConfigDataMap,
   mutable gameObjectMap,
   mutable disposeCount: int,

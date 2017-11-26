@@ -52,10 +52,7 @@ let addItAndItsChildrenToDirtyArray = (index: int, transformData: transformData)
     let last: int = WonderCommonlib.ArraySystem.unsafePop(children^);
     TransformDirtyUtils.addToDirtyArray(last, transformData) |> ignore;
     children :=
-      Js.Array.concat(
-        children^,
-        TransformHierachySystem.unsafeGetChildren(Js.Int.toString(last), transformData)
-      )
+      Js.Array.concat(children^, TransformHierachySystem.unsafeGetChildren(last, transformData))
   };
   transformData
 };

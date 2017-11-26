@@ -2,10 +2,10 @@ open VboBufferType;
 
 let getOrCreateBuffer =
     (gl, geometryIndex: int, bufferMap, createBuffer, getDataFunc, state: StateDataType.state) => {
-  let geometryIndexStr = Js.Int.toString(geometryIndex);
+  let geometryIndex = (geometryIndex);
   let mappedGeometryIndex =
     GeometryIndexUtils.getMappedIndex(
-      geometryIndexStr,
+      geometryIndex,
       GeometryIndexUtils.getMappedIndexMap(state)
     );
   switch (SparseMapSystem.get(geometryIndex, bufferMap)) {

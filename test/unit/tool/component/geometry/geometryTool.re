@@ -5,7 +5,7 @@ let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 let initGeometry = (geometry, state: StateDataType.state) =>
   GeometryInitComponentUtils.initGeometry(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryStateUtils.getGeometryData(state).mappedIndexMap
     ),
     state
@@ -32,7 +32,7 @@ let buildBoxGeometryConfigDataJsObj =
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getVerticesCount(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(index),
+      (index),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state
@@ -41,7 +41,7 @@ let getVerticesCount = (index: int, state: StateDataType.state) =>
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(index),
+      (index),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state
@@ -53,9 +53,9 @@ let getIndexType = (state: StateDataType.state) =>
 let getIndexTypeSize = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
 
-let hasIndices = (indexStr: string, state: StateDataType.state) =>
+let hasIndices = (index: int, state: StateDataType.state) =>
   GeometrySystem.hasIndices(
-    GeometryIndexUtils.getMappedIndex(indexStr, GeometryIndexUtils.getMappedIndexMap(state)),
+    GeometryIndexUtils.getMappedIndex(index, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   );
 
@@ -73,7 +73,7 @@ let buildBufferConfig = (count) => {
 };
 
 let getMappedIndex = (index, state: StateDataType.state) =>
-  getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex(Js.Int.toString(index));
+  getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex((index));
 
 let buildInfo = GeometryOperateDataUtils.buildInfo;
 

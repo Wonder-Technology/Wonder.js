@@ -1,8 +1,8 @@
-let getMappedIndex = (indexStr, mappedIndexMap) =>
-  mappedIndexMap |> WonderCommonlib.HashMapSystem.unsafeGet(indexStr);
+let getMappedIndex = (index, mappedIndexMap) =>
+  mappedIndexMap |> SparseMapSystem.unsafeGet(index);
 
-let setMappedIndex = (indexStr, mappedIndex, mappedIndexMap) =>
-  mappedIndexMap |> WonderCommonlib.HashMapSystem.set(indexStr, mappedIndex);
+let setMappedIndex = (index, mappedIndex, mappedIndexMap) =>
+  mappedIndexMap |> SparseMapSystem.set(index, mappedIndex);
 
 let getMappedIndexMap = (state: StateDataType.state) =>
   GeometryStateUtils.getGeometryData(state).mappedIndexMap;

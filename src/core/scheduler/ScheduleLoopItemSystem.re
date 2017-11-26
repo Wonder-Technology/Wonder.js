@@ -5,7 +5,7 @@ let update = (taskFunc, elapsed: float, state: StateDataType.state) =>
 
 let isFinish = (index: int, state: StateDataType.state) => {
   let {isFinishMap} = ScheduleStateUtils.getSchedulerData(state);
-  switch (WonderCommonlib.HashMapSystem.get(Js.Int.toString(index), isFinishMap)) {
+  switch (SparseMapSystem.get(index, isFinishMap)) {
   | None => false
   | Some(isFinish_) => isFinish_
   }

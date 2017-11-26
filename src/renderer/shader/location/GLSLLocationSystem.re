@@ -18,24 +18,24 @@ let getUniformLocation = (program, name, uniformLocationMap, gl) =>
     pos
   };
 
-let getAttributeLocationMap = (shaderIndexStr: string, state: StateDataType.state) =>
-  state.glslLocationData.attributeLocationMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr);
+let getAttributeLocationMap = (shaderIndex: int, state: StateDataType.state) =>
+  state.glslLocationData.attributeLocationMap |> SparseMapSystem.get(shaderIndex);
 
 let setAttributeLocationMap =
-    (shaderIndexStr: string, attributeLocationMap: Js.Dict.t(int), state: StateDataType.state) => {
+    (shaderIndex: int, attributeLocationMap, state: StateDataType.state) => {
   state.glslLocationData.attributeLocationMap
-  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, attributeLocationMap)
+  |> SparseMapSystem.set(shaderIndex, attributeLocationMap)
   |> ignore;
   state
 };
 
-let getUniformLocationMap = (shaderIndexStr: string, state: StateDataType.state) =>
-  state.glslLocationData.uniformLocationMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr);
+let getUniformLocationMap = (shaderIndex: int, state: StateDataType.state) =>
+  state.glslLocationData.uniformLocationMap |> SparseMapSystem.get(shaderIndex);
 
 let setUniformLocationMap =
-    (shaderIndexStr: string, uniformLocationMap, state: StateDataType.state) => {
+    (shaderIndex: int, uniformLocationMap, state: StateDataType.state) => {
   state.glslLocationData.uniformLocationMap
-  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, uniformLocationMap)
+  |> SparseMapSystem.set(shaderIndex, uniformLocationMap)
   |> ignore;
   state
 };
@@ -43,6 +43,6 @@ let setUniformLocationMap =
 let createLocationMap = () => WonderCommonlib.HashMapSystem.createEmpty();
 
 let initData = () => {
-  attributeLocationMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  uniformLocationMap: WonderCommonlib.HashMapSystem.createEmpty()
+  attributeLocationMap: SparseMapSystem.createEmpty(),
+  uniformLocationMap: SparseMapSystem.createEmpty()
 };

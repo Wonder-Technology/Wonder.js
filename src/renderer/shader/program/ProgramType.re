@@ -1,3 +1,3 @@
 open GlType;
 
-type programData = {programMap: Js.Dict.t(program), mutable lastUsedProgram: option(program)};
+type programData = {programMap: array(program), mutable lastUsedProgram: option(program)};

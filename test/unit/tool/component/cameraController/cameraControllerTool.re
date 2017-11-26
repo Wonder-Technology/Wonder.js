@@ -21,8 +21,8 @@ let getPMatrix = (cameraController, state: StateDataType.state) =>
 
 /* let setWorldToCameraMatrixCacheMap =
        (cameraController, matrix: ArraySystem.t(float), state: StateDataType.state) => {
-     HashMapSystem.set(
-       Js.Int.toString(cameraController),
+     SparseMapSystem.set(
+       (cameraController),
        matrix,
        getCameraControllerData(state).worldToCameraMatrixCacheMap
      )

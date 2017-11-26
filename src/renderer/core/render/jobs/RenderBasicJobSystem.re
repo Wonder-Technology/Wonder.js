@@ -18,25 +18,25 @@ let _render = (gl, state: StateDataType.state) => {
            (state, uid: int) => {
              let materialIndex: int =
                Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
-             let materialIndexStr = Js.Int.toString(materialIndex);
-             let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndexStr, state);
-             let shaderIndexStr = Js.Int.toString(shaderIndex);
+             let materialIndex = (materialIndex);
+             let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
+             let shaderIndex = (shaderIndex);
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
              let mappedGeometryIndex =
                GeometryIndexUtils.getMappedIndex(
-                 Js.Int.toString(geometryIndex),
+                 (geometryIndex),
                  GeometryIndexUtils.getMappedIndexMap(state)
                );
              let {vertexBufferMap, elementArrayBufferMap} =
                VboBufferStateUtils.getVboBufferData(state);
              let uniformLocationMap =
-               Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndexStr, state));
-             let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndexStr, state));
+               Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndex, state));
+             let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndex, state));
              let state =
                state
                |> ProgramSystem.use(gl, program)
-               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
                |> ArraySystem.reduceState(
                     [@bs]
                     (
@@ -66,7 +66,7 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   )
-               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndexStr)
+               |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndex)
                |> ArraySystem.reduceState(
                     [@bs]
                     (

@@ -21,18 +21,13 @@ let create = TransformCreateUtils.create;
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
-    WonderCommonlib.HashMapSystem.set(
-      Js.Int.toString(index),
-      WonderCommonlib.ArraySystem.createEmpty(),
-      childMap
-    )
-    |> ignore
+    SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
   };
   transformData
 };
 
 let getParent = (child: transform, state: StateDataType.state) =>
-  TransformHierachySystem.getParent(Js.Int.toString(child), getTransformData(state));
+  TransformHierachySystem.getParent(child, getTransformData(state));
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
   TransformHierachySystem.setParent(Js.toOption(parent), child, getTransformData(state))
@@ -42,7 +37,7 @@ let setParent = (parent: Js.nullable(transform), child: transform, state: StateD
 };
 
 let getChildren = (transform: transform, state: StateDataType.state) =>
-  getTransformData(state) |> unsafeGetChildren(Js.Int.toString(transform)) |> Js.Array.copy;
+  getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
 
 let update = (state: StateDataType.state) => {
   TransformUpdateSystem.update(getTransformData(state));
@@ -86,7 +81,7 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   let transformData = getTransformData(state);
   TransformOperateDataUtils.setPosition(
     getVector3DataIndex(transform),
-    TransformHierachySystem.getParent(Js.Int.toString(transform), transformData),
+    TransformHierachySystem.getParent(transform, transformData),
     position,
     transformData
   )
@@ -130,11 +125,11 @@ let initData = (state: StateDataType.state) => {
         index: 0,
         /* firstDirtyIndex: getMaxCount (), */
         /* oldIndexArrayBeforeAddToDirtyArray: WonderCommonlib.ArraySystem.createEmpty (), */
-        parentMap: WonderCommonlib.HashMapSystem.createEmpty(),
-        childMap: WonderCommonlib.HashMapSystem.createEmpty(),
+        parentMap: SparseMapSystem.createEmpty(),
+        childMap: SparseMapSystem.createEmpty(),
         gameObjectMap: SparseMapSystem.createEmpty(),
-        /* originToMoveIndexMap: WonderCommonlib.HashMapSystem.createEmpty (), */
-        /* moveToOriginIndexMap: WonderCommonlib.HashMapSystem.createEmpty () */
+        /* originToMoveIndexMap: SparseMapSystem.createEmpty (), */
+        /* moveToOriginIndexMap: SparseMapSystem.createEmpty () */
         dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
       }

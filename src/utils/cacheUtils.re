@@ -4,11 +4,11 @@ open CacheType;
 /* 
 let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => {
   let cachedMap = [@bs] getCacheMapFunc(state);
-  let key = Js.Int.toString(param);
-  switch (WonderCommonlib.HashMapSystem.get(key, cachedMap)) {
+  let key = (param);
+  switch (SparseMapSystem.get(key, cachedMap)) {
   | None =>
     let value = [@bs] bodyFunc(param, state);
-    WonderCommonlib.HashMapSystem.set(key, value, cachedMap) |> ignore;
+    SparseMapSystem.set(key, value, cachedMap) |> ignore;
     value
   | Some(value) => value
   }
@@ -16,11 +16,11 @@ let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => 
 
 let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => {
   let cachedMap = [@bs] getCacheMapFunc(state);
-  let key = Js.Int.toString(param);
-  switch (WonderCommonlib.HashMapSystem.get(key, cachedMap)) {
+  let key = (param);
+  switch (SparseMapSystem.get(key, cachedMap)) {
   | None =>
     let value = [@bs] bodyFunc(param, state);
-    WonderCommonlib.HashMapSystem.set(key, value, cachedMap) |> ignore;
+    SparseMapSystem.set(key, value, cachedMap) |> ignore;
     value
   | Some(value) => value
   }

@@ -6,11 +6,10 @@ type cameraController = int;
 
 type cameraControllerDirtyArray = array(int);
 
-/* type worldToCameraMatrixCacheMap = Js.Dict.t(array(float)); */
+/* type worldToCameraMatrixCacheMap = array(array(float)); */
+type pMatrixMap = array(Js.Typed_array.Float32Array.t);
 
-type pMatrixMap = Js.Dict.t(Js.Typed_array.Float32Array.t);
-
-type updateCameraFuncMap = Js.Dict.t(((int, cameraControllerData) => unit))
+type updateCameraFuncMap = array(((int, cameraControllerData) => unit))
 and cameraControllerData = {
   mutable index: int,
   mutable cameraArray: array(cameraController),
@@ -18,7 +17,7 @@ and cameraControllerData = {
   /* mutable worldToCameraMatrixCacheMap, */
   mutable pMatrixMap,
   mutable gameObjectMap,
-  /* mutable dirtyMap: Js.Dict.t(bool), */
+  /* mutable dirtyMap: array(bool), */
   mutable updateCameraFuncMap,
   mutable perspectiveCameraData,
   mutable disposedIndexArray: array(cameraController)

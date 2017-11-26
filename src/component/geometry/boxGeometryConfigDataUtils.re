@@ -1,10 +1,8 @@
-
 open GeometryType;
 
 open BoxGeometryType;
 
 open GeometryStateUtils;
-
 
 let setConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
@@ -27,7 +25,7 @@ let setConfigData =
          getValueFromJsObj(configData##depthSegment, 1.)
        );
   getGeometryData(state).configDataMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(geometry), configDataHashMap)
+  |> SparseMapSystem.set(geometry, configDataHashMap)
   |> ignore;
   state
 };

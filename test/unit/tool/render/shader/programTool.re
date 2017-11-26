@@ -1,5 +1,5 @@
-let getProgram = (shaderIndexStr: string, state: StateDataType.state) =>
-  ProgramSystem.getProgram(shaderIndexStr, state);
+let getProgram = (shaderIndex: int, state: StateDataType.state) =>
+  ProgramSystem.getProgram(shaderIndex, state);
 
 let clearLastUsedProgram = (state: StateDataType.state) => {
   state.programData.lastUsedProgram = None;

@@ -11,7 +11,7 @@ let isAlive = (geometry: geometry, state: StateDataType.state) => {
   disposedIndexMap |> SparseMapSystem.has(geometry) ?
     false :
     mappedIndexMap
-    |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(geometry))
+    |> SparseMapSystem.get((geometry))
     |> Js.Option.isSome
 };
 

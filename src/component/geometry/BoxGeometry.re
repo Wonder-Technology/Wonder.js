@@ -21,7 +21,7 @@ let setBoxGeometryConfigData =
   );
   setConfigData(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     configData,

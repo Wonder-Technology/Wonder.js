@@ -4,14 +4,14 @@ type transform = int;
 
 type position = (float, float, float);
 
-type transformParentMap = Js.Dict.t(Js.undefined(transform));
+type transformParentMap = array(Js.undefined(transform));
 
-type transformChildMap = Js.Dict.t(array(transform));
+type transformChildMap = array(array(transform));
 
-type transformDirtyMap = Js.Dict.t(bool);
+type transformDirtyMap = array(bool);
 
-/* type originToMoveIndexMap = Js.Dict.t int; */
-/* type moveToOriginIndexMap = Js.Dict.t int; */
+/* type originToMoveIndexMap = array int; */
+/* type moveToOriginIndexMap = array int; */
 type transformDirtyArray = array(int);
 
 type transformData = {

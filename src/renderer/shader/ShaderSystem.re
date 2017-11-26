@@ -47,17 +47,17 @@ let _init =
       |> ProgramSystem.createProgram
       |> ProgramSystem.registerProgram(shaderIndex, state)
       |> ProgramSystem.initShader(vsSource, fsSource, gl);
-    let shaderIndexStr = Js.Int.toString(shaderIndex);
+    let shaderIndex = shaderIndex;
     state
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          gl,
-         shaderIndexStr,
+         shaderIndex,
          program,
          shaderLibDataArr
        )
     |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
          gl,
-         shaderIndexStr,
+         shaderIndex,
          program,
          shaderLibDataArr
        )

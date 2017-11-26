@@ -315,7 +315,7 @@ let _ =
                     () => {
                       let _hasMapData = (index, map) =>
                         map
-                        |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(index))
+                        |> SparseMapSystem.get((index))
                         |> Js.Option.isSome;
                       let _unsafeGetSparseMapData = (index, map, state) =>
                         map
@@ -324,8 +324,8 @@ let _ =
                            );
                       let _unsafeGetMapData = (index, map, state) =>
                         map
-                        |> WonderCommonlib.HashMapSystem.unsafeGet(
-                             Js.Int.toString(GeometryTool.getMappedIndex(index, state))
+                        |> SparseMapSystem.unsafeGet(
+                             (GeometryTool.getMappedIndex(index, state))
                            );
                       describe(
                         "maps should only has alive data",
@@ -741,9 +741,9 @@ let _ =
                                 BoxGeometryTool.createGameObject(state);
                               let state = state |> GameObject.initGameObject(gameObject4);
                               (
-                                GeometryTool.hasIndices(Js.Int.toString(geometry1), state),
-                                GeometryTool.hasIndices(Js.Int.toString(geometry3), state),
-                                GeometryTool.hasIndices(Js.Int.toString(geometry4), state)
+                                GeometryTool.hasIndices((geometry1), state),
+                                GeometryTool.hasIndices((geometry3), state),
+                                GeometryTool.hasIndices((geometry4), state)
                               )
                               |> expect == (true, true, true)
                             }

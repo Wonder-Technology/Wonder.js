@@ -85,26 +85,24 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
   program
 };
 
-let getProgram = (shaderIndexStr: string, state: StateDataType.state) =>
-  _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.get(shaderIndexStr);
+let getProgram = (shaderIndex: int, state: StateDataType.state) =>
+  _getProgramData(state).programMap |> SparseMapSystem.get(shaderIndex);
 
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
-  _getProgramData(state).programMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(shaderIndex), program)
-  |> ignore;
+  _getProgramData(state).programMap |> SparseMapSystem.set(shaderIndex, program) |> ignore;
   program
 };
 
 /* let getProgram = (shaderLibDataKey: string, state: StateDataType.state) =>
-     _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.get(shaderLibDataKey);
+     _getProgramData(state).programMap |> SparseMapSystem.get(shaderLibDataKey);
 
    let setProgram = (shaderLibDataKey: string, program: program, state: StateDataType.state) => {
-     _getProgramData(state).programMap |> WonderCommonlib.HashMapSystem.set(shaderLibDataKey, program) |> ignore;
+     _getProgramData(state).programMap |> SparseMapSystem.set(shaderLibDataKey, program) |> ignore;
      state
    }; */
 /* let buildShaderIndexMapKey = (shaderLibDataArr) => shaderLibDataArr |> Js.Array.joinWith(""); */
 let use = (gl, program: program, state: StateDataType.state) => {
-  /* switch (getProgram(shaderIndexStr, state)) {
+  /* switch (getProgram(shaderIndex, state)) {
      | None => ExceptionHandleSystem.throwMessage("program should exist")
      | Some(program) => */
   let data = _getProgramData(state);
@@ -117,4 +115,4 @@ let use = (gl, program: program, state: StateDataType.state) => {
   }
 };
 
-let initData = () => {programMap: WonderCommonlib.HashMapSystem.createEmpty(), lastUsedProgram: None};
+let initData = () => {programMap: SparseMapSystem.createEmpty(), lastUsedProgram: None};

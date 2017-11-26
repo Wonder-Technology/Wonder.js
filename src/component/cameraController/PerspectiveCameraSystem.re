@@ -7,29 +7,20 @@ open CameraControllerStateUtils;
 open CameraControllerDirtySystem;
 
 let getFovy = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.fovyMap);
+  SparseMapSystem.get(cameraController, cameraData.fovyMap);
 
 let setFovy = (cameraController: cameraController, fovy: float, state: StateDataType.state) => {
-  WonderCommonlib.HashMapSystem.set(
-    Js.Int.toString(cameraController),
-    fovy,
-    getPerspectiveCameraData(state).fovyMap
-  )
-  |> ignore;
+  SparseMapSystem.set(cameraController, fovy, getPerspectiveCameraData(state).fovyMap) |> ignore;
   CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };
 
 let getAspect = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.aspectMap);
+  SparseMapSystem.get(cameraController, cameraData.aspectMap);
 
 let setAspect = (cameraController: cameraController, aspect: float, state: StateDataType.state) => {
-  WonderCommonlib.HashMapSystem.set(
-    Js.Int.toString(cameraController),
-    aspect,
-    getPerspectiveCameraData(state).aspectMap
-  )
+  SparseMapSystem.set(cameraController, aspect, getPerspectiveCameraData(state).aspectMap)
   |> ignore;
   CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
@@ -37,26 +28,20 @@ let setAspect = (cameraController: cameraController, aspect: float, state: State
 };
 
 let getNear = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.nearMap);
+  SparseMapSystem.get(cameraController, cameraData.nearMap);
 
 let setNear = (cameraController: cameraController, near: float, state: StateDataType.state) => {
-  WonderCommonlib.HashMapSystem.set(
-    Js.Int.toString(cameraController),
-    near,
-    getPerspectiveCameraData(state).nearMap
-  )
-  |> ignore;
+  SparseMapSystem.set(cameraController, near, getPerspectiveCameraData(state).nearMap) |> ignore;
   CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
 };
 
 let getFar = (cameraController: cameraController, cameraData: perspectiveCameraData) =>
-  WonderCommonlib.HashMapSystem.get(Js.Int.toString(cameraController), cameraData.farMap);
+  SparseMapSystem.get(cameraController, cameraData.farMap);
 
 let setFar = (cameraController: cameraController, far: float, state: StateDataType.state) => {
-  WonderCommonlib.HashMapSystem.set(Js.Int.toString(cameraController), far, getPerspectiveCameraData(state).farMap)
-  |> ignore;
+  SparseMapSystem.set(cameraController, far, getPerspectiveCameraData(state).farMap) |> ignore;
   CameraControllerDirtySystem.addToDirtyArray(cameraController, getCameraControllerData(state))
   |> ignore;
   state
@@ -68,7 +53,7 @@ let _setPMatrix =
       cameraControllerData: cameraControllerData,
       pMatrix: Js.Typed_array.Float32Array.t
     ) =>
-  WonderCommonlib.HashMapSystem.set(Js.Int.toString(cameraController), pMatrix, cameraControllerData.pMatrixMap);
+  SparseMapSystem.set(cameraController, pMatrix, cameraControllerData.pMatrixMap);
 
 let update = (index: int, cameraControllerData: cameraControllerData) => {
   let cameraData = getPerspectiveCameraDataFromCameraControllerData(cameraControllerData);
@@ -95,8 +80,8 @@ let init = (index: int, cameraControllerData: cameraControllerData) =>
   update(index, cameraControllerData);
 
 let initData = () => {
-  nearMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  farMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  fovyMap: WonderCommonlib.HashMapSystem.createEmpty(),
-  aspectMap: WonderCommonlib.HashMapSystem.createEmpty()
+  nearMap: SparseMapSystem.createEmpty(),
+  farMap: SparseMapSystem.createEmpty(),
+  fovyMap: SparseMapSystem.createEmpty(),
+  aspectMap: SparseMapSystem.createEmpty()
 };

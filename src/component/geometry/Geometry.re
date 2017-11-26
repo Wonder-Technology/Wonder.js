@@ -14,7 +14,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   [@bs]
   getVertices(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state
@@ -28,7 +28,7 @@ let setGeometryVertices =
   );
   setVertices(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     data,
@@ -43,7 +43,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   [@bs]
   getIndices(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state
@@ -57,7 +57,7 @@ let setGeometryIndices =
   );
   setIndices(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     data,
@@ -76,9 +76,9 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
           open StateDataType;
           let {isClonedMap} = GeometryStateUtils.getGeometryData(state);
           GeometryCloneComponentUtils.isCloned(
-            Js.Int.toString(
+            (
               GeometryIndexUtils.getMappedIndex(
-                Js.Int.toString(geometry),
+                (geometry),
                 GeometryIndexUtils.getMappedIndexMap(state)
               )
             ),
@@ -91,7 +91,7 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
   );
   getConfigData(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state
@@ -105,7 +105,7 @@ let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => 
   );
   getGameObject(
     GeometryIndexUtils.getMappedIndex(
-      Js.Int.toString(geometry),
+      (geometry),
       GeometryIndexUtils.getMappedIndexMap(state)
     ),
     state

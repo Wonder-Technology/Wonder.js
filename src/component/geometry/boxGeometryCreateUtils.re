@@ -163,9 +163,7 @@ let create = (state: StateDataType.state) => {
   open StateDataType;
   let (state, index) = GeometryCreateUtils.create(state);
   let {mappedIndexMap} as data = getGeometryData(state);
-  let mappedIndex = GeometryIndexUtils.getMappedIndex(Js.Int.toString(index), mappedIndexMap);
-  data.computeDataFuncMap
-  |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), _computeData)
-  |> ignore;
+  let mappedIndex = GeometryIndexUtils.getMappedIndex(index, mappedIndexMap);
+  data.computeDataFuncMap |> SparseMapSystem.set(mappedIndex, _computeData) |> ignore;
   (state, index, mappedIndex)
 };

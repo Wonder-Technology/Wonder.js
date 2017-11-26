@@ -1,4 +1,4 @@
 type glslLocationData = {
-  attributeLocationMap: Js.Dict.t(Js.Dict.t(int)),
-  uniformLocationMap: Js.Dict.t(Js.Dict.t(GlType.uniformLocation))
+  attributeLocationMap: array(Js.Dict.t(int)),
+  uniformLocationMap: array(Js.Dict.t(GlType.uniformLocation))
 };

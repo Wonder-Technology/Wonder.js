@@ -8,10 +8,10 @@ open GeometryOperateDataUtils;
 
 let initGeometry = (mappedIndex: int, state: StateDataType.state) => {
   let {isClonedMap, computeDataFuncMap} = getGeometryData(state);
-  GeometryCloneComponentUtils.isCloned(Js.Int.toString(mappedIndex), isClonedMap) ?
+  GeometryCloneComponentUtils.isCloned((mappedIndex), isClonedMap) ?
     state :
     (
-      switch (computeDataFuncMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(mappedIndex))) {
+      switch (computeDataFuncMap |> SparseMapSystem.get((mappedIndex))) {
       | None => state
       | Some(computeDataFunc) =>
         let {vertices, indices}: geometryComputeData = computeDataFunc(mappedIndex, state);

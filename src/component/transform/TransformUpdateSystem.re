@@ -20,7 +20,7 @@ let _transform = ({localToWorldMatrices, localPositions} as transformData, dirty
     let index = Array.unsafe_get(dirtyArray, i);
     /* todo from rotation, scale */
     let mat = fromTranslation(localPositions, getVector3DataIndex(index));
-    switch (getParent(Js.Int.toString(index), transformData)) {
+    switch (getParent((index), transformData)) {
     | Some(parent) =>
       [@bs]
       setLocalToWorldMatricesTypeArr(

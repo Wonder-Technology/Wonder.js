@@ -18,7 +18,7 @@ open Gl;
      let {index, mappedIndex, mappedIndexMap, aliveIndexArray} as data = getGeometryData(state);
      data.index = succ(index);
      data.mappedIndex = succ(mappedIndex);
-     GeometryIndexUtils.setMappedIndex(Js.Int.toString(index), mappedIndex, mappedIndexMap) |> ignore;
+     GeometryIndexUtils.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
      aliveIndexArray |> Js.Array.push(index) |> ignore;
      (state, index)
    }; */
@@ -87,7 +87,7 @@ let init = (state: StateDataType.state) => {
   |> Js.Array.forEach(
        (geometryIndex: int) =>
          GeometryInitComponentUtils.initGeometry(
-           GeometryIndexUtils.getMappedIndex(Js.Int.toString(geometryIndex), mappedIndexMap),
+           GeometryIndexUtils.getMappedIndex(geometryIndex, mappedIndexMap),
            state
          )
          |> ignore
@@ -149,16 +149,16 @@ let initData = (state: StateDataType.state) => {
       indicesInfoArray: WonderCommonlib.ArraySystem.createEmpty(),
       verticesOffset: 0,
       indicesOffset: 0,
-      configDataMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      computeDataFuncMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      configDataMap: SparseMapSystem.createEmpty(),
+      computeDataFuncMap: SparseMapSystem.createEmpty(),
       gameObjectMap: SparseMapSystem.createEmpty(),
       disposeCount: 0,
       disposedIndexMap: SparseMapSystem.createEmpty(),
-      mappedIndexMap: WonderCommonlib.HashMapSystem.createEmpty(),
+      mappedIndexMap: SparseMapSystem.createEmpty(),
       aliveIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
-      indicesCountCacheMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      verticesCountCacheMap: WonderCommonlib.HashMapSystem.createEmpty(),
-      isClonedMap: WonderCommonlib.HashMapSystem.createEmpty()
+      indicesCountCacheMap: SparseMapSystem.createEmpty(),
+      verticesCountCacheMap: SparseMapSystem.createEmpty(),
+      isClonedMap: SparseMapSystem.createEmpty()
     });
   state
 };

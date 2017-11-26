@@ -68,7 +68,7 @@ let _ =
               let state = state |> InitBasicMaterialJobTool.exec;
               let shaderIndex = MaterialTool.unsafeGetShaderIndex(material, state);
               state
-              |> ProgramTool.getProgram(Js.Int.toString(shaderIndex))
+              |> ProgramTool.getProgram((shaderIndex))
               |> Js.Option.getExn
               |> expect == program
             }

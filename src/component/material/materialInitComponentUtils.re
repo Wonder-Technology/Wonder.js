@@ -6,8 +6,8 @@ let _initMaterialShader = (gl, materialIndex: int, initShaderFuncTuple, state: S
   let shader_libs = basic_material.material_shader.shader_libs;
   let {groups} = getShaders(state);
   let shaderLibs = getShaderLibs(state);
-  let materialIndexStr = Js.Int.toString(materialIndex);
-  MaterialShaderIndexUtils.hasShaderIndex(materialIndexStr, state) ?
+  let materialIndex = (materialIndex);
+  MaterialShaderIndexUtils.hasShaderIndex(materialIndex, state) ?
     state :
     {
       let shaderIndex =
@@ -18,7 +18,7 @@ let _initMaterialShader = (gl, materialIndex: int, initShaderFuncTuple, state: S
           initShaderFuncTuple,
           state
         );
-      MaterialShaderIndexUtils.setShaderIndex(materialIndexStr, shaderIndex, state)
+      MaterialShaderIndexUtils.setShaderIndex(materialIndex, shaderIndex, state)
     }
 };
 

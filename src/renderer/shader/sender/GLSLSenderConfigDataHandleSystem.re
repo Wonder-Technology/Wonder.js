@@ -17,7 +17,7 @@ open GLSLSenderDrawSystem;
 let addAttributeSendData =
     (
       gl,
-      shaderIndexStr: string,
+      shaderIndex: int,
       /* geometryIndex: int, */
       program: program,
       shaderLibDataArr: shader_libs,
@@ -31,13 +31,13 @@ let addAttributeSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).attributeSendDataMap
-            |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+            |> SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
   );
   let attributeLocationMap =
-    switch (state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndexStr)) {
+    switch (state |> GLSLLocationSystem.getAttributeLocationMap(shaderIndex)) {
     | None => WonderCommonlib.HashMapSystem.createEmpty()
     | Some(map) => map
     };
@@ -147,9 +147,9 @@ let addAttributeSendData =
        )
      );
   getGLSLSenderData(state).attributeSendDataMap
-  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, sendDataArr)
+  |> SparseMapSystem.set(shaderIndex, sendDataArr)
   |> ignore;
-  state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndexStr, attributeLocationMap)
+  state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
 
 let _getModelMMatrixData =
@@ -165,7 +165,7 @@ let _getModelMMatrixData =
 let addUniformSendData =
     (
       gl,
-      shaderIndexStr: string,
+      shaderIndex: int,
       /* geometryIndex: int, */
       /* uid: int, */
       program: program,
@@ -181,13 +181,13 @@ let addUniformSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).uniformSendDataMap
-            |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+            |> SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
   );
   let uniformLocationMap =
-    switch (state |> GLSLLocationSystem.getUniformLocationMap(shaderIndexStr)) {
+    switch (state |> GLSLLocationSystem.getUniformLocationMap(shaderIndex)) {
     | None => WonderCommonlib.HashMapSystem.createEmpty()
     | Some(map) => map
     };
@@ -258,17 +258,17 @@ let addUniformSendData =
        )
      );
   getGLSLSenderData(state).uniformSendDataMap
-  |> WonderCommonlib.HashMapSystem.set(shaderIndexStr, sendDataArr)
+  |> SparseMapSystem.set(shaderIndex, sendDataArr)
   |> ignore;
-  /* let shaderIndexStr = Js.Int.toString(shaderIndex); */
-  state |> GLSLLocationSystem.setUniformLocationMap(shaderIndexStr, uniformLocationMap)
+  /* let shaderIndex = (shaderIndex); */
+  state |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
 /* let addDrawPointsFunc =
-    (gl, materialIndexStr: string, geometryIndex: int, state: StateDataType.state) => {
+    (gl, materialIndex: int, geometryIndex: int, state: StateDataType.state) => {
   /* getGLSLSenderData(state).drawPointsFuncMap
-  |> WonderCommonlib.HashMapSystem.set(
-       materialIndexStr,
+  |> SparseMapSystem.set(
+       materialIndex,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
            GeometrySystem.getDrawMode(gl),
@@ -285,10 +285,10 @@ let addUniformSendData =
   state
 }; */
 
-let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) => {
+let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
-  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
+  |> SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -299,7 +299,7 @@ let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) 
                () => {
                  let {attributeSendDataMap} = getGLSLSenderData(state);
                  attributeSendDataMap
-                 |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+                 |> SparseMapSystem.get(shaderIndex)
                  |> assertExist
                }
              )
@@ -307,10 +307,10 @@ let getAttributeSendData = (shaderIndexStr: string, state: StateDataType.state) 
      )
 };
 
-let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) => {
+let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {uniformSendDataMap} = getGLSLSenderData(state);
   uniformSendDataMap
-  |> WonderCommonlib.HashMapSystem.unsafeGet(shaderIndexStr)
+  |> SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -319,7 +319,7 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
              () => {
                let {uniformSendDataMap} = getGLSLSenderData(state);
                uniformSendDataMap
-               |> WonderCommonlib.HashMapSystem.get(shaderIndexStr)
+               |> SparseMapSystem.get(shaderIndex)
                |> assertExist
              }
            )
@@ -327,7 +327,7 @@ let getUniformSendData = (shaderIndexStr: string, state: StateDataType.state) =>
      )
 };
 
-/* let getDrawPointsFunc = (materialIndexStr: string, state: StateDataType.state) => {
+/* let getDrawPointsFunc = (materialIndex: int, state: StateDataType.state) => {
 let gl = [@bs]DeviceManagerSystem.getGl(state);
   drawElement(
            GeometrySystem.getDrawMode(gl),
@@ -339,7 +339,7 @@ let gl = [@bs]DeviceManagerSystem.getGl(state);
   )
   /* let {drawPointsFuncMap} = getGLSLSenderData(state);
   drawPointsFuncMap
-  |> WonderCommonlib.HashMapSystem.unsafeGet(materialIndexStr)
+  |> SparseMapSystem.unsafeGet(materialIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -348,7 +348,7 @@ let gl = [@bs]DeviceManagerSystem.getGl(state);
              () => {
                let {drawPointsFuncMap} = getGLSLSenderData(state);
                drawPointsFuncMap
-               |> WonderCommonlib.HashMapSystem.get(materialIndexStr)
+               |> SparseMapSystem.get(materialIndex)
                |> assertExist
              }
            )

@@ -49,7 +49,7 @@ let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent
 /* todo refactor: move to gameObjectCreateUtils*/
 let create = (state: StateDataType.state) => {
   /* let {uid, aliveUidArray} as data = GameObjectStateUtils.getGameObjectData(state);
-     let newUIdStr = Js.Int.toString(uid);
+     let newUIdStr = (uid);
      data.uid = increase(uid);
      aliveUidArray |> Js.Array.push(newUIdStr) |> ignore; */
   let (state, uidStr) = GameObjectCreateUtils.create(state);
@@ -181,7 +181,7 @@ let clone = (uid: int, state: StateDataType.state, count: int) => {
         let (state, clonedGeometryArr) =
           GameObjectComponentUtils.cloneGeometryComponent(
             GeometryIndexUtils.getMappedIndex(
-              Js.Int.toString(geometry),
+              geometry,
               GeometryIndexUtils.getMappedIndexMap(state)
             ),
             countRangeArr,
@@ -265,7 +265,7 @@ let clone = (uid: int, state: StateDataType.state, count: int) => {
     /* DebugUtils.log(("child:", clonedTransformArr )) |> ignore; */
     /* todo optimize: use loop */
     TransformHierachySystem.unsafeGetChildren(
-      Js.Int.toString(transform),
+      transform,
       TransformStateUtils.getTransformData(state)
     )
     |> ArraySystem.reduceState(
@@ -325,10 +325,7 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     switch (getGeometryComponent(uid, state)) {
     | Some(geometry) =>
       GeometryInitComponentUtils.handleInitComponent(
-        GeometryIndexUtils.getMappedIndex(
-          Js.Int.toString(geometry),
-          GeometryIndexUtils.getMappedIndexMap(state)
-        ),
+        GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
         state
       )
     | None => state

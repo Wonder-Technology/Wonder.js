@@ -56,18 +56,18 @@ let setPosition =
   };
 
 /* let isTransform = (transform: transform, isTransformMap) =>
-     switch (isTransformMap |> WonderCommonlib.HashMapSystem.get(Js.Int.toString(transform))) {
+     switch (isTransformMap |> SparseMapSystem.get((transform))) {
      | None => false
      | Some(isTransform) => isTransform == true
      };
 
    let markIsTransform = (transform: transform, isTransformMap) => {
-     isTransformMap |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(transform), true) |> ignore;
+     isTransformMap |> SparseMapSystem.set((transform), true) |> ignore;
      ()
    };
 
    let cleanIsTransformMap = (state:StateDataType.state) => {
-    TransformStateUtils.getTransformData(state).isTransformMap = WonderCommonlib.HashMapSystem.createEmpty();
+    TransformStateUtils.getTransformData(state).isTransformMap = SparseMapSystem.createEmpty();
      state;
    }; */
 let getLocalPosition = (transform: transform, transformData) =>
