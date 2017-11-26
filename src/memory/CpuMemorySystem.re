@@ -147,7 +147,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                    verticesInfo.endIndex
                  );
                newIndicesOffset :=
-                 TypeArrayUtils.fillUint16ArrWithUint16Arr(
+                 TypeArrayUtils.fillUint16ArrayWithUint16Array(
                    indices,
                    newIndicesOffset^,
                    indices,

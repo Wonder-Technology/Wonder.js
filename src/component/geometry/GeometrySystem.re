@@ -27,14 +27,14 @@ let getVertices =
   ((mappedIndex: int, state: StateDataType.state) => GeometryOperateDataUtils.getVertices(mappedIndex, state));
 
 let setVertices = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) =>
-  GeometryOperateDataUtils.setVertices(mappedIndex, data, state);
+  GeometryOperateDataUtils.setVerticesWithTypeArray(mappedIndex, data, state);
 
 let getIndices =
   [@bs]
   ((mappedIndex: int, state: StateDataType.state) => GeometryOperateDataUtils.getIndices(mappedIndex, state));
 
 let setIndices = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) =>
-  GeometryOperateDataUtils.setIndices(mappedIndex, data, state);
+  GeometryOperateDataUtils.setIndicesWithTypeArray(mappedIndex, data, state);
 
 let getIndicesCount =
   CacheUtils.memorizeIntState(

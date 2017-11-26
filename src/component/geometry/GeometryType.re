@@ -9,8 +9,8 @@ type geometryInfo = {
 type geometryInfoArray = array(geometryInfo);
 
 type geometryComputeData = {
-  vertices: Js.Typed_array.Float32Array.t,
-  indices: Js.Typed_array.Uint16Array.t
+  vertices: array(float),
+  indices: array(int)
 };
 
 type geometryConfigDataMap = Js.Dict.t(Js.Dict.t(float));

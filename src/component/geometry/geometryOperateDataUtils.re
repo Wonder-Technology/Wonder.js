@@ -62,20 +62,11 @@ let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
 };
 
 let _setFloat32PointData =
-    (
-      index: int,
-      data: Float32Array.t,
-      points: Float32Array.t,
-      infoArray: geometryInfoArray,
-      offset: int
-    ) => {
-  /* let count = Js.Array.length(data); */
-  let count = Float32Array.length(data);
+    (index: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
   Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
-  fillFloat32ArrayWithOffset(points, data, startIndex);
+  fillFloat32ArrayFunc(startIndex);
   newOffset
 };
 
@@ -92,15 +83,11 @@ let _getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
   getUint16ArrSubarray(points, startIndex, endIndex)
 };
 
-let _setUint16PointData =
-    (index: int, data: Uint16Array.t, points: Uint16Array.t, infoArray, offset: int) => {
-  /* let count = Js.Array.length(data); */
-  let count = Uint16Array.length(data);
+let _setUint16PointData = (index: int, infoArray, offset: int, count, fillUint16ArraryFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  /* Array.unsafe_set(infoArray, index, Some(buildInfo(startIndex, newOffset))); */
   Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
-  fillUint16ArrWithOffset(points, data, startIndex);
+  fillUint16ArraryFunc(startIndex);
   newOffset
 };
 
@@ -109,11 +96,29 @@ let getVertices = (index: int, state: StateDataType.state) => {
   _getFloat32PointData(index, vertices, verticesInfoArray)
 };
 
-/* let setVertices = (index: int, data: Js.Array.t(float), state: StateDataType.state) => { */
-let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) => {
+let setVertices = (index: int, data: array(float), state: StateDataType.state) => {
   let {verticesInfoArray, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
-    _setFloat32PointData(index, data, vertices, verticesInfoArray, verticesOffset);
+    _setFloat32PointData(
+      index,
+      verticesInfoArray,
+      verticesOffset,
+      Js.Array.length(data),
+      fillFloat32Array(vertices, data)
+    );
+  state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).verticesOffset)
+};
+
+let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state: StateDataType.state) => {
+  let {verticesInfoArray, vertices, verticesOffset} as geometryData = getGeometryData(state);
+  geometryData.verticesOffset =
+    _setFloat32PointData(
+      index,
+      verticesInfoArray,
+      verticesOffset,
+      Float32Array.length(data),
+      fillFloat32ArrayWithOffset(vertices, data)
+    );
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).verticesOffset)
 };
 
@@ -122,9 +127,28 @@ let getIndices = (index: int, state: StateDataType.state) => {
   _getUint16PointData(index, indices, indicesInfoArray)
 };
 
-let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
+let setIndices = (index: int, data: array(int), state: StateDataType.state) => {
   let {indicesInfoArray, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
-    _setUint16PointData(index, data, indices, indicesInfoArray, indicesOffset);
+    _setUint16PointData(
+      index,
+      indicesInfoArray,
+      indicesOffset,
+      Js.Array.length(data),
+      fillUint16Array(indices, data)
+    );
+  state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).indicesOffset)
+};
+
+let setIndicesWithTypeArray = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
+  let {indicesInfoArray, indices, indicesOffset} as geometryData = getGeometryData(state);
+  geometryData.indicesOffset =
+    _setUint16PointData(
+      index,
+      indicesInfoArray,
+      indicesOffset,
+      Uint16Array.length(data),
+      fillUint16ArrWithOffset(indices, data)
+    );
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).indicesOffset)
 };

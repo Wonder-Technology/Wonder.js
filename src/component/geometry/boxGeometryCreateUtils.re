@@ -150,10 +150,12 @@ let _computeData = (index: int, state: StateDataType.state) =>
     _generateFace(right, int_of_float(depthSegment), int_of_float(heightSegment));
     _generateFace(left, int_of_float(depthSegment), int_of_float(heightSegment));
     {
-      vertices: Js.Typed_array.Float32Array.make(vertices),
-      /* normals: normals,
-         texCoords: texCoords, */
-      indices: Js.Typed_array.Uint16Array.make(indices)
+      /* vertices: Js.Typed_array.Float32Array.make(vertices), */
+      vertices,
+      /* normals, */
+      /* texCoords, */
+      /* indices: Js.Typed_array.Uint16Array.make(indices) */
+      indices
     }
   };
 

@@ -59,7 +59,7 @@ let getUint16ArraySingleVale = (index: int, typeArray: Uint16Array.t) =>
 let setUint16ArraySingleVale = (index: int, data: int, typeArray: Uint16Array.t) =>
   Uint16Array.unsafe_set(typeArray, index, data);
 
-let fillFloat32Arr = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
+let fillFloat32Array = (typeArr: Float32Array.t, dataArr: Js.Array.t(float), startIndex: int) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -118,7 +118,7 @@ let fillFloat32ArrayWithFloat32Array =
 let getFloat32ArrSubarray = (typeArr: Float32Array.t, startIndex: int, endIndex: int) =>
   Float32Array.subarray(~start=startIndex, ~end_=endIndex, typeArr);
 
-let fillUint16Arr = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
+let fillUint16Array = (typeArr: Uint16Array.t, dataArr: Js.Array.t(int), startIndex: int) => {
   requireCheck(
     () =>
       Contract.Operators.(
@@ -150,7 +150,7 @@ let fillUint16ArrWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   targetTypeArr |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
 };
 
-let fillUint16ArrWithUint16Arr =
+let fillUint16ArrayWithUint16Array =
     (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
   requireCheck(
     () =>

@@ -24,8 +24,8 @@ let handleCloneComponent =
              /* todo optimize compare: set in each loop? */
              let state =
                state
-               |> GeometryOperateDataUtils.setVertices(mappedIndex, vertices)
-               |> GeometryOperateDataUtils.setIndices(mappedIndex, indices);
+               |> GeometryOperateDataUtils.setVerticesWithTypeArray(mappedIndex, vertices)
+               |> GeometryOperateDataUtils.setIndicesWithTypeArray(mappedIndex, indices);
              /* todo optimize compare: set in another loop? */
              isClonedMap
              |> WonderCommonlib.HashMapSystem.set(Js.Int.toString(mappedIndex), true)
