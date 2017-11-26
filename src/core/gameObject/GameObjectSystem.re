@@ -97,14 +97,11 @@ let dispose = (uid: int, state: StateDataType.state) => {
 
 let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
-  let uidMap = SparseMapSystem.createEmpty();
   uidArray
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
        (
          (uid) => {
-           /* todo optimize remove? */
-           uidMap |> SparseMapSystem.set(uid, true) |> ignore;
            disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore
          }
        )
@@ -113,15 +110,15 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let state =
     state
     |> GameObjectComponentUtils.batchGetMeshRendererComponent(uidArray)
-    |> GameObjectComponentUtils.batchDisposeMeshRendererComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchDisposeMeshRendererComponent(disposedUidMap, state)
     |> GameObjectComponentUtils.batchGetTransformComponent(uidArray)
-    |> GameObjectComponentUtils.batchDisposeTransformComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchDisposeTransformComponent(disposedUidMap, state)
     |> GameObjectComponentUtils.batchGetMaterialComponent(uidArray)
-    |> GameObjectComponentUtils.batchDisposeMaterialComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchDisposeMaterialComponent(disposedUidMap, state)
     |> GameObjectComponentUtils.batchGetGeometryComponent(uidArray)
-    |> GameObjectComponentUtils.batchDisposeGeometryComponent(uidMap, state)
+    |> GameObjectComponentUtils.batchDisposeGeometryComponent(disposedUidMap, state)
     |> GameObjectComponentUtils.batchGetCameraControllerComponent(uidArray)
-    |> GameObjectComponentUtils.batchDisposeCameraControllerComponent(uidMap, state);
+    |> GameObjectComponentUtils.batchDisposeCameraControllerComponent(disposedUidMap, state);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)
