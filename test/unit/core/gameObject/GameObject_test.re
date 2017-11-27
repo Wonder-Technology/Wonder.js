@@ -378,8 +378,8 @@ let _ =
                   let state = state |> disposeGameObject(gameObject1);
                   let {disposedIndexMap} = state |> GeometryTool.getData;
                   (
-                    disposedIndexMap |> SparseMapSystem.has(geometry1),
-                    disposedIndexMap |> SparseMapSystem.has(geometry2)
+                    disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry2)
                   )
                   |> expect == (true, false)
                 }
@@ -424,9 +424,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {transformMap} = GameObjectTool.getData(state);
                           (
-                            transformMap |> SparseMapSystem.has(gameObject1),
-                            transformMap |> SparseMapSystem.has(gameObject2),
-                            transformMap |> SparseMapSystem.has(gameObject3)
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -451,9 +451,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {meshRendererMap} = GameObjectTool.getData(state);
                           (
-                            meshRendererMap |> SparseMapSystem.has(gameObject1),
-                            meshRendererMap |> SparseMapSystem.has(gameObject2),
-                            meshRendererMap |> SparseMapSystem.has(gameObject3)
+                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            meshRendererMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -481,9 +481,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {geometryMap} = GameObjectTool.getData(state);
                           (
-                            geometryMap |> SparseMapSystem.has(gameObject1),
-                            geometryMap |> SparseMapSystem.has(gameObject2),
-                            geometryMap |> SparseMapSystem.has(gameObject3)
+                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            geometryMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -503,9 +503,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {materialMap} = GameObjectTool.getData(state);
                           (
-                            materialMap |> SparseMapSystem.has(gameObject1),
-                            materialMap |> SparseMapSystem.has(gameObject2),
-                            materialMap |> SparseMapSystem.has(gameObject3)
+                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            materialMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -525,9 +525,9 @@ let _ =
                           let state = state |> disposeGameObject(gameObject2);
                           let {cameraControllerMap} = GameObjectTool.getData(state);
                           (
-                            cameraControllerMap |> SparseMapSystem.has(gameObject1),
-                            cameraControllerMap |> SparseMapSystem.has(gameObject2),
-                            cameraControllerMap |> SparseMapSystem.has(gameObject3)
+                            cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            cameraControllerMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                           )
                           |> expect == (false, false, true)
                         }
@@ -552,10 +552,10 @@ let _ =
                           let state = state |> disposeGameObject(gameObject4);
                           let {transformMap} = GameObjectTool.getData(state);
                           (
-                            transformMap |> SparseMapSystem.has(gameObject1),
-                            transformMap |> SparseMapSystem.has(gameObject2),
-                            transformMap |> SparseMapSystem.has(gameObject3),
-                            transformMap |> SparseMapSystem.has(gameObject4)
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3),
+                            transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject4)
                           )
                           |> expect == (false, false, false, false)
                         }
@@ -574,9 +574,9 @@ let _ =
                       let state = state |> disposeGameObject(gameObject3);
                       let {disposedUidMap} = GameObjectTool.getData(state);
                       (
-                        disposedUidMap |> SparseMapSystem.has(gameObject1),
-                        disposedUidMap |> SparseMapSystem.has(gameObject2),
-                        disposedUidMap |> SparseMapSystem.has(gameObject3)
+                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                        disposedUidMap |> WonderCommonlib.SparseMapSystem.has(gameObject3)
                       )
                       |> expect == (false, false, true)
                     }
@@ -666,8 +666,8 @@ let _ =
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
                   let {disposedIndexMap} = state |> GeometryTool.getData;
                   (
-                    disposedIndexMap |> SparseMapSystem.has(geometry1),
-                    disposedIndexMap |> SparseMapSystem.has(geometry2)
+                    disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
+                    disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry2)
                   )
                   |> expect == (true, true)
                 }
@@ -714,10 +714,10 @@ let _ =
                   let {transformMap, disposeCount} = GameObjectTool.getData(state);
                   (
                     disposeCount,
-                    transformMap |> SparseMapSystem.has(gameObject1),
-                    transformMap |> SparseMapSystem.has(gameObject2),
-                    transformMap |> SparseMapSystem.has(gameObject3),
-                    transformMap |> SparseMapSystem.has(gameObject4)
+                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject1),
+                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject2),
+                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject3),
+                    transformMap |> WonderCommonlib.SparseMapSystem.has(gameObject4)
                   )
                   |> expect == (0, false, false, false, false)
                 }

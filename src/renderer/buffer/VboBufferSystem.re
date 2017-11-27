@@ -10,13 +10,13 @@ let getOrCreateBuffer =
       getDataFunc,
       state: StateDataType.state
     ) =>
-  switch (SparseMapSystem.get(geometryIndex, bufferMap)) {
+  switch (WonderCommonlib.SparseMapSystem.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
     let buffer =
       [@bs]
       createBuffer(gl, mappedGeometryIndex, [@bs] getDataFunc(mappedGeometryIndex, state), state);
-    bufferMap |> SparseMapSystem.set(geometryIndex, buffer) |> ignore;
+    bufferMap |> WonderCommonlib.SparseMapSystem.set(geometryIndex, buffer) |> ignore;
     buffer
   };
 
@@ -24,8 +24,8 @@ let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
   VboBufferPoolSystem.addBufferToPool(geometryIndex, state);
 
 let initData = () => {
-  vertexBufferMap: SparseMapSystem.createEmpty(),
-  elementArrayBufferMap: SparseMapSystem.createEmpty(),
+  vertexBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  elementArrayBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   arrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty()
 };

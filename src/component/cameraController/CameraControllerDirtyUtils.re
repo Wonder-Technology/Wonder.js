@@ -9,7 +9,7 @@ let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
 };
 /*
  let isDirty = (cameraController: cameraController, cameraControllerData: cameraControllerData) =>
-   switch (cameraControllerData.dirtyMap |> SparseMapSystem.get((cameraController))) {
+   switch (cameraControllerData.dirtyMap |> WonderCommonlib.SparseMapSystem.get((cameraController))) {
    | None => false
    | Some(dirty) => dirty == true
    };
@@ -20,6 +20,6 @@ let cleanDirtyArray = (cameraControllerData: cameraControllerData) => {
  };
 
  let cleanDirtyMap = (cameraControllerData: cameraControllerData) => {
-   cameraControllerData.dirtyMap = SparseMapSystem.createEmpty();
+   cameraControllerData.dirtyMap = WonderCommonlib.SparseMapSystem.createEmpty();
    ()
  }; */

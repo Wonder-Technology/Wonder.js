@@ -1,11 +1,11 @@
 open ComponentType;
 
 let addComponentToGameObjectMap = (component: component, gameObjectUid: int, gameObjectMap) =>
-  SparseMapSystem.set(component, gameObjectUid, gameObjectMap)
+  WonderCommonlib.SparseMapSystem.set(component, gameObjectUid, gameObjectMap)
   |> ignore;
 
 let getComponentGameObject = (component: component, gameObjectMap) =>
-  SparseMapSystem.get(component, gameObjectMap);
+  WonderCommonlib.SparseMapSystem.get(component, gameObjectMap);
 
 let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>
   Contract.(

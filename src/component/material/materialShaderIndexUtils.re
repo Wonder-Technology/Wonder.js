@@ -4,7 +4,7 @@ open Contract;
 
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   getMaterialData(state).shaderIndexMap
-  |> SparseMapSystem.unsafeGet(materialIndex)
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -12,18 +12,18 @@ let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
              "shaderIndex should exist",
              () =>
                getMaterialData(state).shaderIndexMap
-               |> SparseMapSystem.get(materialIndex)
+               |> WonderCommonlib.SparseMapSystem.get(materialIndex)
                |> assertExist
            )
          )
      );
 
 let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
-  getMaterialData(state).shaderIndexMap |> SparseMapSystem.has(materialIndex);
+  getMaterialData(state).shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(materialIndex);
 
 let setShaderIndex = (materialIndex: int, shaderIndex: int, state: StateDataType.state) => {
   getMaterialData(state).shaderIndexMap
-  |> SparseMapSystem.set(materialIndex, shaderIndex)
+  |> WonderCommonlib.SparseMapSystem.set(materialIndex, shaderIndex)
   |> ignore;
   state
 };

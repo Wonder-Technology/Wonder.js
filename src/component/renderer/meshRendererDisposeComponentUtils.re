@@ -15,7 +15,7 @@ let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectAr
     renderGameObjectArray
     |> Js.Array.filter(
          (renderGameObject) =>
-           disposedGameObjectUidMap |> SparseMapSystem.has(renderGameObject) == false
+           disposedGameObjectUidMap |> WonderCommonlib.SparseMapSystem.has(renderGameObject) == false
        );
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>

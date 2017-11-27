@@ -70,14 +70,14 @@ let range = (a: int, b: int) => {
 /*
  let removeDuplicateItems = (arr) => {
    let resultArr = [||];
-   let map = SparseMapSystem.createEmpty();
+   let map = WonderCommonlib.SparseMapSystem.createEmpty();
    for (i in 0 to Js.Array.length(arr) - 1) {
      let item = Array.unsafe_get(arr, i);
      let key = (item);
-     switch (SparseMapSystem.get(key, map)) {
+     switch (WonderCommonlib.SparseMapSystem.get(key, map)) {
      | None =>
        Js.Array.push(item, resultArr) |> ignore;
-       SparseMapSystem.set(key, item, map) |> ignore
+       WonderCommonlib.SparseMapSystem.set(key, item, map) |> ignore
      | Some(_) => ()
      }
    };

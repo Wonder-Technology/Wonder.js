@@ -149,16 +149,16 @@ let initData = (state: StateDataType.state) => {
       indicesInfoArray: WonderCommonlib.ArraySystem.createEmpty(),
       verticesOffset: 0,
       indicesOffset: 0,
-      configDataMap: SparseMapSystem.createEmpty(),
-      computeDataFuncMap: SparseMapSystem.createEmpty(),
-      gameObjectMap: SparseMapSystem.createEmpty(),
+      configDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      computeDataFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       disposeCount: 0,
-      disposedIndexMap: SparseMapSystem.createEmpty(),
-      mappedIndexMap: SparseMapSystem.createEmpty(),
+      disposedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      mappedIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       aliveIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
-      indicesCountCacheMap: SparseMapSystem.createEmpty(),
-      verticesCountCacheMap: SparseMapSystem.createEmpty(),
-      isClonedMap: SparseMapSystem.createEmpty()
+      indicesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      verticesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      isClonedMap: WonderCommonlib.SparseMapSystem.createEmpty()
     });
   state
 };

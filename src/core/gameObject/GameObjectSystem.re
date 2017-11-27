@@ -55,7 +55,7 @@ let create = (state: StateDataType.state) => {
 let dispose = (uid: int, state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
-  disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore;
+  disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
   let state =
     switch (getTransformComponent(uid, state)) {
     | Some(transform) => disposeTransformComponent(uid, transform, state)
@@ -93,7 +93,7 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let {disposeCount, disposedUidMap} as data = GameObjectStateUtils.getGameObjectData(state);
   uidArray
   |> WonderCommonlib.ArraySystem.forEach(
-       [@bs] ((uid) => disposedUidMap |> SparseMapSystem.set(uid, true) |> ignore)
+       [@bs] ((uid) => disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore)
      );
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let state =
@@ -267,8 +267,8 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
 
 let isAlive = (uid: int, state: StateDataType.state) => {
   let {transformMap, disposedUidMap} = GameObjectStateUtils.getGameObjectData(state);
-  disposedUidMap |> SparseMapSystem.has(uid) ?
-    false : transformMap |> SparseMapSystem.has(uid) ? true : false
+  disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
+    false : transformMap |> WonderCommonlib.SparseMapSystem.has(uid) ? true : false
 };
 
 let initGameObject = (uid: int, state: StateDataType.state) => {
@@ -297,11 +297,11 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
 let initData = () => {
   uid: 0,
   disposeCount: 0,
-  disposedUidMap: SparseMapSystem.createEmpty(),
+  disposedUidMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   aliveUidArray: WonderCommonlib.ArraySystem.createEmpty(),
-  transformMap: SparseMapSystem.createEmpty(),
-  cameraControllerMap: SparseMapSystem.createEmpty(),
-  geometryMap: SparseMapSystem.createEmpty(),
-  meshRendererMap: SparseMapSystem.createEmpty(),
-  materialMap: SparseMapSystem.createEmpty()
+  transformMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  cameraControllerMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  geometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  materialMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

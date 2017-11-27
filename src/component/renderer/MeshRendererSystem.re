@@ -27,6 +27,6 @@ let batchCreate = (countRangeArr: array(int), state: StateDataType.state) => {
 let initData = () => {
   index: 0,
   renderGameObjectArray: WonderCommonlib.ArraySystem.createEmpty(),
-  gameObjectMap: SparseMapSystem.createEmpty(),
+  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
 };

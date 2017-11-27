@@ -65,8 +65,8 @@ let initData = (state: StateDataType.state) => {
     Some({
       index: 0,
       /* buffer, */
-      shaderIndexMap: SparseMapSystem.createEmpty(),
-      gameObjectMap: SparseMapSystem.createEmpty(),
+      shaderIndexMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
     });
   state

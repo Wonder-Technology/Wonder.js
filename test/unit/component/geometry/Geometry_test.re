@@ -315,16 +315,16 @@ let _ =
                     () => {
                       let _hasMapData = (index, map) =>
                         map
-                        |> SparseMapSystem.get((index))
+                        |> WonderCommonlib.SparseMapSystem.get((index))
                         |> Js.Option.isSome;
                       let _unsafeGetSparseMapData = (index, map, state) =>
                         map
-                        |> SparseMapSystem.unsafeGet(
+                        |> WonderCommonlib.SparseMapSystem.unsafeGet(
                              GeometryTool.getMappedIndex(index, state)
                            );
                       let _unsafeGetMapData = (index, map, state) =>
                         map
-                        |> SparseMapSystem.unsafeGet(
+                        |> WonderCommonlib.SparseMapSystem.unsafeGet(
                              (GeometryTool.getMappedIndex(index, state))
                            );
                       describe(
@@ -495,7 +495,7 @@ let _ =
                           test(
                             "test buffer map",
                             () => {
-                              let _hasMapData = (index, map) => map |> SparseMapSystem.has(index);
+                              let _hasMapData = (index, map) => map |> WonderCommonlib.SparseMapSystem.has(index);
                               open StateDataType;
                               open VboBufferType;
                               let state =
@@ -600,7 +600,7 @@ let _ =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                       let {disposedIndexMap} = state |> GeometryTool.getData;
-                      disposedIndexMap |> expect == SparseMapSystem.createEmpty()
+                      disposedIndexMap |> expect == WonderCommonlib.SparseMapSystem.createEmpty()
                     }
                   );
                   test(

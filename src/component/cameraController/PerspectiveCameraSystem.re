@@ -26,7 +26,7 @@ let _setPMatrix =
       cameraControllerData: cameraControllerData,
       pMatrix: Js.Typed_array.Float32Array.t
     ) =>
-  SparseMapSystem.set(cameraController, pMatrix, cameraControllerData.pMatrixMap);
+  WonderCommonlib.SparseMapSystem.set(cameraController, pMatrix, cameraControllerData.pMatrixMap);
 
 let update = (index: int, cameraControllerData: cameraControllerData) => {
   let cameraData = getPerspectiveCameraDataFromCameraControllerData(cameraControllerData);
@@ -53,8 +53,8 @@ let init = (index: int, cameraControllerData: cameraControllerData) =>
   update(index, cameraControllerData);
 
 let initData = () => {
-  nearMap: SparseMapSystem.createEmpty(),
-  farMap: SparseMapSystem.createEmpty(),
-  fovyMap: SparseMapSystem.createEmpty(),
-  aspectMap: SparseMapSystem.createEmpty()
+  nearMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  farMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  fovyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  aspectMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

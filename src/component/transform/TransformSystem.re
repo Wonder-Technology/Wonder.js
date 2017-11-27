@@ -21,7 +21,7 @@ let create = TransformCreateUtils.create;
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
-    SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
+    WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
   };
   transformData
 };
@@ -125,11 +125,11 @@ let initData = (state: StateDataType.state) => {
         index: 0,
         /* firstDirtyIndex: getMaxCount (), */
         /* oldIndexArrayBeforeAddToDirtyArray: WonderCommonlib.ArraySystem.createEmpty (), */
-        parentMap: SparseMapSystem.createEmpty(),
-        childMap: SparseMapSystem.createEmpty(),
-        gameObjectMap: SparseMapSystem.createEmpty(),
-        /* originToMoveIndexMap: SparseMapSystem.createEmpty (), */
-        /* moveToOriginIndexMap: SparseMapSystem.createEmpty () */
+        parentMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        childMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        /* originToMoveIndexMap: WonderCommonlib.SparseMapSystem.createEmpty (), */
+        /* moveToOriginIndexMap: WonderCommonlib.SparseMapSystem.createEmpty () */
         dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
       }

@@ -27,7 +27,7 @@ let handleCloneComponent =
                |> GeometryOperateDataUtils.setVerticesWithTypeArray(mappedIndex, vertices)
                |> GeometryOperateDataUtils.setIndicesWithTypeArray(mappedIndex, indices);
              /* todo optimize compare: set in another loop? */
-             isClonedMap |> SparseMapSystem.set(mappedIndex, true) |> ignore;
+             isClonedMap |> WonderCommonlib.SparseMapSystem.set(mappedIndex, true) |> ignore;
              componentArr |> Js.Array.push(index) |> ignore;
              state
            }
@@ -38,4 +38,4 @@ let handleCloneComponent =
 };
 
 let isCloned = (mappedGeometry, isClonedMap) =>
-  isClonedMap |> SparseMapSystem.has(mappedGeometry);
+  isClonedMap |> WonderCommonlib.SparseMapSystem.has(mappedGeometry);
