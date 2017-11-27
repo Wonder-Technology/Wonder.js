@@ -39,7 +39,21 @@ let _ =
       );
       describe(
         "scheduleLoop",
-        () =>
+        () => {
+          test(
+            "test no schedule shouldn't error",
+            () => {
+              let result = ref(0.);
+              expect(
+                () => {
+                  let _ = state^ |> DirectorTool.init;
+                  ()
+                }
+              )
+              |> not_
+              |> toThrow
+            }
+          );
           test(
             "schedule the task in each frame",
             () => {
@@ -62,6 +76,7 @@ let _ =
               result^ |> expect == 3.
             }
           )
+        }
       )
     }
   );
