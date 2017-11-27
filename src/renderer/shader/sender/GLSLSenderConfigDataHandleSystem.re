@@ -31,7 +31,7 @@ let addAttributeSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).attributeSendDataMap
-            |> SparseMapSystem.get(shaderIndex)
+            |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
@@ -147,7 +147,7 @@ let addAttributeSendData =
        )
      );
   getGLSLSenderData(state).attributeSendDataMap
-  |> SparseMapSystem.set(shaderIndex, sendDataArr)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr)
   |> ignore;
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
@@ -181,7 +181,7 @@ let addUniformSendData =
           "shouldn't be added before",
           () =>
             getGLSLSenderData(state).uniformSendDataMap
-            |> SparseMapSystem.get(shaderIndex)
+            |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
             |> assertNotExist
         )
       )
@@ -258,7 +258,7 @@ let addUniformSendData =
        )
      );
   getGLSLSenderData(state).uniformSendDataMap
-  |> SparseMapSystem.set(shaderIndex, sendDataArr)
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr)
   |> ignore;
   /* let shaderIndex = (shaderIndex); */
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
@@ -267,7 +267,7 @@ let addUniformSendData =
 /* let addDrawPointsFunc =
     (gl, materialIndex: int, geometryIndex: int, state: StateDataType.state) => {
   /* getGLSLSenderData(state).drawPointsFuncMap
-  |> SparseMapSystem.set(
+  |> WonderCommonlib.SparseMapSystem.set(
        materialIndex,
        GeometrySystem.hasIndices(geometryIndex, state) ?
          drawElement(
@@ -288,7 +288,7 @@ let addUniformSendData =
 let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
-  |> SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -299,7 +299,7 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
                () => {
                  let {attributeSendDataMap} = getGLSLSenderData(state);
                  attributeSendDataMap
-                 |> SparseMapSystem.get(shaderIndex)
+                 |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
                  |> assertExist
                }
              )
@@ -310,7 +310,7 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
 let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {uniformSendDataMap} = getGLSLSenderData(state);
   uniformSendDataMap
-  |> SparseMapSystem.unsafeGet(shaderIndex)
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -319,7 +319,7 @@ let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
              () => {
                let {uniformSendDataMap} = getGLSLSenderData(state);
                uniformSendDataMap
-               |> SparseMapSystem.get(shaderIndex)
+               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
                |> assertExist
              }
            )
@@ -339,7 +339,7 @@ let gl = [@bs]DeviceManagerSystem.getGl(state);
   )
   /* let {drawPointsFuncMap} = getGLSLSenderData(state);
   drawPointsFuncMap
-  |> SparseMapSystem.unsafeGet(materialIndex)
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
@@ -348,7 +348,7 @@ let gl = [@bs]DeviceManagerSystem.getGl(state);
              () => {
                let {drawPointsFuncMap} = getGLSLSenderData(state);
                drawPointsFuncMap
-               |> SparseMapSystem.get(materialIndex)
+               |> WonderCommonlib.SparseMapSystem.get(materialIndex)
                |> assertExist
              }
            )

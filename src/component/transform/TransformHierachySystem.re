@@ -3,23 +3,23 @@ open TransformType;
 open Contract;
 
 let _unsafeGetParent = (index: int, transformData: transformData) =>
-  SparseMapSystem.unsafeGet(index, transformData.parentMap);
+  WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.parentMap);
 
 let getParent = (index: int, transformData: transformData) =>
-  Js.Undefined.to_opt(SparseMapSystem.unsafeGet(index, transformData.parentMap));
+  Js.Undefined.to_opt(WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.parentMap));
 
 let removeFromParentMap = (childIndex: int, transformData: transformData) => {
-  SparseMapSystem.deleteVal(childIndex, transformData.parentMap) |> ignore;
+  WonderCommonlib.SparseMapSystem.deleteVal(childIndex, transformData.parentMap) |> ignore;
   transformData
 };
 
 let unsafeGetChildren = (index: int, transformData: transformData) =>
-  SparseMapSystem.unsafeGet(index, transformData.childMap)
+  WonderCommonlib.SparseMapSystem.unsafeGet(index, transformData.childMap)
   |> ensureCheck(
        (_) =>
          test(
            "children should exist",
-           () => SparseMapSystem.get(index, transformData.childMap) |> assertExist
+           () => WonderCommonlib.SparseMapSystem.get(index, transformData.childMap) |> assertExist
          )
      );
 
@@ -39,7 +39,7 @@ let _removeFromParent = (currentParentIndex: int, child: transform, transformDat
   removeFromParentMap(child, transformData) |> removeFromChildMap(currentParentIndex, child);
 
 let _setParent = (parent: transform, childIndex: int, transformData: transformData) => {
-  SparseMapSystem.set(
+  WonderCommonlib.SparseMapSystem.set(
     childIndex,
     TransformCastTypeUtils.transformToJsUndefine(parent),
     transformData.parentMap

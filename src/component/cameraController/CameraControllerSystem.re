@@ -28,7 +28,7 @@ let getCurrentCameraController = (state: StateDataType.state) => {
 };
 
 /* let _clearCache = (cameraControllerData: cameraControllerData) =>
-   cameraControllerData.worldToCameraMatrixCacheMap = SparseMapSystem.createEmpty(); */
+   cameraControllerData.worldToCameraMatrixCacheMap = WonderCommonlib.SparseMapSystem.createEmpty(); */
 let _initCameraController = (dirtyIndex: int, cameraControllerData: cameraControllerData) =>
   PerspectiveCameraSystem.init(dirtyIndex, cameraControllerData);
 
@@ -51,7 +51,7 @@ let init = (state: StateDataType.state) => {
            test(
              "should has no cache",
              () =>
-               SparseMapSystem.length(getCameraControllerData(state).worldToCameraMatrixCacheMap)
+               WonderCommonlib.SparseMapSystem.length(getCameraControllerData(state).worldToCameraMatrixCacheMap)
                == 0
            )
          )
@@ -68,7 +68,7 @@ let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) =
              () => {
                let cameraControllerData = getCameraControllerData(state);
                cameraControllerData.updateCameraFuncMap
-               |> SparseMapSystem.get((cameraController))
+               |> WonderCommonlib.SparseMapSystem.get((cameraController))
                |> assertNotExist
              }
            )
@@ -76,13 +76,13 @@ let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) =
      ); */
   let cameraControllerData = getCameraControllerData(state);
   cameraControllerData.updateCameraFuncMap
-  |> SparseMapSystem.set(cameraController, PerspectiveCameraSystem.update)
+  |> WonderCommonlib.SparseMapSystem.set(cameraController, PerspectiveCameraSystem.update)
   |> ignore;
   state
 };
 
 let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => {
-  let updateFunc = cameraControllerData.updateCameraFuncMap |> SparseMapSystem.unsafeGet(index);
+  let updateFunc = cameraControllerData.updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index);
   updateFunc(index, cameraControllerData) |> ignore;
   ()
 };
@@ -155,14 +155,14 @@ let getWorldToCameraMatrixByTransform = (transform, state: StateDataType.state) 
    | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
    }; */
 let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  SparseMapSystem.unsafeGet(cameraController, getCameraControllerData(state).pMatrixMap)
+  WonderCommonlib.SparseMapSystem.unsafeGet(cameraController, getCameraControllerData(state).pMatrixMap)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "pMatrix should exist",
              () =>
-               SparseMapSystem.get(cameraController, getCameraControllerData(state).pMatrixMap)
+               WonderCommonlib.SparseMapSystem.get(cameraController, getCameraControllerData(state).pMatrixMap)
                |> assertExist
            )
          )
@@ -175,11 +175,11 @@ let initData = () => {
   index: 0,
   cameraArray: WonderCommonlib.ArraySystem.createEmpty(),
   dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
-  /* worldToCameraMatrixCacheMap: SparseMapSystem.createEmpty(), */
-  pMatrixMap: SparseMapSystem.createEmpty(),
-  gameObjectMap: SparseMapSystem.createEmpty(),
-  /* dirtyMap: SparseMapSystem.createEmpty(), */
-  updateCameraFuncMap: SparseMapSystem.createEmpty(),
+  /* worldToCameraMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
+  pMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  /* dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
+  updateCameraFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   perspectiveCameraData: PerspectiveCameraSystem.initData(),
   disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
 };

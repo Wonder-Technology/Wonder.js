@@ -15,13 +15,13 @@ let getElementArrayBuffer = (gl, state: StateDataType.state) =>
   _getBuffer(gl, VboBufferStateUtils.getVboBufferData(state).elementArrayBufferPool, state);
 
 let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
-  SparseMapSystem.unsafeGet(geometryIndex, bufferMap)
+  WonderCommonlib.SparseMapSystem.unsafeGet(geometryIndex, bufferMap)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "buffer should exist in bufferMap",
-             () => SparseMapSystem.has(geometryIndex, bufferMap) |> assertTrue
+             () => WonderCommonlib.SparseMapSystem.has(geometryIndex, bufferMap) |> assertTrue
            )
          )
      );

@@ -5,7 +5,7 @@ open ComponentType;
 open Contract;
 
 let _getComponent = (uid: int, componentMap: array(int)) : option(component) =>
-  SparseMapSystem.get(uid, componentMap);
+  WonderCommonlib.SparseMapSystem.get(uid, componentMap);
 
 let _hasComponent = (uid: int, componentMap: array(int)) : bool =>
   Js.Option.isSome(_getComponent(uid, componentMap));
@@ -18,7 +18,7 @@ let _addComponent = (uid: int, component: component, componentMap: array(int)) =
         () => _hasComponent(uid, componentMap) |> assertFalse
       )
   );
-  SparseMapSystem.set(uid, component, componentMap) |> ignore
+  WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
 };
 
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>

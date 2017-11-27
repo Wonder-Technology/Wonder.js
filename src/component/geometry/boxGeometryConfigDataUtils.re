@@ -25,7 +25,7 @@ let setConfigData =
          getValueFromJsObj(configData##depthSegment, 1.)
        );
   getGeometryData(state).configDataMap
-  |> SparseMapSystem.set(geometry, configDataHashMap)
+  |> WonderCommonlib.SparseMapSystem.set(geometry, configDataHashMap)
   |> ignore;
   state
 };

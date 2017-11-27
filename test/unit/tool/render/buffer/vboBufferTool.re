@@ -23,8 +23,8 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
 let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: StateDataType.state) => {
   open VboBufferType;
   let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
-  SparseMapSystem.set(geometryIndex, Obj.magic(0), vertexBufferMap);
-  SparseMapSystem.set(geometryIndex, Obj.magic(0), elementArrayBufferMap);
+  WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), vertexBufferMap);
+  WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), elementArrayBufferMap);
   state
 };
 

@@ -164,6 +164,6 @@ let create = (state: StateDataType.state) => {
   let (state, index) = GeometryCreateUtils.create(state);
   let {mappedIndexMap} as data = getGeometryData(state);
   let mappedIndex = GeometryIndexUtils.getMappedIndex(index, mappedIndexMap);
-  data.computeDataFuncMap |> SparseMapSystem.set(mappedIndex, _computeData) |> ignore;
+  data.computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(mappedIndex, _computeData) |> ignore;
   (state, index, mappedIndex)
 };

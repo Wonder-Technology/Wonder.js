@@ -11,7 +11,7 @@ let initGeometry = (mappedIndex: int, state: StateDataType.state) => {
   GeometryCloneComponentUtils.isCloned((mappedIndex), isClonedMap) ?
     state :
     (
-      switch (computeDataFuncMap |> SparseMapSystem.get((mappedIndex))) {
+      switch (computeDataFuncMap |> WonderCommonlib.SparseMapSystem.get((mappedIndex))) {
       | None => state
       | Some(computeDataFunc) =>
         let {vertices, indices}: geometryComputeData = computeDataFunc(mappedIndex, state);
