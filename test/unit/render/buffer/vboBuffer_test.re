@@ -33,7 +33,7 @@ let _ =
                 (state, gameObject1, geometry1)
               };
               test(
-                "getOrCreateBuffer should use created buffer previously in pool",
+                "getOrCreateBuffer should use old one(created buffer previously) in pool",
                 () => {
                   open StateDataType;
                   let (state, gameObject1, geometry1) = _prepare(state^);
@@ -61,6 +61,45 @@ let _ =
                     VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
                   (createBuffer |> getCallCount, resultArrayBuffer2, resultElementArrayBuffer2)
                   |> expect == (2, arrayBuffer1, elementArrayBuffer1)
+                }
+              );
+              describe(
+                "reuse the buffer data of the old one which is in the same dataGroup",
+                () => {
+                  let _prepare = (dataGroup1, dataGroup2) => {
+                    open StateDataType;
+                    let (state, gameObject1, geometry1) = _prepare(state^);
+                    let state = state |> Geometry.setGeometryDataGroup(geometry1, dataGroup1);
+                    let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+                    let state =
+                      state
+                      |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~bufferData, ()));
+                    let _ = VboBufferTool.getOrCreateArrayBuffer(geometry1, state);
+                    let _ = VboBufferTool.getOrCreateElementArrayBuffer(geometry1, state);
+                    let state =
+                      state
+                      |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
+                    let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
+                    let state = state |> Geometry.setGeometryDataGroup(geometry2, dataGroup2);
+                    let state = state |> GameObject.initGameObject(gameObject2);
+                    let _ = VboBufferTool.getOrCreateArrayBuffer(geometry2, state);
+                    let _ = VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
+                    (state, bufferData)
+                  };
+                  test(
+                    "test the same dataGroup",
+                    () => {
+                      let (state, bufferData) = _prepare("dataGroup1", "dataGroup1");
+                      bufferData |> getCallCount |> expect == 2
+                    }
+                  );
+                  test(
+                    "test the different dataGroup",
+                    () => {
+                      let (state, bufferData) = _prepare("dataGroup1", "dataGroup2");
+                      bufferData |> getCallCount |> expect == 4
+                    }
+                  )
                 }
               )
             }

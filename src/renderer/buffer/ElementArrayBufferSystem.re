@@ -9,21 +9,32 @@ open VboBufferType;
 let createBuffer =
   [@bs]
   (
-    (gl, geometryIndex: int, data: Uint16Array.t, state: StateDataType.state) => {
-      let buffer = VboBufferPoolSystem.getElementArrayBuffer(gl, state);
-      bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-      bufferUint16Data(getElementArrayBuffer(gl), data, getStaticDraw(gl), gl);
-      resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
-      buffer
-    }
+    (gl, geometryDataGroup, data: Uint16Array.t, state: StateDataType.state) =>
+      switch (VboBufferPoolSystem.getElementArrayBuffer(gl, geometryDataGroup, state)) {
+      | (buffer, false) => buffer
+      | (buffer, true) =>
+        bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+        bufferUint16Data(getElementArrayBuffer(gl), data, getStaticDraw(gl), gl);
+        resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
+        buffer
+      }
   );
 
 let getOrCreateBuffer =
-    (gl, geometryIndex, mappedGeometryIndex, bufferMap, getDataFunc, state: StateDataType.state) =>
+    (
+      gl,
+      geometryIndex,
+      mappedGeometryIndex,
+      geometryDataGroup,
+      bufferMap,
+      getDataFunc,
+      state: StateDataType.state
+    ) =>
   VboBufferSystem.getOrCreateBuffer(
     gl,
     geometryIndex,
     mappedGeometryIndex,
+    geometryDataGroup,
     bufferMap,
     createBuffer,
     getDataFunc,
