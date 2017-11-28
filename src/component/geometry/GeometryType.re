@@ -5,7 +5,6 @@ type geometryInfo = {
   endIndex: int
 };
 
-/* type geometryInfoArray = array(option(geometryInfo)); */
 type geometryInfoArray = array(geometryInfo);
 
 type geometryComputeData = {
@@ -26,3 +25,5 @@ type geometryIndicesCountCacheMap = array(int);
 type geometryVerticesCountCacheMap = array(int);
 
 type geometryIsClonedMap = array(bool);
+
+type geometryDataGroupMap = array(string);

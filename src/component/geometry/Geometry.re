@@ -13,10 +13,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   );
   [@bs]
   getVertices(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   )
 };
@@ -27,10 +24,7 @@ let setGeometryVertices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setVertices(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     data,
     state
   )
@@ -42,10 +36,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   );
   [@bs]
   getIndices(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   )
 };
@@ -56,10 +47,7 @@ let setGeometryIndices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setIndices(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     data,
     state
   )
@@ -76,11 +64,9 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
           open StateDataType;
           let {isClonedMap} = GeometryStateUtils.getGeometryData(state);
           GeometryCloneComponentUtils.isCloned(
-            (
-              GeometryIndexUtils.getMappedIndex(
-                (geometry),
-                GeometryIndexUtils.getMappedIndexMap(state)
-              )
+            GeometryIndexUtils.getMappedIndex(
+              geometry,
+              GeometryIndexUtils.getMappedIndexMap(state)
             ),
             isClonedMap
           )
@@ -90,13 +76,24 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
     }
   );
   getConfigData(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   )
   |> Js.Option.getExn
+};
+
+let getGeometryDataGroup = (geometry: geometry, state: StateDataType.state) => {
+  requireCheck(
+    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
+  );
+  getDataGroup(geometry, state)
+};
+
+let setGeometryDataGroup = (geometry: geometry, dataGroup: string, state: StateDataType.state) => {
+  requireCheck(
+    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
+  );
+  setDataGroup(geometry, dataGroup, state)
 };
 
 let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => {
@@ -104,10 +101,7 @@ let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => 
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getGameObject(
-    GeometryIndexUtils.getMappedIndex(
-      (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   )
   |> Js.Option.getExn

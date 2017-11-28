@@ -143,7 +143,6 @@ let _ =
                       let (state, geometry) = _prepare(sandbox, state^);
                       let array_buffer = 1;
                       let static_draw = 2;
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                       let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
@@ -152,7 +151,6 @@ let _ =
                                ~sandbox,
                                ~array_buffer,
                                ~static_draw,
-                               ~createBuffer,
                                ~bufferData,
                                ()
                              )
@@ -223,7 +221,6 @@ let _ =
                       let (state, geometry) = _prepare(sandbox, state^);
                       let element_array_buffer = 1;
                       let static_draw = 2;
-                      let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
                       let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                       let state =
                         state
@@ -232,7 +229,6 @@ let _ =
                                ~sandbox,
                                ~element_array_buffer,
                                ~static_draw,
-                               ~createBuffer,
                                ~bufferData,
                                ()
                              )
@@ -764,7 +760,6 @@ let _ =
                             bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
                           bindElementArrayBufferCallCountAfterSecondRender
                           |> expect == bindElementArrayBufferCallCountAfterFirstRender
-                          + 2
                           + 1
                         }
                       )

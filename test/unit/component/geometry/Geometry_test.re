@@ -117,6 +117,17 @@ let _ =
           )
       );
       describe(
+        "getGeometryDataGroup",
+        () =>
+          test(
+            {j|default group should be "default"|j},
+            () => {
+              let (state, geometry) = createBoxGeometry(state^);
+              Geometry.getGeometryDataGroup(geometry, state) |> expect == "default"
+            }
+          )
+      );
+      describe(
         "disposeComponent",
         () => {
           describe(
@@ -314,9 +325,7 @@ let _ =
                     "test reallocate maps",
                     () => {
                       let _hasMapData = (index, map) =>
-                        map
-                        |> WonderCommonlib.SparseMapSystem.get((index))
-                        |> Js.Option.isSome;
+                        map |> WonderCommonlib.SparseMapSystem.get(index) |> Js.Option.isSome;
                       let _unsafeGetSparseMapData = (index, map, state) =>
                         map
                         |> WonderCommonlib.SparseMapSystem.unsafeGet(
@@ -325,7 +334,7 @@ let _ =
                       let _unsafeGetMapData = (index, map, state) =>
                         map
                         |> WonderCommonlib.SparseMapSystem.unsafeGet(
-                             (GeometryTool.getMappedIndex(index, state))
+                             GeometryTool.getMappedIndex(index, state)
                            );
                       describe(
                         "maps should only has alive data",
@@ -495,7 +504,8 @@ let _ =
                           test(
                             "test buffer map",
                             () => {
-                              let _hasMapData = (index, map) => map |> WonderCommonlib.SparseMapSystem.has(index);
+                              let _hasMapData = (index, map) =>
+                                map |> WonderCommonlib.SparseMapSystem.has(index);
                               open StateDataType;
                               open VboBufferType;
                               let state =
@@ -741,9 +751,9 @@ let _ =
                                 BoxGeometryTool.createGameObject(state);
                               let state = state |> GameObject.initGameObject(gameObject4);
                               (
-                                GeometryTool.hasIndices((geometry1), state),
-                                GeometryTool.hasIndices((geometry3), state),
-                                GeometryTool.hasIndices((geometry4), state)
+                                GeometryTool.hasIndices(geometry1, state),
+                                GeometryTool.hasIndices(geometry3, state),
+                                GeometryTool.hasIndices(geometry4, state)
                               )
                               |> expect == (true, true, true)
                             }
