@@ -502,6 +502,44 @@ let _ =
                             }
                           );
                           test(
+                            "test dataGroupMap",
+                            () => {
+                              open StateDataType;
+                              let (
+                                state,
+                                gameObject1,
+                                geometry1,
+                                gameObject2,
+                                geometry2,
+                                gameObject3,
+                                geometry3
+                              ) =
+                                _prepare(state^);
+                              let dataGroup = "group";
+                              let state =
+                                state |> Geometry.setGeometryDataGroup(geometry1, dataGroup);
+                              let state =
+                                state |> Geometry.setGeometryDataGroup(geometry2, dataGroup);
+                              let state =
+                                state |> Geometry.setGeometryDataGroup(geometry3, dataGroup);
+                              let state =
+                                state
+                                |> GameObject.disposeGameObjectGeometryComponent(
+                                     gameObject1,
+                                     geometry1
+                                   );
+                              let {dataGroupMap} = state |> GeometryTool.getData;
+                              (
+                                _hasMapData(0, dataGroupMap),
+                                _hasMapData(1, dataGroupMap),
+                                _hasMapData(2, dataGroupMap),
+                                _hasMapData(3, dataGroupMap),
+                                _hasMapData(4, dataGroupMap)
+                              )
+                              |> expect == (true, true, false, false, false)
+                            }
+                          );
+                          test(
                             "test buffer map",
                             () => {
                               let _hasMapData = (index, map) =>
