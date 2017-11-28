@@ -33,7 +33,10 @@ let reAllocateGameObject = (state: StateDataType.state) => {
        (
          (uid) => {
            newTransformMap
-           |> WonderCommonlib.SparseMapSystem.set(uid, transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid))
+           |> WonderCommonlib.SparseMapSystem.set(
+                uid,
+                transformMap |> WonderCommonlib.SparseMapSystem.unsafeGet(uid)
+              )
            |> ignore;
            switch (meshRendererMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => ()
@@ -42,16 +45,20 @@ let reAllocateGameObject = (state: StateDataType.state) => {
            };
            switch (geometryMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => ()
-           | Some(geometry) => newGeometryMap |> WonderCommonlib.SparseMapSystem.set(uid, geometry) |> ignore
+           | Some(geometry) =>
+             newGeometryMap |> WonderCommonlib.SparseMapSystem.set(uid, geometry) |> ignore
            };
            switch (materialMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => ()
-           | Some(material) => newMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material) |> ignore
+           | Some(material) =>
+             newMaterialMap |> WonderCommonlib.SparseMapSystem.set(uid, material) |> ignore
            };
            switch (cameraControllerMap |> WonderCommonlib.SparseMapSystem.get(uid)) {
            | None => ()
            | Some(cameraController) =>
-             newCameraControllerMap |> WonderCommonlib.SparseMapSystem.set(uid, cameraController) |> ignore
+             newCameraControllerMap
+             |> WonderCommonlib.SparseMapSystem.set(uid, cameraController)
+             |> ignore
            }
          }
        )
@@ -78,8 +85,6 @@ let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, off
 
 let reAllocateGeometry = (state: StateDataType.state) => {
   let {
-        index,
-        mappedIndex,
         vertices,
         indices,
         verticesInfoArray,
@@ -89,10 +94,10 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         gameObjectMap,
         indicesCountCacheMap,
         verticesCountCacheMap,
-        mappedIndexMap,
         disposedIndexMap,
         aliveIndexArray,
-        isClonedMap
+        isClonedMap,
+        dataGroupMap
       } as geometryData =
     GeometryStateUtils.getGeometryData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
@@ -105,6 +110,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndicesCountCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVerticesCountCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newIsClonedMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  let newDataGroupMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVertexBufferMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newElementArrayBufferMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVerticesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
@@ -174,10 +180,22 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                   )
                |> ignore;
                newIsClonedMap
-               |> WonderCommonlib.SparseMapSystem.set(newIndex^, isClonedMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index))
+               |> WonderCommonlib.SparseMapSystem.set(
+                    newIndex^,
+                    isClonedMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
+                  )
+               |> ignore;
+               newDataGroupMap
+               |> WonderCommonlib.SparseMapSystem.set(
+                    newIndex^,
+                    dataGroupMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
+                  )
                |> ignore;
                newVertexBufferMap
-               |> WonderCommonlib.SparseMapSystem.set(index, vertexBufferMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index))
+               |> WonderCommonlib.SparseMapSystem.set(
+                    index,
+                    vertexBufferMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
+                  )
                |> ignore;
                newElementArrayBufferMap
                |> WonderCommonlib.SparseMapSystem.set(
@@ -201,6 +219,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   geometryData.indicesCountCacheMap = newIndicesCountCacheMap;
   geometryData.verticesCountCacheMap = newVerticesCountCacheMap;
   geometryData.isClonedMap = newIsClonedMap;
+  geometryData.dataGroupMap = newDataGroupMap;
   geometryData.disposedIndexMap = WonderCommonlib.SparseMapSystem.createEmpty();
   geometryData.aliveIndexArray = newAliveIndexArray;
   vboBufferData.vertexBufferMap = newVertexBufferMap;
