@@ -21,12 +21,10 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   );
   let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
   disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
+  let group = GeometryGroupUtils.getGroup(geometry, state);
   let state =
-    VboBufferSystem.addBufferToPool(
-      geometry,
-      GeometryGroupUtils.getGroup(geometry, state),
-      state
-    );
+    GeometryGroupUtils.isDefaultGroup(group) ?
+      VboBufferSystem.addBufferToPool(geometry, state) : state;
   data.disposeCount = succ(disposeCount);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
@@ -58,11 +56,9 @@ let handleBatchDisposeComponent =
        (
          (state, geometry) => {
            disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
-           VboBufferSystem.addBufferToPool(
-             geometry,
-             GeometryGroupUtils.getGroup(geometry, state),
-             state
-           )
+           let group = GeometryGroupUtils.getGroup(geometry, state);
+           GeometryGroupUtils.isDefaultGroup(group) ?
+             VboBufferSystem.addBufferToPool(geometry, state) : state
          }
        ),
        state

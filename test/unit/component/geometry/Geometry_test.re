@@ -120,11 +120,51 @@ let _ =
         "getGeometryGroup",
         () =>
           test(
-            {j|default group should be "default"|j},
+            "default group should be 0",
             () => {
               let (state, geometry) = createBoxGeometry(state^);
-              Geometry.getGeometryGroup(geometry, state) |> expect == "default"
+              Geometry.getGeometryGroup(geometry, state) |> expect == 0
             }
+          )
+      );
+      describe(
+        "setGeometryGroup",
+        () =>
+          describe(
+            "contract check",
+            () =>
+              describe(
+                "group should be [1, 63]",
+                () => {
+                  let message = ref("");
+                  beforeEach(() => message := {|group should in [1, 63]|});
+                  test(
+                    "test1",
+                    () => {
+                      let (state, geometry) = createBoxGeometry(state^);
+                      expect(() => Geometry.setGeometryGroup(geometry, 0, state))
+                      |> toThrowMessage(message^)
+                    }
+                  );
+                  test(
+                    "test2",
+                    () => {
+                      let (state, geometry) = createBoxGeometry(state^);
+                      expect(() => Geometry.setGeometryGroup(geometry, 64, state))
+                      |> toThrowMessage(message^)
+                    }
+                  );
+                  test(
+                    "test3",
+                    () => {
+                      let (state, geometry) = createBoxGeometry(state^);
+                      expect(() => Geometry.setGeometryGroup(geometry, 63, state))
+                      |> not_
+                      |> toThrowMessage(message^)
+                    }
+                  )
+                }
+              )
           )
       );
       describe(
@@ -515,13 +555,10 @@ let _ =
                                 geometry3
                               ) =
                                 _prepare(state^);
-                              let group = "group";
-                              let state =
-                                state |> Geometry.setGeometryGroup(geometry1, group);
-                              let state =
-                                state |> Geometry.setGeometryGroup(geometry2, group);
-                              let state =
-                                state |> Geometry.setGeometryGroup(geometry3, group);
+                              let group = 1;
+                              let state = state |> Geometry.setGeometryGroup(geometry1, group);
+                              let state = state |> Geometry.setGeometryGroup(geometry2, group);
+                              let state = state |> Geometry.setGeometryGroup(geometry3, group);
                               let state =
                                 state
                                 |> GameObject.disposeGameObjectGeometryComponent(

@@ -89,7 +89,7 @@ let getGeometryGroup = (geometry: geometry, state: StateDataType.state) => {
   getGroup(geometry, state)
 };
 
-let setGeometryGroup = (geometry: geometry, group: string, state: StateDataType.state) => {
+let setGeometryGroup = (geometry: geometry, group, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
