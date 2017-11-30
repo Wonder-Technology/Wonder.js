@@ -4,8 +4,9 @@ let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
   GeometryInitComponentUtils.initGeometry(
+    geometry,
     GeometryIndexUtils.getMappedIndex(
-      (geometry),
+      geometry,
       GeometryStateUtils.getGeometryData(state).mappedIndexMap
     ),
     state
@@ -31,19 +32,13 @@ let buildBoxGeometryConfigDataJsObj =
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getVerticesCount(
-    GeometryIndexUtils.getMappedIndex(
-      (index),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(index, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   );
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(
-    GeometryIndexUtils.getMappedIndex(
-      (index),
-      GeometryIndexUtils.getMappedIndexMap(state)
-    ),
+    GeometryIndexUtils.getMappedIndex(index, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   );
 
@@ -73,15 +68,32 @@ let buildBufferConfig = (count) => {
 };
 
 let getMappedIndex = (index, state: StateDataType.state) =>
-  getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex((index));
+  getData(state).mappedIndexMap |> GeometryIndexUtils.getMappedIndex(index);
 
 let buildInfo = GeometryOperateDataUtils.buildInfo;
 
 let dispose = GeometryDisposeComponentUtils.handleDisposeComponent;
 
+let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
+  TestTool.closeContractCheck();
+  let state = state |> GameObject.batchDisposeGameObject(gameObjectArr);
+  TestTool.openContractCheck();
+  state
+};
+
+
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
   let state = state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
   TestTool.openContractCheck();
-  state;
+  state
+};
+
+let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) => {
+  open StateDataType;
+  open Sinon;
+  let {computeDataFuncMap} = getData(state);
+  let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
+  computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(geometry, computeDataFunc);
+  (state, computeDataFunc)
 };

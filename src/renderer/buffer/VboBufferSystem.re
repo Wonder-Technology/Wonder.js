@@ -5,7 +5,6 @@ let getOrCreateBuffer =
       gl,
       geometryIndex: int,
       mappedGeometryIndex: int,
-      group,
       bufferMap,
       createBuffer,
       getDataFunc,
@@ -15,7 +14,7 @@ let getOrCreateBuffer =
   | Some(buffer) => buffer
   | None =>
     let buffer =
-      [@bs] createBuffer(gl, group, [@bs] getDataFunc(mappedGeometryIndex, state), state);
+      [@bs] createBuffer(gl, [@bs] getDataFunc(mappedGeometryIndex, state), state);
     bufferMap |> WonderCommonlib.SparseMapSystem.set(geometryIndex, buffer) |> ignore;
     buffer
   };

@@ -740,7 +740,7 @@ let _ =
                     "test create gameObject after dispose one",
                     () =>
                       test(
-                        "should bind new one's element array buffer",
+                        "should bind new one's index buffer",
                         () => {
                           let (state, gameObject1, _, _, _) =
                             RenderJobsTool.prepareGameObject(sandbox, state^);
@@ -760,6 +760,7 @@ let _ =
                             bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
                           bindElementArrayBufferCallCountAfterSecondRender
                           |> expect == bindElementArrayBufferCallCountAfterFirstRender
+                          + 2
                           + 1
                         }
                       )

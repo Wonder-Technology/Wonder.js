@@ -12,6 +12,9 @@ let isAlive = (geometry: geometry, state: StateDataType.state) => {
     false : mappedIndexMap |> WonderCommonlib.SparseMapSystem.get(geometry) |> Js.Option.isSome
 };
 
+let _isNotUsedGeometry = (geometry: geometry, state: StateDataType.state) =>
+  GeometryGroupUtils.getGroupCount(geometry, state) == 0;
+
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
     () =>
@@ -19,18 +22,19 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
         ComponentDisposeComponentUtils.checkComponentShouldAlive(geometry, isAlive, state)
       )
   );
-  let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
-  disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
-  let group = GeometryGroupUtils.getGroup(geometry, state);
-  let state =
-    GeometryGroupUtils.isDefaultGroup(group) ?
-      VboBufferSystem.addBufferToPool(geometry, state) : state;
-  data.disposeCount = succ(disposeCount);
-  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
-    data.disposeCount = 0;
-    CpuMemorySystem.reAllocateGeometry(state)
-  } else {
-    state
+  switch (GeometryGroupUtils.isGroupGeometry(geometry, state)) {
+  | false =>
+    let state = VboBufferSystem.addBufferToPool(geometry, state);
+    let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
+    disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
+    data.disposeCount = succ(disposeCount);
+    if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
+      data.disposeCount = 0;
+      CpuMemorySystem.reAllocateGeometry(state)
+    } else {
+      state
+    }
+  | true => GeometryGroupUtils.decreaseGroupCount(geometry, state)
   }
 };
 
@@ -54,23 +58,23 @@ let handleBatchDisposeComponent =
   |> ArraySystem.reduceState(
        [@bs]
        (
-         (state, geometry) => {
-           disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
-           let group = GeometryGroupUtils.getGroup(geometry, state);
-           GeometryGroupUtils.isDefaultGroup(group) ?
-             VboBufferSystem.addBufferToPool(geometry, state) : state
-         }
+         (state, geometry) =>
+           switch (GeometryGroupUtils.isGroupGeometry(geometry, state)) {
+           | false =>
+             disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
+             let state = VboBufferSystem.addBufferToPool(geometry, state);
+             data.disposeCount = disposeCount + (geometryArray |> Js.Array.length);
+             if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
+               data.disposeCount = 0;
+               CpuMemorySystem.reAllocateGeometry(state)
+             } else {
+               state
+             }
+           | true => GeometryGroupUtils.decreaseGroupCount(geometry, state)
+           }
        ),
        state
      )
-  |> ignore;
-  data.disposeCount = disposeCount + (geometryArray |> Js.Array.length);
-  if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
-    data.disposeCount = 0;
-    CpuMemorySystem.reAllocateGeometry(state)
-  } else {
-    state
-  }
 };
 
 let isNotDisposed = ({index, mappedIndex, disposeCount}) =>
