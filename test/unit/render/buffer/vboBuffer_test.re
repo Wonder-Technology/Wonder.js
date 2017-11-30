@@ -64,12 +64,12 @@ let _ =
                 }
               );
               describe(
-                "reuse the buffer data of the old one which is in the same dataGroup",
+                "reuse the buffer data of the old one which is in the same group",
                 () => {
-                  let _prepare = (dataGroup1, dataGroup2) => {
+                  let _prepare = (group1, group2) => {
                     open StateDataType;
                     let (state, gameObject1, geometry1) = _prepare(state^);
-                    let state = state |> Geometry.setGeometryDataGroup(geometry1, dataGroup1);
+                    let state = state |> Geometry.setGeometryGroup(geometry1, group1);
                     let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
                     let state =
                       state
@@ -80,23 +80,23 @@ let _ =
                       state
                       |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                     let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
-                    let state = state |> Geometry.setGeometryDataGroup(geometry2, dataGroup2);
+                    let state = state |> Geometry.setGeometryGroup(geometry2, group2);
                     let state = state |> GameObject.initGameObject(gameObject2);
                     let _ = VboBufferTool.getOrCreateArrayBuffer(geometry2, state);
                     let _ = VboBufferTool.getOrCreateElementArrayBuffer(geometry2, state);
                     (state, bufferData)
                   };
                   test(
-                    "test the same dataGroup",
+                    "test the same group",
                     () => {
-                      let (state, bufferData) = _prepare("dataGroup1", "dataGroup1");
+                      let (state, bufferData) = _prepare("group1", "group1");
                       bufferData |> getCallCount |> expect == 2
                     }
                   );
                   test(
-                    "test the different dataGroup",
+                    "test the different group",
                     () => {
-                      let (state, bufferData) = _prepare("dataGroup1", "dataGroup2");
+                      let (state, bufferData) = _prepare("group1", "group2");
                       bufferData |> getCallCount |> expect == 4
                     }
                   )

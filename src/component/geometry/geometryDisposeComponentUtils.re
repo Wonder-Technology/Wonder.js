@@ -24,7 +24,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   let state =
     VboBufferSystem.addBufferToPool(
       geometry,
-      GeometryDataGroupUtils.getDataGroup(geometry, state),
+      GeometryGroupUtils.getGroup(geometry, state),
       state
     );
   data.disposeCount = succ(disposeCount);
@@ -60,7 +60,7 @@ let handleBatchDisposeComponent =
            disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
            VboBufferSystem.addBufferToPool(
              geometry,
-             GeometryDataGroupUtils.getDataGroup(geometry, state),
+             GeometryGroupUtils.getGroup(geometry, state),
              state
            )
          }

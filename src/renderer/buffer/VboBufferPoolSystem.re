@@ -2,8 +2,8 @@ open VboBufferType;
 
 open Contract;
 
-let _getBuffer = (gl, geometryDataGroup: string, bufferPool, state: StateDataType.state) =>
-  switch (bufferPool |> WonderCommonlib.HashMapSystem.get(geometryDataGroup)) {
+let _getBuffer = (gl, geometryGroup: string, bufferPool, state: StateDataType.state) =>
+  switch (bufferPool |> WonderCommonlib.HashMapSystem.get(geometryGroup)) {
   | Some(bufferArray) =>
     switch (bufferArray |> Js.Array.pop) {
     | Some(buffer) => (buffer, false)
@@ -12,18 +12,18 @@ let _getBuffer = (gl, geometryDataGroup: string, bufferPool, state: StateDataTyp
   | None => (Gl.createBuffer(gl), true)
   };
 
-let getArrayBuffer = (gl, geometryDataGroup: string, state: StateDataType.state) =>
+let getArrayBuffer = (gl, geometryGroup: string, state: StateDataType.state) =>
   _getBuffer(
     gl,
-    geometryDataGroup,
+    geometryGroup,
     VboBufferStateUtils.getVboBufferData(state).arrayBufferPool,
     state
   );
 
-let getElementArrayBuffer = (gl, geometryDataGroup: string, state: StateDataType.state) =>
+let getElementArrayBuffer = (gl, geometryGroup: string, state: StateDataType.state) =>
   _getBuffer(
     gl,
-    geometryDataGroup,
+    geometryGroup,
     VboBufferStateUtils.getVboBufferData(state).elementArrayBufferPool,
     state
   );
@@ -40,22 +40,22 @@ let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
          )
      );
 
-let _getOrCreatePoolArray = (bufferPool, geometryDataGroup) =>
-  switch (bufferPool |> WonderCommonlib.HashMapSystem.get(geometryDataGroup)) {
+let _getOrCreatePoolArray = (bufferPool, geometryGroup) =>
+  switch (bufferPool |> WonderCommonlib.HashMapSystem.get(geometryGroup)) {
   | Some(bufferArray) => bufferArray
   | None =>
     let bufferArray = WonderCommonlib.ArraySystem.createEmpty();
-    bufferPool |> WonderCommonlib.HashMapSystem.set(geometryDataGroup, bufferArray);
+    bufferPool |> WonderCommonlib.HashMapSystem.set(geometryGroup, bufferArray);
     bufferArray
   };
 
-let addBufferToPool = (geometryIndex: int, geometryDataGroup, state: StateDataType.state) => {
+let addBufferToPool = (geometryIndex: int, geometryGroup, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap, arrayBufferPool, elementArrayBufferPool} =
     VboBufferStateUtils.getVboBufferData(state);
-  _getOrCreatePoolArray(arrayBufferPool, geometryDataGroup)
+  _getOrCreatePoolArray(arrayBufferPool, geometryGroup)
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, vertexBufferMap))
   |> ignore;
-  _getOrCreatePoolArray(elementArrayBufferPool, geometryDataGroup)
+  _getOrCreatePoolArray(elementArrayBufferPool, geometryGroup)
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, elementArrayBufferMap))
   |> ignore;
   state

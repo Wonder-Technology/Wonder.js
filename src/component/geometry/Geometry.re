@@ -82,18 +82,18 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
   |> Js.Option.getExn
 };
 
-let getGeometryDataGroup = (geometry: geometry, state: StateDataType.state) => {
+let getGeometryGroup = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  getDataGroup(geometry, state)
+  getGroup(geometry, state)
 };
 
-let setGeometryDataGroup = (geometry: geometry, dataGroup: string, state: StateDataType.state) => {
+let setGeometryGroup = (geometry: geometry, group: string, state: StateDataType.state) => {
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
-  setDataGroup(geometry, dataGroup, state)
+  setGroup(geometry, group, state)
 };
 
 let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => {
