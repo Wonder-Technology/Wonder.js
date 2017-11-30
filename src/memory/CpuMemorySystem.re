@@ -97,7 +97,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         disposedIndexMap,
         aliveIndexArray,
         isClonedMap,
-        dataGroupMap
+        groupMap
       } as geometryData =
     GeometryStateUtils.getGeometryData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
@@ -110,7 +110,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   let newIndicesCountCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVerticesCountCacheMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newIsClonedMap = WonderCommonlib.SparseMapSystem.createEmpty();
-  let newDataGroupMap = WonderCommonlib.SparseMapSystem.createEmpty();
+  let newGroupMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVertexBufferMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newElementArrayBufferMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newVerticesInfoArray = WonderCommonlib.ArraySystem.createEmpty();
@@ -185,10 +185,10 @@ let reAllocateGeometry = (state: StateDataType.state) => {
                     isClonedMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
                   )
                |> ignore;
-               newDataGroupMap
+               newGroupMap
                |> WonderCommonlib.SparseMapSystem.set(
                     newIndex^,
-                    dataGroupMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
+                    groupMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index)
                   )
                |> ignore;
                newVertexBufferMap
@@ -219,7 +219,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
   geometryData.indicesCountCacheMap = newIndicesCountCacheMap;
   geometryData.verticesCountCacheMap = newVerticesCountCacheMap;
   geometryData.isClonedMap = newIsClonedMap;
-  geometryData.dataGroupMap = newDataGroupMap;
+  geometryData.groupMap = newGroupMap;
   geometryData.disposedIndexMap = WonderCommonlib.SparseMapSystem.createEmpty();
   geometryData.aliveIndexArray = newAliveIndexArray;
   vboBufferData.vertexBufferMap = newVertexBufferMap;

@@ -5,7 +5,7 @@ let getOrCreateBuffer =
       gl,
       geometryIndex: int,
       mappedGeometryIndex: int,
-      geometryDataGroup:string,
+      geometryGroup:string,
       bufferMap,
       createBuffer,
       getDataFunc,
@@ -16,13 +16,13 @@ let getOrCreateBuffer =
   | None =>
     let buffer =
       [@bs]
-      createBuffer(gl, geometryDataGroup, [@bs] getDataFunc(mappedGeometryIndex, state), state);
+      createBuffer(gl, geometryGroup, [@bs] getDataFunc(mappedGeometryIndex, state), state);
     bufferMap |> WonderCommonlib.SparseMapSystem.set(geometryIndex, buffer) |> ignore;
     buffer
   };
 
-let addBufferToPool = (geometryIndex: int, geometryDataGroup, state: StateDataType.state) =>
-  VboBufferPoolSystem.addBufferToPool(geometryIndex, geometryDataGroup, state);
+let addBufferToPool = (geometryIndex: int, geometryGroup, state: StateDataType.state) =>
+  VboBufferPoolSystem.addBufferToPool(geometryIndex, geometryGroup, state);
 
 let initData = () => {
   vertexBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),

@@ -249,7 +249,7 @@ and geometryData = {
   mutable indicesCountCacheMap: geometryIndicesCountCacheMap,
   mutable verticesCountCacheMap: geometryVerticesCountCacheMap,
   mutable isClonedMap: geometryIsClonedMap,
-  mutable dataGroupMap: geometryDataGroupMap
+  mutable groupMap: geometryGroupMap
 }
 and state = {
   bufferConfig: option(bufferConfig),

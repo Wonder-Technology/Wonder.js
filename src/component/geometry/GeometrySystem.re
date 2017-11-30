@@ -72,9 +72,9 @@ let getIndexType = (gl) => getUnsignedShort(gl);
 
 let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
-let getDataGroup = GeometryDataGroupUtils.getDataGroup;
+let getGroup = GeometryGroupUtils.getGroup;
 
-let setDataGroup = GeometryDataGroupUtils.setDataGroup;
+let setGroup = GeometryGroupUtils.setGroup;
 
 let init = (state: StateDataType.state) => {
   requireCheck(
@@ -163,7 +163,7 @@ let initData = (state: StateDataType.state) => {
       indicesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       verticesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       isClonedMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      dataGroupMap: WonderCommonlib.SparseMapSystem.createEmpty()
+      groupMap: WonderCommonlib.SparseMapSystem.createEmpty()
     });
   state
 };

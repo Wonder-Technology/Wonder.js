@@ -117,13 +117,13 @@ let _ =
           )
       );
       describe(
-        "getGeometryDataGroup",
+        "getGeometryGroup",
         () =>
           test(
             {j|default group should be "default"|j},
             () => {
               let (state, geometry) = createBoxGeometry(state^);
-              Geometry.getGeometryDataGroup(geometry, state) |> expect == "default"
+              Geometry.getGeometryGroup(geometry, state) |> expect == "default"
             }
           )
       );
@@ -502,7 +502,7 @@ let _ =
                             }
                           );
                           test(
-                            "test dataGroupMap",
+                            "test groupMap",
                             () => {
                               open StateDataType;
                               let (
@@ -515,26 +515,26 @@ let _ =
                                 geometry3
                               ) =
                                 _prepare(state^);
-                              let dataGroup = "group";
+                              let group = "group";
                               let state =
-                                state |> Geometry.setGeometryDataGroup(geometry1, dataGroup);
+                                state |> Geometry.setGeometryGroup(geometry1, group);
                               let state =
-                                state |> Geometry.setGeometryDataGroup(geometry2, dataGroup);
+                                state |> Geometry.setGeometryGroup(geometry2, group);
                               let state =
-                                state |> Geometry.setGeometryDataGroup(geometry3, dataGroup);
+                                state |> Geometry.setGeometryGroup(geometry3, group);
                               let state =
                                 state
                                 |> GameObject.disposeGameObjectGeometryComponent(
                                      gameObject1,
                                      geometry1
                                    );
-                              let {dataGroupMap} = state |> GeometryTool.getData;
+                              let {groupMap} = state |> GeometryTool.getData;
                               (
-                                _hasMapData(0, dataGroupMap),
-                                _hasMapData(1, dataGroupMap),
-                                _hasMapData(2, dataGroupMap),
-                                _hasMapData(3, dataGroupMap),
-                                _hasMapData(4, dataGroupMap)
+                                _hasMapData(0, groupMap),
+                                _hasMapData(1, groupMap),
+                                _hasMapData(2, groupMap),
+                                _hasMapData(3, groupMap),
+                                _hasMapData(4, groupMap)
                               )
                               |> expect == (true, true, false, false, false)
                             }
