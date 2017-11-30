@@ -9,8 +9,8 @@ open VboBufferType;
 let createBuffer =
   [@bs]
   (
-    (gl, geometryGroup, data: Uint16Array.t, state: StateDataType.state) =>
-      switch (VboBufferPoolSystem.getElementArrayBuffer(gl, geometryGroup, state)) {
+    (gl, group:int, data: Uint16Array.t, state: StateDataType.state) =>
+      switch (VboBufferPoolSystem.getElementArrayBuffer(gl, group, state)) {
       | (buffer, false) => buffer
       | (buffer, true) =>
         bindBuffer(getElementArrayBuffer(gl), buffer, gl);
@@ -25,7 +25,7 @@ let getOrCreateBuffer =
       gl,
       geometryIndex,
       mappedGeometryIndex,
-      geometryGroup,
+      group:int,
       bufferMap,
       getDataFunc,
       state: StateDataType.state
@@ -34,7 +34,7 @@ let getOrCreateBuffer =
     gl,
     geometryIndex,
     mappedGeometryIndex,
-    geometryGroup,
+    group,
     bufferMap,
     createBuffer,
     getDataFunc,
