@@ -283,33 +283,33 @@ let _ =
           );
           describe(
             "send a_position",
-            () =>
-              /* test(
-                   "if lastSendArrayBuffer === buffer, not send",
-                   () => {
-                     let state = _prepare(sandbox, state^);
-                     let float = 1;
-                     let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
-                     let pos = 0;
-                     let getAttribLocation =
-                       GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
-                     let state =
-                       state
-                       |> FakeGlTool.setFakeGl(
-                            FakeGlTool.buildFakeGl(
-                              ~sandbox,
-                              ~float,
-                              ~vertexAttribPointer,
-                              ~getAttribLocation,
-                              ()
-                            )
-                          );
-                     let state = state |> RenderJobsTool.initSystemAndRender;
-                     let state = state |> _render;
-                     let state = state |> _render;
-                     vertexAttribPointer |> getCallCount |> expect == 1
-                   }
-                 ); */
+            () => {
+              test(
+                "if lastSendArrayBuffer === buffer, not send",
+                () => {
+                  let state = _prepare(sandbox, state^);
+                  let float = 1;
+                  let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
+                  let pos = 0;
+                  let getAttribLocation =
+                    GlslLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(
+                           ~sandbox,
+                           ~float,
+                           ~vertexAttribPointer,
+                           ~getAttribLocation,
+                           ()
+                         )
+                       );
+                  let state = state |> RenderJobsTool.initSystemAndRender;
+                  let state = state |> _render;
+                  let state = state |> _render;
+                  vertexAttribPointer |> getCallCount |> expect == 1
+                }
+              );
               describe(
                 "else",
                 () => {
@@ -414,8 +414,10 @@ let _ =
                                );
                           let state = state |> RenderJobsTool.initSystemAndRender;
                           let state = state |> _render;
-                          let state = state |> GlslSenderTool.disableVertexAttribArray;
-                          /* |> GlslSenderTool.cleanLastSendArrayBuffer; */
+                          let state =
+                            state
+                            |> GlslSenderTool.disableVertexAttribArray
+                            |> GlslSenderTool.cleanLastSendArrayBuffer;
                           let state = state |> _render;
                           enableVertexAttribArray |> withOneArg(pos) |> getCallCount |> expect == 2
                         }
@@ -432,6 +434,7 @@ let _ =
                   )
                 }
               )
+            }
           );
           describe(
             "fix bug",
@@ -701,26 +704,25 @@ let _ =
                     let state = state |> RenderJobsTool.initSystemAndRender;
                     (state, bindBuffer, element_array_buffer, buffer)
                   };
-                  /* test(
-                       "if lastSendElementArrayBuffer === buffer, not bind",
-                       () => {
-                         let state = _prepare(sandbox, state^);
-                         let (state, bindBuffer, element_array_buffer, buffer) =
-                           _prepareForElementArrayBuffer(state);
-                         let state = state |> _render;
-                         let bindElementArrayBufferCallCountBeforeSecondRender =
-                           bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                         let state = state |> _render;
-                         let bindElementArrayBufferCallCountAfterSecondRender =
-                           bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                         bindElementArrayBufferCallCountAfterSecondRender
-                         |> expect == bindElementArrayBufferCallCountBeforeSecondRender
-                       }
-                     ); */
+                  test(
+                    "if lastSendElementArrayBuffer === buffer, not bind",
+                    () => {
+                      let state = _prepare(sandbox, state^);
+                      let (state, bindBuffer, element_array_buffer, buffer) =
+                        _prepareForElementArrayBuffer(state);
+                      let state = state |> _render;
+                      let bindElementArrayBufferCallCountBeforeSecondRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      let state = state |> _render;
+                      let bindElementArrayBufferCallCountAfterSecondRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      bindElementArrayBufferCallCountAfterSecondRender
+                      |> expect == bindElementArrayBufferCallCountBeforeSecondRender
+                    }
+                  );
                   test
-                    /* "else, bind", */
                     (
-                      "bind",
+                      "else, bind",
                       () => {
                         let state = _prepare(sandbox, state^);
                         let (state, bindBuffer, element_array_buffer, buffer) =
@@ -760,7 +762,7 @@ let _ =
                             bindBuffer |> withOneArg(element_array_buffer) |> getCallCount;
                           bindElementArrayBufferCallCountAfterSecondRender
                           |> expect == bindElementArrayBufferCallCountAfterFirstRender
-                          + 2
+                          + 1
                           + 1
                         }
                       )

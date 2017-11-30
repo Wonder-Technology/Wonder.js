@@ -111,7 +111,8 @@
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(1, state);
+                var [state, boxes] = createBoxes(19997, state);
+                // var [state, boxes] = createBoxes(2, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -123,7 +124,7 @@
 
                 // state = setData(boxes, state);
                 // state = setParent(boxes, state);
-                state = createAndDisposeGameObjects(boxes, state);
+                // state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
