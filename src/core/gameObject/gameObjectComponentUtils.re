@@ -63,7 +63,18 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   GameObjectStateUtils.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] GeometryAddComponentUtils.handleAddComponent(component, uid, state)
+  switch (
+    GeometryGameObjectUtils.getGameObject(
+      GeometryIndexUtils.getMappedIndex(
+        component,
+        GeometryStateUtils.getGeometryData(state).mappedIndexMap
+      ),
+      state
+    )
+  ) {
+  | Some(_) => GeometryGroupUtils.increaseGroupCount(component, state)
+  | _ => [@bs] GeometryAddComponentUtils.handleAddComponent(component, uid, state)
+  }
 };
 
 let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
@@ -213,15 +224,15 @@ let _batchAddComponent =
          (state, uid, index) => {
            let component = Array.unsafe_get(componentArr, index);
            _addComponent(uid, component, componentMap);
+           GeometryGroupUtils.increaseGroupCount(component, state);
            [@bs] handleAddComponentFunc(component, uid, state)
          }
        ),
        state
      )
-  /* state */
 };
 
-let batchAddTransformComponent =
+let batchAddTransformComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
     uidArray,
@@ -231,7 +242,7 @@ let batchAddTransformComponent =
     state
   );
 
-let batchAddMeshRendererComponent =
+let batchAddMeshRendererComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
     uidArray,
@@ -241,17 +252,34 @@ let batchAddMeshRendererComponent =
     state
   );
 
-let batchAddGeometryComponent =
-    (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
-  _batchAddComponent(
-    uidArray,
-    componentArr,
-    GameObjectStateUtils.getGameObjectData(state).geometryMap,
-    GeometryAddComponentUtils.handleAddComponent,
-    state
+let batchAddGeometryComponentForClone =
+    (uidArray: array(int), componentArr: array(component), state: StateDataType.state) => {
+  let componentMap = GameObjectStateUtils.getGameObjectData(state).geometryMap;
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        test(
+          "one gameObject should add one component",
+          () => uidArray |> Js.Array.length == (componentArr |> Js.Array.length)
+        )
+      )
   );
+  uidArray
+  |> ArraySystem.reduceOneParami(
+       [@bs]
+       (
+         (state, uid, index) => {
+           let component = Array.unsafe_get(componentArr, index);
+           _addComponent(uid, component, componentMap);
+           GeometryGroupUtils.increaseGroupCount(component, state);
+           state
+         }
+       ),
+       state
+     )
+};
 
-let batchAddMaterialComponent =
+let batchAddMaterialComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
     uidArray,
@@ -261,7 +289,7 @@ let batchAddMaterialComponent =
     state
   );
 
-let batchAddCameraControllerComponent =
+let batchAddCameraControllerComponentForClone =
     (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
   _batchAddComponent(
     uidArray,
@@ -280,8 +308,8 @@ let cloneMeshRendererComponent =
   MeshRendererCloneComponentUtils.handleCloneComponent(countRangeArr, state);
 
 let cloneGeometryComponent =
-    (mappedSourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  GeometryCloneComponentUtils.handleCloneComponent(mappedSourceComponent, countRangeArr, state);
+    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
+  GeometryCloneComponentUtils.handleCloneComponent(sourceComponent, countRangeArr, state);
 
 let cloneMaterialComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>

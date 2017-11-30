@@ -18,6 +18,10 @@
         import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/component/geometry/BoxGeometry.js";
 
 
+
+
+        // import { setGeometryGroup } from "../../lib/es6_global/src/component/geometry/Geometry.js";
+
         import { createMeshRenderer } from "../../lib/es6_global/src/component/renderer/MeshRenderer.js";
 
         import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
@@ -50,13 +54,37 @@
 
             function createBoxes(count, state) {
                 var boxes = [];
-                var state$ = state;
-                for (let i = 0; i < count; i++) {
-                    var [state$, box] = createBox(state$);
-                    boxes.push(box);
-                }
+                // var state$ = state;
 
-                return [state$, boxes];
+                var [state, box] = createBox(state);
+
+
+                // for (let i = 0; i < count; i++) {
+                //     // var [state$, box] = createBox(state$);
+
+
+                //     var [state, newBoxes] = cloneGameObject(box, 2000, state);
+
+                //     boxes.push(box);
+                // }
+
+                // return [state, boxes];
+
+
+
+                var [state, newBoxes] = cloneGameObject(box, count, state);
+
+
+                let flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        let arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                newBoxes = flatten(newBoxes);
+
+                return [state, newBoxes];
+
             }
 
             function setPosition(boxes, state) {
@@ -83,7 +111,7 @@
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(10, state);
+                var [state, boxes] = createBoxes(1, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -95,7 +123,7 @@
 
                 // state = setData(boxes, state);
                 // state = setParent(boxes, state);
-                // state = createAndDisposeGameObjects(boxes, state);
+                state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
@@ -195,7 +223,7 @@
 
                     // var [state, newBoxes] = createBoxes(2000, state);
 
-                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 2000, state);
+                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 4000, state);
                     let flatten = (arr) => {
                         return arr.reduce((a, b) => {
                             let arr = a.concat(b);
@@ -227,6 +255,7 @@
                 }, state)
             }
 
+            window.ggg = null;
 
             function createBox(state) {
                 var [state, material] = createBasicMaterial(state);
@@ -239,18 +268,27 @@
                 state = addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
+                if (window.ggg !== undefined) {
 
-                var [state, geometry] = createBoxGeometry(state);
+                    state = addGameObjectGeometryComponent(obj, window.ggg, state);
+                } else {
 
-                state = setBoxGeometryConfigData(geometry, {
-                    width: 5,
-                    height: 5,
-                    depth: 5
-                }, state);
+                    var [state, geometry] = createBoxGeometry(state);
+
+                    state = setBoxGeometryConfigData(geometry, {
+                        width: 5,
+                        height: 5,
+                        depth: 5
+                    }, state);
+
+                    // state = setGeometryGroup(geometry, 1, state);
 
 
 
-                state = addGameObjectGeometryComponent(obj, geometry, state);
+                    state = addGameObjectGeometryComponent(obj, geometry, state);
+
+                    window.ggg = geometry;
+                }
 
                 return [state, obj];
 

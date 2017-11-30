@@ -24,6 +24,6 @@ type geometryIndicesCountCacheMap = array(int);
 
 type geometryVerticesCountCacheMap = array(int);
 
-type geometryIsClonedMap = array(bool);
+type geometryIsInitMap = array(bool);
 
-type geometryGroupMap = array(int);
+type geometryGroupCountMap = array(int);

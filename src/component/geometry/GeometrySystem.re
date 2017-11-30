@@ -72,10 +72,6 @@ let getIndexType = (gl) => getUnsignedShort(gl);
 
 let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
 
-let getGroup = GeometryGroupUtils.getGroup;
-
-let setGroup = GeometryGroupUtils.setGroup;
-
 let init = (state: StateDataType.state) => {
   requireCheck(
     () =>
@@ -91,6 +87,7 @@ let init = (state: StateDataType.state) => {
   |> Js.Array.forEach(
        (geometryIndex: int) =>
          GeometryInitComponentUtils.initGeometry(
+           geometryIndex,
            GeometryIndexUtils.getMappedIndex(geometryIndex, mappedIndexMap),
            state
          )
@@ -103,7 +100,7 @@ let getConfigData = (geometry: geometry, state: StateDataType.state) =>
   GeometryConfigDataUtils.getConfigData(geometry, state);
 
 let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
-  ComponentSystem.getComponentGameObject(mappedGeometry, getGeometryData(state).gameObjectMap);
+  GeometryGameObjectUtils.getGameObject(mappedGeometry, state);
 
 let getVertexDataSize = () => 3;
 
@@ -162,8 +159,8 @@ let initData = (state: StateDataType.state) => {
       aliveIndexArray: WonderCommonlib.ArraySystem.createEmpty(),
       indicesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
       verticesCountCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      isClonedMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-      groupMap: WonderCommonlib.SparseMapSystem.createEmpty()
+      isInitMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+      groupCountMap: WonderCommonlib.SparseMapSystem.createEmpty()
     });
   state
 };

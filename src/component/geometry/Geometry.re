@@ -54,46 +54,35 @@ let setGeometryIndices =
 };
 
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => {
+  /* requireCheck(
+       () => {
+         open Contract.Operators;
+         ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state);
+         test(
+           "cloned geometry have no config data, shouldn't get it",
+           () => {
+             open StateDataType;
+             let {isClonedMap} = GeometryStateUtils.getGeometryData(state);
+             GeometryCloneComponentUtils.isCloned(
+               GeometryIndexUtils.getMappedIndex(
+                 geometry,
+                 GeometryIndexUtils.getMappedIndexMap(state)
+               ),
+               isClonedMap
+             )
+             |> assertFalse
+           }
+         )
+       }
+     ); */
   requireCheck(
-    () => {
-      open Contract.Operators;
-      ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state);
-      test(
-        "cloned geometry have no config data, shouldn't get it",
-        () => {
-          open StateDataType;
-          let {isClonedMap} = GeometryStateUtils.getGeometryData(state);
-          GeometryCloneComponentUtils.isCloned(
-            GeometryIndexUtils.getMappedIndex(
-              geometry,
-              GeometryIndexUtils.getMappedIndexMap(state)
-            ),
-            isClonedMap
-          )
-          |> assertFalse
-        }
-      )
-    }
+    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getConfigData(
     GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
     state
   )
   |> Js.Option.getExn
-};
-
-let getGeometryGroup = (geometry: geometry, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
-  );
-  getGroup(geometry, state)
-};
-
-let setGeometryGroup = (geometry: geometry, group, state: StateDataType.state) => {
-  requireCheck(
-    () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
-  );
-  setGroup(geometry, group, state)
 };
 
 let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => {

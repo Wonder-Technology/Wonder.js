@@ -117,57 +117,6 @@ let _ =
           )
       );
       describe(
-        "getGeometryGroup",
-        () =>
-          test(
-            "default group should be 0",
-            () => {
-              let (state, geometry) = createBoxGeometry(state^);
-              Geometry.getGeometryGroup(geometry, state) |> expect == 0
-            }
-          )
-      );
-      describe(
-        "setGeometryGroup",
-        () =>
-          describe(
-            "contract check",
-            () =>
-              describe(
-                "group should be [1, 63]",
-                () => {
-                  let message = ref("");
-                  beforeEach(() => message := {|group should in [1, 63]|});
-                  test(
-                    "test1",
-                    () => {
-                      let (state, geometry) = createBoxGeometry(state^);
-                      expect(() => Geometry.setGeometryGroup(geometry, 0, state))
-                      |> toThrowMessage(message^)
-                    }
-                  );
-                  test(
-                    "test2",
-                    () => {
-                      let (state, geometry) = createBoxGeometry(state^);
-                      expect(() => Geometry.setGeometryGroup(geometry, 64, state))
-                      |> toThrowMessage(message^)
-                    }
-                  );
-                  test(
-                    "test3",
-                    () => {
-                      let (state, geometry) = createBoxGeometry(state^);
-                      expect(() => Geometry.setGeometryGroup(geometry, 63, state))
-                      |> not_
-                      |> toThrowMessage(message^)
-                    }
-                  )
-                }
-              )
-          )
-      );
-      describe(
         "disposeComponent",
         () => {
           describe(
@@ -505,7 +454,7 @@ let _ =
                             }
                           );
                           test(
-                            "test isClonedMap",
+                            "test isInitMap",
                             () => {
                               open StateDataType;
                               let (
@@ -518,31 +467,25 @@ let _ =
                                 geometry3
                               ) =
                                 _prepare(state^);
-                              let (state, _, _, _, clonedGeometryArr1) =
-                                CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
-                              let (state, _, _, _, clonedGeometryArr2) =
-                                CloneTool.cloneWithGeometry(state, gameObject2, geometry2, 1);
-                              let (state, _, _, _, clonedGeometryArr3) =
-                                CloneTool.cloneWithGeometry(state, gameObject3, geometry3, 1);
                               let state =
                                 state
                                 |> GameObject.disposeGameObjectGeometryComponent(
                                      gameObject1,
                                      geometry1
                                    );
-                              let {isClonedMap} = state |> GeometryTool.getData;
+                              let {isInitMap} = state |> GeometryTool.getData;
                               (
-                                _hasMapData(0, isClonedMap),
-                                _hasMapData(1, isClonedMap),
-                                _hasMapData(2, isClonedMap),
-                                _hasMapData(3, isClonedMap),
-                                _hasMapData(4, isClonedMap)
+                                _hasMapData(0, isInitMap),
+                                _hasMapData(1, isInitMap),
+                                _hasMapData(2, isInitMap),
+                                _hasMapData(3, isInitMap),
+                                _hasMapData(4, isInitMap)
                               )
-                              |> expect == (false, false, true, true, true)
+                              |> expect == (true, true, false, false, false)
                             }
                           );
                           test(
-                            "test groupMap",
+                            "test groupCountMap",
                             () => {
                               open StateDataType;
                               let (
@@ -555,23 +498,24 @@ let _ =
                                 geometry3
                               ) =
                                 _prepare(state^);
-                              let group = 1;
-                              let state = state |> Geometry.setGeometryGroup(geometry1, group);
-                              let state = state |> Geometry.setGeometryGroup(geometry2, group);
-                              let state = state |> Geometry.setGeometryGroup(geometry3, group);
+                              let {groupCountMap} = state |> GeometryTool.getData;
+                              groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry1, 1);
+                              groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry2, 1);
+                              groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry3, 1);
+                              groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry1, 0);
                               let state =
                                 state
                                 |> GameObject.disposeGameObjectGeometryComponent(
                                      gameObject1,
                                      geometry1
                                    );
-                              let {groupMap} = state |> GeometryTool.getData;
+                              let {groupCountMap} = state |> GeometryTool.getData;
                               (
-                                _hasMapData(0, groupMap),
-                                _hasMapData(1, groupMap),
-                                _hasMapData(2, groupMap),
-                                _hasMapData(3, groupMap),
-                                _hasMapData(4, groupMap)
+                                _hasMapData(0, groupCountMap),
+                                _hasMapData(1, groupCountMap),
+                                _hasMapData(2, groupCountMap),
+                                _hasMapData(3, groupCountMap),
+                                _hasMapData(4, groupCountMap)
                               )
                               |> expect == (true, true, false, false, false)
                             }
@@ -959,23 +903,23 @@ let _ =
                   test("setGeometryIndices should error", () => _testSetFunc(setGeometryIndices))
                 }
               )
-          );
-          describe(
-            "check getGeometryConfigData",
-            () =>
-              test(
-                "cloned geometry have no config data, shouldn't get it",
-                () => {
-                  open StateDataType;
-                  let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
-                  let state = state |> GeometryTool.initGeometrys;
-                  let (state, _, _, _, clonedGeometryArr) =
-                    CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
-                  expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
-                  |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
-                }
-              )
           )
+          /* describe(
+               "check getGeometryConfigData",
+               () =>
+                 test(
+                   "cloned geometry have no config data, shouldn't get it",
+                   () => {
+                     open StateDataType;
+                     let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
+                     let state = state |> GeometryTool.initGeometrys;
+                     let (state, _, _, _, clonedGeometryArr) =
+                       CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1);
+                     expect(() => state |> Geometry.getGeometryConfigData(clonedGeometryArr[0]))
+                     |> toThrowMessage("cloned geometry have no config data, shouldn't get it")
+                   }
+                 )
+             ) */
         }
       )
     }

@@ -154,7 +154,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
         let (state, clonedMeshRendererArr) =
           GameObjectComponentUtils.cloneMeshRendererComponent(meshRenderer, countRangeArr, state);
         state
-        |> GameObjectComponentUtils.batchAddMeshRendererComponent(
+        |> GameObjectComponentUtils.batchAddMeshRendererComponentForClone(
              clonedGameObjectArr,
              clonedMeshRendererArr
            )
@@ -164,16 +164,14 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getGeometryComponent(uid, state)) {
       | Some(geometry) =>
         let (state, clonedGeometryArr) =
-          GameObjectComponentUtils.cloneGeometryComponent(
-            GeometryIndexUtils.getMappedIndex(
-              geometry,
-              GeometryIndexUtils.getMappedIndexMap(state)
-            ),
-            countRangeArr,
-            state
-          );
+          GameObjectComponentUtils.cloneGeometryComponent
+            /* GeometryIndexUtils.getMappedIndex(
+                 geometry,
+                 GeometryIndexUtils.getMappedIndexMap(state)
+               ), */
+            (geometry, countRangeArr, state);
         state
-        |> GameObjectComponentUtils.batchAddGeometryComponent(
+        |> GameObjectComponentUtils.batchAddGeometryComponentForClone(
              clonedGameObjectArr,
              clonedGeometryArr
            )
@@ -185,7 +183,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
         let (state, clonedMaterialArr) =
           GameObjectComponentUtils.cloneMaterialComponent(meshRenderer, countRangeArr, state);
         state
-        |> GameObjectComponentUtils.batchAddMaterialComponent(
+        |> GameObjectComponentUtils.batchAddMaterialComponentForClone(
              clonedGameObjectArr,
              clonedMaterialArr
            )
@@ -201,7 +199,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
             state
           );
         state
-        |> GameObjectComponentUtils.batchAddCameraControllerComponent(
+        |> GameObjectComponentUtils.batchAddCameraControllerComponentForClone(
              clonedGameObjectArr,
              clonedCameraControllerArr
            )
@@ -212,7 +210,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
     /* todo optimize compare: add in each loop? */
     let state =
       state
-      |> GameObjectComponentUtils.batchAddTransformComponent(
+      |> GameObjectComponentUtils.batchAddTransformComponentForClone(
            clonedGameObjectArr,
            clonedTransformArr
          );
@@ -276,6 +274,7 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     switch (getGeometryComponent(uid, state)) {
     | Some(geometry) =>
       GeometryInitComponentUtils.handleInitComponent(
+        geometry,
         GeometryIndexUtils.getMappedIndex(geometry, GeometryIndexUtils.getMappedIndexMap(state)),
         state
       )

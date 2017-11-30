@@ -32,75 +32,75 @@ let buildInfo = (startIndex: int, endIndex: int) =>
        }
      );
 
-let getInfo = (infoArray, index) =>
-  Array.unsafe_get(infoArray, index)
+let getInfo = (infoArray, mappedIndex) =>
+  Array.unsafe_get(infoArray, mappedIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
-             {j|infoArray[$index] should exist|j},
-             () => infoArray |> Js.Array.length >= index + 1
+             {j|infoArray[$mappedIndex] should exist|j},
+             () => infoArray |> Js.Array.length >= mappedIndex + 1
            )
          )
      );
 
-/* switch infoArray[index] {
-   | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+/* switch infoArray[mappedIndex] {
+   | None => ExceptionHandleSystem.throwMessage({j|infoArray[$mappedIndex] should exist|j})
    | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
    }; */
-let _getFloat32PointData = (index: int, points: Float32Array.t, infoArray) => {
-  /* switch infoArray[index] {
-     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+let _getFloat32PointData = (mappedIndex: int, points: Float32Array.t, infoArray) => {
+  /* switch infoArray[mappedIndex] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$mappedIndex] should exist|j})
      | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
      }; */
-  let {startIndex, endIndex} = getInfo(infoArray, index);
-  /* switch infoArray[index] {
-     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+  let {startIndex, endIndex} = getInfo(infoArray, mappedIndex);
+  /* switch infoArray[mappedIndex] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$mappedIndex] should exist|j})
      | Some({startIndex, endIndex}) => getFloat32ArrSubarray(points, startIndex, endIndex)
      }; */
   getFloat32ArrSubarray(points, startIndex, endIndex)
 };
 
 let _setFloat32PointData =
-    (index: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
+    (mappedIndex: int, infoArray: geometryInfoArray, offset: int, count, fillFloat32ArrayFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoArray, mappedIndex, buildInfo(startIndex, newOffset));
   fillFloat32ArrayFunc(startIndex);
   newOffset
 };
 
-let _getUint16PointData = (index: int, points: Uint16Array.t, infoArray) => {
+let _getUint16PointData = (mappedIndex: int, points: Uint16Array.t, infoArray) => {
   requireCheck(
     () =>
-      Contract.Operators.(test("info should exist", () => index <= Js.Array.length(infoArray) - 1))
+      Contract.Operators.(test("info should exist", () => mappedIndex <= Js.Array.length(infoArray) - 1))
   );
-  /* switch infoArray[index] {
-     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$index] should exist|j})
+  /* switch infoArray[mappedIndex] {
+     | None => ExceptionHandleSystem.throwMessage({j|infoArray[$mappedIndex] should exist|j})
      | Some({startIndex, endIndex}) => getUint16ArrSubarray(points, startIndex, endIndex)
      } */
-  let {startIndex, endIndex} = getInfo(infoArray, index);
+  let {startIndex, endIndex} = getInfo(infoArray, mappedIndex);
   getUint16ArrSubarray(points, startIndex, endIndex)
 };
 
-let _setUint16PointData = (index: int, infoArray, offset: int, count, fillUint16ArraryFunc) => {
+let _setUint16PointData = (mappedIndex: int, infoArray, offset: int, count, fillUint16ArraryFunc) => {
   let startIndex = offset;
   let newOffset = offset + count;
-  Array.unsafe_set(infoArray, index, buildInfo(startIndex, newOffset));
+  Array.unsafe_set(infoArray, mappedIndex, buildInfo(startIndex, newOffset));
   fillUint16ArraryFunc(startIndex);
   newOffset
 };
 
-let getVertices = (index: int, state: StateDataType.state) => {
+let getVertices = (mappedIndex: int, state: StateDataType.state) => {
   let {vertices, verticesInfoArray} = getGeometryData(state);
-  _getFloat32PointData(index, vertices, verticesInfoArray)
+  _getFloat32PointData(mappedIndex, vertices, verticesInfoArray)
 };
 
-let setVertices = (index: int, data: array(float), state: StateDataType.state) => {
+let setVertices = (mappedIndex: int, data: array(float), state: StateDataType.state) => {
   let {verticesInfoArray, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
     _setFloat32PointData(
-      index,
+      mappedIndex,
       verticesInfoArray,
       verticesOffset,
       Js.Array.length(data),
@@ -109,11 +109,11 @@ let setVertices = (index: int, data: array(float), state: StateDataType.state) =
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).verticesOffset)
 };
 
-let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state: StateDataType.state) => {
+let setVerticesWithTypeArray = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) => {
   let {verticesInfoArray, vertices, verticesOffset} as geometryData = getGeometryData(state);
   geometryData.verticesOffset =
     _setFloat32PointData(
-      index,
+      mappedIndex,
       verticesInfoArray,
       verticesOffset,
       Float32Array.length(data),
@@ -122,16 +122,16 @@ let setVerticesWithTypeArray = (index: int, data: Float32Array.t, state: StateDa
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).verticesOffset)
 };
 
-let getIndices = (index: int, state: StateDataType.state) => {
+let getIndices = (mappedIndex: int, state: StateDataType.state) => {
   let {indices, indicesInfoArray} = getGeometryData(state);
-  _getUint16PointData(index, indices, indicesInfoArray)
+  _getUint16PointData(mappedIndex, indices, indicesInfoArray)
 };
 
-let setIndices = (index: int, data: array(int), state: StateDataType.state) => {
+let setIndices = (mappedIndex: int, data: array(int), state: StateDataType.state) => {
   let {indicesInfoArray, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
     _setUint16PointData(
-      index,
+      mappedIndex,
       indicesInfoArray,
       indicesOffset,
       Js.Array.length(data),
@@ -140,11 +140,11 @@ let setIndices = (index: int, data: array(int), state: StateDataType.state) => {
   state |> _ensureCheckNotExceedGeometryPointDataBufferCount(getGeometryData(state).indicesOffset)
 };
 
-let setIndicesWithTypeArray = (index: int, data: Uint16Array.t, state: StateDataType.state) => {
+let setIndicesWithTypeArray = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) => {
   let {indicesInfoArray, indices, indicesOffset} as geometryData = getGeometryData(state);
   geometryData.indicesOffset =
     _setUint16PointData(
-      index,
+      mappedIndex,
       indicesInfoArray,
       indicesOffset,
       Uint16Array.length(data),

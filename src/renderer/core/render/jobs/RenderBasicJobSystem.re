@@ -7,7 +7,6 @@ open GameObjectType;
 open VboBufferType;
 
 let _render = (gl, state: StateDataType.state) => {
-  /* let renderArray = RenderDataSystem.getRenderArrayFromState(state); */
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
   | Some(renderArray) =>
@@ -23,7 +22,6 @@ let _render = (gl, state: StateDataType.state) => {
              let shaderIndex = shaderIndex;
              let geometryIndex: int =
                Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
-             let geometryGroup = GeometrySystem.getGroup(geometryIndex, state);
              let mappedGeometryIndex =
                GeometryIndexUtils.getMappedIndex(
                  geometryIndex,
@@ -31,8 +29,6 @@ let _render = (gl, state: StateDataType.state) => {
                );
              let {vertexBufferMap, elementArrayBufferMap} =
                VboBufferStateUtils.getVboBufferData(state);
-             /* let uniformLocationMap =
-               Js.Option.getExn(GLSLLocationSystem.getUniformLocationMap(shaderIndex, state)); */
              let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndex, state));
              let state =
                state
@@ -49,7 +45,6 @@ let _render = (gl, state: StateDataType.state) => {
                               gl,
                               geometryIndex,
                               mappedGeometryIndex,
-                              geometryGroup,
                               vertexBufferMap,
                               [@bs] GeometrySystem.getVertices,
                               state
@@ -59,7 +54,6 @@ let _render = (gl, state: StateDataType.state) => {
                               gl,
                               geometryIndex,
                               mappedGeometryIndex,
-                              geometryGroup,
                               elementArrayBufferMap,
                               [@bs] GeometrySystem.getIndices,
                               state
