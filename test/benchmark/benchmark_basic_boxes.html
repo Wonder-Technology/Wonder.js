@@ -59,25 +59,34 @@
                 return [state$, boxes];
             }
 
+            function setPosition(boxes, state) {
+                var playgroundSize = 500;
+
+                for (let i = 0, len = boxes.length; i < len; i++) {
+                    let box = boxes[i];
+                    // state = initGameObject(box, state);
+
+
+                    var transform = getGameObjectTransformComponent(box, state);
+
+
+                    // var pos = getTransformPosition(transform, state);
+                    var localPos = getTransformLocalPosition(transform, state);
+
+                    state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+
+
+                    // console.log(getTransformLocalPosition(transform, state));
+                }
+
+                return [state, boxes];
+            }
+
             function initSample(state) {
-                // var [state, box1] = createBox(state);
-                // var [state, box2] = createBox(state);
-
-                // var boxes = [];
-                // var state$ = state;
-                // for (let i = 0; i < 7000; i++) {
-                //     var [state$, box] = createBox(state$);
-                //     boxes.push(box);
-                // }
-
-                var [state, boxes] = createBoxes(1, state);
-
-                // state = state$;
+                var [state, boxes] = createBoxes(10, state);
 
 
-                // var transform = getGameObjectTransformComponent(box1, state);
-
-                // state = setTransformLocalPosition(transform, [20, 0, 0], state);
+                var [state, boxes] = setPosition(boxes, state);
 
 
 
@@ -86,7 +95,7 @@
 
                 // state = setData(boxes, state);
                 // state = setParent(boxes, state);
-                state = createAndDisposeGameObjects(boxes, state);
+                // state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
@@ -196,25 +205,7 @@
                     newBoxes = flatten(newBoxes);
 
 
-                    var playgroundSize = 500;
-
-                    for (let i = 0, len = newBoxes.length; i < len; i++) {
-                        let box = newBoxes[i];
-                        // state = initGameObject(box, state);
-
-
-                        var transform = getGameObjectTransformComponent(box, state);
-
-
-                        // var pos = getTransformPosition(transform, state);
-                        var localPos = getTransformLocalPosition(transform, state);
-
-                        state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-
-
-                        // console.log(getTransformLocalPosition(transform, state));
-                    }
-
+                    var [state, newBoxes] = setPosition(newBoxes, state);
 
 
 
