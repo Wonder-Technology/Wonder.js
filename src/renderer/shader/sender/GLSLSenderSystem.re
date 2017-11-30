@@ -44,6 +44,6 @@ let initData = () => {
   uniformSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   vertexAttribHistoryArray: WonderCommonlib.ArraySystem.createEmpty(),
-  /* lastSendArrayBuffer: None, */
+  lastSendArrayBuffer: None,
   lastSendElementArrayBuffer: None
 };

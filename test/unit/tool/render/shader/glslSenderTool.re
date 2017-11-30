@@ -1,10 +1,11 @@
 let disableVertexAttribArray = (state: StateDataType.state) =>
   GLSLSenderSystem.disableVertexAttribArray([@bs] DeviceManagerSystem.getGl(state), state);
 
-/* let cleanLastSendArrayBuffer = (state: StateDataType.state) => {
-     GlslSenderStateUtils.getGLSLSenderData(state).lastSendArrayBuffer = None;
-     state
-   }; */
+let cleanLastSendArrayBuffer = (state: StateDataType.state) => {
+  GlslSenderStateUtils.getGLSLSenderData(state).lastSendArrayBuffer = None;
+  state
+};
+
 module JudgeSendUniformData = {
   let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
   let _prepareSendUinformData = (sandbox, state) => {
