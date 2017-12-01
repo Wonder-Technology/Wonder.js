@@ -4,6 +4,18 @@ open ComponentType;
 
 open Contract;
 
+let _unsafeGetComponent = (uid: int, componentMap: array(int)) =>
+  WonderCommonlib.SparseMapSystem.unsafeGet(uid, componentMap)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "component should exist",
+             () => WonderCommonlib.SparseMapSystem.get(uid, componentMap) |> assertExist
+           )
+         )
+     );
+
 let _getComponent = (uid: int, componentMap: array(int)) : option(component) =>
   WonderCommonlib.SparseMapSystem.get(uid, componentMap);
 
@@ -59,6 +71,9 @@ let hasGeometryComponent = (uid: int, state: StateDataType.state) : bool =>
 let getGeometryComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateUtils.getGameObjectData(state).geometryMap |> _getComponent(uid);
 
+let unsafeGetGeometryComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateUtils.getGameObjectData(state).geometryMap |> _unsafeGetComponent(uid);
+
 let addGeometryComponent = (uid: int, component: component, state: StateDataType.state) => {
   GameObjectStateUtils.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
@@ -101,6 +116,9 @@ let hasMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
 
 let getMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateUtils.getGameObjectData(state).materialMap |> _getComponent(uid);
+
+let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateUtils.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
 
 let addMaterialComponent = (uid: int, component: component, state: StateDataType.state) => {
   GameObjectStateUtils.getGameObjectData(state).materialMap
