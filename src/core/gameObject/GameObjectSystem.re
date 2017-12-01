@@ -25,6 +25,7 @@ let disposeTransformComponent = GameObjectComponentUtils.disposeTransformCompone
 let hasGeometryComponent = GameObjectComponentUtils.hasGeometryComponent;
 
 let getGeometryComponent = GameObjectComponentUtils.getGeometryComponent;
+
 let unsafeGetGeometryComponent = GameObjectComponentUtils.unsafeGetGeometryComponent;
 
 let addGeometryComponent = GameObjectComponentUtils.addGeometryComponent;
@@ -42,6 +43,7 @@ let disposeMeshRendererComponent = GameObjectComponentUtils.disposeMeshRendererC
 let hasMaterialComponent = GameObjectComponentUtils.hasMaterialComponent;
 
 let getMaterialComponent = GameObjectComponentUtils.getMaterialComponent;
+
 let unsafeGetMaterialComponent = GameObjectComponentUtils.unsafeGetMaterialComponent;
 
 let addMaterialComponent = GameObjectComponentUtils.addMaterialComponent;
@@ -166,12 +168,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getGeometryComponent(uid, state)) {
       | Some(geometry) =>
         let (state, clonedGeometryArr) =
-          GameObjectComponentUtils.cloneGeometryComponent
-            /* GeometryIndexUtils.getMappedIndex(
-                 geometry,
-                 GeometryIndexUtils.getMappedIndexMap(state)
-               ), */
-            (geometry, countRangeArr, state);
+          GameObjectComponentUtils.cloneGeometryComponent(geometry, countRangeArr, state);
         state
         |> GameObjectComponentUtils.batchAddGeometryComponentForClone(
              clonedGameObjectArr,
@@ -229,7 +226,6 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
          ),
          TransformStateUtils.getTransformData(state)
        );
-    /* todo optimize: use loop */
     TransformHierachySystem.unsafeGetChildren(
       transform,
       TransformStateUtils.getTransformData(state)
