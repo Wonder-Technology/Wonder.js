@@ -88,8 +88,13 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
 let getProgram = (shaderIndex: int, state: StateDataType.state) =>
   _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.get(shaderIndex);
 
+let unsafeGetProgram = (shaderIndex: int, state: StateDataType.state) =>
+  _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex);
+
 let registerProgram = (shaderIndex: int, state: StateDataType.state, program: program) => {
-  _getProgramData(state).programMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, program) |> ignore;
+  _getProgramData(state).programMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, program)
+  |> ignore;
   program
 };
 
@@ -115,4 +120,7 @@ let use = (gl, program: program, state: StateDataType.state) => {
   }
 };
 
-let initData = () => {programMap: WonderCommonlib.SparseMapSystem.createEmpty(), lastUsedProgram: None};
+let initData = () => {
+  programMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  lastUsedProgram: None
+};

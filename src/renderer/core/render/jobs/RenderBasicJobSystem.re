@@ -6,7 +6,7 @@ open GameObjectType;
 
 open VboBufferType;
 
-let _render = (gl, state: StateDataType.state) => {
+let _render = (gl, state: StateDataType.state) =>
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
   | Some(renderArray) =>
@@ -15,13 +15,9 @@ let _render = (gl, state: StateDataType.state) => {
          [@bs]
          (
            (state, uid: int) => {
-             let materialIndex: int =
-               Js.Option.getExn(GameObjectSystem.getMaterialComponent(uid, state));
-             let materialIndex = materialIndex;
+             let materialIndex: int = GameObjectSystem.unsafeGetMaterialComponent(uid, state);
              let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
-             let shaderIndex = shaderIndex;
-             let geometryIndex: int =
-               Js.Option.getExn(GameObjectSystem.getGeometryComponent(uid, state));
+             let geometryIndex: int = GameObjectSystem.unsafeGetGeometryComponent(uid, state);
              let mappedGeometryIndex =
                GeometryIndexUtils.getMappedIndex(
                  geometryIndex,
@@ -29,7 +25,7 @@ let _render = (gl, state: StateDataType.state) => {
                );
              let {vertexBufferMap, elementArrayBufferMap} =
                VboBufferStateUtils.getVboBufferData(state);
-             let program = Js.Option.getExn(ProgramSystem.getProgram(shaderIndex, state));
+             let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
              let state =
                state
                |> ProgramSystem.use(gl, program)
@@ -94,7 +90,6 @@ let _render = (gl, state: StateDataType.state) => {
          ),
          state
        )
-  }
-};
+  };
 
 let getJob = (configData, gl, state) => _render(gl, state);
