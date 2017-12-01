@@ -527,6 +527,30 @@ let _ =
       describe(
         "send uniform data",
         () => {
+          let testSendShaderUniformDataOnlyOnce = (name, prepareSendUinformDataFunc) =>
+            test(
+              "send shader uniform data only once",
+              () => {
+                let (state, _, gameObjectTransform, cameraTransform, cameraController) =
+                  prepareSendUinformDataFunc(sandbox, state^);
+                let (state, gameObject2, _, _, _) =
+                  RenderJobsTool.prepareGameObject(sandbox, state);
+                let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+                let pos = 0;
+                let getUniformLocation = GlslLocationTool.getUniformLocation(~pos, sandbox, name);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv, ~getUniformLocation, ())
+                     );
+                let state =
+                  state
+                  |> RenderJobsTool.initSystemAndRender
+                  |> RenderJobsTool.updateSystem
+                  |> _render;
+                uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 1
+              }
+            );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
             sandbox,
             "u_mMatrix",
@@ -655,6 +679,9 @@ let _ =
               (-3.),
               1.
             |]),
+            ~testFunc=
+              (_prepareSendUinformData) =>
+                testSendShaderUniformDataOnlyOnce("u_vMatrix", _prepareSendUinformData),
             ()
           );
           GlslSenderTool.JudgeSendUniformData.testSendMatrix4(
@@ -662,6 +689,9 @@ let _ =
             "u_pMatrix",
             (gameObjectTransform, cameraTransform, cameraController, state) => state,
             CameraControllerTool.getPMatrixOfCreateCameraControllerPerspectiveCamera(),
+            ~testFunc=
+              (_prepareSendUinformData) =>
+                testSendShaderUniformDataOnlyOnce("u_pMatrix", _prepareSendUinformData),
             ()
           )
         }
@@ -720,24 +750,23 @@ let _ =
                       |> expect == bindElementArrayBufferCallCountBeforeSecondRender
                     }
                   );
-                  test
-                    (
-                      "else, bind",
-                      () => {
-                        let state = _prepare(sandbox, state^);
-                        let (state, bindBuffer, element_array_buffer, buffer) =
-                          _prepareForElementArrayBuffer(state);
-                        let bindElementArrayBufferCallCountAfterInit =
-                          bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                        let state = state |> _render;
-                        let bindElementArrayBufferCallCountAfterRender =
-                          bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
-                        bindElementArrayBufferCallCountAfterRender
-                        |> expect == bindElementArrayBufferCallCountAfterInit
-                        + 1
-                        + 1
-                      }
-                    );
+                  test(
+                    "else, bind",
+                    () => {
+                      let state = _prepare(sandbox, state^);
+                      let (state, bindBuffer, element_array_buffer, buffer) =
+                        _prepareForElementArrayBuffer(state);
+                      let bindElementArrayBufferCallCountAfterInit =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      let state = state |> _render;
+                      let bindElementArrayBufferCallCountAfterRender =
+                        bindBuffer |> withTwoArgs(element_array_buffer, buffer) |> getCallCount;
+                      bindElementArrayBufferCallCountAfterRender
+                      |> expect == bindElementArrayBufferCallCountAfterInit
+                      + 1
+                      + 1
+                    }
+                  );
                   describe(
                     "test create gameObject after dispose one",
                     () =>

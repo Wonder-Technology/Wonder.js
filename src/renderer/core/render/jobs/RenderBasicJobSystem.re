@@ -6,7 +6,33 @@ open GameObjectType;
 
 open VboBufferType;
 
-let _render = (gl, state: StateDataType.state) =>
+let _sendShaderUniformData = (gl, state: StateDataType.state) =>
+  ShaderSystem.getAllShaderIndexArray(state)
+  |> ArraySystem.reduceState(
+       [@bs]
+       (
+         (state, shaderIndex) => {
+           let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
+           state
+           |> ProgramSystem.use(gl, program)
+           |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendData(shaderIndex)
+           |> ArraySystem.reduceState(
+                [@bs]
+                (
+                  (state, {pos, getArrayDataFunc, sendArrayDataFunc}: shaderUniformSendData) => {
+                    [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(state));
+                    state
+                  }
+                ),
+                state
+              )
+         }
+       ),
+       state
+     );
+
+let _render = (gl, state: StateDataType.state) => {
+  let state = state |> _sendShaderUniformData(gl);
   switch (state |> RenderDataSystem.getRenderArrayFromState) {
   | None => state
   | Some(renderArray) =>
@@ -65,7 +91,7 @@ let _render = (gl, state: StateDataType.state) =>
                |> ArraySystem.reduceState(
                     [@bs]
                     (
-                      (state, {pos, getArrayDataFunc, sendArrayDataFunc}) => {
+                      (state, {pos, getArrayDataFunc, sendArrayDataFunc}: uniformSendData) => {
                         [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(uid, state));
                         state
                       }
@@ -90,6 +116,7 @@ let _render = (gl, state: StateDataType.state) =>
          ),
          state
        )
-  };
+  }
+};
 
 let getJob = (configData, gl, state) => _render(gl, state);

@@ -70,18 +70,17 @@ let addAttributeSendData =
                                    gl
                                  ),
                                size: getBufferSizeByType(type_),
-                               buffer:
-                                 /* switch buffer {
-                                 | "vertex" =>
-                                   ArrayBufferSystem.createBuffer(
-                                     gl,
-                                     geometryIndex,
-                                     GeometrySystem.getVertices(geometryIndex, state)
-                                   )
-                                 | _ =>
-                                   ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-                                 }, */
-                                 buffer,
+                               buffer,
+                               /* switch buffer {
+                                  | "vertex" =>
+                                    ArrayBufferSystem.createBuffer(
+                                      gl,
+                                      geometryIndex,
+                                      GeometrySystem.getVertices(geometryIndex, state)
+                                    )
+                                  | _ =>
+                                    ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
+                                  }, */
                                sendFunc: sendBuffer
                              })
                           /* sendBuffer(
@@ -122,20 +121,19 @@ let addAttributeSendData =
                                ({
                                  pos: 0,
                                  size: 0,
-                                 buffer:
-                                   /* switch buffer {
-                                   | "index" =>
-                                     ElementArrayBufferSystem.createBuffer(
-                                       gl,
-                                       geometryIndex,
-                                       GeometrySystem.getIndices(geometryIndex, state)
-                                     )
-                                   | _ =>
-                                     ExceptionHandleSystem.throwMessage(
-                                       {j|unknow buffer:$buffer|j}
-                                     )
-                                   }, */
-                                   buffer,
+                                 buffer,
+                                 /* switch buffer {
+                                    | "index" =>
+                                      ElementArrayBufferSystem.createBuffer(
+                                        gl,
+                                        geometryIndex,
+                                        GeometrySystem.getIndices(geometryIndex, state)
+                                      )
+                                    | _ =>
+                                      ExceptionHandleSystem.throwMessage(
+                                        {j|unknow buffer:$buffer|j}
+                                      )
+                                    }, */
                                  sendFunc: bindElementArrayBuffer
                                })
                           |> ignore
@@ -166,11 +164,8 @@ let addUniformSendData =
     (
       gl,
       shaderIndex: int,
-      /* geometryIndex: int, */
-      /* uid: int, */
       program: program,
       shaderLibDataArr: shader_libs,
-      /* uniformLocationMap, */
       state: StateDataType.state
     )
     : StateDataType.state => {
@@ -191,7 +186,8 @@ let addUniformSendData =
     | None => WonderCommonlib.HashMapSystem.createEmpty()
     | Some(map) => map
     };
-  let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
+  let sendDataArr: array(uniformSendData) = WonderCommonlib.ArraySystem.createEmpty();
+  let shaderSendDataArr: array(shaderUniformSendData) = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
@@ -207,84 +203,87 @@ let addUniformSendData =
                |> WonderCommonlib.ArraySystem.forEach(
                     [@bs]
                     (
-                      ({name, field, type_, from}) =>
-                        sendDataArr
-                        |> Js.Array.push({
-                             pos:
-                               GLSLLocationSystem.getUniformLocation(
-                                 program,
-                                 name,
-                                 uniformLocationMap,
-                                 gl
-                               ),
-                             getArrayDataFunc:
-                               switch from {
-                               | "camera" =>
+                      ({name, field, type_, from}) => {
+                        let pos =
+                          GLSLLocationSystem.getUniformLocation(
+                            program,
+                            name,
+                            uniformLocationMap,
+                            gl
+                          );
+                        let sendArrayDataFunc =
+                          switch type_ {
+                          | "mat4" => sendMatrix4
+                          | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
+                          };
+                        switch from {
+                        | "camera" =>
+                          shaderSendDataArr
+                          |> Js.Array.push({
+                               pos,
+                               sendArrayDataFunc,
+                               getArrayDataFunc:
                                  switch field {
                                  | "vMatrix" => RenderDataSystem.getCameraVMatrixDataFromState
                                  | "pMatrix" => RenderDataSystem.getCameraPMatrixDataFromState
                                  | _ =>
                                    ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
                                  }
-                               | "model" =>
-                                 switch field {
-                                 | "mMatrix" => _getModelMMatrixData
-                                 | _ =>
-                                   ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
-                                 }
-                               | _ => ExceptionHandleSystem.throwMessage({j|unknow from:$from|j})
-                               },
-                             sendArrayDataFunc:
-                               switch type_ {
-                               | "mat4" =>
-                                 /* sendMatrix4(
-                                      gl,
-                                      GLSLLocationSystem.getUniformLocation(
-                                        program,
-                                        name,
-                                        uniformLocationMap,
-                                        gl
-                                      )
-                                    ) */
-                                 sendMatrix4
-                               | _ => ExceptionHandleSystem.throwMessage({j|unknow type:$type_|j})
-                               }
-                           })
-                        |> ignore
+                             })
+                          |> ignore
+                        | "model" =>
+                          sendDataArr
+                          |> Js.Array.push(
+                               {
+                                 pos,
+                                 sendArrayDataFunc,
+                                 getArrayDataFunc:
+                                   switch field {
+                                   | "mMatrix" => _getModelMMatrixData
+                                   | _ =>
+                                     ExceptionHandleSystem.throwMessage({j|unknow field:$field|j})
+                                   }
+                               }: uniformSendData
+                             )
+                          |> ignore
+                        }
+                      }
                     )
                   )
              }
            }
        )
      );
-  getGLSLSenderData(state).uniformSendDataMap
+  let data = getGLSLSenderData(state);
+  data.uniformSendDataMap
   |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr)
   |> ignore;
-  /* let shaderIndex = (shaderIndex); */
+  data.shaderUniformSendDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, shaderSendDataArr)
+  |> ignore;
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
 /* let addDrawPointsFunc =
-    (gl, materialIndex: int, geometryIndex: int, state: StateDataType.state) => {
-  /* getGLSLSenderData(state).drawPointsFuncMap
-  |> WonderCommonlib.SparseMapSystem.set(
-       materialIndex,
-       GeometrySystem.hasIndices(geometryIndex, state) ?
-         drawElement(
-           GeometrySystem.getDrawMode(gl),
-           GeometrySystem.getIndexType(gl),
-           GeometrySystem.getIndexTypeSize(gl),
-           GeometrySystem.getIndicesCount(geometryIndex, state)
-         ) :
-         drawArray(
-           GeometrySystem.getDrawMode(gl),
-           GeometrySystem.getVerticesCount(geometryIndex, state)
-         )
-     )
-  |> ignore; */
-  state
-}; */
-
+       (gl, materialIndex: int, geometryIndex: int, state: StateDataType.state) => {
+     /* getGLSLSenderData(state).drawPointsFuncMap
+     |> WonderCommonlib.SparseMapSystem.set(
+          materialIndex,
+          GeometrySystem.hasIndices(geometryIndex, state) ?
+            drawElement(
+              GeometrySystem.getDrawMode(gl),
+              GeometrySystem.getIndexType(gl),
+              GeometrySystem.getIndexTypeSize(gl),
+              GeometrySystem.getIndicesCount(geometryIndex, state)
+            ) :
+            drawArray(
+              GeometrySystem.getDrawMode(gl),
+              GeometrySystem.getVerticesCount(geometryIndex, state)
+            )
+        )
+     |> ignore; */
+     state
+   }; */
 let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
@@ -327,31 +326,50 @@ let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
      )
 };
 
-/* let getDrawPointsFunc = (materialIndex: int, state: StateDataType.state) => {
-let gl = [@bs]DeviceManagerSystem.getGl(state);
-  drawElement(
-           GeometrySystem.getDrawMode(gl),
-           GeometrySystem.getIndexType(gl),
-           GeometrySystem.getIndexTypeSize(gl),
-           /* GeometrySystem.getIndicesCount(geometryIndex, state) */
-           /* GeometrySystem.getIndicesCount(geometryIndex, state) */
-           36
-  )
-  /* let {drawPointsFuncMap} = getGLSLSenderData(state);
-  drawPointsFuncMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
+let getShaderUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
+  let {shaderUniformSendDataMap} = getGLSLSenderData(state);
+  shaderUniformSendDataMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
-             "draw points func should exist",
+             "uniform shader send data should exist",
              () => {
-               let {drawPointsFuncMap} = getGLSLSenderData(state);
-               drawPointsFuncMap
-               |> WonderCommonlib.SparseMapSystem.get(materialIndex)
+               let {shaderUniformSendDataMap} = getGLSLSenderData(state);
+               shaderUniformSendDataMap
+               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
                |> assertExist
              }
            )
          )
-     ) */
-}; */
+     )
+};
+/* let getDrawPointsFunc = (materialIndex: int, state: StateDataType.state) => {
+   let gl = [@bs]DeviceManagerSystem.getGl(state);
+     drawElement(
+              GeometrySystem.getDrawMode(gl),
+              GeometrySystem.getIndexType(gl),
+              GeometrySystem.getIndexTypeSize(gl),
+              /* GeometrySystem.getIndicesCount(geometryIndex, state) */
+              /* GeometrySystem.getIndicesCount(geometryIndex, state) */
+              36
+     )
+     /* let {drawPointsFuncMap} = getGLSLSenderData(state);
+     drawPointsFuncMap
+     |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
+     |> ensureCheck(
+          (r) =>
+            Contract.Operators.(
+              test(
+                "draw points func should exist",
+                () => {
+                  let {drawPointsFuncMap} = getGLSLSenderData(state);
+                  drawPointsFuncMap
+                  |> WonderCommonlib.SparseMapSystem.get(materialIndex)
+                  |> assertExist
+                }
+              )
+            )
+        ) */
+   }; */
