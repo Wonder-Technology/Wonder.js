@@ -6,10 +6,10 @@ let _getRenderData = (state: StateDataType.state) => state.renderData;
 
 let _getCameraData = (state: StateDataType.state) => Js.Option.getExn(state.renderData.cameraData);
 
-let getCameraVMatrixDataFromState = [@bs] (gameObject: gameObject, state: StateDataType.state) =>
+let getCameraVMatrixDataFromState = [@bs] (state: StateDataType.state) =>
   _getCameraData(state).vMatrix;
 
-let getCameraPMatrixDataFromState = [@bs] (gameObject: gameObject, state: StateDataType.state) =>
+let getCameraPMatrixDataFromState = [@bs] (state: StateDataType.state) =>
   _getCameraData(state).pMatrix;
 
 let getRenderArrayFromState = (state: StateDataType.state) => state.renderData.renderArray;

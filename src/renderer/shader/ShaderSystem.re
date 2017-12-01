@@ -4,6 +4,9 @@ open StateDataType;
 
 let _getShaderData = (state: StateDataType.state) => state.shaderData;
 
+let getAllShaderIndexArray = (state: StateDataType.state) =>
+  ArraySystem.range(0, _getShaderData(state).index - 1);
+
 let _genereateShaderIndex = (state: StateDataType.state) => {
   let shaderData = _getShaderData(state);
   let index = shaderData.index;
