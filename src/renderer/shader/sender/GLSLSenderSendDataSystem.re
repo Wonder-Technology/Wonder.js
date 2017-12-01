@@ -13,7 +13,6 @@ let getBufferSizeByType = (type_: string) =>
   | _ => ExceptionHandleSystem.throwMessage({j|invalide type_:$type_|j})
   };
 
-/* todo optimize: judge last buffer(only when use vao?) */
 let sendBuffer =
   [@bs]
   (
