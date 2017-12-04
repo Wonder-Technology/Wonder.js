@@ -30,27 +30,11 @@ let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
     getMatrix4DataIndex(index) + 16
   );
 
-let rec update = (transform: transform, {dirtyMap, localPositions, localToWorldMatrices} as data) =>
-  /* let isLocalDirty = isLocalDirty(transform, dirtyLocalMap);
-       let isWorldDirty = isLocalDirty(transform, dirtyWorldMap);
-       switch(!isLocalDirty && !isWorldDirty){
-       | true => ()
-       | false =>
-     switch(TransformHierachySystem.getParent(transform, data)){
-     | Some(parent) =>
-     update(parent, data);
-     | None =>
-       switch(isLocalDirty){
-       | true =>
-
-         let mat = fromTranslation(localPositions, getVector3DataIndex(index));
-       }
-     }
-     } */
-  /* let isWorldDirty = isLocalDirty(transform, dirtyMap); */
+let rec update = (transform: transform, {localPositions, localToWorldMatrices} as data) =>
   switch (isDirty(transform, data)) {
   | false => data
   | true =>
+    let data = mark(transform, false, data);
     let mat = fromTranslation(localPositions, getVector3DataIndex(transform));
     switch (getParent(transform, data)) {
     | Some(parent) =>
