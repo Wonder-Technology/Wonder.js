@@ -1,10 +1,13 @@
 let getData = (state: StateDataType.state) => MaterialStateUtils.getMaterialData(state);
 
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
-  MaterialSystem.unsafeGetShaderIndex((materialIndex), state);
+  MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
+
+let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
+  MaterialShaderIndexUtils.hasShaderIndex(materialIndex, state);
 
 let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataType.state) =>
-  MaterialSystem.setShaderIndex((materialIndex), shaderIndex, state);
+  MaterialSystem.setShaderIndex(materialIndex, shaderIndex, state);
 
 let isMaterial = (material) => {
   open Wonder_jest;

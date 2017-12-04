@@ -165,6 +165,26 @@ let _ =
                   )
                   |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1])
                 }
+              );
+              describe(
+                "fix bug",
+                () =>
+                  test(
+                    "if source material's shaderIndex not exist, not set cloned material's shaderIndex",
+                    () => {
+                      let (state, gameObject1, material1) =
+                        BasicMaterialTool.createGameObject(state^);
+                      let (state, clonedGameObjectArr) = cloneGameObject(gameObject1, 1, state);
+                      let clonedMaterialArr =
+                        clonedGameObjectArr
+                        |> CloneTool.getFlattenClonedGameObjectArr
+                        |> Js.Array.map(
+                             (clonedGameObject) =>
+                               getGameObjectMaterialComponent(clonedGameObject, state)
+                           );
+                      MaterialTool.hasShaderIndex(clonedMaterialArr[0], state) |> expect == false
+                    }
+                  )
               )
             }
           );
@@ -200,8 +220,7 @@ let _ =
               test(
                 "add cloned transform's gameObject to map",
                 () => {
-                  let (state, _, _, clonedGameObjectArr, clonedTransformArr) =
-                    _prepare();
+                  let (state, _, _, clonedGameObjectArr, clonedTransformArr) = _prepare();
                   (
                     Transform.getTransformGameObject(clonedTransformArr[0], state),
                     Transform.getTransformGameObject(clonedTransformArr[1], state)

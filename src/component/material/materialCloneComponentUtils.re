@@ -2,7 +2,9 @@ open MaterialType;
 
 let handleCloneComponent =
     (sourceComponent: material, countRangeArr: array(int), state: StateDataType.state) => {
-  let shaderIndex = MaterialShaderIndexUtils.unsafeGetShaderIndex(sourceComponent, state);
+  let hasShaderIndex = MaterialShaderIndexUtils.hasShaderIndex(sourceComponent, state);
+  let shaderIndex =
+    hasShaderIndex ? MaterialShaderIndexUtils.unsafeGetShaderIndex(sourceComponent, state) : -1;
   let createFunc =
     if (MaterialJudgeUtils.isBasicMaterial(sourceComponent, state)) {
       BasicMaterialCreateUtils.create
@@ -17,9 +19,10 @@ let handleCloneComponent =
          (
            (state, _) => {
              let (state, index) = createFunc(state);
-             let state = state |> MaterialShaderIndexUtils.setShaderIndex(sourceComponent, shaderIndex);
              componentArr |> Js.Array.push(index) |> ignore;
-             state
+             hasShaderIndex ?
+               state |> MaterialShaderIndexUtils.setShaderIndex(sourceComponent, shaderIndex) :
+               state
            }
          ),
          state
