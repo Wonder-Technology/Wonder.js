@@ -338,7 +338,6 @@ let _ =
                     |> Transform.setTransformLocalPosition(transform1, pos1)
                     |> Transform.setTransformLocalPosition(transform2, pos2);
                   let state = state |> disposeGameObject(gameObject1);
-                  let state = state |> TransformTool.update;
                   state |> Transform.getTransformPosition(transform2) |> expect == pos2
                 }
               );
@@ -637,7 +636,6 @@ let _ =
                     |> Transform.setTransformLocalPosition(transform2, pos2)
                     |> Transform.setTransformLocalPosition(transform3, pos3);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let state = state |> TransformTool.update;
                   state |> Transform.getTransformPosition(transform3) |> expect == pos3
                 }
               );

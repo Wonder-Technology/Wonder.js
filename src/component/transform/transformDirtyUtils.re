@@ -1,11 +1,32 @@
 open TransformType;
 
-let addToDirtyArray = (index: int, {dirtyArray} as data) => {
-  Js.Array.push(index, dirtyArray) |> ignore;
+open Contract;
+
+let mark = (transform: transform, isDirty, {dirtyMap} as data) => {
+  dirtyMap |> WonderCommonlib.SparseMapSystem.set(transform, isDirty);
   data
 };
 
-let batchAddToDirtyArray = (indexArr: array(int), {dirtyArray} as data) => {
-  data.dirtyArray = dirtyArray |> Js.Array.concat(indexArr);
+let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) => {
+  data
+  |> mark(transform, true)
+  |> TransformHierachySystem.unsafeGetChildren(transform)
+  |> ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
   data
 };
+
+let isDirty = (transform: transform, {dirtyMap} as data) =>
+  dirtyMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> ensureCheck(
+       (isDirty) =>
+         Contract.Operators.(
+           test(
+             "should return bool",
+             () => {
+               dirtyMap |> WonderCommonlib.SparseMapSystem.get(transform) |> assertExist;
+               isDirty |> assertIsBool
+             }
+           )
+         )
+     );

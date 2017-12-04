@@ -12,7 +12,7 @@ type transformDirtyMap = array(bool);
 
 /* type originToMoveIndexMap = array int; */
 /* type moveToOriginIndexMap = array int; */
-type transformDirtyArray = array(int);
+/* type transformDirtyArray = array(int); */
 
 type transformData = {
   mutable index: int,
@@ -24,6 +24,7 @@ type transformData = {
   parentMap: transformParentMap,
   childMap: transformChildMap,
   gameObjectMap,
-  mutable dirtyArray: transformDirtyArray,
+  /* dirtyLocalMap: transformDirtyMap, */
+  dirtyMap: transformDirtyMap,
   mutable disposedIndexArray: array(transform)
 };

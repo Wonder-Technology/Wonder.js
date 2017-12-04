@@ -52,7 +52,7 @@ let disposeMaterialComponent = GameObjectComponentUtils.disposeMaterialComponent
 
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateUtils.create(state);
-  let (state, transform) = TransformCreateUtils.create(state);
+  let (state, transform) = TransformSystem.create(state);
   (addTransformComponent(uid, transform, state), uid)
 };
 

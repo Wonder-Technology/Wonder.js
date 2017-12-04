@@ -65,6 +65,9 @@ let assertJsTrue = (source: Js.boolean) =>
 let assertJsFalse = (source: Js.boolean) =>
   _assert(source == Js.false_, "expect to be false, but actual is true");
 
+let assertIsBool = (source: bool) =>
+  _assert(source == true || source == false, "expect to be bool, but actual not");
+
 let assertExist = (source: option('a)) =>
   _assert(Js.Option.isSome(source), "expect to be exist, but actual not");
 

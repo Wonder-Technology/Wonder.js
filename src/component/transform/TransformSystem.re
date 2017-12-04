@@ -1,14 +1,10 @@
-open TransformOperateDataUtils;
-
 open TransformType;
-
-open TypeArrayUtils;
-
-open StateDataType;
 
 open Contract;
 
-open TransformDirtySystem;
+open StateDataType;
+
+open TransformDirtyUtils;
 
 open TransformHierachySystem;
 
@@ -17,11 +13,28 @@ open TransformStateUtils;
 let isAlive = (transform: transform, state: StateDataType.state) =>
   TransformDisposeComponentUtils.isAlive(transform, state);
 
-let create = TransformCreateUtils.create;
+let create = (state: StateDataType.state) => {
+  let data = getTransformData(state);
+  let index = TransformCreateUtils.create(data);
+  TransformDirtyUtils.mark(index, false, data) |> ignore;
+  (state, index)
+  |> ensureCheck(
+       (_) => {
+         open Contract.Operators;
+         let {index}: transformData = getTransformData(state);
+         let maxCount = TransformBufferUtils.getMaxCount(state);
+         test(
+           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
+           () => index <= maxCount
+         )
+       }
+     )
+};
 
 let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
   for (index in 0 to maxCount - 1) {
-    WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap) |> ignore
+    WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap)
+    |> ignore
   };
   transformData
 };
@@ -31,18 +44,13 @@ let getParent = (child: transform, state: StateDataType.state) =>
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
   TransformHierachySystem.setParent(Js.toOption(parent), child, getTransformData(state))
-  |> addItAndItsChildrenToDirtyArray(child)
+  |> markHierachyDirty(child)
   |> ignore;
   state
 };
 
 let getChildren = (transform: transform, state: StateDataType.state) =>
   getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
-
-let update = (state: StateDataType.state) => {
-  TransformUpdateSystem.update(getTransformData(state));
-  state
-};
 
 let getLocalPosition = (transform: transform, state: StateDataType.state) =>
   /* getFloat3(getVector3DataIndex(transform), getTransformData(state).localPositions); */
@@ -59,17 +67,24 @@ let setLocalPosition = (transform: transform, localPosition: position, state: St
   state
   |> getTransformData
   |> TransformOperateDataUtils.setLocalPosition(transform, localPosition)
-  |> addItAndItsChildrenToDirtyArray(transform)
+  |> markHierachyDirty(transform)
   |> ignore;
-  /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
 
 /* todo add cache? */
 let getPosition = (transform: transform, state: StateDataType.state) => {
   open Js.Typed_array;
-  let localToWorldMatrices = getTransformData(state).localToWorldMatrices;
-  let index = getMatrix4DataIndex(transform);
+  /* let localToWorldMatrices = getTransformData(state).localToWorldMatrices;
+     let index = getMatrix4DataIndex(transform);
+     (
+       Float32Array.unsafe_get(localToWorldMatrices, index + 12),
+       Float32Array.unsafe_get(localToWorldMatrices, index + 13),
+       Float32Array.unsafe_get(localToWorldMatrices, index + 14)
+     ) */
+  let {localToWorldMatrices} =
+    TransformOperateDataUtils.update(transform, getTransformData(state));
+  let index = TransformOperateDataUtils.getMatrix4DataIndex(transform);
   (
     Float32Array.unsafe_get(localToWorldMatrices, index + 12),
     Float32Array.unsafe_get(localToWorldMatrices, index + 13),
@@ -78,20 +93,19 @@ let getPosition = (transform: transform, state: StateDataType.state) => {
 };
 
 let setPosition = (transform: transform, position: position, state: StateDataType.state) => {
-  let transformData = getTransformData(state);
+  let data = getTransformData(state);
   TransformOperateDataUtils.setPosition(
-    getVector3DataIndex(transform),
-    TransformHierachySystem.getParent(transform, transformData),
+    TransformOperateDataUtils.getVector3DataIndex(transform),
+    TransformHierachySystem.getParent(transform, data),
     position,
-    transformData
+    data
   )
+  |> markHierachyDirty(transform)
   |> ignore;
-  addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore;
-  /* markIsTransform(transform, transformData.isTransformMap); */
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =>
+let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) => {
   /* let data =
        TransformOperateDataUtils.getLocalToWorldMatrix(
          transform,
@@ -99,14 +113,9 @@ let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) =
        );
      isTransform(transform, getTransformData(state).isTransformMap) ?
        CacheType.Cache(data) : CacheType.New(data) */
-  TransformOperateDataUtils.getLocalToWorldMatrix(
-    transform,
-    getTransformData(state).localToWorldMatrices
-  );
-
-let init = (state: StateDataType.state) => {
-  TransformUpdateSystem.update(getTransformData(state));
-  state
+  /* todo optimize: update return matrix? */
+  let data = TransformOperateDataUtils.update(transform, getTransformData(state));
+  TransformOperateDataUtils.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
 };
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
@@ -130,7 +139,8 @@ let initData = (state: StateDataType.state) => {
         gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         /* originToMoveIndexMap: WonderCommonlib.SparseMapSystem.createEmpty (), */
         /* moveToOriginIndexMap: WonderCommonlib.SparseMapSystem.createEmpty () */
-        dirtyArray: WonderCommonlib.ArraySystem.createEmpty(),
+        /* dirtyLocalMap: WonderCommonlib.SparseMapSystem.createEmpty(), */
+        dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)

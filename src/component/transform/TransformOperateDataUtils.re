@@ -6,16 +6,16 @@ open TypeArrayUtils;
 
 open TransformType;
 
+open TransformHierachySystem;
+
+open TransformDirtyUtils;
+
+open Matrix4System;
+
 let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
 
 let getVector3DataIndex = (index: int) => index * getVector3DataSize();
 
-/* let setLocalPositionTypeArr =
-   [@bs]
-   (
-     (index: int, position: Js.Array.t(float), localPositions: Float32Array.t) =>
-       setFloat3(getVector3DataIndex(index), position, localPositions)
-   ); */
 let setLocalToWorldMatricesTypeArr =
   [@bs]
   (
@@ -30,29 +30,71 @@ let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
     getMatrix4DataIndex(index) + 16
   );
 
+let rec update = (transform: transform, {dirtyMap, localPositions, localToWorldMatrices} as data) =>
+  /* let isLocalDirty = isLocalDirty(transform, dirtyLocalMap);
+       let isWorldDirty = isLocalDirty(transform, dirtyWorldMap);
+       switch(!isLocalDirty && !isWorldDirty){
+       | true => ()
+       | false =>
+     switch(TransformHierachySystem.getParent(transform, data)){
+     | Some(parent) =>
+     update(parent, data);
+     | None =>
+       switch(isLocalDirty){
+       | true =>
+
+         let mat = fromTranslation(localPositions, getVector3DataIndex(index));
+       }
+     }
+     } */
+  /* let isWorldDirty = isLocalDirty(transform, dirtyMap); */
+  switch (isDirty(transform, data)) {
+  | false => data
+  | true =>
+    let mat = fromTranslation(localPositions, getVector3DataIndex(transform));
+    switch (getParent(transform, data)) {
+    | Some(parent) =>
+      update(parent, data) |> ignore;
+      [@bs]
+      setLocalToWorldMatricesTypeArr(
+        transform,
+        multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
+        localToWorldMatrices
+      )
+      |> ignore;
+      data
+    | None =>
+      [@bs] setLocalToWorldMatricesTypeArr(transform, mat, localToWorldMatrices) |> ignore;
+      data
+    }
+  };
+
 let setPosition =
     (
       localPositionsIndex: int,
       parent: option(transform),
       position: position,
-      {localToWorldMatrices, localPositions}
+      {localToWorldMatrices, localPositions} as data
     ) =>
   switch parent {
   | None =>
     setFloat3(localPositionsIndex, TransformCastTypeUtils.tupleToJsArray(position), localPositions)
+    |> ignore;
+    data
   | Some(parent) =>
+    update(parent, data) |> ignore;
     setFloat3(
       localPositionsIndex,
       TransformCastTypeUtils.tupleToJsArray(
         Vector3System.transformMat4(
           position,
-          Matrix4System.invert(
-            getLocalToWorldMatrix(getMatrix4DataIndex(parent), localToWorldMatrices)
-          )
+          invert(getLocalToWorldMatrix(getMatrix4DataIndex(parent), localToWorldMatrices))
         )
       ),
       localPositions
     )
+    |> ignore;
+    data
   };
 
 /* let isTransform = (transform: transform, isTransformMap) =>

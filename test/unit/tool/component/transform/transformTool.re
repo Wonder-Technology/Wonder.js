@@ -31,10 +31,6 @@ let isTransform = (transform: transform) => {
   expect(transform) >= 0
 };
 
-let init = (state: StateDataType.state) => TransformSystem.init(state);
-
-let update = (state: StateDataType.state) => TransformSystem.update(state);
-
 let getLocalToWorldMatrix = (transform, state: StateDataType.state) =>
   TransformSystem.getLocalToWorldMatrix(transform, state);
 

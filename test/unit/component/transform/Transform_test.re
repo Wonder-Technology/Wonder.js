@@ -27,7 +27,7 @@ let _ =
             (child1LocalPos, child1Pos),
             (child2LocalPos, child2Pos),
             state
-          ) => {
+          ) =>
         (
           state |> getTransformLocalPosition(parent),
           state |> getTransformPosition(parent),
@@ -37,8 +37,7 @@ let _ =
           state |> getTransformPosition(child2)
         )
         |>
-        expect == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos)
-      };
+        expect == (parentLocalPos, parentPos, child1LocalPos, child1Pos, child2LocalPos, child2Pos);
       let _prepareOne = () => {
         let (state, transform) = createTransform(state^);
         let pos1 = (1., 2., 3.);
@@ -100,24 +99,24 @@ let _ =
           )
         }
       );
-      describe(
-        "TransformTool.init",
-        () =>
-          test(
-            "update transform",
-            () => {
-              let (state, parent) = createTransform(state^);
-              let (state, child) = createTransform(state);
-              let pos = (1., 2., 3.);
-              let state =
-                state
-                |> setTransformLocalPosition(parent, pos)
-                |> setTransformParent(Js.Nullable.return(parent), child);
-              let state = state |> TransformTool.init;
-              state |> getTransformPosition(child) |> expect == pos
-            }
-          )
-      );
+      /* describe(
+           "TransformTool.init",
+           () =>
+             test(
+               "update transform",
+               () => {
+                 let (state, parent) = createTransform(state^);
+                 let (state, child) = createTransform(state);
+                 let pos = (1., 2., 3.);
+                 let state =
+                   state
+                   |> setTransformLocalPosition(parent, pos)
+                   |> setTransformParent(Js.Nullable.return(parent), child);
+                 let state = state |> TransformTool.init;
+                 state |> getTransformPosition(child) |> expect == pos
+               }
+             )
+         ); */
       describe(
         "getTransformParent",
         () =>
@@ -144,8 +143,7 @@ let _ =
                   let state =
                     state
                     |> setTransformLocalPosition(parent, pos)
-                    |> setTransformParent(Js.Nullable.return(parent), child)
-                    |> TransformTool.update;
+                    |> setTransformParent(Js.Nullable.return(parent), child);
                   state
                   |> _judgeOneToOne(
                        (parent, child),
@@ -172,16 +170,13 @@ let _ =
                     state
                     |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
-                  let state = TransformTool.update(state);
                   state
-                  |> _judgeOneToTwo
-                       (
-                         (parent, child1, child2),
-                         (pos1, pos1),
-                         (TransformTool.getDefaultPosition(), pos1),
-                         (pos2, add(Float, pos1, pos2))
-                       )
-                       /* (pos2,  pos2) */
+                  |> _judgeOneToTwo(
+                       (parent, child1, child2),
+                       (pos1, pos1),
+                       (TransformTool.getDefaultPosition(), pos1),
+                       (pos2, add(Float, pos1, pos2))
+                     )
                 }
               )
             }
@@ -200,11 +195,7 @@ let _ =
                       state
                       |> setTransformLocalPosition(parent, pos)
                       |> setTransformParent(Js.Nullable.return(parent), child);
-                    let state =
-                      state
-                      |> TransformTool.update
-                      |> setTransformParent(Js.Nullable.null, child)
-                      |> TransformTool.update;
+                    let state = state |> setTransformParent(Js.Nullable.null, child);
                     (state, parent, child, pos)
                   };
                   test(
@@ -244,11 +235,7 @@ let _ =
                     state
                     |> setTransformLocalPosition(child2, pos2)
                     |> setTransformParent(Js.Nullable.return(parent), child2);
-                  let state =
-                    state
-                    |> TransformTool.update
-                    |> setTransformParent(Js.Nullable.null, child2)
-                    |> TransformTool.update;
+                  let state = state |> setTransformParent(Js.Nullable.null, child2);
                   state
                   |> _judgeOneToTwo(
                        (parent, child1, child2),
@@ -272,13 +259,8 @@ let _ =
                   let state =
                     setTransformLocalPosition(parent, pos, state)
                     |> setTransformParent(Js.Nullable.return(parent), child);
-                  let state =
-                    state
-                    |> TransformTool.update
-                    |> setTransformParent(Js.Nullable.return(parent), child)
-                    |> TransformTool.update;
+                  let state = state |> setTransformParent(Js.Nullable.return(parent), child);
                   state |> getTransformParent(child) |> expect == Js.Nullable.return(parent)
-                  /* state |> _judgeOneToOne (parent, child) (pos, pos) (TransformTool.getDefaultPosition (), pos) */
                 }
               );
               test(
@@ -292,7 +274,6 @@ let _ =
                   let state =
                     setTransformLocalPosition(parent1, pos1, state)
                     |> setTransformParent(Js.Nullable.return(parent1), child);
-                  let state = state |> TransformTool.update;
                   let state =
                     setTransformLocalPosition(parent2, pos2, state)
                     |> setTransformParent(Js.Nullable.return(parent2), child);
@@ -326,7 +307,6 @@ let _ =
                     |> Transform.setTransformLocalPosition(transform2, pos2)
                     |> Transform.setTransformLocalPosition(transform3, pos3)
                     |> Transform.setTransformLocalPosition(transform4, pos4);
-                  let state = state |> TransformTool.update;
                   (
                     state |> Transform.getTransformPosition(transform1),
                     state |> Transform.getTransformPosition(transform2),
@@ -375,7 +355,6 @@ let _ =
               state
               |> setTransformLocalPosition(parent, pos1)
               |> setTransformLocalPosition(child, pos2);
-            let state = state |> TransformTool.update;
             (state, parent, child, pos1, pos2)
           };
           test(
@@ -383,7 +362,6 @@ let _ =
             () => {
               let (state, parent, child, _, pos2) = prepare();
               let state = setTransformLocalPosition(parent, pos2, state);
-              let state = state |> TransformTool.update;
               state
               |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
             }
@@ -393,7 +371,6 @@ let _ =
             () => {
               let (state, parent, child, pos1, _) = prepare();
               let state = setTransformLocalPosition(child, pos1, state);
-              let state = state |> TransformTool.update;
               state
               |> _judgeOneToOne((parent, child), (pos1, pos1), (pos1, add(Float, pos1, pos1)))
             }
@@ -402,7 +379,7 @@ let _ =
       );
       describe(
         "getTransformPosition",
-        () =>
+        () => {
           test(
             "default value should be (0.,0.,0.)",
             () => {
@@ -411,7 +388,21 @@ let _ =
               |> getTransformPosition(transform)
               |> expect == TransformTool.getDefaultPosition()
             }
+          );
+          test(
+            "can get the newest position",
+            () => {
+              let (state, parent) = createTransform(state^);
+              let (state, child) = createTransform(state);
+              let pos = (1., 2., 3.);
+              let state =
+                state
+                |> setTransformLocalPosition(parent, pos)
+                |> setTransformParent(Js.Nullable.return(parent), child);
+              state |> getTransformPosition(child) |> expect == pos
+            }
           )
+        }
       );
       describe(
         "setTransformPosition",
@@ -431,9 +422,7 @@ let _ =
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
                   let state = setTransformLocalPosition(parent, pos1, state);
                   let state = setTransformLocalPosition(child, pos2, state);
-                  let state = state |> TransformTool.update;
                   let state = state |> setTransformPosition(parent, pos2);
-                  let state = state |> TransformTool.update;
                   state
                   |> _judgeOneToOne((parent, child), (pos2, pos2), (pos2, add(Float, pos2, pos2)))
                 }
@@ -449,84 +438,82 @@ let _ =
                   let state = setTransformParent(Js.Nullable.return(parent), child, state);
                   let state = setTransformLocalPosition(parent, pos1, state);
                   let state = setTransformLocalPosition(child, pos2, state);
-                  let state = state |> TransformTool.update;
                   let state = state |> setTransformPosition(child, pos3);
-                  let state = state |> TransformTool.update;
                   state |> _judgeOneToOne((parent, child), (pos1, pos1), ((1., 1., 1.), pos3))
                 }
               )
             }
           )
       );
-      describe(
-        "test before TransformTool.update",
-        () => {
-          describe(
-            "should get the last TransformTool.updated transform data",
-            () =>
-              test(
-                "test get position",
-                () => {
-                  let (state, transform, pos1, pos2) = _prepareOne();
-                  let state = state |> TransformTool.update;
-                  let state = setTransformPosition(transform, pos2, state);
-                  state |> getTransformPosition(transform) |> expect == pos1
-                }
-              )
-          );
-          describe(
-            "should get the newest local transform data",
-            () =>
-              test(
-                "test get local position",
-                () => {
-                  let (state, transform, _, pos2) = _prepareOne();
-                  let state = state |> TransformTool.update;
-                  let state = setTransformLocalPosition(transform, pos2, state);
-                  state |> getTransformLocalPosition(transform) |> expect == pos2
-                }
-              )
-          )
-        }
-      );
-      describe(
-        "update",
-        () => {
-          test(
-            "sort dirtyArray, make parent before child",
-            () => {
-              let (state, child) = createTransform(state^);
-              let (state, parent) = createTransform(state);
-              let pos = (1., 2., 3.);
-              let state = state |> setTransformLocalPosition(child, pos);
-              let state =
-                state
-                |> setTransformLocalPosition(parent, pos)
-                |> setTransformParent(Js.Nullable.return(parent), child);
-              /* let state = state |> TransformTool.init; */
-              let state = state |> TransformTool.update;
-              (getTransformPosition(child, state), getTransformPosition(parent, state))
-              |> expect == (Vector3System.add(Float, pos, pos), pos)
-            }
-          );
-          test(
-            "clean dirty array after compute transform data",
-            () => {
-              let (state, _, _, _) = _prepareOne();
-              let len1 =
-                state
-                |> TransformTool.getData
-                |> ((transformData) => Js.Array.length(transformData.dirtyArray));
-              let state = state |> TransformTool.update;
-              let len2 =
-                state
-                |> TransformTool.getData
-                |> ((transformData) => Js.Array.length(transformData.dirtyArray));
-              (len1, len2) |> expect == (1, 0)
-            }
-          )
-        }
-      );
+      /* describe(
+           "test before TransformTool.update",
+           () => {
+             describe(
+               "should get the last TransformTool.updated transform data",
+               () =>
+                 test(
+                   "test get position",
+                   () => {
+                     let (state, transform, pos1, pos2) = _prepareOne();
+                     let state = state |> TransformTool.update;
+                     let state = setTransformPosition(transform, pos2, state);
+                     state |> getTransformPosition(transform) |> expect == pos1
+                   }
+                 )
+             );
+             describe(
+               "should get the newest local transform data",
+               () =>
+                 test(
+                   "test get local position",
+                   () => {
+                     let (state, transform, _, pos2) = _prepareOne();
+                     let state = state |> TransformTool.update;
+                     let state = setTransformLocalPosition(transform, pos2, state);
+                     state |> getTransformLocalPosition(transform) |> expect == pos2
+                   }
+                 )
+             )
+           }
+         ); */
+      /* describe(
+           "immediately update",
+           () => {
+             test(
+               "sort dirtyArray, make parent before child",
+               () => {
+                 let (state, child) = createTransform(state^);
+                 let (state, parent) = createTransform(state);
+                 let pos = (1., 2., 3.);
+                 let state = state |> setTransformLocalPosition(child, pos);
+                 let state =
+                   state
+                   |> setTransformLocalPosition(parent, pos)
+                   |> setTransformParent(Js.Nullable.return(parent), child);
+                 /* let state = state |> TransformTool.init; */
+                 let state = state |> TransformTool.update;
+                 (getTransformPosition(child, state), getTransformPosition(parent, state))
+                 |> expect == (Vector3System.add(Float, pos, pos), pos)
+               }
+             );
+             test(
+               "clean dirty array after compute transform data",
+               () => {
+                 let (state, _, _, _) = _prepareOne();
+                 let len1 =
+                   state
+                   |> TransformTool.getData
+                   |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                 let state = state |> TransformTool.update;
+                 let len2 =
+                   state
+                   |> TransformTool.getData
+                   |> ((transformData) => Js.Array.length(transformData.dirtyArray));
+                 (len1, len2) |> expect == (1, 0)
+               }
+             )
+           }
+         ); */
       describe(
         "getTransformGameObject",
         () =>
@@ -558,7 +545,6 @@ let _ =
                 () => {
                   let (state, transform1) = createTransform(state^);
                   let (state, transform2) = createTransform(state);
-                  let state = state |> TransformTool.update;
                   let pos1 = (1., 2., 3.);
                   let pos2 = (5., 10., 30.);
                   let state =
@@ -566,7 +552,6 @@ let _ =
                     |> setTransformLocalPosition(transform1, pos1)
                     |> setTransformLocalPosition(transform2, pos2);
                   let state = state |> dispose(transform1);
-                  let state = state |> TransformTool.update;
                   state |> getTransformLocalPosition(transform2) |> expect == pos2
                 }
               )
@@ -586,14 +571,13 @@ let _ =
                     |> setTransformLocalPosition(transform1, pos1)
                     |> setTransformLocalPosition(transform2, pos2);
                   let state = state |> dispose(transform1);
-                  let state = state |> TransformTool.update;
                   state |> getTransformLocalPosition(transform2) |> expect == pos2
                 }
               )
           );
           describe(
             "if child is disposed",
-            () =>
+            () => {
               test(
                 "should remove it from childMap",
                 () => {
@@ -602,25 +586,11 @@ let _ =
                   let state =
                     state |> setTransformParent(Js.Nullable.return(transform1), transform2);
                   let state = state |> dispose(transform2);
-                  let state = state |> TransformTool.update;
                   state |> getTransformChildren(transform1) |> expect == [||]
-                }
-              )
-          );
-          describe(
-            "if parent is disposed",
-            () => {
-              test(
-                "should remove it from parentMap",
-                () => {
-                  let (state, transform1, transform2) = _prepare();
-                  let state = state |> dispose(transform1);
-                  let state = state |> TransformTool.update;
-                  state |> getTransformParent(transform2) |> expect == Js.Nullable.undefined
                 }
               );
               describe(
-                "shouldn't affect children when update",
+                "shouldn't affect parent",
                 () => {
                   test(
                     "test disposed one has no parent",
@@ -633,13 +603,14 @@ let _ =
                         |> setTransformLocalPosition(transform1, pos1)
                         |> setTransformLocalPosition(transform2, pos2);
                       let state = state |> dispose(transform1);
-                      let state = state |> TransformTool.update;
                       state |> getTransformPosition(transform2) |> expect == pos2
                     }
                   );
                   test(
                     "test disposed one has parent",
                     () => {
+                      open Vector3System;
+                      open Vector3Type;
                       let (state, transform1, transform2) = _prepare();
                       let (state, transform0) = createTransform(state);
                       let state =
@@ -652,11 +623,52 @@ let _ =
                         |> setTransformLocalPosition(transform0, pos0)
                         |> setTransformLocalPosition(transform1, pos1)
                         |> setTransformLocalPosition(transform2, pos2);
-                      let state = state |> dispose(transform1);
-                      let state = state |> TransformTool.update;
-                      state |> getTransformPosition(transform2) |> expect == pos2
+                      let state = state |> dispose(transform2);
+                      (
+                        state |> getTransformPosition(transform0),
+                        state |> getTransformPosition(transform1)
+                      )
+                      |> expect == (pos0, add(Float, pos0, pos1))
                     }
                   )
+                }
+              )
+            }
+          );
+          describe(
+            "if parent is disposed",
+            () => {
+              test(
+                "should remove it from parentMap",
+                () => {
+                  let (state, transform1, transform2) = _prepare();
+                  let state = state |> dispose(transform1);
+                  state |> getTransformParent(transform2) |> expect == Js.Nullable.undefined
+                }
+              );
+              test(
+                "should affect children",
+                () => {
+                  open Vector3System;
+                  open Vector3Type;
+                  let (state, transform1, transform2) = _prepare();
+                  let (state, transform0) = createTransform(state);
+                  let state =
+                    state |> setTransformParent(Js.Nullable.return(transform0), transform1);
+                  let pos0 = (2., 4., 6.);
+                  let pos1 = (1., 2., 3.);
+                  let pos2 = (5., 10., 30.);
+                  let state =
+                    state
+                    |> setTransformLocalPosition(transform0, pos0)
+                    |> setTransformLocalPosition(transform1, pos1)
+                    |> setTransformLocalPosition(transform2, pos2);
+                  let state = state |> dispose(transform0);
+                  (
+                    state |> getTransformPosition(transform1),
+                    state |> getTransformPosition(transform2)
+                  )
+                  |> expect == (pos1, add(Float, pos1, pos2))
                 }
               )
             }

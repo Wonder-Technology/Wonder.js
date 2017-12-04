@@ -191,10 +191,7 @@ let _ =
                   let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
                   let pos1 = (1., 2., 3.);
                   let state = state |> setTransformLocalPosition(transform1, pos1);
-                  let state = state |> TransformTool.init;
-                  let state = state |> TransformTool.update;
                   let (_, clonedTransformArr) = _getClonedTransformDataArr(gameObject1, 2, state);
-                  let state = state |> TransformTool.update;
                   clonedTransformArr
                   |> Js.Array.map((transform) => getTransformLocalPosition(transform, state))
                   |> expect == [|pos1, pos1|]
@@ -203,7 +200,7 @@ let _ =
               test(
                 "add cloned transform's gameObject to map",
                 () => {
-                  let (state, gameObject1, transform1, clonedGameObjectArr, clonedTransformArr) =
+                  let (state, _, _, clonedGameObjectArr, clonedTransformArr) =
                     _prepare();
                   (
                     Transform.getTransformGameObject(clonedTransformArr[0], state),
@@ -507,11 +504,8 @@ let _ =
                       let state = state |> setTransformLocalPosition(transform2, pos2);
                       let state = state |> setTransformLocalPosition(transform3, pos3);
                       let state = state |> setTransformLocalPosition(transform4, pos4);
-                      let state = state |> TransformTool.init;
-                      let state = state |> TransformTool.update;
                       let (clonedGameObjectArr, clonedTransformArr) =
                         _getClonedTransformDataArr(gameObject1, 1, state);
-                      let state = state |> TransformTool.update;
                       clonedTransformArr
                       |> Js.Array.map((transform) => getTransformPosition(transform, state))
                       |>
