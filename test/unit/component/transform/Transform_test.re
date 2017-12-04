@@ -763,7 +763,7 @@ let _ =
       );
       describe(
         "fix bug",
-        () =>
+        () => {
           test(
             "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
             () => {
@@ -773,7 +773,19 @@ let _ =
               TransformTool.getLocalToWorldMatrix(transform2, state)
               |> expect == TransformTool.getDefaultLocalToWorldMatrix()
             }
+          );
+          test(
+            "get the data from Float32Array may not equal to the value which is setted",
+            () => {
+              let (state, transform0) = createTransform(state^);
+              let pos0 = (0.1, 0., 0.);
+              let state = state |> setTransformLocalPosition(transform0, pos0);
+              state
+              |> getTransformLocalPosition(transform0)
+              |> expect == (0.10000000149011612, 0., 0.)
+            }
           )
+        }
       )
     }
   );
