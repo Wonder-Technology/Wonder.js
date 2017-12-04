@@ -24,8 +24,6 @@ let handleCloneComponent =
          ),
          state
        );
-  /* getTransformData(state) |> TransformDirtyUtils.batchAddToDirtyArray(componentArr) |> ignore; */
-  /* |> TransformDirtyUtils.addToDirtyArray(sourceComponent); */
   TransformDirtyUtils.mark(sourceComponent, true, data) |> ignore;
   (state, componentArr)
 };

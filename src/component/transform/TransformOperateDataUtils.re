@@ -1,7 +1,5 @@
 open Js.Typed_array;
 
-open StateDataType;
-
 open TypeArrayUtils;
 
 open TransformType;
@@ -81,33 +79,15 @@ let setPosition =
     data
   };
 
-/* let isTransform = (transform: transform, isTransformMap) =>
-     switch (isTransformMap |> WonderCommonlib.SparseMapSystem.get((transform))) {
-     | None => false
-     | Some(isTransform) => isTransform == true
-     };
-
-   let markIsTransform = (transform: transform, isTransformMap) => {
-     isTransformMap |> WonderCommonlib.SparseMapSystem.set((transform), true) |> ignore;
-     ()
-   };
-
-   let cleanIsTransformMap = (state:StateDataType.state) => {
-    TransformStateUtils.getTransformData(state).isTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
-     state;
-   }; */
 let getLocalPosition = (transform: transform, transformData) =>
   getFloat3(getVector3DataIndex(transform), transformData.localPositions);
 
 let setLocalPosition = (transform: transform, localPosition: position, transformData) => {
-  /* let transformData = getTransformData(state); */
   setFloat3(
     getVector3DataIndex(transform),
     TransformCastTypeUtils.tupleToJsArray(localPosition),
     transformData.localPositions
   )
   |> ignore;
-  /* addItAndItsChildrenToDirtyArray(transform, transformData) |> ignore; */
-  /* state */
   transformData
 };

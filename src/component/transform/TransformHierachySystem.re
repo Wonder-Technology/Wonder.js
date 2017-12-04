@@ -67,7 +67,7 @@ let _addToParent = (parent: transform, child: transform, transformData: transfor
   _setParent(parent, child, transformData) |> _addChild(parent, child)
 };
 
-let setParent = (parent: option(transform), child: transform, transformData: transformData) => {
+let setParent = (parent: option(transform), child: transform, transformData: transformData) =>
   switch parent {
   | None =>
     switch (getParent(child, transformData)) {
@@ -86,12 +86,4 @@ let setParent = (parent: option(transform), child: transform, transformData: tra
         |> _addToParent(newParent, child) :
         transformData
     }
-  }
-};
-
-let isParent = (parent: transform, child: transform, transformData: transformData) =>
-  _unsafeGetParent(child, transformData) === Js.Undefined.return(parent);
-/* switch (getParent((child), transformData)) {
-   | None => false
-   | Some(currentParent) => TransformJudgeUtils.isSame(currentParent, parent)
-   }; */
+  };
