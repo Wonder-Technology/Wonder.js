@@ -9,12 +9,12 @@ let _getBufferAndSetBufferMap = (gl, bufferPool) =>
   };
 
 let getArrayBuffer = (gl, state: StateDataType.state) => {
-  let {vertexArrayBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  let {vertexArrayBufferPool} = VboBufferStateSystem.getVboBufferData(state);
   _getBufferAndSetBufferMap(gl, vertexArrayBufferPool)
 };
 
 let getElementArrayBuffer = (gl, state: StateDataType.state) => {
-  let {elementArrayBufferPool} = VboBufferStateUtils.getVboBufferData(state);
+  let {elementArrayBufferPool} = VboBufferStateSystem.getVboBufferData(state);
   _getBufferAndSetBufferMap(gl, elementArrayBufferPool)
 };
 
@@ -32,7 +32,7 @@ let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
 
 let addBufferToPool = (geometryIndex: int, state: StateDataType.state) => {
   let {vertexBufferMap, elementArrayBufferMap, vertexArrayBufferPool, elementArrayBufferPool} =
-    VboBufferStateUtils.getVboBufferData(state);
+    VboBufferStateSystem.getVboBufferData(state);
   vertexArrayBufferPool
   |> Js.Array.push(_unsafeGetBufferFromBufferMap(geometryIndex, vertexBufferMap))
   |> ignore;

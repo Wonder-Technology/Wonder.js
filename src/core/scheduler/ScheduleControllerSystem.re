@@ -5,7 +5,7 @@ open StateDataType;
 /* todo add pause,resume, stop control */
 /* todo add more Items */
 let _remove = (index: int, state: state) => {
-  let {count, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
+  let {count, funcRecordArray} as data = ScheduleStateSystem.getSchedulerData(state);
   ArraySystem.deleteBySwap(index, count - 1, funcRecordArray) |> ignore;
   data.count = pred(data.count);
   state
@@ -25,7 +25,7 @@ let _getFuncRecord = (index: int, funcRecordArray) => {
 };
 
 let update = (elapsed: float, state: state) : state => {
-  let {count, funcRecordArray} = ScheduleStateUtils.getSchedulerData(state);
+  let {count, funcRecordArray} = ScheduleStateSystem.getSchedulerData(state);
   ArraySystem.range(0, count - 1)
   |> ArraySystem.reduceState(
        [@bs]
@@ -45,7 +45,7 @@ let update = (elapsed: float, state: state) : state => {
 };
 
 let start = (state: state) => {
-  let {count, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
+  let {count, funcRecordArray} as data = ScheduleStateSystem.getSchedulerData(state);
   ArraySystem.range(0, count - 1)
   |> ArraySystem.reduceState(
        [@bs]
@@ -60,7 +60,7 @@ let start = (state: state) => {
 };
 
 let scheduleLoop = (taskFunc, state: state) => {
-  let {count: index, funcRecordArray} as data = ScheduleStateUtils.getSchedulerData(state);
+  let {count: index, funcRecordArray} as data = ScheduleStateSystem.getSchedulerData(state);
   Array.unsafe_set(
     funcRecordArray,
     index,

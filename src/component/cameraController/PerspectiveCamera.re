@@ -2,7 +2,7 @@ open StateDataType;
 
 open PerspectiveCameraSystem;
 
-open CameraControllerStateUtils;
+open CameraControllerStateSystem;
 
 let getPerspectiveCameraFovy = (cameraController, state) =>
   state |> getPerspectiveCameraData |> getFovy(cameraController) |> Js.Option.getExn;

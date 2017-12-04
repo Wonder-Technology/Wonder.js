@@ -1,6 +1,6 @@
 open MaterialType;
 
-open MaterialStateUtils;
+open MaterialStateSystem;
 
 open Contract;
 
@@ -9,12 +9,12 @@ open StateDataType;
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
 
-let unsafeGetShaderIndex = MaterialShaderIndexUtils.unsafeGetShaderIndex;
+let unsafeGetShaderIndex = MaterialShaderIndexSystem.unsafeGetShaderIndex;
 
-let setShaderIndex = MaterialShaderIndexUtils.setShaderIndex;
+let setShaderIndex = MaterialShaderIndexSystem.setShaderIndex;
 
 let isAlive = (material: material, state: StateDataType.state) =>
-  MaterialDisposeComponentUtils.isAlive(material, state);
+  MaterialDisposeComponentSystem.isAlive(material, state);
 
 /* let getShaderIndexDataSize = () => 1;
 

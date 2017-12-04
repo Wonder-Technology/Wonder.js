@@ -6,7 +6,7 @@ open GlType;
 
 open Gl;
 
-open GlslSenderStateUtils;
+open GLSLSenderStateSystem;
 
 open Js.Typed_array;
 

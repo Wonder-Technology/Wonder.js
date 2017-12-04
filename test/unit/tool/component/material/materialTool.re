@@ -1,10 +1,10 @@
-let getData = (state: StateDataType.state) => MaterialStateUtils.getMaterialData(state);
+let getData = (state: StateDataType.state) => MaterialStateSystem.getMaterialData(state);
 
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
 
 let hasShaderIndex = (materialIndex: int, state: StateDataType.state) =>
-  MaterialShaderIndexUtils.hasShaderIndex(materialIndex, state);
+  MaterialShaderIndexSystem.hasShaderIndex(materialIndex, state);
 
 let setShaderIndex = (materialIndex: int, shaderIndex, state: StateDataType.state) =>
   MaterialSystem.setShaderIndex(materialIndex, shaderIndex, state);
@@ -16,4 +16,4 @@ let isMaterial = (material) => {
   expect(material) >= 0
 };
 
-let dispose = MaterialDisposeComponentUtils.handleDisposeComponent;
+let dispose = MaterialDisposeComponentSystem.handleDisposeComponent;

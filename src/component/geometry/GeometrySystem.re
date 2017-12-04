@@ -6,7 +6,7 @@ open Contract;
 
 open TypeArrayUtils;
 
-open GeometryStateUtils;
+open GeometryStateSystem;
 
 open GeometryType;
 
@@ -18,7 +18,7 @@ open Gl;
      let {index, mappedIndex, mappedIndexMap, aliveIndexArray} as data = getGeometryData(state);
      data.index = succ(index);
      data.mappedIndex = succ(mappedIndex);
-     GeometryIndexUtils.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
+     GeometryIndexSystem.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
      aliveIndexArray |> Js.Array.push(index) |> ignore;
      (state, index)
    }; */
@@ -26,21 +26,21 @@ let getVertices =
   [@bs]
   (
     (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateDataUtils.getVertices(mappedIndex, state)
+      GeometryOperateDataSystem.getVertices(mappedIndex, state)
   );
 
 let setVertices = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) =>
-  GeometryOperateDataUtils.setVerticesWithTypeArray(mappedIndex, data, state);
+  GeometryOperateDataSystem.setVerticesWithTypeArray(mappedIndex, data, state);
 
 let getIndices =
   [@bs]
   (
     (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateDataUtils.getIndices(mappedIndex, state)
+      GeometryOperateDataSystem.getIndices(mappedIndex, state)
   );
 
 let setIndices = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) =>
-  GeometryOperateDataUtils.setIndicesWithTypeArray(mappedIndex, data, state);
+  GeometryOperateDataSystem.setIndicesWithTypeArray(mappedIndex, data, state);
 
 let getIndicesCount =
   CacheUtils.memorizeIntState(
@@ -78,7 +78,7 @@ let init = (state: StateDataType.state) => {
       Contract.Operators.(
         test(
           "shouldn't dispose any geometry before init",
-          () => GeometryDisposeComponentUtils.isNotDisposed(getGeometryData(state)) |> assertTrue
+          () => GeometryDisposeComponentSystem.isNotDisposed(getGeometryData(state)) |> assertTrue
         )
       )
   );
@@ -86,9 +86,9 @@ let init = (state: StateDataType.state) => {
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach(
        (geometryIndex: int) =>
-         GeometryInitComponentUtils.initGeometry(
+         GeometryInitComponentSystem.initGeometry(
            geometryIndex,
-           GeometryIndexUtils.getMappedIndex(geometryIndex, mappedIndexMap),
+           GeometryIndexSystem.getMappedIndex(geometryIndex, mappedIndexMap),
            state
          )
          |> ignore
@@ -97,17 +97,17 @@ let init = (state: StateDataType.state) => {
 };
 
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
-  GeometryConfigDataUtils.getConfigData(geometry, state);
+  GeometryConfigDataSystem.getConfigData(geometry, state);
 
 let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
-  GeometryGameObjectUtils.getGameObject(mappedGeometry, state);
+  GeometryGameObjectSystem.getGameObject(mappedGeometry, state);
 
 let getVertexDataSize = () => 3;
 
 let getIndexDataSize = () => 1;
 
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
-  GeometryDisposeComponentUtils.isAlive(geometry, state);
+  GeometryDisposeComponentSystem.isAlive(geometry, state);
 
 let _createTypeArrays = (buffer, count: int) => {
   let offset = ref(0);

@@ -4,25 +4,25 @@ open Contract;
 
 open StateDataType;
 
-open TransformDirtyUtils;
+open TransformDirtySystem;
 
 open TransformHierachySystem;
 
-open TransformStateUtils;
+open TransformStateSystem;
 
 let isAlive = (transform: transform, state: StateDataType.state) =>
-  TransformDisposeComponentUtils.isAlive(transform, state);
+  TransformDisposeComponentSystem.isAlive(transform, state);
 
 let create = (state: StateDataType.state) => {
   let data = getTransformData(state);
-  let index = TransformCreateUtils.create(data);
-  TransformDirtyUtils.mark(index, false, data) |> ignore;
+  let index = TransformCreateSystem.create(data);
+  TransformDirtySystem.mark(index, false, data) |> ignore;
   (state, index)
   |> ensureCheck(
        (_) => {
          open Contract.Operators;
          let {index}: transformData = getTransformData(state);
-         let maxCount = TransformBufferUtils.getMaxCount(state);
+         let maxCount = TransformBufferSystem.getMaxCount(state);
          test(
            {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
            () => index <= maxCount
@@ -53,12 +53,12 @@ let getChildren = (transform: transform, state: StateDataType.state) =>
   getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
 
 let getLocalPosition = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataUtils.getLocalPosition(transform, getTransformData(state));
+  TransformOperateDataSystem.getLocalPosition(transform, getTransformData(state));
 
 let setLocalPosition = (transform: transform, localPosition: position, state: StateDataType.state) => {
   state
   |> getTransformData
-  |> TransformOperateDataUtils.setLocalPosition(transform, localPosition)
+  |> TransformOperateDataSystem.setLocalPosition(transform, localPosition)
   |> markHierachyDirty(transform)
   |> ignore;
   state
@@ -68,8 +68,8 @@ let setLocalPosition = (transform: transform, localPosition: position, state: St
 let getPosition = (transform: transform, state: StateDataType.state) => {
   open Js.Typed_array;
   let {localToWorldMatrices} =
-    TransformOperateDataUtils.update(transform, getTransformData(state));
-  let index = TransformOperateDataUtils.getMatrix4DataIndex(transform);
+    TransformOperateDataSystem.update(transform, getTransformData(state));
+  let index = TransformOperateDataSystem.getMatrix4DataIndex(transform);
   (
     Float32Array.unsafe_get(localToWorldMatrices, index + 12),
     Float32Array.unsafe_get(localToWorldMatrices, index + 13),
@@ -79,8 +79,8 @@ let getPosition = (transform: transform, state: StateDataType.state) => {
 
 let setPosition = (transform: transform, position: position, state: StateDataType.state) => {
   let data = getTransformData(state);
-  TransformOperateDataUtils.setPosition(
-    TransformOperateDataUtils.getVector3DataIndex(transform),
+  TransformOperateDataSystem.setPosition(
+    TransformOperateDataSystem.getVector3DataIndex(transform),
     TransformHierachySystem.getParent(transform, data),
     position,
     data
@@ -92,17 +92,17 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
 
 let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) => {
   /* todo optimize: update return matrix? */
-  let data = TransformOperateDataUtils.update(transform, getTransformData(state));
-  TransformOperateDataUtils.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
+  let data = TransformOperateDataSystem.update(transform, getTransformData(state));
+  TransformOperateDataSystem.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
 };
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
-  TransformGameObjectUtils.getGameObject(transform, getTransformData(state));
+  TransformGameObjectSystem.getGameObject(transform, getTransformData(state));
 
 let initData = (state: StateDataType.state) => {
-  let maxCount = TransformBufferUtils.getMaxCount(state);
+  let maxCount = TransformBufferSystem.getMaxCount(state);
   let (buffer, localPositions, localToWorldMatrices) =
-    TransformBufferUtils.initBufferData(maxCount);
+    TransformBufferSystem.initBufferData(maxCount);
   state.transformData =
     Some(
       {

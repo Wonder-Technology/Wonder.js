@@ -8,7 +8,7 @@ open StateDataType;
 
 open Contract;
 
-open GlslSenderStateUtils;
+open GLSLSenderStateSystem;
 
 open GLSLSenderSendDataSystem;
 
@@ -155,7 +155,7 @@ let _getModelMMatrixData =
   (
     (gameObject: gameObject, state: StateDataType.state) => {
       let transform =
-        Js.Option.getExn(GameObjectComponentUtils.getTransformComponent(gameObject, state));
+        Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(gameObject, state));
       TransformSystem.getLocalToWorldMatrix(transform, state)
     }
   );

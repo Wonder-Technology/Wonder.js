@@ -2,13 +2,13 @@ open ComponentSystem;
 
 open CameraControllerType;
 
-open CameraControllerDirtyUtils;
+open CameraControllerDirtySystem;
 
 open Contract;
 
-open CameraControllerStateUtils;
+open CameraControllerStateSystem;
 
-let create = (state: StateDataType.state) => CameraControllerCreateUtils.create(state);
+let create = (state: StateDataType.state) => CameraControllerCreateSystem.create(state);
 
 let getCurrentCameraController = (state: StateDataType.state) => {
   requireCheck(
@@ -169,7 +169,7 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
-  CameraControllerDisposeComponentUtils.isAlive(cameraController, state);
+  CameraControllerDisposeComponentSystem.isAlive(cameraController, state);
 
 let initData = () => {
   index: 0,

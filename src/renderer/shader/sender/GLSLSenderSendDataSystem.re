@@ -4,7 +4,7 @@ open GlType;
 
 open Gl;
 
-open GlslSenderStateUtils;
+open GLSLSenderStateSystem;
 
 let getBufferSizeByType = (type_: string) =>
   switch type_ {

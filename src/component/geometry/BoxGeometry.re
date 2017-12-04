@@ -20,9 +20,9 @@ let setBoxGeometryConfigData =
       )
   );
   setConfigData(
-    GeometryIndexUtils.getMappedIndex(
+    GeometryIndexSystem.getMappedIndex(
       (geometry),
-      GeometryIndexUtils.getMappedIndexMap(state)
+      GeometryIndexSystem.getMappedIndexMap(state)
     ),
     configData,
     state

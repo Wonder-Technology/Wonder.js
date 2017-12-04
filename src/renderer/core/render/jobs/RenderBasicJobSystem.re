@@ -45,12 +45,12 @@ let _render = (gl, state: StateDataType.state) => {
              let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
              let geometryIndex: int = GameObjectSystem.unsafeGetGeometryComponent(uid, state);
              let mappedGeometryIndex =
-               GeometryIndexUtils.getMappedIndex(
+               GeometryIndexSystem.getMappedIndex(
                  geometryIndex,
-                 GeometryIndexUtils.getMappedIndexMap(state)
+                 GeometryIndexSystem.getMappedIndexMap(state)
                );
              let {vertexBufferMap, elementArrayBufferMap} =
-               VboBufferStateUtils.getVboBufferData(state);
+               VboBufferStateSystem.getVboBufferData(state);
              let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
              let state =
                state

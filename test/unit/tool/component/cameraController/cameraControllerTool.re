@@ -1,6 +1,6 @@
 open CameraControllerType;
 
-let getData = CameraControllerStateUtils.getCameraControllerData;
+let getData = CameraControllerStateSystem.getCameraControllerData;
 
 let isCameraController = (cameraController: cameraController) => {
   open Wonder_jest;

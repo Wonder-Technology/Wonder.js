@@ -18,7 +18,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         materialMap,
         cameraControllerMap
       } as data =
-    GameObjectStateUtils.getGameObjectData(state);
+    GameObjectStateSystem.getGameObjectData(state);
   let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newMeshRendererMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();
@@ -78,7 +78,7 @@ let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, off
   Array.unsafe_set(
     newInfoArray,
     newIndex,
-    GeometryOperateDataUtils.buildInfo(offset, offset + increment)
+    GeometryOperateDataSystem.buildInfo(offset, offset + increment)
   );
   newInfoArray
 };
@@ -99,9 +99,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         isInitMap,
         groupCountMap
       } as geometryData =
-    GeometryStateUtils.getGeometryData(state);
+    GeometryStateSystem.getGeometryData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
-    VboBufferStateUtils.getVboBufferData(state);
+    VboBufferStateSystem.getVboBufferData(state);
   let newIndex = ref(0);
   let newIndexMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newComputeDataFuncMap = WonderCommonlib.SparseMapSystem.createEmpty();
@@ -125,9 +125,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
        [@bs]
        (
          (index) => {
-           let verticesInfo = GeometryOperateDataUtils.getInfo(verticesInfoArray, newIndex^);
-           let indicesInfo = GeometryOperateDataUtils.getInfo(indicesInfoArray, newIndex^);
-           GeometryIndexUtils.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
+           let verticesInfo = GeometryOperateDataSystem.getInfo(verticesInfoArray, newIndex^);
+           let indicesInfo = GeometryOperateDataSystem.getInfo(indicesInfoArray, newIndex^);
+           GeometryIndexSystem.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
            _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^);
            _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^);
            newVerticesOffset :=

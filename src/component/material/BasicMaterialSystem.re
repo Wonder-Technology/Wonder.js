@@ -10,13 +10,13 @@ open GlType;
 
 open MaterialType;
 
-open MaterialStateUtils;
+open MaterialStateSystem;
 
 open Contract;
 
 /* let getMaxCount = (state: StateDataType.state) =>
    BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount; */
-let create = (state: StateDataType.state) => BasicMaterialCreateUtils.create(state);
+let create = (state: StateDataType.state) => BasicMaterialCreateSystem.create(state);
 
 /* let buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
 
@@ -31,12 +31,12 @@ let init = (gl, state: state) => {
         test(
           "shouldn't dispose any material before init",
           () =>
-            MaterialDisposeComponentUtils.isNotDisposed(MaterialStateUtils.getMaterialData(state))
+            MaterialDisposeComponentSystem.isNotDisposed(MaterialStateSystem.getMaterialData(state))
             |> assertTrue
         )
       )
   );
-  ArraySystem.range(0, MaterialStateUtils.getMaterialData(state).index - 1)
+  ArraySystem.range(0, MaterialStateSystem.getMaterialData(state).index - 1)
   |> ArraySystem.reduceState(
        [@bs]
        (
@@ -50,7 +50,7 @@ let init = (gl, state: state) => {
                 initShaderFuncTuple,
                 state
               ) */
-           MaterialInitComponentUtils.initMaterial(
+           MaterialInitComponentSystem.initMaterial(
              gl,
              materialIndex,
              /* Js.Option.getExn(MaterialSystem.getGameObject(materialIndex, state)), */

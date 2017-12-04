@@ -4,6 +4,6 @@ open BoxGeometryType;
 
 let setConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) =>
-  BoxGeometryConfigDataUtils.setConfigData(geometry, configData, state);
+  BoxGeometryConfigDataSystem.setConfigData(geometry, configData, state);
 
-let create = BoxGeometryCreateUtils.create;
+let create = BoxGeometryCreateSystem.create;

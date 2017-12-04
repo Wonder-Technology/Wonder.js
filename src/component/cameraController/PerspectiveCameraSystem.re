@@ -2,23 +2,23 @@ open CameraControllerType;
 
 open PerspectiveCameraType;
 
-open CameraControllerStateUtils;
+open CameraControllerStateSystem;
 
-let getFovy = PerspectiveCameraOperateDataUtils.getFovy;
+let getFovy = PerspectiveCameraOperateDataSystem.getFovy;
 
-let setFovy = PerspectiveCameraOperateDataUtils.setFovy;
+let setFovy = PerspectiveCameraOperateDataSystem.setFovy;
 
-let getAspect = PerspectiveCameraOperateDataUtils.getAspect;
+let getAspect = PerspectiveCameraOperateDataSystem.getAspect;
 
-let setAspect = PerspectiveCameraOperateDataUtils.setAspect;
+let setAspect = PerspectiveCameraOperateDataSystem.setAspect;
 
-let getFar = PerspectiveCameraOperateDataUtils.getFar;
+let getFar = PerspectiveCameraOperateDataSystem.getFar;
 
-let setFar = PerspectiveCameraOperateDataUtils.setFar;
+let setFar = PerspectiveCameraOperateDataSystem.setFar;
 
-let getNear = PerspectiveCameraOperateDataUtils.getNear;
+let getNear = PerspectiveCameraOperateDataSystem.getNear;
 
-let setNear = PerspectiveCameraOperateDataUtils.setNear;
+let setNear = PerspectiveCameraOperateDataSystem.setNear;
 
 let _setPMatrix =
     (
