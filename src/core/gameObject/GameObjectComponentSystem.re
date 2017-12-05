@@ -74,9 +74,6 @@ let getGeometryComponent = (uid: int, state: StateDataType.state) =>
 let unsafeGetGeometryComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateSystem.getGameObjectData(state).geometryMap |> _unsafeGetComponent(uid);
 
-let unsafeGetGeometryComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateSystem.getGameObjectData(state).geometryMap |> _unsafeGetComponent(uid);
-
 let addGeometryComponent = (uid: int, component: component, state: StateDataType.state) => {
   GameObjectStateSystem.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
@@ -119,9 +116,6 @@ let hasMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
 
 let getMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateSystem.getGameObjectData(state).materialMap |> _getComponent(uid);
-
-let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
-  GameObjectStateSystem.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
 
 let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateSystem.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
