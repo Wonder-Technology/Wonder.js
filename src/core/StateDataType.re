@@ -32,6 +32,8 @@ open MemoryConfigType;
 
 open VboBufferType;
 
+open GPUDetectType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -261,6 +263,7 @@ and state = {
   bufferConfig: option(bufferConfig),
   memoryConfig,
   renderConfig,
+  gpuDetectData,
   viewData,
   initConfig,
   deviceManagerData,

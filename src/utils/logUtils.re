@@ -1,3 +1,1 @@
-/* let log = (message:string) => {
-    Js.log (message);
-}; */
+[@bs.val] [@bs.scope "console"] external warn : string => unit = "warn";

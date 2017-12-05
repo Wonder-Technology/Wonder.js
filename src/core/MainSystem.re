@@ -69,10 +69,12 @@ let _initDataFromState = (state: StateDataType.state) =>
 /* todo detect, setscreensize, set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
   let canvas = createCanvas(config);
+  let gl = createGL(canvas, config.contextConfig);
   state
-  |> setGl(createGL(canvas, config.contextConfig))
+  |> setGl(gl)
   |> setCanvas(~canvas)
   |> setContextConfig(~contextConfig=config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
+  |> GPUDetectSystem.detect(gl)
   |> _initDataFromState
 };

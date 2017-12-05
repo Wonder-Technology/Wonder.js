@@ -54,6 +54,7 @@ let createState =
       shaders: convertShadersToRecord(shaders),
       shader_libs: convertShaderLibsToRecord(shader_libs)
     },
+    gpuDetectData: {extensionInstancedArrays: None, precision: None},
     viewData: {canvas: None, contextConfig: None},
     initConfig: {isTest: Some(false)},
     deviceManagerData: {gl: None, colorWrite: None, clearColor: None},

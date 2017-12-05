@@ -1,5 +1,8 @@
 let init_pipelines = {|
   [
-  {"name": "simple_basic_render", "jobs": [{"name": "init_basic_material"}]}
+  {"name": "simple_basic_render", "jobs": [
+    {"name": "preget_glslData"},
+    {"name": "init_basic_material"}
+    ]}
 ]
 |};

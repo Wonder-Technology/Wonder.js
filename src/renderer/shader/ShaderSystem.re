@@ -2,13 +2,11 @@ open ShaderType;
 
 open StateDataType;
 
-let _getShaderData = (state: StateDataType.state) => state.shaderData;
-
 let getAllShaderIndexArray = (state: StateDataType.state) =>
-  ArraySystem.range(0, _getShaderData(state).index - 1);
+  ArraySystem.range(0, ShaderStateSystem.getShaderData(state).index - 1);
 
 let _genereateShaderIndex = (state: StateDataType.state) => {
-  let shaderData = _getShaderData(state);
+  let shaderData = ShaderStateSystem.getShaderData(state);
   let index = shaderData.index;
   shaderData.index = succ(index);
   (state, index)
@@ -38,7 +36,7 @@ let _init =
       buildGLSLSource,
       state: StateDataType.state
     ) => {
-  let shaderData = _getShaderData(state);
+  let shaderData = ShaderStateSystem.getShaderData(state);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {
   | None =>
@@ -70,8 +68,17 @@ let _init =
   }
 };
 
+let getPrecisionSource = (state: StateDataType.state) =>
+  ShaderSourceBuildSystem.getPrecisionSource(state);
+
 let initMaterialShader =
-    (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>
+    (
+      gl,
+      materialIndex: int,
+      shaderLibDataArr,
+      initShaderFuncTuple,
+      state: StateDataType.state
+    ) =>
   _init(gl, materialIndex, shaderLibDataArr, initShaderFuncTuple, state);
 
-let initData = () => {index: 0, shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty()};
+let initData = () => {index: 0, shaderIndexMap: WonderCommonlib.HashMapSystem.createEmpty(), glslData: None};

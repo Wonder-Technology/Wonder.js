@@ -10,6 +10,10 @@ type attributeLocation = int;
 
 type uniformLocation;
 
+type precisionFormat = {. "precision": int};
+
+type extension;
+
 type options = {
   .
   "alpha": Js.boolean,

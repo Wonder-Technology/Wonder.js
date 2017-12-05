@@ -12,6 +12,12 @@ open Js.Typed_array;
 
 [@bs.get] external getFragmentShader : webgl1Context => int = "FRAGMENT_SHADER";
 
+[@bs.get] external getHighFloat : webgl1Context => int = "HIGH_FLOAT";
+
+[@bs.get] external getMediumFloat : webgl1Context => int = "MEDIUM_FLOAT";
+
+[@bs.get] external getLowFloat : webgl1Context => int = "LOW_FLOAT";
+
 [@bs.get] external getArrayBuffer : webgl1Context => int = "ARRAY_BUFFER";
 
 [@bs.get] external getElementArrayBuffer : webgl1Context => int = "ELEMENT_ARRAY_BUFFER";
@@ -37,6 +43,11 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
   "getContext";
 
 [@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";
+
+[@bs.send.pipe : webgl1Context] external getExtension : string => extension = "";
+
+[@bs.send.pipe : webgl1Context] external getShaderPrecisionFormat : (int, int) => precisionFormat =
+  "";
 
 /* [@bs.send]  external clearColor : context::contextT => r::float => g::float => b::float => a::float => unit =
    "clearColor" ; */
@@ -67,9 +78,13 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external deleteShader : shader => unit = "";
 
-[@bs.send.pipe : webgl1Context] external getAttribLocation : (program, string) => attributeLocation = "";
+[@bs.send.pipe : webgl1Context]
+external getAttribLocation : (program, string) => attributeLocation =
+  "";
 
-[@bs.send.pipe : webgl1Context] external getUniformLocation : (program, string) => uniformLocation = "";
+[@bs.send.pipe : webgl1Context]
+external getUniformLocation : (program, string) => uniformLocation =
+  "";
 
 [@bs.send.pipe : webgl1Context] external bindBuffer : (int, buffer) => unit = "";
 

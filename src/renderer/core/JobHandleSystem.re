@@ -1,6 +1,8 @@
 open StateDataType;
 
-let _getInitJobHandles = () => [("init_basic_material", InitBasicMaterialJobSystem.getJob)];
+let _getInitJobHandles = () => [
+ ("preget_glslData", PregetGLSLDataJobSystem.getJob),
+("init_basic_material", InitBasicMaterialJobSystem.getJob)];
 
 let _getRenderJobHandles = () => [
   ("get_render_array", GetRenderArrayJobSystem.getJob),

@@ -1,5 +1,7 @@
 open StateDataType;
 
+open ShaderType;
+
 open ShaderChunkType;
 
 open ShaderChunkSystem;
@@ -7,10 +9,6 @@ open ShaderChunkSystem;
 let webgl1_main_begin: string = "void main(void){\n";
 
 let webgl1_main_end: string = "}\n";
-
-let _getPrecisionSource = (highp: glslChunk) =>
-  /* todo judge gpu detect data */
-  highp.top;
 
 let _generateAttributeSource = (shaderLibDataArr: shader_libs) =>
   shaderLibDataArr
@@ -87,10 +85,22 @@ let _generateUniformSource =
        ""
      );
 
+/* todo test */
+let getPrecisionSource = (state: StateDataType.state) => {
+  open GPUDetectType;
+  let {precision} = GPUStateSystem.getData(state);
+  switch (precision |> Js.Option.getExn) {
+  | HIGHP => getChunk("highp_fragment", state).top
+  | MEDIUMP => getChunk("mediump_fragment", state).top
+  | LOWP => getChunk("lowp_fragment", state).top
+  }
+};
+
 let buildGLSLSource =
   [@bs]
   (
     (materialIndex: int, shaderLibDataArr: shader_libs, state: StateDataType.state) => {
+      let {precision} = ShaderStateSystem.getGLSLData(state);
       let vs: glslChunk = {
         top: "",
         define: "",
@@ -128,7 +138,7 @@ let buildGLSLSource =
       };
       vs.body = vs.body ++ webgl1_main_begin;
       fs.body = fs.body ++ webgl1_main_begin;
-      fs.top = _getPrecisionSource(getChunk("highp_fragment", state)) ++ fs.top;
+      fs.top = precision ++ fs.top;
       shaderLibDataArr
       |> Js.Array.forEach(
            ({glsls}) =>

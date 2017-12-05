@@ -31,7 +31,9 @@ let init = (gl, state: state) => {
         test(
           "shouldn't dispose any material before init",
           () =>
-            MaterialDisposeComponentSystem.isNotDisposed(MaterialStateSystem.getMaterialData(state))
+            MaterialDisposeComponentSystem.isNotDisposed(
+              MaterialStateSystem.getMaterialData(state)
+            )
             |> assertTrue
         )
       )
