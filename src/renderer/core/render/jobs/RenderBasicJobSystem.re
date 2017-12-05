@@ -98,19 +98,13 @@ let _render = (gl, state: StateDataType.state) => {
                     ),
                     state
                   );
-             GeometrySystem.hasIndices(mappedGeometryIndex, state) ?
-               GLSLSenderDrawSystem.drawElement(
-                 GeometrySystem.getDrawMode(gl),
-                 GeometrySystem.getIndexType(gl),
-                 GeometrySystem.getIndexTypeSize(gl),
-                 GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
-                 gl
-               ) :
-               GLSLSenderDrawSystem.drawArray(
-                 GeometrySystem.getDrawMode(gl),
-                 GeometrySystem.getVerticesCount(mappedGeometryIndex, state),
-                 gl
-               );
+             GLSLSenderDrawSystem.drawElement(
+               GeometrySystem.getDrawMode(gl),
+               GeometrySystem.getIndexType(gl),
+               GeometrySystem.getIndexTypeSize(gl),
+               GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
+               gl
+             );
              state
            }
          ),
