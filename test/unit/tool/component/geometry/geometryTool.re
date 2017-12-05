@@ -82,6 +82,14 @@ let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
 };
 
 
+let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
+  TestTool.closeContractCheck();
+  let state = state |> GameObject.batchDisposeGameObject(gameObjectArr);
+  TestTool.openContractCheck();
+  state
+};
+
+
 let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
   TestTool.closeContractCheck();
   let state = state |> GameObject.disposeGameObjectGeometryComponent(gameObject, geometry);
