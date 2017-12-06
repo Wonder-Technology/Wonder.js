@@ -32,6 +32,7 @@ let _ =
                   test(
                     "it will open wonder.js contract check",
                     () => {
+                      buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
                       setMainConfig(
                         MainTool.buildMainConfig(~isTest=Js.Nullable.return(Js.true_), ())
                       )
@@ -65,7 +66,7 @@ let _ =
                         () => {
                           let canvasDom = {
                             "id": "a",
-                            "getContext": createEmptyStub(refJsObjToSandbox(sandbox^))
+                            "getContext": createGetContextStub(buildFakeGl(sandbox), sandbox)
                           };
                           createMethodStub(
                             refJsObjToSandbox(sandbox^),
@@ -107,7 +108,7 @@ let _ =
                 "else",
                 () => {
                   let exec = () => {
-                    let (canvasDom, div, body) = buildFakeDomForNotPassCanvasId(sandbox);
+                    let (canvasDom, _, div, body) = buildFakeDomForNotPassCanvasId(sandbox);
                     setMainConfig(MainTool.buildMainConfig()) |> ignore;
                     (canvasDom, div, body)
                   };
@@ -138,7 +139,7 @@ let _ =
                   test(
                     "set webgl context option by passed data.(use default value if the field isn't passed)",
                     () => {
-                      let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let (canvasDom, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       setMainConfig(
                         MainTool.buildMainConfig(
                           ~contextConfig=
@@ -176,7 +177,7 @@ let _ =
                   test(
                     "set default webgl context option",
                     () => {
-                      let (canvasDom, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let (canvasDom, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       setMainConfig(MainTool.buildMainConfig()) |> ignore;
                       canvasDom##getContext
                       |> expect
@@ -197,7 +198,7 @@ let _ =
               test(
                 "set to state",
                 () => {
-                  let (_, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                  let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                   let state = setMainConfig(MainTool.buildMainConfig());
                   state
                   |> getContextConfig
@@ -221,31 +222,23 @@ let _ =
               let _buildBufferConfig =
                   (
                     ~transformDataBufferCount=Js.Nullable.undefined,
-                    /* ~meshRendererDataBufferCount=Js.Nullable.undefined, */
-                    /* ~geometryDataBufferCount=Js.Nullable.undefined, */
                     ~geometryPointDataBufferCount=Js.Nullable.undefined,
                     ~basicMaterialDataBufferCount=Js.Nullable.undefined,
                     ()
                   ) =>
                 Js.Nullable.return({
                   "transformDataBufferCount": transformDataBufferCount,
-                  /* "meshRendererDataBufferCount": meshRendererDataBufferCount, */
-                  /* "geometryDataBufferCount": geometryDataBufferCount, */
                   "geometryPointDataBufferCount": geometryPointDataBufferCount,
                   "basicMaterialDataBufferCount": basicMaterialDataBufferCount
                 });
               let _buildExpectedBufferConfig =
                   (
                     ~transformDataBufferCount=20 * 1000,
-                    /* ~meshRendererDataBufferCount=20 * 1000, */
-                    /* ~geometryDataBufferCount=20 * 1000, */
                     ~geometryPointDataBufferCount=1000 * 1000,
                     ~basicMaterialDataBufferCount=20 * 1000,
                     ()
                   ) => {
                 transformDataBufferCount,
-                /* meshRendererDataBufferCount, */
-                /* geometryDataBufferCount, */
                 geometryPointDataBufferCount,
                 basicMaterialDataBufferCount
               };
@@ -255,12 +248,10 @@ let _ =
                   test(
                     "set to state (use default value if the field isn't passed)",
                     () => {
-                      let (_, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       let transformDataBufferCount = 100;
                       let geometryPointDataBufferCount = 200;
                       let basicMaterialDataBufferCount = 300;
-                      /* let meshRendererDataBufferCount = 400; */
-                      /* let geometryDataBufferCount = 500; */
                       let state =
                         setMainConfig(
                           MainTool.buildMainConfig(
@@ -268,10 +259,6 @@ let _ =
                               _buildBufferConfig(
                                 ~transformDataBufferCount=
                                   Js.Nullable.return(transformDataBufferCount),
-                                /* ~meshRendererDataBufferCount=
-                                  Js.Nullable.return(meshRendererDataBufferCount),
-                                ~geometryDataBufferCount=
-                                  Js.Nullable.return(geometryDataBufferCount), */
                                 ~geometryPointDataBufferCount=
                                   Js.Nullable.return(geometryPointDataBufferCount),
                                 ~basicMaterialDataBufferCount=
@@ -286,8 +273,6 @@ let _ =
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount,
-                                  /* ~meshRendererDataBufferCount, */
-                                  /* ~geometryDataBufferCount, */
                                   ~geometryPointDataBufferCount,
                                   ~basicMaterialDataBufferCount,
                                   ()
@@ -301,20 +286,96 @@ let _ =
                   test(
                     "set default data",
                     () => {
-                      let (_, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
                       let state = setMainConfig(MainTool.buildMainConfig());
                       state
                       |> BufferConfigSystem.getConfig
                       |>
                       expect == _buildExpectedBufferConfig(
                                   ~transformDataBufferCount=20 * 1000,
-                                  /* ~geometryDataBufferCount=20 * 1000, */
                                   ~geometryPointDataBufferCount=1000 * 1000,
                                   ~basicMaterialDataBufferCount=20 * 1000,
                                   ()
                                 )
                     }
                   )
+              )
+            }
+          );
+          describe(
+            "detect gpu",
+            () => {
+              describe(
+                "detect extension",
+                () =>
+                  test(
+                    "detect instanced_arrays",
+                    () => {
+                      let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                      setMainConfig(MainTool.buildMainConfig()) |> ignore;
+                      fakeGl##getExtension |> expect |> toCalledWith(["ANGLE_instanced_arrays"])
+                    }
+                  )
+              );
+              describe(
+                "detect capabilty",
+                () => {
+                  let _prepare = (sandbox) => {
+                    open GPUDetectType;
+                    let warn = createMethodStubWithJsObjSandbox(sandbox, LogUtils.console, "warn");
+                    let (_, fakeGl, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
+                    let vertexShader = 0;
+                    let fragmentShader = 1;
+                    let highFloat = 2;
+                    let mediumFloat = 3;
+                    fakeGl##getShaderPrecisionFormat |> returns({"precision": 0}) |> ignore;
+                    (fakeGl, warn, vertexShader, fragmentShader, highFloat, mediumFloat)
+                  };
+                  test(
+                    "if highp is available, use highp",
+                    () => {
+                      let (fakeGl, _, vertexShader, fragmentShader, highFloat, _) =
+                        _prepare(sandbox);
+                      fakeGl##getShaderPrecisionFormat
+                      |> withTwoArgs(vertexShader, highFloat)
+                      |> returns({"precision": 1})
+                      |> ignore;
+                      fakeGl##getShaderPrecisionFormat
+                      |> withTwoArgs(fragmentShader, highFloat)
+                      |> returns({"precision": 1})
+                      |> ignore;
+                      let state = setMainConfig(MainTool.buildMainConfig());
+                      GpuDetectTool.getData(state).precision |> expect == Some(HIGHP)
+                    }
+                  );
+                  test(
+                    "else if mediump is available, warn and use mediump",
+                    () => {
+                      let (fakeGl, warn, vertexShader, fragmentShader, _, mediumFloat) =
+                        _prepare(sandbox);
+                      fakeGl##getShaderPrecisionFormat
+                      |> withTwoArgs(vertexShader, mediumFloat)
+                      |> returns({"precision": 1})
+                      |> ignore;
+                      fakeGl##getShaderPrecisionFormat
+                      |> withTwoArgs(fragmentShader, mediumFloat)
+                      |> returns({"precision": 1})
+                      |> ignore;
+                      let state = setMainConfig(MainTool.buildMainConfig());
+                      (warn |> getCallCount, GpuDetectTool.getData(state).precision)
+                      |> expect == (1, Some(MEDIUMP))
+                    }
+                  );
+                  test(
+                    "else, warn and use lowp",
+                    () => {
+                      let (_, warn, _, _, _, _) = _prepare(sandbox);
+                      let state = setMainConfig(MainTool.buildMainConfig());
+                      (warn |> getCallCount, GpuDetectTool.getData(state).precision)
+                      |> expect == (1, Some(LOWP))
+                    }
+                  )
+                }
               )
             }
           )

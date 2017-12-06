@@ -32,7 +32,7 @@ let _detectPrecision = (gl, gpuDetectData) => {
   let fragmentShader = gl |> getFragmentShader;
   let highFloat = gl |> getHighFloat;
   let mediumFloat = gl |> getMediumFloat;
-  let lowFloat = gl |> getLowFloat;
+  /* let lowFloat = gl |> getLowFloat; */
   let vertexShaderPrecisionHighpFloat = gl |> getShaderPrecisionFormat(vertexShader, highFloat);
   let vertexShaderPrecisionMediumpFloat =
     gl |> getShaderPrecisionFormat(vertexShader, mediumFloat);

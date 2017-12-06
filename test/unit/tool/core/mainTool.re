@@ -2,12 +2,22 @@ open Sinon;
 
 open DomTool;
 
+let createGetContextStub = (fakeGl, sandbox) =>
+  createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(fakeGl);
+
+let buildFakeGl = (sandbox) => {
+  "VERTEX_SHADER": 0,
+  "FRAGMENT_SHADER": 1,
+  "HIGH_FLOAT": 2,
+  "MEDIUM_FLOAT": 3,
+  "getShaderPrecisionFormat":
+    createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns({"precision": 1}),
+  "getExtension": createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(0))
+};
+
 let buildFakeDomForNotPassCanvasId = (sandbox) => {
-  let canvasDom = {
-    "id": "a",
-    "nodeType": 1,
-    "getContext": createEmptyStub(refJsObjToSandbox(sandbox^))
-  };
+  let fakeGl = buildFakeGl(sandbox);
+  let canvasDom = {"id": "a", "nodeType": 1, "getContext": createGetContextStub(fakeGl, sandbox)};
   let div = {"innerHTML": "", "firstChild": canvasDom};
   let body = {"prepend": createEmptyStub(refJsObjToSandbox(sandbox^))};
   createMethodStub(refJsObjToSandbox(sandbox^), documentToObj(Dom.document), "createElement")
@@ -18,7 +28,7 @@ let buildFakeDomForNotPassCanvasId = (sandbox) => {
   |> withOneArg("body")
   |> returns([body])
   |> ignore;
-  (canvasDom, div, body)
+  (canvasDom, fakeGl, div, body)
 };
 
 let buildMainConfig =

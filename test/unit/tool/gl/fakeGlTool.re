@@ -27,6 +27,10 @@ let buildFakeGl =
       ~getProgramParameter=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Js.true_),
       ~getShaderInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getProgramInfoLog=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getShaderPrecisionFormat=createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns({
+        "precision": 1
+      }),
+      ~getExtension=createEmptyStub(refJsObjToSandbox(sandbox^))|> returns(Obj.magic(0)),
       ~attachShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~bindAttribLocation=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~deleteShader=createEmptyStub(refJsObjToSandbox(sandbox^)),
@@ -68,6 +72,8 @@ let buildFakeGl =
   "getProgramParameter": getProgramParameter,
   "getShaderInfoLog": getShaderInfoLog,
   "getProgramInfoLog": getProgramInfoLog,
+  "getShaderPrecisionFormat": getShaderPrecisionFormat,
+  "getExtension": getExtension,
   "attachShader": attachShader,
   "bindAttribLocation": bindAttribLocation,
   "deleteShader": deleteShader,
