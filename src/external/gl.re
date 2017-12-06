@@ -25,6 +25,7 @@ open Js.Typed_array;
 [@bs.get] external getFloat : webgl1Context => int = "FLOAT";
 
 [@bs.get] external getStaticDraw : webgl1Context => int = "STATIC_DRAW";
+[@bs.get] external getDynamicDraw : webgl1Context => int = "DYNAMIC_DRAW";
 
 [@bs.get] external getTriangles : webgl1Context => int = "TRIANGLES";
 
@@ -78,6 +79,8 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send.pipe : webgl1Context] external deleteShader : shader => unit = "";
 
+[@bs.send.pipe : webgl1Context] external deleteBuffer : buffer => unit = "";
+
 [@bs.send.pipe : webgl1Context]
 external getAttribLocation : (program, string) => attributeLocation =
   "";
@@ -96,11 +99,18 @@ external getUniformLocation : (program, string) => uniformLocation =
 [@bs.send.pipe : webgl1Context] external bufferFloat32Data : (int, Float32Array.t, int) => unit =
   "bufferData";
 
+[@bs.send.pipe : webgl1Context] external bufferFloat32DataWithCapacity : (int, int, int) => unit =
+  "bufferData";
+
 [@bs.send.pipe : webgl1Context] external bufferUint16Data : (int, Uint16Array.t, int) => unit =
   "bufferData";
 
 [@bs.send.pipe : webgl1Context] external bufferUint32Data : (int, Uint32Array.t, int) => unit =
   "bufferData";
+
+[@bs.send.pipe : webgl1Context] external bufferSubFloat32Data : (int, int, Float32Array.t) => unit =
+  "bufferSubData";
+
 
 [@bs.send.pipe : webgl1Context]
 external vertexAttribPointer : (attributeLocation, int, int, Js.boolean, int, int) => unit =

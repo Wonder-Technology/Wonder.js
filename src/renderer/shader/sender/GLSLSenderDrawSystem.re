@@ -13,12 +13,12 @@ let bindElementArrayBuffer =
   (
     (gl, size: int, pos: attributeLocation, buffer, state: StateDataType.state) => {
       let {lastSendElementArrayBuffer} as data = getGLSLSenderData(state);
-         switch lastSendElementArrayBuffer {
-         | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
-         | _ =>
-           data.lastSendElementArrayBuffer = Some(buffer);
-      bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-      state
+      switch lastSendElementArrayBuffer {
+      | Some(lastSendElementArrayBuffer) when lastSendElementArrayBuffer === buffer => state
+      | _ =>
+        data.lastSendElementArrayBuffer = Some(buffer);
+        bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+        state
       }
     }
   );
@@ -33,4 +33,24 @@ let drawArray = (drawMode: int, verticesCount: int, gl) => {
   let startOffset = 0;
   drawArray(drawMode, startOffset, verticesCount, gl);
   ()
+};
+
+let drawElementsInstancedANGLE =
+    (
+      drawMode,
+      type_,
+      typeSize: int,
+      indicesCount: int,
+      instancesCount,
+      drawElementsInstancedANGLEFunc
+    ) => {
+  let startOffset = 0;
+  drawElementsInstancedANGLEFunc(
+    drawMode,
+    indicesCount,
+    type_,
+    typeSize * startOffset,
+    instancesCount
+  )
+  |> ignore
 };

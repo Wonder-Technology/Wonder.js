@@ -12,6 +12,7 @@ let _getExtension = (name: string, gl) =>
     | _ => gl |> getExtension(name)
     }
   )
+  |> Obj.magic
   |> Js.toOption;
 
 let _detectExtension = (gl, gpuDetectData) => {
@@ -66,3 +67,6 @@ let detect = (gl, state: StateDataType.state) => {
 };
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
+
+let getInstanceExtension = (state: StateDataType.state) =>
+  GPUStateSystem.getData(state).extensionInstancedArrays;

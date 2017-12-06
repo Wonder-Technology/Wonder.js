@@ -36,6 +36,12 @@ let _addComponent = (uid: int, component: component, componentMap: array(int)) =
 let hasSourceInstanceComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap |> _hasComponent(uid);
 
+let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap |> _getComponent(uid);
+
+let unsafeGetSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
+  GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap |> _unsafeGetComponent(uid);
+
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateSystem.getGameObjectData(state).cameraControllerMap |> _hasComponent(uid);
 

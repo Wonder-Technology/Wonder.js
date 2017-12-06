@@ -18,6 +18,8 @@ let getElementArrayBuffer = (gl, state: StateDataType.state) => {
   _getBufferAndSetBufferMap(gl, elementArrayBufferPool)
 };
 
+let getInstanceBuffer = (gl) => Gl.createBuffer(gl);
+
 let _unsafeGetBufferFromBufferMap = (geometryIndex: int, bufferMap) =>
   WonderCommonlib.SparseMapSystem.unsafeGet(geometryIndex, bufferMap)
   |> ensureCheck(

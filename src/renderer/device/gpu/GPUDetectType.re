@@ -3,7 +3,13 @@ type gpuPrecision =
   | MEDIUMP
   | LOWP;
 
+type extensionInstancedArrays = {
+  .
+  "vertexAttribDivisorANGLE": (GlType.attributeLocation, int) => unit,
+  "drawElementsInstancedANGLE": (int, int, int, int, int) => unit
+};
+
 type gpuDetectData = {
-  extensionInstancedArrays: option(GlType.extension),
+  extensionInstancedArrays: option(extensionInstancedArrays),
   precision: option(gpuPrecision)
 };

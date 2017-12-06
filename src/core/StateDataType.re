@@ -34,6 +34,8 @@ open VboBufferType;
 
 open GPUDetectType;
 
+open SourceInstanceType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -141,10 +143,9 @@ type shaderMapData = {
 };
 
 /* type shaderStaticBranch = {
-  name: string,
-  value: array(string)
-}; */
-
+     name: string,
+     value: array(string)
+   }; */
 type shaderLibItem = {
   type_: option(string),
   name: string
@@ -211,6 +212,9 @@ and attributeSendData = {
   buffer: string,
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
+and instanceAttributeSendData = {
+  pos: attributeLocation
+}
 and uniformSendData = {
   pos: uniformLocation,
   getArrayDataFunc: [@bs] ((gameObject, state) => Float32Array.t),
@@ -225,6 +229,7 @@ and shaderUniformSendData = {
 }
 and glslSenderData = {
   attributeSendDataMap: array(array(attributeSendData)),
+  instanceAttributeSendDataMap: array(array(instanceAttributeSendData)),
   uniformSendDataMap: array(array(uniformSendData)),
   shaderUniformSendDataMap: array(array(shaderUniformSendData)),
   drawPointsFuncMap: array((webgl1Context => unit)),
@@ -270,6 +275,7 @@ and state = {
   memoryConfig,
   renderConfig,
   gpuDetectData,
+  sourceInstanceData,
   viewData,
   initConfig,
   deviceManagerData,

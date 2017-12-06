@@ -41,6 +41,7 @@ let disableVertexAttribArray = (gl, state: StateDataType.state) => {
 
 let initData = () => {
   attributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  instanceAttributeSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   uniformSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   shaderUniformSendDataMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   drawPointsFuncMap: WonderCommonlib.SparseMapSystem.createEmpty(),

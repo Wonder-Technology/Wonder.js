@@ -57,6 +57,7 @@ let createState =
     gpuDetectData: {extensionInstancedArrays: None, precision: None},
     viewData: {canvas: None, contextConfig: None},
     initConfig: {isTest: Some(false)},
+    sourceInstanceData: SourceInstanceSystem.initData(),
     deviceManagerData: {gl: None, colorWrite: None, clearColor: None},
     gameObjectData: GameObjectSystem.initData(),
     transformData: None,

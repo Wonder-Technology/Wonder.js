@@ -102,8 +102,15 @@ let getMaterialShaderLibDataArr =
                switch name {
                | "modelMatrix_instance" =>
                  let shaderLibName =
-                   GameObjectComponentSystem.hasSourceInstanceComponent(gameObject, state) ?
-                     InstanceUtils.isSupportInstance(state) ? value[1] : value[2] : value[0];
+                   if (InstanceUtils.isSourceInstance(gameObject, state)) {
+                     if (InstanceUtils.isSupportInstance(state)) {
+                       value[1]
+                     } else {
+                       value[2]
+                     }
+                   } else {
+                     value[0]
+                   };
                  resultDataArr
                  |> Js.Array.push(_findFirstShaderData(shaderLibName, shaderLibs))
                  |> ignore;

@@ -42,6 +42,7 @@ let addAttributeSendData =
     | Some(map) => map
     };
   let sendDataArr = WonderCommonlib.ArraySystem.createEmpty();
+  let instanceSendDataArr = WonderCommonlib.ArraySystem.createEmpty();
   shaderLibDataArr
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
@@ -59,6 +60,18 @@ let addAttributeSendData =
                     (
                       ({name, buffer, type_}) =>
                         switch (name, type_) {
+                        | (Some(name), Some("instance")) =>
+                          instanceSendDataArr
+                          |> Js.Array.push({
+                               pos:
+                                 GLSLLocationSystem.getAttribLocation(
+                                   program,
+                                   name,
+                                   attributeLocationMap,
+                                   gl
+                                 )
+                             })
+                          |> ignore
                         | (Some(name), Some(type_)) =>
                           sendDataArr
                           |> Js.Array.push({
@@ -144,8 +157,10 @@ let addAttributeSendData =
            }
        )
      );
-  getGLSLSenderData(state).attributeSendDataMap
-  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr)
+  let {attributeSendDataMap, instanceAttributeSendDataMap} = getGLSLSenderData(state);
+  attributeSendDataMap |> WonderCommonlib.SparseMapSystem.set(shaderIndex, sendDataArr) |> ignore;
+  instanceAttributeSendDataMap
+  |> WonderCommonlib.SparseMapSystem.set(shaderIndex, instanceSendDataArr)
   |> ignore;
   state |> GLSLLocationSystem.setAttributeLocationMap(shaderIndex, attributeLocationMap)
 };
@@ -306,6 +321,26 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
      )
 };
 
+let getInstanceAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
+  let {instanceAttributeSendDataMap} = getGLSLSenderData(state);
+  instanceAttributeSendDataMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(shaderIndex)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "instance attribute send data should exist",
+             () => {
+               let {instanceAttributeSendDataMap} = getGLSLSenderData(state);
+               instanceAttributeSendDataMap
+               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+               |> assertExist
+             }
+           )
+         )
+     )
+};
+
 let getUniformSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {uniformSendDataMap} = getGLSLSenderData(state);
   uniformSendDataMap
@@ -334,7 +369,7 @@ let getShaderUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
        (r) =>
          Contract.Operators.(
            test(
-             "uniform shader send data should exist",
+             "shader uniform send data should exist",
              () => {
                let {shaderUniformSendDataMap} = getGLSLSenderData(state);
                shaderUniformSendDataMap
