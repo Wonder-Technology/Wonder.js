@@ -19,7 +19,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(
+            TestTool.init(~sandbox,
               ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
               ()
             )
@@ -818,7 +818,7 @@ let _ =
               let errMeg = "should not exceed geometryPointDataBufferCount";
               let _prepare = () => {
                 let state =
-                  TestTool.init(
+                  TestTool.init(~sandbox,
                     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)),
                     ()
                   );

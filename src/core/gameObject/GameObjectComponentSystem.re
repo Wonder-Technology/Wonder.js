@@ -42,6 +42,13 @@ let getSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
 let unsafeGetSourceInstanceComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap |> _unsafeGetComponent(uid);
 
+let addSourceInstanceComponent = (uid: int, component: component, state: StateDataType.state) => {
+  GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap
+  |> _addComponent(uid, component)
+  |> ignore;
+  [@bs] SourceInstanceAddComponentSystem.handleAddComponent(component, uid, state)
+};
+
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateSystem.getGameObjectData(state).cameraControllerMap |> _hasComponent(uid);
 

@@ -41,7 +41,6 @@ let _getExecutableJob = (jobs: array(job), {name: jobItemName, flags}: jobItem) 
 let getInitPipelineExecutableJobs = ({init_pipeline}, init_pipelines, jobs: array(job)) => {
   let init_pipelineItem: pipeline =
     findFirst(init_pipelines, ({name}: pipeline) => _filterTargetName(name, init_pipeline));
-  /* init_pipelineItem.jobs |> Js.Array.map(mapFunc) |> Js.Array.map(_getExecutableJob(jobs)) */
   init_pipelineItem.jobs |> Js.Array.map(_getExecutableJob(jobs))
 };
 
@@ -96,7 +95,6 @@ let getMaterialShaderLibDataArr =
                  |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
                Js.Array.concat(shaderLibArr, resultDataArr)
              | "static_branch" =>
-               /* todo test */
                let {value} =
                  findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
                switch name {

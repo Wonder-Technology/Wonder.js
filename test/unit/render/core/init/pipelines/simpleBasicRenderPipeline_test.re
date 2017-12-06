@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := SimpleBasicRenderPipelineTool.initWithRenderConfig()
+          state := SimpleBasicRenderPipelineTool.initWithRenderConfig(sandbox)
         }
       );
       describe(

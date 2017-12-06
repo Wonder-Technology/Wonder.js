@@ -9,6 +9,10 @@ open GameObjectType;
 /* todo dispose instance */
 let hasSourceInstanceComponent = GameObjectComponentSystem.hasSourceInstanceComponent;
 
+let getSourceInstanceComponent = GameObjectComponentSystem.getSourceInstanceComponent;
+
+let addSourceInstanceComponent = GameObjectComponentSystem.addSourceInstanceComponent;
+
 let hasCameraControllerComponent = GameObjectComponentSystem.hasCameraControllerComponent;
 
 let getCameraControllerComponent = GameObjectComponentSystem.getCameraControllerComponent;

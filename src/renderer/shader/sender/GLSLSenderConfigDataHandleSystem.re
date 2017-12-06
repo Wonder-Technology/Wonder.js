@@ -18,10 +18,8 @@ let addAttributeSendData =
     (
       gl,
       shaderIndex: int,
-      /* geometryIndex: int, */
       program: program,
       shaderLibDataArr: shader_libs,
-      /* attributeLocationMap, */
       state: StateDataType.state
     ) => {
   requireCheck(
@@ -60,95 +58,44 @@ let addAttributeSendData =
                     (
                       ({name, buffer, type_}) =>
                         switch (name, type_) {
-                        | (Some(name), Some("instance")) =>
-                          instanceSendDataArr
-                          |> Js.Array.push({
-                               pos:
-                                 GLSLLocationSystem.getAttribLocation(
-                                   program,
-                                   name,
-                                   attributeLocationMap,
-                                   gl
-                                 )
-                             })
-                          |> ignore
                         | (Some(name), Some(type_)) =>
-                          sendDataArr
-                          |> Js.Array.push({
-                               pos:
-                                 GLSLLocationSystem.getAttribLocation(
-                                   program,
-                                   name,
-                                   attributeLocationMap,
-                                   gl
-                                 ),
-                               size: getBufferSizeByType(type_),
-                               buffer,
-                               /* switch buffer {
-                                  | "vertex" =>
-                                    ArrayBufferSystem.createBuffer(
-                                      gl,
-                                      geometryIndex,
-                                      GeometrySystem.getVertices(geometryIndex, state)
-                                    )
-                                  | _ =>
-                                    ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-                                  }, */
-                               sendFunc: sendBuffer
-                             })
-                          /* sendBuffer(
-                               gl,
-                               getBufferSizeByType(type_),
-                               GLSLLocationSystem.getAttribLocation(
-                                 program,
-                                 name,
-                                 attributeLocationMap,
-                                 gl
-                               ),
-                               switch buffer {
-                               | "vertex" =>
-                                 ArrayBufferSystem.createBuffer(
-                                   gl,
-                                   geometryIndex,
-                                   GeometrySystem.getVertices(geometryIndex, state)
-                                 )
-                               }
-                             )*/
-                          |> ignore
+                          switch buffer {
+                          | "instance" =>
+                            instanceSendDataArr
+                            |> Js.Array.push({
+                                 pos:
+                                   GLSLLocationSystem.getAttribLocation(
+                                     program,
+                                     name,
+                                     attributeLocationMap,
+                                     gl
+                                   )
+                               })
+                            |> ignore
+                          | _ =>
+                            sendDataArr
+                            |> Js.Array.push({
+                                 pos:
+                                   GLSLLocationSystem.getAttribLocation(
+                                     program,
+                                     name,
+                                     attributeLocationMap,
+                                     gl
+                                   ),
+                                 size: getBufferSizeByType(type_),
+                                 buffer,
+                                 sendFunc: sendBuffer
+                               })
+                            |> ignore
+                          }
                         | (_, _) =>
                           sendDataArr
-                          |> Js.Array.push
-                               /* bindElementArrayBuffer(
-                                    gl,
-                                    switch buffer {
-                                    | "index" =>
-                                      ElementArrayBufferSystem.createBuffer(
-                                        gl,
-                                        geometryIndex,
-                                        GeometrySystem.getIndices(geometryIndex, state)
-                                      )
-                                    }
-                                  ) */
-                               /* pos: Obj.magic(0), */
-                               /* bufferSize: 0, */
-                               ({
-                                 pos: 0,
-                                 size: 0,
-                                 buffer,
-                                 /* switch buffer {
-                                    | "index" =>
-                                      ElementArrayBufferSystem.createBuffer(
-                                        gl,
-                                        geometryIndex,
-                                        GeometrySystem.getIndices(geometryIndex, state)
-                                      )
-                                    | _ =>
-                                      ExceptionHandleSystem.throwMessage(
-                                        {j|unknow buffer:$buffer|j}
-                                      )
-                                    }, */
-                                 sendFunc: bindElementArrayBuffer
-                               })
+                          |> Js.Array.push({
+                               pos: 0,
+                               size: 0,
+                               buffer,
+                               sendFunc: bindElementArrayBuffer
+                             })
                           |> ignore
                         }
                     )
@@ -279,26 +226,6 @@ let addUniformSendData =
   state |> GLSLLocationSystem.setUniformLocationMap(shaderIndex, uniformLocationMap)
 };
 
-/* let addDrawPointsFunc =
-       (gl, materialIndex: int, geometryIndex: int, state: StateDataType.state) => {
-     /* getGLSLSenderData(state).drawPointsFuncMap
-     |> WonderCommonlib.SparseMapSystem.set(
-          materialIndex,
-          GeometrySystem.hasIndices(geometryIndex, state) ?
-            drawElement(
-              GeometrySystem.getDrawMode(gl),
-              GeometrySystem.getIndexType(gl),
-              GeometrySystem.getIndexTypeSize(gl),
-              GeometrySystem.getIndicesCount(geometryIndex, state)
-            ) :
-            drawArray(
-              GeometrySystem.getDrawMode(gl),
-              GeometrySystem.getVerticesCount(geometryIndex, state)
-            )
-        )
-     |> ignore; */
-     state
-   }; */
 let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   let {attributeSendDataMap} = getGLSLSenderData(state);
   attributeSendDataMap
@@ -307,7 +234,6 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
        (r) =>
          Contract.Operators.(
            test
-             /* ("attribute send data should exist", () => Js.Nullable.to_opt(r) |> assertExist) */
              (
                "attribute send data should exist",
                () => {
@@ -380,31 +306,3 @@ let getShaderUniformSendData = (shaderIndex: int, state: StateDataType.state) =>
          )
      )
 };
-/* let getDrawPointsFunc = (materialIndex: int, state: StateDataType.state) => {
-   let gl = [@bs]DeviceManagerSystem.getGl(state);
-     drawElement(
-              GeometrySystem.getDrawMode(gl),
-              GeometrySystem.getIndexType(gl),
-              GeometrySystem.getIndexTypeSize(gl),
-              /* GeometrySystem.getIndicesCount(geometryIndex, state) */
-              /* GeometrySystem.getIndicesCount(geometryIndex, state) */
-              36
-     )
-     /* let {drawPointsFuncMap} = getGLSLSenderData(state);
-     drawPointsFuncMap
-     |> WonderCommonlib.SparseMapSystem.unsafeGet(materialIndex)
-     |> ensureCheck(
-          (r) =>
-            Contract.Operators.(
-              test(
-                "draw points func should exist",
-                () => {
-                  let {drawPointsFuncMap} = getGLSLSenderData(state);
-                  drawPointsFuncMap
-                  |> WonderCommonlib.SparseMapSystem.get(materialIndex)
-                  |> assertExist
-                }
-              )
-            )
-        ) */
-   }; */

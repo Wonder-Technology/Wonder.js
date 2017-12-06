@@ -13,7 +13,7 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(
+            TestTool.init(~sandbox,
               ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
               ()
             )

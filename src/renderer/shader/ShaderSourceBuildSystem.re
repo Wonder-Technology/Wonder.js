@@ -93,6 +93,7 @@ let getPrecisionSource = (state: StateDataType.state) => {
   | HIGHP => getChunk("highp_fragment", state).top
   | MEDIUMP => getChunk("mediump_fragment", state).top
   | LOWP => getChunk("lowp_fragment", state).top
+  | _ => getChunk("highp_fragment", state).top
   }
 };
 
@@ -138,7 +139,7 @@ let buildGLSLSource =
       };
       vs.body = vs.body ++ webgl1_main_begin;
       fs.body = fs.body ++ webgl1_main_begin;
-      fs.top = precision ++ fs.top;
+      fs.top = (precision |> Js.Option.getExn) ++ fs.top;
       shaderLibDataArr
       |> Js.Array.forEach(
            ({glsls}) =>

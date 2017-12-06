@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init() |> DirectorTool.prepare
+          state := TestTool.init(~sandbox, ()) |> DirectorTool.prepare
         }
       );
       test(

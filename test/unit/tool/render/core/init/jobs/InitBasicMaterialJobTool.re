@@ -1,4 +1,4 @@
-let initWithRenderConfig = () =>
+let initWithRenderConfig = (sandbox) =>
   /* TestTool.initWithRenderConfig(
          ~bufferConfig=
            Js.Nullable.return({
@@ -32,7 +32,11 @@ let initWithRenderConfig = () =>
            ),
          ()
        ); */
-  TestTool.init(~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), ());
+  TestTool.init(
+    ~sandbox,
+    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ()
+  );
 
 let prepareGameObject = (sandbox, state) => {
   open GameObject;
@@ -49,20 +53,25 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material)
 };
 
-let prepareForJudgeGLSL = (sandbox, state) => {
+let exec = (state: StateDataType.state) =>
+  state
+  |> GeometryTool.initGeometrys
+  |> AllMaterialSystem.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state))
+  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
+
+let prepareForJudgeGLSLNotExec = (sandbox, state) => {
   open Sinon;
-  let (state, _, _, _) = prepareGameObject(sandbox, state);
+  let (state, gameObject, _, _) = prepareGameObject(sandbox, state);
   let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
-  let state = state |> GeometryTool.initGeometrys;
-  let state = state |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
-  shaderSource
+  (state, shaderSource, gameObject)
 };
 
-let exec = (state: StateDataType.state) =>
-  state
-  |> GeometryTool.initGeometrys
-  |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
+let prepareForJudgeGLSL = (sandbox, state) => {
+  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(sandbox, state);
+  let state = state |> exec;
+  shaderSource
+};

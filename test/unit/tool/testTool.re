@@ -1,5 +1,6 @@
 let init =
     (
+      ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
@@ -7,14 +8,16 @@ let init =
                       "basicMaterialDataBufferCount": Js.Nullable.return(5)
                     }),
       ()
-    ) =>
+    ) => {
+  MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
       state
     }
-  );
+  )
+};
 
 let initWithRenderConfig =
     /* ~renderConfig=(

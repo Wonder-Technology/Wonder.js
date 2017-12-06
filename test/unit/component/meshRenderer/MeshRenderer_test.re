@@ -28,7 +28,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init()
+          state := TestTool.init(~sandbox, ())
         }
       );
       describe(

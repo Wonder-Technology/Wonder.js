@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialJobTool.initWithRenderConfig()
+          state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox)
         }
       );
       describe(

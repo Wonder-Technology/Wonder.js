@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialJobTool.initWithRenderConfig()
+          state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox)
         }
       );
       describe(
@@ -67,10 +67,7 @@ let _ =
                 state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()));
               let state = state |> InitBasicMaterialJobTool.exec;
               let shaderIndex = MaterialTool.unsafeGetShaderIndex(material, state);
-              state
-              |> ProgramTool.getProgram((shaderIndex))
-              |> Js.Option.getExn
-              |> expect == program
+              state |> ProgramTool.getProgram(shaderIndex) |> Js.Option.getExn |> expect == program
             }
           );
           describe(
@@ -123,7 +120,8 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~compileShader, ())
                            );
-                      let state = state |> InitBasicMaterialJobTool.exec;
+                      let state =
+                        state |> InitBasicMaterialJobTool.exec;
                       (getCallCount(shaderSource), getCallCount(compileShader)) |> expect == (2, 2)
                     }
                   );
@@ -165,7 +163,8 @@ let _ =
                                    ()
                                  )
                                );
-                          let state = state |> InitBasicMaterialJobTool.exec;
+                          let state =
+                            state |> InitBasicMaterialJobTool.exec;
                           (getCallCount(log), getCallCount(getShaderInfoLog)) |> expect == (4, 2)
                         }
                       )
@@ -181,7 +180,8 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ())
                            );
-                      let state = state |> InitBasicMaterialJobTool.exec;
+                      let state =
+                        state |> InitBasicMaterialJobTool.exec;
                       getCallCount(attachShader) |> expect == 2
                     }
                   );
@@ -196,7 +196,8 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~bindAttribLocation, ())
                            );
-                      let state = state |> InitBasicMaterialJobTool.exec;
+                      let state =
+                        state |> InitBasicMaterialJobTool.exec;
                       getCallCount(bindAttribLocation |> withThreeArgs(matchAny, 0, "a_position"))
                       |> expect == 1
                     }
@@ -215,7 +216,8 @@ let _ =
                             |> FakeGlTool.setFakeGl(
                                  FakeGlTool.buildFakeGl(~sandbox, ~linkProgram, ())
                                );
-                          let state = state |> InitBasicMaterialJobTool.exec;
+                          let state =
+                            state |> InitBasicMaterialJobTool.exec;
                           getCallCount(linkProgram) |> expect == 1
                         }
                       );
@@ -246,7 +248,12 @@ let _ =
                                        ()
                                      )
                                    );
-                              expect(() => state |> InitBasicMaterialJobTool.exec |> ignore)
+                              expect(
+                                () =>
+                                  state
+                                  |> InitBasicMaterialJobTool.exec
+                                  |> ignore
+                              )
                               |> toThrowMessage({j|link program error:$programInfo|j})
                             }
                           )
@@ -265,7 +272,8 @@ let _ =
                         |> FakeGlTool.setFakeGl(
                              FakeGlTool.buildFakeGl(~sandbox, ~deleteShader, ~linkProgram, ())
                            );
-                      let state = state |> InitBasicMaterialJobTool.exec;
+                      let state =
+                        state |> InitBasicMaterialJobTool.exec;
                       (
                         getCallCount(deleteShader),
                         calledAfter(deleteShader |> getCall(0), linkProgram |> getCall(0)),

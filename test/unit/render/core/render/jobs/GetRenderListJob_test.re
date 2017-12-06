@@ -12,7 +12,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := RenderJobsTool.initWithRenderConfig()
+          state := RenderJobsTool.initWithRenderConfig(sandbox)
         }
       );
       test(

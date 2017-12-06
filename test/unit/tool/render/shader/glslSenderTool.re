@@ -30,7 +30,7 @@ module JudgeSendUniformData = {
               {j|send $name|j},
               () => {
                 let state = ref(StateSystem.createState());
-                beforeEach(() => state := RenderJobsTool.initWithRenderConfig());
+                beforeEach(() => state := RenderJobsTool.initWithRenderConfig(sandbox));
                 /* test(
                      "if cached, not send",
                      () => {

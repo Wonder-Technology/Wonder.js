@@ -40,11 +40,37 @@ let initData = () =>
 |},{|
 
 |},{|
-mat4 getModelMatrix(){
-    return u_mMatrix;
-}
+
 |},{|
-mat4 mMatrix = getModelMatrix();
+mat4 mMatrix = u_mMatrix;
+|}))
+
+|> set("modelMatrix_hardware_instance_vertex", _buildChunk({|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);
+|}))
+
+|> set("modelMatrix_batch_instance_vertex", _buildChunk({|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+
+|},{|
+mat4 mMatrix = u_mMatrix;
 |}))
 
 |> set("webgl1_setPos_mvp", _buildChunk({|

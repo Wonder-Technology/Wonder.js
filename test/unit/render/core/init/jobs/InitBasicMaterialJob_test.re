@@ -14,9 +14,10 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := InitBasicMaterialJobTool.initWithRenderConfig()
+          state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "test get attribute location",
         () =>
@@ -161,23 +162,66 @@ let _ =
                   |> expect == true
                 }
               );
-              test(
-                "test modelMatrix_noInstance shader lib's glsl",
+              describe(
+                "test modelMatrix instance shader libs",
                 () => {
-                  let shaderSource = InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-                  GlslTool.containMultiline(
-                    GlslTool.getVsSource(shaderSource),
-                    [
-                      {|uniform mat4 u_mMatrix;
-|},
-                      {|mat4 getModelMatrix(){
-    return u_mMatrix;
-}|},
-                      {|mat4 mMatrix = getModelMatrix();
-|}
-                    ]
+                  test(
+                    "if has no sourceInstance component, use modelMatrix_noInstance shader lib",
+                    () => {
+                      let shaderSource =
+                        InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+                      GlslTool.containMultiline(
+                        GlslTool.getVsSource(shaderSource),
+                        [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+                      )
+                      |> expect == true
+                    }
+                  );
+                  describe(
+                    "else",
+                    () => {
+                      test(
+                        "if support hardware instance, use modelMatrix_hardware_instance shader lib",
+                        () => {
+                          let (state, shaderSource, gameObject) =
+                            InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
+                          let state =
+                            state
+                            |> InstanceTool.addSourceInstance(gameObject)
+                            |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
+                          let state = state |> InitBasicMaterialJobTool.exec;
+                          GlslTool.containMultiline(
+                            GlslTool.getVsSource(shaderSource),
+                            [
+                              {|attribute vec4 a_mVec4_0;|},
+                              {|attribute vec4 a_mVec4_1;|},
+                              {|attribute vec4 a_mVec4_2;|},
+                              {|attribute vec4 a_mVec4_3;|},
+                              {|mat4 mMatrix = mat4(a_mVec4_0, a_mVec4_1, a_mVec4_2, a_mVec4_3);|}
+                            ]
+                          )
+                          |> expect == true
+                        }
+                      );
+                      test(
+                        "else, use modelMatrix_batch_instance shader lib",
+                        () => {
+                          let (state, shaderSource, gameObject) =
+                            InitBasicMaterialJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
+                          let state =
+                            state
+                            |> InstanceTool.addSourceInstance(gameObject)
+                            |> InstanceTool.setGpuDetectDataAllowBatchInstance;
+                          let state = state |> InitBasicMaterialJobTool.exec;
+                          GlslTool.containMultiline(
+                            GlslTool.getVsSource(shaderSource),
+                            [{|uniform mat4 u_mMatrix;|}, {|mat4 mMatrix = u_mMatrix;|}]
+                          )
+                          |> expect == true
+                        }
+                      )
+                    }
                   )
-                  |> expect == true
                 }
               );
               test(

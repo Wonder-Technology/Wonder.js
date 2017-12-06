@@ -14,7 +14,7 @@ let _ =
       beforeEach(
         () => {
           sandbox := createSandbox();
-          state := TestTool.init()
+          state := TestTool.init(~sandbox, ())
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -462,7 +462,7 @@ let _ =
                         () => {
                           open GameObjectType;
                           let state =
-                            TestTool.init(
+                            TestTool.init(~sandbox,
                               ~bufferConfig=
                                 Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
                               ()
@@ -729,7 +729,7 @@ let _ =
           describe(
             "init components",
             () => {
-              beforeEach(() => state := InitBasicMaterialJobTool.initWithRenderConfig());
+              beforeEach(() => state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox));
               test(
                 "init material component",
                 () => {

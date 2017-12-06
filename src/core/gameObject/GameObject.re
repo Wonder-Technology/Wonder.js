@@ -125,6 +125,22 @@ let hasGameObjectGeometryComponent = (gameObject: gameObject, state: StateDataTy
   hasGeometryComponent(gameObject, state)
 };
 
+let addGameObjectSourceInstanceComponent =
+    (gameObject: gameObject, component: component, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  addSourceInstanceComponent(gameObject, component, state)
+};
+
+let getGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  getSourceInstanceComponent(gameObject, state)
+};
+
+let hasGameObjectSourceInstanceComponent = (gameObject: gameObject, state: StateDataType.state) => {
+  requireCheck(() => Contract.Operators.(_checkGameObjectShouldAlive(gameObject, state)));
+  hasSourceInstanceComponent(gameObject, state)
+};
+
 let isGameObjectAlive = (gameObject: gameObject, state: StateDataType.state) =>
   isAlive(gameObject, state);
 
