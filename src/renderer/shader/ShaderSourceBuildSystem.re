@@ -85,7 +85,6 @@ let _generateUniformSource =
        ""
      );
 
-/* todo test */
 let getPrecisionSource = (state: StateDataType.state) => {
   open GPUDetectType;
   let {precision} = GPUStateSystem.getData(state);
