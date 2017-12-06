@@ -48,7 +48,6 @@ let _init =
       |> ProgramSystem.createProgram
       |> ProgramSystem.registerProgram(shaderIndex, state)
       |> ProgramSystem.initShader(vsSource, fsSource, gl);
-    let shaderIndex = shaderIndex;
     state
     |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          gl,

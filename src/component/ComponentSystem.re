@@ -1,11 +1,24 @@
 open ComponentType;
 
+open Contract;
+
 let addComponentToGameObjectMap = (component: component, gameObjectUid: int, gameObjectMap) =>
-  WonderCommonlib.SparseMapSystem.set(component, gameObjectUid, gameObjectMap)
-  |> ignore;
+  WonderCommonlib.SparseMapSystem.set(component, gameObjectUid, gameObjectMap) |> ignore;
 
 let getComponentGameObject = (component: component, gameObjectMap) =>
   WonderCommonlib.SparseMapSystem.get(component, gameObjectMap);
+
+let unsafeGetComponentGameObject = (component: component, gameObjectMap) =>
+  WonderCommonlib.SparseMapSystem.unsafeGet(component, gameObjectMap)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "component's gameObject should exist",
+             () => WonderCommonlib.SparseMapSystem.get(component, gameObjectMap) |> assertExist
+           )
+         )
+     );
 
 let checkComponentShouldAlive = (component: component, isAliveFunc, state: StateDataType.state) =>
   Contract.(

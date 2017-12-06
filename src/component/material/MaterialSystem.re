@@ -1,13 +1,9 @@
 open MaterialType;
 
-open MaterialStateSystem;
-
-open Contract;
-
 open StateDataType;
 
 let getGameObject = (material: material, state: StateDataType.state) =>
-  ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);
+  MaterialGameObjectSystem.getGameObject(material, state);
 
 let unsafeGetShaderIndex = MaterialShaderIndexSystem.unsafeGetShaderIndex;
 

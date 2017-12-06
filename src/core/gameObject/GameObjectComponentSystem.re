@@ -33,6 +33,9 @@ let _addComponent = (uid: int, component: component, componentMap: array(int)) =
   WonderCommonlib.SparseMapSystem.set(uid, component, componentMap) |> ignore
 };
 
+let hasSourceInstanceComponent = (uid: int, state: StateDataType.state) : bool =>
+  GameObjectStateSystem.getGameObjectData(state).sourceInstanceMap |> _hasComponent(uid);
+
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateSystem.getGameObjectData(state).cameraControllerMap |> _hasComponent(uid);
 

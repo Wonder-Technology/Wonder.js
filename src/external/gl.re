@@ -44,7 +44,7 @@ external getWebgl1Context : (htmlElement, [@bs.as "webgl"] _, options) => webgl1
 
 [@bs.send] external getVertexAttribArrayEnabled : int => int = "VERTEX_ATTRIB_ARRAY_ENABLED";
 
-[@bs.send.pipe : webgl1Context] external getExtension : string => extension = "";
+[@bs.send.pipe : webgl1Context] external getExtension : string => Js.nullable(extension) = "";
 
 [@bs.send.pipe : webgl1Context] external getShaderPrecisionFormat : (int, int) => precisionFormat =
   "";

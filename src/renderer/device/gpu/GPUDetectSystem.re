@@ -6,14 +6,17 @@ open GPUDetectType;
 
 /* todo test */
 let _getExtension = (name: string, gl) =>
-  switch name {
-  | "instanced_arrays" => gl |> getExtension("ANGLE_instanced_arrays")
-  | _ => gl |> getExtension(name)
-  };
+  (
+    switch name {
+    | "instanced_arrays" => gl |> getExtension("ANGLE_instanced_arrays")
+    | _ => gl |> getExtension(name)
+    }
+  )
+  |> Js.toOption;
 
 let _detectExtension = (gl, gpuDetectData) => {
   ...gpuDetectData,
-  extensionInstancedArrays: Some(_getExtension("instanced_arrays", gl))
+  extensionInstancedArrays: _getExtension("instanced_arrays", gl)
 };
 
 let _detectPrecision = (gl, gpuDetectData) => {
@@ -61,3 +64,5 @@ let detect = (gl, state: StateDataType.state) => {
   ...state,
   gpuDetectData: GPUStateSystem.getData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
 };
+
+let hasExtension = (extension) => Js.Option.isSome(extension);

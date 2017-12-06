@@ -6,6 +6,9 @@ open StateDataType;
 
 open GameObjectType;
 
+/* todo dispose instance */
+let hasSourceInstanceComponent = GameObjectComponentSystem.hasSourceInstanceComponent;
+
 let hasCameraControllerComponent = GameObjectComponentSystem.hasCameraControllerComponent;
 
 let getCameraControllerComponent = GameObjectComponentSystem.getCameraControllerComponent;
@@ -300,5 +303,6 @@ let initData = () => {
   cameraControllerMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   geometryMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   meshRendererMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  materialMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  materialMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  sourceInstanceMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

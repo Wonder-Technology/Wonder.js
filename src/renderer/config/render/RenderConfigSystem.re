@@ -1,5 +1,7 @@
 open Contract;
 
+open GameObjectType;
+
 open StateDataType;
 
 let getInitPipelines = (state: StateDataType.state) => state.renderConfig.init_pipelines;
@@ -69,7 +71,13 @@ let _findFirstShaderData = (shaderLibName: string, shaderLibs: shader_libs) =>
   findFirst(shaderLibs, (item: shaderLib) => _filterTargetName(item.name, shaderLibName));
 
 let getMaterialShaderLibDataArr =
-    (groups: array(shaderGroup), shaderLibItems, shaderLibs: shader_libs) =>
+    (
+      {static_branchs, groups},
+      gameObject: gameObject,
+      shaderLibItems,
+      shaderLibs: shader_libs,
+      state: StateDataType.state
+    ) =>
   shaderLibItems
   |> ArraySystem.reduceOneParam(
        [@bs]
@@ -82,12 +90,25 @@ let getMaterialShaderLibDataArr =
            | Some(type_) =>
              switch type_ {
              | "group" =>
-               let group: shaderGroup =
-                 findFirst(groups, (item: shaderGroup) => _filterTargetName(item.name, name));
+               let group = findFirst(groups, (item) => _filterTargetName(item.name, name));
                let shaderLibArr =
                  group.value
                  |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs));
                Js.Array.concat(shaderLibArr, resultDataArr)
+             | "static_branch" =>
+               /* todo test */
+               let {value} =
+                 findFirst(static_branchs, (item) => _filterTargetName(item.name, name));
+               switch name {
+               | "modelMatrix_instance" =>
+                 let shaderLibName =
+                   GameObjectComponentSystem.hasSourceInstanceComponent(gameObject, state) ?
+                     InstanceUtils.isSupportInstance(state) ? value[1] : value[2] : value[0];
+                 resultDataArr
+                 |> Js.Array.push(_findFirstShaderData(shaderLibName, shaderLibs))
+                 |> ignore;
+                 resultDataArr
+               }
              }
            }
        ),

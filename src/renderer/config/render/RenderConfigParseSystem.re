@@ -89,6 +89,19 @@ let convertShadersToRecord = (shaders) => {
   open Decode;
   let json = shaders |> Js.Json.parseExn;
   {
+    static_branchs:
+      json
+      |> field(
+           "static_branchs",
+           (json) =>
+             json
+             |> array(
+                  (json) => {
+                    name: json |> field("name", string),
+                    value: json |> field("value", array(string))
+                  }
+                )
+         ),
     groups:
       json
       |> field(

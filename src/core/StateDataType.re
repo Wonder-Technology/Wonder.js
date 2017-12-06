@@ -135,10 +135,15 @@ type hardwareRelatedSetting = {
   browser
 };
 
-type shaderGroup = {
+type shaderMapData = {
   name: string,
   value: array(string)
 };
+
+/* type shaderStaticBranch = {
+  name: string,
+  value: array(string)
+}; */
 
 type shaderLibItem = {
   type_: option(string),
@@ -150,7 +155,8 @@ type material_shader = {shader_libs: array(shaderLibItem)};
 type shader = {material_shader};
 
 type shaders = {
-  groups: array(shaderGroup),
+  static_branchs: array(shaderMapData),
+  groups: array(shaderMapData),
   basic_material: shader
 };
 
