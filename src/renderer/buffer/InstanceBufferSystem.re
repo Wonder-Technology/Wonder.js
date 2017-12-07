@@ -1,16 +1,9 @@
-open GlType;
-
-open SourceInstanceType;
-
 open Gl;
 
 open Js.Typed_array;
 
-open VboBufferType;
-
 open Contract;
 
-/* todo test */
 /*! start with a maximum of 64 instances */
 let _getDefaultCapacity = () => 64 * 16 * 4;
 
@@ -31,6 +24,7 @@ let getOrCreateBuffer = (gl, sourceInstance: int, bufferMap, state: StateDataTyp
   };
 
 let getFloat32InstanceArraySize = (capacity: int) => {
+  /* todo test */
   requireCheck(
     () =>
       Contract.Operators.(test("capacity should be a multiplier of 4", () => capacity mod 4 == 0))
@@ -45,7 +39,7 @@ let setCapacity = (gl, capacity: int, buffer) => {
     currentCapacity := currentCapacity^ * 2
   };
   if (defaultCapacity < currentCapacity^) {
-    deleteBuffer(buffer);
+    gl |> deleteBuffer(buffer);
     (currentCapacity^, createBuffer(gl, currentCapacity^))
   } else {
     (defaultCapacity, buffer)
@@ -54,7 +48,7 @@ let setCapacity = (gl, capacity: int, buffer) => {
 
 let updateData = (gl, data: Float32Array.t, buffer) => {
   bindBuffer(getArrayBuffer(gl), buffer, gl);
-  bufferSubFloat32Data(getArrayBuffer(gl), 0, data);
+  gl |> bufferSubFloat32Data(getArrayBuffer(gl), 0, data);
   buffer
 };
 /* let unbind = (gl, buffer) => {}; */

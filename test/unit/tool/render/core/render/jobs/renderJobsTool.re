@@ -1,9 +1,6 @@
-let initWithRenderConfig = (sandbox) =>
-  TestTool.initWithRenderConfig(
-    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
-    ~renderConfig=
-      RenderConfigTool.buildRenderConfig(
-        ~renderSetting={|
+let _getDefaultRenderConfig = () =>
+  RenderConfigTool.buildRenderConfig(
+    ~renderSetting={|
     {
     "platform": "pc",
     "browser": [
@@ -23,8 +20,22 @@ let initWithRenderConfig = (sandbox) =>
     "render_pipeline": "simple_basic_render"
 }
 |},
-        ()
-      ),
+    ()
+  );
+
+let initWithRenderConfig = (sandbox) =>
+  TestTool.initWithRenderConfig(
+    ~sandbox,
+    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ~renderConfig=_getDefaultRenderConfig(),
+    ()
+  );
+
+let initWithRenderConfigAndBufferConfig = (sandbox, bufferConfig) =>
+  TestTool.initWithRenderConfig(
+    ~sandbox,
+    ~bufferConfig,
+    ~renderConfig=_getDefaultRenderConfig(),
     ()
   );
 

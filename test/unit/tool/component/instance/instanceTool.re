@@ -21,3 +21,5 @@ let setGpuDetectDataAllowBatchInstance = (state) => {
   ...state,
   gpuDetectData: {...state.gpuDetectData, extensionInstancedArrays: None}
 };
+
+let getExtensionInstancedArrays = (state) => GpuDetectTool.getData(state).extensionInstancedArrays |> Js.Option.getExn;

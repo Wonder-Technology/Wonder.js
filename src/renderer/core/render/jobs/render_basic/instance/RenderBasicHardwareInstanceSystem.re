@@ -79,17 +79,18 @@ let render = (gl, uid, state: StateDataType.state) => {
   let drawElementsInstancedANGLE = extension##drawElementsInstancedANGLE;
   let {instanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceList = SourceInstanceSystem.getObjectInstanceList(state);
+  let instanceRenderList = SourceInstanceSystem.getRenderList(sourceInstance, state);
   let instanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(gl, sourceInstance, instanceBufferMap, state);
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
   let stride = 64;
-  let objectInstanceCount = Js.Array.length(objectInstanceList);
-  let (capacity, instanceBuffer) = instanceBuffer |> setCapacity(gl, objectInstanceCount * stride);
+  let instanceRenderListCount = Js.Array.length(instanceRenderList);
+  let (capacity, instanceBuffer) =
+    instanceBuffer |> setCapacity(gl, instanceRenderListCount * stride);
   let matricesArrayForInstance = Float32Array.fromLength(getFloat32InstanceArraySize(capacity));
   let offset = ref(0);
   let state =
-    objectInstanceList
+    instanceRenderList
     |> ArraySystem.reduceState(
          [@bs]
          (
@@ -109,7 +110,7 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        );
-  let instanceBuffer = updateData(gl, matricesArrayForInstance, instanceBuffer);
+  let _ = updateData(gl, matricesArrayForInstance, instanceBuffer);
   let state =
     state
     |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
@@ -119,7 +120,7 @@ let render = (gl, uid, state: StateDataType.state) => {
            (state, {pos}: instanceAttributeSendData, index) => {
              Gl.enableVertexAttribArray(pos, gl);
              Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
-             vertexAttribDivisorANGLE(pos, 1);
+             [@bs] vertexAttribDivisorANGLE(pos, 1);
              state
            }
          ),
@@ -130,8 +131,9 @@ let render = (gl, uid, state: StateDataType.state) => {
     GeometrySystem.getIndexType(gl),
     GeometrySystem.getIndexTypeSize(gl),
     GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
-    objectInstanceCount,
+    instanceRenderListCount,
     drawElementsInstancedANGLE
   );
+  /* todo unbind? */
   state
 };

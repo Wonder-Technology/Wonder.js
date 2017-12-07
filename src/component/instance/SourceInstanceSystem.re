@@ -1,19 +1,51 @@
 open SourceInstanceType;
 
+open Contract;
+
 let create = (state: StateDataType.state) => SourceInstanceCreateSystem.create(state);
 
-let getObjectInstanceList = (state: StateDataType.state) =>
-  SourceInstanceStateSystem.getData(state).objectInstanceList;
+let _getObjectInstanceList = (sourceInstance, objectInstanceListMap) =>
+  objectInstanceListMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             {j|objectInstanceList of sourceInstance:$sourceInstance should exist|j},
+             () =>
+               objectInstanceListMap
+               |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
+               |> assertExist
+           )
+         )
+     );
 
-let _addObjectInstnace = (uid, {objectInstanceList} as data) => {
-  objectInstanceList |> Js.Array.push(uid) |> ignore;
+let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
+  _getObjectInstanceList(
+    sourceInstance,
+    SourceInstanceStateSystem.getData(state).objectInstanceListMap
+  );
+
+let getRenderList = (sourceInstance, state: StateDataType.state) => {
+  let list =
+    _getObjectInstanceList(
+      sourceInstance,
+      SourceInstanceStateSystem.getData(state).objectInstanceListMap
+    )
+    |> Js.Array.copy;
+  list |> Js.Array.push(sourceInstance) |> ignore;
+  list
+};
+
+let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
+  objectInstanceListMap |> _getObjectInstanceList(sourceInstance) |> Js.Array.push(uid) |> ignore;
   data
 };
 
-let createInstance = (state: StateDataType.state) => {
+let createInstance = (sourceInstance, state: StateDataType.state) => {
   open GameObjectComponentSystem;
   let (state, uid) = GameObjectCreateSystem.create(state);
-  _addObjectInstnace(uid, SourceInstanceStateSystem.getData(state)) |> ignore;
+  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateSystem.getData(state)) |> ignore;
   let (state, transform) = TransformSystem.create(state);
   /* todo add ObjectInstance to instance */
   (addTransformComponent(uid, transform, state), uid)
@@ -28,5 +60,5 @@ let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state)
 let initData = () => {
   index: 0,
   gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  objectInstanceList: WonderCommonlib.ArraySystem.createEmpty()
+  objectInstanceListMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

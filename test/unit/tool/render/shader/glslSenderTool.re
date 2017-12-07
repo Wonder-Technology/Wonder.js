@@ -31,6 +31,7 @@ module JudgeSendUniformData = {
               () => {
                 let state = ref(StateSystem.createState());
                 beforeEach(() => state := RenderJobsTool.initWithRenderConfig(sandbox));
+                /* afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^))); */
                 /* test(
                      "if cached, not send",
                      () => {

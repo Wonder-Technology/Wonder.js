@@ -164,7 +164,7 @@ let _ =
                     }
                   );
                   test(
-                    "bind buffer and reset buffer",
+                    "bind buffer and unbind buffer",
                     () => {
                       let (state, geometry) = _prepare(sandbox, state^);
                       let array_buffer = 1;
@@ -242,7 +242,7 @@ let _ =
                     }
                   );
                   test(
-                    "bind buffer and reset buffer",
+                    "bind buffer and unbind buffer",
                     () => {
                       let (state, geometry) = _prepare(sandbox, state^);
                       let element_array_buffer = 5;
@@ -872,12 +872,13 @@ let _ =
             }
           )
       )
-      /* test
-          ("else, drawArrays",
-          (
-          () => {
-         todo test
-          })
-          ); */
+      /* todo test
+         test
+         ("if gameObject not has indices, contract error",
+         (
+         () => {
+
+         })
+         ); */
     }
   );

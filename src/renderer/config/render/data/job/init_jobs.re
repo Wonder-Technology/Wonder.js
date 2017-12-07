@@ -1,3 +1,6 @@
 let init_jobs = {|
-    [{"name": "init_basic_material"}]
+    [
+        {"name": "preget_glslData"},
+        {"name": "init_basic_material"}
+    ]
 |};

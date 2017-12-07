@@ -45,6 +45,7 @@ let drawElementsInstancedANGLE =
       drawElementsInstancedANGLEFunc
     ) => {
   let startOffset = 0;
+  [@bs]
   drawElementsInstancedANGLEFunc(
     drawMode,
     indicesCount,

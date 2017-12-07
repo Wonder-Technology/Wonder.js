@@ -2,10 +2,10 @@ open ComponentType;
 
 type sourceInstance = int;
 
-type objectInstanceList = array(int);
+type objectInstanceListMap = array(array(int));
 
 type sourceInstanceData = {
   mutable index: int,
-  objectInstanceList,
+  objectInstanceListMap,
   gameObjectMap
 };

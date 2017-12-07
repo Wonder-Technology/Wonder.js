@@ -30,6 +30,7 @@ let initWithRenderConfig =
          Shader_libs.shader_libs
        ), */
     (
+      ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
                       "transformDataBufferCount": Js.Nullable.return(5),
@@ -38,16 +39,16 @@ let initWithRenderConfig =
                     }),
       ~renderConfig,
       ()
-    ) =>
-  StateSystem.createState(~renderConfig, ())
-  |> MainSystem.setConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
-  |> MainSystem.init
+    ) => {
+  MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
+  Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
       state
     }
-  );
+  )
+};
 
 let openContractCheck = () =>
   InitConfigSystem.setIsTest(~isTest=true, StateData.stateData) |> ignore;
