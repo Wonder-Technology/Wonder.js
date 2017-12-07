@@ -45,10 +45,10 @@
             var state = setMainConfig({
                 isTest: false,
                                 bufferConfig:{
-                geometryDataBufferCount:100000,
-                basicMaterialDataBufferCount:100000,
-                transformDataBufferCount:100000,
-                meshRendererDataBufferCount:100000
+                geometryDataBufferCount:200000,
+                basicMaterialDataBufferCount:200000,
+                transformDataBufferCount:200000,
+                meshRendererDataBufferCount:200000
                 // geometryDataBufferCount:200,
                                 }
             });
@@ -120,7 +120,8 @@ let objectInstanceList = getObjectInstanceList(sourceInstance, state);
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(10000, state);
+                var [state, boxes] = createBoxes(100000, state);
+                // var [state, boxes] = createBoxes(100, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);

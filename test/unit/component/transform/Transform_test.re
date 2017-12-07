@@ -528,6 +528,73 @@ let _ =
           )
       );
       describe(
+        "getLocalToWorldMatrix",
+        () =>
+          describe(
+            "test cache",
+            () => {
+              test(
+                "cache data after first get",
+                () => {
+                  open GameObject;
+                  let (state, transform1) = createTransform(state^);
+                  let pos1 = (1., 2., 3.);
+                  let state = state |> setTransformLocalPosition(transform1, pos1);
+                  let mat1 = TransformTool.getLocalToWorldMatrix(transform1, state);
+                  let mat2 = TransformTool.getLocalToWorldMatrix(transform1, state);
+                  mat1 |> expect == mat2
+                }
+              );
+              describe(
+                "test cache invalid",
+                () => {
+                  let _prepare = (state) => {
+                    open GameObject;
+                    let (state, transform1) = createTransform(state^);
+                    let pos1 = (1., 2., 3.);
+                    let state = state |> setTransformLocalPosition(transform1, pos1);
+                    let mat1 =
+                      TransformTool.getLocalToWorldMatrix(transform1, state)
+                      |> Js.Typed_array.Float32Array.copy;
+                    (state, transform1, mat1)
+                  };
+                  test(
+                    "invalid after change local position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformLocalPosition(transform1, pos2);
+                      let mat2 = TransformTool.getLocalToWorldMatrix(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  );
+                  test(
+                    "invalid after change position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformPosition(transform1, pos2);
+                      let mat2 = TransformTool.getLocalToWorldMatrix(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  );
+                  test(
+                    "test get position after change local position",
+                    () => {
+                      let (state, transform1, mat1) = _prepare(state);
+                      let pos2 = (2., 2., 3.);
+                      let state = state |> setTransformLocalPosition(transform1, pos2);
+                      let _ = state |> getTransformPosition(transform1);
+                      let mat2 = TransformTool.getLocalToWorldMatrix(transform1, state);
+                      mat1 |> expect |> not_ |> toEqual(mat2)
+                    }
+                  )
+                }
+              )
+            }
+          )
+      );
+      describe(
         "dispose component",
         () => {
           let dispose = (transform, state) => TransformTool.dispose(transform, state);

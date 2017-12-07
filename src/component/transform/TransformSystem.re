@@ -90,11 +90,19 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, state: StateDataType.state) => {
-  /* todo optimize: update return matrix? */
-  let data = TransformOperateDataSystem.update(transform, getTransformData(state));
-  TransformOperateDataSystem.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
-};
+let getLocalToWorldMatrix =
+  CacheUtils.memorizeLocalToWorldMatrix(
+    [@bs]
+    (
+      (transform: transform, state: StateDataType.state) => {
+        /* todo optimize: update return matrix? */
+        let data = TransformOperateDataSystem.update(transform, getTransformData(state));
+        TransformOperateDataSystem.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
+      }
+    ),
+    [@bs] ((state: StateDataType.state) => getTransformData(state).localToWorldMatrixCacheMap),
+    [@bs]((transform:transform, state: StateDataType.state) => TransformDirtySystem.isDirty(transform, getTransformData(state)))
+  );
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
   TransformGameObjectSystem.getGameObject(transform, getTransformData(state));
@@ -114,6 +122,7 @@ let initData = (state: StateDataType.state) => {
         childMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        localToWorldMatrixCacheMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
       }
       |> _setDefaultChildren(maxCount)
