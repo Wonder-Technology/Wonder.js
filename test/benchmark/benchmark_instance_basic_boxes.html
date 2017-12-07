@@ -34,19 +34,23 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
 
 
-        import { cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { getObjectInstanceList, createSourceInstance, createInstance } from "../../lib/es6_global/src/component/instance/SourceInstance.js";
+
+
+
+        import { addGameObjectSourceInstanceComponent,getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
 
 
         window.onload = function () {
             var state = setMainConfig({
                 isTest: false,
-                //                 bufferConfig:{
-                // geometryDataBufferCount:50000,
-                // basicMaterialDataBufferCount:50000,
-                // transformDataBufferCount:50000,
-                // meshRendererDataBufferCount:50000
-                // // geometryDataBufferCount:200,
-                //                 }
+                                bufferConfig:{
+                geometryDataBufferCount:100000,
+                basicMaterialDataBufferCount:100000,
+                transformDataBufferCount:100000,
+                meshRendererDataBufferCount:100000
+                // geometryDataBufferCount:200,
+                                }
             });
 
             initSample(state);
@@ -56,34 +60,26 @@
                 var boxes = [];
                 // var state$ = state;
 
-                var [state, box] = createBox(state);
+                var [state, box] = createBox(count, state);
 
+                boxes.push(box);
 
-                // for (let i = 0; i < count; i++) {
-                //     // var [state$, box] = createBox(state$);
-
-
-                //     var [state, newBoxes] = cloneGameObject(box, 2000, state);
-
-                //     boxes.push(box);
-                // }
-
-                // return [state, boxes];
+                return [state, boxes];
 
 
 
-                var [state, newBoxes] = cloneGameObject(box, count, state);
+                // var [state, newBoxes] = cloneGameObject(box, count, state);
 
 
-                let flatten = (arr) => {
-                    return arr.reduce((a, b) => {
-                        let arr = a.concat(b);
-                        return arr;
-                    }, []);
-                };
-                newBoxes = flatten(newBoxes);
+                // let flatten = (arr) => {
+                //     return arr.reduce((a, b) => {
+                //         let arr = a.concat(b);
+                //         return arr;
+                //     }, []);
+                // };
+                // newBoxes = flatten(newBoxes);
 
-                return [state, newBoxes];
+                // return [state, newBoxes];
 
             }
 
@@ -94,8 +90,16 @@
                     let box = boxes[i];
                     // state = initGameObject(box, state);
 
+                    let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-                    var transform = getGameObjectTransformComponent(box, state);
+let objectInstanceList = getObjectInstanceList(sourceInstance, state);
+
+
+                for (let i = 0, len = objectInstanceList.length; i < len; i++) {
+                    let objectInstance = objectInstanceList[i];
+
+
+                    var transform = getGameObjectTransformComponent(objectInstance, state);
 
 
                     // var pos = getTransformPosition(transform, state);
@@ -105,14 +109,18 @@
 
 
                     // console.log(getTransformLocalPosition(transform, state));
+
+
+                }
+
+
                 }
 
                 return [state, boxes];
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(19997, state);
-                // var [state, boxes] = createBoxes(2, state);
+                var [state, boxes] = createBoxes(10000, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -122,7 +130,7 @@
 
                 var [state, camera] = createCamera(state);
 
-                state = setData(boxes, state);
+                // state = setData(boxes, state);
                 // state = setParent(boxes, state);
                 // state = createAndDisposeGameObjects(boxes, state);
 
@@ -256,7 +264,7 @@
                 }, state)
             }
 
-            function createBox(state) {
+            function createBox(count, state) {
                 var [state, material] = createBasicMaterial(state);
 
                 var [state, meshRenderer] = createMeshRenderer(state);
@@ -267,6 +275,7 @@
                 state = addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
+
                 var [state, geometry] = createBoxGeometry(state);
 
                 state = setBoxGeometryConfigData(geometry, {
@@ -275,11 +284,34 @@
                     depth: 5
                 }, state);
 
-                // state = setGeometryGroup(geometry, 1, state);
 
 
 
                 state = addGameObjectGeometryComponent(obj, geometry, state);
+
+
+
+
+                var [state, sourceInstance] = createSourceInstance(state);
+                var state =
+                    addGameObjectSourceInstanceComponent(obj, sourceInstance, state);
+
+
+
+                    // var objectInstanceGameObjectArr = 
+
+                for (let i = 0; i < count; i++) {
+                    // state = initGameObject(box, state);
+
+
+                var [state, objectInstanceGameObject] =
+                    createInstance(sourceInstance, state);
+                }
+
+
+
+
+
 
                 return [state, obj];
 

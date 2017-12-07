@@ -75,8 +75,6 @@ let render = (gl, uid, state: StateDataType.state) => {
      );
      state */
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
-  let vertexAttribDivisorANGLE = extension##vertexAttribDivisorANGLE;
-  let drawElementsInstancedANGLE = extension##drawElementsInstancedANGLE;
   let {instanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
   let instanceRenderList = SourceInstanceSystem.getRenderList(sourceInstance, state);
@@ -111,28 +109,25 @@ let render = (gl, uid, state: StateDataType.state) => {
          state
        );
   let _ = updateData(gl, matricesArrayForInstance, instanceBuffer);
-  let state =
-    state
-    |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
-    |> ArraySystem.reduceStatei(
-         [@bs]
-         (
-           (state, {pos}: instanceAttributeSendData, index) => {
-             Gl.enableVertexAttribArray(pos, gl);
-             Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
-             [@bs] vertexAttribDivisorANGLE(pos, 1);
-             state
-           }
-         ),
-         state
-       );
+  state
+  |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
+  |> WonderCommonlib.ArraySystem.forEachi(
+       [@bs]
+       (
+         ({pos}: instanceAttributeSendData, index) => {
+           Gl.enableVertexAttribArray(pos, gl);
+           Gl.vertexAttribPointer(pos, 4, Gl.getFloat(gl), Js.false_, stride, index * 16, gl);
+           [@bs] Obj.magic(extension)##vertexAttribDivisorANGLE(pos, 1)
+         }
+       )
+     );
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
     GeometrySystem.getDrawMode(gl),
     GeometrySystem.getIndexType(gl),
     GeometrySystem.getIndexTypeSize(gl),
     GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
     instanceRenderListCount,
-    drawElementsInstancedANGLE
+    Obj.magic(extension)
   );
   /* todo unbind? */
   state

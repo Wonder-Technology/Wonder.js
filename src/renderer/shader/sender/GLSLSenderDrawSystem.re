@@ -42,11 +42,11 @@ let drawElementsInstancedANGLE =
       typeSize: int,
       indicesCount: int,
       instancesCount,
-      drawElementsInstancedANGLEFunc
+      extension
     ) => {
   let startOffset = 0;
   [@bs]
-  drawElementsInstancedANGLEFunc(
+  extension##drawElementsInstancedANGLE(
     drawMode,
     indicesCount,
     type_,
