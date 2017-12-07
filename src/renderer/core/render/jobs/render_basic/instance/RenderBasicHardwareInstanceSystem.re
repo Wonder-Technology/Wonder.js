@@ -6,74 +6,8 @@ open SourceInstanceType;
 
 open InstanceBufferSystem;
 
-open Js.Typed_array;
-
 let render = (gl, uid, state: StateDataType.state) => {
-  /* todo refactor */
-  let materialIndex: int = GameObjectSystem.unsafeGetMaterialComponent(uid, state);
-  let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
-  let geometryIndex: int = GameObjectSystem.unsafeGetGeometryComponent(uid, state);
-  let mappedGeometryIndex =
-    GeometryIndexSystem.getMappedIndex(
-      geometryIndex,
-      GeometryIndexSystem.getMappedIndexMap(state)
-    );
-  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateSystem.getVboBufferData(state);
-  let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
-  let state =
-    state
-    |> ProgramSystem.use(gl, program)
-    |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, {pos, size, buffer, sendFunc}) => {
-             let arrayBuffer =
-               switch buffer {
-               | "vertex" =>
-                 ArrayBufferSystem.getOrCreateBuffer(
-                   gl,
-                   geometryIndex,
-                   mappedGeometryIndex,
-                   vertexBufferMap,
-                   [@bs] GeometrySystem.getVertices,
-                   state
-                 )
-               | "index" =>
-                 ElementArrayBufferSystem.getOrCreateBuffer(
-                   gl,
-                   geometryIndex,
-                   mappedGeometryIndex,
-                   elementArrayBufferMap,
-                   [@bs] GeometrySystem.getIndices,
-                   state
-                 )
-               | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})
-               };
-             [@bs] sendFunc(gl, size, pos, arrayBuffer, state)
-           }
-         ),
-         state
-       )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndex)
-    |> ArraySystem.reduceState(
-         [@bs]
-         (
-           (state, {pos, getArrayDataFunc, sendArrayDataFunc}: uniformSendData) => {
-             [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(uid, state));
-             state
-           }
-         ),
-         state
-       );
-  /* GLSLSenderDrawSystem.drawElement(
-       GeometrySystem.getDrawMode(gl),
-       GeometrySystem.getIndexType(gl),
-       GeometrySystem.getIndexTypeSize(gl),
-       GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
-       gl
-     );
-     state */
+  let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let {instanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let {objectInstanceListMap, modelMatrixFloat32ArrayMap, instanceBufferCapacityMap} =
