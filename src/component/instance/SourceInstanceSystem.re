@@ -56,5 +56,6 @@ let initData = () => {
   index: 0,
   gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   objectInstanceListMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  modelMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  modelMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  instanceBufferCapacityMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };

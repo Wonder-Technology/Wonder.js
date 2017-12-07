@@ -419,8 +419,9 @@ let _ =
               describe(
                 "set instance buffer's capacity",
                 () =>
+                  /* todo test modelMatrixFloat32Array */
                   describe(
-                    "if default capacity < target capacity ",
+                    "if current capacity < target capacity",
                     () => {
                       let _prepare = (sandbox, state) => {
                         let (
@@ -502,6 +503,54 @@ let _ =
                           |> expect
                           |> toCalledOnce
                         }
+                      );
+                      describe(
+                        "fix bug",
+                        () =>
+                          describe(
+                            "test in the next render(if current capacity >= target capacity)",
+                            () => {
+                              test(
+                                "should use the instance buffer created in the previous render",
+                                () => {
+                                  let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                                    _prepare(sandbox, state^);
+                                  let buffer = Obj.magic(1);
+                                  let createBuffer =
+                                    createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
+                                  let state =
+                                    state
+                                    |> FakeGlTool.setFakeGl(
+                                         FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
+                                       );
+                                  let state = state |> RenderJobsTool.initSystemAndRender;
+                                  let state = state |> _render;
+                                  InstanceBufferTool.getOrCreateBuffer(sourceInstance, state)
+                                  |> expect == buffer
+                                }
+                              );
+                              test(
+                                "shouldn't create instance buffer",
+                                () => {
+                                  let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                                    _prepare(sandbox, state^);
+                                  let buffer = Obj.magic(1);
+                                  let createBuffer =
+                                    createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
+                                  let state =
+                                    state
+                                    |> FakeGlTool.setFakeGl(
+                                         FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ())
+                                       );
+                                  let state = state |> RenderJobsTool.initSystemAndRender;
+                                  let state = state |> _render;
+                                  let callCount = createBuffer |> getCallCount;
+                                  let state = state |> _render;
+                                  createBuffer |> getCallCount |> expect == callCount
+                                }
+                              )
+                            }
+                          )
                       )
                       /* test(
                            "not unbind new one",
