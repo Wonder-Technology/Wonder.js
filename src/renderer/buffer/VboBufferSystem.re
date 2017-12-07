@@ -24,7 +24,7 @@ let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
 let initData = () => {
   vertexBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   elementArrayBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  instanceBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  modelMatrixInstanceBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   vertexArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),
   groupVertexArrayBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArraySystem.createEmpty(),

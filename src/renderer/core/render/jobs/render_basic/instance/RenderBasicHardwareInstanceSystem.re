@@ -9,18 +9,18 @@ open InstanceBufferSystem;
 let render = (gl, uid, state: StateDataType.state) => {
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
-  let {instanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
-  let {objectInstanceListMap, modelMatrixFloat32ArrayMap, instanceBufferCapacityMap} =
+  let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
+  let {objectInstanceListMap, modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateSystem.getData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
   let instanceRenderList =
     SourceInstanceSystem.getRenderList(sourceInstance, objectInstanceListMap);
-  let instanceBuffer =
+  let modelMatrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
       gl,
       sourceInstance,
-      instanceBufferCapacityMap,
-      instanceBufferMap
+      modelMatrixInstanceBufferCapacityMap,
+      modelMatrixInstanceBufferMap
     );
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
   let stride = 64;
@@ -28,7 +28,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   let matricesArrayForInstance =
     InstanceBufferSystem.getOrCreateModelMatrixFloat32Array(
       sourceInstance,
-      instanceBufferCapacityMap,
+      modelMatrixInstanceBufferCapacityMap,
       modelMatrixFloat32ArrayMap
     );
   let matricesArrayForInstance =
@@ -36,11 +36,11 @@ let render = (gl, uid, state: StateDataType.state) => {
       gl,
       sourceInstance,
       instanceRenderListCount * stride,
-      instanceBuffer,
+      modelMatrixInstanceBuffer,
       matricesArrayForInstance,
-      instanceBufferMap,
+      modelMatrixInstanceBufferMap,
       modelMatrixFloat32ArrayMap,
-      instanceBufferCapacityMap
+      modelMatrixInstanceBufferCapacityMap
     );
   let offset = ref(0);
   let state =
@@ -64,7 +64,7 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        );
-  let _ = updateData(gl, matricesArrayForInstance, instanceBuffer);
+  let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
   state
   |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArraySystem.forEachi(
