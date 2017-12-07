@@ -15,6 +15,7 @@ let _ =
           state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "init material shader",
         () => {

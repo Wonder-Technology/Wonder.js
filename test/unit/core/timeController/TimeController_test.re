@@ -19,6 +19,7 @@ let _ =
           TestTool.closeContractCheck()
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "tick",
         () => {

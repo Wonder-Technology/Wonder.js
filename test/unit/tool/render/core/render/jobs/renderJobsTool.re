@@ -31,6 +31,17 @@ let initWithRenderConfig = (sandbox) =>
     ()
   );
 
+
+let initWithRenderConfigWithoutBuildFakeDom = (sandbox) =>
+  TestTool.initWithRenderConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
+    ~renderConfig=_getDefaultRenderConfig(),
+    ()
+  );
+
+
+
 let initWithRenderConfigAndBufferConfig = (sandbox, bufferConfig) =>
   TestTool.initWithRenderConfig(
     ~sandbox,

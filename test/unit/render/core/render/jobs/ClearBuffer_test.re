@@ -17,6 +17,7 @@ let _ =
           state := RenderJobsTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "clear gl buffer",
         () =>

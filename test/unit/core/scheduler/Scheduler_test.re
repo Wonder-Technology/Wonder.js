@@ -17,6 +17,7 @@ let _ =
           state := TestTool.init(~sandbox, ()) |> DirectorTool.prepare
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       test(
         "update scheduler before update system",
         () => {

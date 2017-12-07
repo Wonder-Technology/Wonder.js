@@ -818,7 +818,7 @@ let _ =
               let errMeg = "should not exceed geometryPointDataBufferCount";
               let _prepare = () => {
                 let state =
-                  TestTool.init(~sandbox,
+                  TestTool.initWithoutBuildFakeDom(~sandbox,
                     ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(5)),
                     ()
                   );

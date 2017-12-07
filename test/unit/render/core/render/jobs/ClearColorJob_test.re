@@ -20,6 +20,7 @@ let _ =
           state := RenderJobsTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       test(
         "clear gl color",
         () => {

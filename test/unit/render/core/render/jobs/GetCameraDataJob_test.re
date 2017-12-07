@@ -15,6 +15,7 @@ let _ =
           state := RenderJobsTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       test(
         "set current camera data to state.renderData.cameraData",
         () => {

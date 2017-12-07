@@ -31,6 +31,7 @@ let _ =
           state := TestTool.init(~sandbox, ())
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       describe(
         "getRenderArray",
         () =>

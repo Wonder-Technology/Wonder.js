@@ -15,6 +15,7 @@ let _ =
           state := RenderJobsTool.initWithRenderConfig(sandbox)
         }
       );
+      afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
       test(
         "set render array to state.renderData.renderArray",
         () => {

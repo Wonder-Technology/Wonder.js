@@ -1,3 +1,22 @@
+let initWithoutBuildFakeDom =
+    (
+      ~sandbox,
+      ~isTest=Js.Nullable.return(Js.true_),
+      ~bufferConfig=Js.Nullable.return({
+                      "transformDataBufferCount": Js.Nullable.return(5),
+                      "geometryPointDataBufferCount": Js.Nullable.return(300),
+                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                    }),
+      ()
+    ) =>
+  Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
+  |> (
+    (state) => {
+      StateData.stateData.state = Some(state);
+      state
+    }
+  );
+
 let init =
     (
       ~sandbox,
@@ -10,14 +29,28 @@ let init =
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
+  initWithoutBuildFakeDom(~sandbox, ~isTest, ~bufferConfig, ())
+};
+
+let initWithRenderConfigWithoutBuildFakeDom =
+    (
+      ~sandbox,
+      ~isTest=Js.Nullable.return(Js.true_),
+      ~bufferConfig=Js.Nullable.return({
+                      "transformDataBufferCount": Js.Nullable.return(5),
+                      "geometryPointDataBufferCount": Js.Nullable.return(5),
+                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                    }),
+      ~renderConfig,
+      ()
+    ) =>
   Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
   |> (
     (state) => {
       StateData.stateData.state = Some(state);
       state
     }
-  )
-};
+  );
 
 let initWithRenderConfig =
     /* ~renderConfig=(
@@ -41,13 +74,7 @@ let initWithRenderConfig =
       ()
     ) => {
   MainTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  Main.setMainConfig(MainTool.buildMainConfig(~isTest, ~bufferConfig, ()))
-  |> (
-    (state) => {
-      StateData.stateData.state = Some(state);
-      state
-    }
-  )
+  initWithRenderConfigWithoutBuildFakeDom(~sandbox, ~isTest, ~bufferConfig, ~renderConfig, ())
 };
 
 let openContractCheck = () =>

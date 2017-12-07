@@ -26,7 +26,8 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(~sandbox,
+            TestTool.init(
+              ~sandbox,
               ~bufferConfig=Js.Nullable.return(BufferConfigTool.buildBufferConfig(1000)),
               ()
             )
@@ -143,6 +144,7 @@ let _ =
                       let (state, _, _, clonedGameObjectArr, clonedMaterialArr) = _prepare();
                       let state =
                         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+                      let state = MaterialTool.prepareForInit(state);
                       let state =
                         state
                         |> GameObject.initGameObject(clonedGameObjectArr[0])

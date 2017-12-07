@@ -462,7 +462,8 @@ let _ =
                         () => {
                           open GameObjectType;
                           let state =
-                            TestTool.init(~sandbox,
+                            TestTool.initWithoutBuildFakeDom(
+                              ~sandbox,
                               ~bufferConfig=
                                 Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
                               ()
@@ -729,7 +730,11 @@ let _ =
           describe(
             "init components",
             () => {
-              beforeEach(() => state := InitBasicMaterialJobTool.initWithRenderConfig(sandbox));
+              beforeEach(
+                () =>
+                  state :=
+                    InitBasicMaterialJobTool.initWithRenderConfigWithoutBuildFakeDom(sandbox)
+              );
               test(
                 "init material component",
                 () => {
@@ -739,6 +744,8 @@ let _ =
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()));
+                  let state =
+                  MaterialTool.prepareForInit(state);
                   let state = state |> initGameObject(gameObject);
                   getCallCount(attachShader) |> expect == 2
                 }
