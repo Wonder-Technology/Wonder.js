@@ -76,16 +76,23 @@ let render = (gl, uid, state: StateDataType.state) => {
      state */
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let {instanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
+  let {objectInstanceListMap, modelMatrixFloat32ArrayMap} =
+    SourceInstanceStateSystem.getData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
-  let instanceRenderList = SourceInstanceSystem.getRenderList(sourceInstance, state);
+  let instanceRenderList =
+    SourceInstanceSystem.getRenderList(sourceInstance, objectInstanceListMap);
   let instanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(gl, sourceInstance, instanceBufferMap, state);
   /*! instanceCount * 4(float size) * 4(vec count) * 4(component count) */
   let stride = 64;
   let instanceRenderListCount = Js.Array.length(instanceRenderList);
-  let (capacity, instanceBuffer) =
-    instanceBuffer |> setCapacity(gl, instanceRenderListCount * stride);
-  let matricesArrayForInstance = Float32Array.fromLength(getFloat32InstanceArraySize(capacity));
+  let matricesArrayForInstance =
+    InstanceBufferSystem.getOrCreateModelMatrixFloat32Array(
+      sourceInstance,
+      modelMatrixFloat32ArrayMap
+    );
+  let (capacity, instanceBuffer, matricesArrayForInstance) =
+    setCapacity(gl, instanceRenderListCount * stride, instanceBuffer, matricesArrayForInstance);
   let offset = ref(0);
   let state =
     instanceRenderList

@@ -14,6 +14,7 @@ let createBuffer = (gl, capacity: int) => {
   buffer
 };
 
+/* todo optimize: instant create buffer,typeArray when create sourceInstance? */
 let getOrCreateBuffer = (gl, sourceInstance: int, bufferMap, state: StateDataType.state) =>
   switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, bufferMap)) {
   | Some(buffer) => buffer
@@ -23,7 +24,7 @@ let getOrCreateBuffer = (gl, sourceInstance: int, bufferMap, state: StateDataTyp
     buffer
   };
 
-let getFloat32InstanceArraySize = (capacity: int) => {
+let _getFloat32InstanceArraySize = (capacity: int) => {
   /* todo test */
   requireCheck(
     () =>
@@ -32,7 +33,23 @@ let getFloat32InstanceArraySize = (capacity: int) => {
   capacity / 4
 };
 
-let setCapacity = (gl, capacity: int, buffer) => {
+let _createModelMatrixFloat32Array = () =>
+  Float32Array.fromLength(_getFloat32InstanceArraySize(_getDefaultCapacity()));
+
+let getOrCreateModelMatrixFloat32Array = (sourceInstance: int, modelMatrixFloat32ArrayMap) =>
+  switch (WonderCommonlib.SparseMapSystem.get(sourceInstance, modelMatrixFloat32ArrayMap)) {
+  | Some(typeArr) => typeArr
+  | None =>
+    let typeArr = _createModelMatrixFloat32Array();
+    modelMatrixFloat32ArrayMap
+    |> WonderCommonlib.SparseMapSystem.set(sourceInstance, typeArr)
+    |> ignore;
+    typeArr
+  };
+
+/* todo fix: if create buffer, should set it in map */
+/* todo fix: if create typeArr, should set it in map */
+let setCapacity = (gl, capacity: int, buffer, modelMatrixFloat32Array) => {
   let defaultCapacity = _getDefaultCapacity();
   let currentCapacity = ref(defaultCapacity);
   while (currentCapacity^ < capacity) {
@@ -40,9 +57,9 @@ let setCapacity = (gl, capacity: int, buffer) => {
   };
   if (defaultCapacity < currentCapacity^) {
     gl |> deleteBuffer(buffer);
-    (currentCapacity^, createBuffer(gl, currentCapacity^))
+    (currentCapacity^, createBuffer(gl, currentCapacity^), _createModelMatrixFloat32Array())
   } else {
-    (defaultCapacity, buffer)
+    (defaultCapacity, buffer, modelMatrixFloat32Array)
   }
 };
 

@@ -26,13 +26,8 @@ let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
     SourceInstanceStateSystem.getData(state).objectInstanceListMap
   );
 
-let getRenderList = (sourceInstance, state: StateDataType.state) => {
-  let list =
-    _getObjectInstanceList(
-      sourceInstance,
-      SourceInstanceStateSystem.getData(state).objectInstanceListMap
-    )
-    |> Js.Array.copy;
+let getRenderList = (sourceInstance, objectInstanceListMap) => {
+  let list = _getObjectInstanceList(sourceInstance, objectInstanceListMap) |> Js.Array.copy;
   list |> Js.Array.push(sourceInstance) |> ignore;
   list
 };
@@ -60,5 +55,6 @@ let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state)
 let initData = () => {
   index: 0,
   gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-  objectInstanceListMap: WonderCommonlib.SparseMapSystem.createEmpty()
+  objectInstanceListMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+  modelMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty()
 };
