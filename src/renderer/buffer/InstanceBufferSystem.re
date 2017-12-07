@@ -15,7 +15,6 @@ let createBuffer = (gl, capacity: int) => {
 };
 
 let _getFloat32InstanceArraySize = (capacity: int) => {
-  /* todo test */
   requireCheck(
     () =>
       Contract.Operators.(test("capacity should be a multiplier of 4", () => capacity mod 4 == 0))

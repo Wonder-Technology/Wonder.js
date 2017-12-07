@@ -418,7 +418,17 @@ let _ =
               );
               describe(
                 "set instance buffer's capacity",
-                () =>
+                () => {
+                  describe(
+                    "contract check",
+                    () =>
+                      test(
+                        "capacity should be a multiplier of 4",
+                        () =>
+                          expect(() => InstanceBufferTool.createModelMatrixFloat32Array(3))
+                          |> toThrowMessage("capacity should be a multiplier of 4")
+                      )
+                  );
                   /* todo test modelMatrixFloat32Array */
                   describe(
                     "if current capacity < target capacity",
@@ -573,6 +583,7 @@ let _ =
                          ) */
                     }
                   )
+                }
               );
               describe(
                 "send sourceInstance gameObject's and objectInstanceGameObject gameObjects' model matrices",

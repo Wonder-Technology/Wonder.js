@@ -10,3 +10,5 @@ let getOrCreateBuffer = (sourceInstance, state) => {
     instanceBufferMap
   )
 };
+
+let createModelMatrixFloat32Array = InstanceBufferSystem._createModelMatrixFloat32Array;
