@@ -18,7 +18,7 @@ type transformData = {
   parentMap: transformParentMap,
   childMap: transformChildMap,
   gameObjectMap,
-  localToWorldMatrixCacheMap: array(Js.Typed_array.Float32Array.t),
+  localToWorldMatrixFloat32ArrayMap: array(Js.Typed_array.Float32Array.t),
   dirtyMap: transformDirtyMap,
   mutable disposedIndexArray: array(transform)
 };

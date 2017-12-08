@@ -21,12 +21,17 @@ let setLocalToWorldMatricesTypeArr =
       setFloat16(getMatrix4DataIndex(index), mat, localToWorldMatrices)
   );
 
-let getLocalToWorldMatrix = (index: int, localToWorldMatrices) =>
-  getFloat32ArrSubarray(
+let getLocalToWorldMatrix = (index: int, targetTypeArr, localToWorldMatrices) => {
+  fillFloat32ArrayWithFloat32Array(
+    targetTypeArr,
+    0,
     localToWorldMatrices,
     getMatrix4DataIndex(index),
     getMatrix4DataIndex(index) + 16
-  );
+  )
+  |> ignore;
+  targetTypeArr
+};
 
 let rec update = (transform: transform, {localPositions, localToWorldMatrices} as data) =>
   switch (isDirty(transform, data)) {
@@ -56,11 +61,16 @@ let setPosition =
       localPositionsIndex: int,
       parent: option(transform),
       position: position,
+      localToWorldMatrixFloat32Array,
       {localToWorldMatrices, localPositions} as data
     ) =>
   switch parent {
   | None =>
-    setFloat3(localPositionsIndex, TransformCastTypeSystem.tupleToJsArray(position), localPositions)
+    setFloat3(
+      localPositionsIndex,
+      TransformCastTypeSystem.tupleToJsArray(position),
+      localPositions
+    )
     |> ignore;
     data
   | Some(parent) =>
@@ -70,7 +80,13 @@ let setPosition =
       TransformCastTypeSystem.tupleToJsArray(
         Vector3System.transformMat4(
           position,
-          invert(getLocalToWorldMatrix(getMatrix4DataIndex(parent), localToWorldMatrices))
+          invert(
+            getLocalToWorldMatrix(
+              getMatrix4DataIndex(parent),
+              localToWorldMatrixFloat32Array,
+              localToWorldMatrices
+            )
+          )
         )
       ),
       localPositions

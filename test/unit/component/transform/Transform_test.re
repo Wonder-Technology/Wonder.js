@@ -527,7 +527,7 @@ let _ =
             }
           )
       );
-      describe(
+      /* describe(
         "getLocalToWorldMatrix",
         () =>
           describe(
@@ -593,7 +593,7 @@ let _ =
               )
             }
           )
-      );
+      ); */
       describe(
         "dispose component",
         () => {

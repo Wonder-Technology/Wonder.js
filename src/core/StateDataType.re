@@ -212,9 +212,7 @@ and attributeSendData = {
   buffer: string,
   sendFunc: [@bs] ((webgl1Context, attributeLocation, int, buffer, state) => state)
 }
-and instanceAttributeSendData = {
-  pos: attributeLocation
-}
+and instanceAttributeSendData = {pos: attributeLocation}
 and uniformSendData = {
   pos: uniformLocation,
   getArrayDataFunc: [@bs] ((gameObject, state) => Float32Array.t),
