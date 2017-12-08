@@ -10,5 +10,5 @@ let createInstance = createInstance;
 let getObjectInstanceList = getObjectInstanceList;
 
 let markModelMatrixIsStatic =
-    (sourceInstance: sourceInstance, isStatic: bool, state: StateDataType.state) =>
-  markModelMatrixIsStatic(sourceInstance, isStatic, state);
+    (sourceInstance: sourceInstance, isStatic: Js.boolean, state: StateDataType.state) =>
+  markModelMatrixIsStatic(sourceInstance, Js.to_bool(isStatic), state);

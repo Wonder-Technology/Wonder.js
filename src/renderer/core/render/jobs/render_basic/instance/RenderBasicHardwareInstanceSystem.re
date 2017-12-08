@@ -19,6 +19,7 @@ let _sendModelMatrixData =
       modelMatrixFloat32ArrayMap,
       state
     ) => {
+  DebugUtils.log("send") |> ignore;
   let modelMatrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
       gl,
@@ -110,19 +111,22 @@ let render = (gl, uid, state: StateDataType.state) => {
           state
         )
         |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, true) :
-      /* todo finish */
-      _sendModelMatrixData(
-        gl,
-        extension,
-        sourceInstance,
-        shaderIndex,
-        instanceRenderList,
-        instanceRenderListCount,
-        modelMatrixInstanceBufferCapacityMap,
-        modelMatrixInstanceBufferMap,
-        modelMatrixFloat32ArrayMap,
-        state
-      );
+      {
+        DebugUtils.log("ffff") |> ignore;
+        /* todo finish */
+        _sendModelMatrixData(
+          gl,
+          extension,
+          sourceInstance,
+          shaderIndex,
+          instanceRenderList,
+          instanceRenderListCount,
+          modelMatrixInstanceBufferCapacityMap,
+          modelMatrixInstanceBufferMap,
+          modelMatrixFloat32ArrayMap,
+          state
+        )
+      };
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
     GeometrySystem.getDrawMode(gl),
     GeometrySystem.getIndexType(gl),

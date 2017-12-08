@@ -829,6 +829,73 @@ let _ =
                     }
                   )
                 }
+              );
+              describe(
+                "optimize",
+                () =>
+                  describe(
+                    "add isModelMatrixIsStatic logic",
+                    () => {
+                      let _prepare = (sandbox, isStatic, state) => {
+                        let (
+                          state,
+                          _,
+                          (
+                            geometry,
+                            material,
+                            meshRenderer,
+                            sourceInstance,
+                            objectInstanceGameObject
+                          )
+                        ) =
+                          _prepare(sandbox, state^);
+                        let state =
+                          SourceInstance.markModelMatrixIsStatic(sourceInstance, isStatic, state);
+                        let bufferSubData = createEmptyStubWithJsObjSandbox(sandbox);
+                        let state =
+                          state
+                          |> FakeGlTool.setFakeGl(
+                               FakeGlTool.buildFakeGl(~sandbox, ~bufferSubData, ())
+                             );
+                        let state = state |> RenderJobsTool.initSystemAndRender;
+                        (state, bufferSubData)
+                      };
+                      describe(
+                        "if isModelMatrixIsStatic is true",
+                        () => {
+                          test(
+                            "if not send data before, send data",
+                            () => {
+                              let (state, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let state = state |> _render;
+                              bufferSubData |> expect |> toCalledOnce
+                            }
+                          );
+                          test(
+                            "else, not send data",
+                            () => {
+                              let (state, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let state = state |> _render;
+                              let state = state |> _render;
+                              bufferSubData |> expect |> toCalledOnce
+                            }
+                          )
+                        }
+                      );
+                      describe(
+                        "else",
+                        () =>
+                          test(
+                            "send data",
+                            () => {
+                              let (state, bufferSubData) = _prepare(sandbox, Js.false_, state);
+                              let state = state |> _render;
+                              bufferSubData |> expect |> toCalledOnce
+                            }
+                          )
+                      )
+                    }
+                  )
               )
             }
           )
