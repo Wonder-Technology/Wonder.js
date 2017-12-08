@@ -34,23 +34,23 @@
         import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
 
 
-        import { getObjectInstanceList, createSourceInstance, createInstance } from "../../lib/es6_global/src/component/instance/SourceInstance.js";
+        import { markModelMatrixIsStatic, getObjectInstanceList, createSourceInstance, createInstance } from "../../lib/es6_global/src/component/instance/SourceInstance.js";
 
 
 
-        import { addGameObjectSourceInstanceComponent,getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
 
 
         window.onload = function () {
             var state = setMainConfig({
                 isTest: false,
-                                bufferConfig:{
-                geometryDataBufferCount:200000,
-                basicMaterialDataBufferCount:200000,
-                transformDataBufferCount:200000,
-                meshRendererDataBufferCount:200000
-                // geometryDataBufferCount:200,
-                                }
+                bufferConfig: {
+                    // geometryDataBufferCount:500000,
+                    // basicMaterialDataBufferCount:500000,
+                    transformDataBufferCount: 500000,
+                    // meshRendererDataBufferCount:500000
+                    // geometryDataBufferCount:200,
+                }
             });
 
             initSample(state);
@@ -92,26 +92,26 @@
 
                     let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
 
-let objectInstanceList = getObjectInstanceList(sourceInstance, state);
+                    let objectInstanceList = getObjectInstanceList(sourceInstance, state);
 
 
-                for (let i = 0, len = objectInstanceList.length; i < len; i++) {
-                    let objectInstance = objectInstanceList[i];
+                    for (let i = 0, len = objectInstanceList.length; i < len; i++) {
+                        let objectInstance = objectInstanceList[i];
 
 
-                    var transform = getGameObjectTransformComponent(objectInstance, state);
+                        var transform = getGameObjectTransformComponent(objectInstance, state);
 
 
-                    // var pos = getTransformPosition(transform, state);
-                    var localPos = getTransformLocalPosition(transform, state);
+                        // var pos = getTransformPosition(transform, state);
+                        var localPos = getTransformLocalPosition(transform, state);
 
-                    state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
-
-
-                    // console.log(getTransformLocalPosition(transform, state));
+                        state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
 
 
-                }
+                        // console.log(getTransformLocalPosition(transform, state));
+
+
+                    }
 
 
                 }
@@ -120,8 +120,8 @@ let objectInstanceList = getObjectInstanceList(sourceInstance, state);
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(100000, state);
-                // var [state, boxes] = createBoxes(100, state);
+                var [state, boxes] = createBoxes(200000, state);
+                // var [state, boxes] = createBoxes(2, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -294,19 +294,39 @@ let objectInstanceList = getObjectInstanceList(sourceInstance, state);
 
 
                 var [state, sourceInstance] = createSourceInstance(state);
+
+                setTimeout(() => {
+
+                    scheduleLoop((elapsed, state) => {
+                        return markModelMatrixIsStatic(sourceInstance, false, state)
+                    }, state);
+
+                }, 1000);
+
+
+                setTimeout(() => {
+
+                    scheduleLoop((elapsed, state) => {
+                        return markModelMatrixIsStatic(sourceInstance, true, state)
+                    }, state);
+
+                }, 3000);
+
+
+
                 var state =
                     addGameObjectSourceInstanceComponent(obj, sourceInstance, state);
 
 
 
-                    // var objectInstanceGameObjectArr = 
+                // var objectInstanceGameObjectArr = 
 
                 for (let i = 0; i < count; i++) {
                     // state = initGameObject(box, state);
 
 
-                var [state, objectInstanceGameObject] =
-                    createInstance(sourceInstance, state);
+                    var [state, objectInstanceGameObject] =
+                        createInstance(sourceInstance, state);
                 }
 
 

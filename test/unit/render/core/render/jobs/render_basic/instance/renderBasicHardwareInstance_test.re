@@ -899,7 +899,7 @@ let _ =
                                FakeGlTool.buildFakeGl(~sandbox, ~bufferSubData, ())
                              );
                         let state = state |> RenderJobsTool.initSystemAndRender;
-                        (state, bufferSubData)
+                        (state, sourceInstance, bufferSubData)
                       };
                       describe(
                         "if isModelMatrixIsStatic is true",
@@ -907,7 +907,7 @@ let _ =
                           test(
                             "if not send data before, send data",
                             () => {
-                              let (state, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
                               let state = state |> _render;
                               bufferSubData |> expect |> toCalledOnce
                             }
@@ -915,7 +915,7 @@ let _ =
                           test(
                             "else, not send data",
                             () => {
-                              let (state, bufferSubData) = _prepare(sandbox, Js.true_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, Js.true_, state);
                               let state = state |> _render;
                               let state = state |> _render;
                               bufferSubData |> expect |> toCalledOnce
@@ -929,10 +929,95 @@ let _ =
                           test(
                             "send data",
                             () => {
-                              let (state, bufferSubData) = _prepare(sandbox, Js.false_, state);
+                              let (state, _, bufferSubData) = _prepare(sandbox, Js.false_, state);
                               let state = state |> _render;
                               bufferSubData |> expect |> toCalledOnce
                             }
+                          )
+                      );
+                      describe(
+                        "support switch static to dynamic",
+                        () =>
+                          describe(
+                            "test after switch",
+                            () =>
+                              test(
+                                "send data",
+                                () => {
+                                  let (state, sourceInstance, bufferSubData) =
+                                    _prepare(sandbox, Js.false_, state);
+                                  let state = state |> _render;
+                                  let state =
+                                    SourceInstance.markModelMatrixIsStatic(
+                                      sourceInstance,
+                                      Js.false_,
+                                      state
+                                    );
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  bufferSubData |> expect |> toCalledThrice
+                                }
+                              )
+                          )
+                      );
+                      describe(
+                        "support switch dynamic to static",
+                        () =>
+                          describe(
+                            "test after switch",
+                            () =>
+                              test(
+                                "send data in the next render, and not send data in the next next render",
+                                () => {
+                                  let (state, sourceInstance, bufferSubData) =
+                                    _prepare(sandbox, Js.false_, state);
+                                  let state = state |> _render;
+                                  let state =
+                                    SourceInstance.markModelMatrixIsStatic(
+                                      sourceInstance,
+                                      Js.true_,
+                                      state
+                                    );
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  bufferSubData |> expect |> toCalledTwice
+                                }
+                              )
+                          )
+                      );
+                      describe(
+                        "support switch static to dynamic to static",
+                        () =>
+                          describe(
+                            "test after switch",
+                            () =>
+                              test(
+                                "send data in the next render, and not send data in the next next render",
+                                () => {
+                                  let (state, sourceInstance, bufferSubData) =
+                                    _prepare(sandbox, Js.false_, state);
+                                  let state = state |> _render;
+                                  let state =
+                                    SourceInstance.markModelMatrixIsStatic(
+                                      sourceInstance,
+                                      Js.false_,
+                                      state
+                                    );
+                                  let state = state |> _render;
+                                  let state =
+                                    SourceInstance.markModelMatrixIsStatic(
+                                      sourceInstance,
+                                      Js.true_,
+                                      state
+                                    );
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  let state = state |> _render;
+                                  bufferSubData |> getCallCount |> expect == 3
+                                }
+                              )
                           )
                       )
                     }

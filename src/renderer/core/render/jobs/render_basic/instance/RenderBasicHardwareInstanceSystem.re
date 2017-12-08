@@ -34,7 +34,7 @@ let _sendModelMatrixData =
       modelMatrixInstanceBufferCapacityMap,
       modelMatrixFloat32ArrayMap
     );
-  let (modelMatrixInstanceBuffer,  matricesArrayForInstance ) =
+  let (modelMatrixInstanceBuffer, matricesArrayForInstance) =
     setCapacityAndUpdateBufferAndTypeArray(
       gl,
       sourceInstance,
@@ -84,6 +84,9 @@ let _sendModelMatrixData =
 };
 
 let render = (gl, uid, state: StateDataType.state) => {
+  /* todo optimize for static data:
+     use bufferData instead of bufferSubData(use STATIC_DRAW)
+     use accurate buffer capacity(can't change) */
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
@@ -110,19 +113,19 @@ let render = (gl, uid, state: StateDataType.state) => {
           state
         )
         |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, true) :
-      /* todo finish */
-      _sendModelMatrixData(
-        gl,
-        extension,
-        sourceInstance,
-        shaderIndex,
-        instanceRenderList,
-        instanceRenderListCount,
-        modelMatrixInstanceBufferCapacityMap,
-        modelMatrixInstanceBufferMap,
-        modelMatrixFloat32ArrayMap,
-        state
-      );
+      state
+      |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, false)
+      |> _sendModelMatrixData(
+           gl,
+           extension,
+           sourceInstance,
+           shaderIndex,
+           instanceRenderList,
+           instanceRenderListCount,
+           modelMatrixInstanceBufferCapacityMap,
+           modelMatrixInstanceBufferMap,
+           modelMatrixFloat32ArrayMap
+         );
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
     GeometrySystem.getDrawMode(gl),
     GeometrySystem.getIndexType(gl),
