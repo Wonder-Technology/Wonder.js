@@ -90,18 +90,20 @@ let setPosition = (transform: transform, position: position, state: StateDataTyp
   state
 };
 
-let getLocalToWorldMatrix =
+let getLocalToWorldMatrix = (transform: transform, data) =>
   CacheUtils.memorizeLocalToWorldMatrix(
     [@bs]
     (
-      (transform: transform, state: StateDataType.state) => {
+      (transform: transform, data) => {
         /* todo optimize: update return matrix? */
-        let data = TransformOperateDataSystem.update(transform, getTransformData(state));
+        let data = TransformOperateDataSystem.update(transform, data);
         TransformOperateDataSystem.getLocalToWorldMatrix(transform, data.localToWorldMatrices)
       }
     ),
-    [@bs] ((state: StateDataType.state) => getTransformData(state).localToWorldMatrixCacheMap),
-    [@bs]((transform:transform, state: StateDataType.state) => TransformDirtySystem.isDirty(transform, getTransformData(state)))
+    [@bs] ((data) => data.localToWorldMatrixCacheMap),
+    [@bs] ((transform: transform, data) => TransformDirtySystem.isDirty(transform, data)),
+    transform,
+    data
   );
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>

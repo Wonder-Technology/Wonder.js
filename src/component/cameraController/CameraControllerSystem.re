@@ -125,7 +125,7 @@ let getTransform = (cameraController: cameraController, state: StateDataType.sta
   };
 
 let _getCameraToWorldMatrixByTransform = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrix(transform, state);
+  TransformSystem.getLocalToWorldMatrix(transform, TransformStateSystem.getTransformData(state));
 
 let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   _getCameraToWorldMatrixByTransform(getTransform(cameraController, state), state);

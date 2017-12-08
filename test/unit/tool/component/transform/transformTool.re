@@ -32,7 +32,7 @@ let isTransform = (transform: transform) => {
 };
 
 let getLocalToWorldMatrix = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrix(transform, state);
+  TransformSystem.getLocalToWorldMatrix(transform, TransformStateSystem.getTransformData(state));
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();

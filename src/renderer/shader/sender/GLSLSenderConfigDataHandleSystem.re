@@ -118,7 +118,10 @@ let _getModelMMatrixData =
     (gameObject: gameObject, state: StateDataType.state) => {
       let transform =
         Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(gameObject, state));
-      TransformSystem.getLocalToWorldMatrix(transform, state)
+      TransformSystem.getLocalToWorldMatrix(
+        transform,
+        TransformStateSystem.getTransformData(state)
+      )
     }
   );
 
@@ -233,16 +236,15 @@ let getAttributeSendData = (shaderIndex: int, state: StateDataType.state) => {
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
-           test
-             (
-               "attribute send data should exist",
-               () => {
-                 let {attributeSendDataMap} = getGLSLSenderData(state);
-                 attributeSendDataMap
-                 |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
-                 |> assertExist
-               }
-             )
+           test(
+             "attribute send data should exist",
+             () => {
+               let {attributeSendDataMap} = getGLSLSenderData(state);
+               attributeSendDataMap
+               |> WonderCommonlib.SparseMapSystem.get(shaderIndex)
+               |> assertExist
+             }
+           )
          )
      )
 };

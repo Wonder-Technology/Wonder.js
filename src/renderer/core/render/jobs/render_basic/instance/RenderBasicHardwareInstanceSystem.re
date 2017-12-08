@@ -6,12 +6,12 @@ open SourceInstanceType;
 
 open InstanceBufferSystem;
 
-let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => {
+let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, transformData, state) => {
   let transform = Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(uid, state));
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
     matricesArrayForInstance,
     offset,
-    TransformSystem.getLocalToWorldMatrix(transform, state),
+    TransformSystem.getLocalToWorldMatrix(transform, transformData),
     0,
     16
   );
@@ -30,6 +30,7 @@ let _sendModelMatrixData =
       modelMatrixInstanceBufferCapacityMap,
       modelMatrixInstanceBufferMap,
       modelMatrixFloat32ArrayMap,
+      transformData,
       state
     ) => {
   let modelMatrixInstanceBuffer =
@@ -59,7 +60,8 @@ let _sendModelMatrixData =
       modelMatrixInstanceBufferCapacityMap
     );
   let offset = ref(0);
-  let state = state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
+  let state =
+    state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^, transformData);
   offset := offset^ + 16;
   let state =
     objectInstanceList
@@ -68,7 +70,13 @@ let _sendModelMatrixData =
          (
            (state, objectInstance) => {
              let state =
-               state |> _fillModelMatrixTypeArr(objectInstance, matricesArrayForInstance, offset^);
+               state
+               |> _fillModelMatrixTypeArr(
+                    objectInstance,
+                    matricesArrayForInstance,
+                    offset^,
+                    transformData
+                  );
              offset := offset^ + 16;
              state
            }
@@ -97,8 +105,9 @@ let render = (gl, uid, state: StateDataType.state) => {
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
+  let transformData = TransformStateSystem.getTransformData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
-  let {objectInstanceListMap, modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
+  let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateSystem.getData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceList = SourceInstanceSystem.getObjectInstanceList(sourceInstance, state);
@@ -118,6 +127,7 @@ let render = (gl, uid, state: StateDataType.state) => {
           modelMatrixInstanceBufferCapacityMap,
           modelMatrixInstanceBufferMap,
           modelMatrixFloat32ArrayMap,
+          transformData,
           state
         )
         |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, true) :
@@ -133,7 +143,8 @@ let render = (gl, uid, state: StateDataType.state) => {
            instanceRenderListCount,
            modelMatrixInstanceBufferCapacityMap,
            modelMatrixInstanceBufferMap,
-           modelMatrixFloat32ArrayMap
+           modelMatrixFloat32ArrayMap,
+           transformData
          );
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
     GeometrySystem.getDrawMode(gl),

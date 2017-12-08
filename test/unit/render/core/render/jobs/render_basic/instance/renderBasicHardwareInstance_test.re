@@ -672,7 +672,7 @@ let _ =
                                let transform = transformArr[index];
                                TypeArrayUtils.fillFloat32ArrayWithOffset(
                                  data,
-                                 TransformSystem.getLocalToWorldMatrix(transform, state),
+                                 TransformTool.getLocalToWorldMatrix(transform, state),
                                  offset
                                );
                                offset + 16

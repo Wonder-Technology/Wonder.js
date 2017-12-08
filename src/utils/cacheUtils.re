@@ -12,20 +12,20 @@ let memorizeIntState = (bodyFunc, getCacheMapFunc, param: int, state: state) => 
 };
 
 let memorizeLocalToWorldMatrix =
-    (bodyFunc, getCacheMapFunc, isCacheInvalidFunc, param: int, state: state) =>
-  switch ([@bs] isCacheInvalidFunc(param, state)) {
+    (bodyFunc, getCacheMapFunc, isCacheInvalidFunc, param: int, data) =>
+  switch ([@bs] isCacheInvalidFunc(param, data)) {
   | false =>
-    let cachedMap = [@bs] getCacheMapFunc(state);
+    let cachedMap = [@bs] getCacheMapFunc(data);
     switch (WonderCommonlib.SparseMapSystem.get(param, cachedMap)) {
     | None =>
-      let value = [@bs] bodyFunc(param, state);
+      let value = [@bs] bodyFunc(param, data);
       WonderCommonlib.SparseMapSystem.set(param, value, cachedMap) |> ignore;
       value
     | Some(value) => value
     }
   | true =>
-    let cachedMap = [@bs] getCacheMapFunc(state);
-    let value = [@bs] bodyFunc(param, state);
+    let cachedMap = [@bs] getCacheMapFunc(data);
+    let value = [@bs] bodyFunc(param, data);
     WonderCommonlib.SparseMapSystem.set(param, value, cachedMap) |> ignore;
     value
   };
