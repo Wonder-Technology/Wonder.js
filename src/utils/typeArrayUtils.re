@@ -94,15 +94,6 @@ let fillFloat32ArrayWithOffset = (targetTypeArr, sourceTypeArr: Float32Array.t, 
 
 let fillFloat32ArrayWithFloat32Array =
     (targetTypeArr, targetStartIndex, sourceTypeArr, sourceStartIndex, endIndex) => {
-  requireCheck(
-    () =>
-      Contract.Operators.(
-        test(
-          "targetStartIndex should <= sourceStartIndex",
-          () => targetStartIndex <= sourceStartIndex
-        )
-      )
-  );
   let typeArrIndex = ref(targetStartIndex);
   for (i in sourceStartIndex to endIndex - 1) {
     Js.Typed_array.Float32Array.unsafe_set(

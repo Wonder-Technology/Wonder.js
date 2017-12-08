@@ -56,10 +56,12 @@ let _sendModelMatrixData =
                Js.Option.getExn(
                  GameObjectComponentSystem.getTransformComponent(objectInstance, state)
                );
-             TypeArrayUtils.fillFloat32ArrayWithOffset(
+             TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
                matricesArrayForInstance,
+               offset^ ,
                TransformSystem.getLocalToWorldMatrix(transform, state),
-               offset^
+               0,
+               16
              );
              offset := offset^ + 16;
              state
@@ -85,8 +87,9 @@ let _sendModelMatrixData =
 
 let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
-     use bufferData instead of bufferSubData(use STATIC_DRAW)
-     use accurate buffer capacity(can't change) */
+  use bufferData instead of bufferSubData(use STATIC_DRAW)
+  use accurate buffer capacity(can't change) */
+
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
