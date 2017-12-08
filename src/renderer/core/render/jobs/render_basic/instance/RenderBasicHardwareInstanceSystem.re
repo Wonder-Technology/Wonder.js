@@ -19,7 +19,6 @@ let _sendModelMatrixData =
       modelMatrixFloat32ArrayMap,
       state
     ) => {
-  DebugUtils.log("send") |> ignore;
   let modelMatrixInstanceBuffer =
     InstanceBufferSystem.getOrCreateBuffer(
       gl,
@@ -35,7 +34,7 @@ let _sendModelMatrixData =
       modelMatrixInstanceBufferCapacityMap,
       modelMatrixFloat32ArrayMap
     );
-  let matricesArrayForInstance =
+  let (modelMatrixInstanceBuffer,  matricesArrayForInstance ) =
     setCapacityAndUpdateBufferAndTypeArray(
       gl,
       sourceInstance,
@@ -111,22 +110,19 @@ let render = (gl, uid, state: StateDataType.state) => {
           state
         )
         |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, true) :
-      {
-        DebugUtils.log("ffff") |> ignore;
-        /* todo finish */
-        _sendModelMatrixData(
-          gl,
-          extension,
-          sourceInstance,
-          shaderIndex,
-          instanceRenderList,
-          instanceRenderListCount,
-          modelMatrixInstanceBufferCapacityMap,
-          modelMatrixInstanceBufferMap,
-          modelMatrixFloat32ArrayMap,
-          state
-        )
-      };
+      /* todo finish */
+      _sendModelMatrixData(
+        gl,
+        extension,
+        sourceInstance,
+        shaderIndex,
+        instanceRenderList,
+        instanceRenderListCount,
+        modelMatrixInstanceBufferCapacityMap,
+        modelMatrixInstanceBufferMap,
+        modelMatrixFloat32ArrayMap,
+        state
+      );
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
     GeometrySystem.getDrawMode(gl),
     GeometrySystem.getIndexType(gl),

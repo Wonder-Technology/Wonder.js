@@ -83,9 +83,9 @@ let setCapacityAndUpdateBufferAndTypeArray =
     modelMatrixFloat32ArrayMap
     |> WonderCommonlib.SparseMapSystem.set(sourceInstance, modelMatrixFloat32Array)
     |> ignore;
-    modelMatrixFloat32Array
+    (buffer, modelMatrixFloat32Array)
   } else {
-    modelMatrixFloat32Array
+    (buffer, modelMatrixFloat32Array)
   }
 };
 

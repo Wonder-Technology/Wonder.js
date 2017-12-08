@@ -453,22 +453,63 @@ let _ =
                         };
                         (state, gameObject, sourceInstance, objectInstanceGameObject)
                       };
-                      test(
+                      describe(
                         "delete old instance buffer",
                         () => {
-                          let (state, gameObject, sourceInstance, objectInstanceGameObject) =
-                            _prepare(sandbox, state^);
-                          let buffer = Obj.magic(1);
-                          let createBuffer =
-                            createEmptyStubWithJsObjSandbox(sandbox) |> returns(buffer);
-                          let deleteBuffer = createEmptyStubWithJsObjSandbox(sandbox);
-                          let state =
-                            state
-                            |> FakeGlTool.setFakeGl(
-                                 FakeGlTool.buildFakeGl(~sandbox, ~createBuffer, ~deleteBuffer, ())
-                               );
-                          let state = state |> RenderJobsTool.initSystemAndRender |> _render;
-                          deleteBuffer |> expect |> toCalledOnce
+                          let _prepare = (sandbox, state) => {
+                            let (state, gameObject, sourceInstance, objectInstanceGameObject) =
+                              _prepare(sandbox, state^);
+                            let buffer1 = Obj.magic(1);
+                            let buffer2 = Obj.magic(2);
+                            let createBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                            createBuffer |> onCall(2) |> returns(buffer1);
+                            createBuffer |> onCall(3) |> returns(buffer2);
+                            let deleteBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                            (state, buffer1, buffer2, createBuffer, deleteBuffer)
+                          };
+                          test(
+                            "test delete",
+                            () => {
+                              let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
+                                _prepare(sandbox, state);
+                              let state =
+                                state
+                                |> FakeGlTool.setFakeGl(
+                                     FakeGlTool.buildFakeGl(
+                                       ~sandbox,
+                                       ~createBuffer,
+                                       ~deleteBuffer,
+                                       ()
+                                     )
+                                   );
+                              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                              deleteBuffer |> expect |> toCalledWith([buffer1])
+                            }
+                          );
+                          test(
+                            "not bind deleted buffer",
+                            () => {
+                              let (state, buffer1, buffer2, createBuffer, deleteBuffer) =
+                                _prepare(sandbox, state);
+                              let bindBuffer = createEmptyStubWithJsObjSandbox(sandbox);
+                              let state =
+                                state
+                                |> FakeGlTool.setFakeGl(
+                                     FakeGlTool.buildFakeGl(
+                                       ~sandbox,
+                                       ~createBuffer,
+                                       ~deleteBuffer,
+                                       ~bindBuffer,
+                                       ()
+                                     )
+                                   );
+                              let state = state |> RenderJobsTool.initSystemAndRender |> _render;
+                              bindBuffer
+                              |> withTwoArgs(Sinon.matchAny, buffer1)
+                              |> getCallCount
+                              |> expect == 1
+                            }
+                          )
                         }
                       );
                       test(
