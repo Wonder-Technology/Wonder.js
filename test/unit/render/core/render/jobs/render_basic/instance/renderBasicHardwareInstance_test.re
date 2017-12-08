@@ -9,27 +9,9 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
-      let _createSourceInstanceGameObject = (sandbox, state) => {
-        let (state, gameObject, geometry, material, meshRenderer) =
-          RenderJobsTool.prepareGameObject(sandbox, state);
-        let (state, sourceInstance) = SourceInstance.createSourceInstance(state);
-        let (state, objectInstanceGameObject) =
-          SourceInstance.createInstance(sourceInstance, state);
-        let state =
-          state |> GameObject.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
-        (
-          state,
-          gameObject,
-          (geometry, material, meshRenderer, sourceInstance, objectInstanceGameObject)
-        )
-      };
-      let _prepare = (sandbox, state) => {
-        let state = state |> InstanceTool.setGpuDetectDataAllowHardwareInstance(sandbox);
-        let (state, gameObject, componentTuple) = _createSourceInstanceGameObject(sandbox, state);
-        let (state, _, _, _) = CameraControllerTool.createCameraGameObject(state);
-        (state, gameObject, componentTuple)
-      };
-      let _render = (state: StateDataType.state) => state |> WebGLRenderTool.render;
+      let _createSourceInstanceGameObject = RenderBasicHardwareInstanceTool.createSourceInstanceGameObject;
+      let _prepare = RenderBasicHardwareInstanceTool.prepare;
+      let _render = RenderBasicHardwareInstanceTool.render;
       beforeEach(
         () => {
           sandbox := createSandbox();
