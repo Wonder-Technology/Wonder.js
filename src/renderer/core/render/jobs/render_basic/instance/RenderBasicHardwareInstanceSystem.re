@@ -6,13 +6,26 @@ open SourceInstanceType;
 
 open InstanceBufferSystem;
 
+let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, state) => {
+  let transform = Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(uid, state));
+  TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
+    matricesArrayForInstance,
+    offset,
+    TransformSystem.getLocalToWorldMatrix(transform, state),
+    0,
+    16
+  );
+  state
+};
+
 let _sendModelMatrixData =
     (
       gl,
+      sourceUid,
       extension,
       sourceInstance,
       shaderIndex,
-      instanceRenderList,
+      objectInstanceList,
       instanceRenderListCount,
       modelMatrixInstanceBufferCapacityMap,
       modelMatrixInstanceBufferMap,
@@ -46,23 +59,16 @@ let _sendModelMatrixData =
       modelMatrixInstanceBufferCapacityMap
     );
   let offset = ref(0);
+  let state = state |> _fillModelMatrixTypeArr(sourceUid, matricesArrayForInstance, offset^);
+  offset := offset^ + 16;
   let state =
-    instanceRenderList
+    objectInstanceList
     |> ArraySystem.reduceState(
          [@bs]
          (
            (state, objectInstance) => {
-             let transform =
-               Js.Option.getExn(
-                 GameObjectComponentSystem.getTransformComponent(objectInstance, state)
-               );
-             TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
-               matricesArrayForInstance,
-               offset^ ,
-               TransformSystem.getLocalToWorldMatrix(transform, state),
-               0,
-               16
-             );
+             let state =
+               state |> _fillModelMatrixTypeArr(objectInstance, matricesArrayForInstance, offset^);
              offset := offset^ + 16;
              state
            }
@@ -87,28 +93,27 @@ let _sendModelMatrixData =
 
 let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
-  use bufferData instead of bufferSubData(use STATIC_DRAW)
-  use accurate buffer capacity(can't change) */
-
+     use bufferData instead of bufferSubData(use STATIC_DRAW)
+     use accurate buffer capacity(can't change) */
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let {objectInstanceListMap, modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateSystem.getData(state);
   let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
-  let instanceRenderList =
-    SourceInstanceSystem.getRenderList(sourceInstance, objectInstanceListMap);
-  let instanceRenderListCount = Js.Array.length(instanceRenderList);
+  let objectInstanceList = SourceInstanceSystem.getObjectInstanceList(sourceInstance, state);
+  let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;
   let state =
     SourceInstanceSystem.isModelMatrixIsStatic(sourceInstance, state) ?
       SourceInstanceStaticSystem.isSendModelMatrix(sourceInstance, state) ?
         state :
         _sendModelMatrixData(
           gl,
+          uid,
           extension,
           sourceInstance,
           shaderIndex,
-          instanceRenderList,
+          objectInstanceList,
           instanceRenderListCount,
           modelMatrixInstanceBufferCapacityMap,
           modelMatrixInstanceBufferMap,
@@ -120,10 +125,11 @@ let render = (gl, uid, state: StateDataType.state) => {
       |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, false)
       |> _sendModelMatrixData(
            gl,
+           uid,
            extension,
            sourceInstance,
            shaderIndex,
-           instanceRenderList,
+           objectInstanceList,
            instanceRenderListCount,
            modelMatrixInstanceBufferCapacityMap,
            modelMatrixInstanceBufferMap,

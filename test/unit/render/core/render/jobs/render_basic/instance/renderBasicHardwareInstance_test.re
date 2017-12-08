@@ -663,7 +663,7 @@ let _ =
                            );
                       let state = state |> RenderJobsTool.initSystemAndRender |> _render;
                       let data = Js.Typed_array.Float32Array.fromLength(64 * 16);
-                      let transformArr = [|objectTransform, sourceTransform|];
+                      let transformArr = [|sourceTransform, objectTransform|];
                       ArraySystem.range(0, 1)
                       |> ArraySystem.reduceOneParam(
                            [@bs]

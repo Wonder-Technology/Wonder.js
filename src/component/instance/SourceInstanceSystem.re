@@ -26,12 +26,6 @@ let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
     SourceInstanceStateSystem.getData(state).objectInstanceListMap
   );
 
-let getRenderList = (sourceInstance, objectInstanceListMap) => {
-  let list = _getObjectInstanceList(sourceInstance, objectInstanceListMap) |> Js.Array.copy;
-  list |> Js.Array.push(sourceInstance) |> ignore;
-  list
-};
-
 let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
   objectInstanceListMap |> _getObjectInstanceList(sourceInstance) |> Js.Array.push(uid) |> ignore;
   data
