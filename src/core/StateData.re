@@ -1,3 +1,3 @@
 open StateDataType;
 
-let stateData: stateData = {state: None, isTest: None};
+let stateData: stateData = {state: None, isTest: false};

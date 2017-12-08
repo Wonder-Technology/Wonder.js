@@ -56,7 +56,7 @@ type viewData = {
   contextConfig: option(contextConfig)
 };
 
-type initConfig = {isTest: option(bool)};
+type initConfig = {isTest: bool};
 
 type colorRgba = (float, float, float, float);
 
@@ -296,5 +296,5 @@ and state = {
 
 type stateData = {
   mutable state: option(state),
-  mutable isTest: option(bool)
+  mutable isTest: bool
 };

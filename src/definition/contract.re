@@ -4,11 +4,7 @@ open StateData;
 
 open Exception;
 
-let _getIsTestFromStateData = (stateData: stateData) =>
-  switch stateData.isTest {
-  | None => false
-  | Some(isTest) => isTest
-  };
+let _getIsTestFromStateData = (stateData: stateData) => stateData.isTest;
 
 let describe = (message: string, func, ~preCondition=() => true, ()) =>
   preCondition() ?

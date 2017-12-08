@@ -2,6 +2,6 @@ open StateSystem;
 
 open StateDataType;
 
-let getIsTest = ({isTest}: stateData) : bool => Js.Option.getExn(isTest);
+let getIsTest = ({isTest}: stateData) : bool => isTest;
 
-let setIsTest = (~isTest: bool, stateData: stateData) => stateData.isTest = Some(isTest);
+let setIsTest = (~isTest: bool, stateData: stateData) => stateData.isTest = isTest;
