@@ -3,9 +3,7 @@ let initWithoutBuildFakeDom =
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
-                      "transformDataBufferCount": Js.Nullable.return(5),
-                      "geometryPointDataBufferCount": Js.Nullable.return(300),
-                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                      "geometryPointDataBufferCount": Js.Nullable.return(300)
                     }),
       ()
     ) =>
@@ -22,9 +20,7 @@ let init =
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
-                      "transformDataBufferCount": Js.Nullable.return(5),
-                      "geometryPointDataBufferCount": Js.Nullable.return(300),
-                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                      "geometryPointDataBufferCount": Js.Nullable.return(300)
                     }),
       ()
     ) => {
@@ -37,9 +33,7 @@ let initWithRenderConfigWithoutBuildFakeDom =
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
-                      "transformDataBufferCount": Js.Nullable.return(5),
-                      "geometryPointDataBufferCount": Js.Nullable.return(5),
-                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                      "geometryPointDataBufferCount": Js.Nullable.return(5)
                     }),
       ~renderConfig,
       ()
@@ -66,9 +60,7 @@ let initWithRenderConfig =
       ~sandbox,
       ~isTest=Js.Nullable.return(Js.true_),
       ~bufferConfig=Js.Nullable.return({
-                      "transformDataBufferCount": Js.Nullable.return(5),
-                      "geometryPointDataBufferCount": Js.Nullable.return(5),
-                      "basicMaterialDataBufferCount": Js.Nullable.return(5)
+                      "geometryPointDataBufferCount": Js.Nullable.return(5)
                     }),
       ~renderConfig,
       ()

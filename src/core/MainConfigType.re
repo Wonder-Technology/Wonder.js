@@ -18,9 +18,7 @@ type configJsObj = {
     Js.nullable(
       {
         .
-        "transformDataBufferCount": Js.nullable(int),
-        "geometryPointDataBufferCount": Js.nullable(int),
-        "basicMaterialDataBufferCount": Js.nullable(int)
+        "geometryPointDataBufferCount": Js.nullable(int)
       }
     )
 };
@@ -35,9 +33,7 @@ type contextConfig = {
 };
 
 type bufferConfig = {
-  transformDataBufferCount: int,
-  geometryPointDataBufferCount: int,
-  basicMaterialDataBufferCount: int
+  geometryPointDataBufferCount: int
 };
 
 type mainConfigData = {

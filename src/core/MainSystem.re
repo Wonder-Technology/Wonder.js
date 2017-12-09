@@ -24,11 +24,8 @@ let _changeToContextConfigRecord = (contextConfigObj: Js.t({..})) : MainConfigTy
 };
 
 let _changeToBufferConfigRecord = (bufferConfigObj: Js.t({..})) : MainConfigType.bufferConfig => {
-  transformDataBufferCount: getValueFromJsObj(bufferConfigObj##transformDataBufferCount, 20 * 1000),
   geometryPointDataBufferCount:
-    getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000),
-  basicMaterialDataBufferCount:
-    getValueFromJsObj(bufferConfigObj##basicMaterialDataBufferCount, 20 * 1000)
+    getValueFromJsObj(bufferConfigObj##geometryPointDataBufferCount, 1000 * 1000)
 };
 
 let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
@@ -50,9 +47,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
     switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
     | None => {
-        transformDataBufferCount: 20 * 1000,
-        geometryPointDataBufferCount: 1000 * 1000,
-        basicMaterialDataBufferCount: 20 * 1000
+        geometryPointDataBufferCount: 1000 * 1000
       }
     }
 };

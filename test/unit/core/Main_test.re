@@ -219,28 +219,10 @@ let _ =
             "bufferConfig",
             () => {
               open StateDataType;
-              let _buildBufferConfig =
-                  (
-                    ~transformDataBufferCount=Js.Nullable.undefined,
-                    ~geometryPointDataBufferCount=Js.Nullable.undefined,
-                    ~basicMaterialDataBufferCount=Js.Nullable.undefined,
-                    ()
-                  ) =>
-                Js.Nullable.return({
-                  "transformDataBufferCount": transformDataBufferCount,
-                  "geometryPointDataBufferCount": geometryPointDataBufferCount,
-                  "basicMaterialDataBufferCount": basicMaterialDataBufferCount
-                });
-              let _buildExpectedBufferConfig =
-                  (
-                    ~transformDataBufferCount=20 * 1000,
-                    ~geometryPointDataBufferCount=1000 * 1000,
-                    ~basicMaterialDataBufferCount=20 * 1000,
-                    ()
-                  ) => {
-                transformDataBufferCount,
-                geometryPointDataBufferCount,
-                basicMaterialDataBufferCount
+              let _buildBufferConfig = (~geometryPointDataBufferCount=Js.Nullable.undefined, ()) =>
+                Js.Nullable.return({"geometryPointDataBufferCount": geometryPointDataBufferCount});
+              let _buildExpectedBufferConfig = (~geometryPointDataBufferCount=1000 * 1000, ()) => {
+                geometryPointDataBufferCount: geometryPointDataBufferCount
               };
               describe(
                 "if pass bufferConfig",
@@ -249,20 +231,14 @@ let _ =
                     "set to state (use default value if the field isn't passed)",
                     () => {
                       let (_, _, _, _) = buildFakeDomForNotPassCanvasId(sandbox);
-                      let transformDataBufferCount = 100;
                       let geometryPointDataBufferCount = 200;
-                      let basicMaterialDataBufferCount = 300;
                       let state =
                         setMainConfig(
                           MainTool.buildMainConfig(
                             ~bufferConfig=
                               _buildBufferConfig(
-                                ~transformDataBufferCount=
-                                  Js.Nullable.return(transformDataBufferCount),
                                 ~geometryPointDataBufferCount=
                                   Js.Nullable.return(geometryPointDataBufferCount),
-                                ~basicMaterialDataBufferCount=
-                                  Js.Nullable.return(basicMaterialDataBufferCount),
                                 ()
                               ),
                             ()
@@ -270,13 +246,7 @@ let _ =
                         );
                       state
                       |> BufferConfigSystem.getConfig
-                      |>
-                      expect == _buildExpectedBufferConfig(
-                                  ~transformDataBufferCount,
-                                  ~geometryPointDataBufferCount,
-                                  ~basicMaterialDataBufferCount,
-                                  ()
-                                )
+                      |> expect == _buildExpectedBufferConfig(~geometryPointDataBufferCount, ())
                     }
                   )
               );
@@ -292,9 +262,7 @@ let _ =
                       |> BufferConfigSystem.getConfig
                       |>
                       expect == _buildExpectedBufferConfig(
-                                  ~transformDataBufferCount=20 * 1000,
                                   ~geometryPointDataBufferCount=1000 * 1000,
-                                  ~basicMaterialDataBufferCount=20 * 1000,
                                   ()
                                 )
                     }

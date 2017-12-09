@@ -27,7 +27,7 @@
         import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
 
 
-        import { setTransformParent, getTransformPositionTuple, getTransformLocalPositionTypeArray, setTransformLocalPositionByTuple, setTransformPositionByTuple } from "../../lib/es6_global/src/component/transform/Transform.js";
+        import { setTransformParent, getTransformPositionTypeArray, getTransformPositionTuple, getTransformLocalPositionTypeArray, setTransformLocalPositionByTypeArray, setTransformLocalPositionByTuple, setTransformPositionByTuple, setTransformPositionByTypeArray } from "../../lib/es6_global/src/component/transform/Transform.js";
 
 
         import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/cameraController/CameraController.js";
@@ -47,7 +47,7 @@
                 bufferConfig: {
                     // geometryDataBufferCount:500000,
                     // basicMaterialDataBufferCount:500000,
-                    transformDataBufferCount: 500000,
+                    // transformDataBufferCount: 500000,
                     // meshRendererDataBufferCount:500000
                     // geometryDataBufferCount:200,
                 }
@@ -218,6 +218,19 @@
                         else if (pos[0] < 500) {
                             state = setTransformPositionByTuple(transform, [pos[0] + 10, pos[1], pos[2]], state);
                         }
+
+
+                        // var pos = getTransformPositionTypeArray(transform, state);
+
+                        // var localPos = getTransformLocalPositionTypeArray(transform, state);
+
+                        // if (pos[0] >= 500) {
+                        //     state = setTransformLocalPositionByTypeArray(transform, [100, localPos[1], localPos[2]], state);
+
+                        // }
+                        // else if (pos[0] < 500) {
+                        //     state = setTransformPositionByTypeArray(transform, [pos[0] + 10, pos[1], pos[2]], state);
+                        // }
                     }
                 }
 

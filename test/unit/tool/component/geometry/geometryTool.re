@@ -62,9 +62,7 @@ let isGeometry = (geometry) => {
 };
 
 let buildBufferConfig = (count) => {
-  "transformDataBufferCount": Js.Nullable.undefined,
-  "geometryPointDataBufferCount": Js.Nullable.return(count),
-  "basicMaterialDataBufferCount": Js.Nullable.undefined
+  "geometryPointDataBufferCount": Js.Nullable.return(count)
 };
 
 let getMappedIndex = (index, state: StateDataType.state) =>

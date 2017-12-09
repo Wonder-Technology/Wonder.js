@@ -48,9 +48,7 @@ type contextConfig = {
 };
 
 type bufferConfig = {
-  mutable transformDataBufferCount: int,
-  mutable geometryPointDataBufferCount: int,
-  mutable basicMaterialDataBufferCount: int
+  mutable geometryPointDataBufferCount: int
 };
 
 type viewData = {
