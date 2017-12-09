@@ -123,7 +123,7 @@ let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
   open Js.Typed_array;
   let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
   getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
-  |> Matrix4System.getTranslationSubTypeArray
+  |> Matrix4System.getTranslationTypeArray
 };
 
 let getPositionTuple = (transform: transform, state: StateDataType.state) => {

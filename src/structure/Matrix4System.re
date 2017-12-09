@@ -22,8 +22,12 @@ let fromTranslation = (positionTypeArr: Float32Array.t, resultFloat32Arr) => {
   resultFloat32Arr
 };
 
-let getTranslationSubTypeArray = (matTypeArr) =>
-  TypeArrayUtils.getFloat32ArrSubarray(matTypeArr, 12, 15);
+let getTranslationTypeArray = (matTypeArr) =>
+  Float32Array.make([|
+    Float32Array.unsafe_get(matTypeArr, 12),
+    Float32Array.unsafe_get(matTypeArr, 13),
+    Float32Array.unsafe_get(matTypeArr, 14)
+  |]);
 
 let getTranslationTuple = (matTypeArr) => (
   Float32Array.unsafe_get(matTypeArr, 12),
