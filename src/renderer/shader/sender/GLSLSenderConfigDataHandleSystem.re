@@ -118,10 +118,7 @@ let _getModelMMatrixData =
     (gameObject: gameObject, state: StateDataType.state) => {
       let transform =
         Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(gameObject, state));
-      TransformSystem.getLocalToWorldMatrix(
-        transform,
-        TransformStateSystem.getTransformData(state)
-      )
+      TransformSystem.getLocalToWorldMatrixTypeArray(transform, state)
     }
   );
 

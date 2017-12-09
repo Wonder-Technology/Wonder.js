@@ -31,8 +31,8 @@ let isTransform = (transform: transform) => {
   expect(transform) >= 0
 };
 
-let getLocalToWorldMatrix = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrix(transform, TransformStateSystem.getTransformData(state));
+let getLocalToWorldMatrixTypeArray = (transform, state: StateDataType.state) =>
+  TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
 
 let dispose = (transform, state) => {
   TestTool.closeContractCheck();

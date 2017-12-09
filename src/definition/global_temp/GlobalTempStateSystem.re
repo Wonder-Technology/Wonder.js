@@ -1,0 +1,1 @@
+let getData = (state:StateDataType.state) => state.globalTempData;

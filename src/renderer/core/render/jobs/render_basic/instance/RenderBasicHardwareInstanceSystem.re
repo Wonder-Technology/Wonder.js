@@ -11,7 +11,7 @@ let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, transformD
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
     matricesArrayForInstance,
     offset,
-    TransformSystem.getLocalToWorldMatrix(transform, transformData),
+    TransformSystem.getLocalToWorldMatrixTypeArray(transform, state),
     0,
     16
   );

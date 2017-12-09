@@ -73,6 +73,7 @@ let createState =
     renderData: RenderDataSystem.initData(),
     schedulerData: ScheduleControllerSystem.initData(),
     timeControllerData: TimeControllerSystem.initData(),
-    vboBufferData: VboBufferSystem.initData()
+    vboBufferData: VboBufferSystem.initData(),
+    globalTempData: GlobalTempSystem.initData()
   }
 };

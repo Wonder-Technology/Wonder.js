@@ -18,7 +18,7 @@ let create = (state: StateDataType.state) => {
   let index = TransformCreateSystem.create(data);
   TransformDirtySystem.mark(index, false, data) |> ignore;
   (state, index)
-  |> ensureCheck(
+  /* |> ensureCheck(
        (_) => {
          open Contract.Operators;
          let {index}: transformData = getTransformData(state);
@@ -28,45 +28,8 @@ let create = (state: StateDataType.state) => {
            () => index <= maxCount
          )
        }
-     )
+     ) */
 };
-
-let _setDefaultChildren = (maxCount: int, {childMap} as transformData) => {
-  for (index in 0 to maxCount - 1) {
-    WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty(), childMap)
-    |> ignore
-  };
-  transformData
-};
-
-let _setDefaultLocalToWorldMatrixFloat32Array =
-    (maxCount: int, {localToWorldMatrixFloat32ArrayMap} as transformData) => {
-  for (index in 0 to maxCount - 1) {
-    WonderCommonlib.SparseMapSystem.set(
-      index,
-      Js.Typed_array.Float32Array.fromLength(16),
-      localToWorldMatrixFloat32ArrayMap
-    )
-    |> ignore
-  };
-  transformData
-};
-
-let _getLocalToWorldMatrixFloat32Array = (transform: transform, localToWorldMatrixFloat32ArrayMap) =>
-  localToWorldMatrixFloat32ArrayMap
-  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
-  |> ensureCheck(
-       (r) =>
-         Contract.Operators.(
-           test(
-             "localToWorldMatrixFloat32Array should exist",
-             () =>
-               localToWorldMatrixFloat32ArrayMap
-               |> WonderCommonlib.SparseMapSystem.get(transform)
-               |> assertExist
-           )
-         )
-     );
 
 let getParent = (child: transform, state: StateDataType.state) =>
   TransformHierachySystem.getParent(child, getTransformData(state));
@@ -81,77 +44,93 @@ let setParent = (parent: Js.nullable(transform), child: transform, state: StateD
 let getChildren = (transform: transform, state: StateDataType.state) =>
   getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
 
-let getLocalPosition = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getLocalPosition(transform, getTransformData(state));
+let getLocalPositionTypeArray = (transform: transform, state: StateDataType.state) =>
+  TransformOperateDataSystem.getLocalPositionTypeArray(
+    transform,
+    getTransformData(state).localPositionMap
+  );
 
-let setLocalPosition = (transform: transform, localPosition: position, state: StateDataType.state) => {
+let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =>
+  TransformOperateDataSystem.getLocalPositionTuple(
+    transform,
+    getTransformData(state).localPositionMap
+  );
+
+let setLocalPositionByTypeArray = (transform: transform, localPosition, state: StateDataType.state) => {
   state
   |> getTransformData
-  |> TransformOperateDataSystem.setLocalPosition(transform, localPosition)
+  |> TransformOperateDataSystem.setLocalPositionByTypeArray(transform, localPosition)
   |> markHierachyDirty(transform)
   |> ignore;
   state
 };
 
-let getPosition = (transform: transform, state: StateDataType.state) => {
-  open Js.Typed_array;
-  let {localToWorldMatrices} =
-    TransformOperateDataSystem.update(transform, getTransformData(state));
-  let index = TransformOperateDataSystem.getMatrix4DataIndex(transform);
-  (
-    Float32Array.unsafe_get(localToWorldMatrices, index + 12),
-    Float32Array.unsafe_get(localToWorldMatrices, index + 13),
-    Float32Array.unsafe_get(localToWorldMatrices, index + 14)
-  )
-};
-
-let setPosition = (transform: transform, position: position, state: StateDataType.state) => {
-  let {localToWorldMatrixFloat32ArrayMap} as data = getTransformData(state);
-  TransformOperateDataSystem.setPosition(
-    TransformOperateDataSystem.getVector3DataIndex(transform),
-    TransformHierachySystem.getParent(transform, data),
-    position,
-    _getLocalToWorldMatrixFloat32Array(transform, localToWorldMatrixFloat32ArrayMap),
-    data
-  )
+let setLocalPositionByTuple = (transform: transform, localPosition, state: StateDataType.state) => {
+  state
+  |> getTransformData
+  |> TransformOperateDataSystem.setLocalPositionByTuple(transform, localPosition)
   |> markHierachyDirty(transform)
   |> ignore;
   state
 };
 
-let getLocalToWorldMatrix = (transform: transform, data) => {
-  let {localToWorldMatrixFloat32ArrayMap, localToWorldMatrices} =
-    TransformOperateDataSystem.update(transform, data);
-  TransformOperateDataSystem.getLocalToWorldMatrix(
+let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
+  TransformOperateDataSystem.getPositionTypeArray(transform, state);
+
+let getPositionTuple = (transform: transform, state: StateDataType.state) =>
+  TransformOperateDataSystem.getPositionTuple(transform, state);
+
+let setPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
+  TransformOperateDataSystem.setPositionByTypeArray(
     transform,
-    _getLocalToWorldMatrixFloat32Array(transform, localToWorldMatrixFloat32ArrayMap),
-    localToWorldMatrices
+    position,
+    getTransformData(state),
+    state
   )
+  |> markHierachyDirty(transform)
+  |> ignore;
+  state
+};
+
+let setPositionByTuple = (transform: transform, position: position, state: StateDataType.state) => {
+  TransformOperateDataSystem.setPositionByTuple(
+    transform,
+    position,
+    getTransformData(state),
+    state
+  )
+  |> markHierachyDirty(transform)
+  |> ignore;
+  state
+};
+
+let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) => {
+  let {localToWorldMatrixMap} =
+    TransformOperateDataSystem.update(transform, state) |> getTransformData;
+  TransformOperateDataSystem.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
 };
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
   TransformGameObjectSystem.getGameObject(transform, getTransformData(state));
 
 let initData = (state: StateDataType.state) => {
-  let maxCount = TransformBufferSystem.getMaxCount(state);
-  let (buffer, localPositions, localToWorldMatrices) =
-    TransformBufferSystem.initBufferData(maxCount);
+  /* let maxCount = TransformBufferSystem.getMaxCount(state); */
+  /* let (buffer, localPositions, localToWorldMatrices) =
+     TransformBufferSystem.initBufferData(maxCount); */
   state.transformData =
-    Some(
-      {
-        buffer,
-        localToWorldMatrices,
-        localPositions,
+    Some
+      /* buffer,
+         localToWorldMatrices,
+         localPositions, */
+      ({
         index: 0,
         parentMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         childMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         gameObjectMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         dirtyMap: WonderCommonlib.SparseMapSystem.createEmpty(),
-        localToWorldMatrixFloat32ArrayMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        localToWorldMatrixMap: WonderCommonlib.SparseMapSystem.createEmpty(),
+        localPositionMap: WonderCommonlib.SparseMapSystem.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArraySystem.createEmpty()
-      }
-      |> _setDefaultChildren(maxCount)
-      |> _setDefaultLocalToWorldMatrixFloat32Array(maxCount)
-    );
+      });
   state
 };

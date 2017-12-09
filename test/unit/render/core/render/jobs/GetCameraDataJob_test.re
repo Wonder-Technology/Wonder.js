@@ -22,7 +22,7 @@ let _ =
           let (state, _, _, _, _) = RenderJobsTool.prepareGameObject(sandbox, state^);
           let (state, _, transform2, cameraController2) =
             CameraControllerTool.createCameraGameObject(state);
-          let state = state |> Transform.setTransformLocalPosition(transform2, (1., 2., 3.));
+          let state = state |> Transform.setTransformLocalPositionByTuple(transform2, (1., 2., 3.));
           let render = (state: StateDataType.state) =>
             state |> GetCameraDataJobTool.getJob(RenderJobsTool.buildConfigData());
           let state = RenderJobsTool.passGl(sandbox, state);

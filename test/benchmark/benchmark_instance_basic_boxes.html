@@ -27,7 +27,7 @@
         import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
 
 
-        import { setTransformParent, getTransformPosition, getTransformLocalPosition, setTransformLocalPosition, setTransformPosition } from "../../lib/es6_global/src/component/transform/Transform.js";
+        import { setTransformParent, getTransformPositionTuple, getTransformLocalPositionTypeArray, setTransformLocalPositionByTuple, setTransformPositionByTuple } from "../../lib/es6_global/src/component/transform/Transform.js";
 
 
         import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/cameraController/CameraController.js";
@@ -103,21 +103,21 @@
 
                 // var t1 = getGameObjectTransformComponent(box1, state);
 
-                //                     state = setTransformLocalPosition(t1, [50,0,0], state);
+                //                     state = setTransformLocalPositionByTuple(t1, [50,0,0], state);
 
 
                 // var t2 = getGameObjectTransformComponent(box2, state);
 
-                //                     state = setTransformLocalPosition(t2, [100,0,0], state);
+                //                     state = setTransformLocalPositionByTuple(t2, [100,0,0], state);
 
 
                 // // var o1 = getGameObjectTransformComponent(objectInstanceArr1[0], state);
 
-                // //                     state = setTransformLocalPosition(o1, [0,50,0], state);
+                // //                     state = setTransformLocalPositionByTuple(o1, [0,50,0], state);
 
                 // var o2 = getGameObjectTransformComponent(objectInstanceArr2[0], state);
 
-                //                     state = setTransformLocalPosition(o2, [0,100,0], state);
+                //                     state = setTransformLocalPositionByTuple(o2, [0,100,0], state);
 
 
 
@@ -129,7 +129,7 @@
 
 
             function setPosition(boxes, state) {
-                var playgroundSize = 200;
+                var playgroundSize = 300;
 
                 for (let i = 0, len = boxes.length; i < len; i++) {
                     let box = boxes[i];
@@ -147,17 +147,21 @@
                         var transform = getGameObjectTransformComponent(objectInstance, state);
 
 
-                        // var pos = getTransformPosition(transform, state);
+                        // var pos = getTransformPositionTuple(transform, state);
 
-                        var localPos = getTransformLocalPosition(transform, state);
+                        var localPos = getTransformLocalPositionTypeArray(transform, state);
 
-                        state = setTransformLocalPosition(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
+                        state = setTransformLocalPositionByTuple(transform, [Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize, Math.random() * 2 * playgroundSize - playgroundSize], state);
 
-                        // state = setTransformLocalPosition(transform, [0,0,0], state);
+                        // state = setTransformLocalPositionByTuple(transform, [0,0,0], state);
 
 
-                        // console.log(getTransformLocalPosition(transform, state));
+                        // console.log(getTransformLocalPositionTypeArayr(transform, state));
+
+
                     }
+
+
                 }
 
                 return [state, boxes];
@@ -186,7 +190,37 @@
             }
 
             let _setData = (boxes, state) => {
-                var [state, boxes] = setPosition(boxes, state);
+                var playgroundSize = 300;
+
+                for (let i = 0, len = boxes.length; i < len; i++) {
+                    let box = boxes[i];
+
+                    let sourceInstance = getGameObjectSourceInstanceComponent(box, state);
+
+                    let objectInstanceList = getObjectInstanceList(sourceInstance, state);
+
+
+
+                    for (let i = 0, len = objectInstanceList.length; i < len; i++) {
+                        let objectInstance = objectInstanceList[i];
+
+                        var transform = getGameObjectTransformComponent(objectInstance, state);
+
+
+                        var pos = getTransformPositionTuple(transform, state);
+
+                        var localPos = getTransformLocalPositionTypeArray(transform, state);
+
+                        if (pos[0] >= 500) {
+                            state = setTransformLocalPositionByTuple(transform, [100, localPos[1], localPos[2]], state);
+
+                        }
+                        else if (pos[0] < 500) {
+                            state = setTransformPositionByTuple(transform, [pos[0] + 10, pos[1], pos[2]], state);
+                        }
+                    }
+                }
+
                 return state;
             };
 
@@ -194,6 +228,104 @@
                 return scheduleLoop((elapsed, state) => _setData(boxes, state), state)
             };
 
+            function getRandomParentIndex(num) {
+                return Math.floor(Math.random() * num);
+            }
+
+
+            function setParent(boxes, state) {
+                for (var i = 1, len = 10; i < len; i++) {
+                    var box = boxes[i];
+
+                    state = setTransformParent(boxes[i - 1], box, state)
+                }
+
+                return scheduleLoop((elapsed, state) => {
+                    var box = boxes[i];
+
+                    state = setTransformParent(boxes[getRandomParentIndex(10)], box, state);
+
+                    return _setData(boxes, state);
+                }, state)
+            }
+
+            window.newBoxes$ = null;
+
+            function createAndDisposeGameObjects(boxes, state) {
+                // var state = boxes.reduce((state, box) => {
+                //     return disposeGameObject(box, state);
+                // }, state);
+
+                // window.newBoxes$ = boxes;
+                // window.boxes = boxes.slice(0, 1000);
+                window.sourceBox = boxes[0];
+                window.boxes = [];
+
+                // var index = 0;
+
+                return scheduleLoop((elapsed, state) => {
+
+                    // var state = window.boxes.reduce((state, box) => {
+                    //     // if(index > 1000){
+                    //     //     return state;
+                    //     // }
+                    //     // index += 1;
+                    //     return disposeGameObject(box, state);
+                    // }, state);
+
+
+                    // var state = state;
+
+                    // for(let i = 0, len = window.boxes.length; i < len; i++){
+                    //     let box = window.boxes[i];
+                    //     state = disposeGameObject(box, state);
+                    // }
+
+                    var state = batchDisposeGameObject(window.boxes, state);
+
+
+                    // var state = window.boxes.reduce((state, box) => {
+                    //     // if(index > 1000){
+                    //     //     return state;
+                    //     // }
+                    //     // index += 1;
+                    //     return disposeGameObject(box, state);
+                    // }, state);
+
+
+                    // var [state, newBoxes] = createBoxes(2000, state);
+
+                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 4000, state);
+                    let flatten = (arr) => {
+                        return arr.reduce((a, b) => {
+                            let arr = a.concat(b);
+                            return arr;
+                        }, []);
+                    };
+                    newBoxes = flatten(newBoxes);
+
+
+                    var [state, newBoxes] = setPosition(newBoxes, state);
+
+
+
+                    window.boxes = newBoxes;
+
+                    // return newBoxes.reduce((state, box) => {
+                    //     return initGameObject(box, state);
+                    // }, state);
+
+
+
+                    for (let i = 0, len = newBoxes.length; i < len; i++) {
+                        let box = newBoxes[i];
+                        state = initGameObject(box, state);
+                    }
+
+                    return state;
+
+                }, state)
+            }
 
             function createBox(count, state) {
                 var [state, material] = createBasicMaterial(state);
@@ -293,7 +425,7 @@
 
                 var transform = getGameObjectTransformComponent(obj, state);
 
-                state = setTransformLocalPosition(transform, [0, 0, 1500], state);
+                state = setTransformLocalPositionByTuple(transform, [0, 0, 1500], state);
 
                 return [state, obj];
             }

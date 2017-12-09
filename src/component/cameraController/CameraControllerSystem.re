@@ -82,7 +82,8 @@ let setPerspectiveCamera = (cameraController: int, state: StateDataType.state) =
 };
 
 let _updateCamera = (index: int, cameraControllerData: cameraControllerData) => {
-  let updateFunc = cameraControllerData.updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index);
+  let updateFunc =
+    cameraControllerData.updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.unsafeGet(index);
   updateFunc(index, cameraControllerData) |> ignore;
   ()
 };
@@ -125,7 +126,7 @@ let getTransform = (cameraController: cameraController, state: StateDataType.sta
   };
 
 let _getCameraToWorldMatrixByTransform = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrix(transform, TransformStateSystem.getTransformData(state));
+  TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
 
 let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateDataType.state) =>
   _getCameraToWorldMatrixByTransform(getTransform(cameraController, state), state);
@@ -155,14 +156,20 @@ let getWorldToCameraMatrixByTransform = (transform, state: StateDataType.state) 
    | CacheType.New(data) => CacheType.New(data |> Matrix4System.invert)
    }; */
 let getPMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  WonderCommonlib.SparseMapSystem.unsafeGet(cameraController, getCameraControllerData(state).pMatrixMap)
+  WonderCommonlib.SparseMapSystem.unsafeGet(
+    cameraController,
+    getCameraControllerData(state).pMatrixMap
+  )
   |> ensureCheck(
        (r) =>
          Contract.Operators.(
            test(
              "pMatrix should exist",
              () =>
-               WonderCommonlib.SparseMapSystem.get(cameraController, getCameraControllerData(state).pMatrixMap)
+               WonderCommonlib.SparseMapSystem.get(
+                 cameraController,
+                 getCameraControllerData(state).pMatrixMap
+               )
                |> assertExist
            )
          )

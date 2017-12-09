@@ -36,6 +36,8 @@ open GPUDetectType;
 
 open SourceInstanceType;
 
+open GlobalTempType;
+
 type contextConfig = {
   alpha: bool,
   depth: bool,
@@ -291,7 +293,8 @@ and state = {
   renderData,
   schedulerData,
   timeControllerData,
-  vboBufferData
+  vboBufferData,
+  globalTempData
 };
 
 type stateData = {

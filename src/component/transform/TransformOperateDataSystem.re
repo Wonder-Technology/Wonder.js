@@ -8,102 +8,163 @@ open TransformHierachySystem;
 
 open TransformDirtySystem;
 
+open TransformStateSystem;
+
 open Matrix4System;
 
-let getMatrix4DataIndex = (index: int) => index * getMatrix4DataSize();
+open Contract;
 
-let getVector3DataIndex = (index: int) => index * getVector3DataSize();
+let getLocalToWorldMatrixTypeArray = (transform: transform, localToWorlMatrixMap) =>
+  localToWorlMatrixMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "localToWorldMatrix should exist",
+             () =>
+               localToWorlMatrixMap
+               |> WonderCommonlib.SparseMapSystem.get(transform)
+               |> assertExist
+           )
+         )
+     );
 
-let setLocalToWorldMatricesTypeArr =
-  [@bs]
-  (
-    (index: int, mat: Js.Array.t(float), localToWorldMatrices: Float32Array.t) =>
-      setFloat16(getMatrix4DataIndex(index), mat, localToWorldMatrices)
-  );
-
-let getLocalToWorldMatrix = (index: int, targetTypeArr, localToWorldMatrices) => {
-  fillFloat32ArrayWithFloat32Array(
-    targetTypeArr,
-    0,
-    localToWorldMatrices,
-    getMatrix4DataIndex(index),
-    getMatrix4DataIndex(index) + 16
-  )
-  |> ignore;
-  targetTypeArr
+let setLocalToWorldMatrix =
+    (transform: transform, matTypeArr: Float32Array.t, localToWorldMatrixMap) => {
+  localToWorldMatrixMap |> WonderCommonlib.SparseMapSystem.set(transform, matTypeArr);
+  localToWorldMatrixMap
 };
 
-let rec update = (transform: transform, {localPositions, localToWorldMatrices} as data) =>
+let getLocalPositionTypeArray = (transform: transform, localPositionMap) =>
+  localPositionMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "localPositionshould exist",
+             () =>
+               localPositionMap |> WonderCommonlib.SparseMapSystem.get(transform) |> assertExist
+           )
+         )
+     );
+
+let getLocalPositionTuple = (transform: transform, localPositionMap) => {
+  let typeArr = getLocalPositionTypeArray(transform, localPositionMap);
+  (
+    Float32Array.unsafe_get(typeArr, 0),
+    Float32Array.unsafe_get(typeArr, 1),
+    Float32Array.unsafe_get(typeArr, 2)
+  )
+};
+
+let setLocalPositionByTypeArray =
+    (transform: transform, positionTypeArr: Float32Array.t, {localPositionMap} as data) => {
+  localPositionMap |> WonderCommonlib.SparseMapSystem.set(transform, positionTypeArr);
+  data
+};
+
+let setLocalPositionByTuple = (transform: transform, (x, y, z), {localPositionMap} as data) => {
+  let typeArr = getLocalPositionTypeArray(transform, localPositionMap);
+  Float32Array.unsafe_set(typeArr, 0, x);
+  Float32Array.unsafe_set(typeArr, 1, y);
+  Float32Array.unsafe_set(typeArr, 2, z);
+  data
+};
+
+let _getLocalToWorldMatrixFloat32Array = (transform: transform, localToWorldMatrixFloat32ArrayMap) =>
+  localToWorldMatrixFloat32ArrayMap
+  |> WonderCommonlib.SparseMapSystem.unsafeGet(transform)
+  |> ensureCheck(
+       (r) =>
+         Contract.Operators.(
+           test(
+             "localToWorldMatrixFloat32Array should exist",
+             () =>
+               localToWorldMatrixFloat32ArrayMap
+               |> WonderCommonlib.SparseMapSystem.get(transform)
+               |> assertExist
+           )
+         )
+     );
+
+let rec update = (transform: transform, state: StateDataType.state) => {
+  let {localToWorldMatrixMap, localPositionMap} as data = getTransformData(state);
   switch (isDirty(transform, data)) {
-  | false => data
+  | false => state
   | true =>
-    let data = mark(transform, false, data);
-    let mat = fromTranslation(localPositions, getVector3DataIndex(transform));
+    mark(transform, false, data) |> ignore;
     switch (getParent(transform, data)) {
     | Some(parent) =>
-      update(parent, data) |> ignore;
-      [@bs]
-      setLocalToWorldMatricesTypeArr(
-        transform,
-        multiply(localToWorldMatrices, getMatrix4DataIndex(parent), mat, 0),
-        localToWorldMatrices
+      let state = update(parent, state);
+      multiply(
+        getLocalToWorldMatrixTypeArray(parent, localToWorldMatrixMap),
+        fromTranslation(
+          getLocalPositionTypeArray(transform, localPositionMap),
+          GlobalTempSystem.getFloat32Array1(state)
+        ),
+        getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
       )
       |> ignore;
-      data
+      state
     | None =>
-      [@bs] setLocalToWorldMatricesTypeArr(transform, mat, localToWorldMatrices) |> ignore;
-      data
+      fromTranslation(
+        getLocalPositionTypeArray(transform, localPositionMap),
+        getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
+      )
+      |> ignore;
+      state
     }
-  };
+  }
+};
 
-let setPosition =
-    (
-      localPositionsIndex: int,
-      parent: option(transform),
-      position: position,
-      localToWorldMatrixFloat32Array,
-      {localToWorldMatrices, localPositions} as data
-    ) =>
-  switch parent {
+let getPositionTypeArray = (transform: transform, state: StateDataType.state) => {
+  open Js.Typed_array;
+  let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
+  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
+  |> Matrix4System.getTranslationSubTypeArray
+};
+
+let getPositionTuple = (transform: transform, state: StateDataType.state) => {
+  open Js.Typed_array;
+  let {localToWorldMatrixMap} = update(transform, state) |> getTransformData;
+  getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
+  |> Matrix4System.getTranslationTuple
+};
+
+let setPositionByTypeArray = (transform: transform, position, data, state: StateDataType.state) =>
+  switch (getParent(transform, data)) {
   | None =>
-    setFloat3(
-      localPositionsIndex,
-      TransformCastTypeSystem.tupleToJsArray(position),
-      localPositions
-    )
-    |> ignore;
+    setLocalPositionByTypeArray(transform, position, data) |> ignore;
     data
   | Some(parent) =>
-    update(parent, data) |> ignore;
-    setFloat3(
-      localPositionsIndex,
-      TransformCastTypeSystem.tupleToJsArray(
-        Vector3System.transformMat4(
-          position,
-          invert(
-            getLocalToWorldMatrix(
-              getMatrix4DataIndex(parent),
-              localToWorldMatrixFloat32Array,
-              localToWorldMatrices
-            )
-          )
-        )
-      ),
-      localPositions
+    let data = update(parent, state) |> getTransformData;
+    Vector3System.transformMat4TypeArray(
+      position,
+      invert(getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap)),
+      getLocalPositionTypeArray(transform, data.localPositionMap)
     )
     |> ignore;
     data
   };
 
-let getLocalPosition = (transform: transform, transformData) =>
-  getFloat3(getVector3DataIndex(transform), transformData.localPositions);
-
-let setLocalPosition = (transform: transform, localPosition: position, transformData) => {
-  setFloat3(
-    getVector3DataIndex(transform),
-    TransformCastTypeSystem.tupleToJsArray(localPosition),
-    transformData.localPositions
-  )
-  |> ignore;
-  transformData
-};
+let setPositionByTuple =
+    (transform: transform, position: position, data, state: StateDataType.state) =>
+  switch (getParent(transform, data)) {
+  | None =>
+    setLocalPositionByTuple(transform, position, data) |> ignore;
+    data
+  | Some(parent) =>
+    let data = update(parent, state) |> getTransformData;
+    setLocalPositionByTuple(
+      transform,
+      Vector3System.transformMat4Tuple(
+        position,
+        invert(getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap))
+      ),
+      data
+    )
+    |> ignore;
+    data
+  };

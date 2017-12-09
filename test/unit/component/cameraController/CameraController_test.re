@@ -149,7 +149,7 @@ let _ =
             let state =
               state |> addGameObjectCameraControllerComponent(gameObject, cameraController);
             let transform = state |> getGameObjectTransformComponent(gameObject);
-            let state = state |> setTransformLocalPosition(transform, (1., 2., 3.));
+            let state = state |> setTransformLocalPositionByTuple(transform, (1., 2., 3.));
             (state, gameObject, transform, cameraController)
           };
           describe(
@@ -209,7 +209,7 @@ let _ =
                      let (state, _, transform, cameraController) = _prepare();
                      let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
                      let mat1 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
-                     let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
+                     let state = state |> setTransformLocalPositionByTuple(transform, (10., 30., 40.));
                      let mat2 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
                      let state = state |> setPerspectiveCameraFovy(cameraController, 101.);
                      let mat3 = state |> getCameraControllerWorldToCameraMatrix(cameraController);
@@ -222,7 +222,7 @@ let _ =
                      open Transform;
                      let (state, _, transform, cameraController) = _prepare();
                      let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
-                     let state = state |> setTransformLocalPosition(transform, (10., 30., 40.));
+                     let state = state |> setTransformLocalPositionByTuple(transform, (10., 30., 40.));
                      let state = state |> DirectorTool.initSystem |> DirectorTool.updateSystem;
                      state
                      |> getCameraControllerWorldToCameraMatrix(cameraController)

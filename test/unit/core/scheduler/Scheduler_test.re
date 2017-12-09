@@ -30,12 +30,12 @@ let _ =
                  [@bs]
                  (
                    (elapsed, state) =>
-                     state |> Transform.setTransformLocalPosition(transform, localPos)
+                     state |> Transform.setTransformLocalPositionByTuple(transform, localPos)
                  )
                );
           let state = state |> DirectorTool.init;
           let state = DirectorTool.sync(state, ~time=1., ());
-          state |> Transform.getTransformLocalPosition(transform) |> expect == localPos
+          state |> Transform.getTransformLocalPositionTuple(transform) |> expect == localPos
         }
       );
       describe(
