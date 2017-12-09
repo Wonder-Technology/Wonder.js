@@ -7,7 +7,7 @@ let handleCloneComponent =
   let componentArr = [||];
   let data = getTransformData(state);
   let localPosition =
-    TransformOperateDataSystem.getLocalPositionTypeArray(sourceComponent, data.localPositionMap);
+    TransformOperateDataSystem.getLocalPositionTuple(sourceComponent, data.localPositionMap);
   let state =
     countRangeArr
     |> ArraySystem.reduceState(
@@ -16,7 +16,7 @@ let handleCloneComponent =
            (state, _) => {
              let index = TransformCreateSystem.create(data);
              data
-             |> TransformOperateDataSystem.setLocalPositionByTypeArray(index, localPosition)
+             |> TransformOperateDataSystem.setLocalPositionByTuple(index, localPosition)
              |> TransformDirtySystem.mark(index, true)
              |> ignore;
              componentArr |> Js.Array.push(index) |> ignore;
