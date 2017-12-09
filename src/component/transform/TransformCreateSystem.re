@@ -45,11 +45,17 @@ let _setDefaultLocalPosition = (index: int, localPositionMap) => {
   localPositionMap
 };
 
-let _initDataWhenCreate = (index: int, childMap, localToWorldMatrixMap, localPositionMap) => {
-  _setDefaultChildren(index, childMap) |> ignore;
-  _setDefaultLocalToWorldMatrix(index, localToWorldMatrixMap) |> ignore;
-  _setDefaultLocalPosition(index, localPositionMap) |> ignore
-};
+let _isNotNeedInitData = (index: int, childMap) =>
+  childMap |> WonderCommonlib.SparseMapSystem.has(index);
+
+let _initDataWhenCreate = (index: int, childMap, localToWorldMatrixMap, localPositionMap) =>
+  _isNotNeedInitData(index, childMap) ?
+    () :
+    {
+      _setDefaultChildren(index, childMap) |> ignore;
+      _setDefaultLocalToWorldMatrix(index, localToWorldMatrixMap) |> ignore;
+      _setDefaultLocalPosition(index, localPositionMap) |> ignore
+    };
 
 let create =
     ({index, disposedIndexArray, childMap, localToWorldMatrixMap, localPositionMap} as data) => {

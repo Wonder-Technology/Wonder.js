@@ -111,8 +111,8 @@
             }
 
             function initSample(state) {
-                var [state, boxes] = createBoxes(19997, state);
-                // var [state, boxes] = createBoxes(2, state);
+                // var [state, boxes] = createBoxes(19997, state);
+                var [state, boxes] = createBoxes(2, state);
 
 
                 var [state, boxes] = setPosition(boxes, state);
@@ -122,9 +122,9 @@
 
                 var [state, camera] = createCamera(state);
 
-                state = setData(boxes, state);
+                // state = setData(boxes, state);
                 // state = setParent(boxes, state);
-                // state = createAndDisposeGameObjects(boxes, state);
+                state = createAndDisposeGameObjects(boxes, state);
 
                 startDirector(state);
             }
@@ -224,7 +224,7 @@
 
                     // var [state, newBoxes] = createBoxes(2000, state);
 
-                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 4000, state);
+                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 5000, state);
                     let flatten = (arr) => {
                         return arr.reduce((a, b) => {
                             let arr = a.concat(b);
