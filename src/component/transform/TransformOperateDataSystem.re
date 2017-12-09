@@ -142,7 +142,10 @@ let setPositionByTypeArray = (transform: transform, position, data, state: State
     let data = update(parent, state) |> getTransformData;
     Vector3System.transformMat4TypeArray(
       position,
-      invert(getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap)),
+      invert(
+        getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap),
+        GlobalTempSystem.getFloat32Array1(state)
+      ),
       getLocalPositionTypeArray(transform, data.localPositionMap)
     )
     |> ignore;
@@ -161,7 +164,10 @@ let setPositionByTuple =
       transform,
       Vector3System.transformMat4Tuple(
         position,
-        invert(getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap))
+        invert(
+          getLocalToWorldMatrixTypeArray(parent, data.localToWorldMatrixMap),
+          GlobalTempSystem.getFloat32Array1(state)
+        )
       ),
       data
     )

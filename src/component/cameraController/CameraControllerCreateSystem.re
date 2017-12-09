@@ -12,5 +12,6 @@ let create = (state: StateDataType.state) => {
   data.index = newIndex;
   cameraArray |> Js.Array.push(index) |> ignore;
   addToDirtyArray(index, data) |> ignore;
+  PerspectiveCameraSystem.setDefaultPMatrix(index, data) |> ignore;
   (state, index)
 };

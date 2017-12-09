@@ -142,12 +142,17 @@ let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateD
      ((state: StateDataType.state) => getCameraControllerData(state).worldToCameraMatrixCacheMap)
    ); */
 let getWorldToCameraMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  /* CacheUtils.mapDataInCacheType( */
-  _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert;
+  Matrix4System.invert(
+    _getCameraToWorldMatrix(cameraController, state),
+    Matrix4System.createIdentityMatrix4()
+  );
 
 let getWorldToCameraMatrixByTransform = (transform, state: StateDataType.state) =>
   /* CacheUtils.mapDataInCacheType( */
-  _getCameraToWorldMatrixByTransform(transform, state) |> Matrix4System.invert;
+  Matrix4System.invert(
+    _getCameraToWorldMatrixByTransform(transform, state),
+    Matrix4System.createIdentityMatrix4()
+  );
 
 /* [@bs] ((data) => data |> Matrix4System.invert) */
 /* ); */
