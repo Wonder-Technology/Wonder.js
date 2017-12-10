@@ -232,7 +232,6 @@ let _batchAddComponent =
          (state, uid, index) => {
            let component = Array.unsafe_get(componentArr, index);
            _addComponent(uid, component, componentMap);
-           GeometrySystem.increaseGroupCount(component, state);
            [@bs] handleAddComponentFunc(component, uid, state)
          }
        ),
