@@ -4,8 +4,8 @@ open TransformStateCommon;
 
 let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) => {
   let {localToWorldMatrixMap} =
-    TransformTransformCommon.update(transform, state) |> getTransformData;
-  TransformTransformCommon.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
+    TransformOperateCommon.update(transform, state) |> getTransformData;
+  TransformOperateCommon.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
 };
 
 let create = (state: StateDataType.state) => {

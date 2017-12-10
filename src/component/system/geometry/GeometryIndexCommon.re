@@ -5,4 +5,4 @@ let setMappedIndex = (index, mappedIndex, mappedIndexMap) =>
   mappedIndexMap |> WonderCommonlib.SparseMapSystem.set(index, mappedIndex);
 
 let getMappedIndexMap = (state: StateDataType.state) =>
-  GeometryStateSystem.getGeometryData(state).mappedIndexMap;
+  GeometryStateCommon.getGeometryData(state).mappedIndexMap;

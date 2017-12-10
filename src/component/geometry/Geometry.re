@@ -13,7 +13,7 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
   );
   [@bs]
   getVertices(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     state
   )
 };
@@ -24,7 +24,7 @@ let setGeometryVertices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setVertices(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     data,
     state
   )
@@ -36,7 +36,7 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
   );
   [@bs]
   getIndices(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     state
   )
 };
@@ -47,7 +47,7 @@ let setGeometryIndices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setIndices(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     data,
     state
   )
@@ -79,7 +79,7 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getConfigData(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     state
   )
   |> Js.Option.getExn
@@ -90,7 +90,7 @@ let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => 
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getGameObject(
-    GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
     state
   )
   |> Js.Option.getExn

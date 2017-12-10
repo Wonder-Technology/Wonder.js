@@ -8,7 +8,7 @@ open GameObjectType;
 
 let init = (state: StateDataType.state) =>
   state |> CameraControllerSystem.init |> GeometrySystem.init;
-
+/*  */
 let initDataFromState = (state: StateDataType.state) =>
   state |> TransformSystem.initData |> MaterialAdmin.initData |> GeometrySystem.initData;
 
@@ -285,9 +285,9 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getGeometryComponent(uid, state)) {
     | Some(geometry) =>
-      GeometryInitComponentSystem.handleInitComponent(
+      GeometrySystem.handleInitComponent(
         geometry,
-        GeometryIndexSystem.getMappedIndex(geometry, GeometryIndexSystem.getMappedIndexMap(state)),
+        GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
         state
       )
     | None => state

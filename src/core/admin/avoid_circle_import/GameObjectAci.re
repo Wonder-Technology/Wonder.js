@@ -1,0 +1,1 @@
+let getData = GameObjectStateCommon.getGameObjectData;

@@ -2,18 +2,18 @@ open GeometryType;
 
 open StateDataType;
 
-open GeometryStateSystem;
+open GeometryStateCommon;
 
 open Contract;
 
 let isAlive = (geometry: geometry, state: StateDataType.state) => {
-  let {mappedIndexMap, disposedIndexMap} = GeometryStateSystem.getGeometryData(state);
+  let {mappedIndexMap, disposedIndexMap} = GeometryStateCommon.getGeometryData(state);
   disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry) ?
     false : mappedIndexMap |> WonderCommonlib.SparseMapSystem.get(geometry) |> Js.Option.isSome
 };
 
 let _isNotUsedGeometry = (geometry: geometry, state: StateDataType.state) =>
-  GeometryGroupSystem.getGroupCount(geometry, state) == 0;
+  GeometryGroupCommon.getGroupCount(geometry, state) == 0;
 
 let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) => {
   requireCheck(
@@ -22,7 +22,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
         ComponentDisposeComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)
       )
   );
-  switch (GeometryGroupSystem.isGroupGeometry(geometry, state)) {
+  switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
   | false =>
     let state = VboBufferSystem.addBufferToPool(geometry, state);
     let {disposedIndexMap, disposeCount} as data = getGeometryData(state);
@@ -34,7 +34,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
     } else {
       state
     }
-  | true => GeometryGroupSystem.decreaseGroupCount(geometry, state)
+  | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
   }
 };
 
@@ -59,7 +59,7 @@ let handleBatchDisposeComponent =
        [@bs]
        (
          (state, geometry) =>
-           switch (GeometryGroupSystem.isGroupGeometry(geometry, state)) {
+           switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
            | false =>
              disposedIndexMap |> WonderCommonlib.SparseMapSystem.set(geometry, true) |> ignore;
              let state = VboBufferSystem.addBufferToPool(geometry, state);
@@ -70,7 +70,7 @@ let handleBatchDisposeComponent =
              } else {
                state
              }
-           | true => GeometryGroupSystem.decreaseGroupCount(geometry, state)
+           | true => GeometryGroupCommon.decreaseGroupCount(geometry, state)
            }
        ),
        state

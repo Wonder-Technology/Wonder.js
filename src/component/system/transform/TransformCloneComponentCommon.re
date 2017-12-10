@@ -7,7 +7,7 @@ let handleCloneComponent =
   let componentArr = [||];
   let data = getTransformData(state);
   let localPosition =
-    TransformTransformCommon.getLocalPositionTuple(sourceComponent, data.localPositionMap);
+    TransformOperateCommon.getLocalPositionTuple(sourceComponent, data.localPositionMap);
   let state =
     countRangeArr
     |> ArraySystem.reduceState(
@@ -16,7 +16,7 @@ let handleCloneComponent =
            (state, _) => {
              let index = TransformCreateCommon.create(data);
              data
-             |> TransformTransformCommon.setLocalPositionByTuple(index, localPosition)
+             |> TransformOperateCommon.setLocalPositionByTuple(index, localPosition)
              |> TransformDirtyCommon.mark(index, true)
              |> ignore;
              componentArr |> Js.Array.push(index) |> ignore;

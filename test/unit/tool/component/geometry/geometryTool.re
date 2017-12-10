@@ -1,13 +1,13 @@
-let getData = (state: StateDataType.state) => GeometryStateSystem.getGeometryData(state);
+let getData = (state: StateDataType.state) => GeometrySystem.getData(state);
 
 let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
-  GeometryInitComponentSystem.initGeometry(
+  GeometryInitComponentCommon.initGeometry(
     geometry,
-    GeometryIndexSystem.getMappedIndex(
+    GeometrySystem.getMappedIndex(
       geometry,
-      GeometryStateSystem.getGeometryData(state).mappedIndexMap
+      GeometrySystem.getData(state).mappedIndexMap
     ),
     state
   );
@@ -32,13 +32,13 @@ let buildBoxGeometryConfigDataJsObj =
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getVerticesCount(
-    GeometryIndexSystem.getMappedIndex(index, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
     state
   );
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
   GeometrySystem.getIndicesCount(
-    GeometryIndexSystem.getMappedIndex(index, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
     state
   );
 
@@ -50,7 +50,7 @@ let getIndexTypeSize = (state: StateDataType.state) =>
 
 let hasIndices = (index: int, state: StateDataType.state) =>
   GeometrySystem.hasIndices(
-    GeometryIndexSystem.getMappedIndex(index, GeometryIndexSystem.getMappedIndexMap(state)),
+    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
     state
   );
 
@@ -66,11 +66,11 @@ let buildBufferConfig = (count) => {
 };
 
 let getMappedIndex = (index, state: StateDataType.state) =>
-  getData(state).mappedIndexMap |> GeometryIndexSystem.getMappedIndex(index);
+  getData(state).mappedIndexMap |> GeometrySystem.getMappedIndex(index);
 
-let buildInfo = GeometryOperateDataSystem.buildInfo;
+let buildInfo = GeometryOperateCommon.buildInfo;
 
-let dispose = GeometryDisposeComponentSystem.handleDisposeComponent;
+let dispose = GeometrySystem.handleDisposeComponent;
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();

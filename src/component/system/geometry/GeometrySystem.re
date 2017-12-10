@@ -1,3 +1,5 @@
+
+
 open ComponentSystem;
 
 open Js.Typed_array;
@@ -6,7 +8,7 @@ open Contract;
 
 open TypeArrayUtils;
 
-open GeometryStateSystem;
+open GeometryStateCommon;
 
 open GeometryType;
 
@@ -18,29 +20,59 @@ open Gl;
      let {index, mappedIndex, mappedIndexMap, aliveIndexArray} as data = getGeometryData(state);
      data.index = succ(index);
      data.mappedIndex = succ(mappedIndex);
-     GeometryIndexSystem.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
+     GeometryIndexCommon.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
      aliveIndexArray |> Js.Array.push(index) |> ignore;
      (state, index)
+
+
+
    }; */
+
+
+let getMappedIndex = GeometryIndexCommon.getMappedIndex;
+/* let setMappedIndex = GeometryIndexCommon.setMappedIndex; */
+let getMappedIndexMap = GeometryIndexCommon.getMappedIndexMap;
+
+
+/* let buildInfo = GeometryOperateCommon.buildInfo;
+let getInfo = GeometryOperateCommon.getInfo;
+
+ */
+let getData = GeometryStateCommon.getGeometryData;
+
+let increaseGroupCount = GeometryGroupCommon.increaseGroupCount;
+
+let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
+
+let handleAddComponent = GeometryAddComponentCommon.handleAddComponent;
+
+let handleDisposeComponent = GeometryDisposeComponentCommon.handleDisposeComponent;
+
+let handleBatchDisposeComponent = GeometryDisposeComponentCommon.handleBatchDisposeComponent;
+
+let handleCloneComponent = GeometryCloneComponentCommon.handleCloneComponent;
+
+
+
 let getVertices =
   [@bs]
   (
     (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateDataSystem.getVertices(mappedIndex, state)
+      GeometryOperateCommon.getVertices(mappedIndex, state)
   );
 
 let setVertices = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) =>
-  GeometryOperateDataSystem.setVerticesWithTypeArray(mappedIndex, data, state);
+  GeometryOperateCommon.setVerticesWithTypeArray(mappedIndex, data, state);
 
 let getIndices =
   [@bs]
   (
     (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateDataSystem.getIndices(mappedIndex, state)
+      GeometryOperateCommon.getIndices(mappedIndex, state)
   );
 
 let setIndices = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) =>
-  GeometryOperateDataSystem.setIndicesWithTypeArray(mappedIndex, data, state);
+  GeometryOperateCommon.setIndicesWithTypeArray(mappedIndex, data, state);
 
 let getIndicesCount =
   CacheUtils.memorizeIntState(
@@ -78,7 +110,7 @@ let init = (state: StateDataType.state) => {
       Contract.Operators.(
         test(
           "shouldn't dispose any geometry before init",
-          () => GeometryDisposeComponentSystem.isNotDisposed(getGeometryData(state)) |> assertTrue
+          () => GeometryDisposeComponentCommon.isNotDisposed(getGeometryData(state)) |> assertTrue
         )
       )
   );
@@ -86,9 +118,9 @@ let init = (state: StateDataType.state) => {
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach(
        (geometryIndex: int) =>
-         GeometryInitComponentSystem.initGeometry(
+         GeometryInitComponentCommon.initGeometry(
            geometryIndex,
-           GeometryIndexSystem.getMappedIndex(geometryIndex, mappedIndexMap),
+           GeometryIndexCommon.getMappedIndex(geometryIndex, mappedIndexMap),
            state
          )
          |> ignore
@@ -97,17 +129,18 @@ let init = (state: StateDataType.state) => {
 };
 
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
-  GeometryConfigDataSystem.getConfigData(geometry, state);
+  GeometryConfigDataCommon.getConfigData(geometry, state);
 
 let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
-  GeometryGameObjectSystem.getGameObject(mappedGeometry, state);
+  GeometryGameObjectCommon.getGameObject(mappedGeometry, state);
 
 let getVertexDataSize = () => 3;
 
 let getIndexDataSize = () => 1;
 
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
-  GeometryDisposeComponentSystem.isAlive(geometry, state);
+  GeometryDisposeComponentCommon.isAlive(geometry, state);
+
 
 let _createTypeArrays = (buffer, count: int) => {
   let offset = ref(0);
@@ -118,6 +151,7 @@ let _createTypeArrays = (buffer, count: int) => {
     Uint16Array.fromBufferRange(buffer, ~offset=offset^, ~length=count * getIndexDataSize());
   offset := count * Uint16Array._BYTES_PER_ELEMENT * getIndexDataSize();
   (buffer, vertices, indices)
+
 };
 
 let _getBufferSize = () =>
@@ -164,3 +198,4 @@ let initData = (state: StateDataType.state) => {
     });
   state
 };
+

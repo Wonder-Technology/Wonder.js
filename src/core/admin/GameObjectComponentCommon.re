@@ -98,21 +98,21 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   |> _addComponent(uid, component)
   |> ignore;
   switch (
-    GeometryGameObjectSystem.getGameObject(
-      GeometryIndexSystem.getMappedIndex(
+    GeometrySystem.getGameObject(
+      GeometrySystem.getMappedIndex(
         component,
-        GeometryStateSystem.getGeometryData(state).mappedIndexMap
+        GeometrySystem.getData(state).mappedIndexMap
       ),
       state
     )
   ) {
-  | Some(_) => GeometryGroupSystem.increaseGroupCount(component, state)
-  | _ => [@bs] GeometryAddComponentSystem.handleAddComponent(component, uid, state)
+  | Some(_) => GeometrySystem.increaseGroupCount(component, state)
+  | _ => [@bs] GeometrySystem.handleAddComponent(component, uid, state)
   }
 };
 
 let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
-  GeometryDisposeComponentSystem.handleDisposeComponent(component, state);
+  GeometrySystem.handleDisposeComponent(component, state);
 
 let hasMeshRendererComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
@@ -217,7 +217,7 @@ let batchDisposeGeometryComponent =
   _batchDisposeComponent(
     uidMap,
     state,
-    GeometryDisposeComponentSystem.handleBatchDisposeComponent,
+    GeometrySystem.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -261,7 +261,7 @@ let _batchAddComponent =
          (state, uid, index) => {
            let component = Array.unsafe_get(componentArr, index);
            _addComponent(uid, component, componentMap);
-           GeometryGroupSystem.increaseGroupCount(component, state);
+           GeometrySystem.increaseGroupCount(component, state);
            [@bs] handleAddComponentFunc(component, uid, state)
          }
        ),
@@ -308,7 +308,7 @@ let batchAddGeometryComponentForClone =
          (state, uid, index) => {
            let component = Array.unsafe_get(componentArr, index);
            _addComponent(uid, component, componentMap);
-           GeometryGroupSystem.increaseGroupCount(component, state);
+           GeometrySystem.increaseGroupCount(component, state);
            state
          }
        ),
@@ -346,7 +346,7 @@ let cloneMeshRendererComponent =
 
 let cloneGeometryComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  GeometryCloneComponentSystem.handleCloneComponent(sourceComponent, countRangeArr, state);
+  GeometrySystem.handleCloneComponent(sourceComponent, countRangeArr, state);
 
 let cloneMaterialComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>

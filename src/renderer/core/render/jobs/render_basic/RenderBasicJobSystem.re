@@ -40,10 +40,10 @@ let _render = (gl, state: StateDataType.state) => {
              } else {
                let (state, _, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
                GLSLSenderDrawSystem.drawElement(
-                 GeometrySystem.getDrawMode(gl),
-                 GeometrySystem.getIndexType(gl),
-                 GeometrySystem.getIndexTypeSize(gl),
-                 GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
+                 GeometryAdmin.getDrawMode(gl),
+                 GeometryAdmin.getIndexType(gl),
+                 GeometryAdmin.getIndexTypeSize(gl),
+                 GeometryAdmin.getIndicesCount(mappedGeometryIndex, state),
                  gl
                );
                state

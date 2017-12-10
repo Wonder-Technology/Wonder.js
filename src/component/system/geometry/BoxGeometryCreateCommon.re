@@ -1,11 +1,11 @@
-open GeometryStateSystem;
+open GeometryStateCommon;
 
 open BoxGeometryType;
 
 open GeometryType;
 
 let _computeData = (index: int, state: StateDataType.state) =>
-  switch (GeometryConfigDataSystem.getConfigData(index, state)) {
+  switch (GeometryConfigDataCommon.getConfigData(index, state)) {
   | None => ExceptionHandleSystem.throwMessage("configData should exist")
   | Some(configDataMap) =>
     let width = WonderCommonlib.HashMapSystem.unsafeGet("width", configDataMap);
@@ -161,9 +161,9 @@ let _computeData = (index: int, state: StateDataType.state) =>
 
 let create = (state: StateDataType.state) => {
   open StateDataType;
-  let (state, index) = GeometryCreateSystem.create(state);
+  let (state, index) = GeometryCreateCommon.create(state);
   let {mappedIndexMap} as data = getGeometryData(state);
-  let mappedIndex = GeometryIndexSystem.getMappedIndex(index, mappedIndexMap);
+  let mappedIndex = GeometryIndexCommon.getMappedIndex(index, mappedIndexMap);
   data.computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(mappedIndex, _computeData) |> ignore;
   (state, index, mappedIndex)
 };

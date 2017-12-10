@@ -8,9 +8,9 @@ let render = (gl, uid, state: StateDataType.state) => {
   let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let mappedGeometryIndex =
-    GeometryIndexSystem.getMappedIndex(
+    GeometryAdmin.getMappedIndex(
       geometryIndex,
-      GeometryIndexSystem.getMappedIndexMap(state)
+      GeometryAdmin.getMappedIndexMap(state)
     );
   let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
@@ -30,7 +30,7 @@ let render = (gl, uid, state: StateDataType.state) => {
                    geometryIndex,
                    mappedGeometryIndex,
                    vertexBufferMap,
-                   [@bs] GeometrySystem.getVertices,
+                   [@bs] GeometryAdmin.getVertices,
                    state
                  )
                | "index" =>
@@ -39,7 +39,7 @@ let render = (gl, uid, state: StateDataType.state) => {
                    geometryIndex,
                    mappedGeometryIndex,
                    elementArrayBufferMap,
-                   [@bs] GeometrySystem.getIndices,
+                   [@bs] GeometryAdmin.getIndices,
                    state
                  )
                | _ => ExceptionHandleSystem.throwMessage({j|unknow buffer:$buffer|j})

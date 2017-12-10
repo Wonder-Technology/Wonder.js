@@ -2,9 +2,9 @@ open GeometryType;
 
 open StateDataType;
 
-open GeometryStateSystem;
+open GeometryStateCommon;
 
-open GeometryOperateDataSystem;
+open GeometryOperateCommon;
 
 let _isInit = (index: int, state: StateDataType.state) =>
   switch (getGeometryData(state).isInitMap |> WonderCommonlib.SparseMapSystem.get(index)) {

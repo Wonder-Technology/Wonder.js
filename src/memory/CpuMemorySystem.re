@@ -18,7 +18,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         materialMap,
         cameraControllerMap
       } as data =
-    GameObjectStateCommon.getGameObjectData(state);
+    GameObjectAci.getData(state);
   let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newMeshRendererMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();
@@ -78,7 +78,7 @@ let _updateInfoArray = (newInfoArray, newIndex: int, {startIndex, endIndex}, off
   Array.unsafe_set(
     newInfoArray,
     newIndex,
-    GeometryOperateDataSystem.buildInfo(offset, offset + increment)
+    GeometryAci.buildInfo(offset, offset + increment)
   );
   newInfoArray
 };
@@ -99,7 +99,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
         isInitMap,
         groupCountMap
       } as geometryData =
-    GeometryStateSystem.getGeometryData(state);
+    GeometryAci.getData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
     VboBufferStateSystem.getVboBufferData(state);
   let newIndex = ref(0);
@@ -125,9 +125,9 @@ let reAllocateGeometry = (state: StateDataType.state) => {
        [@bs]
        (
          (index) => {
-           let verticesInfo = GeometryOperateDataSystem.getInfo(verticesInfoArray, newIndex^);
-           let indicesInfo = GeometryOperateDataSystem.getInfo(indicesInfoArray, newIndex^);
-           GeometryIndexSystem.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
+           let verticesInfo = GeometryAci.getInfo(verticesInfoArray, newIndex^);
+           let indicesInfo = GeometryAci.getInfo(indicesInfoArray, newIndex^);
+           GeometryAci.setMappedIndex(index, newIndex^, newIndexMap) |> ignore;
            _updateInfoArray(newVerticesInfoArray, newIndex^, verticesInfo, newVerticesOffset^);
            _updateInfoArray(newIndicesInfoArray, newIndex^, indicesInfo, newIndicesOffset^);
            newVerticesOffset :=

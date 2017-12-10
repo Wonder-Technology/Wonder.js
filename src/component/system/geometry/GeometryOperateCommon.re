@@ -1,6 +1,6 @@
 open Contract;
 
-open GeometryStateSystem;
+open GeometryStateCommon;
 
 open Js.Typed_array;
 

@@ -147,10 +147,10 @@ let render = (gl, uid, state: StateDataType.state) => {
            transformData
          );
   GLSLSenderDrawSystem.drawElementsInstancedANGLE(
-    GeometrySystem.getDrawMode(gl),
-    GeometrySystem.getIndexType(gl),
-    GeometrySystem.getIndexTypeSize(gl),
-    GeometrySystem.getIndicesCount(mappedGeometryIndex, state),
+    GeometryAdmin.getDrawMode(gl),
+    GeometryAdmin.getIndexType(gl),
+    GeometryAdmin.getIndexTypeSize(gl),
+    GeometryAdmin.getIndicesCount(mappedGeometryIndex, state),
     instanceRenderListCount,
     Obj.magic(extension)
   );
