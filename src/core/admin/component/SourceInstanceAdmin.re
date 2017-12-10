@@ -1,4 +1,4 @@
-let getData = SourceInstanceSystem.getData;
+let getSourceInstanceData = SourceInstanceSystem.getSourceInstanceData;
 
 let getObjectInstanceList = SourceInstanceSystem.getObjectInstanceList;
 

@@ -375,7 +375,7 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
-                  let {disposedIndexMap} = state |> GeometryTool.getData;
+                  let {disposedIndexMap} = state |> GeometryTool.getGeometryData;
                   (
                     disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry2)
@@ -663,7 +663,7 @@ let _ =
                   let (state, gameObject1, geometry1) = BoxGeometryTool.createGameObject(state^);
                   let (state, gameObject2, geometry2) = BoxGeometryTool.createGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexMap} = state |> GeometryTool.getData;
+                  let {disposedIndexMap} = state |> GeometryTool.getGeometryData;
                   (
                     disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry1),
                     disposedIndexMap |> WonderCommonlib.SparseMapSystem.has(geometry2)

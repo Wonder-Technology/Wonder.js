@@ -6,7 +6,7 @@ let handleAddComponent =
   [@bs]
   (
     (sourceInstance: sourceInstance, gameObjectUid: int, state: StateDataType.state) => {
-      let data = getData(state);
+      let data = getSourceInstanceData(state);
       ComponentSystem.addComponentToGameObjectMap(
         sourceInstance,
         gameObjectUid,

@@ -7,7 +7,7 @@ let handleInitComponent = MaterialInitComponentCommon.handleInitComponent;
 let getGameObject = (material: material, state: StateDataType.state) =>
   MaterialGameObjectCommon.getGameObject(material, state);
 
-let getData = MaterialStateCommon.getMaterialData;
+let getMaterialData = MaterialStateCommon.getMaterialData;
 
 let unsafeGetShaderIndex = MaterialShaderIndexCommon.unsafeGetShaderIndex;
 

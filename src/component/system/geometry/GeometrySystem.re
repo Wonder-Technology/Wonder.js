@@ -34,7 +34,7 @@ let getMappedIndexMap = GeometryIndexCommon.getMappedIndexMap;
    let getInfo = GeometryOperateCommon.getInfo;
 
     */
-let getData = GeometryStateCommon.getGeometryData;
+let getGeometryData = GeometryStateCommon.getGeometryData;
 
 let increaseGroupCount = GeometryGroupCommon.increaseGroupCount;
 

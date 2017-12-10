@@ -10,7 +10,7 @@ open TransformHierachyCommon;
 
 open TransformStateCommon;
 
-let getData = getTransformData;
+let getTransformData = getTransformData;
 
 let handleAddComponent = TransformAddComponentCommon.handleAddComponent;
 

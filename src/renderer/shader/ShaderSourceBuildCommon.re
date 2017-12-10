@@ -87,7 +87,7 @@ let _generateUniformSource =
 
 let getPrecisionSource = (state: StateDataType.state) => {
   open GPUDetectType;
-  let {precision} = GPUStateUtils.getData(state);
+  let {precision} = GPUStateUtils.getGpuDetectData(state);
   switch (precision |> Js.Option.getExn) {
   | HIGHP => getChunk("highp_fragment", state).top
   | MEDIUMP => getChunk("mediump_fragment", state).top

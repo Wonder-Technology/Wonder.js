@@ -104,11 +104,11 @@ let render = (gl, uid, state: StateDataType.state) => {
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicUtils.render(gl, uid);
-  let extension = GPUStateUtils.getData(state).extensionInstancedArrays |> Js.Option.getExn;
-  let transformData = TransformAdmin.getData(state);
+  let extension = GPUStateUtils.getGpuDetectData(state).extensionInstancedArrays |> Js.Option.getExn;
+  let transformData = TransformAdmin.getTransformData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
-    SourceInstanceAdmin.getData(state);
+    SourceInstanceAdmin.getSourceInstanceData(state);
   let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceList = SourceInstanceAdmin.getObjectInstanceList(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;

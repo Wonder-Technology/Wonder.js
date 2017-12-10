@@ -4,7 +4,7 @@ open Contract;
 
 let create = (state: StateDataType.state) => SourceInstanceCreateCommon.create(state);
 
-let getData = SourceInstanceStateCommon.getData;
+let getSourceInstanceData = SourceInstanceStateCommon.getSourceInstanceData;
 
 let isSendModelMatrix = SourceInstanceStaticCommon.isSendModelMatrix;
 
@@ -29,7 +29,7 @@ let _getObjectInstanceList = (sourceInstance, objectInstanceListMap) =>
 let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
   _getObjectInstanceList(
     sourceInstance,
-    SourceInstanceStateCommon.getData(state).objectInstanceListMap
+    SourceInstanceStateCommon.getSourceInstanceData(state).objectInstanceListMap
   );
 
 let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
@@ -40,7 +40,7 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) 
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   open GameObjectComponentCommon;
   let (state, uid) = GameObjectCreateCommon.create(state);
-  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getData(state)) |> ignore;
+  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getSourceInstanceData(state)) |> ignore;
   let (state, transform) = TransformUtils.create(state);
   /* todo add ObjectInstance to instance */
   (addTransformComponent(uid, transform, state), uid)
@@ -49,7 +49,7 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
 let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     sourceInstance,
-    SourceInstanceStateCommon.getData(state).gameObjectMap
+    SourceInstanceStateCommon.getSourceInstanceData(state).gameObjectMap
   );
 
 let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic;

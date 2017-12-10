@@ -195,7 +195,7 @@ let _ =
                                      gameObject2,
                                      geometry2
                                    );
-                              let {vertices, indices} = state |> GeometryTool.getData;
+                              let {vertices, indices} = state |> GeometryTool.getGeometryData;
                               (
                                 vertices |> Float32Array.slice(~start=0, ~end_=72),
                                 vertices |> Float32Array.slice(~start=72, ~end_=144),
@@ -264,7 +264,7 @@ let _ =
                                  geometry1
                                );
                           let {verticesInfoArray, indicesInfoArray} =
-                            state |> GeometryTool.getData;
+                            state |> GeometryTool.getGeometryData;
                           (verticesInfoArray, indicesInfoArray)
                           |>
                           expect == (
@@ -300,7 +300,7 @@ let _ =
                                  geometry1
                                );
                           let {verticesInfoArray, indicesInfoArray} =
-                            state |> GeometryTool.getData;
+                            state |> GeometryTool.getGeometryData;
                           (
                             verticesInfoArray |> Js.Array.length,
                             indicesInfoArray |> Js.Array.length
@@ -351,7 +351,7 @@ let _ =
                                          gameObject1,
                                          geometry1
                                        );
-                                  let {gameObjectMap} = state |> GeometryTool.getData;
+                                  let {gameObjectMap} = state |> GeometryTool.getGeometryData;
                                   (
                                     _unsafeGetSparseMapData(geometry2, gameObjectMap, state),
                                     _unsafeGetSparseMapData(geometry3, gameObjectMap, state)
@@ -379,7 +379,7 @@ let _ =
                                          gameObject1,
                                          geometry1
                                        );
-                                  let {gameObjectMap} = state |> GeometryTool.getData;
+                                  let {gameObjectMap} = state |> GeometryTool.getGeometryData;
                                   (
                                     Geometry.getGeometryGameObject(geometry2, state),
                                     Geometry.getGeometryGameObject(geometry3, state)
@@ -421,7 +421,7 @@ let _ =
                                 indicesCountCacheMap,
                                 verticesCountCacheMap
                               } =
-                                state |> GeometryTool.getData;
+                                state |> GeometryTool.getGeometryData;
                               (
                                 _hasMapData(0, configDataMap),
                                 _hasMapData(1, configDataMap),
@@ -473,7 +473,7 @@ let _ =
                                      gameObject1,
                                      geometry1
                                    );
-                              let {isInitMap} = state |> GeometryTool.getData;
+                              let {isInitMap} = state |> GeometryTool.getGeometryData;
                               (
                                 _hasMapData(0, isInitMap),
                                 _hasMapData(1, isInitMap),
@@ -498,7 +498,7 @@ let _ =
                                 geometry3
                               ) =
                                 _prepare(state^);
-                              let {groupCountMap} = state |> GeometryTool.getData;
+                              let {groupCountMap} = state |> GeometryTool.getGeometryData;
                               groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry1, 1);
                               groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry2, 1);
                               groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry3, 1);
@@ -509,7 +509,7 @@ let _ =
                                      gameObject1,
                                      geometry1
                                    );
-                              let {groupCountMap} = state |> GeometryTool.getData;
+                              let {groupCountMap} = state |> GeometryTool.getGeometryData;
                               (
                                 _hasMapData(0, groupCountMap),
                                 _hasMapData(1, groupCountMap),
@@ -550,7 +550,7 @@ let _ =
                                      geometry1
                                    );
                               let {vertexBufferMap, elementArrayBufferMap} =
-                                VboBufferTool.getData(state);
+                                VboBufferTool.getVboBufferData(state);
                               (
                                 _hasMapData(0, vertexBufferMap),
                                 _hasMapData(0, elementArrayBufferMap)
@@ -579,11 +579,11 @@ let _ =
                       let state =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-                      let {mappedIndex, disposedIndexMap} = state |> GeometryTool.getData;
+                      let {mappedIndex, disposedIndexMap} = state |> GeometryTool.getGeometryData;
                       let state =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject3, geometry3);
-                      let {mappedIndex} = state |> GeometryTool.getData;
+                      let {mappedIndex} = state |> GeometryTool.getGeometryData;
                       mappedIndex |> expect == 1
                     }
                   );
@@ -607,7 +607,7 @@ let _ =
                       let state =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject3, geometry3);
-                      let {verticesOffset, indicesOffset} = state |> GeometryTool.getData;
+                      let {verticesOffset, indicesOffset} = state |> GeometryTool.getGeometryData;
                       (verticesOffset, indicesOffset) |> expect == (72, 36)
                     }
                   );
@@ -628,7 +628,7 @@ let _ =
                       let state =
                         state
                         |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-                      let {disposedIndexMap} = state |> GeometryTool.getData;
+                      let {disposedIndexMap} = state |> GeometryTool.getGeometryData;
                       disposedIndexMap |> expect == WonderCommonlib.SparseMapSystem.createEmpty()
                     }
                   );
@@ -651,7 +651,7 @@ let _ =
                         BoxGeometryTool.createGameObject(state);
                       let state = state |> GameObject.initGameObject(gameObject4);
                       let state = state |> GameObject.disposeGameObject(gameObject4);
-                      let {aliveIndexArray} = state |> GeometryTool.getData;
+                      let {aliveIndexArray} = state |> GeometryTool.getGeometryData;
                       aliveIndexArray |> expect == [|geometry2, geometry3|]
                     }
                   );

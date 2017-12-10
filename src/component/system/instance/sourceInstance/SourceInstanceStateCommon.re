@@ -1,1 +1,1 @@
-let getData = (state: StateDataType.state) => state.sourceInstanceData;
+let getSourceInstanceData = (state: StateDataType.state) => state.sourceInstanceData;

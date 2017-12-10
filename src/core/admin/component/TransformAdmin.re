@@ -1,3 +1,3 @@
 let getLocalToWorldMatrixTypeArray = TransformSystem.getLocalToWorldMatrixTypeArray;
 
-let getData = TransformSystem.getData;
+let getTransformData = TransformSystem.getTransformData;

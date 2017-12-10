@@ -243,7 +243,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
                   clonedTransformArr[i]
                 )
          ),
-         TransformSystem.getData(state)
+         TransformSystem.getTransformData(state)
        )
     |> TransformSystem.unsafeGetChildren(transform)
     |> ArraySystem.reduceState(

@@ -57,7 +57,7 @@ let _ =
               let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
               let state =
                 state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-              let {gameObjectMap} = GeometryTool.getData(state);
+              let {gameObjectMap} = GeometryTool.getGeometryData(state);
               gameObjectMap |> expect == [|0, 2|]
             }
           )
@@ -176,7 +176,7 @@ let _ =
                          clonedGameObjectArr[0],
                          clonedGeometryArr[0]
                        );
-                  let {gameObjectMap} = GeometryTool.getData(state);
+                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
                   gameObjectMap |> expect == [|0|]
                 }
               );
@@ -195,7 +195,7 @@ let _ =
                   let state =
                     state
                     |> GeometryTool.disposeGeometryByCloseContractCheck(gameObject1, geometry1);
-                  let {gameObjectMap} = GeometryTool.getData(state);
+                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
                   gameObjectMap |> expect == [||]
                 }
               )
@@ -219,7 +219,7 @@ let _ =
                     |> GeometryTool.batchDisposeGeometryByCloseContractCheck([|
                          clonedGameObjectArr[0]
                        |]);
-                  let {gameObjectMap} = GeometryTool.getData(state);
+                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
                   gameObjectMap |> expect == [|0|]
                 }
               );
@@ -235,7 +235,7 @@ let _ =
                          gameObject1,
                          clonedGameObjectArr[0]
                        |]);
-                  let {gameObjectMap} = GeometryTool.getData(state);
+                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
                   gameObjectMap |> expect == [||]
                 }
               )
@@ -335,7 +335,7 @@ let _ =
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
                   let {vertexArrayBufferPool, elementArrayBufferPool} =
-                    VboBufferTool.getData(state);
+                    VboBufferTool.getVboBufferData(state);
                   (
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length
@@ -354,7 +354,7 @@ let _ =
                   let state =
                     state |> GameObject.disposeGameObjectGeometryComponent(gameObject2, geometry2);
                   let {vertexArrayBufferPool, elementArrayBufferPool} =
-                    VboBufferTool.getData(state);
+                    VboBufferTool.getVboBufferData(state);
                   (
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length
@@ -378,7 +378,7 @@ let _ =
                     _prepare(state^);
                   let state = state |> GameObject.batchDisposeGameObject([|gameObject1|]);
                   let {vertexArrayBufferPool, elementArrayBufferPool} =
-                    VboBufferTool.getData(state);
+                    VboBufferTool.getVboBufferData(state);
                   (
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length
@@ -395,7 +395,7 @@ let _ =
                   let state =
                     state |> GameObject.batchDisposeGameObject([|gameObject1, gameObject2|]);
                   let {vertexArrayBufferPool, elementArrayBufferPool} =
-                    VboBufferTool.getData(state);
+                    VboBufferTool.getVboBufferData(state);
                   (
                     vertexArrayBufferPool |> Js.Array.length,
                     elementArrayBufferPool |> Js.Array.length

@@ -1,11 +1,11 @@
-let getData = (state: StateDataType.state) => GeometrySystem.getData(state);
+let getGeometryData = (state: StateDataType.state) => GeometrySystem.getGeometryData(state);
 
 let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
   GeometryInitComponentCommon.initGeometry(
     geometry,
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getData(state).mappedIndexMap),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getGeometryData(state).mappedIndexMap),
     state
   );
 
@@ -61,7 +61,7 @@ let isGeometry = (geometry) => {
 let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let getMappedIndex = (index, state: StateDataType.state) =>
-  getData(state).mappedIndexMap |> GeometrySystem.getMappedIndex(index);
+  getGeometryData(state).mappedIndexMap |> GeometrySystem.getMappedIndex(index);
 
 let buildInfo = GeometryOperateCommon.buildInfo;
 
@@ -85,7 +85,7 @@ let disposeGeometryByCloseContractCheck = (gameObject, geometry, state) => {
 let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) => {
   open StateDataType;
   open Sinon;
-  let {computeDataFuncMap} = getData(state);
+  let {computeDataFuncMap} = getGeometryData(state);
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
   computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(geometry, computeDataFunc);
   (state, computeDataFunc)

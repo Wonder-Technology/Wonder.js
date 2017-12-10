@@ -4,13 +4,13 @@ open Contract;
 
 let markModelMatrixIsStatic =
     (sourceInstance: sourceInstance, isStatic: bool, state: StateDataType.state) => {
-  SourceInstanceStateCommon.getData(state).isModelMatrixStaticMap
+  SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
   |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isStatic);
   state
 };
 
 let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataType.state) =>
-  SourceInstanceStateCommon.getData(state).isModelMatrixStaticMap
+  SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> ensureCheck(
        (r) =>
@@ -18,7 +18,7 @@ let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataTyp
            test(
              "should exist",
              () =>
-               SourceInstanceStateCommon.getData(state).isModelMatrixStaticMap
+               SourceInstanceStateCommon.getSourceInstanceData(state).isModelMatrixStaticMap
                |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
                |> assertExist
            )
@@ -26,13 +26,13 @@ let isModelMatrixIsStatic = (sourceInstance: sourceInstance, state: StateDataTyp
      );
 
 let markSendModelMatrix = (sourceInstance: sourceInstance, isSend, state: StateDataType.state) => {
-  SourceInstanceStateCommon.getData(state).isSendModelMatrixDataMap
+  SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
   |> WonderCommonlib.SparseMapSystem.set(sourceInstance, isSend);
   state
 };
 
 let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.state) =>
-  SourceInstanceStateCommon.getData(state).isSendModelMatrixDataMap
+  SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
   |> WonderCommonlib.SparseMapSystem.unsafeGet(sourceInstance)
   |> ensureCheck(
        (r) =>
@@ -40,7 +40,7 @@ let isSendModelMatrix = (sourceInstance: sourceInstance, state: StateDataType.st
            test(
              "should exist",
              () =>
-               SourceInstanceStateCommon.getData(state).isSendModelMatrixDataMap
+               SourceInstanceStateCommon.getSourceInstanceData(state).isSendModelMatrixDataMap
                |> WonderCommonlib.SparseMapSystem.get(sourceInstance)
                |> assertExist
            )
