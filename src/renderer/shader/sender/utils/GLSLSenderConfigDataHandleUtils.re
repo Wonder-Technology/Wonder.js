@@ -8,11 +8,11 @@ open StateDataType;
 
 open Contract;
 
-open GLSLSenderStateSystem;
+open GLSLSenderStateUtils;
 
-open GLSLSenderSendDataSystem;
+open GLSLSenderSendDataUtils;
 
-open GLSLSenderDrawSystem;
+open GLSLSenderDrawUtils;
 
 let addAttributeSendData =
     (

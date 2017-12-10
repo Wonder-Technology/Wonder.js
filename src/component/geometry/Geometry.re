@@ -62,7 +62,7 @@ let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => 
            "cloned geometry have no config data, shouldn't get it",
            () => {
              open StateDataType;
-             let {isClonedMap} = GeometryStateSystem.getGeometryData(state);
+             let {isClonedMap} = $1StateCommon.getGeometryData(state);
              GeometryCloneComponentSystem.isCloned(
                GeometryIndexSystem.getMappedIndex(
                  geometry,

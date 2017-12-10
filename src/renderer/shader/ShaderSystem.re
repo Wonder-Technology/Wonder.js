@@ -3,10 +3,10 @@ open ShaderType;
 open StateDataType;
 
 let getAllShaderIndexArray = (state: StateDataType.state) =>
-  ArraySystem.range(0, ShaderStateSystem.getShaderData(state).index - 1);
+  ArraySystem.range(0, ShaderStateCommon.getShaderData(state).index - 1);
 
 let _genereateShaderIndex = (state: StateDataType.state) => {
-  let shaderData = ShaderStateSystem.getShaderData(state);
+  let shaderData = ShaderStateCommon.getShaderData(state);
   let index = shaderData.index;
   shaderData.index = succ(index);
   (state, index)
@@ -36,7 +36,7 @@ let _init =
       buildGLSLSource,
       state: StateDataType.state
     ) => {
-  let shaderData = ShaderStateSystem.getShaderData(state);
+  let shaderData = ShaderStateCommon.getShaderData(state);
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
   switch (_getShaderIndex(key, shaderData)) {
   | None =>
@@ -49,13 +49,13 @@ let _init =
       |> ProgramSystem.registerProgram(shaderIndex, state)
       |> ProgramSystem.initShader(vsSource, fsSource, gl);
     state
-    |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
+    |> GLSLSenderConfigDataHandleUtils.addAttributeSendData(
          gl,
          shaderIndex,
          program,
          shaderLibDataArr
        )
-    |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
+    |> GLSLSenderConfigDataHandleUtils.addUniformSendData(
          gl,
          shaderIndex,
          program,
@@ -68,7 +68,7 @@ let _init =
 };
 
 let getPrecisionSource = (state: StateDataType.state) =>
-  ShaderSourceBuildSystem.getPrecisionSource(state);
+  ShaderSourceBuildCommon.getPrecisionSource(state);
 
 let initMaterialShader =
     (gl, materialIndex: int, shaderLibDataArr, initShaderFuncTuple, state: StateDataType.state) =>

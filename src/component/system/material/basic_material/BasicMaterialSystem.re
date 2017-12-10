@@ -1,7 +1,5 @@
 open ComponentSystem;
 
-open RenderConfigSystem;
-
 open StateDataType;
 
 open MaterialSystem;

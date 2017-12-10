@@ -1,4 +1,3 @@
-open CacheType;
 open Js.Typed_array;
 
 type renderCameraData = {

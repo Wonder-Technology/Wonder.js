@@ -85,7 +85,7 @@ let _sendModelMatrixData =
        );
   let _ = updateData(gl, matricesArrayForInstance, modelMatrixInstanceBuffer);
   state
-  |> GLSLSenderConfigDataHandleSystem.getInstanceAttributeSendData(shaderIndex)
+  |> GLSLSenderConfigDataHandleUtils.getInstanceAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArraySystem.forEachi(
        [@bs]
        (
@@ -103,10 +103,10 @@ let render = (gl, uid, state: StateDataType.state) => {
   /* todo optimize for static data:
      use bufferData instead of bufferSubData(use STATIC_DRAW)
      use accurate buffer capacity(can't change) */
-  let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
-  let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
+  let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicUtils.render(gl, uid);
+  let extension = GPUStateUtils.getData(state).extensionInstancedArrays |> Js.Option.getExn;
   let transformData = TransformAdmin.getData(state);
-  let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
+  let {modelMatrixInstanceBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceAdmin.getData(state);
   let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
@@ -146,7 +146,7 @@ let render = (gl, uid, state: StateDataType.state) => {
            modelMatrixFloat32ArrayMap,
            transformData
          );
-  GLSLSenderDrawSystem.drawElementsInstancedANGLE(
+  GLSLSenderDrawUtils.drawElementsInstancedANGLE(
     GeometryAdmin.getDrawMode(gl),
     GeometryAdmin.getIndexType(gl),
     GeometryAdmin.getIndexTypeSize(gl),

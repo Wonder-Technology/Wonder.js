@@ -1,7 +1,7 @@
 open Contract;
 
 let pregetGLSLData = (gl, state: StateDataType.state) => {
-  let glslData = ShaderStateSystem.getGLSLData(state);
+  let glslData = ShaderStateCommon.getGLSLData(state);
   glslData.precision = Some(ShaderSystem.getPrecisionSource(state));
   state
 };

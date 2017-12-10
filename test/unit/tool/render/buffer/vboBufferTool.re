@@ -3,7 +3,7 @@ let getOrCreateArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
     GeometryAdmin.getMappedIndex(geometryIndex, GeometryAdmin.getMappedIndexMap(state)),
-    VboBufferStateSystem.getVboBufferData(state).vertexBufferMap,
+    VboBufferStateUtils.getVboBufferData(state).vertexBufferMap,
     [@bs] ArrayBufferSystem.createBuffer,
     [@bs] GeometryAdmin.getVertices,
     state
@@ -14,7 +14,7 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
     GeometryAdmin.getMappedIndex(geometryIndex, GeometryAdmin.getMappedIndexMap(state)),
-    VboBufferStateSystem.getVboBufferData(state).elementArrayBufferMap,
+    VboBufferStateUtils.getVboBufferData(state).elementArrayBufferMap,
     [@bs] ElementArrayBufferSystem.createBuffer,
     [@bs] GeometryAdmin.getIndices,
     state
@@ -22,10 +22,10 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
 
 let passBufferShouldExistCheckWhenDisposeGeometry = (geometryIndex, state: StateDataType.state) => {
   open VboBufferType;
-  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateSystem.getVboBufferData(state);
+  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), vertexBufferMap);
   WonderCommonlib.SparseMapSystem.set(geometryIndex, Obj.magic(0), elementArrayBufferMap);
   state
 };
 
-let getData = VboBufferStateSystem.getVboBufferData;
+let getData = VboBufferStateUtils.getVboBufferData;

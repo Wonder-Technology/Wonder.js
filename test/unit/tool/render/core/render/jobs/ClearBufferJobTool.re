@@ -1,1 +1,1 @@
-let getJob = (configData, state) => ClearBufferJobSystem.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);
+let getJob = (configData, state) => ClearBufferJobUtils.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);

@@ -12,12 +12,12 @@ let render = (gl, uid, state: StateDataType.state) => {
       geometryIndex,
       GeometryAdmin.getMappedIndexMap(state)
     );
-  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateSystem.getVboBufferData(state);
+  let {vertexBufferMap, elementArrayBufferMap} = VboBufferStateUtils.getVboBufferData(state);
   let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
   (
     state
     |> ProgramSystem.use(gl, program)
-    |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
+    |> GLSLSenderConfigDataHandleUtils.getAttributeSendData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (
@@ -49,7 +49,7 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        )
-    |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndex)
+    |> GLSLSenderConfigDataHandleUtils.getUniformSendData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (

@@ -5,7 +5,7 @@ open StateData;
 let init = (state: StateDataType.state) =>
   state
   |> GameObjectAdmin.init
-  |> WebGLRenderSystem.init
+  |> WebGLRenderAdmin.init
   |> TimeControllerSystem.start
   |> ScheduleControllerSystem.start;
 
@@ -19,7 +19,7 @@ let _sync = (time: float, state: StateDataType.state) => {
 
 let _run = (time: float, state: StateDataType.state) =>
   /* let elapsed = TimeControllerSystem.computeElapseTime(time, state); */
-  state |> _sync(time) |> WebGLRenderSystem.render;
+  state |> _sync(time) |> WebGLRenderAdmin.render;
 
 /* todo unit test */
 let loopBody = (time: float, state: StateDataType.state) => state |> _run(time);

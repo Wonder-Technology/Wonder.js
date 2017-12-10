@@ -8,7 +8,7 @@ open Contract;
 let _getDefaultCapacity = () => 64 * 16 * 4;
 
 let createBuffer = (gl, capacity: int) => {
-  let buffer = VboBufferPoolSystem.getInstanceBuffer(gl);
+  let buffer = VboBufferPoolCommon.getInstanceBuffer(gl);
   bindBuffer(getArrayBuffer(gl), buffer, gl);
   bufferFloat32DataWithCapacity(getArrayBuffer(gl), capacity, getDynamicDraw(gl), gl);
   buffer

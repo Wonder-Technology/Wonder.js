@@ -4,9 +4,9 @@ open Gl;
 
 open GlType;
 
-open GLSLSenderSendDataSystem;
+open GLSLSenderSendDataUtils;
 
-open GLSLSenderStateSystem;
+open GLSLSenderStateUtils;
 
 let bindElementArrayBuffer =
   [@bs]

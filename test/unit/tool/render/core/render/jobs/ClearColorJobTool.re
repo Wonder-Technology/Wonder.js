@@ -1,1 +1,1 @@
-let getJob = (configData, state) => ClearColorJobSystem.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);
+let getJob = (configData, state) => ClearColorJobUtils.getJob(configData, [@bs]DeviceManagerSystem.getGl(state), state);

@@ -19,7 +19,7 @@ let getOrCreateBuffer =
   };
 
 let addBufferToPool = (geometryIndex: int, state: StateDataType.state) =>
-  VboBufferPoolSystem.addBufferToPool(geometryIndex, state);
+  VboBufferPoolCommon.addBufferToPool(geometryIndex, state);
 
 let initData = () => {
   vertexBufferMap: WonderCommonlib.SparseMapSystem.createEmpty(),

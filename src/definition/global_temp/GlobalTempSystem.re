@@ -3,7 +3,7 @@ open Js.Typed_array;
 open GlobalTempType;
 
 let getFloat32Array1 = (state: StateDataType.state) =>
-  GlobalTempStateSystem.getData(state).float32Array1;
+  GlobalTempStateCommon.getData(state).float32Array1;
 
 let initData = () => {
   float32Array1:

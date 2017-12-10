@@ -101,7 +101,7 @@ let reAllocateGeometry = (state: StateDataType.state) => {
       } as geometryData =
     GeometryAci.getData(state);
   let {vertexBufferMap, elementArrayBufferMap} as vboBufferData =
-    VboBufferStateSystem.getVboBufferData(state);
+    VboBufferStateUtils.getVboBufferData(state);
   let newIndex = ref(0);
   let newIndexMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newComputeDataFuncMap = WonderCommonlib.SparseMapSystem.createEmpty();

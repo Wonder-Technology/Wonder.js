@@ -9,7 +9,7 @@ let _sendShaderUniformData = (gl, state: StateDataType.state) =>
            let program = ProgramSystem.unsafeGetProgram(shaderIndex, state);
            state
            |> ProgramSystem.use(gl, program)
-           |> GLSLSenderConfigDataHandleSystem.getShaderUniformSendData(shaderIndex)
+           |> GLSLSenderConfigDataHandleUtils.getShaderUniformSendData(shaderIndex)
            |> ArraySystem.reduceState(
                 [@bs]
                 (
@@ -36,10 +36,10 @@ let _render = (gl, state: StateDataType.state) => {
          (
            (state, uid: int) =>
              if (InstanceUtils.isSourceInstance(uid, state)) {
-               RenderBasicInstanceSystem.render(gl, uid, state)
+               RenderBasicInstanceUtils.render(gl, uid, state)
              } else {
-               let (state, _, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
-               GLSLSenderDrawSystem.drawElement(
+               let (state, _, mappedGeometryIndex) = state |> RenderBasicUtils.render(gl, uid);
+               GLSLSenderDrawUtils.drawElement(
                  GeometryAdmin.getDrawMode(gl),
                  GeometryAdmin.getIndexType(gl),
                  GeometryAdmin.getIndexTypeSize(gl),

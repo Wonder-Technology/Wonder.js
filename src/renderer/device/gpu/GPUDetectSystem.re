@@ -63,10 +63,10 @@ let _detectCapabilty = (gl, gpuDetectData) => _detectPrecision(gl, gpuDetectData
 
 let detect = (gl, state: StateDataType.state) => {
   ...state,
-  gpuDetectData: GPUStateSystem.getData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
+  gpuDetectData: GPUStateUtils.getData(state) |> _detectExtension(gl) |> _detectCapabilty(gl)
 };
 
 let hasExtension = (extension) => Js.Option.isSome(extension);
 
 let getInstanceExtension = (state: StateDataType.state) =>
-  GPUStateSystem.getData(state).extensionInstancedArrays;
+  GPUStateUtils.getData(state).extensionInstancedArrays;

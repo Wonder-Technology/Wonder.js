@@ -1,6 +1,6 @@
 open StateDataType;
 
-open RenderConfigParseSystem;
+open RenderConfigParseUtils;
 
 let getState = (stateData: stateData) : state => Js.Option.getExn(stateData.state);
 

@@ -21,7 +21,7 @@ let _initMaterialShader = (gl, materialIndex: int, initShaderFuncTuple, state: S
     }
 };
 
-let _buildInitShaderFuncTuple = () => ShaderSourceBuildSystem.buildGLSLSource;
+let _buildInitShaderFuncTuple = () => ShaderSourceBuildCommon.buildGLSLSource;
 
 let initMaterial = (gl, materialIndex: int, state: state) =>
   _initMaterialShader(gl, materialIndex, _buildInitShaderFuncTuple(), state);

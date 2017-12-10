@@ -1,1 +1,1 @@
-let render = WebGLRenderSystem.render;
+let render = WebGLRenderAdmin.render;

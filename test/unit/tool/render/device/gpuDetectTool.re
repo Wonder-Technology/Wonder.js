@@ -1,6 +1,6 @@
 open StateDataType;
 
-let getData = GPUStateSystem.getData;
+let getData = GPUStateUtils.getData;
 
 let setPrecision = (precision, state) => {
   ...state,
