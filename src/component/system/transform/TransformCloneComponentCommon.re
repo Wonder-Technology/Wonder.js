@@ -1,23 +1,23 @@
 open TransformType;
 
-open TransformStateSystem;
+open TransformStateCommon;
 
 let handleCloneComponent =
     (sourceComponent: transform, countRangeArr: array(int), state: StateDataType.state) => {
   let componentArr = [||];
   let data = getTransformData(state);
   let localPosition =
-    TransformOperateDataSystem.getLocalPositionTuple(sourceComponent, data.localPositionMap);
+    TransformTransformCommon.getLocalPositionTuple(sourceComponent, data.localPositionMap);
   let state =
     countRangeArr
     |> ArraySystem.reduceState(
          [@bs]
          (
            (state, _) => {
-             let index = TransformCreateSystem.create(data);
+             let index = TransformCreateCommon.create(data);
              data
-             |> TransformOperateDataSystem.setLocalPositionByTuple(index, localPosition)
-             |> TransformDirtySystem.mark(index, true)
+             |> TransformTransformCommon.setLocalPositionByTuple(index, localPosition)
+             |> TransformDirtyCommon.mark(index, true)
              |> ignore;
              componentArr |> Js.Array.push(index) |> ignore;
              state
@@ -25,6 +25,6 @@ let handleCloneComponent =
          ),
          state
        );
-  TransformDirtySystem.mark(sourceComponent, true, data) |> ignore;
+  TransformDirtyCommon.mark(sourceComponent, true, data) |> ignore;
   (state, componentArr)
 };

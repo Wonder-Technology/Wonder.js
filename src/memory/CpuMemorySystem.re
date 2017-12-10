@@ -18,7 +18,7 @@ let reAllocateGameObject = (state: StateDataType.state) => {
         materialMap,
         cameraControllerMap
       } as data =
-    GameObjectStateSystem.getGameObjectData(state);
+    GameObjectStateCommon.getGameObjectData(state);
   let newTransformMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newMeshRendererMap = WonderCommonlib.SparseMapSystem.createEmpty();
   let newGeometryMap = WonderCommonlib.SparseMapSystem.createEmpty();

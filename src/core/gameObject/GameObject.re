@@ -1,6 +1,6 @@
 open GameObjectType;
 
-open GameObjectSystem;
+open GameObjectAdmin;
 
 open ComponentType;
 

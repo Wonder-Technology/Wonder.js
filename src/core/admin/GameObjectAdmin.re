@@ -6,65 +6,76 @@ open StateDataType;
 
 open GameObjectType;
 
+let init = (state: StateDataType.state) =>
+  state |> CameraControllerSystem.init |> GeometrySystem.init;
+
+let initDataFromState = (state: StateDataType.state) =>
+  state |> TransformSystem.initData |> MaterialAdmin.initData |> GeometrySystem.initData;
+
+let update = (elapsed: float, state: StateDataType.state) =>
+  state |> CameraControllerSystem.update;
+
 /* todo dispose instance */
-let hasSourceInstanceComponent = GameObjectComponentSystem.hasSourceInstanceComponent;
+let hasSourceInstanceComponent = GameObjectComponentCommon.hasSourceInstanceComponent;
 
-let getSourceInstanceComponent = GameObjectComponentSystem.getSourceInstanceComponent;
+let getSourceInstanceComponent = GameObjectComponentCommon.getSourceInstanceComponent;
 
-let addSourceInstanceComponent = GameObjectComponentSystem.addSourceInstanceComponent;
+let addSourceInstanceComponent = GameObjectComponentCommon.addSourceInstanceComponent;
 
-let hasCameraControllerComponent = GameObjectComponentSystem.hasCameraControllerComponent;
+let hasCameraControllerComponent = GameObjectComponentCommon.hasCameraControllerComponent;
 
-let getCameraControllerComponent = GameObjectComponentSystem.getCameraControllerComponent;
+let getCameraControllerComponent = GameObjectComponentCommon.getCameraControllerComponent;
 
-let addCameraControllerComponent = GameObjectComponentSystem.addCameraControllerComponent;
+let addCameraControllerComponent = GameObjectComponentCommon.addCameraControllerComponent;
 
-let disposeCameraControllerComponent = GameObjectComponentSystem.disposeCameraControllerComponent;
+let disposeCameraControllerComponent = GameObjectComponentCommon.disposeCameraControllerComponent;
 
-let hasTransformComponent = GameObjectComponentSystem.hasTransformComponent;
+let hasTransformComponent = GameObjectComponentCommon.hasTransformComponent;
 
-let getTransformComponent = GameObjectComponentSystem.getTransformComponent;
+let getTransformComponent = GameObjectComponentCommon.getTransformComponent;
 
-let addTransformComponent = GameObjectComponentSystem.addTransformComponent;
+let unsafeGetTransformComponent = GameObjectComponentCommon.unsafeGetTransformComponent;
 
-let disposeTransformComponent = GameObjectComponentSystem.disposeTransformComponent;
+let addTransformComponent = GameObjectComponentCommon.addTransformComponent;
 
-let hasGeometryComponent = GameObjectComponentSystem.hasGeometryComponent;
+let disposeTransformComponent = GameObjectComponentCommon.disposeTransformComponent;
 
-let getGeometryComponent = GameObjectComponentSystem.getGeometryComponent;
+let hasGeometryComponent = GameObjectComponentCommon.hasGeometryComponent;
 
-let unsafeGetGeometryComponent = GameObjectComponentSystem.unsafeGetGeometryComponent;
+let getGeometryComponent = GameObjectComponentCommon.getGeometryComponent;
 
-let addGeometryComponent = GameObjectComponentSystem.addGeometryComponent;
+let unsafeGetGeometryComponent = GameObjectComponentCommon.unsafeGetGeometryComponent;
 
-let disposeGeometryComponent = GameObjectComponentSystem.disposeGeometryComponent;
+let addGeometryComponent = GameObjectComponentCommon.addGeometryComponent;
 
-let hasMeshRendererComponent = GameObjectComponentSystem.hasMeshRendererComponent;
+let disposeGeometryComponent = GameObjectComponentCommon.disposeGeometryComponent;
 
-let getMeshRendererComponent = GameObjectComponentSystem.getMeshRendererComponent;
+let hasMeshRendererComponent = GameObjectComponentCommon.hasMeshRendererComponent;
 
-let addMeshRendererComponent = GameObjectComponentSystem.addMeshRendererComponent;
+let getMeshRendererComponent = GameObjectComponentCommon.getMeshRendererComponent;
 
-let disposeMeshRendererComponent = GameObjectComponentSystem.disposeMeshRendererComponent;
+let addMeshRendererComponent = GameObjectComponentCommon.addMeshRendererComponent;
 
-let hasMaterialComponent = GameObjectComponentSystem.hasMaterialComponent;
+let disposeMeshRendererComponent = GameObjectComponentCommon.disposeMeshRendererComponent;
 
-let getMaterialComponent = GameObjectComponentSystem.getMaterialComponent;
+let hasMaterialComponent = GameObjectComponentCommon.hasMaterialComponent;
 
-let unsafeGetMaterialComponent = GameObjectComponentSystem.unsafeGetMaterialComponent;
+let getMaterialComponent = GameObjectComponentCommon.getMaterialComponent;
 
-let addMaterialComponent = GameObjectComponentSystem.addMaterialComponent;
+let unsafeGetMaterialComponent = GameObjectComponentCommon.unsafeGetMaterialComponent;
 
-let disposeMaterialComponent = GameObjectComponentSystem.disposeMaterialComponent;
+let addMaterialComponent = GameObjectComponentCommon.addMaterialComponent;
+
+let disposeMaterialComponent = GameObjectComponentCommon.disposeMaterialComponent;
 
 let create = (state: StateDataType.state) => {
-  let (state, uid) = GameObjectCreateSystem.create(state);
+  let (state, uid) = GameObjectCreateCommon.create(state);
   let (state, transform) = TransformSystem.create(state);
   (addTransformComponent(uid, transform, state), uid)
 };
 
 let dispose = (uid: int, state: StateDataType.state) => {
-  let {disposeCount, disposedUidMap} as data = GameObjectStateSystem.getGameObjectData(state);
+  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   data.disposeCount = succ(disposeCount);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore;
   let state =
@@ -101,7 +112,7 @@ let dispose = (uid: int, state: StateDataType.state) => {
 };
 
 let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
-  let {disposeCount, disposedUidMap} as data = GameObjectStateSystem.getGameObjectData(state);
+  let {disposeCount, disposedUidMap} as data = GameObjectStateCommon.getGameObjectData(state);
   uidArray
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs] ((uid) => disposedUidMap |> WonderCommonlib.SparseMapSystem.set(uid, true) |> ignore)
@@ -109,16 +120,16 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   data.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let state =
     state
-    |> GameObjectComponentSystem.batchGetMeshRendererComponent(uidArray)
-    |> GameObjectComponentSystem.batchDisposeMeshRendererComponent(disposedUidMap, state)
-    |> GameObjectComponentSystem.batchGetTransformComponent(uidArray)
-    |> GameObjectComponentSystem.batchDisposeTransformComponent(disposedUidMap, state)
-    |> GameObjectComponentSystem.batchGetMaterialComponent(uidArray)
-    |> GameObjectComponentSystem.batchDisposeMaterialComponent(disposedUidMap, state)
-    |> GameObjectComponentSystem.batchGetGeometryComponent(uidArray)
-    |> GameObjectComponentSystem.batchDisposeGeometryComponent(disposedUidMap, state)
-    |> GameObjectComponentSystem.batchGetCameraControllerComponent(uidArray)
-    |> GameObjectComponentSystem.batchDisposeCameraControllerComponent(disposedUidMap, state);
+    |> GameObjectComponentCommon.batchGetMeshRendererComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeMeshRendererComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetTransformComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeTransformComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetMaterialComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeMaterialComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
+    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state);
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)
@@ -151,7 +162,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
            [@bs]
            (
              (state, _) => {
-               let (state, gameObject) = GameObjectCreateSystem.create(state);
+               let (state, gameObject) = GameObjectCreateCommon.create(state);
                clonedGameObjectArr |> Js.Array.push(gameObject) |> ignore;
                state
              }
@@ -163,9 +174,9 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getMeshRendererComponent(uid, state)) {
       | Some(meshRenderer) =>
         let (state, clonedMeshRendererArr) =
-          GameObjectComponentSystem.cloneMeshRendererComponent(meshRenderer, countRangeArr, state);
+          GameObjectComponentCommon.cloneMeshRendererComponent(meshRenderer, countRangeArr, state);
         state
-        |> GameObjectComponentSystem.batchAddMeshRendererComponentForClone(
+        |> GameObjectComponentCommon.batchAddMeshRendererComponentForClone(
              clonedGameObjectArr,
              clonedMeshRendererArr
            )
@@ -175,9 +186,9 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getGeometryComponent(uid, state)) {
       | Some(geometry) =>
         let (state, clonedGeometryArr) =
-          GameObjectComponentSystem.cloneGeometryComponent(geometry, countRangeArr, state);
+          GameObjectComponentCommon.cloneGeometryComponent(geometry, countRangeArr, state);
         state
-        |> GameObjectComponentSystem.batchAddGeometryComponentForClone(
+        |> GameObjectComponentCommon.batchAddGeometryComponentForClone(
              clonedGameObjectArr,
              clonedGeometryArr
            )
@@ -187,9 +198,9 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getMaterialComponent(uid, state)) {
       | Some(meshRenderer) =>
         let (state, clonedMaterialArr) =
-          GameObjectComponentSystem.cloneMaterialComponent(meshRenderer, countRangeArr, state);
+          GameObjectComponentCommon.cloneMaterialComponent(meshRenderer, countRangeArr, state);
         state
-        |> GameObjectComponentSystem.batchAddMaterialComponentForClone(
+        |> GameObjectComponentCommon.batchAddMaterialComponentForClone(
              clonedGameObjectArr,
              clonedMaterialArr
            )
@@ -199,53 +210,48 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getCameraControllerComponent(uid, state)) {
       | Some(cameraController) =>
         let (state, clonedCameraControllerArr) =
-          GameObjectComponentSystem.cloneCameraControllerComponent(
+          GameObjectComponentCommon.cloneCameraControllerComponent(
             cameraController,
             countRangeArr,
             state
           );
         state
-        |> GameObjectComponentSystem.batchAddCameraControllerComponentForClone(
+        |> GameObjectComponentCommon.batchAddCameraControllerComponentForClone(
              clonedGameObjectArr,
              clonedCameraControllerArr
            )
       | None => state
       };
     let (state, clonedTransformArr) =
-      GameObjectComponentSystem.cloneTransformComponent(transform, countRangeArr, state);
+      GameObjectComponentCommon.cloneTransformComponent(transform, countRangeArr, state);
     /* todo optimize compare: add in each loop? */
-    let state =
-      state
-      |> GameObjectComponentSystem.batchAddTransformComponentForClone(
-           clonedGameObjectArr,
-           clonedTransformArr
-         );
+    /* let state = */
+    state
+    |> GameObjectComponentCommon.batchAddTransformComponentForClone(
+         clonedGameObjectArr,
+         clonedTransformArr
+       );
     clonedParentTransformArr
     |> ArraySystem.reduceOneParami(
          [@bs]
          (
            (transformData, clonedParentTransform, i) =>
              transformData
-             |> TransformHierachySystem.setParent(
+             |> TransformSystem.setParentNotMarkDirty(
                   Some(clonedParentTransform),
                   clonedTransformArr[i]
                 )
          ),
-         TransformStateSystem.getTransformData(state)
-       );
-    TransformHierachySystem.unsafeGetChildren(
-      transform,
-      TransformStateSystem.getTransformData(state)
-    )
+         TransformSystem.getData(state)
+       )
+    |> TransformSystem.unsafeGetChildren(transform)
     |> ArraySystem.reduceState(
          [@bs]
          (
            (state, childTransform) =>
              state
              |> _clone(
-                  TransformStateSystem.getTransformData(state)
-                  |> TransformGameObjectSystem.getGameObject(childTransform)
-                  |> Js.Option.getExn,
+                  state |> TransformSystem.getGameObject(childTransform) |> Js.Option.getExn,
                   childTransform,
                   countRangeArr,
                   clonedTransformArr,
@@ -253,7 +259,8 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
                 )
          ),
          state
-       )
+       );
+    state
   };
   (
     _clone(
@@ -269,7 +276,7 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
 };
 
 let isAlive = (uid: int, state: StateDataType.state) => {
-  let {transformMap, disposedUidMap} = GameObjectStateSystem.getGameObjectData(state);
+  let {transformMap, disposedUidMap} = GameObjectStateCommon.getGameObjectData(state);
   disposedUidMap |> WonderCommonlib.SparseMapSystem.has(uid) ?
     false : transformMap |> WonderCommonlib.SparseMapSystem.has(uid) ? true : false
 };

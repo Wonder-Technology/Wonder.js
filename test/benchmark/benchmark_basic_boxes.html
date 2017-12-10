@@ -87,6 +87,28 @@
 
             }
 
+
+            function createBoxesWithoutClone(count, state) {
+                var boxes = [];
+                // var state$ = state;
+
+                // var [state, box] = createBox(state);
+
+
+                for (let i = 0; i < count; i++) {
+                    var [state, box] = createBox(state);
+
+
+                    // var [state, newBoxes] = cloneGameObject(box, 2000, state);
+
+                    boxes.push(box);
+                }
+
+                return [state, boxes];
+            }
+
+
+
             function setPosition(boxes, state) {
                 var playgroundSize = 500;
 
@@ -221,17 +243,18 @@
                     //     return disposeGameObject(box, state);
                     // }, state);
 
+                    // todo fix!
 
-                    // var [state, newBoxes] = createBoxes(2000, state);
+                    var [state, newBoxes] = createBoxesWithoutClone(100, state);
 
-                    var [state, newBoxes] = cloneGameObject(window.sourceBox, 5000, state);
-                    let flatten = (arr) => {
-                        return arr.reduce((a, b) => {
-                            let arr = a.concat(b);
-                            return arr;
-                        }, []);
-                    };
-                    newBoxes = flatten(newBoxes);
+                    // var [state, newBoxes] = cloneGameObject(window.sourceBox, 8000, state);
+                    // let flatten = (arr) => {
+                    //     return arr.reduce((a, b) => {
+                    //         let arr = a.concat(b);
+                    //         return arr;
+                    //     }, []);
+                    // };
+                    // newBoxes = flatten(newBoxes);
 
 
                     var [state, newBoxes] = setPosition(newBoxes, state);

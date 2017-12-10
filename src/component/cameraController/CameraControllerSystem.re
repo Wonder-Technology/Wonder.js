@@ -114,40 +114,13 @@ let getGameObject = (cameraController: cameraController, state: StateDataType.st
     getCameraControllerData(state).gameObjectMap
   );
 
-let getTransform = (cameraController: cameraController, state: StateDataType.state) =>
-  switch (getGameObject(cameraController, state)) {
-  | None => ExceptionHandleSystem.throwMessage("cameraController's gameObject should exist")
-  | Some(gameObject) =>
-    switch (GameObjectSystem.getTransformComponent(gameObject, state)) {
-    | None =>
-      ExceptionHandleSystem.throwMessage("cameraController's gameObject's transform should exist")
-    | Some(transform) => transform
-    }
-  };
-
 let _getCameraToWorldMatrixByTransform = (transform, state: StateDataType.state) =>
-  TransformSystem.getLocalToWorldMatrixTypeArray(transform, state);
+  TransformUtils.getLocalToWorldMatrixTypeArray(transform, state);
 
-let _getCameraToWorldMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  _getCameraToWorldMatrixByTransform(getTransform(cameraController, state), state);
+let _getCameraToWorldMatrix = (transform, state: StateDataType.state) =>
+  _getCameraToWorldMatrixByTransform(transform, state);
 
-/* let getWorldToCameraMatrix =
-   CacheUtils.memorizeIntState(
-     [@bs]
-     (
-       (cameraController: cameraController, state: StateDataType.state) =>
-         _getCameraToWorldMatrix(cameraController, state) |> Matrix4System.invert
-     ),
-     [@bs]
-     ((state: StateDataType.state) => getCameraControllerData(state).worldToCameraMatrixCacheMap)
-   ); */
-let getWorldToCameraMatrix = (cameraController: cameraController, state: StateDataType.state) =>
-  Matrix4System.invert(
-    _getCameraToWorldMatrix(cameraController, state),
-    Matrix4System.createIdentityMatrix4()
-  );
-
-let getWorldToCameraMatrixByTransform = (transform, state: StateDataType.state) =>
+let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
   /* CacheUtils.mapDataInCacheType( */
   Matrix4System.invert(
     _getCameraToWorldMatrixByTransform(transform, state),

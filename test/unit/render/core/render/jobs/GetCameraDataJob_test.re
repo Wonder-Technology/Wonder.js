@@ -32,7 +32,7 @@ let _ =
           |>
           expect == Some({
                       vMatrix:
-                        CameraControllerTool.getWorldToCameraMatrix(cameraController2, state),
+                        CameraControllerTool.getWorldToCameraMatrix(transform2, state),
                       pMatrix: CameraControllerTool.getPMatrix(cameraController2, state)
                     })
         }

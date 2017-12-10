@@ -46,9 +46,7 @@ let _changeConfigToRecord = (config: configJsObj) : mainConfigData => {
   bufferConfig:
     switch (Js.Nullable.to_opt(config##bufferConfig)) {
     | Some(bufferConfig) => _changeToBufferConfigRecord(bufferConfig)
-    | None => {
-        geometryPointDataBufferCount: 1000 * 1000
-      }
+    | None => {geometryPointDataBufferCount: 1000 * 1000}
     }
 };
 
@@ -57,9 +55,6 @@ let setConfig = (config: Js.t({..}), state: state) => {
   setIsTest(~isTest=config.isTest, StateData.stateData);
   (config, state)
 };
-
-let _initDataFromState = (state: StateDataType.state) =>
-  state |> TransformSystem.initData |> MaterialSystem.initData |> GeometrySystem.initData;
 
 /* todo detect, setscreensize, set pixel ratio ... */
 let init = ((config: mainConfigData, state: state)) => {
@@ -71,5 +66,5 @@ let init = ((config: mainConfigData, state: state)) => {
   |> setContextConfig(~contextConfig=config.contextConfig)
   |> BufferConfigSystem.setConfig(~bufferConfig=config.bufferConfig)
   |> GPUDetectSystem.detect(gl)
-  |> _initDataFromState
+  |> GameObjectAdmin.initDataFromState
 };

@@ -4,11 +4,11 @@ open TypeArrayUtils;
 
 open TransformType;
 
-open TransformHierachySystem;
+open TransformHierachyCommon;
 
-open TransformDirtySystem;
+open TransformDirtyCommon;
 
-open TransformStateSystem;
+open TransformStateCommon;
 
 open Matrix4System;
 

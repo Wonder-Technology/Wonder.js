@@ -32,10 +32,10 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) 
 };
 
 let createInstance = (sourceInstance, state: StateDataType.state) => {
-  open GameObjectComponentSystem;
-  let (state, uid) = GameObjectCreateSystem.create(state);
+  open GameObjectComponentCommon;
+  let (state, uid) = GameObjectCreateCommon.create(state);
   _addObjectInstnace(sourceInstance, uid, SourceInstanceStateSystem.getData(state)) |> ignore;
-  let (state, transform) = TransformSystem.create(state);
+  let (state, transform) = TransformUtils.create(state);
   /* todo add ObjectInstance to instance */
   (addTransformComponent(uid, transform, state), uid)
 };

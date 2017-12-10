@@ -13,8 +13,8 @@ let getCameraControllerData = (state: StateDataType.state) => state.cameraContro
 
 let getDirtyArray = (state: StateDataType.state) => getCameraControllerData(state).dirtyArray;
 
-let getWorldToCameraMatrix = (cameraController, state: StateDataType.state) =>
-  CameraControllerSystem.getWorldToCameraMatrix(cameraController, state);
+let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>
+  CameraControllerSystem.getWorldToCameraMatrix(transform, state);
 
 let getPMatrix = (cameraController, state: StateDataType.state) =>
   CameraControllerSystem.getPMatrix(cameraController, state);

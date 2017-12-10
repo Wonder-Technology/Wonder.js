@@ -1,6 +1,6 @@
 open TransformType;
 
-open TransformStateSystem;
+open TransformStateCommon;
 
 open Contract;
 
@@ -9,14 +9,14 @@ let isAlive = (transform: transform, state: StateDataType.state) =>
 
 let _disposeFromParentAndChildMap = (transform, data) => {
   data
-  |> TransformHierachySystem.unsafeGetChildren(transform)
+  |> TransformHierachyCommon.unsafeGetChildren(transform)
   |> WonderCommonlib.ArraySystem.forEach(
        [@bs]
-       ((child: transform) => TransformHierachySystem.removeFromParentMap(child, data) |> ignore)
+       ((child: transform) => TransformHierachyCommon.removeFromParentMap(child, data) |> ignore)
      );
-  switch (TransformHierachySystem.getParent(transform, data)) {
+  switch (TransformHierachyCommon.getParent(transform, data)) {
   | None => ()
-  | Some(parent) => data |> TransformHierachySystem.removeFromChildMap(parent, transform) |> ignore
+  | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform) |> ignore
   }
 };
 

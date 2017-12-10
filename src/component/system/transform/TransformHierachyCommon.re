@@ -41,7 +41,7 @@ let _removeFromParent = (currentParentIndex: int, child: transform, transformDat
 let _setParent = (parent: transform, childIndex: int, transformData: transformData) => {
   WonderCommonlib.SparseMapSystem.set(
     childIndex,
-    TransformCastTypeSystem.transformToJsUndefine(parent),
+    TransformCastTypeCommon.transformToJsUndefine(parent),
     transformData.parentMap
   )
   |> ignore;
@@ -81,7 +81,7 @@ let setParent = (parent: option(transform), child: transform, transformData: tra
     | None => _addToParent(newParent, child, transformData)
     | Some(currentParent) =>
       let currentParentIndex = currentParent;
-      ! TransformJudgeSystem.isSame(currentParent, newParent) ?
+      ! TransformJudgeCommon.isSame(currentParent, newParent) ?
         _removeFromParent(currentParentIndex, child, transformData)
         |> _addToParent(newParent, child) :
         transformData

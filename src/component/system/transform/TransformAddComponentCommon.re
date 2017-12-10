@@ -1,6 +1,6 @@
 open TransformType;
 
-open TransformStateSystem;
+open TransformStateCommon;
 
 let handleAddComponent =
   [@bs]

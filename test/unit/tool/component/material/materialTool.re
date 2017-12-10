@@ -19,4 +19,4 @@ let isMaterial = (material) => {
 let dispose = MaterialDisposeComponentSystem.handleDisposeComponent;
 
 let prepareForInit = (state) =>
-  state |> AllMaterialSystem.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state));
+  state |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state));

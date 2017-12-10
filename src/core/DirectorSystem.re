@@ -2,25 +2,19 @@ open StateSystem;
 
 open StateData;
 
-let _initSystem = (state: StateDataType.state) =>
-  state |> CameraControllerSystem.init |> GeometrySystem.init;
-
 let init = (state: StateDataType.state) =>
   state
-  |> _initSystem
+  |> GameObjectAdmin.init
   |> WebGLRenderSystem.init
   |> TimeControllerSystem.start
   |> ScheduleControllerSystem.start;
-
-let _updateSystem = (elapsed: float, state: StateDataType.state) =>
-  state |> CameraControllerSystem.update;
 
 let _sync = (time: float, state: StateDataType.state) => {
   let elapsed = TimeControllerSystem.computeElapseTime(time, state);
   state
   |> TimeControllerSystem.tick(elapsed)
   |> ScheduleControllerSystem.update(elapsed)
-  |> _updateSystem(elapsed)
+  |> GameObjectAdmin.update(elapsed)
 };
 
 let _run = (time: float, state: StateDataType.state) =>

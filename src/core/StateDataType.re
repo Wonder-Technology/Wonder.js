@@ -215,7 +215,7 @@ and attributeSendData = {
 and instanceAttributeSendData = {pos: attributeLocation}
 and uniformSendData = {
   pos: uniformLocation,
-  getArrayDataFunc: [@bs] ((gameObject, state) => Float32Array.t),
+  getArrayDataFunc: [@bs] ((transform, state) => Float32Array.t),
   sendArrayDataFunc: [@bs] ((webgl1Context, uniformLocation, Float32Array.t) => unit)
   /* sendFloat32DataFunc: float => unit;
      sendIntDataFunc: int => unit; */

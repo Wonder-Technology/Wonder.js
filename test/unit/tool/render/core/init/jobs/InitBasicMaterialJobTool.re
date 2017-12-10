@@ -63,7 +63,7 @@ let prepareGameObject = (sandbox, state) => {
 let exec = (state: StateDataType.state) =>
   state
   |> GeometryTool.initGeometrys
-  |> AllMaterialSystem.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state))
+  |> MaterialAdmin.pregetGLSLData([@bs] DeviceManagerSystem.getGl(state))
   |> BasicMaterialSystem.init([@bs] DeviceManagerSystem.getGl(state));
 
 let prepareForJudgeGLSLNotExec = (sandbox, state) => {

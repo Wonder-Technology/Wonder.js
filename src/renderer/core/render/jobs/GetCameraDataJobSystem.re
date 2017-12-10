@@ -2,11 +2,14 @@ open StateDataType;
 
 open RenderDataType;
 
+open CameraControllerType;
+
 let _getCameraData = (state: StateDataType.state) =>
-  switch (CameraControllerSystem.getCurrentCameraController(state)) {
+  switch (CameraControllerAdmin.getCurrentCameraController(state)) {
   | None => None
   | Some(currentCameraController) =>
-    let transform = CameraControllerSystem.getTransform(currentCameraController, state);
+    let transform =
+      GetComponentUtils.getTransformFromCameraController(currentCameraController, state);
     /* RenderDataSystem.isFirstRender(state) ?
        Some({
          vMatrix:
@@ -26,8 +29,8 @@ let _getCameraData = (state: StateDataType.state) =>
              CacheType.Cache
        }) */
     Some({
-      vMatrix: CameraControllerSystem.getWorldToCameraMatrixByTransform(transform, state),
-      pMatrix: CameraControllerSystem.getPMatrix(currentCameraController, state)
+      vMatrix: CameraControllerAdmin.getWorldToCameraMatrix(transform, state),
+      pMatrix: CameraControllerAdmin.getPMatrix(currentCameraController, state)
     })
   };
 

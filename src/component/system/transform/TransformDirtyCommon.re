@@ -10,7 +10,7 @@ let mark = (transform: transform, isDirty, {dirtyMap} as data) => {
 let rec markHierachyDirty = (transform: transform, {dirtyMap} as data) => {
   data
   |> mark(transform, true)
-  |> TransformHierachySystem.unsafeGetChildren(transform)
+  |> TransformHierachyCommon.unsafeGetChildren(transform)
   |> ArraySystem.reduceOneParam([@bs] ((data, child) => markHierachyDirty(child, data)), data);
   data
 };

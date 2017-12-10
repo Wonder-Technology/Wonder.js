@@ -46,5 +46,8 @@ let getCameraControllerWorldToCameraMatrix =
         ComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
       )
   );
-  getWorldToCameraMatrix(cameraController, state)
+  getWorldToCameraMatrix(
+    GetComponentUtils.getTransformFromCameraController(cameraController, state),
+    state
+  )
 };

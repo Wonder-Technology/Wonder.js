@@ -7,11 +7,11 @@ open SourceInstanceType;
 open InstanceBufferSystem;
 
 let _fillModelMatrixTypeArr = (uid, matricesArrayForInstance, offset, transformData, state) => {
-  let transform = Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(uid, state));
+  let transform = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
   TypeArrayUtils.fillFloat32ArrayWithFloat32Array(
     matricesArrayForInstance,
     offset,
-    TransformSystem.getLocalToWorldMatrixTypeArray(transform, state),
+    TransformAdmin.getLocalToWorldMatrixTypeArray(transform, state),
     0,
     16
   );
@@ -105,11 +105,11 @@ let render = (gl, uid, state: StateDataType.state) => {
      use accurate buffer capacity(can't change) */
   let (state, shaderIndex, mappedGeometryIndex) = state |> RenderBasicSystem.render(gl, uid);
   let extension = GPUStateSystem.getData(state).extensionInstancedArrays |> Js.Option.getExn;
-  let transformData = TransformStateSystem.getTransformData(state);
+  let transformData = TransformAdmin.getData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
     SourceInstanceStateSystem.getData(state);
-  let sourceInstance = GameObjectComponentSystem.unsafeGetSourceInstanceComponent(uid, state);
+  let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
   let objectInstanceList = SourceInstanceSystem.getObjectInstanceList(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;
   let state =

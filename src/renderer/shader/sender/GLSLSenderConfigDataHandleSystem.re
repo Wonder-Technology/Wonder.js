@@ -115,11 +115,8 @@ let addAttributeSendData =
 let _getModelMMatrixData =
   [@bs]
   (
-    (gameObject: gameObject, state: StateDataType.state) => {
-      let transform =
-        Js.Option.getExn(GameObjectComponentSystem.getTransformComponent(gameObject, state));
-      TransformSystem.getLocalToWorldMatrixTypeArray(transform, state)
-    }
+    (transform, state: StateDataType.state) =>
+      TransformUtils.getLocalToWorldMatrixTypeArray(transform, state)
   );
 
 let addUniformSendData =

@@ -4,54 +4,53 @@ open Contract;
 
 open StateDataType;
 
-open TransformDirtySystem;
+open TransformDirtyCommon;
 
-open TransformHierachySystem;
+open TransformHierachyCommon;
 
-open TransformStateSystem;
+open TransformStateCommon;
+
+let getData = getTransformData;
+
+let handleAddComponent = TransformAddComponentCommon.handleAddComponent;
+
+let handleDisposeComponent = TransformDisposeComponentCommon.handleDisposeComponent;
+
+let handleBatchDisposeComponent = TransformDisposeComponentCommon.handleBatchDisposeComponent;
+
+let handleCloneComponent = TransformCloneComponentCommon.handleCloneComponent;
 
 let isAlive = (transform: transform, state: StateDataType.state) =>
-  TransformDisposeComponentSystem.isAlive(transform, state);
+  TransformDisposeComponentCommon.isAlive(transform, state);
 
-let create = (state: StateDataType.state) => {
-  let data = getTransformData(state);
-  let index = TransformCreateSystem.create(data);
-  TransformDirtySystem.mark(index, false, data) |> ignore;
-  (state, index)
-  /* |> ensureCheck(
-       (_) => {
-         open Contract.Operators;
-         let {index}: transformData = getTransformData(state);
-         let maxCount = TransformBufferSystem.getMaxCount(state);
-         test(
-           {j|have create too many components(the count of transforms shouldn't exceed $maxCount)|j},
-           () => index <= maxCount
-         )
-       }
-     ) */
-};
+let create = (state: StateDataType.state) => TransformUtils.create(state);
 
 let getParent = (child: transform, state: StateDataType.state) =>
-  TransformHierachySystem.getParent(child, getTransformData(state));
+  TransformHierachyCommon.getParent(child, getTransformData(state));
+
+let setParentNotMarkDirty =
+    (parent: option(transform), child: transform, transformData) =>
+  transformData |> TransformHierachyCommon.setParent(parent, child);
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
-  TransformHierachySystem.setParent(Js.toOption(parent), child, getTransformData(state))
-  |> markHierachyDirty(child)
-  |> ignore;
+  getTransformData(state) |> setParentNotMarkDirty(Js.toOption(parent), child) |> markHierachyDirty(child) |> ignore;
   state
 };
 
 let getChildren = (transform: transform, state: StateDataType.state) =>
   getTransformData(state) |> unsafeGetChildren(transform) |> Js.Array.copy;
 
+let unsafeGetChildren = (transform: transform, transformData) =>
+  unsafeGetChildren(transform, transformData);
+
 let getLocalPositionTypeArray = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getLocalPositionTypeArray(
+  TransformTransformCommon.getLocalPositionTypeArray(
     transform,
     getTransformData(state).localPositionMap
   );
 
 let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getLocalPositionTuple(
+  TransformTransformCommon.getLocalPositionTuple(
     transform,
     getTransformData(state).localPositionMap
   );
@@ -59,7 +58,7 @@ let getLocalPositionTuple = (transform: transform, state: StateDataType.state) =
 let setLocalPositionByTypeArray = (transform: transform, localPosition, state: StateDataType.state) => {
   state
   |> getTransformData
-  |> TransformOperateDataSystem.setLocalPositionByTypeArray(transform, localPosition)
+  |> TransformTransformCommon.setLocalPositionByTypeArray(transform, localPosition)
   |> markHierachyDirty(transform)
   |> ignore;
   state
@@ -68,20 +67,20 @@ let setLocalPositionByTypeArray = (transform: transform, localPosition, state: S
 let setLocalPositionByTuple = (transform: transform, localPosition, state: StateDataType.state) => {
   state
   |> getTransformData
-  |> TransformOperateDataSystem.setLocalPositionByTuple(transform, localPosition)
+  |> TransformTransformCommon.setLocalPositionByTuple(transform, localPosition)
   |> markHierachyDirty(transform)
   |> ignore;
   state
 };
 
 let getPositionTypeArray = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getPositionTypeArray(transform, state);
+  TransformTransformCommon.getPositionTypeArray(transform, state);
 
 let getPositionTuple = (transform: transform, state: StateDataType.state) =>
-  TransformOperateDataSystem.getPositionTuple(transform, state);
+  TransformTransformCommon.getPositionTuple(transform, state);
 
 let setPositionByTypeArray = (transform: transform, position, state: StateDataType.state) => {
-  TransformOperateDataSystem.setPositionByTypeArray(
+  TransformTransformCommon.setPositionByTypeArray(
     transform,
     position,
     getTransformData(state),
@@ -93,30 +92,22 @@ let setPositionByTypeArray = (transform: transform, position, state: StateDataTy
 };
 
 let setPositionByTuple = (transform: transform, position: position, state: StateDataType.state) => {
-  TransformOperateDataSystem.setPositionByTuple(
-    transform,
-    position,
-    getTransformData(state),
-    state
-  )
+  TransformTransformCommon.setPositionByTuple(transform, position, getTransformData(state), state)
   |> markHierachyDirty(transform)
   |> ignore;
   state
 };
 
-let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) => {
-  let {localToWorldMatrixMap} =
-    TransformOperateDataSystem.update(transform, state) |> getTransformData;
-  TransformOperateDataSystem.getLocalToWorldMatrixTypeArray(transform, localToWorldMatrixMap)
-};
+let getLocalToWorldMatrixTypeArray = (transform: transform, state: StateDataType.state) =>
+  TransformUtils.getLocalToWorldMatrixTypeArray(transform, state);
 
 let getGameObject = (transform: transform, state: StateDataType.state) =>
-  TransformGameObjectSystem.getGameObject(transform, getTransformData(state));
+  TransformGameObjectCommon.getGameObject(transform, getTransformData(state));
 
 let initData = (state: StateDataType.state) => {
-  /* let maxCount = TransformBufferSystem.getMaxCount(state); */
+  /* let maxCount = TransformBufferCommon.getMaxCount(state); */
   /* let (buffer, localPositions, localToWorldMatrices) =
-     TransformBufferSystem.initBufferData(maxCount); */
+     TransformBufferCommon.initBufferData(maxCount); */
   state.transformData =
     Some
       /* buffer,

@@ -5,3 +5,5 @@ let pregetGLSLData = (gl, state: StateDataType.state) => {
   glslData.precision = Some(ShaderSystem.getPrecisionSource(state));
   state
 };
+
+let initData = (state:StateDataType.state) => MaterialSystem.initData(state);

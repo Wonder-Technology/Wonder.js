@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (configData, gl, state) => AllMaterialSystem.pregetGLSLData(gl, state);
+let getJob = (configData, gl, state) => MaterialAdmin.pregetGLSLData(gl, state);

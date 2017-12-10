@@ -3,9 +3,10 @@ open StateDataType;
 open VboBufferType;
 
 let render = (gl, uid, state: StateDataType.state) => {
-  let materialIndex: int = GameObjectSystem.unsafeGetMaterialComponent(uid, state);
+  let transformIndex: int = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
+  let materialIndex: int = GameObjectAdmin.unsafeGetMaterialComponent(uid, state);
   let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
-  let geometryIndex: int = GameObjectSystem.unsafeGetGeometryComponent(uid, state);
+  let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let mappedGeometryIndex =
     GeometryIndexSystem.getMappedIndex(
       geometryIndex,
@@ -53,13 +54,13 @@ let render = (gl, uid, state: StateDataType.state) => {
          [@bs]
          (
            (state, {pos, getArrayDataFunc, sendArrayDataFunc}: uniformSendData) => {
-             [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(uid, state));
+             [@bs] sendArrayDataFunc(gl, pos, [@bs] getArrayDataFunc(transformIndex, state));
              state
            }
          ),
          state
        ),
-       shaderIndex,
+    shaderIndex,
     mappedGeometryIndex
   )
 };
