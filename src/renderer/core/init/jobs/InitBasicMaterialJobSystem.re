@@ -1,3 +1,3 @@
 open StateDataType;
 
-let getJob = (configData, gl, state) => BasicMaterialSystem.init(gl, state);
+let getJob = (configData, gl, state) => MaterialAdmin.initBasicMaterial(gl, state);

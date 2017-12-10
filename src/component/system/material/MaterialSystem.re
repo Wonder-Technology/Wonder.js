@@ -2,21 +2,33 @@ open MaterialType;
 
 open StateDataType;
 
+let handleInitComponent = MaterialInitComponentCommon.handleInitComponent;
+
+let handleAddComponent = MaterialAddComponentCommon.handleAddComponent;
+
+let handleDisposeComponent = MaterialDisposeComponentCommon.handleDisposeComponent;
+
+let handleBatchDisposeComponent = MaterialDisposeComponentCommon.handleBatchDisposeComponent;
+
+let handleCloneComponent = MaterialCloneComponentCommon.handleCloneComponent;
+
 let getGameObject = (material: material, state: StateDataType.state) =>
-  MaterialGameObjectSystem.getGameObject(material, state);
+  MaterialGameObjectCommon.getGameObject(material, state);
 
-let unsafeGetShaderIndex = MaterialShaderIndexSystem.unsafeGetShaderIndex;
+let getData = MaterialStateCommon.getMaterialData;
 
-let setShaderIndex = MaterialShaderIndexSystem.setShaderIndex;
+let unsafeGetShaderIndex = MaterialShaderIndexCommon.unsafeGetShaderIndex;
+
+let setShaderIndex = MaterialShaderIndexCommon.setShaderIndex;
 
 let isAlive = (material: material, state: StateDataType.state) =>
-  MaterialDisposeComponentSystem.isAlive(material, state);
+  MaterialDisposeComponentCommon.isAlive(material, state);
 
 /* let getShaderIndexDataSize = () => 1;
 
    /* let getColorDataSize = () => 3; */
    let getBasicMaterialBufferCount = (state: StateDataType.state) =>
-     BufferConfigSystem.getConfig(state).basicMaterialDataBufferCount;
+     BufferConfigCommon.getConfig(state).basicMaterialDataBufferCount;
 
    let getMaterialBufferSize = () =>
      /* Float32Array.BYTES_PER_ELEMENT * (getShaderIndexDataSize() + getColorDataSize()); */

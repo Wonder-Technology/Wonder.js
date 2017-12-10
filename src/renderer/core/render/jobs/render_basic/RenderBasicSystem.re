@@ -5,7 +5,7 @@ open VboBufferType;
 let render = (gl, uid, state: StateDataType.state) => {
   let transformIndex: int = GameObjectAdmin.unsafeGetTransformComponent(uid, state);
   let materialIndex: int = GameObjectAdmin.unsafeGetMaterialComponent(uid, state);
-  let shaderIndex = MaterialSystem.unsafeGetShaderIndex(materialIndex, state);
+  let shaderIndex = MaterialAdmin.unsafeGetShaderIndex(materialIndex, state);
   let geometryIndex: int = GameObjectAdmin.unsafeGetGeometryComponent(uid, state);
   let mappedGeometryIndex =
     GeometryAdmin.getMappedIndex(

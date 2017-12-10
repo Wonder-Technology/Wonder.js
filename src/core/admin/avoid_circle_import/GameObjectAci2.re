@@ -1,0 +1,2 @@
+
+let hasSourceInstanceComponent = GameObjectComponentCommon.hasSourceInstanceComponent;

@@ -139,15 +139,15 @@ let getMaterialComponent = (uid: int, state: StateDataType.state) =>
 let unsafeGetMaterialComponent = (uid: int, state: StateDataType.state) =>
   GameObjectStateCommon.getGameObjectData(state).materialMap |> _unsafeGetComponent(uid);
 
-let addMaterialComponent = (uid: int, component: component, state: StateDataType.state) => {
+let addMaterialComponent = (uid: int, component: component, handleAddComponentFunc, state: StateDataType.state) => {
   GameObjectStateCommon.getGameObjectData(state).materialMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] MaterialAddComponentSystem.handleAddComponent(component, uid, state)
+  [@bs]handleAddComponentFunc(component, uid, state)
 };
 
-let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
-  MaterialDisposeComponentSystem.handleDisposeComponent(component, state);
+let disposeMaterialComponent = (uid: int, component: component, handleDisposeComponentFunc, state: StateDataType.state) =>
+  [@bs]handleDisposeComponentFunc(component, state);
 
 let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataType.state) =>
   uidArray
@@ -201,11 +201,11 @@ let batchGetMaterialComponent = (uidArray: array(int), state: StateDataType.stat
   _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).materialMap, state);
 
 let batchDisposeMaterialComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
+    (uidMap, state: StateDataType.state, handleBatchDisposeComponentFunc, componentArray: array(component)) =>
   _batchDisposeComponent(
     uidMap,
     state,
-    MaterialDisposeComponentSystem.handleBatchDisposeComponent,
+    handleBatchDisposeComponentFunc,
     componentArray
   );
 
@@ -317,12 +317,12 @@ let batchAddGeometryComponentForClone =
 };
 
 let batchAddMaterialComponentForClone =
-    (uidArray: array(int), componentArr: array(component), state: StateDataType.state) =>
+    (uidArray: array(int), componentArr: array(component), handleAddComponentFunc, state: StateDataType.state) =>
   _batchAddComponent(
     uidArray,
     componentArr,
     GameObjectStateCommon.getGameObjectData(state).materialMap,
-    MaterialAddComponentSystem.handleAddComponent,
+    [@bs]handleAddComponentFunc,
     state
   );
 
@@ -349,8 +349,8 @@ let cloneGeometryComponent =
   GeometrySystem.handleCloneComponent(sourceComponent, countRangeArr, state);
 
 let cloneMaterialComponent =
-    (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  MaterialCloneComponentSystem.handleCloneComponent(sourceComponent, countRangeArr, state);
+    (sourceComponent: component, countRangeArr: array(int), handleCloneComponentFunc, state: StateDataType.state) =>
+  [@bs]handleCloneComponentFunc(sourceComponent, countRangeArr, state);
 
 let cloneCameraControllerComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>

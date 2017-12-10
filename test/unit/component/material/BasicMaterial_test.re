@@ -40,7 +40,7 @@ let _ =
                 () => {
                   let (state, material1) = createBasicMaterial(state^);
                   let (state, material2) = createBasicMaterial(state);
-                  let state = state |> MaterialTool.dispose(material1);
+                  let state = state |>  MaterialTool.dispose(material1);
                   expect(
                     () => {
                       let state =

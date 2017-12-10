@@ -1,6 +1,6 @@
 open MaterialType;
 
-open MaterialStateSystem;
+open MaterialStateCommon;
 
 let getGameObject = (material: material, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(material, getMaterialData(state).gameObjectMap);

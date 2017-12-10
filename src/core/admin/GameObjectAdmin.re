@@ -8,6 +8,7 @@ open GameObjectType;
 
 let init = (state: StateDataType.state) =>
   state |> CameraControllerSystem.init |> GeometrySystem.init;
+
 /*  */
 let initDataFromState = (state: StateDataType.state) =>
   state |> TransformSystem.initData |> MaterialAdmin.initData |> GeometrySystem.initData;
@@ -64,9 +65,21 @@ let getMaterialComponent = GameObjectComponentCommon.getMaterialComponent;
 
 let unsafeGetMaterialComponent = GameObjectComponentCommon.unsafeGetMaterialComponent;
 
-let addMaterialComponent = GameObjectComponentCommon.addMaterialComponent;
+let addMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.addMaterialComponent(
+    uid,
+    component,
+    MaterialSystem.handleAddComponent,
+    state
+  );
 
-let disposeMaterialComponent = GameObjectComponentCommon.disposeMaterialComponent;
+let disposeMaterialComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.disposeMaterialComponent(
+    uid,
+    component,
+    MaterialSystem.handleDisposeComponent,
+    state
+  );
 
 let create = (state: StateDataType.state) => {
   let (state, uid) = GameObjectCreateCommon.create(state);
@@ -125,7 +138,11 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
     |> GameObjectComponentCommon.batchGetTransformComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeTransformComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetMaterialComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeMaterialComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchDisposeMaterialComponent(
+         disposedUidMap,
+         state,
+         MaterialSystem.handleBatchDisposeComponent
+       )
     |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
     |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
     |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
@@ -198,11 +215,17 @@ let clone = (uid: int, count: int, state: StateDataType.state) => {
       switch (getMaterialComponent(uid, state)) {
       | Some(meshRenderer) =>
         let (state, clonedMaterialArr) =
-          GameObjectComponentCommon.cloneMaterialComponent(meshRenderer, countRangeArr, state);
+          GameObjectComponentCommon.cloneMaterialComponent(
+            meshRenderer,
+            countRangeArr,
+            MaterialSystem.handleCloneComponent,
+            state
+          );
         state
         |> GameObjectComponentCommon.batchAddMaterialComponentForClone(
              clonedGameObjectArr,
-             clonedMaterialArr
+             clonedMaterialArr,
+             MaterialSystem.handleAddComponent
            )
       | None => state
       };
@@ -295,11 +318,7 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
   let state =
     switch (getMaterialComponent(uid, state)) {
     | Some(material) =>
-      MaterialInitComponentSystem.handleInitComponent(
-        [@bs] DeviceManagerSystem.getGl(state),
-        material,
-        state
-      )
+      MaterialSystem.handleInitComponent([@bs] DeviceManagerSystem.getGl(state), material, state)
     | None => state
     };
   state

@@ -1,4 +1,4 @@
-open MaterialStateSystem;
+open MaterialStateCommon;
 
 open Contract;
 

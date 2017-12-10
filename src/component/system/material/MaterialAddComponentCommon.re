@@ -2,7 +2,7 @@ open GameObjectType;
 
 open MaterialType;
 
-open MaterialStateSystem;
+open MaterialStateCommon;
 
 let handleAddComponent =
   [@bs]
