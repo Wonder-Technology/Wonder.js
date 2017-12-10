@@ -1,6 +1,6 @@
 open MeshRendererType;
 
-open MeshRendererStateSystem;
+open MeshRendererStateCommon;
 
 open Contract;
 

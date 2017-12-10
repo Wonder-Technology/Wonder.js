@@ -4,14 +4,6 @@ open StateDataType;
 
 let handleInitComponent = MaterialInitComponentCommon.handleInitComponent;
 
-let handleAddComponent = MaterialAddComponentCommon.handleAddComponent;
-
-let handleDisposeComponent = MaterialDisposeComponentCommon.handleDisposeComponent;
-
-let handleBatchDisposeComponent = MaterialDisposeComponentCommon.handleBatchDisposeComponent;
-
-let handleCloneComponent = MaterialCloneComponentCommon.handleCloneComponent;
-
 let getGameObject = (material: material, state: StateDataType.state) =>
   MaterialGameObjectCommon.getGameObject(material, state);
 

@@ -14,12 +14,6 @@ let getData = getTransformData;
 
 let handleAddComponent = TransformAddComponentCommon.handleAddComponent;
 
-let handleDisposeComponent = TransformDisposeComponentCommon.handleDisposeComponent;
-
-let handleBatchDisposeComponent = TransformDisposeComponentCommon.handleBatchDisposeComponent;
-
-let handleCloneComponent = TransformCloneComponentCommon.handleCloneComponent;
-
 let isAlive = (transform: transform, state: StateDataType.state) =>
   TransformDisposeComponentCommon.isAlive(transform, state);
 
@@ -28,12 +22,14 @@ let create = (state: StateDataType.state) => TransformUtils.create(state);
 let getParent = (child: transform, state: StateDataType.state) =>
   TransformHierachyCommon.getParent(child, getTransformData(state));
 
-let setParentNotMarkDirty =
-    (parent: option(transform), child: transform, transformData) =>
+let setParentNotMarkDirty = (parent: option(transform), child: transform, transformData) =>
   transformData |> TransformHierachyCommon.setParent(parent, child);
 
 let setParent = (parent: Js.nullable(transform), child: transform, state: StateDataType.state) => {
-  getTransformData(state) |> setParentNotMarkDirty(Js.toOption(parent), child) |> markHierachyDirty(child) |> ignore;
+  getTransformData(state)
+  |> setParentNotMarkDirty(Js.toOption(parent), child)
+  |> markHierachyDirty(child)
+  |> ignore;
   state
 };
 

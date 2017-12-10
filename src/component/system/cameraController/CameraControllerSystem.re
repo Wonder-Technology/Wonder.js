@@ -12,14 +12,6 @@ let create = (state: StateDataType.state) => CameraControllerCreateCommon.create
 
 let getCameraControllerData = CameraControllerStateCommon.getCameraControllerData;
 
-let handleAddComponent = CameraControllerAddComponentCommon.handleAddComponent;
-
-let handleDisposeComponent = CameraControllerDisposeComponentCommon.handleDisposeComponent;
-
-let handleBatchDisposeComponent = CameraControllerDisposeComponentCommon.handleBatchDisposeComponent;
-
-let handleCloneComponent = CameraControllerCloneComponentCommon.handleCloneComponent;
-
 let getCurrentCameraController = (state: StateDataType.state) => {
   requireCheck(
     () =>

@@ -1,6 +1,6 @@
 open ComponentSystem;
 
-open MeshRendererStateSystem;
+open MeshRendererStateCommon;
 
 open MeshRendererType;
 

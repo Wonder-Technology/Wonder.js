@@ -8,7 +8,7 @@ let handleCloneComponent =
        [@bs]
        (
          (state, _) => {
-           let (state, index) = MeshRendererCreateSystem.create(state);
+           let (state, index) = MeshRendererCreateCommon.create(state);
            componentArr |> Js.Array.push(index) |> ignore;
            state
          }

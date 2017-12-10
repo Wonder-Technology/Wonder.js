@@ -2,7 +2,7 @@ open GameObjectType;
 
 open MeshRendererType;
 
-open MeshRendererStateSystem;
+open MeshRendererStateCommon;
 
 let _setRenderGameObjectArray =
     (

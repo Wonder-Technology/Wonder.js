@@ -66,7 +66,7 @@ let getMappedIndex = (index, state: StateDataType.state) =>
 let buildInfo = GeometryOperateCommon.buildInfo;
 
 let dispose = (geometry, state: StateDataType.state) =>
-  GeometrySystem.handleDisposeComponent(geometry, state);
+  GeometryDisposeComponentCommon.handleDisposeComponent(geometry, state);
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();

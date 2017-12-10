@@ -3,6 +3,6 @@ open StateDataType;
 open RenderDataType;
 
 let getJob = (configData, gl, state) => {
-  RenderDataSystem.setRenderArray(MeshRendererSystem.getRenderArray(state), state);
+  RenderDataSystem.setRenderArray(MeshRendererAdmin.getRenderArray(state), state);
   state
 };

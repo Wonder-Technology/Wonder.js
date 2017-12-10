@@ -1,5 +1,3 @@
-
-
 open ComponentSystem;
 
 open Js.Typed_array;
@@ -27,32 +25,20 @@ open Gl;
 
 
    }; */
-
-
 let getMappedIndex = GeometryIndexCommon.getMappedIndex;
+
 /* let setMappedIndex = GeometryIndexCommon.setMappedIndex; */
 let getMappedIndexMap = GeometryIndexCommon.getMappedIndexMap;
 
-
 /* let buildInfo = GeometryOperateCommon.buildInfo;
-let getInfo = GeometryOperateCommon.getInfo;
+   let getInfo = GeometryOperateCommon.getInfo;
 
- */
+    */
 let getData = GeometryStateCommon.getGeometryData;
 
 let increaseGroupCount = GeometryGroupCommon.increaseGroupCount;
 
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
-
-let handleAddComponent = GeometryAddComponentCommon.handleAddComponent;
-
-let handleDisposeComponent = GeometryDisposeComponentCommon.handleDisposeComponent;
-
-let handleBatchDisposeComponent = GeometryDisposeComponentCommon.handleBatchDisposeComponent;
-
-let handleCloneComponent = GeometryCloneComponentCommon.handleCloneComponent;
-
-
 
 let getVertices =
   [@bs]
@@ -141,7 +127,6 @@ let getIndexDataSize = () => 1;
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.isAlive(geometry, state);
 
-
 let _createTypeArrays = (buffer, count: int) => {
   let offset = ref(0);
   let vertices =
@@ -151,7 +136,6 @@ let _createTypeArrays = (buffer, count: int) => {
     Uint16Array.fromBufferRange(buffer, ~offset=offset^, ~length=count * getIndexDataSize());
   offset := count * Uint16Array._BYTES_PER_ELEMENT * getIndexDataSize();
   (buffer, vertices, indices)
-
 };
 
 let _getBufferSize = () =>
@@ -198,4 +182,3 @@ let initData = (state: StateDataType.state) => {
     });
   state
 };
-

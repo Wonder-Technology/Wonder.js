@@ -124,11 +124,11 @@ let addMeshRendererComponent = (uid: int, component: component, state: StateData
   GameObjectStateCommon.getGameObjectData(state).meshRendererMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] MeshRendererAddComponentSystem.handleAddComponent(component, uid, state)
+  [@bs] MeshRendererAddComponentCommon.handleAddComponent(component, uid, state)
 };
 
 let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
-  MeshRendererDisposeComponentSystem.handleDisposeComponent(component, uid, state);
+  MeshRendererDisposeComponentCommon.handleDisposeComponent(component, uid, state);
 
 let hasMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).materialMap |> _hasComponent(uid);
@@ -193,7 +193,7 @@ let batchDisposeMeshRendererComponent =
   _batchDisposeComponent(
     uidMap,
     state,
-    MeshRendererDisposeComponentSystem.handleBatchDisposeComponent,
+    MeshRendererDisposeComponentCommon.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -284,7 +284,7 @@ let batchAddMeshRendererComponentForClone =
     uidArray,
     componentArr,
     GameObjectStateCommon.getGameObjectData(state).meshRendererMap,
-    MeshRendererAddComponentSystem.handleAddComponent,
+    MeshRendererAddComponentCommon.handleAddComponent,
     state
   );
 
@@ -341,7 +341,7 @@ let cloneTransformComponent =
 
 let cloneMeshRendererComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  MeshRendererCloneComponentSystem.handleCloneComponent(countRangeArr, state);
+  MeshRendererCloneComponentCommon.handleCloneComponent(countRangeArr, state);
 
 let cloneGeometryComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>

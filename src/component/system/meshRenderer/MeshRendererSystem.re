@@ -1,18 +1,18 @@
 open ComponentSystem;
 
-open MeshRendererStateSystem;
+open MeshRendererStateCommon;
 
 open MeshRendererType;
 
-let handleAddComponent = MeshRendererAddComponentSystem.handleAddComponent;
+let handleAddComponent = MeshRendererAddComponentCommon.handleAddComponent;
 
-let handleDisposeComponent = MeshRendererDisposeComponentSystem.handleDisposeComponent;
+let handleDisposeComponent = MeshRendererDisposeComponentCommon.handleDisposeComponent;
 
-let handleBatchDisposeComponent = MeshRendererDisposeComponentSystem.handleBatchDisposeComponent;
+let handleBatchDisposeComponent = MeshRendererDisposeComponentCommon.handleBatchDisposeComponent;
 
-let handleCloneComponent = MeshRendererCloneComponentSystem.handleCloneComponent;
+let handleCloneComponent = MeshRendererCloneComponentCommon.handleCloneComponent;
 
-let create = MeshRendererCreateSystem.create;
+let create = MeshRendererCreateCommon.create;
 
 let getRenderArray = (state: StateDataType.state) =>
   getMeshRendererData(state).renderGameObjectArray;
@@ -23,7 +23,7 @@ let getGameObject = (meshRenderer: meshRenderer, state: StateDataType.state) => 
 };
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
-  MeshRendererDisposeComponentSystem.isAlive(meshRenderer, state);
+  MeshRendererDisposeComponentCommon.isAlive(meshRenderer, state);
 
 let batchCreate = (countRangeArr: array(int), state: StateDataType.state) => {
   let {index, disposedIndexArray} as data = getMeshRendererData(state);
