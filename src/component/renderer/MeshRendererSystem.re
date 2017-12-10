@@ -4,6 +4,14 @@ open MeshRendererStateSystem;
 
 open MeshRendererType;
 
+let handleAddComponent = MeshRendererAddComponentSystem.handleAddComponent;
+
+let handleDisposeComponent = MeshRendererDisposeComponentSystem.handleDisposeComponent;
+
+let handleBatchDisposeComponent = MeshRendererDisposeComponentSystem.handleBatchDisposeComponent;
+
+let handleCloneComponent = MeshRendererCloneComponentSystem.handleCloneComponent;
+
 let create = MeshRendererCreateSystem.create;
 
 let getRenderArray = (state: StateDataType.state) =>

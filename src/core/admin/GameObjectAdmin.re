@@ -29,7 +29,13 @@ let getCameraControllerComponent = GameObjectComponentCommon.getCameraController
 
 let addCameraControllerComponent = GameObjectComponentCommon.addCameraControllerComponent;
 
-let disposeCameraControllerComponent = GameObjectComponentCommon.disposeCameraControllerComponent;
+let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.disposeCameraControllerComponent(
+    uid,
+    component,
+    CameraControllerSystem.handleDisposeComponent,
+    state
+  );
 
 let hasTransformComponent = GameObjectComponentCommon.hasTransformComponent;
 
@@ -39,7 +45,13 @@ let unsafeGetTransformComponent = GameObjectComponentCommon.unsafeGetTransformCo
 
 let addTransformComponent = GameObjectComponentCommon.addTransformComponent;
 
-let disposeTransformComponent = GameObjectComponentCommon.disposeTransformComponent;
+let disposeTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.disposeTransformComponent(
+    uid,
+    component,
+    TransformSystem.handleDisposeComponent,
+    state
+  );
 
 let hasGeometryComponent = GameObjectComponentCommon.hasGeometryComponent;
 
@@ -49,7 +61,13 @@ let unsafeGetGeometryComponent = GameObjectComponentCommon.unsafeGetGeometryComp
 
 let addGeometryComponent = GameObjectComponentCommon.addGeometryComponent;
 
-let disposeGeometryComponent = GameObjectComponentCommon.disposeGeometryComponent;
+let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.disposeGeometryComponent(
+    uid,
+    component,
+    GeometrySystem.handleDisposeComponent,
+    state
+  );
 
 let hasMeshRendererComponent = GameObjectComponentCommon.hasMeshRendererComponent;
 
@@ -57,7 +75,13 @@ let getMeshRendererComponent = GameObjectComponentCommon.getMeshRendererComponen
 
 let addMeshRendererComponent = GameObjectComponentCommon.addMeshRendererComponent;
 
-let disposeMeshRendererComponent = GameObjectComponentCommon.disposeMeshRendererComponent;
+let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
+  GameObjectComponentCommon.disposeMeshRendererComponent(
+    uid,
+    component,
+    MeshRendererSystem.handleDisposeComponent,
+    state
+  );
 
 let hasMaterialComponent = GameObjectComponentCommon.hasMaterialComponent;
 
@@ -134,19 +158,35 @@ let batchDispose = (uidArray: array(int), state: StateDataType.state) => {
   let state =
     state
     |> GameObjectComponentCommon.batchGetMeshRendererComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeMeshRendererComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchDisposeComponent(
+         disposedUidMap,
+         state,
+         MeshRendererSystem.handleBatchDisposeComponent
+       )
     |> GameObjectComponentCommon.batchGetTransformComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeTransformComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchDisposeComponent(
+         disposedUidMap,
+         state,
+         TransformSystem.handleBatchDisposeComponent
+       )
     |> GameObjectComponentCommon.batchGetMaterialComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeMaterialComponent(
+    |> GameObjectComponentCommon.batchDisposeComponent(
          disposedUidMap,
          state,
          MaterialSystem.handleBatchDisposeComponent
        )
     |> GameObjectComponentCommon.batchGetGeometryComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeGeometryComponent(disposedUidMap, state)
+    |> GameObjectComponentCommon.batchDisposeComponent(
+         disposedUidMap,
+         state,
+         GeometrySystem.handleBatchDisposeComponent
+       )
     |> GameObjectComponentCommon.batchGetCameraControllerComponent(uidArray)
-    |> GameObjectComponentCommon.batchDisposeCameraControllerComponent(disposedUidMap, state);
+    |> GameObjectComponentCommon.batchDisposeComponent(
+         disposedUidMap,
+         state,
+         CameraControllerSystem.handleBatchDisposeComponent
+       );
   if (MemoryUtils.isDisposeTooMany(data.disposeCount, state)) {
     data.disposeCount = 0;
     CpuMemorySystem.reAllocateGameObject(state)

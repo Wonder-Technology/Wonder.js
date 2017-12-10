@@ -62,8 +62,8 @@ let addCameraControllerComponent = (uid: int, component: component, state: State
   [@bs] CameraControllerSystem.handleAddComponent(component, uid, state)
 };
 
-let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
-  CameraControllerSystem.handleDisposeComponent(component, state);
+let disposeCameraControllerComponent = (uid: int, component: component, handleDisposeComponentFunc, state: StateDataType.state) =>
+  [@bs]handleDisposeComponentFunc(component, state);
 
 let hasTransformComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).transformMap |> _hasComponent(uid);
@@ -81,8 +81,8 @@ let addTransformComponent = (uid: int, component: component, state: StateDataTyp
   [@bs] TransformSystem.handleAddComponent(component, uid, state)
 };
 
-let disposeTransformComponent = (uid: int, component: component, state: StateDataType.state) =>
-  TransformSystem.handleDisposeComponent(component, state);
+let disposeTransformComponent = (uid: int, component: component, handleDisposeComponentFunc, state: StateDataType.state) =>
+  [@bs]handleDisposeComponentFunc(component, state);
 
 let hasGeometryComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).geometryMap |> _hasComponent(uid);
@@ -111,8 +111,8 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   }
 };
 
-let disposeGeometryComponent = (uid: int, component: component, state: StateDataType.state) =>
-  GeometrySystem.handleDisposeComponent(component, state);
+let disposeGeometryComponent = (uid: int, component: component,handleDisposeComponentFunc, state: StateDataType.state) =>
+  [@bs]handleDisposeComponentFunc(component, state);
 
 let hasMeshRendererComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).meshRendererMap |> _hasComponent(uid);
@@ -127,8 +127,8 @@ let addMeshRendererComponent = (uid: int, component: component, state: StateData
   [@bs] MeshRendererAddComponentSystem.handleAddComponent(component, uid, state)
 };
 
-let disposeMeshRendererComponent = (uid: int, component: component, state: StateDataType.state) =>
-  MeshRendererDisposeComponentSystem.handleDisposeComponent(component, uid, state);
+let disposeMeshRendererComponent = (uid: int, component: component, handleDisposeComponentFunc, state: StateDataType.state) =>
+  [@bs]handleDisposeComponentFunc(component, uid, state);
 
 let hasMaterialComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).materialMap |> _hasComponent(uid);
@@ -167,40 +167,10 @@ let _batchGetComponent = (uidArray: array(int), componentMap, state: StateDataTy
 
 let _batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleFunc, componentArray: array(component)) =>
-  handleFunc(componentArray, uidMap, state);
+  [@bs]handleFunc(componentArray, uidMap, state);
 
-let batchGetTransformComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).transformMap, state);
 
-let batchDisposeTransformComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    TransformSystem.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(
-    uidArray,
-    GameObjectStateCommon.getGameObjectData(state).meshRendererMap,
-    state
-  );
-
-let batchDisposeMeshRendererComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    MeshRendererDisposeComponentSystem.handleBatchDisposeComponent,
-    componentArray
-  );
-
-let batchGetMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
-  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).materialMap, state);
-
-let batchDisposeMaterialComponent =
+let batchDisposeComponent =
     (uidMap, state: StateDataType.state, handleBatchDisposeComponentFunc, componentArray: array(component)) =>
   _batchDisposeComponent(
     uidMap,
@@ -209,32 +179,33 @@ let batchDisposeMaterialComponent =
     componentArray
   );
 
+
+
+
+let batchGetTransformComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).transformMap, state);
+
+
+
+
+let batchGetMeshRendererComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(
+    uidArray,
+    GameObjectStateCommon.getGameObjectData(state).meshRendererMap,
+    state
+  );
+
+let batchGetMaterialComponent = (uidArray: array(int), state: StateDataType.state) =>
+  _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).materialMap, state);
+
 let batchGetGeometryComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(uidArray, GameObjectStateCommon.getGameObjectData(state).geometryMap, state);
-
-let batchDisposeGeometryComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    GeometrySystem.handleBatchDisposeComponent,
-    componentArray
-  );
 
 let batchGetCameraControllerComponent = (uidArray: array(int), state: StateDataType.state) =>
   _batchGetComponent(
     uidArray,
     GameObjectStateCommon.getGameObjectData(state).cameraControllerMap,
     state
-  );
-
-let batchDisposeCameraControllerComponent =
-    (uidMap, state: StateDataType.state, componentArray: array(component)) =>
-  _batchDisposeComponent(
-    uidMap,
-    state,
-    CameraControllerSystem.handleBatchDisposeComponent,
-    componentArray
   );
 
 let _batchAddComponent =

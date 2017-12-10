@@ -5,10 +5,7 @@ let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 let initGeometry = (geometry, state: StateDataType.state) =>
   GeometryInitComponentCommon.initGeometry(
     geometry,
-    GeometrySystem.getMappedIndex(
-      geometry,
-      GeometrySystem.getData(state).mappedIndexMap
-    ),
+    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getData(state).mappedIndexMap),
     state
   );
 
@@ -61,16 +58,15 @@ let isGeometry = (geometry) => {
   expect(geometry) >= 0
 };
 
-let buildBufferConfig = (count) => {
-  "geometryPointDataBufferCount": Js.Nullable.return(count)
-};
+let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
 
 let getMappedIndex = (index, state: StateDataType.state) =>
   getData(state).mappedIndexMap |> GeometrySystem.getMappedIndex(index);
 
 let buildInfo = GeometryOperateCommon.buildInfo;
 
-let dispose = GeometrySystem.handleDisposeComponent;
+let dispose = (geometry, state: StateDataType.state) =>
+  [@bs] GeometrySystem.handleDisposeComponent(geometry, state);
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
   TestTool.closeContractCheck();
