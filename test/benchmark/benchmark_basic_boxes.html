@@ -8,34 +8,38 @@
 
 <body>
     <script type="module">
-        import { scheduleLoop } from "../../lib/es6_global/src/core/scheduler/Scheduler.js";
+
+        import { scheduleLoop } from "../../lib/es6_global/src/core/api/Scheduler.js";
 
 
-        import { setMainConfig } from "../../lib/es6_global/src/core/Main.js";
+        import { setMainConfig } from "../../lib/es6_global/src/core/api/Main.js";
 
-        import { startDirector } from "../../lib/es6_global/src/core/Director.js";
+        import { startDirector } from "../../lib/es6_global/src/core/api/Director.js";
 
-        import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/component/geometry/BoxGeometry.js";
+        import { createBoxGeometry, setBoxGeometryConfigData } from "../../lib/es6_global/src/component/api/geometry/BoxGeometry.js";
 
 
 
 
         // import { setGeometryGroup } from "../../lib/es6_global/src/component/geometry/Geometry.js";
 
-        import { createMeshRenderer } from "../../lib/es6_global/src/component/meshRenderer/MeshRenderer.js";
+        import { createMeshRenderer } from "../../lib/es6_global/src/component/api/meshRenderer/MeshRenderer.js";
 
-        import { createBasicMaterial } from "../../lib/es6_global/src/component/material/BasicMaterial.js";
-
-
-        import { setTransformParent, getTransformPositionTuple, getTransformLocalPositionTuple, setTransformLocalPositionByTuple, setTransformPositionByTuple } from "../../lib/es6_global/src/component/transform/Transform.js";
+        import { createBasicMaterial } from "../../lib/es6_global/src/component/api/material/BasicMaterial.js";
 
 
-        import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/cameraController/CameraController.js";
-        import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/cameraController/PerspectiveCamera.js";
+        import { setTransformParent, getTransformLocalPositionTuple, getTransformPositionTypeArray, getTransformPositionTuple, getTransformLocalPositionTypeArray, setTransformLocalPositionByTypeArray, setTransformLocalPositionByTuple, setTransformPositionByTuple, setTransformPositionByTypeArray } from "../../lib/es6_global/src/component/api/transform/Transform.js";
 
 
-        import { cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/gameObject/GameObject.js";
+        import { setCameraControllerPerspectiveCamera, createCameraController } from "../../lib/es6_global/src/component/api/cameraController/CameraController.js";
+        import { setPerspectiveCameraNear, setPerspectiveCameraFar, setPerspectiveCameraFovy, setPerspectiveCameraAspect } from "../../lib/es6_global/src/component/api/cameraController/PerspectiveCamera.js";
 
+
+        import { markModelMatrixIsStatic, getObjectInstanceList, createSourceInstance, createInstance } from "../../lib/es6_global/src/component/api/instance/SourceInstance.js";
+
+
+
+        import { addGameObjectSourceInstanceComponent, getGameObjectSourceInstanceComponent, cloneGameObject, batchDisposeGameObject, disposeGameObject, initGameObject, getGameObjectTransformComponent, addGameObjectCameraControllerComponent, addGameObjectMaterialComponent, addGameObjectGeometryComponent, addGameObjectMeshRendererComponent, createGameObject } from "../../lib/es6_global/src/core/api/GameObject.js";
 
         window.onload = function () {
             var state = setMainConfig({
