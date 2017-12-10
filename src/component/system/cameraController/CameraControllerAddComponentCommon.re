@@ -1,6 +1,6 @@
 open CameraControllerType;
 
-open CameraControllerStateSystem;
+open CameraControllerStateCommon;
 
 let handleAddComponent =
   [@bs]

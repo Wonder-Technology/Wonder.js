@@ -3,8 +3,8 @@ open CameraControllerType;
 let handleCloneComponent =
     (sourceComponent: cameraController, countRangeArr: array(int), state: StateDataType.state) => {
   /* todo judge is perspective camera or other camera */
-  open PerspectiveCameraOperateDataSystem;
-  let cameraData = CameraControllerStateSystem.getPerspectiveCameraData(state);
+  open PerspectiveCameraOperateCommon;
+  let cameraData = CameraControllerStateCommon.getPerspectiveCameraData(state);
   let near = getNear(sourceComponent, cameraData) |> Js.Option.getExn;
   let far = getFar(sourceComponent, cameraData) |> Js.Option.getExn;
   let fovy = getFovy(sourceComponent, cameraData) |> Js.Option.getExn;
@@ -16,7 +16,7 @@ let handleCloneComponent =
          [@bs]
          (
            (state, _) => {
-             let (state, index) = CameraControllerCreateSystem.create(state);
+             let (state, index) = CameraControllerCreateCommon.create(state);
              let state =
                state
                |> setNear(index, near)

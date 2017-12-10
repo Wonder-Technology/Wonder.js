@@ -59,11 +59,11 @@ let addCameraControllerComponent = (uid: int, component: component, state: State
   GameObjectStateCommon.getGameObjectData(state).cameraControllerMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] CameraControllerAddComponentSystem.handleAddComponent(component, uid, state)
+  [@bs] CameraControllerSystem.handleAddComponent(component, uid, state)
 };
 
 let disposeCameraControllerComponent = (uid: int, component: component, state: StateDataType.state) =>
-  CameraControllerDisposeComponentSystem.handleDisposeComponent(component, state);
+  CameraControllerSystem.handleDisposeComponent(component, state);
 
 let hasTransformComponent = (uid: int, state: StateDataType.state) : bool =>
   GameObjectStateCommon.getGameObjectData(state).transformMap |> _hasComponent(uid);
@@ -233,7 +233,7 @@ let batchDisposeCameraControllerComponent =
   _batchDisposeComponent(
     uidMap,
     state,
-    CameraControllerDisposeComponentSystem.handleBatchDisposeComponent,
+    CameraControllerSystem.handleBatchDisposeComponent,
     componentArray
   );
 
@@ -332,7 +332,7 @@ let batchAddCameraControllerComponentForClone =
     uidArray,
     componentArr,
     GameObjectStateCommon.getGameObjectData(state).cameraControllerMap,
-    CameraControllerAddComponentSystem.handleAddComponent,
+    CameraControllerSystem.handleAddComponent,
     state
   );
 
@@ -354,4 +354,4 @@ let cloneMaterialComponent =
 
 let cloneCameraControllerComponent =
     (sourceComponent: component, countRangeArr: array(int), state: StateDataType.state) =>
-  CameraControllerCloneComponentSystem.handleCloneComponent(sourceComponent, countRangeArr, state);
+  CameraControllerSystem.handleCloneComponent(sourceComponent, countRangeArr, state);

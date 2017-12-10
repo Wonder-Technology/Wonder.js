@@ -1,10 +1,10 @@
 open CameraControllerType;
 
-open CameraControllerStateSystem;
+open CameraControllerStateCommon;
 
 open ComponentSystem;
 
-open CameraControllerDirtySystem;
+open CameraControllerDirtyCommon;
 
 let _isNotNeedInitData = (index: int, {pMatrixMap}) =>
   pMatrixMap |> WonderCommonlib.SparseMapSystem.has(index);

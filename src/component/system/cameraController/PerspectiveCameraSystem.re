@@ -4,23 +4,23 @@ open Contract;
 
 open PerspectiveCameraType;
 
-open CameraControllerStateSystem;
+open CameraControllerStateCommon;
 
-let getFovy = PerspectiveCameraOperateDataSystem.getFovy;
+let getFovy = PerspectiveCameraOperateCommon.getFovy;
 
-let setFovy = PerspectiveCameraOperateDataSystem.setFovy;
+let setFovy = PerspectiveCameraOperateCommon.setFovy;
 
-let getAspect = PerspectiveCameraOperateDataSystem.getAspect;
+let getAspect = PerspectiveCameraOperateCommon.getAspect;
 
-let setAspect = PerspectiveCameraOperateDataSystem.setAspect;
+let setAspect = PerspectiveCameraOperateCommon.setAspect;
 
-let getFar = PerspectiveCameraOperateDataSystem.getFar;
+let getFar = PerspectiveCameraOperateCommon.getFar;
 
-let setFar = PerspectiveCameraOperateDataSystem.setFar;
+let setFar = PerspectiveCameraOperateCommon.setFar;
 
-let getNear = PerspectiveCameraOperateDataSystem.getNear;
+let getNear = PerspectiveCameraOperateCommon.getNear;
 
-let setNear = PerspectiveCameraOperateDataSystem.setNear;
+let setNear = PerspectiveCameraOperateCommon.setNear;
 
 let setDefaultPMatrix =
     (cameraController: cameraController, cameraControllerData: cameraControllerData) => {

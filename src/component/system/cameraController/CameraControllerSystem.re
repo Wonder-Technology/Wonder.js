@@ -2,13 +2,23 @@ open ComponentSystem;
 
 open CameraControllerType;
 
-open CameraControllerDirtySystem;
+open CameraControllerDirtyCommon;
 
 open Contract;
 
-open CameraControllerStateSystem;
+open CameraControllerStateCommon;
 
-let create = (state: StateDataType.state) => CameraControllerCreateSystem.create(state);
+let create = (state: StateDataType.state) => CameraControllerCreateCommon.create(state);
+
+let getCameraControllerData = CameraControllerStateCommon.getCameraControllerData;
+
+let handleAddComponent = CameraControllerAddComponentCommon.handleAddComponent;
+
+let handleDisposeComponent = CameraControllerDisposeComponentCommon.handleDisposeComponent;
+
+let handleBatchDisposeComponent = CameraControllerDisposeComponentCommon.handleBatchDisposeComponent;
+
+let handleCloneComponent = CameraControllerCloneComponentCommon.handleCloneComponent;
 
 let getCurrentCameraController = (state: StateDataType.state) => {
   requireCheck(
@@ -93,12 +103,12 @@ let update = (state: StateDataType.state) => {
   let dirtyArray = cameraControllerData.dirtyArray;
   /* switch (Js.Array.length(dirtyArray)) {
      | 0 =>
-     CameraControllerDirtySystem.cleanDirtyMap(cameraControllerData) |> ignore;
+     CameraControllerDirtyCommon.cleanDirtyMap(cameraControllerData) |> ignore;
      state;
      | _ => */
   dirtyArray
   |> WonderCommonlib.ArraySystem.removeDuplicateItems
-  /* |> CameraControllerDirtySystem.updateDirtyMap(cameraControllerData) */
+  /* |> CameraControllerDirtyCommon.updateDirtyMap(cameraControllerData) */
   |> Js.Array.forEach((dirtyIndex) => _updateCamera(dirtyIndex, cameraControllerData));
   /* cameraControllerData |> cleanDirtyArray |> _clearCache |> ignore; */
   cameraControllerData |> cleanDirtyArray |> ignore;
@@ -107,7 +117,7 @@ let update = (state: StateDataType.state) => {
 };
 
 /* let isDirty = (cameraController: cameraController, state: StateDataType.state) =>
-   CameraControllerDirtySystem.isDirty(cameraController, getCameraControllerData(state)); */
+   CameraControllerDirtyCommon.isDirty(cameraController, getCameraControllerData(state)); */
 let getGameObject = (cameraController: cameraController, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     cameraController,
@@ -154,7 +164,7 @@ let getPMatrix = (cameraController: cameraController, state: StateDataType.state
      );
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
-  CameraControllerDisposeComponentSystem.isAlive(cameraController, state);
+  CameraControllerDisposeComponentCommon.isAlive(cameraController, state);
 
 let initData = () => {
   index: 0,
