@@ -19,7 +19,7 @@ let handleDisposeComponent = (geometry: geometry, state: StateDataType.state) =>
   requireCheck(
     () =>
       Contract.Operators.(
-        ComponentDisposeComponentSystem.checkComponentShouldAlive(geometry, isAlive, state)
+        ComponentDisposeComponentCommon.checkComponentShouldAlive(geometry, isAlive, state)
       )
   );
   switch (GeometryGroupCommon.isGroupGeometry(geometry, state)) {
@@ -50,7 +50,7 @@ let handleBatchDisposeComponent =
                  [@bs]
                  (
                    (geometry) =>
-                     ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
                        geometry,
                        isAlive,
                        state

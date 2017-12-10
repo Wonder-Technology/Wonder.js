@@ -5,7 +5,7 @@ open CameraControllerStateCommon;
 open Contract;
 
 let isAlive = (cameraController: cameraController, state: StateDataType.state) =>
-  ComponentDisposeComponentSystem.isAlive(
+  ComponentDisposeComponentCommon.isAlive(
     cameraController,
     getCameraControllerData(state).disposedIndexArray
   );
@@ -14,7 +14,7 @@ let handleDisposeComponent = (cameraController: cameraController, state: StateDa
   requireCheck(
     () =>
       Contract.Operators.(
-        ComponentDisposeComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
+        ComponentDisposeComponentCommon.checkComponentShouldAlive(cameraController, isAlive, state)
       )
   );
   let {disposedIndexArray} = getCameraControllerData(state);
@@ -38,7 +38,7 @@ let handleBatchDisposeComponent =
                  [@bs]
                  (
                    (cameraController) =>
-                     ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
                        cameraController,
                        isAlive,
                        state

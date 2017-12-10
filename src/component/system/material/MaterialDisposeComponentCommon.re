@@ -5,13 +5,13 @@ open MaterialStateCommon;
 open Contract;
 
 let isAlive = (material: material, state: StateDataType.state) =>
-  ComponentDisposeComponentSystem.isAlive(material, getMaterialData(state).disposedIndexArray);
+  ComponentDisposeComponentCommon.isAlive(material, getMaterialData(state).disposedIndexArray);
 
 let handleDisposeComponent = (material: material, state: StateDataType.state) => {
   requireCheck(
     () =>
       Contract.Operators.(
-        ComponentDisposeComponentSystem.checkComponentShouldAlive(material, isAlive, state)
+        ComponentDisposeComponentCommon.checkComponentShouldAlive(material, isAlive, state)
       )
   );
   let {disposedIndexArray} = getMaterialData(state);
@@ -31,7 +31,7 @@ let handleBatchDisposeComponent =
                  [@bs]
                  (
                    (material) =>
-                     ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
                        material,
                        isAlive,
                        state

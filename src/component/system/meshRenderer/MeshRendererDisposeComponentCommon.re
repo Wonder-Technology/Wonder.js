@@ -20,7 +20,7 @@ let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectAr
        );
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
-  ComponentDisposeComponentSystem.isAlive(
+  ComponentDisposeComponentCommon.isAlive(
     meshRenderer,
     getMeshRendererData(state).disposedIndexArray
   );
@@ -30,7 +30,7 @@ let handleDisposeComponent =
   requireCheck(
     () =>
       Contract.Operators.(
-        ComponentDisposeComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state)
+        ComponentDisposeComponentCommon.checkComponentShouldAlive(meshRenderer, isAlive, state)
       )
   );
   let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
@@ -55,7 +55,7 @@ let handleBatchDisposeComponent =
                  [@bs]
                  (
                    (meshRenderer) =>
-                     ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
                        meshRenderer,
                        isAlive,
                        state

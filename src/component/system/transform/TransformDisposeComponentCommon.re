@@ -5,7 +5,7 @@ open TransformStateCommon;
 open Contract;
 
 let isAlive = (transform: transform, state: StateDataType.state) =>
-  ComponentDisposeComponentSystem.isAlive(transform, getTransformData(state).disposedIndexArray);
+  ComponentDisposeComponentCommon.isAlive(transform, getTransformData(state).disposedIndexArray);
 
 let _disposeFromParentAndChildMap = (transform, data) => {
   data
@@ -24,7 +24,7 @@ let handleDisposeComponent = (transform: transform, state: StateDataType.state) 
   requireCheck(
     () =>
       Contract.Operators.(
-        ComponentDisposeComponentSystem.checkComponentShouldAlive(transform, isAlive, state)
+        ComponentDisposeComponentCommon.checkComponentShouldAlive(transform, isAlive, state)
       )
   );
   let {disposedIndexArray} as data = getTransformData(state);
@@ -43,7 +43,7 @@ let handleBatchDisposeComponent =
              [@bs]
              (
                (transform) =>
-                 ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                 ComponentDisposeComponentCommon.checkComponentShouldAlive(
                    transform,
                    isAlive,
                    state
