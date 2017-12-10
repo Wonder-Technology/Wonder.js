@@ -10,25 +10,17 @@ let isAlive = (cameraController: cameraController, state: StateDataType.state) =
     getCameraControllerData(state).disposedIndexArray
   );
 
-let handleDisposeComponent =
-  [@bs]
-  (
-    (cameraController: cameraController, state: StateDataType.state) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            ComponentDisposeComponentSystem.checkComponentShouldAlive(
-              cameraController,
-              isAlive,
-              state
-            )
-          )
-      );
-      let {disposedIndexArray} = getCameraControllerData(state);
-      disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
-      state
-    }
+let handleDisposeComponent = (cameraController: cameraController, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        ComponentDisposeComponentSystem.checkComponentShouldAlive(cameraController, isAlive, state)
+      )
   );
+  let {disposedIndexArray} = getCameraControllerData(state);
+  disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
+  state
+};
 
 let handleBatchDisposeComponent =
   [@bs]
@@ -36,7 +28,7 @@ let handleBatchDisposeComponent =
     (
       cameraControllerArray: array(cameraController),
       gameObjectUidMap: array(bool),
-      state:StateDataType.state
+      state: StateDataType.state
     ) => {
       requireCheck(
         () =>

@@ -20,51 +20,44 @@ let _disposeFromParentAndChildMap = (transform, data) => {
   }
 };
 
-let handleDisposeComponent =
-  [@bs]
-  (
-    (transform: transform, state: StateDataType.state) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            ComponentDisposeComponentSystem.checkComponentShouldAlive(transform, isAlive, state)
-          )
-      );
-      let {disposedIndexArray} as data = getTransformData(state);
-      disposedIndexArray |> Js.Array.push(transform) |> ignore;
-      _disposeFromParentAndChildMap(transform, data);
-      state
-    }
+let handleDisposeComponent = (transform: transform, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        ComponentDisposeComponentSystem.checkComponentShouldAlive(transform, isAlive, state)
+      )
   );
+  let {disposedIndexArray} as data = getTransformData(state);
+  disposedIndexArray |> Js.Array.push(transform) |> ignore;
+  _disposeFromParentAndChildMap(transform, data);
+  state
+};
 
 let handleBatchDisposeComponent =
-  [@bs]
-  (
-    (transformArray: array(transform), gameObjectUidMap:array(bool), state: StateDataType.state) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            transformArray
-            |> WonderCommonlib.ArraySystem.forEach(
-                 [@bs]
-                 (
-                   (transform) =>
-                     ComponentDisposeComponentSystem.checkComponentShouldAlive(
-                       transform,
-                       isAlive,
-                       state
-                     )
+    [@bs](transformArray: array(transform), gameObjectUidMap: array(bool), state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        transformArray
+        |> WonderCommonlib.ArraySystem.forEach(
+             [@bs]
+             (
+               (transform) =>
+                 ComponentDisposeComponentSystem.checkComponentShouldAlive(
+                   transform,
+                   isAlive,
+                   state
                  )
-               )
-          )
-      );
-      let {disposedIndexArray} as data = getTransformData(state);
-      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
-      /* todo optimize: batch remove parent,child? */
-      transformArray
-      |> WonderCommonlib.ArraySystem.forEach(
-           [@bs] ((transform) => _disposeFromParentAndChildMap(transform, data))
-         );
-      state
-    }
+             )
+           )
+      )
   );
+  let {disposedIndexArray} as data = getTransformData(state);
+  data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
+  /* todo optimize: batch remove parent,child? */
+  transformArray
+  |> WonderCommonlib.ArraySystem.forEach(
+       [@bs] ((transform) => _disposeFromParentAndChildMap(transform, data))
+     );
+  state
+};

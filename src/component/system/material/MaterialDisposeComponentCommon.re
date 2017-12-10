@@ -7,21 +7,17 @@ open Contract;
 let isAlive = (material: material, state: StateDataType.state) =>
   ComponentDisposeComponentSystem.isAlive(material, getMaterialData(state).disposedIndexArray);
 
-let handleDisposeComponent =
-  [@bs]
-  (
-    (material: material, state: StateDataType.state) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            ComponentDisposeComponentSystem.checkComponentShouldAlive(material, isAlive, state)
-          )
-      );
-      let {disposedIndexArray} = getMaterialData(state);
-      disposedIndexArray |> Js.Array.push(material) |> ignore;
-      state
-    }
+let handleDisposeComponent = (material: material, state: StateDataType.state) => {
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        ComponentDisposeComponentSystem.checkComponentShouldAlive(material, isAlive, state)
+      )
   );
+  let {disposedIndexArray} = getMaterialData(state);
+  disposedIndexArray |> Js.Array.push(material) |> ignore;
+  state
+};
 
 let handleBatchDisposeComponent =
   [@bs]

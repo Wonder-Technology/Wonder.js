@@ -26,26 +26,27 @@ let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   );
 
 let handleDisposeComponent =
-  [@bs]
-  (
     (meshRenderer: meshRenderer, gameObjectUid: int, state: StateDataType.state) => {
-      requireCheck(
-        () =>
-          Contract.Operators.(
-            ComponentDisposeComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state)
-          )
-      );
-      let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
-      disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
-      _removeFromRenderArray(gameObjectUid, data);
-      state
-    }
+  requireCheck(
+    () =>
+      Contract.Operators.(
+        ComponentDisposeComponentSystem.checkComponentShouldAlive(meshRenderer, isAlive, state)
+      )
   );
+  let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+  disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
+  _removeFromRenderArray(gameObjectUid, data);
+  state
+};
 
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (meshRendererArray: array(meshRenderer), gameObjectUidMap:array(bool), state: StateDataType.state) => {
+    (
+      meshRendererArray: array(meshRenderer),
+      gameObjectUidMap: array(bool),
+      state: StateDataType.state
+    ) => {
       requireCheck(
         () =>
           Contract.Operators.(
