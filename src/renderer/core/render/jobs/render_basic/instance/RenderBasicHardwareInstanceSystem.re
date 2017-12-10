@@ -108,13 +108,13 @@ let render = (gl, uid, state: StateDataType.state) => {
   let transformData = TransformAdmin.getData(state);
   let {modelMatrixInstanceBufferMap} = VboBufferStateSystem.getVboBufferData(state);
   let {modelMatrixFloat32ArrayMap, modelMatrixInstanceBufferCapacityMap} =
-    SourceInstanceStateSystem.getData(state);
+    SourceInstanceAdmin.getData(state);
   let sourceInstance = GameObjectComponentCommon.unsafeGetSourceInstanceComponent(uid, state);
-  let objectInstanceList = SourceInstanceSystem.getObjectInstanceList(sourceInstance, state);
+  let objectInstanceList = SourceInstanceAdmin.getObjectInstanceList(sourceInstance, state);
   let instanceRenderListCount = Js.Array.length(objectInstanceList) + 1;
   let state =
-    SourceInstanceSystem.isModelMatrixIsStatic(sourceInstance, state) ?
-      SourceInstanceStaticSystem.isSendModelMatrix(sourceInstance, state) ?
+    SourceInstanceAdmin.isModelMatrixIsStatic(sourceInstance, state) ?
+    SourceInstanceAdmin.isSendModelMatrix(sourceInstance, state) ?
         state :
         _sendModelMatrixData(
           gl,
@@ -130,9 +130,9 @@ let render = (gl, uid, state: StateDataType.state) => {
           transformData,
           state
         )
-        |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, true) :
+        |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, true) :
       state
-      |> SourceInstanceStaticSystem.markSendModelMatrix(sourceInstance, false)
+      |> SourceInstanceAdmin.markSendModelMatrix(sourceInstance, false)
       |> _sendModelMatrixData(
            gl,
            uid,

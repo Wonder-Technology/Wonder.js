@@ -2,7 +2,13 @@ open SourceInstanceType;
 
 open Contract;
 
-let create = (state: StateDataType.state) => SourceInstanceCreateSystem.create(state);
+let create = (state: StateDataType.state) => SourceInstanceCreateCommon.create(state);
+
+let getData = SourceInstanceStateCommon.getData;
+
+let isSendModelMatrix = SourceInstanceStaticCommon.isSendModelMatrix;
+
+let markSendModelMatrix = SourceInstanceStaticCommon.markSendModelMatrix;
 
 let _getObjectInstanceList = (sourceInstance, objectInstanceListMap) =>
   objectInstanceListMap
@@ -23,7 +29,7 @@ let _getObjectInstanceList = (sourceInstance, objectInstanceListMap) =>
 let getObjectInstanceList = (sourceInstance, state: StateDataType.state) =>
   _getObjectInstanceList(
     sourceInstance,
-    SourceInstanceStateSystem.getData(state).objectInstanceListMap
+    SourceInstanceStateCommon.getData(state).objectInstanceListMap
   );
 
 let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) => {
@@ -34,7 +40,7 @@ let _addObjectInstnace = (sourceInstance, uid, {objectInstanceListMap} as data) 
 let createInstance = (sourceInstance, state: StateDataType.state) => {
   open GameObjectComponentCommon;
   let (state, uid) = GameObjectCreateCommon.create(state);
-  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateSystem.getData(state)) |> ignore;
+  _addObjectInstnace(sourceInstance, uid, SourceInstanceStateCommon.getData(state)) |> ignore;
   let (state, transform) = TransformUtils.create(state);
   /* todo add ObjectInstance to instance */
   (addTransformComponent(uid, transform, state), uid)
@@ -43,12 +49,12 @@ let createInstance = (sourceInstance, state: StateDataType.state) => {
 let getGameObject = (sourceInstance: sourceInstance, state: StateDataType.state) =>
   ComponentSystem.getComponentGameObject(
     sourceInstance,
-    SourceInstanceStateSystem.getData(state).gameObjectMap
+    SourceInstanceStateCommon.getData(state).gameObjectMap
   );
 
-let markModelMatrixIsStatic = SourceInstanceStaticSystem.markModelMatrixIsStatic;
+let markModelMatrixIsStatic = SourceInstanceStaticCommon.markModelMatrixIsStatic;
 
-let isModelMatrixIsStatic = SourceInstanceStaticSystem.isModelMatrixIsStatic;
+let isModelMatrixIsStatic = SourceInstanceStaticCommon.isModelMatrixIsStatic;
 
 let initData = () => {
   index: 0,

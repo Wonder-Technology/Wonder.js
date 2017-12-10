@@ -46,7 +46,7 @@ let addSourceInstanceComponent = (uid: int, component: component, state: StateDa
   GameObjectStateCommon.getGameObjectData(state).sourceInstanceMap
   |> _addComponent(uid, component)
   |> ignore;
-  [@bs] SourceInstanceAddComponentSystem.handleAddComponent(component, uid, state)
+  [@bs] SourceInstanceAddComponentCommon.handleAddComponent(component, uid, state)
 };
 
 let hasCameraControllerComponent = (uid: int, state: StateDataType.state) : bool =>

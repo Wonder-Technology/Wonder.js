@@ -1,6 +1,6 @@
 open SourceInstanceType;
 
-open SourceInstanceStateSystem;
+open SourceInstanceStateCommon;
 
 let create = (state: StateDataType.state) => {
   let {index, objectInstanceListMap} as data = getData(state);
@@ -9,7 +9,7 @@ let create = (state: StateDataType.state) => {
   |> WonderCommonlib.SparseMapSystem.set(index, WonderCommonlib.ArraySystem.createEmpty());
   let state =
     state
-    |> SourceInstanceStaticSystem.markModelMatrixIsStatic(index, true)
-    |> SourceInstanceStaticSystem.markSendModelMatrix(index, false);
+    |> SourceInstanceStaticCommon.markModelMatrixIsStatic(index, true)
+    |> SourceInstanceStaticCommon.markSendModelMatrix(index, false);
   (state, index)
 };

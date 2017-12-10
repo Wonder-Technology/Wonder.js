@@ -1,6 +1,6 @@
 open SourceInstanceType;
 
-open SourceInstanceStateSystem;
+open SourceInstanceStateCommon;
 
 let handleAddComponent =
   [@bs]
