@@ -12,6 +12,7 @@ let isAlive = (geometry: geometry, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(geometry, getGeometryData(state).disposedIndexArray);
 
 let _disposeData = (geometry: geometry, state: StateDataType.state) => {
+  let state = VboBufferDisposeSystem.disposeData(geometry, state);
   let {
     verticesMap,
     indicesMap,
@@ -22,7 +23,6 @@ let _disposeData = (geometry: geometry, state: StateDataType.state) => {
     gameObjectMap
   } =
     getGeometryData(state);
-  VboBufferDisposeSystem.disposeData(geometry, state) |> ignore;
   groupCountMap |> WonderCommonlib.SparseMapSystem.set(geometry, 0);
   disposeSparseMapData(geometry, verticesMap) |> ignore;
   disposeSparseMapData(geometry, indicesMap) |> ignore;

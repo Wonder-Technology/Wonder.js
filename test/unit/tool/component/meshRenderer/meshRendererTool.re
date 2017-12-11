@@ -15,3 +15,5 @@ let createGameObject = (state) => {
   let state = state |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, meshRenderer)
 };
+
+let getMeshRendererData = MeshRendererStateCommon.getMeshRendererData;

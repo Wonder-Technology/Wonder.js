@@ -1,5 +1,7 @@
 open CameraControllerType;
 
+open ComponentDisposeComponentCommon;
+
 open CameraControllerStateCommon;
 
 open Contract;
@@ -10,6 +12,18 @@ let isAlive = (cameraController: cameraController, state: StateDataType.state) =
     getCameraControllerData(state).disposedIndexArray
   );
 
+let _disposeData = (cameraController: cameraController, state: StateDataType.state) => {
+  let state = PerspectiveCameraDisposeCommon.disposeData(cameraController, state);
+  let {cameraArray, dirtyArray, pMatrixMap, gameObjectMap, updateCameraFuncMap} as data =
+    getCameraControllerData(state);
+  disposeSparseMapData(cameraController, cameraArray) |> ignore;
+  disposeSparseMapData(cameraController, dirtyArray) |> ignore;
+  disposeSparseMapData(cameraController, pMatrixMap) |> ignore;
+  disposeSparseMapData(cameraController, gameObjectMap) |> ignore;
+  disposeSparseMapData(cameraController, updateCameraFuncMap) |> ignore;
+  state
+};
+
 let handleDisposeComponent = (cameraController: cameraController, state: StateDataType.state) => {
   requireCheck(
     () =>
@@ -19,7 +33,7 @@ let handleDisposeComponent = (cameraController: cameraController, state: StateDa
   );
   let {disposedIndexArray} = getCameraControllerData(state);
   disposedIndexArray |> Js.Array.push(cameraController) |> ignore;
-  state
+  _disposeData(cameraController, state)
 };
 
 let handleBatchDisposeComponent =
@@ -49,6 +63,10 @@ let handleBatchDisposeComponent =
       );
       let {disposedIndexArray} as data = getCameraControllerData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(cameraControllerArray);
-      state
+      cameraControllerArray
+      |> ArraySystem.reduceState(
+           [@bs] ((state, cameraController) => state |> _disposeData(cameraController)),
+           state
+         )
     }
   );

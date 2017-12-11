@@ -11,9 +11,7 @@ let _ =
       open Sinon;
       let sandbox = getSandboxDefaultVal();
       let state = ref(StateSystem.createState());
-      let _prepareOne = (state) => {
-        MeshRendererTool.createGameObject(state);
-      };
+      let _prepareOne = (state) => MeshRendererTool.createGameObject(state);
       let _prepareTwo = () => {
         let (state, meshRenderer1) = createMeshRenderer(state^);
         let (state, gameObject1) = state |> GameObject.createGameObject;
@@ -47,34 +45,57 @@ let _ =
         "disposeComponent",
         () => {
           describe(
-            "remove from renderGameObjectArray",
+            "dispose data",
             () => {
               test(
-                "test getRenderArray",
+                "remove from gameObjectMap",
                 () => {
-                  let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
-                    _prepareTwo();
+                  open MeshRendererType;
+                  let (state, gameObject1, meshRenderer1) =
+                    MeshRendererTool.createGameObject(state^);
                   let state =
                     state
                     |> GameObject.disposeGameObjectMeshRendererComponent(
                          gameObject1,
                          meshRenderer1
                        );
-                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                  let {gameObjectMap} = MeshRendererTool.getMeshRendererData(state);
+                  gameObjectMap
+                  |> WonderCommonlib.SparseMapSystem.has(meshRenderer1)
+                  |> expect == false
                 }
               );
-              test(
-                "test add gameObject after dispose",
+              describe(
+                "remove from renderGameObjectArray",
                 () => {
-                  let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
-                  let state =
-                    state
-                    |> GameObject.disposeGameObjectMeshRendererComponent(
-                         gameObject1,
-                         meshRenderer1
-                       );
-                  let (state, gameObject2, meshRenderer2) = _prepareOne(state);
-                  state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                  test(
+                    "test getRenderArray",
+                    () => {
+                      let (state, gameObject1, meshRenderer1, gameObject2, meshRenderer2) =
+                        _prepareTwo();
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                             gameObject1,
+                             meshRenderer1
+                           );
+                      state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                    }
+                  );
+                  test(
+                    "test add gameObject after dispose",
+                    () => {
+                      let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+                      let state =
+                        state
+                        |> GameObject.disposeGameObjectMeshRendererComponent(
+                             gameObject1,
+                             meshRenderer1
+                           );
+                      let (state, gameObject2, meshRenderer2) = _prepareOne(state);
+                      state |> MeshRendererTool.getRenderArray |> expect == [|gameObject2|]
+                    }
+                  )
                 }
               )
             }

@@ -1,5 +1,7 @@
 open TransformType;
 
+open ComponentDisposeComponentCommon;
+
 open TransformStateCommon;
 
 open Contract;
@@ -17,7 +19,17 @@ let _disposeFromParentAndChildMap = (transform, data) => {
   switch (TransformHierachyCommon.getParent(transform, data)) {
   | None => ()
   | Some(parent) => data |> TransformHierachyCommon.removeFromChildMap(parent, transform) |> ignore
-  }
+  };
+  data
+};
+
+let _disposeData = (transform: transform, state: StateDataType.state) => {
+  let {dirtyMap, gameObjectMap} as data =
+    getTransformData(state);
+  _disposeFromParentAndChildMap(transform, data) |> ignore;
+  disposeSparseMapData(transform, dirtyMap) |> ignore;
+  disposeSparseMapData(transform, gameObjectMap) |> ignore;
+  state
 };
 
 let handleDisposeComponent = (transform: transform, state: StateDataType.state) => {
@@ -29,35 +41,35 @@ let handleDisposeComponent = (transform: transform, state: StateDataType.state) 
   );
   let {disposedIndexArray} as data = getTransformData(state);
   disposedIndexArray |> Js.Array.push(transform) |> ignore;
-  _disposeFromParentAndChildMap(transform, data);
-  state
+  _disposeData(transform, state)
 };
 
 let handleBatchDisposeComponent =
-    [@bs](transformArray: array(transform), gameObjectUidMap: array(bool), state: StateDataType.state) => {
-  requireCheck(
-    () =>
-      Contract.Operators.(
-        transformArray
-        |> WonderCommonlib.ArraySystem.forEach(
-             [@bs]
-             (
-               (transform) =>
-                 ComponentDisposeComponentCommon.checkComponentShouldAlive(
-                   transform,
-                   isAlive,
-                   state
+  [@bs]
+  (
+    (transformArray: array(transform), gameObjectUidMap: array(bool), state: StateDataType.state) => {
+      requireCheck(
+        () =>
+          Contract.Operators.(
+            transformArray
+            |> WonderCommonlib.ArraySystem.forEach(
+                 [@bs]
+                 (
+                   (transform) =>
+                     ComponentDisposeComponentCommon.checkComponentShouldAlive(
+                       transform,
+                       isAlive,
+                       state
+                     )
                  )
-             )
-           )
-      )
+               )
+          )
+      );
+      let {disposedIndexArray} as data = getTransformData(state);
+      data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
+      /* todo optimize: batch remove parent,child? */
+      transformArray
+      |> WonderCommonlib.ArraySystem.forEach([@bs] ((transform) => _disposeData(transform, state)));
+      state
+    }
   );
-  let {disposedIndexArray} as data = getTransformData(state);
-  data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(transformArray);
-  /* todo optimize: batch remove parent,child? */
-  transformArray
-  |> WonderCommonlib.ArraySystem.forEach(
-       [@bs] ((transform) => _disposeFromParentAndChildMap(transform, data))
-     );
-  state
-};

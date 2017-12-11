@@ -1,5 +1,7 @@
 open MeshRendererType;
 
+open ComponentDisposeComponentCommon;
+
 open MeshRendererStateCommon;
 
 open Contract;
@@ -7,10 +9,11 @@ open Contract;
 let _removeFromRenderArray = (disposedGameObjectUid: int, {renderGameObjectArray} as data) => {
   let index = renderGameObjectArray |> Js.Array.indexOf(disposedGameObjectUid);
   let lastIndex = renderGameObjectArray |> Js.Array.length |> pred;
-  renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex)
+  renderGameObjectArray |> ArraySystem.deleteBySwap(index, lastIndex);
+  data
 };
 
-let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectArray} as data) =>
+let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectArray} as data) => {
   data.renderGameObjectArray =
     renderGameObjectArray
     |> Js.Array.filter(
@@ -18,12 +21,20 @@ let _batchRemoveFromRenderArray = (disposedGameObjectUidMap, {renderGameObjectAr
            disposedGameObjectUidMap
            |> WonderCommonlib.SparseMapSystem.has(renderGameObject) == false
        );
+  data
+};
 
 let isAlive = (meshRenderer: meshRenderer, state: StateDataType.state) =>
   ComponentDisposeComponentCommon.isAlive(
     meshRenderer,
     getMeshRendererData(state).disposedIndexArray
   );
+
+let _disposeData = (meshRenderer: meshRenderer, state: StateDataType.state) => {
+  let {gameObjectMap} as data = getMeshRendererData(state);
+  disposeSparseMapData(meshRenderer, gameObjectMap) |> ignore;
+  state
+};
 
 let handleDisposeComponent =
     (meshRenderer: meshRenderer, gameObjectUid: int, state: StateDataType.state) => {
@@ -33,10 +44,10 @@ let handleDisposeComponent =
         ComponentDisposeComponentCommon.checkComponentShouldAlive(meshRenderer, isAlive, state)
       )
   );
-  let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+  let {disposedIndexArray} as data = getMeshRendererData(state);
   disposedIndexArray |> Js.Array.push(meshRenderer) |> ignore;
-  _removeFromRenderArray(gameObjectUid, data);
-  state
+  _removeFromRenderArray(gameObjectUid, data) |> ignore;
+  _disposeData(meshRenderer, state)
 };
 
 let handleBatchDisposeComponent =
@@ -64,9 +75,13 @@ let handleBatchDisposeComponent =
                )
           )
       );
-      let {renderGameObjectArray, disposedIndexArray} as data = getMeshRendererData(state);
+      let {disposedIndexArray} as data = getMeshRendererData(state);
       data.disposedIndexArray = disposedIndexArray |> Js.Array.concat(meshRendererArray);
-      _batchRemoveFromRenderArray(gameObjectUidMap, data);
-      state
+      _batchRemoveFromRenderArray(gameObjectUidMap, data) |> ignore;
+      meshRendererArray
+      |> ArraySystem.reduceState(
+           [@bs] ((state, meshRenderer) => state |> _disposeData(meshRenderer)),
+           state
+         )
     }
   );

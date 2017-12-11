@@ -93,7 +93,7 @@ let _ =
                 "state->index + 1",
                 () => {
                   let (state, _) = createTransform(state^);
-                  TransformTool.getData(state) |> ((data) => expect(data.index) == 1)
+                  TransformTool.getTransformData(state) |> ((data) => expect(data.index) == 1)
                 }
               )
           )
@@ -300,7 +300,7 @@ let _ =
                   let pos2 = (2., 3., 4.);
                   let pos3 = (4., 3., 4.);
                   let pos4 = (7., 3., 4.);
-                  let data = TransformTool.getData(state);
+                  let data = TransformTool.getTransformData(state);
                   let state =
                     state
                     |> Transform.setTransformLocalPositionByTuple(transform1, pos1)
@@ -374,7 +374,7 @@ let _ =
               state
               |> _judgeOneToOne((parent, child), (pos1, pos1), (pos1, add(Float, pos1, pos1)))
             }
-          );
+          )
         }
       );
       describe(
@@ -545,12 +545,12 @@ let _ =
                  let (state, _, _, _) = _prepareOne();
                  let len1 =
                    state
-                   |> TransformTool.getData
+                   |> TransformTool.getTransformData
                    |> ((transformData) => Js.Array.length(transformData.dirtyArray));
                  let state = state |> TransformTool.update;
                  let len2 =
                    state
-                   |> TransformTool.getData
+                   |> TransformTool.getTransformData
                    |> ((transformData) => Js.Array.length(transformData.dirtyArray));
                  (len1, len2) |> expect == (1, 0)
                }
@@ -784,21 +784,53 @@ let _ =
             }
           );
           describe(
+            "dispose map data",
+            () =>
+              test(
+                "remove from dirtyMap, gameObjectMap",
+                () => {
+                  open TransformType;
+                  let (state, gameObject1, transform1) = GameObjectTool.createGameObject(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectTransformComponent(gameObject1, transform1);
+                  let {dirtyMap, gameObjectMap} = TransformTool.getTransformData(state);
+                  (
+                    dirtyMap |> WonderCommonlib.SparseMapSystem.has(transform1),
+                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(transform1)
+                  )
+                  |> expect == (false, false)
+                }
+              )
+          );
+          describe(
             "test add new one after dispose old one",
             () => {
-              /* beforeEach(
-                   () =>
-                     state := BufferConfigTool.setBufferSize(state^, ~transformDataBufferCount=2, ())
-                 ); */
-              test(
-                "if has disposed one, use disposed index(transform) as new index",
+              describe(
+                "if has disposed one",
                 () => {
-                  let (state, transform1, transform2) = _prepare();
-                  let state = state |> dispose(transform1);
-                  let state = state |> dispose(transform2);
-                  let (state, transform3) = createTransform(state);
-                  let (state, transform4) = createTransform(state);
-                  (transform3, transform4) |> expect == (transform2, transform1)
+                  test(
+                    "use disposed index(transform) as new index",
+                    () => {
+                      let (state, transform1, transform2) = _prepare();
+                      let state = state |> dispose(transform1);
+                      let state = state |> dispose(transform2);
+                      let (state, transform3) = createTransform(state);
+                      let (state, transform4) = createTransform(state);
+                      (transform3, transform4) |> expect == (transform2, transform1)
+                    }
+                  );
+                  test(
+                    "new one can get default localPosition",
+                    () => {
+                      let (state, transform1, _) = _prepare();
+                      let state = state |> dispose(transform1);
+                      let (state, transform2) = createTransform(state);
+                      state
+                      |> getTransformLocalPositionTuple(transform2)
+                      |> expect == TransformTool.getDefaultPosition()
+                    }
+                  )
                 }
               );
               test(

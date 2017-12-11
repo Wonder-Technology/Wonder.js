@@ -1,4 +1,4 @@
-let getData = (state: StateDataType.state) => MaterialSystem.getMaterialData(state);
+let getMaterialData = (state: StateDataType.state) => MaterialSystem.getMaterialData(state);
 
 let unsafeGetShaderIndex = (materialIndex: int, state: StateDataType.state) =>
   MaterialSystem.unsafeGetShaderIndex(materialIndex, state);

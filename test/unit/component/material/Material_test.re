@@ -36,7 +36,52 @@ let _ =
       );
       describe(
         "disposeComponent",
-        () =>
+        () => {
+          describe(
+            "dispose data",
+            () =>
+              test(
+                "remove from shaderIndexMap, gameObjectMap",
+                () => {
+                  open MaterialType;
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  let {shaderIndexMap, gameObjectMap} = MaterialTool.getMaterialData(state);
+                  (
+                    shaderIndexMap |> WonderCommonlib.SparseMapSystem.has(material1),
+                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(material1)
+                  )
+                  |> expect == (false, false)
+                }
+              )
+          );
+          describe(
+            "test add new one after dispose old one",
+            () => {
+              test(
+                "use disposed index as new index firstly",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  let (state, material2) = createBasicMaterial(state);
+                  material2 |> expect == material1
+                }
+              );
+              test(
+                "if has no disposed index, get index from materialData.index",
+                () => {
+                  let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
+                  let state =
+                    state |> GameObject.disposeGameObjectMaterialComponent(gameObject1, material1);
+                  let (state, material2) = createBasicMaterial(state);
+                  let (state, material3) = createBasicMaterial(state);
+                  (material2, material3) |> expect == (material1, material1 + 1)
+                }
+              )
+            }
+          );
           describe(
             "contract check",
             () =>
@@ -58,6 +103,7 @@ let _ =
                 }
               )
           )
+        }
       );
       describe(
         "contract check: is alive",

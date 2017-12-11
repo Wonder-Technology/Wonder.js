@@ -11,6 +11,9 @@ let isCameraController = (cameraController: cameraController) => {
 
 let getCameraControllerData = (state: StateDataType.state) => state.cameraControllerData;
 
+let getPerspectiveCameraData = (state: StateDataType.state) =>
+  CameraControllerStateCommon.getPerspectiveCameraData(state);
+
 let getDirtyArray = (state: StateDataType.state) => getCameraControllerData(state).dirtyArray;
 
 let getWorldToCameraMatrix = (transform, state: StateDataType.state) =>

@@ -295,7 +295,7 @@ let _ =
         }
       );
       describe(
-        "disposeComponent",
+        "dispose component",
         () => {
           let _prepareTwo = (state) => {
             let (state, gameObject1, _, cameraController1) =
@@ -304,6 +304,61 @@ let _ =
               CameraControllerTool.createCameraGameObject(state);
             (state, gameObject1, cameraController1, gameObject2, cameraController2)
           };
+          describe(
+            "dispose cameraController data",
+            () =>
+              test(
+                "remove from cameraArray, dirtyArray, pMatrixMap, gameObjectMap, updateCameraFuncMap",
+                () => {
+                  open CameraControllerType;
+                  let (state, gameObject1, _, cameraController1) =
+                    CameraControllerTool.createCameraGameObject(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectCameraControllerComponent(
+                         gameObject1,
+                         cameraController1
+                       );
+                  let {cameraArray, dirtyArray, pMatrixMap, gameObjectMap, updateCameraFuncMap} =
+                    CameraControllerTool.getCameraControllerData(state);
+                  (
+                    cameraArray |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    dirtyArray |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    pMatrixMap |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    gameObjectMap |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    updateCameraFuncMap |> WonderCommonlib.SparseMapSystem.has(cameraController1)
+                  )
+                  |> expect == (false, false, false, false, false)
+                }
+              )
+          );
+          describe(
+            "dispose perspective camera data",
+            () =>
+              test(
+                "remove from nearMap, farMap, fovyMap, aspectMap",
+                () => {
+                  open PerspectiveCameraType;
+                  let (state, gameObject1, _, cameraController1) =
+                    CameraControllerTool.createCameraGameObject(state^);
+                  let state =
+                    state
+                    |> GameObject.disposeGameObjectCameraControllerComponent(
+                         gameObject1,
+                         cameraController1
+                       );
+                  let {nearMap, farMap, fovyMap, aspectMap} as data =
+                    CameraControllerTool.getPerspectiveCameraData(state);
+                  (
+                    nearMap |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    farMap |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    fovyMap |> WonderCommonlib.SparseMapSystem.has(cameraController1),
+                    aspectMap |> WonderCommonlib.SparseMapSystem.has(cameraController1)
+                  )
+                  |> expect == (false, false, false, false)
+                }
+              )
+          );
           describe(
             "test add new one after dispose old one",
             () => {

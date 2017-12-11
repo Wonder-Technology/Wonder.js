@@ -359,7 +359,7 @@ let _ =
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state = state |> disposeGameObject(gameObject1);
-                  let {disposedIndexArray} = state |> MaterialTool.getData;
+                  let {disposedIndexArray} = state |> MaterialTool.getMaterialData;
                   (
                     disposedIndexArray |> Js.Array.includes(material1),
                     disposedIndexArray |> Js.Array.includes(material2)
@@ -646,7 +646,7 @@ let _ =
                   let (state, gameObject1, material1) = BasicMaterialTool.createGameObject(state^);
                   let (state, gameObject2, material2) = BasicMaterialTool.createGameObject(state);
                   let state = state |> batchDisposeGameObject([|gameObject1, gameObject2|]);
-                  let {disposedIndexArray} = state |> MaterialTool.getData;
+                  let {disposedIndexArray} = state |> MaterialTool.getMaterialData;
                   (
                     disposedIndexArray |> Js.Array.includes(material1),
                     disposedIndexArray |> Js.Array.includes(material2)
