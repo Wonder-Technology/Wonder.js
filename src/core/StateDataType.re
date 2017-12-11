@@ -47,9 +47,7 @@ type contextConfig = {
   preserveDrawingBuffer: bool
 };
 
-type bufferConfig = {
-  mutable geometryPointDataBufferCount: int
-};
+type bufferConfig = {mutable geometryPointDataBufferCount: int};
 
 type viewData = {
   canvas: option(DomType.htmlElement),
@@ -247,24 +245,12 @@ and renderConfig = {
 }
 and geometryData = {
   mutable index: int,
-  mutable mappedIndex: int,
-  buffer: Js.Typed_array.array_buffer,
-  vertices: Js.Typed_array.Float32Array.t,
-  /* todo optimize: use Uint32Array based on config or query gpu extension */
-  indices: Js.Typed_array.Uint16Array.t,
-  mutable verticesInfoArray: geometryInfoArray,
-  mutable indicesInfoArray: geometryInfoArray,
-  mutable verticesOffset: int,
-  mutable indicesOffset: int,
+  verticesMap: geometryVerticesMap,
+  indicesMap: geometryIndicesMap,
   mutable computeDataFuncMap: array(((int, state) => geometryComputeData)),
   mutable configDataMap: geometryConfigDataMap,
   mutable gameObjectMap,
-  mutable disposeCount: int,
-  mutable mappedIndexMap: geometryMappedIndexMap,
   mutable disposedIndexMap: geometryDisposeIndexMap,
-  mutable aliveIndexArray: geometryAliveIndexArray,
-  mutable indicesCountCacheMap: geometryIndicesCountCacheMap,
-  mutable verticesCountCacheMap: geometryVerticesCountCacheMap,
   mutable isInitMap: geometryIsInitMap,
   mutable groupCountMap: geometryGroupCountMap
 }

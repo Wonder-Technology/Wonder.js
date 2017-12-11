@@ -6,10 +6,7 @@ open BoxGeometryType;
 
 open Contract;
 
-let createBoxGeometry = (state: StateDataType.state) => {
-  let (state, index, _) = create(state);
-  (state, index)
-};
+let createBoxGeometry = (state: StateDataType.state) => create(state);
 
 let setBoxGeometryConfigData =
     (geometry: geometry, configData: boxGeometryConfigDataJsObj, state: StateDataType.state) => {
@@ -19,12 +16,5 @@ let setBoxGeometryConfigData =
         ComponentSystem.checkComponentShouldAlive(geometry, GeometrySystem.isAlive, state)
       )
   );
-  setConfigData(
-    GeometrySystem.getMappedIndex(
-      (geometry),
-      GeometrySystem.getMappedIndexMap(state)
-    ),
-    configData,
-    state
-  )
+  setConfigData(geometry, configData, state)
 };

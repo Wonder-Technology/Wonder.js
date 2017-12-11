@@ -12,8 +12,8 @@ let getGeometryVertices = (geometry: int, state: StateDataType.state) => {
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   [@bs]
-  getVertices(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+  unsafeGetVertices(
+geometry,
     state
   )
 };
@@ -24,7 +24,7 @@ let setGeometryVertices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setVertices(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+    geometry,
     data,
     state
   )
@@ -35,8 +35,8 @@ let getGeometryIndices = (geometry: int, state: StateDataType.state) => {
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   [@bs]
-  getIndices(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+  unsafeGetIndices(
+    geometry,
     state
   )
 };
@@ -47,39 +47,18 @@ let setGeometryIndices =
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   setIndices(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+    geometry,
     data,
     state
   )
 };
 
 let getGeometryConfigData = (geometry: geometry, state: StateDataType.state) => {
-  /* requireCheck(
-       () => {
-         open Contract.Operators;
-         ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state);
-         test(
-           "cloned geometry have no config data, shouldn't get it",
-           () => {
-             open StateDataType;
-             let {isClonedMap} = $1StateCommon.getGeometryData(state);
-             GeometryCloneComponentSystem.isCloned(
-               GeometryIndexSystem.getMappedIndex(
-                 geometry,
-                 GeometryIndexSystem.getMappedIndexMap(state)
-               ),
-               isClonedMap
-             )
-             |> assertFalse
-           }
-         )
-       }
-     ); */
   requireCheck(
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getConfigData(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+    geometry,
     state
   )
   |> Js.Option.getExn
@@ -90,7 +69,7 @@ let getGeometryGameObject = (geometry: geometry, state: StateDataType.state) => 
     () => Contract.Operators.(ComponentSystem.checkComponentShouldAlive(geometry, isAlive, state))
   );
   getGameObject(
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
+    geometry,
     state
   )
   |> Js.Option.getExn

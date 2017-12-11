@@ -3,11 +3,7 @@ let getGeometryData = (state: StateDataType.state) => GeometrySystem.getGeometry
 let initGeometrys = (state: StateDataType.state) => GeometrySystem.init(state);
 
 let initGeometry = (geometry, state: StateDataType.state) =>
-  GeometryInitComponentCommon.initGeometry(
-    geometry,
-    GeometrySystem.getMappedIndex(geometry, GeometrySystem.getGeometryData(state).mappedIndexMap),
-    state
-  );
+  GeometryInitComponentCommon.initGeometry(geometry, state);
 
 let buildBoxGeometryConfigDataJsObj =
     (
@@ -28,16 +24,10 @@ let buildBoxGeometryConfigDataJsObj =
 };
 
 let getVerticesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getVerticesCount(
-    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
-    state
-  );
+  GeometrySystem.getVerticesCount(index, state);
 
 let getIndicesCount = (index: int, state: StateDataType.state) =>
-  GeometrySystem.getIndicesCount(
-    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
-    state
-  );
+  GeometrySystem.getIndicesCount(index, state);
 
 let getIndexType = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexType;
@@ -46,10 +36,7 @@ let getIndexTypeSize = (state: StateDataType.state) =>
   [@bs] DeviceManagerSystem.getGl(state) |> GeometrySystem.getIndexTypeSize;
 
 let hasIndices = (index: int, state: StateDataType.state) =>
-  GeometrySystem.hasIndices(
-    GeometrySystem.getMappedIndex(index, GeometrySystem.getMappedIndexMap(state)),
-    state
-  );
+  GeometrySystem.hasIndices(index, state);
 
 let isGeometry = (geometry) => {
   open Wonder_jest;
@@ -59,11 +46,6 @@ let isGeometry = (geometry) => {
 };
 
 let buildBufferConfig = (count) => {"geometryPointDataBufferCount": Js.Nullable.return(count)};
-
-let getMappedIndex = (index, state: StateDataType.state) =>
-  getGeometryData(state).mappedIndexMap |> GeometrySystem.getMappedIndex(index);
-
-let buildInfo = GeometryOperateCommon.buildInfo;
 
 let dispose = (geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.handleDisposeComponent(geometry, state);
@@ -89,4 +71,10 @@ let createStubComputeFuncData = (sandbox, geometry, state: StateDataType.state) 
   let computeDataFunc = createEmptyStubWithJsObjSandbox(sandbox);
   computeDataFuncMap |> WonderCommonlib.SparseMapSystem.set(geometry, computeDataFunc);
   (state, computeDataFunc)
+};
+
+let isGeometryDisposed = (geometry, state) => {
+  open StateDataType;
+  let {disposedIndexMap} as data = GeometrySystem.getGeometryData(state);
+  disposedIndexMap |> WonderCommonlib.SparseMapSystem.get(geometry) |> Js.Option.isSome
 };

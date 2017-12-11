@@ -8,5 +8,5 @@ let handleCloneComponent =
   countRangeArr |> Js.Array.map((_) => sourceComponent)
 );
 
-let isCloned = (mappedGeometry, isClonedMap) =>
-  isClonedMap |> WonderCommonlib.SparseMapSystem.has(mappedGeometry);
+let isCloned = (geometry, isClonedMap) =>
+  isClonedMap |> WonderCommonlib.SparseMapSystem.has(geometry);

@@ -1,10 +1,7 @@
-let getMappedIndex = GeometrySystem.getMappedIndex;
 
-let getMappedIndexMap = GeometrySystem.getMappedIndexMap;
+let unsafeGetVertices = GeometrySystem.unsafeGetVertices;
 
-let getVertices = GeometrySystem.getVertices;
-
-let getIndices = GeometrySystem.getIndices;
+let unsafeGetIndices = GeometrySystem.unsafeGetIndices;
 
 let getDrawMode = GeometrySystem.getDrawMode;
 

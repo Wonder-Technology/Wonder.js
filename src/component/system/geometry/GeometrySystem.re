@@ -14,74 +14,44 @@ open StateDataType;
 
 open Gl;
 
-/* let create = (state: StateDataType.state) => {
-     let {index, mappedIndex, mappedIndexMap, aliveIndexArray} as data = getGeometryData(state);
-     data.index = succ(index);
-     data.mappedIndex = succ(mappedIndex);
-     GeometryIndexCommon.setMappedIndex((index), mappedIndex, mappedIndexMap) |> ignore;
-     aliveIndexArray |> Js.Array.push(index) |> ignore;
-     (state, index)
-
-
-
-   }; */
-let getMappedIndex = GeometryIndexCommon.getMappedIndex;
-
-/* let setMappedIndex = GeometryIndexCommon.setMappedIndex; */
-let getMappedIndexMap = GeometryIndexCommon.getMappedIndexMap;
-
-/* let buildInfo = GeometryOperateCommon.buildInfo;
-   let getInfo = GeometryOperateCommon.getInfo;
-
-    */
 let getGeometryData = GeometryStateCommon.getGeometryData;
 
 let increaseGroupCount = GeometryGroupCommon.increaseGroupCount;
 
 let handleInitComponent = GeometryInitComponentCommon.handleInitComponent;
 
-let getVertices =
+let getVertices = (index: int, state: StateDataType.state) =>
+  GeometryOperateCommon.getVertices(index, state);
+
+let unsafeGetVertices =
   [@bs]
   (
-    (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateCommon.getVertices(mappedIndex, state)
+    (index: int, state: StateDataType.state) =>
+      GeometryOperateCommon.unsafeGetVertices(index, state)
   );
 
-let setVertices = (mappedIndex: int, data: Float32Array.t, state: StateDataType.state) =>
-  GeometryOperateCommon.setVerticesWithTypeArray(mappedIndex, data, state);
+let setVertices = (index: int, data: Float32Array.t, state: StateDataType.state) =>
+  GeometryOperateCommon.setVertices(index, data, state);
 
-let getIndices =
+let getIndices = (index: int, state: StateDataType.state) =>
+  GeometryOperateCommon.getIndices(index, state);
+
+let unsafeGetIndices =
   [@bs]
   (
-    (mappedIndex: int, state: StateDataType.state) =>
-      GeometryOperateCommon.getIndices(mappedIndex, state)
+    (index: int, state: StateDataType.state) => GeometryOperateCommon.unsafeGetIndices(index, state)
   );
 
-let setIndices = (mappedIndex: int, data: Uint16Array.t, state: StateDataType.state) =>
-  GeometryOperateCommon.setIndicesWithTypeArray(mappedIndex, data, state);
+let setIndices = (index: int, data: Uint16Array.t, state: StateDataType.state) =>
+  GeometryOperateCommon.setIndices(index, data, state);
 
-let getIndicesCount =
-  CacheUtils.memorizeIntState(
-    [@bs]
-    (
-      (mappedIndex: int, state: StateDataType.state) =>
-        Uint16Array.length([@bs] getIndices(mappedIndex, state))
-    ),
-    [@bs] ((state: StateDataType.state) => getGeometryData(state).indicesCountCacheMap)
-  );
+let getIndicesCount = (index: int, state: StateDataType.state) =>
+  GeometryOperateCommon.unsafeGetIndices(index, state) |> Uint16Array.length;
 
-let hasIndices = (mappedIndex: int, state: StateDataType.state) =>
-  getIndicesCount(mappedIndex, state) > 0;
+let hasIndices = (index: int, state: StateDataType.state) => getIndicesCount(index, state) > 0;
 
-let getVerticesCount =
-  CacheUtils.memorizeIntState(
-    [@bs]
-    (
-      (mappedIndex: int, state: StateDataType.state) =>
-        Float32Array.length([@bs] getVertices(mappedIndex, state))
-    ),
-    [@bs] ((state: StateDataType.state) => getGeometryData(state).verticesCountCacheMap)
-  );
+let getVerticesCount = (index: int, state: StateDataType.state) =>
+  GeometryOperateCommon.unsafeGetVertices(index, state) |> Float32Array.length;
 
 let getDrawMode = (gl) => getTriangles(gl);
 
@@ -100,16 +70,11 @@ let init = (state: StateDataType.state) => {
         )
       )
   );
-  let {index, mappedIndexMap} = getGeometryData(state);
+  let {index} = getGeometryData(state);
   ArraySystem.range(0, index - 1)
   |> Js.Array.forEach(
        (geometryIndex: int) =>
-         GeometryInitComponentCommon.initGeometry(
-           geometryIndex,
-           GeometryIndexCommon.getMappedIndex(geometryIndex, mappedIndexMap),
-           state
-         )
-         |> ignore
+         GeometryInitComponentCommon.initGeometry(geometryIndex, state) |> ignore
      );
   state
 };
@@ -117,8 +82,8 @@ let init = (state: StateDataType.state) => {
 let getConfigData = (geometry: geometry, state: StateDataType.state) =>
   GeometryConfigDataCommon.getConfigData(geometry, state);
 
-let getGameObject = (mappedGeometry: geometry, state: StateDataType.state) =>
-  GeometryGameObjectCommon.getGameObject(mappedGeometry, state);
+let getGameObject = (geometry: geometry, state: StateDataType.state) =>
+  GeometryGameObjectCommon.getGameObject(geometry, state);
 
 let isAlive = (geometry: geometry, state: StateDataType.state) =>
   GeometryDisposeComponentCommon.isAlive(geometry, state);

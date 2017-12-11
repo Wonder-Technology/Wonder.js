@@ -97,15 +97,7 @@ let addGeometryComponent = (uid: int, component: component, state: StateDataType
   GameObjectStateCommon.getGameObjectData(state).geometryMap
   |> _addComponent(uid, component)
   |> ignore;
-  switch (
-    GeometryGameObjectCommon.getGameObject(
-      GeometryIndexCommon.getMappedIndex(
-        component,
-        GeometryStateCommon.getGeometryData(state).mappedIndexMap
-      ),
-      state
-    )
-  ) {
+  switch (GeometryGameObjectCommon.getGameObject(component, state)) {
   | Some(_) => GeometryGroupCommon.increaseGroupCount(component, state)
   | _ => [@bs] GeometryAddComponentCommon.handleAddComponent(component, uid, state)
   }

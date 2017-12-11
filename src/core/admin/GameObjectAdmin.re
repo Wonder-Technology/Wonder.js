@@ -288,7 +288,6 @@ let initGameObject = (uid: int, state: StateDataType.state) => {
     | Some(geometry) =>
       GeometrySystem.handleInitComponent(
         geometry,
-        GeometrySystem.getMappedIndex(geometry, GeometrySystem.getMappedIndexMap(state)),
         state
       )
     | None => state

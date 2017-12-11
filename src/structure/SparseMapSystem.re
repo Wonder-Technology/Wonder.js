@@ -1,0 +1,1 @@
+let length = Js.Array.length;

@@ -2,10 +2,9 @@ let getOrCreateArrayBuffer = (geometryIndex: int, state: StateDataType.state) =>
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
-    GeometryAdmin.getMappedIndex(geometryIndex, GeometryAdmin.getMappedIndexMap(state)),
     VboBufferStateUtils.getVboBufferData(state).vertexBufferMap,
     [@bs] ArrayBufferSystem.createBuffer,
-    [@bs] GeometryAdmin.getVertices,
+    [@bs] GeometryAdmin.unsafeGetVertices,
     state
   );
 
@@ -13,10 +12,9 @@ let getOrCreateElementArrayBuffer = (geometryIndex: int, state: StateDataType.st
   VboBufferSystem.getOrCreateBuffer(
     [@bs] DeviceManagerSystem.getGl(state),
     geometryIndex,
-    GeometryAdmin.getMappedIndex(geometryIndex, GeometryAdmin.getMappedIndexMap(state)),
     VboBufferStateUtils.getVboBufferData(state).elementArrayBufferMap,
     [@bs] ElementArrayBufferSystem.createBuffer,
-    [@bs] GeometryAdmin.getIndices,
+    [@bs] GeometryAdmin.unsafeGetIndices,
     state
   );
 

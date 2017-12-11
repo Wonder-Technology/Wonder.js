@@ -19,7 +19,8 @@ let _ =
         () => {
           sandbox := createSandbox();
           state :=
-            TestTool.init(~sandbox, 
+            TestTool.init(
+              ~sandbox,
               ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)),
               ()
             )
@@ -43,24 +44,6 @@ let _ =
           )
           |> expect == (gameObject1, gameObject1)
         }
-      );
-      describe(
-        "test reallocate geometry",
-        () =>
-          test(
-            "dispose some the shared geometry while still has alive one not cause really dispose",
-            () => {
-              state := MemoryConfigTool.setConfig(state^, ~maxDisposeCount=1, ());
-              open GeometryType;
-              open StateDataType;
-              let (state, gameObject1, geometry1, gameObject2, geometry2) = _createAndInit(state^);
-              let (state, gameObject3, geometry3) = BoxGeometryTool.createGameObject(state);
-              let state =
-                state |> GameObject.disposeGameObjectGeometryComponent(gameObject1, geometry1);
-              let {gameObjectMap} = GeometryTool.getGeometryData(state);
-              gameObjectMap |> expect == [|0, 2|]
-            }
-          )
       );
       describe(
         "test clone geometry component",
@@ -161,7 +144,7 @@ let _ =
             "test dispose cloned geometry",
             () => {
               let _prepare = (state) => {
-                let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=1, ());
+                /* let state = MemoryConfigTool.setConfig(state, ~maxDisposeCount=1, ()); */
                 let (state, gameObject1, geometry1) = _createAndInitGameObject(state);
                 CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 1)
               };
@@ -195,8 +178,7 @@ let _ =
                   let state =
                     state
                     |> GeometryTool.disposeGeometryByCloseContractCheck(gameObject1, geometry1);
-                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
-                  gameObjectMap |> expect == [||]
+                  state |> GeometryTool.isGeometryDisposed(geometry1) |> expect == true
                 }
               )
             }
@@ -235,8 +217,7 @@ let _ =
                          gameObject1,
                          clonedGameObjectArr[0]
                        |]);
-                  let {gameObjectMap} = GeometryTool.getGeometryData(state);
-                  gameObjectMap |> expect == [||]
+                  state |> GeometryTool.isGeometryDisposed(geometry1) |> expect == true
                 }
               )
             }

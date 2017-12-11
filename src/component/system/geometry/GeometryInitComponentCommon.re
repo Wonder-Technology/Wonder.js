@@ -17,22 +17,22 @@ let _markIsInit = (index: int, isInit: bool, state: StateDataType.state) => {
   state
 };
 
-let initGeometry = (index: int, mappedIndex: int, state: StateDataType.state) =>
+let initGeometry = (index: int, state: StateDataType.state) =>
   if (_isInit(index, state)) {
     state
   } else {
     let {computeDataFuncMap} = getGeometryData(state);
-    switch (computeDataFuncMap |> WonderCommonlib.SparseMapSystem.get(mappedIndex)) {
+    switch (computeDataFuncMap |> WonderCommonlib.SparseMapSystem.get(index)) {
     | None => state
     | Some(computeDataFunc) =>
-      let {vertices, indices}: geometryComputeData = computeDataFunc(mappedIndex, state);
+      let {vertices, indices}: geometryComputeData = computeDataFunc(index, state);
       /* todo compute normals */
       state
-      |> setVertices(mappedIndex, vertices)
-      |> setIndices(mappedIndex, indices)
+      |> setVerticesWithArray(index, vertices)
+      |> setIndicesWithArray(index, indices)
       |> _markIsInit(index, true)
     }
   };
 
-let handleInitComponent = (index: int, mappedIndex: int, state: StateDataType.state) =>
-  initGeometry(index, mappedIndex, state);
+let handleInitComponent = (index: int, state: StateDataType.state) =>
+  initGeometry(index, state);
