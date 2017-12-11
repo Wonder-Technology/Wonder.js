@@ -17,7 +17,7 @@ let render = (gl, uid, state: StateDataType.state) => {
   (
     state
     |> ProgramSystem.use(gl, program)
-    |> GLSLSenderConfigDataHandleUtils.getAttributeSendData(shaderIndex)
+    |> GLSLSenderConfigDataHandleSystem.getAttributeSendData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (
@@ -49,7 +49,7 @@ let render = (gl, uid, state: StateDataType.state) => {
          ),
          state
        )
-    |> GLSLSenderConfigDataHandleUtils.getUniformSendData(shaderIndex)
+    |> GLSLSenderConfigDataHandleSystem.getUniformSendData(shaderIndex)
     |> ArraySystem.reduceState(
          [@bs]
          (

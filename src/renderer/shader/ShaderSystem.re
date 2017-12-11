@@ -49,13 +49,13 @@ let _init =
       |> ProgramSystem.registerProgram(shaderIndex, state)
       |> ProgramSystem.initShader(vsSource, fsSource, gl);
     state
-    |> GLSLSenderConfigDataHandleUtils.addAttributeSendData(
+    |> GLSLSenderConfigDataHandleSystem.addAttributeSendData(
          gl,
          shaderIndex,
          program,
          shaderLibDataArr
        )
-    |> GLSLSenderConfigDataHandleUtils.addUniformSendData(
+    |> GLSLSenderConfigDataHandleSystem.addUniformSendData(
          gl,
          shaderIndex,
          program,
